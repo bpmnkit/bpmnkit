@@ -1,0 +1,639 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 0,
+    "info": 29,
+    "warning": 18
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "Gateway_UserSatisfied"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"Gateway_UserSatisfied\" has 2 outgoing flows but no default flow set.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Gateway_UserSatisfied"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"User satisfied?\" has no default sequence flow.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"AI Agent\" has no error boundary event.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "UserTask_ReviewAgentResponse"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"User Feedback\" has no timer boundary event.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "StartEvent_TaskReceived"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Task to perform received\" has no documentation describing expected input variables.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:openai",
+      "message": "Variable \"openai\" is referenced but never set in this process.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "warning",
+      "suggestion": "\"openai\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:responses",
+      "message": "Variable \"responses\" is referenced but never set in this process.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "warning",
+      "suggestion": "\"responses\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:custom",
+      "message": "Variable \"custom\" is referenced but never set in this process.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "warning",
+      "suggestion": "\"custom\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:camunda",
+      "message": "Variable \"camunda\" is referenced but never set in this process.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "warning",
+      "suggestion": "\"camunda\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:apiKey",
+      "message": "Variable \"apiKey\" is referenced but never set in this process.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "warning",
+      "suggestion": "\"apiKey\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:modelDefault",
+      "message": "Variable \"modelDefault\" is referenced but never set in this process.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "warning",
+      "suggestion": "\"modelDefault\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:followUpInput",
+      "message": "Variable \"followUpInput\" is referenced but never set in this process.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "warning",
+      "suggestion": "\"followUpInput\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:inputText",
+      "message": "Variable \"inputText\" is referenced but never set in this process.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "warning",
+      "suggestion": "\"inputText\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:followUpDocuments",
+      "message": "Variable \"followUpDocuments\" is referenced but never set in this process.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "warning",
+      "suggestion": "\"followUpDocuments\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:inputDocuments",
+      "message": "Variable \"inputDocuments\" is referenced but never set in this process.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "warning",
+      "suggestion": "\"inputDocuments\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:WAIT_FOR_TOOL_CALL_RESULTS",
+      "message": "Variable \"WAIT_FOR_TOOL_CALL_RESULTS\" is referenced but never set in this process.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "warning",
+      "suggestion": "\"WAIT_FOR_TOOL_CALL_RESULTS\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:text",
+      "message": "Variable \"text\" is referenced but never set in this process.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "warning",
+      "suggestion": "\"text\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Gateway_UserSatisfied"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:userSatisfied",
+      "message": "Variable \"userSatisfied\" is referenced but never set in this process.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "warning",
+      "suggestion": "\"userSatisfied\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:provider.type",
+      "message": "Variable \"provider.type\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"provider.type\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:provider.openai.api.type",
+      "message": "Variable \"provider.openai.api.type\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"provider.openai.api.type\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:provider.openai.backend.type",
+      "message": "Variable \"provider.openai.backend.type\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"provider.openai.backend.type\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:provider.openai.backend.custom.endpoint",
+      "message": "Variable \"provider.openai.backend.custom.endpoint\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"provider.openai.backend.custom.endpoint\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:provider.openai.backend.custom.authentication.type",
+      "message": "Variable \"provider.openai.backend.custom.authentication.type\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"provider.openai.backend.custom.authentication.type\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:provider.openai.backend.custom.authentication.apiKey",
+      "message": "Variable \"provider.openai.backend.custom.authentication.apiKey\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"provider.openai.backend.custom.authentication.apiKey\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:provider.openai.model.model",
+      "message": "Variable \"provider.openai.model.model\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"provider.openai.model.model\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:provider.openai.api.responses.effort",
+      "message": "Variable \"provider.openai.api.responses.effort\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"provider.openai.api.responses.effort\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:data.systemPrompt.prompt",
+      "message": "Variable \"data.systemPrompt.prompt\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"data.systemPrompt.prompt\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:data.userPrompt.prompt",
+      "message": "Variable \"data.userPrompt.prompt\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"data.userPrompt.prompt\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:data.userPrompt.documents",
+      "message": "Variable \"data.userPrompt.documents\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"data.userPrompt.documents\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:agentContext",
+      "message": "Variable \"agentContext\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"agentContext\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:data.memory.storage.type",
+      "message": "Variable \"data.memory.storage.type\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"data.memory.storage.type\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:data.memory.contextWindowSize",
+      "message": "Variable \"data.memory.contextWindowSize\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"data.memory.contextWindowSize\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:data.limits.maxModelCalls",
+      "message": "Variable \"data.limits.maxModelCalls\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"data.limits.maxModelCalls\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:data.events.behavior",
+      "message": "Variable \"data.events.behavior\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"data.events.behavior\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:data.response.format.type",
+      "message": "Variable \"data.response.format.type\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"data.response.format.type\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:data.response.format.parseJson",
+      "message": "Variable \"data.response.format.parseJson\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"data.response.format.parseJson\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:data.response.includeAssistantMessage",
+      "message": "Variable \"data.response.includeAssistantMessage\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"data.response.includeAssistantMessage\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:data.response.includeAgentContext",
+      "message": "Variable \"data.response.includeAgentContext\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"data.response.includeAgentContext\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "UserTask_ReviewAgentResponse"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:responseText",
+      "message": "Variable \"responseText\" is set but never read by any downstream element.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"responseText\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:AI_Agent",
+      "message": "Element \"AI_Agent\" produces: provider.type, provider.openai.api.type, provider.openai.backend.type, provider.openai.backend.custom.endpoint, provider.openai.backend.custom.authentication.type, provider.openai.backend.custom.authentication.apiKey, provider.openai.model.model, provider.openai.api.responses.effort, data.systemPrompt.prompt, data.userPrompt.prompt, data.userPrompt.documents, agentContext, data.memory.storage.type, data.memory.contextWindowSize, data.limits.maxModelCalls, data.events.behavior, data.response.format.type, data.response.format.parseJson, data.response.includeAssistantMessage, data.response.includeAgentContext, agent; consumes: openai, responses, custom, camunda, apiKey, modelDefault, followUpInput, inputText, followUpDocuments, inputDocuments, agent, WAIT_FOR_TOOL_CALL_RESULTS, text.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "UserTask_ReviewAgentResponse"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:UserTask_ReviewAgentResponse",
+      "message": "Element \"UserTask_ReviewAgentResponse\" produces: responseText; consumes: agent.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Gateway_UserSatisfied"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:Gateway_UserSatisfied",
+      "message": "Element \"Gateway_UserSatisfied\" consumes: userSatisfied.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_Gateway_RunAgent_AI_Agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_Gateway_RunAgent_AI_Agent",
+      "message": "Variables in scope at flow \"Flow_Gateway_RunAgent_AI_Agent\": agent, agentContext, data.events.behavior, data.limits.maxModelCalls, data.memory.contextWindowSize, data.memory.storage.type, data.response.format.parseJson, data.response.format.type, data.response.includeAgentContext, data.response.includeAssistantMessage, data.systemPrompt.prompt, data.userPrompt.documents, data.userPrompt.prompt, provider.openai.api.responses.effort, provider.openai.api.type, provider.openai.backend.custom.authentication.apiKey, provider.openai.backend.custom.authentication.type, provider.openai.backend.custom.endpoint, provider.openai.backend.type, provider.openai.model.model, provider.type, responseText.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_AI_Agent_UserTask_ReviewAgentResponse"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_AI_Agent_UserTask_ReviewAgentResponse",
+      "message": "Variables in scope at flow \"Flow_AI_Agent_UserTask_ReviewAgentResponse\": agent, agentContext, data.events.behavior, data.limits.maxModelCalls, data.memory.contextWindowSize, data.memory.storage.type, data.response.format.parseJson, data.response.format.type, data.response.includeAgentContext, data.response.includeAssistantMessage, data.systemPrompt.prompt, data.userPrompt.documents, data.userPrompt.prompt, provider.openai.api.responses.effort, provider.openai.api.type, provider.openai.backend.custom.authentication.apiKey, provider.openai.backend.custom.authentication.type, provider.openai.backend.custom.endpoint, provider.openai.backend.type, provider.openai.model.model, provider.type, responseText.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied",
+      "message": "Variables in scope at flow \"Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied\": agent, agentContext, data.events.behavior, data.limits.maxModelCalls, data.memory.contextWindowSize, data.memory.storage.type, data.response.format.parseJson, data.response.format.type, data.response.includeAgentContext, data.response.includeAssistantMessage, data.systemPrompt.prompt, data.userPrompt.documents, data.userPrompt.prompt, provider.openai.api.responses.effort, provider.openai.api.type, provider.openai.backend.custom.authentication.apiKey, provider.openai.backend.custom.authentication.type, provider.openai.backend.custom.endpoint, provider.openai.backend.type, provider.openai.model.model, provider.type, responseText.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_Yes"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_Yes",
+      "message": "Variables in scope at flow \"Flow_Yes\": agent, agentContext, data.events.behavior, data.limits.maxModelCalls, data.memory.contextWindowSize, data.memory.storage.type, data.response.format.parseJson, data.response.format.type, data.response.includeAgentContext, data.response.includeAssistantMessage, data.systemPrompt.prompt, data.userPrompt.documents, data.userPrompt.prompt, provider.openai.api.responses.effort, provider.openai.api.type, provider.openai.backend.custom.authentication.apiKey, provider.openai.backend.custom.authentication.type, provider.openai.backend.custom.endpoint, provider.openai.backend.type, provider.openai.model.model, provider.type, responseText.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_No"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_No",
+      "message": "Variables in scope at flow \"Flow_No\": agent, agentContext, data.events.behavior, data.limits.maxModelCalls, data.memory.contextWindowSize, data.memory.storage.type, data.response.format.parseJson, data.response.format.type, data.response.includeAgentContext, data.response.includeAssistantMessage, data.systemPrompt.prompt, data.userPrompt.documents, data.userPrompt.prompt, provider.openai.api.responses.effort, provider.openai.api.type, provider.openai.backend.custom.authentication.apiKey, provider.openai.backend.custom.authentication.type, provider.openai.backend.custom.endpoint, provider.openai.backend.type, provider.openai.model.model, provider.type, responseText.",
+      "plane": "ai-agent-chat-with-tools",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "info",
+      "suggestion": ""
+    }
+  ],
+  "platform": {
+    "id": "camunda-cloud",
+    "name": "Camunda Cloud",
+    "version": "8.10.0"
+  },
+  "total": 47
+}

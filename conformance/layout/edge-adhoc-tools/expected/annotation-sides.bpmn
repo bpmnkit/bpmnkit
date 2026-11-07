@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="P" isExecutable="true">
+    <bpmn:startEvent id="S" name="Start">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:adHocSubProcess id="Ad" name="Pick tools">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+      <bpmn:userTask id="T1" name="Tool T1"/>
+      <bpmn:userTask id="T2" name="Tool T2"/>
+      <bpmn:userTask id="T3" name="Tool T3"/>
+      <bpmn:userTask id="T4" name="Tool T4"/>
+      <bpmn:userTask id="T5" name="Tool T5"/>
+      <bpmn:userTask id="T6" name="Tool T6"/>
+      <bpmn:userTask id="T7" name="Tool T7"/>
+      <bpmn:serviceTask id="Linked1" name="Linked a">
+        <bpmn:outgoing>lf</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="Linked2" name="Linked b">
+        <bpmn:incoming>lf</bpmn:incoming>
+      </bpmn:serviceTask>
+      <bpmn:sequenceFlow id="lf" sourceRef="Linked1" targetRef="Linked2"/>
+      <bpmn:textAnnotation id="AdNote">
+        <bpmn:text>Tools run in any order</bpmn:text>
+      </bpmn:textAnnotation>
+      <bpmn:association id="as1" sourceRef="T1" targetRef="AdNote"/>
+    </bpmn:adHocSubProcess>
+    <bpmn:endEvent id="E" name="End">
+      <bpmn:incoming>f2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="Ad"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="Ad" targetRef="E"/>
+    <bpmn:textAnnotation id="OuterNote">
+      <bpmn:text>Outer note</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="as2" sourceRef="Ad" targetRef="OuterNote"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="P">
+      <bpmndi:BPMNShape id="S_di" bpmnElement="S">
+        <dc:Bounds x="114" y="120" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="112" y="160" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Ad_di" bpmnElement="Ad" isExpanded="true">
+        <dc:Bounds x="250" y="20" width="480" height="568"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_di" bpmnElement="E">
+        <dc:Bounds x="830" y="120" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="828" y="160" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T1_di" bpmnElement="T1">
+        <dc:Bounds x="300" y="98" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T2_di" bpmnElement="T2">
+        <dc:Bounds x="440" y="98" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T3_di" bpmnElement="T3">
+        <dc:Bounds x="580" y="98" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T4_di" bpmnElement="T4">
+        <dc:Bounds x="300" y="198" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T5_di" bpmnElement="T5">
+        <dc:Bounds x="440" y="198" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T6_di" bpmnElement="T6">
+        <dc:Bounds x="580" y="198" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T7_di" bpmnElement="T7">
+        <dc:Bounds x="300" y="298" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Linked1_di" bpmnElement="Linked1">
+        <dc:Bounds x="300" y="458" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Linked2_di" bpmnElement="Linked2">
+        <dc:Bounds x="460" y="458" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="OuterNote_di" bpmnElement="OuterNote">
+        <dc:Bounds x="390" y="638" width="200" height="30"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="AdNote_di" bpmnElement="AdNote">
+        <dc:Bounds x="20" y="43" width="200" height="30"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1">
+        <di:waypoint x="150" y="138"/>
+        <di:waypoint x="250" y="138"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2">
+        <di:waypoint x="730" y="138"/>
+        <di:waypoint x="830" y="138"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="lf_di" bpmnElement="lf">
+        <di:waypoint x="400" y="498"/>
+        <di:waypoint x="460" y="498"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="as2_di" bpmnElement="as2">
+        <di:waypoint x="490" y="588"/>
+        <di:waypoint x="490" y="638"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="as1_di" bpmnElement="as1">
+        <di:waypoint x="300" y="98"/>
+        <di:waypoint x="220" y="73"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

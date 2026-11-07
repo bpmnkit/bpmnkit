@@ -1,0 +1,66 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s1",
+            "name": "First",
+            "type": "startEvent"
+          },
+          {
+            "id": "a",
+            "name": "A",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "eventType": "message",
+            "id": "s2",
+            "name": "Second",
+            "type": "startEvent"
+          },
+          {
+            "id": "a_join",
+            "type": "exclusiveGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s1",
+            "id": "Flow_1",
+            "to": "a_join"
+          },
+          {
+            "from": "a",
+            "id": "Flow_2",
+            "to": "e"
+          },
+          {
+            "from": "s2",
+            "id": "Flow_3",
+            "to": "a_join"
+          },
+          {
+            "from": "a_join",
+            "id": "Flow_4",
+            "to": "a"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "joined 2 flows into \"a\" with xor gateway \"a_join\"",
+    "named 1 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

@@ -1,0 +1,14 @@
+{
+  "aliases": {
+    "auto": "auto",
+    "check": "check",
+    "done": "done",
+    "failed": "failed",
+    "notice": "notice",
+    "notify": "notify",
+    "pay": "pay",
+    "pay_join": "pay_join",
+    "review": "review",
+    "start": "start"
+  }
+}

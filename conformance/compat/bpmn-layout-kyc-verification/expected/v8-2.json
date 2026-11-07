@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "uploadDocument"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-form",
+      "message": "User task \"Upload Identity Document\" links a form by formId, which needs Camunda 8.4 or newer; this model targets Camunda 8.2.",
+      "processId": "KYCOnboarding",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.4 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "enhancedDueDiligence"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-form",
+      "message": "User task \"Enhanced Due Diligence Review\" links a form by formId, which needs Camunda 8.4 or newer; this model targets Camunda 8.2.",
+      "processId": "KYCOnboarding",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.4 or newer (modeler:executionPlatformVersion), or remove it."
+    }
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "findings": [
+    {
+      "elementId": "a",
+      "fix": "Add \"values\": [{ \"label\": \"…\", \"value\": \"…\" }], or take them from a variable with \"valuesKey\" or \"valuesExpression\". (agent-cards/form.md#traps)",
+      "message": "Component \"a\" (select) has no options.",
+      "rule": "form/missing-options",
+      "severity": "error"
+    },
+    {
+      "elementId": "f",
+      "fix": "Give each component its own id. (agent-cards/form.md#traps)",
+      "message": "The id \"f\" is used by the form and by components[5].",
+      "rule": "form/duplicate-id",
+      "severity": "error"
+    },
+    {
+      "elementId": "g",
+      "fix": "Add \"values\": [{ \"label\": \"…\", \"value\": \"…\" }], or take them from a variable with \"valuesKey\" or \"valuesExpression\". (agent-cards/form.md#traps)",
+      "message": "Component \"g\" (select) has no options.",
+      "rule": "form/missing-options",
+      "severity": "error"
+    }
+  ]
+}

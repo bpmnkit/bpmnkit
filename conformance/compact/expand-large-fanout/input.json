@@ -1,0 +1,122 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "s",
+          "type": "startEvent"
+        },
+        {
+          "id": "g",
+          "type": "parallelGateway"
+        },
+        {
+          "id": "t1",
+          "type": "task"
+        },
+        {
+          "id": "t2",
+          "type": "task"
+        },
+        {
+          "id": "t3",
+          "type": "task"
+        },
+        {
+          "id": "t4",
+          "type": "task"
+        },
+        {
+          "id": "t5",
+          "type": "task"
+        },
+        {
+          "id": "t6",
+          "type": "task"
+        },
+        {
+          "id": "j",
+          "type": "parallelGateway"
+        },
+        {
+          "id": "e",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f0",
+          "from": "s",
+          "to": "g"
+        },
+        {
+          "id": "a1",
+          "from": "g",
+          "to": "t1"
+        },
+        {
+          "id": "b1",
+          "from": "t1",
+          "to": "j"
+        },
+        {
+          "id": "a2",
+          "from": "g",
+          "to": "t2"
+        },
+        {
+          "id": "b2",
+          "from": "t2",
+          "to": "j"
+        },
+        {
+          "id": "a3",
+          "from": "g",
+          "to": "t3"
+        },
+        {
+          "id": "b3",
+          "from": "t3",
+          "to": "j"
+        },
+        {
+          "id": "a4",
+          "from": "g",
+          "to": "t4"
+        },
+        {
+          "id": "b4",
+          "from": "t4",
+          "to": "j"
+        },
+        {
+          "id": "a5",
+          "from": "g",
+          "to": "t5"
+        },
+        {
+          "id": "b5",
+          "from": "t5",
+          "to": "j"
+        },
+        {
+          "id": "a6",
+          "from": "g",
+          "to": "t6"
+        },
+        {
+          "id": "b6",
+          "from": "t6",
+          "to": "j"
+        },
+        {
+          "id": "fe",
+          "from": "j",
+          "to": "e"
+        }
+      ]
+    }
+  ]
+}

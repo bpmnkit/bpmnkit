@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 16,
+  "id": "f",
+  "components": [
+    {
+      "label": "S",
+      "values": [
+        {
+          "label": "A",
+          "value": "a",
+          "disabled": true
+        },
+        {
+          "label": "B",
+          "value": "b",
+          "meta": {
+            "k": [
+              1
+            ]
+          },
+          "toString": "x"
+        },
+        {
+          "label": "",
+          "value": ""
+        }
+      ],
+      "type": "select",
+      "layout": {
+        "row": "r1",
+        "columns": 4,
+        "hint": "x",
+        "__proto__": 1
+      },
+      "id": "s",
+      "key": "s"
+    },
+    {
+      "label": "R",
+      "values": [
+        {
+          "label": "A",
+          "value": "a",
+          "description": "d"
+        }
+      ],
+      "type": "radio",
+      "layout": {
+        "columns": "wide",
+        "row": 5
+      },
+      "id": "r",
+      "key": "r"
+    },
+    {
+      "label": "T",
+      "values": [
+        {
+          "label": "A",
+          "value": "a",
+          "x": null
+        }
+      ],
+      "type": "taglist",
+      "layout": {
+        "columns": null,
+        "hint": "no row, no columns"
+      },
+      "id": "t",
+      "key": "t"
+    },
+    {
+      "label": "G",
+      "components": [
+        {
+          "label": "B",
+          "type": "button",
+          "layout": {
+            "row": "r2",
+            "columns": null,
+            "gap": 2
+          },
+          "id": "b"
+        }
+      ],
+      "type": "group",
+      "layout": {
+        "columns": null,
+        "extra": true
+      },
+      "id": "g"
+    }
+  ],
+  "type": "default"
+}

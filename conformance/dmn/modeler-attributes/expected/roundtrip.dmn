@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:camunda="http://camunda.org/schema/1.0/dmn" id="Definitions_c8" name="Camunda 8 table" namespace="https://www.omg.org/spec/DMN/20191111/MODEL/" exporter="Camunda Modeler" exporterVersion="5.22.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
+  <decision id="d1" name="Decision 1">
+    <decisionTable id="t1" hitPolicy="UNIQUE">
+      <input id="i1" label="Customer">
+        <inputExpression id="ie1" typeRef="string">
+          <text>customer</text>
+        </inputExpression>
+      </input>
+      <output id="o1" label="Discount" name="discount" typeRef="number"/>
+      <rule id="r1">
+        <inputEntry id="e1">
+          <text>"gold"</text>
+        </inputEntry>
+        <outputEntry id="p1">
+          <text>0.2</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>
+

@@ -1,0 +1,76 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_classify"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Business rule task \"Classify invoice\" has no implementation; Camunda needs a zeebe:calledDecision or zeebe:taskDefinition.",
+      "processId": "invoice-approval",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_approve"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Approve invoice\" is a job-worker user task; Camunda 8.6 deprecates those in favour of Camunda user tasks.",
+      "processId": "invoice-approval",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_approve"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Approve invoice\" has no zeebe:formDefinition.",
+      "processId": "invoice-approval",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_archive"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Archive invoice\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "invoice-approval",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_book"
+      ],
+      "fixable": false,
+      "id": "compat/called-element",
+      "message": "Call activity \"Book invoice\" has no zeebe:calledElement processId.",
+      "processId": "invoice-approval",
+      "severity": "error",
+      "suggestion": "Set the id of the process to call."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_total"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Script task \"Compute total\" has no implementation; Camunda needs a zeebe:script or zeebe:taskDefinition.",
+      "processId": "invoice-approval",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    }
+  ]
+}

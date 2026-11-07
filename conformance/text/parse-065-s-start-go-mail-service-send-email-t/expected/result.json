@@ -1,0 +1,61 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "id": "mail",
+            "jobType": "mail",
+            "multiInstance": {
+              "collection": "=stakeholders",
+              "element": "stakeholder"
+            },
+            "name": "Send email to each stakeholder",
+            "type": "serviceTask"
+          },
+          {
+            "id": "report",
+            "jobType": "report",
+            "name": "Report sales every day",
+            "type": "serviceTask"
+          },
+          {
+            "id": "e",
+            "name": "Done",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "mail"
+          },
+          {
+            "from": "mail",
+            "id": "Flow_2",
+            "to": "report"
+          },
+          {
+            "from": "report",
+            "id": "Flow_3",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "\"mail\" runs once per stakeholder, over the list \"stakeholders\""
+  ],
+  "problems": [],
+  "questions": []
+}

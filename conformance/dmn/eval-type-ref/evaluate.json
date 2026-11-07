@@ -1,0 +1,13 @@
+[
+  { "decision": "number_in", "context": { "v": { "t": "number", "v": "1" } } },
+  { "decision": "number_in", "context": { "v": { "t": "string", "v": "1" } } },
+  { "decision": "number_in", "context": { "v": { "t": "null" } } },
+  { "decision": "number_in", "context": { "v": { "t": "boolean", "v": true } } },
+  { "decision": "legacy_and_any", "context": { "v": { "t": "number", "v": "1.5" }, "w": { "t": "string", "v": "x" } } },
+  { "decision": "bad_output", "context": { "v": { "t": "number", "v": "1" } } },
+  { "decision": "date_in", "context": { "d": { "t": "date", "v": "2024-06-01" } } },
+  { "decision": "date_in", "context": { "d": { "t": "string", "v": "2024-06-01" } } },
+  { "decision": "date_in", "context": { "d": { "t": "string", "v": "2026-06-01" } } },
+  { "decision": "date_in", "context": { "d": { "t": "string", "v": "nonsense" } } },
+  { "decision": "date_in", "context": { "d": { "t": "number", "v": "5" } } }
+]

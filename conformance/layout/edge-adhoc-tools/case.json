@@ -1,0 +1,45 @@
+{
+  "runs": {
+    "semantic": {},
+    "grid": {
+      "engine": "grid"
+    },
+    "grid-hint": {
+      "hints": {
+        "grids": {
+          "Ad": {
+            "columns": 3
+          }
+        }
+      }
+    },
+    "grid-hint-column": {
+      "engine": "grid",
+      "hints": {
+        "grids": {
+          "Ad": {
+            "columns": 2,
+            "fill": "column"
+          }
+        }
+      }
+    },
+    "annotation-sides": {
+      "hints": {
+        "annotationSides": {
+          "AdNote": "left",
+          "OuterNote": "below"
+        }
+      }
+    },
+    "annotation-sides-above": {
+      "engine": "grid",
+      "hints": {
+        "annotationSides": {
+          "AdNote": "above",
+          "OuterNote": "right"
+        }
+      }
+    }
+  }
+}

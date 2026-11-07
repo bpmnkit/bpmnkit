@@ -1,0 +1,1 @@
+expand: invalid CompactDiagram — flow "f1" references "ghost", which is not an element in process "P"

@@ -1,0 +1,73 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "t",
+            "jobType": "work",
+            "name": "Work",
+            "type": "serviceTask"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "t",
+            "eventType": "error",
+            "id": "b",
+            "name": "Fail",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "h",
+            "name": "Handle",
+            "type": "task"
+          },
+          {
+            "id": "x",
+            "name": "Failed",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "e"
+          },
+          {
+            "from": "b",
+            "id": "Flow_3",
+            "to": "h"
+          },
+          {
+            "from": "h",
+            "id": "Flow_4",
+            "to": "x"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

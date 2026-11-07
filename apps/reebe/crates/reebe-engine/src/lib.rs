@@ -7,24 +7,25 @@
 pub mod clock;
 pub mod engine;
 pub mod error;
+pub mod job_notifier;
+pub mod key_gen;
 pub mod process_def_cache;
 pub mod processor;
-pub mod key_gen;
-pub mod job_notifier;
 
 // Server-only modules (not available on WASM)
+#[cfg(not(target_arch = "wasm32"))]
+pub mod engine_integration_tests;
 #[cfg(not(target_arch = "wasm32"))]
 pub mod replay;
 #[cfg(not(target_arch = "wasm32"))]
 pub mod routing;
 #[cfg(not(target_arch = "wasm32"))]
-pub mod stream;
-#[cfg(not(target_arch = "wasm32"))]
 pub mod scheduler;
 #[cfg(not(target_arch = "wasm32"))]
-pub mod tests;
+pub mod stream;
 #[cfg(not(target_arch = "wasm32"))]
-pub mod engine_integration_tests;
+#[allow(clippy::module_inception)]
+pub mod tests;
 
 pub use clock::{Clock, RealClock, VirtualClock};
 pub use engine::{EngineConfig, EngineState};
@@ -39,7 +40,7 @@ pub fn evaluate_feel(
     expression: &str,
     variables: &serde_json::Value,
 ) -> Result<serde_json::Value, EngineError> {
-    use reebe_feel::{FeelContext, parse_and_evaluate};
+    use reebe_feel::{parse_and_evaluate, FeelContext};
     let ctx = FeelContext::from_json(variables.clone());
     parse_and_evaluate(expression, &ctx)
         .map(serde_json::Value::from)

@@ -1,0 +1,400 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_945cd271-46b6-4d71-83a1-530e445af820"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Interview customer\" has no zeebe:formDefinition.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_17db66a1-badd-4942-9ebd-02bc5595cdde"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Prove/Provide identity\" has no zeebe:formDefinition.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_664f14a9-c1f1-490a-bbec-1f66ba4e7fe4"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Obtain supporting data and documents of the customer\" has no zeebe:formDefinition.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_d22de266-6170-4783-91f9-40832e4cc58d"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Check customer documents\" has no zeebe:formDefinition.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_87785f46-7026-4d3c-b2c0-6a9468da67f6"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Copy, sign, and scan documents\" has no zeebe:formDefinition.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_a73027a7-615e-4a4d-95ee-c4cd78ab30c4"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"File documents in customer file\" has no zeebe:formDefinition.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_9c5d383f-df57-4012-b490-fa36f9f90eed"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Add personal data\" has no zeebe:formDefinition.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_be6ea91a-4f8e-4240-86e8-f85036aee96f"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Perform risk assessment of the customer\" has no zeebe:formDefinition.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_f006114d-c7cb-4ce0-9bfe-f0938c36a53e"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Document risk assessment\" has no zeebe:formDefinition.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_b9338c62-a257-47dd-8c2e-88b80b73c330"
+      ],
+      "fixable": false,
+      "id": "compat/called-element",
+      "message": "Call activity \"Check for connected clients\" has no zeebe:calledElement processId.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Set the id of the process to call."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_b360104e-8410-4b99-827a-776e2083fb96"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Create customer in the system\" has no zeebe:formDefinition.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_8055ae64-cafd-4fd0-be36-2216e3b02e37"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Signal end event \"Identity determined and new customer created\" needs Camunda 8.3 or newer; this model targets Camunda 8.0.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_2fd5c7d3-797d-45a5-a0d8-dfa60654ba5e"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Complete data and documents\" has no zeebe:formDefinition.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_09074897-556d-4fd2-afb6-2f6c774e1820"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Perform know your customer (KYC) activities\" has no zeebe:formDefinition.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_f0422f0d-396b-4ee7-ad83-fdd34a8bab71"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Document the identity of the economic owner\" has no zeebe:formDefinition.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_05a1a66a-9308-41c7-a611-4fc57627a058"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"End business relation\" has no zeebe:formDefinition.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_1fc87527-9cad-4f8e-b9c7-ebe106cbe98d"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Check risk and decide about approval\" has no zeebe:formDefinition.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_1da34f39-8338-4ecb-a93f-90349fa10260"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Reject customer request\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_1cf552d4-5152-4595-9218-84f31533bc70"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Signal end event \"No business relation created\" needs Camunda 8.3 or newer; this model targets Camunda 8.0.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_fcb09e30-bfe6-46b9-af01-6777c60026f2"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"Individual Person\" leaves Exclusive gateway \"Legal entity or individual?\" without a condition and is not its default flow.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_eec53048-291a-4802-8fec-012857f845eb"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"Yes\" leaves Exclusive gateway \"Data complete?\" without a condition and is not its default flow.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_1887adee-8291-4640-a5fa-3dc5f33d5a34"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"No\" leaves Exclusive gateway \"Subject to approval?\" without a condition and is not its default flow.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_664f3a71-3efa-4c94-8797-815f2e377cf7"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"No\" leaves Exclusive gateway \"Data complete?\" without a condition and is not its default flow.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_6912e5ed-5cae-4798-b6e6-8d367ddb3f60"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"Legal Entity\" leaves Exclusive gateway \"Legal entity or individual?\" without a condition and is not its default flow.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_afc35597-a482-432a-8ace-17adaf609572"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"Yes\" leaves Exclusive gateway \"Identity of the economic owner certifiable?\" without a condition and is not its default flow.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_470d1a12-e1fa-4471-b753-cfd7dbe20d80"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"No\" leaves Exclusive gateway \"Identity of the economic owner certifiable?\" without a condition and is not its default flow.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_e88d64c7-3aaf-4a5f-9787-4e5ba696312b"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"Yes\" leaves Exclusive gateway \"Subject to approval?\" without a condition and is not its default flow.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_8a77d7f6-320a-47ff-a155-57ee200df478"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"Yes\" leaves Exclusive gateway \"Approval?\" without a condition and is not its default flow.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_ae94e0c1-aa12-433f-bd44-a4d8a70a089e"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"No\" leaves Exclusive gateway \"Approval?\" without a condition and is not its default flow.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_8b104885-149e-4af6-a459-d924dacd81b3"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Check if group of connected clients exists\" has no zeebe:formDefinition.",
+      "processId": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_7507ae41-a1fa-405c-b4ea-85ed920eace5"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Document group of connected clients according to Capital Requirements Regulation (CRR)\" has no zeebe:formDefinition.",
+      "processId": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_e25b9c2d-690e-470b-8993-112002994fc2"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"Yes\" leaves Exclusive gateway \"Group of connected Clients existing?\" without a condition and is not its default flow.",
+      "processId": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_c329c58d-4a71-471f-acb9-b7f7113d8547"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"No\" leaves Exclusive gateway \"Group of connected Clients existing?\" without a condition and is not its default flow.",
+      "processId": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    }
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "t",
+            "inputs": {
+              "a": "=x + 1",
+              "b": "=if x > 1 then \"big\" else \"small\""
+            },
+            "jobType": "call",
+            "name": "Call",
+            "outputs": {
+              "r": "=response.value"
+            },
+            "type": "serviceTask"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

@@ -1,0 +1,56 @@
+{
+  "id": "Defs_1",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "start",
+          "name": "Start",
+          "type": "startEvent"
+        },
+        {
+          "id": "validate",
+          "name": "Validate",
+          "type": "serviceTask"
+        },
+        {
+          "id": "gw",
+          "name": "OK?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "end",
+          "type": "endEvent"
+        },
+        {
+          "id": "open",
+          "name": "Open end",
+          "type": "task"
+        }
+      ],
+      "flows": [
+        {
+          "from": "start",
+          "id": "f1",
+          "to": "validate"
+        },
+        {
+          "from": "validate",
+          "id": "f2",
+          "to": "gw"
+        },
+        {
+          "from": "gw",
+          "id": "f3",
+          "to": "end"
+        },
+        {
+          "from": "gw",
+          "id": "f4",
+          "to": "open"
+        }
+      ],
+      "id": "proc"
+    }
+  ]
+}

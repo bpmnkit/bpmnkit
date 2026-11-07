@@ -1,0 +1,10 @@
+{
+  "aliases": {
+    "end_cancel": "end_cancel",
+    "end_ok": "end_ok",
+    "paid_gw": "paid_gw",
+    "payment": "payment",
+    "ship": "ship",
+    "start": "start"
+  }
+}

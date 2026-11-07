@@ -1,0 +1,4134 @@
+{
+  "collaborations": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "groups": [],
+      "id": "_4",
+      "messageFlows": [
+        {
+          "id": "_76",
+          "sourceRef": "_5",
+          "targetRef": "_33",
+          "unknownAttributes": {
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "id": "_80",
+          "sourceRef": "_5",
+          "targetRef": "_38",
+          "unknownAttributes": {
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "id": "_77",
+          "sourceRef": "_45",
+          "targetRef": "_5",
+          "unknownAttributes": {
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "id": "_78",
+          "sourceRef": "_18",
+          "targetRef": "_5",
+          "unknownAttributes": {
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "id": "_79",
+          "sourceRef": "_31",
+          "targetRef": "_5",
+          "unknownAttributes": {
+            "triso:readOnly": "false"
+          }
+        }
+      ],
+      "name": "04 Travel Planning - ADONIS",
+      "participants": [
+        {
+          "id": "_5",
+          "name": "Client",
+          "unknownAttributes": {
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "id": "_7",
+          "name": "Travel Planning",
+          "processRef": "_8",
+          "unknownAttributes": {
+            "triso:readOnly": "false"
+          }
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {
+        "arisebpmn:type": "MT_ENTERPRISE_BPMN_COLLABORATION",
+        "ot:outerProcess": "_9"
+      }
+    }
+  ],
+  "diagrams": [
+    {
+      "id": "ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "plane": {
+        "bpmnElement": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+        "edges": [
+          {
+            "bpmnElement": "dataAssoc_Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240_to__5e0cd331-db4a-4561-9f7f-141eecba6967",
+            "id": "dataAssoc_Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240_to__5e0cd331-db4a-4561-9f7f-141eecba6967_di",
+            "label": {},
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 364.53999999999996,
+                "y": 155.9
+              },
+              {
+                "x": 414.62,
+                "y": 155.9
+              },
+              {
+                "x": 414.62,
+                "y": 217.12
+              }
+            ]
+          },
+          {
+            "bpmnElement": "ID-ee745c84-43de-11f1-744d-b02628b36240",
+            "id": "Edge_ID-ee745c84-43de-11f1-744d-b02628b36240",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 159.02,
+                "y": 255.12
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LSID-73a31a41-43d5-11f1-744d-b02628b36240_0",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 159.02,
+                "y": 255.12
+              },
+              {
+                "x": 231.31,
+                "y": 255.12
+              }
+            ]
+          },
+          {
+            "bpmnElement": "ID-ee745c88-43de-11f1-744d-b02628b36240",
+            "id": "Edge_ID-ee745c88-43de-11f1-744d-b02628b36240",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 236.13,
+                "y": 155.91
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LSID-73a31a41-43d5-11f1-744d-b02628b36240_0",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666",
+              "targetElement": "Shape_ID-ee745c82-43de-11f1-744d-b02628b36240"
+            },
+            "waypoints": [
+              {
+                "x": 236.13,
+                "y": 155.91
+              },
+              {
+                "x": 250.3,
+                "y": 155.91
+              },
+              {
+                "x": 250.3,
+                "y": 223.94
+              }
+            ]
+          },
+          {
+            "bpmnElement": "ID-ee745c8e-43de-11f1-744d-b02628b36240",
+            "id": "Edge_ID-ee745c8e-43de-11f1-744d-b02628b36240",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 297.64,
+                "y": 223.94
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LSID-73a31a41-43d5-11f1-744d-b02628b36240_0",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666",
+              "sourceElement": "Shape_ID-ee745c82-43de-11f1-744d-b02628b36240"
+            },
+            "waypoints": [
+              {
+                "x": 297.64,
+                "y": 223.94
+              },
+              {
+                "x": 297.64,
+                "y": 155.91
+              },
+              {
+                "x": 315.78,
+                "y": 155.91
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_1b18998a-581e-4a9f-a591-b4f360261866",
+            "id": "_7d5d1a83-f961-455e-bba5-0178a902d9b5",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 334.62,
+                "y": 255.12
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LSID-73a31a41-43d5-11f1-744d-b02628b36240_0",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#000000"
+            },
+            "waypoints": [
+              {
+                "x": 334.62,
+                "y": 255.12
+              },
+              {
+                "x": 390.62,
+                "y": 255.12
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_c0e8a59b-136b-4e14-8ef4-a9b1ff8f13fa",
+            "id": "_401f0937-9a1a-419e-bbd1-c373a3bcda70",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 485.62,
+                "y": 255.12
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LSID-73a31a41-43d5-11f1-744d-b02628b36240_0",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#000000"
+            },
+            "waypoints": [
+              {
+                "x": 485.62,
+                "y": 255.12
+              },
+              {
+                "x": 541.62,
+                "y": 255.12
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_8ad15c31-1a47-4349-a146-0fbea8774532",
+            "id": "_3051e538-0e22-43b8-b666-688349516c76",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 438.62,
+                "y": 218.12
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LSID-73a31a41-43d5-11f1-744d-b02628b36240_0",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#000000",
+              "sourceElement": "_cf8cebcd-18e4-4d14-b6bd-35af312c6b42"
+            },
+            "waypoints": [
+              {
+                "x": 438.62,
+                "y": 218.12
+              },
+              {
+                "x": 438.62,
+                "y": 60.870000000000005
+              },
+              {
+                "x": 482.5,
+                "y": 60.870000000000005
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_5c59161c-f8b2-4e94-aac8-895517dcc1d4",
+            "id": "_0cca43d4-431b-439c-836f-517dd4195e0e",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 438.62,
+                "y": 217.12
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LSID-73a31a41-43d5-11f1-744d-b02628b36240_0",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#000000",
+              "sourceElement": "_cf8cebcd-18e4-4d14-b6bd-35af312c6b42"
+            },
+            "waypoints": [
+              {
+                "x": 438.62,
+                "y": 217.12
+              },
+              {
+                "x": 438.62,
+                "y": 167.93
+              },
+              {
+                "x": 482.5,
+                "y": 167.93
+              }
+            ]
+          }
+        ],
+        "id": "Plane_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 34.58000000000001,
+              "width": 34.579999999999984,
+              "x": 124.44,
+              "y": 237.83
+            },
+            "bpmnElement": "ID-ee745c80-43de-11f1-744d-b02628b36240",
+            "id": "Shape_ID-ee745c80-43de-11f1-744d-b02628b36240",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 69.15999999999997,
+                "x": 112.91333333333334,
+                "y": 272.41
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LSID-73a31a41-43d5-11f1-744d-b02628b36240_0",
+                "triso:defaultBounds": "true"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#72ab16"
+            }
+          },
+          {
+            "bounds": {
+              "height": 62.360000000000014,
+              "width": 104.31,
+              "x": 231.31,
+              "y": 223.94
+            },
+            "bpmnElement": "ID-ee745c82-43de-11f1-744d-b02628b36240",
+            "id": "Shape_ID-ee745c82-43de-11f1-744d-b02628b36240",
+            "label": {
+              "bounds": {
+                "height": 47,
+                "width": 79.64999999999999,
+                "x": 243.78000000000003,
+                "y": 239.56
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LSID-73a31a41-43d5-11f1-744d-b02628b36240_1"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#00a2ce"
+            }
+          },
+          {
+            "bounds": {
+              "height": 64.06,
+              "width": 48.75999999999999,
+              "x": 187.37,
+              "y": 123.87
+            },
+            "bpmnElement": "ID-ee745c85-43de-11f1-744d-b02628b36240",
+            "id": "Shape_ID-ee745c85-43de-11f1-744d-b02628b36240",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 59.53,
+                "x": 181.98000000000002,
+                "y": 190.77
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LSID-73a31a41-43d5-11f1-744d-b02628b36240_1"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#5e5e5e"
+            }
+          },
+          {
+            "bounds": {
+              "height": 64.06,
+              "width": 48.75999999999999,
+              "x": 315.78,
+              "y": 123.87
+            },
+            "bpmnElement": "Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240",
+            "id": "Shape_Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 87.87,
+                "x": 324.57,
+                "y": 190.77
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LSID-73a31a41-43d5-11f1-744d-b02628b36240_1"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#5e5e5e"
+            }
+          },
+          {
+            "bounds": {
+              "height": 76,
+              "width": 96,
+              "x": 390.62,
+              "y": 217.12
+            },
+            "bpmnElement": "_5e0cd331-db4a-4561-9f7f-141eecba6967",
+            "id": "_cf8cebcd-18e4-4d14-b6bd-35af312c6b42",
+            "label": {
+              "bounds": {
+                "height": 16,
+                "width": 90,
+                "x": 393.62,
+                "y": 247.12
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LSID-73a31a41-43d5-11f1-744d-b02628b36240_0",
+                "triso:defaultBounds": "true"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#000000"
+            }
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 541.62,
+              "y": 237.12
+            },
+            "bpmnElement": "_2a76b8fa-b11b-4f0a-9835-2a144fada546",
+            "id": "_0667afb8-f6b2-4b25-aebe-e61131dd9e68",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 72,
+                "x": 529.62,
+                "y": 273.12
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LSID-73a31a41-43d5-11f1-744d-b02628b36240_0",
+                "triso:defaultBounds": "true"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#000000"
+            }
+          },
+          {
+            "bounds": {
+              "height": 40,
+              "width": 34,
+              "x": 482.5,
+              "y": 40.870000000000005
+            },
+            "bpmnElement": "_801b8c70-b793-499d-b462-4fd8d541f32b",
+            "id": "_312b9c73-d151-4826-94e2-ede0bc57fb13",
+            "label": {
+              "bounds": {
+                "height": 16,
+                "width": 110,
+                "x": 444.5,
+                "y": 85.87
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LSID-73a31a41-43d5-11f1-744d-b02628b36240_0",
+                "triso:defaultBounds": "true"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#000000"
+            }
+          },
+          {
+            "bounds": {
+              "height": 40,
+              "width": 34,
+              "x": 482.5,
+              "y": 147.93
+            },
+            "bpmnElement": "_8a969b23-b4b1-453c-8925-1cec72ddbaef",
+            "id": "_1ea9d18d-8cf4-48f7-91da-249cd02e6792",
+            "label": {
+              "bounds": {
+                "height": 16,
+                "width": 110,
+                "x": 444.5,
+                "y": 192.93
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LSID-73a31a41-43d5-11f1-744d-b02628b36240_0",
+                "triso:defaultBounds": "true"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#000000"
+            }
+          }
+        ],
+        "unknownAttributes": {
+          "trisobpmn:diagramHeight": "1050",
+          "trisobpmn:diagramWidth": "1485"
+        }
+      },
+      "unknownAttributes": {
+        "name": "C.10.0.2"
+      },
+      "unknownChildren": [
+        {
+          "attributes": {
+            "id": "LSID-73a31a41-43d5-11f1-744d-b02628b36240_0"
+          },
+          "children": [
+            {
+              "attributes": {
+                "isBold": "false",
+                "isItalic": "false",
+                "isStrikeThrough": "false",
+                "isUnderline": "false",
+                "name": "arial,helvetica,sans-serif",
+                "size": "11"
+              },
+              "children": [],
+              "name": "dc:Font"
+            }
+          ],
+          "name": "bpmndi:BPMNLabelStyle"
+        },
+        {
+          "attributes": {
+            "id": "LSID-73a31a41-43d5-11f1-744d-b02628b36240_1"
+          },
+          "children": [
+            {
+              "attributes": {
+                "isBold": "false",
+                "isItalic": "false",
+                "isStrikeThrough": "false",
+                "isUnderline": "false",
+                "name": "Arial",
+                "size": "11"
+              },
+              "children": [],
+              "name": "dc:Font"
+            }
+          ],
+          "name": "bpmndi:BPMNLabelStyle"
+        }
+      ]
+    },
+    {
+      "id": "_3",
+      "plane": {
+        "bpmnElement": "_4",
+        "edges": [
+          {
+            "bpmnElement": "_17",
+            "id": "Edge__17",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 740.41,
+                "y": 350.08
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 740.41,
+                "y": 350.08
+              },
+              {
+                "x": 1903.75,
+                "y": 350.08
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_20",
+            "id": "Edge__20",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 1283.53,
+                "y": 657.92
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 1283.53,
+                "y": 657.92
+              },
+              {
+                "x": 1333.42,
+                "y": 657.92
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_23",
+            "id": "Edge__23",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 762.52,
+                "y": 464.88
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 762.52,
+                "y": 464.88
+              },
+              {
+                "x": 884.41,
+                "y": 464.88
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_26",
+            "id": "Edge__26",
+            "label": {
+              "bounds": {
+                "height": 16,
+                "width": 16.720000000000027,
+                "x": 595.56,
+                "y": 467.72
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0",
+                "triso:labelPosition": "custom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 545.39,
+                "y": 464.88
+              },
+              {
+                "x": 662.46,
+                "y": 464.88
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_28",
+            "id": "Edge__28",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 992.41,
+                "y": 656.5
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 992.41,
+                "y": 656.5
+              },
+              {
+                "x": 1132.44,
+                "y": 656.5
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_30",
+            "id": "Edge__30",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 12.190000000000055,
+                "x": 987.87,
+                "y": 467.72
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0",
+                "triso:labelPosition": "custom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 940.54,
+                "y": 464.88
+              },
+              {
+                "x": 1047.4,
+                "y": 464.88
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_32",
+            "id": "Edge__32",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 185.39,
+                "y": 464.88
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 185.39,
+                "y": 464.88
+              },
+              {
+                "x": 262.49,
+                "y": 464.88
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_35",
+            "id": "Edge__35",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 1103.53,
+                "y": 469.13
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 1103.53,
+                "y": 469.13
+              },
+              {
+                "x": 1899.78,
+                "y": 469.13
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_37",
+            "id": "Edge__37",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 1690.58,
+                "y": 657.92
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 1690.58,
+                "y": 657.92
+              },
+              {
+                "x": 1776.76,
+                "y": 657.92
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_40",
+            "id": "Edge__40",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 1866.61,
+                "y": 657.92
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 1866.61,
+                "y": 657.92
+              },
+              {
+                "x": 1913.67,
+                "y": 657.92
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_42",
+            "id": "Edge__42",
+            "label": {
+              "bounds": {
+                "height": 16,
+                "width": 16.720000000000027,
+                "x": 913.61,
+                "y": 560.98
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0",
+                "triso:labelPosition": "custom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 912.47,
+                "y": 492.94
+              },
+              {
+                "x": 912.47,
+                "y": 558.14
+              },
+              {
+                "x": 931.46,
+                "y": 558.14
+              },
+              {
+                "x": 931.46,
+                "y": 623.06
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_43",
+            "id": "Edge__43",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 12.190000000000055,
+                "x": 594.99,
+                "y": 352.91
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0",
+                "triso:labelPosition": "custom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 517.61,
+                "y": 437.1
+              },
+              {
+                "x": 517.61,
+                "y": 350.08
+              },
+              {
+                "x": 684.57,
+                "y": 350.08
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_44",
+            "id": "Edge__44",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 1433.48,
+                "y": 657.92
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 1433.48,
+                "y": 657.92
+              },
+              {
+                "x": 1492.44,
+                "y": 657.92
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_46",
+            "id": "Edge__46",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 1592.5,
+                "y": 657.92
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 1592.5,
+                "y": 657.92
+              },
+              {
+                "x": 1654.58,
+                "y": 657.92
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_47",
+            "id": "Edge__47",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 372.47,
+                "y": 464.88
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 372.47,
+                "y": 464.88
+              },
+              {
+                "x": 489.54,
+                "y": 464.88
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_50",
+            "id": "Edge__50",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 1798.58,
+                "y": 757.98
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666",
+              "targetElement": "Shape__39"
+            },
+            "waypoints": [
+              {
+                "x": 1798.58,
+                "y": 757.98
+              },
+              {
+                "x": 1821.83,
+                "y": 757.98
+              },
+              {
+                "x": 1821.83,
+                "y": 687.97
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_54",
+            "id": "Edge__54",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 1321.51,
+                "y": 822.9
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666",
+              "targetElement": "Shape__22"
+            },
+            "waypoints": [
+              {
+                "x": 1321.51,
+                "y": 822.9
+              },
+              {
+                "x": 1358.65,
+                "y": 822.9
+              },
+              {
+                "x": 1358.65,
+                "y": 697.89
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_56",
+            "id": "Edge__56",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 1321.51,
+                "y": 748.06
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666",
+              "targetElement": "Shape__22"
+            },
+            "waypoints": [
+              {
+                "x": 1321.51,
+                "y": 748.06
+              },
+              {
+                "x": 1358.65,
+                "y": 748.06
+              },
+              {
+                "x": 1358.65,
+                "y": 697.89
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_58",
+            "id": "Edge__58",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 992.41,
+                "y": 656.5
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666",
+              "sourceElement": "Shape__29"
+            },
+            "waypoints": [
+              {
+                "x": 992.41,
+                "y": 656.5
+              },
+              {
+                "x": 1037.48,
+                "y": 656.5
+              },
+              {
+                "x": 1037.48,
+                "y": 725.1
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_60",
+            "id": "Edge__60",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 992.41,
+                "y": 656.5
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666",
+              "sourceElement": "Shape__29"
+            },
+            "waypoints": [
+              {
+                "x": 992.41,
+                "y": 656.5
+              },
+              {
+                "x": 1037.48,
+                "y": 656.5
+              },
+              {
+                "x": 1037.48,
+                "y": 858.05
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_63",
+            "id": "Edge__63",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 246.61,
+                "y": 545.1
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666",
+              "targetElement": "Shape__29"
+            },
+            "waypoints": [
+              {
+                "x": 246.61,
+                "y": 545.1
+              },
+              {
+                "x": 931.46,
+                "y": 545.1
+              },
+              {
+                "x": 931.46,
+                "y": 623.06
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_66",
+            "id": "Edge__66",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 372.47,
+                "y": 464.88
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666",
+              "sourceElement": "Shape__34"
+            },
+            "waypoints": [
+              {
+                "x": 344.97499999999997,
+                "y": 424.91
+              },
+              {
+                "x": 344.97499999999997,
+                "y": 384.945
+              },
+              {
+                "x": 413.57,
+                "y": 384.945
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_68",
+            "id": "Edge__68",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 246.61,
+                "y": 545.1
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666",
+              "targetElement": "Shape__34"
+            },
+            "waypoints": [
+              {
+                "x": 246.61,
+                "y": 545.1
+              },
+              {
+                "x": 317.48,
+                "y": 545.1
+              },
+              {
+                "x": 317.48,
+                "y": 505.13
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_71",
+            "id": "Edge__71",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 626.46,
+                "y": 560.13
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666",
+              "targetElement": "Shape__24"
+            },
+            "waypoints": [
+              {
+                "x": 626.46,
+                "y": 560.13
+              },
+              {
+                "x": 712.63,
+                "y": 560.13
+              },
+              {
+                "x": 712.63,
+                "y": 505.13
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_70",
+            "id": "Edge__70",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 762.52,
+                "y": 464.88
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666",
+              "sourceElement": "Shape__24"
+            },
+            "waypoints": [
+              {
+                "x": 737.5050000000001,
+                "y": 424.91
+              },
+              {
+                "x": 737.5050000000001,
+                "y": 373.045
+              },
+              {
+                "x": 836.5,
+                "y": 373.045
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_74",
+            "id": "Edge__74",
+            "label": {
+              "bounds": {
+                "height": 16.5,
+                "width": 0,
+                "x": 1208.13,
+                "y": 619.94
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_1",
+                "triso:defaultBounds": "true",
+                "triso:labelPosition": "midbottom"
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666",
+              "sourceElement": "Shape__21"
+            },
+            "waypoints": [
+              {
+                "x": 1208.13,
+                "y": 619.94
+              },
+              {
+                "x": 1208.13,
+                "y": 560.13
+              },
+              {
+                "x": 626.46,
+                "y": 560.13
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_76",
+            "id": "Edge__76",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 100,
+                "x": 162,
+                "y": 286
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 157,
+                "y": 149
+              },
+              {
+                "x": 157,
+                "y": 437
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_77",
+            "id": "Edge__77",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 100,
+                "x": 1547,
+                "y": 376
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 1542,
+                "y": 617
+              },
+              {
+                "x": 1542,
+                "y": 149
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_78",
+            "id": "Edge__78",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 100,
+                "x": 717,
+                "y": 229
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 712,
+                "y": 322
+              },
+              {
+                "x": 712,
+                "y": 149
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_79",
+            "id": "Edge__79",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 100,
+                "x": 1080,
+                "y": 288
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 1075,
+                "y": 441
+              },
+              {
+                "x": 1075,
+                "y": 149
+              }
+            ]
+          },
+          {
+            "bpmnElement": "_80",
+            "id": "Edge__80",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 100,
+                "x": 1677,
+                "y": 388
+              }
+            },
+            "unknownAttributes": {
+              "color:border-color": "#666666"
+            },
+            "waypoints": [
+              {
+                "x": 1672,
+                "y": 149
+              },
+              {
+                "x": 1672,
+                "y": 640
+              }
+            ]
+          }
+        ],
+        "id": "Plane__3",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 149.95,
+              "width": 1772.5,
+              "x": 0,
+              "y": 0
+            },
+            "bpmnElement": "_5",
+            "id": "Shape__5",
+            "isHorizontal": true,
+            "label": {
+              "bounds": {
+                "height": 149.95,
+                "width": 20,
+                "x": 0,
+                "y": 0
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#5e5e5e"
+            }
+          },
+          {
+            "bounds": {
+              "height": 725.1,
+              "width": 2068,
+              "x": 26.08,
+              "y": 310.11
+            },
+            "bpmnElement": "_7",
+            "id": "Shape__7",
+            "isHorizontal": true,
+            "label": {
+              "bounds": {
+                "height": 725,
+                "width": 20,
+                "x": 26.08,
+                "y": 310.11000000000007
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#5e5e5e"
+            }
+          },
+          {
+            "bounds": {
+              "height": 423,
+              "width": 2036,
+              "x": 57,
+              "y": 610.02
+            },
+            "bpmnElement": "_15",
+            "id": "Shape__15",
+            "isHorizontal": true,
+            "label": {
+              "bounds": {
+                "height": 423,
+                "width": 20,
+                "x": 57,
+                "y": 610.02
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#5e5e5e"
+            }
+          },
+          {
+            "bounds": {
+              "height": 60.09000000000003,
+              "width": 90.1400000000001,
+              "x": 1776.76,
+              "y": 627.87
+            },
+            "bpmnElement": "_39",
+            "id": "Shape__39",
+            "label": {
+              "bounds": {
+                "height": 47,
+                "width": 68.03,
+                "x": 1787.81,
+                "y": 642.08
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#00a2ce"
+            }
+          },
+          {
+            "bounds": {
+              "height": 32.02999999999997,
+              "width": 32.02999999999997,
+              "x": 1913.67,
+              "y": 640.06
+            },
+            "bpmnElement": "_41",
+            "id": "Shape__41",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 53.290000000000006,
+                "x": 1902.9,
+                "y": 674.93
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#fd6767"
+            }
+          },
+          {
+            "bounds": {
+              "height": 79.94000000000005,
+              "width": 100.05999999999995,
+              "x": 1333.42,
+              "y": 617.95
+            },
+            "bpmnElement": "_22",
+            "id": "Shape__22",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 89.28999999999999,
+                "x": 1338.8,
+                "y": 652.63
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#00a2ce"
+            }
+          },
+          {
+            "bounds": {
+              "height": 66.89999999999998,
+              "width": 121.88999999999999,
+              "x": 870.52,
+              "y": 623.06
+            },
+            "bpmnElement": "_29",
+            "id": "Shape__29",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 35.43000000000001,
+                "x": 915.87,
+                "y": 632.5
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#00a2ce",
+              "triso:targetpage": "ID-73a31a41-43d5-11f1-744d-b02628b36240"
+            }
+          },
+          {
+            "bounds": {
+              "height": 75.97000000000003,
+              "width": 151.08999999999992,
+              "x": 1132.44,
+              "y": 619.94
+            },
+            "bpmnElement": "_21",
+            "id": "Shape__21",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 121.03999999999999,
+                "x": 1147.46,
+                "y": 652.06
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#00a2ce"
+            }
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 1654.58,
+              "y": 640.06
+            },
+            "bpmnElement": "_38",
+            "id": "Shape__38",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 101.47999999999999,
+                "x": 1621.7,
+                "y": 678.9
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#da7400"
+            }
+          },
+          {
+            "bounds": {
+              "height": 79.94000000000005,
+              "width": 100.05999999999995,
+              "x": 1492.44,
+              "y": 617.95
+            },
+            "bpmnElement": "_45",
+            "id": "Shape__45",
+            "label": {
+              "bounds": {
+                "height": 47,
+                "width": 77.66999999999999,
+                "x": 1503.5,
+                "y": 644.63
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#00a2ce"
+            }
+          },
+          {
+            "bounds": {
+              "height": 56.129999999999995,
+              "width": 47.90999999999997,
+              "x": 1013.39,
+              "y": 725.1
+            },
+            "bpmnElement": "_49",
+            "id": "Shape__49",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 72.28,
+                "x": 1001.2000000000002,
+                "y": 784.06
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#5e5e5e"
+            }
+          },
+          {
+            "bounds": {
+              "height": 49.889999999999986,
+              "width": 49.8900000000001,
+              "x": 1773.64,
+              "y": 757.98
+            },
+            "bpmnElement": "Reference__2",
+            "id": "Shape_Reference__2",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 48.19,
+                "x": 1774.49,
+                "y": 810.71
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#5e5e5e"
+            }
+          },
+          {
+            "bounds": {
+              "height": 56.129999999999995,
+              "width": 47.90999999999997,
+              "x": 1013.39,
+              "y": 858.05
+            },
+            "bpmnElement": "_59",
+            "id": "Shape__59",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 31.179999999999996,
+                "x": 1021.61,
+                "y": 917.01
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#5e5e5e"
+            }
+          },
+          {
+            "bounds": {
+              "height": 49.889999999999986,
+              "width": 37.98000000000002,
+              "x": 1283.53,
+              "y": 723.12
+            },
+            "bpmnElement": "Reference__11",
+            "id": "Shape_Reference__11",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 72.28,
+                "x": 1266.52,
+                "y": 775.84
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#5e5e5e"
+            }
+          },
+          {
+            "bounds": {
+              "height": 49.889999999999986,
+              "width": 37.98000000000002,
+              "x": 1283.53,
+              "y": 797.95
+            },
+            "bpmnElement": "Reference__13",
+            "id": "Shape_Reference__13",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 31.179999999999996,
+                "x": 1286.93,
+                "y": 850.68
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#5e5e5e"
+            }
+          },
+          {
+            "bounds": {
+              "height": 300,
+              "width": 2036,
+              "x": 57,
+              "y": 310.11
+            },
+            "bpmnElement": "_16",
+            "id": "Shape__16",
+            "isHorizontal": true,
+            "label": {
+              "bounds": {
+                "height": 300,
+                "width": 20,
+                "x": 57,
+                "y": 310.11
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#5e5e5e"
+            }
+          },
+          {
+            "bounds": {
+              "height": 32.03000000000003,
+              "width": 32.02999999999997,
+              "x": 1903.75,
+              "y": 333.92
+            },
+            "bpmnElement": "_19",
+            "id": "Shape__19",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 68.88,
+                "x": 1885.32,
+                "y": 368.79
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#fd6767"
+            }
+          },
+          {
+            "bounds": {
+              "height": 32.02999999999997,
+              "width": 32.02999999999997,
+              "x": 1899.78,
+              "y": 452.98
+            },
+            "bpmnElement": "_36",
+            "id": "Shape__36",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 96.38,
+                "x": 1867.46,
+                "y": 487.84
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#fd6767"
+            }
+          },
+          {
+            "bounds": {
+              "height": 56.129999999999995,
+              "width": 56.12999999999988,
+              "x": 1047.4,
+              "y": 441.07
+            },
+            "bpmnElement": "_31",
+            "id": "Shape__31",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 144.84999999999997,
+                "x": 1003.1800000000001,
+                "y": 500.03
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#da7400"
+            }
+          },
+          {
+            "bounds": {
+              "height": 56.129999999999995,
+              "width": 56.129999999999995,
+              "x": 684.57,
+              "y": 322.02
+            },
+            "bpmnElement": "_18",
+            "id": "Shape__18",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 91.28,
+                "x": 666.99,
+                "y": 380.98
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#da7400"
+            }
+          },
+          {
+            "bounds": {
+              "height": 79.94,
+              "width": 109.97999999999996,
+              "x": 262.49,
+              "y": 424.91
+            },
+            "bpmnElement": "_34",
+            "id": "Shape__34",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 88.16000000000001,
+                "x": 273.54,
+                "y": 459.59000000000003
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#00a2ce"
+            }
+          },
+          {
+            "bounds": {
+              "height": 56.129999999999995,
+              "width": 56.12999999999997,
+              "x": 129.54,
+              "y": 437.1
+            },
+            "bpmnElement": "_33",
+            "id": "Shape__33",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 66.04999999999998,
+                "x": 124.72000000000001,
+                "y": 496.06
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#72ab16"
+            }
+          },
+          {
+            "bounds": {
+              "height": 79.94,
+              "width": 100.06000000000006,
+              "x": 662.46,
+              "y": 424.91
+            },
+            "bpmnElement": "_24",
+            "id": "Shape__24",
+            "label": {
+              "bounds": {
+                "height": 47,
+                "width": 78.52000000000001,
+                "x": 673.23,
+                "y": 451.59000000000003
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#00a2ce"
+            }
+          },
+          {
+            "bounds": {
+              "height": 56.129999999999995,
+              "width": 56.13000000000005,
+              "x": 489.54,
+              "y": 437.1
+            },
+            "bpmnElement": "_27",
+            "id": "Shape__27",
+            "isMarkerVisible": true,
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 73.70000000000002,
+                "x": 480.76,
+                "y": 496.06
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#5e5e5e"
+            }
+          },
+          {
+            "bounds": {
+              "height": 56.129999999999995,
+              "width": 56.129999999999995,
+              "x": 884.41,
+              "y": 437.1
+            },
+            "bpmnElement": "_25",
+            "id": "Shape__25",
+            "isMarkerVisible": true,
+            "label": {
+              "bounds": {
+                "height": 62,
+                "width": 42.239999999999995,
+                "x": 891.5,
+                "y": 496.06
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#5e5e5e"
+            }
+          },
+          {
+            "bounds": {
+              "height": 56.129999999999995,
+              "width": 47.910000000000025,
+              "x": 198.43,
+              "y": 517.04
+            },
+            "bpmnElement": "_48",
+            "id": "Shape__48",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 59.53,
+                "x": 192.47000000000003,
+                "y": 576
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#5e5e5e"
+            }
+          },
+          {
+            "bounds": {
+              "height": 56.129999999999995,
+              "width": 47.90999999999997,
+              "x": 578.55,
+              "y": 532.06
+            },
+            "bpmnElement": "Reference__1",
+            "id": "Shape_Reference__1",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 38.55,
+                "x": 583.09,
+                "y": 591.02
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#5e5e5e"
+            }
+          },
+          {
+            "bounds": {
+              "height": 56.129999999999995,
+              "width": 47.90999999999997,
+              "x": 413.57,
+              "y": 356.88
+            },
+            "bpmnElement": "Reference__12",
+            "id": "Shape_Reference__12",
+            "label": {
+              "bounds": {
+                "height": 31,
+                "width": 68.31,
+                "x": 403.37,
+                "y": 415.84
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#5e5e5e"
+            }
+          },
+          {
+            "bounds": {
+              "height": 56.129999999999995,
+              "width": 47.90999999999997,
+              "x": 836.5,
+              "y": 344.98
+            },
+            "bpmnElement": "Reference__10",
+            "id": "Shape_Reference__10",
+            "label": {
+              "bounds": {
+                "height": 62,
+                "width": 40.82000000000001,
+                "x": 839.91,
+                "y": 403.94
+              },
+              "unknownAttributes": {
+                "color:color": "#000000",
+                "labelStyle": "LS_3_0"
+              }
+            },
+            "unknownAttributes": {
+              "color:background-color": "#ffffff",
+              "color:border-color": "#5e5e5e"
+            }
+          }
+        ],
+        "unknownAttributes": {
+          "trisobpmn:diagramHeight": "1095.21",
+          "trisobpmn:diagramWidth": "2154.52"
+        }
+      },
+      "unknownAttributes": {
+        "name": "C.10.0.1"
+      },
+      "unknownChildren": [
+        {
+          "attributes": {
+            "id": "LS_3_0"
+          },
+          "children": [
+            {
+              "attributes": {
+                "isBold": "false",
+                "isItalic": "false",
+                "isStrikeThrough": "false",
+                "isUnderline": "false",
+                "name": "Arial",
+                "size": "11"
+              },
+              "children": [],
+              "name": "dc:Font"
+            }
+          ],
+          "name": "bpmndi:BPMNLabelStyle"
+        },
+        {
+          "attributes": {
+            "id": "LS_3_1"
+          },
+          "children": [
+            {
+              "attributes": {
+                "isBold": "false",
+                "isItalic": "false",
+                "isStrikeThrough": "false",
+                "isUnderline": "false",
+                "name": "arial,helvetica,sans-serif",
+                "size": "11"
+              },
+              "children": [],
+              "name": "dc:Font"
+            }
+          ],
+          "name": "bpmndi:BPMNLabelStyle"
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "exporter": "KnowProcess Modeler",
+  "exporterVersion": "4.1.0",
+  "id": "Definitions__3",
+  "messages": [],
+  "namespaces": {
+    "": "http://www.softwareag.com/aris/bpmn2",
+    "activiti": "http://activiti.org/bpmn",
+    "aris": "http://www.softwareag.com/aris/attributes",
+    "arisebpmn": "http://www.softwareag.com/aris/ebpmn",
+    "asyncapi": "https://asyncapi.org/omg/extension/1.0",
+    "boxedext": "https://www.trisotech.com/spec/DMN/20191111/EXT/",
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "bpsim": "http://www.bpsim.org/schemas/1.0",
+    "camunda": "http://camunda.org/schema/1.0/bpmn",
+    "color": "http://www.omg.org/spec/BPMN/non-normative/color/1.0",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "deco": "http://www.omg.org/spec/BPMN/non-normative/extensions/envelope-decorator-bounds/1.0",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "dmn": "https://www.omg.org/spec/DMN/20240513/MODEL/",
+    "drools": "http://www.jboss.org/drools",
+    "feel": "https://www.omg.org/spec/DMN/20240513/FEEL/",
+    "flowable": "http://flowable.org/bpmn",
+    "i18n": "http://www.omg.org/spec/BPMN/non-normative/extensions/i18n/1.0",
+    "kp": "http://knowprocess.com/bpmn",
+    "openapi": "https://openapis.org/omg/extension/1.0",
+    "ot": "http://www.omninet.de/ot/bpmn/v1",
+    "rss": "http://purl.org/rss/2.0/",
+    "scedc": "https://www.omg.org/spec/SCE/DC/",
+    "scedi": "https://www.omg.org/spec/SCE/DI/",
+    "sdmn": "https://www.omg.org/spec/SDMN/",
+    "semantic": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "tc": "http://www.omg.org/spec/DMN/20160719/testcase",
+    "travelPlanning": "http://www.trisotech.com/definitions/_1a8e6ac5-c038-4a51-a69c-fcfa48532d33",
+    "triso": "http://www.trisotech.com/2015/triso/modeling",
+    "trisobpmn": "http://www.trisotech.com/2014/triso/bpmn",
+    "trisofeed": "http://trisotech.com/feed",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [
+        {
+          "attributes": {},
+          "children": [],
+          "name": "ot:startPermission"
+        }
+      ],
+      "flowElements": [
+        {
+          "dataInputAssociations": [
+            {
+              "id": "_50",
+              "sourceRefs": [
+                "Reference__2"
+              ],
+              "targetRef": "DataInput__39",
+              "unknownAttributes": {}
+            }
+          ],
+          "extensionElements": [
+            {
+              "attributes": {
+                "displayApplyButton": "false",
+                "displayOkButton": "false",
+                "displayShowProcessButton": "false",
+                "formType": "ruleBased"
+              },
+              "children": [],
+              "name": "ot:userTaskDefinition"
+            }
+          ],
+          "id": "_39",
+          "incoming": [
+            "_37"
+          ],
+          "name": "Record meeting details",
+          "outgoing": [
+            "_40"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {
+            "implementation": "##unspecified",
+            "ot:alias": "task6",
+            "ot:displayName": "Record meeting details",
+            "triso:readOnly": "false"
+          },
+          "unknownChildren": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "id": "DataInput__39",
+                    "triso:readOnly": "false"
+                  },
+                  "children": [],
+                  "name": "semantic:dataInput"
+                },
+                {
+                  "attributes": {
+                    "id": "_f7372180-e3ad-4081-a6d4-d2963a93de14"
+                  },
+                  "children": [
+                    {
+                      "attributes": {},
+                      "children": [],
+                      "name": "semantic:dataInputRefs",
+                      "text": "DataInput__39"
+                    }
+                  ],
+                  "name": "semantic:inputSet"
+                },
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "semantic:outputSet"
+                }
+              ],
+              "name": "semantic:ioSpecification"
+            }
+          ]
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "_41",
+          "incoming": [
+            "_40"
+          ],
+          "name": "Trip planned",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {
+            "ot:alias": "event7",
+            "ot:displayName": "Trip planned",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "dataInputAssociations": [
+            {
+              "id": "_54",
+              "sourceRefs": [
+                "Reference__13"
+              ],
+              "targetRef": "DataInput__22",
+              "unknownAttributes": {}
+            },
+            {
+              "id": "_56",
+              "sourceRefs": [
+                "Reference__11"
+              ],
+              "targetRef": "DataInput__22_1",
+              "unknownAttributes": {}
+            }
+          ],
+          "extensionElements": [
+            {
+              "attributes": {
+                "displayApplyButton": "false",
+                "displayOkButton": "false",
+                "displayShowProcessButton": "false",
+                "formType": "ruleBased",
+                "reassignMode": "explicit"
+              },
+              "children": [],
+              "name": "ot:userTaskDefinition"
+            }
+          ],
+          "id": "_22",
+          "incoming": [
+            "_20"
+          ],
+          "name": "Prepare confirmation email",
+          "outgoing": [
+            "_44"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {
+            "implementation": "##unspecified",
+            "ot:alias": "task3",
+            "ot:displayName": "Prepare confirmation email",
+            "triso:readOnly": "false"
+          },
+          "unknownChildren": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "id": "DataInput__22",
+                    "triso:readOnly": "false"
+                  },
+                  "children": [],
+                  "name": "semantic:dataInput"
+                },
+                {
+                  "attributes": {
+                    "id": "DataInput__22_1",
+                    "triso:readOnly": "false"
+                  },
+                  "children": [],
+                  "name": "semantic:dataInput"
+                },
+                {
+                  "attributes": {
+                    "id": "_04d67518-59c0-4c5b-9cf4-63616c7ba66b"
+                  },
+                  "children": [
+                    {
+                      "attributes": {},
+                      "children": [],
+                      "name": "semantic:dataInputRefs",
+                      "text": "DataInput__22"
+                    },
+                    {
+                      "attributes": {},
+                      "children": [],
+                      "name": "semantic:dataInputRefs",
+                      "text": "DataInput__22_1"
+                    }
+                  ],
+                  "name": "semantic:inputSet"
+                },
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "semantic:outputSet"
+                }
+              ],
+              "name": "semantic:ioSpecification"
+            }
+          ]
+        },
+        {
+          "dataInputAssociations": [
+            {
+              "id": "_63",
+              "sourceRefs": [
+                "_48"
+              ],
+              "targetRef": "DataInput__29",
+              "unknownAttributes": {}
+            }
+          ],
+          "dataOutputAssociations": [
+            {
+              "id": "_58",
+              "sourceRefs": [
+                "_801b8c70-b793-499d-b462-4fd8d541f32b_29"
+              ],
+              "targetRef": "_49",
+              "unknownAttributes": {}
+            },
+            {
+              "id": "_60",
+              "sourceRefs": [
+                "_801b8c70-b793-499d-b462-4fd8d541f32b_29"
+              ],
+              "targetRef": "_59",
+              "unknownAttributes": {}
+            }
+          ],
+          "extensionElements": [],
+          "id": "_29",
+          "incoming": [
+            "_42"
+          ],
+          "name": "Plan trip",
+          "outgoing": [
+            "_28"
+          ],
+          "type": "callActivity",
+          "unknownAttributes": {
+            "calledElement": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+            "ot:alias": "activity1",
+            "ot:displayName": "Plan trip",
+            "triso:readOnly": "false"
+          },
+          "unknownChildren": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "id": "DataInput__29",
+                    "triso:readOnly": "false"
+                  },
+                  "children": [],
+                  "name": "semantic:dataInput"
+                },
+                {
+                  "attributes": {
+                    "id": "_801b8c70-b793-499d-b462-4fd8d541f32b_29",
+                    "isCollection": "false",
+                    "itemSubjectRef": "_triso-default-bpmnItemDefinition-string_id",
+                    "triso:readOnly": "false"
+                  },
+                  "children": [],
+                  "name": "semantic:dataOutput"
+                },
+                {
+                  "attributes": {
+                    "id": "_8a969b23-b4b1-453c-8925-1cec72ddbaef_29",
+                    "isCollection": "false",
+                    "itemSubjectRef": "_triso-default-bpmnItemDefinition-string_id",
+                    "name": "Tickets",
+                    "ot:alias": "output1",
+                    "triso:readOnly": "false"
+                  },
+                  "children": [],
+                  "name": "semantic:dataOutput"
+                },
+                {
+                  "attributes": {
+                    "id": "_31ddf9e8-f0f8-4fcf-85f3-fce0feb3199c"
+                  },
+                  "children": [
+                    {
+                      "attributes": {},
+                      "children": [],
+                      "name": "semantic:dataInputRefs",
+                      "text": "DataInput__29"
+                    }
+                  ],
+                  "name": "semantic:inputSet"
+                },
+                {
+                  "attributes": {
+                    "id": "_757bad0a-f311-43f9-8b69-da383c4172a9"
+                  },
+                  "children": [
+                    {
+                      "attributes": {},
+                      "children": [],
+                      "name": "semantic:dataOutputRefs",
+                      "text": "_801b8c70-b793-499d-b462-4fd8d541f32b_29"
+                    },
+                    {
+                      "attributes": {},
+                      "children": [],
+                      "name": "semantic:dataOutputRefs",
+                      "text": "_8a969b23-b4b1-453c-8925-1cec72ddbaef_29"
+                    }
+                  ],
+                  "name": "semantic:outputSet"
+                }
+              ],
+              "name": "semantic:ioSpecification"
+            }
+          ]
+        },
+        {
+          "dataOutputAssociations": [
+            {
+              "id": "_74",
+              "sourceRefs": [
+                "DataOutput__21"
+              ],
+              "targetRef": "Reference__1",
+              "unknownAttributes": {}
+            }
+          ],
+          "extensionElements": [],
+          "id": "_21",
+          "incoming": [
+            "_28"
+          ],
+          "name": "Update employee's calendar",
+          "outgoing": [
+            "_20"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {
+            "implementation": "##WebService",
+            "ot:alias": "task1",
+            "ot:connectorGuid": "{00000000-0000-0000-0000-000000000000}",
+            "ot:displayName": "Update employee's calendar",
+            "triso:readOnly": "false"
+          },
+          "unknownChildren": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "id": "DataOutput__21",
+                    "triso:hidden": "false",
+                    "triso:readOnly": "false"
+                  },
+                  "children": [],
+                  "name": "semantic:dataOutput"
+                },
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "semantic:inputSet"
+                },
+                {
+                  "attributes": {
+                    "id": "_2aa79919-4bfb-4f24-98a5-965484a5db91"
+                  },
+                  "children": [
+                    {
+                      "attributes": {},
+                      "children": [],
+                      "name": "semantic:dataOutputRefs",
+                      "text": "DataOutput__21"
+                    }
+                  ],
+                  "name": "semantic:outputSet"
+                }
+              ],
+              "name": "semantic:ioSpecification"
+            }
+          ]
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "Definition__38",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [],
+          "id": "_38",
+          "incoming": [
+            "_46"
+          ],
+          "name": "Recieve meeting details",
+          "outgoing": [
+            "_37"
+          ],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {
+            "ot:alias": "event4",
+            "ot:displayName": "Recieve meeting details",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_45",
+          "incoming": [
+            "_44"
+          ],
+          "name": "Send confirmation email",
+          "outgoing": [
+            "_46"
+          ],
+          "type": "sendTask",
+          "unknownAttributes": {
+            "implementation": "##WebService",
+            "ot:alias": "task5",
+            "ot:displayName": "Send confirmation email",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "dataStoreRef": "_2",
+          "extensionElements": [],
+          "id": "Reference__2",
+          "incoming": [],
+          "name": "HR system",
+          "outgoing": [],
+          "type": "dataStoreReference",
+          "unknownAttributes": {
+            "ot:alias": "HrSystem",
+            "ot:displayName": "HR system",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "dataObjectRef": "_11",
+          "extensionElements": [],
+          "id": "Reference__11",
+          "incoming": [],
+          "name": "Hotel reservation",
+          "outgoing": [],
+          "type": "dataObjectReference",
+          "unknownAttributes": {
+            "ot:alias": "dataObj3",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "dataObjectRef": "_13",
+          "extensionElements": [],
+          "id": "Reference__13",
+          "incoming": [],
+          "name": "Tickets",
+          "outgoing": [],
+          "type": "dataObjectReference",
+          "unknownAttributes": {
+            "ot:alias": "dataObj4",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "_19",
+          "incoming": [
+            "_17"
+          ],
+          "name": "Client answered",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {
+            "ot:alias": "event5",
+            "ot:displayName": "Client answered",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "_36",
+          "incoming": [
+            "_35"
+          ],
+          "name": "No personnel available",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {
+            "ot:alias": "event6",
+            "ot:displayName": "No personnel available",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "Definition__31",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [],
+          "id": "_31",
+          "incoming": [
+            "_30"
+          ],
+          "name": "Notify client personel not available",
+          "outgoing": [
+            "_35"
+          ],
+          "type": "intermediateThrowEvent",
+          "unknownAttributes": {
+            "ot:alias": "event1",
+            "ot:displayName": "Notify client personel not available",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "Definition__18",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [],
+          "id": "_18",
+          "incoming": [
+            "_43"
+          ],
+          "name": "Answer client directly",
+          "outgoing": [
+            "_17"
+          ],
+          "type": "intermediateThrowEvent",
+          "unknownAttributes": {
+            "ot:alias": "event3",
+            "ot:displayName": "Answer client directly",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "dataInputAssociations": [
+            {
+              "id": "_68",
+              "sourceRefs": [
+                "_48"
+              ],
+              "targetRef": "DataInput__34",
+              "unknownAttributes": {}
+            }
+          ],
+          "dataOutputAssociations": [
+            {
+              "id": "_66",
+              "sourceRefs": [
+                "DataOutput__34"
+              ],
+              "targetRef": "Reference__12",
+              "unknownAttributes": {}
+            }
+          ],
+          "extensionElements": [
+            {
+              "attributes": {
+                "displayApplyButton": "false",
+                "displayOkButton": "false",
+                "displayShowProcessButton": "false",
+                "formType": "ruleBased",
+                "reassignMode": "explicit"
+              },
+              "children": [],
+              "name": "ot:userTaskDefinition"
+            }
+          ],
+          "id": "_34",
+          "incoming": [
+            "_32"
+          ],
+          "name": "Check client request",
+          "outgoing": [
+            "_47"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {
+            "implementation": "##unspecified",
+            "ot:alias": "task4",
+            "ot:displayName": "Check client request",
+            "triso:readOnly": "false"
+          },
+          "unknownChildren": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "id": "DataInput__34",
+                    "triso:readOnly": "false"
+                  },
+                  "children": [],
+                  "name": "semantic:dataInput"
+                },
+                {
+                  "attributes": {
+                    "id": "DataOutput__34",
+                    "triso:hidden": "false",
+                    "triso:readOnly": "false"
+                  },
+                  "children": [],
+                  "name": "semantic:dataOutput"
+                },
+                {
+                  "attributes": {
+                    "id": "_01b80f50-4698-47b8-9ce4-2e91bb270b83"
+                  },
+                  "children": [
+                    {
+                      "attributes": {},
+                      "children": [],
+                      "name": "semantic:dataInputRefs",
+                      "text": "DataInput__34"
+                    }
+                  ],
+                  "name": "semantic:inputSet"
+                },
+                {
+                  "attributes": {
+                    "id": "_cea41f46-ea44-4563-8fa3-243cba4bf462"
+                  },
+                  "children": [
+                    {
+                      "attributes": {},
+                      "children": [],
+                      "name": "semantic:dataOutputRefs",
+                      "text": "DataOutput__34"
+                    }
+                  ],
+                  "name": "semantic:outputSet"
+                }
+              ],
+              "name": "semantic:ioSpecification"
+            }
+          ]
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "Definition__33",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [],
+          "id": "_33",
+          "incoming": [],
+          "name": "E-mail received",
+          "outgoing": [
+            "_32"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {
+            "ot:alias": "event2",
+            "ot:displayName": "E-mail received",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "dataInputAssociations": [
+            {
+              "id": "_71",
+              "sourceRefs": [
+                "Reference__1"
+              ],
+              "targetRef": "DataInput__24",
+              "unknownAttributes": {}
+            }
+          ],
+          "dataOutputAssociations": [
+            {
+              "id": "_70",
+              "sourceRefs": [
+                "DataOutput__24"
+              ],
+              "targetRef": "Reference__10",
+              "unknownAttributes": {}
+            }
+          ],
+          "extensionElements": [
+            {
+              "attributes": {
+                "displayApplyButton": "false",
+                "displayOkButton": "false",
+                "displayShowProcessButton": "false",
+                "formType": "ruleBased",
+                "reassignMode": "explicit"
+              },
+              "children": [],
+              "name": "ot:userTaskDefinition"
+            }
+          ],
+          "id": "_24",
+          "incoming": [
+            "_26"
+          ],
+          "name": "Check employee's availability",
+          "outgoing": [
+            "_23"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {
+            "implementation": "##unspecified",
+            "ot:alias": "task2",
+            "ot:displayName": "Check employee's availability",
+            "triso:readOnly": "false"
+          },
+          "unknownChildren": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "id": "DataInput__24",
+                    "triso:readOnly": "false"
+                  },
+                  "children": [],
+                  "name": "semantic:dataInput"
+                },
+                {
+                  "attributes": {
+                    "id": "DataOutput__24",
+                    "triso:hidden": "false",
+                    "triso:readOnly": "false"
+                  },
+                  "children": [],
+                  "name": "semantic:dataOutput"
+                },
+                {
+                  "attributes": {
+                    "id": "_1642b32b-405d-4e17-be45-c8e8113c7c99"
+                  },
+                  "children": [
+                    {
+                      "attributes": {},
+                      "children": [],
+                      "name": "semantic:dataInputRefs",
+                      "text": "DataInput__24"
+                    }
+                  ],
+                  "name": "semantic:inputSet"
+                },
+                {
+                  "attributes": {
+                    "id": "_90dfafb3-8f88-457f-a8b5-104e4513b807"
+                  },
+                  "children": [
+                    {
+                      "attributes": {},
+                      "children": [],
+                      "name": "semantic:dataOutputRefs",
+                      "text": "DataOutput__24"
+                    }
+                  ],
+                  "name": "semantic:outputSet"
+                }
+              ],
+              "name": "semantic:ioSpecification"
+            }
+          ]
+        },
+        {
+          "extensionElements": [],
+          "id": "_27",
+          "incoming": [
+            "_47"
+          ],
+          "name": "On-site Meeting?",
+          "outgoing": [
+            "_26",
+            "_43"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {
+            "gatewayDirection": "Diverging",
+            "ot:alias": "gateway2",
+            "ot:displayName": "On-site Meeting?",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_25",
+          "incoming": [
+            "_23"
+          ],
+          "name": "Employee \navailable?",
+          "outgoing": [
+            "_30",
+            "_42"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {
+            "gatewayDirection": "Diverging",
+            "ot:alias": "gateway1",
+            "ot:displayName": "Employee \navailable?",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "dataStoreRef": "_1",
+          "extensionElements": [],
+          "id": "Reference__1",
+          "incoming": [],
+          "name": "Calendar",
+          "outgoing": [],
+          "type": "dataStoreReference",
+          "unknownAttributes": {
+            "ot:alias": "dataStore1",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "dataObjectRef": "_12",
+          "extensionElements": [],
+          "id": "Reference__12",
+          "incoming": [],
+          "name": "On-site meeting",
+          "outgoing": [],
+          "type": "dataObjectReference",
+          "unknownAttributes": {
+            "ot:alias": "dataObj1",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "dataObjectRef": "_10",
+          "extensionElements": [],
+          "id": "Reference__10",
+          "incoming": [],
+          "name": "Identified\nemployee",
+          "outgoing": [],
+          "type": "dataObjectReference",
+          "unknownAttributes": {
+            "ot:alias": "dataObj2",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_10",
+          "incoming": [],
+          "name": "Identified\nemployee",
+          "outgoing": [],
+          "type": "dataObject",
+          "unknownAttributes": {
+            "ot:alias": "dataObj2",
+            "triso:displayName": "Identified\nemployee",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_13",
+          "incoming": [],
+          "isCollection": true,
+          "name": "Tickets",
+          "outgoing": [],
+          "type": "dataObject",
+          "unknownAttributes": {
+            "itemSubjectRef": "itemDefinition_vlo3517az",
+            "ot:alias": "dataObj4",
+            "triso:displayName": "Tickets",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_12",
+          "incoming": [],
+          "name": "On-site meeting",
+          "outgoing": [],
+          "type": "dataObject",
+          "unknownAttributes": {
+            "ot:alias": "dataObj1",
+            "triso:displayName": "On-site meeting",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_11",
+          "incoming": [],
+          "name": "Hotel reservation",
+          "outgoing": [],
+          "type": "dataObject",
+          "unknownAttributes": {
+            "itemSubjectRef": "itemDefinition_qpgidbr63",
+            "ot:alias": "dataObj3",
+            "triso:displayName": "Hotel reservation",
+            "triso:readOnly": "false"
+          }
+        }
+      ],
+      "groups": [],
+      "id": "_8",
+      "isExecutable": false,
+      "laneSet": {
+        "lanes": [
+          {
+            "flowNodeRefs": [
+              "_39",
+              "_41",
+              "_22",
+              "_29",
+              "_21",
+              "_38",
+              "_45"
+            ],
+            "id": "_15",
+            "name": "Employee",
+            "unknownAttributes": {
+              "ot:alias": "lane1",
+              "ot:displayName": "Employee",
+              "triso:readOnly": "false"
+            }
+          },
+          {
+            "flowNodeRefs": [
+              "_19",
+              "_36",
+              "_31",
+              "_18",
+              "_34",
+              "_33",
+              "_24",
+              "_27",
+              "_25"
+            ],
+            "id": "_16",
+            "name": "Project Office",
+            "unknownAttributes": {
+              "ot:alias": "lane2",
+              "ot:displayName": "Project Office",
+              "triso:readOnly": "false"
+            }
+          }
+        ],
+        "unknownAttributes": {}
+      },
+      "name": "Travel Planning",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "_17",
+          "sourceRef": "_18",
+          "targetRef": "_19",
+          "unknownAttributes": {
+            "isImmediate": "false",
+            "ot:alias": "flow17",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_20",
+          "sourceRef": "_21",
+          "targetRef": "_22",
+          "unknownAttributes": {
+            "isImmediate": "false",
+            "ot:alias": "flow5",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_23",
+          "sourceRef": "_24",
+          "targetRef": "_25",
+          "unknownAttributes": {
+            "isImmediate": "false",
+            "ot:alias": "flow4",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_26",
+          "name": "Yes",
+          "sourceRef": "_27",
+          "targetRef": "_24",
+          "unknownAttributes": {
+            "isImmediate": "false",
+            "ot:alias": "flow3",
+            "ot:displayName": "Yes",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_28",
+          "sourceRef": "_29",
+          "targetRef": "_21",
+          "unknownAttributes": {
+            "isImmediate": "false",
+            "ot:alias": "flow2",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_30",
+          "name": "No",
+          "sourceRef": "_25",
+          "targetRef": "_31",
+          "unknownAttributes": {
+            "isImmediate": "false",
+            "ot:alias": "flow7",
+            "ot:displayName": "No",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_32",
+          "sourceRef": "_33",
+          "targetRef": "_34",
+          "unknownAttributes": {
+            "isImmediate": "false",
+            "ot:alias": "flow8",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_35",
+          "sourceRef": "_31",
+          "targetRef": "_36",
+          "unknownAttributes": {
+            "isImmediate": "false",
+            "ot:alias": "flow18",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_37",
+          "sourceRef": "_38",
+          "targetRef": "_39",
+          "unknownAttributes": {
+            "isImmediate": "false",
+            "ot:alias": "flow19",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_40",
+          "sourceRef": "_39",
+          "targetRef": "_41",
+          "unknownAttributes": {
+            "isImmediate": "false",
+            "ot:alias": "flow20",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_42",
+          "name": "Yes",
+          "sourceRef": "_25",
+          "targetRef": "_29",
+          "unknownAttributes": {
+            "isImmediate": "false",
+            "ot:alias": "flow1",
+            "ot:displayName": "Yes",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_43",
+          "name": "No",
+          "sourceRef": "_27",
+          "targetRef": "_18",
+          "unknownAttributes": {
+            "isImmediate": "false",
+            "ot:alias": "flow10",
+            "ot:displayName": "No",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_44",
+          "sourceRef": "_22",
+          "targetRef": "_45",
+          "unknownAttributes": {
+            "isImmediate": "false",
+            "ot:alias": "flow6",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_46",
+          "sourceRef": "_45",
+          "targetRef": "_38",
+          "unknownAttributes": {
+            "isImmediate": "false",
+            "ot:alias": "flow11",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_47",
+          "sourceRef": "_34",
+          "targetRef": "_27",
+          "unknownAttributes": {
+            "isImmediate": "false",
+            "ot:alias": "flow9",
+            "triso:readOnly": "false"
+          }
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {
+        "isClosed": "false",
+        "ot:alias": "process2",
+        "ot:displayName": "Travel Planning",
+        "triso:collectEnds": "true",
+        "triso:readOnly": "false"
+      },
+      "unknownChildren": [
+        {
+          "attributes": {},
+          "children": [
+            {
+              "attributes": {
+                "id": "_48",
+                "isCollection": "false",
+                "name": "Client request",
+                "ot:alias": "input1",
+                "triso:readOnly": "false"
+              },
+              "children": [],
+              "name": "semantic:dataInput"
+            },
+            {
+              "attributes": {
+                "id": "_49",
+                "itemSubjectRef": "_9765ffd2-35b3-4958-bddc-ef1ba5d8ebb4",
+                "name": "Hotel reservation",
+                "ot:alias": "output2",
+                "triso:readOnly": "false"
+              },
+              "children": [],
+              "name": "semantic:dataOutput"
+            },
+            {
+              "attributes": {
+                "id": "_59",
+                "isCollection": "true",
+                "itemSubjectRef": "_9765ffd2-35b3-4958-bddc-ef1ba5d8ebb4",
+                "name": "Tickets",
+                "ot:alias": "output1",
+                "triso:readOnly": "false"
+              },
+              "children": [],
+              "name": "semantic:dataOutput"
+            },
+            {
+              "attributes": {
+                "id": "_a2f30cba-7097-46b1-a0e0-cb8ad10b85b1"
+              },
+              "children": [
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "semantic:dataInputRefs",
+                  "text": "_48"
+                }
+              ],
+              "name": "semantic:inputSet"
+            },
+            {
+              "attributes": {
+                "id": "_a3ee2ca7-0791-485b-8538-1d2244fb554b"
+              },
+              "children": [
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "semantic:dataOutputRefs",
+                  "text": "_49"
+                },
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "semantic:dataOutputRefs",
+                  "text": "_59"
+                }
+              ],
+              "name": "semantic:outputSet"
+            }
+          ],
+          "name": "semantic:ioSpecification"
+        }
+      ]
+    },
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "extensionElements": [],
+          "id": "ID-ee745c8c-43de-11f1-744d-b02628b36240",
+          "incoming": [],
+          "name": "Preferred hotel and travel means",
+          "outgoing": [],
+          "type": "dataObject",
+          "unknownAttributes": {
+            "triso:displayName": "Preferred hotel and travel means",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "ID-ee745c80-43de-11f1-744d-b02628b36240",
+          "incoming": [],
+          "outgoing": [
+            "ID-ee745c84-43de-11f1-744d-b02628b36240"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "dataInputAssociations": [
+            {
+              "id": "ID-ee745c88-43de-11f1-744d-b02628b36240",
+              "sourceRefs": [
+                "ID-ee745c85-43de-11f1-744d-b02628b36240"
+              ],
+              "targetRef": "DataInput_ID-ee745c82-43de-11f1-744d-b02628b36240",
+              "unknownAttributes": {}
+            }
+          ],
+          "dataOutputAssociations": [
+            {
+              "id": "ID-ee745c8e-43de-11f1-744d-b02628b36240",
+              "sourceRefs": [
+                "DataOutput_ID-ee745c82-43de-11f1-744d-b02628b36240"
+              ],
+              "targetRef": "Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240",
+              "unknownAttributes": {}
+            }
+          ],
+          "extensionElements": [],
+          "id": "ID-ee745c82-43de-11f1-744d-b02628b36240",
+          "incoming": [
+            "ID-ee745c84-43de-11f1-744d-b02628b36240"
+          ],
+          "name": "Request employee preferences",
+          "outgoing": [
+            "_1b18998a-581e-4a9f-a591-b4f360261866"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {
+            "implementation": "##unspecified",
+            "triso:readOnly": "false"
+          },
+          "unknownChildren": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "id": "DataInput_ID-ee745c82-43de-11f1-744d-b02628b36240",
+                    "triso:readOnly": "false"
+                  },
+                  "children": [],
+                  "name": "semantic:dataInput"
+                },
+                {
+                  "attributes": {
+                    "id": "DataOutput_ID-ee745c82-43de-11f1-744d-b02628b36240",
+                    "triso:hidden": "false",
+                    "triso:readOnly": "false"
+                  },
+                  "children": [],
+                  "name": "semantic:dataOutput"
+                },
+                {
+                  "attributes": {
+                    "id": "_e4d5030a-85d2-4313-b1dd-bffe5f54565c"
+                  },
+                  "children": [
+                    {
+                      "attributes": {},
+                      "children": [],
+                      "name": "semantic:dataInputRefs",
+                      "text": "DataInput_ID-ee745c82-43de-11f1-744d-b02628b36240"
+                    }
+                  ],
+                  "name": "semantic:inputSet"
+                },
+                {
+                  "attributes": {
+                    "id": "_08f45118-5481-4ef5-8dfc-a5308a836242"
+                  },
+                  "children": [
+                    {
+                      "attributes": {},
+                      "children": [],
+                      "name": "semantic:dataOutputRefs",
+                      "text": "DataOutput_ID-ee745c82-43de-11f1-744d-b02628b36240"
+                    }
+                  ],
+                  "name": "semantic:outputSet"
+                }
+              ],
+              "name": "semantic:ioSpecification"
+            }
+          ]
+        },
+        {
+          "dataInputAssociations": [
+            {
+              "id": "dataAssoc_Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240_to__5e0cd331-db4a-4561-9f7f-141eecba6967",
+              "sourceRefs": [
+                "Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240"
+              ],
+              "targetRef": "dataInput_ump2i215t",
+              "unknownAttributes": {}
+            }
+          ],
+          "dataOutputAssociations": [
+            {
+              "id": "_8ad15c31-1a47-4349-a146-0fbea8774532",
+              "sourceRefs": [
+                "_393bfc2e-32d1-4b49-8dd2-22c654541596"
+              ],
+              "targetRef": "_801b8c70-b793-499d-b462-4fd8d541f32b",
+              "unknownAttributes": {}
+            },
+            {
+              "id": "_5c59161c-f8b2-4e94-aac8-895517dcc1d4",
+              "sourceRefs": [
+                "_393bfc2e-32d1-4b49-8dd2-22c654541596"
+              ],
+              "targetRef": "_8a969b23-b4b1-453c-8925-1cec72ddbaef",
+              "unknownAttributes": {}
+            }
+          ],
+          "extensionElements": [
+            {
+              "attributes": {
+                "id": "_a9ffc4b8-99f5-4ce7-be34-3842028b3346",
+                "mode": "others",
+                "type": "email"
+              },
+              "children": [],
+              "name": "triso:notification"
+            }
+          ],
+          "id": "_5e0cd331-db4a-4561-9f7f-141eecba6967",
+          "incoming": [
+            "_1b18998a-581e-4a9f-a591-b4f360261866"
+          ],
+          "name": "Book trip",
+          "outgoing": [
+            "_c0e8a59b-136b-4e14-8ef4-a9b1ff8f13fa"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {
+            "implementation": "##unspecified",
+            "triso:readOnly": "false"
+          },
+          "unknownChildren": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "id": "dataInput_ump2i215t"
+                  },
+                  "children": [],
+                  "name": "semantic:dataInput"
+                },
+                {
+                  "attributes": {
+                    "id": "_393bfc2e-32d1-4b49-8dd2-22c654541596",
+                    "isCollection": "false",
+                    "itemSubjectRef": "_triso-default-bpmnItemDefinition-string_id",
+                    "triso:hidden": "false",
+                    "triso:readOnly": "false"
+                  },
+                  "children": [],
+                  "name": "semantic:dataOutput"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {},
+                      "children": [],
+                      "name": "semantic:dataInputRefs",
+                      "text": "dataInput_ump2i215t"
+                    }
+                  ],
+                  "name": "semantic:inputSet"
+                },
+                {
+                  "attributes": {
+                    "id": "_e9d2d1da-2259-4da4-a2a3-9146db175b2b"
+                  },
+                  "children": [
+                    {
+                      "attributes": {},
+                      "children": [],
+                      "name": "semantic:dataOutputRefs",
+                      "text": "_393bfc2e-32d1-4b49-8dd2-22c654541596"
+                    }
+                  ],
+                  "name": "semantic:outputSet"
+                }
+              ],
+              "name": "semantic:ioSpecification"
+            }
+          ]
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "_2a76b8fa-b11b-4f0a-9835-2a144fada546",
+          "incoming": [
+            "_c0e8a59b-136b-4e14-8ef4-a9b1ff8f13fa"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "dataObjectRef": "ID-ee745c8c-43de-11f1-744d-b02628b36240",
+          "extensionElements": [],
+          "id": "Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240",
+          "incoming": [],
+          "name": "Preferred hotel and travel means",
+          "outgoing": [],
+          "type": "dataObjectReference",
+          "unknownAttributes": {
+            "triso:readOnly": "false"
+          }
+        }
+      ],
+      "groups": [],
+      "id": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "isExecutable": false,
+      "name": "Plan Trip",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "ID-ee745c84-43de-11f1-744d-b02628b36240",
+          "sourceRef": "ID-ee745c80-43de-11f1-744d-b02628b36240",
+          "targetRef": "ID-ee745c82-43de-11f1-744d-b02628b36240",
+          "unknownAttributes": {
+            "isImmediate": "false",
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_1b18998a-581e-4a9f-a591-b4f360261866",
+          "sourceRef": "ID-ee745c82-43de-11f1-744d-b02628b36240",
+          "targetRef": "_5e0cd331-db4a-4561-9f7f-141eecba6967",
+          "unknownAttributes": {
+            "triso:readOnly": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "_c0e8a59b-136b-4e14-8ef4-a9b1ff8f13fa",
+          "sourceRef": "_5e0cd331-db4a-4561-9f7f-141eecba6967",
+          "targetRef": "_2a76b8fa-b11b-4f0a-9835-2a144fada546",
+          "unknownAttributes": {
+            "triso:readOnly": "false"
+          }
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {
+        "isClosed": "false",
+        "triso:collectEnds": "true",
+        "triso:readOnly": "false"
+      },
+      "unknownChildren": [
+        {
+          "attributes": {},
+          "children": [
+            {
+              "attributes": {
+                "id": "ID-ee745c85-43de-11f1-744d-b02628b36240",
+                "isCollection": "false",
+                "name": "Client request",
+                "triso:readOnly": "false"
+              },
+              "children": [],
+              "name": "semantic:dataInput"
+            },
+            {
+              "attributes": {
+                "id": "_801b8c70-b793-499d-b462-4fd8d541f32b",
+                "isCollection": "true",
+                "itemSubjectRef": "_9765ffd2-35b3-4958-bddc-ef1ba5d8ebb4",
+                "name": "Hotel reservation",
+                "ot:alias": "output2",
+                "triso:displayName": "Hotel reservation",
+                "triso:readOnly": "false"
+              },
+              "children": [],
+              "name": "semantic:dataOutput"
+            },
+            {
+              "attributes": {
+                "id": "_8a969b23-b4b1-453c-8925-1cec72ddbaef",
+                "isCollection": "true",
+                "itemSubjectRef": "_9765ffd2-35b3-4958-bddc-ef1ba5d8ebb4",
+                "name": "Tickets",
+                "ot:alias": "output1",
+                "triso:readOnly": "false"
+              },
+              "children": [],
+              "name": "semantic:dataOutput"
+            },
+            {
+              "attributes": {
+                "id": "_06308928-4676-4288-94e1-cd562d59c0da"
+              },
+              "children": [
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "semantic:dataInputRefs",
+                  "text": "ID-ee745c85-43de-11f1-744d-b02628b36240"
+                }
+              ],
+              "name": "semantic:inputSet"
+            },
+            {
+              "attributes": {
+                "id": "_5213ec74-e4c5-40fa-b751-86a0a0092708"
+              },
+              "children": [
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "semantic:dataOutputRefs",
+                  "text": "_801b8c70-b793-499d-b462-4fd8d541f32b"
+                },
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "semantic:dataOutputRefs",
+                  "text": "_8a969b23-b4b1-453c-8925-1cec72ddbaef"
+                }
+              ],
+              "name": "semantic:outputSet"
+            }
+          ],
+          "name": "semantic:ioSpecification"
+        }
+      ]
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://www.softwareag.com/aris/bpmn2",
+  "unknownAttributes": {
+    "kp:extra-namespaces": "{}",
+    "name": "C.10.0",
+    "triso:translationLanguages": "",
+    "trisobpmn:logoChoice": "Default",
+    "xml:lang": "en"
+  },
+  "unknownChildren": [
+    {
+      "attributes": {
+        "importType": "https://www.omg.org/spec/SDMN/",
+        "location": "Travel Planning.sdmn",
+        "namespace": "http://www.trisotech.com/definitions/_1a8e6ac5-c038-4a51-a69c-fcfa48532d33"
+      },
+      "children": [],
+      "name": "semantic:import"
+    },
+    {
+      "attributes": {
+        "id": "itemDefinition_qpgidbr63",
+        "structureRef": "tHotelReservation"
+      },
+      "children": [],
+      "name": "semantic:itemDefinition"
+    },
+    {
+      "attributes": {
+        "id": "itemDefinition_vlo3517az",
+        "structureRef": "tTravelTicket"
+      },
+      "children": [],
+      "name": "semantic:itemDefinition"
+    },
+    {
+      "attributes": {
+        "id": "_triso-default-bpmnItemDefinition-string_id",
+        "structureRef": "feel:string",
+        "triso:basicType": "true",
+        "triso:definitionType": "http://www.trisotech.com/2015/triso/modeling/ItemDefinitionType",
+        "triso:name": "triso_string"
+      },
+      "children": [],
+      "name": "semantic:itemDefinition"
+    },
+    {
+      "attributes": {
+        "id": "_triso-default-bpmnItemDefinition-Any_id",
+        "structureRef": "feel:Any",
+        "triso:basicType": "true",
+        "triso:definitionType": "http://www.trisotech.com/2015/triso/modeling/ItemDefinitionType",
+        "triso:name": "triso_Any"
+      },
+      "children": [],
+      "name": "semantic:itemDefinition"
+    },
+    {
+      "attributes": {
+        "id": "_9765ffd2-35b3-4958-bddc-ef1ba5d8ebb4",
+        "isCollection": "false",
+        "structureRef": "feel:list",
+        "triso:basicType": "false",
+        "triso:definitionType": "http://www.trisotech.com/2015/triso/modeling/ItemDefinitionType",
+        "triso:name": "Item Definition ⦀ Text",
+        "triso:parameterType": "feel:string",
+        "triso:readOnly": "false"
+      },
+      "children": [],
+      "name": "semantic:itemDefinition"
+    },
+    {
+      "attributes": {
+        "id": "_2",
+        "name": "HR system",
+        "ot:alias": "HrSystem",
+        "ot:displayName": "HR system",
+        "triso:displayName": "HR system",
+        "triso:readOnly": "false"
+      },
+      "children": [],
+      "name": "semantic:dataStore"
+    },
+    {
+      "attributes": {
+        "id": "_1",
+        "name": "Calendar",
+        "ot:alias": "dataStore1",
+        "triso:displayName": "Calendar",
+        "triso:readOnly": "false"
+      },
+      "children": [],
+      "name": "semantic:dataStore"
+    }
+  ]
+}

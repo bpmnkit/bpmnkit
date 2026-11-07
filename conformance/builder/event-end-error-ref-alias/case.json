@@ -1,0 +1,9 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["endEvent","e",{"errorRef":"ERR1"}],
+		["build"]
+	]
+}

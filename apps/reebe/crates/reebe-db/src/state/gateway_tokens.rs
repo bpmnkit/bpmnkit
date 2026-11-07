@@ -50,7 +50,12 @@ impl<'a> JoinTokenRepository<'a> {
     }
 
     /// Consume one token on `sequence_flow_id`.
-    pub async fn take(&self, flow_scope_key: i64, gateway_id: &str, sequence_flow_id: &str) -> Result<()> {
+    pub async fn take(
+        &self,
+        flow_scope_key: i64,
+        gateway_id: &str,
+        sequence_flow_id: &str,
+    ) -> Result<()> {
         sqlx::query(
             "UPDATE join_tokens SET token_count = token_count - 1
              WHERE flow_scope_key = $1 AND gateway_id = $2 AND sequence_flow_id = $3",
@@ -67,7 +72,10 @@ impl<'a> JoinTokenRepository<'a> {
         Ok(())
     }
 
-    pub async fn get_by_process_instance(&self, process_instance_key: i64) -> Result<Vec<JoinToken>> {
+    pub async fn get_by_process_instance(
+        &self,
+        process_instance_key: i64,
+    ) -> Result<Vec<JoinToken>> {
         let rows = sqlx::query(
             "SELECT process_instance_key, flow_scope_key, gateway_id, sequence_flow_id, token_count
              FROM join_tokens WHERE process_instance_key = $1

@@ -1,0 +1,25 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "s",
+          "type": "startEvent"
+        },
+        {
+          "id": "e",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f",
+          "from": "s",
+          "to": "e"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2 @@
+# Bestellprozess für Käufer — größer
+s[start Beginn] > e[end Ende]

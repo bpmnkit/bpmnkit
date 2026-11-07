@@ -1,0 +1,173 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "naming"
+  ],
+  "counts": {
+    "error": 12,
+    "info": 0,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "pool"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "Participant \"pool\" has no label.",
+      "processId": "Definitions_parity",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "blackbox"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "Participant \"blackbox\" has no label.",
+      "processId": "Definitions_parity",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "lane_unnamed"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "Lane \"lane_unnamed\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "lane_child"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "Lane \"lane_child\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "task_blank"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "task element \"task_blank\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "f_cond"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "Conditional sequence flow \"f_cond\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "sub_start"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "startEvent element \"sub_start\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "sub_catch"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "intermediateCatchEvent element \"sub_catch\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "tx_start"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "startEvent element \"tx_start\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "tx_task"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "task element \"tx_task\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "evt_start"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "startEvent element \"evt_start\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "adhoc_unnamed"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "task element \"adhoc_unnamed\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 12
+}

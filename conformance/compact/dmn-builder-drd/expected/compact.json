@@ -1,0 +1,77 @@
+{
+  "decisions": [
+    {
+      "id": "riskScore",
+      "inputs": [
+        {
+          "expression": "age",
+          "id": "Input_0000002",
+          "typeRef": "number"
+        }
+      ],
+      "name": "Risk Score",
+      "outputs": [
+        {
+          "id": "Output_0000004",
+          "name": "risk",
+          "typeRef": "string"
+        }
+      ],
+      "requires": [
+        "age"
+      ],
+      "rules": [
+        {
+          "id": "DecisionRule_0000007",
+          "inputs": [
+            "< 18"
+          ],
+          "outputs": [
+            "\"low\""
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "FIRST",
+      "id": "approval",
+      "inputs": [
+        {
+          "expression": "risk",
+          "id": "Input_000000a"
+        }
+      ],
+      "name": "Approval",
+      "outputs": [
+        {
+          "id": "Output_000000c",
+          "name": "approved",
+          "typeRef": "boolean"
+        }
+      ],
+      "requires": [
+        "riskScore",
+        "age"
+      ],
+      "rules": [
+        {
+          "id": "DecisionRule_000000f",
+          "inputs": [
+            "\"low\""
+          ],
+          "outputs": [
+            "true"
+          ]
+        }
+      ]
+    }
+  ],
+  "id": "Definitions_000000k",
+  "inputData": [
+    {
+      "id": "age",
+      "name": "Age"
+    }
+  ],
+  "name": "Approval"
+}

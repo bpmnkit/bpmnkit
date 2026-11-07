@@ -1,0 +1,100 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "g",
+            "name": "Size?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "a",
+            "name": "A",
+            "type": "task"
+          },
+          {
+            "id": "j",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "b",
+            "name": "B",
+            "type": "task"
+          },
+          {
+            "id": "c",
+            "name": "C",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "g"
+          },
+          {
+            "condition": "= size < 10",
+            "from": "g",
+            "id": "Flow_2",
+            "name": "Small",
+            "to": "a"
+          },
+          {
+            "from": "a",
+            "id": "Flow_3",
+            "to": "j"
+          },
+          {
+            "condition": "= size < 100",
+            "from": "g",
+            "id": "Flow_4",
+            "name": "Medium",
+            "to": "b"
+          },
+          {
+            "from": "b",
+            "id": "Flow_5",
+            "to": "j"
+          },
+          {
+            "from": "g",
+            "id": "Flow_6",
+            "isDefault": true,
+            "name": "Large",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "id": "Flow_7",
+            "to": "j"
+          },
+          {
+            "from": "j",
+            "id": "Flow_8",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

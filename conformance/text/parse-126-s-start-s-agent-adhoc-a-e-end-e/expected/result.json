@@ -1,0 +1,56 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "documentation": "Starts it",
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "children": {
+              "elements": [
+                {
+                  "documentation": "Searches the recipe catalogue.",
+                  "id": "t",
+                  "jobType": "t",
+                  "name": "T",
+                  "type": "serviceTask"
+                }
+              ],
+              "flows": []
+            },
+            "id": "agent",
+            "name": "A",
+            "type": "adHocSubProcess"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "agent"
+          },
+          {
+            "from": "agent",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [],
+  "questions": []
+}

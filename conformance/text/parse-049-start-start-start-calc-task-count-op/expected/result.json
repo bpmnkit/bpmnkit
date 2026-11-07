@@ -1,0 +1,45 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "Start",
+            "type": "startEvent"
+          },
+          {
+            "id": "calc",
+            "name": "Count open issues",
+            "resultVariable": "openIssues",
+            "script": "= count(issues[state = \"open\"])",
+            "type": "scriptTask"
+          },
+          {
+            "id": "done",
+            "name": "Done",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "calc"
+          },
+          {
+            "from": "calc",
+            "id": "Flow_2",
+            "to": "done"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [],
+  "questions": []
+}

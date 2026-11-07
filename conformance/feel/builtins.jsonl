@@ -1,0 +1,53 @@
+{"id":"builtins/1","expr":"abs(-5)","context":{},"expected":{"t":"number","v":"5"}}
+{"id":"builtins/2","expr":"floor(1.7)","context":{},"expected":{"t":"number","v":"1"}}
+{"id":"builtins/3","expr":"ceiling(1.2)","context":{},"expected":{"t":"number","v":"2"}}
+{"id":"builtins/4","expr":"round half up(2.5, 0)","context":{},"expected":{"t":"number","v":"3"}}
+{"id":"builtins/5","expr":"round half even(2.5, 0)","context":{},"expected":{"t":"error"}}
+{"id":"builtins/6","expr":"decimal(1.2345, 2)","context":{},"expected":{"t":"number","v":"1.23"}}
+{"id":"builtins/7","expr":"modulo(10, 3)","context":{},"expected":{"t":"number","v":"1"}}
+{"id":"builtins/8","expr":"modulo(-10, 3)","context":{},"expected":{"t":"number","v":"2"}}
+{"id":"builtins/9","expr":"sqrt(16)","context":{},"expected":{"t":"number","v":"4"}}
+{"id":"builtins/10","expr":"number(\"12.5\")","context":{},"expected":{"t":"number","v":"12.5"}}
+{"id":"builtins/11","expr":"string(12)","context":{},"expected":{"t":"string","v":"12"}}
+{"id":"builtins/12","expr":"string(true)","context":{},"expected":{"t":"string","v":"true"}}
+{"id":"builtins/13","expr":"is defined(x)","context":{"x":{"t":"number","v":"1"}},"expected":{"t":"boolean","v":true}}
+{"id":"builtins/14","expr":"even(4)","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"builtins/15","expr":"odd(4)","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"builtins/16","expr":"product([2,3,4])","context":{},"expected":{"t":"number","v":"24"}}
+{"id":"builtins/17","expr":"log(1)","context":{},"expected":{"t":"number","v":"0"}}
+{"id":"builtins/18","expr":"exp(0)","context":{},"expected":{"t":"number","v":"1"}}
+{"id":"builtins/19","expr":"bogus(1)","context":{},"expected":{"t":"null"}}
+{"id":"builtins/21","expr":"string(date(\"2020-01-02\"))","context":{},"expected":{"t":"string","v":"2020-01-02"}}
+{"id":"builtins/22","expr":"unknownVar","context":{},"expected":{"t":"null"}}
+{"id":"builtins/23","expr":"1 != 2","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"builtins/24","expr":"5 >= 5","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"builtins/25","expr":"floor(3.7)","context":{},"expected":{"t":"number","v":"3"}}
+{"id":"builtins/26","expr":"ceiling(3.2)","context":{},"expected":{"t":"number","v":"4"}}
+{"id":"builtins/27","expr":"decimal(3.14159, 2)","context":{},"expected":{"t":"number","v":"3.14"}}
+{"id":"builtins/28","expr":"is defined(y)","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"builtins/29","expr":"number(from: \"1,5\", grouping separator: null, decimal separator: \",\")","context":{},"expected":{"t":"number","v":"1.5"}}
+{"id":"builtins/30","expr":"function(a, b) a - b","context":{},"expected":{"t":"error"}}
+{"id":"builtins/31","expr":"function(a) a","context":{},"expected":{"t":"error"}}
+{"id":"builtins/32","expr":"(function(a) a + 1)(2)","context":{},"expected":{"t":"number","v":"3"}}
+{"id":"builtins/33","expr":"function(a) a * 2","context":{},"expected":{"t":"error"}}
+{"id":"builtins/34","expr":"number(\"1,000.5\", \",\", \".\")","context":{},"expected":{"t":"number","v":"1000.5"}}
+{"id":"builtins/35","expr":"number(\"1.000,5\", \".\", \",\")","context":{},"expected":{"t":"number","v":"1000.5"}}
+{"id":"builtins/36","expr":"number(\"1000\")","context":{},"expected":{"t":"number","v":"1000"}}
+{"id":"builtins/37","expr":"number(\"1,000.5\", \".\", \".\")","context":{},"expected":{"t":"null"}}
+{"id":"builtins/38","expr":"number(\"1,000.5\", \";\", \".\")","context":{},"expected":{"t":"null"}}
+{"id":"builtins/39","expr":"is(@\"23:00:50Z\", @\"23:00:50+00:00\")","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"builtins/40","expr":"is(@\"23:00:50\", @\"23:00:50Z\")","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"builtins/41","expr":"is(@\"P1D\", @\"PT24H\")","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"builtins/42","expr":"is(@\"P0Y\", @\"P0D\")","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"builtins/43","expr":"exp(4, 4)","context":{},"expected":{"t":"null"}}
+{"id":"builtins/44","expr":"sqrt(4, 4)","context":{},"expected":{"t":"null"}}
+{"id":"builtins/45","expr":"sqrt(\"4\")","context":{},"expected":{"t":"null"}}
+{"id":"builtins/46","expr":"floor(\"1.5\")","context":{},"expected":{"t":"null"}}
+{"id":"builtins/47","expr":"decimal(2.5, 0)","context":{},"expected":{"t":"number","v":"2"}}
+{"id":"builtins/48","expr":"decimal(3.5, 0)","context":{},"expected":{"t":"number","v":"4"}}
+{"id":"builtins/49","expr":"round half up(-5.5, 0)","context":{},"expected":{"t":"number","v":"-6"}}
+{"id":"builtins/50","expr":"round half down(5.5, 0)","context":{},"expected":{"t":"number","v":"5"}}
+{"id":"builtins/51","expr":"round up(5.5, 6177)","context":{},"expected":{"t":"null"}}
+{"id":"builtins/52","expr":"floor(1.56, null)","context":{},"expected":{"t":"null"}}
+{"id":"builtins/53","expr":"week of year(@\"2003-12-29\")","context":{},"expected":{"t":"number","v":"1"}}
+{"id":"builtins/54","expr":"week of year(@\"2010-01-01\")","context":{},"expected":{"t":"number","v":"53"}}

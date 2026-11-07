@@ -1,0 +1,50 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"svc\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "g"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Complex gateway \"g\" is not supported by any Camunda 8 version.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Model it with an element Camunda 8 executes."
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 2,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 0,
+      "naming": 0,
+      "pattern": 0,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 2,
+      "info": 0,
+      "warning": 0
+    },
+    "total": 2
+  }
+}

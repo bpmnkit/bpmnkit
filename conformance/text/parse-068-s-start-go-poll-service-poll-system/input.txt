@@ -1,0 +1,2 @@
+s[start Go] > poll[service Poll system] > late[catch:timer | on=poll after=PT5M] > flag[user Flag for follow-up] > e[end Done]
+s > every[and Process every recipient | each=recipients] > poll

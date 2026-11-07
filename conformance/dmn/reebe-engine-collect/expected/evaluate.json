@@ -1,0 +1,40 @@
+[
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "name is required"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "start_inputValidation",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "name is required"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "start_inputValidation",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  }
+]

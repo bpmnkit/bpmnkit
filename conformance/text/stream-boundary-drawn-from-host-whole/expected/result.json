@@ -1,0 +1,116 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "t",
+            "name": "Work",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "t",
+            "eventType": "timer",
+            "id": "w",
+            "name": "Late",
+            "timerDuration": "PT5M",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "h",
+            "name": "Handle",
+            "type": "task"
+          },
+          {
+            "id": "x",
+            "name": "X",
+            "type": "endEvent"
+          },
+          {
+            "id": "t_split",
+            "type": "parallelGateway"
+          },
+          {
+            "id": "h_join",
+            "type": "exclusiveGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t_split",
+            "id": "Flow_2",
+            "to": "e"
+          },
+          {
+            "from": "t_split",
+            "id": "Flow_3",
+            "to": "h_join"
+          },
+          {
+            "from": "w",
+            "id": "Flow_4",
+            "to": "h_join"
+          },
+          {
+            "from": "h",
+            "id": "Flow_5",
+            "to": "x"
+          },
+          {
+            "from": "t",
+            "id": "Flow_6",
+            "to": "t_split"
+          },
+          {
+            "from": "h_join",
+            "id": "Flow_7",
+            "to": "h"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "put boundary \"w\" on \"t\", the task drawn into it",
+    "led t > w to what the boundary leads to, since nothing flows into a boundary event",
+    "split the flows out of \"t\" with and gateway \"t_split\"",
+    "joined 2 flows into \"h\" with xor gateway \"h_join\"",
+    "named 3 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": [
+    {
+      "draft": "After \"Work\", ",
+      "elementId": "t_split",
+      "options": [
+        {
+          "change": "After \"Work\", only one of \"E\" and \"Handle\" happens: decide which with an xor gateway.",
+          "label": "Only one of them"
+        },
+        {
+          "change": "After \"Work\", do \"E\" and \"Handle\" one after the other, not at the same time.",
+          "label": "One after the other"
+        }
+      ],
+      "text": "After \"Work\", \"E\" and \"Handle\" run at the same time. Is that right?"
+    }
+  ]
+}

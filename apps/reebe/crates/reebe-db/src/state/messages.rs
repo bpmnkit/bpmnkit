@@ -1,9 +1,9 @@
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 use crate::pool::DbPool;
+use crate::{DbError, Result};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use crate::{Result, DbError};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Message {
@@ -103,7 +103,7 @@ impl<'a> MessageRepository<'a> {
         .fetch_all(self.pool)
         .await?;
 
-        Ok(rows.into_iter().map(|r| row_to_message(r)).collect())
+        Ok(rows.into_iter().map(row_to_message).collect())
     }
 
     pub async fn expire_old(&self) -> Result<u64> {
@@ -143,7 +143,7 @@ impl<'a> MessageRepository<'a> {
         .fetch_all(self.pool)
         .await?;
 
-        Ok(rows.into_iter().map(|r| row_to_message(r)).collect())
+        Ok(rows.into_iter().map(row_to_message).collect())
     }
 }
 
@@ -211,7 +211,7 @@ impl<'a> MessageSubscriptionRepository<'a> {
         .fetch_all(self.pool)
         .await?;
 
-        Ok(rows.into_iter().map(|r| row_to_sub(r)).collect())
+        Ok(rows.into_iter().map(row_to_sub).collect())
     }
 
     pub async fn update_state(&self, key: i64, state: &str) -> Result<()> {
@@ -274,7 +274,7 @@ impl<'a> MessageSubscriptionRepository<'a> {
         .fetch_all(self.pool)
         .await?;
 
-        Ok(rows.into_iter().map(|r| row_to_sub(r)).collect())
+        Ok(rows.into_iter().map(row_to_sub).collect())
     }
 }
 

@@ -1,0 +1,310 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 17,
+    "info": 2,
+    "warning": 3
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "c1",
+        "c2"
+      ],
+      "fixable": false,
+      "id": "feel/duplicate-expression",
+      "message": "FEEL expression \"= x\" appears on 2 sequence flows.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Consider extracting repeated FEEL expressions into a shared variable or decision table."
+    },
+    {
+      "bpmnlintRule": "fake-join",
+      "category": "flow",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"end\" (endEvent) has 5 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Started\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:x",
+      "message": "Variable \"x\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"x\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:y",
+      "message": "Variable \"y\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"y\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:start",
+      "message": "Element \"start\" consumes: x, y.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "bpmnlintRule": "conditional-flows",
+      "category": "feel",
+      "elementIds": [
+        "f1"
+      ],
+      "fixable": false,
+      "id": "feel/missing-condition",
+      "message": "Sequence flow \"f1\" leaves \"start\", which routes by condition, but has no condition and is not the default flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make this flow the default."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "c1"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "Conditional sequence flow \"c1\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "c2"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "Conditional sequence flow \"c2\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "c3"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "Conditional sequence flow \"c3\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"start\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "a"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"a\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"end\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f1"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f1\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f2"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f2\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "dup"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"dup\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "c1"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"c1\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "c2"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"c2\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "c3"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"c3\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-duplicate-sequence-flows",
+      "category": "flow",
+      "elementIds": [
+        "dup",
+        "a",
+        "end"
+      ],
+      "fixable": false,
+      "id": "flow/duplicate-sequence-flow",
+      "message": "Sequence flow \"dup\" duplicates another flow from \"a\" to \"end\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Remove the duplicate — two identical flows spawn two tokens."
+    },
+    {
+      "bpmnlintRule": "no-duplicate-sequence-flows",
+      "category": "flow",
+      "elementIds": [
+        "c2",
+        "start",
+        "end"
+      ],
+      "fixable": false,
+      "id": "flow/duplicate-sequence-flow",
+      "message": "Sequence flow \"c2\" duplicates another flow from \"start\" to \"end\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Remove the duplicate — two identical flows spawn two tokens."
+    },
+    {
+      "bpmnlintRule": "no-implicit-split",
+      "category": "flow",
+      "elementIds": [
+        "a"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-split",
+      "message": "Element \"a\" (task) splits the flow implicitly into 2 unconditional flows.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Model the split with an explicit parallel gateway."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 22
+}

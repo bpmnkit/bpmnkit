@@ -1,0 +1,1219 @@
+{
+  "findings": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "uploadDocument"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"uploadDocument\" (userTask) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "KycOnboarding",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "task-reuse",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": true,
+      "id": "task/reusable-group",
+      "message": "2 service tasks share a similar configuration (taskType=\"io.camunda:http-json:1\") and could be reused via a call activity.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Extract the repeated service task into a reusable sub-process and replace occurrences with call activities."
+    },
+    {
+      "category": "task-reuse",
+      "elementIds": [
+        "sendVerificationRejection",
+        "sendFinalRejection"
+      ],
+      "fixable": true,
+      "id": "task/reusable-group",
+      "message": "2 service tasks share a similar configuration (taskType=\"email-sender\") and could be reused via a call activity.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Extract the repeated service task into a reusable sub-process and replace occurrences with call activities."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "pattern/http-no-error-boundary",
+      "message": "Service task \"Verify Document (OCR)\" calls an HTTP connector but has no error boundary event.",
+      "processId": "KycOnboarding",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle network failures (timeouts, non-2xx responses)."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "screening"
+      ],
+      "fixable": false,
+      "id": "pattern/http-no-error-boundary",
+      "message": "Service task \"Sanctions & PEP Screening\" calls an HTTP connector but has no error boundary event.",
+      "processId": "KycOnboarding",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle network failures (timeouts, non-2xx responses)."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "uploadDocument"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Upload Identity Document\" has no timer boundary event.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "complianceReview"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Enhanced Due Diligence Review\" has no timer boundary event.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Verify Document (OCR)\" has no output variable mapping.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "sendVerificationRejection"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Send Rejection Notice\" has no output variable mapping.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "screening"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Sanctions & PEP Screening\" has no output variable mapping.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "standardDueDiligence"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Standard Due Diligence\" has no output variable mapping.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "activateAccount"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Activate Customer Account\" has no output variable mapping.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "escalateToCompliance"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Escalate to Compliance\" has no output variable mapping.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "sendFinalRejection"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Send Rejection Notice\" has no output variable mapping.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Customer Onboarding Started\" has no documentation describing expected input variables.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "pattern/duplicate-job-type",
+      "message": "Job type \"io.camunda:http-json:1\" is used by 2 service tasks.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": "Verify this is intentional — the same worker will handle all these tasks. Consider distinct job types if behaviors differ."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "sendVerificationRejection",
+        "sendFinalRejection"
+      ],
+      "fixable": false,
+      "id": "pattern/duplicate-job-type",
+      "message": "Job type \"email-sender\" is used by 2 service tasks.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": "Verify this is intentional — the same worker will handle all these tasks. Consider distinct job types if behaviors differ."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "bearer"
+      ],
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:bearer",
+      "message": "Variable \"bearer\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"bearer\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "secrets"
+      ],
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:secrets",
+      "message": "Variable \"secrets\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"secrets\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "POST"
+      ],
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:POST",
+      "message": "Variable \"POST\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"POST\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "ocrServiceUrl"
+      ],
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:ocrServiceUrl",
+      "message": "Variable \"ocrServiceUrl\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"ocrServiceUrl\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "documentId"
+      ],
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:documentId",
+      "message": "Variable \"documentId\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"documentId\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "documentType"
+      ],
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:documentType",
+      "message": "Variable \"documentType\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"documentType\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "screeningServiceUrl"
+      ],
+      "elementIds": [
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:screeningServiceUrl",
+      "message": "Variable \"screeningServiceUrl\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"screeningServiceUrl\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "applicant"
+      ],
+      "elementIds": [
+        "screening",
+        "activateAccount"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:applicant",
+      "message": "Variable \"applicant\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"applicant\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "verified"
+      ],
+      "elementIds": [
+        "qualityGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:verified",
+      "message": "Variable \"verified\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"verified\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "retryCount"
+      ],
+      "elementIds": [
+        "retryGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:retryCount",
+      "message": "Variable \"retryCount\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"retryCount\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "sanctionsHit"
+      ],
+      "elementIds": [
+        "dueDiligenceGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:sanctionsHit",
+      "message": "Variable \"sanctionsHit\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"sanctionsHit\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "pep"
+      ],
+      "elementIds": [
+        "dueDiligenceGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:pep",
+      "message": "Variable \"pep\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"pep\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "riskClassification"
+      ],
+      "elementIds": [
+        "outcomeGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:riskClassification",
+      "message": "Variable \"riskClassification\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"riskClassification\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:authentication.type",
+      "message": "Variable \"authentication.type\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.type"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"authentication.type\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:authentication.token",
+      "message": "Variable \"authentication.token\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"authentication.token\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:method",
+      "message": "Variable \"method\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "method"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"method\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:url",
+      "message": "Variable \"url\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"url\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:body",
+      "message": "Variable \"body\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "body"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"body\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:connectionTimeoutInSeconds",
+      "message": "Variable \"connectionTimeoutInSeconds\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "connectionTimeoutInSeconds"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"connectionTimeoutInSeconds\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:readTimeoutInSeconds",
+      "message": "Variable \"readTimeoutInSeconds\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "readTimeoutInSeconds"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"readTimeoutInSeconds\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "activateAccount"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:customerId",
+      "message": "Variable \"customerId\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "customerId"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"customerId\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "bearer",
+        "secrets",
+        "POST",
+        "ocrServiceUrl",
+        "documentId",
+        "documentType"
+      ],
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:verifyDocument",
+      "message": "Element \"verifyDocument\" produces: authentication.type, authentication.token, method, url, body, connectionTimeoutInSeconds, readTimeoutInSeconds; consumes: bearer, secrets, POST, ocrServiceUrl, documentId, documentType.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.type",
+        "authentication.token",
+        "method",
+        "url",
+        "body",
+        "connectionTimeoutInSeconds",
+        "readTimeoutInSeconds"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "bearer",
+        "secrets",
+        "POST",
+        "screeningServiceUrl",
+        "applicant"
+      ],
+      "elementIds": [
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:screening",
+      "message": "Element \"screening\" produces: authentication.type, authentication.token, method, url, body, connectionTimeoutInSeconds, readTimeoutInSeconds; consumes: bearer, secrets, POST, screeningServiceUrl, applicant.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.type",
+        "authentication.token",
+        "method",
+        "url",
+        "body",
+        "connectionTimeoutInSeconds",
+        "readTimeoutInSeconds"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "applicant"
+      ],
+      "elementIds": [
+        "activateAccount"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:activateAccount",
+      "message": "Element \"activateAccount\" produces: customerId; consumes: applicant.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "customerId"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "verified"
+      ],
+      "elementIds": [
+        "qualityGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:qualityGateway",
+      "message": "Element \"qualityGateway\" consumes: verified.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "retryCount"
+      ],
+      "elementIds": [
+        "retryGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:retryGateway",
+      "message": "Element \"retryGateway\" consumes: retryCount.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "sanctionsHit",
+        "pep"
+      ],
+      "elementIds": [
+        "dueDiligenceGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:dueDiligenceGateway",
+      "message": "Element \"dueDiligenceGateway\" consumes: sanctionsHit, pep.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "riskClassification"
+      ],
+      "elementIds": [
+        "outcomeGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:outcomeGateway",
+      "message": "Element \"outcomeGateway\" consumes: riskClassification.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_aFggSXlz"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_aFggSXlz",
+      "message": "Variables in scope at flow \"Flow_aFggSXlz\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_nrWGBeCZ"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_nrWGBeCZ",
+      "message": "Variables in scope at flow \"Flow_nrWGBeCZ\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_Vp0HOfCz"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_Vp0HOfCz",
+      "message": "Variables in scope at flow \"Flow_Vp0HOfCz\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_RETXa3Vt"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_RETXa3Vt",
+      "message": "Variables in scope at flow \"Flow_RETXa3Vt\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_i4OMbS2y"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_i4OMbS2y",
+      "message": "Variables in scope at flow \"Flow_i4OMbS2y\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_8reekDVI"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_8reekDVI",
+      "message": "Variables in scope at flow \"Flow_8reekDVI\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_Y4q86h1Q"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_Y4q86h1Q",
+      "message": "Variables in scope at flow \"Flow_Y4q86h1Q\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_VNppp5Gg"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_VNppp5Gg",
+      "message": "Variables in scope at flow \"Flow_VNppp5Gg\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_8ZqbzajU"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_8ZqbzajU",
+      "message": "Variables in scope at flow \"Flow_8ZqbzajU\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_hyodCBEu"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_hyodCBEu",
+      "message": "Variables in scope at flow \"Flow_hyodCBEu\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_Fj3alEoq"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_Fj3alEoq",
+      "message": "Variables in scope at flow \"Flow_Fj3alEoq\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_LXaUZMEX"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_LXaUZMEX",
+      "message": "Variables in scope at flow \"Flow_LXaUZMEX\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_1u29yKxb"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_1u29yKxb",
+      "message": "Variables in scope at flow \"Flow_1u29yKxb\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_NFb6OA8f"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_NFb6OA8f",
+      "message": "Variables in scope at flow \"Flow_NFb6OA8f\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_hHN1OOEM"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_hHN1OOEM",
+      "message": "Variables in scope at flow \"Flow_hHN1OOEM\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_1busQeAe"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_1busQeAe",
+      "message": "Variables in scope at flow \"Flow_1busQeAe\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, customerId, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "customerId",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_VHWI1YqZ"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_VHWI1YqZ",
+      "message": "Variables in scope at flow \"Flow_VHWI1YqZ\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_KmLNM32V"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_KmLNM32V",
+      "message": "Variables in scope at flow \"Flow_KmLNM32V\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_y162Zfc7"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_y162Zfc7",
+      "message": "Variables in scope at flow \"Flow_y162Zfc7\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_b0dqg7ck"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_b0dqg7ck",
+      "message": "Variables in scope at flow \"Flow_b0dqg7ck\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_WuhSJujP"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_WuhSJujP",
+      "message": "Variables in scope at flow \"Flow_WuhSJujP\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "produces": [
+        "authentication.token",
+        "authentication.type",
+        "body",
+        "connectionTimeoutInSeconds",
+        "method",
+        "readTimeoutInSeconds",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "riskClassification"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Final Risk Classification\" (businessRuleTask) has neither a zeebe:taskDefinition type nor a zeebe:calledDecision.",
+      "processId": "KycOnboarding",
+      "severity": "error",
+      "suggestion": "Set a decisionId or a job type."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "uploadDocument"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Upload Identity Document\" is a job-worker user task; Camunda 8.9 deprecates those in favour of Camunda user tasks.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "complianceReview"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Enhanced Due Diligence Review\" is a job-worker user task; Camunda 8.9 deprecates those in favour of Camunda user tasks.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <source> uses deprecated secret expression format",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Write the secret as {{secrets.NAME}}."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "screening"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <source> uses deprecated secret expression format",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Write the secret as {{secrets.NAME}}."
+    }
+  ],
+  "fixes": [
+    {
+      "description": "Inserted exclusive gateway \"Gateway_0000001\" before \"uploadDocument\" to join 2 incoming flows",
+      "id": "flow/multi-incoming-task",
+      "index": 0,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" exporter=\"@bpmnkit/core\" exporterVersion=\"0.0.23\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.9.0\">\n  <bpmn:process id=\"KycOnboarding\" name=\"KYC Onboarding Process\" isExecutable=\"true\">\n    <bpmn:extensionElements>\n      <zeebe:versionTag value=\"1.0.0\"/>\n    </bpmn:extensionElements>\n    <bpmn:startEvent id=\"start\" name=\"Customer Onboarding Started\">\n      <bpmn:outgoing>Flow_xMEWWQ9P</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:userTask id=\"uploadDocument\" name=\"Upload Identity Document\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"id-document-upload-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n      <bpmn:outgoing>Flow_aFggSXlz</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:serviceTask id=\"verifyDocument\" zeebe:modelerTemplate=\"io.camunda.connectors.HttpJson.v2\" zeebe:modelerTemplateVersion=\"12\" name=\"Verify Document (OCR)\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\" retries=\"3\"/>\n        <zeebe:ioMapping>\n          <zeebe:input source=\"bearer\" target=\"authentication.type\"/>\n          <zeebe:input source=\"=secrets.OCR_SERVICE_TOKEN\" target=\"authentication.token\"/>\n          <zeebe:input source=\"POST\" target=\"method\"/>\n          <zeebe:input source=\"=ocrServiceUrl + &quot;/verify&quot;\" target=\"url\"/>\n          <zeebe:input source=\"={ documentId: documentId, documentType: documentType }\" target=\"body\"/>\n          <zeebe:input source=\"20\" target=\"connectionTimeoutInSeconds\"/>\n          <zeebe:input source=\"20\" target=\"readTimeoutInSeconds\"/>\n        </zeebe:ioMapping>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"ocrResponse\"/>\n          <zeebe:header key=\"resultExpression\" value=\"={ quality: ocrResponse.body.quality, verified: ocrResponse.body.verified }\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_aFggSXlz</bpmn:incoming>\n      <bpmn:outgoing>Flow_nrWGBeCZ</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"qualityGateway\" name=\"Document Verified?\" default=\"Flow_RETXa3Vt\">\n      <bpmn:incoming>Flow_nrWGBeCZ</bpmn:incoming>\n      <bpmn:outgoing>Flow_Vp0HOfCz</bpmn:outgoing>\n      <bpmn:outgoing>Flow_RETXa3Vt</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:scriptTask id=\"incrementRetry\" name=\"Increment Retry Count\">\n      <bpmn:extensionElements>\n        <zeebe:script expression=\"=if is defined(retryCount) then retryCount + 1 else 1\" resultVariable=\"retryCount\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_RETXa3Vt</bpmn:incoming>\n      <bpmn:outgoing>Flow_i4OMbS2y</bpmn:outgoing>\n    </bpmn:scriptTask>\n    <bpmn:exclusiveGateway id=\"retryGateway\" name=\"Retries Remaining?\" default=\"Flow_Y4q86h1Q\">\n      <bpmn:incoming>Flow_i4OMbS2y</bpmn:incoming>\n      <bpmn:outgoing>Flow_8reekDVI</bpmn:outgoing>\n      <bpmn:outgoing>Flow_Y4q86h1Q</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"sendVerificationRejection\" name=\"Send Rejection Notice\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"email-sender\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"template\" value=\"kyc-rejected-verification\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_Y4q86h1Q</bpmn:incoming>\n      <bpmn:outgoing>Flow_VNppp5Gg</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endRejectedVerification\" name=\"Rejected — Verification Failed\">\n      <bpmn:incoming>Flow_VNppp5Gg</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:serviceTask id=\"screening\" zeebe:modelerTemplate=\"io.camunda.connectors.HttpJson.v2\" zeebe:modelerTemplateVersion=\"12\" name=\"Sanctions &amp; PEP Screening\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\" retries=\"3\"/>\n        <zeebe:ioMapping>\n          <zeebe:input source=\"bearer\" target=\"authentication.type\"/>\n          <zeebe:input source=\"=secrets.SCREENING_SERVICE_TOKEN\" target=\"authentication.token\"/>\n          <zeebe:input source=\"POST\" target=\"method\"/>\n          <zeebe:input source=\"=screeningServiceUrl + &quot;/screen&quot;\" target=\"url\"/>\n          <zeebe:input source=\"={ fullName: applicant.fullName, dateOfBirth: applicant.dateOfBirth, nationality: applicant.nationality }\" target=\"body\"/>\n          <zeebe:input source=\"20\" target=\"connectionTimeoutInSeconds\"/>\n          <zeebe:input source=\"20\" target=\"readTimeoutInSeconds\"/>\n        </zeebe:ioMapping>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"screeningResponse\"/>\n          <zeebe:header key=\"resultExpression\" value=\"={ sanctionsHit: screeningResponse.body.sanctionsHit, pep: screeningResponse.body.pep, riskLevel: screeningResponse.body.riskLevel }\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_Vp0HOfCz</bpmn:incoming>\n      <bpmn:outgoing>Flow_8ZqbzajU</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"dueDiligenceGateway\" name=\"Due Diligence Level?\" default=\"Flow_LXaUZMEX\">\n      <bpmn:incoming>Flow_8ZqbzajU</bpmn:incoming>\n      <bpmn:outgoing>Flow_hyodCBEu</bpmn:outgoing>\n      <bpmn:outgoing>Flow_LXaUZMEX</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"standardDueDiligence\" name=\"Standard Due Diligence\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"due-diligence-service\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"level\" value=\"standard\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_hyodCBEu</bpmn:incoming>\n      <bpmn:outgoing>Flow_Fj3alEoq</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:userTask id=\"complianceReview\" name=\"Enhanced Due Diligence Review\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"enhanced-dd-review-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_LXaUZMEX</bpmn:incoming>\n      <bpmn:outgoing>Flow_1u29yKxb</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:businessRuleTask id=\"riskClassification\" name=\"Final Risk Classification\">\n      <bpmn:incoming>Flow_WuhSJujP</bpmn:incoming>\n      <bpmn:outgoing>Flow_NFb6OA8f</bpmn:outgoing>\n    </bpmn:businessRuleTask>\n    <bpmn:exclusiveGateway id=\"outcomeGateway\" name=\"Classification Outcome?\" default=\"Flow_y162Zfc7\">\n      <bpmn:incoming>Flow_NFb6OA8f</bpmn:incoming>\n      <bpmn:outgoing>Flow_hHN1OOEM</bpmn:outgoing>\n      <bpmn:outgoing>Flow_VHWI1YqZ</bpmn:outgoing>\n      <bpmn:outgoing>Flow_y162Zfc7</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"activateAccount\" name=\"Activate Customer Account\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"account-activation-service\"/>\n        <zeebe:ioMapping>\n          <zeebe:input source=\"=applicant.id\" target=\"customerId\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_hHN1OOEM</bpmn:incoming>\n      <bpmn:outgoing>Flow_1busQeAe</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endApproved\" name=\"Customer Approved\">\n      <bpmn:incoming>Flow_1busQeAe</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:serviceTask id=\"escalateToCompliance\" name=\"Escalate to Compliance\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"compliance-escalation-service\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"queue\" value=\"compliance-review\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_VHWI1YqZ</bpmn:incoming>\n      <bpmn:outgoing>Flow_KmLNM32V</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endEscalated\" name=\"Escalated to Compliance\">\n      <bpmn:incoming>Flow_KmLNM32V</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:serviceTask id=\"sendFinalRejection\" name=\"Send Rejection Notice\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"email-sender\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"template\" value=\"kyc-rejected-risk\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_y162Zfc7</bpmn:incoming>\n      <bpmn:outgoing>Flow_b0dqg7ck</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endRejected\" name=\"Customer Rejected\">\n      <bpmn:incoming>Flow_b0dqg7ck</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:exclusiveGateway id=\"dueDiligenceGateway_join\">\n      <bpmn:incoming>Flow_Fj3alEoq</bpmn:incoming>\n      <bpmn:incoming>Flow_1u29yKxb</bpmn:incoming>\n      <bpmn:outgoing>Flow_WuhSJujP</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:exclusiveGateway id=\"Gateway_0000001\">\n      <bpmn:incoming>Flow_xMEWWQ9P</bpmn:incoming>\n      <bpmn:incoming>Flow_8reekDVI</bpmn:incoming>\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:sequenceFlow id=\"Flow_xMEWWQ9P\" sourceRef=\"start\" targetRef=\"Gateway_0000001\"/>\n    <bpmn:sequenceFlow id=\"Flow_aFggSXlz\" sourceRef=\"uploadDocument\" targetRef=\"verifyDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_nrWGBeCZ\" sourceRef=\"verifyDocument\" targetRef=\"qualityGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_Vp0HOfCz\" sourceRef=\"qualityGateway\" targetRef=\"screening\" name=\"verification-passed\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=verified = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_RETXa3Vt\" sourceRef=\"qualityGateway\" targetRef=\"incrementRetry\" name=\"verification-failed\"/>\n    <bpmn:sequenceFlow id=\"Flow_i4OMbS2y\" sourceRef=\"incrementRetry\" targetRef=\"retryGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_8reekDVI\" sourceRef=\"retryGateway\" targetRef=\"Gateway_0000001\" name=\"retry-upload\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=retryCount &lt;= 2</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_Y4q86h1Q\" sourceRef=\"retryGateway\" targetRef=\"sendVerificationRejection\" name=\"retries-exhausted\"/>\n    <bpmn:sequenceFlow id=\"Flow_VNppp5Gg\" sourceRef=\"sendVerificationRejection\" targetRef=\"endRejectedVerification\"/>\n    <bpmn:sequenceFlow id=\"Flow_8ZqbzajU\" sourceRef=\"screening\" targetRef=\"dueDiligenceGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_hyodCBEu\" sourceRef=\"dueDiligenceGateway\" targetRef=\"standardDueDiligence\" name=\"standard-dd\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=sanctionsHit = false and pep = false</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_Fj3alEoq\" sourceRef=\"standardDueDiligence\" targetRef=\"dueDiligenceGateway_join\"/>\n    <bpmn:sequenceFlow id=\"Flow_LXaUZMEX\" sourceRef=\"dueDiligenceGateway\" targetRef=\"complianceReview\" name=\"enhanced-dd\"/>\n    <bpmn:sequenceFlow id=\"Flow_1u29yKxb\" sourceRef=\"complianceReview\" targetRef=\"dueDiligenceGateway_join\"/>\n    <bpmn:sequenceFlow id=\"Flow_NFb6OA8f\" sourceRef=\"riskClassification\" targetRef=\"outcomeGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_hHN1OOEM\" sourceRef=\"outcomeGateway\" targetRef=\"activateAccount\" name=\"approved\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=riskClassification.decision = \"approve\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_1busQeAe\" sourceRef=\"activateAccount\" targetRef=\"endApproved\"/>\n    <bpmn:sequenceFlow id=\"Flow_VHWI1YqZ\" sourceRef=\"outcomeGateway\" targetRef=\"escalateToCompliance\" name=\"escalated\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=riskClassification.decision = \"escalate\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_KmLNM32V\" sourceRef=\"escalateToCompliance\" targetRef=\"endEscalated\"/>\n    <bpmn:sequenceFlow id=\"Flow_y162Zfc7\" sourceRef=\"outcomeGateway\" targetRef=\"sendFinalRejection\" name=\"rejected\"/>\n    <bpmn:sequenceFlow id=\"Flow_b0dqg7ck\" sourceRef=\"sendFinalRejection\" targetRef=\"endRejected\"/>\n    <bpmn:sequenceFlow id=\"Flow_WuhSJujP\" sourceRef=\"dueDiligenceGateway_join\" targetRef=\"riskClassification\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"Gateway_0000001\" targetRef=\"uploadDocument\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Extracted 2 service tasks to call activity referencing \"Reusable_io.camunda_http-json_1_proc_0000001\"",
+      "generated": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions id=\"Definitions_0000009\" targetNamespace=\"http://bpmn.io/schema/bpmn\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\">\n  <bpmn:process id=\"Reusable_io.camunda_http-json_1_proc_0000001\" isExecutable=\"false\">\n    <bpmn:startEvent id=\"StartEvent_0000002\">\n      <bpmn:outgoing>Flow_0000005</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"ServiceTask_0000003\" name=\"Verify Document (OCR)\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\" retries=\"3\"/>\n        <zeebe:ioMapping>\n          <zeebe:input source=\"bearer\" target=\"authentication.type\"/>\n          <zeebe:input source=\"=secrets.OCR_SERVICE_TOKEN\" target=\"authentication.token\"/>\n          <zeebe:input source=\"POST\" target=\"method\"/>\n          <zeebe:input source=\"=ocrServiceUrl + &quot;/verify&quot;\" target=\"url\"/>\n          <zeebe:input source=\"={ documentId: documentId, documentType: documentType }\" target=\"body\"/>\n          <zeebe:input source=\"20\" target=\"connectionTimeoutInSeconds\"/>\n          <zeebe:input source=\"20\" target=\"readTimeoutInSeconds\"/>\n        </zeebe:ioMapping>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"ocrResponse\"/>\n          <zeebe:header key=\"resultExpression\" value=\"={ quality: ocrResponse.body.quality, verified: ocrResponse.body.verified }\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_0000005</bpmn:incoming>\n      <bpmn:outgoing>Flow_0000006</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"EndEvent_0000004\">\n      <bpmn:incoming>Flow_0000006</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000005\" sourceRef=\"StartEvent_0000002\" targetRef=\"ServiceTask_0000003\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000006\" sourceRef=\"ServiceTask_0000003\" targetRef=\"EndEvent_0000004\"/>\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_0000007\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_0000008\" bpmnElement=\"Reusable_io.camunda_http-json_1_proc_0000001\">\n      <bpmndi:BPMNShape id=\"StartEvent_0000002_di\" bpmnElement=\"StartEvent_0000002\">\n        <dc:Bounds x=\"152\" y=\"100\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"ServiceTask_0000003_di\" bpmnElement=\"ServiceTask_0000003\">\n        <dc:Bounds x=\"260\" y=\"100\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"EndEvent_0000004_di\" bpmnElement=\"EndEvent_0000004\">\n        <dc:Bounds x=\"432\" y=\"100\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"Flow_0000005_di\" bpmnElement=\"Flow_0000005\">\n        <di:waypoint x=\"188\" y=\"118\"/>\n        <di:waypoint x=\"260\" y=\"118\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0000006_di\" bpmnElement=\"Flow_0000006\">\n        <di:waypoint x=\"360\" y=\"118\"/>\n        <di:waypoint x=\"432\" y=\"118\"/>\n      </bpmndi:BPMNEdge>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>\n\n",
+      "id": "task/reusable-group",
+      "index": 1,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" exporter=\"@bpmnkit/core\" exporterVersion=\"0.0.23\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.9.0\">\n  <bpmn:process id=\"KycOnboarding\" name=\"KYC Onboarding Process\" isExecutable=\"true\">\n    <bpmn:extensionElements>\n      <zeebe:versionTag value=\"1.0.0\"/>\n    </bpmn:extensionElements>\n    <bpmn:startEvent id=\"start\" name=\"Customer Onboarding Started\">\n      <bpmn:outgoing>Flow_xMEWWQ9P</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:userTask id=\"uploadDocument\" name=\"Upload Identity Document\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"id-document-upload-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_xMEWWQ9P</bpmn:incoming>\n      <bpmn:incoming>Flow_8reekDVI</bpmn:incoming>\n      <bpmn:outgoing>Flow_aFggSXlz</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:callActivity id=\"verifyDocument\" name=\"Verify Document (OCR)\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"Reusable_io.camunda_http-json_1_proc_0000001\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_aFggSXlz</bpmn:incoming>\n      <bpmn:outgoing>Flow_nrWGBeCZ</bpmn:outgoing>\n    </bpmn:callActivity>\n    <bpmn:exclusiveGateway id=\"qualityGateway\" name=\"Document Verified?\" default=\"Flow_RETXa3Vt\">\n      <bpmn:incoming>Flow_nrWGBeCZ</bpmn:incoming>\n      <bpmn:outgoing>Flow_Vp0HOfCz</bpmn:outgoing>\n      <bpmn:outgoing>Flow_RETXa3Vt</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:scriptTask id=\"incrementRetry\" name=\"Increment Retry Count\">\n      <bpmn:extensionElements>\n        <zeebe:script expression=\"=if is defined(retryCount) then retryCount + 1 else 1\" resultVariable=\"retryCount\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_RETXa3Vt</bpmn:incoming>\n      <bpmn:outgoing>Flow_i4OMbS2y</bpmn:outgoing>\n    </bpmn:scriptTask>\n    <bpmn:exclusiveGateway id=\"retryGateway\" name=\"Retries Remaining?\" default=\"Flow_Y4q86h1Q\">\n      <bpmn:incoming>Flow_i4OMbS2y</bpmn:incoming>\n      <bpmn:outgoing>Flow_8reekDVI</bpmn:outgoing>\n      <bpmn:outgoing>Flow_Y4q86h1Q</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"sendVerificationRejection\" name=\"Send Rejection Notice\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"email-sender\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"template\" value=\"kyc-rejected-verification\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_Y4q86h1Q</bpmn:incoming>\n      <bpmn:outgoing>Flow_VNppp5Gg</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endRejectedVerification\" name=\"Rejected — Verification Failed\">\n      <bpmn:incoming>Flow_VNppp5Gg</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:callActivity id=\"screening\" name=\"Sanctions &amp; PEP Screening\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"Reusable_io.camunda_http-json_1_proc_0000001\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_Vp0HOfCz</bpmn:incoming>\n      <bpmn:outgoing>Flow_8ZqbzajU</bpmn:outgoing>\n    </bpmn:callActivity>\n    <bpmn:exclusiveGateway id=\"dueDiligenceGateway\" name=\"Due Diligence Level?\" default=\"Flow_LXaUZMEX\">\n      <bpmn:incoming>Flow_8ZqbzajU</bpmn:incoming>\n      <bpmn:outgoing>Flow_hyodCBEu</bpmn:outgoing>\n      <bpmn:outgoing>Flow_LXaUZMEX</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"standardDueDiligence\" name=\"Standard Due Diligence\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"due-diligence-service\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"level\" value=\"standard\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_hyodCBEu</bpmn:incoming>\n      <bpmn:outgoing>Flow_Fj3alEoq</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:userTask id=\"complianceReview\" name=\"Enhanced Due Diligence Review\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"enhanced-dd-review-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_LXaUZMEX</bpmn:incoming>\n      <bpmn:outgoing>Flow_1u29yKxb</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:businessRuleTask id=\"riskClassification\" name=\"Final Risk Classification\">\n      <bpmn:incoming>Flow_WuhSJujP</bpmn:incoming>\n      <bpmn:outgoing>Flow_NFb6OA8f</bpmn:outgoing>\n    </bpmn:businessRuleTask>\n    <bpmn:exclusiveGateway id=\"outcomeGateway\" name=\"Classification Outcome?\" default=\"Flow_y162Zfc7\">\n      <bpmn:incoming>Flow_NFb6OA8f</bpmn:incoming>\n      <bpmn:outgoing>Flow_hHN1OOEM</bpmn:outgoing>\n      <bpmn:outgoing>Flow_VHWI1YqZ</bpmn:outgoing>\n      <bpmn:outgoing>Flow_y162Zfc7</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"activateAccount\" name=\"Activate Customer Account\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"account-activation-service\"/>\n        <zeebe:ioMapping>\n          <zeebe:input source=\"=applicant.id\" target=\"customerId\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_hHN1OOEM</bpmn:incoming>\n      <bpmn:outgoing>Flow_1busQeAe</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endApproved\" name=\"Customer Approved\">\n      <bpmn:incoming>Flow_1busQeAe</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:serviceTask id=\"escalateToCompliance\" name=\"Escalate to Compliance\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"compliance-escalation-service\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"queue\" value=\"compliance-review\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_VHWI1YqZ</bpmn:incoming>\n      <bpmn:outgoing>Flow_KmLNM32V</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endEscalated\" name=\"Escalated to Compliance\">\n      <bpmn:incoming>Flow_KmLNM32V</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:serviceTask id=\"sendFinalRejection\" name=\"Send Rejection Notice\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"email-sender\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"template\" value=\"kyc-rejected-risk\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_y162Zfc7</bpmn:incoming>\n      <bpmn:outgoing>Flow_b0dqg7ck</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endRejected\" name=\"Customer Rejected\">\n      <bpmn:incoming>Flow_b0dqg7ck</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:exclusiveGateway id=\"dueDiligenceGateway_join\">\n      <bpmn:incoming>Flow_Fj3alEoq</bpmn:incoming>\n      <bpmn:incoming>Flow_1u29yKxb</bpmn:incoming>\n      <bpmn:outgoing>Flow_WuhSJujP</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:sequenceFlow id=\"Flow_xMEWWQ9P\" sourceRef=\"start\" targetRef=\"uploadDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_aFggSXlz\" sourceRef=\"uploadDocument\" targetRef=\"verifyDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_nrWGBeCZ\" sourceRef=\"verifyDocument\" targetRef=\"qualityGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_Vp0HOfCz\" sourceRef=\"qualityGateway\" targetRef=\"screening\" name=\"verification-passed\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=verified = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_RETXa3Vt\" sourceRef=\"qualityGateway\" targetRef=\"incrementRetry\" name=\"verification-failed\"/>\n    <bpmn:sequenceFlow id=\"Flow_i4OMbS2y\" sourceRef=\"incrementRetry\" targetRef=\"retryGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_8reekDVI\" sourceRef=\"retryGateway\" targetRef=\"uploadDocument\" name=\"retry-upload\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=retryCount &lt;= 2</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_Y4q86h1Q\" sourceRef=\"retryGateway\" targetRef=\"sendVerificationRejection\" name=\"retries-exhausted\"/>\n    <bpmn:sequenceFlow id=\"Flow_VNppp5Gg\" sourceRef=\"sendVerificationRejection\" targetRef=\"endRejectedVerification\"/>\n    <bpmn:sequenceFlow id=\"Flow_8ZqbzajU\" sourceRef=\"screening\" targetRef=\"dueDiligenceGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_hyodCBEu\" sourceRef=\"dueDiligenceGateway\" targetRef=\"standardDueDiligence\" name=\"standard-dd\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=sanctionsHit = false and pep = false</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_Fj3alEoq\" sourceRef=\"standardDueDiligence\" targetRef=\"dueDiligenceGateway_join\"/>\n    <bpmn:sequenceFlow id=\"Flow_LXaUZMEX\" sourceRef=\"dueDiligenceGateway\" targetRef=\"complianceReview\" name=\"enhanced-dd\"/>\n    <bpmn:sequenceFlow id=\"Flow_1u29yKxb\" sourceRef=\"complianceReview\" targetRef=\"dueDiligenceGateway_join\"/>\n    <bpmn:sequenceFlow id=\"Flow_NFb6OA8f\" sourceRef=\"riskClassification\" targetRef=\"outcomeGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_hHN1OOEM\" sourceRef=\"outcomeGateway\" targetRef=\"activateAccount\" name=\"approved\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=riskClassification.decision = \"approve\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_1busQeAe\" sourceRef=\"activateAccount\" targetRef=\"endApproved\"/>\n    <bpmn:sequenceFlow id=\"Flow_VHWI1YqZ\" sourceRef=\"outcomeGateway\" targetRef=\"escalateToCompliance\" name=\"escalated\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=riskClassification.decision = \"escalate\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_KmLNM32V\" sourceRef=\"escalateToCompliance\" targetRef=\"endEscalated\"/>\n    <bpmn:sequenceFlow id=\"Flow_y162Zfc7\" sourceRef=\"outcomeGateway\" targetRef=\"sendFinalRejection\" name=\"rejected\"/>\n    <bpmn:sequenceFlow id=\"Flow_b0dqg7ck\" sourceRef=\"sendFinalRejection\" targetRef=\"endRejected\"/>\n    <bpmn:sequenceFlow id=\"Flow_WuhSJujP\" sourceRef=\"dueDiligenceGateway_join\" targetRef=\"riskClassification\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Extracted 2 service tasks to call activity referencing \"Reusable_email-sender_proc_0000001\"",
+      "generated": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions id=\"Definitions_0000009\" targetNamespace=\"http://bpmn.io/schema/bpmn\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\">\n  <bpmn:process id=\"Reusable_email-sender_proc_0000001\" isExecutable=\"false\">\n    <bpmn:startEvent id=\"StartEvent_0000002\">\n      <bpmn:outgoing>Flow_0000005</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"ServiceTask_0000003\" name=\"Send Rejection Notice\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"email-sender\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"template\" value=\"kyc-rejected-verification\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_0000005</bpmn:incoming>\n      <bpmn:outgoing>Flow_0000006</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"EndEvent_0000004\">\n      <bpmn:incoming>Flow_0000006</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000005\" sourceRef=\"StartEvent_0000002\" targetRef=\"ServiceTask_0000003\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000006\" sourceRef=\"ServiceTask_0000003\" targetRef=\"EndEvent_0000004\"/>\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_0000007\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_0000008\" bpmnElement=\"Reusable_email-sender_proc_0000001\">\n      <bpmndi:BPMNShape id=\"StartEvent_0000002_di\" bpmnElement=\"StartEvent_0000002\">\n        <dc:Bounds x=\"152\" y=\"100\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"ServiceTask_0000003_di\" bpmnElement=\"ServiceTask_0000003\">\n        <dc:Bounds x=\"260\" y=\"100\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"EndEvent_0000004_di\" bpmnElement=\"EndEvent_0000004\">\n        <dc:Bounds x=\"432\" y=\"100\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"Flow_0000005_di\" bpmnElement=\"Flow_0000005\">\n        <di:waypoint x=\"188\" y=\"118\"/>\n        <di:waypoint x=\"260\" y=\"118\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0000006_di\" bpmnElement=\"Flow_0000006\">\n        <di:waypoint x=\"360\" y=\"118\"/>\n        <di:waypoint x=\"432\" y=\"118\"/>\n      </bpmndi:BPMNEdge>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>\n\n",
+      "id": "task/reusable-group",
+      "index": 2,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" exporter=\"@bpmnkit/core\" exporterVersion=\"0.0.23\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.9.0\">\n  <bpmn:process id=\"KycOnboarding\" name=\"KYC Onboarding Process\" isExecutable=\"true\">\n    <bpmn:extensionElements>\n      <zeebe:versionTag value=\"1.0.0\"/>\n    </bpmn:extensionElements>\n    <bpmn:startEvent id=\"start\" name=\"Customer Onboarding Started\">\n      <bpmn:outgoing>Flow_xMEWWQ9P</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:userTask id=\"uploadDocument\" name=\"Upload Identity Document\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"id-document-upload-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_xMEWWQ9P</bpmn:incoming>\n      <bpmn:incoming>Flow_8reekDVI</bpmn:incoming>\n      <bpmn:outgoing>Flow_aFggSXlz</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:serviceTask id=\"verifyDocument\" zeebe:modelerTemplate=\"io.camunda.connectors.HttpJson.v2\" zeebe:modelerTemplateVersion=\"12\" name=\"Verify Document (OCR)\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\" retries=\"3\"/>\n        <zeebe:ioMapping>\n          <zeebe:input source=\"bearer\" target=\"authentication.type\"/>\n          <zeebe:input source=\"=secrets.OCR_SERVICE_TOKEN\" target=\"authentication.token\"/>\n          <zeebe:input source=\"POST\" target=\"method\"/>\n          <zeebe:input source=\"=ocrServiceUrl + &quot;/verify&quot;\" target=\"url\"/>\n          <zeebe:input source=\"={ documentId: documentId, documentType: documentType }\" target=\"body\"/>\n          <zeebe:input source=\"20\" target=\"connectionTimeoutInSeconds\"/>\n          <zeebe:input source=\"20\" target=\"readTimeoutInSeconds\"/>\n        </zeebe:ioMapping>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"ocrResponse\"/>\n          <zeebe:header key=\"resultExpression\" value=\"={ quality: ocrResponse.body.quality, verified: ocrResponse.body.verified }\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_aFggSXlz</bpmn:incoming>\n      <bpmn:outgoing>Flow_nrWGBeCZ</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"qualityGateway\" name=\"Document Verified?\" default=\"Flow_RETXa3Vt\">\n      <bpmn:incoming>Flow_nrWGBeCZ</bpmn:incoming>\n      <bpmn:outgoing>Flow_Vp0HOfCz</bpmn:outgoing>\n      <bpmn:outgoing>Flow_RETXa3Vt</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:scriptTask id=\"incrementRetry\" name=\"Increment Retry Count\">\n      <bpmn:extensionElements>\n        <zeebe:script expression=\"=if is defined(retryCount) then retryCount + 1 else 1\" resultVariable=\"retryCount\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_RETXa3Vt</bpmn:incoming>\n      <bpmn:outgoing>Flow_i4OMbS2y</bpmn:outgoing>\n    </bpmn:scriptTask>\n    <bpmn:exclusiveGateway id=\"retryGateway\" name=\"Retries Remaining?\" default=\"Flow_Y4q86h1Q\">\n      <bpmn:incoming>Flow_i4OMbS2y</bpmn:incoming>\n      <bpmn:outgoing>Flow_8reekDVI</bpmn:outgoing>\n      <bpmn:outgoing>Flow_Y4q86h1Q</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:callActivity id=\"sendVerificationRejection\" name=\"Send Rejection Notice\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"Reusable_email-sender_proc_0000001\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_Y4q86h1Q</bpmn:incoming>\n      <bpmn:outgoing>Flow_VNppp5Gg</bpmn:outgoing>\n    </bpmn:callActivity>\n    <bpmn:endEvent id=\"endRejectedVerification\" name=\"Rejected — Verification Failed\">\n      <bpmn:incoming>Flow_VNppp5Gg</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:serviceTask id=\"screening\" zeebe:modelerTemplate=\"io.camunda.connectors.HttpJson.v2\" zeebe:modelerTemplateVersion=\"12\" name=\"Sanctions &amp; PEP Screening\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\" retries=\"3\"/>\n        <zeebe:ioMapping>\n          <zeebe:input source=\"bearer\" target=\"authentication.type\"/>\n          <zeebe:input source=\"=secrets.SCREENING_SERVICE_TOKEN\" target=\"authentication.token\"/>\n          <zeebe:input source=\"POST\" target=\"method\"/>\n          <zeebe:input source=\"=screeningServiceUrl + &quot;/screen&quot;\" target=\"url\"/>\n          <zeebe:input source=\"={ fullName: applicant.fullName, dateOfBirth: applicant.dateOfBirth, nationality: applicant.nationality }\" target=\"body\"/>\n          <zeebe:input source=\"20\" target=\"connectionTimeoutInSeconds\"/>\n          <zeebe:input source=\"20\" target=\"readTimeoutInSeconds\"/>\n        </zeebe:ioMapping>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"screeningResponse\"/>\n          <zeebe:header key=\"resultExpression\" value=\"={ sanctionsHit: screeningResponse.body.sanctionsHit, pep: screeningResponse.body.pep, riskLevel: screeningResponse.body.riskLevel }\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_Vp0HOfCz</bpmn:incoming>\n      <bpmn:outgoing>Flow_8ZqbzajU</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"dueDiligenceGateway\" name=\"Due Diligence Level?\" default=\"Flow_LXaUZMEX\">\n      <bpmn:incoming>Flow_8ZqbzajU</bpmn:incoming>\n      <bpmn:outgoing>Flow_hyodCBEu</bpmn:outgoing>\n      <bpmn:outgoing>Flow_LXaUZMEX</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"standardDueDiligence\" name=\"Standard Due Diligence\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"due-diligence-service\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"level\" value=\"standard\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_hyodCBEu</bpmn:incoming>\n      <bpmn:outgoing>Flow_Fj3alEoq</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:userTask id=\"complianceReview\" name=\"Enhanced Due Diligence Review\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"enhanced-dd-review-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_LXaUZMEX</bpmn:incoming>\n      <bpmn:outgoing>Flow_1u29yKxb</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:businessRuleTask id=\"riskClassification\" name=\"Final Risk Classification\">\n      <bpmn:incoming>Flow_WuhSJujP</bpmn:incoming>\n      <bpmn:outgoing>Flow_NFb6OA8f</bpmn:outgoing>\n    </bpmn:businessRuleTask>\n    <bpmn:exclusiveGateway id=\"outcomeGateway\" name=\"Classification Outcome?\" default=\"Flow_y162Zfc7\">\n      <bpmn:incoming>Flow_NFb6OA8f</bpmn:incoming>\n      <bpmn:outgoing>Flow_hHN1OOEM</bpmn:outgoing>\n      <bpmn:outgoing>Flow_VHWI1YqZ</bpmn:outgoing>\n      <bpmn:outgoing>Flow_y162Zfc7</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"activateAccount\" name=\"Activate Customer Account\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"account-activation-service\"/>\n        <zeebe:ioMapping>\n          <zeebe:input source=\"=applicant.id\" target=\"customerId\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_hHN1OOEM</bpmn:incoming>\n      <bpmn:outgoing>Flow_1busQeAe</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endApproved\" name=\"Customer Approved\">\n      <bpmn:incoming>Flow_1busQeAe</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:serviceTask id=\"escalateToCompliance\" name=\"Escalate to Compliance\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"compliance-escalation-service\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"queue\" value=\"compliance-review\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_VHWI1YqZ</bpmn:incoming>\n      <bpmn:outgoing>Flow_KmLNM32V</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endEscalated\" name=\"Escalated to Compliance\">\n      <bpmn:incoming>Flow_KmLNM32V</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:callActivity id=\"sendFinalRejection\" name=\"Send Rejection Notice\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"Reusable_email-sender_proc_0000001\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_y162Zfc7</bpmn:incoming>\n      <bpmn:outgoing>Flow_b0dqg7ck</bpmn:outgoing>\n    </bpmn:callActivity>\n    <bpmn:endEvent id=\"endRejected\" name=\"Customer Rejected\">\n      <bpmn:incoming>Flow_b0dqg7ck</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:exclusiveGateway id=\"dueDiligenceGateway_join\">\n      <bpmn:incoming>Flow_Fj3alEoq</bpmn:incoming>\n      <bpmn:incoming>Flow_1u29yKxb</bpmn:incoming>\n      <bpmn:outgoing>Flow_WuhSJujP</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:sequenceFlow id=\"Flow_xMEWWQ9P\" sourceRef=\"start\" targetRef=\"uploadDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_aFggSXlz\" sourceRef=\"uploadDocument\" targetRef=\"verifyDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_nrWGBeCZ\" sourceRef=\"verifyDocument\" targetRef=\"qualityGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_Vp0HOfCz\" sourceRef=\"qualityGateway\" targetRef=\"screening\" name=\"verification-passed\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=verified = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_RETXa3Vt\" sourceRef=\"qualityGateway\" targetRef=\"incrementRetry\" name=\"verification-failed\"/>\n    <bpmn:sequenceFlow id=\"Flow_i4OMbS2y\" sourceRef=\"incrementRetry\" targetRef=\"retryGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_8reekDVI\" sourceRef=\"retryGateway\" targetRef=\"uploadDocument\" name=\"retry-upload\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=retryCount &lt;= 2</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_Y4q86h1Q\" sourceRef=\"retryGateway\" targetRef=\"sendVerificationRejection\" name=\"retries-exhausted\"/>\n    <bpmn:sequenceFlow id=\"Flow_VNppp5Gg\" sourceRef=\"sendVerificationRejection\" targetRef=\"endRejectedVerification\"/>\n    <bpmn:sequenceFlow id=\"Flow_8ZqbzajU\" sourceRef=\"screening\" targetRef=\"dueDiligenceGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_hyodCBEu\" sourceRef=\"dueDiligenceGateway\" targetRef=\"standardDueDiligence\" name=\"standard-dd\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=sanctionsHit = false and pep = false</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_Fj3alEoq\" sourceRef=\"standardDueDiligence\" targetRef=\"dueDiligenceGateway_join\"/>\n    <bpmn:sequenceFlow id=\"Flow_LXaUZMEX\" sourceRef=\"dueDiligenceGateway\" targetRef=\"complianceReview\" name=\"enhanced-dd\"/>\n    <bpmn:sequenceFlow id=\"Flow_1u29yKxb\" sourceRef=\"complianceReview\" targetRef=\"dueDiligenceGateway_join\"/>\n    <bpmn:sequenceFlow id=\"Flow_NFb6OA8f\" sourceRef=\"riskClassification\" targetRef=\"outcomeGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_hHN1OOEM\" sourceRef=\"outcomeGateway\" targetRef=\"activateAccount\" name=\"approved\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=riskClassification.decision = \"approve\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_1busQeAe\" sourceRef=\"activateAccount\" targetRef=\"endApproved\"/>\n    <bpmn:sequenceFlow id=\"Flow_VHWI1YqZ\" sourceRef=\"outcomeGateway\" targetRef=\"escalateToCompliance\" name=\"escalated\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=riskClassification.decision = \"escalate\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_KmLNM32V\" sourceRef=\"escalateToCompliance\" targetRef=\"endEscalated\"/>\n    <bpmn:sequenceFlow id=\"Flow_y162Zfc7\" sourceRef=\"outcomeGateway\" targetRef=\"sendFinalRejection\" name=\"rejected\"/>\n    <bpmn:sequenceFlow id=\"Flow_b0dqg7ck\" sourceRef=\"sendFinalRejection\" targetRef=\"endRejected\"/>\n    <bpmn:sequenceFlow id=\"Flow_WuhSJujP\" sourceRef=\"dueDiligenceGateway_join\" targetRef=\"riskClassification\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    }
+  ],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 49,
+      "deploy": 5,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 1,
+      "naming": 0,
+      "pattern": 14,
+      "task-reuse": 2
+    },
+    "bySeverity": {
+      "error": 4,
+      "info": 38,
+      "warning": 29
+    },
+    "total": 71
+  }
+}

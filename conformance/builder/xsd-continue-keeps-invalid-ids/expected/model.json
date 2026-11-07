@@ -1,0 +1,76 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "id": "Defs 1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "1start",
+          "incoming": [],
+          "outgoing": [
+            "flow one"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "a→b",
+          "incoming": [
+            "flow one"
+          ],
+          "outgoing": [
+            "Flow_a_b_n"
+          ],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "n",
+          "incoming": [
+            "Flow_a_b_n"
+          ],
+          "outgoing": [],
+          "type": "task",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "proc",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "flow one",
+          "sourceRef": "1start",
+          "targetRef": "a→b",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_a_b_n",
+          "sourceRef": "a→b",
+          "targetRef": "n",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

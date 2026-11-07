@@ -51,8 +51,16 @@ struct Setup {
 async fn setup() -> Option<Setup> {
     let pool = common::setup_db(5).await?;
     let engine = Arc::new(common::start_engine(pool.clone()));
-    let service = GatewayService::new(GatewayState { engine: engine.clone(), pool: pool.clone(), partition_count: 1 });
-    Some(Setup { service, backend: SqlxBackend::new(pool), engine })
+    let service = GatewayService::new(GatewayState {
+        engine: engine.clone(),
+        pool: pool.clone(),
+        partition_count: 1,
+    });
+    Some(Setup {
+        service,
+        backend: SqlxBackend::new(pool),
+        engine,
+    })
 }
 
 impl Setup {
@@ -82,9 +90,18 @@ impl Setup {
     }
 
     /// Wait until the element instance of `element_id` is in `state`.
-    async fn element(&self, pi: i64, element_id: &str, state: &str) -> reebe_db::state::element_instances::ElementInstance {
+    async fn element(
+        &self,
+        pi: i64,
+        element_id: &str,
+        state: &str,
+    ) -> reebe_db::state::element_instances::ElementInstance {
         for _ in 0..100 {
-            let found = self.backend.get_element_instances_by_process_instance(pi).await.unwrap_or_default()
+            let found = self
+                .backend
+                .get_element_instances_by_process_instance(pi)
+                .await
+                .unwrap_or_default()
                 .into_iter()
                 .find(|e| e.element_id == element_id && e.state == state);
             if let Some(found) = found {
@@ -109,9 +126,15 @@ async fn modify_process_instance_activates_terminates_and_moves() {
             activate_instructions: vec![ActivateInstruction {
                 element_id: "b".into(),
                 ancestor_element_instance_key: 0,
-                variable_instructions: vec![VariableInstruction { variables: r#"{"inB":1}"#.into(), scope_id: "b".into() }],
+                variable_instructions: vec![VariableInstruction {
+                    variables: r#"{"inB":1}"#.into(),
+                    scope_id: "b".into(),
+                }],
             }],
-            terminate_instructions: vec![TerminateInstruction { element_instance_key: a.key, element_id: String::new() }],
+            terminate_instructions: vec![TerminateInstruction {
+                element_instance_key: a.key,
+                element_id: String::new(),
+            }],
             ..Default::default()
         }))
         .await
@@ -120,7 +143,10 @@ async fn modify_process_instance_activates_terminates_and_moves() {
     s.element(pi, "sp", "ACTIVATED").await;
     let b = s.element(pi, "b", "ACTIVATED").await;
     let in_b = s.backend.get_variables_by_scope(b.key).await.unwrap();
-    assert!(in_b.iter().any(|v| v.name == "inB" && v.value == json!(1)), "{in_b:?}");
+    assert!(
+        in_b.iter().any(|v| v.name == "inB" && v.value == json!(1)),
+        "{in_b:?}"
+    );
 
     // Zeebe 8.9's move instruction, by source element id; the sub-process and then the
     // process instance are left with nothing to do and terminated.
@@ -149,17 +175,28 @@ async fn modify_process_instance_rejects_as_zeebe_does() {
     let pi = s.start().await;
     s.element(pi, "a", "ACTIVATED").await;
 
-    let missing = s.service
-        .modify_process_instance(Request::new(ModifyProcessInstanceRequest { process_instance_key: 42, ..Default::default() }))
+    let missing = s
+        .service
+        .modify_process_instance(Request::new(ModifyProcessInstanceRequest {
+            process_instance_key: 42,
+            ..Default::default()
+        }))
         .await
         .unwrap_err();
     assert_eq!(missing.code(), Code::NotFound, "{missing:?}");
-    assert_eq!(missing.message(), "Expected to modify process instance but no process instance found with key '42'");
+    assert_eq!(
+        missing.message(),
+        "Expected to modify process instance but no process instance found with key '42'"
+    );
 
-    let unsupported = s.service
+    let unsupported = s
+        .service
         .modify_process_instance(Request::new(ModifyProcessInstanceRequest {
             process_instance_key: pi,
-            activate_instructions: vec![ActivateInstruction { element_id: "sp-start".into(), ..Default::default() }],
+            activate_instructions: vec![ActivateInstruction {
+                element_id: "sp-start".into(),
+                ..Default::default()
+            }],
             ..Default::default()
         }))
         .await
@@ -173,11 +210,13 @@ async fn modify_process_instance_rejects_as_zeebe_does() {
 
 /// A DRG `greetings` with the literal decision `greet`, which says `{greeting} {name}`.
 fn greeting_dmn(greeting: &str) -> String {
-    format!(r#"<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="greetings" name="Greetings" namespace="t">
+    format!(
+        r#"<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="greetings" name="Greetings" namespace="t">
   <decision id="greet" name="Greet">
     <literalExpression><text>"{greeting} " + name</text></literalExpression>
   </decision>
-</definitions>"#)
+</definitions>"#
+    )
 }
 
 /// start → decide (business rule task calling `greet` into `greeting`) → end.
@@ -198,11 +237,18 @@ const DECIDING_PROCESS: &str = r#"<bpmn:definitions xmlns:bpmn="http://www.omg.o
 #[tokio::test]
 async fn deploy_resource_deploys_bpmn_and_dmn_that_then_run() {
     let Some(s) = setup().await else { return };
-    let deployed = s.service
+    let deployed = s
+        .service
         .deploy_resource(Request::new(DeployResourceRequest {
             resources: vec![
-                Resource { name: "greet.dmn".into(), content: greeting_dmn("Hello").into_bytes() },
-                Resource { name: "decide.bpmn".into(), content: DECIDING_PROCESS.as_bytes().to_vec() },
+                Resource {
+                    name: "greet.dmn".into(),
+                    content: greeting_dmn("Hello").into_bytes(),
+                },
+                Resource {
+                    name: "decide.bpmn".into(),
+                    content: DECIDING_PROCESS.as_bytes().to_vec(),
+                },
             ],
             tenant_id: String::new(),
         }))
@@ -223,17 +269,41 @@ async fn deploy_resource_deploys_bpmn_and_dmn_that_then_run() {
         }
     }
     let process = process.expect("the process");
-    assert_eq!((process.bpmn_process_id.as_str(), process.version, process.resource_name.as_str()), ("decide-proc", 1, "decide.bpmn"));
+    assert_eq!(
+        (
+            process.bpmn_process_id.as_str(),
+            process.version,
+            process.resource_name.as_str()
+        ),
+        ("decide-proc", 1, "decide.bpmn")
+    );
     assert!(process.process_definition_key > 0);
     let decision = decision.expect("the decision");
-    assert_eq!((decision.dmn_decision_id.as_str(), decision.dmn_decision_name.as_str(), decision.version), ("greet", "Greet", 1));
+    assert_eq!(
+        (
+            decision.dmn_decision_id.as_str(),
+            decision.dmn_decision_name.as_str(),
+            decision.version
+        ),
+        ("greet", "Greet", 1)
+    );
     assert_eq!(decision.dmn_decision_requirements_id, "greetings");
     let requirements = requirements.expect("the decision requirements");
-    assert_eq!((requirements.dmn_decision_requirements_id.as_str(), requirements.version), ("greetings", 1));
-    assert_eq!(requirements.decision_requirements_key, decision.decision_requirements_key);
+    assert_eq!(
+        (
+            requirements.dmn_decision_requirements_id.as_str(),
+            requirements.version
+        ),
+        ("greetings", 1)
+    );
+    assert_eq!(
+        requirements.decision_requirements_key,
+        decision.decision_requirements_key
+    );
 
     // The deployed process runs, and its business rule task evaluates the decision.
-    let pi = s.service
+    let pi = s
+        .service
         .create_process_instance(Request::new(CreateProcessInstanceRequest {
             process_definition_key: process.process_definition_key,
             variables: r#"{"name":"Ada"}"#.into(),
@@ -245,61 +315,128 @@ async fn deploy_resource_deploys_bpmn_and_dmn_that_then_run() {
         .process_instance_key;
     s.element(pi, "end", "COMPLETED").await;
     let variables = s.backend.get_variables_by_scope(pi).await.unwrap();
-    assert!(variables.iter().any(|v| v.name == "greeting" && v.value == json!("Hello Ada")), "{variables:?}");
+    assert!(
+        variables
+            .iter()
+            .any(|v| v.name == "greeting" && v.value == json!("Hello Ada")),
+        "{variables:?}"
+    );
 
     // EvaluateDecision by key and by id; a new version is what the id names.
-    let deployed_again = s.service
+    let deployed_again = s
+        .service
         .deploy_resource(Request::new(DeployResourceRequest {
-            resources: vec![Resource { name: "greet.dmn".into(), content: greeting_dmn("Hi").into_bytes() }],
+            resources: vec![Resource {
+                name: "greet.dmn".into(),
+                content: greeting_dmn("Hi").into_bytes(),
+            }],
             tenant_id: String::new(),
         }))
         .await
         .expect("DeployResource")
         .into_inner();
-    let Some(deployment::Metadata::Decision(v2)) = deployed_again.deployments.into_iter().find_map(|d| match d.metadata {
-        Some(m @ deployment::Metadata::Decision(_)) => Some(Some(m)),
-        _ => None,
-    }).flatten() else { panic!("no decision") };
+    let Some(deployment::Metadata::Decision(v2)) = deployed_again
+        .deployments
+        .into_iter()
+        .find_map(|d| match d.metadata {
+            Some(m @ deployment::Metadata::Decision(_)) => Some(Some(m)),
+            _ => None,
+        })
+        .flatten()
+    else {
+        panic!("no decision")
+    };
     assert_eq!(v2.version, 2);
-    let evaluate = |request: EvaluateDecisionRequest| s.service.evaluate_decision(Request::new(request));
-    let by_key = evaluate(EvaluateDecisionRequest { decision_key: decision.decision_key, variables: r#"{"name":"Ada"}"#.into(), ..Default::default() })
-        .await
-        .expect("EvaluateDecision by key")
-        .into_inner();
-    assert_eq!((by_key.decision_output.as_str(), by_key.decision_version, by_key.decision_key), (r#""Hello Ada""#, 1, decision.decision_key));
-    assert_eq!((by_key.decision_requirements_id.as_str(), by_key.decision_requirements_key), ("greetings", decision.decision_requirements_key));
+    let evaluate =
+        |request: EvaluateDecisionRequest| s.service.evaluate_decision(Request::new(request));
+    let by_key = evaluate(EvaluateDecisionRequest {
+        decision_key: decision.decision_key,
+        variables: r#"{"name":"Ada"}"#.into(),
+        ..Default::default()
+    })
+    .await
+    .expect("EvaluateDecision by key")
+    .into_inner();
+    assert_eq!(
+        (
+            by_key.decision_output.as_str(),
+            by_key.decision_version,
+            by_key.decision_key
+        ),
+        (r#""Hello Ada""#, 1, decision.decision_key)
+    );
+    assert_eq!(
+        (
+            by_key.decision_requirements_id.as_str(),
+            by_key.decision_requirements_key
+        ),
+        ("greetings", decision.decision_requirements_key)
+    );
     assert!(by_key.decision_evaluation_key > 0);
-    let by_id = evaluate(EvaluateDecisionRequest { decision_id: "greet".into(), variables: r#"{"name":"Ada"}"#.into(), ..Default::default() })
-        .await
-        .expect("EvaluateDecision by id")
-        .into_inner();
-    assert_eq!((by_id.decision_output.as_str(), by_id.decision_version, by_id.decision_key), (r#""Hi Ada""#, 2, v2.decision_key));
+    let by_id = evaluate(EvaluateDecisionRequest {
+        decision_id: "greet".into(),
+        variables: r#"{"name":"Ada"}"#.into(),
+        ..Default::default()
+    })
+    .await
+    .expect("EvaluateDecision by id")
+    .into_inner();
+    assert_eq!(
+        (
+            by_id.decision_output.as_str(),
+            by_id.decision_version,
+            by_id.decision_key
+        ),
+        (r#""Hi Ada""#, 2, v2.decision_key)
+    );
 
-    let missing = evaluate(EvaluateDecisionRequest { decision_key: 424242, ..Default::default() }).await.unwrap_err();
+    let missing = evaluate(EvaluateDecisionRequest {
+        decision_key: 424242,
+        ..Default::default()
+    })
+    .await
+    .unwrap_err();
     assert_eq!(missing.code(), Code::NotFound, "{missing:?}");
-    assert_eq!(missing.message(), "Expected to evaluate decision '424242', but no decision found for key '424242'");
+    assert_eq!(
+        missing.message(),
+        "Expected to evaluate decision '424242', but no decision found for key '424242'"
+    );
 }
 
 #[tokio::test]
 async fn deploy_process_deploys_bpmn() {
     let Some(s) = setup().await else { return };
-    let deployed = s.service
+    let deployed = s
+        .service
         .deploy_process(Request::new(DeployProcessRequest {
-            processes: vec![ProcessRequestObject { name: "proc.bpmn".into(), definition: PROCESS.as_bytes().to_vec() }],
+            processes: vec![ProcessRequestObject {
+                name: "proc.bpmn".into(),
+                definition: PROCESS.as_bytes().to_vec(),
+            }],
         }))
         .await
         .expect("DeployProcess")
         .into_inner();
     assert!(deployed.key > 0);
     assert_eq!(deployed.processes.len(), 1);
-    assert_eq!((deployed.processes[0].bpmn_process_id.as_str(), deployed.processes[0].version), ("proc", 1));
+    assert_eq!(
+        (
+            deployed.processes[0].bpmn_process_id.as_str(),
+            deployed.processes[0].version
+        ),
+        ("proc", 1)
+    );
     let pi = s.start().await;
     s.element(pi, "a", "ACTIVATED").await;
 
     // A deployment the engine rejects is INVALID_ARGUMENT, as in Zeebe.
-    let rejected = s.service
+    let rejected = s
+        .service
         .deploy_process(Request::new(DeployProcessRequest {
-            processes: vec![ProcessRequestObject { name: "bad.bpmn".into(), definition: b"<nope".to_vec() }],
+            processes: vec![ProcessRequestObject {
+                name: "bad.bpmn".into(),
+                definition: b"<nope".to_vec(),
+            }],
         }))
         .await
         .unwrap_err();

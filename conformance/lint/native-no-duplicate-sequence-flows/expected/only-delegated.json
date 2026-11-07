@@ -1,0 +1,85 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 0,
+    "info": 2,
+    "warning": 3
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "c1",
+        "c2"
+      ],
+      "fixable": false,
+      "id": "feel/duplicate-expression",
+      "message": "FEEL expression \"= x\" appears on 2 sequence flows.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Consider extracting repeated FEEL expressions into a shared variable or decision table."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Started\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:x",
+      "message": "Variable \"x\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"x\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:y",
+      "message": "Variable \"y\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"y\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:start",
+      "message": "Element \"start\" consumes: x, y.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": ""
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 5
+}

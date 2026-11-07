@@ -29,16 +29,16 @@
 //! the local `outputCollection`, which is propagated to the enclosing scope when the
 //! ad-hoc sub-process completes.
 
-use std::sync::Arc;
-use reebe_bpmn::{BpmnProcess, FlowElement, SubProcess};
-use reebe_db::state::element_instances::ElementInstance;
-use reebe_db::state::jobs::Job;
-use crate::engine::EngineState;
-use crate::error::{EngineError, EngineResult};
-use crate::key_gen::KeyGenerator;
 use super::scope;
 use super::throw_event::terminate_subtree;
 use super::{CommandToWrite, EventToWrite, Writers};
+use crate::engine::EngineState;
+use crate::error::{EngineError, EngineResult};
+use crate::key_gen::KeyGenerator;
+use reebe_bpmn::{BpmnProcess, FlowElement, SubProcess};
+use reebe_db::state::element_instances::ElementInstance;
+use reebe_db::state::jobs::Job;
+use std::sync::Arc;
 
 pub(crate) const AD_HOC: &str = "AD_HOC_SUB_PROCESS";
 pub(crate) const INNER: &str = "AD_HOC_SUB_PROCESS_INNER_INSTANCE";
@@ -53,10 +53,13 @@ const COMPLETION_PENDING: &str = "__adHocCompletionPending";
 /// The ids of the elements an ad-hoc sub-process can activate: its direct children
 /// without an incoming sequence flow, other than events and event sub-processes.
 pub(crate) fn activatable(sp: &SubProcess) -> Vec<&str> {
-    let mut ids: Vec<&str> = sp.elements
+    let mut ids: Vec<&str> = sp
+        .elements
         .values()
         .filter(|el| match el {
-            FlowElement::StartEvent(_) | FlowElement::EndEvent(_) | FlowElement::BoundaryEvent(_) => false,
+            FlowElement::StartEvent(_)
+            | FlowElement::EndEvent(_)
+            | FlowElement::BoundaryEvent(_) => false,
             FlowElement::SubProcess(inner) if inner.triggered_by_event => false,
             _ => true,
         })
@@ -74,39 +77,58 @@ pub(crate) fn activatable(sp: &SubProcess) -> Vec<&str> {
 /// is left out, and a property with an empty value is `null`.
 pub(crate) fn elements_variable(sp: &SubProcess) -> serde_json::Value {
     let allowed = activatable(sp);
-    let mut ids: Vec<&str> = sp.element_order.iter().map(String::as_str).filter(|id| allowed.contains(id)).collect();
+    let mut ids: Vec<&str> = sp
+        .element_order
+        .iter()
+        .map(String::as_str)
+        .filter(|id| allowed.contains(id))
+        .collect();
     if ids.len() != allowed.len() {
         ids = allowed;
     }
-    let elements = ids.into_iter().filter_map(|id| sp.elements.get(id)).map(|el| {
-        let details = sp.element_details.get(el.id()).cloned().unwrap_or_default();
-        let properties: serde_json::Map<String, serde_json::Value> = details
-            .properties
-            .into_iter()
-            .filter(|(name, _)| !name.is_empty())
-            .map(|(name, value)| (name, if value.is_empty() { serde_json::Value::Null } else { value.into() }))
-            .collect();
-        let parameters: Vec<serde_json::Value> = super::bpmn_element::get_input_mappings(el)
-            .iter()
-            // Deployment rejected any call that is not valid.
-            .flat_map(|mapping| reebe_feel::from_ai_parameters(&mapping.source).unwrap_or_default())
-            .collect();
-        let mut element = serde_json::Map::new();
-        element.insert("elementId".into(), el.id().into());
-        if let Some(name) = el.name().filter(|name| !name.is_empty()) {
-            element.insert("elementName".into(), name.into());
-        }
-        if let Some(documentation) = details.documentation.filter(|text| !text.is_empty()) {
-            element.insert("documentation".into(), documentation.into());
-        }
-        if !properties.is_empty() {
-            element.insert("properties".into(), properties.into());
-        }
-        if !parameters.is_empty() {
-            element.insert("parameters".into(), parameters.into());
-        }
-        serde_json::Value::Object(element)
-    });
+    let elements = ids
+        .into_iter()
+        .filter_map(|id| sp.elements.get(id))
+        .map(|el| {
+            let details = sp.element_details.get(el.id()).cloned().unwrap_or_default();
+            let properties: serde_json::Map<String, serde_json::Value> = details
+                .properties
+                .into_iter()
+                .filter(|(name, _)| !name.is_empty())
+                .map(|(name, value)| {
+                    (
+                        name,
+                        if value.is_empty() {
+                            serde_json::Value::Null
+                        } else {
+                            value.into()
+                        },
+                    )
+                })
+                .collect();
+            let parameters: Vec<serde_json::Value> = super::bpmn_element::get_input_mappings(el)
+                .iter()
+                // Deployment rejected any call that is not valid.
+                .flat_map(|mapping| {
+                    reebe_feel::from_ai_parameters(&mapping.source).unwrap_or_default()
+                })
+                .collect();
+            let mut element = serde_json::Map::new();
+            element.insert("elementId".into(), el.id().into());
+            if let Some(name) = el.name().filter(|name| !name.is_empty()) {
+                element.insert("elementName".into(), name.into());
+            }
+            if let Some(documentation) = details.documentation.filter(|text| !text.is_empty()) {
+                element.insert("documentation".into(), documentation.into());
+            }
+            if !properties.is_empty() {
+                element.insert("properties".into(), properties.into());
+            }
+            if !parameters.is_empty() {
+                element.insert("parameters".into(), parameters.into());
+            }
+            serde_json::Value::Object(element)
+        });
     serde_json::Value::Array(elements.collect())
 }
 
@@ -114,15 +136,21 @@ pub(crate) fn elements_variable(sp: &SubProcess) -> serde_json::Value {
 /// (at any depth) can activate, as Zeebe's `AdHocSubProcessTransformer` does when it
 /// builds their metadata: `Err` with its message for the first call it cannot read,
 /// which rejects the deployment.
-pub(crate) fn check_from_ai_calls(elements: &std::collections::HashMap<String, FlowElement>) -> Result<(), String> {
+pub(crate) fn check_from_ai_calls(
+    elements: &std::collections::HashMap<String, FlowElement>,
+) -> Result<(), String> {
     for el in elements.values() {
-        let FlowElement::SubProcess(sp) = el else { continue };
+        let FlowElement::SubProcess(sp) = el else {
+            continue;
+        };
         if sp.ad_hoc {
             let mut ids = activatable(sp);
             // Report the first failing element in document order, as Zeebe does.
             ids.sort_by_key(|id| sp.element_order.iter().position(|o| o == id));
             for id in ids {
-                let Some(el) = sp.elements.get(id) else { continue };
+                let Some(el) = sp.elements.get(id) else {
+                    continue;
+                };
                 for mapping in super::bpmn_element::get_input_mappings(el) {
                     reebe_feel::from_ai_parameters(&mapping.source).map_err(|message| {
                         format!("Failed to extract ad-hoc activity parameters for element '{id}'. {message}")
@@ -143,7 +171,9 @@ pub(crate) async fn active_elements(
     process_instance_key: i64,
     ad_hoc_key: i64,
 ) -> Result<Vec<String>, String> {
-    let Some(expression) = &sp.active_elements_collection else { return Ok(Vec::new()) };
+    let Some(expression) = &sp.active_elements_collection else {
+        return Ok(Vec::new());
+    };
     let ctx = scope::feel_context(state, process_instance_key, ad_hoc_key).await;
     let value = reebe_feel::parse_and_evaluate(expression, &ctx)
         .map(serde_json::Value::from)
@@ -199,7 +229,15 @@ pub(crate) async fn activate_inner(
         writers.events.push(element_event(&inner, intent));
     }
     for (name, value) in variables.into_iter().flatten() {
-        scope::set_local(state, inner.process_instance_key, key, name, value.clone(), &inner.tenant_id).await?;
+        scope::set_local(
+            state,
+            inner.process_instance_key,
+            key,
+            name,
+            value.clone(),
+            &inner.tenant_id,
+        )
+        .await?;
     }
     writers.commands.push(CommandToWrite {
         value_type: "PROCESS_INSTANCE".to_string(),
@@ -226,9 +264,25 @@ pub(crate) async fn activated(
     ad_hoc: &ElementInstance,
     elements: &[String],
 ) -> EngineResult<()> {
-    scope::set_local(state, ad_hoc.process_instance_key, ad_hoc.key, ELEMENTS_VARIABLE, elements_variable(sp), &ad_hoc.tenant_id).await?;
+    scope::set_local(
+        state,
+        ad_hoc.process_instance_key,
+        ad_hoc.key,
+        ELEMENTS_VARIABLE,
+        elements_variable(sp),
+        &ad_hoc.tenant_id,
+    )
+    .await?;
     if let Some(collection) = &sp.output_collection {
-        scope::set_local(state, ad_hoc.process_instance_key, ad_hoc.key, collection, serde_json::json!([]), &ad_hoc.tenant_id).await?;
+        scope::set_local(
+            state,
+            ad_hoc.process_instance_key,
+            ad_hoc.key,
+            collection,
+            serde_json::json!([]),
+            &ad_hoc.tenant_id,
+        )
+        .await?;
     }
     if sp.task_definition.is_some() {
         create_job(writers, sp, ad_hoc);
@@ -240,7 +294,9 @@ pub(crate) async fn activated(
 }
 
 fn create_job(writers: &mut Writers, sp: &SubProcess, ad_hoc: &ElementInstance) {
-    let Some(td) = &sp.task_definition else { return };
+    let Some(td) = &sp.task_definition else {
+        return;
+    };
     writers.commands.push(CommandToWrite {
         value_type: "JOB".to_string(),
         intent: "CREATE".to_string(),
@@ -274,15 +330,20 @@ pub(crate) fn job_result(
     job: &Job,
     result: Option<&serde_json::Value>,
 ) -> EngineResult<Option<JobResult>> {
-    let Some(result) = result.filter(|r| r.is_object()) else { return Ok(None) };
-    let activate: Vec<(String, Option<serde_json::Map<String, serde_json::Value>>)> = result["activateElements"]
+    let Some(result) = result.filter(|r| r.is_object()) else {
+        return Ok(None);
+    };
+    let activate: Vec<(String, Option<serde_json::Map<String, serde_json::Value>>)> = result
+        ["activateElements"]
         .as_array()
         .into_iter()
         .flatten()
-        .map(|a| (
-            a["elementId"].as_str().unwrap_or_default().to_string(),
-            a["variables"].as_object().cloned(),
-        ))
+        .map(|a| {
+            (
+                a["elementId"].as_str().unwrap_or_default().to_string(),
+                a["variables"].as_object().cloned(),
+            )
+        })
         .collect();
     let completion_fulfilled = result["isCompletionConditionFulfilled"].as_bool() == Some(true);
     if activate.is_empty() && !completion_fulfilled {
@@ -295,13 +356,18 @@ pub(crate) fn job_result(
         ))
     };
     if completion_fulfilled && !activate.is_empty() {
-        return Err(reject("the job result both activates elements and fulfils the completion condition".into()));
+        return Err(reject(
+            "the job result both activates elements and fulfils the completion condition".into(),
+        ));
     }
     let Some(FlowElement::SubProcess(sp)) = process.get_element_recursive(&job.element_id) else {
         return Err(reject("its element is not an ad-hoc sub-process".into()));
     };
     let allowed = activatable(sp);
-    if let Some((unknown, _)) = activate.iter().find(|(id, _)| !allowed.contains(&id.as_str())) {
+    if let Some((unknown, _)) = activate
+        .iter()
+        .find(|(id, _)| !allowed.contains(&id.as_str()))
+    {
         return Err(reject(format!(
             "'{unknown}' is not an element it can activate (activatable: {})",
             allowed.join(", "),
@@ -328,10 +394,25 @@ pub(crate) async fn apply_job_result(
         // With output mappings, the job's variables stay in the sub-process and the
         // mappings pick what leaves it.
         if sp.output_mappings.is_empty() {
-            scope::propagate(state, ad_hoc.process_instance_key, ad_hoc.key, vars, &ad_hoc.tenant_id).await?;
+            scope::propagate(
+                state,
+                ad_hoc.process_instance_key,
+                ad_hoc.key,
+                vars,
+                &ad_hoc.tenant_id,
+            )
+            .await?;
         } else {
             for (name, value) in vars {
-                scope::set_local(state, ad_hoc.process_instance_key, ad_hoc.key, name, value.clone(), &ad_hoc.tenant_id).await?;
+                scope::set_local(
+                    state,
+                    ad_hoc.process_instance_key,
+                    ad_hoc.key,
+                    name,
+                    value.clone(),
+                    &ad_hoc.tenant_id,
+                )
+                .await?;
             }
         }
     }
@@ -346,7 +427,12 @@ pub(crate) async fn apply_job_result(
 
 /// The completion condition holds: complete now, terminating what is still active if
 /// `cancel`, or once nothing is active any more.
-async fn fulfil(state: &EngineState, writers: &mut Writers, ad_hoc: &ElementInstance, cancel: bool) -> EngineResult<()> {
+async fn fulfil(
+    state: &EngineState,
+    writers: &mut Writers,
+    ad_hoc: &ElementInstance,
+    cancel: bool,
+) -> EngineResult<()> {
     let active = active_children(state, ad_hoc).await?;
     if cancel || active.is_empty() {
         for child in &active {
@@ -354,22 +440,38 @@ async fn fulfil(state: &EngineState, writers: &mut Writers, ad_hoc: &ElementInst
         }
         complete(writers, ad_hoc);
     } else {
-        scope::set_local(state, ad_hoc.process_instance_key, ad_hoc.key, COMPLETION_PENDING, serde_json::json!(true), &ad_hoc.tenant_id).await?;
+        scope::set_local(
+            state,
+            ad_hoc.process_instance_key,
+            ad_hoc.key,
+            COMPLETION_PENDING,
+            serde_json::json!(true),
+            &ad_hoc.tenant_id,
+        )
+        .await?;
     }
     Ok(())
 }
 
-async fn active_children(state: &EngineState, ad_hoc: &ElementInstance) -> EngineResult<Vec<ElementInstance>> {
-    Ok(state.backend
+async fn active_children(
+    state: &EngineState,
+    ad_hoc: &ElementInstance,
+) -> EngineResult<Vec<ElementInstance>> {
+    Ok(state
+        .backend
         .get_element_instances_by_process_instance(ad_hoc.process_instance_key)
         .await?
         .into_iter()
-        .filter(|ei| ei.flow_scope_key == Some(ad_hoc.key) && !matches!(ei.state.as_str(), "COMPLETED" | "TERMINATED"))
+        .filter(|ei| {
+            ei.flow_scope_key == Some(ad_hoc.key)
+                && !matches!(ei.state.as_str(), "COMPLETED" | "TERMINATED")
+        })
         .collect())
 }
 
 async fn completion_pending(state: &EngineState, ad_hoc: &ElementInstance) -> EngineResult<bool> {
-    Ok(state.backend
+    Ok(state
+        .backend
         .get_variables_by_scope(ad_hoc.key)
         .await?
         .iter()
@@ -391,19 +493,33 @@ pub(crate) async fn inner_completed(
     if inner.state != "ACTIVATED" && !retry {
         return Ok(());
     }
-    let Some(ad_hoc_key) = inner.flow_scope_key else { return Ok(()) };
-    let ad_hoc = state.backend.get_element_instance_by_key(ad_hoc_key).await?;
-    let Some(FlowElement::SubProcess(sp)) = process.get_element_recursive(&ad_hoc.element_id) else { return Ok(()) };
+    let Some(ad_hoc_key) = inner.flow_scope_key else {
+        return Ok(());
+    };
+    let ad_hoc = state
+        .backend
+        .get_element_instance_by_key(ad_hoc_key)
+        .await?;
+    let Some(FlowElement::SubProcess(sp)) = process.get_element_recursive(&ad_hoc.element_id)
+    else {
+        return Ok(());
+    };
 
     if !retry {
-        state.backend.update_element_instance_state(inner.key, "COMPLETING").await?;
-        writers.events.push(element_event(inner, "ELEMENT_COMPLETING"));
+        state
+            .backend
+            .update_element_instance_state(inner.key, "COMPLETING")
+            .await?;
+        writers
+            .events
+            .push(element_event(inner, "ELEMENT_COMPLETING"));
         if let (Some(collection), Some(output)) = (&sp.output_collection, &sp.output_element) {
             let ctx = scope::feel_context(state, inner.process_instance_key, inner.key).await;
             let value = reebe_feel::parse_and_evaluate(output, &ctx)
                 .map(serde_json::Value::from)
                 .unwrap_or(serde_json::Value::Null);
-            let mut items = state.backend
+            let mut items = state
+                .backend
                 .get_variables_by_scope(ad_hoc.key)
                 .await?
                 .into_iter()
@@ -411,7 +527,15 @@ pub(crate) async fn inner_completed(
                 .and_then(|v| v.value.as_array().cloned())
                 .unwrap_or_default();
             items.push(value);
-            scope::set_local(state, ad_hoc.process_instance_key, ad_hoc.key, collection, serde_json::Value::Array(items), &ad_hoc.tenant_id).await?;
+            scope::set_local(
+                state,
+                ad_hoc.process_instance_key,
+                ad_hoc.key,
+                collection,
+                serde_json::Value::Array(items),
+                &ad_hoc.tenant_id,
+            )
+            .await?;
         }
     }
 
@@ -434,8 +558,13 @@ pub(crate) async fn inner_completed(
             return Ok(());
         }
     };
-    state.backend.update_element_instance_state(inner.key, "COMPLETED").await?;
-    writers.events.push(element_event(inner, "ELEMENT_COMPLETED"));
+    state
+        .backend
+        .update_element_instance_state(inner.key, "COMPLETED")
+        .await?;
+    writers
+        .events
+        .push(element_event(inner, "ELEMENT_COMPLETED"));
     flow_ended(state, writers, sp, &ad_hoc, fulfilled).await
 }
 
@@ -449,8 +578,13 @@ pub(crate) async fn completion_condition(
     sp: &SubProcess,
     ad_hoc: &ElementInstance,
 ) -> EngineResult<Result<Option<bool>, String>> {
-    let Some(condition) = &sp.completion_condition else { return Ok(Ok(None)) };
-    if sp.task_definition.is_some() || ad_hoc.state != "ACTIVATED" || completion_pending(state, ad_hoc).await? {
+    let Some(condition) = &sp.completion_condition else {
+        return Ok(Ok(None));
+    };
+    if sp.task_definition.is_some()
+        || ad_hoc.state != "ACTIVATED"
+        || completion_pending(state, ad_hoc).await?
+    {
         return Ok(Ok(None));
     }
     let ctx = scope::feel_context(state, ad_hoc.process_instance_key, ad_hoc.key).await;
@@ -481,12 +615,17 @@ pub(crate) async fn flow_ended(
     }
     if sp.task_definition.is_some() {
         // The worker decides again; there is one job at a time.
-        state.backend.cancel_jobs_by_element_instance(ad_hoc.key).await?;
+        state
+            .backend
+            .cancel_jobs_by_element_instance(ad_hoc.key)
+            .await?;
         create_job(writers, sp, ad_hoc);
         return Ok(());
     }
     match (&sp.completion_condition, fulfilled) {
-        (Some(_), Some(true)) => fulfil(state, writers, ad_hoc, sp.cancel_remaining_instances).await?,
+        (Some(_), Some(true)) => {
+            fulfil(state, writers, ad_hoc, sp.cancel_remaining_instances).await?
+        }
         (Some(_), _) => {}
         (None, _) if active.is_empty() => complete(writers, ad_hoc),
         (None, _) => {}
@@ -495,9 +634,16 @@ pub(crate) async fn flow_ended(
 }
 
 /// The ad-hoc sub-process is completing: hand its output collection to the enclosing scope.
-pub(crate) async fn completing(state: &EngineState, sp: &SubProcess, ad_hoc: &ElementInstance) -> EngineResult<()> {
-    let Some(collection) = &sp.output_collection else { return Ok(()) };
-    let Some(value) = state.backend
+pub(crate) async fn completing(
+    state: &EngineState,
+    sp: &SubProcess,
+    ad_hoc: &ElementInstance,
+) -> EngineResult<()> {
+    let Some(collection) = &sp.output_collection else {
+        return Ok(());
+    };
+    let Some(value) = state
+        .backend
         .get_variables_by_scope(ad_hoc.key)
         .await?
         .into_iter()
@@ -509,7 +655,14 @@ pub(crate) async fn completing(state: &EngineState, sp: &SubProcess, ad_hoc: &El
     let mut vars = serde_json::Map::new();
     vars.insert(collection.clone(), value);
     let parent = ad_hoc.flow_scope_key.unwrap_or(ad_hoc.process_instance_key);
-    scope::propagate(state, ad_hoc.process_instance_key, parent, &vars, &ad_hoc.tenant_id).await
+    scope::propagate(
+        state,
+        ad_hoc.process_instance_key,
+        parent,
+        &vars,
+        &ad_hoc.tenant_id,
+    )
+    .await
 }
 
 fn complete(writers: &mut Writers, ad_hoc: &ElementInstance) {
@@ -571,11 +724,17 @@ impl super::RecordProcessor for AdHocSubProcessInstructionProcessor {
             serde_json::Value::String(key) => key.clone(),
             other => other.to_string(),
         };
-        let not_found = || EngineError::NotFound(format!(
+        let not_found = || {
+            EngineError::NotFound(format!(
             "Expected to activate activities for ad-hoc sub-process but no ad-hoc sub-process instance found with key '{key_text}'."
-        ));
+        ))
+        };
         let key: i64 = key_text.parse().map_err(|_| not_found())?;
-        let ad_hoc = state.backend.get_element_instance_by_key(key).await.map_err(|_| not_found())?;
+        let ad_hoc = state
+            .backend
+            .get_element_instance_by_key(key)
+            .await
+            .map_err(|_| not_found())?;
         if ad_hoc.element_type != AD_HOC {
             return Err(not_found());
         }
@@ -584,18 +743,34 @@ impl super::RecordProcessor for AdHocSubProcessInstructionProcessor {
                 "Expected to activate activities for ad-hoc sub-process with key '{key}', but it is not active."
             )));
         }
-        let process = super::throw_event::load_process(state, ad_hoc.process_definition_key, &ad_hoc.bpmn_process_id).await?;
-        let Some(FlowElement::SubProcess(sp)) = process.get_element_recursive(&ad_hoc.element_id) else {
+        let process = super::throw_event::load_process(
+            state,
+            ad_hoc.process_definition_key,
+            &ad_hoc.bpmn_process_id,
+        )
+        .await?;
+        let Some(FlowElement::SubProcess(sp)) = process.get_element_recursive(&ad_hoc.element_id)
+        else {
             return Err(not_found());
         };
-        let elements: Vec<(String, Option<serde_json::Map<String, serde_json::Value>>)> = payload["elements"]
+        let elements: Vec<(String, Option<serde_json::Map<String, serde_json::Value>>)> = payload
+            ["elements"]
             .as_array()
             .into_iter()
             .flatten()
-            .map(|e| (e["elementId"].as_str().unwrap_or_default().to_string(), e["variables"].as_object().cloned()))
+            .map(|e| {
+                (
+                    e["elementId"].as_str().unwrap_or_default().to_string(),
+                    e["variables"].as_object().cloned(),
+                )
+            })
             .collect();
         let allowed = activatable(sp);
-        let unknown: Vec<&str> = elements.iter().map(|(id, _)| id.as_str()).filter(|id| !allowed.contains(id)).collect();
+        let unknown: Vec<&str> = elements
+            .iter()
+            .map(|(id, _)| id.as_str())
+            .filter(|id| !allowed.contains(id))
+            .collect();
         if !unknown.is_empty() {
             return Err(EngineError::NotFound(format!(
                 "Expected to activate activities for ad-hoc sub-process with key '{key}', but the given elements [{}] do not exist.",
@@ -617,7 +792,8 @@ impl super::RecordProcessor for AdHocSubProcessInstructionProcessor {
             key: ad_hoc.key,
             payload: payload.clone(),
         });
-        writers.response = Some(serde_json::json!({ "adHocSubProcessInstanceKey": key.to_string() }));
+        writers.response =
+            Some(serde_json::json!({ "adHocSubProcessInstanceKey": key.to_string() }));
         Ok(())
     }
 }

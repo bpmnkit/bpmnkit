@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["intermediateCatchEvent","c",{"condition":"=ready","conditionVariableEvents":["create","update"]}],
+		["endEvent","e"],
+		["build"]
+	]
+}

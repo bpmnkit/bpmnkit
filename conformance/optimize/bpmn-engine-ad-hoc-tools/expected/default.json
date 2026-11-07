@@ -1,0 +1,86 @@
+{
+  "findings": [
+    {
+      "category": "naming",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"start\" has no name.",
+      "processId": "ad-hoc-tools",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "Agent"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"Agent\" (adHocSubProcess) has no name.",
+      "processId": "ad-hoc-tools",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"end\" has no name.",
+      "processId": "ad-hoc-tools",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Agent"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Agent\" has no error boundary event.",
+      "processId": "ad-hoc-tools",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"start\" has no documentation describing expected input variables.",
+      "processId": "ad-hoc-tools",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 0,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 0,
+      "naming": 3,
+      "pattern": 2,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 0,
+      "info": 3,
+      "warning": 2
+    },
+    "total": 5
+  }
+}

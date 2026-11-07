@@ -1,0 +1,2 @@
+Invalid collaboration:
+  Message flow "MF" starts and ends in participant "A"; a message flow crosses pools, a sequence flow stays inside one

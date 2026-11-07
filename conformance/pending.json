@@ -1,0 +1,3 @@
+{
+  "builder/sub-process-no-callback-error": "Unrepresentable: TS throws when subProcess() gets no content callback; in Rust the callback is a required closure, so the script cannot be written."
+}

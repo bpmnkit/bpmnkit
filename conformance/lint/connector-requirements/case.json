@@ -1,0 +1,34 @@
+{
+  "runs": {
+    "default": {},
+    "with-requirements": {
+      "connectorRequirements": {
+        "tpl.http": [
+          "url",
+          "method",
+          "result",
+          "authentication.token"
+        ],
+        "tpl.other": [
+          "prop",
+          "x"
+        ]
+      }
+    },
+    "neutral-forced": {
+      "connectorRequirements": {
+        "tpl.http": [
+          "url",
+          "method",
+          "result",
+          "authentication.token"
+        ],
+        "tpl.other": [
+          "prop",
+          "x"
+        ]
+      },
+      "forceEngineRules": true
+    }
+  }
+}

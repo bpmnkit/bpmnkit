@@ -1,0 +1,871 @@
+{
+  "collaborations": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "groups": [],
+      "id": "collab",
+      "messageFlows": [],
+      "participants": [
+        {
+          "id": "pool",
+          "processRef": "proc",
+          "unknownAttributes": {}
+        },
+        {
+          "id": "blackbox",
+          "name": "  ",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "id": "Definitions_parity",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance"
+  },
+  "processes": [
+    {
+      "associations": [
+        {
+          "id": "assoc_top",
+          "sourceRef": "boundary_comp",
+          "targetRef": "handler_top",
+          "unknownAttributes": {}
+        }
+      ],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "start",
+          "incoming": [],
+          "name": "Start",
+          "outgoing": [
+            "f_start"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "default": "f_default",
+          "extensionElements": [],
+          "id": "gw_split",
+          "incoming": [
+            "f_start"
+          ],
+          "name": "Route?",
+          "outgoing": [
+            "f_cond",
+            "f_default",
+            "f_plain"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "task_blank",
+          "incoming": [
+            "f_plain"
+          ],
+          "name": "   ",
+          "outgoing": [
+            "f_blank_out"
+          ],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "gw_xor",
+          "incoming": [
+            "f_default"
+          ],
+          "name": "Which?",
+          "outgoing": [
+            "f_x1",
+            "f_x2"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "task_x1",
+          "incoming": [
+            "f_x1"
+          ],
+          "name": "X1",
+          "outgoing": [
+            "f_x1_out",
+            "f_x1_other"
+          ],
+          "type": "task",
+          "unknownAttributes": {
+            "default": "f_x1_out"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "task_x2",
+          "incoming": [
+            "f_x2"
+          ],
+          "name": "X2",
+          "outgoing": [
+            "f_x2_out"
+          ],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "task_x1",
+          "eventDefinitions": [
+            {
+              "id": "timer_def",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "boundary_timer",
+          "incoming": [],
+          "name": "Late",
+          "outgoing": [],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "task_x1",
+          "eventDefinitions": [
+            {
+              "id": "comp_def",
+              "type": "compensate"
+            }
+          ],
+          "extensionElements": [],
+          "id": "boundary_comp",
+          "incoming": [],
+          "name": "Compensate X1",
+          "outgoing": [],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "handler_top",
+          "incoming": [],
+          "isForCompensation": true,
+          "name": "Undo X1",
+          "outgoing": [],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "link_throw_def",
+              "name": "B",
+              "type": "link"
+            }
+          ],
+          "extensionElements": [],
+          "id": "link_throw",
+          "incoming": [
+            "f_x2_out"
+          ],
+          "name": "To B",
+          "outgoing": [],
+          "type": "intermediateThrowEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "link_catch_def",
+              "name": "B",
+              "type": "link"
+            }
+          ],
+          "extensionElements": [],
+          "id": "link_catch",
+          "incoming": [],
+          "name": "From B",
+          "outgoing": [
+            "f_catch"
+          ],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "task_r1",
+          "incoming": [],
+          "name": "R1",
+          "outgoing": [
+            "f_r1"
+          ],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "task_r2",
+          "incoming": [],
+          "name": "R2",
+          "outgoing": [
+            "f_r2"
+          ],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "start_joined",
+          "incoming": [
+            "f_r1",
+            "f_r2"
+          ],
+          "name": "Restarted",
+          "outgoing": [
+            "f_restart"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "end",
+          "incoming": [
+            "f_blank_out",
+            "f_x1_out",
+            "f_sub_out"
+          ],
+          "name": "Done",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "end_other",
+          "incoming": [
+            "f_x1_other"
+          ],
+          "name": "Other",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "end_link",
+          "incoming": [
+            "f_catch"
+          ],
+          "name": "Linked",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "end_restart",
+          "incoming": [
+            "f_restart"
+          ],
+          "name": "Restart done",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [
+            {
+              "id": "sub_assoc",
+              "sourceRef": "sub_comp",
+              "targetRef": "sub_handler",
+              "unknownAttributes": {}
+            }
+          ],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "sub_start",
+              "incoming": [],
+              "outgoing": [
+                "sf1"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "sub_fork",
+              "incoming": [
+                "sf1"
+              ],
+              "outgoing": [
+                "sf2",
+                "sf3"
+              ],
+              "type": "parallelGateway",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "sub_t1",
+              "incoming": [
+                "sf2"
+              ],
+              "name": "T1",
+              "outgoing": [
+                "sf4"
+              ],
+              "type": "task",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "sub_t2",
+              "incoming": [
+                "sf3"
+              ],
+              "name": "T2",
+              "outgoing": [
+                "sf5"
+              ],
+              "type": "task",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "sub_join_task",
+              "incoming": [
+                "sf4",
+                "sf5"
+              ],
+              "name": "Join",
+              "outgoing": [
+                "sf6"
+              ],
+              "type": "task",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "sub_orphan",
+              "incoming": [],
+              "name": "Orphan",
+              "outgoing": [
+                "sf7"
+              ],
+              "type": "task",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "sub_mixed",
+              "incoming": [
+                "sf6",
+                "sf7"
+              ],
+              "name": "Mixed?",
+              "outgoing": [
+                "sf8",
+                "sf9"
+              ],
+              "type": "exclusiveGateway",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "sub_redundant",
+              "incoming": [
+                "sf8"
+              ],
+              "outgoing": [
+                "sf10"
+              ],
+              "type": "exclusiveGateway",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "sub_dead",
+              "incoming": [
+                "sf9"
+              ],
+              "name": "Dead end",
+              "outgoing": [],
+              "type": "task",
+              "unknownAttributes": {}
+            },
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "sub_end",
+              "incoming": [
+                "sf10"
+              ],
+              "name": "Sub done",
+              "outgoing": [],
+              "type": "endEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "eventDefinitions": [
+                {
+                  "id": "sub_timer_def",
+                  "type": "timer"
+                }
+              ],
+              "extensionElements": [],
+              "id": "sub_catch",
+              "incoming": [],
+              "outgoing": [],
+              "type": "intermediateCatchEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "attachedToRef": "sub_t1",
+              "eventDefinitions": [
+                {
+                  "id": "sub_comp_def",
+                  "type": "compensate"
+                }
+              ],
+              "extensionElements": [],
+              "id": "sub_comp",
+              "incoming": [],
+              "name": "Compensate T1",
+              "outgoing": [],
+              "type": "boundaryEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "sub_handler",
+              "incoming": [],
+              "isForCompensation": true,
+              "name": "Undo T1",
+              "outgoing": [],
+              "type": "task",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "sub",
+          "incoming": [
+            "f_cond"
+          ],
+          "name": "Sub",
+          "outgoing": [
+            "f_sub_out"
+          ],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "sf1",
+              "sourceRef": "sub_start",
+              "targetRef": "sub_fork",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "sf2",
+              "sourceRef": "sub_fork",
+              "targetRef": "sub_t1",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "sf3",
+              "sourceRef": "sub_fork",
+              "targetRef": "sub_t2",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "sf4",
+              "sourceRef": "sub_t1",
+              "targetRef": "sub_join_task",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "sf5",
+              "sourceRef": "sub_t2",
+              "targetRef": "sub_join_task",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "sf6",
+              "sourceRef": "sub_join_task",
+              "targetRef": "sub_mixed",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "sf7",
+              "sourceRef": "sub_orphan",
+              "targetRef": "sub_mixed",
+              "unknownAttributes": {}
+            },
+            {
+              "conditionExpression": {
+                "attributes": {
+                  "xsi:type": "bpmn:tFormalExpression"
+                },
+                "text": "= ok"
+              },
+              "extensionElements": [],
+              "id": "sf8",
+              "name": "ok",
+              "sourceRef": "sub_mixed",
+              "targetRef": "sub_redundant",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "sf9",
+              "sourceRef": "sub_mixed",
+              "targetRef": "sub_dead",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "sf10",
+              "sourceRef": "sub_redundant",
+              "targetRef": "sub_end",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "type": "subProcess",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "tx_start",
+              "incoming": [],
+              "outgoing": [
+                "tf1"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "tx_task",
+              "incoming": [
+                "tf1"
+              ],
+              "outgoing": [],
+              "type": "task",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "tx",
+          "incoming": [],
+          "name": "Tx",
+          "outgoing": [],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "tf1",
+              "sourceRef": "tx_start",
+              "targetRef": "tx_task",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "type": "transaction",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [
+                {
+                  "id": "evt_msg_def",
+                  "type": "message"
+                }
+              ],
+              "extensionElements": [],
+              "id": "evt_start",
+              "incoming": [],
+              "outgoing": [
+                "ef1"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "evt_task",
+              "incoming": [
+                "ef1"
+              ],
+              "name": "Handle",
+              "outgoing": [],
+              "type": "task",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "evt_sub",
+          "incoming": [],
+          "name": "On message",
+          "outgoing": [],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "ef1",
+              "sourceRef": "evt_start",
+              "targetRef": "evt_task",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "triggeredByEvent": true,
+          "type": "subProcess",
+          "unknownAttributes": {
+            "triggeredByEvent": "true"
+          }
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "extensionElements": [],
+              "id": "adhoc_tool",
+              "incoming": [],
+              "name": "Tool",
+              "outgoing": [],
+              "type": "task",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "adhoc_unnamed",
+              "incoming": [],
+              "outgoing": [],
+              "type": "task",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "adhoc",
+          "incoming": [],
+          "name": "Tools",
+          "outgoing": [],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "type": "adHocSubProcess",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "data_obj",
+          "incoming": [],
+          "outgoing": [],
+          "type": "dataObject",
+          "unknownAttributes": {}
+        },
+        {
+          "dataObjectRef": "data_obj",
+          "extensionElements": [],
+          "id": "data_ref",
+          "incoming": [],
+          "outgoing": [],
+          "type": "dataObjectReference",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "store_ref",
+          "incoming": [],
+          "outgoing": [],
+          "type": "dataStoreReference",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "proc",
+      "isExecutable": true,
+      "laneSet": {
+        "id": "lanes",
+        "lanes": [
+          {
+            "flowNodeRefs": [],
+            "id": "lane_unnamed",
+            "unknownAttributes": {}
+          },
+          {
+            "childLaneSet": {
+              "id": "child_lanes",
+              "lanes": [
+                {
+                  "flowNodeRefs": [],
+                  "id": "lane_child",
+                  "unknownAttributes": {}
+                }
+              ],
+              "unknownAttributes": {}
+            },
+            "flowNodeRefs": [],
+            "id": "lane_named",
+            "name": "Clerks",
+            "unknownAttributes": {}
+          }
+        ],
+        "unknownAttributes": {}
+      },
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "f_start",
+          "sourceRef": "start",
+          "targetRef": "gw_split",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "= a"
+          },
+          "extensionElements": [],
+          "id": "f_cond",
+          "sourceRef": "gw_split",
+          "targetRef": "sub",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f_default",
+          "name": "Otherwise",
+          "sourceRef": "gw_split",
+          "targetRef": "gw_xor",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f_plain",
+          "sourceRef": "gw_split",
+          "targetRef": "task_blank",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f_blank_out",
+          "sourceRef": "task_blank",
+          "targetRef": "end",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f_x1",
+          "sourceRef": "gw_xor",
+          "targetRef": "task_x1",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f_x2",
+          "sourceRef": "gw_xor",
+          "targetRef": "task_x2",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f_x1_out",
+          "sourceRef": "task_x1",
+          "targetRef": "end",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f_x1_other",
+          "sourceRef": "task_x1",
+          "targetRef": "end_other",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f_x2_out",
+          "sourceRef": "task_x2",
+          "targetRef": "link_throw",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f_catch",
+          "sourceRef": "link_catch",
+          "targetRef": "end_link",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f_r1",
+          "sourceRef": "task_r1",
+          "targetRef": "start_joined",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f_r2",
+          "sourceRef": "task_r2",
+          "targetRef": "start_joined",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f_restart",
+          "sourceRef": "start_joined",
+          "targetRef": "end_restart",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f_sub_out",
+          "sourceRef": "sub",
+          "targetRef": "end",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

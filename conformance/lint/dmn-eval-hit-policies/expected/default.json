@@ -1,0 +1,60 @@
+{
+  "findings": [
+    {
+      "elementId": "single_bogus_t",
+      "fix": "Use one of UNIQUE, FIRST, PRIORITY, ANY, COLLECT, RULE ORDER, OUTPUT ORDER (UNIQUE when omitted). (agent-cards/dmn.md#traps)",
+      "message": "Decision \"single_bogus\" has hitPolicy \"BOGUS\".",
+      "rule": "dmn/invalid-hit-policy",
+      "severity": "error"
+    },
+    {
+      "elementId": "multi_bogus_t",
+      "fix": "Use one of UNIQUE, FIRST, PRIORITY, ANY, COLLECT, RULE ORDER, OUTPUT ORDER (UNIQUE when omitted). (agent-cards/dmn.md#traps)",
+      "message": "Decision \"multi_bogus\" has hitPolicy \"BOGUS\".",
+      "rule": "dmn/invalid-hit-policy",
+      "severity": "error"
+    },
+    {
+      "elementId": "collect_avg_t",
+      "fix": "Use one of SUM, MIN, MAX, COUNT. (agent-cards/dmn.md#traps)",
+      "message": "Decision \"collect_avg\" has aggregation \"AVG\".",
+      "rule": "dmn/invalid-aggregation",
+      "severity": "error"
+    },
+    {
+      "elementId": "keys_o1",
+      "fix": "Give every output a name — with several outputs the result is a context keyed by output name. (agent-cards/dmn.md#traps)",
+      "message": "Output \"Labelled\" of Decision \"keys\" has no name, and the table has 3 outputs.",
+      "rule": "dmn/missing-output-name",
+      "severity": "error"
+    },
+    {
+      "elementId": "keys_o2",
+      "fix": "Give every output a name — with several outputs the result is a context keyed by output name. (agent-cards/dmn.md#traps)",
+      "message": "Output \"keys_o2\" of Decision \"keys\" has no name, and the table has 3 outputs.",
+      "rule": "dmn/missing-output-name",
+      "severity": "error"
+    },
+    {
+      "elementId": "entries_r12_i1",
+      "fix": "Write unary tests: a value (`\"gold\"`, `42`), a comparison (`> 10`), a range (`[1..5]`), a list (`\"a\",\"b\"`), `not(...)`, or `-` for any. (agent-cards/dmn.md#traps)",
+      "message": "Input entry of rule \"entries_r12\" is not valid FEEL unary tests: Unexpected token '>' (at 1) in `>>> broken`.",
+      "rule": "dmn/feel-syntax",
+      "severity": "error"
+    },
+    {
+      "elementId": "entries_r13_o0",
+      "fix": "Fix the FEEL expression; strings need double quotes and DMN entries have no leading `=`. (agent-cards/dmn.md#traps)",
+      "message": "Output entry of rule \"entries_r13\" is not valid FEEL: Expected expression after '+' (at 3) in `x +`.",
+      "rule": "dmn/feel-syntax",
+      "severity": "error"
+    },
+    {
+      "elementId": "computed_input_i2",
+      "fix": "Set <inputExpression><text>variableName</text></inputExpression> to the value the column tests. (agent-cards/dmn.md#traps)",
+      "message": "Input \"in2\" of Decision \"computed_input\" has no input expression.",
+      "rule": "dmn/empty-input-expression",
+      "severity": "error"
+    }
+  ]
+}

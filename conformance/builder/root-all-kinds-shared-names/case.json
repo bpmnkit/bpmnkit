@@ -1,0 +1,11 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s",{"messageName":"m"}],
+		["intermediateCatchEvent","c",{"messageName":"m","correlationKey":"=k"}],
+		["intermediateThrowEvent","t",{"signalName":"m"}],
+		["endEvent","e",{"errorCode":"m"}],
+		["build"]
+	]
+}

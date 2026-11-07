@@ -1,0 +1,557 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "UNIQUE",
+        "id": "t_unique",
+        "inputs": [
+          {
+            "id": "i1",
+            "inputExpression": {
+              "id": "ie1",
+              "text": "x",
+              "typeRef": "number"
+            },
+            "label": "x"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o1",
+            "name": "y",
+            "typeRef": "string"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r1",
+            "inputEntries": [
+              {
+                "id": "e1",
+                "text": "< 10"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "p1",
+                "text": "\"small\""
+              }
+            ]
+          },
+          {
+            "id": "r2",
+            "inputEntries": [
+              {
+                "id": "e2",
+                "text": ">= 10"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "p2",
+                "text": "\"large\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d_unique",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Unique"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "FIRST",
+        "id": "t_first",
+        "inputs": [
+          {
+            "id": "i2",
+            "inputExpression": {
+              "id": "ie2",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o2",
+            "name": "y"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r3",
+            "inputEntries": [
+              {
+                "id": "e3",
+                "text": "1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "p3",
+                "text": "\"a\""
+              }
+            ]
+          },
+          {
+            "id": "r4",
+            "inputEntries": [
+              {
+                "id": "e4",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "p4",
+                "text": "\"b\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d_first",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "First"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "ANY",
+        "id": "t_any",
+        "inputs": [
+          {
+            "id": "i3",
+            "inputExpression": {
+              "id": "ie3",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o3",
+            "name": "y"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r5",
+            "inputEntries": [
+              {
+                "id": "e5",
+                "text": "1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "p5",
+                "text": "\"a\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d_any",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Any"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "RULE ORDER",
+        "id": "t_rule_order",
+        "inputs": [
+          {
+            "id": "i4",
+            "inputExpression": {
+              "id": "ie4",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o4",
+            "name": "y"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r6",
+            "inputEntries": [
+              {
+                "id": "e6",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "p6",
+                "text": "1"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d_rule_order",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Rule order"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "OUTPUT ORDER",
+        "id": "t_output_order",
+        "inputs": [
+          {
+            "id": "i5",
+            "inputExpression": {
+              "id": "ie5",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o5",
+            "name": "y",
+            "outputValues": "\"high\",\"low\""
+          }
+        ],
+        "rules": [
+          {
+            "id": "r7",
+            "inputEntries": [
+              {
+                "id": "e7",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "p7",
+                "text": "\"low\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d_output_order",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Output order"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "PRIORITY",
+        "id": "t_priority",
+        "inputs": [
+          {
+            "id": "i6",
+            "inputExpression": {
+              "id": "ie6",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o6",
+            "name": "y"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r8",
+            "inputEntries": [
+              {
+                "id": "e8",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "p8",
+                "text": "\"low\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d_priority",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Priority"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "COLLECT",
+        "id": "t_collect",
+        "inputs": [
+          {
+            "id": "i7",
+            "inputExpression": {
+              "id": "ie7",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o7",
+            "name": "y"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r9",
+            "inputEntries": [
+              {
+                "id": "e9",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "p9",
+                "text": "1"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d_collect",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Collect"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "aggregation": "SUM",
+        "hitPolicy": "COLLECT",
+        "id": "t_sum",
+        "inputs": [
+          {
+            "id": "i8",
+            "inputExpression": {
+              "id": "ie8",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o8",
+            "name": "y",
+            "typeRef": "number"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r10",
+            "inputEntries": [
+              {
+                "id": "e10",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "p10",
+                "text": "1"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d_sum",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Collect sum"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "aggregation": "MIN",
+        "hitPolicy": "COLLECT",
+        "id": "t_min",
+        "inputs": [
+          {
+            "id": "i9",
+            "inputExpression": {
+              "id": "ie9",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o9",
+            "name": "y",
+            "typeRef": "number"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r11",
+            "inputEntries": [
+              {
+                "id": "e11",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "p11",
+                "text": "1"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d_min",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Collect min"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "aggregation": "MAX",
+        "hitPolicy": "COLLECT",
+        "id": "t_max",
+        "inputs": [
+          {
+            "id": "i10",
+            "inputExpression": {
+              "id": "ie10",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o10",
+            "name": "y",
+            "typeRef": "number"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r12",
+            "inputEntries": [
+              {
+                "id": "e12",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "p12",
+                "text": "1"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d_max",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Collect max"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "aggregation": "COUNT",
+        "hitPolicy": "COLLECT",
+        "id": "t_count",
+        "inputs": [
+          {
+            "id": "i11",
+            "inputExpression": {
+              "id": "ie11",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o11",
+            "name": "y",
+            "typeRef": "number"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r13",
+            "inputEntries": [
+              {
+                "id": "e13",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "p13",
+                "text": "1"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d_count",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Collect count"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "id": "t_default",
+        "inputs": [
+          {
+            "id": "i12",
+            "inputExpression": {
+              "id": "ie12",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o12",
+            "name": "y"
+          }
+        ],
+        "rules": []
+      },
+      "id": "d_default",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "No hit policy"
+    }
+  ],
+  "id": "Definitions_hp",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "Hit policies",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/"
+  },
+  "textAnnotations": []
+}

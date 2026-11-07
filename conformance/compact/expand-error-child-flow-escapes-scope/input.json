@@ -1,0 +1,34 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "a",
+          "type": "task"
+        },
+        {
+          "id": "sp",
+          "type": "subProcess",
+          "children": {
+            "elements": [
+              {
+                "id": "x",
+                "type": "task"
+              }
+            ],
+            "flows": [
+              {
+                "id": "fx",
+                "from": "a",
+                "to": "x"
+              }
+            ]
+          }
+        }
+      ],
+      "flows": []
+    }
+  ]
+}

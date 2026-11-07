@@ -1,0 +1,155 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_P",
+      "plane": {
+        "bpmnElement": "P",
+        "edges": [
+          {
+            "bpmnElement": "f",
+            "id": "f_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 100,
+                "y": 40
+              },
+              {
+                "x": 160,
+                "y": 40
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_P",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 0,
+              "y": 0
+            },
+            "bpmnElement": "u",
+            "id": "u_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 160,
+              "y": 0
+            },
+            "bpmnElement": "u2",
+            "id": "u2_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "D",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [],
+              "name": "zeebe:userTask"
+            },
+            {
+              "attributes": {
+                "formId": "f"
+              },
+              "children": [],
+              "name": "zeebe:formDefinition"
+            },
+            {
+              "attributes": {
+                "assignee": "= boss",
+                "candidateGroups": "a,b",
+                "candidateUsers": "= users"
+              },
+              "children": [],
+              "name": "zeebe:assignmentDefinition"
+            },
+            {
+              "attributes": {
+                "dueDate": "2030-01-01T00:00:00Z",
+                "followUpDate": "= now()"
+              },
+              "children": [],
+              "name": "zeebe:taskSchedule"
+            },
+            {
+              "attributes": {
+                "priority": "90"
+              },
+              "children": [],
+              "name": "zeebe:priorityDefinition"
+            }
+          ],
+          "id": "u",
+          "incoming": [],
+          "name": "U",
+          "outgoing": [
+            "f"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "priority": "= p"
+              },
+              "children": [],
+              "name": "zeebe:priorityDefinition"
+            }
+          ],
+          "id": "u2",
+          "incoming": [
+            "f"
+          ],
+          "outgoing": [],
+          "type": "userTask",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "P",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "f",
+          "sourceRef": "u",
+          "targetRef": "u2",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

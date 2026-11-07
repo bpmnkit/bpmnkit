@@ -1,0 +1,61 @@
+{
+  "connectors": [
+    {
+      "alias": "http",
+      "args": [
+        "POST",
+        "https://x"
+      ],
+      "elementId": "t",
+      "id": "t",
+      "line": 2,
+      "values": {
+        "body": "=\"a | b\"",
+        "headers.k": "v"
+      }
+    }
+  ],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "t",
+            "jobType": "t",
+            "name": "T",
+            "type": "serviceTask"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

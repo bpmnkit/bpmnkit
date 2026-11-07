@@ -1,0 +1,13 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["exclusiveGateway","g"],
+		["branch","a",{"$ops":[
+			["intermediateCatchEvent","c",{"timerDuration":"PT1H"}],
+			["withBoundary","b",{"timerDuration":"PT1H"},{"$ops":[["endEvent","x"]]}]
+		]}],
+		["build"]
+	]
+}

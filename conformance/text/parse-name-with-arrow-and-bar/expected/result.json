@@ -1,0 +1,50 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "A",
+            "type": "startEvent"
+          },
+          {
+            "id": "t",
+            "name": "Compare a > b",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 1 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "unknown attribute \"c\" on \"t\"; ignored"
+    }
+  ],
+  "questions": []
+}

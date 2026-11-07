@@ -1,0 +1,266 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 2,
+    "info": 13,
+    "warning": 5
+  },
+  "diagnostics": [
+    {
+      "category": "naming",
+      "elementIds": [
+        "Start_z"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"Start_z\" has no name.",
+      "processId": "Process_zeebe",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "End_z"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"End_z\" has no name.",
+      "processId": "Process_zeebe",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Task_service"
+      ],
+      "fixable": false,
+      "id": "pattern/http-no-error-boundary",
+      "message": "Service task \"Call API\" calls an HTTP connector but has no error boundary event.",
+      "processId": "Process_zeebe",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle network failures (timeouts, non-2xx responses)."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Task_call"
+      ],
+      "fixable": false,
+      "id": "pattern/call-activity-no-error-boundary",
+      "message": "Call activity \"Fulfil\" has no error boundary event.",
+      "processId": "Process_zeebe",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle errors propagated from the called process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Task_human"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Approve\" has no timer boundary event.",
+      "processId": "Process_zeebe",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Start_z"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Start_z\" has no documentation describing expected input variables.",
+      "processId": "Process_zeebe",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Task_service"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:customer",
+      "message": "Variable \"customer\" is referenced but never set in this process.",
+      "processId": "Process_zeebe",
+      "severity": "warning",
+      "suggestion": "\"customer\" is never set. Did you mean \"customerId\"?"
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Task_service"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:order",
+      "message": "Variable \"order\" is referenced but never set in this process.",
+      "processId": "Process_zeebe",
+      "severity": "warning",
+      "suggestion": "\"order\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Task_service"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:response",
+      "message": "Variable \"response\" is referenced but never set in this process.",
+      "processId": "Process_zeebe",
+      "severity": "warning",
+      "suggestion": "\"response\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Task_service"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:customerId",
+      "message": "Variable \"customerId\" is set but never read by any downstream element.",
+      "processId": "Process_zeebe",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"customerId\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Task_service"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:amount",
+      "message": "Variable \"amount\" is set but never read by any downstream element.",
+      "processId": "Process_zeebe",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"amount\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Task_service"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:apiResult",
+      "message": "Variable \"apiResult\" is set but never read by any downstream element.",
+      "processId": "Process_zeebe",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"apiResult\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Task_decide"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:risk",
+      "message": "Variable \"risk\" is set but never read by any downstream element.",
+      "processId": "Process_zeebe",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"risk\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Task_service"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:Task_service",
+      "message": "Element \"Task_service\" produces: customerId, amount, apiResult; consumes: customer, order, response.",
+      "processId": "Process_zeebe",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Task_decide"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:Task_decide",
+      "message": "Element \"Task_decide\" produces: risk.",
+      "processId": "Process_zeebe",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_z2"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_z2",
+      "message": "Variables in scope at flow \"Flow_z2\": amount, apiResult, customerId.",
+      "processId": "Process_zeebe",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_z3"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_z3",
+      "message": "Variables in scope at flow \"Flow_z3\": amount, apiResult, customerId.",
+      "processId": "Process_zeebe",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_z4"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_z4",
+      "message": "Variables in scope at flow \"Flow_z4\": amount, apiResult, customerId, risk.",
+      "processId": "Process_zeebe",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_z5"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_z5",
+      "message": "Variables in scope at flow \"Flow_z5\": amount, apiResult, customerId, risk.",
+      "processId": "Process_zeebe",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_z6"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_z6",
+      "message": "Variables in scope at flow \"Flow_z6\": amount, apiResult, customerId, risk.",
+      "processId": "Process_zeebe",
+      "severity": "info",
+      "suggestion": ""
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 20
+}

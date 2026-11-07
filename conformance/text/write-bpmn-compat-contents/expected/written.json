@@ -1,0 +1,30 @@
+{
+  "aliases": {
+    "adhoc": "badOutputCollection",
+    "catch": "pollingCatch",
+    "catch_2": "feelTimer",
+    "catch_3": "linkCatch1",
+    "end": "end",
+    "manual": "loopA",
+    "receive": "secretReceive",
+    "rule": "badDecisionResult",
+    "script": "badResult",
+    "service": "feelNew",
+    "service_10": "secretFine",
+    "service_2": "feelShadowed",
+    "service_3": "badVars",
+    "service_4": "secretsTask",
+    "service_5": "secretLiteral",
+    "service_6": "secretQuoted",
+    "service_7": "secretProperty",
+    "service_8": "secretList",
+    "service_9": "secretIfContext",
+    "start": "start",
+    "start_2": "webhookStart",
+    "sub": "linkScope",
+    "task": "loopB",
+    "task_2": "adHocInner",
+    "throw": "linkNoName",
+    "xor": "loopGateway"
+  }
+}

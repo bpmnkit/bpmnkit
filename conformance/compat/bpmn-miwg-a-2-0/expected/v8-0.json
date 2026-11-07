@@ -1,0 +1,88 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_5a972b87-735d-454a-b31c-f52fb3afc5c7"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 1\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_4f7d62d7-f0e6-46bc-be00-69e02da38f65"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 2\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_e6eb725a-34bc-45c7-aed0-9f9596cd7bee"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 3\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_7d399717-1aba-47ac-8d7d-8aaa033255e0"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 4\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_f1478fb7-98c4-4c01-8c15-68bd04c91535"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"\" leaves Exclusive gateway \"Gateway\n(Split Flow)\" without a condition and is not its default flow.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_a1570a53-28d2-41b1-a3a2-3e50c00d747e"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"\" leaves Exclusive gateway \"Gateway\n(Split Flow)\" without a condition and is not its default flow.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"\" leaves Exclusive gateway \"Gateway\n(Split Flow)\" without a condition and is not its default flow.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    }
+  ]
+}

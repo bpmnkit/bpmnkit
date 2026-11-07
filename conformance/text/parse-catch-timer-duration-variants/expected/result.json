@@ -1,0 +1,83 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "eventType": "timer",
+            "id": "a",
+            "name": "Five",
+            "timerDuration": "PT5M",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "eventType": "timer",
+            "id": "b",
+            "name": "Lower",
+            "timerDuration": "PT10M",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "eventType": "timer",
+            "id": "c",
+            "name": "Days",
+            "timerDuration": "P1D",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "eventType": "timer",
+            "id": "d",
+            "name": "0:PT5M",
+            "timerDuration": "PT5M",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "a"
+          },
+          {
+            "from": "a",
+            "id": "Flow_2",
+            "to": "b"
+          },
+          {
+            "from": "b",
+            "id": "Flow_3",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "id": "Flow_4",
+            "to": "d"
+          },
+          {
+            "from": "d",
+            "id": "Flow_5",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

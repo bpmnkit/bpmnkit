@@ -1,0 +1,1348 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 60,
+    "info": 13,
+    "warning": 37
+  },
+  "diagnostics": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"start\" (startEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "start2"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"start2\" (startEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "startTimerDuration"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"startTimerDuration\" (startEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "startCron"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"startCron\" (startEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "startSignal"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"startSignal\" (startEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchNoTimer"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"catchNoTimer\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchNoTimer"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"catchNoTimer\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchBadDuration"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"catchBadDuration\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchBadDuration"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"catchBadDuration\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchDate"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"catchDate\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchDate"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"catchDate\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchCycle"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"catchCycle\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchCycle"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"catchCycle\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchMsgNoRef"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"catchMsgNoRef\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchMsgNoRef"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"catchMsgNoRef\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchMsgNoName"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"catchMsgNoName\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchMsgNoName"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"catchMsgNoName\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchMsgNoKey"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"catchMsgNoKey\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchMsgNoKey"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"catchMsgNoKey\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchMsgOk"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"catchMsgOk\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchMsgOk"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"catchMsgOk\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchLink"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"catchLink\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchLink"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"catchLink\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchSignalNoName"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"catchSignalNoName\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchSignalNoName"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"catchSignalNoName\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchConditional"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"catchConditional\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "catchConditional"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"catchConditional\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "work"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"work\" (serviceTask) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "work"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"work\" (serviceTask) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "boundaryCycle"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"boundaryCycle\" (boundaryEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "boundaryCycle"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"boundaryCycle\" (boundaryEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "boundaryErrorNoRef"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"boundaryErrorNoRef\" (boundaryEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "boundaryErrorNoRef"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"boundaryErrorNoRef\" (boundaryEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "boundaryErrorExpr"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"boundaryErrorExpr\" (boundaryEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "boundaryErrorExpr"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"boundaryErrorExpr\" (boundaryEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "boundaryEscalation"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"boundaryEscalation\" (boundaryEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "boundaryEscalation"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"boundaryEscalation\" (boundaryEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "boundaryCompensation"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"boundaryCompensation\" (boundaryEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "boundaryCompensation"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"boundaryCompensation\" (boundaryEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "throwNone"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"throwNone\" (intermediateThrowEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "throwNone"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"throwNone\" (intermediateThrowEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "throwEscalationNoRef"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"throwEscalationNoRef\" (intermediateThrowEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "throwEscalationNoRef"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"throwEscalationNoRef\" (intermediateThrowEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "throwEscalationNoCode"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"throwEscalationNoCode\" (intermediateThrowEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "throwEscalationNoCode"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"throwEscalationNoCode\" (intermediateThrowEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "throwMessage"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"throwMessage\" (intermediateThrowEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "throwMessage"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"throwMessage\" (intermediateThrowEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "throwMessageTyped"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"throwMessageTyped\" (intermediateThrowEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "throwMessageTyped"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"throwMessageTyped\" (intermediateThrowEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "throwCompensation"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"throwCompensation\" (intermediateThrowEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "throwCompensation"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"throwCompensation\" (intermediateThrowEvent) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "endErrorNoRef"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"endErrorNoRef\" (endEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "endErrorNoCode"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"endErrorNoCode\" (endEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "endErrorExpr"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"endErrorExpr\" (endEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "endTerminate"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"endTerminate\" (endEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "endSignalNoRef"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"endSignalNoRef\" (endEvent) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "eventSub"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"eventSub\" (subProcess) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "eventSub"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"eventSub\" (subProcess) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "signalSub"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"signalSub\" (subProcess) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "signalSub"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"signalSub\" (subProcess) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "messageSub"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"messageSub\" (subProcess) is not reachable from any start event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "messageSub"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"messageSub\" (subProcess) has no outgoing sequence flows.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"start\" has no name.",
+      "processId": "events",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "start2"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"start2\" has no name.",
+      "processId": "events",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "startTimerDuration"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"startTimerDuration\" has no name.",
+      "processId": "events",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "startCron"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"startCron\" has no name.",
+      "processId": "events",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "startSignal"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"startSignal\" has no name.",
+      "processId": "events",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "endErrorNoRef"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"endErrorNoRef\" has no name.",
+      "processId": "events",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "endErrorNoCode"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"endErrorNoCode\" has no name.",
+      "processId": "events",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "endErrorExpr"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"endErrorExpr\" has no name.",
+      "processId": "events",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "endTerminate"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"endTerminate\" has no name.",
+      "processId": "events",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "endSignalNoRef"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"endSignalNoRef\" has no name.",
+      "processId": "events",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "eventSub"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"eventSub\" (subProcess) has no name.",
+      "processId": "events",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "signalSub"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"signalSub\" (subProcess) has no name.",
+      "processId": "events",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "messageSub"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"messageSub\" (subProcess) has no name.",
+      "processId": "events",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "eventSub"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"eventSub\" has no error boundary event.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "signalSub"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"signalSub\" has no error boundary event.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "messageSub"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"messageSub\" has no error boundary event.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "work"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Work\" has no output variable mapping.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"start\" has no documentation describing expected input variables.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start2"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"start2\" has no documentation describing expected input variables.",
+      "processId": "events",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "boundaryCycle"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"work\" has no outgoing sequence flow.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "boundaryErrorNoRef"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"work\" has no outgoing sequence flow.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "boundaryErrorExpr"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"work\" has no outgoing sequence flow.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "boundaryEscalation"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"work\" has no outgoing sequence flow.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "boundaryCompensation"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"work\" has no outgoing sequence flow.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchMsgNoRef"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"catchMsgNoRef\" (intermediateCatchEvent) has no zeebe:subscription correlationKey.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchMsgNoName"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"catchMsgNoName\" (intermediateCatchEvent) has no zeebe:subscription correlationKey.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchMsgNoKey"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"catchMsgNoKey\" (intermediateCatchEvent) has no zeebe:subscription correlationKey.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "compat/no-multiple-none-start-events",
+      "message": "Start event \"start\" is one of 2 blank start events in process \"events\"; Camunda allows one.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Keep one blank start event and give the others an event definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "start2"
+      ],
+      "fixable": false,
+      "id": "compat/no-multiple-none-start-events",
+      "message": "Start event \"start2\" is one of 2 blank start events in process \"events\"; Camunda allows one.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Keep one blank start event and give the others an event definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "startTimerDuration"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer start event \"startTimerDuration\" uses timeDuration, which Camunda does not allow on this event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Use another kind of timer."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchNoTimer"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer intermediate catch event \"catchNoTimer\" has no timer value; set one of timeDate, timeDuration.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Set when the timer fires."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchBadDuration"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer intermediate catch event \"catchBadDuration\" has timeDuration \"5 minutes\", which is not an ISO 8601 duration (PT15M).",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Write an ISO 8601 duration (PT15M), or a FEEL expression starting with \"=\"."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchCycle"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer intermediate catch event \"catchCycle\" uses timeCycle, which Camunda does not allow on this event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Use another kind of timer."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchMsgNoRef"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message intermediate catch event \"catchMsgNoRef\" references no message.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchMsgNoName"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message intermediate catch event \"catchMsgNoName\" references message \"Msg_noname\", which has no name.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Name the message — Camunda correlates on it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchSignalNoName"
+      ],
+      "fixable": false,
+      "id": "compat/signal-reference",
+      "message": "Signal intermediate catch event \"catchSignalNoName\" references signal \"Sig_noname\", which has no name.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Name the signal — Camunda broadcasts on it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchConditional"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Conditional intermediate catch event \"catchConditional\" needs Camunda 8.9 or newer; this model targets Camunda 8.6.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.9 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "boundaryCycle"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer boundary event \"boundaryCycle\" uses timeCycle, which Camunda does not allow on this event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Use another kind of timer."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "boundaryEscalation"
+      ],
+      "fixable": false,
+      "id": "compat/escalation-boundary-event-attached-to-ref",
+      "message": "Escalation boundary event \"boundaryEscalation\" is attached to Service task \"Work\"; a task cannot throw an escalation, so Camunda does not allow it there.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Attach it to a sub-process or call activity instead."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "throwEscalationNoRef"
+      ],
+      "fixable": false,
+      "id": "compat/escalation-reference",
+      "message": "Escalation intermediate throw event \"throwEscalationNoRef\" references no escalation.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:escalation with an escalation code."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "throwEscalationNoCode"
+      ],
+      "fixable": false,
+      "id": "compat/escalation-reference",
+      "message": "Escalation intermediate throw event \"throwEscalationNoCode\" references escalation \"no code\", which has no escalation code.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Set the escalation code."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "throwMessage"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Message intermediate throw event \"throwMessage\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "throwCompensation"
+      ],
+      "fixable": false,
+      "id": "compat/wait-for-completion",
+      "message": "Compensate intermediate throw event \"throwCompensation\" sets waitForCompletion=\"false\"; Camunda always waits for compensation to complete.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Remove waitForCompletion, or set it to \"true\"."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "endErrorNoRef"
+      ],
+      "fixable": false,
+      "id": "compat/error-reference",
+      "message": "Error end event \"endErrorNoRef\" references no error.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:error with an error code."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "endErrorNoCode"
+      ],
+      "fixable": false,
+      "id": "compat/error-reference",
+      "message": "Error end event \"endErrorNoCode\" references error \"no code\", which has no error code.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Set the error code."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "endSignalNoRef"
+      ],
+      "fixable": false,
+      "id": "compat/signal-reference",
+      "message": "Signal end event \"endSignalNoRef\" references no signal.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:signal with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "subTimerCycle"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer start event \"subTimerCycle\" uses timeCycle, which Camunda does not allow on this event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Use another kind of timer."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "subMessage"
+      ],
+      "fixable": false,
+      "id": "compat/subscription",
+      "message": "Message \"nokey\" used by Message start event \"subMessage\" has no zeebe:subscription.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Add a zeebe:subscription with a correlationKey to the message."
+    }
+  ],
+  "platform": {
+    "id": "camunda-cloud",
+    "name": "Camunda Cloud",
+    "version": "8.6.0"
+  },
+  "total": 110
+}

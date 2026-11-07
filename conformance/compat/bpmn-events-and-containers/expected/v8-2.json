@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Start_signal"
+      ],
+      "fixable": false,
+      "id": "compat/no-signal-event-sub-process",
+      "message": "Signal start event \"Start_signal\" starts a sub-process, which needs Camunda 8.3 or newer; this model targets Camunda 8.2.",
+      "processId": "Process_events",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Sub_work"
+      ],
+      "fixable": false,
+      "id": "compat/collapsed-subprocess",
+      "message": "Sub-process \"Sub_work\" is drawn collapsed, which needs Camunda 8.4 or newer; this model targets Camunda 8.2.",
+      "processId": "Process_events",
+      "severity": "error",
+      "suggestion": "Expand the sub-process, or target Camunda 8.4 or newer."
+    }
+  ]
+}

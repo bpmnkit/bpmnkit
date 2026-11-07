@@ -1,0 +1,48 @@
+{
+  "input": "bpmn/zeebe-extensions/input.bpmn",
+  "runs": {
+    "default": {},
+    "v1-0": {
+      "version": "1.0"
+    },
+    "v8-0": {
+      "version": "8.0"
+    },
+    "v8-1": {
+      "version": "8.1"
+    },
+    "v8-2": {
+      "version": "8.2"
+    },
+    "v8-3": {
+      "version": "8.3"
+    },
+    "v8-4": {
+      "version": "8.4"
+    },
+    "v8-5": {
+      "version": "8.5"
+    },
+    "v8-6": {
+      "version": "8.6"
+    },
+    "v8-7": {
+      "version": "8.7"
+    },
+    "v8-8": {
+      "version": "8.8"
+    },
+    "v8-9": {
+      "version": "8.9"
+    },
+    "v8-10": {
+      "version": "8.10"
+    },
+    "v8-6.2": {
+      "version": "8.6.2"
+    },
+    "v9-0": {
+      "version": "9.0"
+    }
+  }
+}

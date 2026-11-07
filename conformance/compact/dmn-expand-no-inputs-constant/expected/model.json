@@ -1,0 +1,60 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "id": "decisionTable_0000002",
+        "inputs": [],
+        "outputs": [
+          {
+            "id": "o",
+            "name": "y"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r",
+            "inputEntries": [],
+            "outputEntries": [
+              {
+                "id": "outputEntry_0_0000001",
+                "text": "\"const\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "t",
+      "informationRequirements": [],
+      "knowledgeRequirements": []
+    }
+  ],
+  "diagram": {
+    "edges": [],
+    "shapes": [
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 160,
+          "y": 100
+        },
+        "dmnElementRef": "t"
+      }
+    ]
+  },
+  "id": "defs",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "Defs",
+  "namespace": "http://bpmn.io/schema/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "dc": "http://www.omg.org/spec/DMN/20180521/DC/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/"
+  },
+  "textAnnotations": []
+}

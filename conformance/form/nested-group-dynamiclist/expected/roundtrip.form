@@ -1,0 +1,77 @@
+{
+  "schemaVersion": 16,
+  "id": "f",
+  "components": [
+    {
+      "label": "Outer",
+      "components": [
+        {
+          "label": "Inner",
+          "components": [
+            {
+              "type": "dynamiclist",
+              "id": "dl",
+              "label": "Items",
+              "components": [
+                {
+                  "label": "Item",
+                  "type": "textfield",
+                  "layout": {
+                    "row": "R1",
+                    "columns": 8
+                  },
+                  "id": "dl_name",
+                  "key": "item"
+                },
+                {
+                  "label": "Qty",
+                  "type": "number",
+                  "layout": {
+                    "row": "R1",
+                    "columns": 8
+                  },
+                  "id": "dl_qty",
+                  "key": "qty"
+                },
+                {
+                  "label": "Deep",
+                  "components": [],
+                  "type": "group",
+                  "id": "dl_g"
+                }
+              ],
+              "path": "items",
+              "isRepeating": true
+            }
+          ],
+          "showOutline": true,
+          "type": "group",
+          "id": "g2"
+        },
+        {
+          "text": "after inner",
+          "type": "text",
+          "id": "g1_t"
+        }
+      ],
+      "type": "group",
+      "layout": {
+        "row": "Row_g1",
+        "columns": null
+      },
+      "id": "g1"
+    },
+    {
+      "type": "dynamiclist",
+      "id": "dl_empty",
+      "components": []
+    },
+    {
+      "type": "dynamiclist",
+      "id": "dl_notarray",
+      "components": [],
+      "path": "x"
+    }
+  ],
+  "type": "default"
+}

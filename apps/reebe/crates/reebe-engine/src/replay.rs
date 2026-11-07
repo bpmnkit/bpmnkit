@@ -19,7 +19,7 @@ use tracing::{info, warn};
 pub async fn needs_replay(pool: &DbPool, partition_id: i16) -> bool {
     // Check if there are any EVENT records but no process instances
     let event_count: i64 = sqlx::query_scalar(
-        "SELECT COUNT(*) FROM partition_records WHERE partition_id = $1 AND record_type = 'EVENT'"
+        "SELECT COUNT(*) FROM partition_records WHERE partition_id = $1 AND record_type = 'EVENT'",
     )
     .bind(partition_id)
     .fetch_one(pool)
@@ -30,12 +30,10 @@ pub async fn needs_replay(pool: &DbPool, partition_id: i16) -> bool {
         return false;
     }
 
-    let instance_count: i64 = sqlx::query_scalar(
-        "SELECT COUNT(*) FROM process_instances"
-    )
-    .fetch_one(pool)
-    .await
-    .unwrap_or(0);
+    let instance_count: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM process_instances")
+        .fetch_one(pool)
+        .await
+        .unwrap_or(0);
 
     // If we have events but no instances, projections might be stale
     event_count > 0 && instance_count == 0
@@ -56,6 +54,9 @@ pub async fn check_and_log_replay_status(pool: &DbPool, partition_id: i16) {
              This can happen after a database restore or schema reset."
         );
     } else {
-        info!(partition_id, "Projection state looks consistent with event log");
+        info!(
+            partition_id,
+            "Projection state looks consistent with event log"
+        );
     }
 }

@@ -1,0 +1,394 @@
+{
+  "id": "_af3cbf6a-9c69-460b-9a1d-276711d30213",
+  "processes": [
+    {
+      "elements": [
+        {
+          "eventType": "message",
+          "id": "_15fef309-6718-4352-9b71-f757bcd8c023",
+          "name": "Offer Approved",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "eventType": "message",
+          "id": "_e5c69e92-6f98-47c8-bc22-b75d38620f95",
+          "name": "Cancel Request",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "eventType": "timer",
+          "id": "_87baeef0-f32e-4a93-b802-fdd588aaf729",
+          "name": "24 Hours",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "eventType": "compensate",
+          "id": "_6a5cdbbf-2618-496e-b728-955dc215ef9d",
+          "name": "Booking",
+          "type": "intermediateThrowEvent"
+        },
+        {
+          "id": "_88247168-b457-4663-aad0-753a0236c8df",
+          "name": "Offer Expired",
+          "type": "endEvent"
+        },
+        {
+          "id": "_7eb87eb8-0d7a-445b-b768-90d754a938ed",
+          "name": "Request Cancelled",
+          "type": "endEvent"
+        },
+        {
+          "id": "_e839800f-ad4f-4bcc-aaf2-d38fe4a32bcd",
+          "name": "Request\nCredit Card Information",
+          "type": "sendTask"
+        },
+        {
+          "id": "_7ab6dbdf-f55b-4be6-bb41-d99793135c1d",
+          "type": "eventBasedGateway"
+        },
+        {
+          "eventType": "message",
+          "id": "_44e3f1fa-42cd-40b7-9980-a51ac49d5fa3",
+          "name": "Receive Travel Request",
+          "type": "startEvent"
+        },
+        {
+          "id": "_42e03d0f-6c6b-4493-971f-c6928eb563b0",
+          "name": "Booking \nConfirmed",
+          "type": "endEvent"
+        },
+        {
+          "id": "_babdfa54-b55f-463f-9341-424b42db9760",
+          "name": "Failed Credit\nTransaction",
+          "type": "endEvent"
+        },
+        {
+          "id": "_a68b0941-b7e3-4791-8e13-fd9622e4448c",
+          "name": "Failed \nBooking",
+          "type": "endEvent"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "_6ff2b954-2017-46dd-941e-4badd9326eac",
+                "name": "Travel Booked",
+                "type": "endEvent"
+              },
+              {
+                "id": "_31a01c78-9a86-4b53-a485-e8a973ba6383",
+                "type": "startEvent"
+              },
+              {
+                "children": {
+                  "elements": [
+                    {
+                      "id": "_fc4826b1-1e63-49f6-8670-7cc8104e45ea",
+                      "type": "endEvent"
+                    },
+                    {
+                      "eventType": "compensate",
+                      "id": "_99bf4db9-3616-4ed1-a0f8-b8175c3fd46f",
+                      "name": "Hotel",
+                      "type": "intermediateThrowEvent"
+                    },
+                    {
+                      "eventType": "compensate",
+                      "id": "_e4b9fa74-efd8-409f-a2e4-ad917df767b4",
+                      "name": "Flight",
+                      "type": "intermediateThrowEvent"
+                    },
+                    {
+                      "eventType": "compensate",
+                      "id": "_8af17ed4-6e13-463b-8333-d397b3002c65",
+                      "name": "Booking",
+                      "type": "startEvent"
+                    },
+                    {
+                      "id": "_c4ddacd9-6e12-49e3-b058-e71c0af08c68",
+                      "type": "parallelGateway"
+                    },
+                    {
+                      "id": "_08cd4ce0-bf7c-4a05-bacf-546daa51ce9c",
+                      "type": "parallelGateway"
+                    }
+                  ],
+                  "flows": [
+                    {
+                      "from": "_c4ddacd9-6e12-49e3-b058-e71c0af08c68",
+                      "id": "_b3d5a547-87a4-460d-b7c1-53b6506127e9",
+                      "to": "_fc4826b1-1e63-49f6-8670-7cc8104e45ea"
+                    },
+                    {
+                      "from": "_99bf4db9-3616-4ed1-a0f8-b8175c3fd46f",
+                      "id": "_8d0dadf1-129e-4ba8-b829-3e7e176bf775",
+                      "to": "_c4ddacd9-6e12-49e3-b058-e71c0af08c68"
+                    },
+                    {
+                      "from": "_e4b9fa74-efd8-409f-a2e4-ad917df767b4",
+                      "id": "_b62ef735-9d04-494a-aeb4-95fd4862cc45",
+                      "to": "_c4ddacd9-6e12-49e3-b058-e71c0af08c68"
+                    },
+                    {
+                      "from": "_08cd4ce0-bf7c-4a05-bacf-546daa51ce9c",
+                      "id": "_64d60a4e-90cf-4a9a-afbb-631739b6b704",
+                      "to": "_99bf4db9-3616-4ed1-a0f8-b8175c3fd46f"
+                    },
+                    {
+                      "from": "_08cd4ce0-bf7c-4a05-bacf-546daa51ce9c",
+                      "id": "_3cd5068b-6df1-4a62-a06a-369d063f6160",
+                      "to": "_e4b9fa74-efd8-409f-a2e4-ad917df767b4"
+                    },
+                    {
+                      "from": "_8af17ed4-6e13-463b-8333-d397b3002c65",
+                      "id": "_e0c52135-c57f-4ee6-b488-22bbab06dccc",
+                      "to": "_08cd4ce0-bf7c-4a05-bacf-546daa51ce9c"
+                    }
+                  ]
+                },
+                "id": "_e880bf53-84ca-4776-aa75-d1bf53172240",
+                "name": "Handle Compensation",
+                "type": "subProcess"
+              },
+              {
+                "id": "_749dd603-40f5-40fb-89b4-0e305b29892c",
+                "type": "parallelGateway"
+              },
+              {
+                "id": "_6a68d4b4-7549-42ce-b903-9da8b2024d31",
+                "type": "parallelGateway"
+              },
+              {
+                "id": "_3a2f133c-3ae1-4e21-94b5-6e8cf51acd74",
+                "name": "Cancel Hotel",
+                "type": "serviceTask"
+              },
+              {
+                "id": "_b595ec43-0769-4864-8f2e-403c405c8217",
+                "name": "Book Hotel",
+                "type": "serviceTask"
+              },
+              {
+                "id": "_ea5cc55d-bfce-49c6-8a1a-a8a41a85da12",
+                "name": "Book Flight",
+                "type": "serviceTask"
+              },
+              {
+                "id": "_0198160d-b56c-4919-9920-db5f32d16b3f",
+                "name": "Cancel Flight",
+                "type": "serviceTask"
+              },
+              {
+                "attachedTo": "_b595ec43-0769-4864-8f2e-403c405c8217",
+                "eventType": "compensate",
+                "id": "_b25ecc7c-4eff-4a70-96f2-6b2f94cf19b1",
+                "name": "Hotel",
+                "type": "boundaryEvent"
+              },
+              {
+                "attachedTo": "_ea5cc55d-bfce-49c6-8a1a-a8a41a85da12",
+                "eventType": "compensate",
+                "id": "_fe3f9094-097b-416d-adeb-4b7e7e753f3c",
+                "name": "Flight",
+                "type": "boundaryEvent"
+              }
+            ],
+            "flows": [
+              {
+                "from": "_31a01c78-9a86-4b53-a485-e8a973ba6383",
+                "id": "_d51b76e8-b096-4376-ba01-7ca63ae51f70",
+                "to": "_749dd603-40f5-40fb-89b4-0e305b29892c"
+              },
+              {
+                "from": "_6a68d4b4-7549-42ce-b903-9da8b2024d31",
+                "id": "_eba304c2-42e8-4d65-a9dc-e2483fd8ad86",
+                "to": "_6ff2b954-2017-46dd-941e-4badd9326eac"
+              },
+              {
+                "from": "_749dd603-40f5-40fb-89b4-0e305b29892c",
+                "id": "_018e5307-4c8d-46fd-ba84-7b75409b3124",
+                "to": "_ea5cc55d-bfce-49c6-8a1a-a8a41a85da12"
+              },
+              {
+                "from": "_ea5cc55d-bfce-49c6-8a1a-a8a41a85da12",
+                "id": "_b08efa4c-c27c-4654-9901-279a8c456a4f",
+                "to": "_6a68d4b4-7549-42ce-b903-9da8b2024d31"
+              },
+              {
+                "from": "_b595ec43-0769-4864-8f2e-403c405c8217",
+                "id": "_e6011c12-800f-44e6-8ae8-51866664afcf",
+                "to": "_6a68d4b4-7549-42ce-b903-9da8b2024d31"
+              },
+              {
+                "from": "_749dd603-40f5-40fb-89b4-0e305b29892c",
+                "id": "_b2d48080-6bb1-4ae9-85c9-916d87536a49",
+                "to": "_b595ec43-0769-4864-8f2e-403c405c8217"
+              }
+            ]
+          },
+          "id": "_c38139c7-a2d1-47c7-b75a-19e14c7212c8",
+          "name": "Make Booking",
+          "type": "subProcess"
+        },
+        {
+          "id": "_22612d45-65ca-4a74-a6eb-53af7ebcb5ff",
+          "name": "Confirm Booking",
+          "type": "sendTask"
+        },
+        {
+          "id": "_c8fa5253-dde9-471e-b933-58b00e8f374c",
+          "name": "Notify Failed Booking",
+          "type": "sendTask"
+        },
+        {
+          "id": "_614d6469-2bb8-4ad6-a20a-db5db6321c6b",
+          "name": "Charge Credit Card",
+          "type": "serviceTask"
+        },
+        {
+          "id": "_9cc2ac34-f12c-49e0-b37c-144e5a84fd92",
+          "name": "Make Flights and Hotel Offer",
+          "type": "sendTask"
+        },
+        {
+          "id": "_8afc49f0-42c2-4da9-8e79-e08dbe349776",
+          "name": "Update Customer Record",
+          "type": "serviceTask"
+        },
+        {
+          "id": "_de7e721e-a073-4857-b8c3-c6ae886dbb46",
+          "name": "Notify Customer\nOffer Expired",
+          "type": "sendTask"
+        },
+        {
+          "id": "_2d6586cf-81fc-4e2a-83ec-6cfff5b34bb0",
+          "name": "Notify Failed Credit Transaction",
+          "type": "sendTask"
+        },
+        {
+          "attachedTo": "_614d6469-2bb8-4ad6-a20a-db5db6321c6b",
+          "eventType": "error",
+          "id": "_6db9a77f-189f-4c07-b33b-e0c88f09e0db",
+          "type": "boundaryEvent"
+        },
+        {
+          "attachedTo": "_c38139c7-a2d1-47c7-b75a-19e14c7212c8",
+          "eventType": "error",
+          "id": "_54d6e34f-4613-48d4-9143-b90927448adb",
+          "type": "boundaryEvent"
+        },
+        {
+          "attachedTo": "_e839800f-ad4f-4bcc-aaf2-d38fe4a32bcd",
+          "eventType": "timer",
+          "id": "_32c4138c-74ae-484a-a7e5-0609370d7080",
+          "name": "24 Hours",
+          "type": "boundaryEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "_15fef309-6718-4352-9b71-f757bcd8c023",
+          "id": "_c7c2f8e1-a93f-44d6-9a94-cb92d7466d73",
+          "to": "_e839800f-ad4f-4bcc-aaf2-d38fe4a32bcd"
+        },
+        {
+          "from": "_7ab6dbdf-f55b-4be6-bb41-d99793135c1d",
+          "id": "_16857297-f0fb-4027-87f6-633a76267c84",
+          "to": "_87baeef0-f32e-4a93-b802-fdd588aaf729"
+        },
+        {
+          "from": "_7ab6dbdf-f55b-4be6-bb41-d99793135c1d",
+          "id": "_54044d90-3a1e-4a49-99a3-1497045c7235",
+          "to": "_15fef309-6718-4352-9b71-f757bcd8c023"
+        },
+        {
+          "from": "_7ab6dbdf-f55b-4be6-bb41-d99793135c1d",
+          "id": "_2403da0e-5b49-43fa-ba00-ec6c1f3e4790",
+          "to": "_e5c69e92-6f98-47c8-bc22-b75d38620f95"
+        },
+        {
+          "from": "_6db9a77f-189f-4c07-b33b-e0c88f09e0db",
+          "id": "_b792d502-a08e-4a3d-bdc1-1fc33a2022f6",
+          "to": "_6a5cdbbf-2618-496e-b728-955dc215ef9d"
+        },
+        {
+          "from": "_22612d45-65ca-4a74-a6eb-53af7ebcb5ff",
+          "id": "_c69565cd-3a08-4532-b466-8f9a9ebdc1e1",
+          "to": "_42e03d0f-6c6b-4493-971f-c6928eb563b0"
+        },
+        {
+          "from": "_54d6e34f-4613-48d4-9143-b90927448adb",
+          "id": "_8eac4fb5-c746-42e4-ab0b-80cdfaf76007",
+          "to": "_c8fa5253-dde9-471e-b933-58b00e8f374c"
+        },
+        {
+          "from": "_c8fa5253-dde9-471e-b933-58b00e8f374c",
+          "id": "_ec8c7430-02e1-4298-9b00-33c4d56d0fac",
+          "to": "_a68b0941-b7e3-4791-8e13-fd9622e4448c"
+        },
+        {
+          "from": "_614d6469-2bb8-4ad6-a20a-db5db6321c6b",
+          "id": "_65293cb4-b859-4ff7-bcd3-ba4e38cf8763",
+          "to": "_22612d45-65ca-4a74-a6eb-53af7ebcb5ff"
+        },
+        {
+          "from": "_c38139c7-a2d1-47c7-b75a-19e14c7212c8",
+          "id": "_f81560f5-e1c5-497d-a159-dce350f2283c",
+          "to": "_614d6469-2bb8-4ad6-a20a-db5db6321c6b"
+        },
+        {
+          "from": "_44e3f1fa-42cd-40b7-9980-a51ac49d5fa3",
+          "id": "_9ec5ad1d-0662-42a4-9118-bca0bf744422",
+          "to": "_9cc2ac34-f12c-49e0-b37c-144e5a84fd92"
+        },
+        {
+          "from": "_9cc2ac34-f12c-49e0-b37c-144e5a84fd92",
+          "id": "_bcb8805c-5e93-41ec-991b-575d26ed3a9c",
+          "to": "_7ab6dbdf-f55b-4be6-bb41-d99793135c1d"
+        },
+        {
+          "from": "_e5c69e92-6f98-47c8-bc22-b75d38620f95",
+          "id": "_f072c57e-dcc6-4a16-8f28-13a2cd6e43ed",
+          "to": "_8afc49f0-42c2-4da9-8e79-e08dbe349776"
+        },
+        {
+          "from": "_8afc49f0-42c2-4da9-8e79-e08dbe349776",
+          "id": "_e396fc69-5792-41e3-8a92-ee6b83cd0909",
+          "to": "_7eb87eb8-0d7a-445b-b768-90d754a938ed"
+        },
+        {
+          "from": "_87baeef0-f32e-4a93-b802-fdd588aaf729",
+          "id": "_649072fc-31c7-4e04-bc58-d4442a06f076",
+          "to": "_de7e721e-a073-4857-b8c3-c6ae886dbb46"
+        },
+        {
+          "from": "_de7e721e-a073-4857-b8c3-c6ae886dbb46",
+          "id": "_51e34f49-b9eb-4f10-ac0a-7af81e1370ff",
+          "to": "_88247168-b457-4663-aad0-753a0236c8df"
+        },
+        {
+          "from": "_32c4138c-74ae-484a-a7e5-0609370d7080",
+          "id": "_a0c99000-31e1-4de9-baf7-45c2d09ebbff",
+          "to": "_de7e721e-a073-4857-b8c3-c6ae886dbb46"
+        },
+        {
+          "from": "_6a5cdbbf-2618-496e-b728-955dc215ef9d",
+          "id": "_c72535b8-43f7-4906-9f18-691e03050c24",
+          "to": "_2d6586cf-81fc-4e2a-83ec-6cfff5b34bb0"
+        },
+        {
+          "from": "_2d6586cf-81fc-4e2a-83ec-6cfff5b34bb0",
+          "id": "_94e0bd86-6659-4669-baee-ce671c7f33d6",
+          "to": "_babdfa54-b55f-463f-9341-424b42db9760"
+        },
+        {
+          "from": "_e839800f-ad4f-4bcc-aaf2-d38fe4a32bcd",
+          "id": "_7efd61ea-979e-44f4-91c8-e212ae6b22c7",
+          "to": "_c38139c7-a2d1-47c7-b75a-19e14c7212c8"
+        }
+      ],
+      "id": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "name": "Simple Travel Booking"
+    }
+  ]
+}

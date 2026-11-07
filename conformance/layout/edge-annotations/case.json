@@ -1,0 +1,17 @@
+{
+  "runs": {
+    "semantic": {},
+    "grid": {
+      "engine": "grid"
+    },
+    "sides": {
+      "hints": {
+        "annotationSides": {
+          "N1": "below",
+          "N2": "left",
+          "N4": "above"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "aliases": {
+    "and": "and",
+    "dispatch": "dispatch",
+    "dispatch_join": "dispatch_join",
+    "e": "e",
+    "label": "label",
+    "pack": "pack",
+    "pick": "pick",
+    "s": "s"
+  }
+}

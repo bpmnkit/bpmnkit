@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+  xmlns:modeler="http://camunda.org/schema/modeler/1.0"
+  xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  
+  
+  <bpmn:process id="proc" isExecutable="true">
+    <bpmn:startEvent id="start" ><bpmn:outgoing>in</bpmn:outgoing></bpmn:startEvent><bpmn:exclusiveGateway id="gw" default="no" ><bpmn:incoming>in</bpmn:incoming><bpmn:outgoing>no</bpmn:outgoing><bpmn:outgoing>yes</bpmn:outgoing></bpmn:exclusiveGateway><bpmn:endEvent id="e1" ><bpmn:incoming>no</bpmn:incoming></bpmn:endEvent><bpmn:endEvent id="e2" ><bpmn:incoming>yes</bpmn:incoming></bpmn:endEvent>
+	  <bpmn:sequenceFlow id="in" sourceRef="start" targetRef="gw" name="go" /><bpmn:sequenceFlow id="no" sourceRef="gw" targetRef="e1" name="No" /><bpmn:sequenceFlow id="yes" sourceRef="gw" targetRef="e2" name="Yes" />
+  </bpmn:process>
+  
+</bpmn:definitions>

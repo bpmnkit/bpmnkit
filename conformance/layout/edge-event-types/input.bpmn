@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="P" isExecutable="true">
+    <bpmn:startEvent id="S" name="Message start">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="e1"/>
+    </bpmn:startEvent>
+    <bpmn:intermediateCatchEvent id="C1" name="Wait">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="e2">
+        <bpmn:timeDuration>PT1H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateThrowEvent id="T1" name="Signal">
+      <bpmn:incoming>f2</bpmn:incoming>
+      <bpmn:outgoing>f3</bpmn:outgoing>
+      <bpmn:signalEventDefinition id="e3"/>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:callActivity id="CA" calledElement="other" name="Call">
+      <bpmn:incoming>f3</bpmn:incoming>
+      <bpmn:outgoing>f4</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:businessRuleTask id="BR" name="Rule">
+      <bpmn:incoming>f4</bpmn:incoming>
+      <bpmn:outgoing>f5</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:scriptTask id="SC" name="Script">
+      <bpmn:incoming>f5</bpmn:incoming>
+      <bpmn:outgoing>f6</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:manualTask id="MT" name="Manual">
+      <bpmn:incoming>f6</bpmn:incoming>
+      <bpmn:outgoing>f7</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:endEvent id="E" name="Terminate">
+      <bpmn:incoming>f7</bpmn:incoming>
+      <bpmn:terminateEventDefinition id="e4"/>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="C1"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="C1" targetRef="T1"/>
+    <bpmn:sequenceFlow id="f3" sourceRef="T1" targetRef="CA"/>
+    <bpmn:sequenceFlow id="f4" sourceRef="CA" targetRef="BR"/>
+    <bpmn:sequenceFlow id="f5" sourceRef="BR" targetRef="SC"/>
+    <bpmn:sequenceFlow id="f6" sourceRef="SC" targetRef="MT"/>
+    <bpmn:sequenceFlow id="f7" sourceRef="MT" targetRef="E"/>
+  </bpmn:process>
+</bpmn:definitions>
+

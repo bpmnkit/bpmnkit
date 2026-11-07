@@ -1,0 +1,196 @@
+{
+  "findings": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "_f1478fb7-98c4-4c01-8c15-68bd04c91535"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_f1478fb7-98c4-4c01-8c15-68bd04c91535\" exits a decision gateway without a condition expression.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_a1570a53-28d2-41b1-a3a2-3e50c00d747e"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_a1570a53-28d2-41b1-a3a2-3e50c00d747e\" exits a decision gateway without a condition expression.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b\" exits a decision gateway without a condition expression.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_35fe57a7-1302-44e2-bf58-032f11af7ecb"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" has 3 outgoing flows but no default flow set.",
+      "processId": "WFP-6-",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_258f51eb-b764-4a71-b681-3a01cca14143"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"_258f51eb-b764-4a71-b681-3a01cca14143\" (endEvent) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_35fe57a7-1302-44e2-bf58-032f11af7ecb"
+      ],
+      "fixable": false,
+      "id": "naming/gateway-not-a-question",
+      "message": "Gateway \"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" is named \"Gateway\n(Split Flow)\" — split gateways should be phrased as questions.",
+      "processId": "WFP-6-",
+      "severity": "info",
+      "suggestion": "Rephrase as a question, e.g. \"Gateway\n(Split Flow)?\""
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_35fe57a7-1302-44e2-bf58-032f11af7ecb",
+        "_f1478fb7-98c4-4c01-8c15-68bd04c91535"
+      ],
+      "fixable": false,
+      "id": "naming/missing-flow-condition",
+      "message": "Sequence flow \"_f1478fb7-98c4-4c01-8c15-68bd04c91535\" from split gateway \"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" has no condition label.",
+      "processId": "WFP-6-",
+      "severity": "warning",
+      "suggestion": "Label each outgoing flow with the condition answer, e.g. \"Yes\", \"No\", \"Approved\", \"Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_35fe57a7-1302-44e2-bf58-032f11af7ecb",
+        "_a1570a53-28d2-41b1-a3a2-3e50c00d747e"
+      ],
+      "fixable": false,
+      "id": "naming/missing-flow-condition",
+      "message": "Sequence flow \"_a1570a53-28d2-41b1-a3a2-3e50c00d747e\" from split gateway \"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" has no condition label.",
+      "processId": "WFP-6-",
+      "severity": "warning",
+      "suggestion": "Label each outgoing flow with the condition answer, e.g. \"Yes\", \"No\", \"Approved\", \"Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_35fe57a7-1302-44e2-bf58-032f11af7ecb",
+        "_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b"
+      ],
+      "fixable": false,
+      "id": "naming/missing-flow-condition",
+      "message": "Sequence flow \"_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b\" from split gateway \"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" has no condition label.",
+      "processId": "WFP-6-",
+      "severity": "warning",
+      "suggestion": "Label each outgoing flow with the condition answer, e.g. \"Yes\", \"No\", \"Approved\", \"Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_33c66216-391c-49c2-aa19-d8f0b7f5f91d"
+      ],
+      "fixable": false,
+      "id": "naming/join-gateway-labeled",
+      "message": "Gateway \"_33c66216-391c-49c2-aa19-d8f0b7f5f91d\" (join) is named \"Gateway\n(Merge Flows)\" — join gateways should not have labels.",
+      "processId": "WFP-6-",
+      "severity": "info",
+      "suggestion": "Remove the label from join-only gateways; their semantics are implicit."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_35fe57a7-1302-44e2-bf58-032f11af7ecb"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Gateway\n(Split Flow)\" has no default sequence flow.",
+      "processId": "WFP-6-",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_6b5db6a9-037a-49ad-9201-09201e2aaa97"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Start Event\" has no documentation describing expected input variables.",
+      "processId": "WFP-6-",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"WFP-6-\" is not marked executable.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    }
+  ],
+  "fixes": [
+    {
+      "description": "Set default flow to \"_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b\" on gateway \"_35fe57a7-1302-44e2-bf58-032f11af7ecb\"",
+      "id": "feel/missing-default-flow",
+      "index": 3,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<semantic:definitions xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:bpsim=\"http://www.bpsim.org/schemas/1.0\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:semantic=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" id=\"_1373649889746\" targetNamespace=\"http://www.trisotech.com/definitions/_1373649889746\" name=\"A.2.0\">\n  <semantic:process id=\"WFP-6-\" isExecutable=\"false\">\n    <semantic:startEvent id=\"_6b5db6a9-037a-49ad-9201-09201e2aaa97\" name=\"Start Event\">\n      <semantic:outgoing>_b50f530c-3450-4e1a-b81f-ea346dc6e1cb</semantic:outgoing>\n    </semantic:startEvent>\n    <semantic:task id=\"_5a972b87-735d-454a-b31c-f52fb3afc5c7\" completionQuantity=\"1\" startQuantity=\"1\" name=\"Task 1\">\n      <semantic:incoming>_b50f530c-3450-4e1a-b81f-ea346dc6e1cb</semantic:incoming>\n      <semantic:outgoing>_fe74c141-8843-4b00-a704-5e5e13be53b0</semantic:outgoing>\n    </semantic:task>\n    <semantic:endEvent id=\"_258f51eb-b764-4a71-b681-3a01cca14143\" name=\"End Event\">\n      <semantic:incoming>_a3d40a56-9b7f-417e-911e-d39e7f18b90c</semantic:incoming>\n      <semantic:incoming>_d4ce87c6-1373-45d6-a3b4-fbb2a04ee2e5</semantic:incoming>\n    </semantic:endEvent>\n    <semantic:task id=\"_4f7d62d7-f0e6-46bc-be00-69e02da38f65\" completionQuantity=\"1\" startQuantity=\"1\" name=\"Task 2\">\n      <semantic:incoming>_f1478fb7-98c4-4c01-8c15-68bd04c91535</semantic:incoming>\n      <semantic:outgoing>_a3d40a56-9b7f-417e-911e-d39e7f18b90c</semantic:outgoing>\n    </semantic:task>\n    <semantic:task id=\"_e6eb725a-34bc-45c7-aed0-9f9596cd7bee\" completionQuantity=\"1\" startQuantity=\"1\" name=\"Task 3\">\n      <semantic:incoming>_a1570a53-28d2-41b1-a3a2-3e50c00d747e</semantic:incoming>\n      <semantic:outgoing>_e9ebc7c7-995d-46db-86ce-d823bc2b4687</semantic:outgoing>\n    </semantic:task>\n    <semantic:exclusiveGateway id=\"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" gatewayDirection=\"Unspecified\" name=\"Gateway&#10;(Split Flow)\" default=\"_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b\">\n      <semantic:incoming>_fe74c141-8843-4b00-a704-5e5e13be53b0</semantic:incoming>\n      <semantic:outgoing>_f1478fb7-98c4-4c01-8c15-68bd04c91535</semantic:outgoing>\n      <semantic:outgoing>_a1570a53-28d2-41b1-a3a2-3e50c00d747e</semantic:outgoing>\n      <semantic:outgoing>_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b</semantic:outgoing>\n    </semantic:exclusiveGateway>\n    <semantic:task id=\"_7d399717-1aba-47ac-8d7d-8aaa033255e0\" completionQuantity=\"1\" startQuantity=\"1\" name=\"Task 4\">\n      <semantic:incoming>_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b</semantic:incoming>\n      <semantic:outgoing>_698b593f-18eb-42ea-b8cd-bcd51e1514cc</semantic:outgoing>\n    </semantic:task>\n    <semantic:exclusiveGateway id=\"_33c66216-391c-49c2-aa19-d8f0b7f5f91d\" gatewayDirection=\"Unspecified\" name=\"Gateway&#10;(Merge Flows)\">\n      <semantic:incoming>_e9ebc7c7-995d-46db-86ce-d823bc2b4687</semantic:incoming>\n      <semantic:incoming>_698b593f-18eb-42ea-b8cd-bcd51e1514cc</semantic:incoming>\n      <semantic:outgoing>_d4ce87c6-1373-45d6-a3b4-fbb2a04ee2e5</semantic:outgoing>\n    </semantic:exclusiveGateway>\n    <semantic:sequenceFlow id=\"_b50f530c-3450-4e1a-b81f-ea346dc6e1cb\" sourceRef=\"_6b5db6a9-037a-49ad-9201-09201e2aaa97\" targetRef=\"_5a972b87-735d-454a-b31c-f52fb3afc5c7\" name=\"\"/>\n    <semantic:sequenceFlow id=\"_fe74c141-8843-4b00-a704-5e5e13be53b0\" sourceRef=\"_5a972b87-735d-454a-b31c-f52fb3afc5c7\" targetRef=\"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" name=\"\"/>\n    <semantic:sequenceFlow id=\"_f1478fb7-98c4-4c01-8c15-68bd04c91535\" sourceRef=\"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" targetRef=\"_4f7d62d7-f0e6-46bc-be00-69e02da38f65\" name=\"\"/>\n    <semantic:sequenceFlow id=\"_a3d40a56-9b7f-417e-911e-d39e7f18b90c\" sourceRef=\"_4f7d62d7-f0e6-46bc-be00-69e02da38f65\" targetRef=\"_258f51eb-b764-4a71-b681-3a01cca14143\" name=\"\"/>\n    <semantic:sequenceFlow id=\"_e9ebc7c7-995d-46db-86ce-d823bc2b4687\" sourceRef=\"_e6eb725a-34bc-45c7-aed0-9f9596cd7bee\" targetRef=\"_33c66216-391c-49c2-aa19-d8f0b7f5f91d\" name=\"\"/>\n    <semantic:sequenceFlow id=\"_698b593f-18eb-42ea-b8cd-bcd51e1514cc\" sourceRef=\"_7d399717-1aba-47ac-8d7d-8aaa033255e0\" targetRef=\"_33c66216-391c-49c2-aa19-d8f0b7f5f91d\" name=\"\"/>\n    <semantic:sequenceFlow id=\"_d4ce87c6-1373-45d6-a3b4-fbb2a04ee2e5\" sourceRef=\"_33c66216-391c-49c2-aa19-d8f0b7f5f91d\" targetRef=\"_258f51eb-b764-4a71-b681-3a01cca14143\" name=\"\"/>\n    <semantic:sequenceFlow id=\"_a1570a53-28d2-41b1-a3a2-3e50c00d747e\" sourceRef=\"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" targetRef=\"_e6eb725a-34bc-45c7-aed0-9f9596cd7bee\" name=\"\"/>\n    <semantic:sequenceFlow id=\"_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b\" sourceRef=\"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" targetRef=\"_7d399717-1aba-47ac-8d7d-8aaa033255e0\" name=\"\"/>\n  </semantic:process>\n  <bpmndi:BPMNDiagram id=\"Trisotech_Visio-_6\" documentation=\"\" name=\"A.2.0\" resolution=\"96.00000267028808\">\n    <bpmndi:BPMNPlane bpmnElement=\"WFP-6-\">\n      <bpmndi:BPMNShape id=\"S1373649889871__6b5db6a9-037a-49ad-9201-09201e2aaa97\" bpmnElement=\"_6b5db6a9-037a-49ad-9201-09201e2aaa97\">\n        <dc:Bounds x=\"186\" y=\"276\" width=\"30\" height=\"30\"/>\n        <bpmndi:BPMNLabel labelStyle=\"LS1373649889872\">\n          <dc:Bounds x=\"153.67766754457273\" y=\"311.3333333333333\" width=\"94.93333333333335\" height=\"12.804751171875008\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"S1373649889873__5a972b87-735d-454a-b31c-f52fb3afc5c7\" bpmnElement=\"_5a972b87-735d-454a-b31c-f52fb3afc5c7\">\n        <dc:Bounds x=\"252\" y=\"257\" width=\"83\" height=\"68\"/>\n        <bpmndi:BPMNLabel labelStyle=\"LS1373649889872\">\n          <dc:Bounds x=\"257.3333333333333\" y=\"284.5818763825664\" width=\"72.48293963254594\" height=\"12.804751171875008\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"S1373649889874__258f51eb-b764-4a71-b681-3a01cca14143\" bpmnElement=\"_258f51eb-b764-4a71-b681-3a01cca14143\">\n        <dc:Bounds x=\"736\" y=\"244\" width=\"32\" height=\"32\"/>\n        <bpmndi:BPMNLabel labelStyle=\"LS1373649889872\">\n          <dc:Bounds x=\"656.5963254593175\" y=\"257.5976244140626\" width=\"94.93333333333335\" height=\"12.804751171875008\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"S1373649889875__4f7d62d7-f0e6-46bc-be00-69e02da38f65\" bpmnElement=\"_4f7d62d7-f0e6-46bc-be00-69e02da38f65\">\n        <dc:Bounds x=\"480\" y=\"172\" width=\"83\" height=\"68\"/>\n        <bpmndi:BPMNLabel labelStyle=\"LS1373649889872\">\n          <dc:Bounds x=\"485.3333333333333\" y=\"199.58187638256646\" width=\"72.48293963254594\" height=\"12.804751171875008\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"S1373649889876__e6eb725a-34bc-45c7-aed0-9f9596cd7bee\" bpmnElement=\"_e6eb725a-34bc-45c7-aed0-9f9596cd7bee\">\n        <dc:Bounds x=\"480\" y=\"257\" width=\"83\" height=\"68\"/>\n        <bpmndi:BPMNLabel labelStyle=\"LS1373649889872\">\n          <dc:Bounds x=\"485.3333333333333\" y=\"284.5818763825664\" width=\"72.48293963254594\" height=\"12.804751171875008\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"S1373649889877__35fe57a7-1302-44e2-bf58-032f11af7ecb\" bpmnElement=\"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" isMarkerVisible=\"false\">\n        <dc:Bounds x=\"399\" y=\"270\" width=\"42\" height=\"42\"/>\n        <bpmndi:BPMNLabel labelStyle=\"LS1373649889872\">\n          <dc:Bounds x=\"336.7931758530184\" y=\"311.26591304208245\" width=\"94.93333333333335\" height=\"25.604702343750013\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"S1373649889878__7d399717-1aba-47ac-8d7d-8aaa033255e0\" bpmnElement=\"_7d399717-1aba-47ac-8d7d-8aaa033255e0\">\n        <dc:Bounds x=\"480\" y=\"352\" width=\"83\" height=\"68\"/>\n        <bpmndi:BPMNLabel labelStyle=\"LS1373649889872\">\n          <dc:Bounds x=\"485.3333333333333\" y=\"379.5818763825664\" width=\"72.48293963254594\" height=\"12.804751171875008\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"S1373649889879__33c66216-391c-49c2-aa19-d8f0b7f5f91d\" bpmnElement=\"_33c66216-391c-49c2-aa19-d8f0b7f5f91d\" isMarkerVisible=\"false\">\n        <dc:Bounds x=\"621\" y=\"315\" width=\"42\" height=\"42\"/>\n        <bpmndi:BPMNLabel labelStyle=\"LS1373649889872\">\n          <dc:Bounds x=\"654.3207349081365\" y=\"347.41024725332187\" width=\"94.93333333333335\" height=\"25.604702343750013\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"E1373649889881__a3d40a56-9b7f-417e-911e-d39e7f18b90c\" bpmnElement=\"_a3d40a56-9b7f-417e-911e-d39e7f18b90c\">\n        <di:waypoint x=\"563\" y=\"206\"/>\n        <di:waypoint x=\"752\" y=\"206\"/>\n        <di:waypoint x=\"752\" y=\"244\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"E1373649889882__b50f530c-3450-4e1a-b81f-ea346dc6e1cb\" bpmnElement=\"_b50f530c-3450-4e1a-b81f-ea346dc6e1cb\">\n        <di:waypoint x=\"216\" y=\"291\"/>\n        <di:waypoint x=\"234\" y=\"291\"/>\n        <di:waypoint x=\"252\" y=\"291\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"E1373649889883__fe74c141-8843-4b00-a704-5e5e13be53b0\" bpmnElement=\"_fe74c141-8843-4b00-a704-5e5e13be53b0\">\n        <di:waypoint x=\"335\" y=\"291\"/>\n        <di:waypoint x=\"353\" y=\"291\"/>\n        <di:waypoint x=\"399\" y=\"291\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"E1373649889884__20ebb3c1-5178-4c7c-a91d-23e58f2aa73b\" bpmnElement=\"_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b\">\n        <di:waypoint x=\"420\" y=\"312\"/>\n        <di:waypoint x=\"420\" y=\"386\"/>\n        <di:waypoint x=\"480\" y=\"386\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"E1373649889885__d4ce87c6-1373-45d6-a3b4-fbb2a04ee2e5\" bpmnElement=\"_d4ce87c6-1373-45d6-a3b4-fbb2a04ee2e5\">\n        <di:waypoint x=\"663\" y=\"336\"/>\n        <di:waypoint x=\"752\" y=\"336\"/>\n        <di:waypoint x=\"752\" y=\"276\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"E1373649889886__e9ebc7c7-995d-46db-86ce-d823bc2b4687\" bpmnElement=\"_e9ebc7c7-995d-46db-86ce-d823bc2b4687\">\n        <di:waypoint x=\"563\" y=\"291\"/>\n        <di:waypoint x=\"642\" y=\"291\"/>\n        <di:waypoint x=\"642\" y=\"315\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"E1373649889887__f1478fb7-98c4-4c01-8c15-68bd04c91535\" bpmnElement=\"_f1478fb7-98c4-4c01-8c15-68bd04c91535\">\n        <di:waypoint x=\"420\" y=\"270\"/>\n        <di:waypoint x=\"420\" y=\"206\"/>\n        <di:waypoint x=\"480\" y=\"206\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"E1373649889888__a1570a53-28d2-41b1-a3a2-3e50c00d747e\" bpmnElement=\"_a1570a53-28d2-41b1-a3a2-3e50c00d747e\">\n        <di:waypoint x=\"440\" y=\"291\"/>\n        <di:waypoint x=\"458\" y=\"291\"/>\n        <di:waypoint x=\"480\" y=\"291\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"E1373649889889__698b593f-18eb-42ea-b8cd-bcd51e1514cc\" bpmnElement=\"_698b593f-18eb-42ea-b8cd-bcd51e1514cc\">\n        <di:waypoint x=\"563\" y=\"386\"/>\n        <di:waypoint x=\"642\" y=\"386\"/>\n        <di:waypoint x=\"642\" y=\"357\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNEdge>\n    </bpmndi:BPMNPlane>\n    <bpmndi:BPMNLabelStyle id=\"LS1373649889872\">\n      <dc:Font isBold=\"false\" isItalic=\"false\" isStrikeThrough=\"false\" isUnderline=\"false\" name=\"Arial\" size=\"11.0\"/>\n    </bpmndi:BPMNLabelStyle>\n  </bpmndi:BPMNDiagram>\n</semantic:definitions>\n\n"
+    },
+    {
+      "description": "Inserted exclusive gateway \"Gateway_0000001\" before \"_258f51eb-b764-4a71-b681-3a01cca14143\" to join 2 incoming flows",
+      "id": "flow/multi-incoming-task",
+      "index": 4,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<semantic:definitions xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:bpsim=\"http://www.bpsim.org/schemas/1.0\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:semantic=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" id=\"_1373649889746\" targetNamespace=\"http://www.trisotech.com/definitions/_1373649889746\" name=\"A.2.0\">\n  <semantic:process id=\"WFP-6-\" isExecutable=\"false\">\n    <semantic:startEvent id=\"_6b5db6a9-037a-49ad-9201-09201e2aaa97\" name=\"Start Event\">\n      <semantic:outgoing>_b50f530c-3450-4e1a-b81f-ea346dc6e1cb</semantic:outgoing>\n    </semantic:startEvent>\n    <semantic:task id=\"_5a972b87-735d-454a-b31c-f52fb3afc5c7\" completionQuantity=\"1\" startQuantity=\"1\" name=\"Task 1\">\n      <semantic:incoming>_b50f530c-3450-4e1a-b81f-ea346dc6e1cb</semantic:incoming>\n      <semantic:outgoing>_fe74c141-8843-4b00-a704-5e5e13be53b0</semantic:outgoing>\n    </semantic:task>\n    <semantic:endEvent id=\"_258f51eb-b764-4a71-b681-3a01cca14143\" name=\"End Event\">\n      <semantic:incoming>Flow_0000002</semantic:incoming>\n    </semantic:endEvent>\n    <semantic:task id=\"_4f7d62d7-f0e6-46bc-be00-69e02da38f65\" completionQuantity=\"1\" startQuantity=\"1\" name=\"Task 2\">\n      <semantic:incoming>_f1478fb7-98c4-4c01-8c15-68bd04c91535</semantic:incoming>\n      <semantic:outgoing>_a3d40a56-9b7f-417e-911e-d39e7f18b90c</semantic:outgoing>\n    </semantic:task>\n    <semantic:task id=\"_e6eb725a-34bc-45c7-aed0-9f9596cd7bee\" completionQuantity=\"1\" startQuantity=\"1\" name=\"Task 3\">\n      <semantic:incoming>_a1570a53-28d2-41b1-a3a2-3e50c00d747e</semantic:incoming>\n      <semantic:outgoing>_e9ebc7c7-995d-46db-86ce-d823bc2b4687</semantic:outgoing>\n    </semantic:task>\n    <semantic:exclusiveGateway id=\"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" gatewayDirection=\"Unspecified\" name=\"Gateway&#10;(Split Flow)\">\n      <semantic:incoming>_fe74c141-8843-4b00-a704-5e5e13be53b0</semantic:incoming>\n      <semantic:outgoing>_f1478fb7-98c4-4c01-8c15-68bd04c91535</semantic:outgoing>\n      <semantic:outgoing>_a1570a53-28d2-41b1-a3a2-3e50c00d747e</semantic:outgoing>\n      <semantic:outgoing>_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b</semantic:outgoing>\n    </semantic:exclusiveGateway>\n    <semantic:task id=\"_7d399717-1aba-47ac-8d7d-8aaa033255e0\" completionQuantity=\"1\" startQuantity=\"1\" name=\"Task 4\">\n      <semantic:incoming>_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b</semantic:incoming>\n      <semantic:outgoing>_698b593f-18eb-42ea-b8cd-bcd51e1514cc</semantic:outgoing>\n    </semantic:task>\n    <semantic:exclusiveGateway id=\"_33c66216-391c-49c2-aa19-d8f0b7f5f91d\" gatewayDirection=\"Unspecified\" name=\"Gateway&#10;(Merge Flows)\">\n      <semantic:incoming>_e9ebc7c7-995d-46db-86ce-d823bc2b4687</semantic:incoming>\n      <semantic:incoming>_698b593f-18eb-42ea-b8cd-bcd51e1514cc</semantic:incoming>\n      <semantic:outgoing>_d4ce87c6-1373-45d6-a3b4-fbb2a04ee2e5</semantic:outgoing>\n    </semantic:exclusiveGateway>\n    <semantic:exclusiveGateway id=\"Gateway_0000001\">\n      <semantic:incoming>_a3d40a56-9b7f-417e-911e-d39e7f18b90c</semantic:incoming>\n      <semantic:incoming>_d4ce87c6-1373-45d6-a3b4-fbb2a04ee2e5</semantic:incoming>\n      <semantic:outgoing>Flow_0000002</semantic:outgoing>\n    </semantic:exclusiveGateway>\n    <semantic:sequenceFlow id=\"_b50f530c-3450-4e1a-b81f-ea346dc6e1cb\" sourceRef=\"_6b5db6a9-037a-49ad-9201-09201e2aaa97\" targetRef=\"_5a972b87-735d-454a-b31c-f52fb3afc5c7\" name=\"\"/>\n    <semantic:sequenceFlow id=\"_fe74c141-8843-4b00-a704-5e5e13be53b0\" sourceRef=\"_5a972b87-735d-454a-b31c-f52fb3afc5c7\" targetRef=\"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" name=\"\"/>\n    <semantic:sequenceFlow id=\"_f1478fb7-98c4-4c01-8c15-68bd04c91535\" sourceRef=\"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" targetRef=\"_4f7d62d7-f0e6-46bc-be00-69e02da38f65\" name=\"\"/>\n    <semantic:sequenceFlow id=\"_a3d40a56-9b7f-417e-911e-d39e7f18b90c\" sourceRef=\"_4f7d62d7-f0e6-46bc-be00-69e02da38f65\" targetRef=\"Gateway_0000001\" name=\"\"/>\n    <semantic:sequenceFlow id=\"_e9ebc7c7-995d-46db-86ce-d823bc2b4687\" sourceRef=\"_e6eb725a-34bc-45c7-aed0-9f9596cd7bee\" targetRef=\"_33c66216-391c-49c2-aa19-d8f0b7f5f91d\" name=\"\"/>\n    <semantic:sequenceFlow id=\"_698b593f-18eb-42ea-b8cd-bcd51e1514cc\" sourceRef=\"_7d399717-1aba-47ac-8d7d-8aaa033255e0\" targetRef=\"_33c66216-391c-49c2-aa19-d8f0b7f5f91d\" name=\"\"/>\n    <semantic:sequenceFlow id=\"_d4ce87c6-1373-45d6-a3b4-fbb2a04ee2e5\" sourceRef=\"_33c66216-391c-49c2-aa19-d8f0b7f5f91d\" targetRef=\"Gateway_0000001\" name=\"\"/>\n    <semantic:sequenceFlow id=\"_a1570a53-28d2-41b1-a3a2-3e50c00d747e\" sourceRef=\"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" targetRef=\"_e6eb725a-34bc-45c7-aed0-9f9596cd7bee\" name=\"\"/>\n    <semantic:sequenceFlow id=\"_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b\" sourceRef=\"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" targetRef=\"_7d399717-1aba-47ac-8d7d-8aaa033255e0\" name=\"\"/>\n    <semantic:sequenceFlow id=\"Flow_0000002\" sourceRef=\"Gateway_0000001\" targetRef=\"_258f51eb-b764-4a71-b681-3a01cca14143\"/>\n  </semantic:process>\n  <bpmndi:BPMNDiagram id=\"Trisotech_Visio-_6\" documentation=\"\" name=\"A.2.0\" resolution=\"96.00000267028808\">\n    <bpmndi:BPMNPlane bpmnElement=\"WFP-6-\">\n      <bpmndi:BPMNShape id=\"S1373649889871__6b5db6a9-037a-49ad-9201-09201e2aaa97\" bpmnElement=\"_6b5db6a9-037a-49ad-9201-09201e2aaa97\">\n        <dc:Bounds x=\"186\" y=\"276\" width=\"30\" height=\"30\"/>\n        <bpmndi:BPMNLabel labelStyle=\"LS1373649889872\">\n          <dc:Bounds x=\"153.67766754457273\" y=\"311.3333333333333\" width=\"94.93333333333335\" height=\"12.804751171875008\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"S1373649889873__5a972b87-735d-454a-b31c-f52fb3afc5c7\" bpmnElement=\"_5a972b87-735d-454a-b31c-f52fb3afc5c7\">\n        <dc:Bounds x=\"252\" y=\"257\" width=\"83\" height=\"68\"/>\n        <bpmndi:BPMNLabel labelStyle=\"LS1373649889872\">\n          <dc:Bounds x=\"257.3333333333333\" y=\"284.5818763825664\" width=\"72.48293963254594\" height=\"12.804751171875008\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"S1373649889874__258f51eb-b764-4a71-b681-3a01cca14143\" bpmnElement=\"_258f51eb-b764-4a71-b681-3a01cca14143\">\n        <dc:Bounds x=\"736\" y=\"244\" width=\"32\" height=\"32\"/>\n        <bpmndi:BPMNLabel labelStyle=\"LS1373649889872\">\n          <dc:Bounds x=\"656.5963254593175\" y=\"257.5976244140626\" width=\"94.93333333333335\" height=\"12.804751171875008\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"S1373649889875__4f7d62d7-f0e6-46bc-be00-69e02da38f65\" bpmnElement=\"_4f7d62d7-f0e6-46bc-be00-69e02da38f65\">\n        <dc:Bounds x=\"480\" y=\"172\" width=\"83\" height=\"68\"/>\n        <bpmndi:BPMNLabel labelStyle=\"LS1373649889872\">\n          <dc:Bounds x=\"485.3333333333333\" y=\"199.58187638256646\" width=\"72.48293963254594\" height=\"12.804751171875008\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"S1373649889876__e6eb725a-34bc-45c7-aed0-9f9596cd7bee\" bpmnElement=\"_e6eb725a-34bc-45c7-aed0-9f9596cd7bee\">\n        <dc:Bounds x=\"480\" y=\"257\" width=\"83\" height=\"68\"/>\n        <bpmndi:BPMNLabel labelStyle=\"LS1373649889872\">\n          <dc:Bounds x=\"485.3333333333333\" y=\"284.5818763825664\" width=\"72.48293963254594\" height=\"12.804751171875008\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"S1373649889877__35fe57a7-1302-44e2-bf58-032f11af7ecb\" bpmnElement=\"_35fe57a7-1302-44e2-bf58-032f11af7ecb\" isMarkerVisible=\"false\">\n        <dc:Bounds x=\"399\" y=\"270\" width=\"42\" height=\"42\"/>\n        <bpmndi:BPMNLabel labelStyle=\"LS1373649889872\">\n          <dc:Bounds x=\"336.7931758530184\" y=\"311.26591304208245\" width=\"94.93333333333335\" height=\"25.604702343750013\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"S1373649889878__7d399717-1aba-47ac-8d7d-8aaa033255e0\" bpmnElement=\"_7d399717-1aba-47ac-8d7d-8aaa033255e0\">\n        <dc:Bounds x=\"480\" y=\"352\" width=\"83\" height=\"68\"/>\n        <bpmndi:BPMNLabel labelStyle=\"LS1373649889872\">\n          <dc:Bounds x=\"485.3333333333333\" y=\"379.5818763825664\" width=\"72.48293963254594\" height=\"12.804751171875008\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"S1373649889879__33c66216-391c-49c2-aa19-d8f0b7f5f91d\" bpmnElement=\"_33c66216-391c-49c2-aa19-d8f0b7f5f91d\" isMarkerVisible=\"false\">\n        <dc:Bounds x=\"621\" y=\"315\" width=\"42\" height=\"42\"/>\n        <bpmndi:BPMNLabel labelStyle=\"LS1373649889872\">\n          <dc:Bounds x=\"654.3207349081365\" y=\"347.41024725332187\" width=\"94.93333333333335\" height=\"25.604702343750013\"/>\n        </bpmndi:BPMNLabel>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Gateway_0000001_di\" bpmnElement=\"Gateway_0000001\" isMarkerVisible=\"true\">\n        <dc:Bounds x=\"636\" y=\"235\" width=\"50\" height=\"50\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"E1373649889881__a3d40a56-9b7f-417e-911e-d39e7f18b90c\" bpmnElement=\"_a3d40a56-9b7f-417e-911e-d39e7f18b90c\">\n        <di:waypoint x=\"563\" y=\"206\"/>\n        <di:waypoint x=\"752\" y=\"206\"/>\n        <di:waypoint x=\"661\" y=\"260\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"E1373649889882__b50f530c-3450-4e1a-b81f-ea346dc6e1cb\" bpmnElement=\"_b50f530c-3450-4e1a-b81f-ea346dc6e1cb\">\n        <di:waypoint x=\"216\" y=\"291\"/>\n        <di:waypoint x=\"234\" y=\"291\"/>\n        <di:waypoint x=\"252\" y=\"291\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"E1373649889883__fe74c141-8843-4b00-a704-5e5e13be53b0\" bpmnElement=\"_fe74c141-8843-4b00-a704-5e5e13be53b0\">\n        <di:waypoint x=\"335\" y=\"291\"/>\n        <di:waypoint x=\"353\" y=\"291\"/>\n        <di:waypoint x=\"399\" y=\"291\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"E1373649889884__20ebb3c1-5178-4c7c-a91d-23e58f2aa73b\" bpmnElement=\"_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b\">\n        <di:waypoint x=\"420\" y=\"312\"/>\n        <di:waypoint x=\"420\" y=\"386\"/>\n        <di:waypoint x=\"480\" y=\"386\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"E1373649889885__d4ce87c6-1373-45d6-a3b4-fbb2a04ee2e5\" bpmnElement=\"_d4ce87c6-1373-45d6-a3b4-fbb2a04ee2e5\">\n        <di:waypoint x=\"663\" y=\"336\"/>\n        <di:waypoint x=\"752\" y=\"336\"/>\n        <di:waypoint x=\"661\" y=\"260\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"E1373649889886__e9ebc7c7-995d-46db-86ce-d823bc2b4687\" bpmnElement=\"_e9ebc7c7-995d-46db-86ce-d823bc2b4687\">\n        <di:waypoint x=\"563\" y=\"291\"/>\n        <di:waypoint x=\"642\" y=\"291\"/>\n        <di:waypoint x=\"642\" y=\"315\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"E1373649889887__f1478fb7-98c4-4c01-8c15-68bd04c91535\" bpmnElement=\"_f1478fb7-98c4-4c01-8c15-68bd04c91535\">\n        <di:waypoint x=\"420\" y=\"270\"/>\n        <di:waypoint x=\"420\" y=\"206\"/>\n        <di:waypoint x=\"480\" y=\"206\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"E1373649889888__a1570a53-28d2-41b1-a3a2-3e50c00d747e\" bpmnElement=\"_a1570a53-28d2-41b1-a3a2-3e50c00d747e\">\n        <di:waypoint x=\"440\" y=\"291\"/>\n        <di:waypoint x=\"458\" y=\"291\"/>\n        <di:waypoint x=\"480\" y=\"291\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"E1373649889889__698b593f-18eb-42ea-b8cd-bcd51e1514cc\" bpmnElement=\"_698b593f-18eb-42ea-b8cd-bcd51e1514cc\">\n        <di:waypoint x=\"563\" y=\"386\"/>\n        <di:waypoint x=\"642\" y=\"386\"/>\n        <di:waypoint x=\"642\" y=\"357\"/>\n        <bpmndi:BPMNLabel/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0000002_di\" bpmnElement=\"Flow_0000002\">\n        <di:waypoint x=\"686\" y=\"260\"/>\n        <di:waypoint x=\"736\" y=\"260\"/>\n      </bpmndi:BPMNEdge>\n    </bpmndi:BPMNPlane>\n    <bpmndi:BPMNLabelStyle id=\"LS1373649889872\">\n      <dc:Font isBold=\"false\" isItalic=\"false\" isStrikeThrough=\"false\" isUnderline=\"false\" name=\"Arial\" size=\"11.0\"/>\n    </bpmndi:BPMNLabelStyle>\n  </bpmndi:BPMNDiagram>\n</semantic:definitions>\n\n"
+    }
+  ],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 1,
+      "extract": 0,
+      "feel": 4,
+      "feel-syntax": 0,
+      "flow": 1,
+      "naming": 5,
+      "pattern": 2,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 5,
+      "info": 2,
+      "warning": 6
+    },
+    "total": 13
+  }
+}

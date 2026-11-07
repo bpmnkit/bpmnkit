@@ -1,0 +1,25 @@
+{
+	"type": "default",
+	"components": [
+		{
+			"id": "z",
+			"key": "z",
+			"label": "Z",
+			"type": "textfield"
+		},
+		{
+			"id": "y",
+			"type": "button",
+			"label": "Y"
+		}
+	],
+	"schemaVersion": 14,
+	"generated": false,
+	"id": "reordered",
+	"exporter": {
+		"version": "9",
+		"name": "Hand"
+	},
+	"executionPlatformVersion": "8.3.0",
+	"executionPlatform": "Camunda Cloud"
+}

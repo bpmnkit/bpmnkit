@@ -1,0 +1,11 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["message","M1",{"name":"a"}],
+		["message","M1",{"name":"b"}],
+		["startEvent","s"],
+		["endEvent","e"],
+		["build"]
+	]
+}

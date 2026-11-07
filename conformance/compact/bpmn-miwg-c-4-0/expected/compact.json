@@ -1,0 +1,492 @@
+{
+  "id": "_e7ccc12c-2987-48ae-92aa-08112101d9c9",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "_a4220c17-364f-4a08-ae9c-757a6468b295",
+          "name": "Candidate accepted offer",
+          "type": "startEvent"
+        },
+        {
+          "id": "_f8973a92-3d84-4672-a1a3-b0df154121e1",
+          "name": "Send \ncandidate Contract",
+          "type": "userTask"
+        },
+        {
+          "id": "_f9e3cd76-809a-48b5-be1c-e84fc4324268",
+          "name": "Contract terms accepted ?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "_aa275782-c989-49ba-bf94-c58916ca7bb5",
+          "name": "Get signature on contract and notify responsible department",
+          "type": "userTask"
+        },
+        {
+          "id": "_987b9b74-333a-4043-a72a-daadf667acc7",
+          "name": "Review terms of contract",
+          "type": "userTask"
+        },
+        {
+          "id": "_305ddf53-49a8-4105-ad06-70272a2332aa",
+          "name": "Non-exclusive Gateway",
+          "type": "parallelGateway"
+        },
+        {
+          "id": "_0e71ed63-93f9-44b6-a89d-da9628652926",
+          "name": "Inform employee of company policies",
+          "type": "userTask"
+        },
+        {
+          "id": "_eba690b9-34ef-49e4-b265-1411809d9302",
+          "name": "Introduce employee to company Mission, Vision and Values",
+          "type": "userTask"
+        },
+        {
+          "id": "_67944b4c-4950-45a2-a131-1c4679c6b433",
+          "name": "Perform training for time reports sick leave and holidays",
+          "type": "userTask"
+        },
+        {
+          "id": "_4c95f4a0-f4ec-45ed-9fdb-7b236155d6f5",
+          "name": "Register for medical insurance",
+          "type": "userTask"
+        },
+        {
+          "id": "_82da02ca-ee9a-4403-9f3b-aad030e089b9",
+          "name": "Non-exclusive Gateway",
+          "type": "parallelGateway"
+        },
+        {
+          "dataStoreRef": "_d367181e-c25a-407e-a5fb-817a27698a30",
+          "id": "_f00a95f6-043e-4ec1-8731-153a707e950c",
+          "name": "Employee Details",
+          "type": "dataStoreReference"
+        },
+        {
+          "id": "_986cf801-0780-49d3-91cd-2cc6d3c1aac3",
+          "name": "Request preparations for a new employee",
+          "type": "userTask"
+        },
+        {
+          "eventType": "signal",
+          "id": "_855451b0-5298-48b2-a81d-84ecbcca0a85",
+          "name": "New employee in department X",
+          "type": "intermediateThrowEvent"
+        },
+        {
+          "id": "_72da5cee-0456-4c3c-ba8d-6dd085d6f52d",
+          "name": "Introduce new employee to the team",
+          "type": "userTask"
+        },
+        {
+          "id": "_e3d3ac43-74a3-48ff-9a02-e64b1358cc34",
+          "name": "Perform training for position",
+          "type": "userTask"
+        },
+        {
+          "id": "_80f70d22-fb42-403f-8bdb-6805e9467bb7",
+          "name": "Non-exclusive Gateway",
+          "type": "parallelGateway"
+        },
+        {
+          "eventType": "message",
+          "id": "_fe77c2f2-278f-4752-9d03-aa0c8a12af1e",
+          "name": "Input from Payroll ready",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "eventType": "message",
+          "id": "_db9147a9-7fbc-4657-a506-15e777f2cfd9",
+          "name": "Input from Facilities ready",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "eventType": "message",
+          "id": "_74e2cc7b-99ca-426b-ad53-ad70a56506aa",
+          "name": "Input from IT ready",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "id": "_19808f32-dfb5-462d-aaa6-e662f9932dba",
+          "name": "Non-exclusive Gateway",
+          "type": "parallelGateway"
+        },
+        {
+          "id": "_351b058e-c37c-4fb7-9d32-24075f53ce02",
+          "name": "Compile welcome package",
+          "type": "userTask"
+        },
+        {
+          "id": "_52401cbb-02b8-4eaf-84f1-1edbc0854a4a",
+          "name": "Give employee welcome package",
+          "type": "userTask"
+        },
+        {
+          "id": "_36baf139-fb74-43ef-8936-d490238c2825",
+          "name": "End Event",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "_a4220c17-364f-4a08-ae9c-757a6468b295",
+          "id": "_6d1a9d5a-127d-477a-8dbe-268f125f20d8",
+          "to": "_f8973a92-3d84-4672-a1a3-b0df154121e1"
+        },
+        {
+          "from": "_f8973a92-3d84-4672-a1a3-b0df154121e1",
+          "id": "_4d3df0ce-e5be-443b-a379-8dcd4aae4de9",
+          "to": "_f9e3cd76-809a-48b5-be1c-e84fc4324268"
+        },
+        {
+          "from": "_f9e3cd76-809a-48b5-be1c-e84fc4324268",
+          "id": "_237c8380-5449-446e-a323-aad80181176d",
+          "name": "Yes",
+          "to": "_aa275782-c989-49ba-bf94-c58916ca7bb5"
+        },
+        {
+          "from": "_f9e3cd76-809a-48b5-be1c-e84fc4324268",
+          "id": "_7e9d8b8b-faa9-4264-858b-7454702c4ec2",
+          "name": "No",
+          "to": "_987b9b74-333a-4043-a72a-daadf667acc7"
+        },
+        {
+          "from": "_aa275782-c989-49ba-bf94-c58916ca7bb5",
+          "id": "_41254af9-ca6b-49ae-a58e-c48f4c6120d2",
+          "to": "_305ddf53-49a8-4105-ad06-70272a2332aa"
+        },
+        {
+          "from": "_305ddf53-49a8-4105-ad06-70272a2332aa",
+          "id": "_d1c906b1-8f68-4485-94ea-00e732fba73e",
+          "to": "_0e71ed63-93f9-44b6-a89d-da9628652926"
+        },
+        {
+          "from": "_0e71ed63-93f9-44b6-a89d-da9628652926",
+          "id": "_5ae80bdd-cda7-491b-b3f7-bce2c4b35a83",
+          "to": "_eba690b9-34ef-49e4-b265-1411809d9302"
+        },
+        {
+          "from": "_eba690b9-34ef-49e4-b265-1411809d9302",
+          "id": "_15f3cde0-eeb5-4ad2-820a-114815aa782d",
+          "to": "_67944b4c-4950-45a2-a131-1c4679c6b433"
+        },
+        {
+          "from": "_67944b4c-4950-45a2-a131-1c4679c6b433",
+          "id": "_2d93c5db-2e41-463b-a1a6-63a05616d912",
+          "to": "_4c95f4a0-f4ec-45ed-9fdb-7b236155d6f5"
+        },
+        {
+          "from": "_4c95f4a0-f4ec-45ed-9fdb-7b236155d6f5",
+          "id": "_3104b7bb-a417-4557-8c1b-d95b1c7e36a4",
+          "to": "_82da02ca-ee9a-4403-9f3b-aad030e089b9"
+        },
+        {
+          "from": "_305ddf53-49a8-4105-ad06-70272a2332aa",
+          "id": "_0811a8cc-1fde-4319-a718-7fb3ce64ae0b",
+          "to": "_986cf801-0780-49d3-91cd-2cc6d3c1aac3"
+        },
+        {
+          "from": "_986cf801-0780-49d3-91cd-2cc6d3c1aac3",
+          "id": "_3bb98d19-0d0b-4f47-a097-30c60183e334",
+          "to": "_855451b0-5298-48b2-a81d-84ecbcca0a85"
+        },
+        {
+          "from": "_855451b0-5298-48b2-a81d-84ecbcca0a85",
+          "id": "_71b2c3f1-0d34-4cfb-956c-cedf83660dfb",
+          "to": "_82da02ca-ee9a-4403-9f3b-aad030e089b9"
+        },
+        {
+          "from": "_82da02ca-ee9a-4403-9f3b-aad030e089b9",
+          "id": "_cad69ba8-8b26-41f9-87a1-372a899dcbf3",
+          "to": "_72da5cee-0456-4c3c-ba8d-6dd085d6f52d"
+        },
+        {
+          "from": "_72da5cee-0456-4c3c-ba8d-6dd085d6f52d",
+          "id": "_2ef25e1e-bbdd-4cba-b411-6091ec8669d6",
+          "to": "_e3d3ac43-74a3-48ff-9a02-e64b1358cc34"
+        },
+        {
+          "from": "_e3d3ac43-74a3-48ff-9a02-e64b1358cc34",
+          "id": "_240df34c-86c2-49fe-b1ec-58ea25d35c1f",
+          "to": "_80f70d22-fb42-403f-8bdb-6805e9467bb7"
+        },
+        {
+          "from": "_80f70d22-fb42-403f-8bdb-6805e9467bb7",
+          "id": "_2be942a3-d921-4ad9-bce7-33e3411d98b4",
+          "to": "_74e2cc7b-99ca-426b-ad53-ad70a56506aa"
+        },
+        {
+          "from": "_80f70d22-fb42-403f-8bdb-6805e9467bb7",
+          "id": "_4b186d86-fae1-4f55-a3b6-b90fa27affc1",
+          "to": "_fe77c2f2-278f-4752-9d03-aa0c8a12af1e"
+        },
+        {
+          "from": "_80f70d22-fb42-403f-8bdb-6805e9467bb7",
+          "id": "_c1307108-5b3d-48af-ae53-11b30dd31bed",
+          "to": "_db9147a9-7fbc-4657-a506-15e777f2cfd9"
+        },
+        {
+          "from": "_fe77c2f2-278f-4752-9d03-aa0c8a12af1e",
+          "id": "_e82e6ee3-24d6-419a-96c0-a147f1943c23",
+          "to": "_19808f32-dfb5-462d-aaa6-e662f9932dba"
+        },
+        {
+          "from": "_74e2cc7b-99ca-426b-ad53-ad70a56506aa",
+          "id": "_16e4630e-39c0-4e94-ab65-a8a622245adf",
+          "to": "_19808f32-dfb5-462d-aaa6-e662f9932dba"
+        },
+        {
+          "from": "_db9147a9-7fbc-4657-a506-15e777f2cfd9",
+          "id": "_c8da08ab-0b59-4c21-9386-f857d624c471",
+          "to": "_19808f32-dfb5-462d-aaa6-e662f9932dba"
+        },
+        {
+          "from": "_19808f32-dfb5-462d-aaa6-e662f9932dba",
+          "id": "_ece7bc06-ccf7-49f5-b5f1-99e1103cf538",
+          "to": "_351b058e-c37c-4fb7-9d32-24075f53ce02"
+        },
+        {
+          "from": "_351b058e-c37c-4fb7-9d32-24075f53ce02",
+          "id": "_c8454490-8090-4cf7-a164-d0aded7bc4da",
+          "to": "_52401cbb-02b8-4eaf-84f1-1edbc0854a4a"
+        },
+        {
+          "from": "_52401cbb-02b8-4eaf-84f1-1edbc0854a4a",
+          "id": "_0fdd6987-6236-4972-a7be-3431ed6654ec",
+          "to": "_36baf139-fb74-43ef-8936-d490238c2825"
+        },
+        {
+          "from": "_987b9b74-333a-4043-a72a-daadf667acc7",
+          "id": "_9ca6c9e6-4aff-4ec8-9fd3-2743c06483c3",
+          "to": "_f8973a92-3d84-4672-a1a3-b0df154121e1"
+        }
+      ],
+      "id": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "name": "Money Bank - Process"
+    },
+    {
+      "elements": [
+        {
+          "eventType": "signal",
+          "id": "_e9306b3f-3a77-42e1-b53e-2ed8ee45486d",
+          "name": "New \nemployee\nhired",
+          "type": "startEvent"
+        },
+        {
+          "id": "_7e9d2e5a-21f7-493b-9ae4-03245aa33a5c",
+          "name": "Create domain account",
+          "type": "userTask"
+        },
+        {
+          "id": "_c29af228-0768-4dfe-945a-17755e173674",
+          "name": "Prepare workstation",
+          "type": "manualTask"
+        },
+        {
+          "id": "_912f731a-fb6b-499b-a3f4-4c1632d606bd",
+          "name": "Assign required applications and permissions",
+          "type": "userTask"
+        },
+        {
+          "id": "_9db2d136-aa33-4de2-be76-554e7843363d",
+          "name": "Configure workstation",
+          "type": "serviceTask"
+        },
+        {
+          "id": "_ad173aff-cfe3-4098-8c65-02f783ad9e1f",
+          "name": "Prepare IT part of welcome package",
+          "type": "userTask"
+        },
+        {
+          "eventType": "message",
+          "id": "_c82dd8eb-ce54-4aa7-b8c4-b8d3e8fd654e",
+          "name": "Workstation and permissions ready",
+          "type": "endEvent"
+        },
+        {
+          "dataStoreRef": "_d367181e-c25a-407e-a5fb-817a27698a30",
+          "id": "_e355b511-e181-4e7b-a9b1-30cb48dd6cab",
+          "name": "Employee Details",
+          "type": "dataStoreReference"
+        },
+        {
+          "dataStoreRef": "_7c793f30-d450-4a8e-becf-f168b14317ea",
+          "id": "_b60be020-1f04-46c2-b1a9-19bfc66ead82",
+          "name": "User Management",
+          "type": "dataStoreReference"
+        }
+      ],
+      "flows": [
+        {
+          "from": "_e9306b3f-3a77-42e1-b53e-2ed8ee45486d",
+          "id": "_495f04a4-ed17-4e7b-a952-11c06c2230d1",
+          "to": "_7e9d2e5a-21f7-493b-9ae4-03245aa33a5c"
+        },
+        {
+          "from": "_7e9d2e5a-21f7-493b-9ae4-03245aa33a5c",
+          "id": "_0bccc7f6-0f56-49bc-98df-59d70433c043",
+          "to": "_c29af228-0768-4dfe-945a-17755e173674"
+        },
+        {
+          "from": "_c29af228-0768-4dfe-945a-17755e173674",
+          "id": "_dcec1142-90eb-41a8-b809-458b713ab94c",
+          "to": "_912f731a-fb6b-499b-a3f4-4c1632d606bd"
+        },
+        {
+          "from": "_912f731a-fb6b-499b-a3f4-4c1632d606bd",
+          "id": "_be72815e-ed18-4d77-9252-1ab0a7438dc9",
+          "to": "_9db2d136-aa33-4de2-be76-554e7843363d"
+        },
+        {
+          "from": "_9db2d136-aa33-4de2-be76-554e7843363d",
+          "id": "_ba635734-5672-4f1b-b753-3b08c778c64e",
+          "to": "_ad173aff-cfe3-4098-8c65-02f783ad9e1f"
+        },
+        {
+          "from": "_ad173aff-cfe3-4098-8c65-02f783ad9e1f",
+          "id": "_c904a36b-64f6-46e3-8ef1-9f2ecc3faaff",
+          "to": "_c82dd8eb-ce54-4aa7-b8c4-b8d3e8fd654e"
+        }
+      ],
+      "id": "_f0035388-f829-470c-b82b-0b15c3da3399",
+      "name": "IT - Process"
+    },
+    {
+      "elements": [
+        {
+          "eventType": "signal",
+          "id": "_3d4130c6-48c9-47fe-8e95-2eeb56060e2b",
+          "name": "New \nemployee\nhired",
+          "type": "startEvent"
+        },
+        {
+          "id": "_ae47ce79-bd91-452b-be68-47a2ea589e75",
+          "name": "Validate provided information",
+          "type": "userTask"
+        },
+        {
+          "id": "_fa14ca2d-ea97-49a2-b75e-72e7d27d6fd1",
+          "name": "All necessary data available?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "_788443d9-65f0-43a4-96a8-63e8d6f380a7",
+          "name": "Clarify missing points",
+          "type": "manualTask"
+        },
+        {
+          "id": "_9dbd92a5-5c0a-4039-b741-bf4ede54ccf0",
+          "name": "Update payroll system",
+          "type": "userTask"
+        },
+        {
+          "eventType": "message",
+          "id": "_efbd0983-76cd-4a4c-acf3-6dde71d7c760",
+          "name": "Payroll ready",
+          "type": "endEvent"
+        },
+        {
+          "dataStoreRef": "_d367181e-c25a-407e-a5fb-817a27698a30",
+          "id": "_16498c9e-c33f-4f92-9033-714b89582a7c",
+          "name": "Employee Details",
+          "type": "dataStoreReference"
+        },
+        {
+          "dataStoreRef": "_2addcc9a-638e-4496-b84f-5b0e28fe6536",
+          "id": "_a9cffac5-6e03-41de-83bf-d34304f28b1a",
+          "name": "Payroll system",
+          "type": "dataStoreReference"
+        }
+      ],
+      "flows": [
+        {
+          "from": "_3d4130c6-48c9-47fe-8e95-2eeb56060e2b",
+          "id": "_6b24f6f7-bc44-4d73-ab54-1ac8b638423e",
+          "to": "_ae47ce79-bd91-452b-be68-47a2ea589e75"
+        },
+        {
+          "from": "_ae47ce79-bd91-452b-be68-47a2ea589e75",
+          "id": "_d110be18-ff17-4375-818b-6463eff4e2d6",
+          "to": "_fa14ca2d-ea97-49a2-b75e-72e7d27d6fd1"
+        },
+        {
+          "from": "_fa14ca2d-ea97-49a2-b75e-72e7d27d6fd1",
+          "id": "_ca6f904d-e30d-4777-a7dd-661650e1e3a2",
+          "name": "No",
+          "to": "_788443d9-65f0-43a4-96a8-63e8d6f380a7"
+        },
+        {
+          "from": "_fa14ca2d-ea97-49a2-b75e-72e7d27d6fd1",
+          "id": "_12e2f256-ec10-4a8d-934c-329143c588d8",
+          "name": "Yes",
+          "to": "_9dbd92a5-5c0a-4039-b741-bf4ede54ccf0"
+        },
+        {
+          "from": "_788443d9-65f0-43a4-96a8-63e8d6f380a7",
+          "id": "_7b347349-7441-4e5c-ab24-2e614051f222",
+          "to": "_9dbd92a5-5c0a-4039-b741-bf4ede54ccf0"
+        },
+        {
+          "from": "_9dbd92a5-5c0a-4039-b741-bf4ede54ccf0",
+          "id": "_46c8bd85-1b7f-45fb-81c6-23d22300c0cd",
+          "to": "_efbd0983-76cd-4a4c-acf3-6dde71d7c760"
+        }
+      ],
+      "id": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "name": "Payroll - Process"
+    },
+    {
+      "elements": [
+        {
+          "eventType": "signal",
+          "id": "_94a62738-dc7a-49f6-81d8-f5642f7ae850",
+          "name": "New \nemployee \nhired",
+          "type": "startEvent"
+        },
+        {
+          "id": "_2bf94039-15a1-44bb-9d14-81358777466c",
+          "name": "Prepare\naccess \ncard",
+          "type": "manualTask"
+        },
+        {
+          "id": "_737503c8-10bc-483f-8871-5461d822b469",
+          "name": "Configure access details",
+          "type": "userTask"
+        },
+        {
+          "eventType": "message",
+          "id": "_5ee09fe4-f38f-454d-b6e4-1c3703a6a239",
+          "name": "Access \ncard \nready",
+          "type": "endEvent"
+        },
+        {
+          "dataStoreRef": "_d367181e-c25a-407e-a5fb-817a27698a30",
+          "id": "_9931ba94-ede8-4f53-8081-878c549ba1c8",
+          "name": "Employee Details",
+          "type": "dataStoreReference"
+        }
+      ],
+      "flows": [
+        {
+          "from": "_94a62738-dc7a-49f6-81d8-f5642f7ae850",
+          "id": "_ea0e1abf-e9f6-406a-96fb-12fcdf765634",
+          "to": "_2bf94039-15a1-44bb-9d14-81358777466c"
+        },
+        {
+          "from": "_2bf94039-15a1-44bb-9d14-81358777466c",
+          "id": "_4436759d-6848-4400-93e5-3971c69b2f67",
+          "to": "_737503c8-10bc-483f-8871-5461d822b469"
+        },
+        {
+          "from": "_737503c8-10bc-483f-8871-5461d822b469",
+          "id": "_f405a593-5f87-4f62-862e-bcf9f776bc95",
+          "to": "_5ee09fe4-f38f-454d-b6e4-1c3703a6a239"
+        }
+      ],
+      "id": "_3486bf55-0a7f-4ff1-be15-1555669f58ad",
+      "name": "Facilities - Process"
+    }
+  ]
+}

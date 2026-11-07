@@ -1,0 +1,10 @@
+{
+  "runs": {
+    "default": {},
+    "syntax-only": {
+      "categories": [
+        "feel-syntax"
+      ]
+    }
+  }
+}

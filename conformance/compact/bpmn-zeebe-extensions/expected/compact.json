@@ -1,0 +1,102 @@
+{
+  "id": "Definitions_zeebe",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "Start_z",
+          "type": "startEvent"
+        },
+        {
+          "id": "Task_service",
+          "inputs": {
+            "amount": "=order.total",
+            "customerId": "=customer.id"
+          },
+          "jobType": "io.camunda:http-json:1",
+          "name": "Call API",
+          "outputs": {
+            "apiResult": "=response.body"
+          },
+          "properties": {
+            "team": "payments"
+          },
+          "taskHeaders": {
+            "method": "POST",
+            "url": "https://example.invalid/orders"
+          },
+          "type": "serviceTask"
+        },
+        {
+          "assignee": "=requester",
+          "candidateGroups": "approvers",
+          "dueDate": "=now() + duration(\"P1D\")",
+          "followUpDate": "=now()",
+          "formId": "approval-form",
+          "id": "Task_human",
+          "name": "Approve",
+          "priority": "=order.priority",
+          "type": "userTask"
+        },
+        {
+          "decisionId": "risk-decision",
+          "id": "Task_decide",
+          "name": "Decide",
+          "resultVariable": "risk",
+          "type": "businessRuleTask"
+        },
+        {
+          "calledProcess": "fulfilment",
+          "id": "Task_call",
+          "name": "Fulfil",
+          "type": "callActivity"
+        },
+        {
+          "id": "Task_script",
+          "name": "Summarise",
+          "resultVariable": "highRisk",
+          "script": "=risk > 5",
+          "type": "scriptTask"
+        },
+        {
+          "id": "End_z",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "Start_z",
+          "id": "Flow_z1",
+          "to": "Task_service"
+        },
+        {
+          "from": "Task_service",
+          "id": "Flow_z2",
+          "to": "Task_human"
+        },
+        {
+          "from": "Task_human",
+          "id": "Flow_z3",
+          "to": "Task_decide"
+        },
+        {
+          "from": "Task_decide",
+          "id": "Flow_z4",
+          "to": "Task_call"
+        },
+        {
+          "from": "Task_call",
+          "id": "Flow_z5",
+          "to": "Task_script"
+        },
+        {
+          "from": "Task_script",
+          "id": "Flow_z6",
+          "to": "End_z"
+        }
+      ],
+      "id": "Process_zeebe",
+      "name": "Zeebe surface"
+    }
+  ]
+}

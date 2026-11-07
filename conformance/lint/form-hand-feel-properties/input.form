@@ -1,0 +1,57 @@
+{
+  "id": "F",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "id": "a",
+      "type": "textfield",
+      "key": "a",
+      "label": "=\"x\"",
+      "description": "=1 +"
+    },
+    {
+      "id": "b",
+      "type": "textfield",
+      "key": "b",
+      "label": "b",
+      "properties": {
+        "nested": "=a and",
+        "deeper": {
+          "x": "=("
+        }
+      }
+    },
+    {
+      "id": "c",
+      "type": "textfield",
+      "key": "c",
+      "label": "c",
+      "readonly": "=not("
+    },
+    {
+      "id": "d",
+      "type": "text",
+      "text": "=\"ok\" +"
+    },
+    {
+      "id": "e",
+      "type": "expression",
+      "key": "e",
+      "expression": "=x =="
+    },
+    {
+      "id": "f",
+      "type": "textfield",
+      "key": "f",
+      "label": "f",
+      "default": "="
+    },
+    {
+      "id": "g",
+      "type": "textfield",
+      "key": "g",
+      "label": "  =  ok"
+    }
+  ]
+}

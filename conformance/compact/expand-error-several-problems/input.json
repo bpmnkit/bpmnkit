@@ -1,0 +1,30 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "a",
+          "type": "task"
+        },
+        {
+          "id": "a",
+          "type": "task"
+        },
+        {
+          "id": "b",
+          "type": "boundaryEvent",
+          "attachedTo": "zz"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f",
+          "from": "a",
+          "to": "ghost"
+        }
+      ]
+    }
+  ]
+}

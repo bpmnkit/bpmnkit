@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/is-executable-absent/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}

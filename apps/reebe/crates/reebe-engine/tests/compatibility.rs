@@ -172,7 +172,11 @@ async fn deploy(handle: &EngineHandle, bpmn: &str, name: &str) -> i64 {
         .expect("response must contain processDefinitionKey")
 }
 
-async fn create_instance(handle: &EngineHandle, bpmn_process_id: &str, vars: serde_json::Value) -> i64 {
+async fn create_instance(
+    handle: &EngineHandle,
+    bpmn_process_id: &str,
+    vars: serde_json::Value,
+) -> i64 {
     let resp = handle
         .send_command(
             "PROCESS_INSTANCE_CREATION".to_string(),
@@ -193,7 +197,11 @@ async fn create_instance(handle: &EngineHandle, bpmn_process_id: &str, vars: ser
         .expect("response must contain processInstanceKey")
 }
 
-async fn wait_for_jobs(pool: &DbPool, job_type: &str, max_attempts: u32) -> Vec<reebe_db::state::jobs::Job> {
+async fn wait_for_jobs(
+    pool: &DbPool,
+    job_type: &str,
+    max_attempts: u32,
+) -> Vec<reebe_db::state::jobs::Job> {
     use reebe_db::state::jobs::JobRepository;
     for _ in 0..max_attempts {
         let jobs = JobRepository::new(pool)
@@ -208,7 +216,12 @@ async fn wait_for_jobs(pool: &DbPool, job_type: &str, max_attempts: u32) -> Vec<
     vec![]
 }
 
-async fn wait_for_process_state(pool: &DbPool, key: i64, target: &str, max_attempts: u32) -> String {
+async fn wait_for_process_state(
+    pool: &DbPool,
+    key: i64,
+    target: &str,
+    max_attempts: u32,
+) -> String {
     use reebe_db::state::process_instances::ProcessInstanceRepository;
     for _ in 0..max_attempts {
         if let Ok(pi) = ProcessInstanceRepository::new(pool).get_by_key(key).await {
@@ -265,7 +278,10 @@ async fn test_job_worker_long_polling() {
         "Long-polling should return at least one job within 3 s"
     );
     assert_eq!(activated[0].job_type, "compat-work");
-    assert!(activated[0].deadline.is_some(), "Activated job should have a deadline set");
+    assert!(
+        activated[0].deadline.is_some(),
+        "Activated job should have a deadline set"
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -316,15 +332,10 @@ async fn test_job_worker_timeout_retry() {
     );
 
     // Verify the job is available for re-activation.
-    let re_activated = reebe_db::state::jobs::activate_jobs(
-        &pool,
-        "compat-work",
-        "retry-worker",
-        10,
-        30_000,
-    )
-    .await
-    .expect("second activate_jobs should succeed");
+    let re_activated =
+        reebe_db::state::jobs::activate_jobs(&pool, "compat-work", "retry-worker", 10, 30_000)
+            .await
+            .expect("second activate_jobs should succeed");
 
     assert!(
         !re_activated.is_empty(),
@@ -388,7 +399,9 @@ async fn test_message_correlation_edge_cases() {
     );
     // Verify job belongs to our instance.
     assert!(
-        jobs_1.iter().any(|j| j.process_instance_key == instance_key_1),
+        jobs_1
+            .iter()
+            .any(|j| j.process_instance_key == instance_key_1),
         "Case 1: the correlated job must belong to instance_key_1"
     );
 
@@ -421,7 +434,10 @@ async fn test_message_correlation_edge_cases() {
     let mut correlated = false;
     while start.elapsed() < Duration::from_secs(5) {
         let jobs = wait_for_jobs(&pool, "compat-process-order", 1).await;
-        if jobs.iter().any(|j| j.process_instance_key == instance_key_2) {
+        if jobs
+            .iter()
+            .any(|j| j.process_instance_key == instance_key_2)
+        {
             correlated = true;
             break;
         }
@@ -462,7 +478,9 @@ async fn test_timer_accuracy() {
     clock.advance(chrono::Duration::milliseconds(199));
     tokio::time::sleep(Duration::from_millis(500)).await; // five scheduler polls
     assert!(
-        wait_for_jobs(&pool, "compat-after-timer", 1).await.is_empty(),
+        wait_for_jobs(&pool, "compat-after-timer", 1)
+            .await
+            .is_empty(),
         "the timer must not fire 1 ms before it is due"
     );
 
@@ -471,7 +489,10 @@ async fn test_timer_accuracy() {
     let jobs = wait_for_jobs(&pool, "compat-after-timer", 100).await; // 100 × 50 ms = 5 s max
     let elapsed = start.elapsed();
 
-    assert!(!jobs.is_empty(), "the timer fires once it is due; waited {elapsed:?}");
+    assert!(
+        !jobs.is_empty(),
+        "the timer fires once it is due; waited {elapsed:?}"
+    );
     assert!(
         elapsed <= Duration::from_secs(2),
         "the timer should fire within one scheduler poll (100 ms) plus slack; took {elapsed:?}"
@@ -483,7 +504,10 @@ async fn test_timer_accuracy() {
 async fn wait_for_active_timer(pool: &DbPool, instance_key: i64) {
     use reebe_db::state::timers::TimerRepository;
     for _ in 0..100 {
-        let timers = TimerRepository::new(pool).get_by_process_instance(instance_key).await.unwrap_or_default();
+        let timers = TimerRepository::new(pool)
+            .get_by_process_instance(instance_key)
+            .await
+            .unwrap_or_default();
         if timers.iter().any(|t| t.state == "ACTIVE") {
             return;
         }
@@ -521,7 +545,10 @@ const START_EVENTS_BPMN: &str = r#"<?xml version="1.0" encoding="UTF-8"?>
 </bpmn:definitions>"#;
 
 async fn count_instances(pool: &DbPool) -> i64 {
-    sqlx::query_scalar("SELECT COUNT(*) FROM process_instances").fetch_one(pool).await.expect("count")
+    sqlx::query_scalar("SELECT COUNT(*) FROM process_instances")
+        .fetch_one(pool)
+        .await
+        .expect("count")
 }
 
 async fn wait_for_instances(pool: &DbPool, expected: i64) -> i64 {
@@ -558,7 +585,11 @@ async fn test_timer_and_message_start_events() {
     let handle = &engine.handle;
 
     deploy(handle, START_EVENTS_BPMN, "compat-start-events.bpmn").await;
-    assert_eq!(count_instances(&pool).await, 0, "deploying creates no instance");
+    assert_eq!(
+        count_instances(&pool).await,
+        0,
+        "deploying creates no instance"
+    );
 
     // The cycle fires every minute, twice.
     clock.advance(chrono::Duration::minutes(1));
@@ -575,14 +606,24 @@ async fn test_timer_and_message_start_events() {
     publish(handle, "compat-start", "").await;
     assert_eq!(wait_for_instances(&pool, 4).await, 4);
     tokio::time::sleep(Duration::from_millis(300)).await;
-    assert_eq!(count_instances(&pool).await, 4, "the second order-1 message waits");
+    assert_eq!(
+        count_instances(&pool).await,
+        4,
+        "the second order-1 message waits"
+    );
 
     // A new version replaces the timer of the previous one.
-    deploy(handle, &START_EVENTS_BPMN.replace("R2/PT1M", "R/PT1M"), "compat-start-events.bpmn").await;
-    let active_timers: i64 = sqlx::query_scalar("SELECT COUNT(*) FROM timers WHERE state = 'ACTIVE'")
-        .fetch_one(&pool)
-        .await
-        .expect("count timers");
+    deploy(
+        handle,
+        &START_EVENTS_BPMN.replace("R2/PT1M", "R/PT1M"),
+        "compat-start-events.bpmn",
+    )
+    .await;
+    let active_timers: i64 =
+        sqlx::query_scalar("SELECT COUNT(*) FROM timers WHERE state = 'ACTIVE'")
+            .fetch_one(&pool)
+            .await
+            .expect("count timers");
     assert_eq!(active_timers, 1, "only the new version's timer is active");
     engine.stop();
 }
@@ -629,17 +670,16 @@ async fn test_multi_instance_parallel() {
     );
 
     // Activate and complete all 3 jobs.
-    let activated = reebe_db::state::jobs::activate_jobs(
-        &pool,
-        "compat-mi-work",
-        "mi-worker",
-        3,
-        30_000,
-    )
-    .await
-    .expect("activate_jobs should succeed");
+    let activated =
+        reebe_db::state::jobs::activate_jobs(&pool, "compat-mi-work", "mi-worker", 3, 30_000)
+            .await
+            .expect("activate_jobs should succeed");
 
-    assert_eq!(activated.len(), 3, "All 3 multi-instance jobs should be activated");
+    assert_eq!(
+        activated.len(),
+        3,
+        "All 3 multi-instance jobs should be activated"
+    );
 
     for job in &activated {
         handle
@@ -712,7 +752,9 @@ async fn test_rfc7807_error_format() {
     let err = result.unwrap_err();
     let err_str = format!("{err:?}");
     assert!(
-        err_str.contains("NotFound") || err_str.contains("not found") || err_str.contains("no rows"),
+        err_str.contains("NotFound")
+            || err_str.contains("not found")
+            || err_str.contains("no rows"),
         "Error should indicate that the process was not found; got: {err_str}"
     );
 
@@ -726,10 +768,22 @@ async fn test_rfc7807_error_format() {
         "detail": err_str,
         "instance": "/v2/process-instances"
     });
-    assert!(problem["type"].is_string(), "RFC 7807: 'type' field must be present");
-    assert!(problem["title"].is_string(), "RFC 7807: 'title' field must be present");
-    assert!(problem["status"].is_number(), "RFC 7807: 'status' field must be present");
-    assert!(problem["detail"].is_string(), "RFC 7807: 'detail' field must be present");
+    assert!(
+        problem["type"].is_string(),
+        "RFC 7807: 'type' field must be present"
+    );
+    assert!(
+        problem["title"].is_string(),
+        "RFC 7807: 'title' field must be present"
+    );
+    assert!(
+        problem["status"].is_number(),
+        "RFC 7807: 'status' field must be present"
+    );
+    assert!(
+        problem["detail"].is_string(),
+        "RFC 7807: 'detail' field must be present"
+    );
 }
 
 // ---------------------------------------------------------------------------
@@ -847,7 +901,11 @@ async fn complete_job(handle: &EngineHandle, key: i64) {
 /// The one activatable job of `job_type` in `instance_key`.
 async fn job_of(pool: &DbPool, job_type: &str, instance_key: i64) -> reebe_db::state::jobs::Job {
     for _ in 0..100 {
-        if let Some(job) = wait_for_jobs(pool, job_type, 1).await.into_iter().find(|j| j.process_instance_key == instance_key) {
+        if let Some(job) = wait_for_jobs(pool, job_type, 1)
+            .await
+            .into_iter()
+            .find(|j| j.process_instance_key == instance_key)
+        {
             return job;
         }
         tokio::time::sleep(Duration::from_millis(50)).await;
@@ -860,25 +918,38 @@ async fn job_of(pool: &DbPool, job_type: &str, instance_key: i64) -> reebe_db::s
 #[tokio::test]
 async fn test_event_subprocess_and_inclusive_join() {
     let Some((pool, handle)) = setup().await else {
-        eprintln!("REEBE_DATABASE__URL not set — skipping test_event_subprocess_and_inclusive_join");
+        eprintln!(
+            "REEBE_DATABASE__URL not set — skipping test_event_subprocess_and_inclusive_join"
+        );
         return;
     };
     deploy(&handle, ESP_AND_INCLUSIVE_BPMN, "compat-esp-or.bpmn").await;
 
     // Both branches taken: the join waits for the second one.
-    let joined = create_instance(&handle, "compat-esp-or", serde_json::json!({ "branches": ["a", "b"], "orderId": "o-1" })).await;
+    let joined = create_instance(
+        &handle,
+        "compat-esp-or",
+        serde_json::json!({ "branches": ["a", "b"], "orderId": "o-1" }),
+    )
+    .await;
     let a = job_of(&pool, "compat-or-a", joined).await;
     let b = job_of(&pool, "compat-or-b", joined).await;
     complete_job(&handle, a.key).await;
     tokio::time::sleep(Duration::from_millis(300)).await;
     assert!(
-        wait_for_jobs(&pool, "compat-or-after", 1).await.iter().all(|j| j.process_instance_key != joined),
+        wait_for_jobs(&pool, "compat-or-after", 1)
+            .await
+            .iter()
+            .all(|j| j.process_instance_key != joined),
         "the inclusive join waits for the other taken branch"
     );
     complete_job(&handle, b.key).await;
     let after = job_of(&pool, "compat-or-after", joined).await;
     complete_job(&handle, after.key).await;
-    assert_eq!(wait_for_process_state(&pool, joined, "COMPLETED", 120).await, "COMPLETED");
+    assert_eq!(
+        wait_for_process_state(&pool, joined, "COMPLETED", 120).await,
+        "COMPLETED"
+    );
     let open: i64 = sqlx::query_scalar(
         "SELECT COUNT(*) FROM message_subscriptions WHERE process_instance_key = $1 AND state = 'OPENED'",
     )
@@ -886,10 +957,18 @@ async fn test_event_subprocess_and_inclusive_join() {
     .fetch_one(&pool)
     .await
     .expect("count subscriptions");
-    assert_eq!(open, 0, "the event sub-process is disarmed when the process completes");
+    assert_eq!(
+        open, 0,
+        "the event sub-process is disarmed when the process completes"
+    );
 
     // The message event sub-process interrupts the running branch.
-    let cancelled = create_instance(&handle, "compat-esp-or", serde_json::json!({ "branches": ["a"], "orderId": "o-2" })).await;
+    let cancelled = create_instance(
+        &handle,
+        "compat-esp-or",
+        serde_json::json!({ "branches": ["a"], "orderId": "o-2" }),
+    )
+    .await;
     let a = job_of(&pool, "compat-or-a", cancelled).await;
     handle
         .send_command(
@@ -904,15 +983,24 @@ async fn test_event_subprocess_and_inclusive_join() {
         .await
         .expect("publish");
     let handler = job_of(&pool, "compat-esp-handle", cancelled).await;
-    assert_eq!(handler.variables["reason"], "customer", "the message variables are visible in the event sub-process");
+    assert_eq!(
+        handler.variables["reason"], "customer",
+        "the message variables are visible in the event sub-process"
+    );
     let a_state: String = sqlx::query_scalar("SELECT state FROM jobs WHERE key = $1")
         .bind(a.key)
         .fetch_one(&pool)
         .await
         .expect("job state");
-    assert_eq!(a_state, "CANCELED", "the interrupted branch's job is cancelled");
+    assert_eq!(
+        a_state, "CANCELED",
+        "the interrupted branch's job is cancelled"
+    );
     complete_job(&handle, handler.key).await;
-    assert_eq!(wait_for_process_state(&pool, cancelled, "COMPLETED", 120).await, "COMPLETED");
+    assert_eq!(
+        wait_for_process_state(&pool, cancelled, "COMPLETED", 120).await,
+        "COMPLETED"
+    );
 }
 
 /// A retry loop drawn with link events: work → [throw "retry"] ⇢ [catch "retry"] → check
@@ -1007,7 +1095,8 @@ async fn test_link_events_and_compensation() {
         .expect("throw error");
     let mut refunds = Vec::new();
     for _ in 0..100 {
-        refunds = wait_for_jobs(&pool, "compat-refund", 1).await
+        refunds = wait_for_jobs(&pool, "compat-refund", 1)
+            .await
             .into_iter()
             .filter(|j| j.process_instance_key == instance)
             .collect();
@@ -1024,13 +1113,22 @@ async fn test_link_events_and_compensation() {
     .fetch_one(&pool)
     .await
     .expect("undo state");
-    assert_eq!(undo_state, "ACTIVATED", "the compensation end event waits for the refunds");
+    assert_eq!(
+        undo_state, "ACTIVATED",
+        "the compensation end event waits for the refunds"
+    );
 
     complete_job(&handle, refunds[0].key).await;
     tokio::time::sleep(Duration::from_millis(200)).await;
-    assert_eq!(wait_for_process_state(&pool, instance, "ACTIVE", 1).await, "ACTIVE");
+    assert_eq!(
+        wait_for_process_state(&pool, instance, "ACTIVE", 1).await,
+        "ACTIVE"
+    );
     complete_job(&handle, refunds[1].key).await;
-    assert_eq!(wait_for_process_state(&pool, instance, "COMPLETED", 120).await, "COMPLETED");
+    assert_eq!(
+        wait_for_process_state(&pool, instance, "COMPLETED", 120).await,
+        "COMPLETED"
+    );
     let link_catches: i64 = sqlx::query_scalar(
         "SELECT COUNT(*) FROM element_instances WHERE process_instance_key = $1 AND element_id = 'at-check' AND state = 'COMPLETED'",
     )

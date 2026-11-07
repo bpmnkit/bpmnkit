@@ -1,0 +1,9 @@
+{
+  "aliases": {
+    "agent": "agent",
+    "ask": "ask",
+    "done": "done",
+    "review": "review",
+    "users": "users"
+  }
+}

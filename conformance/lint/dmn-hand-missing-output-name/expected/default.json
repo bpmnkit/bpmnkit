@@ -1,0 +1,18 @@
+{
+  "findings": [
+    {
+      "elementId": "o1",
+      "fix": "Give every output a name — with several outputs the result is a context keyed by output name. (agent-cards/dmn.md#traps)",
+      "message": "Output \"First\" of Decision \"D1\" has no name, and the table has 3 outputs.",
+      "rule": "dmn/missing-output-name",
+      "severity": "error"
+    },
+    {
+      "elementId": "o2",
+      "fix": "Give every output a name — with several outputs the result is a context keyed by output name. (agent-cards/dmn.md#traps)",
+      "message": "Output \"o2\" of Decision \"D1\" has no name, and the table has 3 outputs.",
+      "rule": "dmn/missing-output-name",
+      "severity": "error"
+    }
+  ]
+}

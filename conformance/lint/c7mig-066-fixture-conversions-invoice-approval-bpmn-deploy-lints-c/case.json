@@ -1,0 +1,10 @@
+{
+  "runs": {
+    "opts-1": {
+      "categories": [
+        "deploy",
+        "feel-syntax"
+      ]
+    }
+  }
+}

@@ -1,10 +1,10 @@
+use crate::app::ApiState;
+use crate::error::{ApiError, ApiResult};
 use axum::extract::{Path, State};
 use axum::response::IntoResponse;
 use axum::Json;
 use serde_json::json;
 use sqlx::Row;
-use crate::app::ApiState;
-use crate::error::{ApiError, ApiResult};
 
 pub async fn element_instance_statistics(
     State(state): State<ApiState>,
@@ -155,9 +155,7 @@ pub async fn incidents_by_error(
     Ok(Json(json!({ "items": items })))
 }
 
-pub async fn jobs_statistics_global(
-    State(state): State<ApiState>,
-) -> ApiResult<impl IntoResponse> {
+pub async fn jobs_statistics_global(State(state): State<ApiState>) -> ApiResult<impl IntoResponse> {
     let pool = state.replica_pool.as_ref().unwrap_or(&state.pool);
     let row = sqlx::query(
         r#"SELECT

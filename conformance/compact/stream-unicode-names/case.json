@@ -1,0 +1,10 @@
+{
+	"chunks": [
+		"{\"elements\":[{\"id\":\"a\",\"type\"",
+		":\"userTask\",\"name\":\"Überprüfe",
+		"n 日本語 ✓\"},{\"id\":\"b\",\"type\":\"e",
+		"ndEvent\",\"name\":\"終了\"}],\"flows",
+		"\":[{\"id\":\"f\",\"from\":\"a\",\"to\":",
+		"\"b\"}]}"
+	]
+}

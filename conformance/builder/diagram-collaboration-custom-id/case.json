@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createDiagram","D"],
+		["collaborationId","Custom"],
+		["process","mine",{"$ops":[["startEvent","s"],["endEvent","e"]]}],
+		["participant","Me",{"processId":"mine"}],
+		["build"]
+	]
+}

@@ -1,0 +1,1 @@
+start[start Start] > calc[task Count open issues | result=openIssues feel=count(issues[state = "open"])] > done[end Done]

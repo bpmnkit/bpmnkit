@@ -1,0 +1,49 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "a",
+            "name": "A",
+            "type": "startEvent"
+          },
+          {
+            "id": "t",
+            "jobType": "t",
+            "name": "T",
+            "type": "serviceTask"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "a",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 1,
+      "message": "form= takes a start or user node; ignored on \"t\""
+    }
+  ],
+  "questions": []
+}

@@ -1,0 +1,190 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "g",
+            "name": "Order valid?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "a",
+            "name": "Accepted",
+            "type": "endEvent"
+          },
+          {
+            "id": "b",
+            "name": "Refused",
+            "type": "endEvent"
+          },
+          {
+            "eventType": "message",
+            "id": "s2",
+            "name": "S2",
+            "type": "startEvent"
+          },
+          {
+            "id": "h",
+            "name": "Size?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "c",
+            "name": "Big",
+            "type": "endEvent"
+          },
+          {
+            "id": "d",
+            "name": "Small",
+            "type": "endEvent"
+          },
+          {
+            "eventType": "timer",
+            "id": "s3",
+            "name": "S3",
+            "type": "startEvent"
+          },
+          {
+            "id": "p",
+            "type": "parallelGateway"
+          },
+          {
+            "id": "x",
+            "name": "X",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "Done",
+            "type": "endEvent"
+          },
+          {
+            "id": "y",
+            "name": "Y",
+            "type": "task"
+          },
+          {
+            "id": "e_join",
+            "type": "parallelGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "g"
+          },
+          {
+            "condition": "= orderValid = true",
+            "from": "g",
+            "id": "Flow_2",
+            "name": "Yes: order is valid",
+            "to": "a"
+          },
+          {
+            "from": "g",
+            "id": "Flow_3",
+            "isDefault": true,
+            "name": "No: order is not valid",
+            "to": "b"
+          },
+          {
+            "from": "s2",
+            "id": "Flow_4",
+            "to": "h"
+          },
+          {
+            "condition": "= size > 10",
+            "from": "h",
+            "id": "Flow_5",
+            "name": "Big",
+            "to": "c"
+          },
+          {
+            "from": "h",
+            "id": "Flow_6",
+            "isDefault": true,
+            "name": "Small",
+            "to": "d"
+          },
+          {
+            "from": "s3",
+            "id": "Flow_7",
+            "to": "p"
+          },
+          {
+            "from": "p",
+            "id": "Flow_8",
+            "to": "x"
+          },
+          {
+            "from": "x",
+            "id": "Flow_9",
+            "to": "e_join"
+          },
+          {
+            "from": "p",
+            "id": "Flow_10",
+            "to": "y"
+          },
+          {
+            "from": "y",
+            "id": "Flow_11",
+            "to": "e_join"
+          },
+          {
+            "from": "e_join",
+            "id": "Flow_12",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "joined 2 flows into \"e\" with and gateway \"e_join\"",
+    "made g > b the default branch of \"g\"",
+    "gave g > a the condition \"= orderValid = true\"",
+    "made h > d the default branch of \"h\" instead of its condition",
+    "dropped the condition on p > y, which is not a decision",
+    "named 3 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 2,
+      "message": "condition \"order is valid\" is not FEEL; kept as the branch label"
+    },
+    {
+      "line": 3,
+      "message": "condition \"order is not valid\" is not FEEL; kept as the branch label"
+    }
+  ],
+  "questions": [
+    {
+      "draft": "At \"Order valid?\", decide on ",
+      "elementId": "g",
+      "options": [],
+      "text": "\"Order valid?\" decides on \"orderValid\", a variable the diagram made up. What data decides it?"
+    },
+    {
+      "draft": "At \"Size?\", when nothing else holds, ",
+      "elementId": "h",
+      "options": [
+        {
+          "change": "At \"Size?\", make \"Big\" the default branch.",
+          "label": "Big"
+        }
+      ],
+      "text": "When no condition at \"Size?\" holds, it takes \"Small\". Is that the right fallback?"
+    }
+  ]
+}

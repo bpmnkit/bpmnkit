@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="proc">
+    <bpmn:startEvent id="s"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:serviceTask id="t1">
+      <bpmn:incoming>f1</bpmn:incoming>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="f1" sourceRef="s" targetRef="t1"/>
+  </bpmn:process>
+</bpmn:definitions>
+

@@ -1,0 +1,6 @@
+s[start] > review[user Review claim]
+review >(Approved) pay[task Pay] > e[end Paid]
+review >(Rejected) e2[end Rejected]
+s2[start:message Update] > both[task Record update]
+both > a[task A] > e3[end Done]
+both > b[task B] > e3

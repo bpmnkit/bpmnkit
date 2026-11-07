@@ -1,0 +1,175 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "exporter": "@bpmnkit/core",
+  "exporterVersion": "0.0.23",
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "s",
+          "incoming": [],
+          "outgoing": [
+            "Flow_s_cg"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "cg",
+          "incoming": [
+            "Flow_s_cg"
+          ],
+          "name": "Complex",
+          "outgoing": [
+            "Flow_cg_ta",
+            "Flow_cg_tb"
+          ],
+          "type": "complexGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "ta"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "ta",
+          "incoming": [
+            "Flow_cg_ta"
+          ],
+          "name": "ta",
+          "outgoing": [
+            "Flow_ta_cj"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "tb"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "tb",
+          "incoming": [
+            "Flow_cg_tb"
+          ],
+          "name": "tb",
+          "outgoing": [
+            "Flow_tb_cj"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "cj",
+          "incoming": [
+            "Flow_ta_cj",
+            "Flow_tb_cj"
+          ],
+          "outgoing": [
+            "Flow_cj_e"
+          ],
+          "type": "complexGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e",
+          "incoming": [
+            "Flow_cj_e"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "p",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_s_cg",
+          "sourceRef": "s",
+          "targetRef": "cg",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_cg_ta",
+          "name": "a",
+          "sourceRef": "cg",
+          "targetRef": "ta",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_cg_tb",
+          "name": "b",
+          "sourceRef": "cg",
+          "targetRef": "tb",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_ta_cj",
+          "sourceRef": "ta",
+          "targetRef": "cj",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_tb_cj",
+          "sourceRef": "tb",
+          "targetRef": "cj",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_cj_e",
+          "sourceRef": "cj",
+          "targetRef": "e",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.10.0"
+  }
+}

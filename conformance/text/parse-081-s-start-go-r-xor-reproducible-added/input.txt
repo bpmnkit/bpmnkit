@@ -1,0 +1,3 @@
+s[start Go] > r[xor Reproducible?]      (ADDED)
+r >(Yes: ok) e[end Done]
+r >(No) x[end Dropped]

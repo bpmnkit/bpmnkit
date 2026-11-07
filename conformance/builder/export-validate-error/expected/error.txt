@@ -1,0 +1,2 @@
+Bpmn.export: 1 deploy error(s):
+deploy/service-task-no-type [t]: "t" (serviceTask) has no zeebe:taskDefinition type. Fix: Set a job type — Camunda 8 refuses to deploy a task with no task definition.

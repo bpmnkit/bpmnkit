@@ -1,0 +1,236 @@
+{
+  "id": "sid-bdb880ac-c464-4e5c-aa56-569d709436e0",
+  "processes": [
+    {
+      "elements": [
+        {
+          "eventType": "message",
+          "id": "sid-36EA43D1-0FE6-4197-AC57-7A43785B784B",
+          "name": "Invoice\nreceived",
+          "type": "startEvent"
+        },
+        {
+          "id": "sid-05039C4F-59F7-4CBD-8C84-D35E27C7B5EF",
+          "name": "Scan Invoice",
+          "type": "task"
+        },
+        {
+          "id": "sid-CFAC8502-0E69-4F08-BE36-8499B8C0FA44",
+          "name": "Archive\noriginal",
+          "type": "task"
+        },
+        {
+          "id": "sid-BC9AC0B6-1785-4E35-A974-7FEF1A586B9D",
+          "type": "endEvent"
+        },
+        {
+          "eventType": "message",
+          "id": "sid-40EC6574-E644-425C-8CE7-EE384F0C3520",
+          "name": "Approver to \nbe assigned",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "id": "sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD",
+          "name": "Assign approver",
+          "type": "task"
+        },
+        {
+          "id": "sid-F0D29912-929D-491C-8D23-73BD80CF980A",
+          "type": "eventBasedGateway"
+        },
+        {
+          "eventType": "message",
+          "id": "sid-B548B980-12E3-408E-9AC4-7031B85A8F2D",
+          "name": "Invoice review\n needed",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "id": "sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D",
+          "name": "Review and document result",
+          "type": "task"
+        },
+        {
+          "eventType": "timer",
+          "id": "sid-0E349B8B-14A7-4565-988A-38F3A9B624D2",
+          "name": "7 days",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "id": "sid-282524E6-660F-431D-8F19-1C3E9E9DE817",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "sid-F0D29912-929D-491C-8D23-73BD80CF980A",
+          "id": "sid-71EF9530-A32A-49BC-A783-9B98A5801362",
+          "to": "sid-0E349B8B-14A7-4565-988A-38F3A9B624D2"
+        },
+        {
+          "from": "sid-CFAC8502-0E69-4F08-BE36-8499B8C0FA44",
+          "id": "sid-C0540F47-C3C0-4FA8-B000-6D87640A6178",
+          "to": "sid-40EC6574-E644-425C-8CE7-EE384F0C3520"
+        },
+        {
+          "from": "sid-40EC6574-E644-425C-8CE7-EE384F0C3520",
+          "id": "sid-4AD2006C-9290-42B0-A904-DD8076B791C4",
+          "to": "sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD"
+        },
+        {
+          "from": "sid-05039C4F-59F7-4CBD-8C84-D35E27C7B5EF",
+          "id": "sid-3E8B2FCF-E408-4A5D-9455-8FDE7BB3EF96",
+          "to": "sid-CFAC8502-0E69-4F08-BE36-8499B8C0FA44"
+        },
+        {
+          "from": "sid-F0D29912-929D-491C-8D23-73BD80CF980A",
+          "id": "sid-4686AFBC-E33A-4657-95A0-B2E27E704152",
+          "to": "sid-B548B980-12E3-408E-9AC4-7031B85A8F2D"
+        },
+        {
+          "from": "sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D",
+          "id": "sid-6CB8539C-E02A-4496-94E7-17FAECB0D4B1",
+          "to": "sid-282524E6-660F-431D-8F19-1C3E9E9DE817"
+        },
+        {
+          "from": "sid-B548B980-12E3-408E-9AC4-7031B85A8F2D",
+          "id": "sid-D03CC374-8575-4F38-98B4-4DFF014C43CB",
+          "to": "sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D"
+        },
+        {
+          "from": "sid-0E349B8B-14A7-4565-988A-38F3A9B624D2",
+          "id": "sid-3019478F-48D5-4B85-95B1-E192B9BE4183",
+          "to": "sid-BC9AC0B6-1785-4E35-A974-7FEF1A586B9D"
+        },
+        {
+          "from": "sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD",
+          "id": "sid-26030150-7369-4B7F-8264-B3ABC62BA735",
+          "to": "sid-F0D29912-929D-491C-8D23-73BD80CF980A"
+        },
+        {
+          "from": "sid-36EA43D1-0FE6-4197-AC57-7A43785B784B",
+          "id": "sid-7971C38C-2EF5-41F2-A24E-3FFCA069EDBF",
+          "to": "sid-05039C4F-59F7-4CBD-8C84-D35E27C7B5EF"
+        }
+      ],
+      "id": "sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57",
+      "name": "Team-Assistant"
+    },
+    {
+      "elements": [
+        {
+          "id": "approveInvoice",
+          "name": "Approve Invoice",
+          "type": "userTask"
+        },
+        {
+          "id": "invoice_approved",
+          "name": "Invoice\napproved?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "assignApprover",
+          "name": "Assign\nApprover",
+          "type": "userTask"
+        },
+        {
+          "id": "reviewInvoice",
+          "name": "Rechnung klären",
+          "type": "userTask"
+        },
+        {
+          "id": "reviewSuccessful_gw",
+          "name": "Review\nsuccessful?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "invoiceNotProcessed",
+          "name": "Invoice not\nprocessed",
+          "type": "endEvent"
+        },
+        {
+          "eventType": "message",
+          "id": "StartEvent_1",
+          "name": "Invoice\nreceived",
+          "type": "startEvent"
+        },
+        {
+          "id": "prepareBankTransfer",
+          "name": "Prepare\r\nBank\r\nTransfer",
+          "type": "userTask"
+        },
+        {
+          "id": "invoiceProcessed",
+          "name": "Invoice\nprocessed",
+          "type": "endEvent"
+        },
+        {
+          "id": "archiveInvoice",
+          "name": "Archive\nInvoice",
+          "type": "serviceTask"
+        }
+      ],
+      "flows": [
+        {
+          "condition": "${approved}",
+          "from": "invoice_approved",
+          "id": "invoiceApproved",
+          "name": "yes",
+          "to": "prepareBankTransfer"
+        },
+        {
+          "condition": "${!approved}",
+          "from": "invoice_approved",
+          "id": "invoiceNotApproved",
+          "name": "no",
+          "to": "reviewInvoice"
+        },
+        {
+          "condition": "${clarified == 'yes'}",
+          "from": "reviewSuccessful_gw",
+          "id": "reviewSuccessful",
+          "name": "yes",
+          "to": "approveInvoice"
+        },
+        {
+          "condition": "${clarified == 'no'}",
+          "from": "reviewSuccessful_gw",
+          "id": "reviewNotSuccessful",
+          "name": "no",
+          "to": "invoiceNotProcessed"
+        },
+        {
+          "from": "approveInvoice",
+          "id": "sequenceFlow_180",
+          "to": "invoice_approved"
+        },
+        {
+          "from": "reviewInvoice",
+          "id": "sequenceFlow_183",
+          "to": "reviewSuccessful_gw"
+        },
+        {
+          "from": "assignApprover",
+          "id": "sequenceFlow_178",
+          "to": "approveInvoice"
+        },
+        {
+          "from": "prepareBankTransfer",
+          "id": "SequenceFlow_2",
+          "to": "archiveInvoice"
+        },
+        {
+          "from": "archiveInvoice",
+          "id": "SequenceFlow_3",
+          "to": "invoiceProcessed"
+        },
+        {
+          "from": "StartEvent_1",
+          "id": "SequenceFlow_1",
+          "to": "assignApprover"
+        }
+      ],
+      "id": "bpmn-miwg-test-case-c.1.0",
+      "name": "BPMN MIWG Test Case C.1.0"
+    }
+  ]
+}

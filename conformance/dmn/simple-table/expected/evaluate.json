@@ -1,0 +1,30 @@
+[
+  {
+    "result": {
+      "t": "string",
+      "v": "world"
+    },
+    "evaluated": [
+      {
+        "decision": "Dec_1",
+        "result": {
+          "t": "string",
+          "v": "world"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "Dec_1",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  }
+]

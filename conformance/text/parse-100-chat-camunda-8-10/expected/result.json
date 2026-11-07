@@ -1,0 +1,35 @@
+{
+  "connectors": [],
+  "diagram": {
+    "executionPlatformVersion": "8.10.0",
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "a",
+            "name": "A",
+            "type": "startEvent"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "a",
+            "id": "Flow_1",
+            "to": "e"
+          }
+        ],
+        "id": "Chat",
+        "name": "Chat"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [],
+  "questions": []
+}

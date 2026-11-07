@@ -1,0 +1,9 @@
+{
+  "aliases": {
+    "adhoc": "Agent",
+    "end": "end",
+    "service": "T1",
+    "service_2": "T2",
+    "start": "start"
+  }
+}

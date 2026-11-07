@@ -151,11 +151,30 @@ export function packAnnotations(
 
 	const annotationIds = new Set(process.textAnnotations.map((a) => a.id))
 	const elementForAnnotation = new Map<string, string>()
+	const annotationPairs: Array<[string, string]> = []
 	for (const assoc of process.associations) {
-		if (annotationIds.has(assoc.targetRef))
+		if (annotationIds.has(assoc.targetRef) && annotationIds.has(assoc.sourceRef))
+			annotationPairs.push([assoc.sourceRef, assoc.targetRef])
+		else if (annotationIds.has(assoc.targetRef))
 			elementForAnnotation.set(assoc.targetRef, assoc.sourceRef)
 		else if (annotationIds.has(assoc.sourceRef))
 			elementForAnnotation.set(assoc.sourceRef, assoc.targetRef)
+	}
+	// An annotation linked only to another annotation packs beside that one's
+	// element, so the association between the two stays short.
+	for (let changed = true; changed; ) {
+		changed = false
+		for (const [a, b] of annotationPairs) {
+			const forA = elementForAnnotation.get(a)
+			const forB = elementForAnnotation.get(b)
+			if (forA === undefined && forB !== undefined) {
+				elementForAnnotation.set(a, forB)
+				changed = true
+			} else if (forB === undefined && forA !== undefined) {
+				elementForAnnotation.set(b, forA)
+				changed = true
+			}
+		}
 	}
 
 	const nodeById = new Map(layoutNodes.map((n) => [n.id, n]))

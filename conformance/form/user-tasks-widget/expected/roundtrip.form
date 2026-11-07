@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 16,
+  "id": "approve-form",
+  "components": [
+    {
+      "label": "Approver",
+      "type": "textfield",
+      "id": "f1",
+      "key": "approver"
+    },
+    {
+      "label": "Approved",
+      "type": "checkbox",
+      "id": "f2",
+      "key": "approved"
+    }
+  ],
+  "type": "default"
+}

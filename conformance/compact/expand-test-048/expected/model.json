@@ -1,0 +1,129 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_Process_1",
+      "plane": {
+        "bpmnElement": "Process_1",
+        "edges": [
+          {
+            "bpmnElement": "f1",
+            "id": "f1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 50,
+                "y": 25
+              },
+              {
+                "x": 110,
+                "y": 25
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_Process_1",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 0,
+              "y": 0
+            },
+            "bpmnElement": "gw",
+            "id": "gw_di",
+            "isMarkerVisible": true,
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 42,
+                "x": 4,
+                "y": 54
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 110,
+              "y": 7
+            },
+            "bpmnElement": "end",
+            "id": "end_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 40,
+                "x": 108,
+                "y": 47
+              }
+            },
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "extensionElements": [],
+          "id": "gw",
+          "incoming": [],
+          "name": "Valid?",
+          "outgoing": [
+            "f1"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "end",
+          "incoming": [
+            "f1"
+          ],
+          "name": "Done",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "Process_1",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "f1",
+          "sourceRef": "gw",
+          "targetRef": "end",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

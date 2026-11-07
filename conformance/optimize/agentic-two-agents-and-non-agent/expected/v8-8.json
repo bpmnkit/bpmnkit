@@ -1,0 +1,182 @@
+{
+  "findings": [
+    {
+      "category": "pattern",
+      "elementIds": [
+        "agent"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Agent\" has no error boundary event.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "agent2"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Agent\" has no error boundary event.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "plain"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Plain\" has no error boundary event.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"S\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "agentic",
+      "elementIds": [
+        "agent"
+      ],
+      "fixable": false,
+      "id": "agentic/no-output-collection",
+      "message": "AI Agent \"Agent\" has no outputCollection — tool call results won't be aggregated.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Set zeebe:adHoc outputCollection (e.g. \"toolCallResults\")."
+    },
+    {
+      "category": "agentic",
+      "elementIds": [
+        "agent"
+      ],
+      "fixable": false,
+      "id": "agentic/limits-missing",
+      "message": "AI Agent \"Agent\" has no data.limits.maxModelCalls binding.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Set a model-call limit as a safety net against infinite tool loops."
+    },
+    {
+      "category": "agentic",
+      "elementIds": [
+        "a1t"
+      ],
+      "fixable": false,
+      "id": "agentic/tool-no-description",
+      "message": "Tool \"a1t\" has no documentation — the LLM sees no description for this tool.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Set <bpmn:documentation> describing what this tool does."
+    },
+    {
+      "category": "agentic",
+      "elementIds": [
+        "agent2"
+      ],
+      "fixable": false,
+      "id": "agentic/limits-missing",
+      "message": "AI Agent \"Agent\" has no data.limits.maxModelCalls binding.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Set a model-call limit as a safety net against infinite tool loops."
+    },
+    {
+      "category": "agentic",
+      "elementIds": [
+        "b1t"
+      ],
+      "fixable": false,
+      "id": "agentic/fromai-bad-ref",
+      "message": "fromAi() on \"b1t\" input \"x\" references \"x\", not a toolCall.* field.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "fromAi()'s first argument must reference \"toolCall.<param>\"."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "agent2"
+      ],
+      "fixable": false,
+      "id": "compat/ad-hoc-sub-process",
+      "message": "Ad-hoc sub-process \"Agent\" sets only one of outputCollection and outputElement.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set both, or neither."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "a1t"
+      ],
+      "fixable": false,
+      "id": "compat/agent-tool-output-key",
+      "message": "Tool returns nothing to the agent. Set a \"toolCallResult\" (at minimum, note the task completed).",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an output mapping with target toolCallResult."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "b1t"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() key must start with \"toolCall.\". Use toolCall.x instead of a bare name.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Pass the parameter as fromAi(toolCall.name, ...)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "b1t"
+      ],
+      "fixable": false,
+      "id": "compat/agent-tool-output-key",
+      "message": "Tool returns nothing to the agent. Set a \"toolCallResult\" (at minimum, note the task completed).",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an output mapping with target toolCallResult."
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 5,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 4,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 0,
+      "naming": 0,
+      "pattern": 4,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 3,
+      "info": 2,
+      "warning": 8
+    },
+    "total": 13
+  }
+}

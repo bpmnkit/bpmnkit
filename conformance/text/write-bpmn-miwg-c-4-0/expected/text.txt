@@ -1,0 +1,9 @@
+# Money Bank - Process
+candidate_accepted_offer[start Candidate accepted offer] > send_candidate_contract[user Send candidate Contract] > contract_terms_accepted[xor Contract terms accepted ?]
+contract_terms_accepted >(Yes) get_signature_on_contract[user Get signature on contract and notify responsible department] > non_exclusive_gateway[and Non-exclusive Gateway]
+contract_terms_accepted >(No) review_terms_of_contract[user Review terms of contract] > send_candidate_contract
+non_exclusive_gateway > inform_employee_of_company[user Inform employee of company policies] > introduce_employee_to_company[user Introduce employee to company Mission, Vision and Values] > perform_training_for_time[user Perform training for time reports sick leave and holidays] > register_for_medical_insurance[user Register for medical insurance] > non_exclusive_gateway_2[and Non-exclusive Gateway] > introduce_new_employee_to[user Introduce new employee to the team] > perform_training_for_position[user Perform training for position] > non_exclusive_gateway_3[and Non-exclusive Gateway]
+non_exclusive_gateway > request_preparations_for_a[user Request preparations for a new employee] > new_employee_in_department[throw:signal New employee in department X] > non_exclusive_gateway_2
+non_exclusive_gateway_3 > input_from_it_ready[catch:message Input from IT ready] > non_exclusive_gateway_4[and Non-exclusive Gateway] > compile_welcome_package[user Compile welcome package] > give_employee_welcome_package[user Give employee welcome package] > end_event[end End Event]
+non_exclusive_gateway_3 > input_from_payroll_ready[catch:message Input from Payroll ready] > non_exclusive_gateway_4
+non_exclusive_gateway_3 > input_from_facilities_ready[catch:message Input from Facilities ready] > non_exclusive_gateway_4

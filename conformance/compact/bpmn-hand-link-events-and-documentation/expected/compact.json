@@ -1,0 +1,46 @@
+{
+  "id": "Defs_1",
+  "processes": [
+    {
+      "documentation": "Process doc",
+      "elements": [
+        {
+          "documentation": "Start doc",
+          "id": "s",
+          "name": "Go",
+          "type": "startEvent"
+        },
+        {
+          "eventType": "link",
+          "id": "out",
+          "name": "Jump",
+          "type": "intermediateThrowEvent"
+        },
+        {
+          "eventType": "link",
+          "id": "in",
+          "name": "Land",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "id": "e",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "s",
+          "id": "f1",
+          "to": "out"
+        },
+        {
+          "from": "in",
+          "id": "f2",
+          "to": "e"
+        }
+      ],
+      "id": "p",
+      "name": "Links"
+    }
+  ]
+}

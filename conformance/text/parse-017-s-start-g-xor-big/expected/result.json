@@ -1,0 +1,60 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "g",
+            "name": "Big?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "a",
+            "name": "A",
+            "type": "endEvent"
+          },
+          {
+            "id": "b",
+            "name": "B",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "g"
+          },
+          {
+            "condition": "= size > 10",
+            "from": "g",
+            "id": "Flow_2",
+            "name": "Yes",
+            "to": "a"
+          },
+          {
+            "from": "g",
+            "id": "Flow_3",
+            "isDefault": true,
+            "name": "No",
+            "to": "b"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "made g > b the default branch of \"g\"",
+    "named 3 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

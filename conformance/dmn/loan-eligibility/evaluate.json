@@ -1,0 +1,24 @@
+[
+  {
+    "decision": "eligibility",
+    "context": {
+      "income": {
+        "t": "number",
+        "v": "1500"
+      }
+    }
+  },
+  {
+    "decision": "eligibility",
+    "context": {
+      "income": {
+        "t": "number",
+        "v": "2500"
+      }
+    }
+  },
+  {
+    "decision": "eligibility",
+    "context": {}
+  }
+]

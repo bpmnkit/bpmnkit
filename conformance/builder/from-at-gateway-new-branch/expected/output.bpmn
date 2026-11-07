@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0">
+  <bpmn:process id="proc" isExecutable="true">
+    <bpmn:startEvent id="start" name="Start">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="validate" name="Validate">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="gw" name="OK?">
+      <bpmn:incoming>f2</bpmn:incoming>
+      <bpmn:outgoing>f3</bpmn:outgoing>
+      <bpmn:outgoing>f4</bpmn:outgoing>
+      <bpmn:outgoing>Flow_gw_zt</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="end">
+      <bpmn:incoming>f3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="open" name="Open end">
+      <bpmn:incoming>f4</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:serviceTask id="zt" name="zt">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="zt"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_gw_zt</bpmn:incoming>
+      <bpmn:outgoing>Flow_zt_ze</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="ze">
+      <bpmn:incoming>Flow_zt_ze</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="validate"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="validate" targetRef="gw"/>
+    <bpmn:sequenceFlow id="f3" sourceRef="gw" targetRef="end"/>
+    <bpmn:sequenceFlow id="f4" sourceRef="gw" targetRef="open"/>
+    <bpmn:sequenceFlow id="Flow_gw_zt" sourceRef="gw" targetRef="zt" name="extra">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=z</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_zt_ze" sourceRef="zt" targetRef="ze"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="proc">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start">
+        <dc:Bounds x="152" y="102" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="validate_di" bpmnElement="validate">
+        <dc:Bounds x="240" y="80" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_di" bpmnElement="gw" isMarkerVisible="true">
+        <dc:Bounds x="395" y="95" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_di" bpmnElement="end">
+        <dc:Bounds x="502" y="102" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="open_di" bpmnElement="open">
+        <dc:Bounds x="470" y="200" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1">
+        <di:waypoint x="188" y="120"/>
+        <di:waypoint x="240" y="120"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2">
+        <di:waypoint x="340" y="120"/>
+        <di:waypoint x="395" y="120"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3">
+        <di:waypoint x="445" y="120"/>
+        <di:waypoint x="502" y="120"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f4_di" bpmnElement="f4">
+        <di:waypoint x="420" y="145"/>
+        <di:waypoint x="420" y="240"/>
+        <di:waypoint x="470" y="240"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

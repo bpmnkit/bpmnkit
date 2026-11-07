@@ -1,0 +1,112 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "approveInvoice"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Approve Invoice\" is a job-worker user task; Camunda 8.8 deprecates those in favour of Camunda user tasks.",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "approveInvoice"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Approve Invoice\" has no zeebe:formDefinition.",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "assignApprover"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Assign\r\nApprover\" is a job-worker user task; Camunda 8.8 deprecates those in favour of Camunda user tasks.",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "assignApprover"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Assign\r\nApprover\" has no zeebe:formDefinition.",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "reviewInvoice"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Rechnung klären\" is a job-worker user task; Camunda 8.8 deprecates those in favour of Camunda user tasks.",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "reviewInvoice"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Rechnung klären\" has no zeebe:formDefinition.",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "prepareBankTransfer"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Prepare\r\nBank\r\nTransfer\" is a job-worker user task; Camunda 8.8 deprecates those in favour of Camunda user tasks.",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "prepareBankTransfer"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Prepare\r\nBank\r\nTransfer\" has no zeebe:formDefinition.",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "archiveInvoice"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Archive\nInvoice\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "handle-invoice",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    }
+  ]
+}

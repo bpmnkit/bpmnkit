@@ -1,0 +1,17 @@
+{
+  "findings": [
+    {
+      "elementId": "t1",
+      "fix": "Add an <output id=\"…\" name=\"result\" typeRef=\"string\"/> column. (agent-cards/dmn.md#traps)",
+      "message": "Decision \"d1\"'s decision table has no <output>.",
+      "rule": "dmn/no-output",
+      "severity": "error"
+    },
+    {
+      "fix": "Set <inputExpression><text>variableName</text></inputExpression> to the value the column tests. (agent-cards/dmn.md#traps)",
+      "message": "Input \"no id and no expression\" of Decision \"d1\" has no input expression.",
+      "rule": "dmn/empty-input-expression",
+      "severity": "error"
+    }
+  ]
+}

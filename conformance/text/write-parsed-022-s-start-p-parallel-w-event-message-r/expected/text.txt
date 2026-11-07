@@ -1,0 +1,3 @@
+s[start S] > p[and]
+p > w[catch:message Report received] > d[rule Check credit] > e_join[and] > e[end E]
+p > h[user Review report] > e_join

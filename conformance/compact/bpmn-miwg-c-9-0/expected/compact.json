@@ -1,0 +1,331 @@
+{
+  "id": "_5SVkEIXnEeSmwfgVk-ryvQ",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "StartEvent_ApplicationReceived",
+          "name": "Application received",
+          "outputs": {
+            "documentReferenceId": "= string(now())"
+          },
+          "resultVariable": "documentReferenceId",
+          "type": "startEvent"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "documentation": "Ends the subprocess and send message timeout handled",
+                "eventType": "message",
+                "id": "EndMessageEvent_Timeout",
+                "jobType": "timeoutHandled",
+                "name": "Timeout handled",
+                "type": "endEvent"
+              },
+              {
+                "documentation": "Catches timeout error event and starts the subprocess",
+                "eventType": "error",
+                "id": "StartErrorEvent_Timeout",
+                "name": "Timeout",
+                "type": "startEvent"
+              },
+              {
+                "documentation": "Manually handles the timeout",
+                "id": "UserTask_HandleTimeout",
+                "name": "Handle Timeout",
+                "type": "userTask"
+              }
+            ],
+            "flows": [
+              {
+                "from": "StartErrorEvent_Timeout",
+                "id": "Flow_151qlxc",
+                "to": "UserTask_HandleTimeout"
+              },
+              {
+                "from": "UserTask_HandleTimeout",
+                "id": "Flow_0dppbeu",
+                "to": "EndMessageEvent_Timeout"
+              }
+            ]
+          },
+          "id": "Activity_1ke2ixr",
+          "type": "subProcess"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "documentation": "Customer onboarding cancellation message received",
+                "eventType": "message",
+                "id": "StartMessageEvent_CancellationRequested",
+                "name": "Cancelation requested",
+                "type": "startEvent"
+              },
+              {
+                "documentation": "Cancel application",
+                "id": "ServiceTask_CancelApplication",
+                "jobType": "cancelApplication",
+                "name": "Cancel application",
+                "type": "serviceTask"
+              },
+              {
+                "documentation": "Inform customer of a successful cancelation",
+                "eventType": "message",
+                "id": "EndMessageEvent_InformCustomer",
+                "jobType": "informCustomerSuccessfulCancelation",
+                "name": "Customer notified about successful cancelation",
+                "type": "endEvent"
+              },
+              {
+                "id": "ParallelGateway_CancelApplication",
+                "type": "parallelGateway"
+              },
+              {
+                "documentation": "Inform operations team of a successful cancelation",
+                "eventType": "message",
+                "id": "EndMessageEvent_InformOperations",
+                "jobType": "informOperationsSuccessfulCancelation",
+                "name": "Operations Team notified about successful cancelation",
+                "type": "endEvent"
+              }
+            ],
+            "flows": [
+              {
+                "from": "StartMessageEvent_CancellationRequested",
+                "id": "Flow_12nmks0",
+                "to": "ServiceTask_CancelApplication"
+              },
+              {
+                "from": "ServiceTask_CancelApplication",
+                "id": "Flow_19iipc6",
+                "to": "ParallelGateway_CancelApplication"
+              },
+              {
+                "from": "ParallelGateway_CancelApplication",
+                "id": "Flow_0qrakss",
+                "to": "EndMessageEvent_InformCustomer"
+              },
+              {
+                "from": "ParallelGateway_CancelApplication",
+                "id": "Flow_1jml1az",
+                "to": "EndMessageEvent_InformOperations"
+              }
+            ]
+          },
+          "id": "Activity_0vp33kx",
+          "type": "subProcess"
+        },
+        {
+          "calledProcess": "ManualCheck",
+          "id": "Activity_ManualCheck",
+          "name": "Manual Check",
+          "type": "callActivity"
+        },
+        {
+          "documentation": "Customer onboarding process end application issued",
+          "id": "EndEvent_ApplicationIssued",
+          "name": "Application\n issued",
+          "type": "endEvent"
+        },
+        {
+          "id": "SendTask_SendPolicy",
+          "inputs": {
+            "apiKey": "secrets.SENDGRID_DEMO",
+            "from.email": "demo@camunda.com",
+            "from.name": "= corporation",
+            "template.data": "= {\n    \"name\": applicant.name,\n    \"applicationNumber\": applicationNumber,\n    \"product\": product\n}",
+            "template.id": "d-0d0120b0c7f148ef8a1c262f2cf07092",
+            "to.email": "= applicant.email",
+            "to.name": "= applicant.name"
+          },
+          "jobType": "io.camunda:sendgrid:1",
+          "modelerTemplate": {
+            "id": "io.camunda.connectors.SendGrid.v1.template"
+          },
+          "name": "Send confirmation",
+          "type": "serviceTask"
+        },
+        {
+          "documentation": "Deliver policy",
+          "id": "ServiceTask_DeliverPolicy",
+          "jobType": "issuePolicy",
+          "name": "Deliver confirmation",
+          "type": "serviceTask"
+        },
+        {
+          "id": "ExclusiveGateway_Decision",
+          "name": "Decision?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "documentation": "Customer onboarding process end application rejected",
+          "id": "EndEvent_ApplicationRejected",
+          "name": "Application \nrejected",
+          "type": "endEvent"
+        },
+        {
+          "documentation": "Reject policy",
+          "id": "ServiceTask_RejectPolicy",
+          "jobType": "rejectPolicy",
+          "name": "Reject application",
+          "type": "serviceTask"
+        },
+        {
+          "id": "SendTask_SendRejection",
+          "inputs": {
+            "apiKey": "secrets.SENDGRID_DEMO",
+            "from.email": "demo@camunda.com",
+            "from.name": "= corporation",
+            "template.data": "= {\n    \"name\": applicant.name\n}",
+            "template.id": "d-aa6a58aaded54a83884518433ac2dd56",
+            "to.email": "= applicant.email",
+            "to.name": "= applicant.name"
+          },
+          "jobType": "io.camunda:sendgrid:1",
+          "modelerTemplate": {
+            "id": "io.camunda.connectors.SendGrid.v1.template"
+          },
+          "name": "Send rejection",
+          "type": "serviceTask"
+        },
+        {
+          "attachedTo": "Activity_ManualCheck",
+          "documentation": "Captures error if fraud is detected",
+          "eventType": "error",
+          "id": "ErrorBoundaryEvent_FraudDetected",
+          "name": "Fraud detected",
+          "type": "boundaryEvent"
+        },
+        {
+          "id": "SendTask_ReportFraud",
+          "jobType": "reportFraud",
+          "name": "Report fraud",
+          "type": "sendTask"
+        },
+        {
+          "documentation": "Customer onboarding process terminated due to fraud",
+          "eventType": "terminate",
+          "id": "TerminateEvent_ApplicationCanceledFraud",
+          "name": "Application canceled due to fraud",
+          "type": "endEvent"
+        },
+        {
+          "documentation": "Route process based on risk, \"green\" automatic onboarding, \"yellow\" manual check, \"red\" automatic rejection",
+          "id": "ExclusiveGateway_Risk",
+          "name": "Risk?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "decisionId": "risk_check",
+          "documentation": "Identify risk for prospect client",
+          "id": "BusinessRuleTask_CheckApplicationAutomatically",
+          "name": "Check application automatically",
+          "outputs": {
+            "riskLevels": "= if result != null then result.riskLevel else [\"green\"]",
+            "risks": "= if result != null then result.risk else []"
+          },
+          "resultVariable": "result",
+          "type": "businessRuleTask"
+        },
+        {
+          "documentation": "Gets credit score for prospect client",
+          "id": "ServiceTask_GetCreditScore",
+          "jobType": "calculateScore",
+          "name": "Get credit score",
+          "type": "serviceTask"
+        }
+      ],
+      "flows": [
+        {
+          "from": "ServiceTask_GetCreditScore",
+          "id": "SequenceFlow_1gd6p37",
+          "to": "BusinessRuleTask_CheckApplicationAutomatically"
+        },
+        {
+          "from": "ServiceTask_RejectPolicy",
+          "id": "SequenceFlow_01vh1zw",
+          "to": "SendTask_SendRejection"
+        },
+        {
+          "from": "SendTask_SendRejection",
+          "id": "SequenceFlow_13",
+          "to": "EndEvent_ApplicationRejected"
+        },
+        {
+          "condition": "= some risk in riskLevels satisfies risk = \"red\"",
+          "from": "ExclusiveGateway_Risk",
+          "id": "SequenceFlow_Red",
+          "name": "Red (severe risk)",
+          "to": "ServiceTask_RejectPolicy"
+        },
+        {
+          "from": "BusinessRuleTask_CheckApplicationAutomatically",
+          "id": "SequenceFlow_2",
+          "to": "ExclusiveGateway_Risk"
+        },
+        {
+          "from": "ExclusiveGateway_Risk",
+          "id": "SequenceFlow_Green",
+          "isDefault": true,
+          "name": "Green (no risk)",
+          "to": "ServiceTask_DeliverPolicy"
+        },
+        {
+          "from": "ServiceTask_DeliverPolicy",
+          "id": "SequenceFlow_10",
+          "to": "SendTask_SendPolicy"
+        },
+        {
+          "from": "SendTask_SendPolicy",
+          "id": "SequenceFlow_11",
+          "to": "EndEvent_ApplicationIssued"
+        },
+        {
+          "condition": "= approved ",
+          "from": "ExclusiveGateway_Decision",
+          "id": "SequenceFlow_ApplicationAccepted",
+          "name": "Application accepted",
+          "to": "ServiceTask_DeliverPolicy"
+        },
+        {
+          "condition": "= not(approved)",
+          "from": "ExclusiveGateway_Decision",
+          "id": "SequenceFlow_ApplicationDeclined",
+          "name": "Application declined",
+          "to": "ServiceTask_RejectPolicy"
+        },
+        {
+          "from": "StartEvent_ApplicationReceived",
+          "id": "SequenceFlow_6",
+          "to": "ServiceTask_GetCreditScore"
+        },
+        {
+          "condition": "= every risk in riskLevels satisfies risk = \"yellow\"",
+          "from": "ExclusiveGateway_Risk",
+          "id": "SequenceFlow_Yellow",
+          "name": "Yellow (moderate risk)",
+          "to": "Activity_ManualCheck"
+        },
+        {
+          "from": "Activity_ManualCheck",
+          "id": "Flow_0ik8h65",
+          "to": "ExclusiveGateway_Decision"
+        },
+        {
+          "from": "ErrorBoundaryEvent_FraudDetected",
+          "id": "Flow_177paze",
+          "to": "SendTask_ReportFraud"
+        },
+        {
+          "from": "SendTask_ReportFraud",
+          "id": "Flow_0cvhizd",
+          "to": "TerminateEvent_ApplicationCanceledFraud"
+        }
+      ],
+      "id": "customer_onboarding_en",
+      "name": "Customer Onboarding"
+    }
+  ]
+}

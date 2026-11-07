@@ -1,0 +1,40 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "g",
+          "type": "inclusiveGateway"
+        },
+        {
+          "id": "h",
+          "type": "complexGateway"
+        },
+        {
+          "id": "a",
+          "type": "task"
+        },
+        {
+          "id": "b",
+          "type": "task"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f1",
+          "from": "g",
+          "to": "a",
+          "isDefault": true
+        },
+        {
+          "id": "f2",
+          "from": "h",
+          "to": "b",
+          "isDefault": true
+        }
+      ]
+    }
+  ]
+}

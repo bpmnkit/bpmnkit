@@ -1,0 +1,807 @@
+{
+	"branches": {
+		"ok": {
+			"id": "Definitions_1",
+			"targetNamespace": "http://bpmn.io/schema/bpmn",
+			"exporter": "@bpmnkit/core",
+			"exporterVersion": "0.0.23",
+			"namespaces": {
+				"bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+				"bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+				"dc": "http://www.omg.org/spec/DD/20100524/DC",
+				"di": "http://www.omg.org/spec/DD/20100524/DI",
+				"zeebe": "http://camunda.org/schema/zeebe/1.0",
+				"modeler": "http://camunda.org/schema/modeler/1.0",
+				"xsi": "http://www.w3.org/2001/XMLSchema-instance"
+			},
+			"unknownAttributes": {
+				"modeler:executionPlatform": "Camunda Cloud",
+				"modeler:executionPlatformVersion": "8.10.0"
+			},
+			"errors": [],
+			"escalations": [],
+			"messages": [],
+			"signals": [],
+			"collaborations": [],
+			"processes": [
+				{
+					"id": "p",
+					"isExecutable": true,
+					"extensionElements": [],
+					"flowElements": [
+						{
+							"id": "s",
+							"incoming": [],
+							"outgoing": ["Flow_s_gw"],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "startEvent",
+							"eventDefinitions": []
+						},
+						{
+							"id": "gw",
+							"incoming": ["Flow_s_gw"],
+							"outgoing": ["F_yes", "Flow_gw_lt"],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "exclusiveGateway",
+							"default": "Flow_gw_lt"
+						},
+						{
+							"id": "t1",
+							"name": "T1",
+							"incoming": ["F_yes"],
+							"outgoing": ["Flow_t1_inner"],
+							"extensionElements": [
+								{
+									"name": "zeebe:taskDefinition",
+									"attributes": {
+										"type": "work"
+									},
+									"children": []
+								}
+							],
+							"unknownAttributes": {},
+							"type": "serviceTask"
+						},
+						{
+							"id": "bd",
+							"incoming": [],
+							"outgoing": ["Flow_bd_e2"],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "boundaryEvent",
+							"attachedToRef": "t1",
+							"eventDefinitions": [
+								{
+									"type": "timer",
+									"timeDuration": "PT1S",
+									"id": "bd_TimerEventDefinition"
+								}
+							]
+						},
+						{
+							"id": "e2",
+							"incoming": ["Flow_bd_e2"],
+							"outgoing": [],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "endEvent",
+							"eventDefinitions": []
+						},
+						{
+							"id": "inner",
+							"incoming": ["Flow_t1_inner"],
+							"outgoing": ["Flow_inner_ta", "Flow_inner_tb"],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "exclusiveGateway",
+							"default": "Flow_inner_ta"
+						},
+						{
+							"id": "ta",
+							"incoming": ["Flow_inner_ta"],
+							"outgoing": ["Flow_ta_inner_join"],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "task"
+						},
+						{
+							"id": "tb",
+							"incoming": ["Flow_inner_tb"],
+							"outgoing": ["Flow_tb_inner_join"],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "userTask"
+						},
+						{
+							"id": "lt",
+							"incoming": ["Flow_gw_lt"],
+							"outgoing": [],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "intermediateThrowEvent",
+							"eventDefinitions": [
+								{
+									"type": "link",
+									"name": "L",
+									"id": "lt_LinkEventDefinition"
+								}
+							]
+						},
+						{
+							"id": "lc",
+							"incoming": [],
+							"outgoing": ["Flow_lc_end"],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "intermediateCatchEvent",
+							"eventDefinitions": [
+								{
+									"type": "link",
+									"name": "L",
+									"id": "lc_LinkEventDefinition"
+								}
+							],
+							"dataInputAssociations": [
+								{
+									"sourceRefs": ["dr"],
+									"unknownAttributes": {}
+								}
+							]
+						},
+						{
+							"id": "d1",
+							"name": "D",
+							"incoming": [],
+							"outgoing": [],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "dataObject"
+						},
+						{
+							"id": "dr",
+							"incoming": [],
+							"outgoing": [],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "dataObjectReference",
+							"dataObjectRef": "d1"
+						},
+						{
+							"id": "end",
+							"incoming": ["Flow_lc_end", "Flow_inner_join_end"],
+							"outgoing": [],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "endEvent",
+							"eventDefinitions": []
+						},
+						{
+							"id": "inner_join",
+							"incoming": ["Flow_tb_inner_join", "Flow_ta_inner_join"],
+							"outgoing": ["Flow_inner_join_end"],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "exclusiveGateway"
+						}
+					],
+					"sequenceFlows": [
+						{
+							"id": "Flow_s_gw",
+							"sourceRef": "s",
+							"targetRef": "gw",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						},
+						{
+							"id": "F_yes",
+							"sourceRef": "gw",
+							"targetRef": "t1",
+							"name": "Yes",
+							"conditionExpression": {
+								"text": "= x > 1",
+								"attributes": {
+									"xsi:type": "bpmn:tFormalExpression"
+								}
+							},
+							"extensionElements": [],
+							"unknownAttributes": {}
+						},
+						{
+							"id": "Flow_bd_e2",
+							"sourceRef": "bd",
+							"targetRef": "e2",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						},
+						{
+							"id": "Flow_t1_inner",
+							"sourceRef": "t1",
+							"targetRef": "inner",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						},
+						{
+							"id": "Flow_inner_ta",
+							"sourceRef": "inner",
+							"targetRef": "ta",
+							"name": "a",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						},
+						{
+							"id": "Flow_inner_tb",
+							"sourceRef": "inner",
+							"targetRef": "tb",
+							"name": "b",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						},
+						{
+							"id": "Flow_tb_inner_join",
+							"sourceRef": "tb",
+							"targetRef": "inner_join",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						},
+						{
+							"id": "Flow_gw_lt",
+							"sourceRef": "gw",
+							"targetRef": "lt",
+							"name": "no",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						},
+						{
+							"id": "Flow_ta_inner_join",
+							"sourceRef": "ta",
+							"targetRef": "inner_join",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						},
+						{
+							"id": "Flow_lc_end",
+							"sourceRef": "lc",
+							"targetRef": "end",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						},
+						{
+							"id": "Flow_inner_join_end",
+							"sourceRef": "inner_join",
+							"targetRef": "end",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						}
+					],
+					"textAnnotations": [
+						{
+							"id": "TextAnnotation_ta_1",
+							"text": "note",
+							"unknownAttributes": {}
+						},
+						{
+							"id": "TextAnnotation_lc_1",
+							"text": "after catch",
+							"unknownAttributes": {}
+						}
+					],
+					"associations": [
+						{
+							"id": "Association_ta_1",
+							"sourceRef": "ta",
+							"targetRef": "TextAnnotation_ta_1",
+							"associationDirection": "None",
+							"unknownAttributes": {}
+						},
+						{
+							"id": "Association_lc_1",
+							"sourceRef": "lc",
+							"targetRef": "TextAnnotation_lc_1",
+							"associationDirection": "None",
+							"unknownAttributes": {}
+						}
+					],
+					"groups": [],
+					"unknownAttributes": {}
+				}
+			],
+			"diagrams": []
+		}
+	},
+	"subProcesses": {
+		"ok": {
+			"id": "Definitions_1",
+			"targetNamespace": "http://bpmn.io/schema/bpmn",
+			"exporter": "@bpmnkit/core",
+			"exporterVersion": "0.0.23",
+			"namespaces": {
+				"bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+				"bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+				"dc": "http://www.omg.org/spec/DD/20100524/DC",
+				"di": "http://www.omg.org/spec/DD/20100524/DI",
+				"zeebe": "http://camunda.org/schema/zeebe/1.0",
+				"modeler": "http://camunda.org/schema/modeler/1.0",
+				"xsi": "http://www.w3.org/2001/XMLSchema-instance"
+			},
+			"unknownAttributes": {
+				"modeler:executionPlatform": "Camunda Cloud",
+				"modeler:executionPlatformVersion": "8.10.0"
+			},
+			"errors": [],
+			"escalations": [],
+			"messages": [],
+			"signals": [],
+			"collaborations": [],
+			"processes": [
+				{
+					"id": "p",
+					"isExecutable": true,
+					"extensionElements": [],
+					"flowElements": [
+						{
+							"id": "s",
+							"incoming": [],
+							"outgoing": ["Flow_s_sp"],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "startEvent",
+							"eventDefinitions": []
+						},
+						{
+							"id": "sp",
+							"incoming": ["Flow_s_sp"],
+							"outgoing": ["Flow_sp_tx"],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "subProcess",
+							"flowElements": [
+								{
+									"id": "ss",
+									"incoming": [],
+									"outgoing": ["Flow_ss_a"],
+									"extensionElements": [],
+									"unknownAttributes": {},
+									"type": "startEvent",
+									"eventDefinitions": [],
+									"isInterrupting": false
+								},
+								{
+									"id": "a",
+									"incoming": ["Flow_ss_a"],
+									"outgoing": ["Flow_a_g", "Flow_a_join"],
+									"extensionElements": [],
+									"unknownAttributes": {},
+									"type": "task"
+								},
+								{
+									"id": "sb",
+									"incoming": [],
+									"outgoing": ["Flow_sb_onTimeout"],
+									"extensionElements": [],
+									"unknownAttributes": {},
+									"type": "boundaryEvent",
+									"attachedToRef": "a",
+									"eventDefinitions": [
+										{
+											"type": "timer",
+											"timeDuration": "PT5S",
+											"id": "sb_TimerEventDefinition"
+										}
+									]
+								},
+								{
+									"id": "onTimeout",
+									"incoming": ["Flow_sb_onTimeout"],
+									"outgoing": [],
+									"extensionElements": [],
+									"unknownAttributes": {},
+									"type": "task"
+								},
+								{
+									"id": "g",
+									"incoming": ["Flow_a_g"],
+									"outgoing": ["Flow_g_b1", "Flow_g_b2"],
+									"extensionElements": [],
+									"unknownAttributes": {},
+									"type": "exclusiveGateway",
+									"default": "Flow_g_b2"
+								},
+								{
+									"id": "b1",
+									"incoming": ["Flow_g_b1"],
+									"outgoing": ["Flow_b1_g_join"],
+									"extensionElements": [],
+									"unknownAttributes": {},
+									"type": "task"
+								},
+								{
+									"id": "b2",
+									"incoming": ["Flow_g_b2"],
+									"outgoing": ["Flow_b2_g_join"],
+									"extensionElements": [],
+									"unknownAttributes": {},
+									"type": "task"
+								},
+								{
+									"id": "join",
+									"incoming": ["Flow_a_join", "Flow_g_join_join"],
+									"outgoing": [],
+									"extensionElements": [],
+									"unknownAttributes": {},
+									"type": "task"
+								},
+								{
+									"id": "se",
+									"incoming": [],
+									"outgoing": [],
+									"extensionElements": [],
+									"unknownAttributes": {},
+									"type": "endEvent",
+									"eventDefinitions": []
+								},
+								{
+									"id": "esp",
+									"incoming": [],
+									"outgoing": [],
+									"extensionElements": [],
+									"unknownAttributes": {},
+									"type": "subProcess",
+									"flowElements": [
+										{
+											"id": "es",
+											"incoming": [],
+											"outgoing": ["Flow_es_ee"],
+											"extensionElements": [],
+											"unknownAttributes": {},
+											"type": "startEvent",
+											"eventDefinitions": [
+												{
+													"type": "timer",
+													"timeDuration": "PT1H",
+													"id": "es_TimerEventDefinition"
+												}
+											]
+										},
+										{
+											"id": "ee",
+											"incoming": ["Flow_es_ee"],
+											"outgoing": [],
+											"extensionElements": [],
+											"unknownAttributes": {},
+											"type": "endEvent",
+											"eventDefinitions": []
+										}
+									],
+									"sequenceFlows": [
+										{
+											"id": "Flow_es_ee",
+											"sourceRef": "es",
+											"targetRef": "ee",
+											"extensionElements": [],
+											"unknownAttributes": {}
+										}
+									],
+									"textAnnotations": [],
+									"associations": [],
+									"groups": [],
+									"triggeredByEvent": true
+								},
+								{
+									"id": "g_join",
+									"incoming": ["Flow_b1_g_join", "Flow_b2_g_join"],
+									"outgoing": ["Flow_g_join_join"],
+									"extensionElements": [],
+									"unknownAttributes": {},
+									"type": "exclusiveGateway"
+								}
+							],
+							"sequenceFlows": [
+								{
+									"id": "Flow_ss_a",
+									"sourceRef": "ss",
+									"targetRef": "a",
+									"extensionElements": [],
+									"unknownAttributes": {}
+								},
+								{
+									"id": "Flow_sb_onTimeout",
+									"sourceRef": "sb",
+									"targetRef": "onTimeout",
+									"extensionElements": [],
+									"unknownAttributes": {}
+								},
+								{
+									"id": "Flow_a_g",
+									"sourceRef": "a",
+									"targetRef": "g",
+									"extensionElements": [],
+									"unknownAttributes": {}
+								},
+								{
+									"id": "Flow_g_b1",
+									"sourceRef": "g",
+									"targetRef": "b1",
+									"name": "one",
+									"extensionElements": [],
+									"unknownAttributes": {}
+								},
+								{
+									"id": "Flow_g_b2",
+									"sourceRef": "g",
+									"targetRef": "b2",
+									"name": "two",
+									"extensionElements": [],
+									"unknownAttributes": {}
+								},
+								{
+									"id": "Flow_b1_g_join",
+									"sourceRef": "b1",
+									"targetRef": "g_join",
+									"extensionElements": [],
+									"unknownAttributes": {}
+								},
+								{
+									"id": "Flow_b2_g_join",
+									"sourceRef": "b2",
+									"targetRef": "g_join",
+									"extensionElements": [],
+									"unknownAttributes": {}
+								},
+								{
+									"id": "Flow_a_join",
+									"sourceRef": "a",
+									"targetRef": "join",
+									"extensionElements": [],
+									"unknownAttributes": {}
+								},
+								{
+									"id": "Flow_g_join_join",
+									"sourceRef": "g_join",
+									"targetRef": "join",
+									"extensionElements": [],
+									"unknownAttributes": {}
+								}
+							],
+							"textAnnotations": [],
+							"associations": [],
+							"groups": [],
+							"loopCharacteristics": {
+								"extensionElements": [
+									{
+										"name": "zeebe:loopCharacteristics",
+										"attributes": {
+											"inputCollection": "= items",
+											"inputElement": "item"
+										},
+										"children": []
+									}
+								]
+							}
+						},
+						{
+							"id": "tx",
+							"incoming": ["Flow_sp_tx"],
+							"outgoing": ["Flow_tx_ah"],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "transaction",
+							"flowElements": [
+								{
+									"id": "x1",
+									"incoming": [],
+									"outgoing": ["Flow_x1_x2"],
+									"extensionElements": [],
+									"unknownAttributes": {},
+									"type": "task"
+								},
+								{
+									"id": "x2",
+									"incoming": ["Flow_x1_x2"],
+									"outgoing": [],
+									"extensionElements": [],
+									"unknownAttributes": {},
+									"type": "task"
+								}
+							],
+							"sequenceFlows": [
+								{
+									"id": "Flow_x1_x2",
+									"sourceRef": "x1",
+									"targetRef": "x2",
+									"extensionElements": [],
+									"unknownAttributes": {}
+								}
+							],
+							"textAnnotations": [],
+							"associations": [],
+							"groups": []
+						},
+						{
+							"id": "ah",
+							"incoming": ["Flow_tx_ah"],
+							"outgoing": ["Flow_ah_gw"],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "adHocSubProcess",
+							"flowElements": [
+								{
+									"id": "tool1",
+									"name": "Tool 1",
+									"incoming": ["Flow_tool2_tool1"],
+									"outgoing": [],
+									"extensionElements": [
+										{
+											"name": "zeebe:taskDefinition",
+											"attributes": {
+												"type": "work"
+											},
+											"children": []
+										}
+									],
+									"unknownAttributes": {},
+									"type": "serviceTask"
+								},
+								{
+									"id": "tool2",
+									"name": "Tool 2",
+									"incoming": [],
+									"outgoing": ["Flow_tool2_tool1"],
+									"extensionElements": [
+										{
+											"name": "zeebe:taskDefinition",
+											"attributes": {
+												"type": "work"
+											},
+											"children": []
+										}
+									],
+									"unknownAttributes": {},
+									"type": "serviceTask"
+								}
+							],
+							"sequenceFlows": [
+								{
+									"id": "Flow_tool2_tool1",
+									"sourceRef": "tool2",
+									"targetRef": "tool1",
+									"extensionElements": [],
+									"unknownAttributes": {}
+								}
+							],
+							"textAnnotations": [],
+							"associations": [],
+							"groups": []
+						},
+						{
+							"id": "gw",
+							"incoming": ["Flow_ah_gw"],
+							"outgoing": ["Flow_gw_xe"],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "exclusiveGateway"
+						},
+						{
+							"id": "ev",
+							"incoming": [],
+							"outgoing": [],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "subProcess",
+							"flowElements": [
+								{
+									"id": "evs",
+									"incoming": [],
+									"outgoing": ["Flow_evs_eve"],
+									"extensionElements": [],
+									"unknownAttributes": {},
+									"type": "startEvent",
+									"eventDefinitions": []
+								},
+								{
+									"id": "eve",
+									"incoming": ["Flow_evs_eve"],
+									"outgoing": [],
+									"extensionElements": [],
+									"unknownAttributes": {},
+									"type": "endEvent",
+									"eventDefinitions": []
+								}
+							],
+							"sequenceFlows": [
+								{
+									"id": "Flow_evs_eve",
+									"sourceRef": "evs",
+									"targetRef": "eve",
+									"extensionElements": [],
+									"unknownAttributes": {}
+								}
+							],
+							"textAnnotations": [],
+							"associations": [],
+							"groups": [],
+							"triggeredByEvent": true
+						},
+						{
+							"id": "xe",
+							"incoming": ["Flow_gw_xe"],
+							"outgoing": [],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "endEvent",
+							"eventDefinitions": []
+						}
+					],
+					"sequenceFlows": [
+						{
+							"id": "Flow_s_sp",
+							"sourceRef": "s",
+							"targetRef": "sp",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						},
+						{
+							"id": "Flow_sp_tx",
+							"sourceRef": "sp",
+							"targetRef": "tx",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						},
+						{
+							"id": "Flow_tx_ah",
+							"sourceRef": "tx",
+							"targetRef": "ah",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						},
+						{
+							"id": "Flow_ah_gw",
+							"sourceRef": "ah",
+							"targetRef": "gw",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						},
+						{
+							"id": "Flow_gw_xe",
+							"sourceRef": "gw",
+							"targetRef": "xe",
+							"name": "x",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						}
+					],
+					"textAnnotations": [],
+					"associations": [],
+					"groups": [],
+					"unknownAttributes": {}
+				}
+			],
+			"diagrams": []
+		}
+	},
+	"dupInSub": {
+		"error": "Duplicate element ID \"a\" in sub-process"
+	},
+	"elementMissing": {
+		"error": "Element \"nope\" not found in sub-process"
+	},
+	"annotationNoCursor": {
+		"error": "textAnnotation() must follow a flow element"
+	},
+	"boundaryNoTask": {
+		"error": "withBoundary() must follow a task element inside the sub-process. Current builder position has no active task."
+	},
+	"branchWithoutGateway": {
+		"error": "branch() must be called after a gateway element"
+	},
+	"boundaryAtGateway": {
+		"error": "withBoundary() must follow a task element inside the branch. Current builder position has no active task."
+	},
+	"dupEventSubInBranch": {
+		"error": "Duplicate element ID \"t\""
+	},
+	"dupAcrossBranches": {
+		"error": "Duplicate element ID \"t\""
+	}
+}

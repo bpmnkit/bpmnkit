@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/zeebe-extensions/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "eventType": "message",
+            "id": "a",
+            "name": "Tell",
+            "type": "intermediateThrowEvent"
+          },
+          {
+            "eventType": "signal",
+            "id": "b",
+            "name": "Shout",
+            "type": "intermediateThrowEvent"
+          },
+          {
+            "eventType": "escalation",
+            "id": "c",
+            "name": "Raise",
+            "type": "intermediateThrowEvent"
+          },
+          {
+            "eventType": "compensate",
+            "id": "d",
+            "name": "Undo",
+            "type": "intermediateThrowEvent"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "a"
+          },
+          {
+            "from": "a",
+            "id": "Flow_2",
+            "to": "b"
+          },
+          {
+            "from": "b",
+            "id": "Flow_3",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "id": "Flow_4",
+            "to": "d"
+          },
+          {
+            "from": "d",
+            "id": "Flow_5",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

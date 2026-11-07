@@ -1,0 +1,122 @@
+{
+  "categories": [
+    {
+      "categoryValues": [
+        {
+          "id": "CategoryValue_intake",
+          "unknownAttributes": {
+            "value": "Intake"
+          },
+          "value": "Intake"
+        },
+        {
+          "id": "CategoryValue_review",
+          "unknownAttributes": {
+            "value": "Review"
+          },
+          "value": "Review"
+        }
+      ],
+      "id": "Category_phases",
+      "unknownAttributes": {}
+    }
+  ],
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "id": "Definitions_artifacts",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL"
+  },
+  "processes": [
+    {
+      "associations": [
+        {
+          "associationDirection": "None",
+          "id": "Association_sla",
+          "sourceRef": "Task_review",
+          "targetRef": "TextAnnotation_sla",
+          "unknownAttributes": {}
+        }
+      ],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "Start_art",
+          "incoming": [],
+          "outgoing": [
+            "Flow_a1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "documentation": "Reviewer checks the submission against policy.",
+          "extensionElements": [],
+          "id": "Task_review",
+          "incoming": [
+            "Flow_a1"
+          ],
+          "name": "Review",
+          "outgoing": [
+            "Flow_a2"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "End_art",
+          "incoming": [
+            "Flow_a2"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [
+        {
+          "categoryValueRef": "CategoryValue_intake",
+          "id": "Group_intake",
+          "unknownAttributes": {}
+        }
+      ],
+      "id": "Process_artifacts",
+      "isExecutable": true,
+      "name": "Annotated process",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_a1",
+          "sourceRef": "Start_art",
+          "targetRef": "Task_review",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_a2",
+          "sourceRef": "Task_review",
+          "targetRef": "End_art",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [
+        {
+          "id": "TextAnnotation_sla",
+          "text": "Must complete within one business day.",
+          "unknownAttributes": {}
+        }
+      ],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

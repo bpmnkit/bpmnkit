@@ -1,0 +1,150 @@
+{
+  "runs": {
+    "default": {},
+    "all": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:all"
+      }
+    },
+    "recommended": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:recommended"
+      }
+    },
+    "no-inclusive-gateway-error": {
+      "bpmnlintrc": {
+        "rules": {
+          "no-inclusive-gateway": "error"
+        }
+      }
+    },
+    "no-inclusive-gateway-off": {
+      "bpmnlintrc": {
+        "rules": {
+          "no-inclusive-gateway": "off"
+        }
+      }
+    },
+    "no-complex-gateway-error": {
+      "bpmnlintrc": {
+        "rules": {
+          "no-complex-gateway": "error"
+        }
+      }
+    },
+    "no-complex-gateway-off": {
+      "bpmnlintrc": {
+        "rules": {
+          "no-complex-gateway": "off"
+        }
+      }
+    },
+    "no-gateway-join-fork-error": {
+      "bpmnlintrc": {
+        "rules": {
+          "no-gateway-join-fork": "error"
+        }
+      }
+    },
+    "no-gateway-join-fork-off": {
+      "bpmnlintrc": {
+        "rules": {
+          "no-gateway-join-fork": "off"
+        }
+      }
+    },
+    "superfluous-gateway-error": {
+      "bpmnlintrc": {
+        "rules": {
+          "superfluous-gateway": "error"
+        }
+      }
+    },
+    "superfluous-gateway-off": {
+      "bpmnlintrc": {
+        "rules": {
+          "superfluous-gateway": "off"
+        }
+      }
+    },
+    "label-required-error": {
+      "bpmnlintrc": {
+        "rules": {
+          "label-required": "error"
+        }
+      }
+    },
+    "label-required-off": {
+      "bpmnlintrc": {
+        "rules": {
+          "label-required": "off"
+        }
+      }
+    },
+    "no-inclusive-gateway-warn-delegated": {
+      "bpmnlintrc": {
+        "rules": {
+          "no-inclusive-gateway": "warn"
+        }
+      },
+      "bpmnlintDelegated": true
+    },
+    "no-complex-gateway-warn-delegated": {
+      "bpmnlintrc": {
+        "rules": {
+          "no-complex-gateway": "warn"
+        }
+      },
+      "bpmnlintDelegated": true
+    },
+    "no-gateway-join-fork-warn-delegated": {
+      "bpmnlintrc": {
+        "rules": {
+          "no-gateway-join-fork": "warn"
+        }
+      },
+      "bpmnlintDelegated": true
+    },
+    "superfluous-gateway-warn-delegated": {
+      "bpmnlintrc": {
+        "rules": {
+          "superfluous-gateway": "warn"
+        }
+      },
+      "bpmnlintDelegated": true
+    },
+    "label-required-warn-delegated": {
+      "bpmnlintrc": {
+        "rules": {
+          "label-required": "warn"
+        }
+      },
+      "bpmnlintDelegated": true
+    },
+    "standard-size-options": {
+      "bpmnlintrc": {
+        "rules": {
+          "standard-size": [
+            "error",
+            {
+              "bpmn:Task": {
+                "width": 120,
+                "height": 80
+              },
+              "bpmn:EndEvent": {
+                "width": 40,
+                "height": 40
+              }
+            }
+          ]
+        }
+      }
+    },
+    "only-delegated": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:all"
+      },
+      "bpmnlintDelegated": true
+    }
+  }
+}

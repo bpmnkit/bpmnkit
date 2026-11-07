@@ -1,0 +1,85 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://bpmnkit.com/spec/lint-rules.schema.json",
+	"title": "bpmnlint rule metadata",
+	"description": "bpmnlint's rule names, the presets BPMN Kit expands, and the category and default options of the rules implemented natively. Check functions and their messages stay in code.",
+	"type": "object",
+	"required": ["bpmnlintVersion", "rules", "nativeOrder", "standardSize", "presets"],
+	"additionalProperties": false,
+	"properties": {
+		"$schema": { "type": "string" },
+		"bpmnlintVersion": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
+		"rules": {
+			"description": "Every bpmnlint rule, in bpmnlint's order. `category` is present for natively implemented rules.",
+			"type": "array",
+			"minItems": 1,
+			"items": {
+				"type": "object",
+				"required": ["name"],
+				"additionalProperties": false,
+				"properties": {
+					"name": { "type": "string", "minLength": 1 },
+					"category": { "$ref": "#/$defs/category" }
+				}
+			}
+		},
+		"nativeOrder": {
+			"description": "The natively implemented rules in the order they are checked.",
+			"type": "array",
+			"minItems": 1,
+			"uniqueItems": true,
+			"items": { "type": "string", "minLength": 1 }
+		},
+		"standardSize": {
+			"type": "object",
+			"required": ["defaults"],
+			"additionalProperties": false,
+			"properties": {
+				"defaults": {
+					"description": "Default width and height per BPMN type for the standard-size rule.",
+					"type": "object",
+					"additionalProperties": {
+						"type": "object",
+						"required": ["width", "height"],
+						"additionalProperties": false,
+						"properties": {
+							"width": { "type": "integer" },
+							"height": { "type": "integer" }
+						}
+					}
+				}
+			}
+		},
+		"presets": {
+			"description": "bpmnlint's `correctness` and `recommended` presets; key order is kept. `all` is every rule at error.",
+			"type": "object",
+			"required": ["correctness", "recommended"],
+			"additionalProperties": false,
+			"properties": {
+				"correctness": { "$ref": "#/$defs/preset" },
+				"recommended": { "$ref": "#/$defs/preset" }
+			}
+		}
+	},
+	"$defs": {
+		"category": {
+			"enum": [
+				"feel",
+				"feel-syntax",
+				"flow",
+				"naming",
+				"task-reuse",
+				"extract",
+				"pattern",
+				"data-flow",
+				"deploy",
+				"agentic",
+				"connector"
+			]
+		},
+		"preset": {
+			"type": "object",
+			"additionalProperties": { "enum": ["off", "warn", "error", "info"] }
+		}
+	}
+}

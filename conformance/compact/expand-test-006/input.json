@@ -1,0 +1,48 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "id": "p",
+      "elements": [
+        {
+          "id": "s",
+          "type": "startEvent"
+        },
+        {
+          "id": "call",
+          "type": "serviceTask",
+          "jobType": "io.camunda:http-json:1",
+          "resultVariable": "res",
+          "inputs": {
+            "authentication.type": "noAuth",
+            "method": "POST",
+            "url": "https://api.example.com",
+            "body": "={a: 1}",
+            "connectionTimeoutInSeconds": "20",
+            "readTimeoutInSeconds": "20"
+          },
+          "modelerTemplate": {
+            "id": "io.camunda.connectors.HttpJson.v2",
+            "version": 18
+          }
+        },
+        {
+          "id": "e",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "id": "Flow_s_call",
+          "from": "s",
+          "to": "call"
+        },
+        {
+          "id": "Flow_call_e",
+          "from": "call",
+          "to": "e"
+        }
+      ]
+    }
+  ]
+}

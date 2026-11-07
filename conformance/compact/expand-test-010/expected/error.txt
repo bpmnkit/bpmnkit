@@ -1,0 +1,1 @@
+gateway "G" marks two flows as default, "F2" and "F3". A gateway has at most one.

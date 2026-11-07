@@ -1,0 +1,508 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 6,
+    "info": 17,
+    "warning": 17
+  },
+  "diagnostics": [
+    {
+      "category": "naming",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"start\" has no name.",
+      "processId": "order-process",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "paid_gw"
+      ],
+      "fixable": false,
+      "id": "naming/split-gateway-no-label",
+      "message": "Gateway \"paid_gw\" (exclusiveGateway, split) has no name.",
+      "processId": "order-process",
+      "severity": "warning",
+      "suggestion": "Label split gateways as a yes/no question, e.g. \"Invoice valid?\", \"Order approved?\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "paid_gw",
+        "f_ship"
+      ],
+      "fixable": false,
+      "id": "naming/missing-flow-condition",
+      "message": "Sequence flow \"f_ship\" from split gateway \"paid_gw\" has no condition label.",
+      "processId": "order-process",
+      "severity": "warning",
+      "suggestion": "Label each outgoing flow with the condition answer, e.g. \"Yes\", \"No\", \"Approved\", \"Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "paid_gw",
+        "f_unpaid"
+      ],
+      "fixable": false,
+      "id": "naming/missing-flow-condition",
+      "message": "Sequence flow \"f_unpaid\" from split gateway \"paid_gw\" has no condition label.",
+      "processId": "order-process",
+      "severity": "warning",
+      "suggestion": "Label each outgoing flow with the condition answer, e.g. \"Yes\", \"No\", \"Approved\", \"Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "end_ok"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"end_ok\" has no name.",
+      "processId": "order-process",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "end_cancel"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"end_cancel\" has no name.",
+      "processId": "order-process",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "payment"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Charge card\" has no output variable mapping.",
+      "processId": "order-process",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "ship"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Ship\" has no output variable mapping.",
+      "processId": "order-process",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"start\" has no documentation describing expected input variables.",
+      "processId": "order-process",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "paid_gw"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:paid",
+      "message": "Variable \"paid\" is referenced but never set in this process.",
+      "processId": "order-process",
+      "severity": "warning",
+      "suggestion": "\"paid\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "paid_gw"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:paid_gw",
+      "message": "Element \"paid_gw\" consumes: paid.",
+      "processId": "order-process",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "t_start"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"t_start\" has no name.",
+      "processId": "timer-process",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "t_end"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"t_end\" has no name.",
+      "processId": "timer-process",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "t_start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"t_start\" has no documentation describing expected input variables.",
+      "processId": "timer-process",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "wait_hour"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"wait_hour\" has 1 event definition(s) without an id.",
+      "processId": "timer-process",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "d_start"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"d_start\" has no name.",
+      "processId": "date-process",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "d_end"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"d_end\" has no name.",
+      "processId": "date-process",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "d_start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"d_start\" has no documentation describing expected input variables.",
+      "processId": "date-process",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "wait_new_year"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"wait_new_year\" has 1 event definition(s) without an id.",
+      "processId": "date-process",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "r_start"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"r_start\" has no name.",
+      "processId": "review-process",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "r_done"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"r_done\" has no name.",
+      "processId": "review-process",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "escalate"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"escalate\" (serviceTask) has no name.",
+      "processId": "review-process",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "r_escalated"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"r_escalated\" has no name.",
+      "processId": "review-process",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "escalate"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"escalate\" has no output variable mapping.",
+      "processId": "review-process",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "r_start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"r_start\" has no documentation describing expected input variables.",
+      "processId": "review-process",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "review_timeout"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"review_timeout\" has 1 event definition(s) without an id.",
+      "processId": "review-process",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "m_start"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"m_start\" has no name.",
+      "processId": "message-process",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "m_end"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"m_end\" has no name.",
+      "processId": "message-process",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "m_start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"m_start\" has no documentation describing expected input variables.",
+      "processId": "message-process",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "await_confirmation"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"await_confirmation\" has 1 event definition(s) without an id.",
+      "processId": "message-process",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "await_confirmation"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"await_confirmation\" (intermediateCatchEvent) has no zeebe:subscription correlationKey.",
+      "processId": "message-process",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "c_start"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"c_start\" has no name.",
+      "processId": "connector-process",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "fetch_weather"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"fetch_weather\" (serviceTask) has no name.",
+      "processId": "connector-process",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "c_end"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"c_end\" has no name.",
+      "processId": "connector-process",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "fetch_weather"
+      ],
+      "fixable": false,
+      "id": "pattern/http-no-error-boundary",
+      "message": "Service task \"fetch_weather\" calls an HTTP connector but has no error boundary event.",
+      "processId": "connector-process",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle network failures (timeouts, non-2xx responses)."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "fetch_weather"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"fetch_weather\" has no output variable mapping.",
+      "processId": "connector-process",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "c_start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"c_start\" has no documentation describing expected input variables.",
+      "processId": "connector-process",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "p_start"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"p_start\" has no name.",
+      "processId": "parallel-process",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "p_end"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"p_end\" has no name.",
+      "processId": "parallel-process",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "p_start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"p_start\" has no documentation describing expected input variables.",
+      "processId": "parallel-process",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 40
+}

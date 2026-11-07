@@ -1,0 +1,51 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 1,
+    "info": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Started\" has no documentation describing expected input variables.",
+      "plane": "proc",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "bpmnlintRule": "standard-size",
+      "category": "pattern",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": false,
+      "id": "pattern/non-standard-size",
+      "message": "Element \"end\" is 40x40; the standard size is 36x36.",
+      "plane": "proc",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Resize it to the standard size so diagrams across the project read alike."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 2
+}

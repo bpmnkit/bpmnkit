@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_tasks" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="tasks" isExecutable="true">
+    <bpmn:startEvent id="start"/>
+    <bpmn:task id="plainTask">
+      <bpmn:incoming>flowNoCondition</bpmn:incoming>
+      <bpmn:outgoing>flowA</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:manualTask id="manual">
+      <bpmn:incoming>flowDefault</bpmn:incoming>
+      <bpmn:outgoing>flowB</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:serviceTask id="noType">
+      <bpmn:outgoing>flowConditionFromTask</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="emptyType">
+      <bpmn:incoming>flowConditionFromTask</bpmn:incoming>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="headers" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="h"/>
+        <zeebe:taskHeaders>
+          <zeebe:header key="a" value="2"/>
+        </zeebe:taskHeaders>
+        <zeebe:properties>
+          <zeebe:property name="p" value="v"/>
+        </zeebe:properties>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:scriptTask id="scriptFeel">
+      <bpmn:extensionElements>
+        <zeebe:script expression="=1 + 1" resultVariable="result"/>
+      </bpmn:extensionElements>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="scriptNone"/>
+    <bpmn:businessRuleTask id="brtNoResult">
+      <bpmn:extensionElements>
+        <zeebe:calledDecision decisionId="d" resultVariable="result"/>
+      </bpmn:extensionElements>
+    </bpmn:businessRuleTask>
+    <bpmn:businessRuleTask id="brtBinding">
+      <bpmn:extensionElements>
+        <zeebe:calledDecision decisionId="d" resultVariable="r"/>
+      </bpmn:extensionElements>
+    </bpmn:businessRuleTask>
+    <bpmn:businessRuleTask id="brtTagExpr">
+      <bpmn:extensionElements>
+        <zeebe:calledDecision decisionId="d" resultVariable="r"/>
+      </bpmn:extensionElements>
+    </bpmn:businessRuleTask>
+    <bpmn:callActivity id="callNoProcess"/>
+    <bpmn:callActivity id="callOptions">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="child"/>
+      </bpmn:extensionElements>
+    </bpmn:callActivity>
+    <bpmn:sendTask id="sendNoType"/>
+    <bpmn:receiveTask id="receiveNoRef"/>
+    <bpmn:receiveTask id="receiveOk"/>
+    <bpmn:userTask id="jobWorkerTask">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formId="f"/>
+        <zeebe:assignmentDefinition candidateUsers="alice"/>
+        <zeebe:taskSchedule dueDate="tomorrow"/>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+    <bpmn:userTask id="zeebeTask">
+      <bpmn:extensionElements>
+        <zeebe:priorityDefinition priority="150"/>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+    <bpmn:userTask id="noForm"/>
+    <bpmn:userTask id="zeebeTaskOk">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formId="f"/>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="multi">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="m"/>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="multiNoZeebe">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="m"/>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:complexGateway id="complex"/>
+    <bpmn:inclusiveGateway id="joinInclusive">
+      <bpmn:incoming>flowA</bpmn:incoming>
+      <bpmn:incoming>flowB</bpmn:incoming>
+    </bpmn:inclusiveGateway>
+    <bpmn:exclusiveGateway id="split" default="flowDefault">
+      <bpmn:outgoing>flowNoCondition</bpmn:outgoing>
+      <bpmn:outgoing>flowDefault</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:eventBasedGateway id="eventGateway">
+      <bpmn:outgoing>flowEventGateway</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+    <bpmn:receiveTask id="afterEventGateway">
+      <bpmn:incoming>flowEventGateway</bpmn:incoming>
+    </bpmn:receiveTask>
+    <bpmn:subProcess id="collapsed">
+      <bpmn:startEvent id="collapsedStart"/>
+    </bpmn:subProcess>
+    <bpmn:transaction id="tx">
+      <bpmn:startEvent id="txStart"/>
+    </bpmn:transaction>
+    <bpmn:adHocSubProcess id="adHocEmpty">
+      <bpmn:intermediateThrowEvent id="adHocThrow"/>
+      <bpmn:subProcess id="adHocEventSub">
+        <bpmn:startEvent id="adHocEventStart">
+          <bpmn:messageEventDefinition id="adHocEventStart_MessageEventDefinition"/>
+        </bpmn:startEvent>
+      </bpmn:subProcess>
+    </bpmn:adHocSubProcess>
+    <bpmn:dataObject id="data"/>
+    <bpmn:sequenceFlow id="flowA" sourceRef="plainTask" targetRef="joinInclusive"/>
+    <bpmn:sequenceFlow id="flowB" sourceRef="manual" targetRef="joinInclusive"/>
+    <bpmn:sequenceFlow id="flowNoCondition" sourceRef="split" targetRef="plainTask"/>
+    <bpmn:sequenceFlow id="flowDefault" sourceRef="split" targetRef="manual"/>
+    <bpmn:sequenceFlow id="flowConditionFromTask" sourceRef="noType" targetRef="emptyType">
+      <bpmn:conditionExpression>=true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flowEventGateway" sourceRef="eventGateway" targetRef="afterEventGateway"/>
+  </bpmn:process>
+  <bpmn:process id="notExecutable" isExecutable="true">
+    <bpmn:complexGateway id="complexInNonExecutable"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_tasks">
+    <bpmndi:BPMNPlane id="BPMNPlane_tasks" bpmnElement="tasks">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start">
+        <dc:Bounds x="163" y="0" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="plainTask_di" bpmnElement="plainTask">
+        <dc:Bounds x="462" y="256" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="manual_di" bpmnElement="manual">
+        <dc:Bounds x="462" y="116" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="noType_di" bpmnElement="noType">
+        <dc:Bounds x="131" y="416" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="emptyType_di" bpmnElement="emptyType">
+        <dc:Bounds x="462" y="416" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="headers_di" bpmnElement="headers">
+        <dc:Bounds x="131" y="576" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="scriptFeel_di" bpmnElement="scriptFeel">
+        <dc:Bounds x="131" y="736" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="scriptNone_di" bpmnElement="scriptNone">
+        <dc:Bounds x="131" y="896" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="brtNoResult_di" bpmnElement="brtNoResult">
+        <dc:Bounds x="131" y="1056" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="brtBinding_di" bpmnElement="brtBinding">
+        <dc:Bounds x="131" y="1216" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="brtTagExpr_di" bpmnElement="brtTagExpr">
+        <dc:Bounds x="131" y="1376" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="callNoProcess_di" bpmnElement="callNoProcess">
+        <dc:Bounds x="131" y="1536" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="callOptions_di" bpmnElement="callOptions">
+        <dc:Bounds x="131" y="1696" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sendNoType_di" bpmnElement="sendNoType">
+        <dc:Bounds x="131" y="1856" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="receiveNoRef_di" bpmnElement="receiveNoRef">
+        <dc:Bounds x="131" y="2016" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="receiveOk_di" bpmnElement="receiveOk">
+        <dc:Bounds x="131" y="2176" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="jobWorkerTask_di" bpmnElement="jobWorkerTask">
+        <dc:Bounds x="131" y="2336" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="zeebeTask_di" bpmnElement="zeebeTask">
+        <dc:Bounds x="131" y="2496" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="noForm_di" bpmnElement="noForm">
+        <dc:Bounds x="131" y="2656" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="zeebeTaskOk_di" bpmnElement="zeebeTaskOk">
+        <dc:Bounds x="131" y="2816" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="multi_di" bpmnElement="multi">
+        <dc:Bounds x="131" y="2976" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="multiNoZeebe_di" bpmnElement="multiNoZeebe">
+        <dc:Bounds x="131" y="3136" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="complex_di" bpmnElement="complex">
+        <dc:Bounds x="156" y="3296" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="joinInclusive_di" bpmnElement="joinInclusive">
+        <dc:Bounds x="622" y="131" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="split_di" bpmnElement="split" isMarkerVisible="true">
+        <dc:Bounds x="156" y="131" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="eventGateway_di" bpmnElement="eventGateway">
+        <dc:Bounds x="156" y="3441" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="afterEventGateway_di" bpmnElement="afterEventGateway">
+        <dc:Bounds x="462" y="3426" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="collapsed_di" bpmnElement="collapsed" isExpanded="true">
+        <dc:Bounds x="113" y="3586" width="136" height="136"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="tx_di" bpmnElement="tx" isExpanded="true">
+        <dc:Bounds x="113" y="3802" width="136" height="136"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="adHocEmpty_di" bpmnElement="adHocEmpty" isExpanded="true">
+        <dc:Bounds x="0" y="4018" width="362" height="236"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="data_di" bpmnElement="data">
+        <dc:Bounds x="163" y="4334" width="36" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="collapsedStart_di" bpmnElement="collapsedStart">
+        <dc:Bounds x="163" y="3636" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="txStart_di" bpmnElement="txStart">
+        <dc:Bounds x="163" y="3852" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="adHocThrow_di" bpmnElement="adHocThrow">
+        <dc:Bounds x="50" y="4118" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="adHocEventSub_di" bpmnElement="adHocEventSub" isExpanded="true">
+        <dc:Bounds x="176" y="4068" width="136" height="136"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="adHocEventStart_di" bpmnElement="adHocEventStart">
+        <dc:Bounds x="226" y="4118" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="flowA_di" bpmnElement="flowA">
+        <di:waypoint x="562" y="296"/>
+        <di:waypoint x="592" y="296"/>
+        <di:waypoint x="592" y="156"/>
+        <di:waypoint x="622" y="156"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flowB_di" bpmnElement="flowB">
+        <di:waypoint x="562" y="156"/>
+        <di:waypoint x="622" y="156"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flowNoCondition_di" bpmnElement="flowNoCondition">
+        <di:waypoint x="181" y="181"/>
+        <di:waypoint x="181" y="296"/>
+        <di:waypoint x="462" y="296"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flowDefault_di" bpmnElement="flowDefault">
+        <di:waypoint x="206" y="156"/>
+        <di:waypoint x="462" y="156"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flowConditionFromTask_di" bpmnElement="flowConditionFromTask">
+        <di:waypoint x="231" y="456"/>
+        <di:waypoint x="462" y="456"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flowEventGateway_di" bpmnElement="flowEventGateway">
+        <di:waypoint x="206" y="3466"/>
+        <di:waypoint x="462" y="3466"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_notExecutable">
+    <bpmndi:BPMNPlane id="BPMNPlane_notExecutable" bpmnElement="notExecutable">
+      <bpmndi:BPMNShape id="complexInNonExecutable_di" bpmnElement="complexInNonExecutable">
+        <dc:Bounds x="0" y="0" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

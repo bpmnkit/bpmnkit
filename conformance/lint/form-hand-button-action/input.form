@@ -1,0 +1,30 @@
+{
+  "id": "F",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "id": "a",
+      "type": "button",
+      "label": "A",
+      "action": "launch"
+    },
+    {
+      "id": "b",
+      "type": "button",
+      "label": "B",
+      "action": "submit"
+    },
+    {
+      "id": "c",
+      "type": "button",
+      "label": "C",
+      "action": "reset"
+    },
+    {
+      "id": "d",
+      "type": "button",
+      "label": "D"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+[package]
+name = "bpmnkit-bpmn"
+description = "BPMN 2.0 + Zeebe model, parser and lossless serializer for BPMN Kit (Rust twin of @bpmnkit/core's BPMN I/O)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["bpmn", "zeebe", "camunda", "parser", "workflow"]
+categories = ["parser-implementations", "encoding"]
+# Tests and benches read the shared corpus under ../../conformance, outside the package.
+exclude = ["tests/", "benches/"]
+
+[dependencies]
+bpmnkit-spec = { workspace = true }
+bpmnkit-xml = { workspace = true }
+indexmap = { workspace = true }
+serde = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true, features = ["float_roundtrip"] }
+
+[[bench]]
+name = "io"
+harness = false

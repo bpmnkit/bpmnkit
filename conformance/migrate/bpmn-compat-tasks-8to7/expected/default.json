@@ -1,0 +1,237 @@
+{
+  "report": {
+    "findings": [
+      {
+        "applied": false,
+        "construct": "zeebe:subscription",
+        "elementId": "Msg_ok",
+        "elementType": "message",
+        "message": "Camunda 7 does not subscribe messages by correlationKey; the key is dropped.",
+        "processId": "",
+        "severity": "manual",
+        "suggestion": "Correlate with a business key or correlation variables when sending the message."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:executionListeners",
+        "elementId": "tasks",
+        "elementType": "process",
+        "message": "zeebe:executionListeners has no Camunda 7 equivalent and was dropped.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:userTaskForm",
+        "elementId": "tasks",
+        "elementType": "process",
+        "message": "zeebe:userTaskForm has no Camunda 7 equivalent and was dropped.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "connector",
+        "elementId": "headers",
+        "elementType": "serviceTask",
+        "message": "Connector \"h\" has no Camunda 7 runtime; it becomes a plain external task.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Implement an external task worker for this topic."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:executionListeners",
+        "elementId": "headers",
+        "elementType": "serviceTask",
+        "message": "zeebe:executionListeners has no Camunda 7 equivalent and was dropped.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:taskHeaders",
+        "elementId": "headers",
+        "elementType": "serviceTask",
+        "message": "zeebe:taskHeaders has no Camunda 7 equivalent and was dropped.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:properties",
+        "elementId": "headers",
+        "elementType": "serviceTask",
+        "message": "zeebe:properties has no Camunda 7 equivalent and was dropped.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:script",
+        "elementId": "scriptFeel",
+        "elementType": "scriptTask",
+        "message": "zeebe:script has no Camunda 7 equivalent and was dropped.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:calledDecision",
+        "elementId": "brtNoResult",
+        "elementType": "businessRuleTask",
+        "message": "zeebe:calledDecision has no Camunda 7 equivalent and was dropped.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:calledDecision",
+        "elementId": "brtBinding",
+        "elementType": "businessRuleTask",
+        "message": "zeebe:calledDecision has no Camunda 7 equivalent and was dropped.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:calledDecision",
+        "elementId": "brtTagExpr",
+        "elementType": "businessRuleTask",
+        "message": "zeebe:calledDecision has no Camunda 7 equivalent and was dropped.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:formDefinition",
+        "elementId": "jobWorkerTask",
+        "elementType": "userTask",
+        "message": "Only formKey forms exist in Camunda 7; formId and external references are dropped.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Link an embedded or generated form by camunda:formKey."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:taskSchedule",
+        "elementId": "jobWorkerTask",
+        "elementType": "userTask",
+        "message": "zeebe:taskSchedule has no Camunda 7 equivalent and was dropped.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:userTask",
+        "elementId": "zeebeTask",
+        "elementType": "userTask",
+        "message": "zeebe:userTask has no Camunda 7 equivalent and was dropped.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:priorityDefinition",
+        "elementId": "zeebeTask",
+        "elementType": "userTask",
+        "message": "zeebe:priorityDefinition has no Camunda 7 equivalent and was dropped.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:taskListeners",
+        "elementId": "zeebeTask",
+        "elementType": "userTask",
+        "message": "zeebe:taskListeners has no Camunda 7 equivalent and was dropped.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:userTask",
+        "elementId": "noForm",
+        "elementType": "userTask",
+        "message": "zeebe:userTask has no Camunda 7 equivalent and was dropped.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:formDefinition",
+        "elementId": "zeebeTaskOk",
+        "elementType": "userTask",
+        "message": "Only formKey forms exist in Camunda 7; formId and external references are dropped.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Link an embedded or generated form by camunda:formKey."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:userTask",
+        "elementId": "zeebeTaskOk",
+        "elementType": "userTask",
+        "message": "zeebe:userTask has no Camunda 7 equivalent and was dropped.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:executionListeners",
+        "elementId": "multi",
+        "elementType": "serviceTask",
+        "message": "zeebe:executionListeners has no Camunda 7 equivalent and was dropped.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:jobPriorityDefinition",
+        "elementId": "multiNoZeebe",
+        "elementType": "serviceTask",
+        "message": "zeebe:jobPriorityDefinition has no Camunda 7 equivalent and was dropped.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:adHoc",
+        "elementId": "adHocEmpty",
+        "elementType": "adHocSubProcess",
+        "message": "zeebe:adHoc has no Camunda 7 equivalent and was dropped.",
+        "processId": "tasks",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "flowConditionFromTask",
+        "elementType": "element",
+        "message": "FEEL condition \"=true\" kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "tasks",
+        "severity": "manual",
+        "suggestion": "Rewrite the condition as a JUEL expression."
+      }
+    ]
+  },
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_tasks\" targetNamespace=\"http://bpmn.io/schema/bpmn\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\">\n  <bpmn:message id=\"Msg_ok\" name=\"ok\"/>\n  <bpmn:process id=\"tasks\" camunda:versionTag=\"\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" camunda:formKey=\"camunda-forms:bpmn:emptyForm\"/>\n    <bpmn:task id=\"plainTask\">\n      <bpmn:incoming>flowNoCondition</bpmn:incoming>\n      <bpmn:outgoing>flowA</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:manualTask id=\"manual\">\n      <bpmn:incoming>flowDefault</bpmn:incoming>\n      <bpmn:outgoing>flowB</bpmn:outgoing>\n    </bpmn:manualTask>\n    <bpmn:serviceTask id=\"noType\">\n      <bpmn:outgoing>flowConditionFromTask</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"emptyType\" camunda:type=\"external\" camunda:topic=\"\">\n      <bpmn:incoming>flowConditionFromTask</bpmn:incoming>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"headers\" camunda:type=\"external\" camunda:topic=\"h\"/>\n    <bpmn:scriptTask id=\"scriptFeel\"/>\n    <bpmn:scriptTask id=\"scriptNone\"/>\n    <bpmn:businessRuleTask id=\"brtNoResult\"/>\n    <bpmn:businessRuleTask id=\"brtBinding\"/>\n    <bpmn:businessRuleTask id=\"brtTagExpr\"/>\n    <bpmn:callActivity id=\"callNoProcess\"/>\n    <bpmn:callActivity id=\"callOptions\" calledElement=\"child\" camunda:calledElementBinding=\"deployment\">\n      <bpmn:extensionElements>\n        <camunda:out variables=\"all\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n    <bpmn:sendTask id=\"sendNoType\"/>\n    <bpmn:receiveTask id=\"receiveNoRef\"/>\n    <bpmn:receiveTask id=\"receiveOk\" messageRef=\"Msg_ok\"/>\n    <bpmn:userTask id=\"jobWorkerTask\" camunda:candidateUsers=\"alice\"/>\n    <bpmn:userTask id=\"zeebeTask\" camunda:formKey=\"camunda-forms:bpmn:emptyForm\"/>\n    <bpmn:userTask id=\"noForm\"/>\n    <bpmn:userTask id=\"zeebeTaskOk\"/>\n    <bpmn:serviceTask id=\"multi\" camunda:type=\"external\" camunda:topic=\"m\">\n      <bpmn:multiInstanceLoopCharacteristics>\n        <bpmn:extensionElements>\n          <zeebe:loopCharacteristics outputCollection=\"results\"/>\n        </bpmn:extensionElements>\n      </bpmn:multiInstanceLoopCharacteristics>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"multiNoZeebe\" camunda:type=\"external\" camunda:topic=\"m\">\n      <bpmn:multiInstanceLoopCharacteristics/>\n    </bpmn:serviceTask>\n    <bpmn:complexGateway id=\"complex\"/>\n    <bpmn:inclusiveGateway id=\"joinInclusive\">\n      <bpmn:incoming>flowA</bpmn:incoming>\n      <bpmn:incoming>flowB</bpmn:incoming>\n    </bpmn:inclusiveGateway>\n    <bpmn:exclusiveGateway id=\"split\" default=\"flowDefault\">\n      <bpmn:outgoing>flowNoCondition</bpmn:outgoing>\n      <bpmn:outgoing>flowDefault</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:eventBasedGateway id=\"eventGateway\">\n      <bpmn:outgoing>flowEventGateway</bpmn:outgoing>\n    </bpmn:eventBasedGateway>\n    <bpmn:receiveTask id=\"afterEventGateway\" messageRef=\"Msg_ok\">\n      <bpmn:incoming>flowEventGateway</bpmn:incoming>\n    </bpmn:receiveTask>\n    <bpmn:subProcess id=\"collapsed\">\n      <bpmn:startEvent id=\"collapsedStart\"/>\n    </bpmn:subProcess>\n    <bpmn:transaction id=\"tx\">\n      <bpmn:startEvent id=\"txStart\"/>\n    </bpmn:transaction>\n    <bpmn:adHocSubProcess id=\"adHocEmpty\" cancelRemainingInstances=\"false\">\n      <bpmn:intermediateThrowEvent id=\"adHocThrow\"/>\n      <bpmn:subProcess id=\"adHocEventSub\" triggeredByEvent=\"true\">\n        <bpmn:startEvent id=\"adHocEventStart\">\n          <bpmn:messageEventDefinition id=\"M1\" messageRef=\"Msg_ok\"/>\n        </bpmn:startEvent>\n      </bpmn:subProcess>\n      <bpmn:completionCondition>=done</bpmn:completionCondition>\n    </bpmn:adHocSubProcess>\n    <bpmn:dataObject id=\"data\"/>\n    <bpmn:sequenceFlow id=\"flowA\" sourceRef=\"plainTask\" targetRef=\"joinInclusive\"/>\n    <bpmn:sequenceFlow id=\"flowB\" sourceRef=\"manual\" targetRef=\"joinInclusive\"/>\n    <bpmn:sequenceFlow id=\"flowNoCondition\" sourceRef=\"split\" targetRef=\"plainTask\"/>\n    <bpmn:sequenceFlow id=\"flowDefault\" sourceRef=\"split\" targetRef=\"manual\"/>\n    <bpmn:sequenceFlow id=\"flowConditionFromTask\" sourceRef=\"noType\" targetRef=\"emptyType\">\n      <bpmn:conditionExpression>=true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"flowEventGateway\" sourceRef=\"eventGateway\" targetRef=\"afterEventGateway\"/>\n  </bpmn:process>\n  <bpmn:process id=\"notExecutable\" isExecutable=\"false\">\n    <bpmn:complexGateway id=\"complexInNonExecutable\"/>\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id=\"Diagram\">\n    <bpmndi:BPMNPlane id=\"Plane\" bpmnElement=\"tasks\">\n      <bpmndi:BPMNShape id=\"collapsed_di\" bpmnElement=\"collapsed\" isExpanded=\"false\">\n        <dc:Bounds x=\"0\" y=\"0\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>\n\n"
+}

@@ -1,0 +1,26 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "id": "Process_1",
+      "elements": [
+        {
+          "id": "sub",
+          "type": "subProcess",
+          "name": "Handle Payment",
+          "children": {
+            "elements": [
+              {
+                "id": "inner",
+                "type": "serviceTask",
+                "name": "Charge Card"
+              }
+            ],
+            "flows": []
+          }
+        }
+      ],
+      "flows": []
+    }
+  ]
+}

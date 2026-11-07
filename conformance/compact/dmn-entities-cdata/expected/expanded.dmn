@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="Definitions_text" name="Fish &amp; &quot;Chips&quot; &lt;ok>" namespace="http://bpmn.io/schema/dmn">
+  <decision id="d1" name="Tom &amp; Jerry's AB é &amp;unknown; 100%">
+    <decisionTable id="decisionTable_0000008">
+      <input id="i1" label="a &lt; b">
+        <inputExpression id="inputExpression_0000001" typeRef="string">
+          <text>a &lt; b &amp;&amp; c &gt; "d"</text>
+        </inputExpression>
+      </input>
+      <output id="o1" label="single &quot;quoted&quot;" name="result"/>
+      <rule id="r1">
+        <description>Uses &lt;, &gt;, &amp; and a CDATA &lt;tag&gt; &amp; more end</description>
+        <inputEntry id="inputEntry_0_0000002">
+          <text>&lt;= 10 and &gt;= 2</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000003">
+          <text>"x" + "&lt;y&gt;"</text>
+        </outputEntry>
+      </rule>
+      <rule id="r2">
+        <inputEntry id="inputEntry_0_0000004">
+          <text>
+          multi
+          line   spaced
+        </text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000005">
+          <text>"tab	newline
+done"</text>
+        </outputEntry>
+      </rule>
+      <rule id="r3">
+        <inputEntry id="inputEntry_0_0000006">
+          <text>"日本語 ünïcode 😀"</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000007">
+          <text></text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="d1">
+        <dc:Bounds height="80" width="180" x="160" y="100"/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

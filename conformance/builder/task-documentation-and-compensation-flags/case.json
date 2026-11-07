@@ -1,0 +1,15 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["manualTask","m",{"isForCompensation":true,"documentation":"doc"}],
+		["task","t",{"isForCompensation":true}],
+		["scriptTask","s2",{"expression":"=1","resultVariable":"r","documentation":"d","isForCompensation":true}],
+		["callActivity","c",{"processId":"x","isForCompensation":true}],
+		["businessRuleTask","b",{"taskType":"x","isForCompensation":true}],
+		["userTask","u",{"isForCompensation":true}],
+		["endEvent","e"],
+		["build"]
+	]
+}

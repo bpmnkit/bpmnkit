@@ -1,0 +1,41 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "e"
+          }
+        ],
+        "id": "P",
+        "name": "P"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "unknown title attribute \"camunda=eight\"; ignored"
+    }
+  ],
+  "questions": []
+}

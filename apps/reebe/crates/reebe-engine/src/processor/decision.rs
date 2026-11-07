@@ -1,13 +1,13 @@
 //! `DECISION_EVALUATION` `EVALUATE`: evaluate a deployed decision, named by its id (the
 //! latest version) or by its key, as Zeebe's `DecisionEvaluationEvaluateProcessor` does.
 
-use std::sync::Arc;
-use async_trait::async_trait;
-use reebe_db::records::DbRecord;
+use super::{EventToWrite, RecordProcessor, Writers};
 use crate::engine::EngineState;
 use crate::error::{EngineError, EngineResult};
 use crate::key_gen::KeyGenerator;
-use super::{EventToWrite, RecordProcessor, Writers};
+use async_trait::async_trait;
+use reebe_db::records::DbRecord;
+use std::sync::Arc;
 
 pub struct DecisionEvaluationProcessor;
 
@@ -24,9 +24,18 @@ impl RecordProcessor for DecisionEvaluationProcessor {
         value_type == "DECISION_EVALUATION" && intent == "EVALUATE"
     }
 
-    async fn process(&self, record: &DbRecord, state: &EngineState, writers: &mut Writers) -> EngineResult<()> {
+    async fn process(
+        &self,
+        record: &DbRecord,
+        state: &EngineState,
+        writers: &mut Writers,
+    ) -> EngineResult<()> {
         let payload = &record.payload;
-        let tenant_id = payload["tenantId"].as_str().filter(|t| !t.is_empty()).unwrap_or(&record.tenant_id).to_string();
+        let tenant_id = payload["tenantId"]
+            .as_str()
+            .filter(|t| !t.is_empty())
+            .unwrap_or(&record.tenant_id)
+            .to_string();
         let decision_id = payload["decisionId"].as_str().unwrap_or_default();
         let decision_key = key_of(&payload["decisionKey"]).unwrap_or(-1);
         let decision = if !decision_id.is_empty() {
@@ -47,20 +56,26 @@ impl RecordProcessor for DecisionEvaluationProcessor {
                 })?
         } else {
             return Err(EngineError::InvalidArgument(
-                "Expected either a decision id or a valid decision key, but none provided".to_string(),
+                "Expected either a decision id or a valid decision key, but none provided"
+                    .to_string(),
             ));
         };
 
-        let drg = reebe_dmn::parse_dmn(&decision.dmn_xml)
-            .map_err(|e| EngineError::Internal(format!("DMN of decision '{}' does not parse: {e}", decision.decision_id)))?;
+        let drg = reebe_dmn::parse_dmn(&decision.dmn_xml).map_err(|e| {
+            EngineError::Internal(format!(
+                "DMN of decision '{}' does not parse: {e}",
+                decision.decision_id
+            ))
+        })?;
         let variables = match &payload["variables"] {
             serde_json::Value::Object(_) => payload["variables"].clone(),
             _ => serde_json::json!({}),
         };
-        let (output, failure) = match reebe_dmn::evaluate_decision(&drg, &decision.decision_id, &variables) {
-            Ok(output) => (output, None),
-            Err(e) => (serde_json::Value::Null, Some(e.to_string())),
-        };
+        let (output, failure) =
+            match reebe_dmn::evaluate_decision(&drg, &decision.decision_id, &variables) {
+                Ok(output) => (output, None),
+                Err(e) => (serde_json::Value::Null, Some(e.to_string())),
+            };
         let key_gen = KeyGenerator::new(Arc::clone(&state.backend), state.partition_id);
         let evaluation_key = key_gen.next_key().await?;
         let result = serde_json::json!({
@@ -78,7 +93,12 @@ impl RecordProcessor for DecisionEvaluationProcessor {
         });
         writers.events.push(EventToWrite {
             value_type: "DECISION_EVALUATION".to_string(),
-            intent: if failure.is_some() { "FAILED" } else { "EVALUATED" }.to_string(),
+            intent: if failure.is_some() {
+                "FAILED"
+            } else {
+                "EVALUATED"
+            }
+            .to_string(),
             key: evaluation_key,
             payload: result.clone(),
         });

@@ -1,0 +1,289 @@
+{
+  "id": "Definitions_agents",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "outsideTool",
+          "inputs": {
+            "x": "=fromAi(toolCall.x, \"x\")"
+          },
+          "jobType": "t",
+          "type": "serviceTask"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "plainTool",
+                "inputs": {
+                  "x": "=fromAi(toolCall.x)"
+                },
+                "jobType": "t",
+                "type": "serviceTask"
+              }
+            ],
+            "flows": []
+          },
+          "id": "plainAdHoc",
+          "name": "Plain",
+          "type": "adHocSubProcess"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "documentation": "Looks up the weather.",
+                "id": "toolGood",
+                "inputs": {
+                  "city": "=fromAi(toolCall.city, \"The city\", \"string\")",
+                  "days": "=fromAi(value: toolCall.days, description: \"Days\")"
+                },
+                "jobType": "t",
+                "outputs": {
+                  "toolCallResult": "=weather"
+                },
+                "resultVariable": "toolCallResult",
+                "type": "serviceTask"
+              },
+              {
+                "id": "toolNoResult",
+                "jobType": "t",
+                "type": "serviceTask"
+              },
+              {
+                "id": "toolUnmapped",
+                "inputs": {
+                  "a": "=fromAi(\"city\")",
+                  "b": "=fromAi(city, 1)",
+                  "c": "=fromAi()"
+                },
+                "jobType": "t",
+                "outputs": {
+                  "result": "=r"
+                },
+                "resultVariable": "result",
+                "type": "serviceTask"
+              },
+              {
+                "id": "toolCasing",
+                "inputs": {
+                  "a": "=FromAI(toolCall.x)",
+                  "b": "=fromAi(toolCall.a.b) + fromAi(other.x)",
+                  "c": "=fromAi(if x then toolCall.x else toolCall.y)",
+                  "d": "=fromAi(toolCall[\"x\"], null)",
+                  "e": "=fromAi(null) + fromAi(1 + 2) + fromAi(-1)",
+                  "f": "=fromAi([1]) + fromAi((toolCall.p)) + fromAi(toolCall.q, (\"d\"))"
+                },
+                "jobType": "t",
+                "outputs": {
+                  "ToolCallResult": "=r"
+                },
+                "resultVariable": "ToolCallResult",
+                "type": "serviceTask"
+              },
+              {
+                "id": "toolDuplicateKey",
+                "inputs": {
+                  "a": "=fromAi(toolCall.q)",
+                  "b": "=fromAi(toolCall.q, \"again\")"
+                },
+                "jobType": "t",
+                "outputs": {
+                  "toolCallResult": "=r",
+                  "toolcallresult.extra": "=r"
+                },
+                "type": "serviceTask"
+              },
+              {
+                "id": "toolOutputFromAi",
+                "jobType": "t",
+                "outputs": {
+                  "toolCallResult": "=fromAi(toolCall.o)"
+                },
+                "resultVariable": "toolCallResult",
+                "type": "serviceTask"
+              },
+              {
+                "id": "chainA",
+                "jobType": "t",
+                "name": "Fetch",
+                "outputs": {
+                  "toolCallResult": "=r"
+                },
+                "resultVariable": "toolCallResult",
+                "type": "serviceTask"
+              },
+              {
+                "id": "chainB",
+                "inputs": {
+                  "y": "=fromAi(toolCall.y)"
+                },
+                "jobType": "t",
+                "outputs": {
+                  "toolCallResult": "=context put(toolCallResult, \"b\", 1)"
+                },
+                "type": "serviceTask"
+              },
+              {
+                "id": "chainC",
+                "resultVariable": "toolCallResult",
+                "script": "=1",
+                "type": "scriptTask"
+              },
+              {
+                "id": "branch",
+                "jobType": "t",
+                "type": "serviceTask"
+              },
+              {
+                "id": "branchA",
+                "jobType": "t",
+                "outputs": {
+                  "toolCallResult": "=a"
+                },
+                "resultVariable": "toolCallResult",
+                "type": "serviceTask"
+              },
+              {
+                "id": "branchB",
+                "jobType": "t",
+                "taskHeaders": {
+                  "resultExpression": "={toolCallResult: b, other: toolcallresult}"
+                },
+                "type": "serviceTask"
+              },
+              {
+                "children": {
+                  "elements": [
+                    {
+                      "id": "toolSubStart",
+                      "type": "startEvent"
+                    },
+                    {
+                      "id": "toolSubStep",
+                      "inputs": {
+                        "k": "=fromAi(toolCall.k)"
+                      },
+                      "jobType": "t",
+                      "taskHeaders": {
+                        "resultVariable": "toolResult"
+                      },
+                      "type": "serviceTask"
+                    }
+                  ],
+                  "flows": [
+                    {
+                      "from": "toolSubStart",
+                      "id": "toolSubToStep",
+                      "to": "toolSubStep"
+                    }
+                  ]
+                },
+                "id": "toolSub",
+                "type": "subProcess"
+              },
+              {
+                "id": "toolBoundary",
+                "jobType": "t",
+                "outputs": {
+                  "toolCallResult": "=a"
+                },
+                "resultVariable": "toolCallResult",
+                "type": "serviceTask"
+              },
+              {
+                "attachedTo": "toolBoundary",
+                "eventType": "error",
+                "id": "toolBoundaryError",
+                "outputs": {
+                  "toolCallResult": "=e"
+                },
+                "resultVariable": "toolCallResult",
+                "type": "boundaryEvent"
+              }
+            ],
+            "flows": [
+              {
+                "from": "chainA",
+                "id": "chainAtoB",
+                "to": "chainB"
+              },
+              {
+                "from": "chainB",
+                "id": "chainBtoC",
+                "to": "chainC"
+              },
+              {
+                "condition": "=fromAi(toolCall.z) = 1",
+                "from": "branch",
+                "id": "branchToA",
+                "to": "branchA"
+              },
+              {
+                "from": "branch",
+                "id": "branchToB",
+                "to": "branchB"
+              }
+            ]
+          },
+          "id": "tools",
+          "name": "Tools",
+          "properties": {
+            "io.camunda.agenticai.toolContainer": "true"
+          },
+          "type": "adHocSubProcess"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "legacyTool",
+                "jobType": "t",
+                "type": "serviceTask"
+              }
+            ],
+            "flows": []
+          },
+          "id": "legacyAgent",
+          "jobType": "agent",
+          "modelerTemplate": {
+            "id": "io.camunda.connectors.agenticai.aiagent.jobworker.v1"
+          },
+          "type": "adHocSubProcess"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "forkedTool",
+                "jobType": "t",
+                "type": "serviceTask"
+              }
+            ],
+            "flows": []
+          },
+          "id": "forkedAgent",
+          "jobType": "io.camunda.agenticai:aiagent-job-worker:1",
+          "type": "adHocSubProcess"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "definedTool",
+                "jobType": "t",
+                "type": "serviceTask"
+              }
+            ],
+            "flows": []
+          },
+          "id": "definedAgent",
+          "type": "adHocSubProcess"
+        }
+      ],
+      "flows": [],
+      "id": "agents"
+    }
+  ]
+}

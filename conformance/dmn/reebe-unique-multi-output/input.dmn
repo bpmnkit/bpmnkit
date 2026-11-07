@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             namespace="http://camunda.org/schema/1.0/dmn"
+             name="DRD" id="Definitions_risk">
+  <decision id="riskScore" name="Risk Score">
+    <decisionTable id="dt1" hitPolicy="UNIQUE">
+      <input id="i1" label="amount">
+        <inputExpression id="ie1"><text>amount</text></inputExpression>
+      </input>
+      <output id="o1" name="riskLevel" typeRef="string"/>
+      <output id="o2" name="scoreValue" typeRef="integer"/>
+      <rule id="r1">
+        <inputEntry id="ie1r1"><text>&gt;= 10000</text></inputEntry>
+        <outputEntry id="oe1r1"><text>"HIGH"</text></outputEntry>
+        <outputEntry id="oe2r1"><text>90</text></outputEntry>
+      </rule>
+      <rule id="r2">
+        <inputEntry id="ie1r2"><text>&gt;= 1000</text></inputEntry>
+        <outputEntry id="oe1r2"><text>"MEDIUM"</text></outputEntry>
+        <outputEntry id="oe2r2"><text>50</text></outputEntry>
+      </rule>
+      <rule id="r3">
+        <inputEntry id="ie1r3"><text>&lt; 1000</text></inputEntry>
+        <outputEntry id="oe1r3"><text>"LOW"</text></outputEntry>
+        <outputEntry id="oe2r3"><text>10</text></outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

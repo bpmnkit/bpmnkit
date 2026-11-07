@@ -1,0 +1,10 @@
+{
+  "findings": [
+    {
+      "fix": "Add at least one <decision> with a <decisionTable> or <literalExpression>; Zeebe rejects a DRG without decisions. (agent-cards/dmn.md#traps)",
+      "message": "The document contains no <decision>.",
+      "rule": "dmn/no-decision",
+      "severity": "error"
+    }
+  ]
+}

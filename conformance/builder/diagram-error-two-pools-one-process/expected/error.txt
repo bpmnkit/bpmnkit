@@ -1,0 +1,2 @@
+Invalid collaboration:
+  Participants "A" and "B" both reference process "p"; a process belongs to one pool

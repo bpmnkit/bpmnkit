@@ -1,0 +1,1 @@
+s[start] > a[catch:timer Five | after=PT5M] > b[catch:timer Lower | after=pt10m] > c[catch:timer Days | after=P1D] > d[catch:timer 0:PT5M] > e[end]

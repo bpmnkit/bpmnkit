@@ -1,0 +1,62 @@
+{
+  "id": "Defs_1",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "s",
+          "type": "startEvent"
+        },
+        {
+          "id": "t",
+          "jobType": "send-mail",
+          "multiInstance": {
+            "collection": "=people",
+            "completionCondition": "= count(sent) > 2",
+            "element": "person",
+            "outputCollection": "sent",
+            "outputElement": "=ok",
+            "sequential": true
+          },
+          "name": "Mail each",
+          "type": "serviceTask"
+        },
+        {
+          "id": "e",
+          "type": "endEvent"
+        },
+        {
+          "attachedTo": "t",
+          "eventType": "timer",
+          "id": "b",
+          "interrupting": false,
+          "name": "Too slow",
+          "timerDuration": "PT1H",
+          "type": "boundaryEvent"
+        },
+        {
+          "id": "e2",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "s",
+          "id": "f1",
+          "to": "t"
+        },
+        {
+          "from": "t",
+          "id": "f2",
+          "to": "e"
+        },
+        {
+          "from": "b",
+          "id": "f3",
+          "to": "e2"
+        }
+      ],
+      "id": "p"
+    }
+  ]
+}

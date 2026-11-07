@@ -1,0 +1,3 @@
+Bpmn.export: 2 deploy error(s):
+feel/empty-condition [f3]: Sequence flow "f3" exits a decision gateway without a condition expression. Fix: Add a FEEL condition expression or mark this flow as the default.
+feel/empty-condition [f4]: Sequence flow "f4" exits a decision gateway without a condition expression. Fix: Add a FEEL condition expression or mark this flow as the default.

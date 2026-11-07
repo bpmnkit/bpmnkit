@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="d" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="P" isExecutable="true">
+    <bpmn:subProcess id="Sub">
+      <bpmn:exclusiveGateway id="SubG" default="SF2">
+        <bpmn:outgoing>SF1</bpmn:outgoing>
+        <bpmn:outgoing>SF2</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:task id="A">
+        <bpmn:incoming>SF1</bpmn:incoming>
+      </bpmn:task>
+      <bpmn:task id="B">
+        <bpmn:incoming>SF2</bpmn:incoming>
+      </bpmn:task>
+      <bpmn:sequenceFlow id="SF1" sourceRef="SubG" targetRef="A">
+        <bpmn:conditionExpression>= ok</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="SF2" sourceRef="SubG" targetRef="B"/>
+    </bpmn:subProcess>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_P">
+    <bpmndi:BPMNPlane id="BPMNPlane_P" bpmnElement="P">
+      <bpmndi:BPMNShape id="Sub_di" bpmnElement="Sub" isExpanded="true">
+        <dc:Bounds x="0" y="0" width="310" height="320"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SubG_di" bpmnElement="SubG" isMarkerVisible="true">
+        <dc:Bounds x="50" y="65" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="A_di" bpmnElement="A">
+        <dc:Bounds x="160" y="190" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="B_di" bpmnElement="B">
+        <dc:Bounds x="160" y="50" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SF1_di" bpmnElement="SF1">
+        <di:waypoint x="75" y="115"/>
+        <di:waypoint x="75" y="230"/>
+        <di:waypoint x="160" y="230"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF2_di" bpmnElement="SF2">
+        <di:waypoint x="100" y="90"/>
+        <di:waypoint x="160" y="90"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

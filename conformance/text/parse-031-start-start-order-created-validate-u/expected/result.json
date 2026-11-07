@@ -1,0 +1,59 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "Order created",
+            "type": "startEvent"
+          },
+          {
+            "id": "validate",
+            "name": "Validate order",
+            "type": "userTask"
+          },
+          {
+            "id": "notify",
+            "jobType": "notify",
+            "name": "Notify ops",
+            "type": "serviceTask"
+          },
+          {
+            "id": "done",
+            "name": "Done",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "validate"
+          },
+          {
+            "from": "validate",
+            "id": "Flow_2",
+            "to": "notify"
+          },
+          {
+            "from": "notify",
+            "id": "Flow_3",
+            "to": "done"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 2,
+      "message": "\"validate\" is already declared on line 1; ignored \"xor Failed validation?\""
+    }
+  ],
+  "questions": []
+}

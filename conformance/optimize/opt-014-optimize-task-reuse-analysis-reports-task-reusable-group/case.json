@@ -1,0 +1,8 @@
+{
+  "runs": {
+    "default": {},
+    "opts-2": {
+      "reuseThreshold": 3
+    }
+  }
+}

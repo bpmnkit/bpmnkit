@@ -1,0 +1,2 @@
+s[start] > g[xor Ok?]
+g >(Yes: ok) a[task A] > e[end]

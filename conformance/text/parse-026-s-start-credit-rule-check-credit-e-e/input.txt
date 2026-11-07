@@ -1,0 +1,1 @@
+s[start] > credit[rule Check credit] > e[end]

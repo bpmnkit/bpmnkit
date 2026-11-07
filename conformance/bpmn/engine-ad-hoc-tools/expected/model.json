@@ -1,0 +1,124 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "start",
+          "incoming": [],
+          "outgoing": [
+            "f1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "agent"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "flowElements": [
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "t1"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                }
+              ],
+              "id": "T1",
+              "incoming": [],
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "t2"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                }
+              ],
+              "id": "T2",
+              "incoming": [],
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "Agent",
+          "incoming": [
+            "f1"
+          ],
+          "outgoing": [
+            "f2"
+          ],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "type": "adHocSubProcess",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "end",
+          "incoming": [
+            "f2"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "ad-hoc-tools",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "f1",
+          "sourceRef": "start",
+          "targetRef": "Agent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f2",
+          "sourceRef": "Agent",
+          "targetRef": "end",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

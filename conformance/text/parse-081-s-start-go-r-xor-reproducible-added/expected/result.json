@@ -1,0 +1,64 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "id": "r",
+            "name": "Reproducible?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "e",
+            "name": "Done",
+            "type": "endEvent"
+          },
+          {
+            "id": "x",
+            "name": "Dropped",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "r"
+          },
+          {
+            "condition": "= ok",
+            "from": "r",
+            "id": "Flow_2",
+            "name": "Yes",
+            "to": "e"
+          },
+          {
+            "from": "r",
+            "id": "Flow_3",
+            "isDefault": true,
+            "name": "No",
+            "to": "x"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "made r > x the default branch of \"r\""
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "ignored the note \"(ADDED)\""
+    }
+  ],
+  "questions": []
+}

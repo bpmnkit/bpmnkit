@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["sendTask","send",{"name":"Send","messageName":"order-shipped","correlationKey":"=orderId"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

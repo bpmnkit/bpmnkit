@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_0000001">
+      <bpmn:outgoing>Flow_StartEvent_0000001_t</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="t" name="x">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="y"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_StartEvent_0000001_t</bpmn:incoming>
+      <bpmn:outgoing>Flow_t_g</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="g" default="Flow_g_EndEvent_0000006">
+      <bpmn:incoming>Flow_t_g</bpmn:incoming>
+      <bpmn:outgoing>Flow_g_EndEvent_0000004</bpmn:outgoing>
+      <bpmn:outgoing>Flow_g_EndEvent_0000006</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="EndEvent_0000004">
+      <bpmn:incoming>Flow_g_EndEvent_0000004</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="EndEvent_0000006">
+      <bpmn:incoming>Flow_g_EndEvent_0000006</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_StartEvent_0000001_t" sourceRef="StartEvent_0000001" targetRef="t"/>
+    <bpmn:sequenceFlow id="Flow_t_g" sourceRef="t" targetRef="g"/>
+    <bpmn:sequenceFlow id="Flow_g_EndEvent_0000004" sourceRef="g" targetRef="EndEvent_0000004" name="a">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=1</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_g_EndEvent_0000006" sourceRef="g" targetRef="EndEvent_0000006" name="b"/>
+  </bpmn:process>
+</bpmn:definitions>
+

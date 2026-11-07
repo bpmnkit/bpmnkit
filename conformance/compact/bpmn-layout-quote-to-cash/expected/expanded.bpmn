@@ -1,0 +1,598 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="QuoteToCash" name="Quote-to-Cash Process" isExecutable="true">
+    <bpmn:startEvent id="start" name="Opportunity Received">
+      <bpmn:outgoing>Flow_XjhCYuOK</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="generateQuote" name="Generate Quote from Catalog">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="quote-generator"/>
+        <zeebe:taskHeaders>
+          <zeebe:header key="pricingModel" value="tiered"/>
+        </zeebe:taskHeaders>
+        <zeebe:ioMapping>
+          <zeebe:input source="=opportunity.lineItems" target="lineItems"/>
+          <zeebe:input source="=customer.tier" target="pricingTier"/>
+          <zeebe:output source="=quote.total" target="quoteTotal"/>
+          <zeebe:output source="=quote.discountPercent" target="discountPercent"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_XjhCYuOK</bpmn:incoming>
+      <bpmn:outgoing>Flow_bchUvOZ2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="discountApproval" name="Discount Level?" default="Flow_y9NbTDhR">
+      <bpmn:incoming>Flow_bchUvOZ2</bpmn:incoming>
+      <bpmn:outgoing>Flow_QZRbwxhU</bpmn:outgoing>
+      <bpmn:outgoing>Flow_7TjRkdGd</bpmn:outgoing>
+      <bpmn:outgoing>Flow_y9NbTDhR</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="managerApproval" name="Manager Discount Approval">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formId="discount-approval-form"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_7TjRkdGd</bpmn:incoming>
+      <bpmn:outgoing>Flow_McQkxpe9</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="vpApproval" name="VP Discount Approval">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formId="discount-approval-form"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_y9NbTDhR</bpmn:incoming>
+      <bpmn:outgoing>Flow_fpJ7UEWD</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="approvalDecision" name="Discount Approved?" default="Flow_va69mGZx">
+      <bpmn:incoming>Flow_McQkxpe9</bpmn:incoming>
+      <bpmn:incoming>Flow_fpJ7UEWD</bpmn:incoming>
+      <bpmn:outgoing>Flow_oExsK6c1</bpmn:outgoing>
+      <bpmn:outgoing>Flow_va69mGZx</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="endContractRejected" name="Contract Rejected">
+      <bpmn:incoming>Flow_va69mGZx</bpmn:incoming>
+      <bpmn:incoming>Flow_TtJzWXLn</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="generateContract" name="Generate Contract">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="contract-generator"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=quote" target="quote"/>
+          <zeebe:input source="=customer" target="customer"/>
+          <zeebe:output source="=contract.id" target="contractId"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_QZRbwxhU</bpmn:incoming>
+      <bpmn:incoming>Flow_oExsK6c1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2s0JeKjV</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="sendForSignature" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="12" name="Send Contract for E-Signature">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1"/>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultExpression" value="=signatureResponse.body"/>
+          <zeebe:header key="resultVariable" value="signatureResponse"/>
+        </zeebe:taskHeaders>
+        <zeebe:ioMapping>
+          <zeebe:input source="bearer" target="authentication.type"/>
+          <zeebe:input source="=secrets.ESIGN_TOKEN" target="authentication.token"/>
+          <zeebe:input source="POST" target="method"/>
+          <zeebe:input source="=esignatureUrl + &quot;/envelopes&quot;" target="url"/>
+          <zeebe:input source="20" target="connectionTimeoutInSeconds"/>
+          <zeebe:input source="20" target="readTimeoutInSeconds"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_2s0JeKjV</bpmn:incoming>
+      <bpmn:outgoing>Flow_GqAZEa9L</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="signatureCheck" name="Contract Signed?">
+      <bpmn:incoming>Flow_GqAZEa9L</bpmn:incoming>
+      <bpmn:outgoing>Flow_TtJzWXLn</bpmn:outgoing>
+      <bpmn:outgoing>Flow_bm3sKMZA</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="orderType" name="Order Type?" default="Flow_U58MqVEA">
+      <bpmn:incoming>Flow_bm3sKMZA</bpmn:incoming>
+      <bpmn:outgoing>Flow_K9wwadg1</bpmn:outgoing>
+      <bpmn:outgoing>Flow_U58MqVEA</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="provisionStandard" name="Provision Standard Order">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="provisioning-service"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=order" target="order"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_K9wwadg1</bpmn:incoming>
+      <bpmn:outgoing>Flow_MJRLe9Ud</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:subProcess id="provisionBundle" name="Provision Bundled Order">
+      <bpmn:incoming>Flow_U58MqVEA</bpmn:incoming>
+      <bpmn:outgoing>Flow_ppq2whx1</bpmn:outgoing>
+      <bpmn:startEvent id="provStart" name="Line Item">
+        <bpmn:outgoing>Flow_JiJIEANV</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:serviceTask id="provisionLine" name="Provision Line Item">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="provisioning-service"/>
+          <zeebe:ioMapping>
+            <zeebe:input source="=lineItem" target="lineItem"/>
+            <zeebe:output source="=provisionStatus" target="provisionResult"/>
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_JiJIEANV</bpmn:incoming>
+        <bpmn:outgoing>Flow_opsPtJat</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:endEvent id="provEnd" name="Line Provisioned">
+        <bpmn:incoming>Flow_opsPtJat</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_JiJIEANV" sourceRef="provStart" targetRef="provisionLine"/>
+      <bpmn:sequenceFlow id="Flow_opsPtJat" sourceRef="provisionLine" targetRef="provEnd"/>
+    </bpmn:subProcess>
+    <bpmn:serviceTask id="generateInvoice" name="Generate Invoice">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="invoice-generator"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=order" target="order"/>
+          <zeebe:input source="=quote.total" target="amountDue"/>
+          <zeebe:output source="=invoice.id" target="invoiceId"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_mGa16ca8</bpmn:incoming>
+      <bpmn:outgoing>Flow_NNMRv3Pv</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="processPayment" zeebe:modelerTemplate="io.camunda.connectors.HttpJson.v2" zeebe:modelerTemplateVersion="12" name="Charge Payment Gateway">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1"/>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultExpression" value="=paymentResponse.body"/>
+          <zeebe:header key="resultVariable" value="paymentResponse"/>
+        </zeebe:taskHeaders>
+        <zeebe:ioMapping>
+          <zeebe:input source="bearer" target="authentication.type"/>
+          <zeebe:input source="=secrets.PAYMENT_GATEWAY_TOKEN" target="authentication.token"/>
+          <zeebe:input source="POST" target="method"/>
+          <zeebe:input source="=paymentGatewayUrl + &quot;/charges&quot;" target="url"/>
+          <zeebe:input source="20" target="connectionTimeoutInSeconds"/>
+          <zeebe:input source="20" target="readTimeoutInSeconds"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_NNMRv3Pv</bpmn:incoming>
+      <bpmn:outgoing>Flow_rAke0SwX</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:eventBasedGateway id="paymentOutcome" name="Payment Outcome?">
+      <bpmn:incoming>Flow_rAke0SwX</bpmn:incoming>
+      <bpmn:outgoing>Flow_CGvPR8ea</bpmn:outgoing>
+      <bpmn:outgoing>Flow_EpnDtwOl</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+    <bpmn:intermediateCatchEvent id="paymentConfirmed" name="Payment Confirmed">
+      <bpmn:incoming>Flow_CGvPR8ea</bpmn:incoming>
+      <bpmn:outgoing>Flow_WvP1ZYV3</bpmn:outgoing>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="endPaymentReceived" name="Payment Received">
+      <bpmn:incoming>Flow_WvP1ZYV3</bpmn:incoming>
+      <bpmn:incoming>Flow_tTnmOKZY</bpmn:incoming>
+      <bpmn:incoming>Flow_V7DE8MG5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:intermediateCatchEvent id="paymentWindowElapsed" name="Payment Window Elapsed">
+      <bpmn:incoming>Flow_EpnDtwOl</bpmn:incoming>
+      <bpmn:outgoing>Flow_z74FHoCS</bpmn:outgoing>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:subProcess id="dunning" name="Dunning &amp; Cash Collection">
+      <bpmn:incoming>Flow_z74FHoCS</bpmn:incoming>
+      <bpmn:outgoing>Flow_FRNklBg3</bpmn:outgoing>
+      <bpmn:startEvent id="dunStart" name="Payment Overdue">
+        <bpmn:outgoing>Flow_Y2WHbokq</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:serviceTask id="sendReminder1" name="Send 1st Reminder">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="reminder-sender"/>
+          <zeebe:taskHeaders>
+            <zeebe:header key="template" value="dunning-1"/>
+          </zeebe:taskHeaders>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_Y2WHbokq</bpmn:incoming>
+        <bpmn:outgoing>Flow_bxCEkomG</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:receiveTask id="awaitPayment1" name="Await Payment (1)">
+        <bpmn:incoming>Flow_bxCEkomG</bpmn:incoming>
+      </bpmn:receiveTask>
+      <bpmn:boundaryEvent id="timerReminder1" name="7 Days" attachedToRef="awaitPayment1" cancelActivity="true">
+        <bpmn:outgoing>Flow_jRDLA0qv</bpmn:outgoing>
+      </bpmn:boundaryEvent>
+      <bpmn:endEvent id="dunEndPaid" name="Payment Collected">
+        <bpmn:incoming>Flow_jRDLA0qv</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_Y2WHbokq" sourceRef="dunStart" targetRef="sendReminder1"/>
+      <bpmn:sequenceFlow id="Flow_bxCEkomG" sourceRef="sendReminder1" targetRef="awaitPayment1"/>
+      <bpmn:sequenceFlow id="Flow_jRDLA0qv" sourceRef="timerReminder1" targetRef="dunEndPaid"/>
+    </bpmn:subProcess>
+    <bpmn:exclusiveGateway id="collectionCheck" name="Payment Collected?" default="Flow_baF9j4Dg">
+      <bpmn:incoming>Flow_FRNklBg3</bpmn:incoming>
+      <bpmn:outgoing>Flow_tTnmOKZY</bpmn:outgoing>
+      <bpmn:outgoing>Flow_baF9j4Dg</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="collectionsAgency" name="Escalate to Collections Agency">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="collections-agency"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=invoiceId" target="invoiceId"/>
+          <zeebe:output source="=collectionResult.recovered" target="recovered"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_baF9j4Dg</bpmn:incoming>
+      <bpmn:outgoing>Flow_ZTOMVwy0</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="collectionsResult" name="Debt Recovered?" default="Flow_fyHvSVmV">
+      <bpmn:incoming>Flow_ZTOMVwy0</bpmn:incoming>
+      <bpmn:outgoing>Flow_V7DE8MG5</bpmn:outgoing>
+      <bpmn:outgoing>Flow_fyHvSVmV</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="endWrittenOff" name="Written Off — Collections Failed">
+      <bpmn:incoming>Flow_fyHvSVmV</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="orderType_join">
+      <bpmn:incoming>Flow_MJRLe9Ud</bpmn:incoming>
+      <bpmn:incoming>Flow_ppq2whx1</bpmn:incoming>
+      <bpmn:outgoing>Flow_mGa16ca8</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_XjhCYuOK" sourceRef="start" targetRef="generateQuote"/>
+    <bpmn:sequenceFlow id="Flow_bchUvOZ2" sourceRef="generateQuote" targetRef="discountApproval"/>
+    <bpmn:sequenceFlow id="Flow_QZRbwxhU" sourceRef="discountApproval" targetRef="generateContract" name="no-approval-needed">
+      <bpmn:conditionExpression>=discountPercent &lt;= 10</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_7TjRkdGd" sourceRef="discountApproval" targetRef="managerApproval" name="manager-approval">
+      <bpmn:conditionExpression>=discountPercent &gt; 10 and discountPercent &lt;= 25</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_McQkxpe9" sourceRef="managerApproval" targetRef="approvalDecision"/>
+    <bpmn:sequenceFlow id="Flow_y9NbTDhR" sourceRef="discountApproval" targetRef="vpApproval" name="vp-approval"/>
+    <bpmn:sequenceFlow id="Flow_fpJ7UEWD" sourceRef="vpApproval" targetRef="approvalDecision"/>
+    <bpmn:sequenceFlow id="Flow_oExsK6c1" sourceRef="approvalDecision" targetRef="generateContract" name="discount-approved">
+      <bpmn:conditionExpression>=discountApproved = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_va69mGZx" sourceRef="approvalDecision" targetRef="endContractRejected" name="discount-rejected"/>
+    <bpmn:sequenceFlow id="Flow_2s0JeKjV" sourceRef="generateContract" targetRef="sendForSignature"/>
+    <bpmn:sequenceFlow id="Flow_GqAZEa9L" sourceRef="sendForSignature" targetRef="signatureCheck"/>
+    <bpmn:sequenceFlow id="Flow_TtJzWXLn" sourceRef="signatureCheck" targetRef="endContractRejected" name="signature-declined">
+      <bpmn:conditionExpression>=signatureResponse.status = "declined"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_bm3sKMZA" sourceRef="signatureCheck" targetRef="orderType" name="signature-signed">
+      <bpmn:conditionExpression>=signatureResponse.status = "signed"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_K9wwadg1" sourceRef="orderType" targetRef="provisionStandard" name="standard-order">
+      <bpmn:conditionExpression>=order.type = "standard"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_MJRLe9Ud" sourceRef="provisionStandard" targetRef="orderType_join"/>
+    <bpmn:sequenceFlow id="Flow_U58MqVEA" sourceRef="orderType" targetRef="provisionBundle" name="bundled-order"/>
+    <bpmn:sequenceFlow id="Flow_ppq2whx1" sourceRef="provisionBundle" targetRef="orderType_join"/>
+    <bpmn:sequenceFlow id="Flow_NNMRv3Pv" sourceRef="generateInvoice" targetRef="processPayment"/>
+    <bpmn:sequenceFlow id="Flow_rAke0SwX" sourceRef="processPayment" targetRef="paymentOutcome"/>
+    <bpmn:sequenceFlow id="Flow_CGvPR8ea" sourceRef="paymentOutcome" targetRef="paymentConfirmed" name="paid-immediately"/>
+    <bpmn:sequenceFlow id="Flow_WvP1ZYV3" sourceRef="paymentConfirmed" targetRef="endPaymentReceived"/>
+    <bpmn:sequenceFlow id="Flow_EpnDtwOl" sourceRef="paymentOutcome" targetRef="paymentWindowElapsed" name="payment-overdue"/>
+    <bpmn:sequenceFlow id="Flow_z74FHoCS" sourceRef="paymentWindowElapsed" targetRef="dunning"/>
+    <bpmn:sequenceFlow id="Flow_FRNklBg3" sourceRef="dunning" targetRef="collectionCheck"/>
+    <bpmn:sequenceFlow id="Flow_tTnmOKZY" sourceRef="collectionCheck" targetRef="endPaymentReceived" name="collected-during-dunning">
+      <bpmn:conditionExpression>=paymentReceived = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_baF9j4Dg" sourceRef="collectionCheck" targetRef="collectionsAgency" name="still-unpaid"/>
+    <bpmn:sequenceFlow id="Flow_ZTOMVwy0" sourceRef="collectionsAgency" targetRef="collectionsResult"/>
+    <bpmn:sequenceFlow id="Flow_V7DE8MG5" sourceRef="collectionsResult" targetRef="endPaymentReceived" name="debt-recovered">
+      <bpmn:conditionExpression>=recovered = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_fyHvSVmV" sourceRef="collectionsResult" targetRef="endWrittenOff" name="debt-written-off"/>
+    <bpmn:sequenceFlow id="Flow_mGa16ca8" sourceRef="orderType_join" targetRef="generateInvoice"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_QuoteToCash">
+    <bpmndi:BPMNPlane id="BPMNPlane_QuoteToCash" bpmnElement="QuoteToCash">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start">
+        <dc:Bounds x="0" y="162" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-52" y="202" width="140" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="generateQuote_di" bpmnElement="generateQuote">
+        <dc:Bounds x="106" y="140" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="discountApproval_di" bpmnElement="discountApproval" isMarkerVisible="true">
+        <dc:Bounds x="266" y="155" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="299" y="209" width="105" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="managerApproval_di" bpmnElement="managerApproval">
+        <dc:Bounds x="448" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="vpApproval_di" bpmnElement="vpApproval">
+        <dc:Bounds x="448" y="140" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="approvalDecision_di" bpmnElement="approvalDecision" isMarkerVisible="true">
+        <dc:Bounds x="608" y="155" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="641" y="209" width="126" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="endContractRejected_di" bpmnElement="endContractRejected">
+        <dc:Bounds x="1320" y="162" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1278.5" y="144" width="119" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="generateContract_di" bpmnElement="generateContract">
+        <dc:Bounds x="797" y="261" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sendForSignature_di" bpmnElement="sendForSignature">
+        <dc:Bounds x="957" y="261" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="signatureCheck_di" bpmnElement="signatureCheck" isMarkerVisible="true">
+        <dc:Bounds x="1117" y="276" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1086" y="330" width="112" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="orderType_di" bpmnElement="orderType" isMarkerVisible="true">
+        <dc:Bounds x="1313" y="276" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1299.5" y="258" width="77" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="provisionStandard_di" bpmnElement="provisionStandard">
+        <dc:Bounds x="1652.75" y="261" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="provisionBundle_di" bpmnElement="provisionBundle" isExpanded="true">
+        <dc:Bounds x="1481" y="401" width="443.5" height="208"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="generateInvoice_di" bpmnElement="generateInvoice">
+        <dc:Bounds x="2134.5" y="261" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="processPayment_di" bpmnElement="processPayment">
+        <dc:Bounds x="2294.5" y="261" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="paymentOutcome_di" bpmnElement="paymentOutcome">
+        <dc:Bounds x="2454.5" y="276" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2423.5" y="258" width="112" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="paymentConfirmed_di" bpmnElement="paymentConfirmed">
+        <dc:Bounds x="2636.5" y="283" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2595" y="323" width="119" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="endPaymentReceived_di" bpmnElement="endPaymentReceived">
+        <dc:Bounds x="4004" y="283" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3966" y="265" width="112" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="paymentWindowElapsed_di" bpmnElement="paymentWindowElapsed">
+        <dc:Bounds x="2636.5" y="501" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2577.5" y="541" width="154" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="dunning_di" bpmnElement="dunning" isExpanded="true">
+        <dc:Bounds x="2772.5" y="401" width="628" height="246"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="collectionCheck_di" bpmnElement="collectionCheck" isMarkerVisible="true">
+        <dc:Bounds x="3500.5" y="494" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3462.5" y="548" width="126" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="collectionsAgency_di" bpmnElement="collectionsAgency">
+        <dc:Bounds x="3654.5" y="479" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="collectionsResult_di" bpmnElement="collectionsResult" isMarkerVisible="true">
+        <dc:Bounds x="3814.5" y="494" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3787" y="548" width="105" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="endWrittenOff_di" bpmnElement="endWrittenOff">
+        <dc:Bounds x="4004" y="501" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3910" y="541" width="224" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="orderType_join_di" bpmnElement="orderType_join" isMarkerVisible="true">
+        <dc:Bounds x="2024.5" y="276" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="provStart_di" bpmnElement="provStart">
+        <dc:Bounds x="1544.5" y="501" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1531" y="541" width="63" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="provisionLine_di" bpmnElement="provisionLine">
+        <dc:Bounds x="1640.5" y="479" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="provEnd_di" bpmnElement="provEnd">
+        <dc:Bounds x="1800.5" y="501" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1762.5" y="541" width="112" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="dunStart_di" bpmnElement="dunStart">
+        <dc:Bounds x="2857" y="501" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2822.5" y="541" width="105" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sendReminder1_di" bpmnElement="sendReminder1">
+        <dc:Bounds x="2953" y="479" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="awaitPayment1_di" bpmnElement="awaitPayment1">
+        <dc:Bounds x="3113" y="479" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="timerReminder1_di" bpmnElement="timerReminder1">
+        <dc:Bounds x="3145" y="541" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3117" y="581" width="42" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="dunEndPaid_di" bpmnElement="dunEndPaid">
+        <dc:Bounds x="3273" y="501" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3231.5" y="483" width="119" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_XjhCYuOK_di" bpmnElement="Flow_XjhCYuOK">
+        <di:waypoint x="36" y="180"/>
+        <di:waypoint x="106" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_bchUvOZ2_di" bpmnElement="Flow_bchUvOZ2">
+        <di:waypoint x="206" y="180"/>
+        <di:waypoint x="266" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_QZRbwxhU_di" bpmnElement="Flow_QZRbwxhU">
+        <di:waypoint x="291" y="205"/>
+        <di:waypoint x="291" y="301"/>
+        <di:waypoint x="797" y="301"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7TjRkdGd_di" bpmnElement="Flow_7TjRkdGd">
+        <di:waypoint x="291" y="155"/>
+        <di:waypoint x="291" y="40"/>
+        <di:waypoint x="448" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_McQkxpe9_di" bpmnElement="Flow_McQkxpe9">
+        <di:waypoint x="548" y="40"/>
+        <di:waypoint x="578" y="40"/>
+        <di:waypoint x="578" y="180"/>
+        <di:waypoint x="608" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_y9NbTDhR_di" bpmnElement="Flow_y9NbTDhR">
+        <di:waypoint x="316" y="180"/>
+        <di:waypoint x="448" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_fpJ7UEWD_di" bpmnElement="Flow_fpJ7UEWD">
+        <di:waypoint x="548" y="180"/>
+        <di:waypoint x="608" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_oExsK6c1_di" bpmnElement="Flow_oExsK6c1">
+        <di:waypoint x="633" y="205"/>
+        <di:waypoint x="633" y="233"/>
+        <di:waypoint x="847" y="233"/>
+        <di:waypoint x="847" y="261"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_va69mGZx_di" bpmnElement="Flow_va69mGZx">
+        <di:waypoint x="658" y="180"/>
+        <di:waypoint x="1320" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2s0JeKjV_di" bpmnElement="Flow_2s0JeKjV">
+        <di:waypoint x="897" y="301"/>
+        <di:waypoint x="957" y="301"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_GqAZEa9L_di" bpmnElement="Flow_GqAZEa9L">
+        <di:waypoint x="1057" y="301"/>
+        <di:waypoint x="1117" y="301"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_TtJzWXLn_di" bpmnElement="Flow_TtJzWXLn">
+        <di:waypoint x="1142" y="276"/>
+        <di:waypoint x="1142" y="237"/>
+        <di:waypoint x="1338" y="237"/>
+        <di:waypoint x="1338" y="198"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_bm3sKMZA_di" bpmnElement="Flow_bm3sKMZA">
+        <di:waypoint x="1167" y="301"/>
+        <di:waypoint x="1313" y="301"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_K9wwadg1_di" bpmnElement="Flow_K9wwadg1">
+        <di:waypoint x="1363" y="301"/>
+        <di:waypoint x="1652.75" y="301"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_MJRLe9Ud_di" bpmnElement="Flow_MJRLe9Ud">
+        <di:waypoint x="1752.75" y="301"/>
+        <di:waypoint x="2024.5" y="301"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_U58MqVEA_di" bpmnElement="Flow_U58MqVEA">
+        <di:waypoint x="1338" y="326"/>
+        <di:waypoint x="1338" y="505"/>
+        <di:waypoint x="1481" y="505"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ppq2whx1_di" bpmnElement="Flow_ppq2whx1">
+        <di:waypoint x="1702.75" y="401"/>
+        <di:waypoint x="1702.75" y="371"/>
+        <di:waypoint x="2049.5" y="371"/>
+        <di:waypoint x="2049.5" y="326"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_NNMRv3Pv_di" bpmnElement="Flow_NNMRv3Pv">
+        <di:waypoint x="2234.5" y="301"/>
+        <di:waypoint x="2294.5" y="301"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_rAke0SwX_di" bpmnElement="Flow_rAke0SwX">
+        <di:waypoint x="2394.5" y="301"/>
+        <di:waypoint x="2454.5" y="301"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_CGvPR8ea_di" bpmnElement="Flow_CGvPR8ea">
+        <di:waypoint x="2504.5" y="301"/>
+        <di:waypoint x="2636.5" y="301"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_WvP1ZYV3_di" bpmnElement="Flow_WvP1ZYV3">
+        <di:waypoint x="2672.5" y="301"/>
+        <di:waypoint x="4004" y="301"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_EpnDtwOl_di" bpmnElement="Flow_EpnDtwOl">
+        <di:waypoint x="2479.5" y="326"/>
+        <di:waypoint x="2479.5" y="519"/>
+        <di:waypoint x="2636.5" y="519"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_z74FHoCS_di" bpmnElement="Flow_z74FHoCS">
+        <di:waypoint x="2672.5" y="519"/>
+        <di:waypoint x="2772.5" y="519"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_FRNklBg3_di" bpmnElement="Flow_FRNklBg3">
+        <di:waypoint x="3400.5" y="519"/>
+        <di:waypoint x="3500.5" y="519"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_tTnmOKZY_di" bpmnElement="Flow_tTnmOKZY">
+        <di:waypoint x="3525.5" y="494"/>
+        <di:waypoint x="3525.5" y="399"/>
+        <di:waypoint x="4022" y="399"/>
+        <di:waypoint x="4022" y="319"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_baF9j4Dg_di" bpmnElement="Flow_baF9j4Dg">
+        <di:waypoint x="3550.5" y="519"/>
+        <di:waypoint x="3654.5" y="519"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ZTOMVwy0_di" bpmnElement="Flow_ZTOMVwy0">
+        <di:waypoint x="3754.5" y="519"/>
+        <di:waypoint x="3814.5" y="519"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_V7DE8MG5_di" bpmnElement="Flow_V7DE8MG5">
+        <di:waypoint x="3839.5" y="494"/>
+        <di:waypoint x="3839.5" y="301"/>
+        <di:waypoint x="4004" y="301"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_fyHvSVmV_di" bpmnElement="Flow_fyHvSVmV">
+        <di:waypoint x="3864.5" y="519"/>
+        <di:waypoint x="4004" y="519"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_mGa16ca8_di" bpmnElement="Flow_mGa16ca8">
+        <di:waypoint x="2074.5" y="301"/>
+        <di:waypoint x="2134.5" y="301"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_JiJIEANV_di" bpmnElement="Flow_JiJIEANV">
+        <di:waypoint x="1580.5" y="519"/>
+        <di:waypoint x="1640.5" y="519"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_opsPtJat_di" bpmnElement="Flow_opsPtJat">
+        <di:waypoint x="1740.5" y="519"/>
+        <di:waypoint x="1800.5" y="519"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Y2WHbokq_di" bpmnElement="Flow_Y2WHbokq">
+        <di:waypoint x="2893" y="519"/>
+        <di:waypoint x="2953" y="519"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_bxCEkomG_di" bpmnElement="Flow_bxCEkomG">
+        <di:waypoint x="3053" y="519"/>
+        <di:waypoint x="3113" y="519"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_jRDLA0qv_di" bpmnElement="Flow_jRDLA0qv">
+        <di:waypoint x="3163" y="577"/>
+        <di:waypoint x="3163" y="597"/>
+        <di:waypoint x="3243" y="597"/>
+        <di:waypoint x="3243" y="519"/>
+        <di:waypoint x="3273" y="519"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

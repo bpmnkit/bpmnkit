@@ -1,0 +1,125 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "task",
+            "name": "Record offer",
+            "type": "task"
+          },
+          {
+            "id": "and",
+            "type": "parallelGateway"
+          },
+          {
+            "id": "task_2",
+            "name": "Order laptop",
+            "type": "task"
+          },
+          {
+            "id": "j",
+            "type": "parallelGateway"
+          },
+          {
+            "id": "task_3",
+            "name": "Grant access",
+            "type": "task"
+          },
+          {
+            "id": "check",
+            "name": "Ok?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "done",
+            "name": "Approved",
+            "type": "endEvent"
+          },
+          {
+            "id": "done_2",
+            "name": "Rejected",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "task"
+          },
+          {
+            "from": "task",
+            "id": "Flow_2",
+            "to": "and"
+          },
+          {
+            "from": "and",
+            "id": "Flow_3",
+            "to": "task_2"
+          },
+          {
+            "from": "task_2",
+            "id": "Flow_4",
+            "to": "j"
+          },
+          {
+            "from": "and",
+            "id": "Flow_5",
+            "to": "task_3"
+          },
+          {
+            "from": "task_3",
+            "id": "Flow_6",
+            "to": "j"
+          },
+          {
+            "from": "j",
+            "id": "Flow_7",
+            "to": "check"
+          },
+          {
+            "condition": "= ok",
+            "from": "check",
+            "id": "Flow_8",
+            "name": "Yes",
+            "to": "done"
+          },
+          {
+            "from": "check",
+            "id": "Flow_9",
+            "isDefault": true,
+            "name": "No",
+            "to": "done_2"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 1 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"task\" on line 1 is a different node; this one is \"task_2\""
+    },
+    {
+      "line": 2,
+      "message": "\"task\" on line 1 is a different node; this one is \"task_3\""
+    },
+    {
+      "line": 5,
+      "message": "\"done\" on line 4 is a different node; this one is \"done_2\""
+    }
+  ],
+  "questions": []
+}

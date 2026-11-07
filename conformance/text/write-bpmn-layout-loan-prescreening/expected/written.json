@@ -1,0 +1,12 @@
+{
+  "aliases": {
+    "credit_score_check": "Task_CreditScoreCheck",
+    "loan_application_received": "StartEvent_LoanRequest",
+    "loan_approved": "EndEvent_Approved",
+    "loan_rejected": "EndEvent_Rejected",
+    "manual_underwriter_review": "Task_UnderwriterReview",
+    "pre_screening": "Gateway_PreScreen",
+    "risk_scoring": "Task_RiskScoring",
+    "underwriter_decision": "Gateway_FinalDecision"
+  }
+}

@@ -1,0 +1,1 @@
+expand expects a CompactDiagram, received an array.

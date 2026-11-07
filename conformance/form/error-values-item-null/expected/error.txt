@@ -1,0 +1,1 @@
+components[0].values[0]: must be an object

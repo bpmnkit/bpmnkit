@@ -1,0 +1,72 @@
+name: Differential fuzzing
+
+# Feeds generated FEEL, BPMN, DMN, form and process-text inputs to the Rust crates and the TS
+# packages and compares the answers (doc/rust-rewrite-proposal.md §4.4, crates/bpmnkit-fuzz).
+# Each disagreement is shrunk and uploaded as an artifact; turn it into a conformance case.
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+    inputs:
+      seconds:
+        description: Seconds per target
+        type: number
+        default: 600
+
+concurrency:
+  group: fuzz-nightly
+  cancel-in-progress: true
+
+jobs:
+  fuzz:
+    name: Fuzz ${{ matrix.target }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [feel, bpmn, dmn, dmn-eval, form, text, compact]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build the TS oracle's packages
+        # @bpmnkit/engine's wasm runner imports @bpmnkit/reebe-wasm, which this job does not
+        # build; tsc still emits dist/dmn.js, the only module the oracle loads.
+        run: |
+          pnpm --filter @bpmnkit/feel --filter @bpmnkit/core build
+          pnpm --filter @bpmnkit/engine exec tsc || true
+          test -f packages/engine/dist/dmn.js
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+
+      - name: Build the fuzzer
+        run: cargo build -p bpmnkit-fuzz --release
+
+      - name: Fuzz
+        run: >
+          ./target/release/bpmnkit-fuzz --target ${{ matrix.target }}
+          --seconds ${{ inputs.seconds || 600 }}
+          --seed ${{ github.run_id }}
+          --out fuzz-mismatches
+
+      - name: Upload mismatches
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fuzz-mismatches-${{ matrix.target }}
+          path: fuzz-mismatches/
+          if-no-files-found: ignore

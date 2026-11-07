@@ -1,0 +1,205 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "exporter": "@bpmnkit/core",
+  "exporterVersion": "0.0.23",
+  "id": "Definitions_1",
+  "messages": [
+    {
+      "extensionElements": [
+        {
+          "attributes": {
+            "correlationKey": "=id"
+          },
+          "children": [],
+          "name": "zeebe:subscription"
+        }
+      ],
+      "id": "Message_reply",
+      "name": "reply",
+      "unknownAttributes": {}
+    }
+  ],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "s",
+          "incoming": [],
+          "outgoing": [
+            "Flow_s_eg"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "eg",
+          "incoming": [
+            "Flow_s_eg"
+          ],
+          "name": "Wait for",
+          "outgoing": [
+            "Flow_eg_m",
+            "Flow_eg_t"
+          ],
+          "type": "eventBasedGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "m_MessageEventDefinition",
+              "messageRef": "Message_reply",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [],
+          "id": "m",
+          "incoming": [
+            "Flow_eg_m"
+          ],
+          "outgoing": [
+            "Flow_m_handle"
+          ],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "handle"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "handle",
+          "incoming": [
+            "Flow_m_handle"
+          ],
+          "name": "handle",
+          "outgoing": [
+            "Flow_handle_e1"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e1",
+          "incoming": [
+            "Flow_handle_e1"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "t_TimerEventDefinition",
+              "timeDuration": "PT1H",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "t",
+          "incoming": [
+            "Flow_eg_t"
+          ],
+          "outgoing": [
+            "Flow_t_e2"
+          ],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e2",
+          "incoming": [
+            "Flow_t_e2"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "p",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_s_eg",
+          "sourceRef": "s",
+          "targetRef": "eg",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_eg_m",
+          "name": "msg",
+          "sourceRef": "eg",
+          "targetRef": "m",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_m_handle",
+          "sourceRef": "m",
+          "targetRef": "handle",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_handle_e1",
+          "sourceRef": "handle",
+          "targetRef": "e1",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_eg_t",
+          "name": "timeout",
+          "sourceRef": "eg",
+          "targetRef": "t",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_t_e2",
+          "sourceRef": "t",
+          "targetRef": "e2",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.10.0"
+  }
+}

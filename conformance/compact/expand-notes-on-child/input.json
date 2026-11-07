@@ -1,0 +1,30 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "sp",
+          "type": "subProcess",
+          "children": {
+            "elements": [
+              {
+                "id": "is",
+                "type": "startEvent"
+              }
+            ],
+            "flows": []
+          }
+        }
+      ],
+      "flows": [],
+      "notes": [
+        {
+          "elementId": "is",
+          "text": "inner"
+        }
+      ]
+    }
+  ]
+}

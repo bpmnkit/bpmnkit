@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["adHocSubProcess","ah",{"$ops":[["serviceTask","t",{"name":"t","taskType":"t"}]]},{"multiInstance":{"isSequential":true,"collection":"=xs"}}],
+		["endEvent","e"],
+		["build"]
+	]
+}

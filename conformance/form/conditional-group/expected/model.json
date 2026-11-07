@@ -1,0 +1,33 @@
+{
+  "components": [
+    {
+      "components": [
+        {
+          "conditional": {
+            "hide": "=x = 1"
+          },
+          "extraProps": {
+            "description": "help"
+          },
+          "id": "t",
+          "key": "t",
+          "label": "T",
+          "layout": {
+            "columns": null,
+            "row": "r2"
+          },
+          "type": "textfield"
+        }
+      ],
+      "id": "g",
+      "label": "G",
+      "layout": {
+        "columns": null,
+        "row": "r1"
+      },
+      "type": "group"
+    }
+  ],
+  "id": "f",
+  "type": "default"
+}

@@ -1,0 +1,45 @@
+{
+  "id": "d",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "Sub",
+          "type": "subProcess",
+          "children": {
+            "elements": [
+              {
+                "id": "SubG",
+                "type": "exclusiveGateway"
+              },
+              {
+                "id": "A",
+                "type": "task"
+              },
+              {
+                "id": "B",
+                "type": "task"
+              }
+            ],
+            "flows": [
+              {
+                "id": "SF1",
+                "from": "SubG",
+                "to": "A",
+                "condition": "= ok"
+              },
+              {
+                "id": "SF2",
+                "from": "SubG",
+                "to": "B",
+                "isDefault": true
+              }
+            ]
+          }
+        }
+      ],
+      "flows": []
+    }
+  ]
+}

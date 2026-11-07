@@ -1,0 +1,592 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "tasks"
+      ],
+      "fixable": false,
+      "id": "compat/no-execution-listeners",
+      "message": "Process \"tasks\" has execution listeners, which need Camunda 8.6 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.6 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "tasks"
+      ],
+      "fixable": false,
+      "id": "compat/no-version-tag",
+      "message": "Process \"tasks\" has a zeebe:versionTag, which needs Camunda 8.6 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.6 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "compat/start-event-form",
+      "message": "Start event \"start\" has a form, which needs Camunda 8.3 or newer on a start event; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "plainTask"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"plainTask\" needs Camunda 8.2 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "noType"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"noType\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "emptyType"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"emptyType\" has a zeebe:taskDefinition with no type.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set type on the zeebe:taskDefinition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "headers"
+      ],
+      "fixable": false,
+      "id": "compat/no-execution-listeners",
+      "message": "Service task \"headers\" has execution listeners, which need Camunda 8.6 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.6 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "headers"
+      ],
+      "fixable": false,
+      "id": "compat/no-template",
+      "message": "Service task \"headers\" applies element template \"io.camunda.connectors.HttpJson.v2\", which needs Camunda 8.0 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.0 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "headers"
+      ],
+      "fixable": false,
+      "id": "compat/no-zeebe-properties",
+      "message": "Service task \"headers\" has a zeebe:properties, which needs Camunda 8.1 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.1 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "headers"
+      ],
+      "fixable": false,
+      "id": "compat/duplicate-task-headers",
+      "message": "Service task \"headers\" has more than one task header \"a\".",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Remove the duplicate header."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "headers"
+      ],
+      "fixable": false,
+      "id": "compat/io-mapping",
+      "message": "Service task \"headers\" has an input mapping with no source, which needs Camunda 8.8 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set the source."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "headers"
+      ],
+      "fixable": false,
+      "id": "compat/io-mapping",
+      "message": "Service task \"headers\" has an output mapping with no target.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set the target."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "scriptFeel"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Script task \"scriptFeel\" has a zeebe:script, which needs Camunda 8.2 or newer here; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "scriptNone"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Script task \"scriptNone\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "brtNoResult"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Business rule task \"brtNoResult\" has a zeebe:calledDecision with no resultVariable.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set resultVariable on the zeebe:calledDecision."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "brtBinding"
+      ],
+      "fixable": false,
+      "id": "compat/no-binding-type",
+      "message": "Business rule task \"brtBinding\" binds its zeebe:calledDecision by \"versionTag\", which needs Camunda 8.6 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.6 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "brtTagExpr"
+      ],
+      "fixable": false,
+      "id": "compat/no-binding-type",
+      "message": "Business rule task \"brtTagExpr\" binds its zeebe:calledDecision by \"versionTag\", which needs Camunda 8.6 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.6 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "callNoProcess"
+      ],
+      "fixable": false,
+      "id": "compat/called-element",
+      "message": "Call activity \"callNoProcess\" has no zeebe:calledElement processId.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set the id of the process to call."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "callOptions"
+      ],
+      "fixable": false,
+      "id": "compat/no-binding-type",
+      "message": "Call activity \"callOptions\" binds its zeebe:calledElement by \"deployment\", which needs Camunda 8.6 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.6 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "callOptions"
+      ],
+      "fixable": false,
+      "id": "compat/no-propagate-all-parent-variables",
+      "message": "Call activity \"callOptions\" sets propagateAllParentVariables=\"false\", which needs Camunda 8.2 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "callOptions"
+      ],
+      "fixable": false,
+      "id": "compat/no-business-id",
+      "message": "Call activity \"callOptions\" sets a businessId, which needs Camunda 8.10 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.10 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sendNoType"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Send task \"sendNoType\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "receiveNoRef"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Receive task \"receiveNoRef\" references no message.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "jobWorkerTask"
+      ],
+      "fixable": false,
+      "id": "compat/no-task-schedule",
+      "message": "User task \"jobWorkerTask\" has a zeebe:taskSchedule, which needs Camunda 8.2 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "jobWorkerTask"
+      ],
+      "fixable": false,
+      "id": "compat/no-candidate-users",
+      "message": "User task \"jobWorkerTask\" assigns candidate users, which needs Camunda 8.2 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "jobWorkerTask"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-form",
+      "message": "User task \"jobWorkerTask\" links a form by formId, which needs Camunda 8.4 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.4 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "zeebeTask"
+      ],
+      "fixable": false,
+      "id": "compat/no-zeebe-user-task",
+      "message": "User task \"zeebeTask\" has a zeebe:userTask, which needs Camunda 8.5 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.5 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "zeebeTask"
+      ],
+      "fixable": false,
+      "id": "compat/no-priority-definition",
+      "message": "User task \"zeebeTask\" has a zeebe:priorityDefinition, which needs Camunda 8.6 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.6 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "zeebeTask"
+      ],
+      "fixable": false,
+      "id": "compat/no-task-listeners",
+      "message": "User task \"zeebeTask\" has a zeebe:taskListeners, which needs Camunda 8.8 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "noForm"
+      ],
+      "fixable": false,
+      "id": "compat/no-zeebe-user-task",
+      "message": "User task \"noForm\" has a zeebe:userTask, which needs Camunda 8.5 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.5 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "noForm"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"noForm\" has no zeebe:formDefinition.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "zeebeTaskOk"
+      ],
+      "fixable": false,
+      "id": "compat/no-zeebe-user-task",
+      "message": "User task \"zeebeTaskOk\" has a zeebe:userTask, which needs Camunda 8.5 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.5 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "multi"
+      ],
+      "fixable": false,
+      "id": "compat/no-execution-listeners",
+      "message": "Service task \"multi\" has execution listeners, which need Camunda 8.6 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.6 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "multi"
+      ],
+      "fixable": false,
+      "id": "compat/no-cancel-execution-listener",
+      "message": "Service task \"multi\" has a \"cancel\" execution listener, which needs Camunda 8.10 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.10 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "multi"
+      ],
+      "fixable": false,
+      "id": "compat/no-execution-listener-headers",
+      "message": "Service task \"multi\" has an execution listener with headers, which need Camunda 8.10 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.10 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "multi"
+      ],
+      "fixable": false,
+      "id": "compat/loop-characteristics",
+      "message": "Service task \"multi\" is multi-instance with no input collection.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set the input collection to iterate over."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "multi"
+      ],
+      "fixable": false,
+      "id": "compat/loop-characteristics",
+      "message": "Service task \"multi\" sets an output collection but no output element.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set both the output collection and the output element, or neither."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "multiNoZeebe"
+      ],
+      "fixable": false,
+      "id": "compat/no-job-priority-definition",
+      "message": "Service task \"multiNoZeebe\" has a zeebe:jobPriorityDefinition, which needs Camunda 8.10 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.10 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "multiNoZeebe"
+      ],
+      "fixable": false,
+      "id": "compat/loop-characteristics",
+      "message": "Service task \"multiNoZeebe\" is multi-instance without a zeebe:loopCharacteristics.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set the input collection to iterate over."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "complex"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Complex gateway \"complex\" is not supported by any Camunda 8 version.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Model it with an element Camunda 8 executes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "joinInclusive"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Inclusive gateway \"joinInclusive\" needs Camunda 8.1 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.1 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "afterEventGateway"
+      ],
+      "fixable": false,
+      "id": "compat/event-based-gateway-target",
+      "message": "Receive task \"afterEventGateway\" follows an event-based gateway; Camunda only accepts catch events there.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Replace the receive task with a message intermediate catch event."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "tx"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Transaction \"tx\" is not supported by any Camunda 8 version.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Model it with an element Camunda 8 executes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "adHocEmpty"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Ad-hoc sub-process \"adHocEmpty\" needs Camunda 8.7 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.7 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "data"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Data object \"data\" needs Camunda 8.0 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.0 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "flowNoCondition"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"flowNoCondition\" leaves Exclusive gateway \"split\" without a condition and is not its default flow.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "flowConditionFromTask"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"flowConditionFromTask\" has a condition, but only flows leaving an exclusive or inclusive gateway may.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Remove the condition, or route the flow through a gateway."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "collapsed"
+      ],
+      "fixable": false,
+      "id": "compat/collapsed-subprocess",
+      "message": "Sub-process \"collapsed\" is drawn collapsed, which needs Camunda 8.4 or newer; this model targets Camunda 1.3.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Expand the sub-process, or target Camunda 8.4 or newer."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "complexInNonExecutable"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Complex gateway \"complexInNonExecutable\" is not supported by any Camunda 8 version.",
+      "processId": "notExecutable",
+      "severity": "error",
+      "suggestion": "Model it with an element Camunda 8 executes."
+    }
+  ]
+}

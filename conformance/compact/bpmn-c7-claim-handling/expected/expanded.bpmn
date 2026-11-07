@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_0d9c2xk" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="claim-handling" name="Claim handling" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_claim" name="Claim submitted">
+      <bpmn:outgoing>Flow_toAssess</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="StartEvent_claim_MessageEventDefinition"/>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_assess" name="Assess claim">
+      <bpmn:incoming>Flow_toAssess</bpmn:incoming>
+      <bpmn:outgoing>Flow_toFraudCheck</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="Task_fraudCheck" name="Check for fraud">
+      <bpmn:incoming>Flow_toFraudCheck</bpmn:incoming>
+      <bpmn:outgoing>Flow_toReviewItems</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:subProcess id="SubProcess_items" name="Review items">
+      <bpmn:incoming>Flow_toReviewItems</bpmn:incoming>
+      <bpmn:outgoing>Flow_toPayout</bpmn:outgoing>
+      <bpmn:startEvent id="StartEvent_item">
+        <bpmn:outgoing>Flow_toPrice</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:scriptTask id="Task_price" name="Price item">
+        <bpmn:incoming>Flow_toPrice</bpmn:incoming>
+        <bpmn:outgoing>Flow_toItemEnd</bpmn:outgoing>
+      </bpmn:scriptTask>
+      <bpmn:endEvent id="EndEvent_item">
+        <bpmn:incoming>Flow_toItemEnd</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_toPrice" sourceRef="StartEvent_item" targetRef="Task_price"/>
+      <bpmn:sequenceFlow id="Flow_toItemEnd" sourceRef="Task_price" targetRef="EndEvent_item"/>
+    </bpmn:subProcess>
+    <bpmn:serviceTask id="Task_payout" name="Pay out claim">
+      <bpmn:incoming>Flow_toPayout</bpmn:incoming>
+      <bpmn:outgoing>Flow_toNotify</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="EndEvent_paid" name="Claim paid">
+      <bpmn:incoming>Flow_toNotify</bpmn:incoming>
+      <bpmn:messageEventDefinition id="EndEvent_paid_MessageEventDefinition"/>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Signal_fraud" name="Fraud alert" attachedToRef="Task_assess" cancelActivity="true">
+      <bpmn:outgoing>Flow_toFraudEnd</bpmn:outgoing>
+      <bpmn:signalEventDefinition id="Signal_fraud_SignalEventDefinition"/>
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="EndEvent_fraud" name="Claim blocked">
+      <bpmn:incoming>Flow_toFraudEnd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_toAssess" sourceRef="StartEvent_claim" targetRef="Task_assess"/>
+    <bpmn:sequenceFlow id="Flow_toFraudCheck" sourceRef="Task_assess" targetRef="Task_fraudCheck"/>
+    <bpmn:sequenceFlow id="Flow_toReviewItems" sourceRef="Task_fraudCheck" targetRef="SubProcess_items"/>
+    <bpmn:sequenceFlow id="Flow_toPayout" sourceRef="SubProcess_items" targetRef="Task_payout"/>
+    <bpmn:sequenceFlow id="Flow_toNotify" sourceRef="Task_payout" targetRef="EndEvent_paid"/>
+    <bpmn:sequenceFlow id="Flow_toFraudEnd" sourceRef="Signal_fraud" targetRef="EndEvent_fraud"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_claim-handling">
+    <bpmndi:BPMNPlane id="BPMNPlane_claim-handling" bpmnElement="claim-handling">
+      <bpmndi:BPMNShape id="StartEvent_claim_di" bpmnElement="StartEvent_claim">
+        <dc:Bounds x="0" y="100" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-34.5" y="140" width="105" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_assess_di" bpmnElement="Task_assess">
+        <dc:Bounds x="96" y="78" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_fraudCheck_di" bpmnElement="Task_fraudCheck">
+        <dc:Bounds x="256" y="78" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SubProcess_items_di" bpmnElement="SubProcess_items" isExpanded="true">
+        <dc:Bounds x="456" y="0" width="392" height="208"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_payout_di" bpmnElement="Task_payout">
+        <dc:Bounds x="948" y="78" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_paid_di" bpmnElement="EndEvent_paid">
+        <dc:Bounds x="1108" y="100" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1091" y="140" width="70" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Signal_fraud_di" bpmnElement="Signal_fraud">
+        <dc:Bounds x="128" y="140" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="65" y="180" width="77" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_fraud_di" bpmnElement="EndEvent_fraud">
+        <dc:Bounds x="288" y="236" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="260.5" y="276" width="91" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_item_di" bpmnElement="StartEvent_item">
+        <dc:Bounds x="506" y="100" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_price_di" bpmnElement="Task_price">
+        <dc:Bounds x="602" y="78" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_item_di" bpmnElement="EndEvent_item">
+        <dc:Bounds x="762" y="100" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_toAssess_di" bpmnElement="Flow_toAssess">
+        <di:waypoint x="36" y="118"/>
+        <di:waypoint x="96" y="118"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_toFraudCheck_di" bpmnElement="Flow_toFraudCheck">
+        <di:waypoint x="196" y="118"/>
+        <di:waypoint x="256" y="118"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_toReviewItems_di" bpmnElement="Flow_toReviewItems">
+        <di:waypoint x="356" y="118"/>
+        <di:waypoint x="456" y="118"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_toPayout_di" bpmnElement="Flow_toPayout">
+        <di:waypoint x="848" y="118"/>
+        <di:waypoint x="948" y="118"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_toNotify_di" bpmnElement="Flow_toNotify">
+        <di:waypoint x="1048" y="118"/>
+        <di:waypoint x="1108" y="118"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_toFraudEnd_di" bpmnElement="Flow_toFraudEnd">
+        <di:waypoint x="146" y="176"/>
+        <di:waypoint x="146" y="254"/>
+        <di:waypoint x="288" y="254"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_toPrice_di" bpmnElement="Flow_toPrice">
+        <di:waypoint x="542" y="118"/>
+        <di:waypoint x="602" y="118"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_toItemEnd_di" bpmnElement="Flow_toItemEnd">
+        <di:waypoint x="702" y="118"/>
+        <di:waypoint x="762" y="118"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

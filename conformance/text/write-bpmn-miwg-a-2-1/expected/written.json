@@ -1,0 +1,12 @@
+{
+  "aliases": {
+    "end_event": "_To9ZsTOCEeSknpIVFCxNIQ",
+    "gateway_merge_flows": "_To9Z2TOCEeSknpIVFCxNIQ",
+    "gateway_split_flow": "_To9ZyjOCEeSknpIVFCxNIQ",
+    "start_event": "_To9ZojOCEeSknpIVFCxNIQ",
+    "task_1": "_To9ZpzOCEeSknpIVFCxNIQ",
+    "task_2": "_To9ZtjOCEeSknpIVFCxNIQ",
+    "task_3": "_To9ZwDOCEeSknpIVFCxNIQ",
+    "task_4": "_To9ZzzOCEeSknpIVFCxNIQ"
+  }
+}

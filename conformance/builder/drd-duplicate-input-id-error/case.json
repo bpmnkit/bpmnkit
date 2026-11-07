@@ -1,0 +1,9 @@
+{
+	"kind": "dmn",
+	"script": [
+		["drd","Dup"],
+		["$let","h24","inputData","a"],
+		["$let","h25","inputData","a"],
+		["build"]
+	]
+}

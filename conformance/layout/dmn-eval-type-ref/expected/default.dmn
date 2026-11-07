@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="type-ref" name="type-ref" namespace="http://bpmnkit.com/conformance">
+  <decision id="number_in" name="number_in">
+    <decisionTable id="number_in_t" hitPolicy="FIRST">
+      <input id="number_in_i0">
+        <inputExpression id="number_in_ie0" typeRef="number">
+          <text>v</text>
+        </inputExpression>
+      </input>
+      <output id="number_in_o0" name="r" typeRef="string"/>
+      <rule id="ni_r0">
+        <inputEntry id="ni_r0_i0">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="ni_r0_o0">
+          <text>"ok"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="legacy_and_any" name="legacy_and_any">
+    <decisionTable id="legacy_and_any_t" hitPolicy="FIRST">
+      <input id="legacy_i0">
+        <inputExpression id="legacy_ie0" typeRef="double">
+          <text>v</text>
+        </inputExpression>
+      </input>
+      <input id="legacy_i1">
+        <inputExpression id="legacy_ie1" typeRef="Any">
+          <text>w</text>
+        </inputExpression>
+      </input>
+      <input id="legacy_i2">
+        <inputExpression id="legacy_ie2" typeRef="frobnicate">
+          <text>w</text>
+        </inputExpression>
+      </input>
+      <output id="legacy_o0" name="r" typeRef="integer"/>
+      <rule id="la_r0">
+        <inputEntry id="la_r0_i0">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="la_r0_i1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="la_r0_i2">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="la_r0_o0">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="bad_output" name="bad_output">
+    <decisionTable id="bad_output_t" hitPolicy="FIRST">
+      <input id="bad_output_i0">
+        <inputExpression id="bad_output_ie0">
+          <text>v</text>
+        </inputExpression>
+      </input>
+      <output id="bad_output_o0" name="r" typeRef="boolean"/>
+      <rule id="bo_r0">
+        <inputEntry id="bo_r0_i0">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="bo_r0_o0">
+          <text>"yes"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="date_in" name="date_in">
+    <decisionTable id="date_in_t" hitPolicy="FIRST">
+      <input id="date_in_i0">
+        <inputExpression id="date_in_ie0" typeRef="date">
+          <text>d</text>
+        </inputExpression>
+      </input>
+      <output id="date_in_o0" name="r" typeRef="string"/>
+      <rule id="di_r0">
+        <inputEntry id="di_r0_i0">
+          <text>&lt; date("2025-01-01")</text>
+        </inputEntry>
+        <outputEntry id="di_r0_o0">
+          <text>"old"</text>
+        </outputEntry>
+      </rule>
+      <rule id="di_r1">
+        <inputEntry id="di_r1_i0">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="di_r1_o0">
+          <text>"new"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="number_in">
+        <dc:Bounds height="80" width="180" x="160" y="100"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="legacy_and_any">
+        <dc:Bounds height="80" width="180" x="160" y="220"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="bad_output">
+        <dc:Bounds height="80" width="180" x="160" y="340"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="date_in">
+        <dc:Bounds height="80" width="180" x="160" y="460"/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

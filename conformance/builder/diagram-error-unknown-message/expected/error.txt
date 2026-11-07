@@ -1,0 +1,2 @@
+Invalid collaboration:
+  Message flow "MF" references message "Msg_none", which this diagram does not declare

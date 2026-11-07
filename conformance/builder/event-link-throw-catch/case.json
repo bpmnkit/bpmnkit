@@ -1,0 +1,12 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["intermediateThrowEvent","jump",{"linkName":"L1"}],
+		["intermediateCatchEvent","land",{"linkName":"L1"}],
+		["serviceTask","after",{"name":"after","taskType":"after"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

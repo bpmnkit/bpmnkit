@@ -1,0 +1,88 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_assess"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Assess claim\" is a job-worker user task; Camunda 8.6 deprecates those in favour of Camunda user tasks.",
+      "processId": "claim-handling",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_assess"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Assess claim\" has no zeebe:formDefinition.",
+      "processId": "claim-handling",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_fraudCheck"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Check for fraud\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "claim-handling",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "SubProcess_items"
+      ],
+      "fixable": false,
+      "id": "compat/loop-characteristics",
+      "message": "Sub-process \"Review items\" is multi-instance without a zeebe:loopCharacteristics.",
+      "processId": "claim-handling",
+      "severity": "error",
+      "suggestion": "Set the input collection to iterate over."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_price"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Script task \"Price item\" has no implementation; Camunda needs a zeebe:script or zeebe:taskDefinition.",
+      "processId": "claim-handling",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_payout"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Pay out claim\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "claim-handling",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "EndEvent_paid"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Message end event \"Claim paid\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "claim-handling",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    }
+  ]
+}

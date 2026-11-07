@@ -1,0 +1,3 @@
+s[start] > g[xor Ok?]
+g >(No: default) > b[task B] > e[end]
+g >(Yes: ok) e

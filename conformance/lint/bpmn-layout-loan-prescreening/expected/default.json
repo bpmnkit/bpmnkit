@@ -1,0 +1,376 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 2,
+    "info": 17,
+    "warning": 10
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "Gateway_PreScreen"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"Gateway_PreScreen\" has 2 outgoing flows but no default flow set.",
+      "processId": "loan-approval-process",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "Gateway_FinalDecision"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"Gateway_FinalDecision\" has 2 outgoing flows but no default flow set.",
+      "processId": "loan-approval-process",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "EndEvent_Rejected"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"EndEvent_Rejected\" (endEvent) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "loan-approval-process",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "Gateway_PreScreen"
+      ],
+      "fixable": false,
+      "id": "naming/gateway-not-a-question",
+      "message": "Gateway \"Gateway_PreScreen\" is named \"Pre-Screening\" — split gateways should be phrased as questions.",
+      "processId": "loan-approval-process",
+      "severity": "info",
+      "suggestion": "Rephrase as a question, e.g. \"Pre-Screening?\""
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "Gateway_FinalDecision"
+      ],
+      "fixable": false,
+      "id": "naming/gateway-not-a-question",
+      "message": "Gateway \"Gateway_FinalDecision\" is named \"Underwriter Decision\" — split gateways should be phrased as questions.",
+      "processId": "loan-approval-process",
+      "severity": "info",
+      "suggestion": "Rephrase as a question, e.g. \"Underwriter Decision?\""
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Task_CreditScoreCheck"
+      ],
+      "fixable": false,
+      "id": "pattern/http-no-error-boundary",
+      "message": "Service task \"Credit Score Check\" calls an HTTP connector but has no error boundary event.",
+      "processId": "loan-approval-process",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle network failures (timeouts, non-2xx responses)."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Gateway_PreScreen"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Pre-Screening\" has no default sequence flow.",
+      "processId": "loan-approval-process",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Gateway_FinalDecision"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Underwriter Decision\" has no default sequence flow.",
+      "processId": "loan-approval-process",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Task_UnderwriterReview"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Manual Underwriter Review\" has no timer boundary event.",
+      "processId": "loan-approval-process",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "StartEvent_LoanRequest"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Loan Application Received\" has no documentation describing expected input variables.",
+      "processId": "loan-approval-process",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Task_CreditScoreCheck"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:applicantId",
+      "message": "Variable \"applicantId\" is referenced but never set in this process.",
+      "processId": "loan-approval-process",
+      "severity": "warning",
+      "suggestion": "\"applicantId\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Task_CreditScoreCheck"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:noAuth",
+      "message": "Variable \"noAuth\" is referenced but never set in this process.",
+      "processId": "loan-approval-process",
+      "severity": "warning",
+      "suggestion": "\"noAuth\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Task_CreditScoreCheck"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:response",
+      "message": "Variable \"response\" is referenced but never set in this process.",
+      "processId": "loan-approval-process",
+      "severity": "warning",
+      "suggestion": "\"response\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Gateway_FinalDecision"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:approved",
+      "message": "Variable \"approved\" is referenced but never set in this process.",
+      "processId": "loan-approval-process",
+      "severity": "warning",
+      "suggestion": "\"approved\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Task_CreditScoreCheck"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:method",
+      "message": "Variable \"method\" is set but never read by any downstream element.",
+      "processId": "loan-approval-process",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"method\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Task_CreditScoreCheck"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:url",
+      "message": "Variable \"url\" is set but never read by any downstream element.",
+      "processId": "loan-approval-process",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"url\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Task_CreditScoreCheck"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:authentication.type",
+      "message": "Variable \"authentication.type\" is set but never read by any downstream element.",
+      "processId": "loan-approval-process",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"authentication.type\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Task_RiskScoring"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:riskResult",
+      "message": "Variable \"riskResult\" is set but never read by any downstream element.",
+      "processId": "loan-approval-process",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"riskResult\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Task_CreditScoreCheck"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:Task_CreditScoreCheck",
+      "message": "Element \"Task_CreditScoreCheck\" produces: method, url, authentication.type, creditScore; consumes: applicantId, noAuth, response.",
+      "processId": "loan-approval-process",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Task_RiskScoring"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:Task_RiskScoring",
+      "message": "Element \"Task_RiskScoring\" produces: riskResult.",
+      "processId": "loan-approval-process",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Gateway_PreScreen"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:Gateway_PreScreen",
+      "message": "Element \"Gateway_PreScreen\" consumes: creditScore.",
+      "processId": "loan-approval-process",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Gateway_FinalDecision"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:Gateway_FinalDecision",
+      "message": "Element \"Gateway_FinalDecision\" consumes: approved.",
+      "processId": "loan-approval-process",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_ToPreScreen"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_ToPreScreen",
+      "message": "Variables in scope at flow \"Flow_ToPreScreen\": authentication.type, creditScore, method, url.",
+      "processId": "loan-approval-process",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_RejectLowScore"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_RejectLowScore",
+      "message": "Variables in scope at flow \"Flow_RejectLowScore\": authentication.type, creditScore, method, url.",
+      "processId": "loan-approval-process",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_PassPreScreen"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_PassPreScreen",
+      "message": "Variables in scope at flow \"Flow_PassPreScreen\": authentication.type, creditScore, method, url.",
+      "processId": "loan-approval-process",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_ToUnderwriter"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_ToUnderwriter",
+      "message": "Variables in scope at flow \"Flow_ToUnderwriter\": authentication.type, creditScore, method, riskResult, url.",
+      "processId": "loan-approval-process",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_ToDecisionGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_ToDecisionGateway",
+      "message": "Variables in scope at flow \"Flow_ToDecisionGateway\": authentication.type, creditScore, method, riskResult, url.",
+      "processId": "loan-approval-process",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_Approved"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_Approved",
+      "message": "Variables in scope at flow \"Flow_Approved\": authentication.type, creditScore, method, riskResult, url.",
+      "processId": "loan-approval-process",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_Rejected"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_Rejected",
+      "message": "Variables in scope at flow \"Flow_Rejected\": authentication.type, creditScore, method, riskResult, url.",
+      "processId": "loan-approval-process",
+      "severity": "info",
+      "suggestion": ""
+    }
+  ],
+  "platform": {
+    "id": "camunda-cloud",
+    "name": "Camunda Cloud",
+    "version": "8.5.0"
+  },
+  "total": 29
+}

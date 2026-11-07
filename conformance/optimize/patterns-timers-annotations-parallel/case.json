@@ -1,0 +1,15 @@
+{
+  "runs": {
+    "default": {},
+    "pattern-only": {
+      "categories": [
+        "pattern"
+      ]
+    },
+    "data-flow-only": {
+      "categories": [
+        "data-flow"
+      ]
+    }
+  }
+}

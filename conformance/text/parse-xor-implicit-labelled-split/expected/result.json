@@ -1,0 +1,115 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "a",
+            "name": "Check",
+            "type": "task"
+          },
+          {
+            "id": "b",
+            "name": "Ship",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "id": "c",
+            "name": "Repair",
+            "type": "task"
+          },
+          {
+            "id": "a_split",
+            "name": "Check outcome?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "e_join",
+            "type": "exclusiveGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "a"
+          },
+          {
+            "condition": "= checkOutcome = \"Fine\"",
+            "from": "a_split",
+            "id": "Flow_2",
+            "name": "Fine",
+            "to": "b"
+          },
+          {
+            "from": "b",
+            "id": "Flow_3",
+            "to": "e_join"
+          },
+          {
+            "from": "a_split",
+            "id": "Flow_4",
+            "isDefault": true,
+            "name": "Broken",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "id": "Flow_5",
+            "to": "e_join"
+          },
+          {
+            "from": "a",
+            "id": "Flow_6",
+            "to": "a_split"
+          },
+          {
+            "from": "e_join",
+            "id": "Flow_7",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "split the flows out of \"a\" with xor gateway \"a_split\"",
+    "joined 2 flows into \"e\" with xor gateway \"e_join\"",
+    "made a_split > c the default branch of \"a_split\"",
+    "gave a_split > b the condition \"= checkOutcome = \"Fine\"\"",
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": [
+    {
+      "draft": "At \"Check outcome?\", when nothing else holds, ",
+      "elementId": "a_split",
+      "options": [
+        {
+          "change": "At \"Check outcome?\", make \"Fine\" the default branch.",
+          "label": "Fine"
+        }
+      ],
+      "text": "When no condition at \"Check outcome?\" holds, it takes \"Broken\". Is that the right fallback?"
+    },
+    {
+      "draft": "At \"Check outcome?\", decide on ",
+      "elementId": "a_split",
+      "options": [],
+      "text": "\"Check outcome?\" decides on \"checkOutcome\", a variable the diagram made up. What data decides it?"
+    }
+  ]
+}

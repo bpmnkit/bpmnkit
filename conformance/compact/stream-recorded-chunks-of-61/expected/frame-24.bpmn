@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="start_order_received" name="Order Received">
+      <bpmn:outgoing>flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="task_check_stock" name="Check Stock">
+      <bpmn:incoming>flow_1</bpmn:incoming>
+      <bpmn:outgoing>flow_2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="gw_in_stock" name="In Stock?">
+      <bpmn:incoming>flow_2</bpmn:incoming>
+      <bpmn:outgoing>flow_3</bpmn:outgoing>
+      <bpmn:outgoing>flow_6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="task_charge_card" name="Charge Card">
+      <bpmn:incoming>flow_3</bpmn:incoming>
+      <bpmn:outgoing>flow_4</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="task_ship_order" name="Ship Order">
+      <bpmn:incoming>flow_4</bpmn:incoming>
+      <bpmn:outgoing>flow_5</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="task_notify_unavailable" name="Notify Customer of Unavailability">
+      <bpmn:incoming>flow_6</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:endEvent id="end_fulfilled" name="Order Fulfilled">
+      <bpmn:incoming>flow_5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="end_cancelled" name="Order Cancelled"/>
+    <bpmn:sequenceFlow id="flow_1" sourceRef="start_order_received" targetRef="task_check_stock"/>
+    <bpmn:sequenceFlow id="flow_2" sourceRef="task_check_stock" targetRef="gw_in_stock"/>
+    <bpmn:sequenceFlow id="flow_3" sourceRef="gw_in_stock" targetRef="task_charge_card" name="In Stock">
+      <bpmn:conditionExpression>= stockAvailable = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flow_4" sourceRef="task_charge_card" targetRef="task_ship_order"/>
+    <bpmn:sequenceFlow id="flow_5" sourceRef="task_ship_order" targetRef="end_fulfilled"/>
+    <bpmn:sequenceFlow id="flow_6" sourceRef="gw_in_stock" targetRef="task_notify_unavailable" name="Out of Stock">
+      <bpmn:conditionExpression>= stockAvailable = false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Process_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="start_order_received_di" bpmnElement="start_order_received">
+        <dc:Bounds x="0" y="22" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-31" y="62" width="98" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_check_stock_di" bpmnElement="task_check_stock">
+        <dc:Bounds x="96" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_in_stock_di" bpmnElement="gw_in_stock" isMarkerVisible="true">
+        <dc:Bounds x="256" y="15" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="249.5" y="-3" width="63" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_charge_card_di" bpmnElement="task_charge_card">
+        <dc:Bounds x="410" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_ship_order_di" bpmnElement="task_ship_order">
+        <dc:Bounds x="570" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_notify_unavailable_di" bpmnElement="task_notify_unavailable">
+        <dc:Bounds x="410" y="140" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_fulfilled_di" bpmnElement="end_fulfilled">
+        <dc:Bounds x="730" y="22" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="695.5" y="62" width="105" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_cancelled_di" bpmnElement="end_cancelled">
+        <dc:Bounds x="0" y="300" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-34.5" y="340" width="105" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="flow_1_di" bpmnElement="flow_1">
+        <di:waypoint x="36" y="40"/>
+        <di:waypoint x="96" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_2_di" bpmnElement="flow_2">
+        <di:waypoint x="196" y="40"/>
+        <di:waypoint x="256" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_3_di" bpmnElement="flow_3">
+        <di:waypoint x="306" y="40"/>
+        <di:waypoint x="410" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_4_di" bpmnElement="flow_4">
+        <di:waypoint x="510" y="40"/>
+        <di:waypoint x="570" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_5_di" bpmnElement="flow_5">
+        <di:waypoint x="670" y="40"/>
+        <di:waypoint x="730" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow_6_di" bpmnElement="flow_6">
+        <di:waypoint x="281" y="65"/>
+        <di:waypoint x="281" y="180"/>
+        <di:waypoint x="410" y="180"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

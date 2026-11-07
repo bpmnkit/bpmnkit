@@ -1,0 +1,10 @@
+{
+  "runs": {
+    "default": {},
+    "opts-2": {
+      "categories": [
+        "naming"
+      ]
+    }
+  }
+}

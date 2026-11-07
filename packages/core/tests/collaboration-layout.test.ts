@@ -11,6 +11,7 @@ import type {
 	BpmnSequenceFlow,
 	BpmnSubProcess,
 } from "../src/bpmn/bpmn-model.js"
+import { Bpmn } from "../src/bpmn/index.js"
 
 function node(id: string, type: BpmnFlowElement["type"] = "serviceTask"): BpmnFlowElement {
 	const base = {
@@ -291,5 +292,32 @@ describe("collaboration — endpoints and empty pools", () => {
 		if (!dock) return
 		expect(dock.x).toBeGreaterThanOrEqual(box.x)
 		expect(dock.x).toBeLessThanOrEqual(box.x + box.width)
+	})
+
+	it("draws the annotations of a participant whose process holds nothing else, inside its pool", () => {
+		// Regression: such a participant used to become a 60 px black box and its
+		// annotations got no shapes at all.
+		const laid = applyAutoLayout(
+			Bpmn.parse(`<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="D" targetNamespace="t">
+<bpmn:collaboration id="C"><bpmn:participant id="PA" processRef="Pn" /><bpmn:participant id="PB" processRef="Pw" /><bpmn:participant id="PX" /></bpmn:collaboration>
+<bpmn:process id="Pn"><bpmn:textAnnotation id="Ann1"><bpmn:text>Note</bpmn:text></bpmn:textAnnotation><bpmn:textAnnotation id="Ann2"><bpmn:text>Another</bpmn:text></bpmn:textAnnotation></bpmn:process>
+<bpmn:process id="Pw"><bpmn:startEvent id="s" /><bpmn:task id="t" /><bpmn:endEvent id="e" /><bpmn:sequenceFlow id="f1" sourceRef="s" targetRef="t" /><bpmn:sequenceFlow id="f2" sourceRef="t" targetRef="e" /></bpmn:process>
+</bpmn:definitions>`),
+		)
+		const shapes = shapesOf(laid)
+		const pool = shapes.get("PA")
+		const work = shapes.get("PB")
+		const blackBox = shapes.get("PX")
+		if (!pool || !work || !blackBox) throw new Error("a pool has no shape")
+		for (const id of ["Ann1", "Ann2"]) {
+			const ann = shapes.get(id)
+			if (!ann) throw new Error(`${id} has no shape`)
+			expect(ann.x).toBeGreaterThanOrEqual(pool.x + 30)
+			expect(ann.y).toBeGreaterThan(pool.y)
+			expect(ann.x + ann.width).toBeLessThan(pool.x + pool.width)
+			expect(ann.y + ann.height).toBeLessThan(pool.y + pool.height)
+		}
+		// The black box still takes the width of the widest pool with content.
+		expect(blackBox.width).toBe(Math.max(pool.width, work.width))
 	})
 })

@@ -1,0 +1,51 @@
+{
+  "input": "bpmn/compat-tasks/input.bpmn",
+  "runs": {
+    "default": {},
+    "v-abc": {
+      "version": "abc"
+    },
+    "v-8": {
+      "version": "8"
+    },
+    "v-8_": {
+      "version": "8."
+    },
+    "v-v8_6": {
+      "version": "v8.6"
+    },
+    "v-8_6_0_alpha": {
+      "version": "8.6.0-alpha"
+    },
+    "v-8_6_2": {
+      "version": "8.6.2"
+    },
+    "v-8_99": {
+      "version": "8.99"
+    },
+    "v-08_6": {
+      "version": "08.6"
+    },
+    "v-_8_6_": {
+      "version": " 8.6 "
+    },
+    "v-8_10_1": {
+      "version": "8.10.1"
+    },
+    "v-8_9": {
+      "version": "8.9"
+    },
+    "v-7_20": {
+      "version": "7.20"
+    },
+    "v-0": {
+      "version": "0"
+    },
+    "v-1_3": {
+      "version": "1.3"
+    },
+    "v-1_4": {
+      "version": "1.4"
+    }
+  }
+}

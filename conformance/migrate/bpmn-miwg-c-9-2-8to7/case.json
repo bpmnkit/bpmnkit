@@ -1,0 +1,8 @@
+{
+  "input": "bpmn/miwg-c-9-2/input.bpmn",
+  "runs": {
+    "default": {
+      "direction": "8to7"
+    }
+  }
+}

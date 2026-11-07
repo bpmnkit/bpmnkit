@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "fix": "Set \"type\": \"default\". (agent-cards/form.md#traps)",
+      "message": "The form's top-level \"type\" is \"form\", not \"default\".",
+      "rule": "form/invalid-schema",
+      "severity": "error"
+    },
+    {
+      "fix": "Set \"schemaVersion\" to a number, e.g. 16, or remove it. (agent-cards/form.md#traps)",
+      "message": "\"schemaVersion\" is \"16\", not a number.",
+      "rule": "form/invalid-schema",
+      "severity": "warning"
+    }
+  ]
+}

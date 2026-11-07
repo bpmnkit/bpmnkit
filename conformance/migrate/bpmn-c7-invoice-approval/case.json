@@ -1,0 +1,14 @@
+{
+  "input": "bpmn/c7-invoice-approval/input.bpmn",
+  "runs": {
+    "default": {},
+    "v8-6": {
+      "options": {
+        "executionPlatformVersion": "8.6.0"
+      }
+    },
+    "to-c7-roundtrip": {
+      "direction": "8to7"
+    }
+  }
+}

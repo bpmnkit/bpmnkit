@@ -1,0 +1,29 @@
+{
+  "aliases": {
+    "charge_payment_gateway": "processPayment",
+    "contract_rejected": "endContractRejected",
+    "contract_signed": "signatureCheck",
+    "debt_recovered": "collectionsResult",
+    "discount_approved": "approvalDecision",
+    "discount_level": "discountApproval",
+    "dunning": "dunning",
+    "escalate_to_collections_agency": "collectionsAgency",
+    "generate_contract": "generateContract",
+    "generate_invoice": "generateInvoice",
+    "generate_quote_from_catalog": "generateQuote",
+    "manager_discount_approval": "managerApproval",
+    "order_type": "orderType",
+    "payment_collected": "collectionCheck",
+    "payment_confirmed": "paymentConfirmed",
+    "payment_outcome": "paymentOutcome",
+    "payment_received": "endPaymentReceived",
+    "payment_window_elapsed": "paymentWindowElapsed",
+    "provision_bundled_order": "provisionBundle",
+    "provision_standard_order": "provisionStandard",
+    "send_contract_for_e": "sendForSignature",
+    "start": "start",
+    "vp_discount_approval": "vpApproval",
+    "written_off_collections_failed": "endWrittenOff",
+    "xor": "orderType_join"
+  }
+}

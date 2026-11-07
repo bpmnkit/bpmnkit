@@ -1,0 +1,1253 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "exporter": "@bpmnkit/core",
+  "exporterVersion": "0.0.23",
+  "id": "Definitions_1",
+  "messages": [
+    {
+      "id": "Message_VgqDdPrJ",
+      "name": "payment-confirmed",
+      "unknownAttributes": {}
+    }
+  ],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [
+        {
+          "attributes": {
+            "value": "1.0.0"
+          },
+          "children": [],
+          "name": "zeebe:versionTag"
+        }
+      ],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "start",
+          "incoming": [],
+          "name": "Opportunity Received",
+          "outgoing": [
+            "Flow_XjhCYuOK"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "quote-generator"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "=opportunity.lineItems",
+                    "target": "lineItems"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=customer.tier",
+                    "target": "pricingTier"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=quote.total",
+                    "target": "quoteTotal"
+                  },
+                  "children": [],
+                  "name": "zeebe:output"
+                },
+                {
+                  "attributes": {
+                    "source": "=quote.discountPercent",
+                    "target": "discountPercent"
+                  },
+                  "children": [],
+                  "name": "zeebe:output"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "pricingModel",
+                    "value": "tiered"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            }
+          ],
+          "id": "generateQuote",
+          "incoming": [
+            "Flow_XjhCYuOK"
+          ],
+          "name": "Generate Quote from Catalog",
+          "outgoing": [
+            "Flow_bchUvOZ2"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "default": "Flow_y9NbTDhR",
+          "extensionElements": [],
+          "id": "discountApproval",
+          "incoming": [
+            "Flow_bchUvOZ2"
+          ],
+          "name": "Discount Level?",
+          "outgoing": [
+            "Flow_QZRbwxhU",
+            "Flow_7TjRkdGd",
+            "Flow_y9NbTDhR"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "formId": "discount-approval-form"
+              },
+              "children": [],
+              "name": "zeebe:formDefinition"
+            }
+          ],
+          "id": "managerApproval",
+          "incoming": [
+            "Flow_7TjRkdGd"
+          ],
+          "name": "Manager Discount Approval",
+          "outgoing": [
+            "Flow_McQkxpe9"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "formId": "discount-approval-form"
+              },
+              "children": [],
+              "name": "zeebe:formDefinition"
+            }
+          ],
+          "id": "vpApproval",
+          "incoming": [
+            "Flow_y9NbTDhR"
+          ],
+          "name": "VP Discount Approval",
+          "outgoing": [
+            "Flow_fpJ7UEWD"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "default": "Flow_va69mGZx",
+          "extensionElements": [],
+          "id": "approvalDecision",
+          "incoming": [
+            "Flow_McQkxpe9",
+            "Flow_fpJ7UEWD"
+          ],
+          "name": "Discount Approved?",
+          "outgoing": [
+            "Flow_oExsK6c1",
+            "Flow_va69mGZx"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "endContractRejected",
+          "incoming": [
+            "Flow_va69mGZx",
+            "Flow_TtJzWXLn"
+          ],
+          "name": "Contract Rejected",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "contract-generator"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "=quote",
+                    "target": "quote"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=customer",
+                    "target": "customer"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=contract.id",
+                    "target": "contractId"
+                  },
+                  "children": [],
+                  "name": "zeebe:output"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            }
+          ],
+          "id": "generateContract",
+          "incoming": [
+            "Flow_QZRbwxhU",
+            "Flow_oExsK6c1"
+          ],
+          "name": "Generate Contract",
+          "outgoing": [
+            "Flow_2s0JeKjV"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "retries": "3",
+                "type": "io.camunda:http-json:1"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "bearer",
+                    "target": "authentication.type"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=secrets.ESIGN_TOKEN",
+                    "target": "authentication.token"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "POST",
+                    "target": "method"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=esignatureUrl + \"/envelopes\"",
+                    "target": "url"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "20",
+                    "target": "connectionTimeoutInSeconds"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "20",
+                    "target": "readTimeoutInSeconds"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "resultVariable",
+                    "value": "signatureResponse"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                },
+                {
+                  "attributes": {
+                    "key": "resultExpression",
+                    "value": "=signatureResponse.body"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            }
+          ],
+          "id": "sendForSignature",
+          "incoming": [
+            "Flow_2s0JeKjV"
+          ],
+          "name": "Send Contract for E-Signature",
+          "outgoing": [
+            "Flow_GqAZEa9L"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {
+            "zeebe:modelerTemplate": "io.camunda.connectors.HttpJson.v2",
+            "zeebe:modelerTemplateVersion": "12"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "signatureCheck",
+          "incoming": [
+            "Flow_GqAZEa9L"
+          ],
+          "name": "Contract Signed?",
+          "outgoing": [
+            "Flow_TtJzWXLn",
+            "Flow_bm3sKMZA"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "default": "Flow_U58MqVEA",
+          "extensionElements": [],
+          "id": "orderType",
+          "incoming": [
+            "Flow_bm3sKMZA"
+          ],
+          "name": "Order Type?",
+          "outgoing": [
+            "Flow_K9wwadg1",
+            "Flow_U58MqVEA"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "provisioning-service"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "=order",
+                    "target": "order"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            }
+          ],
+          "id": "provisionStandard",
+          "incoming": [
+            "Flow_K9wwadg1"
+          ],
+          "name": "Provision Standard Order",
+          "outgoing": [
+            "Flow_MJRLe9Ud"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "provStart",
+              "incoming": [],
+              "name": "Line Item",
+              "outgoing": [
+                "Flow_JiJIEANV"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "provisioning-service"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "source": "=lineItem",
+                        "target": "lineItem"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "=provisionStatus",
+                        "target": "provisionResult"
+                      },
+                      "children": [],
+                      "name": "zeebe:output"
+                    }
+                  ],
+                  "name": "zeebe:ioMapping"
+                }
+              ],
+              "id": "provisionLine",
+              "incoming": [
+                "Flow_JiJIEANV"
+              ],
+              "name": "Provision Line Item",
+              "outgoing": [
+                "Flow_opsPtJat"
+              ],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            },
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "provEnd",
+              "incoming": [
+                "Flow_opsPtJat"
+              ],
+              "name": "Line Provisioned",
+              "outgoing": [],
+              "type": "endEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "provisionBundle",
+          "incoming": [
+            "Flow_U58MqVEA"
+          ],
+          "loopCharacteristics": {
+            "extensionElements": []
+          },
+          "name": "Provision Bundled Order",
+          "outgoing": [
+            "Flow_ppq2whx1"
+          ],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "Flow_JiJIEANV",
+              "sourceRef": "provStart",
+              "targetRef": "provisionLine",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "Flow_opsPtJat",
+              "sourceRef": "provisionLine",
+              "targetRef": "provEnd",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "type": "subProcess",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "invoice-generator"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "=order",
+                    "target": "order"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=quote.total",
+                    "target": "amountDue"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=invoice.id",
+                    "target": "invoiceId"
+                  },
+                  "children": [],
+                  "name": "zeebe:output"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            }
+          ],
+          "id": "generateInvoice",
+          "incoming": [
+            "Flow_mGa16ca8"
+          ],
+          "name": "Generate Invoice",
+          "outgoing": [
+            "Flow_NNMRv3Pv"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "retries": "3",
+                "type": "io.camunda:http-json:1"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "bearer",
+                    "target": "authentication.type"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=secrets.PAYMENT_GATEWAY_TOKEN",
+                    "target": "authentication.token"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "POST",
+                    "target": "method"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=paymentGatewayUrl + \"/charges\"",
+                    "target": "url"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "20",
+                    "target": "connectionTimeoutInSeconds"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "20",
+                    "target": "readTimeoutInSeconds"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "resultVariable",
+                    "value": "paymentResponse"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                },
+                {
+                  "attributes": {
+                    "key": "resultExpression",
+                    "value": "=paymentResponse.body"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            }
+          ],
+          "id": "processPayment",
+          "incoming": [
+            "Flow_NNMRv3Pv"
+          ],
+          "name": "Charge Payment Gateway",
+          "outgoing": [
+            "Flow_rAke0SwX"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {
+            "zeebe:modelerTemplate": "io.camunda.connectors.HttpJson.v2",
+            "zeebe:modelerTemplateVersion": "12"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "paymentOutcome",
+          "incoming": [
+            "Flow_rAke0SwX"
+          ],
+          "name": "Payment Outcome?",
+          "outgoing": [
+            "Flow_CGvPR8ea",
+            "Flow_EpnDtwOl"
+          ],
+          "type": "eventBasedGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "paymentConfirmed",
+          "incoming": [
+            "Flow_CGvPR8ea"
+          ],
+          "name": "Payment Confirmed",
+          "outgoing": [
+            "Flow_WvP1ZYV3"
+          ],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "endPaymentReceived",
+          "incoming": [
+            "Flow_WvP1ZYV3",
+            "Flow_tTnmOKZY",
+            "Flow_V7DE8MG5"
+          ],
+          "name": "Payment Received",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "paymentWindowElapsed",
+          "incoming": [
+            "Flow_EpnDtwOl"
+          ],
+          "name": "Payment Window Elapsed",
+          "outgoing": [
+            "Flow_z74FHoCS"
+          ],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "dunStart",
+              "incoming": [],
+              "name": "Payment Overdue",
+              "outgoing": [
+                "Flow_Y2WHbokq"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "reminder-sender"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "key": "template",
+                        "value": "dunning-1"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    }
+                  ],
+                  "name": "zeebe:taskHeaders"
+                }
+              ],
+              "id": "sendReminder1",
+              "incoming": [
+                "Flow_Y2WHbokq"
+              ],
+              "name": "Send 1st Reminder",
+              "outgoing": [
+                "Flow_bxCEkomG"
+              ],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "awaitPayment1",
+              "incoming": [
+                "Flow_bxCEkomG"
+              ],
+              "messageRef": "Message_VgqDdPrJ",
+              "name": "Await Payment (1)",
+              "outgoing": [],
+              "type": "receiveTask",
+              "unknownAttributes": {}
+            },
+            {
+              "attachedToRef": "awaitPayment1",
+              "cancelActivity": true,
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "timerReminder1",
+              "incoming": [],
+              "name": "7 Days",
+              "outgoing": [
+                "Flow_jRDLA0qv"
+              ],
+              "type": "boundaryEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "dunEndPaid",
+              "incoming": [
+                "Flow_jRDLA0qv"
+              ],
+              "name": "Payment Collected",
+              "outgoing": [],
+              "type": "endEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "dunning",
+          "incoming": [
+            "Flow_z74FHoCS"
+          ],
+          "name": "Dunning & Cash Collection",
+          "outgoing": [
+            "Flow_FRNklBg3"
+          ],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "Flow_Y2WHbokq",
+              "sourceRef": "dunStart",
+              "targetRef": "sendReminder1",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "Flow_bxCEkomG",
+              "sourceRef": "sendReminder1",
+              "targetRef": "awaitPayment1",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "Flow_jRDLA0qv",
+              "sourceRef": "timerReminder1",
+              "targetRef": "dunEndPaid",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "type": "subProcess",
+          "unknownAttributes": {}
+        },
+        {
+          "default": "Flow_baF9j4Dg",
+          "extensionElements": [],
+          "id": "collectionCheck",
+          "incoming": [
+            "Flow_FRNklBg3"
+          ],
+          "name": "Payment Collected?",
+          "outgoing": [
+            "Flow_tTnmOKZY",
+            "Flow_baF9j4Dg"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "collections-agency"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "=invoiceId",
+                    "target": "invoiceId"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=collectionResult.recovered",
+                    "target": "recovered"
+                  },
+                  "children": [],
+                  "name": "zeebe:output"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            }
+          ],
+          "id": "collectionsAgency",
+          "incoming": [
+            "Flow_baF9j4Dg"
+          ],
+          "name": "Escalate to Collections Agency",
+          "outgoing": [
+            "Flow_ZTOMVwy0"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "default": "Flow_fyHvSVmV",
+          "extensionElements": [],
+          "id": "collectionsResult",
+          "incoming": [
+            "Flow_ZTOMVwy0"
+          ],
+          "name": "Debt Recovered?",
+          "outgoing": [
+            "Flow_V7DE8MG5",
+            "Flow_fyHvSVmV"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "endWrittenOff",
+          "incoming": [
+            "Flow_fyHvSVmV"
+          ],
+          "name": "Written Off — Collections Failed",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "orderType_join",
+          "incoming": [
+            "Flow_MJRLe9Ud",
+            "Flow_ppq2whx1"
+          ],
+          "outgoing": [
+            "Flow_mGa16ca8"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "QuoteToCash",
+      "isExecutable": true,
+      "name": "Quote-to-Cash Process",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_XjhCYuOK",
+          "sourceRef": "start",
+          "targetRef": "generateQuote",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_bchUvOZ2",
+          "sourceRef": "generateQuote",
+          "targetRef": "discountApproval",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=discountPercent <= 10"
+          },
+          "extensionElements": [],
+          "id": "Flow_QZRbwxhU",
+          "name": "no-approval-needed",
+          "sourceRef": "discountApproval",
+          "targetRef": "generateContract",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=discountPercent > 10 and discountPercent <= 25"
+          },
+          "extensionElements": [],
+          "id": "Flow_7TjRkdGd",
+          "name": "manager-approval",
+          "sourceRef": "discountApproval",
+          "targetRef": "managerApproval",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_McQkxpe9",
+          "sourceRef": "managerApproval",
+          "targetRef": "approvalDecision",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_y9NbTDhR",
+          "name": "vp-approval",
+          "sourceRef": "discountApproval",
+          "targetRef": "vpApproval",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_fpJ7UEWD",
+          "sourceRef": "vpApproval",
+          "targetRef": "approvalDecision",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=discountApproved = true"
+          },
+          "extensionElements": [],
+          "id": "Flow_oExsK6c1",
+          "name": "discount-approved",
+          "sourceRef": "approvalDecision",
+          "targetRef": "generateContract",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_va69mGZx",
+          "name": "discount-rejected",
+          "sourceRef": "approvalDecision",
+          "targetRef": "endContractRejected",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_2s0JeKjV",
+          "sourceRef": "generateContract",
+          "targetRef": "sendForSignature",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_GqAZEa9L",
+          "sourceRef": "sendForSignature",
+          "targetRef": "signatureCheck",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=signatureResponse.status = \"declined\""
+          },
+          "extensionElements": [],
+          "id": "Flow_TtJzWXLn",
+          "name": "signature-declined",
+          "sourceRef": "signatureCheck",
+          "targetRef": "endContractRejected",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=signatureResponse.status = \"signed\""
+          },
+          "extensionElements": [],
+          "id": "Flow_bm3sKMZA",
+          "name": "signature-signed",
+          "sourceRef": "signatureCheck",
+          "targetRef": "orderType",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=order.type = \"standard\""
+          },
+          "extensionElements": [],
+          "id": "Flow_K9wwadg1",
+          "name": "standard-order",
+          "sourceRef": "orderType",
+          "targetRef": "provisionStandard",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_MJRLe9Ud",
+          "sourceRef": "provisionStandard",
+          "targetRef": "orderType_join",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_U58MqVEA",
+          "name": "bundled-order",
+          "sourceRef": "orderType",
+          "targetRef": "provisionBundle",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_ppq2whx1",
+          "sourceRef": "provisionBundle",
+          "targetRef": "orderType_join",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_NNMRv3Pv",
+          "sourceRef": "generateInvoice",
+          "targetRef": "processPayment",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_rAke0SwX",
+          "sourceRef": "processPayment",
+          "targetRef": "paymentOutcome",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_CGvPR8ea",
+          "name": "paid-immediately",
+          "sourceRef": "paymentOutcome",
+          "targetRef": "paymentConfirmed",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_WvP1ZYV3",
+          "sourceRef": "paymentConfirmed",
+          "targetRef": "endPaymentReceived",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_EpnDtwOl",
+          "name": "payment-overdue",
+          "sourceRef": "paymentOutcome",
+          "targetRef": "paymentWindowElapsed",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_z74FHoCS",
+          "sourceRef": "paymentWindowElapsed",
+          "targetRef": "dunning",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_FRNklBg3",
+          "sourceRef": "dunning",
+          "targetRef": "collectionCheck",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=paymentReceived = true"
+          },
+          "extensionElements": [],
+          "id": "Flow_tTnmOKZY",
+          "name": "collected-during-dunning",
+          "sourceRef": "collectionCheck",
+          "targetRef": "endPaymentReceived",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_baF9j4Dg",
+          "name": "still-unpaid",
+          "sourceRef": "collectionCheck",
+          "targetRef": "collectionsAgency",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_ZTOMVwy0",
+          "sourceRef": "collectionsAgency",
+          "targetRef": "collectionsResult",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=recovered = true"
+          },
+          "extensionElements": [],
+          "id": "Flow_V7DE8MG5",
+          "name": "debt-recovered",
+          "sourceRef": "collectionsResult",
+          "targetRef": "endPaymentReceived",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_fyHvSVmV",
+          "name": "debt-written-off",
+          "sourceRef": "collectionsResult",
+          "targetRef": "endWrittenOff",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_mGa16ca8",
+          "sourceRef": "orderType_join",
+          "targetRef": "generateInvoice",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.9.0"
+  }
+}

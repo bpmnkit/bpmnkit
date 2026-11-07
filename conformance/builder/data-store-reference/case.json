@@ -1,0 +1,12 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["serviceTask","t",{"name":"t","taskType":"t"}],
+		["dataStoreReference","DS1","Store_1",{"name":"Orders DB"}],
+		["dataAssociation","t","DS1","input"],
+		["endEvent","e"],
+		["build"]
+	]
+}

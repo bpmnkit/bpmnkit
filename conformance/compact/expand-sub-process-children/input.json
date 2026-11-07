@@ -1,0 +1,44 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "sp",
+          "type": "subProcess",
+          "name": "Sub",
+          "children": {
+            "elements": [
+              {
+                "id": "is",
+                "type": "startEvent"
+              },
+              {
+                "id": "it",
+                "type": "task"
+              },
+              {
+                "id": "ie",
+                "type": "endEvent"
+              }
+            ],
+            "flows": [
+              {
+                "id": "if1",
+                "from": "is",
+                "to": "it"
+              },
+              {
+                "id": "if2",
+                "from": "it",
+                "to": "ie"
+              }
+            ]
+          }
+        }
+      ],
+      "flows": []
+    }
+  ]
+}

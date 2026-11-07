@@ -1,0 +1,106 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "a",
+            "name": "Pack",
+            "type": "task"
+          },
+          {
+            "id": "b",
+            "name": "Label",
+            "type": "task"
+          },
+          {
+            "id": "c",
+            "name": "Invoice",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "id": "a_split",
+            "type": "parallelGateway"
+          },
+          {
+            "id": "e_join",
+            "type": "parallelGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "a"
+          },
+          {
+            "from": "a_split",
+            "id": "Flow_2",
+            "to": "b"
+          },
+          {
+            "from": "a_split",
+            "id": "Flow_3",
+            "to": "c"
+          },
+          {
+            "from": "b",
+            "id": "Flow_4",
+            "to": "e_join"
+          },
+          {
+            "from": "c",
+            "id": "Flow_5",
+            "to": "e_join"
+          },
+          {
+            "from": "a",
+            "id": "Flow_6",
+            "to": "a_split"
+          },
+          {
+            "from": "e_join",
+            "id": "Flow_7",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "split the flows out of \"a\" with and gateway \"a_split\"",
+    "joined 2 flows into \"e\" with and gateway \"e_join\"",
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": [
+    {
+      "draft": "After \"Pack\", ",
+      "elementId": "a_split",
+      "options": [
+        {
+          "change": "After \"Pack\", only one of \"Label\" and \"Invoice\" happens: decide which with an xor gateway.",
+          "label": "Only one of them"
+        },
+        {
+          "change": "After \"Pack\", do \"Label\" and \"Invoice\" one after the other, not at the same time.",
+          "label": "One after the other"
+        }
+      ],
+      "text": "After \"Pack\", \"Label\" and \"Invoice\" run at the same time. Is that right?"
+    }
+  ]
+}

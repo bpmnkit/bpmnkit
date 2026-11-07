@@ -1,0 +1,54 @@
+[
+  {
+    "decision": "shipping",
+    "context": {
+      "order": {
+        "t": "context",
+        "v": {
+          "weight": {
+            "t": "number",
+            "v": "3"
+          },
+          "country": {
+            "t": "string",
+            "v": "DE"
+          }
+        }
+      },
+      "express": {
+        "t": "boolean",
+        "v": true
+      },
+      "shipDate": {
+        "t": "string",
+        "v": "2026-05-01"
+      }
+    }
+  },
+  {
+    "decision": "shipping",
+    "context": {
+      "order": {
+        "t": "context",
+        "v": {
+          "weight": {
+            "t": "number",
+            "v": "9"
+          },
+          "country": {
+            "t": "string",
+            "v": "US"
+          }
+        }
+      },
+      "express": {
+        "t": "boolean",
+        "v": false
+      },
+      "shipDate": {
+        "t": "string",
+        "v": "2031-01-01"
+      }
+    }
+  }
+]

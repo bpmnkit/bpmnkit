@@ -1,0 +1,11 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["serviceTask","t",{"name":"t","taskType":"t"}],
+		["textAnnotation","Needs a manager's OK & <review>"],
+		["endEvent","e"],
+		["build"]
+	]
+}

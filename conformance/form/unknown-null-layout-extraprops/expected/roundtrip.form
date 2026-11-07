@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 16,
+  "id": "f",
+  "components": [
+    {
+      "type": "plugin",
+      "id": "p1",
+      "layout": null,
+      "data": 1
+    },
+    {
+      "type": "plugin",
+      "id": "p2",
+      "extraProps": "abc"
+    },
+    {
+      "type": "plugin",
+      "id": "p3",
+      "extraProps": {
+        "a": 1
+      }
+    },
+    {
+      "type": "plugin",
+      "id": "p4",
+      "extraProps": [
+        1,
+        2
+      ],
+      "layout": {
+        "row": "r",
+        "columns": null,
+        "x": 1
+      }
+    },
+    {
+      "type": "plugin",
+      "id": "p5",
+      "extraProps": null
+    }
+  ],
+  "type": "default"
+}

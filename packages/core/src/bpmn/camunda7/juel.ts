@@ -369,7 +369,8 @@ class JuelParser {
 		if (head && C7_ENGINE_OBJECTS.has(text)) {
 			throw new Refusal(`"${text}" is a Camunda 7 engine object with no Camunda 8 counterpart`)
 		}
-		if (head && text in MULTI_INSTANCE_RENAMES) {
+		// `in` would also find Object.prototype members, refusing a variable named `constructor`.
+		if (head && Object.hasOwn(MULTI_INSTANCE_RENAMES, text)) {
 			const renamed = MULTI_INSTANCE_RENAMES[text]
 			if (this.options.multiInstance !== true || renamed === undefined) {
 				throw new Refusal(`"${text}" exists only in a multi-instance completion condition`)

@@ -1,0 +1,15 @@
+[
+  {
+    "decision": "start_inputValidation",
+    "context": {}
+  },
+  {
+    "decision": "start_inputValidation",
+    "context": {
+      "name": {
+        "t": "string",
+        "v": "x"
+      }
+    }
+  }
+]

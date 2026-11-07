@@ -1,0 +1,5 @@
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="d" namespace="t">
+  <decision id="greet" name="Greet">
+    <literalExpression><text>"Hello " + name</text></literalExpression>
+  </decision>
+</definitions>

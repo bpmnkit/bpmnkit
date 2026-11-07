@@ -1,0 +1,84 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "Start",
+            "type": "startEvent"
+          },
+          {
+            "id": "read",
+            "jobType": "read",
+            "name": "Read issues",
+            "type": "serviceTask"
+          },
+          {
+            "attachedTo": "read",
+            "eventType": "error",
+            "id": "err",
+            "name": "API error",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "calc",
+            "name": "Count issues",
+            "type": "task"
+          },
+          {
+            "id": "done",
+            "name": "Done",
+            "type": "endEvent"
+          },
+          {
+            "id": "alert",
+            "jobType": "alert",
+            "name": "Alert the team",
+            "type": "sendTask"
+          },
+          {
+            "id": "failed",
+            "name": "Failed",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "read"
+          },
+          {
+            "from": "read",
+            "id": "Flow_2",
+            "to": "calc"
+          },
+          {
+            "from": "calc",
+            "id": "Flow_3",
+            "to": "done"
+          },
+          {
+            "from": "err",
+            "id": "Flow_4",
+            "to": "alert"
+          },
+          {
+            "from": "alert",
+            "id": "Flow_5",
+            "to": "failed"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "moved err > calc onto \"read\": a boundary leads only to its handling"
+  ],
+  "problems": [],
+  "questions": []
+}

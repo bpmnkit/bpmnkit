@@ -1,0 +1,10 @@
+{
+  "runs": {
+    "opts-1": {
+      "feelLengthThreshold": 200,
+      "feelOperatorThreshold": 50,
+      "feelVariableThreshold": 50,
+      "feelNestingThreshold": 50
+    }
+  }
+}

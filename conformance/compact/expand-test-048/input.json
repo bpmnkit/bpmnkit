@@ -1,0 +1,27 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "id": "Process_1",
+      "elements": [
+        {
+          "id": "gw",
+          "type": "exclusiveGateway",
+          "name": "Valid?"
+        },
+        {
+          "id": "end",
+          "type": "endEvent",
+          "name": "Done"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f1",
+          "from": "gw",
+          "to": "end"
+        }
+      ]
+    }
+  ]
+}

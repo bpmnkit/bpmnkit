@@ -1,0 +1,52 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "fail"
+      ],
+      "fixable": false,
+      "id": "compat/error-reference",
+      "message": "Error end event \"fail\" references error \"Failed\", which has no error code.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Set the error code."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "wait"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Receive task \"wait\" references message \"msg\", which has no name.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Name the message — Camunda correlates on it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "wait"
+      ],
+      "fixable": false,
+      "id": "compat/subscription",
+      "message": "Message \"msg\" used by Receive task \"wait\" has no zeebe:subscription.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Add a zeebe:subscription with a correlationKey to the message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "shout"
+      ],
+      "fixable": false,
+      "id": "compat/signal-reference",
+      "message": "Signal intermediate throw event \"shout\" references signal \"sig\", which has no name.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Name the signal — Camunda broadcasts on it."
+    }
+  ]
+}

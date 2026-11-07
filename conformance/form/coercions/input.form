@@ -1,0 +1,43 @@
+{
+  "id": "co",
+  "type": "default",
+  "exporter": {
+    "name": 12,
+    "version": null,
+    "extra": 1
+  },
+  "components": [
+    {
+      "type": "datetime",
+      "id": "d1",
+      "key": 5
+    },
+    {
+      "type": "datetime",
+      "id": "d2"
+    },
+    {
+      "type": "datetime",
+      "id": "d3",
+      "key": [
+        1,
+        2
+      ],
+      "subtype": "date"
+    },
+    {
+      "type": "datetime",
+      "id": "d4",
+      "key": {
+        "a": 1
+      },
+      "subtype": 3
+    },
+    {
+      "type": "button",
+      "id": "b1",
+      "label": "",
+      "action": ""
+    }
+  ]
+}

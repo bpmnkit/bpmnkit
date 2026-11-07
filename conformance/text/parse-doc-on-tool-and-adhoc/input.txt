@@ -1,0 +1,6 @@
+s[start] > a[adhoc Agent] > e[end]
+t1[service Search | inside=a job=search]
+t2[service Read | inside=a job=read]
+doc t1: Searches the web
+doc t2: Reads a page
+note a: Chooses tools

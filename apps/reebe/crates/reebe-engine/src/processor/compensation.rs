@@ -25,16 +25,16 @@
 //! processors call when an element completes, never when it is terminated. The throw
 //! event waits until its scope is terminated.
 
-use std::cmp::Reverse;
-use std::collections::HashMap;
-use std::sync::Arc;
-use reebe_bpmn::BpmnProcess;
-use reebe_db::state::compensation::CompensationSubscription;
-use reebe_db::state::element_instances::ElementInstance;
+use super::{CommandToWrite, Writers};
 use crate::engine::EngineState;
 use crate::error::EngineResult;
 use crate::key_gen::KeyGenerator;
-use super::{CommandToWrite, Writers};
+use reebe_bpmn::BpmnProcess;
+use reebe_db::state::compensation::CompensationSubscription;
+use reebe_db::state::element_instances::ElementInstance;
+use std::cmp::Reverse;
+use std::collections::HashMap;
+use std::sync::Arc;
 
 /// An activity completed: record it if it has a compensation handler.
 pub(crate) async fn activity_completed(
@@ -42,19 +42,26 @@ pub(crate) async fn activity_completed(
     process: &BpmnProcess,
     activity: &ElementInstance,
 ) -> EngineResult<()> {
-    let Some(handler) = process.compensation_handler(&activity.element_id) else { return Ok(()) };
+    let Some(handler) = process.compensation_handler(&activity.element_id) else {
+        return Ok(());
+    };
     let key_gen = KeyGenerator::new(Arc::clone(&state.backend), state.partition_id);
-    state.backend.upsert_compensation_subscription(&CompensationSubscription {
-        key: key_gen.next_key().await?,
-        process_instance_key: activity.process_instance_key,
-        compensable_activity_id: activity.element_id.clone(),
-        compensable_activity_instance_key: activity.key,
-        compensable_activity_scope_key: activity.flow_scope_key.unwrap_or(activity.process_instance_key),
-        compensation_handler_id: handler.to_string(),
-        throw_event_instance_key: None,
-        compensation_handler_instance_key: None,
-        tenant_id: activity.tenant_id.clone(),
-    }).await?;
+    state
+        .backend
+        .upsert_compensation_subscription(&CompensationSubscription {
+            key: key_gen.next_key().await?,
+            process_instance_key: activity.process_instance_key,
+            compensable_activity_id: activity.element_id.clone(),
+            compensable_activity_instance_key: activity.key,
+            compensable_activity_scope_key: activity
+                .flow_scope_key
+                .unwrap_or(activity.process_instance_key),
+            compensation_handler_id: handler.to_string(),
+            throw_event_instance_key: None,
+            compensation_handler_instance_key: None,
+            tenant_id: activity.tenant_id.clone(),
+        })
+        .await?;
     Ok(())
 }
 
@@ -67,7 +74,8 @@ pub(crate) async fn throw(
     activity_ref: Option<&str>,
 ) -> EngineResult<bool> {
     let pi = thrower.process_instance_key;
-    let instances: HashMap<i64, ElementInstance> = state.backend
+    let instances: HashMap<i64, ElementInstance> = state
+        .backend
         .get_element_instances_by_process_instance(pi)
         .await?
         .into_iter()
@@ -75,7 +83,10 @@ pub(crate) async fn throw(
         .collect();
     let scope_key = thrower.flow_scope_key.unwrap_or(pi);
     let mut scope_keys = vec![scope_key];
-    if let Some(esp) = instances.get(&scope_key).filter(|ei| ei.element_type == "EVENT_SUB_PROCESS") {
+    if let Some(esp) = instances
+        .get(&scope_key)
+        .filter(|ei| ei.element_type == "EVENT_SUB_PROCESS")
+    {
         scope_keys.push(esp.flow_scope_key.unwrap_or(pi));
     }
     // The subscription's scope is a compensated scope, or a completed sub-process
@@ -91,23 +102,30 @@ pub(crate) async fn throw(
             _ => return false,
         }
     };
-    let mut invoked: Vec<CompensationSubscription> = state.backend
+    let mut invoked: Vec<CompensationSubscription> = state
+        .backend
         .get_compensation_subscriptions(pi)
         .await?
         .into_iter()
         .filter(|s| s.throw_event_instance_key.is_none())
         .filter(|s| match activity_ref {
-            Some(activity) => s.compensable_activity_id == activity && scope_keys.contains(&s.compensable_activity_scope_key),
+            Some(activity) => {
+                s.compensable_activity_id == activity
+                    && scope_keys.contains(&s.compensable_activity_scope_key)
+            }
             None => within(s.compensable_activity_scope_key),
         })
         .collect();
     invoked.sort_by_key(|s| Reverse(s.key));
 
     for sub in &invoked {
-        state.backend.upsert_compensation_subscription(&CompensationSubscription {
-            throw_event_instance_key: Some(thrower.key),
-            ..sub.clone()
-        }).await?;
+        state
+            .backend
+            .upsert_compensation_subscription(&CompensationSubscription {
+                throw_event_instance_key: Some(thrower.key),
+                ..sub.clone()
+            })
+            .await?;
         writers.commands.push(CommandToWrite {
             value_type: "PROCESS_INSTANCE".to_string(),
             intent: "ACTIVATE_ELEMENT".to_string(),
@@ -133,10 +151,14 @@ pub(crate) async fn handler_activating(
     process_instance_key: i64,
     handler_key: i64,
 ) -> EngineResult<()> {
-    let Some(sub_key) = payload["compensationSubscriptionKey"].as_str().and_then(|k| k.parse::<i64>().ok()) else {
+    let Some(sub_key) = payload["compensationSubscriptionKey"]
+        .as_str()
+        .and_then(|k| k.parse::<i64>().ok())
+    else {
         return Ok(());
     };
-    let Some(sub) = state.backend
+    let Some(sub) = state
+        .backend
         .get_compensation_subscriptions(process_instance_key)
         .await?
         .into_iter()
@@ -144,10 +166,13 @@ pub(crate) async fn handler_activating(
     else {
         return Ok(());
     };
-    state.backend.upsert_compensation_subscription(&CompensationSubscription {
-        compensation_handler_instance_key: Some(handler_key),
-        ..sub
-    }).await?;
+    state
+        .backend
+        .upsert_compensation_subscription(&CompensationSubscription {
+            compensation_handler_instance_key: Some(handler_key),
+            ..sub
+        })
+        .await?;
     Ok(())
 }
 
@@ -158,16 +183,32 @@ pub(crate) async fn handler_completed(
     writers: &mut Writers,
     handler: &ElementInstance,
 ) -> EngineResult<()> {
-    let subs = state.backend.get_compensation_subscriptions(handler.process_instance_key).await?;
-    let Some(sub) = subs.iter().find(|s| s.compensation_handler_instance_key == Some(handler.key)) else {
+    let subs = state
+        .backend
+        .get_compensation_subscriptions(handler.process_instance_key)
+        .await?;
+    let Some(sub) = subs
+        .iter()
+        .find(|s| s.compensation_handler_instance_key == Some(handler.key))
+    else {
         return Ok(());
     };
-    state.backend.delete_compensation_subscription(sub.key).await?;
-    let Some(throw_key) = sub.throw_event_instance_key else { return Ok(()) };
-    if subs.iter().any(|s| s.key != sub.key && s.throw_event_instance_key == Some(throw_key)) {
+    state
+        .backend
+        .delete_compensation_subscription(sub.key)
+        .await?;
+    let Some(throw_key) = sub.throw_event_instance_key else {
+        return Ok(());
+    };
+    if subs
+        .iter()
+        .any(|s| s.key != sub.key && s.throw_event_instance_key == Some(throw_key))
+    {
         return Ok(());
     }
-    let Ok(thrower) = state.backend.get_element_instance_by_key(throw_key).await else { return Ok(()) };
+    let Ok(thrower) = state.backend.get_element_instance_by_key(throw_key).await else {
+        return Ok(());
+    };
     if thrower.state != "ACTIVATED" {
         return Ok(());
     }

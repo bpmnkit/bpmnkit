@@ -1,0 +1,11 @@
+{
+	"kind": "bpmn",
+	"input": "builder/from-noop/input.bpmn",
+	"script": [
+		["from","proc"],
+		["at","open"],
+		["withBoundary","bt",{"timerDuration":"PT1M"},{"$ops":[["endEvent","late"]]}],
+		["endEvent","done"],
+		["build"]
+	]
+}

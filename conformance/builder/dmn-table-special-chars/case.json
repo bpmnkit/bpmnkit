@@ -1,0 +1,11 @@
+{
+	"kind": "dmn",
+	"script": [
+		["createDecisionTable","d"],
+		["name","A & B <c>"],
+		["input",{"label":"x > y","expression":"a < b && c"}],
+		["output",{"name":"o"}],
+		["rule",{"description":"desc <&>","inputs":["\"quote\\\"d\""],"outputs":["'single'"]}],
+		["build"]
+	]
+}

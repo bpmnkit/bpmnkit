@@ -1,0 +1,221 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_P",
+      "plane": {
+        "bpmnElement": "P",
+        "edges": [
+          {
+            "bpmnElement": "F1",
+            "id": "F1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 36,
+                "y": 25
+              },
+              {
+                "x": 96,
+                "y": 25
+              }
+            ]
+          },
+          {
+            "bpmnElement": "F2",
+            "id": "F2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 121,
+                "y": 50
+              },
+              {
+                "x": 121,
+                "y": 143
+              },
+              {
+                "x": 206,
+                "y": 143
+              }
+            ]
+          },
+          {
+            "bpmnElement": "F3",
+            "id": "F3_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 146,
+                "y": 25
+              },
+              {
+                "x": 238,
+                "y": 25
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_P",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 0,
+              "y": 7
+            },
+            "bpmnElement": "S",
+            "id": "S_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 96,
+              "y": 0
+            },
+            "bpmnElement": "G",
+            "id": "G_di",
+            "isMarkerVisible": true,
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 84,
+                "x": 79,
+                "y": -18
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 206,
+              "y": 103
+            },
+            "bpmnElement": "Approve",
+            "id": "Approve_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 238,
+              "y": 7
+            },
+            "bpmnElement": "E",
+            "id": "E_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "d",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "S",
+          "incoming": [],
+          "outgoing": [
+            "F1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "default": "F3",
+          "extensionElements": [],
+          "id": "G",
+          "incoming": [
+            "F1"
+          ],
+          "name": "Over 10,000?",
+          "outgoing": [
+            "F2",
+            "F3"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Approve",
+          "incoming": [
+            "F2"
+          ],
+          "name": "Approve",
+          "outgoing": [],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "E",
+          "incoming": [
+            "F3"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "P",
+      "isExecutable": true,
+      "name": "Proc",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "F1",
+          "sourceRef": "S",
+          "targetRef": "G",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {},
+            "text": "= total > 10000"
+          },
+          "extensionElements": [],
+          "id": "F2",
+          "sourceRef": "G",
+          "targetRef": "Approve",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "F3",
+          "sourceRef": "G",
+          "targetRef": "E",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

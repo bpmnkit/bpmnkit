@@ -1,0 +1,70 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "children": {
+              "elements": [
+                {
+                  "documentation": "Searches the web",
+                  "id": "t1",
+                  "jobType": "search",
+                  "name": "Search",
+                  "type": "serviceTask"
+                },
+                {
+                  "documentation": "Reads a page",
+                  "id": "t2",
+                  "jobType": "read",
+                  "name": "Read",
+                  "type": "serviceTask"
+                }
+              ],
+              "flows": []
+            },
+            "id": "a",
+            "name": "Agent",
+            "type": "adHocSubProcess"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "a"
+          },
+          {
+            "from": "a",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1",
+        "notes": [
+          {
+            "elementId": "a",
+            "text": "Chooses tools"
+          }
+        ]
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

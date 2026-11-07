@@ -12,9 +12,7 @@ use tracing::warn;
 
 use reebe_db::DbPool;
 
-use super::{
-    basic::validate_basic, AuthConfig, AuthError, AuthMethod, JwksClient,
-};
+use super::{basic::validate_basic, AuthConfig, AuthError, AuthMethod, JwksClient};
 
 /// Shared state for the auth middleware, held in an `Arc`.
 pub struct AuthState {
@@ -88,7 +86,9 @@ pub async fn auth_middleware(
             match creds {
                 Ok(c) => match &auth_state.pool {
                     Some(pool) => validate_basic(pool, c).await,
-                    None => Err(AuthError::Internal("DB pool not available for Basic auth".into())),
+                    None => Err(AuthError::Internal(
+                        "DB pool not available for Basic auth".into(),
+                    )),
                 },
                 Err(e) => Err(e),
             }

@@ -1,0 +1,38 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "g",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "a",
+          "type": "task"
+        },
+        {
+          "id": "b",
+          "type": "task"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f1",
+          "from": "g",
+          "to": "a",
+          "condition": "= x",
+          "name": "Yes"
+        },
+        {
+          "id": "f2",
+          "from": "g",
+          "to": "b",
+          "isDefault": true,
+          "name": "No"
+        }
+      ]
+    }
+  ]
+}

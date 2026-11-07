@@ -1,0 +1,1 @@
+withBoundary() cannot attach to startEvent "ss". It must follow a task or activity element.

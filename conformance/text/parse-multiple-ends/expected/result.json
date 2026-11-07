@@ -1,0 +1,59 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "g",
+            "name": "Ok?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "e1",
+            "name": "A",
+            "type": "endEvent"
+          },
+          {
+            "id": "e2",
+            "name": "B",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "g"
+          },
+          {
+            "condition": "= ok",
+            "from": "g",
+            "id": "Flow_2",
+            "name": "Yes",
+            "to": "e1"
+          },
+          {
+            "from": "g",
+            "id": "Flow_3",
+            "isDefault": true,
+            "name": "No",
+            "to": "e2"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 1 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

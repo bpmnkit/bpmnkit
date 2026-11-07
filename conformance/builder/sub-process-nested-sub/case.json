@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["subProcess","outer",{"$ops":[["startEvent","os"],["subProcess","innerSub",{"$ops":[["startEvent","is"],["serviceTask","deep",{"name":"deep","taskType":"deep"}],["endEvent","ie"]]}],["endEvent","oe"]]}],
+		["endEvent","e"],
+		["build"]
+	]
+}

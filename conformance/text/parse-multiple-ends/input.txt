@@ -1,0 +1,3 @@
+s[start] > g[xor Ok?]
+g >(Yes: ok) e1[end A]
+g >(No: default) e2[end B]

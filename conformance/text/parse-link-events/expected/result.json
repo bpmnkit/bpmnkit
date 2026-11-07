@@ -1,0 +1,64 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "a",
+            "name": "Out",
+            "type": "intermediateThrowEvent"
+          },
+          {
+            "id": "b",
+            "name": "In",
+            "type": "intermediateThrowEvent"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "a"
+          },
+          {
+            "from": "a",
+            "id": "Flow_2",
+            "to": "b"
+          },
+          {
+            "from": "b",
+            "id": "Flow_3",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"a\" cannot be a link event here; made it a plain event"
+    },
+    {
+      "line": 1,
+      "message": "\"b\" cannot be a link event here; made it a plain event"
+    }
+  ],
+  "questions": []
+}

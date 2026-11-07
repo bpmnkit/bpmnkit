@@ -1,0 +1,25 @@
+{
+  "findings": [
+    {
+      "elementId": "a",
+      "fix": "Set \"key\" to the process variable the field reads and writes, e.g. \"amount\". (agent-cards/form.md#traps)",
+      "message": "Component \"a\" (textfield) is not bound to a variable — it has no \"key\".",
+      "rule": "form/missing-key",
+      "severity": "error"
+    },
+    {
+      "elementId": "b",
+      "fix": "Set \"key\" to the process variable the field reads and writes, e.g. \"amount\". (agent-cards/form.md#traps)",
+      "message": "Component \"b\" (number) is not bound to a variable — it has no \"key\".",
+      "rule": "form/missing-key",
+      "severity": "error"
+    },
+    {
+      "elementId": "c",
+      "fix": "Set \"key\" to the process variable the field reads and writes, e.g. \"amount\". (agent-cards/form.md#traps)",
+      "message": "Component \"c\" (checkbox) is not bound to a variable — it has no \"key\".",
+      "rule": "form/missing-key",
+      "severity": "error"
+    }
+  ]
+}

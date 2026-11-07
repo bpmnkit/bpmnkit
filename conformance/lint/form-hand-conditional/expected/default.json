@@ -1,0 +1,11 @@
+{
+  "findings": [
+    {
+      "elementId": "b",
+      "fix": "Prefix it with \"=\" to make it FEEL, e.g. \"=x > 1\". (agent-cards/form.md#traps)",
+      "message": "Component \"b\"'s conditional.hide is \"x > 1\", which is not an expression.",
+      "rule": "form/conditional-not-feel",
+      "severity": "warning"
+    }
+  ]
+}

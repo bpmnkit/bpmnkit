@@ -1,0 +1,1 @@
+components[0]: textfield must have a 'label' string

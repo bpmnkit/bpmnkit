@@ -1,0 +1,1 @@
+s[start Go] > mail[service Send email to each stakeholder] > report[service Report sales every day] > e[end Done]

@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "UserTask_CallCustomer"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Call customer\" has no zeebe:formDefinition.",
+      "processId": "requestDocument_en",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    }
+  ]
+}

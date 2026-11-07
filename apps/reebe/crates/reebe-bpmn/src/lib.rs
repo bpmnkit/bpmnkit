@@ -1,7 +1,9 @@
+mod adapter;
 pub mod model;
 pub mod parser;
-pub mod validator;
+#[allow(clippy::module_inception)]
 pub mod tests;
+pub mod validator;
 
 pub use model::*;
 pub use parser::{parse_bpmn, BpmnParseError};

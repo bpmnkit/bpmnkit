@@ -1,0 +1,809 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 4,
+    "info": 32,
+    "warning": 23
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "ExclusiveGateway_Decision"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"ExclusiveGateway_Decision\" has 2 outgoing flows but no default flow set.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "SendTask_SendPolicy"
+      ],
+      "fixable": false,
+      "id": "feel/complex-io-mapping",
+      "message": "IO mapping input source on task \"SendTask_SendPolicy\" is complex.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": "Consider extracting complex FEEL expressions into intermediate variables."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Activity_1ke2ixr"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Activity_1ke2ixr\" (subProcess) is not reachable from any start event.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Activity_1ke2ixr"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Activity_1ke2ixr\" (subProcess) has no outgoing sequence flows.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Activity_0vp33kx"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Activity_0vp33kx\" (subProcess) is not reachable from any start event.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Activity_0vp33kx"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Activity_0vp33kx\" (subProcess) has no outgoing sequence flows.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ServiceTask_DeliverPolicy"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"ServiceTask_DeliverPolicy\" (serviceTask) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ServiceTask_RejectPolicy"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"ServiceTask_RejectPolicy\" (serviceTask) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "Activity_1ke2ixr"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"Activity_1ke2ixr\" (subProcess) has no name.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "Activity_0vp33kx"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"Activity_0vp33kx\" (subProcess) has no name.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "task-reuse",
+      "elementIds": [
+        "SendTask_SendPolicy",
+        "SendTask_SendRejection"
+      ],
+      "fixable": true,
+      "id": "task/reusable-group",
+      "message": "2 service tasks share a similar configuration (taskType=\"io.camunda:sendgrid:1\") and could be reused via a call activity.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "Extract the repeated service task into a reusable sub-process and replace occurrences with call activities."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "ExclusiveGateway_Decision"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Decision?\" has no default sequence flow.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Activity_1ke2ixr"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Activity_1ke2ixr\" has no error boundary event.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Activity_0vp33kx"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Activity_0vp33kx\" has no error boundary event.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "SendTask_SendPolicy"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Send confirmation\" has no output variable mapping.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "ServiceTask_DeliverPolicy"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Deliver confirmation\" has no output variable mapping.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "ServiceTask_RejectPolicy"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Reject application\" has no output variable mapping.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "SendTask_SendRejection"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Send rejection\" has no output variable mapping.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "ServiceTask_GetCreditScore"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Get credit score\" has no output variable mapping.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "StartEvent_ApplicationReceived"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Application received\" has no documentation describing expected input variables.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "SendTask_SendPolicy",
+        "SendTask_SendRejection"
+      ],
+      "fixable": false,
+      "id": "pattern/duplicate-job-type",
+      "message": "Job type \"io.camunda:sendgrid:1\" is used by 2 service tasks.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": "Verify this is intentional — the same worker will handle all these tasks. Consider distinct job types if behaviors differ."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SendTask_SendPolicy",
+        "SendTask_SendRejection"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:demo",
+      "message": "Variable \"demo\" is referenced but never set in this process.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "\"demo\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SendTask_SendPolicy",
+        "SendTask_SendRejection"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:d",
+      "message": "Variable \"d\" is referenced but never set in this process.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "\"d\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SendTask_SendPolicy",
+        "SendTask_SendRejection"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:secrets",
+      "message": "Variable \"secrets\" is referenced but never set in this process.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "\"secrets\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SendTask_SendPolicy",
+        "SendTask_SendRejection"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:corporation",
+      "message": "Variable \"corporation\" is referenced but never set in this process.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "\"corporation\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SendTask_SendPolicy",
+        "SendTask_SendRejection"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:applicant",
+      "message": "Variable \"applicant\" is referenced but never set in this process.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "\"applicant\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SendTask_SendPolicy"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:applicationNumber",
+      "message": "Variable \"applicationNumber\" is referenced but never set in this process.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "\"applicationNumber\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SendTask_SendRejection"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:aa6a58aaded54a83884518433ac2dd56",
+      "message": "Variable \"aa6a58aaded54a83884518433ac2dd56\" is referenced but never set in this process.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "\"aa6a58aaded54a83884518433ac2dd56\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "ExclusiveGateway_Risk"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:risk",
+      "message": "Variable \"risk\" is referenced but never set in this process.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "\"risk\" is never set. Did you mean \"risks\"?"
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "ExclusiveGateway_Decision"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:approved",
+      "message": "Variable \"approved\" is referenced but never set in this process.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "\"approved\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "StartEvent_ApplicationReceived"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:documentReferenceId",
+      "message": "Variable \"documentReferenceId\" is set but never read by any downstream element.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"documentReferenceId\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SendTask_SendPolicy",
+        "SendTask_SendRejection"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:from.email",
+      "message": "Variable \"from.email\" is set but never read by any downstream element.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"from.email\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SendTask_SendPolicy",
+        "SendTask_SendRejection"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:template.id",
+      "message": "Variable \"template.id\" is set but never read by any downstream element.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"template.id\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SendTask_SendPolicy",
+        "SendTask_SendRejection"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:apiKey",
+      "message": "Variable \"apiKey\" is set but never read by any downstream element.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"apiKey\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SendTask_SendPolicy",
+        "SendTask_SendRejection"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:from.name",
+      "message": "Variable \"from.name\" is set but never read by any downstream element.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"from.name\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SendTask_SendPolicy",
+        "SendTask_SendRejection"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:to.name",
+      "message": "Variable \"to.name\" is set but never read by any downstream element.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"to.name\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SendTask_SendPolicy",
+        "SendTask_SendRejection"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:to.email",
+      "message": "Variable \"to.email\" is set but never read by any downstream element.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"to.email\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SendTask_SendPolicy",
+        "SendTask_SendRejection"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:template.data",
+      "message": "Variable \"template.data\" is set but never read by any downstream element.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"template.data\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "BusinessRuleTask_CheckApplicationAutomatically"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:risks",
+      "message": "Variable \"risks\" is set but never read by any downstream element.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"risks\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "StartEvent_ApplicationReceived"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:StartEvent_ApplicationReceived",
+      "message": "Element \"StartEvent_ApplicationReceived\" produces: documentReferenceId.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SendTask_SendPolicy"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:SendTask_SendPolicy",
+      "message": "Element \"SendTask_SendPolicy\" produces: from.email, template.id, apiKey, from.name, to.name, to.email, template.data; consumes: demo, d, secrets, corporation, applicant, applicationNumber.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SendTask_SendRejection"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:SendTask_SendRejection",
+      "message": "Element \"SendTask_SendRejection\" produces: apiKey, from.email, template.id, template.data, to.email, to.name, from.name; consumes: secrets, demo, d, aa6a58aaded54a83884518433ac2dd56, applicant, corporation.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "BusinessRuleTask_CheckApplicationAutomatically"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:BusinessRuleTask_CheckApplicationAutomatically",
+      "message": "Element \"BusinessRuleTask_CheckApplicationAutomatically\" produces: riskLevels, risks, result; consumes: result.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "ExclusiveGateway_Risk"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:ExclusiveGateway_Risk",
+      "message": "Element \"ExclusiveGateway_Risk\" consumes: riskLevels, risk.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "ExclusiveGateway_Decision"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:ExclusiveGateway_Decision",
+      "message": "Element \"ExclusiveGateway_Decision\" consumes: approved.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SequenceFlow_1gd6p37"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:SequenceFlow_1gd6p37",
+      "message": "Variables in scope at flow \"SequenceFlow_1gd6p37\": documentReferenceId.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SequenceFlow_01vh1zw"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:SequenceFlow_01vh1zw",
+      "message": "Variables in scope at flow \"SequenceFlow_01vh1zw\": documentReferenceId, result, riskLevels, risks.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SequenceFlow_13"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:SequenceFlow_13",
+      "message": "Variables in scope at flow \"SequenceFlow_13\": apiKey, documentReferenceId, from.email, from.name, result, riskLevels, risks, template.data, template.id, to.email, to.name.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SequenceFlow_Red"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:SequenceFlow_Red",
+      "message": "Variables in scope at flow \"SequenceFlow_Red\": documentReferenceId, result, riskLevels, risks.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SequenceFlow_2"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:SequenceFlow_2",
+      "message": "Variables in scope at flow \"SequenceFlow_2\": documentReferenceId, result, riskLevels, risks.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SequenceFlow_Green"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:SequenceFlow_Green",
+      "message": "Variables in scope at flow \"SequenceFlow_Green\": documentReferenceId, result, riskLevels, risks.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SequenceFlow_10"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:SequenceFlow_10",
+      "message": "Variables in scope at flow \"SequenceFlow_10\": documentReferenceId, result, riskLevels, risks.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SequenceFlow_11"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:SequenceFlow_11",
+      "message": "Variables in scope at flow \"SequenceFlow_11\": apiKey, documentReferenceId, from.email, from.name, result, riskLevels, risks, template.data, template.id, to.email, to.name.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SequenceFlow_ApplicationAccepted"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:SequenceFlow_ApplicationAccepted",
+      "message": "Variables in scope at flow \"SequenceFlow_ApplicationAccepted\": documentReferenceId, result, riskLevels, risks.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SequenceFlow_ApplicationDeclined"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:SequenceFlow_ApplicationDeclined",
+      "message": "Variables in scope at flow \"SequenceFlow_ApplicationDeclined\": documentReferenceId, result, riskLevels, risks.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SequenceFlow_6"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:SequenceFlow_6",
+      "message": "Variables in scope at flow \"SequenceFlow_6\": documentReferenceId.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "SequenceFlow_Yellow"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:SequenceFlow_Yellow",
+      "message": "Variables in scope at flow \"SequenceFlow_Yellow\": documentReferenceId, result, riskLevels, risks.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_0ik8h65"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_0ik8h65",
+      "message": "Variables in scope at flow \"Flow_0ik8h65\": documentReferenceId, result, riskLevels, risks.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "UserTask_HandleTimeout"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Handle Timeout\" has no zeebe:formDefinition.",
+      "plane": "Collaboration_CustomerOnboarding",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    }
+  ],
+  "platform": {
+    "id": "camunda-cloud",
+    "name": "Camunda Cloud",
+    "version": "8.1.0"
+  },
+  "total": 59
+}

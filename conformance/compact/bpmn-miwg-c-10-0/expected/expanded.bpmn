@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions__3" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="_8" name="Travel Planning" isExecutable="true">
+    <bpmn:userTask id="_39" name="Record meeting details">
+      <bpmn:incoming>_37</bpmn:incoming>
+      <bpmn:outgoing>_40</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="_41" name="Trip planned">
+      <bpmn:incoming>_40</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="_22" name="Prepare confirmation email">
+      <bpmn:incoming>_20</bpmn:incoming>
+      <bpmn:outgoing>_44</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:callActivity id="_29" name="Plan trip">
+      <bpmn:incoming>_42</bpmn:incoming>
+      <bpmn:outgoing>_28</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:serviceTask id="_21" name="Update employee's calendar">
+      <bpmn:incoming>_28</bpmn:incoming>
+      <bpmn:outgoing>_20</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:intermediateCatchEvent id="_38" name="Recieve meeting details">
+      <bpmn:incoming>_46</bpmn:incoming>
+      <bpmn:outgoing>_37</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="_38_MessageEventDefinition"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sendTask id="_45" name="Send confirmation email">
+      <bpmn:incoming>_44</bpmn:incoming>
+      <bpmn:outgoing>_46</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:dataStoreReference id="Reference__2" name="HR system" dataStoreRef="_2"/>
+    <bpmn:dataObjectReference id="Reference__11" name="Hotel reservation" dataObjectRef="_11"/>
+    <bpmn:dataObjectReference id="Reference__13" name="Tickets" dataObjectRef="_13"/>
+    <bpmn:endEvent id="_19" name="Client answered">
+      <bpmn:incoming>_17</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="_36" name="No personnel available">
+      <bpmn:incoming>_35</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:intermediateThrowEvent id="_31" name="Notify client personel not available">
+      <bpmn:incoming>_30</bpmn:incoming>
+      <bpmn:outgoing>_35</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="_31_MessageEventDefinition"/>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateThrowEvent id="_18" name="Answer client directly">
+      <bpmn:incoming>_43</bpmn:incoming>
+      <bpmn:outgoing>_17</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="_18_MessageEventDefinition"/>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:userTask id="_34" name="Check client request">
+      <bpmn:incoming>_32</bpmn:incoming>
+      <bpmn:outgoing>_47</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:startEvent id="_33" name="E-mail received">
+      <bpmn:outgoing>_32</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="_33_MessageEventDefinition"/>
+    </bpmn:startEvent>
+    <bpmn:userTask id="_24" name="Check employee's availability">
+      <bpmn:incoming>_26</bpmn:incoming>
+      <bpmn:outgoing>_23</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="_27" name="On-site Meeting?">
+      <bpmn:incoming>_47</bpmn:incoming>
+      <bpmn:outgoing>_26</bpmn:outgoing>
+      <bpmn:outgoing>_43</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="_25" name="Employee &#10;available?">
+      <bpmn:incoming>_23</bpmn:incoming>
+      <bpmn:outgoing>_30</bpmn:outgoing>
+      <bpmn:outgoing>_42</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:dataStoreReference id="Reference__1" name="Calendar" dataStoreRef="_1"/>
+    <bpmn:dataObjectReference id="Reference__12" name="On-site meeting" dataObjectRef="_12"/>
+    <bpmn:dataObjectReference id="Reference__10" name="Identified&#10;employee" dataObjectRef="_10"/>
+    <bpmn:dataObject id="_10" name="Identified&#10;employee"/>
+    <bpmn:dataObject id="_13" name="Tickets" isCollection="true"/>
+    <bpmn:dataObject id="_12" name="On-site meeting"/>
+    <bpmn:dataObject id="_11" name="Hotel reservation"/>
+    <bpmn:sequenceFlow id="_17" sourceRef="_18" targetRef="_19"/>
+    <bpmn:sequenceFlow id="_20" sourceRef="_21" targetRef="_22"/>
+    <bpmn:sequenceFlow id="_23" sourceRef="_24" targetRef="_25"/>
+    <bpmn:sequenceFlow id="_26" sourceRef="_27" targetRef="_24" name="Yes"/>
+    <bpmn:sequenceFlow id="_28" sourceRef="_29" targetRef="_21"/>
+    <bpmn:sequenceFlow id="_30" sourceRef="_25" targetRef="_31" name="No"/>
+    <bpmn:sequenceFlow id="_32" sourceRef="_33" targetRef="_34"/>
+    <bpmn:sequenceFlow id="_35" sourceRef="_31" targetRef="_36"/>
+    <bpmn:sequenceFlow id="_37" sourceRef="_38" targetRef="_39"/>
+    <bpmn:sequenceFlow id="_40" sourceRef="_39" targetRef="_41"/>
+    <bpmn:sequenceFlow id="_42" sourceRef="_25" targetRef="_29" name="Yes"/>
+    <bpmn:sequenceFlow id="_43" sourceRef="_27" targetRef="_18" name="No"/>
+    <bpmn:sequenceFlow id="_44" sourceRef="_22" targetRef="_45"/>
+    <bpmn:sequenceFlow id="_46" sourceRef="_45" targetRef="_38"/>
+    <bpmn:sequenceFlow id="_47" sourceRef="_34" targetRef="_27"/>
+  </bpmn:process>
+  <bpmn:process id="Process_ID-73a31a41-43d5-11f1-744d-b02628b36240" name="Plan Trip" isExecutable="true">
+    <bpmn:dataObject id="ID-ee745c8c-43de-11f1-744d-b02628b36240" name="Preferred hotel and travel means"/>
+    <bpmn:startEvent id="ID-ee745c80-43de-11f1-744d-b02628b36240">
+      <bpmn:outgoing>ID-ee745c84-43de-11f1-744d-b02628b36240</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="ID-ee745c82-43de-11f1-744d-b02628b36240" name="Request employee preferences">
+      <bpmn:incoming>ID-ee745c84-43de-11f1-744d-b02628b36240</bpmn:incoming>
+      <bpmn:outgoing>_1b18998a-581e-4a9f-a591-b4f360261866</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="_5e0cd331-db4a-4561-9f7f-141eecba6967" name="Book trip">
+      <bpmn:incoming>_1b18998a-581e-4a9f-a591-b4f360261866</bpmn:incoming>
+      <bpmn:outgoing>_c0e8a59b-136b-4e14-8ef4-a9b1ff8f13fa</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="_2a76b8fa-b11b-4f0a-9835-2a144fada546">
+      <bpmn:incoming>_c0e8a59b-136b-4e14-8ef4-a9b1ff8f13fa</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:dataObjectReference id="Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240" name="Preferred hotel and travel means" dataObjectRef="ID-ee745c8c-43de-11f1-744d-b02628b36240"/>
+    <bpmn:sequenceFlow id="ID-ee745c84-43de-11f1-744d-b02628b36240" sourceRef="ID-ee745c80-43de-11f1-744d-b02628b36240" targetRef="ID-ee745c82-43de-11f1-744d-b02628b36240"/>
+    <bpmn:sequenceFlow id="_1b18998a-581e-4a9f-a591-b4f360261866" sourceRef="ID-ee745c82-43de-11f1-744d-b02628b36240" targetRef="_5e0cd331-db4a-4561-9f7f-141eecba6967"/>
+    <bpmn:sequenceFlow id="_c0e8a59b-136b-4e14-8ef4-a9b1ff8f13fa" sourceRef="_5e0cd331-db4a-4561-9f7f-141eecba6967" targetRef="_2a76b8fa-b11b-4f0a-9835-2a144fada546"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram__8">
+    <bpmndi:BPMNPlane id="BPMNPlane__8" bpmnElement="_8">
+      <bpmndi:BPMNShape id="_39_di" bpmnElement="_39">
+        <dc:Bounds x="1613" y="136" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_41_di" bpmnElement="_41">
+        <dc:Bounds x="1773" y="158" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1749" y="198" width="84" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_22_di" bpmnElement="_22">
+        <dc:Bounds x="1156" y="136" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_29_di" bpmnElement="_29">
+        <dc:Bounds x="775" y="136" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_21_di" bpmnElement="_21">
+        <dc:Bounds x="996" y="136" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_38_di" bpmnElement="_38">
+        <dc:Bounds x="1496.5" y="158" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1434" y="198" width="161" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_45_di" bpmnElement="_45">
+        <dc:Bounds x="1316" y="136" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Reference__2_di" bpmnElement="Reference__2">
+        <dc:Bounds x="0" y="296" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Reference__11_di" bpmnElement="Reference__11">
+        <dc:Bounds x="7" y="426" width="36" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Reference__13_di" bpmnElement="Reference__13">
+        <dc:Bounds x="7" y="556" width="36" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_19_di" bpmnElement="_19">
+        <dc:Bounds x="593" y="158" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="558.5" y="198" width="105" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_36_di" bpmnElement="_36">
+        <dc:Bounds x="1028" y="22" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="969" y="62" width="154" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_31_di" bpmnElement="_31">
+        <dc:Bounds x="807" y="22" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="699" y="62" width="252" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_18_di" bpmnElement="_18">
+        <dc:Bounds x="428" y="158" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="369" y="198" width="154" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_34_di" bpmnElement="_34">
+        <dc:Bounds x="110" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_33_di" bpmnElement="_33">
+        <dc:Bounds x="7" y="22" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-27.5" y="62" width="105" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_24_di" bpmnElement="_24">
+        <dc:Bounds x="396" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_27_di" bpmnElement="_27" isMarkerVisible="true">
+        <dc:Bounds x="270" y="15" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="239" y="-3" width="112" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_25_di" bpmnElement="_25" isMarkerVisible="true">
+        <dc:Bounds x="586" y="15" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="541" y="-3" width="140" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Reference__1_di" bpmnElement="Reference__1">
+        <dc:Bounds x="0" y="686" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Reference__12_di" bpmnElement="Reference__12">
+        <dc:Bounds x="7" y="816" width="36" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Reference__10_di" bpmnElement="Reference__10">
+        <dc:Bounds x="7" y="946" width="36" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_10_di" bpmnElement="_10">
+        <dc:Bounds x="7" y="1076" width="36" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_13_di" bpmnElement="_13">
+        <dc:Bounds x="7" y="1206" width="36" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_12_di" bpmnElement="_12">
+        <dc:Bounds x="7" y="1336" width="36" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_11_di" bpmnElement="_11">
+        <dc:Bounds x="7" y="1466" width="36" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="_17_di" bpmnElement="_17">
+        <di:waypoint x="464" y="176"/>
+        <di:waypoint x="593" y="176"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_20_di" bpmnElement="_20">
+        <di:waypoint x="1096" y="176"/>
+        <di:waypoint x="1156" y="176"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_23_di" bpmnElement="_23">
+        <di:waypoint x="496" y="40"/>
+        <di:waypoint x="586" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_26_di" bpmnElement="_26">
+        <di:waypoint x="320" y="40"/>
+        <di:waypoint x="396" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_28_di" bpmnElement="_28">
+        <di:waypoint x="875" y="176"/>
+        <di:waypoint x="996" y="176"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_30_di" bpmnElement="_30">
+        <di:waypoint x="636" y="40"/>
+        <di:waypoint x="807" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_32_di" bpmnElement="_32">
+        <di:waypoint x="43" y="40"/>
+        <di:waypoint x="110" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_35_di" bpmnElement="_35">
+        <di:waypoint x="843" y="40"/>
+        <di:waypoint x="1028" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_37_di" bpmnElement="_37">
+        <di:waypoint x="1532.5" y="176"/>
+        <di:waypoint x="1613" y="176"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_40_di" bpmnElement="_40">
+        <di:waypoint x="1713" y="176"/>
+        <di:waypoint x="1773" y="176"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_42_di" bpmnElement="_42">
+        <di:waypoint x="611" y="65"/>
+        <di:waypoint x="611" y="100.5"/>
+        <di:waypoint x="825" y="100.5"/>
+        <di:waypoint x="825" y="136"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_43_di" bpmnElement="_43">
+        <di:waypoint x="295" y="65"/>
+        <di:waypoint x="295" y="176"/>
+        <di:waypoint x="428" y="176"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_44_di" bpmnElement="_44">
+        <di:waypoint x="1256" y="176"/>
+        <di:waypoint x="1316" y="176"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_46_di" bpmnElement="_46">
+        <di:waypoint x="1416" y="176"/>
+        <di:waypoint x="1496.5" y="176"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_47_di" bpmnElement="_47">
+        <di:waypoint x="210" y="40"/>
+        <di:waypoint x="270" y="40"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Process_ID-73a31a41-43d5-11f1-744d-b02628b36240">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_ID-73a31a41-43d5-11f1-744d-b02628b36240" bpmnElement="Process_ID-73a31a41-43d5-11f1-744d-b02628b36240">
+      <bpmndi:BPMNShape id="ID-ee745c8c-43de-11f1-744d-b02628b36240_di" bpmnElement="ID-ee745c8c-43de-11f1-744d-b02628b36240">
+        <dc:Bounds x="0" y="0" width="36" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ID-ee745c80-43de-11f1-744d-b02628b36240_di" bpmnElement="ID-ee745c80-43de-11f1-744d-b02628b36240">
+        <dc:Bounds x="0" y="152" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ID-ee745c82-43de-11f1-744d-b02628b36240_di" bpmnElement="ID-ee745c82-43de-11f1-744d-b02628b36240">
+        <dc:Bounds x="96" y="130" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_5e0cd331-db4a-4561-9f7f-141eecba6967_di" bpmnElement="_5e0cd331-db4a-4561-9f7f-141eecba6967">
+        <dc:Bounds x="256" y="130" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_2a76b8fa-b11b-4f0a-9835-2a144fada546_di" bpmnElement="_2a76b8fa-b11b-4f0a-9835-2a144fada546">
+        <dc:Bounds x="416" y="152" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240_di" bpmnElement="Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240">
+        <dc:Bounds x="0" y="290" width="36" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="ID-ee745c84-43de-11f1-744d-b02628b36240_di" bpmnElement="ID-ee745c84-43de-11f1-744d-b02628b36240">
+        <di:waypoint x="36" y="170"/>
+        <di:waypoint x="96" y="170"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_1b18998a-581e-4a9f-a591-b4f360261866_di" bpmnElement="_1b18998a-581e-4a9f-a591-b4f360261866">
+        <di:waypoint x="196" y="170"/>
+        <di:waypoint x="256" y="170"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_c0e8a59b-136b-4e14-8ef4-a9b1ff8f13fa_di" bpmnElement="_c0e8a59b-136b-4e14-8ef4-a9b1ff8f13fa">
+        <di:waypoint x="356" y="170"/>
+        <di:waypoint x="416" y="170"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

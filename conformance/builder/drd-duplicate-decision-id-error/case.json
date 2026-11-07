@@ -1,0 +1,9 @@
+{
+	"kind": "dmn",
+	"script": [
+		["drd","Dup"],
+		["$let","h22","decision","a",{"$ops":[["name","A"],["input",{"expression":"x"}],["output",{"name":"aOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]}],
+		["$let","h23","decision","a",{"$ops":[["name","A"],["input",{"expression":"x"}],["output",{"name":"aOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]}],
+		["build"]
+	]
+}

@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["manualTask","m",{"name":"Check on site","documentation":"walk there"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

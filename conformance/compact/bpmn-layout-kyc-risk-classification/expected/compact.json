@@ -1,0 +1,316 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "start",
+          "name": "Onboarding Started",
+          "type": "startEvent"
+        },
+        {
+          "formId": "identity-document-upload-form",
+          "id": "uploadDocument",
+          "name": "Upload Identity Document",
+          "type": "userTask"
+        },
+        {
+          "id": "verifyDocument",
+          "inputs": {
+            "authentication.token": "=secrets.OCR_SERVICE_TOKEN",
+            "authentication.type": "bearer",
+            "connectionTimeoutInSeconds": "20",
+            "method": "POST",
+            "readTimeoutInSeconds": "20",
+            "url": "=ocrServiceUrl + \"/verify\""
+          },
+          "jobType": "io.camunda:http-json:1",
+          "modelerTemplate": {
+            "id": "io.camunda.connectors.HttpJson.v2",
+            "version": 12
+          },
+          "name": "Verify Document (OCR)",
+          "resultVariable": "ocrResponse",
+          "taskHeaders": {
+            "resultExpression": "={ verified: ocrResponse.body.verified, quality: ocrResponse.body.quality }"
+          },
+          "type": "serviceTask"
+        },
+        {
+          "id": "qualityGateway",
+          "name": "Document Verified?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "retryGateway",
+          "name": "Retries Remaining?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "incrementRetry",
+          "name": "Increment Retry Count",
+          "resultVariable": "retryCount",
+          "script": "=retryCount + 1",
+          "type": "scriptTask"
+        },
+        {
+          "id": "sendVerificationRejection",
+          "inputs": {
+            "to": "=applicant.email"
+          },
+          "jobType": "email-sender",
+          "name": "Send Verification Rejection",
+          "taskHeaders": {
+            "template": "kyc-document-rejected"
+          },
+          "type": "serviceTask"
+        },
+        {
+          "id": "endRejectedDocument",
+          "name": "Rejected — Document",
+          "type": "endEvent"
+        },
+        {
+          "id": "sanctionsScreening",
+          "inputs": {
+            "authentication.token": "=secrets.SCREENING_SERVICE_TOKEN",
+            "authentication.type": "bearer",
+            "connectionTimeoutInSeconds": "20",
+            "method": "POST",
+            "readTimeoutInSeconds": "20",
+            "url": "=screeningServiceUrl + \"/screen\""
+          },
+          "jobType": "io.camunda:http-json:1",
+          "modelerTemplate": {
+            "id": "io.camunda.connectors.HttpJson.v2",
+            "version": 12
+          },
+          "name": "Sanctions & PEP Screening",
+          "resultVariable": "screeningResponse",
+          "taskHeaders": {
+            "resultExpression": "={ riskLevel: screeningResponse.body.riskLevel, isPep: screeningResponse.body.isPep, hits: screeningResponse.body.hits }"
+          },
+          "type": "serviceTask"
+        },
+        {
+          "id": "dueDiligenceGateway",
+          "name": "Due Diligence Level?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "standardDueDiligence",
+          "inputs": {
+            "applicantId": "=applicant.id"
+          },
+          "jobType": "due-diligence-service",
+          "name": "Standard Due Diligence",
+          "outputs": {
+            "dueDiligenceResult": "=ddResult"
+          },
+          "resultVariable": "dueDiligenceResult",
+          "type": "serviceTask"
+        },
+        {
+          "formId": "enhanced-due-diligence-form",
+          "id": "enhancedDueDiligence",
+          "name": "Enhanced Due Diligence Review",
+          "type": "userTask"
+        },
+        {
+          "id": "finalRiskClassification",
+          "name": "Final Risk Classification",
+          "type": "businessRuleTask"
+        },
+        {
+          "id": "outcomeGateway",
+          "name": "Final Decision?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "activateAccount",
+          "inputs": {
+            "applicantId": "=applicant.id"
+          },
+          "jobType": "account-service",
+          "name": "Activate Customer Account",
+          "type": "serviceTask"
+        },
+        {
+          "id": "endApproved",
+          "name": "Approved",
+          "type": "endEvent"
+        },
+        {
+          "id": "escalateToCompliance",
+          "inputs": {
+            "applicantId": "=applicant.id"
+          },
+          "jobType": "compliance-notifier",
+          "name": "Escalate to Compliance",
+          "taskHeaders": {
+            "queue": "compliance-review"
+          },
+          "type": "serviceTask"
+        },
+        {
+          "id": "endEscalated",
+          "name": "Escalated to Compliance",
+          "type": "endEvent"
+        },
+        {
+          "id": "sendKycRejection",
+          "inputs": {
+            "to": "=applicant.email"
+          },
+          "jobType": "email-sender",
+          "name": "Send KYC Rejection",
+          "taskHeaders": {
+            "template": "kyc-rejected"
+          },
+          "type": "serviceTask"
+        },
+        {
+          "id": "endRejected",
+          "name": "Rejected",
+          "type": "endEvent"
+        },
+        {
+          "id": "dueDiligenceGateway_join",
+          "type": "exclusiveGateway"
+        }
+      ],
+      "flows": [
+        {
+          "from": "start",
+          "id": "Flow_dzvGWk3K",
+          "to": "uploadDocument"
+        },
+        {
+          "from": "uploadDocument",
+          "id": "Flow_jFSBMYJb",
+          "to": "verifyDocument"
+        },
+        {
+          "from": "verifyDocument",
+          "id": "Flow_1TTrGjjw",
+          "to": "qualityGateway"
+        },
+        {
+          "condition": "=ocrResponse.verified = true",
+          "from": "qualityGateway",
+          "id": "Flow_0LEUQOxJ",
+          "name": "document-verified",
+          "to": "sanctionsScreening"
+        },
+        {
+          "condition": "=ocrResponse.verified = false",
+          "from": "qualityGateway",
+          "id": "Flow_mYkhul6F",
+          "name": "document-failed",
+          "to": "retryGateway"
+        },
+        {
+          "condition": "=retryCount < 2",
+          "from": "retryGateway",
+          "id": "Flow_S3pkDgDT",
+          "name": "retry-upload",
+          "to": "incrementRetry"
+        },
+        {
+          "from": "incrementRetry",
+          "id": "Flow_rlKvyhN6",
+          "to": "uploadDocument"
+        },
+        {
+          "from": "retryGateway",
+          "id": "Flow_uHPpRk4d",
+          "isDefault": true,
+          "name": "retries-exhausted",
+          "to": "sendVerificationRejection"
+        },
+        {
+          "from": "sendVerificationRejection",
+          "id": "Flow_tODzlPDa",
+          "to": "endRejectedDocument"
+        },
+        {
+          "from": "sanctionsScreening",
+          "id": "Flow_IRsmpnbh",
+          "to": "dueDiligenceGateway"
+        },
+        {
+          "condition": "=screeningResponse.riskLevel = \"low\" and screeningResponse.isPep = false",
+          "from": "dueDiligenceGateway",
+          "id": "Flow_8vSOCU50",
+          "name": "standard-dd",
+          "to": "standardDueDiligence"
+        },
+        {
+          "from": "standardDueDiligence",
+          "id": "Flow_K56CWSVL",
+          "to": "dueDiligenceGateway_join"
+        },
+        {
+          "from": "dueDiligenceGateway",
+          "id": "Flow_P4BQYrEw",
+          "isDefault": true,
+          "name": "enhanced-dd",
+          "to": "enhancedDueDiligence"
+        },
+        {
+          "from": "enhancedDueDiligence",
+          "id": "Flow_01TCJkY6",
+          "to": "dueDiligenceGateway_join"
+        },
+        {
+          "from": "finalRiskClassification",
+          "id": "Flow_afmDHVqD",
+          "to": "outcomeGateway"
+        },
+        {
+          "condition": "=finalClassification.decision = \"approve\"",
+          "from": "outcomeGateway",
+          "id": "Flow_nsEpR6Kw",
+          "name": "outcome-approved",
+          "to": "activateAccount"
+        },
+        {
+          "from": "activateAccount",
+          "id": "Flow_hyA4P19S",
+          "to": "endApproved"
+        },
+        {
+          "condition": "=finalClassification.decision = \"escalate\"",
+          "from": "outcomeGateway",
+          "id": "Flow_NgrHE8n7",
+          "name": "outcome-escalated",
+          "to": "escalateToCompliance"
+        },
+        {
+          "from": "escalateToCompliance",
+          "id": "Flow_jEsjEcCl",
+          "to": "endEscalated"
+        },
+        {
+          "from": "outcomeGateway",
+          "id": "Flow_RGXncTod",
+          "isDefault": true,
+          "name": "outcome-rejected",
+          "to": "sendKycRejection"
+        },
+        {
+          "from": "sendKycRejection",
+          "id": "Flow_LtOjKgN2",
+          "to": "endRejected"
+        },
+        {
+          "from": "dueDiligenceGateway_join",
+          "id": "Flow_5Xnykddu",
+          "to": "finalRiskClassification"
+        }
+      ],
+      "id": "KycOnboarding",
+      "name": "KYC Onboarding Process"
+    }
+  ]
+}

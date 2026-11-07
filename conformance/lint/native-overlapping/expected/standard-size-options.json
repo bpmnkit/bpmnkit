@@ -1,0 +1,143 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 4,
+    "info": 1,
+    "warning": 4
+  },
+  "diagnostics": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "b"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"b\" (boundaryEvent) has no outgoing sequence flows.",
+      "plane": "proc",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "sub"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"sub\" (subProcess) is not reachable from any start event.",
+      "plane": "proc",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "sub"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"sub\" (subProcess) has no outgoing sequence flows.",
+      "plane": "proc",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "sub"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"sub\" (subProcess) has no name.",
+      "plane": "proc",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "sub"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"sub\" has no error boundary event.",
+      "plane": "proc",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Started\" has no documentation describing expected input variables.",
+      "plane": "proc",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"a\" has no outgoing sequence flow.",
+      "plane": "proc",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "bpmnlintRule": "standard-size",
+      "category": "pattern",
+      "elementIds": [
+        "a"
+      ],
+      "fixable": false,
+      "id": "pattern/non-standard-size",
+      "message": "Element \"a\" is 100x80; the standard size is 120x80.",
+      "plane": "proc",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Resize it to the standard size so diagrams across the project read alike."
+    },
+    {
+      "bpmnlintRule": "standard-size",
+      "category": "pattern",
+      "elementIds": [
+        "inner"
+      ],
+      "fixable": false,
+      "id": "pattern/non-standard-size",
+      "message": "Element \"inner\" is 100x80; the standard size is 120x80.",
+      "plane": "proc",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Resize it to the standard size so diagrams across the project read alike."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 9
+}

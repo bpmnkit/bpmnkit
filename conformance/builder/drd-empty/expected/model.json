@@ -1,0 +1,23 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [],
+  "exporter": "bpmn-sdk",
+  "exporterVersion": "0.0.1",
+  "id": "Definitions_0000001",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {
+    "executionPlatform": "Camunda Cloud",
+    "executionPlatformVersion": "8.10.0"
+  },
+  "name": "Empty",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "dc": "http://www.omg.org/spec/DMN/20180521/DC/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/",
+    "modeler": "http://camunda.org/schema/modeler/1.0"
+  },
+  "textAnnotations": []
+}

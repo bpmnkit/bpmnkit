@@ -1,0 +1,13 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["serviceTask","t",{"name":"t","taskType":"t"}],
+		["textAnnotation","one"],
+		["textAnnotation","two"],
+		["annotate","s","start note"],
+		["endEvent","e"],
+		["build"]
+	]
+}

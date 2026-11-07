@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs"
 import { describe, expect, it } from "vitest"
 import { applyAutoLayout } from "../src/bpmn/auto-layout.js"
 import { Bpmn } from "../src/bpmn/index.js"
@@ -132,6 +133,22 @@ describe("auto-layout — DI ids stay unique (#250)", () => {
 		const ids = allDiIds(applyAutoLayout(defs))
 		expect(new Set(ids).size).toBe(ids.length)
 	})
+
+	it("does not fall back to a taken id when the element's own `X_di` is the one claimed twice", () => {
+		// Regression: t1 (laid out first) takes `t2_di`, and t2's own generated id
+		// is that same `t2_di`, which used to skip the collision check.
+		const defs = Bpmn.parse(gatewayProcess())
+		const t1 = defs.diagrams[0]?.plane.shapes.find((s) => s.bpmnElement === "t1")
+		if (!t1) throw new Error("fixture lost its DI")
+		t1.id = "t2_di"
+
+		const out = applyAutoLayout(defs)
+		const ids = allDiIds(out)
+		expect(new Set(ids).size).toBe(ids.length)
+		const shapes = out.diagrams[0]?.plane.shapes ?? []
+		expect(shapes.find((s) => s.bpmnElement === "t1")?.id).toBe("t2_di")
+		expect(shapes.find((s) => s.bpmnElement === "t2")?.id).toBe("t2_di_2")
+	})
 })
 
 describe("auto-layout — kept DI on collapsed sub-process planes (#250)", () => {
@@ -230,5 +247,25 @@ describe("auto-layout — marker only where it applies (#250)", () => {
 
 		const out = applyAutoLayout(defs).diagrams[0]?.plane.shapes.find((s) => s.bpmnElement === "t1")
 		expect(out?.isMarkerVisible).toBeUndefined()
+	})
+})
+
+describe("auto-layout — diagram ids stay unique", () => {
+	it("keeps each root process on its own source diagram when the first one draws another process", () => {
+		const xml = readFileSync(
+			new URL(
+				"../../../conformance/layout/edge-existing-di-diagram-order/input.bpmn",
+				import.meta.url,
+			),
+			"utf8",
+		)
+		const laid = applyAutoLayout(Bpmn.parse(xml))
+		const ids = laid.diagrams.map((d) => [d.id, d.plane.id, d.plane.bpmnElement])
+		// The primary plane draws ProcessA; it used to take the first source
+		// diagram's ids (DiagramB), which ProcessB's own plane keeps as well.
+		expect(ids).toEqual([
+			["DiagramA", "PlaneA", "ProcessA"],
+			["DiagramB", "PlaneB", "ProcessB"],
+		])
 	})
 })

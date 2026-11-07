@@ -1,0 +1,850 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "Diagram",
+      "plane": {
+        "bpmnElement": "tasks",
+        "edges": [],
+        "id": "Plane",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 0,
+              "y": 0
+            },
+            "bpmnElement": "collapsed",
+            "id": "collapsed_di",
+            "isExpanded": false,
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "Definitions_tasks",
+  "messages": [
+    {
+      "extensionElements": [
+        {
+          "attributes": {
+            "correlationKey": "=orderId"
+          },
+          "children": [],
+          "name": "zeebe:subscription"
+        }
+      ],
+      "id": "Msg_ok",
+      "name": "ok",
+      "unknownAttributes": {}
+    }
+  ],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [
+        {
+          "attributes": {
+            "value": ""
+          },
+          "children": [],
+          "name": "zeebe:versionTag"
+        },
+        {
+          "attributes": {},
+          "children": [
+            {
+              "attributes": {
+                "eventType": "start",
+                "type": "audit"
+              },
+              "children": [],
+              "name": "zeebe:executionListener"
+            },
+            {
+              "attributes": {
+                "eventType": "start",
+                "type": "audit"
+              },
+              "children": [],
+              "name": "zeebe:executionListener"
+            },
+            {
+              "attributes": {
+                "eventType": "end"
+              },
+              "children": [],
+              "name": "zeebe:executionListener"
+            }
+          ],
+          "name": "zeebe:executionListeners"
+        },
+        {
+          "attributes": {
+            "id": "emptyForm"
+          },
+          "children": [],
+          "name": "zeebe:userTaskForm"
+        }
+      ],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "formKey": "camunda-forms:bpmn:emptyForm"
+              },
+              "children": [],
+              "name": "zeebe:formDefinition"
+            }
+          ],
+          "id": "start",
+          "incoming": [],
+          "outgoing": [],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "plainTask",
+          "incoming": [
+            "flowNoCondition"
+          ],
+          "outgoing": [
+            "flowA"
+          ],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "manual",
+          "incoming": [
+            "flowDefault"
+          ],
+          "outgoing": [
+            "flowB"
+          ],
+          "type": "manualTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "noType",
+          "incoming": [],
+          "outgoing": [
+            "flowConditionFromTask"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": ""
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "emptyType",
+          "incoming": [
+            "flowConditionFromTask"
+          ],
+          "outgoing": [],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "h"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "eventType": "beforeAll",
+                    "type": "prep"
+                  },
+                  "children": [],
+                  "name": "zeebe:executionListener"
+                }
+              ],
+              "name": "zeebe:executionListeners"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "a",
+                    "value": "1"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                },
+                {
+                  "attributes": {
+                    "key": "a",
+                    "value": "2"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "target": "x"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "=y"
+                  },
+                  "children": [],
+                  "name": "zeebe:output"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "name": "p",
+                    "value": "v"
+                  },
+                  "children": [],
+                  "name": "zeebe:property"
+                }
+              ],
+              "name": "zeebe:properties"
+            }
+          ],
+          "id": "headers",
+          "incoming": [],
+          "outgoing": [],
+          "type": "serviceTask",
+          "unknownAttributes": {
+            "zeebe:modelerTemplate": "io.camunda.connectors.HttpJson.v2"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "expression": "=1 + 1"
+              },
+              "children": [],
+              "name": "zeebe:script"
+            }
+          ],
+          "id": "scriptFeel",
+          "incoming": [],
+          "outgoing": [],
+          "type": "scriptTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "scriptNone",
+          "incoming": [],
+          "outgoing": [],
+          "type": "scriptTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "decisionId": "d"
+              },
+              "children": [],
+              "name": "zeebe:calledDecision"
+            }
+          ],
+          "id": "brtNoResult",
+          "incoming": [],
+          "outgoing": [],
+          "type": "businessRuleTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "bindingType": "versionTag",
+                "decisionId": "d",
+                "resultVariable": "r"
+              },
+              "children": [],
+              "name": "zeebe:calledDecision"
+            }
+          ],
+          "id": "brtBinding",
+          "incoming": [],
+          "outgoing": [],
+          "type": "businessRuleTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "bindingType": "versionTag",
+                "decisionId": "d",
+                "resultVariable": "r",
+                "versionTag": "=tag"
+              },
+              "children": [],
+              "name": "zeebe:calledDecision"
+            }
+          ],
+          "id": "brtTagExpr",
+          "incoming": [],
+          "outgoing": [],
+          "type": "businessRuleTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "callNoProcess",
+          "incoming": [],
+          "outgoing": [],
+          "type": "callActivity",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "bindingType": "deployment",
+                "businessId": "=orderId",
+                "processId": "child",
+                "propagateAllParentVariables": "false"
+              },
+              "children": [],
+              "name": "zeebe:calledElement"
+            }
+          ],
+          "id": "callOptions",
+          "incoming": [],
+          "outgoing": [],
+          "type": "callActivity",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "sendNoType",
+          "incoming": [],
+          "outgoing": [],
+          "type": "sendTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "receiveNoRef",
+          "incoming": [],
+          "outgoing": [],
+          "type": "receiveTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "receiveOk",
+          "incoming": [],
+          "messageRef": "Msg_ok",
+          "outgoing": [],
+          "type": "receiveTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "candidateUsers": "alice"
+              },
+              "children": [],
+              "name": "zeebe:assignmentDefinition"
+            },
+            {
+              "attributes": {
+                "dueDate": "tomorrow"
+              },
+              "children": [],
+              "name": "zeebe:taskSchedule"
+            },
+            {
+              "attributes": {
+                "formId": "f"
+              },
+              "children": [],
+              "name": "zeebe:formDefinition"
+            }
+          ],
+          "id": "jobWorkerTask",
+          "incoming": [],
+          "outgoing": [],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [],
+              "name": "zeebe:userTask"
+            },
+            {
+              "attributes": {
+                "formKey": "camunda-forms:bpmn:emptyForm"
+              },
+              "children": [],
+              "name": "zeebe:formDefinition"
+            },
+            {
+              "attributes": {
+                "priority": "150"
+              },
+              "children": [],
+              "name": "zeebe:priorityDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "eventType": "complete"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskListener"
+                }
+              ],
+              "name": "zeebe:taskListeners"
+            }
+          ],
+          "id": "zeebeTask",
+          "incoming": [],
+          "outgoing": [],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [],
+              "name": "zeebe:userTask"
+            }
+          ],
+          "id": "noForm",
+          "incoming": [],
+          "outgoing": [],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [],
+              "name": "zeebe:userTask"
+            },
+            {
+              "attributes": {
+                "formId": "f"
+              },
+              "children": [],
+              "name": "zeebe:formDefinition"
+            }
+          ],
+          "id": "zeebeTaskOk",
+          "incoming": [],
+          "outgoing": [],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "m"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "eventType": "beforeAll",
+                    "type": "prep"
+                  },
+                  "children": [],
+                  "name": "zeebe:executionListener"
+                },
+                {
+                  "attributes": {
+                    "eventType": "cancel",
+                    "type": "undo"
+                  },
+                  "children": [],
+                  "name": "zeebe:executionListener"
+                },
+                {
+                  "attributes": {
+                    "eventType": "end",
+                    "type": "notify"
+                  },
+                  "children": [
+                    {
+                      "attributes": {},
+                      "children": [
+                        {
+                          "attributes": {
+                            "key": "channel",
+                            "value": "ops"
+                          },
+                          "children": [],
+                          "name": "zeebe:header"
+                        }
+                      ],
+                      "name": "zeebe:taskHeaders"
+                    }
+                  ],
+                  "name": "zeebe:executionListener"
+                }
+              ],
+              "name": "zeebe:executionListeners"
+            }
+          ],
+          "id": "multi",
+          "incoming": [],
+          "loopCharacteristics": {
+            "extensionElements": [
+              {
+                "attributes": {
+                  "outputCollection": "results"
+                },
+                "children": [],
+                "name": "zeebe:loopCharacteristics"
+              }
+            ]
+          },
+          "outgoing": [],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "m"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {
+                "priority": "10"
+              },
+              "children": [],
+              "name": "zeebe:jobPriorityDefinition"
+            }
+          ],
+          "id": "multiNoZeebe",
+          "incoming": [],
+          "loopCharacteristics": {
+            "extensionElements": []
+          },
+          "outgoing": [],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "complex",
+          "incoming": [],
+          "outgoing": [],
+          "type": "complexGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "joinInclusive",
+          "incoming": [
+            "flowA",
+            "flowB"
+          ],
+          "outgoing": [],
+          "type": "inclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "default": "flowDefault",
+          "extensionElements": [],
+          "id": "split",
+          "incoming": [],
+          "outgoing": [
+            "flowNoCondition",
+            "flowDefault"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "eventGateway",
+          "incoming": [],
+          "outgoing": [
+            "flowEventGateway"
+          ],
+          "type": "eventBasedGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "afterEventGateway",
+          "incoming": [
+            "flowEventGateway"
+          ],
+          "messageRef": "Msg_ok",
+          "outgoing": [],
+          "type": "receiveTask",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "collapsedStart",
+              "incoming": [],
+              "outgoing": [],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "collapsed",
+          "incoming": [],
+          "outgoing": [],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "type": "subProcess",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "txStart",
+              "incoming": [],
+              "outgoing": [],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "tx",
+          "incoming": [],
+          "outgoing": [],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "type": "transaction",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "cancelRemainingInstances": false,
+          "completionCondition": {
+            "attributes": {},
+            "text": "=done"
+          },
+          "extensionElements": [
+            {
+              "attributes": {
+                "outputCollection": "results"
+              },
+              "children": [],
+              "name": "zeebe:adHoc"
+            }
+          ],
+          "flowElements": [
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "adHocThrow",
+              "incoming": [],
+              "outgoing": [],
+              "type": "intermediateThrowEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "associations": [],
+              "extensionElements": [],
+              "flowElements": [
+                {
+                  "eventDefinitions": [
+                    {
+                      "id": "M1",
+                      "messageRef": "Msg_ok",
+                      "type": "message"
+                    }
+                  ],
+                  "extensionElements": [],
+                  "id": "adHocEventStart",
+                  "incoming": [],
+                  "outgoing": [],
+                  "type": "startEvent",
+                  "unknownAttributes": {}
+                }
+              ],
+              "groups": [],
+              "id": "adHocEventSub",
+              "incoming": [],
+              "outgoing": [],
+              "sequenceFlows": [],
+              "textAnnotations": [],
+              "triggeredByEvent": true,
+              "type": "subProcess",
+              "unknownAttributes": {
+                "triggeredByEvent": "true"
+              }
+            }
+          ],
+          "groups": [],
+          "id": "adHocEmpty",
+          "incoming": [],
+          "outgoing": [],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "type": "adHocSubProcess",
+          "unknownAttributes": {
+            "cancelRemainingInstances": "false"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "data",
+          "incoming": [],
+          "outgoing": [],
+          "type": "dataObject",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "tasks",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "flowA",
+          "sourceRef": "plainTask",
+          "targetRef": "joinInclusive",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "flowB",
+          "sourceRef": "manual",
+          "targetRef": "joinInclusive",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "flowNoCondition",
+          "sourceRef": "split",
+          "targetRef": "plainTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "flowDefault",
+          "sourceRef": "split",
+          "targetRef": "manual",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {},
+            "text": "=true"
+          },
+          "extensionElements": [],
+          "id": "flowConditionFromTask",
+          "sourceRef": "noType",
+          "targetRef": "emptyType",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "flowEventGateway",
+          "sourceRef": "eventGateway",
+          "targetRef": "afterEventGateway",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    },
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "extensionElements": [],
+          "id": "complexInNonExecutable",
+          "incoming": [],
+          "outgoing": [],
+          "type": "complexGateway",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "notExecutable",
+      "isExecutable": false,
+      "sequenceFlows": [],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.6.0"
+  }
+}

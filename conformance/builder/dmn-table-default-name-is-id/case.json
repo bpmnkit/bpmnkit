@@ -1,0 +1,10 @@
+{
+	"kind": "dmn",
+	"script": [
+		["createDecisionTable","decision_id"],
+		["input",{"expression":"x"}],
+		["output",{"name":"y"}],
+		["rule",{"inputs":["1"],"outputs":["2"]}],
+		["build"]
+	]
+}

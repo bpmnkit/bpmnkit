@@ -1,0 +1,727 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "id": "Definitions_testing",
+  "messages": [
+    {
+      "id": "Msg_Confirm",
+      "name": "payment-confirmed",
+      "unknownAttributes": {}
+    }
+  ],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "start",
+          "incoming": [],
+          "outgoing": [
+            "f_start"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "payment"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "provider",
+                    "value": "stripe"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            }
+          ],
+          "id": "payment",
+          "incoming": [
+            "f_start"
+          ],
+          "name": "Charge card",
+          "outgoing": [
+            "f_paid"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "default": "f_unpaid",
+          "extensionElements": [],
+          "id": "paid_gw",
+          "incoming": [
+            "f_paid"
+          ],
+          "outgoing": [
+            "f_ship",
+            "f_unpaid"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "ship"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "ship",
+          "incoming": [
+            "f_ship"
+          ],
+          "name": "Ship",
+          "outgoing": [
+            "f_shipped"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "end_ok",
+          "incoming": [
+            "f_shipped"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "end_cancel",
+          "incoming": [
+            "f_unpaid"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "order-process",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "f_start",
+          "sourceRef": "start",
+          "targetRef": "payment",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f_paid",
+          "sourceRef": "payment",
+          "targetRef": "paid_gw",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {},
+            "text": "=paid = true"
+          },
+          "extensionElements": [],
+          "id": "f_ship",
+          "sourceRef": "paid_gw",
+          "targetRef": "ship",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f_unpaid",
+          "sourceRef": "paid_gw",
+          "targetRef": "end_cancel",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f_shipped",
+          "sourceRef": "ship",
+          "targetRef": "end_ok",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    },
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "t_start",
+          "incoming": [],
+          "outgoing": [
+            "tf1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "timeDuration": "PT1H",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "wait_hour",
+          "incoming": [
+            "tf1"
+          ],
+          "outgoing": [
+            "tf2"
+          ],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "t_end",
+          "incoming": [
+            "tf2"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "timer-process",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "tf1",
+          "sourceRef": "t_start",
+          "targetRef": "wait_hour",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "tf2",
+          "sourceRef": "wait_hour",
+          "targetRef": "t_end",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    },
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "d_start",
+          "incoming": [],
+          "outgoing": [
+            "df1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "timeDate": "2027-01-01T00:00:00Z",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "wait_new_year",
+          "incoming": [
+            "df1"
+          ],
+          "outgoing": [
+            "df2"
+          ],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "d_end",
+          "incoming": [
+            "df2"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "date-process",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "df1",
+          "sourceRef": "d_start",
+          "targetRef": "wait_new_year",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "df2",
+          "sourceRef": "wait_new_year",
+          "targetRef": "d_end",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    },
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "r_start",
+          "incoming": [],
+          "outgoing": [
+            "rf1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [],
+              "name": "zeebe:userTask"
+            }
+          ],
+          "id": "review",
+          "incoming": [
+            "rf1"
+          ],
+          "name": "Review",
+          "outgoing": [
+            "rf2"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "review",
+          "eventDefinitions": [
+            {
+              "timeDuration": "P1D",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "review_timeout",
+          "incoming": [],
+          "outgoing": [
+            "rf3"
+          ],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "r_done",
+          "incoming": [
+            "rf2"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "escalate"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "escalate",
+          "incoming": [
+            "rf3"
+          ],
+          "outgoing": [
+            "rf4"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "r_escalated",
+          "incoming": [
+            "rf4"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "review-process",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "rf1",
+          "sourceRef": "r_start",
+          "targetRef": "review",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "rf2",
+          "sourceRef": "review",
+          "targetRef": "r_done",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "rf3",
+          "sourceRef": "review_timeout",
+          "targetRef": "escalate",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "rf4",
+          "sourceRef": "escalate",
+          "targetRef": "r_escalated",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    },
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "m_start",
+          "incoming": [],
+          "outgoing": [
+            "mf1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "messageRef": "Msg_Confirm",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [],
+          "id": "await_confirmation",
+          "incoming": [
+            "mf1"
+          ],
+          "outgoing": [
+            "mf2"
+          ],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "m_end",
+          "incoming": [
+            "mf2"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "message-process",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "mf1",
+          "sourceRef": "m_start",
+          "targetRef": "await_confirmation",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "mf2",
+          "sourceRef": "await_confirmation",
+          "targetRef": "m_end",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    },
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "c_start",
+          "incoming": [],
+          "outgoing": [
+            "cf1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "io.camunda:http-json:1"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "resultVariable",
+                    "value": "weatherResponse"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                },
+                {
+                  "attributes": {
+                    "key": "resultExpression",
+                    "value": "={temperature: body.main.temp, ok: status = 200}"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            }
+          ],
+          "id": "fetch_weather",
+          "incoming": [
+            "cf1"
+          ],
+          "outgoing": [
+            "cf2"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "c_end",
+          "incoming": [
+            "cf2"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "connector-process",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "cf1",
+          "sourceRef": "c_start",
+          "targetRef": "fetch_weather",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "cf2",
+          "sourceRef": "fetch_weather",
+          "targetRef": "c_end",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    },
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "p_start",
+          "incoming": [],
+          "outgoing": [
+            "pf1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "fork",
+          "incoming": [
+            "pf1"
+          ],
+          "outgoing": [
+            "pf2",
+            "pf3"
+          ],
+          "type": "parallelGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "branch_a",
+          "incoming": [
+            "pf2"
+          ],
+          "outgoing": [
+            "pf4"
+          ],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "branch_b",
+          "incoming": [
+            "pf3"
+          ],
+          "outgoing": [
+            "pf5"
+          ],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "join",
+          "incoming": [
+            "pf4",
+            "pf5"
+          ],
+          "outgoing": [
+            "pf6"
+          ],
+          "type": "parallelGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "p_end",
+          "incoming": [
+            "pf6"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "parallel-process",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "pf1",
+          "sourceRef": "p_start",
+          "targetRef": "fork",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "pf2",
+          "sourceRef": "fork",
+          "targetRef": "branch_a",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "pf3",
+          "sourceRef": "fork",
+          "targetRef": "branch_b",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "pf4",
+          "sourceRef": "branch_a",
+          "targetRef": "join",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "pf5",
+          "sourceRef": "branch_b",
+          "targetRef": "join",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "pf6",
+          "sourceRef": "join",
+          "targetRef": "p_end",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

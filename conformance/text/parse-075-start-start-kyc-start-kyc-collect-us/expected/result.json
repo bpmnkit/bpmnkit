@@ -1,0 +1,73 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "Start KYC",
+            "type": "startEvent"
+          },
+          {
+            "id": "collect",
+            "name": "Collect data",
+            "type": "userTask"
+          },
+          {
+            "id": "done",
+            "name": "Done",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "collect"
+          },
+          {
+            "from": "collect",
+            "id": "Flow_2",
+            "to": "done"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 1 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "unknown trigger \"kyc\" for \"start\"; ignored, the name already says it"
+    },
+    {
+      "line": 1,
+      "message": "\"status\" has only one branch; gateway removed"
+    },
+    {
+      "line": 3,
+      "message": "boundary \"gov\" is on \"governance\", which is never declared; left out"
+    },
+    {
+      "line": 3,
+      "message": "\"gov\" was left out; flow gov > cancel left out"
+    },
+    {
+      "line": 3,
+      "message": "\"cancel\" is not connected to a start event; left out"
+    }
+  ],
+  "questions": [
+    {
+      "draft": "At \"Status approved?\", otherwise ",
+      "elementId": "status",
+      "options": [],
+      "text": "\"Status approved?\" had only one way to go, so it was removed. What happens otherwise?"
+    }
+  ]
+}

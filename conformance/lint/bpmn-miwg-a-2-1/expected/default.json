@@ -1,0 +1,130 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 2,
+    "info": 3,
+    "warning": 3
+  },
+  "diagnostics": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "_To9ZsTOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"_To9ZsTOCEeSknpIVFCxNIQ\" (endEvent) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "plane": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_To9ZwDOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"_To9ZwDOCEeSknpIVFCxNIQ\" (task) has 3 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "plane": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_To9ZyjOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": false,
+      "id": "naming/gateway-not-a-question",
+      "message": "Gateway \"_To9ZyjOCEeSknpIVFCxNIQ\" is named \"Gateway\r\n(Split Flow)\" — split gateways should be phrased as questions.",
+      "plane": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "info",
+      "suggestion": "Rephrase as a question, e.g. \"Gateway\r\n(Split Flow)?\""
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_To9ZyjOCEeSknpIVFCxNIQ",
+        "_To9Z-TOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": false,
+      "id": "naming/missing-flow-condition",
+      "message": "Sequence flow \"_To9Z-TOCEeSknpIVFCxNIQ\" from split gateway \"_To9ZyjOCEeSknpIVFCxNIQ\" has no condition label.",
+      "plane": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "warning",
+      "suggestion": "Label each outgoing flow with the condition answer, e.g. \"Yes\", \"No\", \"Approved\", \"Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_To9ZyjOCEeSknpIVFCxNIQ",
+        "_To9Z_DOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": false,
+      "id": "naming/missing-flow-condition",
+      "message": "Sequence flow \"_To9Z_DOCEeSknpIVFCxNIQ\" from split gateway \"_To9ZyjOCEeSknpIVFCxNIQ\" has no condition label.",
+      "plane": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "warning",
+      "suggestion": "Label each outgoing flow with the condition answer, e.g. \"Yes\", \"No\", \"Approved\", \"Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_To9Z2TOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": false,
+      "id": "naming/join-gateway-labeled",
+      "message": "Gateway \"_To9Z2TOCEeSknpIVFCxNIQ\" (join) is named \"Gateway\n(Merge Flows)\" — join gateways should not have labels.",
+      "plane": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "info",
+      "suggestion": "Remove the label from join-only gateways; their semantics are implicit."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_To9ZojOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Start Event\" has no documentation describing expected input variables.",
+      "plane": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_To9Z7TOCEeSknpIVFCxNIQ",
+        "_To9ZtjOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": false,
+      "id": "pattern/literal-condition",
+      "message": "Sequence flow \"Condition\" has a condition that only references literal values: `true`",
+      "plane": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "info",
+      "suggestion": "A literal condition never changes at runtime. Replace with a variable reference or remove the condition."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 8
+}

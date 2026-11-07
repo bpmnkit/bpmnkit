@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "hitPolicy": "UNIQUE",
+      "id": "eligibility",
+      "inputs": [
+        {
+          "expression": "income",
+          "id": "Input_income",
+          "label": "Monthly income",
+          "typeRef": "number"
+        }
+      ],
+      "name": "Eligibility",
+      "outputs": [
+        {
+          "id": "Output_eligible",
+          "label": "Eligible",
+          "name": "eligible",
+          "typeRef": "boolean"
+        }
+      ],
+      "requires": [
+        "InputData_income"
+      ],
+      "rules": [
+        {
+          "id": "Rule_low",
+          "inputs": [
+            "< 2000"
+          ],
+          "outputs": [
+            "false"
+          ]
+        },
+        {
+          "id": "Rule_high",
+          "inputs": [
+            ">= 2000"
+          ],
+          "outputs": [
+            "true"
+          ]
+        }
+      ]
+    }
+  ],
+  "id": "Definitions_loan",
+  "inputData": [
+    {
+      "id": "InputData_income",
+      "name": "Income"
+    }
+  ],
+  "name": "Loan eligibility"
+}

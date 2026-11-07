@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:serviceTask id="t" name="Mail each"><bpmn:extensionElements><zeebe:taskDefinition type="send-mail"/></bpmn:extensionElements><bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing><bpmn:multiInstanceLoopCharacteristics isSequential="true"><bpmn:extensionElements><zeebe:loopCharacteristics inputCollection="=people" inputElement="person" outputCollection="sent" outputElement="=ok"/></bpmn:extensionElements><bpmn:completionCondition>= count(sent) &gt; 2</bpmn:completionCondition></bpmn:multiInstanceLoopCharacteristics></bpmn:serviceTask>
+    <bpmn:endEvent id="e"><bpmn:incoming>f2</bpmn:incoming></bpmn:endEvent>
+    <bpmn:boundaryEvent id="b" name="Too slow" attachedToRef="t" cancelActivity="false"><bpmn:outgoing>f3</bpmn:outgoing><bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:boundaryEvent>
+    <bpmn:endEvent id="e2"><bpmn:incoming>f3</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="s" targetRef="t"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="t" targetRef="e"/>
+    <bpmn:sequenceFlow id="f3" sourceRef="b" targetRef="e2"/>
+  </bpmn:process>
+</bpmn:definitions>

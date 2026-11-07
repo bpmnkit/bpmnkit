@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "none"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Script task \"none\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "half"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Script task \"half\" has a zeebe:script, which needs Camunda 8.2 or newer here; this model targets Camunda 8.1.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    }
+  ]
+}

@@ -1,8 +1,8 @@
-use std::sync::Arc;
-use std::time::Duration;
-use reebe_db::StateBackend;
 use crate::clock::Clock;
 use crate::engine::EngineHandle;
+use reebe_db::StateBackend;
+use std::sync::Arc;
+use std::time::Duration;
 
 pub struct Scheduler {
     backend: Arc<dyn StateBackend>,
@@ -12,8 +12,16 @@ pub struct Scheduler {
 
 impl Scheduler {
     /// `clock` decides when a timer is due; pass the engine's clock so that both agree.
-    pub fn new(backend: Arc<dyn StateBackend>, engine_handle: EngineHandle, clock: Arc<dyn Clock>) -> Self {
-        Self { backend, engine_handle, clock }
+    pub fn new(
+        backend: Arc<dyn StateBackend>,
+        engine_handle: EngineHandle,
+        clock: Arc<dyn Clock>,
+    ) -> Self {
+        Self {
+            backend,
+            engine_handle,
+            clock,
+        }
     }
 
     /// Run all background scheduler tasks.
@@ -34,7 +42,11 @@ impl Scheduler {
     }
 }
 
-async fn run_timer_scheduler(backend: Arc<dyn StateBackend>, engine_handle: EngineHandle, clock: Arc<dyn Clock>) {
+async fn run_timer_scheduler(
+    backend: Arc<dyn StateBackend>,
+    engine_handle: EngineHandle,
+    clock: Arc<dyn Clock>,
+) {
     loop {
         tokio::time::sleep(Duration::from_millis(100)).await;
 

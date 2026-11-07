@@ -1,0 +1,40 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "s",
+          "type": "startEvent"
+        },
+        {
+          "id": "a",
+          "type": "userTask",
+          "name": "A"
+        },
+        {
+          "id": "e",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f1",
+          "from": "s",
+          "to": "a"
+        },
+        {
+          "id": "f2",
+          "from": "a",
+          "to": "e"
+        },
+        {
+          "id": "f3",
+          "from": "a",
+          "to": "ghost"
+        }
+      ]
+    }
+  ]
+}

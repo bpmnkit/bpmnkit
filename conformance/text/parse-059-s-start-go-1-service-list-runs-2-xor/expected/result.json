@@ -1,0 +1,106 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "id": "n1",
+            "jobType": "n1",
+            "name": "List runs",
+            "type": "serviceTask"
+          },
+          {
+            "id": "n2",
+            "name": "Any?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "n3",
+            "jobType": "n3",
+            "name": "Post list",
+            "type": "serviceTask"
+          },
+          {
+            "id": "e",
+            "name": "Done",
+            "type": "endEvent"
+          },
+          {
+            "id": "e_join",
+            "type": "exclusiveGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "n1"
+          },
+          {
+            "from": "n1",
+            "id": "Flow_2",
+            "to": "n2"
+          },
+          {
+            "condition": "= n > 0",
+            "from": "n2",
+            "id": "Flow_3",
+            "name": "Yes",
+            "to": "n3"
+          },
+          {
+            "from": "n3",
+            "id": "Flow_4",
+            "to": "e_join"
+          },
+          {
+            "from": "n2",
+            "id": "Flow_5",
+            "isDefault": true,
+            "name": "No",
+            "to": "e_join"
+          },
+          {
+            "from": "e_join",
+            "id": "Flow_6",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "joined 2 flows into \"e\" with xor gateway \"e_join\""
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"1\" is not an id; read as \"n1\""
+    },
+    {
+      "line": 1,
+      "message": "\"2\" is not an id; read as \"n2\""
+    },
+    {
+      "line": 2,
+      "message": "\"2\" is not an id; read as \"n2\""
+    },
+    {
+      "line": 2,
+      "message": "\"3\" is not an id; read as \"n3\""
+    },
+    {
+      "line": 3,
+      "message": "\"2\" is not an id; read as \"n2\""
+    }
+  ],
+  "questions": []
+}

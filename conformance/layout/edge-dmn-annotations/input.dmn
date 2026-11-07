@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="Defs_ann" name="Annotated" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="d1" name="Decide"><informationRequirement id="r1"><requiredInput href="#in1"/></informationRequirement><literalExpression id="le1"><text>1</text></literalExpression></decision>
+  <inputData id="in1" name="Input"/>
+  <textAnnotation id="ta1"><text>Explains the decision</text></textAnnotation>
+  <textAnnotation id="ta2"><text>Explains the input and is a bit longer</text></textAnnotation>
+  <textAnnotation id="ta3"><text>Floating note</text></textAnnotation>
+  <association id="as1"><sourceRef href="#d1"/><targetRef href="#ta1"/></association>
+  <association id="as2"><sourceRef href="#in1"/><targetRef href="#ta2"/></association>
+</definitions>

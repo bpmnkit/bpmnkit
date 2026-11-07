@@ -1,0 +1,6 @@
+s[start] > g[xor]
+g >(default) a[end]
+g >(default) b[end]
+s2[start:message] > p[and]
+p >(default) c[end]
+p > d[end]

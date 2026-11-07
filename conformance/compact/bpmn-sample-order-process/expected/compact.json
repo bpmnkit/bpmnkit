@@ -1,0 +1,95 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "start",
+          "name": "Order Received",
+          "type": "startEvent"
+        },
+        {
+          "id": "validate",
+          "name": "Validate Order",
+          "type": "serviceTask"
+        },
+        {
+          "id": "gw-check",
+          "name": "Valid?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "process",
+          "name": "Process Order",
+          "type": "serviceTask"
+        },
+        {
+          "id": "reject",
+          "name": "Reject Order",
+          "type": "serviceTask"
+        },
+        {
+          "id": "gw-merge",
+          "name": "Merge",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "notify",
+          "name": "Send Notification",
+          "type": "serviceTask"
+        },
+        {
+          "id": "end",
+          "name": "Order Complete",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "start",
+          "id": "flow1",
+          "to": "validate"
+        },
+        {
+          "from": "validate",
+          "id": "flow2",
+          "to": "gw-check"
+        },
+        {
+          "from": "gw-check",
+          "id": "flow-yes",
+          "name": "yes",
+          "to": "process"
+        },
+        {
+          "from": "gw-check",
+          "id": "flow-no",
+          "name": "no",
+          "to": "reject"
+        },
+        {
+          "from": "process",
+          "id": "flow3",
+          "to": "gw-merge"
+        },
+        {
+          "from": "reject",
+          "id": "flow4",
+          "to": "gw-merge"
+        },
+        {
+          "from": "gw-merge",
+          "id": "flow5",
+          "to": "notify"
+        },
+        {
+          "from": "notify",
+          "id": "flow6",
+          "to": "end"
+        }
+      ],
+      "id": "order-process",
+      "name": "Order Process"
+    }
+  ]
+}

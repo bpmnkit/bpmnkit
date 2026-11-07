@@ -1,0 +1,37 @@
+{
+  "decisions": [
+    {
+      "hitPolicy": "COLLECT",
+      "id": "start_inputValidation",
+      "inputs": [
+        {
+          "expression": "name",
+          "id": "i1",
+          "label": "name"
+        }
+      ],
+      "name": "Input Validation",
+      "outputs": [
+        {
+          "id": "o1",
+          "name": "error",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r1",
+          "inputs": [
+            "null"
+          ],
+          "outputs": [
+            "\"name is required\""
+          ]
+        }
+      ]
+    }
+  ],
+  "id": "Definitions_validation",
+  "inputData": [],
+  "name": "DRD"
+}

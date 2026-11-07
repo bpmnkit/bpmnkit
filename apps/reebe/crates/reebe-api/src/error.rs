@@ -1,8 +1,8 @@
 use axum::http::StatusCode;
 use axum::response::{IntoResponse, Response};
 use axum::Json;
-use serde::Serialize;
 use reebe_engine::EngineError;
+use serde::Serialize;
 
 /// RFC 7807 Problem Detail error response.
 #[derive(Debug, Serialize)]
@@ -63,7 +63,9 @@ impl From<EngineError> for ApiError {
                 resource: "resource".to_string(),
                 key: msg.clone(),
             },
-            EngineError::InvalidState(msg) | EngineError::InvalidArgument(msg) => ApiError::InvalidRequest(msg.clone()),
+            EngineError::InvalidState(msg) | EngineError::InvalidArgument(msg) => {
+                ApiError::InvalidRequest(msg.clone())
+            }
             _ => ApiError::EngineError(e),
         }
     }
@@ -80,10 +82,7 @@ impl IntoResponse for ApiError {
         let (status, detail) = match &self {
             ApiError::NotFound { resource, key } => (
                 StatusCode::NOT_FOUND,
-                ProblemDetail::not_found(
-                    format!("{resource} '{key}' not found"),
-                    "API/not-found",
-                ),
+                ProblemDetail::not_found(format!("{resource} '{key}' not found"), "API/not-found"),
             ),
             ApiError::InvalidRequest(msg) => (
                 StatusCode::BAD_REQUEST,
@@ -108,7 +107,9 @@ impl IntoResponse for ApiError {
                     StatusCode::NOT_FOUND,
                     ProblemDetail::not_found(msg.clone(), "API/not-found"),
                 ),
-                EngineError::InvalidState(msg) | EngineError::InvalidArgument(msg) | EngineError::BpmnParse(msg) => (
+                EngineError::InvalidState(msg)
+                | EngineError::InvalidArgument(msg)
+                | EngineError::BpmnParse(msg) => (
                     StatusCode::BAD_REQUEST,
                     ProblemDetail::invalid_argument(msg.clone(), "API/invalid-request"),
                 ),

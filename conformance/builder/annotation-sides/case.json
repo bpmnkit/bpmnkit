@@ -1,0 +1,15 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["serviceTask","t",{"name":"t","taskType":"t"}],
+		["annotate","t","left",{"side":"left"}],
+		["annotate","t","above",{"side":"above"}],
+		["annotate","t","below",{"side":"below"}],
+		["annotate","t","right",{"side":"right"}],
+		["endEvent","e"],
+		["withAutoLayout"],
+		["build"]
+	]
+}

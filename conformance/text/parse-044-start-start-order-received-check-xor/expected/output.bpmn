@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="start" name="Order received">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="check" name="Order valid?" default="Flow_2">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="ship" name="Ship order">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="ship"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="done" name="Order shipped">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="fail" name="Validation failed" attachedToRef="ship" cancelActivity="true">
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="fail_ErrorEventDefinition"/>
+    </bpmn:boundaryEvent>
+    <bpmn:sendTask id="notify" name="Notify #ops on Slack">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="notify"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:endEvent id="sent" name="Notification sent">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="notify_join">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="start" targetRef="check"/>
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="check" targetRef="ship" name="Yes"/>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="ship" targetRef="done"/>
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="check" targetRef="notify_join" name="No: order invalid">
+      <bpmn:conditionExpression>= orderValid = false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="fail" targetRef="notify_join"/>
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="notify" targetRef="sent"/>
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="notify_join" targetRef="notify"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Process_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start">
+        <dc:Bounds x="0" y="22" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-31" y="62" width="98" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="check_di" bpmnElement="check" isMarkerVisible="true">
+        <dc:Bounds x="102" y="15" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="85" y="-3" width="84" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ship_di" bpmnElement="ship">
+        <dc:Bounds x="212" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="done_di" bpmnElement="done">
+        <dc:Bounds x="379" y="22" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="351.5" y="62" width="91" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="fail_di" bpmnElement="fail">
+        <dc:Bounds x="244" y="62" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="139" y="102" width="119" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="notify_di" bpmnElement="notify">
+        <dc:Bounds x="482" y="136" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sent_di" bpmnElement="sent">
+        <dc:Bounds x="642" y="158" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="600.5" y="198" width="119" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="notify_join_di" bpmnElement="notify_join" isMarkerVisible="true">
+        <dc:Bounds x="372" y="151" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="36" y="40"/>
+        <di:waypoint x="102" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="152" y="40"/>
+        <di:waypoint x="212" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="312" y="40"/>
+        <di:waypoint x="379" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="127" y="65"/>
+        <di:waypoint x="127" y="176"/>
+        <di:waypoint x="372" y="176"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="262" y="98"/>
+        <di:waypoint x="262" y="124.5"/>
+        <di:waypoint x="397" y="124.5"/>
+        <di:waypoint x="397" y="151"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="582" y="176"/>
+        <di:waypoint x="642" y="176"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="422" y="176"/>
+        <di:waypoint x="482" y="176"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

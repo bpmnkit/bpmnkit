@@ -1,0 +1,33 @@
+[package]
+name = "bpmnkit-lint"
+description = "BPMN lint and optimize passes, bpmnlint config, DMN and Form lint for BPMN Kit (Rust twin of @bpmnkit/core's lint, optimize and bpmnlint)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["bpmn", "lint", "dmn", "camunda", "bpmnlint"]
+categories = ["development-tools"]
+# Tests and benches read the shared corpus under ../../conformance, outside the package.
+exclude = ["tests/", "benches/"]
+
+[dependencies]
+bpmnkit-bpmn = { workspace = true }
+bpmnkit-compat = { workspace = true }
+bpmnkit-dmn = { workspace = true }
+bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.1.0" }
+bpmnkit-form = { workspace = true }
+bpmnkit-spec = { workspace = true }
+bpmnkit-xml = { workspace = true }
+indexmap = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true, features = ["float_roundtrip"] }
+
+[[bench]]
+name = "lint"
+harness = false

@@ -1,0 +1,54 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "A",
+            "type": "startEvent"
+          },
+          {
+            "id": "t",
+            "name": "ta",
+            "type": "task"
+          },
+          {
+            "id": "t_end",
+            "name": "Process completed",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "t_end"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "added end event \"t_end\" after \"t\""
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"t[\" is not closed; closed it where its name ends"
+    },
+    {
+      "line": 1,
+      "message": "unknown kind \"ta\" for \"t\"; used task"
+    }
+  ],
+  "questions": []
+}

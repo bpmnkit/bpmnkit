@@ -1,0 +1,895 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 4,
+    "info": 38,
+    "warning": 29
+  },
+  "diagnostics": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "uploadDocument"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"uploadDocument\" (userTask) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "KycOnboarding",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "task-reuse",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": true,
+      "id": "task/reusable-group",
+      "message": "2 service tasks share a similar configuration (taskType=\"io.camunda:http-json:1\") and could be reused via a call activity.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Extract the repeated service task into a reusable sub-process and replace occurrences with call activities."
+    },
+    {
+      "category": "task-reuse",
+      "elementIds": [
+        "sendVerificationRejection",
+        "sendFinalRejection"
+      ],
+      "fixable": true,
+      "id": "task/reusable-group",
+      "message": "2 service tasks share a similar configuration (taskType=\"email-sender\") and could be reused via a call activity.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Extract the repeated service task into a reusable sub-process and replace occurrences with call activities."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "pattern/http-no-error-boundary",
+      "message": "Service task \"Verify Document (OCR)\" calls an HTTP connector but has no error boundary event.",
+      "processId": "KycOnboarding",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle network failures (timeouts, non-2xx responses)."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "screening"
+      ],
+      "fixable": false,
+      "id": "pattern/http-no-error-boundary",
+      "message": "Service task \"Sanctions & PEP Screening\" calls an HTTP connector but has no error boundary event.",
+      "processId": "KycOnboarding",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle network failures (timeouts, non-2xx responses)."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "uploadDocument"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Upload Identity Document\" has no timer boundary event.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "complianceReview"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Enhanced Due Diligence Review\" has no timer boundary event.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Verify Document (OCR)\" has no output variable mapping.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "sendVerificationRejection"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Send Rejection Notice\" has no output variable mapping.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "screening"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Sanctions & PEP Screening\" has no output variable mapping.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "standardDueDiligence"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Standard Due Diligence\" has no output variable mapping.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "activateAccount"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Activate Customer Account\" has no output variable mapping.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "escalateToCompliance"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Escalate to Compliance\" has no output variable mapping.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "sendFinalRejection"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Send Rejection Notice\" has no output variable mapping.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Customer Onboarding Started\" has no documentation describing expected input variables.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "pattern/duplicate-job-type",
+      "message": "Job type \"io.camunda:http-json:1\" is used by 2 service tasks.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": "Verify this is intentional — the same worker will handle all these tasks. Consider distinct job types if behaviors differ."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "sendVerificationRejection",
+        "sendFinalRejection"
+      ],
+      "fixable": false,
+      "id": "pattern/duplicate-job-type",
+      "message": "Job type \"email-sender\" is used by 2 service tasks.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": "Verify this is intentional — the same worker will handle all these tasks. Consider distinct job types if behaviors differ."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:bearer",
+      "message": "Variable \"bearer\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"bearer\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:secrets",
+      "message": "Variable \"secrets\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"secrets\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:POST",
+      "message": "Variable \"POST\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"POST\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:ocrServiceUrl",
+      "message": "Variable \"ocrServiceUrl\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"ocrServiceUrl\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:documentId",
+      "message": "Variable \"documentId\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"documentId\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:documentType",
+      "message": "Variable \"documentType\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"documentType\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:screeningServiceUrl",
+      "message": "Variable \"screeningServiceUrl\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"screeningServiceUrl\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "screening",
+        "activateAccount"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:applicant",
+      "message": "Variable \"applicant\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"applicant\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "qualityGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:verified",
+      "message": "Variable \"verified\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"verified\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "retryGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:retryCount",
+      "message": "Variable \"retryCount\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"retryCount\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "dueDiligenceGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:sanctionsHit",
+      "message": "Variable \"sanctionsHit\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"sanctionsHit\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "dueDiligenceGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:pep",
+      "message": "Variable \"pep\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"pep\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "outcomeGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:riskClassification",
+      "message": "Variable \"riskClassification\" is referenced but never set in this process.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "\"riskClassification\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:authentication.type",
+      "message": "Variable \"authentication.type\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"authentication.type\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:authentication.token",
+      "message": "Variable \"authentication.token\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"authentication.token\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:method",
+      "message": "Variable \"method\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"method\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:url",
+      "message": "Variable \"url\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"url\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:body",
+      "message": "Variable \"body\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"body\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:connectionTimeoutInSeconds",
+      "message": "Variable \"connectionTimeoutInSeconds\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"connectionTimeoutInSeconds\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument",
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:readTimeoutInSeconds",
+      "message": "Variable \"readTimeoutInSeconds\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"readTimeoutInSeconds\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "activateAccount"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:customerId",
+      "message": "Variable \"customerId\" is set but never read by any downstream element.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"customerId\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:verifyDocument",
+      "message": "Element \"verifyDocument\" produces: authentication.type, authentication.token, method, url, body, connectionTimeoutInSeconds, readTimeoutInSeconds; consumes: bearer, secrets, POST, ocrServiceUrl, documentId, documentType.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "screening"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:screening",
+      "message": "Element \"screening\" produces: authentication.type, authentication.token, method, url, body, connectionTimeoutInSeconds, readTimeoutInSeconds; consumes: bearer, secrets, POST, screeningServiceUrl, applicant.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "activateAccount"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:activateAccount",
+      "message": "Element \"activateAccount\" produces: customerId; consumes: applicant.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "qualityGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:qualityGateway",
+      "message": "Element \"qualityGateway\" consumes: verified.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "retryGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:retryGateway",
+      "message": "Element \"retryGateway\" consumes: retryCount.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "dueDiligenceGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:dueDiligenceGateway",
+      "message": "Element \"dueDiligenceGateway\" consumes: sanctionsHit, pep.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "outcomeGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:outcomeGateway",
+      "message": "Element \"outcomeGateway\" consumes: riskClassification.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_aFggSXlz"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_aFggSXlz",
+      "message": "Variables in scope at flow \"Flow_aFggSXlz\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_nrWGBeCZ"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_nrWGBeCZ",
+      "message": "Variables in scope at flow \"Flow_nrWGBeCZ\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_Vp0HOfCz"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_Vp0HOfCz",
+      "message": "Variables in scope at flow \"Flow_Vp0HOfCz\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_RETXa3Vt"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_RETXa3Vt",
+      "message": "Variables in scope at flow \"Flow_RETXa3Vt\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_i4OMbS2y"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_i4OMbS2y",
+      "message": "Variables in scope at flow \"Flow_i4OMbS2y\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_8reekDVI"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_8reekDVI",
+      "message": "Variables in scope at flow \"Flow_8reekDVI\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_Y4q86h1Q"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_Y4q86h1Q",
+      "message": "Variables in scope at flow \"Flow_Y4q86h1Q\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_VNppp5Gg"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_VNppp5Gg",
+      "message": "Variables in scope at flow \"Flow_VNppp5Gg\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_8ZqbzajU"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_8ZqbzajU",
+      "message": "Variables in scope at flow \"Flow_8ZqbzajU\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_hyodCBEu"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_hyodCBEu",
+      "message": "Variables in scope at flow \"Flow_hyodCBEu\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_Fj3alEoq"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_Fj3alEoq",
+      "message": "Variables in scope at flow \"Flow_Fj3alEoq\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_LXaUZMEX"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_LXaUZMEX",
+      "message": "Variables in scope at flow \"Flow_LXaUZMEX\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_1u29yKxb"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_1u29yKxb",
+      "message": "Variables in scope at flow \"Flow_1u29yKxb\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_NFb6OA8f"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_NFb6OA8f",
+      "message": "Variables in scope at flow \"Flow_NFb6OA8f\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_hHN1OOEM"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_hHN1OOEM",
+      "message": "Variables in scope at flow \"Flow_hHN1OOEM\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_1busQeAe"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_1busQeAe",
+      "message": "Variables in scope at flow \"Flow_1busQeAe\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, customerId, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_VHWI1YqZ"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_VHWI1YqZ",
+      "message": "Variables in scope at flow \"Flow_VHWI1YqZ\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_KmLNM32V"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_KmLNM32V",
+      "message": "Variables in scope at flow \"Flow_KmLNM32V\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_y162Zfc7"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_y162Zfc7",
+      "message": "Variables in scope at flow \"Flow_y162Zfc7\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_b0dqg7ck"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_b0dqg7ck",
+      "message": "Variables in scope at flow \"Flow_b0dqg7ck\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_WuhSJujP"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_WuhSJujP",
+      "message": "Variables in scope at flow \"Flow_WuhSJujP\": authentication.token, authentication.type, body, connectionTimeoutInSeconds, method, readTimeoutInSeconds, url.",
+      "processId": "KycOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "riskClassification"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Final Risk Classification\" (businessRuleTask) has neither a zeebe:taskDefinition type nor a zeebe:calledDecision.",
+      "processId": "KycOnboarding",
+      "severity": "error",
+      "suggestion": "Set a decisionId or a job type."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "uploadDocument"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Upload Identity Document\" is a job-worker user task; Camunda 8.9 deprecates those in favour of Camunda user tasks.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "complianceReview"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Enhanced Due Diligence Review\" is a job-worker user task; Camunda 8.9 deprecates those in favour of Camunda user tasks.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <source> uses deprecated secret expression format",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Write the secret as {{secrets.NAME}}."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "screening"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <source> uses deprecated secret expression format",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Write the secret as {{secrets.NAME}}."
+    }
+  ],
+  "platform": {
+    "id": "camunda-cloud",
+    "name": "Camunda Cloud",
+    "version": "8.9.0"
+  },
+  "total": 71
+}

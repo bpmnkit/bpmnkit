@@ -1,0 +1,4 @@
+# Order Process
+start[start Order Received] > validate[service Validate Order] > valid[xor Valid?]
+valid >(yes) process[service Process Order] > merge[xor Merge] > notify[service Send Notification] > end[end Order Complete]
+valid >(no) reject[service Reject Order] > merge

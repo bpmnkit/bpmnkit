@@ -26,9 +26,9 @@ sqlx = { version = "0.8", features = ["runtime-tokio", "chrono", "uuid", "json"]
 metrics = { workspace = true }
 metrics-exporter-prometheus = { workspace = true }
 reebe-protocol = { workspace = true }
-reebe-engine = { workspace = true, default-features = false }
+reebe-engine = { workspace = true, default-features = false, features = ["full-feel"] }
 reebe-db = { workspace = true, default-features = false }
-reebe-feel = { workspace = true }
+reebe-feel = { workspace = true, features = ["full-feel"] }
 
 [features]
 default = ["postgres"]

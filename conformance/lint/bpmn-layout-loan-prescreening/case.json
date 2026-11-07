@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/layout-loan-prescreening/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}

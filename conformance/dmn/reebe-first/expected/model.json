@@ -1,0 +1,106 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "FIRST",
+        "id": "dt1",
+        "inputs": [
+          {
+            "id": "i1",
+            "inputExpression": {
+              "id": "ie1",
+              "text": "score"
+            },
+            "label": "score"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o1",
+            "name": "tier",
+            "typeRef": "string"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r1",
+            "inputEntries": [
+              {
+                "id": "ie1r1",
+                "text": ">= 800"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "oe1r1",
+                "text": "\"PLATINUM\""
+              }
+            ]
+          },
+          {
+            "id": "r2",
+            "inputEntries": [
+              {
+                "id": "ie1r2",
+                "text": ">= 600"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "oe1r2",
+                "text": "\"GOLD\""
+              }
+            ]
+          },
+          {
+            "id": "r3",
+            "inputEntries": [
+              {
+                "id": "ie1r3",
+                "text": ">= 400"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "oe1r3",
+                "text": "\"SILVER\""
+              }
+            ]
+          },
+          {
+            "id": "r4",
+            "inputEntries": [
+              {
+                "id": "ie1r4",
+                "text": ">= 0"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "oe1r4",
+                "text": "\"BRONZE\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "tierDecision",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Tier Decision"
+    }
+  ],
+  "id": "Definitions_first",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "DRD",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/"
+  },
+  "textAnnotations": []
+}

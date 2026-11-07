@@ -1,0 +1,1830 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 71,
+    "info": 11,
+    "warning": 68
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "flowNoCondition"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"flowNoCondition\" exits a decision gateway without a condition expression.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-end-event",
+      "message": "Process \"tasks\" has no end event.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Add an end event to properly terminate the process."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"start\" (startEvent) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "plainTask"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"plainTask\" (task) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "manual"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"manual\" (manualTask) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "noType"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"noType\" (serviceTask) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "emptyType"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"emptyType\" (serviceTask) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "emptyType"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"emptyType\" (serviceTask) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "headers"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"headers\" (serviceTask) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "headers"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"headers\" (serviceTask) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "scriptFeel"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"scriptFeel\" (scriptTask) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "scriptFeel"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"scriptFeel\" (scriptTask) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "scriptNone"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"scriptNone\" (scriptTask) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "scriptNone"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"scriptNone\" (scriptTask) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "brtNoResult"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"brtNoResult\" (businessRuleTask) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "brtNoResult"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"brtNoResult\" (businessRuleTask) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "brtBinding"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"brtBinding\" (businessRuleTask) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "brtBinding"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"brtBinding\" (businessRuleTask) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "brtTagExpr"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"brtTagExpr\" (businessRuleTask) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "brtTagExpr"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"brtTagExpr\" (businessRuleTask) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "callNoProcess"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"callNoProcess\" (callActivity) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "callNoProcess"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"callNoProcess\" (callActivity) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "callOptions"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"callOptions\" (callActivity) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "callOptions"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"callOptions\" (callActivity) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "sendNoType"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"sendNoType\" (sendTask) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "sendNoType"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"sendNoType\" (sendTask) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "receiveNoRef"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"receiveNoRef\" (receiveTask) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "receiveNoRef"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"receiveNoRef\" (receiveTask) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "receiveOk"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"receiveOk\" (receiveTask) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "receiveOk"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"receiveOk\" (receiveTask) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "jobWorkerTask"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"jobWorkerTask\" (userTask) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "jobWorkerTask"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"jobWorkerTask\" (userTask) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "zeebeTask"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"zeebeTask\" (userTask) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "zeebeTask"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"zeebeTask\" (userTask) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "noForm"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"noForm\" (userTask) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "noForm"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"noForm\" (userTask) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "zeebeTaskOk"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"zeebeTaskOk\" (userTask) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "zeebeTaskOk"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"zeebeTaskOk\" (userTask) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "multi"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"multi\" (serviceTask) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "multi"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"multi\" (serviceTask) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "multiNoZeebe"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"multiNoZeebe\" (serviceTask) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "multiNoZeebe"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"multiNoZeebe\" (serviceTask) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "complex"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"complex\" (complexGateway) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "complex"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"complex\" (complexGateway) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "joinInclusive"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"joinInclusive\" (inclusiveGateway) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "joinInclusive"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"joinInclusive\" (inclusiveGateway) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "split"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"split\" (exclusiveGateway) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "eventGateway"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"eventGateway\" (eventBasedGateway) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "afterEventGateway"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"afterEventGateway\" (receiveTask) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "afterEventGateway"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"afterEventGateway\" (receiveTask) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "collapsed"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"collapsed\" (subProcess) is not reachable from any start event.",
+      "plane": "tasks",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "collapsed"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"collapsed\" (subProcess) has no outgoing sequence flows.",
+      "plane": "tasks",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "tx"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"tx\" (transaction) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "tx"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"tx\" (transaction) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "adHocEmpty"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"adHocEmpty\" (adHocSubProcess) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "adHocEmpty"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"adHocEmpty\" (adHocSubProcess) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "data"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"data\" (dataObject) is not reachable from any start event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "data"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"data\" (dataObject) has no outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"start\" has no name.",
+      "processId": "tasks",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "manual"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"manual\" (manualTask) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "noType"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"noType\" (serviceTask) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "emptyType"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"emptyType\" (serviceTask) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "headers"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"headers\" (serviceTask) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "scriptFeel"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"scriptFeel\" (scriptTask) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "scriptNone"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"scriptNone\" (scriptTask) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "brtNoResult"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"brtNoResult\" (businessRuleTask) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "brtBinding"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"brtBinding\" (businessRuleTask) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "brtTagExpr"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"brtTagExpr\" (businessRuleTask) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "callNoProcess"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"callNoProcess\" (callActivity) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "callOptions"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"callOptions\" (callActivity) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "sendNoType"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"sendNoType\" (sendTask) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "receiveNoRef"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"receiveNoRef\" (receiveTask) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "receiveOk"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"receiveOk\" (receiveTask) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "jobWorkerTask"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"jobWorkerTask\" (userTask) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "zeebeTask"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"zeebeTask\" (userTask) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "noForm"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"noForm\" (userTask) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "zeebeTaskOk"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"zeebeTaskOk\" (userTask) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "multi"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"multi\" (serviceTask) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "multiNoZeebe"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"multiNoZeebe\" (serviceTask) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "split"
+      ],
+      "fixable": false,
+      "id": "naming/split-gateway-no-label",
+      "message": "Gateway \"split\" (exclusiveGateway, split) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Label split gateways as a yes/no question, e.g. \"Invoice valid?\", \"Order approved?\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "split",
+        "flowNoCondition"
+      ],
+      "fixable": false,
+      "id": "naming/missing-flow-condition",
+      "message": "Sequence flow \"flowNoCondition\" from split gateway \"split\" has no condition label.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Label each outgoing flow with the condition answer, e.g. \"Yes\", \"No\", \"Approved\", \"Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "split",
+        "flowDefault"
+      ],
+      "fixable": false,
+      "id": "naming/missing-flow-condition",
+      "message": "Sequence flow \"flowDefault\" from split gateway \"split\" has no condition label.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Label each outgoing flow with the condition answer, e.g. \"Yes\", \"No\", \"Approved\", \"Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "afterEventGateway"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"afterEventGateway\" (receiveTask) has no name.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "collapsed"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"collapsed\" (subProcess) has no name.",
+      "plane": "tasks",
+      "processId": "tasks",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "tx"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"tx\" (transaction) has no name.",
+      "processId": "tasks",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "adHocEmpty"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"adHocEmpty\" (adHocSubProcess) has no name.",
+      "processId": "tasks",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "task-reuse",
+      "elementIds": [
+        "multi",
+        "multiNoZeebe"
+      ],
+      "fixable": true,
+      "id": "task/reusable-group",
+      "message": "2 service tasks share a similar configuration (taskType=\"m\") and could be reused via a call activity.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Extract the repeated service task into a reusable sub-process and replace occurrences with call activities."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "collapsed"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"collapsed\" has no error boundary event.",
+      "plane": "tasks",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "tx"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"tx\" has no error boundary event.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "adHocEmpty"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"adHocEmpty\" has no error boundary event.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "callNoProcess"
+      ],
+      "fixable": false,
+      "id": "pattern/call-activity-no-error-boundary",
+      "message": "Call activity \"callNoProcess\" has no error boundary event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle errors propagated from the called process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "callOptions"
+      ],
+      "fixable": false,
+      "id": "pattern/call-activity-no-error-boundary",
+      "message": "Call activity \"callOptions\" has no error boundary event.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle errors propagated from the called process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "jobWorkerTask"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"jobWorkerTask\" has no timer boundary event.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "zeebeTask"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"zeebeTask\" has no timer boundary event.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "noForm"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"noForm\" has no timer boundary event.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "zeebeTaskOk"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"zeebeTaskOk\" has no timer boundary event.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "emptyType"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"emptyType\" has no output variable mapping.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "multi"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"multi\" has no output variable mapping.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "multiNoZeebe"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"multiNoZeebe\" has no output variable mapping.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"start\" has no documentation describing expected input variables.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "multi",
+        "multiNoZeebe"
+      ],
+      "fixable": false,
+      "id": "pattern/duplicate-job-type",
+      "message": "Job type \"m\" is used by 2 service tasks.",
+      "processId": "tasks",
+      "severity": "info",
+      "suggestion": "Verify this is intentional — the same worker will handle all these tasks. Consider distinct job types if behaviors differ."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "flowConditionFromTask",
+        "noType"
+      ],
+      "fixable": false,
+      "id": "pattern/literal-condition",
+      "message": "Sequence flow \"flowConditionFromTask\" has a condition that only references literal values: `=true`",
+      "processId": "tasks",
+      "severity": "info",
+      "suggestion": "A literal condition never changes at runtime. Replace with a variable reference or remove the condition."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "headers"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:y",
+      "message": "Variable \"y\" is referenced but never set in this process.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "\"y\" is never set. Did you mean \"x\"?"
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "headers"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:x",
+      "message": "Variable \"x\" is set but never read by any downstream element.",
+      "processId": "tasks",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"x\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "brtBinding",
+        "brtTagExpr"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:r",
+      "message": "Variable \"r\" is set but never read by any downstream element.",
+      "processId": "tasks",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"r\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "headers"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:headers",
+      "message": "Element \"headers\" produces: x; consumes: y.",
+      "processId": "tasks",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "brtBinding"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:brtBinding",
+      "message": "Element \"brtBinding\" produces: r.",
+      "processId": "tasks",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "brtTagExpr"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:brtTagExpr",
+      "message": "Element \"brtTagExpr\" produces: r.",
+      "processId": "tasks",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "noType"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"noType\" (serviceTask) has no zeebe:taskDefinition type.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "emptyType"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"emptyType\" (serviceTask) has no zeebe:taskDefinition type.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "callNoProcess"
+      ],
+      "fixable": false,
+      "id": "deploy/call-activity-no-process",
+      "message": "Call activity \"callNoProcess\" has no zeebe:calledElement processId.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set the process id to call."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sendNoType"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"sendNoType\" (sendTask) has no zeebe:taskDefinition type.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-start-event",
+      "message": "Process \"notExecutable\" has no start event.",
+      "processId": "notExecutable",
+      "severity": "error",
+      "suggestion": "Add a start event to define where the process begins."
+    },
+    {
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-end-event",
+      "message": "Process \"notExecutable\" has no end event.",
+      "processId": "notExecutable",
+      "severity": "warning",
+      "suggestion": "Add an end event to properly terminate the process."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "complexInNonExecutable"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"complexInNonExecutable\" (complexGateway) is not reachable from any start event.",
+      "processId": "notExecutable",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "complexInNonExecutable"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"complexInNonExecutable\" (complexGateway) has no outgoing sequence flows.",
+      "processId": "notExecutable",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"notExecutable\" is not marked executable.",
+      "processId": "notExecutable",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "tasks"
+      ],
+      "fixable": false,
+      "id": "compat/duplicate-execution-listeners",
+      "message": "Process \"tasks\" has two \"start\" execution listeners of type \"audit\".",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Remove the duplicate listener."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "tasks"
+      ],
+      "fixable": false,
+      "id": "compat/execution-listener",
+      "message": "Process \"tasks\" has an execution listener with no job type.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set the listener's type."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "tasks"
+      ],
+      "fixable": false,
+      "id": "compat/version-tag",
+      "message": "Process \"tasks\" has a zeebe:versionTag with no value.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set the version tag, or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "compat/start-event-form",
+      "message": "Start event \"start\" embeds form \"emptyForm\", which is empty.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Put the form's JSON in the zeebe:userTaskForm."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "headers"
+      ],
+      "fixable": false,
+      "id": "compat/no-before-all-execution-listener",
+      "message": "Service task \"headers\" has a \"beforeAll\" execution listener, which needs Camunda 8.10 or newer; this model targets Camunda 8.6.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.10 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "headers"
+      ],
+      "fixable": false,
+      "id": "compat/duplicate-task-headers",
+      "message": "Service task \"headers\" has more than one task header \"a\".",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Remove the duplicate header."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "headers"
+      ],
+      "fixable": false,
+      "id": "compat/io-mapping",
+      "message": "Service task \"headers\" has an input mapping with no source, which needs Camunda 8.8 or newer; this model targets Camunda 8.6.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set the source."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "headers"
+      ],
+      "fixable": false,
+      "id": "compat/io-mapping",
+      "message": "Service task \"headers\" has an output mapping with no target.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set the target."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "scriptFeel"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Script task \"scriptFeel\" has a zeebe:script with no resultVariable.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set resultVariable on the zeebe:script."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "scriptNone"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Script task \"scriptNone\" has no implementation; Camunda needs a zeebe:script or zeebe:taskDefinition.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "brtNoResult"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Business rule task \"brtNoResult\" has a zeebe:calledDecision with no resultVariable.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set resultVariable on the zeebe:calledDecision."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "brtBinding"
+      ],
+      "fixable": false,
+      "id": "compat/version-tag",
+      "message": "Business rule task \"brtBinding\" binds its zeebe:calledDecision by version tag but sets no versionTag.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set the version tag to bind to."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "brtTagExpr"
+      ],
+      "fixable": false,
+      "id": "compat/version-tag",
+      "message": "Business rule task \"brtTagExpr\" binds its decision by a version tag expression, which needs Camunda 8.10 or newer; this model targets Camunda 8.6.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.10 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "callOptions"
+      ],
+      "fixable": false,
+      "id": "compat/no-business-id",
+      "message": "Call activity \"callOptions\" sets a businessId, which needs Camunda 8.10 or newer; this model targets Camunda 8.6.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.10 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "receiveNoRef"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Receive task \"receiveNoRef\" references no message.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "jobWorkerTask"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"jobWorkerTask\" is a job-worker user task; Camunda 8.6 deprecates those in favour of Camunda user tasks.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "jobWorkerTask"
+      ],
+      "fixable": false,
+      "id": "compat/task-schedule",
+      "message": "User task \"jobWorkerTask\" has dueDate \"tomorrow\", which is not an ISO 8601 date-time.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Write an ISO 8601 date-time (2026-01-01T09:00:00Z) or a FEEL expression starting with \"=\"."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "zeebeTask"
+      ],
+      "fixable": false,
+      "id": "compat/no-task-listeners",
+      "message": "User task \"zeebeTask\" has a zeebe:taskListeners, which needs Camunda 8.8 or newer; this model targets Camunda 8.6.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "zeebeTask"
+      ],
+      "fixable": false,
+      "id": "compat/priority-definition",
+      "message": "User task \"zeebeTask\" has priority \"150\"; Camunda takes a whole number from 0 to 100.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Use 0–100, or a FEEL expression starting with \"=\"."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "zeebeTask"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-form",
+      "message": "User task \"zeebeTask\" has a zeebe:formDefinition that must set exactly one of externalReference, formId.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set one of externalReference, formId."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "noForm"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"noForm\" has no zeebe:formDefinition.",
+      "processId": "tasks",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "multi"
+      ],
+      "fixable": false,
+      "id": "compat/no-before-all-execution-listener",
+      "message": "Service task \"multi\" has a \"beforeAll\" execution listener, which needs Camunda 8.10 or newer; this model targets Camunda 8.6.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.10 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "multi"
+      ],
+      "fixable": false,
+      "id": "compat/no-cancel-execution-listener",
+      "message": "Service task \"multi\" has a \"cancel\" execution listener, which needs Camunda 8.10 or newer; this model targets Camunda 8.6.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.10 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "multi"
+      ],
+      "fixable": false,
+      "id": "compat/no-execution-listener-headers",
+      "message": "Service task \"multi\" has an execution listener with headers, which need Camunda 8.10 or newer; this model targets Camunda 8.6.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.10 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "multi"
+      ],
+      "fixable": false,
+      "id": "compat/loop-characteristics",
+      "message": "Service task \"multi\" is multi-instance with no input collection.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set the input collection to iterate over."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "multi"
+      ],
+      "fixable": false,
+      "id": "compat/loop-characteristics",
+      "message": "Service task \"multi\" sets an output collection but no output element.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set both the output collection and the output element, or neither."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "multiNoZeebe"
+      ],
+      "fixable": false,
+      "id": "compat/no-job-priority-definition",
+      "message": "Service task \"multiNoZeebe\" has a zeebe:jobPriorityDefinition, which needs Camunda 8.10 or newer; this model targets Camunda 8.6.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.10 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "multiNoZeebe"
+      ],
+      "fixable": false,
+      "id": "compat/loop-characteristics",
+      "message": "Service task \"multiNoZeebe\" is multi-instance without a zeebe:loopCharacteristics.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Set the input collection to iterate over."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "complex"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Complex gateway \"complex\" is not supported by any Camunda 8 version.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Model it with an element Camunda 8 executes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "afterEventGateway"
+      ],
+      "fixable": false,
+      "id": "compat/event-based-gateway-target",
+      "message": "Receive task \"afterEventGateway\" follows an event-based gateway; Camunda only accepts catch events there.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Replace the receive task with a message intermediate catch event."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "tx"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Transaction \"tx\" is not supported by any Camunda 8 version.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Model it with an element Camunda 8 executes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "adHocEmpty"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Ad-hoc sub-process \"adHocEmpty\" needs Camunda 8.7 or newer; this model targets Camunda 8.6.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.7 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "flowConditionFromTask"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"flowConditionFromTask\" has a condition, but only flows leaving an exclusive or inclusive gateway may.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Remove the condition, or route the flow through a gateway."
+    }
+  ],
+  "platform": {
+    "id": "camunda-cloud",
+    "name": "Camunda Cloud",
+    "version": "8.6.0"
+  },
+  "total": 150
+}

@@ -1,0 +1,87 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "t",
+          "type": "serviceTask",
+          "jobType": "w"
+        },
+        {
+          "id": "b1",
+          "type": "boundaryEvent",
+          "attachedTo": "t",
+          "eventType": "timer",
+          "timerDuration": "PT1H"
+        },
+        {
+          "id": "b2",
+          "type": "boundaryEvent",
+          "attachedTo": "t",
+          "eventType": "error"
+        },
+        {
+          "id": "b3",
+          "type": "boundaryEvent",
+          "attachedTo": "t",
+          "eventType": "message",
+          "interrupting": false
+        },
+        {
+          "id": "b4",
+          "type": "boundaryEvent",
+          "attachedTo": "t",
+          "eventType": "signal"
+        },
+        {
+          "id": "b5",
+          "type": "boundaryEvent",
+          "attachedTo": "t",
+          "eventType": "escalation",
+          "interrupting": false
+        },
+        {
+          "id": "b6",
+          "type": "boundaryEvent",
+          "attachedTo": "t",
+          "eventType": "compensate"
+        },
+        {
+          "id": "b7",
+          "type": "boundaryEvent",
+          "attachedTo": "t",
+          "eventType": "conditional",
+          "condition": "= a"
+        },
+        {
+          "id": "b8",
+          "type": "boundaryEvent",
+          "attachedTo": "t",
+          "eventType": "cancel"
+        },
+        {
+          "id": "x1",
+          "type": "endEvent"
+        },
+        {
+          "id": "x2",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f1",
+          "from": "b1",
+          "to": "x1"
+        },
+        {
+          "id": "f2",
+          "from": "b2",
+          "to": "x2"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,176 @@
+{
+  "id": "_5033f8b0-0396-494b-a52c-787034420443",
+  "processes": [
+    {
+      "elements": [
+        {
+          "eventType": "message",
+          "id": "_cc9778bd-edd8-4df2-ba15-56c310f90e62",
+          "name": "Receive customer request",
+          "type": "startEvent"
+        },
+        {
+          "documentation": "First contact with customer",
+          "id": "_c73a5f4a-72f1-4e11-bb40-2f98da75fb9a",
+          "name": "Analyse customer request",
+          "type": "userTask"
+        },
+        {
+          "documentation": "Fridge replaced if still under warranty.",
+          "id": "_a92069f7-377b-4dbd-a1fd-1da071aabf6d",
+          "name": "Replace fridge",
+          "type": "userTask"
+        },
+        {
+          "id": "_177bd313-c6c9-4df5-8f82-313beb30d2eb",
+          "name": "Fridge replaced",
+          "type": "endEvent"
+        },
+        {
+          "id": "_604be023-654c-44df-a64c-365254a100cd",
+          "name": "Service type",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "_b3dc1906-d4d3-40c5-aaf6-5a74148ae887",
+          "name": "Emergency repair completed",
+          "type": "endEvent"
+        },
+        {
+          "id": "_2b6bc88e-d3be-4704-87d1-c264bf704589",
+          "name": "Service level",
+          "type": "exclusiveGateway"
+        },
+        {
+          "documentation": "Standard service level is common for most customer support.\nThis level guarantees the fridge will be repaired in a reasonable amount of time.\nCustomers may decide to raise the service level to Premium while waiting for the standard service to solve the issue.",
+          "id": "_d034722f-751d-4f37-a3d7-47993822e979",
+          "name": "Perform repair (standard level)",
+          "type": "userTask"
+        },
+        {
+          "documentation": "These customers get special service in case of damage.\nThis service level guarantees less than two days to solve the issue.",
+          "id": "_6a34496f-8cf7-42e5-88a9-d1af98cc3cba",
+          "name": "Perform repair (premium level)",
+          "type": "userTask"
+        },
+        {
+          "id": "_dcee5c64-3010-4ee5-b480-bce856e6f29c",
+          "name": "Repair completed",
+          "type": "endEvent"
+        },
+        {
+          "id": "_936c0bfa-5ebf-4546-8d1a-cce556148788",
+          "name": "Successful?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "documentation": "This is a special case for handling emergencies for clients such as Hospitals or Commercial fridges.",
+          "id": "_cd6f230f-13c3-4027-aa3e-57de601a1ab2",
+          "name": "Perform emergency repair",
+          "type": "subProcess"
+        },
+        {
+          "attachedTo": "_6a34496f-8cf7-42e5-88a9-d1af98cc3cba",
+          "eventType": "timer",
+          "id": "Bpmn_BoundaryEvent_sS9gABqGEeWDuOtG0oS24A",
+          "name": "2 hours",
+          "timerDuration": "PT2H",
+          "type": "boundaryEvent"
+        },
+        {
+          "attachedTo": "_d034722f-751d-4f37-a3d7-47993822e979",
+          "eventType": "message",
+          "id": "Bpmn_BoundaryEvent_LwKtwhqHEeWDuOtG0oS24A",
+          "type": "boundaryEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "_c73a5f4a-72f1-4e11-bb40-2f98da75fb9a",
+          "id": "_acb2aca3-8851-48f0-b127-7b3c9db5e18d",
+          "to": "_604be023-654c-44df-a64c-365254a100cd"
+        },
+        {
+          "from": "_604be023-654c-44df-a64c-365254a100cd",
+          "id": "_b99800c3-c340-460c-a43e-098014a365d0",
+          "name": "Warranty",
+          "to": "_a92069f7-377b-4dbd-a1fd-1da071aabf6d"
+        },
+        {
+          "from": "_604be023-654c-44df-a64c-365254a100cd",
+          "id": "_437e5969-1e61-4cb9-aa76-4f8854f32eeb",
+          "name": "Emergency service",
+          "to": "_cd6f230f-13c3-4027-aa3e-57de601a1ab2"
+        },
+        {
+          "from": "_604be023-654c-44df-a64c-365254a100cd",
+          "id": "_ada039b6-94dd-4a15-a6b1-c7fe662c64ee",
+          "name": "Regular repair service",
+          "to": "_2b6bc88e-d3be-4704-87d1-c264bf704589"
+        },
+        {
+          "from": "_2b6bc88e-d3be-4704-87d1-c264bf704589",
+          "id": "_cddf9325-a85b-4347-8c57-8b909fa77ae9",
+          "name": "Standard",
+          "to": "_d034722f-751d-4f37-a3d7-47993822e979"
+        },
+        {
+          "condition": "Service Level == 'Premium'",
+          "from": "_2b6bc88e-d3be-4704-87d1-c264bf704589",
+          "id": "_be893987-caec-4605-b078-bd96b7cd6c12",
+          "name": "Premium",
+          "to": "_6a34496f-8cf7-42e5-88a9-d1af98cc3cba"
+        },
+        {
+          "from": "_d034722f-751d-4f37-a3d7-47993822e979",
+          "id": "_435d9320-bbf4-48ad-aa56-16cb5483e95b",
+          "to": "_dcee5c64-3010-4ee5-b480-bce856e6f29c"
+        },
+        {
+          "from": "_6a34496f-8cf7-42e5-88a9-d1af98cc3cba",
+          "id": "_d54c5707-af7a-4b36-a059-46681bbf0004",
+          "to": "_dcee5c64-3010-4ee5-b480-bce856e6f29c"
+        },
+        {
+          "from": "_cd6f230f-13c3-4027-aa3e-57de601a1ab2",
+          "id": "_b22c01a4-1eef-4f52-9b16-a201a9621619",
+          "to": "_936c0bfa-5ebf-4546-8d1a-cce556148788"
+        },
+        {
+          "from": "_a92069f7-377b-4dbd-a1fd-1da071aabf6d",
+          "id": "_c5756bb9-6e6f-42d1-8799-c2d673499eb8",
+          "to": "_177bd313-c6c9-4df5-8f82-313beb30d2eb"
+        },
+        {
+          "from": "_936c0bfa-5ebf-4546-8d1a-cce556148788",
+          "id": "_cf380e47-1401-4e7e-b710-193b626e49eb",
+          "name": "yes",
+          "to": "_b3dc1906-d4d3-40c5-aaf6-5a74148ae887"
+        },
+        {
+          "from": "_936c0bfa-5ebf-4546-8d1a-cce556148788",
+          "id": "_3fb323d5-2c59-487a-af63-804208f6c5cb",
+          "name": "no",
+          "to": "_a92069f7-377b-4dbd-a1fd-1da071aabf6d"
+        },
+        {
+          "from": "_cc9778bd-edd8-4df2-ba15-56c310f90e62",
+          "id": "_a5af06ae-bd69-464d-bbaf-3d7418702d77",
+          "to": "_c73a5f4a-72f1-4e11-bb40-2f98da75fb9a"
+        },
+        {
+          "from": "Bpmn_BoundaryEvent_sS9gABqGEeWDuOtG0oS24A",
+          "id": "Bpmn_SequenceFlow_tcbpgBqGEeWDuOtG0oS24A",
+          "to": "_cd6f230f-13c3-4027-aa3e-57de601a1ab2"
+        },
+        {
+          "from": "Bpmn_BoundaryEvent_LwKtwhqHEeWDuOtG0oS24A",
+          "id": "Bpmn_SequenceFlow_-dQQwBqHEeWDuOtG0oS24A",
+          "to": "_6a34496f-8cf7-42e5-88a9-d1af98cc3cba"
+        }
+      ],
+      "id": "_8170787a-3207-434d-9bea-4787059f444f",
+      "name": "Fridge Repair Process"
+    }
+  ]
+}

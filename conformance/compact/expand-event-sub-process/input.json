@@ -1,0 +1,42 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "main",
+          "type": "task"
+        },
+        {
+          "id": "esp",
+          "type": "eventSubProcess",
+          "children": {
+            "elements": [
+              {
+                "id": "es",
+                "type": "startEvent",
+                "name": "Cancelled",
+                "eventType": "message",
+                "interrupting": false
+              },
+              {
+                "id": "ee",
+                "type": "endEvent",
+                "name": "Handled"
+              }
+            ],
+            "flows": [
+              {
+                "id": "g",
+                "from": "es",
+                "to": "ee"
+              }
+            ]
+          }
+        }
+      ],
+      "flows": []
+    }
+  ]
+}

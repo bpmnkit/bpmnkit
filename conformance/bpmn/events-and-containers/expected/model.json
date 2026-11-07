@@ -1,0 +1,458 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_1",
+      "plane": {
+        "bpmnElement": "Process_events",
+        "edges": [
+          {
+            "bpmnElement": "Flow_e1",
+            "id": "Flow_e1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 188,
+                "y": 120
+              },
+              {
+                "x": 240,
+                "y": 120
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_1",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 152,
+              "y": 102
+            },
+            "bpmnElement": "Start_e",
+            "id": "Start_e_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 240,
+              "y": 80
+            },
+            "bpmnElement": "Sub_work",
+            "id": "Sub_work_di",
+            "isExpanded": false,
+            "label": {},
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "errorCode": "BOOM",
+      "id": "Error_boom",
+      "name": "Boom",
+      "unknownAttributes": {}
+    }
+  ],
+  "escalations": [
+    {
+      "escalationCode": "UP",
+      "id": "Escalation_up",
+      "name": "Up",
+      "unknownAttributes": {}
+    }
+  ],
+  "id": "Definitions_events",
+  "messages": [
+    {
+      "id": "Message_wake",
+      "name": "Wake",
+      "unknownAttributes": {}
+    }
+  ],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "Start_e",
+          "incoming": [],
+          "outgoing": [
+            "Flow_e1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "Start_inner",
+              "incoming": [],
+              "outgoing": [
+                "Flow_i1"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "eventDefinitions": [
+                {
+                  "id": "TED_wait",
+                  "timeDuration": "PT5M",
+                  "timeDurationAttributes": {
+                    "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+                    "xsi:type": "bpmn:tFormalExpression"
+                  },
+                  "type": "timer"
+                }
+              ],
+              "extensionElements": [],
+              "id": "Catch_wait",
+              "incoming": [
+                "Flow_i1"
+              ],
+              "outgoing": [
+                "Flow_i2"
+              ],
+              "type": "intermediateCatchEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "End_inner",
+              "incoming": [
+                "Flow_i2"
+              ],
+              "outgoing": [],
+              "type": "endEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "Sub_work",
+          "incoming": [
+            "Flow_e1"
+          ],
+          "loopCharacteristics": {
+            "completionCondition": {
+              "attributes": {
+                "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+                "xsi:type": "bpmn:tFormalExpression"
+              },
+              "text": "=done >= 1"
+            },
+            "extensionElements": [
+              {
+                "attributes": {
+                  "inputCollection": "=items",
+                  "inputElement": "item",
+                  "outputCollection": "results",
+                  "outputElement": "=result"
+                },
+                "children": [],
+                "name": "zeebe:loopCharacteristics"
+              }
+            ],
+            "loopCardinality": {
+              "attributes": {
+                "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+                "xsi:type": "bpmn:tFormalExpression"
+              },
+              "text": "=count(items)"
+            }
+          },
+          "name": "Do the work",
+          "outgoing": [
+            "Flow_e2"
+          ],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "Flow_i1",
+              "sourceRef": "Start_inner",
+              "targetRef": "Catch_wait",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "Flow_i2",
+              "sourceRef": "Catch_wait",
+              "targetRef": "End_inner",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "type": "subProcess",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "Sub_work",
+          "eventDefinitions": [
+            {
+              "errorRef": "Error_boom",
+              "id": "EED_1",
+              "type": "error"
+            }
+          ],
+          "extensionElements": [],
+          "id": "Boundary_error",
+          "incoming": [],
+          "outgoing": [
+            "Flow_err"
+          ],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "Sub_work",
+          "cancelActivity": false,
+          "eventDefinitions": [
+            {
+              "id": "TED_late",
+              "timeCycle": "R/PT1H",
+              "timeCycleAttributes": {
+                "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+                "xsi:type": "bpmn:tFormalExpression"
+              },
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "Boundary_timer",
+          "incoming": [],
+          "outgoing": [
+            "Flow_late"
+          ],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "default": "Flow_no",
+          "extensionElements": [],
+          "id": "Gateway_check",
+          "incoming": [
+            "Flow_e2"
+          ],
+          "name": "Escalate?",
+          "outgoing": [
+            "Flow_yes",
+            "Flow_no"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "escalationRef": "Escalation_up",
+              "id": "EscED_1",
+              "type": "escalation"
+            }
+          ],
+          "extensionElements": [],
+          "id": "Throw_escalate",
+          "incoming": [
+            "Flow_yes"
+          ],
+          "outgoing": [
+            "Flow_e3"
+          ],
+          "type": "intermediateThrowEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "End_ok",
+          "incoming": [
+            "Flow_no",
+            "Flow_e3"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "TerED_1",
+              "type": "terminate"
+            }
+          ],
+          "extensionElements": [],
+          "id": "End_err",
+          "incoming": [
+            "Flow_err"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "End_late",
+          "incoming": [
+            "Flow_late"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [
+                {
+                  "id": "SED_1",
+                  "signalRef": "Signal_go",
+                  "type": "signal"
+                }
+              ],
+              "extensionElements": [],
+              "id": "Start_signal",
+              "incoming": [],
+              "isInterrupting": false,
+              "outgoing": [
+                "Flow_sig"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {
+                "isInterrupting": "false"
+              }
+            },
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "End_signal",
+              "incoming": [
+                "Flow_sig"
+              ],
+              "outgoing": [],
+              "type": "endEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "Sub_event",
+          "incoming": [],
+          "name": "On signal",
+          "outgoing": [],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "Flow_sig",
+              "sourceRef": "Start_signal",
+              "targetRef": "End_signal",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "triggeredByEvent": true,
+          "type": "subProcess",
+          "unknownAttributes": {
+            "triggeredByEvent": "true"
+          }
+        }
+      ],
+      "groups": [],
+      "id": "Process_events",
+      "isExecutable": true,
+      "name": "Events and containers",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_e1",
+          "sourceRef": "Start_e",
+          "targetRef": "Sub_work",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_e2",
+          "sourceRef": "Sub_work",
+          "targetRef": "Gateway_check",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=overdue"
+          },
+          "extensionElements": [],
+          "id": "Flow_yes",
+          "name": "Yes",
+          "sourceRef": "Gateway_check",
+          "targetRef": "Throw_escalate",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_no",
+          "name": "No",
+          "sourceRef": "Gateway_check",
+          "targetRef": "End_ok",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_e3",
+          "sourceRef": "Throw_escalate",
+          "targetRef": "End_ok",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_err",
+          "sourceRef": "Boundary_error",
+          "targetRef": "End_err",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_late",
+          "sourceRef": "Boundary_timer",
+          "targetRef": "End_late",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [
+    {
+      "id": "Signal_go",
+      "name": "Go",
+      "unknownAttributes": {}
+    }
+  ],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

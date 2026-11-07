@@ -1,0 +1,20 @@
+[
+  {
+    "decision": "d1",
+    "context": {
+      "customer": {
+        "t": "string",
+        "v": "gold"
+      }
+    }
+  },
+  {
+    "decision": "d1",
+    "context": {
+      "customer": {
+        "t": "string",
+        "v": "silver"
+      }
+    }
+  }
+]

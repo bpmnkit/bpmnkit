@@ -1,0 +1,11 @@
+{
+  "runs": {
+    "default": {},
+    "reuse-3": {
+      "reuseThreshold": 3
+    },
+    "reuse-1": {
+      "reuseThreshold": 1
+    }
+  }
+}

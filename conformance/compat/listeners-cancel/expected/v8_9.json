@@ -1,0 +1,76 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "proc"
+      ],
+      "fixable": false,
+      "id": "compat/no-cancel-execution-listener",
+      "message": "Process \"proc\" has a \"cancel\" execution listener, which needs Camunda 8.10 or newer; this model targets Camunda 8.9.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.10 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "compat/no-cancel-execution-listener",
+      "message": "Service task \"T\" has a \"cancel\" execution listener, which needs Camunda 8.10 or newer; this model targets Camunda 8.9.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.10 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "compat/duplicate-execution-listeners",
+      "message": "Service task \"T\" has two \"cancel\" execution listeners of type \"l\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Remove the duplicate listener."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "compat/no-cancel-execution-listener",
+      "message": "Service task \"T\" has a \"cancel\" execution listener, which needs Camunda 8.10 or newer; this model targets Camunda 8.9.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.10 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "compat/execution-listener",
+      "message": "Service task \"T\" has an execution listener with no job type.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set the listener's type."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "compat/no-execution-listener-headers",
+      "message": "Service task \"T\" has an execution listener with headers, which need Camunda 8.10 or newer; this model targets Camunda 8.9.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.10 or newer (modeler:executionPlatformVersion), or remove it."
+    }
+  ]
+}

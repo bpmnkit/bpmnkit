@@ -1,0 +1,235 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_p",
+      "plane": {
+        "bpmnElement": "p",
+        "edges": [
+          {
+            "bpmnElement": "Flow_s_call",
+            "id": "Flow_s_call_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 36,
+                "y": 40
+              },
+              {
+                "x": 96,
+                "y": 40
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_call_e",
+            "id": "Flow_call_e_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 196,
+                "y": 40
+              },
+              {
+                "x": 256,
+                "y": 40
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_p",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 0,
+              "y": 22
+            },
+            "bpmnElement": "s",
+            "id": "s_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 96,
+              "y": 0
+            },
+            "bpmnElement": "call",
+            "id": "call_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 256,
+              "y": 22
+            },
+            "bpmnElement": "e",
+            "id": "e_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "s",
+          "incoming": [],
+          "outgoing": [
+            "Flow_s_call"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "io.camunda:http-json:1"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "resultVariable",
+                    "value": "res"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "noAuth",
+                    "target": "authentication.type"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "POST",
+                    "target": "method"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "https://api.example.com",
+                    "target": "url"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "={a: 1}",
+                    "target": "body"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "20",
+                    "target": "connectionTimeoutInSeconds"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                },
+                {
+                  "attributes": {
+                    "source": "20",
+                    "target": "readTimeoutInSeconds"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            }
+          ],
+          "id": "call",
+          "incoming": [
+            "Flow_s_call"
+          ],
+          "outgoing": [
+            "Flow_call_e"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {
+            "zeebe:modelerTemplate": "io.camunda.connectors.HttpJson.v2",
+            "zeebe:modelerTemplateVersion": "18"
+          }
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e",
+          "incoming": [
+            "Flow_call_e"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "p",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_s_call",
+          "sourceRef": "s",
+          "targetRef": "call",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_call_e",
+          "sourceRef": "call",
+          "targetRef": "e",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

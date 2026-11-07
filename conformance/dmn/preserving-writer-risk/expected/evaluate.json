@@ -1,0 +1,32 @@
+[
+  {
+    "result": {
+      "t": "string",
+      "v": "low"
+    },
+    "evaluated": [
+      {
+        "decision": "risk",
+        "result": {
+          "t": "string",
+          "v": "low"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "high"
+    },
+    "evaluated": [
+      {
+        "decision": "risk",
+        "result": {
+          "t": "string",
+          "v": "high"
+        }
+      }
+    ]
+  }
+]

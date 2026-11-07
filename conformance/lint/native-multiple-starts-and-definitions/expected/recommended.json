@@ -1,0 +1,256 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 16,
+    "info": 0,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Started\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start2"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"start2\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "start2"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "startEvent element \"start2\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "multi"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "intermediateCatchEvent element \"multi\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"start\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "a"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"a\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"end\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "start2"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"start2\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "multi"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"multi\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f1"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f1\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f2"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f2\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-disconnected",
+      "category": "flow",
+      "elementIds": [
+        "start2"
+      ],
+      "fixable": false,
+      "id": "flow/disconnected",
+      "message": "Element \"start2\" (startEvent) is not connected to any sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to the process flow or remove it."
+    },
+    {
+      "bpmnlintRule": "no-disconnected",
+      "category": "flow",
+      "elementIds": [
+        "multi"
+      ],
+      "fixable": false,
+      "id": "flow/disconnected",
+      "message": "Element \"multi\" (intermediateCatchEvent) is not connected to any sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to the process flow or remove it."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "start2"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"start2\" (startEvent) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "multi"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"multi\" (intermediateCatchEvent) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-start",
+      "category": "flow",
+      "elementIds": [
+        "multi"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-start",
+      "message": "Element \"multi\" (intermediateCatchEvent) has no incoming sequence flow, so it starts the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it from a start event or an upstream element."
+    },
+    {
+      "bpmnlintRule": "single-blank-start-event",
+      "category": "flow",
+      "elementIds": [
+        "proc"
+      ],
+      "fixable": false,
+      "id": "flow/multiple-blank-start-events",
+      "message": "Process \"proc\" has 2 blank start events.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Keep one blank start event per scope; give the others a trigger or remove them."
+    },
+    {
+      "bpmnlintRule": "single-event-definition",
+      "category": "flow",
+      "elementIds": [
+        "multi"
+      ],
+      "fixable": false,
+      "id": "flow/multiple-event-definitions",
+      "message": "Event \"multi\" has 2 event definitions.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Keep one event definition per event; split the others into separate events."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 18
+}

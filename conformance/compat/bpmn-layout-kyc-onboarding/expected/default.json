@@ -1,0 +1,64 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "uploadDocument"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Upload Identity Document\" is a job-worker user task; Camunda 8.9 deprecates those in favour of Camunda user tasks.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "complianceReview"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Enhanced Due Diligence Review\" is a job-worker user task; Camunda 8.9 deprecates those in favour of Camunda user tasks.",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "riskClassification"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Business rule task \"Final Risk Classification\" has no implementation; Camunda needs a zeebe:calledDecision or zeebe:taskDefinition.",
+      "processId": "KycOnboarding",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <source> uses deprecated secret expression format",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Write the secret as {{secrets.NAME}}."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "screening"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <source> uses deprecated secret expression format",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Write the secret as {{secrets.NAME}}."
+    }
+  ]
+}

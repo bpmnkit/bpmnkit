@@ -1,0 +1,724 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 36,
+    "info": 2,
+    "warning": 20
+  },
+  "diagnostics": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "s1"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"s1\" (startEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "s2"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"s2\" (startEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "s3"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"s3\" (startEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"svc\" (serviceTask) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"svc\" (serviceTask) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "snd"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"snd\" (sendTask) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "snd"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"snd\" (sendTask) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "br"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"br\" (businessRuleTask) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "br"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"br\" (businessRuleTask) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "br2"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"br2\" (businessRuleTask) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "br2"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"br2\" (businessRuleTask) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "br3"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"br3\" (businessRuleTask) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "br3"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"br3\" (businessRuleTask) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ca"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"ca\" (callActivity) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ca"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"ca\" (callActivity) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ca2"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"ca2\" (callActivity) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ca2"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"ca2\" (callActivity) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ic1"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"ic1\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ic1"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"ic1\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ic2"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"ic2\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ic2"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"ic2\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ic3"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"ic3\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ic3"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"ic3\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ic4"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"ic4\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ic4"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"ic4\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "rt1"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"rt1\" (receiveTask) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "rt1"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"rt1\" (receiveTask) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "rt2"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"rt2\" (receiveTask) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "rt2"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"rt2\" (receiveTask) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "rt3"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"rt3\" (receiveTask) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "rt3"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"rt3\" (receiveTask) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "host"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"host\" (task) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "host"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"host\" (task) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "bm"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"bm\" (boundaryEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "bm"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"bm\" (boundaryEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "bmk"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"bmk\" (boundaryEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "bmk"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"bmk\" (boundaryEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"end\" (endEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "ca"
+      ],
+      "fixable": false,
+      "id": "pattern/call-activity-no-error-boundary",
+      "message": "Call activity \"Call none\" has no error boundary event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle errors propagated from the called process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "ca2"
+      ],
+      "fixable": false,
+      "id": "pattern/call-activity-no-error-boundary",
+      "message": "Call activity \"Call ok\" has no error boundary event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle errors propagated from the called process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "bm"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"host\" has no outgoing sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "bmk"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"host\" has no outgoing sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "br2"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:r",
+      "message": "Variable \"r\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"r\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "br2"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:br2",
+      "message": "Element \"br2\" produces: r.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "s1"
+      ],
+      "fixable": false,
+      "id": "deploy/message-start-no-name",
+      "message": "Message start event \"Msg start\" has no message name.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a message name — Camunda 8 refuses to deploy an unnamed message reference."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "s3"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"Timer start\" has 1 event definition(s) without an id.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"No type\" (serviceTask) has no zeebe:taskDefinition type.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "snd"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Send no type\" (sendTask) has no zeebe:taskDefinition type.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "br"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Rule none\" (businessRuleTask) has neither a zeebe:taskDefinition type nor a zeebe:calledDecision.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a decisionId or a job type."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "ca"
+      ],
+      "fixable": false,
+      "id": "deploy/call-activity-no-process",
+      "message": "Call activity \"Call none\" has no zeebe:calledElement processId.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set the process id to call."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "ic1"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"Catch no corr\" (intermediateCatchEvent) has no zeebe:subscription correlationKey.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "ic4"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"Catch no id\" has 1 event definition(s) without an id.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "rt1"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"Receive no corr\" (receiveTask) has no zeebe:subscription correlationKey.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "bm"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"bm\" (boundaryEvent) has no zeebe:subscription correlationKey.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "s3"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer start event \"Timer start\" has no timer value; set one of timeCycle, timeDate.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set when the timer fires."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "ic2"
+      ],
+      "fixable": false,
+      "id": "compat/subscription",
+      "message": "Message intermediate catch event \"Catch ext corr\" carries its zeebe:subscription itself; Camunda Modeler expects it on message \"M1\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Move the zeebe:subscription onto the bpmn:message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "rt3"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Receive task \"Receive no msg\" references no message.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "bmk"
+      ],
+      "fixable": false,
+      "id": "compat/subscription",
+      "message": "Message boundary event \"bmk\" carries its zeebe:subscription itself; Camunda Modeler expects it on message \"M3\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Move the zeebe:subscription onto the bpmn:message."
+    }
+  ],
+  "platform": {
+    "id": "camunda-cloud",
+    "name": "Camunda Cloud",
+    "version": "8.6.0"
+  },
+  "total": 58
+}

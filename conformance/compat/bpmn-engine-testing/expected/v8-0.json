@@ -1,0 +1,76 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "wait_new_year"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer intermediate catch event \"wait_new_year\" uses timeDate, which needs Camunda 8.3 or newer on this event; this model targets Camunda 8.0.",
+      "processId": "date-process",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "review"
+      ],
+      "fixable": false,
+      "id": "compat/no-zeebe-user-task",
+      "message": "User task \"Review\" has a zeebe:userTask, which needs Camunda 8.5 or newer; this model targets Camunda 8.0.",
+      "processId": "review-process",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.5 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "review"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Review\" has no zeebe:formDefinition.",
+      "processId": "review-process",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "await_confirmation"
+      ],
+      "fixable": false,
+      "id": "compat/subscription",
+      "message": "Message \"payment-confirmed\" used by Message intermediate catch event \"await_confirmation\" has no zeebe:subscription.",
+      "processId": "message-process",
+      "severity": "error",
+      "suggestion": "Add a zeebe:subscription with a correlationKey to the message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "branch_a"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"branch_a\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "parallel-process",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "branch_b"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"branch_b\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "parallel-process",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="Definitions_multi" name="Multiple inputs and outputs" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="shipping" name="Shipping">
+    <decisionTable id="dt" hitPolicy="RULE ORDER">
+      <input id="in_weight" label="Weight (kg)">
+        <inputExpression id="ie_weight" typeRef="number"><text>order.weight</text></inputExpression>
+      </input>
+      <input id="in_country" label="Country">
+        <inputExpression id="ie_country" typeRef="string"><text>order.country</text></inputExpression>
+      </input>
+      <input id="in_express" label="Express">
+        <inputExpression id="ie_express" typeRef="boolean"><text>express</text></inputExpression>
+      </input>
+      <input id="in_date" label="Ship date">
+        <inputExpression id="ie_date" typeRef="date"><text>date(shipDate)</text></inputExpression>
+      </input>
+      <output id="out_carrier" label="Carrier" name="carrier" typeRef="string"/>
+      <output id="out_price" label="Price" name="price" typeRef="number"/>
+      <rule id="r1">
+        <description>Light parcels inside the EU</description>
+        <inputEntry id="r1_1"><text>[0..5]</text></inputEntry>
+        <inputEntry id="r1_2"><text>"DE","AT","FR"</text></inputEntry>
+        <inputEntry id="r1_3"><text>false</text></inputEntry>
+        <inputEntry id="r1_4"><text></text></inputEntry>
+        <outputEntry id="r1_o1"><text>"Post"</text></outputEntry>
+        <outputEntry id="r1_o2"><text>4.9</text></outputEntry>
+      </rule>
+      <rule id="r2">
+        <inputEntry id="r2_1"><text>&gt; 5</text></inputEntry>
+        <inputEntry id="r2_2"><text>not("US")</text></inputEntry>
+        <inputEntry id="r2_3"><text>-</text></inputEntry>
+        <inputEntry id="r2_4"><text>&lt; date("2030-01-01")</text></inputEntry>
+        <outputEntry id="r2_o1"><text>"Freight"</text></outputEntry>
+        <outputEntry id="r2_o2"><text>weight * 1.5</text></outputEntry>
+      </rule>
+      <rule id="r3">
+        <inputEntry id="r3_1"><text>-</text></inputEntry>
+        <inputEntry id="r3_2"><text>-</text></inputEntry>
+        <inputEntry id="r3_3"><text>true</text></inputEntry>
+        <inputEntry id="r3_4"><text>-</text></inputEntry>
+        <outputEntry id="r3_o1"><text>"Express"</text></outputEntry>
+        <outputEntry id="r3_o2"><text>19.9</text></outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

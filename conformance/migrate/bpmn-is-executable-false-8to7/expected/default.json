@@ -1,0 +1,6 @@
+{
+  "report": {
+    "findings": []
+  },
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"Process_1\" isExecutable=\"false\">\n    <bpmn:startEvent id=\"Start\"/>\n  </bpmn:process>\n  <bpmn:process id=\"Process_2\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"Start2\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+}

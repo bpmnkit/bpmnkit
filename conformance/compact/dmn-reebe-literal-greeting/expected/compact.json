@@ -1,0 +1,14 @@
+{
+  "decisions": [
+    {
+      "id": "greet",
+      "inputs": [],
+      "name": "Greet",
+      "outputs": [],
+      "rules": []
+    }
+  ],
+  "id": "d",
+  "inputData": [],
+  "name": "d"
+}

@@ -66,6 +66,13 @@ export function markExplicitFlowId(flow: BpmnSequenceFlow): void {
 	explicitIds.add(flow)
 }
 
+/** Gives `to`, a copy of `flow`, the builder-side facts recorded for `flow`. */
+export function copyFlowTags(flow: BpmnSequenceFlow, to: BpmnSequenceFlow): void {
+	const branchId = branchIds.get(flow)
+	if (branchId !== undefined) branchIds.set(to, branchId)
+	if (explicitIds.has(flow)) explicitIds.add(to)
+}
+
 /** A scope's contents, as far as id checking needs: sub-processes carry both lists. */
 interface IdScope {
 	flowElements: BpmnFlowElement[]

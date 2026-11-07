@@ -1,0 +1,84 @@
+{
+  "runs": {
+    "default": {},
+    "all": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:all"
+      }
+    },
+    "recommended": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:recommended"
+      }
+    },
+    "ad-hoc-sub-process-error": {
+      "bpmnlintrc": {
+        "rules": {
+          "ad-hoc-sub-process": "error"
+        }
+      }
+    },
+    "ad-hoc-sub-process-off": {
+      "bpmnlintrc": {
+        "rules": {
+          "ad-hoc-sub-process": "off"
+        }
+      }
+    },
+    "no-disconnected-error": {
+      "bpmnlintrc": {
+        "rules": {
+          "no-disconnected": "error"
+        }
+      }
+    },
+    "no-disconnected-off": {
+      "bpmnlintrc": {
+        "rules": {
+          "no-disconnected": "off"
+        }
+      }
+    },
+    "ad-hoc-sub-process-warn-delegated": {
+      "bpmnlintrc": {
+        "rules": {
+          "ad-hoc-sub-process": "warn"
+        }
+      },
+      "bpmnlintDelegated": true
+    },
+    "no-disconnected-warn-delegated": {
+      "bpmnlintrc": {
+        "rules": {
+          "no-disconnected": "warn"
+        }
+      },
+      "bpmnlintDelegated": true
+    },
+    "standard-size-options": {
+      "bpmnlintrc": {
+        "rules": {
+          "standard-size": [
+            "error",
+            {
+              "bpmn:Task": {
+                "width": 120,
+                "height": 80
+              },
+              "bpmn:EndEvent": {
+                "width": 40,
+                "height": 40
+              }
+            }
+          ]
+        }
+      }
+    },
+    "only-delegated": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:all"
+      },
+      "bpmnlintDelegated": true
+    }
+  }
+}

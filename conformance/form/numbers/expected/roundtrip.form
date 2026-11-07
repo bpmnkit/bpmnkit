@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 16.5,
+  "id": "f",
+  "components": [
+    {
+      "label": "N",
+      "type": "number",
+      "id": "n1",
+      "key": "n",
+      "defaultValue": 0.1
+    },
+    {
+      "label": "N",
+      "type": "number",
+      "id": "n2",
+      "key": "n",
+      "defaultValue": 1e+21
+    },
+    {
+      "label": "N",
+      "type": "number",
+      "id": "n3",
+      "key": "n",
+      "defaultValue": 0
+    },
+    {
+      "height": 0.000001,
+      "type": "spacer",
+      "id": "n4"
+    },
+    {
+      "height": 1.5e-7,
+      "type": "spacer",
+      "id": "n5"
+    },
+    {
+      "height": 123456789012345680000,
+      "type": "spacer",
+      "id": "n6"
+    },
+    {
+      "type": "iframe",
+      "id": "n7",
+      "height": 5e-324
+    },
+    {
+      "type": "dynamiclist",
+      "id": "n8",
+      "components": [],
+      "defaultRepetitions": 3
+    },
+    {
+      "type": "table",
+      "id": "n9",
+      "rowCount": 1e+300
+    },
+    {
+      "type": "future",
+      "id": "n10",
+      "big": 12345678901234567000,
+      "exp": 25000000000,
+      "neg": -3.25
+    }
+  ],
+  "type": "default"
+}

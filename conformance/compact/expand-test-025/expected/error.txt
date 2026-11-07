@@ -1,0 +1,1 @@
+expand: invalid CompactDiagram — flow "fx" references "a", which is not an element in "sub"

@@ -1,0 +1,183 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_P",
+      "plane": {
+        "bpmnElement": "P",
+        "edges": [
+          {
+            "bpmnElement": "if1",
+            "id": "if1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 86,
+                "y": 118
+              },
+              {
+                "x": 146,
+                "y": 118
+              }
+            ]
+          },
+          {
+            "bpmnElement": "if2",
+            "id": "if2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 246,
+                "y": 118
+              },
+              {
+                "x": 306,
+                "y": 118
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_P",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 208,
+              "width": 392,
+              "x": 0,
+              "y": 0
+            },
+            "bpmnElement": "sp",
+            "id": "sp_di",
+            "isExpanded": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 50,
+              "y": 100
+            },
+            "bpmnElement": "is",
+            "id": "is_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 146,
+              "y": 78
+            },
+            "bpmnElement": "it",
+            "id": "it_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 306,
+              "y": 100
+            },
+            "bpmnElement": "ie",
+            "id": "ie_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "D",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "is",
+              "incoming": [],
+              "outgoing": [
+                "if1"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "it",
+              "incoming": [
+                "if1"
+              ],
+              "outgoing": [
+                "if2"
+              ],
+              "type": "task",
+              "unknownAttributes": {}
+            },
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "ie",
+              "incoming": [
+                "if2"
+              ],
+              "outgoing": [],
+              "type": "endEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "sp",
+          "incoming": [],
+          "name": "Sub",
+          "outgoing": [],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "if1",
+              "sourceRef": "is",
+              "targetRef": "it",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "if2",
+              "sourceRef": "it",
+              "targetRef": "ie",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "type": "subProcess",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "P",
+      "isExecutable": true,
+      "sequenceFlows": [],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

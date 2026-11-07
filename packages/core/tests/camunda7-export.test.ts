@@ -93,6 +93,16 @@ describe("convertCamunda8To7", () => {
 		expect(out).not.toMatch(/zeebe|modeler/)
 	})
 
+	it("converts a multi-instance loop that has an id", () => {
+		const { out } = run(
+			c8(
+				'<bpmn:task id="t"><bpmn:multiInstanceLoopCharacteristics id="m" isSequential="false"/></bpmn:task>',
+			),
+		)
+		expect(out).toContain('id="m"')
+		expect(out).not.toMatch(/zeebe|modeler/)
+	})
+
 	it("does not mutate the input", () => {
 		const defs = Bpmn.parse(
 			c8(

@@ -1,0 +1,42 @@
+{
+  "id": "Defs_1",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "s",
+          "type": "startEvent"
+        },
+        {
+          "assignee": "=manager",
+          "candidateGroups": "sales,support",
+          "candidateUsers": "alice",
+          "dueDate": "2030-01-01T00:00:00Z",
+          "followUpDate": "=now()",
+          "formId": "approve-form",
+          "id": "u",
+          "name": "Approve",
+          "priority": 75,
+          "type": "userTask"
+        },
+        {
+          "id": "e",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "s",
+          "id": "f1",
+          "to": "u"
+        },
+        {
+          "from": "u",
+          "id": "f2",
+          "to": "e"
+        }
+      ],
+      "id": "p"
+    }
+  ]
+}

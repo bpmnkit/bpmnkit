@@ -1,0 +1,12 @@
+{
+	"kind": "bpmn",
+	"input": "builder/from-noop/input.bpmn",
+	"script": [
+		["from","proc"],
+		["at","open"],
+		["serviceTask","n",{"name":"n","taskType":"n"}],
+		["endEvent","z"],
+		["withAutoLayout"],
+		["build"]
+	]
+}

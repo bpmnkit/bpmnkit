@@ -1,0 +1,124 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_P",
+      "plane": {
+        "bpmnElement": "P",
+        "edges": [],
+        "id": "BPMNPlane_P",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 0,
+              "y": 0
+            },
+            "bpmnElement": "t",
+            "id": "t_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 36,
+              "x": 32,
+              "y": 160
+            },
+            "bpmnElement": "do",
+            "id": "do_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 36,
+              "x": 32,
+              "y": 290
+            },
+            "bpmnElement": "ref",
+            "id": "ref_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 25,
+              "y": 420
+            },
+            "bpmnElement": "ds",
+            "id": "ds_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "D",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "extensionElements": [],
+          "id": "t",
+          "incoming": [],
+          "outgoing": [],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "do",
+          "incoming": [],
+          "isCollection": true,
+          "name": "Order",
+          "outgoing": [],
+          "type": "dataObject",
+          "unknownAttributes": {}
+        },
+        {
+          "dataObjectRef": "do",
+          "extensionElements": [],
+          "id": "ref",
+          "incoming": [],
+          "outgoing": [],
+          "type": "dataObjectReference",
+          "unknownAttributes": {}
+        },
+        {
+          "dataStoreRef": "Store_1",
+          "extensionElements": [],
+          "id": "ds",
+          "incoming": [],
+          "name": "DB",
+          "outgoing": [],
+          "type": "dataStoreReference",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "P",
+      "isExecutable": true,
+      "sequenceFlows": [],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

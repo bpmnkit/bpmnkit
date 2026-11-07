@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_host</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="host" name="host">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="host"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_s_host</bpmn:incoming>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="b" attachedToRef="host">
+      <bpmn:compensateEventDefinition id="b_CompensateEventDefinition"/>
+    </bpmn:boundaryEvent>
+    <bpmn:serviceTask id="undo" name="undo" isForCompensation="true">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="undo"/>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_s_host" sourceRef="s" targetRef="host"/>
+    <bpmn:association id="Association_0000002" sourceRef="b" targetRef="undo" associationDirection="One"/>
+  </bpmn:process>
+</bpmn:definitions>
+

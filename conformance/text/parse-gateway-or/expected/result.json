@@ -1,0 +1,100 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "g",
+            "name": "Which?",
+            "type": "inclusiveGateway"
+          },
+          {
+            "id": "x",
+            "name": "X",
+            "type": "task"
+          },
+          {
+            "id": "j",
+            "type": "inclusiveGateway"
+          },
+          {
+            "id": "y",
+            "name": "Y",
+            "type": "task"
+          },
+          {
+            "id": "z",
+            "name": "Z",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "g"
+          },
+          {
+            "condition": "= a",
+            "from": "g",
+            "id": "Flow_2",
+            "name": "A",
+            "to": "x"
+          },
+          {
+            "from": "x",
+            "id": "Flow_3",
+            "to": "j"
+          },
+          {
+            "condition": "= b",
+            "from": "g",
+            "id": "Flow_4",
+            "name": "B",
+            "to": "y"
+          },
+          {
+            "from": "y",
+            "id": "Flow_5",
+            "to": "j"
+          },
+          {
+            "from": "g",
+            "id": "Flow_6",
+            "isDefault": true,
+            "name": "C",
+            "to": "z"
+          },
+          {
+            "from": "z",
+            "id": "Flow_7",
+            "to": "j"
+          },
+          {
+            "from": "j",
+            "id": "Flow_8",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

@@ -1,0 +1,230 @@
+{
+  "findings": [
+    {
+      "category": "pattern",
+      "elementIds": [
+        "fork"
+      ],
+      "fixable": false,
+      "id": "pattern/parallel-variable-conflict",
+      "message": "Parallel branches from gateway \"Fork\" both write to: shared.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Last writer wins — result is non-deterministic. Use distinct variable names per branch."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "single"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-single-outgoing",
+      "message": "Exclusive gateway \"One way?\" has only one outgoing flow and is a pass-through.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Remove this gateway and connect its source directly to its target."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"S\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b0"
+      ],
+      "fixable": false,
+      "id": "pattern/timer-duration-zero",
+      "message": "Timer boundary on \"t0\" has a duration of zero — it will fire immediately.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a meaningful duration (e.g. PT1H for 1 hour) to avoid instant firing."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b1"
+      ],
+      "fixable": false,
+      "id": "pattern/timer-duration-zero",
+      "message": "Timer boundary on \"t0\" has a duration of zero — it will fire immediately.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a meaningful duration (e.g. PT1H for 1 hour) to avoid instant firing."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b3"
+      ],
+      "fixable": false,
+      "id": "pattern/timer-duration-zero",
+      "message": "Timer boundary on \"u\" has a duration of zero — it will fire immediately.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a meaningful duration (e.g. PT1H for 1 hour) to avoid instant firing."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b4"
+      ],
+      "fixable": false,
+      "id": "pattern/timer-duration-zero",
+      "message": "Timer boundary on \"u\" has a duration of zero — it will fire immediately.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a meaningful duration (e.g. PT1H for 1 hour) to avoid instant firing."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b5"
+      ],
+      "fixable": false,
+      "id": "pattern/timer-duration-zero",
+      "message": "Timer boundary on \"u\" has a duration of zero — it will fire immediately.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a meaningful duration (e.g. PT1H for 1 hour) to avoid instant firing."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b6"
+      ],
+      "fixable": false,
+      "id": "pattern/timer-duration-zero",
+      "message": "Timer boundary on \"u\" has a duration of zero — it will fire immediately.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a meaningful duration (e.g. PT1H for 1 hour) to avoid instant firing."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b1"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"t0\" has no outgoing sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b2"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"t0\" has no outgoing sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b3"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"u\" has no outgoing sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b4"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"u\" has no outgoing sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b5"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"u\" has no outgoing sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "b6"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"u\" has no outgoing sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "ta1"
+      ],
+      "fixable": false,
+      "id": "pattern/empty-annotation",
+      "message": "Text annotation \"ta1\" is empty.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Fill in the annotation or remove it to keep the diagram clean."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "ta2"
+      ],
+      "fixable": false,
+      "id": "pattern/empty-annotation",
+      "message": "Text annotation \"ta2\" is empty.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Fill in the annotation or remove it to keep the diagram clean."
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 0,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 0,
+      "naming": 0,
+      "pattern": 17,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 13,
+      "info": 2,
+      "warning": 2
+    },
+    "total": 17
+  }
+}

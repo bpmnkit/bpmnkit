@@ -1,0 +1,175 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "review",
+            "name": "Review claim",
+            "type": "userTask"
+          },
+          {
+            "id": "pay",
+            "name": "Pay",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "Paid",
+            "type": "endEvent"
+          },
+          {
+            "id": "e2",
+            "name": "Rejected",
+            "type": "endEvent"
+          },
+          {
+            "eventType": "message",
+            "id": "s2",
+            "name": "Update",
+            "type": "startEvent"
+          },
+          {
+            "id": "both",
+            "name": "Record update",
+            "type": "task"
+          },
+          {
+            "id": "a",
+            "name": "A",
+            "type": "task"
+          },
+          {
+            "id": "e3",
+            "name": "Done",
+            "type": "endEvent"
+          },
+          {
+            "id": "b",
+            "name": "B",
+            "type": "task"
+          },
+          {
+            "id": "review_split",
+            "name": "Review claim outcome?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "both_split",
+            "type": "parallelGateway"
+          },
+          {
+            "id": "e3_join",
+            "type": "parallelGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "review"
+          },
+          {
+            "condition": "= reviewClaimOutcome = \"Approved\"",
+            "from": "review_split",
+            "id": "Flow_2",
+            "name": "Approved",
+            "to": "pay"
+          },
+          {
+            "from": "pay",
+            "id": "Flow_3",
+            "to": "e"
+          },
+          {
+            "from": "review_split",
+            "id": "Flow_4",
+            "isDefault": true,
+            "name": "Rejected",
+            "to": "e2"
+          },
+          {
+            "from": "s2",
+            "id": "Flow_5",
+            "to": "both"
+          },
+          {
+            "from": "both_split",
+            "id": "Flow_6",
+            "to": "a"
+          },
+          {
+            "from": "a",
+            "id": "Flow_7",
+            "to": "e3_join"
+          },
+          {
+            "from": "both_split",
+            "id": "Flow_8",
+            "to": "b"
+          },
+          {
+            "from": "b",
+            "id": "Flow_9",
+            "to": "e3_join"
+          },
+          {
+            "from": "review",
+            "id": "Flow_10",
+            "to": "review_split"
+          },
+          {
+            "from": "both",
+            "id": "Flow_11",
+            "to": "both_split"
+          },
+          {
+            "from": "e3_join",
+            "id": "Flow_12",
+            "to": "e3"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "split the flows out of \"review\" with xor gateway \"review_split\"",
+    "split the flows out of \"both\" with and gateway \"both_split\"",
+    "joined 2 flows into \"e3\" with and gateway \"e3_join\"",
+    "made review_split > e2 the default branch of \"review_split\"",
+    "gave review_split > pay the condition \"= reviewClaimOutcome = \"Approved\"\"",
+    "named 1 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": [
+    {
+      "draft": "At \"Review claim outcome?\", decide on ",
+      "elementId": "review_split",
+      "options": [],
+      "text": "\"Review claim outcome?\" decides on \"reviewClaimOutcome\", a variable the diagram made up. What data decides it?"
+    },
+    {
+      "draft": "After \"Record update\", ",
+      "elementId": "both_split",
+      "options": [
+        {
+          "change": "After \"Record update\", only one of \"A\" and \"B\" happens: decide which with an xor gateway.",
+          "label": "Only one of them"
+        },
+        {
+          "change": "After \"Record update\", do \"A\" and \"B\" one after the other, not at the same time.",
+          "label": "One after the other"
+        }
+      ],
+      "text": "After \"Record update\", \"A\" and \"B\" run at the same time. Is that right?"
+    }
+  ]
+}

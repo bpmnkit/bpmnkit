@@ -1,0 +1,23 @@
+{
+  "id": "esc \"quoted\" \\ / é 😀",
+  "components": [
+    {
+      "text": "line1\nline2\ttab \u0001 \u001f \b \f \r    <>&'",
+      "type": "text",
+      "id": "t"
+    },
+    {
+      "label": "é中😀",
+      "type": "textfield",
+      "id": "u",
+      "key": "k\u0000x",
+      "defaultValue": ""
+    },
+    {
+      "type": "x\ny",
+      "id": "v",
+      "raw": " /"
+    }
+  ],
+  "type": "default"
+}

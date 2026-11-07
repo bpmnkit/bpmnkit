@@ -1,10 +1,10 @@
+use crate::app::ApiState;
+use crate::error::{ApiError, ApiResult};
 use axum::extract::State;
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::Json;
 use serde_json::json;
-use crate::app::ApiState;
-use crate::error::{ApiError, ApiResult};
 
 fn not_implemented() -> impl IntoResponse {
     (
@@ -74,10 +74,19 @@ pub async fn evaluate_decision(
     Json(body): Json<serde_json::Value>,
 ) -> ApiResult<impl IntoResponse> {
     let payload = evaluation_payload(&body)?;
-    let tenant_id = payload["tenantId"].as_str().filter(|t| !t.is_empty()).unwrap_or("<default>").to_string();
+    let tenant_id = payload["tenantId"]
+        .as_str()
+        .filter(|t| !t.is_empty())
+        .unwrap_or("<default>")
+        .to_string();
     let result = state
         .engine
-        .send_command("DECISION_EVALUATION".to_string(), "EVALUATE".to_string(), payload, tenant_id)
+        .send_command(
+            "DECISION_EVALUATION".to_string(),
+            "EVALUATE".to_string(),
+            payload,
+            tenant_id,
+        )
         .await
         .map_err(ApiError::EngineError)?;
     let failure = result["failureMessage"].as_str().filter(|m| !m.is_empty());

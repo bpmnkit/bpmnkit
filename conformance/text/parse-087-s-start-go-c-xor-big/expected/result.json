@@ -1,0 +1,81 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "id": "c",
+            "name": "Big?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "a",
+            "name": "A",
+            "type": "task"
+          },
+          {
+            "id": "b",
+            "name": "B",
+            "type": "task"
+          },
+          {
+            "id": "a_end",
+            "name": "Process completed",
+            "type": "endEvent"
+          },
+          {
+            "id": "b_end",
+            "name": "Process completed",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "c"
+          },
+          {
+            "condition": "= amount > 5",
+            "from": "c",
+            "id": "Flow_2",
+            "name": "Yes",
+            "to": "a"
+          },
+          {
+            "from": "c",
+            "id": "Flow_3",
+            "isDefault": true,
+            "name": "No",
+            "to": "b"
+          },
+          {
+            "from": "a",
+            "id": "Flow_4",
+            "to": "a_end"
+          },
+          {
+            "from": "b",
+            "id": "Flow_5",
+            "to": "b_end"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "added end event \"a_end\" after \"a\"",
+    "added end event \"b_end\" after \"b\"",
+    "made c > b the default branch of \"c\""
+  ],
+  "problems": [],
+  "questions": []
+}

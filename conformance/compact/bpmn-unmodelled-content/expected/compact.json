@@ -1,0 +1,36 @@
+{
+  "id": "Definitions_unmodelled",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "Start_u",
+          "type": "startEvent"
+        },
+        {
+          "id": "Task_u",
+          "name": "Review order",
+          "type": "userTask"
+        },
+        {
+          "id": "End_u",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "Start_u",
+          "id": "Flow_u1",
+          "to": "Task_u"
+        },
+        {
+          "from": "Task_u",
+          "id": "Flow_u2",
+          "to": "End_u"
+        }
+      ],
+      "id": "Process_unmodelled",
+      "name": "Unmodelled content carrier"
+    }
+  ]
+}

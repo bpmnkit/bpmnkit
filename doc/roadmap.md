@@ -1057,6 +1057,13 @@ not code.
 
 ---
 
+## Rust twin (`doc/rust-rewrite-proposal.md`)
+
+- [x] Phases 0–8: gate, harness, spec data, FEEL, BPMN I/O, DMN + Form, tooling, layout, builder + text
+- [x] Phase 9: nightly differential fuzzing, crates.io publishing setup, crate docs
+- [ ] First crates.io publish (needs the `CARGO_REGISTRY_TOKEN` secret and `crates-io` environment)
+- [ ] `bpmnkit` facade crate re-exporting the others behind features (§3)
+
 ## Completed
 
 *(Items moved here from above as they ship)*

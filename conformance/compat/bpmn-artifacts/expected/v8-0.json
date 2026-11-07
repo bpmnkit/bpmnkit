@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_review"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Review\" has no zeebe:formDefinition.",
+      "processId": "Process_artifacts",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    }
+  ]
+}

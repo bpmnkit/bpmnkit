@@ -1,0 +1,1 @@
+a[start A] > s[script S | in.list=items result=n feel=count(items[state = 1])] > e[end E]

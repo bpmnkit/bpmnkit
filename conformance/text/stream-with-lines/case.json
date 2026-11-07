@@ -1,0 +1,7 @@
+{
+	"chunks": [
+		"s[start] > t[service T] > e[end]\n",
+		"with t: http GET https://x.example | result=r\n",
+		"with ghost: slack x\n"
+	]
+}

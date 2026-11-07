@@ -1,0 +1,3 @@
+start[start Start] > read[service Read issues] > completed[end]
+err[boundary:error API error | on=read] > handle[task Handle failure] > failed[end Failed]
+err > calc[task Count issues] > done[end Done]

@@ -1,0 +1,84 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "g",
+            "name": "Ok?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "a",
+            "name": "A",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "id": "b",
+            "name": "B",
+            "type": "task"
+          },
+          {
+            "id": "e_join",
+            "type": "exclusiveGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "g"
+          },
+          {
+            "condition": "= ok",
+            "from": "g",
+            "id": "Flow_2",
+            "name": "Yes",
+            "to": "a"
+          },
+          {
+            "from": "a",
+            "id": "Flow_3",
+            "to": "e_join"
+          },
+          {
+            "from": "g",
+            "id": "Flow_4",
+            "isDefault": true,
+            "name": "No",
+            "to": "b"
+          },
+          {
+            "from": "b",
+            "id": "Flow_5",
+            "to": "e_join"
+          },
+          {
+            "from": "e_join",
+            "id": "Flow_6",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "joined 2 flows into \"e\" with xor gateway \"e_join\"",
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

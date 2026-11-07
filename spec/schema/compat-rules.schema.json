@@ -1,0 +1,165 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://bpmnkit.com/spec/compat-rules.schema.json",
+	"title": "Camunda 8 compatibility tables",
+	"description": "Which BPMN constructs, Zeebe properties, FEEL built-ins and inbound connector properties each Camunda 8 version supports, and the plugin rules that check them. Versions are strings listed in `versions`.",
+	"type": "object",
+	"required": [
+		"source",
+		"versions",
+		"elementSupport",
+		"implementationSupport",
+		"timerSupport",
+		"cronTimerSince",
+		"featureSince",
+		"feelBuiltinSince",
+		"inboundConnectorPropertySince",
+		"rules"
+	],
+	"additionalProperties": false,
+	"properties": {
+		"$schema": { "type": "string" },
+		"source": {
+			"description": "Where the tables were taken from.",
+			"type": "object",
+			"required": [
+				"plugin",
+				"pluginVersion",
+				"linting",
+				"feelBuiltins",
+				"feelBuiltinsVersion",
+				"license",
+				"copyright"
+			],
+			"additionalProperties": false,
+			"properties": {
+				"plugin": { "type": "string", "minLength": 1 },
+				"pluginVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+				"linting": { "type": "string", "minLength": 1 },
+				"feelBuiltins": { "type": "string", "minLength": 1 },
+				"feelBuiltinsVersion": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+				"license": { "type": "string", "minLength": 1 },
+				"copyright": { "type": "string", "minLength": 1 }
+			}
+		},
+		"versions": {
+			"description": "Camunda versions, oldest first.",
+			"type": "array",
+			"minItems": 1,
+			"uniqueItems": true,
+			"items": { "$ref": "#/$defs/version" }
+		},
+		"elementSupport": { "$ref": "#/$defs/supportMap" },
+		"implementationSupport": {
+			"description": "Per implementation kind, the first version each element accepts it in.",
+			"type": "object",
+			"required": ["calledDecision", "script", "taskDefinition"],
+			"additionalProperties": false,
+			"properties": {
+				"calledDecision": { "$ref": "#/$defs/supportMap" },
+				"script": { "$ref": "#/$defs/supportMap" },
+				"taskDefinition": { "$ref": "#/$defs/supportMap" }
+			}
+		},
+		"timerSupport": {
+			"description": "Per event type and timer property, the first version allowed, for each combination of interrupting and in-event-sub-process; null means never.",
+			"type": "object",
+			"additionalProperties": {
+				"type": "object",
+				"required": ["timeCycle", "timeDate", "timeDuration"],
+				"additionalProperties": false,
+				"properties": {
+					"timeCycle": { "$ref": "#/$defs/timerCell" },
+					"timeDate": { "$ref": "#/$defs/timerCell" },
+					"timeDuration": { "$ref": "#/$defs/timerCell" }
+				}
+			}
+		},
+		"cronTimerSince": { "$ref": "#/$defs/version" },
+		"featureSince": {
+			"type": "object",
+			"additionalProperties": {
+				"type": "object",
+				"required": ["since", "description"],
+				"additionalProperties": false,
+				"properties": {
+					"since": { "$ref": "#/$defs/version" },
+					"description": { "type": "string", "minLength": 1 }
+				}
+			}
+		},
+		"feelBuiltinSince": {
+			"type": "object",
+			"additionalProperties": { "$ref": "#/$defs/version" }
+		},
+		"inboundConnectorPropertySince": {
+			"type": "object",
+			"additionalProperties": {
+				"type": "object",
+				"required": ["since", "connectors"],
+				"additionalProperties": false,
+				"properties": {
+					"since": { "$ref": "#/$defs/version" },
+					"connectors": {
+						"type": "array",
+						"minItems": 1,
+						"uniqueItems": true,
+						"items": { "type": "string", "minLength": 1 }
+					}
+				}
+			}
+		},
+		"rules": {
+			"description": "Every rule of the plugin's camunda-cloud-* configs.",
+			"type": "object",
+			"additionalProperties": {
+				"type": "object",
+				"required": ["severity", "coverage"],
+				"additionalProperties": false,
+				"properties": {
+					"severity": { "enum": ["error", "warn"] },
+					"since": { "$ref": "#/$defs/version" },
+					"until": { "$ref": "#/$defs/version" },
+					"coverage": { "enum": ["implemented", "partial", "existing", "not-implemented"] },
+					"equivalents": {
+						"type": "array",
+						"minItems": 1,
+						"items": { "type": "string", "minLength": 1 }
+					},
+					"note": { "type": "string", "minLength": 1 }
+				}
+			}
+		}
+	},
+	"$defs": {
+		"version": { "type": "string", "pattern": "^\\d+\\.\\d+$" },
+		"supportMap": {
+			"description": "BPMN type to the first supporting version, or, for events, a map from event definition (`_` for none) to a version.",
+			"type": "object",
+			"additionalProperties": {
+				"anyOf": [
+					{ "$ref": "#/$defs/version" },
+					{ "type": "object", "additionalProperties": { "$ref": "#/$defs/version" } }
+				]
+			}
+		},
+		"timerCell": {
+			"type": "object",
+			"required": ["interrupting", "nonInterrupting"],
+			"additionalProperties": false,
+			"properties": {
+				"interrupting": { "$ref": "#/$defs/timerPair" },
+				"nonInterrupting": { "$ref": "#/$defs/timerPair" }
+			}
+		},
+		"timerPair": {
+			"type": "object",
+			"required": ["inEventSubProcess", "elsewhere"],
+			"additionalProperties": false,
+			"properties": {
+				"inEventSubProcess": { "anyOf": [{ "$ref": "#/$defs/version" }, { "type": "null" }] },
+				"elsewhere": { "anyOf": [{ "$ref": "#/$defs/version" }, { "type": "null" }] }
+			}
+		}
+	}
+}

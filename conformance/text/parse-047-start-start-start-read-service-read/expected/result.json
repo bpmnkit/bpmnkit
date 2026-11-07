@@ -1,0 +1,84 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "Start",
+            "type": "startEvent"
+          },
+          {
+            "id": "read",
+            "jobType": "read",
+            "name": "Read issues",
+            "type": "serviceTask"
+          },
+          {
+            "attachedTo": "read",
+            "eventType": "error",
+            "id": "err",
+            "name": "API error",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "handle",
+            "name": "Handle failure",
+            "type": "task"
+          },
+          {
+            "id": "failed",
+            "name": "Failed",
+            "type": "endEvent"
+          },
+          {
+            "id": "calc",
+            "name": "Count issues",
+            "type": "task"
+          },
+          {
+            "id": "done",
+            "name": "Done",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "read"
+          },
+          {
+            "from": "err",
+            "id": "Flow_2",
+            "to": "handle"
+          },
+          {
+            "from": "handle",
+            "id": "Flow_3",
+            "to": "failed"
+          },
+          {
+            "from": "read",
+            "id": "Flow_4",
+            "to": "calc"
+          },
+          {
+            "from": "calc",
+            "id": "Flow_5",
+            "to": "done"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "removed end event \"completed\" after \"read\", whose work followed its boundary",
+    "moved err > calc onto \"read\": a boundary leads only to its handling"
+  ],
+  "problems": [],
+  "questions": []
+}

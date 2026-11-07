@@ -1,0 +1,1 @@
+Form must have a 'components' array

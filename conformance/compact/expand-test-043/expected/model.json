@@ -1,0 +1,121 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_Process_1",
+      "plane": {
+        "bpmnElement": "Process_1",
+        "edges": [
+          {
+            "bpmnElement": "f1",
+            "id": "f1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 36,
+                "y": 40
+              },
+              {
+                "x": 96,
+                "y": 40
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_Process_1",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 0,
+              "y": 22
+            },
+            "bpmnElement": "start",
+            "id": "start_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 98,
+                "x": -31,
+                "y": 62
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 96,
+              "y": 0
+            },
+            "bpmnElement": "ship",
+            "id": "ship_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "start",
+          "incoming": [],
+          "name": "Order Received",
+          "outgoing": [
+            "f1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "ship",
+          "incoming": [
+            "f1"
+          ],
+          "name": "Ship Order",
+          "outgoing": [],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "Process_1",
+      "isExecutable": true,
+      "name": "Order",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "f1",
+          "sourceRef": "start",
+          "targetRef": "ship",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

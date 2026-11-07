@@ -1,0 +1,1 @@
+expand: invalid CompactDiagram — flow from "a" to "e" has no id

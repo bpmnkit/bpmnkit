@@ -1,0 +1,78 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "g",
+            "name": "Ok?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "a",
+            "name": "A",
+            "type": "endEvent"
+          },
+          {
+            "id": "b",
+            "name": "B",
+            "type": "endEvent"
+          },
+          {
+            "id": "c",
+            "name": "C",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "g"
+          },
+          {
+            "condition": "= status = \"ok\" and count(items) > 0",
+            "from": "g",
+            "id": "Flow_2",
+            "name": "Yes",
+            "to": "a"
+          },
+          {
+            "condition": "= ok = \"Maybe\"",
+            "from": "g",
+            "id": "Flow_3",
+            "name": "Maybe",
+            "to": "b"
+          },
+          {
+            "from": "g",
+            "id": "Flow_4",
+            "isDefault": true,
+            "to": "c"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "gave g > b the condition \"= ok = \"Maybe\"\"",
+    "named 1 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": [
+    {
+      "draft": "At \"Ok?\", decide on ",
+      "elementId": "g",
+      "options": [],
+      "text": "\"Ok?\" decides on \"ok\", a variable the diagram made up. What data decides it?"
+    }
+  ]
+}

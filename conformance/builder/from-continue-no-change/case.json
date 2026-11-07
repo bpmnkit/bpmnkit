@@ -1,0 +1,8 @@
+{
+	"kind": "bpmn",
+	"input": "bpmn/sample-order-process/input.bpmn",
+	"script": [
+		["from","order-process"],
+		["build"]
+	]
+}

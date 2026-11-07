@@ -1,0 +1,56 @@
+[
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "riskScore",
+        "result": {
+          "t": "string",
+          "v": "low"
+        }
+      },
+      {
+        "decision": "approval",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "riskScore",
+        "result": {
+          "t": "null"
+        }
+      },
+      {
+        "decision": "approval",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "low"
+    },
+    "evaluated": [
+      {
+        "decision": "riskScore",
+        "result": {
+          "t": "string",
+          "v": "low"
+        }
+      }
+    ]
+  }
+]

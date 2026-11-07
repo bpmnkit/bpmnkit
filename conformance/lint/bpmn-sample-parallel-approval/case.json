@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/sample-parallel-approval/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}

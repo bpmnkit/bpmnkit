@@ -1,0 +1,180 @@
+{
+  "id": "Definitions_1k3v0qa",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "StartEvent_order",
+          "name": "Order received",
+          "type": "startEvent"
+        },
+        {
+          "id": "Task_review",
+          "name": "Review order",
+          "type": "userTask"
+        },
+        {
+          "id": "Gateway_approved",
+          "name": "Approved?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "Task_charge",
+          "name": "Charge payment",
+          "type": "serviceTask"
+        },
+        {
+          "id": "Task_awaitPayment",
+          "name": "Await payment confirmation",
+          "type": "receiveTask"
+        },
+        {
+          "id": "Task_shippingCost",
+          "name": "Determine shipping cost",
+          "type": "businessRuleTask"
+        },
+        {
+          "id": "Task_invoice",
+          "name": "Create invoice",
+          "type": "callActivity"
+        },
+        {
+          "id": "Task_ship",
+          "name": "Ship order",
+          "type": "serviceTask"
+        },
+        {
+          "eventType": "timer",
+          "id": "Timer_wait",
+          "name": "Wait for delivery window",
+          "timerDuration": "${deliveryWindow}",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "id": "Task_summary",
+          "name": "Build summary",
+          "type": "scriptTask"
+        },
+        {
+          "id": "EndEvent_done",
+          "name": "Order fulfilled",
+          "type": "endEvent"
+        },
+        {
+          "id": "Task_notify",
+          "name": "Notify customer",
+          "type": "serviceTask"
+        },
+        {
+          "id": "EndEvent_rejected",
+          "name": "Order rejected",
+          "type": "endEvent"
+        },
+        {
+          "attachedTo": "Task_review",
+          "eventType": "timer",
+          "id": "Timer_reviewOverdue",
+          "interrupting": false,
+          "name": "3 days",
+          "timerDuration": "P3D",
+          "type": "boundaryEvent"
+        },
+        {
+          "id": "Task_escalate",
+          "name": "Escalate review",
+          "type": "serviceTask"
+        },
+        {
+          "id": "EndEvent_escalated",
+          "name": "Escalated",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "StartEvent_order",
+          "id": "Flow_toReview",
+          "to": "Task_review"
+        },
+        {
+          "from": "Task_review",
+          "id": "Flow_toApproved",
+          "to": "Gateway_approved"
+        },
+        {
+          "condition": "${approved && order.total <= 1000}",
+          "from": "Gateway_approved",
+          "id": "Flow_approved",
+          "name": "yes",
+          "to": "Task_charge"
+        },
+        {
+          "condition": "${approved and order.customer.vip eq true}",
+          "from": "Gateway_approved",
+          "id": "Flow_vip",
+          "name": "vip",
+          "to": "Task_charge"
+        },
+        {
+          "from": "Gateway_approved",
+          "id": "Flow_rejected",
+          "isDefault": true,
+          "name": "no",
+          "to": "Task_notify"
+        },
+        {
+          "from": "Task_charge",
+          "id": "Flow_toConfirm",
+          "to": "Task_awaitPayment"
+        },
+        {
+          "from": "Task_awaitPayment",
+          "id": "Flow_toShippingCost",
+          "to": "Task_shippingCost"
+        },
+        {
+          "from": "Task_shippingCost",
+          "id": "Flow_toInvoice",
+          "to": "Task_invoice"
+        },
+        {
+          "from": "Task_invoice",
+          "id": "Flow_toShip",
+          "to": "Task_ship"
+        },
+        {
+          "from": "Task_ship",
+          "id": "Flow_toWait",
+          "to": "Timer_wait"
+        },
+        {
+          "from": "Timer_wait",
+          "id": "Flow_toSummary",
+          "to": "Task_summary"
+        },
+        {
+          "from": "Task_summary",
+          "id": "Flow_toDone",
+          "to": "EndEvent_done"
+        },
+        {
+          "from": "Task_notify",
+          "id": "Flow_toRejectedEnd",
+          "to": "EndEvent_rejected"
+        },
+        {
+          "from": "Timer_reviewOverdue",
+          "id": "Flow_toEscalate",
+          "to": "Task_escalate"
+        },
+        {
+          "from": "Task_escalate",
+          "id": "Flow_toEscalated",
+          "to": "EndEvent_escalated"
+        }
+      ],
+      "id": "order-fulfillment",
+      "name": "Order fulfillment"
+    }
+  ]
+}

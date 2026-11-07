@@ -1,0 +1,10 @@
+{
+	"chunks": [
+		"Here is the process you asked for:\n```json\n{ \"id\":",
+		" \"D\", \"processes\": [ { \"id\": \"P\", \"elements\": [\n  ",
+		"{ \"id\": \"start\", \"type\": \"startEvent\", \"name\": \"Or",
+		"der Received\" },\n  { \"id\": \"end\", \"type\": \"endEven",
+		"t\", \"name\": \"Order Fulfilled\" }\n], \"flows\": [{ \"id",
+		"\": \"f1\", \"from\": \"start\", \"to\": \"end\" }] } ] }\n```"
+	]
+}

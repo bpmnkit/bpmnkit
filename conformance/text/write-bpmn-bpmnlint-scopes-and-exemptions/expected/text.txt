@@ -1,0 +1,19 @@
+start[start Start] > gw_split[xor Route?]
+gw_split >(: a) sub[sub Sub] > end[end Done]
+gw_split >(Otherwise: default) gw_xor[xor Which?]
+gw_split > task_blank[task ] > end
+gw_xor > task_x1[task X1]
+gw_xor > task_x2[task X2] > link_throw[throw:link To B]
+task_x1 > end
+task_x1 > end_other[end Other]
+link_catch[catch:link From B] > end_link[end Linked]
+task_r1[task R1] > start_joined[start Restarted] > end_restart[end Restart done]
+task_r2[task R2] > start_joined
+boundary_timer[boundary:timer Late | on=task_x1]
+boundary_comp[boundary:compensate Compensate X1 | on=task_x1]
+handler_top[task Undo X1]
+tx[transaction Tx]
+evt_sub[sub On message]
+adhoc[adhoc Tools]
+adhoc_tool[task Tool | inside=adhoc]
+adhoc_unnamed[task | inside=adhoc]

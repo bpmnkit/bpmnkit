@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["serviceTask","t",{"name":"Full","taskType":"full-worker","retries":"5","ioMapping":{"inputs":[{"source":"=a","target":"x"},{"source":"=b","target":"y"}],"outputs":[{"source":"=r","target":"result"}]},"taskHeaders":{"region":"eu","retry-backoff":"PT5S"},"zeebeProperties":[{"name":"k1","value":"v1"},{"name":"k2","value":"v2"}],"modelerTemplate":"io.camunda.example","modelerTemplateVersion":"3","modelerTemplateIcon":"data:image/svg+xml;base64,AAAA","documentation":"Does <everything> & more","executionListeners":[{"eventType":"start","type":"listener-start","retries":"2"},{"eventType":"end","type":"listener-end"}]}],
+		["endEvent","e"],
+		["build"]
+	]
+}

@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["task","t"],
+		["startEvent","s"],
+		["endEvent","e"],
+		["build"]
+	]
+}

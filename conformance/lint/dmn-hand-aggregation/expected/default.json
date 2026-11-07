@@ -1,0 +1,39 @@
+{
+  "findings": [
+    {
+      "elementId": "t_bad",
+      "fix": "Use one of SUM, MIN, MAX, COUNT. (agent-cards/dmn.md#traps)",
+      "message": "Decision \"bad\" has aggregation \"MEDIAN\".",
+      "rule": "dmn/invalid-aggregation",
+      "severity": "error"
+    },
+    {
+      "elementId": "t_withFirst",
+      "fix": "Aggregation only applies to hitPolicy=\"COLLECT\" — set that, or remove the aggregation. (agent-cards/dmn.md#traps)",
+      "message": "Decision \"withFirst\" sets aggregation \"SUM\" with hitPolicy \"FIRST\".",
+      "rule": "dmn/invalid-aggregation",
+      "severity": "error"
+    },
+    {
+      "elementId": "t_noPolicy",
+      "fix": "Aggregation only applies to hitPolicy=\"COLLECT\" — set that, or remove the aggregation. (agent-cards/dmn.md#traps)",
+      "message": "Decision \"noPolicy\" sets aggregation \"COUNT\" with hitPolicy \"UNIQUE\".",
+      "rule": "dmn/invalid-aggregation",
+      "severity": "error"
+    },
+    {
+      "elementId": "t_lower",
+      "fix": "Write hitPolicy=\"COLLECT\". (agent-cards/dmn.md#traps)",
+      "message": "Decision \"lower\" has hitPolicy \"collect\".",
+      "rule": "dmn/invalid-hit-policy",
+      "severity": "error"
+    },
+    {
+      "elementId": "t_lower",
+      "fix": "Use one of SUM, MIN, MAX, COUNT. (agent-cards/dmn.md#traps)",
+      "message": "Decision \"lower\" has aggregation \"sum\".",
+      "rule": "dmn/invalid-aggregation",
+      "severity": "error"
+    }
+  ]
+}

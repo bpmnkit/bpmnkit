@@ -1,19 +1,18 @@
-use std::sync::Arc;
-use async_trait::async_trait;
-use reebe_db::records::DbRecord;
-use reebe_db::state::identity::{Tenant, User};
+use super::{EventToWrite, RecordProcessor, Writers};
 use crate::engine::EngineState;
 use crate::error::{EngineError, EngineResult};
 use crate::key_gen::KeyGenerator;
-use super::{EventToWrite, RecordProcessor, Writers};
+use async_trait::async_trait;
+use reebe_db::records::DbRecord;
+use reebe_db::state::identity::{Tenant, User};
+use std::sync::Arc;
 
 pub struct IdentityProcessor;
 
 #[async_trait]
 impl RecordProcessor for IdentityProcessor {
     fn accepts(&self, value_type: &str, intent: &str) -> bool {
-        matches!(value_type, "USER" | "TENANT")
-            && matches!(intent, "CREATE" | "DELETE" | "UPDATE")
+        matches!(value_type, "USER" | "TENANT") && matches!(intent, "CREATE" | "DELETE" | "UPDATE")
     }
 
     async fn process(
@@ -41,10 +40,7 @@ impl IdentityProcessor {
         let key_gen = KeyGenerator::new(Arc::clone(&state.backend), state.partition_id);
         let payload = &record.payload;
 
-        let tenant_id_str = payload["tenantId"]
-            .as_str()
-            .unwrap_or("")
-            .to_string();
+        let tenant_id_str = payload["tenantId"].as_str().unwrap_or("").to_string();
         let name = payload["name"].as_str().map(|s| s.to_string());
 
         let key = key_gen.next_key().await?;

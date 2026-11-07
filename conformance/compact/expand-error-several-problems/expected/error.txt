@@ -1,0 +1,1 @@
+expand: invalid CompactDiagram — duplicate id "a" (task); boundary event "b" is attached to "zz", which is not an element in process "P"; flow "f" references "ghost", which is not an element in process "P"

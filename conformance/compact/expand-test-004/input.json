@@ -1,0 +1,39 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "id": "Process_1",
+      "elements": [
+        {
+          "id": "start",
+          "type": "startEvent"
+        },
+        {
+          "id": "post",
+          "type": "serviceTask",
+          "jobType": "io.camunda:slack:1",
+          "modelerTemplate": {
+            "id": "io.camunda.connectors.Slack.v1",
+            "version": 5
+          }
+        },
+        {
+          "id": "end",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f1",
+          "from": "start",
+          "to": "post"
+        },
+        {
+          "id": "f2",
+          "from": "post",
+          "to": "end"
+        }
+      ]
+    }
+  ]
+}

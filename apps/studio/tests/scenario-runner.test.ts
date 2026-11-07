@@ -223,7 +223,7 @@ describe("scenario runner — DMN business rule task + exclusive gateway", () =>
 // ── Suite 2: real files (test.bpmn + dmn.dmn) ────────────────────────────────
 
 const REAL_BPMN = `<?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_webhook-call" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_webhook-call" targetNamespace="http://bpmn.io/schema/bpmn">
   <bpmn:error id="Error_tONEiTac" name="VALIDATION_FAILED" errorCode="VALIDATION_FAILED"/>
   <bpmn:error id="Error_5tm7CQPQ" name="VALIDATION_FAILED" errorCode="VALIDATION_FAILED"/>
   <bpmn:process id="webhook-call" name="webhook call" isExecutable="true">
@@ -241,7 +241,7 @@ const REAL_BPMN = `<?xml version="1.0" encoding="UTF-8"?>
           <zeebe:input source="20" target="connectionTimeoutInSeconds"/>
         </zeebe:ioMapping>
         <zeebe:taskHeaders>
-          <zeebe:header key="resultExpression" value="={\\"mytest\\": true}"/>
+          <zeebe:header key="resultExpression" value="={&quot;mytest&quot;: true}"/>
         </zeebe:taskHeaders>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_pfu9qcs</bpmn:incoming>
@@ -346,7 +346,7 @@ const HTTP_JOB_TYPE = "io.camunda:http-json:1"
 describe("scenario runner — webhook-call process + input validation DMN", () => {
 	// ── Working DMN rules (equality / range checks) ──────────────────────────
 
-	it("asd missing, sss valid: DMN fires 'asd is required', process takes error end", async () => {
+	it("asd missing, sss valid: FEEL fires asd-null and asd-type rules, process takes error end", async () => {
 		const result = await runScenarioWasm(
 			REAL_BPMN,
 			{
@@ -360,7 +360,7 @@ describe("scenario runner — webhook-call process + input validation DMN", () =
 						"Gateway_FfzaKwa9",
 						"Event_eReDBgY3",
 					],
-					variables: { validationErrors: ["asd is required"] },
+					variables: { validationErrors: ["asd is required", "asd must be a string"] },
 				},
 			},
 			getRealDmn,
@@ -375,7 +375,10 @@ describe("scenario runner — webhook-call process + input validation DMN", () =
 		])
 		expect(result.failures).toHaveLength(0)
 		expect(result.passed).toBe(false)
-		expect(result.finalVariables.validationErrors).toEqual(["asd is required"])
+		expect(result.finalVariables.validationErrors).toEqual([
+			"asd is required",
+			"asd must be a string",
+		])
 		expect(result.visitedElements).toContain("Event_eReDBgY3")
 		expect(result.visitedElements).not.toContain("serviceTask_zu501th")
 	})
@@ -477,23 +480,23 @@ describe("scenario runner — webhook-call process + input validation DMN", () =
 		expect(result.visitedElements).toContain("Event_eReDBgY3")
 	})
 
-	it("asd wrong type (number): WASM returns [], gateway takes happy path", async () => {
-		// WASM DMN captures validationErrors=[] so post-hoc FEEL is skipped
+	it("asd wrong type (number): FEEL fires not(instance of string), gateway takes error end", async () => {
 		const result = await runScenarioWasm(
 			REAL_BPMN,
-			{
-				id: "r6",
-				name: "asd wrong type (number)",
-				inputs: { asd: 42, sss: 5 },
-				mocks: { [HTTP_JOB_TYPE]: { outputs: {} } },
-			},
+			{ id: "r6", name: "asd wrong type (number)", inputs: { asd: 42, sss: 5 } },
 			getRealDmn,
 		)
 
-		expect(result.errors).toHaveLength(0)
-		expect(result.finalVariables.validationErrors).toEqual([])
-		// Happy path taken because validationErrors is empty
-		expect(result.visitedElements).toContain("serviceTask_zu501th")
+		// Zeebe raises an incident for an error end event nothing catches, and so does Reebe.
+		expect(result.errors).toEqual([
+			{
+				elementId: "Event_eReDBgY3",
+				message: expect.stringContaining("'VALIDATION_FAILED', but it was not caught"),
+			},
+		])
+		expect(result.finalVariables.validationErrors).toEqual(["asd must be a string"])
+		expect(result.visitedElements).toContain("Event_eReDBgY3")
+		expect(result.visitedElements).not.toContain("serviceTask_zu501th")
 	})
 
 	it("sss wrong type (string): FEEL fires not(instance of number), gateway takes error end", async () => {

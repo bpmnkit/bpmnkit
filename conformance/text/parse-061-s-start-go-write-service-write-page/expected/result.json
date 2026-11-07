@@ -1,0 +1,49 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "id": "write",
+            "jobType": "write",
+            "name": "Write page",
+            "type": "serviceTask"
+          },
+          {
+            "id": "stop",
+            "name": "Done",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "write"
+          },
+          {
+            "from": "write",
+            "id": "Flow_2",
+            "to": "stop"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 2,
+      "message": "the line starts with \">\"; read it as continuing \"write\""
+    }
+  ],
+  "questions": []
+}

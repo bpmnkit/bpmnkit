@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:userTask id="u" name="Approve"><bpmn:extensionElements><zeebe:userTask/><zeebe:assignmentDefinition assignee="=manager" candidateGroups="sales,support" candidateUsers="alice"/><zeebe:taskSchedule dueDate="2030-01-01T00:00:00Z" followUpDate="=now()"/><zeebe:priorityDefinition priority="75"/><zeebe:formDefinition formId="approve-form"/></bpmn:extensionElements><bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing></bpmn:userTask>
+    <bpmn:endEvent id="e"><bpmn:incoming>f2</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="s" targetRef="u"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="u" targetRef="e"/>
+  </bpmn:process>
+</bpmn:definitions>

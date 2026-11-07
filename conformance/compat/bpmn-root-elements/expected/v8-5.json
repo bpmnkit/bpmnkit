@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Process_roots"
+      ],
+      "fixable": false,
+      "id": "compat/no-version-tag",
+      "message": "Process \"Root element carrier\" has a zeebe:versionTag, which needs Camunda 8.6 or newer; this model targets Camunda 8.5.",
+      "processId": "Process_roots",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.6 or newer (modeler:executionPlatformVersion), or remove it."
+    }
+  ]
+}

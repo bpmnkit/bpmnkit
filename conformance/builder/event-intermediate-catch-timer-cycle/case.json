@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["intermediateCatchEvent","c",{"timerCycle":"R3/PT1M"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

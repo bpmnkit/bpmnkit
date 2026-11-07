@@ -1,0 +1,3 @@
+s[start S] > e[end E]
+note s: One
+note s: Two

@@ -1,0 +1,559 @@
+{
+	"$schema": "./schema/feel-builtins.schema.json",
+	"builtins": [
+		{
+			"name": "string",
+			"group": "conversion",
+			"signatures": [["from"]]
+		},
+		{
+			"name": "number",
+			"group": "conversion",
+			"signatures": [
+				["from"],
+				["from", "grouping separator"],
+				["from", "grouping separator", "decimal separator"]
+			]
+		},
+		{
+			"name": "context",
+			"group": "conversion",
+			"signatures": [["entries"]]
+		},
+		{
+			"name": "date",
+			"group": "conversion",
+			"signatures": [["from"], ["year", "month", "day"]]
+		},
+		{
+			"name": "time",
+			"group": "conversion",
+			"signatures": [["from"], ["hour", "minute", "second"], ["hour", "minute", "second", "offset"]]
+		},
+		{
+			"name": "date and time",
+			"group": "conversion",
+			"signatures": [["from"], ["date", "time"], ["date", "timezone"]]
+		},
+		{
+			"name": "duration",
+			"group": "conversion",
+			"signatures": [["from"]]
+		},
+		{
+			"name": "years and months duration",
+			"group": "conversion",
+			"signatures": [["from", "to"]]
+		},
+		{
+			"name": "not",
+			"group": "boolean",
+			"signatures": [["negand"]]
+		},
+		{
+			"name": "is",
+			"group": "boolean",
+			"signatures": [["value1"], ["value2"], ["value1", "value2"]]
+		},
+		{
+			"name": "is defined",
+			"group": "boolean",
+			"signatures": [["value"]]
+		},
+		{
+			"name": "get or else",
+			"group": "boolean",
+			"signatures": [["value", "default"]]
+		},
+		{
+			"name": "assert",
+			"group": "boolean",
+			"signatures": [["value", "condition"], ["value", "condition", "cause"]]
+		},
+		{
+			"name": "fromAi",
+			"group": "boolean",
+			"signatures": [
+				["value"],
+				["value", "description"],
+				["value", "type"],
+				["value", "description", "type"],
+				["value", "schema"],
+				["value", "description", "schema"],
+				["value", "type", "schema"],
+				["value", "description", "type", "schema"],
+				["value", "options"],
+				["value", "description", "options"],
+				["value", "type", "options"],
+				["value", "description", "type", "options"],
+				["value", "schema", "options"],
+				["value", "description", "schema", "options"],
+				["value", "type", "schema", "options"],
+				["value", "description", "type", "schema", "options"]
+			]
+		},
+		{
+			"name": "substring",
+			"group": "string",
+			"signatures": [["string", "start position"], ["string", "start position", "length"]]
+		},
+		{
+			"name": "string length",
+			"group": "string",
+			"signatures": [["string"]]
+		},
+		{
+			"name": "upper case",
+			"group": "string",
+			"signatures": [["string"]]
+		},
+		{
+			"name": "lower case",
+			"group": "string",
+			"signatures": [["string"]]
+		},
+		{
+			"name": "substring before",
+			"group": "string",
+			"signatures": [["string", "match"]]
+		},
+		{
+			"name": "substring after",
+			"group": "string",
+			"signatures": [["string", "match"]]
+		},
+		{
+			"name": "contains",
+			"group": "string",
+			"signatures": [["string", "match"]]
+		},
+		{
+			"name": "starts with",
+			"group": "string",
+			"signatures": [["string", "match"]]
+		},
+		{
+			"name": "ends with",
+			"group": "string",
+			"signatures": [["string", "match"]]
+		},
+		{
+			"name": "matches",
+			"group": "string",
+			"signatures": [["input", "pattern"], ["input", "pattern", "flags"]]
+		},
+		{
+			"name": "replace",
+			"group": "string",
+			"signatures": [
+				["input", "pattern", "replacement"],
+				["input", "pattern", "replacement", "flags"]
+			]
+		},
+		{
+			"name": "split",
+			"group": "string",
+			"signatures": [["string", "delimiter"]]
+		},
+		{
+			"name": "string join",
+			"group": "string",
+			"signatures": [["list"], ["list", "delimiter"], ["list", "delimiter", "prefix", "suffix"]]
+		},
+		{
+			"name": "is blank",
+			"group": "string",
+			"signatures": [["string"]]
+		},
+		{
+			"name": "trim",
+			"group": "string",
+			"signatures": [["string"]]
+		},
+		{
+			"name": "extract",
+			"group": "string",
+			"signatures": [["string", "pattern"]]
+		},
+		{
+			"name": "uuid",
+			"group": "string",
+			"signatures": [[]]
+		},
+		{
+			"name": "to base64",
+			"group": "string",
+			"signatures": [["value"]]
+		},
+		{
+			"name": "from base64",
+			"group": "string",
+			"signatures": [["value"]]
+		},
+		{
+			"name": "to json",
+			"group": "string",
+			"signatures": [["value"]]
+		},
+		{
+			"name": "from json",
+			"group": "string",
+			"signatures": [["value"]]
+		},
+		{
+			"name": "list contains",
+			"group": "list",
+			"signatures": [["list", "element"]]
+		},
+		{
+			"name": "count",
+			"group": "list",
+			"signatures": [["list"]],
+			"variadic": true
+		},
+		{
+			"name": "min",
+			"group": "list",
+			"signatures": [["list"]],
+			"variadic": true
+		},
+		{
+			"name": "max",
+			"group": "list",
+			"signatures": [["list"]],
+			"variadic": true
+		},
+		{
+			"name": "sum",
+			"group": "list",
+			"signatures": [["list"]],
+			"variadic": true
+		},
+		{
+			"name": "product",
+			"group": "list",
+			"signatures": [["list"]],
+			"variadic": true
+		},
+		{
+			"name": "mean",
+			"group": "list",
+			"signatures": [["list"]],
+			"variadic": true
+		},
+		{
+			"name": "median",
+			"group": "list",
+			"signatures": [["list"]],
+			"variadic": true
+		},
+		{
+			"name": "stddev",
+			"group": "list",
+			"signatures": [["list"]],
+			"variadic": true
+		},
+		{
+			"name": "mode",
+			"group": "list",
+			"signatures": [["list"]],
+			"variadic": true
+		},
+		{
+			"name": "all",
+			"group": "list",
+			"signatures": [["list"]],
+			"variadic": true
+		},
+		{
+			"name": "any",
+			"group": "list",
+			"signatures": [["list"]],
+			"variadic": true
+		},
+		{
+			"name": "sublist",
+			"group": "list",
+			"signatures": [["list", "start position"], ["list", "start position", "length"]]
+		},
+		{
+			"name": "append",
+			"group": "list",
+			"signatures": [["list", "items"]],
+			"variadic": true
+		},
+		{
+			"name": "concatenate",
+			"group": "list",
+			"signatures": [["lists"]],
+			"variadic": true
+		},
+		{
+			"name": "insert before",
+			"group": "list",
+			"signatures": [["list", "position", "newItem"]]
+		},
+		{
+			"name": "remove",
+			"group": "list",
+			"signatures": [["list", "position"]]
+		},
+		{
+			"name": "reverse",
+			"group": "list",
+			"signatures": [["list"]]
+		},
+		{
+			"name": "index of",
+			"group": "list",
+			"signatures": [["list", "match"]]
+		},
+		{
+			"name": "union",
+			"group": "list",
+			"signatures": [["list"]],
+			"variadic": true
+		},
+		{
+			"name": "distinct values",
+			"group": "list",
+			"signatures": [["list"]]
+		},
+		{
+			"name": "flatten",
+			"group": "list",
+			"signatures": [["list"]]
+		},
+		{
+			"name": "sort",
+			"group": "list",
+			"signatures": [["list", "precedes"]]
+		},
+		{
+			"name": "duplicate values",
+			"group": "list",
+			"signatures": [["list"]]
+		},
+		{
+			"name": "is empty",
+			"group": "list",
+			"signatures": [["list"]]
+		},
+		{
+			"name": "partition",
+			"group": "list",
+			"signatures": [["list", "size"]]
+		},
+		{
+			"name": "decimal",
+			"group": "numeric",
+			"signatures": [["n", "scale"]]
+		},
+		{
+			"name": "floor",
+			"group": "numeric",
+			"signatures": [["n"], ["n", "scale"]]
+		},
+		{
+			"name": "ceiling",
+			"group": "numeric",
+			"signatures": [["n"], ["n", "scale"]]
+		},
+		{
+			"name": "round up",
+			"group": "numeric",
+			"signatures": [["n", "scale"]]
+		},
+		{
+			"name": "round down",
+			"group": "numeric",
+			"signatures": [["n", "scale"]]
+		},
+		{
+			"name": "round half up",
+			"group": "numeric",
+			"signatures": [["n", "scale"]]
+		},
+		{
+			"name": "round half down",
+			"group": "numeric",
+			"signatures": [["n", "scale"]]
+		},
+		{
+			"name": "abs",
+			"group": "numeric",
+			"signatures": [["number"], ["n"]]
+		},
+		{
+			"name": "modulo",
+			"group": "numeric",
+			"signatures": [["dividend", "divisor"]]
+		},
+		{
+			"name": "sqrt",
+			"group": "numeric",
+			"signatures": [["number"]]
+		},
+		{
+			"name": "log",
+			"group": "numeric",
+			"signatures": [["number"]]
+		},
+		{
+			"name": "exp",
+			"group": "numeric",
+			"signatures": [["number"]]
+		},
+		{
+			"name": "odd",
+			"group": "numeric",
+			"signatures": [["number"]]
+		},
+		{
+			"name": "even",
+			"group": "numeric",
+			"signatures": [["number"]]
+		},
+		{
+			"name": "random number",
+			"group": "numeric",
+			"signatures": [[]]
+		},
+		{
+			"name": "get value",
+			"group": "context",
+			"signatures": [["context", "key"], ["context", "keys"], ["m", "key"], ["m", "keys"]]
+		},
+		{
+			"name": "get entries",
+			"group": "context",
+			"signatures": [["context"], ["m"]]
+		},
+		{
+			"name": "context put",
+			"group": "context",
+			"signatures": [["context", "key", "value"], ["context", "keys", "value"]]
+		},
+		{
+			"name": "context merge",
+			"group": "context",
+			"signatures": [["contexts"]],
+			"variadic": true
+		},
+		{
+			"name": "now",
+			"group": "temporal",
+			"signatures": [[]]
+		},
+		{
+			"name": "today",
+			"group": "temporal",
+			"signatures": [[]]
+		},
+		{
+			"name": "day of week",
+			"group": "temporal",
+			"signatures": [["date"]]
+		},
+		{
+			"name": "day of year",
+			"group": "temporal",
+			"signatures": [["date"]]
+		},
+		{
+			"name": "week of year",
+			"group": "temporal",
+			"signatures": [["date"]]
+		},
+		{
+			"name": "month of year",
+			"group": "temporal",
+			"signatures": [["date"]]
+		},
+		{
+			"name": "last day of month",
+			"group": "temporal",
+			"signatures": [["date"]]
+		},
+		{
+			"name": "before",
+			"group": "range",
+			"signatures": [
+				["point1", "point2"],
+				["range", "point"],
+				["point", "range"],
+				["range1", "range2"]
+			]
+		},
+		{
+			"name": "after",
+			"group": "range",
+			"signatures": [
+				["point1", "point2"],
+				["range", "point"],
+				["point", "range"],
+				["range1", "range2"]
+			]
+		},
+		{
+			"name": "meets",
+			"group": "range",
+			"signatures": [["range1", "range2"]]
+		},
+		{
+			"name": "met by",
+			"group": "range",
+			"signatures": [["range1", "range2"]]
+		},
+		{
+			"name": "overlaps",
+			"group": "range",
+			"signatures": [["range1", "range2"]]
+		},
+		{
+			"name": "overlaps before",
+			"group": "range",
+			"signatures": [["range1", "range2"]]
+		},
+		{
+			"name": "overlaps after",
+			"group": "range",
+			"signatures": [["range1", "range2"]]
+		},
+		{
+			"name": "finishes",
+			"group": "range",
+			"signatures": [["point", "range"], ["range1", "range2"]]
+		},
+		{
+			"name": "finished by",
+			"group": "range",
+			"signatures": [["range", "point"], ["range1", "range2"]]
+		},
+		{
+			"name": "includes",
+			"group": "range",
+			"signatures": [["range", "point"], ["range1", "range2"]]
+		},
+		{
+			"name": "during",
+			"group": "range",
+			"signatures": [["point", "range"], ["range1", "range2"]]
+		},
+		{
+			"name": "starts",
+			"group": "range",
+			"signatures": [["point", "range"], ["range1", "range2"]]
+		},
+		{
+			"name": "started by",
+			"group": "range",
+			"signatures": [["range", "point"], ["range1", "range2"]]
+		},
+		{
+			"name": "coincides",
+			"group": "range",
+			"signatures": [["point1", "point2"], ["range1", "range2"]]
+		}
+	]
+}

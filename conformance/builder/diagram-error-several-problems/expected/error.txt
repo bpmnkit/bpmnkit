@@ -1,0 +1,5 @@
+Invalid collaboration:
+  Participant "B" references process "zzz", which this diagram does not contain
+  Message flow "MF" starts and ends in participant "A"; a message flow crosses pools, a sequence flow stays inside one
+  Message flow "MF" references message "none", which this diagram does not declare
+  Message flow "MF2" names source "x", which is not a participant or a flow node in one

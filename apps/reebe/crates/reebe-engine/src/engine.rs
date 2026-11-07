@@ -1,11 +1,11 @@
-use std::sync::Arc;
-use std::time::Duration;
-use dashmap::DashMap;
-use reebe_db::records::DbRecord;
-use reebe_db::StateBackend;
 use crate::clock::Clock;
 use crate::error::{EngineError, EngineResult};
 use crate::process_def_cache::ProcessDefCache;
+use dashmap::DashMap;
+use reebe_db::records::DbRecord;
+use reebe_db::StateBackend;
+use std::sync::Arc;
+use std::time::Duration;
 
 /// Read-only access to engine state during processing.
 /// Available on all targets including WASM.
@@ -26,11 +26,11 @@ use crate::job_notifier::JobNotifier;
 
 #[cfg(not(target_arch = "wasm32"))]
 use crate::processor::{
-    RecordProcessor, Writers,
-    DeploymentProcessor, ProcessInstanceCreationProcessor, ProcessInstanceCancelProcessor,
-    BpmnElementProcessor, JobProcessor, MessageProcessor, TimerProcessor, IncidentProcessor,
-    UserTaskProcessor, SignalProcessor, IdentityProcessor, VariableDocumentProcessor,
-        AdHocSubProcessInstructionProcessor, ProcessInstanceModificationProcessor, DecisionEvaluationProcessor,
+    AdHocSubProcessInstructionProcessor, BpmnElementProcessor, DecisionEvaluationProcessor,
+    DeploymentProcessor, IdentityProcessor, IncidentProcessor, JobProcessor, MessageProcessor,
+    ProcessInstanceCancelProcessor, ProcessInstanceCreationProcessor,
+    ProcessInstanceModificationProcessor, RecordProcessor, SignalProcessor, TimerProcessor,
+    UserTaskProcessor, VariableDocumentProcessor, Writers,
 };
 
 #[cfg(not(target_arch = "wasm32"))]
@@ -93,13 +93,14 @@ impl EngineHandle {
         payload: serde_json::Value,
         tenant_id: String,
     ) -> EngineResult<serde_json::Value> {
-        let _permit = tokio::time::timeout(
-            Duration::from_secs(30),
-            self.in_flight.acquire(),
-        )
-        .await
-        .map_err(|_| EngineError::Internal("Engine is overloaded — backpressure limit reached".to_string()))?
-        .map_err(|_| EngineError::Internal("Backpressure semaphore closed".to_string()))?;
+        let _permit = tokio::time::timeout(Duration::from_secs(30), self.in_flight.acquire())
+            .await
+            .map_err(|_| {
+                EngineError::Internal(
+                    "Engine is overloaded — backpressure limit reached".to_string(),
+                )
+            })?
+            .map_err(|_| EngineError::Internal("Backpressure semaphore closed".to_string()))?;
 
         let (tx, rx) = oneshot::channel();
         let cmd = PendingCommand {
@@ -114,7 +115,8 @@ impl EngineHandle {
             .send(cmd)
             .await
             .map_err(|_| EngineError::Internal("Engine channel closed".to_string()))?;
-        let result = rx.await
+        let result = rx
+            .await
             .map_err(|_| EngineError::Internal("Response channel closed".to_string()))?;
         result
     }
@@ -122,7 +124,11 @@ impl EngineHandle {
 
 #[cfg(not(target_arch = "wasm32"))]
 impl Engine {
-    pub fn new(backend: Arc<dyn StateBackend>, partition_id: i16, clock: Arc<dyn Clock>) -> (Self, EngineHandle) {
+    pub fn new(
+        backend: Arc<dyn StateBackend>,
+        partition_id: i16,
+        clock: Arc<dyn Clock>,
+    ) -> (Self, EngineHandle) {
         let job_notifier = Arc::new(JobNotifier::new());
         let (command_tx, command_rx) = mpsc::channel(1024);
         let in_flight = Arc::new(Semaphore::new(1024));
@@ -150,7 +156,9 @@ impl Engine {
             Arc::new(ProcessInstanceCreationProcessor),
             Arc::new(ProcessInstanceCancelProcessor),
             Arc::new(BpmnElementProcessor),
-            Arc::new(JobProcessor { job_notifier: job_notifier.clone() }),
+            Arc::new(JobProcessor {
+                job_notifier: job_notifier.clone(),
+            }),
             Arc::new(MessageProcessor),
             Arc::new(TimerProcessor),
             Arc::new(IncidentProcessor),
@@ -178,12 +186,20 @@ impl Engine {
 
     pub async fn run(self: Arc<Self>) {
         // Acquire advisory lock for this partition on startup.
-        if self.state.backend.try_acquire_partition_lock(self.state.partition_id).await {
+        if self
+            .state
+            .backend
+            .try_acquire_partition_lock(self.state.partition_id)
+            .await
+        {
             tracing::info!(
                 "Acquired advisory lock for partition {}",
                 self.state.partition_id
             );
-            self.owned_partitions.write().await.push(self.state.partition_id);
+            self.owned_partitions
+                .write()
+                .await
+                .push(self.state.partition_id);
         } else {
             tracing::warn!(
                 "Could not acquire advisory lock for partition {} — another node may own it",
@@ -199,16 +215,11 @@ impl Engine {
                 tokio::time::sleep(Duration::from_secs(5)).await;
                 let pid = state_hb.partition_id;
                 let already_owned = owned_hb.read().await.contains(&pid);
-                if !already_owned {
-                    if state_hb.backend.try_acquire_partition_lock(pid).await {
-                        tracing::info!("Re-acquired advisory lock for partition {}", pid);
-                        owned_hb.write().await.push(pid);
-                    }
+                if !already_owned && state_hb.backend.try_acquire_partition_lock(pid).await {
+                    tracing::info!("Re-acquired advisory lock for partition {}", pid);
+                    owned_hb.write().await.push(pid);
                 }
-                tracing::debug!(
-                    "Partition heartbeat: owned = {:?}",
-                    *owned_hb.read().await
-                );
+                tracing::debug!("Partition heartbeat: owned = {:?}", *owned_hb.read().await);
             }
         });
 
@@ -228,13 +239,20 @@ impl Engine {
         let mut consecutive_errors: u32 = 0;
 
         loop {
-            match self.state.backend.fetch_commands_from(self.state.partition_id, last_position + 1, 100).await {
+            match self
+                .state
+                .backend
+                .fetch_commands_from(self.state.partition_id, last_position + 1, 100)
+                .await
+            {
                 Ok(records) if !records.is_empty() => {
                     consecutive_errors = 0;
                     for record in &records {
                         last_position = record.position;
                         self.process_one(record).await;
-                        if let Err(e) = self.state.backend
+                        if let Err(e) = self
+                            .state
+                            .backend
                             .set_processed_position(self.state.partition_id, record.position)
                             .await
                         {
@@ -272,7 +290,12 @@ impl Engine {
     async fn processed_position(&self) -> i64 {
         let mut attempt: u32 = 0;
         loop {
-            match self.state.backend.get_processed_position(self.state.partition_id).await {
+            match self
+                .state
+                .backend
+                .get_processed_position(self.state.partition_id)
+                .await
+            {
                 Ok(position) => {
                     tracing::info!(
                         "Partition {} resumes after position {}",
@@ -329,7 +352,8 @@ impl Engine {
                 let mut writers = Writers::new();
                 match processor.process(record, &self.state, &mut writers).await {
                     Ok(()) => {
-                        metrics::counter!("reebe_partition_records_total", "type" => "command").increment(1);
+                        metrics::counter!("reebe_partition_records_total", "type" => "command")
+                            .increment(1);
                         self.commit_results(record, writers).await;
                     }
                     Err(e) => {
@@ -372,7 +396,12 @@ impl Engine {
 
         let now_ms = self.state.clock.now().timestamp_millis();
 
-        let first_pos = match self.state.backend.next_position_batch(self.state.partition_id, total).await {
+        let first_pos = match self
+            .state
+            .backend
+            .next_position_batch(self.state.partition_id, total)
+            .await
+        {
             Ok(p) => p,
             Err(e) => {
                 tracing::error!("Error reserving position batch: {}", e);
@@ -425,7 +454,8 @@ impl Engine {
                     metrics::counter!(
                         "reebe_process_instances_total",
                         "state" => "completed"
-                    ).increment(1);
+                    )
+                    .increment(1);
                 }
                 ("JOB", "CREATED") => {
                     metrics::counter!("reebe_jobs_created_total").increment(1);

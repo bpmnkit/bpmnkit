@@ -1,0 +1,78 @@
+{
+  "id": "F",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "id": "t",
+      "type": "text",
+      "text": "# Title"
+    },
+    {
+      "id": "a",
+      "type": "textfield",
+      "key": "customer.name",
+      "label": "a",
+      "validate": {
+        "required": true,
+        "pattern": "^[A-Z]"
+      }
+    },
+    {
+      "id": "g",
+      "type": "group",
+      "path": "g",
+      "label": "G",
+      "components": [
+        {
+          "id": "b",
+          "type": "textfield",
+          "key": "x",
+          "label": "b"
+        },
+        {
+          "id": "d",
+          "type": "dynamiclist",
+          "path": "rows",
+          "label": "Rows",
+          "components": [
+            {
+              "id": "c",
+              "type": "textfield",
+              "key": "x",
+              "label": "c"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "n",
+      "type": "number",
+      "key": "n",
+      "label": "N",
+      "validate": {
+        "min": 0,
+        "max": 10
+      }
+    },
+    {
+      "id": "s",
+      "type": "select",
+      "key": "s",
+      "label": "S",
+      "values": [
+        {
+          "label": "A",
+          "value": "a"
+        }
+      ]
+    },
+    {
+      "id": "b",
+      "type": "button",
+      "label": "Go",
+      "action": "submit"
+    }
+  ]
+}

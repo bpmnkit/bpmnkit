@@ -1,30 +1,32 @@
+use crate::app::ApiState;
+use crate::dto::user_tasks::{
+    AssignUserTaskRequest, CompleteUserTaskRequest, SearchUserTasksRequest, UserTaskDto,
+};
+use crate::error::{ApiError, ApiResult};
+use crate::pagination::PageResponse;
 use axum::extract::{Path, State};
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::Json;
 use reebe_db::state::user_tasks::UserTaskRepository;
-use crate::app::ApiState;
-use crate::dto::user_tasks::{
-    AssignUserTaskRequest, CompleteUserTaskRequest,
-    SearchUserTasksRequest, UserTaskDto,
-};
-use crate::error::{ApiError, ApiResult};
-use crate::pagination::PageResponse;
 
 pub async fn get_user_task(
     State(state): State<ApiState>,
     Path(key): Path<String>,
 ) -> ApiResult<impl IntoResponse> {
-    let key_i64: i64 = key.parse().map_err(|_| {
-        ApiError::InvalidRequest(format!("Invalid key: {key}"))
-    })?;
+    let key_i64: i64 = key
+        .parse()
+        .map_err(|_| ApiError::InvalidRequest(format!("Invalid key: {key}")))?;
 
     let pool = state.replica_pool.as_ref().unwrap_or(&state.pool);
     let repo = UserTaskRepository::new(pool);
-    let task = repo.get_by_key(key_i64).await.map_err(|_| ApiError::NotFound {
-        resource: "user task".to_string(),
-        key: key.clone(),
-    })?;
+    let task = repo
+        .get_by_key(key_i64)
+        .await
+        .map_err(|_| ApiError::NotFound {
+            resource: "user task".to_string(),
+            key: key.clone(),
+        })?;
 
     Ok(Json(UserTaskDto::from(task)))
 }

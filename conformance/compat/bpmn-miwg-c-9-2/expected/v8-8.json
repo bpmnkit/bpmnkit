@@ -1,0 +1,64 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "UserTask_DecideOnApplication"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Decide on application\" is a job-worker user task; Camunda 8.8 deprecates those in favour of Camunda user tasks.",
+      "processId": "ManualCheck",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "UserTask_AccelerateDecision"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Accelerate decision making\" is a job-worker user task; Camunda 8.8 deprecates those in favour of Camunda user tasks.",
+      "processId": "ManualCheck",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "UserTask_AccelerateDecision"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Accelerate decision making\" has no zeebe:formDefinition.",
+      "processId": "ManualCheck",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "UserTask_CheckForFraud"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Check for Fraud\" is a job-worker user task; Camunda 8.8 deprecates those in favour of Camunda user tasks.",
+      "processId": "ManualCheck",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "UserTask_CheckForFraud"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Check for Fraud\" has no zeebe:formDefinition.",
+      "processId": "ManualCheck",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    }
+  ]
+}

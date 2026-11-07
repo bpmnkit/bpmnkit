@@ -21,7 +21,7 @@ import type { BpmnDefinitions, BpmnElementType, BpmnFlowElement } from "./bpmn-m
 import { compactify } from "./compact.js"
 import type { CompactElement, CompactFlow } from "./compact.js"
 import { FIXED_KINDS } from "./process-delta.js"
-import { KINDS, splitMappings } from "./process-text.js"
+import { KINDS, duration, splitMappings } from "./process-text.js"
 
 /** Options for {@link writeProcessText}. */
 export interface WriteProcessTextOptions {
@@ -119,6 +119,10 @@ function spec(element: CompactElement, host: string | undefined, container?: str
 	if (host !== undefined) attrs.push(`on=${host}`)
 	if (container !== undefined) attrs.push(`inside=${container}`)
 	if (element.interrupting === false) attrs.push("nonint")
+	// Only a duration that reads back as itself: a cycle or a FEEL expression would not
+	const after = element.timerDuration
+	if (element.eventType === "timer" && after && duration(after) === after)
+		attrs.push(`after=${after}`)
 	if (element.jobType) attrs.push(`job=${element.jobType}`)
 	if (element.formId) attrs.push(`form=${element.formId}`)
 	// Mapping values run to the next ` word=`, so they are written before result= and feel=

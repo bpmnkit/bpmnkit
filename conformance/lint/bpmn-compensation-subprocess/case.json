@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/compensation-subprocess/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}
