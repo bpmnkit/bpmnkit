@@ -166,6 +166,55 @@ pub enum BpmnEventDefinition {
     Compensate(BpmnCompensateEventDefinition),
 }
 
+impl BpmnEventDefinition {
+    /// The `"type"` discriminant (`"timer"`, `"error"`, ...).
+    pub fn type_name(&self) -> &'static str {
+        use BpmnEventDefinition::*;
+        match self {
+            Timer(_) => "timer",
+            Error(_) => "error",
+            Escalation(_) => "escalation",
+            Message(_) => "message",
+            Signal(_) => "signal",
+            Conditional(_) => "conditional",
+            Link(_) => "link",
+            Cancel(_) => "cancel",
+            Terminate(_) => "terminate",
+            Compensate(_) => "compensate",
+        }
+    }
+
+    pub fn id(&self) -> Option<&str> {
+        use BpmnEventDefinition::*;
+        match self {
+            Timer(d) => d.id.as_deref(),
+            Error(d) => d.id.as_deref(),
+            Escalation(d) => d.id.as_deref(),
+            Message(d) => d.id.as_deref(),
+            Signal(d) => d.id.as_deref(),
+            Conditional(d) => d.id.as_deref(),
+            Link(d) => d.id.as_deref(),
+            Cancel(d) | Terminate(d) => d.id.as_deref(),
+            Compensate(d) => d.id.as_deref(),
+        }
+    }
+
+    pub fn id_mut(&mut self) -> &mut Option<String> {
+        use BpmnEventDefinition::*;
+        match self {
+            Timer(d) => &mut d.id,
+            Error(d) => &mut d.id,
+            Escalation(d) => &mut d.id,
+            Message(d) => &mut d.id,
+            Signal(d) => &mut d.id,
+            Conditional(d) => &mut d.id,
+            Link(d) => &mut d.id,
+            Cancel(d) | Terminate(d) => &mut d.id,
+            Compensate(d) => &mut d.id,
+        }
+    }
+}
+
 // ---------------------------------------------------------------------------
 // Expressions and multi-instance loops
 // ---------------------------------------------------------------------------
@@ -531,6 +580,126 @@ impl BpmnFlowElement {
             AdHocSubProcess(s) => Some(&s.contents),
             EventSubProcess(s) => Some(&s.contents),
             Transaction(s) => Some(&s.contents),
+            _ => None,
+        }
+    }
+
+    /// Mutable [`Self::base`].
+    pub fn base_mut(&mut self) -> &mut BpmnFlowNodeBase {
+        use BpmnFlowElement::*;
+        match self {
+            StartEvent(e) => &mut e.base,
+            EndEvent(e) | IntermediateCatchEvent(e) | IntermediateThrowEvent(e) => &mut e.base,
+            BoundaryEvent(e) => &mut e.base,
+            Task(a) | ServiceTask(a) | ScriptTask(a) | UserTask(a) | BusinessRuleTask(a)
+            | ManualTask(a) | CallActivity(a) => &mut a.base,
+            SendTask(t) | ReceiveTask(t) => &mut t.base,
+            SubProcess(s) => &mut s.base,
+            AdHocSubProcess(s) => &mut s.base,
+            EventSubProcess(s) => &mut s.base,
+            Transaction(s) => &mut s.base,
+            ExclusiveGateway(g) | InclusiveGateway(g) | ComplexGateway(g) => &mut g.base,
+            ParallelGateway(b) | EventBasedGateway(b) => b,
+            DataObject(d) => &mut d.base,
+            DataObjectReference(d) => &mut d.base,
+            DataStoreReference(d) => &mut d.base,
+        }
+    }
+
+    /// Mutable [`Self::contents`].
+    pub fn contents_mut(&mut self) -> Option<&mut BpmnProcessContents> {
+        use BpmnFlowElement::*;
+        match self {
+            SubProcess(s) => Some(&mut s.contents),
+            AdHocSubProcess(s) => Some(&mut s.contents),
+            EventSubProcess(s) => Some(&mut s.contents),
+            Transaction(s) => Some(&mut s.contents),
+            _ => None,
+        }
+    }
+
+    /// The event definitions of an event; `None` for every other element (TS's
+    /// `"eventDefinitions" in el`).
+    pub fn event_definitions(&self) -> Option<&[BpmnEventDefinition]> {
+        use BpmnFlowElement::*;
+        match self {
+            StartEvent(e) => Some(&e.event_definitions),
+            EndEvent(e) | IntermediateCatchEvent(e) | IntermediateThrowEvent(e) => {
+                Some(&e.event_definitions)
+            }
+            BoundaryEvent(e) => Some(&e.event_definitions),
+            _ => None,
+        }
+    }
+
+    /// Mutable [`Self::event_definitions`].
+    pub fn event_definitions_mut(&mut self) -> Option<&mut Vec<BpmnEventDefinition>> {
+        use BpmnFlowElement::*;
+        match self {
+            StartEvent(e) => Some(&mut e.event_definitions),
+            EndEvent(e) | IntermediateCatchEvent(e) | IntermediateThrowEvent(e) => {
+                Some(&mut e.event_definitions)
+            }
+            BoundaryEvent(e) => Some(&mut e.event_definitions),
+            _ => None,
+        }
+    }
+
+    /// The `default` flow slot of an exclusive, inclusive or complex gateway (TS's
+    /// `"default" in el`); `None` for every other element.
+    pub fn default_flow_mut(&mut self) -> Option<&mut Option<String>> {
+        use BpmnFlowElement::*;
+        match self {
+            ExclusiveGateway(g) | InclusiveGateway(g) | ComplexGateway(g) => Some(&mut g.default),
+            _ => None,
+        }
+    }
+
+    /// The gateway's `default` flow id, if it is a gateway that has one set.
+    pub fn default_flow(&self) -> Option<&str> {
+        use BpmnFlowElement::*;
+        match self {
+            ExclusiveGateway(g) | InclusiveGateway(g) | ComplexGateway(g) => g.default.as_deref(),
+            _ => None,
+        }
+    }
+
+    /// The `loopCharacteristics` slot of an element that can carry one.
+    pub fn loop_characteristics_mut(
+        &mut self,
+    ) -> Option<&mut Option<BpmnMultiInstanceLoopCharacteristics>> {
+        use BpmnFlowElement::*;
+        match self {
+            Task(a) | ServiceTask(a) | ScriptTask(a) | UserTask(a) | BusinessRuleTask(a)
+            | ManualTask(a) | CallActivity(a) => Some(&mut a.loop_characteristics),
+            SendTask(t) | ReceiveTask(t) => Some(&mut t.loop_characteristics),
+            SubProcess(s) => Some(&mut s.loop_characteristics),
+            AdHocSubProcess(s) => Some(&mut s.loop_characteristics),
+            Transaction(s) => Some(&mut s.loop_characteristics),
+            _ => None,
+        }
+    }
+
+    /// The multi-instance marker, if the element carries one.
+    pub fn loop_characteristics(&self) -> Option<&BpmnMultiInstanceLoopCharacteristics> {
+        use BpmnFlowElement::*;
+        match self {
+            Task(a) | ServiceTask(a) | ScriptTask(a) | UserTask(a) | BusinessRuleTask(a)
+            | ManualTask(a) | CallActivity(a) => a.loop_characteristics.as_ref(),
+            SendTask(t) | ReceiveTask(t) => t.loop_characteristics.as_ref(),
+            SubProcess(s) => s.loop_characteristics.as_ref(),
+            AdHocSubProcess(s) => s.loop_characteristics.as_ref(),
+            Transaction(s) => s.loop_characteristics.as_ref(),
+            _ => None,
+        }
+    }
+
+    /// `messageRef` of a send or receive task.
+    pub fn message_ref(&self) -> Option<&str> {
+        match self {
+            BpmnFlowElement::SendTask(t) | BpmnFlowElement::ReceiveTask(t) => {
+                t.message_ref.as_deref()
+            }
             _ => None,
         }
     }

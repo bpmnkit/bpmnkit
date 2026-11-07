@@ -68,6 +68,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "bpmnkit-builder"
+version = "0.1.0"
+dependencies = [
+ "bpmnkit-bpmn",
+ "bpmnkit-dmn",
+ "bpmnkit-layout",
+ "bpmnkit-xml",
+ "indexmap",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
 name = "bpmnkit-compat"
 version = "0.1.0"
 dependencies = [
@@ -161,6 +174,21 @@ dependencies = [
 name = "bpmnkit-spec"
 version = "0.1.0"
 dependencies = [
+ "serde_json",
+]
+
+[[package]]
+name = "bpmnkit-text"
+version = "0.1.0"
+dependencies = [
+ "bpmnkit-bpmn",
+ "bpmnkit-dmn",
+ "bpmnkit-feel",
+ "bpmnkit-layout",
+ "bpmnkit-xml",
+ "indexmap",
+ "regex",
+ "serde",
  "serde_json",
 ]
 

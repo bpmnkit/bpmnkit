@@ -2,11 +2,11 @@
 
 /// JS `String.prototype.trim`. Not `str::trim`: JS strips U+FEFF and keeps U+0085, Rust does
 /// the opposite.
-pub(crate) fn js_trim(s: &str) -> &str {
+pub fn js_trim(s: &str) -> &str {
     s.trim_matches(is_js_space)
 }
 
-fn is_js_space(c: char) -> bool {
+pub fn is_js_space(c: char) -> bool {
     matches!(
         c,
         '\u{9}'..='\u{D}'
@@ -26,7 +26,7 @@ fn is_js_space(c: char) -> bool {
 /// JS `Number(s)`: surrounding whitespace is ignored, `""` is 0, `0x`/`0o`/`0b` literals and
 /// `[+-]Infinity` are accepted, anything else must be a strict decimal literal or the result
 /// is NaN. Rust's own `parse::<f64>` would also take `inf` and `nan`, which JS does not.
-pub(crate) fn js_number(s: &str) -> f64 {
+pub fn js_number(s: &str) -> f64 {
     let s = js_trim(s);
     if s.is_empty() {
         return 0.0;
@@ -109,7 +109,7 @@ fn is_decimal_literal(s: &str) -> bool {
 
 /// JS `String(n)`: shortest round-trip digits, no `.0` on integers, exponent form outside
 /// `[1e-6, 1e21)`.
-pub(crate) fn js_number_to_string(n: f64) -> String {
+pub fn js_number_to_string(n: f64) -> String {
     if n.is_nan() {
         return "NaN".into();
     }

@@ -2,8 +2,7 @@
 //! `getZeebeExtensions` reader from `utils.ts`. The model keeps `extensionElements`
 //! verbatim; this module reads and writes them without losing unrecognised ones.
 //!
-//! Not ported: placement checks (`ensureZeebeExtension`, spec data will drive them)
-//! and `makeConditionalDefinition` (needs the model's conditional event type).
+//! Placement checks read `bpmnkit_spec`'s Zeebe descriptor data.
 
 use bpmnkit_xml::{local_name, Attrs, XmlElement};
 use serde::{Deserialize, Serialize};
@@ -746,6 +745,51 @@ pub fn assert_zeebe_placement(owner: &str, extension: &str) -> Result<(), String
         "<{extension}> is not allowed on <{owner}>. The Zeebe schema allows it on: {}.",
         bpmnkit_spec::elements::zeebe_allowed_in(extension).join(", ")
     ))
+}
+
+/// TS's `ensureZeebeExtension`: the `extension` element (`zeebe:versionTag`) of an element
+/// of model type `owner_type`, created empty at the end of `extension_elements` when absent.
+/// Refuses a placement the descriptor forbids, with `ZeebePlacementError`'s message.
+pub fn ensure_zeebe_extension<'a>(
+    owner_type: &str,
+    extension_elements: &'a mut Vec<XmlElement>,
+    extension: &str,
+) -> Result<&'a mut XmlElement, String> {
+    assert_zeebe_placement(&bpmn_element_name(owner_type), extension)?;
+    let at = match extension_elements.iter().position(|c| c.name == extension) {
+        Some(at) => at,
+        None => {
+            extension_elements.push(XmlElement::new(extension));
+            extension_elements.len() - 1
+        }
+    };
+    Ok(&mut extension_elements[at])
+}
+
+/// TS's `makeConditionalDefinition`: a conditional event definition with a FEEL condition
+/// and, for a non-empty `variable_events`, a `zeebe:conditionalFilter`.
+pub fn make_conditional_definition(
+    condition: &str,
+    variable_events: Option<&[String]>,
+) -> crate::model::BpmnEventDefinition {
+    let mut condition_attributes = Attrs::new();
+    condition_attributes.insert("xsi:type".into(), "bpmn:tFormalExpression".into());
+    let extension_elements = match variable_events {
+        Some(events) if !events.is_empty() => {
+            let mut filter = XmlElement::new("zeebe:conditionalFilter");
+            filter
+                .attributes
+                .insert("variableEvents".into(), events.join(","));
+            Some(vec![filter])
+        }
+        _ => None,
+    };
+    crate::model::BpmnEventDefinition::Conditional(crate::model::BpmnConditionalEventDefinition {
+        condition: Some(condition.to_owned()),
+        condition_attributes: Some(condition_attributes),
+        extension_elements,
+        ..Default::default()
+    })
 }
 
 #[cfg(test)]

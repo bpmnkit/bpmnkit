@@ -1,0 +1,22 @@
+[package]
+name = "bpmnkit-text"
+description = "Text formats for BPMN Kit: BPMN and DMN compact JSON, the process line format and connector lines (Rust twin of @bpmnkit/core's compact.ts and process-text.ts)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish = false
+
+[dependencies]
+bpmnkit-bpmn = { path = "../bpmnkit-bpmn" }
+bpmnkit-dmn = { path = "../bpmnkit-dmn" }
+bpmnkit-feel = { path = "../bpmnkit-feel" }
+bpmnkit-layout = { path = "../bpmnkit-layout" }
+bpmnkit-xml = { path = "../bpmnkit-xml" }
+indexmap = { workspace = true }
+regex = { version = "1", default-features = false, features = ["std", "unicode-perl", "unicode-case", "unicode-gencat"] }
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true, features = ["float_roundtrip"] }
