@@ -6,9 +6,7 @@
 				{
 					"method": "serviceTask",
 					"id": "t",
-					"args": [
-						"{\"name\":\"T\",\"taskType\":\"work\"}"
-					]
+					"args": ["{\"name\":\"T\",\"taskType\":\"work\"}"]
 				}
 			],
 			"ok": {
@@ -48,9 +46,7 @@
 				{
 					"method": "serviceTask",
 					"id": "t",
-					"args": [
-						"{\"name\":\"T\",\"taskType\":\"w\",\"ioMapping\":{},\"taskHeaders\":{}}"
-					]
+					"args": ["{\"name\":\"T\",\"taskType\":\"w\",\"ioMapping\":{},\"taskHeaders\":{}}"]
 				}
 			],
 			"ok": {
@@ -164,9 +160,7 @@
 				{
 					"method": "userTask",
 					"id": "u",
-					"args": [
-						"{\"formKey\":\"camunda-forms:bpmn:x\"}"
-					]
+					"args": ["{\"formKey\":\"camunda-forms:bpmn:x\"}"]
 				}
 			],
 			"ok": {
@@ -185,9 +179,7 @@
 				{
 					"method": "userTask",
 					"id": "u",
-					"args": [
-						"{\"externalReference\":\"https://x\"}"
-					]
+					"args": ["{\"externalReference\":\"https://x\"}"]
 				}
 			],
 			"ok": {
@@ -206,9 +198,7 @@
 				{
 					"method": "userTask",
 					"id": "u",
-					"args": [
-						"{\"embeddedForm\":{\"id\":\"form1\",\"schema\":\"{\\\"a\\\":1}\"}}"
-					]
+					"args": ["{\"embeddedForm\":{\"id\":\"form1\",\"schema\":\"{\\\"a\\\":1}\"}}"]
 				}
 			],
 			"ok": {
@@ -227,23 +217,17 @@
 				{
 					"method": "userTask",
 					"id": "u1",
-					"args": [
-						"{\"embeddedForm\":{\"id\":\"form1\",\"schema\":\"S\"}}"
-					]
+					"args": ["{\"embeddedForm\":{\"id\":\"form1\",\"schema\":\"S\"}}"]
 				},
 				{
 					"method": "userTask",
 					"id": "u2",
-					"args": [
-						"{\"embeddedForm\":{\"id\":\"form1\",\"schema\":\"S\"}}"
-					]
+					"args": ["{\"embeddedForm\":{\"id\":\"form1\",\"schema\":\"S\"}}"]
 				},
 				{
 					"method": "userTask",
 					"id": "u3",
-					"args": [
-						"{\"embeddedForm\":{\"id\":\"form2\",\"schema\":\"T\"}}"
-					]
+					"args": ["{\"embeddedForm\":{\"id\":\"form2\",\"schema\":\"T\"}}"]
 				}
 			],
 			"ok": {
@@ -262,16 +246,12 @@
 				{
 					"method": "userTask",
 					"id": "u1",
-					"args": [
-						"{\"embeddedForm\":{\"id\":\"form1\",\"schema\":\"S\"}}"
-					]
+					"args": ["{\"embeddedForm\":{\"id\":\"form1\",\"schema\":\"S\"}}"]
 				},
 				{
 					"method": "userTask",
 					"id": "u2",
-					"args": [
-						"{\"embeddedForm\":{\"id\":\"form1\",\"schema\":\"T\"}}"
-					]
+					"args": ["{\"embeddedForm\":{\"id\":\"form1\",\"schema\":\"T\"}}"]
 				}
 			],
 			"error": "embedded form \"form1\" is declared with two different schemas"
@@ -282,9 +262,7 @@
 				{
 					"method": "userTask",
 					"id": "u",
-					"args": [
-						"{\"formId\":\"a\",\"formKey\":\"b\"}"
-					]
+					"args": ["{\"formId\":\"a\",\"formKey\":\"b\"}"]
 				}
 			],
 			"error": "userTask: set only one of formId, formKey, externalReference or embeddedForm"
@@ -295,9 +273,7 @@
 				{
 					"method": "userTask",
 					"id": "u",
-					"args": [
-						"{\"formKey\":\"\"}"
-					]
+					"args": ["{\"formKey\":\"\"}"]
 				}
 			],
 			"ok": {
@@ -337,23 +313,17 @@
 				{
 					"method": "userTask",
 					"id": "u1",
-					"args": [
-						"{\"priority\":2.5}"
-					]
+					"args": ["{\"priority\":2.5}"]
 				},
 				{
 					"method": "userTask",
 					"id": "u2",
-					"args": [
-						"{\"priority\":0}"
-					]
+					"args": ["{\"priority\":0}"]
 				},
 				{
 					"method": "userTask",
 					"id": "u3",
-					"args": [
-						"{\"priority\":1e+21}"
-					]
+					"args": ["{\"priority\":1e+21}"]
 				}
 			],
 			"ok": {
@@ -393,9 +363,7 @@
 				{
 					"method": "userTask",
 					"id": "u",
-					"args": [
-						"{\"executionListeners\":[{\"eventType\":\"start\",\"type\":\"x\"}]}"
-					]
+					"args": ["{\"executionListeners\":[{\"eventType\":\"start\",\"type\":\"x\"}]}"]
 				}
 			],
 			"ok": {
@@ -433,9 +401,7 @@
 				{
 					"method": "businessRuleTask",
 					"id": "b",
-					"args": [
-						"{\"name\":\"B\",\"taskType\":\"dmn\"}"
-					]
+					"args": ["{\"name\":\"B\",\"taskType\":\"dmn\"}"]
 				}
 			],
 			"ok": {
@@ -454,9 +420,7 @@
 				{
 					"method": "businessRuleTask",
 					"id": "b",
-					"args": [
-						"{\"decisionId\":\"d\"}"
-					]
+					"args": ["{\"decisionId\":\"d\"}"]
 				}
 			],
 			"ok": {
@@ -517,9 +481,7 @@
 				{
 					"method": "callActivity",
 					"id": "c",
-					"args": [
-						"{\"processId\":\"p2\"}"
-					]
+					"args": ["{\"processId\":\"p2\"}"]
 				}
 			],
 			"ok": {
@@ -538,9 +500,7 @@
 				{
 					"method": "manualTask",
 					"id": "m",
-					"args": [
-						"{\"name\":\"M\",\"documentation\":\"d\",\"isForCompensation\":true}"
-					]
+					"args": ["{\"name\":\"M\",\"documentation\":\"d\",\"isForCompensation\":true}"]
 				},
 				{
 					"method": "task",
@@ -571,16 +531,12 @@
 				{
 					"method": "sendTask",
 					"id": "s",
-					"args": [
-						"{\"name\":\"S\",\"messageName\":\"Order Placed\",\"isForCompensation\":true}"
-					]
+					"args": ["{\"name\":\"S\",\"messageName\":\"Order Placed\",\"isForCompensation\":true}"]
 				},
 				{
 					"method": "sendTask",
 					"id": "s2",
-					"args": [
-						"{\"messageName\":\"Order Placed\",\"multiInstance\":{\"collection\":\"=c\"}}"
-					]
+					"args": ["{\"messageName\":\"Order Placed\",\"multiInstance\":{\"collection\":\"=c\"}}"]
 				},
 				{
 					"method": "sendTask",
@@ -604,16 +560,12 @@
 				{
 					"method": "receiveTask",
 					"id": "r",
-					"args": [
-						"{\"messageName\":\"Reply\",\"correlationKey\":\"=id\"}"
-					]
+					"args": ["{\"messageName\":\"Reply\",\"correlationKey\":\"=id\"}"]
 				},
 				{
 					"method": "receiveTask",
 					"id": "r2",
-					"args": [
-						"{\"messageName\":\"Reply\",\"correlationKey\":\"=id\"}"
-					]
+					"args": ["{\"messageName\":\"Reply\",\"correlationKey\":\"=id\"}"]
 				}
 			],
 			"ok": {
@@ -632,23 +584,17 @@
 				{
 					"method": "receiveTask",
 					"id": "r",
-					"args": [
-						"{\"messageName\":\"Reply\",\"correlationKey\":\"=a\"}"
-					]
+					"args": ["{\"messageName\":\"Reply\",\"correlationKey\":\"=a\"}"]
 				},
 				{
 					"method": "receiveTask",
 					"id": "r2",
-					"args": [
-						"{\"messageName\":\"Reply\",\"correlationKey\":\"=b\"}"
-					]
+					"args": ["{\"messageName\":\"Reply\",\"correlationKey\":\"=b\"}"]
 				},
 				{
 					"method": "receiveTask",
 					"id": "r3",
-					"args": [
-						"{\"messageName\":\"Other\",\"correlationKey\":\"=c\"}"
-					]
+					"args": ["{\"messageName\":\"Other\",\"correlationKey\":\"=c\"}"]
 				}
 			],
 			"ok": {
@@ -667,23 +613,17 @@
 				{
 					"method": "receiveTask",
 					"id": "r",
-					"args": [
-						"{\"messageName\":\"M1\",\"correlationKey\":\"\"}"
-					]
+					"args": ["{\"messageName\":\"M1\",\"correlationKey\":\"\"}"]
 				},
 				{
 					"method": "receiveTask",
 					"id": "r2",
-					"args": [
-						"{\"messageName\":\"M1\",\"correlationKey\":\"=k\"}"
-					]
+					"args": ["{\"messageName\":\"M1\",\"correlationKey\":\"=k\"}"]
 				},
 				{
 					"method": "receiveTask",
 					"id": "r3",
-					"args": [
-						"{\"correlationKey\":\"=orphan\"}"
-					]
+					"args": ["{\"correlationKey\":\"=orphan\"}"]
 				}
 			],
 			"ok": {
@@ -702,30 +642,22 @@
 				{
 					"method": "exclusiveGateway",
 					"id": "x",
-					"args": [
-						"{\"name\":\"X\",\"defaultFlow\":\"Flow_x\"}"
-					]
+					"args": ["{\"name\":\"X\",\"defaultFlow\":\"Flow_x\"}"]
 				},
 				{
 					"method": "inclusiveGateway",
 					"id": "i",
-					"args": [
-						"{\"defaultFlow\":\"\"}"
-					]
+					"args": ["{\"defaultFlow\":\"\"}"]
 				},
 				{
 					"method": "complexGateway",
 					"id": "c",
-					"args": [
-						"{\"defaultFlow\":\"Flow_c\",\"documentation\":\"d\"}"
-					]
+					"args": ["{\"defaultFlow\":\"Flow_c\",\"documentation\":\"d\"}"]
 				},
 				{
 					"method": "parallelGateway",
 					"id": "p",
-					"args": [
-						"{\"name\":\"P\"}"
-					]
+					"args": ["{\"name\":\"P\"}"]
 				},
 				{
 					"method": "eventBasedGateway",
@@ -775,44 +707,32 @@
 				{
 					"method": "startEvent",
 					"id": "t",
-					"args": [
-						"{\"timerCycle\":\"R/PT1H\"}"
-					]
+					"args": ["{\"timerCycle\":\"R/PT1H\"}"]
 				},
 				{
 					"method": "startEvent",
 					"id": "t2",
-					"args": [
-						"{\"timerDuration\":\"\",\"timerDate\":\"\"}"
-					]
+					"args": ["{\"timerDuration\":\"\",\"timerDate\":\"\"}"]
 				},
 				{
 					"method": "startEvent",
 					"id": "m",
-					"args": [
-						"{\"messageName\":\"Go Now\",\"modelerTemplate\":\"tpl\"}"
-					]
+					"args": ["{\"messageName\":\"Go Now\",\"modelerTemplate\":\"tpl\"}"]
 				},
 				{
 					"method": "startEvent",
 					"id": "c",
-					"args": [
-						"{\"condition\":\"=x > 1\",\"conditionVariableEvents\":[\"create\",\"update\"]}"
-					]
+					"args": ["{\"condition\":\"=x > 1\",\"conditionVariableEvents\":[\"create\",\"update\"]}"]
 				},
 				{
 					"method": "startEvent",
 					"id": "c2",
-					"args": [
-						"{\"condition\":\"=y\",\"conditionVariableEvents\":[]}"
-					]
+					"args": ["{\"condition\":\"=y\",\"conditionVariableEvents\":[]}"]
 				},
 				{
 					"method": "startEvent",
 					"id": "n",
-					"args": [
-						"{\"isInterrupting\":false}"
-					]
+					"args": ["{\"isInterrupting\":false}"]
 				}
 			],
 			"ok": {
@@ -836,37 +756,27 @@
 				{
 					"method": "endEvent",
 					"id": "e2",
-					"args": [
-						"{\"errorCode\":\"E_FAIL\"}"
-					]
+					"args": ["{\"errorCode\":\"E_FAIL\"}"]
 				},
 				{
 					"method": "endEvent",
 					"id": "e3",
-					"args": [
-						"{\"errorRef\":\"E_FAIL\"}"
-					]
+					"args": ["{\"errorRef\":\"E_FAIL\"}"]
 				},
 				{
 					"method": "endEvent",
 					"id": "e4",
-					"args": [
-						"{\"errorCode\":\"\"}"
-					]
+					"args": ["{\"errorCode\":\"\"}"]
 				},
 				{
 					"method": "endEvent",
 					"id": "e5",
-					"args": [
-						"{\"messageName\":\"Done\",\"signalName\":\"Sig\",\"escalationCode\":\"ESC\"}"
-					]
+					"args": ["{\"messageName\":\"Done\",\"signalName\":\"Sig\",\"escalationCode\":\"ESC\"}"]
 				},
 				{
 					"method": "endEvent",
 					"id": "e6",
-					"args": [
-						"{\"errorCode\":\"Other Error\",\"name\":\"Err\"}"
-					]
+					"args": ["{\"errorCode\":\"Other Error\",\"name\":\"Err\"}"]
 				}
 			],
 			"ok": {
@@ -885,23 +795,17 @@
 				{
 					"method": "endEvent",
 					"id": "e1",
-					"args": [
-						"{\"errorCode\":\"a b\"}"
-					]
+					"args": ["{\"errorCode\":\"a b\"}"]
 				},
 				{
 					"method": "endEvent",
 					"id": "e2",
-					"args": [
-						"{\"errorCode\":\"a-b\"}"
-					]
+					"args": ["{\"errorCode\":\"a-b\"}"]
 				},
 				{
 					"method": "endEvent",
 					"id": "e3",
-					"args": [
-						"{\"errorCode\":\"a b\"}"
-					]
+					"args": ["{\"errorCode\":\"a b\"}"]
 				}
 			],
 			"ok": {
@@ -925,30 +829,22 @@
 				{
 					"method": "intermediateThrowEvent",
 					"id": "t2",
-					"args": [
-						"{\"messageName\":\"M\"}"
-					]
+					"args": ["{\"messageName\":\"M\"}"]
 				},
 				{
 					"method": "intermediateThrowEvent",
 					"id": "t3",
-					"args": [
-						"{\"signalName\":\"S\",\"escalationCode\":\"X\"}"
-					]
+					"args": ["{\"signalName\":\"S\",\"escalationCode\":\"X\"}"]
 				},
 				{
 					"method": "intermediateThrowEvent",
 					"id": "t4",
-					"args": [
-						"{\"compensation\":true,\"activityRef\":\"act\"}"
-					]
+					"args": ["{\"compensation\":true,\"activityRef\":\"act\"}"]
 				},
 				{
 					"method": "intermediateThrowEvent",
 					"id": "t5",
-					"args": [
-						"{\"linkName\":\"go\"}"
-					]
+					"args": ["{\"linkName\":\"go\"}"]
 				}
 			],
 			"ok": {
@@ -972,44 +868,32 @@
 				{
 					"method": "intermediateCatchEvent",
 					"id": "c2",
-					"args": [
-						"{\"timerDuration\":\"PT5M\"}"
-					]
+					"args": ["{\"timerDuration\":\"PT5M\"}"]
 				},
 				{
 					"method": "intermediateCatchEvent",
 					"id": "c3",
-					"args": [
-						"{\"messageName\":\"M\",\"correlationKey\":\"=k\"}"
-					]
+					"args": ["{\"messageName\":\"M\",\"correlationKey\":\"=k\"}"]
 				},
 				{
 					"method": "intermediateCatchEvent",
 					"id": "c4",
-					"args": [
-						"{\"signalName\":\"S\",\"timerDate\":\"2030-01-01T00:00:00Z\"}"
-					]
+					"args": ["{\"signalName\":\"S\",\"timerDate\":\"2030-01-01T00:00:00Z\"}"]
 				},
 				{
 					"method": "intermediateCatchEvent",
 					"id": "c5",
-					"args": [
-						"{\"linkName\":\"go\"}"
-					]
+					"args": ["{\"linkName\":\"go\"}"]
 				},
 				{
 					"method": "intermediateCatchEvent",
 					"id": "c6",
-					"args": [
-						"{\"condition\":\"=a\",\"conditionVariableEvents\":[\"update\"]}"
-					]
+					"args": ["{\"condition\":\"=a\",\"conditionVariableEvents\":[\"update\"]}"]
 				},
 				{
 					"method": "intermediateCatchEvent",
 					"id": "c7",
-					"args": [
-						"{\"correlationKey\":\"=nomsg\"}"
-					]
+					"args": ["{\"correlationKey\":\"=nomsg\"}"]
 				}
 			],
 			"ok": {
@@ -1033,9 +917,7 @@
 				{
 					"method": "boundaryEvent",
 					"id": "b1",
-					"args": [
-						"{\"attachedTo\":\"host\",\"timerDuration\":\"PT1H\"}"
-					]
+					"args": ["{\"attachedTo\":\"host\",\"timerDuration\":\"PT1H\"}"]
 				},
 				{
 					"method": "boundaryEvent",
@@ -1047,23 +929,17 @@
 				{
 					"method": "boundaryEvent",
 					"id": "b3",
-					"args": [
-						"{\"attachedTo\":\"host\",\"errorCode\":\"E\"}"
-					]
+					"args": ["{\"attachedTo\":\"host\",\"errorCode\":\"E\"}"]
 				},
 				{
 					"method": "boundaryEvent",
 					"id": "b4",
-					"args": [
-						"{\"attachedTo\":\"host\",\"signalName\":\"S\",\"name\":\"B\"}"
-					]
+					"args": ["{\"attachedTo\":\"host\",\"signalName\":\"S\",\"name\":\"B\"}"]
 				},
 				{
 					"method": "boundaryEvent",
 					"id": "b5",
-					"args": [
-						"{\"attachedTo\":\"host\",\"compensation\":true}"
-					]
+					"args": ["{\"attachedTo\":\"host\",\"compensation\":true}"]
 				},
 				{
 					"method": "boundaryEvent",
@@ -1075,9 +951,7 @@
 				{
 					"method": "boundaryEvent",
 					"id": "b7",
-					"args": [
-						"{\"attachedTo\":\"host\"}"
-					]
+					"args": ["{\"attachedTo\":\"host\"}"]
 				}
 			],
 			"ok": {
@@ -1096,9 +970,7 @@
 				{
 					"method": "boundaryEvent",
 					"id": "b",
-					"args": [
-						"{\"attachedTo\":\"\"}"
-					]
+					"args": ["{\"attachedTo\":\"\"}"]
 				}
 			],
 			"error": "boundaryEvent(\"b\") requires the id of the activity it attaches to. Pass it as options.attachedTo, as boundaryEvent(\"b\", hostId, options), or use withBoundary() to attach to the preceding activity."
@@ -1109,9 +981,7 @@
 				{
 					"method": "dataObject",
 					"id": "do1",
-					"args": [
-						"{\"name\":\"D\",\"isCollection\":true}"
-					]
+					"args": ["{\"name\":\"D\",\"isCollection\":true}"]
 				},
 				{
 					"method": "dataObject",
@@ -1121,25 +991,17 @@
 				{
 					"method": "dataObjectReference",
 					"id": "dr1",
-					"args": [
-						"\"do1\"",
-						"{\"name\":\"R\",\"isCollection\":true}"
-					]
+					"args": ["\"do1\"", "{\"name\":\"R\",\"isCollection\":true}"]
 				},
 				{
 					"method": "dataObjectReference",
 					"id": "dr2",
-					"args": [
-						"\"do2\""
-					]
+					"args": ["\"do2\""]
 				},
 				{
 					"method": "dataStoreReference",
 					"id": "ds",
-					"args": [
-						"\"store\"",
-						"{\"name\":\"S\"}"
-					]
+					"args": ["\"store\"", "{\"name\":\"S\"}"]
 				}
 			],
 			"ok": {
@@ -1158,9 +1020,7 @@
 				{
 					"method": "adHocSubProcess",
 					"id": "ah",
-					"args": [
-						"{\"toolGrid\":{\"columns\":2.5}}"
-					]
+					"args": ["{\"toolGrid\":{\"columns\":2.5}}"]
 				}
 			],
 			"error": "adHocSubProcess(\"ah\"): toolGrid.columns must be a positive integer, got 2.5"
@@ -1171,9 +1031,7 @@
 				{
 					"method": "adHocSubProcess",
 					"id": "ah",
-					"args": [
-						"{\"toolGrid\":{\"columns\":0}}"
-					]
+					"args": ["{\"toolGrid\":{\"columns\":0}}"]
 				}
 			],
 			"error": "adHocSubProcess(\"ah\"): toolGrid.columns must be a positive integer, got 0"
@@ -1189,16 +1047,12 @@
 				{
 					"method": "serviceTask",
 					"id": "t1",
-					"args": [
-						"{\"name\":\"T1\",\"taskType\":\"a\"}"
-					]
+					"args": ["{\"name\":\"T1\",\"taskType\":\"a\"}"]
 				},
 				{
 					"method": "endEvent",
 					"id": "end",
-					"args": [
-						"{\"errorCode\":\"BOOM\"}"
-					]
+					"args": ["{\"errorCode\":\"BOOM\"}"]
 				}
 			],
 			"ok": {

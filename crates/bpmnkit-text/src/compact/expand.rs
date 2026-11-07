@@ -62,7 +62,7 @@ pub fn default_flows(
             continue;
         }
         let type_ = types.get(flow.from.as_str());
-        let Some(type_) = type_.filter(|t| DEFAULTABLE.contains(t)) else {
+        if !type_.is_some_and(|t| DEFAULTABLE.contains(t)) {
             let what = match type_ {
                 None => format!("unknown element \"{}\"", flow.from),
                 Some(t) => format!("a {t}"),
@@ -71,7 +71,7 @@ pub fn default_flows(
                 "flow \"{}\" is marked isDefault but leaves {what}. Only an exclusive, inclusive or complex gateway has a default flow.",
                 flow.id
             )));
-        };
+        }
         if let Some(already) = defaults.get(&flow.from) {
             return Err(TextError::new(format!(
                 "gateway \"{}\" marks two flows as default, \"{already}\" and \"{}\". A gateway has at most one.",

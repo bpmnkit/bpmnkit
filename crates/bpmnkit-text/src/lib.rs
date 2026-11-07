@@ -3,15 +3,6 @@
 //! `bpmn/process-text-writer.ts`, `bpmn/connector-line.ts` and `bpmn/element-catalog.ts`.
 //! TS is the oracle: JSON shapes, written text and every message match.
 
-// skeleton: removed once ported
-#![allow(
-    unused_variables,
-    dead_code,
-    unused_imports,
-    unused_mut,
-    clippy::ptr_arg
-)]
-
 pub mod catalog;
 pub mod compact;
 pub mod connector_line;

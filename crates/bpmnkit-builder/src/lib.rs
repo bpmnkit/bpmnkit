@@ -5,15 +5,6 @@
 //! TS throws at the call that went wrong; here the first error is kept and returned by
 //! `build()` (see `shared.rs`), and every call after it does nothing.
 
-// skeleton: removed once ported
-#![allow(
-    unused_variables,
-    dead_code,
-    unused_imports,
-    unused_mut,
-    clippy::ptr_arg
-)]
-
 pub mod branch;
 pub mod diagram;
 pub mod dmn;
