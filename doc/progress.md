@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-07 — Studio scenario-runner tests on the shared reebe crates
+
+- `apps/studio/tests/scenario-runner.test.ts` failed in CI after reebe switched to the shared `bpmnkit-xml`/`bpmnkit-bpmn` parser. The fixture's `resultExpression` header was invalid XML (`value="={\"mytest\": true}"`; XML has no backslash escape) and used `zeebe:` without declaring it. The old hand-written reebe parser accepted both; the shared one rejects them, as Zeebe does. The fixture now uses `&quot;` and declares `xmlns:zeebe`.
+- Two expectations matched old reebe FEEL behaviour, not FEEL: `not(instance of string)` is true for `null` and for `42` (TS `@bpmnkit/feel` agrees). So when `asd` is missing, both "asd is required" and "asd must be a string" fire, and `asd: 42` takes the error end. The tests now expect that, like the existing `sss` cases.
+
 ## 2026-11-07 — Rust twin phase 9: differential fuzzing, crates.io setup, docs
 
 - Differential fuzzing (proposal §4.4): new unpublished crate `bpmnkit-fuzz`. Proptest generators for seven targets: `feel`, `bpmn` (parse + serialize), `dmn`, `dmn-eval`, `form`, `text` (process text + expand) and `compact` (compactify + expand). Each input goes to the Rust crates and to a long-lived Node oracle (`scripts/fuzz/oracle.mjs`, JSONL over stdin/stdout, the recorders' encodings). Proptest shrinks each disagreement across both implementations. Mismatches are written to `target/fuzz-mismatches/`. `--replay` re-runs a saved one. A watchdog saves an input that runs longer than `--slow` seconds. `pnpm fuzz` runs it. Rust-only properties (`tests/props.rs`): no panics, serializers are idempotent, process text always expands, and at least 70 % of generated BPMN/DMN/form/compact inputs parse. Nightly workflow `fuzz-nightly.yml`: one job per target, 10 min each, mismatches uploaded as artifacts. Comparison is the conformance rule, plus documented float64 tolerances (`conformance/README.md`, "Differential fuzzing").
