@@ -12,9 +12,8 @@
 //!   (1956–2017).
 //! - `writer`: `process-text-writer.ts`.
 //!
-//! The types here are complete. Porter notes for this file (`parse_process_text` and
-//! [`ProcessTextStream`]): lines split on `/\r?\n/`, numbered from 1; the stream reads only
-//! up to each `\n` (a `\r` before it stays on the line, which `trim()` drops), and
+//! [`parse_process_text`] splits lines on `/\r?\n/`, numbered from 1; the stream reads
+//! only up to each `\n` (a `\r` before it stays on the line, which `trim()` drops), and
 //! `push` returns `expand(assemble(reader, false).diagram)` when a line added something
 //! and the reader has nodes. TS lets an `expand` error escape `push`; so does `Err` here.
 
@@ -27,7 +26,7 @@ mod writer;
 use bpmnkit_bpmn::BpmnDefinitions;
 use serde::{Deserialize, Serialize};
 
-use crate::compact::CompactDiagram;
+use crate::compact::{expand, CompactDiagram};
 use crate::connector_line::ConnectorLine;
 use crate::TextError;
 
@@ -121,7 +120,22 @@ pub struct ProcessTextResult {
 
 /// TS's `parseProcessText`: never fails; see the module notes.
 pub fn parse_process_text(text: &str) -> ProcessTextResult {
-    todo!()
+    let mut reader = reader::Reader::new();
+    // `text.split(/\r?\n/)`: a lone `\r` stays, and so does one ending the last line.
+    let mut lines: Vec<&str> = text.split('\n').collect();
+    let last = lines.len() - 1;
+    for line in &mut lines[..last] {
+        *line = line.strip_suffix('\r').unwrap_or(line);
+    }
+    for (index, line) in lines.into_iter().enumerate() {
+        reader.line(line, line_number(index + 1));
+    }
+    reader.finish();
+    assemble::assemble(&mut reader, true)
+}
+
+fn line_number(n: usize) -> u32 {
+    u32::try_from(n).unwrap_or(u32::MAX)
 }
 
 /// TS's `createProcessTextStream()`: reads the format line by line as it arrives.
@@ -140,11 +154,28 @@ impl ProcessTextStream {
     /// TS's `push(chunk)`: the diagram after the lines this chunk completed, laid out, or
     /// `None` when they added nothing.
     pub fn push(&mut self, chunk: &str) -> Result<Option<BpmnDefinitions>, TextError> {
-        todo!()
+        self.pending.push_str(chunk);
+        let mut changed = false;
+        while let Some(nl) = self.pending.find('\n') {
+            self.line_number += 1;
+            changed = self.reader.line(&self.pending[..nl], self.line_number) || changed;
+            self.pending.drain(..=nl);
+        }
+        if !changed || self.reader.nodes.is_empty() {
+            return Ok(None);
+        }
+        let result = assemble::assemble(&mut self.reader, false);
+        expand(&result.diagram).map(Some)
     }
 
     /// TS's `end()`: reads the last, unterminated line and returns the full result.
     pub fn end(&mut self) -> ProcessTextResult {
-        todo!()
+        if !self.pending.is_empty() {
+            self.line_number += 1;
+            let pending = std::mem::take(&mut self.pending);
+            self.reader.line(&pending, self.line_number);
+        }
+        self.reader.finish();
+        assemble::assemble(&mut self.reader, true)
     }
 }
