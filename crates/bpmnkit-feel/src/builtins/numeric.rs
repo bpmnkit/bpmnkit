@@ -21,7 +21,13 @@ pub fn lookup(name: &str) -> Option<BuiltinFn> {
         "modulo" => modulo,
         "sqrt" => |a| unary(a, |n| n.sqrt()),
         "log" => |a| unary(a, |n| n.checked_ln()),
-        "exp" => |a| unary(a, |n| n.checked_exp()),
+        // exp of a large negative number is below 28 fraction digits: 0, as TS rounds it.
+        "exp" => |a| {
+            unary(a, |n| {
+                n.checked_exp()
+                    .or_else(|| n.is_sign_negative().then_some(Decimal::ZERO))
+            })
+        },
         "odd" => |a| unary_bool(a, |n| n.abs() % Decimal::TWO == Decimal::ONE),
         "even" => |a| unary_bool(a, |n| (n % Decimal::TWO).is_zero()),
         "random number" => |_| random_number(),
@@ -249,6 +255,9 @@ mod tests {
         assert_eq!(call("log", &[n("1")]), n("0"));
         assert_eq!(call("exp", &[n("0")]), n("1"));
         assert_eq!(call("exp", &[n("100000")]), Value::Null);
+        // Fuzz regression: underflow is 0, as TS's double rounds it.
+        assert_eq!(call("exp", &[n("-67")]), n("0"));
+        assert_eq!(call("exp", &[n("-665.4")]), n("0"));
     }
 
     #[test]

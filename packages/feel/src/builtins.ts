@@ -267,7 +267,15 @@ function toScale(v: FeelValue | undefined): number | null {
 
 /** Rounds `n` at `scale` with the given rounding of a value exactly halfway. */
 function roundAt(n: number, scale: number, round: (x: number) => number): number {
-	if (Math.abs(scale) > SCALE_LIMIT) return n
+	// No double has a digit past 10^-300 that rounding would change, so a finer scale
+	// keeps n. A coarser one rounds to a multiple of 10^-scale, which is 0 for most n:
+	// decimal(1, -301) is 0, as in the Rust twin.
+	if (scale > SCALE_LIMIT) return n
+	if (scale < -SCALE_LIMIT) {
+		const step = 10 ** -scale
+		const units = round(n / step)
+		return units === 0 ? 0 : units * step
+	}
 	const factor = 10 ** scale
 	// Re-reading the scaled value through its decimal form keeps a product like
 	// 1.005 * 100 from landing just under the halfway point it should sit on.
@@ -877,7 +885,9 @@ reg("log", (n) => {
 
 reg("exp", (n) => {
 	const num = toNum(n)
-	return num === null ? null : Math.exp(num)
+	// Past float64's range exp is Infinity, which FEEL has no number for.
+	const e = num === null ? null : Math.exp(num)
+	return e !== null && Number.isFinite(e) ? e : null
 })
 
 reg("odd", (n) => {
@@ -1112,22 +1122,29 @@ reg("index of", (list, match) => {
 
 // Set membership is SameValueZero, exactly what Array#includes used here, so
 // de-duplication keeps its semantics while dropping from O(n²) to O(n).
-reg("union", (...args) => {
-	const seen = new Set<FeelValue>()
-	for (const v of args) {
-		if (isFeelList(v)) {
-			for (const item of v) seen.add(item)
-		} else {
-			seen.add(v)
+/**
+ * The items without repeats, in first-seen order. Equal dates, lists and contexts are
+ * distinct objects, so they are compared by value (as `duplicate values` does), not by
+ * identity: `distinct values([@"2024-02-29", @"2024-02-29"])` has one item.
+ */
+function distinct(items: FeelValue[]): FeelValue[] {
+	const out: FeelValue[] = []
+	const keyed = new Set<FeelValue>()
+	for (const item of items) {
+		if (item === null || typeof item !== "object") {
+			if (keyed.has(item)) continue
+			keyed.add(item)
+		} else if (out.some((o) => sameItem(o, item))) {
+			continue
 		}
+		out.push(item)
 	}
-	return [...seen]
-})
+	return out
+}
 
-reg("distinct values", (list) => {
-	if (!isFeelList(list)) return null
-	return [...new Set(list)]
-})
+reg("union", (...args) => distinct(args.flatMap((v) => (isFeelList(v) ? v : [v]))))
+
+reg("distinct values", (list) => (isFeelList(list) ? distinct(list) : null))
 
 // Camunda extensions (feel-scala) --------------------------------------------
 

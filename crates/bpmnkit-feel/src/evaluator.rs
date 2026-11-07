@@ -318,11 +318,17 @@ fn eval<'a>(node: &Node, scope: &'a Scope<'a>) -> Value {
         }
         NodeKind::For { bindings, body } => {
             let mut results: Vec<Value> = Vec::new();
+            // Copying the results for `partial` on every iteration is quadratic, so it is
+            // bound only when the body can read it.
+            let reads_partial = mentions(body, "partial");
             let ok = walk(bindings, 0, scope, &mut |inner| {
-                // The body sees the results produced so far as `partial`.
-                let partial = Value::List(results.clone());
-                let body_scope = inner.child(Frame::One("partial", partial));
-                let v = eval(body, &body_scope);
+                let v = if reads_partial {
+                    // The body sees the results produced so far as `partial`.
+                    let partial = Value::List(results.clone());
+                    eval(body, &inner.child(Frame::One("partial", partial)))
+                } else {
+                    eval(body, inner)
+                };
                 results.push(v);
             });
             if ok {
@@ -746,6 +752,52 @@ fn instance_of(val: &Value, type_name: &str) -> bool {
         "function" => matches!(val, Value::Function(_)),
         "Any" | "any" => true,
         _ => false,
+    }
+}
+
+/// Whether `name` occurs anywhere in `node` as a name or a callee (conservatively: bindings,
+/// context entries and function bodies are searched too).
+fn mentions(node: &Node, name: &str) -> bool {
+    use NodeKind as K;
+    let any = |nodes: &[Node]| nodes.iter().any(|n| mentions(n, name));
+    let bound = |bs: &[Binding]| bs.iter().any(|b| mentions(&b.domain, name));
+    match &node.kind {
+        K::Name(n) => n == name,
+        K::Number(_) | K::String(_) | K::Boolean(_) | K::Null | K::Temporal(_) | K::AnyInput => {
+            false
+        }
+        K::List(items) | K::UnaryTestList(items) | K::UnaryNot(items) => any(items),
+        K::Context(entries) => entries.iter().any(|(_, n)| mentions(n, name)),
+        K::Range { low, high, .. } => mentions(low, name) || mentions(high, name),
+        K::UnaryMinus(n) | K::Path { base: n, .. } | K::InstanceOf { value: n, .. } => {
+            mentions(n, name)
+        }
+        K::Binary { left, right, .. } => mentions(left, name) || mentions(right, name),
+        K::Filter { base, condition } => mentions(base, name) || mentions(condition, name),
+        K::Call { callee, args } => callee == name || any(args),
+        K::CallExpr { target, args } => mentions(target, name) || any(args),
+        K::CallNamed { callee, args } => {
+            callee == name || args.iter().any(|(_, n)| mentions(n, name))
+        }
+        K::If {
+            condition,
+            then,
+            otherwise,
+        } => mentions(condition, name) || mentions(then, name) || mentions(otherwise, name),
+        K::For { bindings, body } => bound(bindings) || mentions(body, name),
+        K::Some {
+            bindings,
+            satisfies,
+        }
+        | K::Every {
+            bindings,
+            satisfies,
+        } => bound(bindings) || mentions(satisfies, name),
+        K::Between { value, low, high } => {
+            mentions(value, name) || mentions(low, name) || mentions(high, name)
+        }
+        K::InTest { value, test } => mentions(value, name) || mentions(test, name),
+        K::FunctionDef { body, .. } => mentions(body, name),
     }
 }
 

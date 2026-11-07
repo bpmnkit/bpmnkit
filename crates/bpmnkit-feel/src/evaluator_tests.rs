@@ -165,6 +165,29 @@ fn filters() {
     );
 }
 
+/// Fuzz regression: `partial` was copied on every iteration, so a long range took minutes.
+#[test]
+fn long_for_is_linear() {
+    let start = std::time::Instant::now();
+    check(&[
+        ("count(for x in 1..200000 return x)", "200000"),
+        (
+            "count(for x in 1..200000 return for y in [x] return y)",
+            "200000",
+        ),
+        ("for i in 1..3 return count(partial)", "[0, 1, 2]"),
+        (
+            "for i in 1..3 return (function() partial)()",
+            "[[], [[]], [[], [[]]]]",
+        ),
+    ]);
+    assert!(
+        start.elapsed() < std::time::Duration::from_secs(20),
+        "{:?}",
+        start.elapsed()
+    );
+}
+
 #[test]
 fn for_some_every() {
     check(&[

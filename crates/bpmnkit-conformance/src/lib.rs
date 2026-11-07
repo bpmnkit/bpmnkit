@@ -17,12 +17,14 @@ pub mod text;
 pub mod tooling;
 mod value;
 
-pub use bpmn::{check_case as check_bpmn_case, run_case as run_bpmn_case};
+pub use bpmn::{
+    check_case as check_bpmn_case, first_diff_line, json_diff, run_case as run_bpmn_case,
+};
 pub use dmn::{
     check_case as check_dmn_case, check_eval_case as check_dmn_eval_case, eval_case_ids,
     run_case as run_dmn_case, run_eval_case as run_dmn_eval_case,
 };
-pub use feel::evaluate as evaluate_feel;
+pub use feel::{evaluate as evaluate_feel, from_feel, to_feel};
 pub use form::{check_case as check_form_case, run_case as run_form_case};
 pub use value::{decimal_eq, Value};
 

@@ -1,0 +1,21 @@
+[package]
+name = "bpmnkit-fuzz"
+description = "Differential fuzzing of the BPMN Kit Rust crates against the TypeScript implementation (proptest generators, a Node oracle over JSONL)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+publish = false
+
+[dependencies]
+bpmnkit-bpmn = { workspace = true }
+bpmnkit-conformance = { path = "../bpmnkit-conformance" }
+bpmnkit-dmn = { workspace = true }
+bpmnkit-feel = { path = "../bpmnkit-feel" }
+bpmnkit-form = { workspace = true }
+bpmnkit-spec = { workspace = true }
+bpmnkit-text = { workspace = true }
+serde = { workspace = true }
+proptest = { version = "1", default-features = false, features = ["std"] }
+serde_json = { workspace = true, features = ["float_roundtrip"] }

@@ -379,3 +379,52 @@ describe("boolean input entries and shadowed built-ins", () => {
 		expect(eval_("sum", { sum: null })).toBeNull()
 	})
 })
+
+// Found by differential fuzzing against bpmnkit-feel (crates/bpmnkit-fuzz).
+describe("fuzz regressions", () => {
+	it("a power that is not a finite number is null", () => {
+		expect(eval_("(-8) ** (1/3)")).toBeNull()
+		expect(eval_("10 ** 400")).toBeNull()
+		expect(eval_("0 ** -1")).toBeNull()
+		// The NaN no longer reaches the comparison, which sees null.
+		expect(eval_('"" = -2 ** -0.1')).toBe(false)
+		expect(eval_("(-8) ** 2")).toBe(64)
+	})
+
+	it("decimal() past the scale limit rounds to 0", () => {
+		expect(eval_("decimal(1, -301)")).toBe(0)
+		expect(eval_("decimal(125, -1)")).toBe(120)
+		expect(eval_("decimal(1.5, 400)")).toBe(1.5)
+	})
+
+	it("scaled durations are whole months, and null when not finite", () => {
+		const ym = (e: string) => (eval_(e) as { months: number } | null)?.months
+		expect(ym('@"P1Y2M" * 0.1')).toBe(1)
+		expect(ym('@"P1Y2M" / -3')).toBe(-5)
+		expect(ym('@"P1Y5M" * 0.5')).toBe(9)
+		expect(eval_('@"P1D" / 0')).toBeNull()
+		expect(eval_('@"P1M" / 0')).toBeNull()
+		expect(eval_("exp(7097.9)")).toBeNull()
+	})
+
+	it("union and distinct values compare dates, lists and contexts by value", () => {
+		expect(eval_('distinct values([@"2024-02-29", @"2024-02-29"])')).toHaveLength(1)
+		expect(eval_("distinct values([[1], [1], [2]])")).toEqual([[1], [2]])
+		expect(eval_("union([{a: 1}], [{a: 1}], [1, 1])")).toEqual([{ a: 1 }, 1])
+	})
+
+	it("a long for is linear: partial is bound only when the body reads it", () => {
+		const start = Date.now()
+		expect(eval_("count(for x in 1..200000 return x)")).toBe(200000)
+		expect(Date.now() - start).toBeLessThan(3000)
+		expect(eval_("for i in 1..3 return count(partial)")).toEqual([0, 1, 2])
+		expect(eval_("for i in 1..3 return (function() partial)()")).toEqual([[], [[]], [[], [[]]]])
+	})
+
+	it("a list never equals a context", () => {
+		expect(eval_("[] in [{}]")).toBe(false)
+		expect(eval_('[1] in [{"0": 1}]')).toBe(false)
+		expect(evalUT("y", [], { y: [{}] })).toBe(false)
+		expect(eval_("[] in [[]]")).toBe(true)
+	})
+})

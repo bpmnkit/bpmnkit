@@ -303,7 +303,17 @@ pub fn div(a: &Value, b: &Value) -> Value {
     }
 }
 
+/// A power too close to zero for 28 fraction digits is 0, as float64 rounds it (TS twin);
+/// only a power too large to hold is `None`.
 fn pow_decimal(x: Decimal, y: Decimal) -> Option<Decimal> {
+    // `-0` is zero, not a negative base: (-0) ** 0.5 is 0.
+    let x = if x.is_zero() { Decimal::ZERO } else { x };
+    let real = !x.is_sign_negative() || y.is_integer();
+    let shrinks = (x.abs() > Decimal::ONE) == y.is_sign_negative() && x.abs() != Decimal::ONE;
+    pow_exact(x, y).or_else(|| (real && shrinks && !x.is_zero()).then_some(Decimal::ZERO))
+}
+
+fn pow_exact(x: Decimal, y: Decimal) -> Option<Decimal> {
     if y.is_integer() {
         let n = y.to_i64()?;
         if x.is_zero() && n < 0 {
@@ -536,6 +546,15 @@ mod tests {
         assert_eq!(pow(&n("1"), &n("1000000000000")), n("1"));
         assert_eq!(pow(&n("10"), &n("21")), n("1000000000000000000000"));
         assert_eq!(pow(&Value::from("a"), &n("2")), Value::Null);
+        // Fuzz regressions: underflow is 0 (TS rounds the double), overflow stays null.
+        assert_eq!(pow(&n("10"), &n("-29")), n("0"));
+        assert_eq!(pow(&n("-12"), &n("-27")), n("0"));
+        assert_eq!(pow(&n("0.5"), &n("200")), n("0"));
+        assert_eq!(pow(&n("2"), &n("-100.5")), n("0"));
+        assert_eq!(pow(&n("-0.5"), &n("0.3")), Value::Null);
+        assert_eq!(pow(&n("-4"), &n("48")), Value::Null);
+        assert_eq!(pow(&n("-0"), &n("0.5")), n("0"));
+        assert_eq!(pow(&n("-0"), &n("1.5")), n("0"));
         match pow(&n("2"), &n("1.5")) {
             Value::Number(x) => assert!(
                 (x - "2.8284271247461900976033774484".parse::<Decimal>().unwrap()).abs()
