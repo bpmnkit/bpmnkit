@@ -1,5 +1,9 @@
 # Features
 
+## `bpmnkit-builder` and `bpmnkit-text`: builder, process text and compact in Rust (2026-11-07)
+
+A Rust fluent builder for BPMN processes, collaborations, decision tables and DRDs whose output (model, XML, auto-layout, error messages) equals `@bpmnkit/core`'s builder, call for call; process text parsing, streaming and writing; compact BPMN and DMN (`compactify`, `expand`, streams). 789 of 790 recorded cases match exactly; the one pending case is a call Rust's types rule out. About 2–3× faster than TS for layout-backed builds, process text and expand.
+
 ## `bpmnkit-layout`: auto-layout in Rust (2026-11-06)
 
 Rust auto-layout for BPMN (both engines: semantic and grid; pools, lanes, boundary events, expanded and collapsed sub-processes, annotations, message flows, keeping the source DI's ids and styles) and DMN, with the same shapes, waypoints, labels and XML as `@bpmnkit/core`'s `applyAutoLayout` and `layoutDmn`: all 217 recorded layout runs match exactly. Takes the builder's layout hints (tool grids, annotation sides). About 2.5× faster than TS on the semantic engine and 2.2× on grid.
