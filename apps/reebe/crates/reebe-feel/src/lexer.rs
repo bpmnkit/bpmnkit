@@ -17,12 +17,12 @@ pub enum Token {
     Star,
     Slash,
     // Comparison
-    Eq,    // =
-    Ne,    // !=
-    Lt,    // <
-    Le,    // <=
-    Gt,    // >
-    Ge,    // >=
+    Eq, // =
+    Ne, // !=
+    Lt, // <
+    Le, // <=
+    Gt, // >
+    Ge, // >=
     // Boolean keywords
     And,
     Or,
@@ -38,16 +38,16 @@ pub enum Token {
     Every,
     Satisfies,
     // Delimiters
-    Dot,           // .
-    Comma,         // ,
-    Colon,         // :
-    LParen,        // (
-    RParen,        // )
-    LBracket,      // [
-    RBracket,      // ]
-    LBrace,        // {
-    RBrace,        // }
-    DoubleDot,     // ..
+    Dot,       // .
+    Comma,     // ,
+    Colon,     // :
+    LParen,    // (
+    RParen,    // )
+    LBracket,  // [
+    RBracket,  // ]
+    LBrace,    // {
+    RBrace,    // }
+    DoubleDot, // ..
     // Special
     InstanceOf,
     Eof,
@@ -113,7 +113,9 @@ pub fn tokenize(input: &str) -> Result<Vec<Token>, FeelError> {
                 i += 1;
             }
             if i >= chars.len() {
-                return Err(FeelError::LexerError("Unterminated string literal".to_string()));
+                return Err(FeelError::LexerError(
+                    "Unterminated string literal".to_string(),
+                ));
             }
             i += 1; // closing "
             tokens.push(Token::StringLit(s));
@@ -127,19 +129,23 @@ pub fn tokenize(input: &str) -> Result<Vec<Token>, FeelError> {
                 i += 1;
             }
             // Check for float
-            let is_float = i < chars.len() && chars[i] == '.'
-                && (i + 1 >= chars.len() || chars[i + 1] != '.');
+            let is_float =
+                i < chars.len() && chars[i] == '.' && (i + 1 >= chars.len() || chars[i + 1] != '.');
             if is_float {
                 i += 1; // consume '.'
                 while i < chars.len() && chars[i].is_ascii_digit() {
                     i += 1;
                 }
                 let num_str: String = chars[start..i].iter().collect();
-                let f: f64 = num_str.parse().map_err(|_| FeelError::LexerError(format!("Invalid float: {}", num_str)))?;
+                let f: f64 = num_str
+                    .parse()
+                    .map_err(|_| FeelError::LexerError(format!("Invalid float: {}", num_str)))?;
                 tokens.push(Token::Float(f));
             } else {
                 let num_str: String = chars[start..i].iter().collect();
-                let n: i64 = num_str.parse().map_err(|_| FeelError::LexerError(format!("Invalid integer: {}", num_str)))?;
+                let n: i64 = num_str
+                    .parse()
+                    .map_err(|_| FeelError::LexerError(format!("Invalid integer: {}", num_str)))?;
                 tokens.push(Token::Integer(n));
             }
             continue;
@@ -156,7 +162,7 @@ pub fn tokenize(input: &str) -> Result<Vec<Token>, FeelError> {
                     // Make sure the match is complete (not part of a longer identifier)
                     let end_idx = i + kw.len();
                     let next_char = chars.get(end_idx);
-                    let is_complete = next_char.map_or(true, |c| !c.is_alphanumeric() && *c != '_');
+                    let is_complete = next_char.is_none_or(|c| !c.is_alphanumeric() && *c != '_');
                     if is_complete {
                         tokens.push(Token::Ident(kw.to_string()));
                         i += kw.len();
@@ -196,7 +202,9 @@ pub fn tokenize(input: &str) -> Result<Vec<Token>, FeelError> {
                     let j = i;
                     // skip whitespace
                     let mut k = j;
-                    while k < chars.len() && chars[k] == ' ' { k += 1; }
+                    while k < chars.len() && chars[k] == ' ' {
+                        k += 1;
+                    }
                     if k + 1 < chars.len() && chars[k] == 'o' && chars[k + 1] == 'f' {
                         // check that 'of' is not part of a longer word
                         let after_of = k + 2;
@@ -218,18 +226,54 @@ pub fn tokenize(input: &str) -> Result<Vec<Token>, FeelError> {
 
         // Operators and punctuation
         match chars[i] {
-            '+' => { tokens.push(Token::Plus); i += 1; }
-            '*' => { tokens.push(Token::Star); i += 1; }
-            '/' => { tokens.push(Token::Slash); i += 1; }
-            '-' => { tokens.push(Token::Minus); i += 1; }
-            '(' => { tokens.push(Token::LParen); i += 1; }
-            ')' => { tokens.push(Token::RParen); i += 1; }
-            '[' => { tokens.push(Token::LBracket); i += 1; }
-            ']' => { tokens.push(Token::RBracket); i += 1; }
-            '{' => { tokens.push(Token::LBrace); i += 1; }
-            '}' => { tokens.push(Token::RBrace); i += 1; }
-            ',' => { tokens.push(Token::Comma); i += 1; }
-            ':' => { tokens.push(Token::Colon); i += 1; }
+            '+' => {
+                tokens.push(Token::Plus);
+                i += 1;
+            }
+            '*' => {
+                tokens.push(Token::Star);
+                i += 1;
+            }
+            '/' => {
+                tokens.push(Token::Slash);
+                i += 1;
+            }
+            '-' => {
+                tokens.push(Token::Minus);
+                i += 1;
+            }
+            '(' => {
+                tokens.push(Token::LParen);
+                i += 1;
+            }
+            ')' => {
+                tokens.push(Token::RParen);
+                i += 1;
+            }
+            '[' => {
+                tokens.push(Token::LBracket);
+                i += 1;
+            }
+            ']' => {
+                tokens.push(Token::RBracket);
+                i += 1;
+            }
+            '{' => {
+                tokens.push(Token::LBrace);
+                i += 1;
+            }
+            '}' => {
+                tokens.push(Token::RBrace);
+                i += 1;
+            }
+            ',' => {
+                tokens.push(Token::Comma);
+                i += 1;
+            }
+            ':' => {
+                tokens.push(Token::Colon);
+                i += 1;
+            }
             '.' => {
                 if i + 1 < chars.len() && chars[i + 1] == '.' {
                     tokens.push(Token::DoubleDot);
@@ -239,13 +283,19 @@ pub fn tokenize(input: &str) -> Result<Vec<Token>, FeelError> {
                     i += 1;
                 }
             }
-            '=' => { tokens.push(Token::Eq); i += 1; }
+            '=' => {
+                tokens.push(Token::Eq);
+                i += 1;
+            }
             '!' => {
                 if i + 1 < chars.len() && chars[i + 1] == '=' {
                     tokens.push(Token::Ne);
                     i += 2;
                 } else {
-                    return Err(FeelError::LexerError(format!("Unexpected character '!' at position {}", i)));
+                    return Err(FeelError::LexerError(format!(
+                        "Unexpected character '!' at position {}",
+                        i
+                    )));
                 }
             }
             '<' => {
@@ -267,7 +317,10 @@ pub fn tokenize(input: &str) -> Result<Vec<Token>, FeelError> {
                 }
             }
             c => {
-                return Err(FeelError::LexerError(format!("Unexpected character '{}' at position {}", c, i)));
+                return Err(FeelError::LexerError(format!(
+                    "Unexpected character '{}' at position {}",
+                    c, i
+                )));
             }
         }
     }

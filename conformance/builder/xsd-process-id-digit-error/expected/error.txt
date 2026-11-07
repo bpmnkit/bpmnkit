@@ -1,0 +1,1 @@
+Process id "1p" is not a valid XML id (xsd:ID). Allowed: letters, digits, "_", "-", "." — starting with a letter or "_", no spaces or ":". Example: "Task_ApproveOrder". See agent-cards/bpmn.md#traps.

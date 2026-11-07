@@ -1,0 +1,1 @@
+s[start Upload received] > queue[event catch Send to SQS] > wait[catch Reply received] > e[end Done]

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="Definitions_multi" name="Multiple inputs and outputs" namespace="http://bpmn.io/schema/dmn">
+  <decision id="shipping" name="Shipping">
+    <decisionTable id="decisionTable_000000n" hitPolicy="RULE ORDER">
+      <input id="in_weight" label="Weight (kg)">
+        <inputExpression id="inputExpression_0000001" typeRef="number">
+          <text>order.weight</text>
+        </inputExpression>
+      </input>
+      <input id="in_country" label="Country">
+        <inputExpression id="inputExpression_0000002" typeRef="string">
+          <text>order.country</text>
+        </inputExpression>
+      </input>
+      <input id="in_express" label="Express">
+        <inputExpression id="inputExpression_0000003" typeRef="boolean">
+          <text>express</text>
+        </inputExpression>
+      </input>
+      <input id="in_date" label="Ship date">
+        <inputExpression id="inputExpression_0000004" typeRef="date">
+          <text>date(shipDate)</text>
+        </inputExpression>
+      </input>
+      <output id="out_carrier" label="Carrier" name="carrier" typeRef="string"/>
+      <output id="out_price" label="Price" name="price" typeRef="number"/>
+      <rule id="r1">
+        <description>Light parcels inside the EU</description>
+        <inputEntry id="inputEntry_0_0000005">
+          <text>[0..5]</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_0000006">
+          <text>"DE","AT","FR"</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_0000007">
+          <text>false</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_3_0000008">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000009">
+          <text>"Post"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000000a">
+          <text>4.9</text>
+        </outputEntry>
+      </rule>
+      <rule id="r2">
+        <inputEntry id="inputEntry_0_000000b">
+          <text>&gt; 5</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_000000c">
+          <text>not("US")</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_000000d">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_3_000000e">
+          <text>&lt; date("2030-01-01")</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000f">
+          <text>"Freight"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000000g">
+          <text>weight * 1.5</text>
+        </outputEntry>
+      </rule>
+      <rule id="r3">
+        <inputEntry id="inputEntry_0_000000h">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_000000i">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_000000j">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_3_000000k">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000l">
+          <text>"Express"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000000m">
+          <text>19.9</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="shipping">
+        <dc:Bounds height="80" width="180" x="160" y="100"/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

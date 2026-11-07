@@ -1,0 +1,11 @@
+{
+  "aliases": {
+    "approve": "Task_human",
+    "call_api": "Task_service",
+    "decide": "Task_decide",
+    "end": "End_z",
+    "fulfil": "Task_call",
+    "start": "Start_z",
+    "summarise": "Task_script"
+  }
+}

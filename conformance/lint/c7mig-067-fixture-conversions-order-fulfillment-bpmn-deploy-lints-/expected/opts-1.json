@@ -1,0 +1,45 @@
+{
+  "categories": [
+    "deploy",
+    "feel-syntax"
+  ],
+  "counts": {
+    "error": 2,
+    "info": 0,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_awaitPayment"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"Await payment confirmation\" (receiveTask) has no zeebe:subscription correlationKey.",
+      "plane": "order-fulfillment",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_summary"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Script task \"Build summary\" has no implementation; Camunda needs a zeebe:script or zeebe:taskDefinition.",
+      "plane": "order-fulfillment",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    }
+  ],
+  "platform": {
+    "id": "camunda-cloud",
+    "name": "Camunda Cloud",
+    "version": "8.8.0"
+  },
+  "total": 2
+}

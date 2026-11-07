@@ -1,0 +1,698 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [
+    {
+      "id": "Err_nocode",
+      "name": "no code",
+      "unknownAttributes": {}
+    },
+    {
+      "errorCode": "=code",
+      "id": "Err_expr",
+      "name": "expr",
+      "unknownAttributes": {}
+    }
+  ],
+  "escalations": [
+    {
+      "id": "Esc_nocode",
+      "name": "no code",
+      "unknownAttributes": {}
+    }
+  ],
+  "id": "Definitions_events",
+  "messages": [
+    {
+      "extensionElements": [
+        {
+          "attributes": {
+            "correlationKey": "=orderId"
+          },
+          "children": [],
+          "name": "zeebe:subscription"
+        }
+      ],
+      "id": "Msg_ok",
+      "name": "ok",
+      "unknownAttributes": {}
+    },
+    {
+      "id": "Msg_nokey",
+      "name": "nokey",
+      "unknownAttributes": {}
+    },
+    {
+      "id": "Msg_noname",
+      "unknownAttributes": {}
+    }
+  ],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "start",
+          "incoming": [],
+          "outgoing": [],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "start2",
+          "incoming": [],
+          "outgoing": [],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "T1",
+              "timeDuration": "PT5M",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "startTimerDuration",
+          "incoming": [],
+          "outgoing": [],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "T2",
+              "timeCycle": "0 0 9 * * MON",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "startCron",
+          "incoming": [],
+          "outgoing": [],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "S1",
+              "signalRef": "Sig_ok",
+              "type": "signal"
+            }
+          ],
+          "extensionElements": [],
+          "id": "startSignal",
+          "incoming": [],
+          "outgoing": [],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "T3",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "catchNoTimer",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "T4",
+              "timeDuration": "5 minutes",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "catchBadDuration",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "T5",
+              "timeDate": "2026-02-01T09:00:00Z",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "catchDate",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "T6",
+              "timeCycle": "R3/PT10M",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "catchCycle",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "M1",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [],
+          "id": "catchMsgNoRef",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "M2",
+              "messageRef": "Msg_noname",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [],
+          "id": "catchMsgNoName",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "M3",
+              "messageRef": "Msg_nokey",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [],
+          "id": "catchMsgNoKey",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "M4",
+              "messageRef": "Msg_ok",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [],
+          "id": "catchMsgOk",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "L1",
+              "name": "a",
+              "type": "link"
+            }
+          ],
+          "extensionElements": [],
+          "id": "catchLink",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "S2",
+              "signalRef": "Sig_noname",
+              "type": "signal"
+            }
+          ],
+          "extensionElements": [],
+          "id": "catchSignalNoName",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "condition": "=x > 1",
+              "id": "C1",
+              "type": "conditional"
+            }
+          ],
+          "extensionElements": [],
+          "id": "catchConditional",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "work"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "work",
+          "incoming": [],
+          "name": "Work",
+          "outgoing": [],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "work",
+          "eventDefinitions": [
+            {
+              "id": "T7",
+              "timeCycle": "R/PT1H",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "boundaryCycle",
+          "incoming": [],
+          "outgoing": [],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "work",
+          "eventDefinitions": [
+            {
+              "id": "E1",
+              "type": "error"
+            }
+          ],
+          "extensionElements": [],
+          "id": "boundaryErrorNoRef",
+          "incoming": [],
+          "outgoing": [],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "work",
+          "eventDefinitions": [
+            {
+              "errorRef": "Err_expr",
+              "id": "E2",
+              "type": "error"
+            }
+          ],
+          "extensionElements": [],
+          "id": "boundaryErrorExpr",
+          "incoming": [],
+          "outgoing": [],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "work",
+          "cancelActivity": false,
+          "eventDefinitions": [
+            {
+              "id": "X1",
+              "type": "escalation"
+            }
+          ],
+          "extensionElements": [],
+          "id": "boundaryEscalation",
+          "incoming": [],
+          "outgoing": [],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "work",
+          "eventDefinitions": [
+            {
+              "id": "CP1",
+              "type": "compensate"
+            }
+          ],
+          "extensionElements": [],
+          "id": "boundaryCompensation",
+          "incoming": [],
+          "outgoing": [],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "throwNone",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateThrowEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "X2",
+              "type": "escalation"
+            }
+          ],
+          "extensionElements": [],
+          "id": "throwEscalationNoRef",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateThrowEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "escalationRef": "Esc_nocode",
+              "id": "X3",
+              "type": "escalation"
+            }
+          ],
+          "extensionElements": [],
+          "id": "throwEscalationNoCode",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateThrowEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "M5",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [],
+          "id": "throwMessage",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateThrowEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "M6",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "send"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "throwMessageTyped",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateThrowEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "CP2",
+              "type": "compensate",
+              "unknownAttributes": {
+                "waitForCompletion": "false"
+              }
+            }
+          ],
+          "extensionElements": [],
+          "id": "throwCompensation",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateThrowEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "E3",
+              "type": "error"
+            }
+          ],
+          "extensionElements": [],
+          "id": "endErrorNoRef",
+          "incoming": [],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "errorRef": "Err_nocode",
+              "id": "E4",
+              "type": "error"
+            }
+          ],
+          "extensionElements": [],
+          "id": "endErrorNoCode",
+          "incoming": [],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "errorRef": "Err_expr",
+              "id": "E5",
+              "type": "error"
+            }
+          ],
+          "extensionElements": [],
+          "id": "endErrorExpr",
+          "incoming": [],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "TE1",
+              "type": "terminate"
+            }
+          ],
+          "extensionElements": [],
+          "id": "endTerminate",
+          "incoming": [],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "S3",
+              "type": "signal"
+            }
+          ],
+          "extensionElements": [],
+          "id": "endSignalNoRef",
+          "incoming": [],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [
+                {
+                  "id": "T8",
+                  "timeCycle": "R/PT1H",
+                  "type": "timer"
+                }
+              ],
+              "extensionElements": [],
+              "id": "subTimerCycle",
+              "incoming": [],
+              "outgoing": [],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "subEnd",
+              "incoming": [],
+              "outgoing": [],
+              "type": "endEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "eventSub",
+          "incoming": [],
+          "outgoing": [],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "triggeredByEvent": true,
+          "type": "subProcess",
+          "unknownAttributes": {
+            "triggeredByEvent": "true"
+          }
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [
+                {
+                  "id": "S4",
+                  "signalRef": "Sig_ok",
+                  "type": "signal"
+                }
+              ],
+              "extensionElements": [],
+              "id": "subSignal",
+              "incoming": [],
+              "isInterrupting": false,
+              "outgoing": [],
+              "type": "startEvent",
+              "unknownAttributes": {
+                "isInterrupting": "false"
+              }
+            },
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "subEnd2",
+              "incoming": [],
+              "outgoing": [],
+              "type": "endEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "signalSub",
+          "incoming": [],
+          "outgoing": [],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "triggeredByEvent": true,
+          "type": "subProcess",
+          "unknownAttributes": {
+            "triggeredByEvent": "true"
+          }
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [
+                {
+                  "id": "M7",
+                  "messageRef": "Msg_nokey",
+                  "type": "message"
+                }
+              ],
+              "extensionElements": [],
+              "id": "subMessage",
+              "incoming": [],
+              "isInterrupting": false,
+              "outgoing": [],
+              "type": "startEvent",
+              "unknownAttributes": {
+                "isInterrupting": "false"
+              }
+            },
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "subEnd3",
+              "incoming": [],
+              "outgoing": [],
+              "type": "endEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "messageSub",
+          "incoming": [],
+          "outgoing": [],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "triggeredByEvent": true,
+          "type": "subProcess",
+          "unknownAttributes": {
+            "triggeredByEvent": "true"
+          }
+        }
+      ],
+      "groups": [],
+      "id": "events",
+      "isExecutable": true,
+      "sequenceFlows": [],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [
+    {
+      "id": "Sig_ok",
+      "name": "go",
+      "unknownAttributes": {}
+    },
+    {
+      "id": "Sig_noname",
+      "unknownAttributes": {}
+    }
+  ],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.6.0"
+  }
+}

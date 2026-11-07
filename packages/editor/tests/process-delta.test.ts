@@ -301,6 +301,30 @@ describe("applyProcessDelta", () => {
 		expectSound(next)
 	})
 
+	it("gives a new timer its after= duration", () => {
+		const result = apply(
+			drawn(LOAN),
+			"late[boundary:timer Late | on=review after=P2D] > review_end[end Reminded]",
+		)
+		expect(result.problems).toEqual([])
+		const late = element(result.definitions, "late")
+		expect(late && "eventDefinitions" in late ? late.eventDefinitions[0] : undefined).toMatchObject(
+			{ type: "timer", timeDuration: "P2D" },
+		)
+	})
+
+	it("changes an existing timer's duration from a restated after=", () => {
+		const defs = drawn(
+			"s[start Go] > t[task Work] > e[end Done]\nlate[boundary:timer Late | on=t after=PT1H] > x[end Late]",
+		)
+		const result = apply(defs, "late[boundary:timer Late | on=t after=PT2H]")
+		expect(result.problems).toEqual([])
+		const late = element(result.definitions, "late")
+		expect(late && "eventDefinitions" in late ? late.eventDefinitions[0] : undefined).toMatchObject(
+			{ type: "timer", timeDuration: "PT2H" },
+		)
+	})
+
 	it("removes a step and joins its neighbours", () => {
 		const defs = drawn(LOAN)
 		const result = apply(defs, "- review")

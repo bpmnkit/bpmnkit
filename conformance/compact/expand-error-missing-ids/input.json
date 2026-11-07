@@ -1,0 +1,19 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "type": "task"
+        }
+      ],
+      "flows": [
+        {
+          "from": "a",
+          "to": "b"
+        }
+      ]
+    }
+  ]
+}

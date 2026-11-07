@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="order-process" name="Order Process" isExecutable="true">
+    <bpmn:startEvent id="start" name="Order Received">
+      <bpmn:outgoing>flow1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="validate" name="Validate Order">
+      <bpmn:incoming>flow1</bpmn:incoming>
+      <bpmn:outgoing>flow2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="gw-check" name="Valid?">
+      <bpmn:incoming>flow2</bpmn:incoming>
+      <bpmn:outgoing>flow-yes</bpmn:outgoing>
+      <bpmn:outgoing>flow-no</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="process" name="Process Order">
+      <bpmn:incoming>flow-yes</bpmn:incoming>
+      <bpmn:outgoing>flow3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="reject" name="Reject Order">
+      <bpmn:incoming>flow-no</bpmn:incoming>
+      <bpmn:outgoing>flow4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="gw-merge" name="Merge">
+      <bpmn:incoming>flow3</bpmn:incoming>
+      <bpmn:incoming>flow4</bpmn:incoming>
+      <bpmn:outgoing>flow5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="notify" name="Send Notification">
+      <bpmn:incoming>flow5</bpmn:incoming>
+      <bpmn:outgoing>flow6</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="end" name="Order Complete">
+      <bpmn:incoming>flow6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="flow1" sourceRef="start" targetRef="validate"/>
+    <bpmn:sequenceFlow id="flow2" sourceRef="validate" targetRef="gw-check"/>
+    <bpmn:sequenceFlow id="flow-yes" sourceRef="gw-check" targetRef="process" name="yes"/>
+    <bpmn:sequenceFlow id="flow-no" sourceRef="gw-check" targetRef="reject" name="no"/>
+    <bpmn:sequenceFlow id="flow3" sourceRef="process" targetRef="gw-merge"/>
+    <bpmn:sequenceFlow id="flow4" sourceRef="reject" targetRef="gw-merge"/>
+    <bpmn:sequenceFlow id="flow5" sourceRef="gw-merge" targetRef="notify"/>
+    <bpmn:sequenceFlow id="flow6" sourceRef="notify" targetRef="end"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="diagram1">
+    <bpmndi:BPMNPlane id="plane1" bpmnElement="order-process">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start">
+        <dc:Bounds x="51" y="42" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="20" y="82" width="98" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="validate_di" bpmnElement="validate">
+        <dc:Bounds x="169" y="20" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw-check_di" bpmnElement="gw-check" isMarkerVisible="true">
+        <dc:Bounds x="344" y="35" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="348" y="89" width="42" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="process_di" bpmnElement="process">
+        <dc:Bounds x="469" y="20" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw-merge_di" bpmnElement="gw-merge" isMarkerVisible="true">
+        <dc:Bounds x="644" y="35" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="649" y="89" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="notify_di" bpmnElement="notify">
+        <dc:Bounds x="769" y="20" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_di" bpmnElement="end">
+        <dc:Bounds x="951" y="42" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="920" y="82" width="98" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="reject_di" bpmnElement="reject">
+        <dc:Bounds x="469" y="160" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="flow1_di" bpmnElement="flow1">
+        <di:waypoint x="87" y="60"/>
+        <di:waypoint x="169" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow2_di" bpmnElement="flow2">
+        <di:waypoint x="269" y="60"/>
+        <di:waypoint x="344" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow-yes_di" bpmnElement="flow-yes">
+        <di:waypoint x="394" y="60"/>
+        <di:waypoint x="469" y="60"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="412" y="36" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow-no_di" bpmnElement="flow-no">
+        <di:waypoint x="369" y="85"/>
+        <di:waypoint x="369" y="200"/>
+        <di:waypoint x="469" y="200"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="345" y="136" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow3_di" bpmnElement="flow3">
+        <di:waypoint x="569" y="60"/>
+        <di:waypoint x="644" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow4_di" bpmnElement="flow4">
+        <di:waypoint x="569" y="200"/>
+        <di:waypoint x="669" y="200"/>
+        <di:waypoint x="669" y="85"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow5_di" bpmnElement="flow5">
+        <di:waypoint x="694" y="60"/>
+        <di:waypoint x="769" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow6_di" bpmnElement="flow6">
+        <di:waypoint x="869" y="60"/>
+        <di:waypoint x="951" y="60"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:subProcess id="Undo" isForCompensation="true">
+      <bpmn:startEvent id="UndoStart"/>
+    </bpmn:subProcess>
+    <bpmn:transaction id="Tx" isForCompensation="true"/>
+    <bpmn:adHocSubProcess id="Adhoc" isForCompensation="true"/>
+    <bpmn:subProcess id="Evt" triggeredByEvent="true" isForCompensation="true"/>
+    <bpmn:subProcess id="Plain"/>
+  </bpmn:process>
+</bpmn:definitions>
+

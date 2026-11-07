@@ -1,0 +1,6 @@
+s[start] > check[xor Eligible?]
+check >(Yes: applicant is eligible) review[user Review application] > a[end]
+check >(No: applicant not eligible) reject[user Reject application] > b[end]
+s2[start:message] > g[xor Big?]
+g >(Yes: amount > 1000) big[end]
+g >(No: amount is small) small[end]

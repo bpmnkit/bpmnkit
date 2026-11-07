@@ -1,0 +1,1819 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 41,
+    "info": 38,
+    "warning": 68
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "secretList"
+      ],
+      "fixable": false,
+      "id": "feel/complex-io-mapping",
+      "message": "IO mapping input source on task \"secretList\" is complex.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Consider extracting complex FEEL expressions into intermediate variables."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "secretIfContext"
+      ],
+      "fixable": false,
+      "id": "feel/complex-io-mapping",
+      "message": "IO mapping input source on task \"secretIfContext\" is complex.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Consider extracting complex FEEL expressions into intermediate variables."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "secretFine"
+      ],
+      "fixable": false,
+      "id": "feel/complex-io-mapping",
+      "message": "IO mapping input source on task \"secretFine\" is complex.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Consider extracting complex FEEL expressions into intermediate variables."
+    },
+    {
+      "category": "feel-syntax",
+      "elementIds": [
+        "feelShadowed"
+      ],
+      "fixable": false,
+      "id": "feel-syntax/parse-error",
+      "message": "Invalid FEEL expression on input \"c\" of \"feelShadowed\": Expected )",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Fix the FEEL syntax — see the error position for the offending token."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "webhookStart"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"webhookStart\" (startEvent) has no outgoing sequence flows.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "pollingCatch"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"pollingCatch\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "pollingCatch"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"pollingCatch\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "loopA"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"loopA\" (manualTask) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "feelNew"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"feelNew\" (serviceTask) is not reachable from any start event.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "feelNew"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"feelNew\" (serviceTask) has no outgoing sequence flows.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "feelShadowed"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"feelShadowed\" (serviceTask) is not reachable from any start event.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "feelShadowed"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"feelShadowed\" (serviceTask) has no outgoing sequence flows.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "feelTimer"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"feelTimer\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "feelTimer"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"feelTimer\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "badVars"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"badVars\" (serviceTask) is not reachable from any start event.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "badVars"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"badVars\" (serviceTask) has no outgoing sequence flows.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "badResult"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"badResult\" (scriptTask) is not reachable from any start event.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "badResult"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"badResult\" (scriptTask) has no outgoing sequence flows.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "badDecisionResult"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"badDecisionResult\" (businessRuleTask) is not reachable from any start event.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "badDecisionResult"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"badDecisionResult\" (businessRuleTask) has no outgoing sequence flows.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "badOutputCollection"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"badOutputCollection\" (adHocSubProcess) is not reachable from any start event.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "badOutputCollection"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"badOutputCollection\" (adHocSubProcess) has no outgoing sequence flows.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "secretsTask"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"secretsTask\" (serviceTask) is not reachable from any start event.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "secretsTask"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"secretsTask\" (serviceTask) has no outgoing sequence flows.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "secretReceive"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"secretReceive\" (receiveTask) is not reachable from any start event.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "secretReceive"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"secretReceive\" (receiveTask) has no outgoing sequence flows.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "secretLiteral"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"secretLiteral\" (serviceTask) is not reachable from any start event.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "secretLiteral"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"secretLiteral\" (serviceTask) has no outgoing sequence flows.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "secretQuoted"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"secretQuoted\" (serviceTask) is not reachable from any start event.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "secretQuoted"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"secretQuoted\" (serviceTask) has no outgoing sequence flows.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "secretProperty"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"secretProperty\" (serviceTask) is not reachable from any start event.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "secretProperty"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"secretProperty\" (serviceTask) has no outgoing sequence flows.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "secretList"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"secretList\" (serviceTask) is not reachable from any start event.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "secretList"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"secretList\" (serviceTask) has no outgoing sequence flows.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "secretIfContext"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"secretIfContext\" (serviceTask) is not reachable from any start event.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "secretIfContext"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"secretIfContext\" (serviceTask) has no outgoing sequence flows.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "secretFine"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"secretFine\" (serviceTask) is not reachable from any start event.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "secretFine"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"secretFine\" (serviceTask) has no outgoing sequence flows.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "linkNoName"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"linkNoName\" (intermediateThrowEvent) is not reachable from any start event.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "linkNoName"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"linkNoName\" (intermediateThrowEvent) has no outgoing sequence flows.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "linkCatch1"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"linkCatch1\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "linkCatch1"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"linkCatch1\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "linkScope"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"linkScope\" (subProcess) is not reachable from any start event.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "linkScope"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"linkScope\" (subProcess) has no outgoing sequence flows.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"start\" has no name.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "webhookStart"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"webhookStart\" has no name.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "loopA"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"loopA\" (manualTask) has no name.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "loopGateway"
+      ],
+      "fixable": false,
+      "id": "naming/split-gateway-no-label",
+      "message": "Gateway \"loopGateway\" (exclusiveGateway, split) has no name.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Label split gateways as a yes/no question, e.g. \"Invoice valid?\", \"Order approved?\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "loopGateway",
+        "toLoopB"
+      ],
+      "fixable": false,
+      "id": "naming/missing-flow-condition",
+      "message": "Sequence flow \"toLoopB\" from split gateway \"loopGateway\" has no condition label.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Label each outgoing flow with the condition answer, e.g. \"Yes\", \"No\", \"Approved\", \"Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "loopGateway",
+        "toEnd"
+      ],
+      "fixable": false,
+      "id": "naming/missing-flow-condition",
+      "message": "Sequence flow \"toEnd\" from split gateway \"loopGateway\" has no condition label.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Label each outgoing flow with the condition answer, e.g. \"Yes\", \"No\", \"Approved\", \"Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"end\" has no name.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "feelNew"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"feelNew\" (serviceTask) has no name.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "feelShadowed"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"feelShadowed\" (serviceTask) has no name.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "badVars"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"badVars\" (serviceTask) has no name.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "badResult"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"badResult\" (scriptTask) has no name.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "badDecisionResult"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"badDecisionResult\" (businessRuleTask) has no name.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "badOutputCollection"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"badOutputCollection\" (adHocSubProcess) has no name.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "secretsTask"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"secretsTask\" (serviceTask) has no name.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "secretReceive"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"secretReceive\" (receiveTask) has no name.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "secretLiteral"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"secretLiteral\" (serviceTask) has no name.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "secretQuoted"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"secretQuoted\" (serviceTask) has no name.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "secretProperty"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"secretProperty\" (serviceTask) has no name.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "secretList"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"secretList\" (serviceTask) has no name.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "secretIfContext"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"secretIfContext\" (serviceTask) has no name.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "secretFine"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"secretFine\" (serviceTask) has no name.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "linkScope"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"linkScope\" (subProcess) has no name.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "task-reuse",
+      "elementIds": [
+        "feelShadowed",
+        "secretFine",
+        "badVars",
+        "secretsTask",
+        "secretLiteral",
+        "secretQuoted",
+        "secretProperty",
+        "secretList",
+        "secretIfContext"
+      ],
+      "fixable": true,
+      "id": "task/reusable-group",
+      "message": "9 service tasks share a similar configuration (taskType=\"t\") and could be reused via a call activity.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Extract the repeated service task into a reusable sub-process and replace occurrences with call activities."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "badOutputCollection"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"badOutputCollection\" has no error boundary event.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "linkScope"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"linkScope\" has no error boundary event.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "feelShadowed"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"feelShadowed\" has no output variable mapping.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "secretsTask"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"secretsTask\" has no output variable mapping.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "secretLiteral"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"secretLiteral\" has no output variable mapping.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "secretQuoted"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"secretQuoted\" has no output variable mapping.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "secretProperty"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"secretProperty\" has no output variable mapping.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "secretList"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"secretList\" has no output variable mapping.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "secretIfContext"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"secretIfContext\" has no output variable mapping.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "secretFine"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"secretFine\" has no output variable mapping.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"start\" has no documentation describing expected input variables.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "feelShadowed",
+        "badVars",
+        "secretsTask",
+        "secretLiteral",
+        "secretQuoted",
+        "secretProperty",
+        "secretList",
+        "secretIfContext",
+        "secretFine"
+      ],
+      "fixable": false,
+      "id": "pattern/duplicate-job-type",
+      "message": "Job type \"t\" is used by 9 service tasks.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Verify this is intentional — the same worker will handle all these tasks. Consider distinct job types if behaviors differ."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "feelNew"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:payload",
+      "message": "Variable \"payload\" is referenced but never set in this process.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "\"payload\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "feelNew"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:name",
+      "message": "Variable \"name\" is referenced but never set in this process.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "\"name\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "feelNew"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:items",
+      "message": "Variable \"items\" is referenced but never set in this process.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "\"items\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "secretsTask"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:secrets",
+      "message": "Variable \"secrets\" is referenced but never set in this process.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "\"secrets\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "secretsTask",
+        "secretLiteral",
+        "secretList",
+        "secretIfContext",
+        "secretFine"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:camunda",
+      "message": "Variable \"camunda\" is referenced but never set in this process.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "\"camunda\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "secretIfContext",
+        "secretFine"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:prod",
+      "message": "Variable \"prod\" is referenced but never set in this process.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "\"prod\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "loopGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:reason",
+      "message": "Variable \"reason\" is referenced but never set in this process.",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "\"reason\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "feelNew"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:id",
+      "message": "Variable \"id\" is set but never read by any downstream element.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"id\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "feelNew"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:data",
+      "message": "Variable \"data\" is set but never read by any downstream element.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"data\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "feelNew"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:label",
+      "message": "Variable \"label\" is set but never read by any downstream element.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"label\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "feelNew"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:pages",
+      "message": "Variable \"pages\" is set but never read by any downstream element.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"pages\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "feelShadowed",
+        "secretLiteral",
+        "secretQuoted",
+        "secretList",
+        "secretIfContext",
+        "secretFine"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:a",
+      "message": "Variable \"a\" is set but never read by any downstream element.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"a\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "feelShadowed",
+        "secretFine"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:b",
+      "message": "Variable \"b\" is set but never read by any downstream element.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"b\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "feelShadowed",
+        "secretFine"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:c",
+      "message": "Variable \"c\" is set but never read by any downstream element.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"c\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "feelShadowed",
+        "secretFine"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:d",
+      "message": "Variable \"d\" is set but never read by any downstream element.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"d\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "badVars"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:1st",
+      "message": "Variable \"1st\" is set but never read by any downstream element.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"1st\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "badVars"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:my variable name",
+      "message": "Variable \"my variable name\" is set but never read by any downstream element.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"my variable name\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "badVars"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:a.b_c",
+      "message": "Variable \"a.b_c\" is set but never read by any downstream element.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"a.b_c\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "badDecisionResult"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:2x",
+      "message": "Variable \"2x\" is set but never read by any downstream element.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"2x\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "secretsTask"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:apiKey",
+      "message": "Variable \"apiKey\" is set but never read by any downstream element.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"apiKey\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "secretsTask"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:token",
+      "message": "Variable \"token\" is set but never read by any downstream element.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"token\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "secretsTask"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:ok",
+      "message": "Variable \"ok\" is set but never read by any downstream element.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"ok\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "feelNew"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:feelNew",
+      "message": "Element \"feelNew\" produces: id, data, label, pages; consumes: payload, name, items.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "feelShadowed"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:feelShadowed",
+      "message": "Element \"feelShadowed\" produces: a, b, c, d.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "badVars"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:badVars",
+      "message": "Element \"badVars\" produces: 1st, my variable name, a.b_c.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "badDecisionResult"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:badDecisionResult",
+      "message": "Element \"badDecisionResult\" produces: 2x.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "secretsTask"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:secretsTask",
+      "message": "Element \"secretsTask\" produces: apiKey, token, ok; consumes: secrets, camunda.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "secretLiteral"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:secretLiteral",
+      "message": "Element \"secretLiteral\" produces: a; consumes: camunda.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "secretQuoted"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:secretQuoted",
+      "message": "Element \"secretQuoted\" produces: a.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "secretList"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:secretList",
+      "message": "Element \"secretList\" produces: a; consumes: camunda.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "secretIfContext"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:secretIfContext",
+      "message": "Element \"secretIfContext\" produces: a; consumes: prod, camunda.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "secretFine"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:secretFine",
+      "message": "Element \"secretFine\" produces: a, b, c, d; consumes: camunda, prod.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "loopGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:loopGateway",
+      "message": "Element \"loopGateway\" consumes: reason.",
+      "processId": "contents",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "pollingCatch"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"pollingCatch\" (intermediateCatchEvent) has no zeebe:subscription correlationKey.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-end-event",
+      "message": "Process \"waits\" has no end event.",
+      "processId": "waits",
+      "severity": "warning",
+      "suggestion": "Add an end event to properly terminate the process."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "waitsTask"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"waitsTask\" (task) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "waits",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "waitsStart"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"waitsStart\" has no name.",
+      "processId": "waits",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "waitsService"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"waitsService\" (serviceTask) has no name.",
+      "processId": "waits",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "waitsService"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"waitsService\" has no output variable mapping.",
+      "processId": "waits",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "waitsStart"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"waitsStart\" has no documentation describing expected input variables.",
+      "processId": "waits",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-end-event",
+      "message": "Process \"recursive\" has no end event.",
+      "processId": "recursive",
+      "severity": "warning",
+      "suggestion": "Add an end event to properly terminate the process."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "recursiveSub"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"recursiveSub\" (subProcess) has no outgoing sequence flows.",
+      "processId": "recursive",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "recursiveStart"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"recursiveStart\" has no name.",
+      "processId": "recursive",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "recursiveSub"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"recursiveSub\" (subProcess) has no name.",
+      "processId": "recursive",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "recursiveSub"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"recursiveSub\" has no error boundary event.",
+      "processId": "recursive",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "recursiveStart"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"recursiveStart\" has no documentation describing expected input variables.",
+      "processId": "recursive",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "contents"
+      ],
+      "fixable": false,
+      "id": "compat/duplicate-execution-listener-headers",
+      "message": "Properties of type <zeebe:Header> have property <key> with duplicate value of <channel>",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Remove the duplicate header from the execution listener."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badVars"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <1st> not allowed",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "The input target \"1st\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badVars"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <my variabl...> not allowed",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "The output target \"my variable name\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badVars"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <item-x> not allowed",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "The input element \"item-x\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badResult"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <a-b> not allowed",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "The result variable \"a-b\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badDecisionResult"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <2x> not allowed",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "The result variable \"2x\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badOutputCollection"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <all result...> not allowed",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "The output collection \"all results\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretsTask"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <source> uses deprecated secret expression format",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Reference the secret as =camunda.secrets.NAME."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretsTask"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <source> uses legacy secret expression format",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Reference the secret as =camunda.secrets.NAME."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretsTask"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <value> uses legacy secret expression format",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Reference the secret as =camunda.secrets.NAME."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretReceive"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <correlationKey> uses deprecated secret expression format",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Reference the secret as =camunda.secrets.NAME."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretLiteral"
+      ],
+      "fixable": false,
+      "id": "compat/unresolvable-secret-reference",
+      "message": "Property <source> must use a secret reference as an expression (e.g. =camunda.secrets.NAME), not as a string literal",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Write the reference as a FEEL expression, outside quotes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretQuoted"
+      ],
+      "fixable": false,
+      "id": "compat/unresolvable-secret-reference",
+      "message": "Property <source> must use a secret reference as an expression (e.g. =camunda.secrets.NAME), not as a string literal",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Write the reference as a FEEL expression, outside quotes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretProperty"
+      ],
+      "fixable": false,
+      "id": "compat/unresolvable-secret-reference",
+      "message": "Property <value> must use a secret reference as an expression (e.g. =camunda.secrets.NAME), not as a string literal",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Write the reference as a FEEL expression, outside quotes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretList"
+      ],
+      "fixable": false,
+      "id": "compat/unresolvable-secret-reference",
+      "message": "Property <source> must not assign a secret reference inside a list",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Map the secret to a variable of its own, and build the list from that variable."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretIfContext"
+      ],
+      "fixable": false,
+      "id": "compat/unresolvable-secret-reference",
+      "message": "Property <source> must not assign a secret reference inside a context returned by an if expression branch",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Map the secret to a variable of its own, and build the context from that variable."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "linkNoName"
+      ],
+      "fixable": false,
+      "id": "compat/link-event",
+      "message": "Element of type <bpmn:LinkEventDefinition> must have property <name>",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Name the link — a throw and its catch are paired by name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "linkCatchBlank"
+      ],
+      "fixable": false,
+      "id": "compat/link-event",
+      "message": "Element of type <bpmn:LinkEventDefinition> must have property <name>",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Name the link — a throw and its catch are paired by name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "linkCatch1"
+      ],
+      "fixable": false,
+      "id": "compat/link-event",
+      "message": "Property of type <bpmn:LinkEventDefinition> has property <name> with duplicate value of <L>",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Give each link catch event in the process its own name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "linkCatch2"
+      ],
+      "fixable": false,
+      "id": "compat/link-event",
+      "message": "Property of type <bpmn:LinkEventDefinition> has property <name> with duplicate value of <L>",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Give each link catch event in the process its own name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "contents"
+      ],
+      "fixable": false,
+      "id": "compat/no-loop",
+      "message": "Loop detected: loopA -> loopGateway -> loopB -> loopA",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Put a wait state in the loop — a service, user or receive task, or a catch event — or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "recursive"
+      ],
+      "fixable": false,
+      "id": "compat/no-loop",
+      "message": "Loop detected: recursiveCall -> recursiveStart -> recursiveSub -> recursiveSubStart -> recursiveCall",
+      "processId": "recursive",
+      "severity": "error",
+      "suggestion": "Put a wait state in the loop — a service, user or receive task, or a catch event — or remove it."
+    }
+  ],
+  "platform": {
+    "id": "camunda-cloud",
+    "name": "Camunda Cloud",
+    "version": "8.10.0"
+  },
+  "total": 147
+}

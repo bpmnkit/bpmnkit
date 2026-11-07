@@ -74,7 +74,10 @@ pub fn start_engine_with_clock(pool: DbPool, clock: Arc<dyn Clock>) -> RunningEn
     let engine_task = tokio::spawn(Arc::new(engine).run());
     let scheduler = Scheduler::new(backend, handle.clone(), clock);
     let scheduler_task = tokio::spawn(async move { scheduler.run().await });
-    RunningEngine { handle, tasks: vec![engine_task, scheduler_task] }
+    RunningEngine {
+        handle,
+        tasks: vec![engine_task, scheduler_task],
+    }
 }
 
 /// A second pool on the database of `pool`, as a restarted server would open.

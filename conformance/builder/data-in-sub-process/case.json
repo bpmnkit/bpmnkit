@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["subProcess","sp",{"$ops":[["startEvent","is"],["serviceTask","t",{"name":"t","taskType":"t"}],["dataObject","DO1",{"name":"d"}],["dataObjectReference","R1","DO1"],["dataStoreReference","DS1","Store_x"],["dataAssociation","t","R1","input"],["dataAssociation","t","DS1","output"],["endEvent","ie"]]}],
+		["endEvent","e"],
+		["build"]
+	]
+}

@@ -1,0 +1,83 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "t",
+            "jobType": "t",
+            "name": "Work",
+            "type": "serviceTask"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "t",
+            "eventType": "error",
+            "id": "b",
+            "name": "Fail",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "a",
+            "name": "Log",
+            "type": "task"
+          },
+          {
+            "id": "c",
+            "name": "Fix",
+            "type": "userTask"
+          },
+          {
+            "id": "e2",
+            "name": "Fixed",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "e"
+          },
+          {
+            "from": "b",
+            "id": "Flow_3",
+            "to": "a"
+          },
+          {
+            "from": "a",
+            "id": "Flow_4",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "id": "Flow_5",
+            "to": "e2"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

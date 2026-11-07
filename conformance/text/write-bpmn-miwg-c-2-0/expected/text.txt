@@ -1,0 +1,1 @@
+receive_credit_card_information[start:message Receive Credit Card Information] > take_payment[task Take Payment] > send_result[end:message Send Result]

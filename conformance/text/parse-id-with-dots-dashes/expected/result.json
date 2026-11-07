@@ -1,0 +1,45 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start.1",
+            "name": "Start 1",
+            "type": "startEvent"
+          },
+          {
+            "id": "do-it",
+            "name": "Do it",
+            "type": "task"
+          },
+          {
+            "id": "end_2",
+            "name": "End 2",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start.1",
+            "id": "Flow_1",
+            "to": "do-it"
+          },
+          {
+            "from": "do-it",
+            "id": "Flow_2",
+            "to": "end_2"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

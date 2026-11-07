@@ -1,0 +1,73 @@
+{
+  "report": {
+    "counts": {
+      "convertible": 3,
+      "manual": 3,
+      "unsupported": 0
+    },
+    "findings": [
+      {
+        "applied": true,
+        "construct": "camunda:type=external",
+        "elementId": "t",
+        "elementType": "serviceTask",
+        "message": "External task topic \"x\" became job type \"x\".",
+        "processId": "p",
+        "severity": "convertible",
+        "suggestion": "zeebe:taskDefinition type — point the external task worker at the Camunda 8 job API with the same type."
+      },
+      {
+        "applied": false,
+        "construct": "camunda:inputParameter",
+        "elementId": "t",
+        "elementType": "serviceTask",
+        "message": "Input parameter \"note\" was not converted: text mixed with ${…} is string templating, which FEEL does not do implicitly.",
+        "processId": "p",
+        "severity": "manual",
+        "suggestion": "Write it as <zeebe:input source=\"=…\" target=\"note\"/> by hand."
+      },
+      {
+        "applied": false,
+        "construct": "camunda:inputParameter",
+        "elementId": "t",
+        "elementType": "serviceTask",
+        "message": "Input parameter \"audit\" was not converted: it is a groovy script.",
+        "processId": "p",
+        "severity": "manual",
+        "suggestion": "Write it as <zeebe:input source=\"=…\" target=\"audit\"/> by hand."
+      },
+      {
+        "applied": false,
+        "construct": "camunda:outputParameter",
+        "elementId": "t",
+        "elementType": "serviceTask",
+        "message": "Output parameter \"my-var\" was not converted: \"my-var\" is not a valid Camunda 8 target name.",
+        "processId": "p",
+        "severity": "manual",
+        "suggestion": "Write it as <zeebe:output source=\"=…\" target=\"my-var\"/> by hand."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:inputOutput",
+        "elementId": "t",
+        "elementType": "serviceTask",
+        "message": "2 input/output parameters moved to zeebe:ioMapping, JUEL translated to FEEL.",
+        "processId": "p",
+        "severity": "convertible",
+        "suggestion": "zeebe:ioMapping"
+      },
+      {
+        "applied": true,
+        "construct": "modeler:executionPlatform",
+        "elementId": "Definitions_test",
+        "elementType": "definitions",
+        "message": "Execution platform set to Camunda Cloud 8.10.0 (was Camunda Platform).",
+        "processId": "",
+        "severity": "convertible",
+        "suggestion": "Camunda Modeler opens the file as a Camunda 8 diagram."
+      }
+    ],
+    "total": 6
+  },
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" id=\"Definitions_test\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.10.0\">\n  <bpmn:process id=\"p\" isExecutable=\"true\">\n    <bpmn:serviceTask id=\"t\">\n      <bpmn:extensionElements>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"note\">Paid ${claim.id}</camunda:inputParameter>\n          <camunda:inputParameter name=\"audit\">\n            <camunda:script scriptFormat=\"groovy\">x.collect()</camunda:script>\n          </camunda:inputParameter>\n          <camunda:outputParameter name=\"my-var\">${a}</camunda:outputParameter>\n        </camunda:inputOutput>\n        <zeebe:taskDefinition type=\"x\"/>\n        <zeebe:ioMapping>\n          <zeebe:input source=\"=a\" target=\"ok\"/>\n          <zeebe:input source=\"=a + 1\" target=\"feel\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+}

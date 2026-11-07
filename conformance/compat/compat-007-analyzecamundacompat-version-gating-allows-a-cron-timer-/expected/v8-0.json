@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "s"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer start event \"s\" uses a cron expression, which needs Camunda 8.1 or newer; this model targets Camunda 8.0.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Use an ISO 8601 repeating interval (R/PT1H), or target Camunda 8.1 or newer."
+    }
+  ]
+}

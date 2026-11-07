@@ -1,0 +1,136 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "compat/no-multiple-none-start-events",
+      "message": "Start event \"Start\" is one of 2 blank start events in process \"proc\"; Camunda allows one.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Keep one blank start event and give the others an event definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "start_joined"
+      ],
+      "fixable": false,
+      "id": "compat/no-multiple-none-start-events",
+      "message": "Start event \"Restarted\" is one of 2 blank start events in process \"proc\"; Camunda allows one.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Keep one blank start event and give the others an event definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "boundary_timer"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer boundary event \"Late\" has no timer value; set one of timeDate, timeDuration.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set when the timer fires."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sub_catch"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer intermediate catch event \"sub_catch\" has no timer value; set one of timeDate, timeDuration.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set when the timer fires."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sf9"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"sf9\" leaves Exclusive gateway \"Mixed?\" without a condition and is not its default flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "tx"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Transaction \"Tx\" is not supported by any Camunda 8 version.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Model it with an element Camunda 8 executes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "evt_start"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message start event \"evt_start\" references no message.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Ad-hoc sub-process \"Tools\" needs Camunda 8.7 or newer; this model targets Camunda 8.5.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.7 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "f_plain"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"f_plain\" leaves Exclusive gateway \"Route?\" without a condition and is not its default flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "f_x1"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"f_x1\" leaves Exclusive gateway \"Which?\" without a condition and is not its default flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "f_x2"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"f_x2\" leaves Exclusive gateway \"Which?\" without a condition and is not its default flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    }
+  ]
+}

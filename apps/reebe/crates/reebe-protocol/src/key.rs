@@ -72,8 +72,16 @@ mod tests {
         for pid in 1..=8u32 {
             for lk in [1u64, 100, 1000, 100_000] {
                 let encoded = encode_key(pid, lk);
-                assert_eq!(decode_partition_id(encoded), pid, "partition_id mismatch for pid={pid}, lk={lk}");
-                assert_eq!(decode_local_key(encoded), lk, "local_key mismatch for pid={pid}, lk={lk}");
+                assert_eq!(
+                    decode_partition_id(encoded),
+                    pid,
+                    "partition_id mismatch for pid={pid}, lk={lk}"
+                );
+                assert_eq!(
+                    decode_local_key(encoded),
+                    lk,
+                    "local_key mismatch for pid={pid}, lk={lk}"
+                );
             }
         }
     }

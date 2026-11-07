@@ -1,0 +1,339 @@
+{
+  "findings": [
+    {
+      "category": "task-reuse",
+      "elementIds": [
+        "c1",
+        "c3",
+        "c4"
+      ],
+      "fixable": true,
+      "id": "task/reusable-group",
+      "message": "3 service tasks share a similar configuration (taskType=\"io.camunda:x:1\") and could be reused via a call activity.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Extract the repeated service task into a reusable sub-process and replace occurrences with call activities."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "c2"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"c2\" has no output variable mapping.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "c3"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"c3\" has no output variable mapping.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "c4"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"c4\" has no output variable mapping.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "plain"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Plain\" has no output variable mapping.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"S\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "c1",
+        "c2",
+        "c3",
+        "c4"
+      ],
+      "fixable": false,
+      "id": "pattern/duplicate-job-type",
+      "message": "Job type \"io.camunda:x:1\" is used by 4 service tasks.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Verify this is intentional — the same worker will handle all these tasks. Consider distinct job types if behaviors differ."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "a"
+      ],
+      "elementIds": [
+        "c1",
+        "c2"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:a",
+      "message": "Variable \"a\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"a\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "r"
+      ],
+      "elementIds": [
+        "c1"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:r",
+      "message": "Variable \"r\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"r\" is never set. Did you mean \"url\"?"
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "m"
+      ],
+      "elementIds": [
+        "c2"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:m",
+      "message": "Variable \"m\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"m\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "c1",
+        "c2"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:url",
+      "message": "Variable \"url\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "produces": [
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"url\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "c1"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:result",
+      "message": "Variable \"result\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "produces": [
+        "result"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"result\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "c2"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:method",
+      "message": "Variable \"method\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "produces": [
+        "method"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"method\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "a",
+        "r"
+      ],
+      "elementIds": [
+        "c1"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:c1",
+      "message": "Element \"c1\" produces: url, result; consumes: a, r.",
+      "processId": "proc",
+      "produces": [
+        "url",
+        "result"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "a",
+        "m"
+      ],
+      "elementIds": [
+        "c2"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:c2",
+      "message": "Element \"c2\" produces: url, method; consumes: a, m.",
+      "processId": "proc",
+      "produces": [
+        "url",
+        "method"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f2"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f2",
+      "message": "Variables in scope at flow \"f2\": result, url.",
+      "processId": "proc",
+      "produces": [
+        "result",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f3"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f3",
+      "message": "Variables in scope at flow \"f3\": method, result, url.",
+      "processId": "proc",
+      "produces": [
+        "method",
+        "result",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f4"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f4",
+      "message": "Variables in scope at flow \"f4\": method, result, url.",
+      "processId": "proc",
+      "produces": [
+        "method",
+        "result",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f5"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f5",
+      "message": "Variables in scope at flow \"f5\": method, result, url.",
+      "processId": "proc",
+      "produces": [
+        "method",
+        "result",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f6"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f6",
+      "message": "Variables in scope at flow \"f6\": method, result, url.",
+      "processId": "proc",
+      "produces": [
+        "method",
+        "result",
+        "url"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    }
+  ],
+  "fixes": [
+    {
+      "description": "Extracted 3 service tasks to call activity referencing \"Reusable_io.camunda_x_1_proc_0000001\"",
+      "generated": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions id=\"Definitions_0000009\" targetNamespace=\"http://bpmn.io/schema/bpmn\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\">\n  <bpmn:process id=\"Reusable_io.camunda_x_1_proc_0000001\" isExecutable=\"false\">\n    <bpmn:startEvent id=\"StartEvent_0000002\">\n      <bpmn:outgoing>Flow_0000005</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"ServiceTask_0000003\" name=\"c1\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:x:1\"/>\n        <zeebe:ioMapping>\n          <zeebe:input source=\"=a\" target=\"url\"/>\n          <zeebe:output source=\"=r\" target=\"result\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_0000005</bpmn:incoming>\n      <bpmn:outgoing>Flow_0000006</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"EndEvent_0000004\">\n      <bpmn:incoming>Flow_0000006</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000005\" sourceRef=\"StartEvent_0000002\" targetRef=\"ServiceTask_0000003\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000006\" sourceRef=\"ServiceTask_0000003\" targetRef=\"EndEvent_0000004\"/>\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_0000007\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_0000008\" bpmnElement=\"Reusable_io.camunda_x_1_proc_0000001\">\n      <bpmndi:BPMNShape id=\"StartEvent_0000002_di\" bpmnElement=\"StartEvent_0000002\">\n        <dc:Bounds x=\"152\" y=\"100\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"ServiceTask_0000003_di\" bpmnElement=\"ServiceTask_0000003\">\n        <dc:Bounds x=\"260\" y=\"100\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"EndEvent_0000004_di\" bpmnElement=\"EndEvent_0000004\">\n        <dc:Bounds x=\"432\" y=\"100\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"Flow_0000005_di\" bpmnElement=\"Flow_0000005\">\n        <di:waypoint x=\"188\" y=\"118\"/>\n        <di:waypoint x=\"260\" y=\"118\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0000006_di\" bpmnElement=\"Flow_0000006\">\n        <di:waypoint x=\"360\" y=\"118\"/>\n        <di:waypoint x=\"432\" y=\"118\"/>\n      </bpmndi:BPMNEdge>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>\n\n",
+      "id": "task/reusable-group",
+      "index": 0,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"S\">\n      <bpmn:outgoing>f1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:callActivity id=\"c1\" name=\"c1\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"Reusable_io.camunda_x_1_proc_0000001\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>f1</bpmn:incoming>\n      <bpmn:outgoing>f2</bpmn:outgoing>\n    </bpmn:callActivity>\n    <bpmn:serviceTask id=\"c2\" zeebe:modelerTemplate=\"tpl.http\" name=\"c2\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:x:1\"/>\n        <zeebe:ioMapping>\n          <zeebe:input source=\"=a\" target=\"url\"/>\n          <zeebe:input source=\"=m\" target=\"method\"/>\n        </zeebe:ioMapping>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"v\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>f2</bpmn:incoming>\n      <bpmn:outgoing>f3</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:callActivity id=\"c3\" name=\"c3\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"Reusable_io.camunda_x_1_proc_0000001\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>f3</bpmn:incoming>\n      <bpmn:outgoing>f4</bpmn:outgoing>\n    </bpmn:callActivity>\n    <bpmn:callActivity id=\"c4\" name=\"c4\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"Reusable_io.camunda_x_1_proc_0000001\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>f4</bpmn:incoming>\n      <bpmn:outgoing>f5</bpmn:outgoing>\n    </bpmn:callActivity>\n    <bpmn:serviceTask id=\"plain\" name=\"Plain\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"x\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>f5</bpmn:incoming>\n      <bpmn:outgoing>f6</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"end\" name=\"E\">\n      <bpmn:incoming>f6</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"f1\" sourceRef=\"start\" targetRef=\"c1\"/>\n    <bpmn:sequenceFlow id=\"f2\" sourceRef=\"c1\" targetRef=\"c2\"/>\n    <bpmn:sequenceFlow id=\"f3\" sourceRef=\"c2\" targetRef=\"c3\"/>\n    <bpmn:sequenceFlow id=\"f4\" sourceRef=\"c3\" targetRef=\"c4\"/>\n    <bpmn:sequenceFlow id=\"f5\" sourceRef=\"c4\" targetRef=\"plain\"/>\n    <bpmn:sequenceFlow id=\"f6\" sourceRef=\"plain\" targetRef=\"end\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    }
+  ],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 13,
+      "deploy": 0,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 0,
+      "naming": 0,
+      "pattern": 6,
+      "task-reuse": 1
+    },
+    "bySeverity": {
+      "error": 0,
+      "info": 11,
+      "warning": 9
+    },
+    "total": 20
+  }
+}

@@ -32,7 +32,8 @@ sqlx = { version = "0.8", features = ["runtime-tokio", "chrono", "json"] }
 tokio = { version = "1", default-features = false, features = ["sync"] }
 
 [features]
-default = ["postgres"]
+default = ["postgres", "full-feel"]
+full-feel = ["reebe-feel/full-feel", "reebe-dmn/full-feel"]
 postgres = ["reebe-db/postgres"]
 sqlite = ["reebe-db/sqlite"]
 memory = ["reebe-db/memory"]

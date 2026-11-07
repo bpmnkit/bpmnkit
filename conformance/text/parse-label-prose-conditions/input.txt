@@ -1,0 +1,3 @@
+s[start] > g[xor Decide]
+g >(If the customer is a VIP) a[task Fast] > e[end]
+g >(Otherwise) b[task Slow] > e

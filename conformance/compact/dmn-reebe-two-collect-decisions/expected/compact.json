@@ -1,0 +1,67 @@
+{
+  "decisions": [
+    {
+      "hitPolicy": "COLLECT",
+      "id": "multiValidation",
+      "inputs": [
+        {
+          "expression": "name",
+          "id": "i1",
+          "label": "name"
+        }
+      ],
+      "name": "Multi-field Validation",
+      "outputs": [
+        {
+          "id": "o1",
+          "name": "error",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r1",
+          "inputs": [
+            "null"
+          ],
+          "outputs": [
+            "\"name is required\""
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "COLLECT",
+      "id": "ageValidation",
+      "inputs": [
+        {
+          "expression": "age",
+          "id": "i2",
+          "label": "age"
+        }
+      ],
+      "name": "Age Validation",
+      "outputs": [
+        {
+          "id": "o2",
+          "name": "error",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r2",
+          "inputs": [
+            "< 0"
+          ],
+          "outputs": [
+            "\"age cannot be negative\""
+          ]
+        }
+      ]
+    }
+  ],
+  "id": "Definitions_multi",
+  "inputData": [],
+  "name": "DRD"
+}

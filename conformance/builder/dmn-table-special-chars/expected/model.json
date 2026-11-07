@@ -1,0 +1,82 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "id": "DecisionTable_0000001",
+        "inputs": [
+          {
+            "id": "Input_0000002",
+            "inputExpression": {
+              "id": "InputExpression_0000003",
+              "text": "a < b && c"
+            },
+            "label": "x > y"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "Output_0000004",
+            "name": "o"
+          }
+        ],
+        "rules": [
+          {
+            "description": "desc <&>",
+            "id": "DecisionRule_0000007",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_0000005",
+                "text": "\"quote\\\"d\""
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_0000006",
+                "text": "'single'"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "A & B <c>"
+    }
+  ],
+  "diagram": {
+    "edges": [],
+    "shapes": [
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 160,
+          "y": 100
+        },
+        "dmnElementRef": "d"
+      }
+    ]
+  },
+  "exporter": "bpmn-sdk",
+  "exporterVersion": "0.0.1",
+  "id": "Definitions_0000008",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {
+    "executionPlatform": "Camunda Cloud",
+    "executionPlatformVersion": "8.10.0"
+  },
+  "name": "DRD",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "dc": "http://www.omg.org/spec/DMN/20180521/DC/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/",
+    "modeler": "http://camunda.org/schema/modeler/1.0"
+  },
+  "textAnnotations": []
+}

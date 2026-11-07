@@ -1,0 +1,11 @@
+{
+	"kind": "dmn",
+	"script": [
+		["drd","Chain"],
+		["$let","in","inputData","in1","Input"],
+		["$let","a","decision","a",{"$ops":[["name","A"],["input",{"expression":"x"}],["output",{"name":"aOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]},{"requires":[{"$ref":"in"}]}],
+		["$let","b","decision","b",{"$ops":[["name","B"],["input",{"expression":"x"}],["output",{"name":"bOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]},{"requires":[{"$ref":"a"}]}],
+		["$let","h8","decision","c",{"$ops":[["name","C"],["input",{"expression":"x"}],["output",{"name":"cOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]},{"requires":[{"$ref":"b"},{"$ref":"a"}]}],
+		["build"]
+	]
+}

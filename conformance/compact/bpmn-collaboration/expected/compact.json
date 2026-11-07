@@ -1,0 +1,60 @@
+{
+  "id": "Definitions_collab",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "Start_buyer",
+          "name": "Need identified",
+          "type": "startEvent"
+        },
+        {
+          "id": "Task_place_order",
+          "jobType": "place-order",
+          "name": "Place order",
+          "type": "serviceTask"
+        },
+        {
+          "id": "End_buyer",
+          "name": "Ordered",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "Start_buyer",
+          "id": "Flow_b1",
+          "to": "Task_place_order"
+        },
+        {
+          "from": "Task_place_order",
+          "id": "Flow_b2",
+          "to": "End_buyer"
+        }
+      ],
+      "id": "Process_buyer",
+      "name": "Buyer"
+    },
+    {
+      "elements": [
+        {
+          "id": "Start_seller",
+          "type": "startEvent"
+        },
+        {
+          "id": "End_seller",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "Start_seller",
+          "id": "Flow_s1",
+          "to": "End_seller"
+        }
+      ],
+      "id": "Process_seller",
+      "name": "Seller"
+    }
+  ]
+}

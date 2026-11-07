@@ -1,0 +1,136 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_c73a5f4a-72f1-4e11-bb40-2f98da75fb9a"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Analyse customer request\" has no zeebe:formDefinition.",
+      "processId": "_8170787a-3207-434d-9bea-4787059f444f",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_a92069f7-377b-4dbd-a1fd-1da071aabf6d"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Replace fridge\" has no zeebe:formDefinition.",
+      "processId": "_8170787a-3207-434d-9bea-4787059f444f",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_d034722f-751d-4f37-a3d7-47993822e979"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Perform repair (standard level)\" has no zeebe:formDefinition.",
+      "processId": "_8170787a-3207-434d-9bea-4787059f444f",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_6a34496f-8cf7-42e5-88a9-d1af98cc3cba"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Perform repair (premium level)\" has no zeebe:formDefinition.",
+      "processId": "_8170787a-3207-434d-9bea-4787059f444f",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Bpmn_BoundaryEvent_LwKtwhqHEeWDuOtG0oS24A"
+      ],
+      "fixable": false,
+      "id": "compat/subscription",
+      "message": "Message \"Service Level\" used by Message boundary event \"Bpmn_BoundaryEvent_LwKtwhqHEeWDuOtG0oS24A\" has no zeebe:subscription.",
+      "processId": "_8170787a-3207-434d-9bea-4787059f444f",
+      "severity": "error",
+      "suggestion": "Add a zeebe:subscription with a correlationKey to the message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_b99800c3-c340-460c-a43e-098014a365d0"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"Warranty\" leaves Exclusive gateway \"Service type\" without a condition and is not its default flow.",
+      "processId": "_8170787a-3207-434d-9bea-4787059f444f",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_437e5969-1e61-4cb9-aa76-4f8854f32eeb"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"Emergency service\" leaves Exclusive gateway \"Service type\" without a condition and is not its default flow.",
+      "processId": "_8170787a-3207-434d-9bea-4787059f444f",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_ada039b6-94dd-4a15-a6b1-c7fe662c64ee"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"Regular repair service\" leaves Exclusive gateway \"Service type\" without a condition and is not its default flow.",
+      "processId": "_8170787a-3207-434d-9bea-4787059f444f",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_cddf9325-a85b-4347-8c57-8b909fa77ae9"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"Standard\" leaves Exclusive gateway \"Service level\" without a condition and is not its default flow.",
+      "processId": "_8170787a-3207-434d-9bea-4787059f444f",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_cf380e47-1401-4e7e-b710-193b626e49eb"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"yes\" leaves Exclusive gateway \"Successful?\" without a condition and is not its default flow.",
+      "processId": "_8170787a-3207-434d-9bea-4787059f444f",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_3fb323d5-2c59-487a-af63-804208f6c5cb"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"no\" leaves Exclusive gateway \"Successful?\" without a condition and is not its default flow.",
+      "processId": "_8170787a-3207-434d-9bea-4787059f444f",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    }
+  ]
+}

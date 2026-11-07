@@ -1,0 +1,512 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 6,
+    "info": 12,
+    "warning": 22
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "Flow_compact_4"
+      ],
+      "fixable": false,
+      "id": "feel/complex-condition",
+      "message": "Condition on flow \"Flow_compact_4\" is complex (length=79, nesting=1, operators=6, variables=5).",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Consider extracting complex FEEL expressions into named variables or decision tables."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "Flow_compact_5"
+      ],
+      "fixable": false,
+      "id": "feel/complex-condition",
+      "message": "Condition on flow \"Flow_compact_5\" is complex (length=78, nesting=1, operators=6, variables=5).",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Consider extracting complex FEEL expressions into named variables or decision tables."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "Flow_compact_9"
+      ],
+      "fixable": false,
+      "id": "feel/complex-condition",
+      "message": "Condition on flow \"Flow_compact_9\" is complex (length=74, nesting=0, operators=4, variables=5).",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Consider extracting complex FEEL expressions into named variables or decision tables."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "documentQuality"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"documentQuality\" has 3 outgoing flows but no default flow set.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "riskRouting"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"riskRouting\" has 2 outgoing flows but no default flow set.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "classificationGateway"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"classificationGateway\" has 3 outgoing flows but no default flow set.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "uploadDocument"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"uploadDocument\" (userTask) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "KYCOnboarding",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "finalRiskClassification"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"finalRiskClassification\" (businessRuleTask) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "KYCOnboarding",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "notifyRejection"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"notifyRejection\" (serviceTask) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "KYCOnboarding",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "task-reuse",
+      "elementIds": [
+        "verifyDocument",
+        "sanctionsScreening",
+        "standardDueDiligence"
+      ],
+      "fixable": true,
+      "id": "task/reusable-group",
+      "message": "3 service tasks share a similar configuration (taskType=\"io.camunda:http-json:1\") and could be reused via a call activity.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Extract the repeated service task into a reusable sub-process and replace occurrences with call activities."
+    },
+    {
+      "category": "task-reuse",
+      "elementIds": [
+        "notifyRejection",
+        "notifyApproval"
+      ],
+      "fixable": true,
+      "id": "task/reusable-group",
+      "message": "2 service tasks share a similar configuration (taskType=\"email-sender\") and could be reused via a call activity.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Extract the repeated service task into a reusable sub-process and replace occurrences with call activities."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "pattern/http-no-error-boundary",
+      "message": "Service task \"Verify Document via OCR\" calls an HTTP connector but has no error boundary event.",
+      "processId": "KYCOnboarding",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle network failures (timeouts, non-2xx responses)."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "sanctionsScreening"
+      ],
+      "fixable": false,
+      "id": "pattern/http-no-error-boundary",
+      "message": "Service task \"Sanctions & PEP Screening\" calls an HTTP connector but has no error boundary event.",
+      "processId": "KYCOnboarding",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle network failures (timeouts, non-2xx responses)."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "standardDueDiligence"
+      ],
+      "fixable": false,
+      "id": "pattern/http-no-error-boundary",
+      "message": "Service task \"Standard Due Diligence\" calls an HTTP connector but has no error boundary event.",
+      "processId": "KYCOnboarding",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle network failures (timeouts, non-2xx responses)."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "documentQuality"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Document Verified?\" has no default sequence flow.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "riskRouting"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Risk Level?\" has no default sequence flow.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "classificationGateway"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Classification Outcome?\" has no default sequence flow.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "uploadDocument"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Upload Identity Document\" has no timer boundary event.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "enhancedDueDiligence"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Enhanced Due Diligence Review\" has no timer boundary event.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Verify Document via OCR\" has no output variable mapping.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "sanctionsScreening"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Sanctions & PEP Screening\" has no output variable mapping.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "standardDueDiligence"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Standard Due Diligence\" has no output variable mapping.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "notifyRejection"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Notify Rejection\" has no output variable mapping.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "notifyApproval"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Notify Approval\" has no output variable mapping.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Onboarding Started\" has no documentation describing expected input variables.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "verifyDocument",
+        "sanctionsScreening",
+        "standardDueDiligence"
+      ],
+      "fixable": false,
+      "id": "pattern/duplicate-job-type",
+      "message": "Job type \"io.camunda:http-json:1\" is used by 3 service tasks.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": "Verify this is intentional — the same worker will handle all these tasks. Consider distinct job types if behaviors differ."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "notifyRejection",
+        "notifyApproval"
+      ],
+      "fixable": false,
+      "id": "pattern/duplicate-job-type",
+      "message": "Job type \"email-sender\" is used by 2 service tasks.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": "Verify this is intentional — the same worker will handle all these tasks. Consider distinct job types if behaviors differ."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "documentQuality"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:ocrResponse",
+      "message": "Variable \"ocrResponse\" is referenced but never set in this process.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "\"ocrResponse\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "documentQuality"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:uploadRetries",
+      "message": "Variable \"uploadRetries\" is referenced but never set in this process.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "\"uploadRetries\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "riskRouting"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:screeningResponse",
+      "message": "Variable \"screeningResponse\" is referenced but never set in this process.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "\"screeningResponse\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "finalRiskClassification"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:finalRiskClassification",
+      "message": "Element \"finalRiskClassification\" produces: riskClassification.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "documentQuality"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:documentQuality",
+      "message": "Element \"documentQuality\" consumes: ocrResponse, uploadRetries.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "riskRouting"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:riskRouting",
+      "message": "Element \"riskRouting\" consumes: screeningResponse.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "classificationGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:classificationGateway",
+      "message": "Element \"classificationGateway\" consumes: riskClassification.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_12"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_12",
+      "message": "Variables in scope at flow \"Flow_compact_12\": riskClassification.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_13"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_13",
+      "message": "Variables in scope at flow \"Flow_compact_13\": riskClassification.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_14"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_14",
+      "message": "Variables in scope at flow \"Flow_compact_14\": riskClassification.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_15"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_15",
+      "message": "Variables in scope at flow \"Flow_compact_15\": riskClassification.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_16"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_16",
+      "message": "Variables in scope at flow \"Flow_compact_16\": riskClassification.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_17"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_17",
+      "message": "Variables in scope at flow \"Flow_compact_17\": riskClassification.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 40
+}

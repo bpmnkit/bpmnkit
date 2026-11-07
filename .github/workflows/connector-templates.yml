@@ -71,5 +71,6 @@ jobs:
             reach npm.
           add-paths: |
             packages/connectors/src/templates
+            spec/templates/connectors.json
             packages/core/src/connectors/templates
             packages/connector-gen/src/generated/api-index

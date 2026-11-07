@@ -1,0 +1,10 @@
+# KYC Customer Onboarding
+start[start Onboarding Started] > upload_identity_document[user Upload Identity Document | form=identity-upload-form] > verify_document_via_ocr[service Verify Document via OCR | job=io.camunda:http-json:1] > document_verified[xor Document Verified?]
+document_verified >(verification-failed-retry: ocrResponse.verified = false and (uploadRetries != null and uploadRetries < 2)) upload_identity_document
+document_verified >(verification-failed-exhausted: ocrResponse.verified = false and (uploadRetries = null or uploadRetries >= 2)) notify_rejection[service Notify Rejection | job=email-sender] > customer_rejected[end Customer Rejected]
+document_verified >(verification-passed: ocrResponse.verified = true) sanctions_pep_screening[service Sanctions & PEP Screening | job=io.camunda:http-json:1] > risk_level[xor Risk Level?]
+risk_level >(standard-risk: screeningResponse.riskLevel = "low") standard_due_diligence[service Standard Due Diligence | job=io.camunda:http-json:1] > final_risk_classification[rule Final Risk Classification] > classification_outcome[xor Classification Outcome?]
+risk_level >(enhanced-risk: screeningResponse.riskLevel = "high" or screeningResponse.pepMatch = true) enhanced_due_diligence_review[user Enhanced Due Diligence Review | form=compliance-edd-form] > final_risk_classification
+classification_outcome >(approved: riskClassification.outcome = "approved") notify_approval[service Notify Approval | job=email-sender] > customer_approved[end Customer Approved]
+classification_outcome >(rejected: riskClassification.outcome = "rejected") notify_rejection
+classification_outcome >(escalate: riskClassification.outcome = "escalate") escalated_to_compliance[end Escalated to Compliance]

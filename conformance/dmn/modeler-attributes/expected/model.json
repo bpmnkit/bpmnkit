@@ -1,0 +1,72 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "UNIQUE",
+        "id": "t1",
+        "inputs": [
+          {
+            "id": "i1",
+            "inputExpression": {
+              "id": "ie1",
+              "text": "customer",
+              "typeRef": "string"
+            },
+            "label": "Customer"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o1",
+            "label": "Discount",
+            "name": "discount",
+            "typeRef": "number"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r1",
+            "inputEntries": [
+              {
+                "id": "e1",
+                "text": "\"gold\""
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "p1",
+                "text": "0.2"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d1",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Decision 1"
+    }
+  ],
+  "exporter": "Camunda Modeler",
+  "exporterVersion": "5.22.0",
+  "id": "Definitions_c8",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {
+    "executionPlatform": "Camunda Cloud",
+    "executionPlatformVersion": "8.6.0"
+  },
+  "name": "Camunda 8 table",
+  "namespace": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "camunda": "http://camunda.org/schema/1.0/dmn",
+    "dc": "http://www.omg.org/spec/DMN/20180521/DC/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/",
+    "modeler": "http://camunda.org/schema/modeler/1.0"
+  },
+  "textAnnotations": []
+}

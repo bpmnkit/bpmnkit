@@ -1,0 +1,28 @@
+[
+  {
+    "decision": "inputValidation",
+    "context": {
+      "name": {
+        "t": "string",
+        "v": ""
+      }
+    }
+  },
+  {
+    "decision": "inputValidation",
+    "context": {
+      "name": {
+        "t": "null"
+      }
+    }
+  },
+  {
+    "decision": "inputValidation",
+    "context": {
+      "name": {
+        "t": "string",
+        "v": "Ada"
+      }
+    }
+  }
+]

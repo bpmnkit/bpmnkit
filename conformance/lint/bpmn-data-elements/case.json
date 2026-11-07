@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/data-elements/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}

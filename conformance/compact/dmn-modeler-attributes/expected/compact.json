@@ -1,0 +1,39 @@
+{
+  "decisions": [
+    {
+      "hitPolicy": "UNIQUE",
+      "id": "d1",
+      "inputs": [
+        {
+          "expression": "customer",
+          "id": "i1",
+          "label": "Customer",
+          "typeRef": "string"
+        }
+      ],
+      "name": "Decision 1",
+      "outputs": [
+        {
+          "id": "o1",
+          "label": "Discount",
+          "name": "discount",
+          "typeRef": "number"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r1",
+          "inputs": [
+            "\"gold\""
+          ],
+          "outputs": [
+            "0.2"
+          ]
+        }
+      ]
+    }
+  ],
+  "id": "Definitions_c8",
+  "inputData": [],
+  "name": "Camunda 8 table"
+}

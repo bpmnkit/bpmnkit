@@ -1,0 +1,159 @@
+{
+  "id": "Definitions_events",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "Start_e",
+          "type": "startEvent"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "Start_inner",
+                "type": "startEvent"
+              },
+              {
+                "eventType": "timer",
+                "id": "Catch_wait",
+                "timerDuration": "PT5M",
+                "type": "intermediateCatchEvent"
+              },
+              {
+                "id": "End_inner",
+                "type": "endEvent"
+              }
+            ],
+            "flows": [
+              {
+                "from": "Start_inner",
+                "id": "Flow_i1",
+                "to": "Catch_wait"
+              },
+              {
+                "from": "Catch_wait",
+                "id": "Flow_i2",
+                "to": "End_inner"
+              }
+            ]
+          },
+          "id": "Sub_work",
+          "multiInstance": {
+            "collection": "=items",
+            "completionCondition": "=done >= 1",
+            "element": "item",
+            "outputCollection": "results",
+            "outputElement": "=result"
+          },
+          "name": "Do the work",
+          "type": "subProcess"
+        },
+        {
+          "attachedTo": "Sub_work",
+          "eventType": "error",
+          "id": "Boundary_error",
+          "type": "boundaryEvent"
+        },
+        {
+          "attachedTo": "Sub_work",
+          "eventType": "timer",
+          "id": "Boundary_timer",
+          "interrupting": false,
+          "type": "boundaryEvent"
+        },
+        {
+          "id": "Gateway_check",
+          "name": "Escalate?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "eventType": "escalation",
+          "id": "Throw_escalate",
+          "type": "intermediateThrowEvent"
+        },
+        {
+          "id": "End_ok",
+          "type": "endEvent"
+        },
+        {
+          "eventType": "terminate",
+          "id": "End_err",
+          "type": "endEvent"
+        },
+        {
+          "id": "End_late",
+          "type": "endEvent"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "eventType": "signal",
+                "id": "Start_signal",
+                "type": "startEvent"
+              },
+              {
+                "id": "End_signal",
+                "type": "endEvent"
+              }
+            ],
+            "flows": [
+              {
+                "from": "Start_signal",
+                "id": "Flow_sig",
+                "to": "End_signal"
+              }
+            ]
+          },
+          "id": "Sub_event",
+          "name": "On signal",
+          "type": "subProcess"
+        }
+      ],
+      "flows": [
+        {
+          "from": "Start_e",
+          "id": "Flow_e1",
+          "to": "Sub_work"
+        },
+        {
+          "from": "Sub_work",
+          "id": "Flow_e2",
+          "to": "Gateway_check"
+        },
+        {
+          "condition": "=overdue",
+          "from": "Gateway_check",
+          "id": "Flow_yes",
+          "name": "Yes",
+          "to": "Throw_escalate"
+        },
+        {
+          "from": "Gateway_check",
+          "id": "Flow_no",
+          "isDefault": true,
+          "name": "No",
+          "to": "End_ok"
+        },
+        {
+          "from": "Throw_escalate",
+          "id": "Flow_e3",
+          "to": "End_ok"
+        },
+        {
+          "from": "Boundary_error",
+          "id": "Flow_err",
+          "to": "End_err"
+        },
+        {
+          "from": "Boundary_timer",
+          "id": "Flow_late",
+          "to": "End_late"
+        }
+      ],
+      "id": "Process_events",
+      "name": "Events and containers"
+    }
+  ]
+}

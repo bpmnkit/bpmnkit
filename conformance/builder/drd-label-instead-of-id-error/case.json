@@ -1,0 +1,9 @@
+{
+	"kind": "dmn",
+	"script": [
+		["drd","Bad"],
+		["$let","h18","decision","riskScore",{"$ops":[["name","RISKSCORE"],["input",{"expression":"x"}],["output",{"name":"riskScoreOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]}],
+		["$let","h19","decision","b",{"$ops":[["name","B"],["input",{"expression":"x"}],["output",{"name":"bOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]},{"requires":["RISKSCORE"]}],
+		["build"]
+	]
+}

@@ -1,0 +1,115 @@
+{
+  "id": "Definitions_07hq2mb",
+  "processes": [
+    {
+      "elements": [
+        {
+          "eventType": "message",
+          "id": "StartEvent_invoice",
+          "name": "Invoice received",
+          "type": "startEvent"
+        },
+        {
+          "id": "Task_classify",
+          "name": "Classify invoice",
+          "type": "businessRuleTask"
+        },
+        {
+          "id": "Task_approve",
+          "name": "Approve invoice",
+          "type": "userTask"
+        },
+        {
+          "id": "Gateway_approved",
+          "name": "Approved?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "eventType": "timer",
+          "id": "Timer_clarify",
+          "name": "Wait one day",
+          "timerDuration": "P1D",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "id": "EndEvent_rejected",
+          "name": "Invoice rejected",
+          "type": "endEvent"
+        },
+        {
+          "id": "Task_archive",
+          "name": "Archive invoice",
+          "type": "serviceTask"
+        },
+        {
+          "id": "Task_book",
+          "name": "Book invoice",
+          "type": "callActivity"
+        },
+        {
+          "id": "Task_total",
+          "name": "Compute total",
+          "type": "scriptTask"
+        },
+        {
+          "id": "EndEvent_done",
+          "name": "Invoice booked",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "StartEvent_invoice",
+          "id": "Flow_toClassify",
+          "to": "Task_classify"
+        },
+        {
+          "from": "Task_classify",
+          "id": "Flow_toApprove",
+          "to": "Task_approve"
+        },
+        {
+          "from": "Task_approve",
+          "id": "Flow_toDecision",
+          "to": "Gateway_approved"
+        },
+        {
+          "condition": "${approved == true}",
+          "from": "Gateway_approved",
+          "id": "Flow_yes",
+          "name": "yes",
+          "to": "Task_archive"
+        },
+        {
+          "condition": "${approved == false}",
+          "from": "Gateway_approved",
+          "id": "Flow_no",
+          "name": "no",
+          "to": "Timer_clarify"
+        },
+        {
+          "from": "Timer_clarify",
+          "id": "Flow_toRejected",
+          "to": "EndEvent_rejected"
+        },
+        {
+          "from": "Task_archive",
+          "id": "Flow_toBook",
+          "to": "Task_book"
+        },
+        {
+          "from": "Task_book",
+          "id": "Flow_toTotal",
+          "to": "Task_total"
+        },
+        {
+          "from": "Task_total",
+          "id": "Flow_toDone",
+          "to": "EndEvent_done"
+        }
+      ],
+      "id": "invoice-approval",
+      "name": "Invoice approval"
+    }
+  ]
+}

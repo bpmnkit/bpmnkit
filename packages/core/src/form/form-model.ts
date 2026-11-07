@@ -2,6 +2,8 @@
 export interface FormLayout {
 	row?: string
 	columns?: number | null
+	/** Keys the model does not know (or whose value had an unexpected type), kept verbatim. */
+	extraProps?: Record<string, unknown>
 }
 
 /**
@@ -26,12 +28,21 @@ export interface FormValidation {
 	required?: boolean
 	minLength?: number
 	maxLength?: number
+	min?: number
+	max?: number
+	pattern?: string
+	/** form-js preset such as "email" or "phone", or "custom" together with `pattern`. */
+	validationType?: string
+	/** Keys the model does not know (or whose value had an unexpected type), kept verbatim. */
+	extraProps?: Record<string, unknown>
 }
 
 /** A label/value option used by select, radio, and checklist components. */
 export interface FormValueOption {
 	label: string
 	value: string
+	/** Keys the model does not know, kept verbatim. */
+	extraProps?: Record<string, unknown>
 }
 
 /** form-js `conditional` block: the component is hidden while the FEEL expression is true. */

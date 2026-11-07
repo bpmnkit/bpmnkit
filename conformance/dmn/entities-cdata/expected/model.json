@@ -1,0 +1,97 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "id": "t1",
+        "inputs": [
+          {
+            "id": "i1",
+            "inputExpression": {
+              "id": "ie1",
+              "text": "a < b && c > \"d\"",
+              "typeRef": "string"
+            },
+            "label": "a < b"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o1",
+            "label": "single \"quoted\"",
+            "name": "result"
+          }
+        ],
+        "rules": [
+          {
+            "description": "Uses <, >, & and a CDATA <tag> & more end",
+            "id": "r1",
+            "inputEntries": [
+              {
+                "id": "e1",
+                "text": "<= 10 and >= 2"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "p1",
+                "text": "\"x\" + \"<y>\""
+              }
+            ]
+          },
+          {
+            "id": "r2",
+            "inputEntries": [
+              {
+                "id": "e2",
+                "text": "\n          multi\n          line   spaced\n        "
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "p2",
+                "text": "\"tab\tnewline\ndone\""
+              }
+            ]
+          },
+          {
+            "id": "r3",
+            "inputEntries": [
+              {
+                "id": "e3",
+                "text": "\"日本語 ünïcode 😀\""
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "p3",
+                "text": ""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d1",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Tom & Jerry's AB é &unknown; 100%"
+    }
+  ],
+  "id": "Definitions_text",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "Fish & \"Chips\" <ok>",
+  "namespace": "urn:text",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/"
+  },
+  "textAnnotations": [
+    {
+      "id": "ta",
+      "text": "1 < 2 && 3 > 2"
+    }
+  ]
+}

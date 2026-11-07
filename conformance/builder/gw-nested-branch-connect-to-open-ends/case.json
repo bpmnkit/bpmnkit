@@ -1,0 +1,17 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["exclusiveGateway","g"],
+		["branch","a",{"$ops":[
+			["exclusiveGateway","g2"],
+			["branch","x",{"$ops":[["serviceTask","t1",{"name":"t1","taskType":"t"}]]}],
+			["branch","y",{"$ops":[["serviceTask","t2",{"name":"t2","taskType":"t"}]]}],
+			["connectTo","end"]
+		]}],
+		["branch","b",{"$ops":[["connectTo","end"]]}],
+		["endEvent","end"],
+		["build"]
+	]
+}

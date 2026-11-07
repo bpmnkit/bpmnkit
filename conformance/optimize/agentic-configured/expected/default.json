@@ -1,0 +1,119 @@
+{
+  "findings": [
+    {
+      "category": "pattern",
+      "elementIds": [
+        "agent"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Agent\" has no error boundary event.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"S\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:data.limits.maxModelCalls",
+      "message": "Variable \"data.limits.maxModelCalls\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "produces": [
+        "data.limits.maxModelCalls"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"data.limits.maxModelCalls\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:agent",
+      "message": "Element \"agent\" produces: data.limits.maxModelCalls.",
+      "processId": "proc",
+      "produces": [
+        "data.limits.maxModelCalls"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f2"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f2",
+      "message": "Variables in scope at flow \"f2\": data.limits.maxModelCalls.",
+      "processId": "proc",
+      "produces": [
+        "data.limits.maxModelCalls"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "agent"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Ad-hoc sub-process \"Agent\" needs Camunda 8.7 or newer; this model targets Camunda 8.6.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.7 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t1"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 3,
+      "deploy": 2,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 0,
+      "naming": 0,
+      "pattern": 2,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 2,
+      "info": 3,
+      "warning": 2
+    },
+    "total": 7
+  }
+}

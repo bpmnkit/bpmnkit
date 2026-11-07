@@ -1,0 +1,603 @@
+{
+  "findings": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "Flow_compact_4"
+      ],
+      "fixable": false,
+      "id": "feel/complex-condition",
+      "message": "Condition on flow \"Flow_compact_4\" is complex (length=79, nesting=1, operators=6, variables=5).",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Consider extracting complex FEEL expressions into named variables or decision tables."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "Flow_compact_5"
+      ],
+      "fixable": false,
+      "id": "feel/complex-condition",
+      "message": "Condition on flow \"Flow_compact_5\" is complex (length=78, nesting=1, operators=6, variables=5).",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Consider extracting complex FEEL expressions into named variables or decision tables."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "Flow_compact_9"
+      ],
+      "fixable": false,
+      "id": "feel/complex-condition",
+      "message": "Condition on flow \"Flow_compact_9\" is complex (length=74, nesting=0, operators=4, variables=5).",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Consider extracting complex FEEL expressions into named variables or decision tables."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "documentQuality"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"documentQuality\" has 3 outgoing flows but no default flow set.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "riskRouting"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"riskRouting\" has 2 outgoing flows but no default flow set.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "classificationGateway"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"classificationGateway\" has 3 outgoing flows but no default flow set.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "uploadDocument"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"uploadDocument\" (userTask) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "KYCOnboarding",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "finalRiskClassification"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"finalRiskClassification\" (businessRuleTask) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "KYCOnboarding",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "notifyRejection"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"notifyRejection\" (serviceTask) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "KYCOnboarding",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "task-reuse",
+      "elementIds": [
+        "verifyDocument",
+        "sanctionsScreening",
+        "standardDueDiligence"
+      ],
+      "fixable": true,
+      "id": "task/reusable-group",
+      "message": "3 service tasks share a similar configuration (taskType=\"io.camunda:http-json:1\") and could be reused via a call activity.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Extract the repeated service task into a reusable sub-process and replace occurrences with call activities."
+    },
+    {
+      "category": "task-reuse",
+      "elementIds": [
+        "notifyRejection",
+        "notifyApproval"
+      ],
+      "fixable": true,
+      "id": "task/reusable-group",
+      "message": "2 service tasks share a similar configuration (taskType=\"email-sender\") and could be reused via a call activity.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Extract the repeated service task into a reusable sub-process and replace occurrences with call activities."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "pattern/http-no-error-boundary",
+      "message": "Service task \"Verify Document via OCR\" calls an HTTP connector but has no error boundary event.",
+      "processId": "KYCOnboarding",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle network failures (timeouts, non-2xx responses)."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "sanctionsScreening"
+      ],
+      "fixable": false,
+      "id": "pattern/http-no-error-boundary",
+      "message": "Service task \"Sanctions & PEP Screening\" calls an HTTP connector but has no error boundary event.",
+      "processId": "KYCOnboarding",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle network failures (timeouts, non-2xx responses)."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "standardDueDiligence"
+      ],
+      "fixable": false,
+      "id": "pattern/http-no-error-boundary",
+      "message": "Service task \"Standard Due Diligence\" calls an HTTP connector but has no error boundary event.",
+      "processId": "KYCOnboarding",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle network failures (timeouts, non-2xx responses)."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "documentQuality"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Document Verified?\" has no default sequence flow.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "riskRouting"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Risk Level?\" has no default sequence flow.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "classificationGateway"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Classification Outcome?\" has no default sequence flow.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "uploadDocument"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Upload Identity Document\" has no timer boundary event.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "enhancedDueDiligence"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Enhanced Due Diligence Review\" has no timer boundary event.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Verify Document via OCR\" has no output variable mapping.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "sanctionsScreening"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Sanctions & PEP Screening\" has no output variable mapping.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "standardDueDiligence"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Standard Due Diligence\" has no output variable mapping.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "notifyRejection"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Notify Rejection\" has no output variable mapping.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "notifyApproval"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Notify Approval\" has no output variable mapping.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Onboarding Started\" has no documentation describing expected input variables.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "verifyDocument",
+        "sanctionsScreening",
+        "standardDueDiligence"
+      ],
+      "fixable": false,
+      "id": "pattern/duplicate-job-type",
+      "message": "Job type \"io.camunda:http-json:1\" is used by 3 service tasks.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": "Verify this is intentional — the same worker will handle all these tasks. Consider distinct job types if behaviors differ."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "notifyRejection",
+        "notifyApproval"
+      ],
+      "fixable": false,
+      "id": "pattern/duplicate-job-type",
+      "message": "Job type \"email-sender\" is used by 2 service tasks.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": "Verify this is intentional — the same worker will handle all these tasks. Consider distinct job types if behaviors differ."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "ocrResponse"
+      ],
+      "elementIds": [
+        "documentQuality"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:ocrResponse",
+      "message": "Variable \"ocrResponse\" is referenced but never set in this process.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "\"ocrResponse\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "uploadRetries"
+      ],
+      "elementIds": [
+        "documentQuality"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:uploadRetries",
+      "message": "Variable \"uploadRetries\" is referenced but never set in this process.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "\"uploadRetries\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "screeningResponse"
+      ],
+      "elementIds": [
+        "riskRouting"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:screeningResponse",
+      "message": "Variable \"screeningResponse\" is referenced but never set in this process.",
+      "processId": "KYCOnboarding",
+      "severity": "warning",
+      "suggestion": "\"screeningResponse\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "finalRiskClassification"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:finalRiskClassification",
+      "message": "Element \"finalRiskClassification\" produces: riskClassification.",
+      "processId": "KYCOnboarding",
+      "produces": [
+        "riskClassification"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "ocrResponse",
+        "uploadRetries"
+      ],
+      "elementIds": [
+        "documentQuality"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:documentQuality",
+      "message": "Element \"documentQuality\" consumes: ocrResponse, uploadRetries.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "screeningResponse"
+      ],
+      "elementIds": [
+        "riskRouting"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:riskRouting",
+      "message": "Element \"riskRouting\" consumes: screeningResponse.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "riskClassification"
+      ],
+      "elementIds": [
+        "classificationGateway"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:classificationGateway",
+      "message": "Element \"classificationGateway\" consumes: riskClassification.",
+      "processId": "KYCOnboarding",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_12"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_12",
+      "message": "Variables in scope at flow \"Flow_compact_12\": riskClassification.",
+      "processId": "KYCOnboarding",
+      "produces": [
+        "riskClassification"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_13"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_13",
+      "message": "Variables in scope at flow \"Flow_compact_13\": riskClassification.",
+      "processId": "KYCOnboarding",
+      "produces": [
+        "riskClassification"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_14"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_14",
+      "message": "Variables in scope at flow \"Flow_compact_14\": riskClassification.",
+      "processId": "KYCOnboarding",
+      "produces": [
+        "riskClassification"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_15"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_15",
+      "message": "Variables in scope at flow \"Flow_compact_15\": riskClassification.",
+      "processId": "KYCOnboarding",
+      "produces": [
+        "riskClassification"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_16"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_16",
+      "message": "Variables in scope at flow \"Flow_compact_16\": riskClassification.",
+      "processId": "KYCOnboarding",
+      "produces": [
+        "riskClassification"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_compact_17"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_compact_17",
+      "message": "Variables in scope at flow \"Flow_compact_17\": riskClassification.",
+      "processId": "KYCOnboarding",
+      "produces": [
+        "riskClassification"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    }
+  ],
+  "fixes": [
+    {
+      "description": "Set default flow to \"Flow_compact_6\" on gateway \"documentQuality\"",
+      "id": "feel/missing-default-flow",
+      "index": 3,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"KYCOnboarding\" name=\"KYC Customer Onboarding\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"Onboarding Started\">\n      <bpmn:outgoing>Flow_compact_1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:userTask id=\"uploadDocument\" name=\"Upload Identity Document\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"identity-upload-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_1</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_4</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_2</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:serviceTask id=\"verifyDocument\" name=\"Verify Document via OCR\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"ocrResponse\"/>\n          <zeebe:header key=\"resultExpression\" value=\"=ocrResponse.body\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_2</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_3</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"documentQuality\" name=\"Document Verified?\" default=\"Flow_compact_6\">\n      <bpmn:incoming>Flow_compact_3</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_4</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_5</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_6</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"sanctionsScreening\" name=\"Sanctions &amp; PEP Screening\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"screeningResponse\"/>\n          <zeebe:header key=\"resultExpression\" value=\"=screeningResponse.body\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_6</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_7</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"riskRouting\" name=\"Risk Level?\">\n      <bpmn:incoming>Flow_compact_7</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_8</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_9</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"standardDueDiligence\" name=\"Standard Due Diligence\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"sddResponse\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_8</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_10</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:userTask id=\"enhancedDueDiligence\" name=\"Enhanced Due Diligence Review\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"compliance-edd-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_9</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_11</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:businessRuleTask id=\"finalRiskClassification\" name=\"Final Risk Classification\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"kyc-risk-classification\" resultVariable=\"riskClassification\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_10</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_11</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_12</bpmn:outgoing>\n    </bpmn:businessRuleTask>\n    <bpmn:exclusiveGateway id=\"classificationGateway\" name=\"Classification Outcome?\">\n      <bpmn:incoming>Flow_compact_12</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_13</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_14</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_15</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"notifyRejection\" name=\"Notify Rejection\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"email-sender\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"template\" value=\"kyc-rejected\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_5</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_14</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_17</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"notifyApproval\" name=\"Notify Approval\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"email-sender\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"template\" value=\"kyc-approved\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_13</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_16</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endApproved\" name=\"Customer Approved\">\n      <bpmn:incoming>Flow_compact_16</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"endRejected\" name=\"Customer Rejected\">\n      <bpmn:incoming>Flow_compact_17</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"endEscalated\" name=\"Escalated to Compliance\">\n      <bpmn:incoming>Flow_compact_15</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_compact_1\" sourceRef=\"start\" targetRef=\"uploadDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_2\" sourceRef=\"uploadDocument\" targetRef=\"verifyDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_3\" sourceRef=\"verifyDocument\" targetRef=\"documentQuality\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_4\" sourceRef=\"documentQuality\" targetRef=\"uploadDocument\" name=\"verification-failed-retry\">\n      <bpmn:conditionExpression>=ocrResponse.verified = false and (uploadRetries != null and uploadRetries &lt; 2)</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_5\" sourceRef=\"documentQuality\" targetRef=\"notifyRejection\" name=\"verification-failed-exhausted\">\n      <bpmn:conditionExpression>=ocrResponse.verified = false and (uploadRetries = null or uploadRetries &gt;= 2)</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_6\" sourceRef=\"documentQuality\" targetRef=\"sanctionsScreening\" name=\"verification-passed\">\n      <bpmn:conditionExpression>=ocrResponse.verified = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_7\" sourceRef=\"sanctionsScreening\" targetRef=\"riskRouting\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_8\" sourceRef=\"riskRouting\" targetRef=\"standardDueDiligence\" name=\"standard-risk\">\n      <bpmn:conditionExpression>=screeningResponse.riskLevel = \"low\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_9\" sourceRef=\"riskRouting\" targetRef=\"enhancedDueDiligence\" name=\"enhanced-risk\">\n      <bpmn:conditionExpression>=screeningResponse.riskLevel = \"high\" or screeningResponse.pepMatch = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_10\" sourceRef=\"standardDueDiligence\" targetRef=\"finalRiskClassification\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_11\" sourceRef=\"enhancedDueDiligence\" targetRef=\"finalRiskClassification\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_12\" sourceRef=\"finalRiskClassification\" targetRef=\"classificationGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_13\" sourceRef=\"classificationGateway\" targetRef=\"notifyApproval\" name=\"approved\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"approved\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_14\" sourceRef=\"classificationGateway\" targetRef=\"notifyRejection\" name=\"rejected\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"rejected\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_15\" sourceRef=\"classificationGateway\" targetRef=\"endEscalated\" name=\"escalate\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"escalate\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_16\" sourceRef=\"notifyApproval\" targetRef=\"endApproved\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_17\" sourceRef=\"notifyRejection\" targetRef=\"endRejected\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Set default flow to \"Flow_compact_9\" on gateway \"riskRouting\"",
+      "id": "feel/missing-default-flow",
+      "index": 4,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"KYCOnboarding\" name=\"KYC Customer Onboarding\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"Onboarding Started\">\n      <bpmn:outgoing>Flow_compact_1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:userTask id=\"uploadDocument\" name=\"Upload Identity Document\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"identity-upload-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_1</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_4</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_2</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:serviceTask id=\"verifyDocument\" name=\"Verify Document via OCR\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"ocrResponse\"/>\n          <zeebe:header key=\"resultExpression\" value=\"=ocrResponse.body\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_2</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_3</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"documentQuality\" name=\"Document Verified?\">\n      <bpmn:incoming>Flow_compact_3</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_4</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_5</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_6</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"sanctionsScreening\" name=\"Sanctions &amp; PEP Screening\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"screeningResponse\"/>\n          <zeebe:header key=\"resultExpression\" value=\"=screeningResponse.body\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_6</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_7</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"riskRouting\" name=\"Risk Level?\" default=\"Flow_compact_9\">\n      <bpmn:incoming>Flow_compact_7</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_8</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_9</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"standardDueDiligence\" name=\"Standard Due Diligence\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"sddResponse\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_8</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_10</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:userTask id=\"enhancedDueDiligence\" name=\"Enhanced Due Diligence Review\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"compliance-edd-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_9</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_11</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:businessRuleTask id=\"finalRiskClassification\" name=\"Final Risk Classification\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"kyc-risk-classification\" resultVariable=\"riskClassification\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_10</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_11</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_12</bpmn:outgoing>\n    </bpmn:businessRuleTask>\n    <bpmn:exclusiveGateway id=\"classificationGateway\" name=\"Classification Outcome?\">\n      <bpmn:incoming>Flow_compact_12</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_13</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_14</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_15</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"notifyRejection\" name=\"Notify Rejection\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"email-sender\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"template\" value=\"kyc-rejected\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_5</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_14</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_17</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"notifyApproval\" name=\"Notify Approval\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"email-sender\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"template\" value=\"kyc-approved\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_13</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_16</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endApproved\" name=\"Customer Approved\">\n      <bpmn:incoming>Flow_compact_16</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"endRejected\" name=\"Customer Rejected\">\n      <bpmn:incoming>Flow_compact_17</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"endEscalated\" name=\"Escalated to Compliance\">\n      <bpmn:incoming>Flow_compact_15</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_compact_1\" sourceRef=\"start\" targetRef=\"uploadDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_2\" sourceRef=\"uploadDocument\" targetRef=\"verifyDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_3\" sourceRef=\"verifyDocument\" targetRef=\"documentQuality\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_4\" sourceRef=\"documentQuality\" targetRef=\"uploadDocument\" name=\"verification-failed-retry\">\n      <bpmn:conditionExpression>=ocrResponse.verified = false and (uploadRetries != null and uploadRetries &lt; 2)</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_5\" sourceRef=\"documentQuality\" targetRef=\"notifyRejection\" name=\"verification-failed-exhausted\">\n      <bpmn:conditionExpression>=ocrResponse.verified = false and (uploadRetries = null or uploadRetries &gt;= 2)</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_6\" sourceRef=\"documentQuality\" targetRef=\"sanctionsScreening\" name=\"verification-passed\">\n      <bpmn:conditionExpression>=ocrResponse.verified = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_7\" sourceRef=\"sanctionsScreening\" targetRef=\"riskRouting\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_8\" sourceRef=\"riskRouting\" targetRef=\"standardDueDiligence\" name=\"standard-risk\">\n      <bpmn:conditionExpression>=screeningResponse.riskLevel = \"low\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_9\" sourceRef=\"riskRouting\" targetRef=\"enhancedDueDiligence\" name=\"enhanced-risk\">\n      <bpmn:conditionExpression>=screeningResponse.riskLevel = \"high\" or screeningResponse.pepMatch = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_10\" sourceRef=\"standardDueDiligence\" targetRef=\"finalRiskClassification\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_11\" sourceRef=\"enhancedDueDiligence\" targetRef=\"finalRiskClassification\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_12\" sourceRef=\"finalRiskClassification\" targetRef=\"classificationGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_13\" sourceRef=\"classificationGateway\" targetRef=\"notifyApproval\" name=\"approved\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"approved\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_14\" sourceRef=\"classificationGateway\" targetRef=\"notifyRejection\" name=\"rejected\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"rejected\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_15\" sourceRef=\"classificationGateway\" targetRef=\"endEscalated\" name=\"escalate\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"escalate\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_16\" sourceRef=\"notifyApproval\" targetRef=\"endApproved\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_17\" sourceRef=\"notifyRejection\" targetRef=\"endRejected\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Set default flow to \"Flow_compact_15\" on gateway \"classificationGateway\"",
+      "id": "feel/missing-default-flow",
+      "index": 5,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"KYCOnboarding\" name=\"KYC Customer Onboarding\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"Onboarding Started\">\n      <bpmn:outgoing>Flow_compact_1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:userTask id=\"uploadDocument\" name=\"Upload Identity Document\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"identity-upload-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_1</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_4</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_2</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:serviceTask id=\"verifyDocument\" name=\"Verify Document via OCR\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"ocrResponse\"/>\n          <zeebe:header key=\"resultExpression\" value=\"=ocrResponse.body\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_2</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_3</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"documentQuality\" name=\"Document Verified?\">\n      <bpmn:incoming>Flow_compact_3</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_4</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_5</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_6</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"sanctionsScreening\" name=\"Sanctions &amp; PEP Screening\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"screeningResponse\"/>\n          <zeebe:header key=\"resultExpression\" value=\"=screeningResponse.body\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_6</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_7</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"riskRouting\" name=\"Risk Level?\">\n      <bpmn:incoming>Flow_compact_7</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_8</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_9</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"standardDueDiligence\" name=\"Standard Due Diligence\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"sddResponse\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_8</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_10</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:userTask id=\"enhancedDueDiligence\" name=\"Enhanced Due Diligence Review\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"compliance-edd-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_9</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_11</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:businessRuleTask id=\"finalRiskClassification\" name=\"Final Risk Classification\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"kyc-risk-classification\" resultVariable=\"riskClassification\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_10</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_11</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_12</bpmn:outgoing>\n    </bpmn:businessRuleTask>\n    <bpmn:exclusiveGateway id=\"classificationGateway\" name=\"Classification Outcome?\" default=\"Flow_compact_15\">\n      <bpmn:incoming>Flow_compact_12</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_13</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_14</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_15</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"notifyRejection\" name=\"Notify Rejection\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"email-sender\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"template\" value=\"kyc-rejected\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_5</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_14</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_17</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"notifyApproval\" name=\"Notify Approval\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"email-sender\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"template\" value=\"kyc-approved\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_13</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_16</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endApproved\" name=\"Customer Approved\">\n      <bpmn:incoming>Flow_compact_16</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"endRejected\" name=\"Customer Rejected\">\n      <bpmn:incoming>Flow_compact_17</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"endEscalated\" name=\"Escalated to Compliance\">\n      <bpmn:incoming>Flow_compact_15</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_compact_1\" sourceRef=\"start\" targetRef=\"uploadDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_2\" sourceRef=\"uploadDocument\" targetRef=\"verifyDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_3\" sourceRef=\"verifyDocument\" targetRef=\"documentQuality\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_4\" sourceRef=\"documentQuality\" targetRef=\"uploadDocument\" name=\"verification-failed-retry\">\n      <bpmn:conditionExpression>=ocrResponse.verified = false and (uploadRetries != null and uploadRetries &lt; 2)</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_5\" sourceRef=\"documentQuality\" targetRef=\"notifyRejection\" name=\"verification-failed-exhausted\">\n      <bpmn:conditionExpression>=ocrResponse.verified = false and (uploadRetries = null or uploadRetries &gt;= 2)</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_6\" sourceRef=\"documentQuality\" targetRef=\"sanctionsScreening\" name=\"verification-passed\">\n      <bpmn:conditionExpression>=ocrResponse.verified = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_7\" sourceRef=\"sanctionsScreening\" targetRef=\"riskRouting\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_8\" sourceRef=\"riskRouting\" targetRef=\"standardDueDiligence\" name=\"standard-risk\">\n      <bpmn:conditionExpression>=screeningResponse.riskLevel = \"low\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_9\" sourceRef=\"riskRouting\" targetRef=\"enhancedDueDiligence\" name=\"enhanced-risk\">\n      <bpmn:conditionExpression>=screeningResponse.riskLevel = \"high\" or screeningResponse.pepMatch = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_10\" sourceRef=\"standardDueDiligence\" targetRef=\"finalRiskClassification\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_11\" sourceRef=\"enhancedDueDiligence\" targetRef=\"finalRiskClassification\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_12\" sourceRef=\"finalRiskClassification\" targetRef=\"classificationGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_13\" sourceRef=\"classificationGateway\" targetRef=\"notifyApproval\" name=\"approved\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"approved\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_14\" sourceRef=\"classificationGateway\" targetRef=\"notifyRejection\" name=\"rejected\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"rejected\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_15\" sourceRef=\"classificationGateway\" targetRef=\"endEscalated\" name=\"escalate\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"escalate\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_16\" sourceRef=\"notifyApproval\" targetRef=\"endApproved\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_17\" sourceRef=\"notifyRejection\" targetRef=\"endRejected\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Inserted exclusive gateway \"Gateway_0000001\" before \"uploadDocument\" to join 2 incoming flows",
+      "id": "flow/multi-incoming-task",
+      "index": 6,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"KYCOnboarding\" name=\"KYC Customer Onboarding\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"Onboarding Started\">\n      <bpmn:outgoing>Flow_compact_1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:userTask id=\"uploadDocument\" name=\"Upload Identity Document\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"identity-upload-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_2</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:serviceTask id=\"verifyDocument\" name=\"Verify Document via OCR\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"ocrResponse\"/>\n          <zeebe:header key=\"resultExpression\" value=\"=ocrResponse.body\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_2</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_3</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"documentQuality\" name=\"Document Verified?\">\n      <bpmn:incoming>Flow_compact_3</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_4</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_5</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_6</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"sanctionsScreening\" name=\"Sanctions &amp; PEP Screening\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"screeningResponse\"/>\n          <zeebe:header key=\"resultExpression\" value=\"=screeningResponse.body\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_6</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_7</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"riskRouting\" name=\"Risk Level?\">\n      <bpmn:incoming>Flow_compact_7</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_8</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_9</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"standardDueDiligence\" name=\"Standard Due Diligence\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"sddResponse\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_8</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_10</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:userTask id=\"enhancedDueDiligence\" name=\"Enhanced Due Diligence Review\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"compliance-edd-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_9</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_11</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:businessRuleTask id=\"finalRiskClassification\" name=\"Final Risk Classification\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"kyc-risk-classification\" resultVariable=\"riskClassification\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_10</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_11</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_12</bpmn:outgoing>\n    </bpmn:businessRuleTask>\n    <bpmn:exclusiveGateway id=\"classificationGateway\" name=\"Classification Outcome?\">\n      <bpmn:incoming>Flow_compact_12</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_13</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_14</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_15</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"notifyRejection\" name=\"Notify Rejection\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"email-sender\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"template\" value=\"kyc-rejected\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_5</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_14</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_17</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"notifyApproval\" name=\"Notify Approval\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"email-sender\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"template\" value=\"kyc-approved\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_13</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_16</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endApproved\" name=\"Customer Approved\">\n      <bpmn:incoming>Flow_compact_16</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"endRejected\" name=\"Customer Rejected\">\n      <bpmn:incoming>Flow_compact_17</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"endEscalated\" name=\"Escalated to Compliance\">\n      <bpmn:incoming>Flow_compact_15</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:exclusiveGateway id=\"Gateway_0000001\">\n      <bpmn:incoming>Flow_compact_1</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_4</bpmn:incoming>\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:sequenceFlow id=\"Flow_compact_1\" sourceRef=\"start\" targetRef=\"Gateway_0000001\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_2\" sourceRef=\"uploadDocument\" targetRef=\"verifyDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_3\" sourceRef=\"verifyDocument\" targetRef=\"documentQuality\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_4\" sourceRef=\"documentQuality\" targetRef=\"Gateway_0000001\" name=\"verification-failed-retry\">\n      <bpmn:conditionExpression>=ocrResponse.verified = false and (uploadRetries != null and uploadRetries &lt; 2)</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_5\" sourceRef=\"documentQuality\" targetRef=\"notifyRejection\" name=\"verification-failed-exhausted\">\n      <bpmn:conditionExpression>=ocrResponse.verified = false and (uploadRetries = null or uploadRetries &gt;= 2)</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_6\" sourceRef=\"documentQuality\" targetRef=\"sanctionsScreening\" name=\"verification-passed\">\n      <bpmn:conditionExpression>=ocrResponse.verified = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_7\" sourceRef=\"sanctionsScreening\" targetRef=\"riskRouting\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_8\" sourceRef=\"riskRouting\" targetRef=\"standardDueDiligence\" name=\"standard-risk\">\n      <bpmn:conditionExpression>=screeningResponse.riskLevel = \"low\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_9\" sourceRef=\"riskRouting\" targetRef=\"enhancedDueDiligence\" name=\"enhanced-risk\">\n      <bpmn:conditionExpression>=screeningResponse.riskLevel = \"high\" or screeningResponse.pepMatch = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_10\" sourceRef=\"standardDueDiligence\" targetRef=\"finalRiskClassification\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_11\" sourceRef=\"enhancedDueDiligence\" targetRef=\"finalRiskClassification\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_12\" sourceRef=\"finalRiskClassification\" targetRef=\"classificationGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_13\" sourceRef=\"classificationGateway\" targetRef=\"notifyApproval\" name=\"approved\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"approved\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_14\" sourceRef=\"classificationGateway\" targetRef=\"notifyRejection\" name=\"rejected\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"rejected\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_15\" sourceRef=\"classificationGateway\" targetRef=\"endEscalated\" name=\"escalate\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"escalate\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_16\" sourceRef=\"notifyApproval\" targetRef=\"endApproved\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_17\" sourceRef=\"notifyRejection\" targetRef=\"endRejected\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"Gateway_0000001\" targetRef=\"uploadDocument\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Inserted exclusive gateway \"Gateway_0000001\" before \"finalRiskClassification\" to join 2 incoming flows",
+      "id": "flow/multi-incoming-task",
+      "index": 7,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"KYCOnboarding\" name=\"KYC Customer Onboarding\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"Onboarding Started\">\n      <bpmn:outgoing>Flow_compact_1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:userTask id=\"uploadDocument\" name=\"Upload Identity Document\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"identity-upload-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_1</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_4</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_2</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:serviceTask id=\"verifyDocument\" name=\"Verify Document via OCR\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"ocrResponse\"/>\n          <zeebe:header key=\"resultExpression\" value=\"=ocrResponse.body\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_2</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_3</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"documentQuality\" name=\"Document Verified?\">\n      <bpmn:incoming>Flow_compact_3</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_4</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_5</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_6</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"sanctionsScreening\" name=\"Sanctions &amp; PEP Screening\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"screeningResponse\"/>\n          <zeebe:header key=\"resultExpression\" value=\"=screeningResponse.body\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_6</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_7</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"riskRouting\" name=\"Risk Level?\">\n      <bpmn:incoming>Flow_compact_7</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_8</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_9</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"standardDueDiligence\" name=\"Standard Due Diligence\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"sddResponse\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_8</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_10</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:userTask id=\"enhancedDueDiligence\" name=\"Enhanced Due Diligence Review\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"compliance-edd-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_9</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_11</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:businessRuleTask id=\"finalRiskClassification\" name=\"Final Risk Classification\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"kyc-risk-classification\" resultVariable=\"riskClassification\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_12</bpmn:outgoing>\n    </bpmn:businessRuleTask>\n    <bpmn:exclusiveGateway id=\"classificationGateway\" name=\"Classification Outcome?\">\n      <bpmn:incoming>Flow_compact_12</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_13</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_14</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_15</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"notifyRejection\" name=\"Notify Rejection\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"email-sender\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"template\" value=\"kyc-rejected\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_5</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_14</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_17</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"notifyApproval\" name=\"Notify Approval\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"email-sender\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"template\" value=\"kyc-approved\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_13</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_16</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endApproved\" name=\"Customer Approved\">\n      <bpmn:incoming>Flow_compact_16</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"endRejected\" name=\"Customer Rejected\">\n      <bpmn:incoming>Flow_compact_17</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"endEscalated\" name=\"Escalated to Compliance\">\n      <bpmn:incoming>Flow_compact_15</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:exclusiveGateway id=\"Gateway_0000001\">\n      <bpmn:incoming>Flow_compact_10</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_11</bpmn:incoming>\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:sequenceFlow id=\"Flow_compact_1\" sourceRef=\"start\" targetRef=\"uploadDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_2\" sourceRef=\"uploadDocument\" targetRef=\"verifyDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_3\" sourceRef=\"verifyDocument\" targetRef=\"documentQuality\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_4\" sourceRef=\"documentQuality\" targetRef=\"uploadDocument\" name=\"verification-failed-retry\">\n      <bpmn:conditionExpression>=ocrResponse.verified = false and (uploadRetries != null and uploadRetries &lt; 2)</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_5\" sourceRef=\"documentQuality\" targetRef=\"notifyRejection\" name=\"verification-failed-exhausted\">\n      <bpmn:conditionExpression>=ocrResponse.verified = false and (uploadRetries = null or uploadRetries &gt;= 2)</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_6\" sourceRef=\"documentQuality\" targetRef=\"sanctionsScreening\" name=\"verification-passed\">\n      <bpmn:conditionExpression>=ocrResponse.verified = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_7\" sourceRef=\"sanctionsScreening\" targetRef=\"riskRouting\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_8\" sourceRef=\"riskRouting\" targetRef=\"standardDueDiligence\" name=\"standard-risk\">\n      <bpmn:conditionExpression>=screeningResponse.riskLevel = \"low\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_9\" sourceRef=\"riskRouting\" targetRef=\"enhancedDueDiligence\" name=\"enhanced-risk\">\n      <bpmn:conditionExpression>=screeningResponse.riskLevel = \"high\" or screeningResponse.pepMatch = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_10\" sourceRef=\"standardDueDiligence\" targetRef=\"Gateway_0000001\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_11\" sourceRef=\"enhancedDueDiligence\" targetRef=\"Gateway_0000001\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_12\" sourceRef=\"finalRiskClassification\" targetRef=\"classificationGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_13\" sourceRef=\"classificationGateway\" targetRef=\"notifyApproval\" name=\"approved\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"approved\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_14\" sourceRef=\"classificationGateway\" targetRef=\"notifyRejection\" name=\"rejected\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"rejected\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_15\" sourceRef=\"classificationGateway\" targetRef=\"endEscalated\" name=\"escalate\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"escalate\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_16\" sourceRef=\"notifyApproval\" targetRef=\"endApproved\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_17\" sourceRef=\"notifyRejection\" targetRef=\"endRejected\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"Gateway_0000001\" targetRef=\"finalRiskClassification\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Inserted exclusive gateway \"Gateway_0000001\" before \"notifyRejection\" to join 2 incoming flows",
+      "id": "flow/multi-incoming-task",
+      "index": 8,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"KYCOnboarding\" name=\"KYC Customer Onboarding\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"Onboarding Started\">\n      <bpmn:outgoing>Flow_compact_1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:userTask id=\"uploadDocument\" name=\"Upload Identity Document\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"identity-upload-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_1</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_4</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_2</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:serviceTask id=\"verifyDocument\" name=\"Verify Document via OCR\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"ocrResponse\"/>\n          <zeebe:header key=\"resultExpression\" value=\"=ocrResponse.body\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_2</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_3</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"documentQuality\" name=\"Document Verified?\">\n      <bpmn:incoming>Flow_compact_3</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_4</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_5</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_6</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"sanctionsScreening\" name=\"Sanctions &amp; PEP Screening\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"screeningResponse\"/>\n          <zeebe:header key=\"resultExpression\" value=\"=screeningResponse.body\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_6</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_7</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"riskRouting\" name=\"Risk Level?\">\n      <bpmn:incoming>Flow_compact_7</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_8</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_9</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"standardDueDiligence\" name=\"Standard Due Diligence\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"sddResponse\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_8</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_10</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:userTask id=\"enhancedDueDiligence\" name=\"Enhanced Due Diligence Review\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"compliance-edd-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_9</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_11</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:businessRuleTask id=\"finalRiskClassification\" name=\"Final Risk Classification\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"kyc-risk-classification\" resultVariable=\"riskClassification\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_10</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_11</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_12</bpmn:outgoing>\n    </bpmn:businessRuleTask>\n    <bpmn:exclusiveGateway id=\"classificationGateway\" name=\"Classification Outcome?\">\n      <bpmn:incoming>Flow_compact_12</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_13</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_14</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_15</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"notifyRejection\" name=\"Notify Rejection\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"email-sender\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"template\" value=\"kyc-rejected\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_17</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"notifyApproval\" name=\"Notify Approval\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"email-sender\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"template\" value=\"kyc-approved\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_13</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_16</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endApproved\" name=\"Customer Approved\">\n      <bpmn:incoming>Flow_compact_16</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"endRejected\" name=\"Customer Rejected\">\n      <bpmn:incoming>Flow_compact_17</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"endEscalated\" name=\"Escalated to Compliance\">\n      <bpmn:incoming>Flow_compact_15</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:exclusiveGateway id=\"Gateway_0000001\">\n      <bpmn:incoming>Flow_compact_5</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_14</bpmn:incoming>\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:sequenceFlow id=\"Flow_compact_1\" sourceRef=\"start\" targetRef=\"uploadDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_2\" sourceRef=\"uploadDocument\" targetRef=\"verifyDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_3\" sourceRef=\"verifyDocument\" targetRef=\"documentQuality\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_4\" sourceRef=\"documentQuality\" targetRef=\"uploadDocument\" name=\"verification-failed-retry\">\n      <bpmn:conditionExpression>=ocrResponse.verified = false and (uploadRetries != null and uploadRetries &lt; 2)</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_5\" sourceRef=\"documentQuality\" targetRef=\"Gateway_0000001\" name=\"verification-failed-exhausted\">\n      <bpmn:conditionExpression>=ocrResponse.verified = false and (uploadRetries = null or uploadRetries &gt;= 2)</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_6\" sourceRef=\"documentQuality\" targetRef=\"sanctionsScreening\" name=\"verification-passed\">\n      <bpmn:conditionExpression>=ocrResponse.verified = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_7\" sourceRef=\"sanctionsScreening\" targetRef=\"riskRouting\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_8\" sourceRef=\"riskRouting\" targetRef=\"standardDueDiligence\" name=\"standard-risk\">\n      <bpmn:conditionExpression>=screeningResponse.riskLevel = \"low\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_9\" sourceRef=\"riskRouting\" targetRef=\"enhancedDueDiligence\" name=\"enhanced-risk\">\n      <bpmn:conditionExpression>=screeningResponse.riskLevel = \"high\" or screeningResponse.pepMatch = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_10\" sourceRef=\"standardDueDiligence\" targetRef=\"finalRiskClassification\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_11\" sourceRef=\"enhancedDueDiligence\" targetRef=\"finalRiskClassification\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_12\" sourceRef=\"finalRiskClassification\" targetRef=\"classificationGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_13\" sourceRef=\"classificationGateway\" targetRef=\"notifyApproval\" name=\"approved\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"approved\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_14\" sourceRef=\"classificationGateway\" targetRef=\"Gateway_0000001\" name=\"rejected\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"rejected\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_15\" sourceRef=\"classificationGateway\" targetRef=\"endEscalated\" name=\"escalate\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"escalate\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_16\" sourceRef=\"notifyApproval\" targetRef=\"endApproved\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_17\" sourceRef=\"notifyRejection\" targetRef=\"endRejected\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"Gateway_0000001\" targetRef=\"notifyRejection\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Extracted 3 service tasks to call activity referencing \"Reusable_io.camunda_http-json_1_proc_0000001\"",
+      "generated": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions id=\"Definitions_0000009\" targetNamespace=\"http://bpmn.io/schema/bpmn\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\">\n  <bpmn:process id=\"Reusable_io.camunda_http-json_1_proc_0000001\" isExecutable=\"false\">\n    <bpmn:startEvent id=\"StartEvent_0000002\">\n      <bpmn:outgoing>Flow_0000005</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"ServiceTask_0000003\" name=\"Verify Document via OCR\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"ocrResponse\"/>\n          <zeebe:header key=\"resultExpression\" value=\"=ocrResponse.body\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_0000005</bpmn:incoming>\n      <bpmn:outgoing>Flow_0000006</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"EndEvent_0000004\">\n      <bpmn:incoming>Flow_0000006</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000005\" sourceRef=\"StartEvent_0000002\" targetRef=\"ServiceTask_0000003\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000006\" sourceRef=\"ServiceTask_0000003\" targetRef=\"EndEvent_0000004\"/>\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_0000007\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_0000008\" bpmnElement=\"Reusable_io.camunda_http-json_1_proc_0000001\">\n      <bpmndi:BPMNShape id=\"StartEvent_0000002_di\" bpmnElement=\"StartEvent_0000002\">\n        <dc:Bounds x=\"152\" y=\"100\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"ServiceTask_0000003_di\" bpmnElement=\"ServiceTask_0000003\">\n        <dc:Bounds x=\"260\" y=\"100\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"EndEvent_0000004_di\" bpmnElement=\"EndEvent_0000004\">\n        <dc:Bounds x=\"432\" y=\"100\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"Flow_0000005_di\" bpmnElement=\"Flow_0000005\">\n        <di:waypoint x=\"188\" y=\"118\"/>\n        <di:waypoint x=\"260\" y=\"118\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0000006_di\" bpmnElement=\"Flow_0000006\">\n        <di:waypoint x=\"360\" y=\"118\"/>\n        <di:waypoint x=\"432\" y=\"118\"/>\n      </bpmndi:BPMNEdge>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>\n\n",
+      "id": "task/reusable-group",
+      "index": 9,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"KYCOnboarding\" name=\"KYC Customer Onboarding\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"Onboarding Started\">\n      <bpmn:outgoing>Flow_compact_1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:userTask id=\"uploadDocument\" name=\"Upload Identity Document\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"identity-upload-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_1</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_4</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_2</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:callActivity id=\"verifyDocument\" name=\"Verify Document via OCR\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"Reusable_io.camunda_http-json_1_proc_0000001\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_2</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_3</bpmn:outgoing>\n    </bpmn:callActivity>\n    <bpmn:exclusiveGateway id=\"documentQuality\" name=\"Document Verified?\">\n      <bpmn:incoming>Flow_compact_3</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_4</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_5</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_6</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:callActivity id=\"sanctionsScreening\" name=\"Sanctions &amp; PEP Screening\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"Reusable_io.camunda_http-json_1_proc_0000001\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_6</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_7</bpmn:outgoing>\n    </bpmn:callActivity>\n    <bpmn:exclusiveGateway id=\"riskRouting\" name=\"Risk Level?\">\n      <bpmn:incoming>Flow_compact_7</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_8</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_9</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:callActivity id=\"standardDueDiligence\" name=\"Standard Due Diligence\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"Reusable_io.camunda_http-json_1_proc_0000001\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_8</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_10</bpmn:outgoing>\n    </bpmn:callActivity>\n    <bpmn:userTask id=\"enhancedDueDiligence\" name=\"Enhanced Due Diligence Review\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"compliance-edd-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_9</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_11</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:businessRuleTask id=\"finalRiskClassification\" name=\"Final Risk Classification\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"kyc-risk-classification\" resultVariable=\"riskClassification\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_10</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_11</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_12</bpmn:outgoing>\n    </bpmn:businessRuleTask>\n    <bpmn:exclusiveGateway id=\"classificationGateway\" name=\"Classification Outcome?\">\n      <bpmn:incoming>Flow_compact_12</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_13</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_14</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_15</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"notifyRejection\" name=\"Notify Rejection\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"email-sender\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"template\" value=\"kyc-rejected\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_5</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_14</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_17</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"notifyApproval\" name=\"Notify Approval\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"email-sender\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"template\" value=\"kyc-approved\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_13</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_16</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endApproved\" name=\"Customer Approved\">\n      <bpmn:incoming>Flow_compact_16</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"endRejected\" name=\"Customer Rejected\">\n      <bpmn:incoming>Flow_compact_17</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"endEscalated\" name=\"Escalated to Compliance\">\n      <bpmn:incoming>Flow_compact_15</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_compact_1\" sourceRef=\"start\" targetRef=\"uploadDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_2\" sourceRef=\"uploadDocument\" targetRef=\"verifyDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_3\" sourceRef=\"verifyDocument\" targetRef=\"documentQuality\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_4\" sourceRef=\"documentQuality\" targetRef=\"uploadDocument\" name=\"verification-failed-retry\">\n      <bpmn:conditionExpression>=ocrResponse.verified = false and (uploadRetries != null and uploadRetries &lt; 2)</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_5\" sourceRef=\"documentQuality\" targetRef=\"notifyRejection\" name=\"verification-failed-exhausted\">\n      <bpmn:conditionExpression>=ocrResponse.verified = false and (uploadRetries = null or uploadRetries &gt;= 2)</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_6\" sourceRef=\"documentQuality\" targetRef=\"sanctionsScreening\" name=\"verification-passed\">\n      <bpmn:conditionExpression>=ocrResponse.verified = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_7\" sourceRef=\"sanctionsScreening\" targetRef=\"riskRouting\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_8\" sourceRef=\"riskRouting\" targetRef=\"standardDueDiligence\" name=\"standard-risk\">\n      <bpmn:conditionExpression>=screeningResponse.riskLevel = \"low\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_9\" sourceRef=\"riskRouting\" targetRef=\"enhancedDueDiligence\" name=\"enhanced-risk\">\n      <bpmn:conditionExpression>=screeningResponse.riskLevel = \"high\" or screeningResponse.pepMatch = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_10\" sourceRef=\"standardDueDiligence\" targetRef=\"finalRiskClassification\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_11\" sourceRef=\"enhancedDueDiligence\" targetRef=\"finalRiskClassification\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_12\" sourceRef=\"finalRiskClassification\" targetRef=\"classificationGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_13\" sourceRef=\"classificationGateway\" targetRef=\"notifyApproval\" name=\"approved\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"approved\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_14\" sourceRef=\"classificationGateway\" targetRef=\"notifyRejection\" name=\"rejected\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"rejected\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_15\" sourceRef=\"classificationGateway\" targetRef=\"endEscalated\" name=\"escalate\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"escalate\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_16\" sourceRef=\"notifyApproval\" targetRef=\"endApproved\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_17\" sourceRef=\"notifyRejection\" targetRef=\"endRejected\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Extracted 2 service tasks to call activity referencing \"Reusable_email-sender_proc_0000001\"",
+      "generated": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions id=\"Definitions_0000009\" targetNamespace=\"http://bpmn.io/schema/bpmn\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\">\n  <bpmn:process id=\"Reusable_email-sender_proc_0000001\" isExecutable=\"false\">\n    <bpmn:startEvent id=\"StartEvent_0000002\">\n      <bpmn:outgoing>Flow_0000005</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"ServiceTask_0000003\" name=\"Notify Rejection\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"email-sender\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"template\" value=\"kyc-rejected\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_0000005</bpmn:incoming>\n      <bpmn:outgoing>Flow_0000006</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"EndEvent_0000004\">\n      <bpmn:incoming>Flow_0000006</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000005\" sourceRef=\"StartEvent_0000002\" targetRef=\"ServiceTask_0000003\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000006\" sourceRef=\"ServiceTask_0000003\" targetRef=\"EndEvent_0000004\"/>\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_0000007\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_0000008\" bpmnElement=\"Reusable_email-sender_proc_0000001\">\n      <bpmndi:BPMNShape id=\"StartEvent_0000002_di\" bpmnElement=\"StartEvent_0000002\">\n        <dc:Bounds x=\"152\" y=\"100\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"ServiceTask_0000003_di\" bpmnElement=\"ServiceTask_0000003\">\n        <dc:Bounds x=\"260\" y=\"100\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"EndEvent_0000004_di\" bpmnElement=\"EndEvent_0000004\">\n        <dc:Bounds x=\"432\" y=\"100\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"Flow_0000005_di\" bpmnElement=\"Flow_0000005\">\n        <di:waypoint x=\"188\" y=\"118\"/>\n        <di:waypoint x=\"260\" y=\"118\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_0000006_di\" bpmnElement=\"Flow_0000006\">\n        <di:waypoint x=\"360\" y=\"118\"/>\n        <di:waypoint x=\"432\" y=\"118\"/>\n      </bpmndi:BPMNEdge>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>\n\n",
+      "id": "task/reusable-group",
+      "index": 10,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"KYCOnboarding\" name=\"KYC Customer Onboarding\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"Onboarding Started\">\n      <bpmn:outgoing>Flow_compact_1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:userTask id=\"uploadDocument\" name=\"Upload Identity Document\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"identity-upload-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_1</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_4</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_2</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:serviceTask id=\"verifyDocument\" name=\"Verify Document via OCR\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"ocrResponse\"/>\n          <zeebe:header key=\"resultExpression\" value=\"=ocrResponse.body\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_2</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_3</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"documentQuality\" name=\"Document Verified?\">\n      <bpmn:incoming>Flow_compact_3</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_4</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_5</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_6</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"sanctionsScreening\" name=\"Sanctions &amp; PEP Screening\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"screeningResponse\"/>\n          <zeebe:header key=\"resultExpression\" value=\"=screeningResponse.body\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_6</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_7</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"riskRouting\" name=\"Risk Level?\">\n      <bpmn:incoming>Flow_compact_7</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_8</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_9</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"standardDueDiligence\" name=\"Standard Due Diligence\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"resultVariable\" value=\"sddResponse\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_8</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_10</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:userTask id=\"enhancedDueDiligence\" name=\"Enhanced Due Diligence Review\">\n      <bpmn:extensionElements>\n        <zeebe:formDefinition formId=\"compliance-edd-form\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_9</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_11</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:businessRuleTask id=\"finalRiskClassification\" name=\"Final Risk Classification\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"kyc-risk-classification\" resultVariable=\"riskClassification\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_10</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_11</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_12</bpmn:outgoing>\n    </bpmn:businessRuleTask>\n    <bpmn:exclusiveGateway id=\"classificationGateway\" name=\"Classification Outcome?\">\n      <bpmn:incoming>Flow_compact_12</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_13</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_14</bpmn:outgoing>\n      <bpmn:outgoing>Flow_compact_15</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:callActivity id=\"notifyRejection\" name=\"Notify Rejection\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"Reusable_email-sender_proc_0000001\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_5</bpmn:incoming>\n      <bpmn:incoming>Flow_compact_14</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_17</bpmn:outgoing>\n    </bpmn:callActivity>\n    <bpmn:callActivity id=\"notifyApproval\" name=\"Notify Approval\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"Reusable_email-sender_proc_0000001\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_compact_13</bpmn:incoming>\n      <bpmn:outgoing>Flow_compact_16</bpmn:outgoing>\n    </bpmn:callActivity>\n    <bpmn:endEvent id=\"endApproved\" name=\"Customer Approved\">\n      <bpmn:incoming>Flow_compact_16</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"endRejected\" name=\"Customer Rejected\">\n      <bpmn:incoming>Flow_compact_17</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"endEscalated\" name=\"Escalated to Compliance\">\n      <bpmn:incoming>Flow_compact_15</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_compact_1\" sourceRef=\"start\" targetRef=\"uploadDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_2\" sourceRef=\"uploadDocument\" targetRef=\"verifyDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_3\" sourceRef=\"verifyDocument\" targetRef=\"documentQuality\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_4\" sourceRef=\"documentQuality\" targetRef=\"uploadDocument\" name=\"verification-failed-retry\">\n      <bpmn:conditionExpression>=ocrResponse.verified = false and (uploadRetries != null and uploadRetries &lt; 2)</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_5\" sourceRef=\"documentQuality\" targetRef=\"notifyRejection\" name=\"verification-failed-exhausted\">\n      <bpmn:conditionExpression>=ocrResponse.verified = false and (uploadRetries = null or uploadRetries &gt;= 2)</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_6\" sourceRef=\"documentQuality\" targetRef=\"sanctionsScreening\" name=\"verification-passed\">\n      <bpmn:conditionExpression>=ocrResponse.verified = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_7\" sourceRef=\"sanctionsScreening\" targetRef=\"riskRouting\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_8\" sourceRef=\"riskRouting\" targetRef=\"standardDueDiligence\" name=\"standard-risk\">\n      <bpmn:conditionExpression>=screeningResponse.riskLevel = \"low\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_9\" sourceRef=\"riskRouting\" targetRef=\"enhancedDueDiligence\" name=\"enhanced-risk\">\n      <bpmn:conditionExpression>=screeningResponse.riskLevel = \"high\" or screeningResponse.pepMatch = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_10\" sourceRef=\"standardDueDiligence\" targetRef=\"finalRiskClassification\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_11\" sourceRef=\"enhancedDueDiligence\" targetRef=\"finalRiskClassification\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_12\" sourceRef=\"finalRiskClassification\" targetRef=\"classificationGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_13\" sourceRef=\"classificationGateway\" targetRef=\"notifyApproval\" name=\"approved\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"approved\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_14\" sourceRef=\"classificationGateway\" targetRef=\"notifyRejection\" name=\"rejected\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"rejected\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_15\" sourceRef=\"classificationGateway\" targetRef=\"endEscalated\" name=\"escalate\">\n      <bpmn:conditionExpression>=riskClassification.outcome = \"escalate\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_compact_16\" sourceRef=\"notifyApproval\" targetRef=\"endApproved\"/>\n    <bpmn:sequenceFlow id=\"Flow_compact_17\" sourceRef=\"notifyRejection\" targetRef=\"endRejected\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    }
+  ],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 13,
+      "deploy": 0,
+      "extract": 0,
+      "feel": 6,
+      "feel-syntax": 0,
+      "flow": 3,
+      "naming": 0,
+      "pattern": 16,
+      "task-reuse": 2
+    },
+    "bySeverity": {
+      "error": 6,
+      "info": 12,
+      "warning": 22
+    },
+    "total": 40
+  }
+}

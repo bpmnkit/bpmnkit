@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_ah</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:adHocSubProcess id="ah">
+      <bpmn:incoming>Flow_s_ah</bpmn:incoming>
+      <bpmn:outgoing>Flow_ah_e</bpmn:outgoing>
+      <bpmn:serviceTask id="a" name="a">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="a"/>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="b" name="b">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="b"/>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="c" name="c">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="c"/>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="d" name="d">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="d"/>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+    </bpmn:adHocSubProcess>
+    <bpmn:endEvent id="e">
+      <bpmn:incoming>Flow_ah_e</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s_ah" sourceRef="s" targetRef="ah"/>
+    <bpmn:sequenceFlow id="Flow_ah_e" sourceRef="ah" targetRef="e"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="p_di">
+    <bpmndi:BPMNPlane id="p_di_plane" bpmnElement="p">
+      <bpmndi:BPMNShape id="s_di" bpmnElement="s">
+        <dc:Bounds x="20" y="42" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ah_di" bpmnElement="ah" isExpanded="true">
+        <dc:Bounds x="156" y="20" width="340" height="280"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="e_di" bpmnElement="e">
+        <dc:Bounds x="596" y="42" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="a_di" bpmnElement="a">
+        <dc:Bounds x="206" y="70" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="b_di" bpmnElement="b">
+        <dc:Bounds x="206" y="170" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="c_di" bpmnElement="c">
+        <dc:Bounds x="346" y="70" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="d_di" bpmnElement="d">
+        <dc:Bounds x="346" y="170" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_s_ah_di" bpmnElement="Flow_s_ah">
+        <di:waypoint x="56" y="60"/>
+        <di:waypoint x="156" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ah_e_di" bpmnElement="Flow_ah_e">
+        <di:waypoint x="496" y="60"/>
+        <di:waypoint x="596" y="60"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

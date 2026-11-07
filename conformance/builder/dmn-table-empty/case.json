@@ -1,0 +1,7 @@
+{
+	"kind": "dmn",
+	"script": [
+		["createDecisionTable","d"],
+		["build"]
+	]
+}

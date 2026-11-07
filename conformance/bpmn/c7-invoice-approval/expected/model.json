@@ -1,0 +1,622 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_1",
+      "plane": {
+        "bpmnElement": "invoice-approval",
+        "edges": [
+          {
+            "bpmnElement": "Flow_toClassify",
+            "id": "Flow_toClassify_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 188,
+                "y": 200
+              },
+              {
+                "x": 240,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toApprove",
+            "id": "Flow_toApprove_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 340,
+                "y": 200
+              },
+              {
+                "x": 390,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toDecision",
+            "id": "Flow_toDecision_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 490,
+                "y": 200
+              },
+              {
+                "x": 545,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_yes",
+            "id": "Flow_yes_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 595,
+                "y": 200
+              },
+              {
+                "x": 650,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_no",
+            "id": "Flow_no_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 570,
+                "y": 225
+              },
+              {
+                "x": 570,
+                "y": 310
+              },
+              {
+                "x": 652,
+                "y": 310
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toRejected",
+            "id": "Flow_toRejected_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 688,
+                "y": 310
+              },
+              {
+                "x": 742,
+                "y": 310
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toBook",
+            "id": "Flow_toBook_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 750,
+                "y": 200
+              },
+              {
+                "x": 800,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toTotal",
+            "id": "Flow_toTotal_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 900,
+                "y": 200
+              },
+              {
+                "x": 950,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toDone",
+            "id": "Flow_toDone_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 1050,
+                "y": 200
+              },
+              {
+                "x": 1102,
+                "y": 200
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_1",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 152,
+              "y": 182
+            },
+            "bpmnElement": "StartEvent_invoice",
+            "id": "StartEvent_invoice_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 240,
+              "y": 160
+            },
+            "bpmnElement": "Task_classify",
+            "id": "Task_classify_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 390,
+              "y": 160
+            },
+            "bpmnElement": "Task_approve",
+            "id": "Task_approve_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 545,
+              "y": 175
+            },
+            "bpmnElement": "Gateway_approved",
+            "id": "Gateway_approved_di",
+            "isMarkerVisible": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 652,
+              "y": 292
+            },
+            "bpmnElement": "Timer_clarify",
+            "id": "Timer_clarify_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 742,
+              "y": 292
+            },
+            "bpmnElement": "EndEvent_rejected",
+            "id": "EndEvent_rejected_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 650,
+              "y": 160
+            },
+            "bpmnElement": "Task_archive",
+            "id": "Task_archive_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 800,
+              "y": 160
+            },
+            "bpmnElement": "Task_book",
+            "id": "Task_book_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 950,
+              "y": 160
+            },
+            "bpmnElement": "Task_total",
+            "id": "Task_total_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 1102,
+              "y": 182
+            },
+            "bpmnElement": "EndEvent_done",
+            "id": "EndEvent_done_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "exporter": "Camunda Modeler",
+  "exporterVersion": "5.28.0",
+  "id": "Definitions_07hq2mb",
+  "messages": [
+    {
+      "id": "Message_InvoiceReceived",
+      "name": "InvoiceReceived",
+      "unknownAttributes": {}
+    }
+  ],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "camunda": "http://camunda.org/schema/1.0/bpmn",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [
+            {
+              "id": "MessageEventDefinition_invoice",
+              "messageRef": "Message_InvoiceReceived",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [],
+          "id": "StartEvent_invoice",
+          "incoming": [],
+          "name": "Invoice received",
+          "outgoing": [
+            "Flow_toClassify"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Task_classify",
+          "incoming": [
+            "Flow_toClassify"
+          ],
+          "name": "Classify invoice",
+          "outgoing": [
+            "Flow_toApprove"
+          ],
+          "type": "businessRuleTask",
+          "unknownAttributes": {
+            "camunda:decisionRef": "invoice-classification",
+            "camunda:decisionRefBinding": "deployment",
+            "camunda:mapDecisionResult": "singleEntry",
+            "camunda:resultVariable": "approverGroup"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "Task_approve",
+          "incoming": [
+            "Flow_toApprove"
+          ],
+          "name": "Approve invoice",
+          "outgoing": [
+            "Flow_toDecision"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {
+            "camunda:assignee": "accounting-lead",
+            "camunda:candidateGroups": "accounting",
+            "camunda:formRef": "approve-invoice",
+            "camunda:formRefBinding": "latest"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "Gateway_approved",
+          "incoming": [
+            "Flow_toDecision"
+          ],
+          "name": "Approved?",
+          "outgoing": [
+            "Flow_yes",
+            "Flow_no"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "TimerEventDefinition_clarify",
+              "timeDuration": "P1D",
+              "timeDurationAttributes": {
+                "xsi:type": "bpmn:tFormalExpression"
+              },
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "Timer_clarify",
+          "incoming": [
+            "Flow_no"
+          ],
+          "name": "Wait one day",
+          "outgoing": [
+            "Flow_toRejected"
+          ],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "EndEvent_rejected",
+          "incoming": [
+            "Flow_toRejected"
+          ],
+          "name": "Invoice rejected",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "name": "documentId"
+                  },
+                  "children": [],
+                  "name": "camunda:inputParameter",
+                  "text": "${invoice.documentId}"
+                },
+                {
+                  "attributes": {
+                    "name": "retention"
+                  },
+                  "children": [],
+                  "name": "camunda:inputParameter",
+                  "text": "P10Y"
+                },
+                {
+                  "attributes": {
+                    "name": "archiveId"
+                  },
+                  "children": [],
+                  "name": "camunda:outputParameter",
+                  "text": "${archiveId}"
+                }
+              ],
+              "name": "camunda:inputOutput"
+            },
+            {
+              "attributes": {},
+              "children": [],
+              "name": "camunda:failedJobRetryTimeCycle",
+              "text": "R3/PT0S"
+            }
+          ],
+          "id": "Task_archive",
+          "incoming": [
+            "Flow_yes"
+          ],
+          "name": "Archive invoice",
+          "outgoing": [
+            "Flow_toBook"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {
+            "camunda:asyncBefore": "true",
+            "camunda:topic": "archive-invoice",
+            "camunda:type": "external"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "source": "invoice",
+                "target": "invoice"
+              },
+              "children": [],
+              "name": "camunda:in"
+            },
+            {
+              "attributes": {
+                "source": "archiveId",
+                "target": "archiveId"
+              },
+              "children": [],
+              "name": "camunda:in"
+            },
+            {
+              "attributes": {
+                "source": "bookingId",
+                "target": "bookingId"
+              },
+              "children": [],
+              "name": "camunda:out"
+            }
+          ],
+          "id": "Task_book",
+          "incoming": [
+            "Flow_toBook"
+          ],
+          "name": "Book invoice",
+          "outgoing": [
+            "Flow_toTotal"
+          ],
+          "type": "callActivity",
+          "unknownAttributes": {
+            "calledElement": "booking",
+            "camunda:calledElementBinding": "latest"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "Task_total",
+          "incoming": [
+            "Flow_toTotal"
+          ],
+          "name": "Compute total",
+          "outgoing": [
+            "Flow_toDone"
+          ],
+          "type": "scriptTask",
+          "unknownAttributes": {
+            "camunda:resultVariable": "total",
+            "scriptFormat": "feel"
+          },
+          "unknownChildren": [
+            {
+              "attributes": {},
+              "children": [],
+              "name": "bpmn:script",
+              "text": "invoice.net + invoice.tax"
+            }
+          ]
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "EndEvent_done",
+          "incoming": [
+            "Flow_toDone"
+          ],
+          "name": "Invoice booked",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "invoice-approval",
+      "isExecutable": true,
+      "name": "Invoice approval",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_toClassify",
+          "sourceRef": "StartEvent_invoice",
+          "targetRef": "Task_classify",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toApprove",
+          "sourceRef": "Task_classify",
+          "targetRef": "Task_approve",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toDecision",
+          "sourceRef": "Task_approve",
+          "targetRef": "Gateway_approved",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "${approved == true}"
+          },
+          "extensionElements": [],
+          "id": "Flow_yes",
+          "name": "yes",
+          "sourceRef": "Gateway_approved",
+          "targetRef": "Task_archive",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "${approved == false}"
+          },
+          "extensionElements": [],
+          "id": "Flow_no",
+          "name": "no",
+          "sourceRef": "Gateway_approved",
+          "targetRef": "Timer_clarify",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toRejected",
+          "sourceRef": "Timer_clarify",
+          "targetRef": "EndEvent_rejected",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toBook",
+          "sourceRef": "Task_archive",
+          "targetRef": "Task_book",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toTotal",
+          "sourceRef": "Task_book",
+          "targetRef": "Task_total",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toDone",
+          "sourceRef": "Task_total",
+          "targetRef": "EndEvent_done",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {
+        "camunda:versionTag": "1.4"
+      }
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Platform",
+    "modeler:executionPlatformVersion": "7.22.0"
+  }
+}

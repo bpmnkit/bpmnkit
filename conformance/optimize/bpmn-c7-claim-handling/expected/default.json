@@ -1,0 +1,74 @@
+{
+  "findings": [
+    {
+      "category": "pattern",
+      "elementIds": [
+        "SubProcess_items"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Review items\" has no error boundary event.",
+      "processId": "claim-handling",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Task_assess"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Assess claim\" has no timer boundary event.",
+      "processId": "claim-handling",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_fraudCheck"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Check for fraud\" (serviceTask) has no zeebe:taskDefinition type.",
+      "processId": "claim-handling",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_payout"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Pay out claim\" (serviceTask) has no zeebe:taskDefinition type.",
+      "processId": "claim-handling",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 2,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 0,
+      "naming": 0,
+      "pattern": 2,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 2,
+      "info": 0,
+      "warning": 2
+    },
+    "total": 4
+  }
+}

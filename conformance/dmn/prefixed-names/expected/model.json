@@ -1,0 +1,114 @@
+{
+  "associations": [
+    {
+      "id": "as1",
+      "sourceRef": "ta",
+      "targetRef": "d1"
+    }
+  ],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "aggregation": "SUM",
+        "hitPolicy": "COLLECT",
+        "id": "t1",
+        "inputs": [
+          {
+            "id": "i1",
+            "inputExpression": {
+              "id": "ie1",
+              "text": "amount",
+              "typeRef": "number"
+            },
+            "label": "Amount"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o1",
+            "name": "fee",
+            "typeRef": "number"
+          }
+        ],
+        "rules": [
+          {
+            "description": "fee for any amount",
+            "id": "r1",
+            "inputEntries": [
+              {
+                "id": "e1",
+                "text": "> 0"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "p1",
+                "text": "2.5"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d1",
+      "informationRequirements": [
+        {
+          "id": "ir1",
+          "requiredInput": "in1"
+        }
+      ],
+      "knowledgeRequirements": [],
+      "name": "Prefixed decision"
+    }
+  ],
+  "diagram": {
+    "edges": [
+      {
+        "dmnElementRef": "as1",
+        "waypoints": [
+          {
+            "x": 3,
+            "y": 4
+          }
+        ]
+      }
+    ],
+    "shapes": [
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 1,
+          "y": 2
+        },
+        "dmnElementRef": "d1"
+      }
+    ]
+  },
+  "id": "Definitions_prefixed",
+  "inputData": [
+    {
+      "id": "in1",
+      "name": "Amount"
+    }
+  ],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "Prefixed",
+  "namespace": "urn:prefixed",
+  "namespaces": {
+    "camunda": "http://camunda.org/schema/1.0/dmn",
+    "dc": "http://www.omg.org/spec/DMN/20180521/DC/",
+    "di": "http://www.omg.org/spec/DMN/20180521/DI/",
+    "dmn": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/",
+    "x": "urn:x"
+  },
+  "textAnnotations": [
+    {
+      "id": "ta",
+      "text": "note"
+    }
+  ]
+}

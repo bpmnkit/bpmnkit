@@ -20,13 +20,13 @@ import type { BpmnElementType } from "./bpmn-model.js"
 import type { CompactFlow } from "./compact.js"
 import { CONNECTOR_LINE, type ConnectorLine, parseConnectorLine } from "./connector-line.js"
 import {
-	ALIASES,
 	DOC_LINE,
-	KINDS,
 	NOTE_LINE,
 	type ProcessTextProblem,
 	TRIGGERS,
+	duration,
 	edgeLabel,
+	kindOf,
 	splitFeel,
 	splitMappings,
 	tokenizePath,
@@ -93,6 +93,8 @@ export interface DeltaNode {
 	outputs?: Record<string, string>
 	/** The ad-hoc sub-process the node lives in, from `inside=`. */
 	inside?: string
+	/** A timer's ISO 8601 duration (`PT5M`), from `after=`. */
+	timerDuration?: string
 	/** `nonint`: a non-interrupting boundary or start event. */
 	interrupting?: false
 	line: number
@@ -149,7 +151,8 @@ function readSpec(
 	const space = head.search(/\s/)
 	const word = space < 0 ? head : head.slice(0, space)
 	const [kindWord = "", trigger] = word.toLowerCase().split(":")
-	const type = KINDS[kindWord] ?? ALIASES[kindWord] ?? FIXED_KINDS[kindWord]
+	const type =
+		kindOf(kindWord) ?? (Object.hasOwn(FIXED_KINDS, kindWord) ? FIXED_KINDS[kindWord] : undefined)
 
 	if (type === undefined) {
 		// `review[Review application]`: no kind, so the whole head is the new name.
@@ -184,6 +187,7 @@ function readSpec(
 		else if (key === "form" && value) node.formId = value
 		else if (key === "inside" && value) node.inside = value
 		else if (key === "nonint" && value === undefined) node.interrupting = false
+		else if (key === "after" && value && duration(value)) node.timerDuration = duration(value)
 		else problems.push({ line, message: `unknown attribute "${attr}" on "${id}"; ignored` })
 	}
 	return node

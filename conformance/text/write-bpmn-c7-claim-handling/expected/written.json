@@ -1,0 +1,12 @@
+{
+  "aliases": {
+    "assess_claim": "Task_assess",
+    "check_for_fraud": "Task_fraudCheck",
+    "claim_blocked": "EndEvent_fraud",
+    "claim_paid": "EndEvent_paid",
+    "claim_submitted": "StartEvent_claim",
+    "fraud_alert": "Signal_fraud",
+    "pay_out_claim": "Task_payout",
+    "review_items": "SubProcess_items"
+  }
+}

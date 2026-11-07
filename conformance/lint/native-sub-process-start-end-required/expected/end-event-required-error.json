@@ -1,0 +1,145 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 3,
+    "info": 2,
+    "warning": 5
+  },
+  "diagnostics": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "sub"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"sub\" (subProcess) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "sub"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"sub\" (subProcess) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"adhoc\" (adHocSubProcess) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"adhoc\" (adHocSubProcess) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "sub"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"sub\" (subProcess) has no name.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"adhoc\" (adHocSubProcess) has no name.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "sub"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"sub\" has no error boundary event.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"adhoc\" has no error boundary event.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Started\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "bpmnlintRule": "end-event-required",
+      "category": "flow",
+      "elementIds": [
+        "sub"
+      ],
+      "fixable": false,
+      "id": "flow/sub-process-no-end-event",
+      "message": "Sub-process \"sub\" has no end event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add an end event so the sub-process completes explicitly."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 10
+}

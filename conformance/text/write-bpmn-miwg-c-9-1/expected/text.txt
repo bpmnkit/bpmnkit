@@ -1,0 +1,7 @@
+# Document Request | camunda=8.1
+document_requested[start Document requested] > request_document[send Request document | job=email] > wait_for_answer[receive Wait for answer] > document_received[end Document received]
+answer_received[end Answer received]
+send_reminder_email[send Send reminder email | job=email] > email_sent[end Email sent]
+call_customer[user Call customer] > answer_received
+daily[boundary:timer daily | on=wait_for_answer nonint] > send_reminder_email
+boundary_1_week[boundary:timer 1 week | on=wait_for_answer after=P7D] > call_customer

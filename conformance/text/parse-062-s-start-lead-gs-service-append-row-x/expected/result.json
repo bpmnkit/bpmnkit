@@ -1,0 +1,94 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Lead",
+            "type": "startEvent"
+          },
+          {
+            "id": "gs",
+            "jobType": "gs",
+            "name": "Append row",
+            "type": "serviceTask"
+          },
+          {
+            "id": "xor",
+            "name": "Notify sales?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "t",
+            "jobType": "t",
+            "name": "Notify",
+            "type": "sendTask"
+          },
+          {
+            "id": "end",
+            "name": "Lead added",
+            "type": "endEvent"
+          },
+          {
+            "id": "end_join",
+            "type": "exclusiveGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "gs"
+          },
+          {
+            "from": "gs",
+            "id": "Flow_2",
+            "to": "xor"
+          },
+          {
+            "condition": "= isNew",
+            "from": "xor",
+            "id": "Flow_3",
+            "name": "Yes",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_4",
+            "to": "end_join"
+          },
+          {
+            "from": "xor",
+            "id": "Flow_5",
+            "isDefault": true,
+            "name": "No",
+            "to": "end_join"
+          },
+          {
+            "from": "end_join",
+            "id": "Flow_6",
+            "to": "end"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "joined 2 flows into \"end\" with xor gateway \"end_join\""
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"xor …\" has no brackets; read it as declaring \"xor\""
+    },
+    {
+      "line": 2,
+      "message": "\"end …\" has no brackets; read it as declaring \"end\""
+    }
+  ],
+  "questions": []
+}

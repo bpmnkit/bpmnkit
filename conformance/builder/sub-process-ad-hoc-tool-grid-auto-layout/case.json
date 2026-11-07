@@ -1,0 +1,11 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["adHocSubProcess","ah",{"$ops":[["serviceTask","t1",{"name":"t1","taskType":"t1"}],["serviceTask","t2",{"name":"t2","taskType":"t2"}],["serviceTask","t3",{"name":"t3","taskType":"t3"}],["serviceTask","t4",{"name":"t4","taskType":"t4"}],["serviceTask","t5",{"name":"t5","taskType":"t5"}],["serviceTask","t6",{"name":"t6","taskType":"t6"}]]},{"toolGrid":{"columns":3}}],
+		["endEvent","e"],
+		["withAutoLayout"],
+		["build"]
+	]
+}

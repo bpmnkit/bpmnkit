@@ -1,0 +1,69 @@
+{
+  "findings": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "gw"
+      ],
+      "fixable": true,
+      "id": "flow/redundant-gateway",
+      "message": "Gateway \"gw\" (exclusiveGateway) has only 1 incoming and 1 outgoing flow — it is redundant.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Remove this gateway and connect its source directly to its target."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "gw"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-single-outgoing",
+      "message": "Exclusive gateway \"gw\" has only one outgoing flow and is a pass-through.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Remove this gateway and connect its source directly to its target."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"S\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    }
+  ],
+  "fixes": [
+    {
+      "description": "Removed redundant gateway \"gw\" and connected \"start\" → \"a\"",
+      "id": "flow/redundant-gateway",
+      "index": 0,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"proc\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"S\">\n      <bpmn:outgoing>Flow_0000001</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:task id=\"a\" name=\"A\">\n      <bpmn:incoming>Flow_0000001</bpmn:incoming>\n      <bpmn:outgoing>f3</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:endEvent id=\"end\" name=\"E\">\n      <bpmn:incoming>f3</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"f3\" sourceRef=\"a\" targetRef=\"end\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000001\" sourceRef=\"start\" targetRef=\"a\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    }
+  ],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 0,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 1,
+      "naming": 0,
+      "pattern": 2,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 0,
+      "info": 1,
+      "warning": 2
+    },
+    "total": 3
+  }
+}

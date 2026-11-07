@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+  xmlns:modeler="http://camunda.org/schema/modeler/1.0"
+  xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
+  <bpmn:message id="m1" name="M1" /><bpmn:message id="m2" name="M2"><bpmn:extensionElements><zeebe:subscription correlationKey="=orderId" /></bpmn:extensionElements></bpmn:message><bpmn:message id="m3" name="M3" />
+  
+  <bpmn:process id="proc" isExecutable="true">
+    <bpmn:startEvent id="s1" name="Msg start"><bpmn:messageEventDefinition id="s1d" /></bpmn:startEvent>
+<bpmn:startEvent id="s2" name="Msg start named"><bpmn:messageEventDefinition id="s2d" messageRef="m1" /></bpmn:startEvent>
+<bpmn:startEvent id="s3" name="Timer start"><bpmn:timerEventDefinition /></bpmn:startEvent>
+<bpmn:serviceTask id="svc" name="No type" /><bpmn:sendTask id="snd" name="Send no type" /><bpmn:businessRuleTask id="br" name="Rule none" />
+<bpmn:businessRuleTask id="br2" name="Rule decision"><bpmn:extensionElements><zeebe:calledDecision decisionId="d" resultVariable="r" /></bpmn:extensionElements></bpmn:businessRuleTask>
+<bpmn:businessRuleTask id="br3" name="Rule job"><bpmn:extensionElements><zeebe:taskDefinition type="t" /></bpmn:extensionElements></bpmn:businessRuleTask>
+<bpmn:callActivity id="ca" name="Call none" /><bpmn:callActivity id="ca2" name="Call ok"><bpmn:extensionElements><zeebe:calledElement processId="other" propagateAllChildVariables="false" /></bpmn:extensionElements></bpmn:callActivity>
+<bpmn:intermediateCatchEvent id="ic1" name="Catch no corr"><bpmn:messageEventDefinition id="ic1d" messageRef="m1" /></bpmn:intermediateCatchEvent>
+<bpmn:intermediateCatchEvent id="ic2" name="Catch ext corr"><bpmn:extensionElements><zeebe:subscription correlationKey="=k" /></bpmn:extensionElements><bpmn:messageEventDefinition id="ic2d" messageRef="m1" /></bpmn:intermediateCatchEvent>
+<bpmn:intermediateCatchEvent id="ic3" name="Catch msg corr"><bpmn:messageEventDefinition id="ic3d" messageRef="m2" /></bpmn:intermediateCatchEvent>
+<bpmn:intermediateCatchEvent id="ic4" name="Catch no id"><bpmn:timerEventDefinition><bpmn:timeDuration>PT1S</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:intermediateCatchEvent>
+<bpmn:receiveTask id="rt1" name="Receive no corr" messageRef="m1" /><bpmn:receiveTask id="rt2" name="Receive msg corr" messageRef="m2" /><bpmn:receiveTask id="rt3" name="Receive no msg" />
+<bpmn:task id="host" name="Host" /><bpmn:boundaryEvent id="bm" attachedToRef="host"><bpmn:messageEventDefinition id="bmd" messageRef="m1" /></bpmn:boundaryEvent><bpmn:boundaryEvent id="bmk" attachedToRef="host"><bpmn:extensionElements><zeebe:subscription correlationKey="=k" /></bpmn:extensionElements><bpmn:messageEventDefinition id="bmkd" messageRef="m3" /></bpmn:boundaryEvent>
+<bpmn:endEvent id="end" name="E" />
+  </bpmn:process>
+  
+</bpmn:definitions>

@@ -1,0 +1,1 @@
+Decision "d1" requires unknown id "no-hash". Valid ids: d1, d2, in. Use ids, not names. See agent-cards/dmn.md#traps.

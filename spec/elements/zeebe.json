@@ -1,0 +1,647 @@
+{
+	"$schema": "../schema/elements.schema.json",
+	"family": "zeebe",
+	"namespace": {
+		"prefix": "zeebe",
+		"uri": "http://camunda.org/schema/zeebe/1.0"
+	},
+	"source": "zeebe-bpmn-moddle (MIT) as vendored in packages/core/descriptors/zeebe.json, Camunda 8.10; allowedIn is resolved from its meta.allowedIn by `pnpm --filter @bpmnkit/core generate:placement`",
+	"traits": [
+		{
+			"name": "collection",
+			"description": "Wrapper whose children are repeated entries of one kind (ioMapping, taskHeaders, ...), with no attributes of its own."
+		}
+	],
+	"elements": [
+		{
+			"name": "adHoc",
+			"description": "Marks an ad-hoc sub-process and names how it collects results and picks active elements.",
+			"attributes": [
+				{
+					"name": "activeElementsCollection",
+					"type": "expression"
+				},
+				{
+					"name": "outputCollection",
+					"type": "string"
+				},
+				{
+					"name": "outputElement",
+					"type": "expression"
+				}
+			],
+			"allowedIn": ["bpmn:adHocSubProcess"]
+		},
+		{
+			"name": "agentDefinition",
+			"description": "Marks a service task or ad-hoc sub-process as an AI agent the engine runs (Camunda 8.10+).",
+			"attributes": [
+				{
+					"name": "agentType",
+					"type": "string",
+					"required": true
+				}
+			],
+			"allowedIn": ["bpmn:adHocSubProcess", "bpmn:serviceTask"]
+		},
+		{
+			"name": "assignmentDefinition",
+			"description": "Who a user task is assigned to.",
+			"attributes": [
+				{
+					"name": "assignee",
+					"type": "string"
+				},
+				{
+					"name": "candidateGroups",
+					"type": "string"
+				},
+				{
+					"name": "candidateUsers",
+					"type": "string"
+				}
+			],
+			"allowedIn": ["bpmn:userTask"]
+		},
+		{
+			"name": "calledDecision",
+			"description": "The DMN decision a business rule task invokes.",
+			"attributes": [
+				{
+					"name": "decisionId",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "resultVariable",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "bindingType",
+					"type": "enum",
+					"values": ["latest", "deployment", "versionTag"],
+					"default": "latest",
+					"description": "What the referenced id resolves against (Camunda 8.6+)."
+				},
+				{
+					"name": "versionTag",
+					"type": "string",
+					"description": "Only meaningful with bindingType versionTag."
+				}
+			],
+			"allowedIn": ["bpmn:businessRuleTask"]
+		},
+		{
+			"name": "calledElement",
+			"description": "The process a call activity invokes.",
+			"attributes": [
+				{
+					"name": "processId",
+					"type": "string"
+				},
+				{
+					"name": "processIdExpression",
+					"type": "expression"
+				},
+				{
+					"name": "propagateAllChildVariables",
+					"type": "boolean"
+				},
+				{
+					"name": "propagateAllParentVariables",
+					"type": "boolean",
+					"default": true
+				},
+				{
+					"name": "businessId",
+					"type": "string"
+				},
+				{
+					"name": "bindingType",
+					"type": "enum",
+					"values": ["latest", "deployment", "versionTag"],
+					"default": "latest",
+					"description": "What the referenced id resolves against (Camunda 8.6+)."
+				},
+				{
+					"name": "versionTag",
+					"type": "string",
+					"description": "Only meaningful with bindingType versionTag."
+				}
+			],
+			"allowedIn": ["bpmn:callActivity"]
+		},
+		{
+			"name": "conditionalFilter",
+			"description": "Limits which variable changes re-evaluate a conditional event definition.",
+			"attributes": [
+				{
+					"name": "variableNames",
+					"type": "string"
+				},
+				{
+					"name": "variableEvents",
+					"type": "string",
+					"description": "Comma-separated create and update."
+				}
+			],
+			"allowedIn": ["bpmn:conditionalEventDefinition"]
+		},
+		{
+			"name": "executionListener",
+			"description": "A job-worker listener on an element's lifecycle.",
+			"attributes": [
+				{
+					"name": "eventType",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "type",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "retries",
+					"type": "string"
+				}
+			],
+			"children": [
+				{
+					"element": "taskHeaders",
+					"multiplicity": "0..1"
+				}
+			],
+			"allowedIn": ["zeebe:executionListeners"]
+		},
+		{
+			"name": "executionListeners",
+			"description": "Execution listeners of an element.",
+			"children": [
+				{
+					"element": "executionListener",
+					"multiplicity": "1..*"
+				}
+			],
+			"traits": ["collection"],
+			"allowedIn": [
+				"bpmn:adHocSubProcess",
+				"bpmn:boundaryEvent",
+				"bpmn:businessRuleTask",
+				"bpmn:callActivity",
+				"bpmn:endEvent",
+				"bpmn:eventBasedGateway",
+				"bpmn:exclusiveGateway",
+				"bpmn:implicitThrowEvent",
+				"bpmn:inclusiveGateway",
+				"bpmn:intermediateCatchEvent",
+				"bpmn:intermediateThrowEvent",
+				"bpmn:manualTask",
+				"bpmn:parallelGateway",
+				"bpmn:process",
+				"bpmn:receiveTask",
+				"bpmn:scriptTask",
+				"bpmn:sendTask",
+				"bpmn:serviceTask",
+				"bpmn:startEvent",
+				"bpmn:subProcess",
+				"bpmn:task",
+				"bpmn:transaction",
+				"bpmn:userTask"
+			]
+		},
+		{
+			"name": "formDefinition",
+			"description": "The form of a user task or start event.",
+			"attributes": [
+				{
+					"name": "formKey",
+					"type": "string"
+				},
+				{
+					"name": "formId",
+					"type": "string"
+				},
+				{
+					"name": "externalReference",
+					"type": "string"
+				},
+				{
+					"name": "bindingType",
+					"type": "enum",
+					"values": ["latest", "deployment", "versionTag"],
+					"default": "latest",
+					"description": "What the referenced id resolves against (Camunda 8.6+)."
+				},
+				{
+					"name": "versionTag",
+					"type": "string",
+					"description": "Only meaningful with bindingType versionTag."
+				}
+			],
+			"allowedIn": ["bpmn:startEvent", "bpmn:userTask"]
+		},
+		{
+			"name": "header",
+			"description": "One task header key/value pair.",
+			"attributes": [
+				{
+					"name": "key",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "value",
+					"type": "string"
+				}
+			]
+		},
+		{
+			"name": "input",
+			"description": "Maps a source expression into a local variable.",
+			"attributes": [
+				{
+					"name": "source",
+					"type": "expression",
+					"required": true
+				},
+				{
+					"name": "target",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "modelerConfigurationTemplate",
+					"type": "string"
+				},
+				{
+					"name": "modelerConfigurationName",
+					"type": "string"
+				}
+			],
+			"allowedIn": [
+				"bpmn:adHocSubProcess",
+				"bpmn:businessRuleTask",
+				"bpmn:callActivity",
+				"bpmn:endEvent",
+				"bpmn:intermediateThrowEvent",
+				"bpmn:scriptTask",
+				"bpmn:sendTask",
+				"bpmn:serviceTask",
+				"bpmn:subProcess",
+				"bpmn:transaction",
+				"bpmn:userTask"
+			]
+		},
+		{
+			"name": "ioMapping",
+			"description": "Input and output variable mappings.",
+			"children": [
+				{
+					"element": "input"
+				},
+				{
+					"element": "output"
+				}
+			],
+			"traits": ["collection"],
+			"allowedIn": [
+				"bpmn:adHocSubProcess",
+				"bpmn:boundaryEvent",
+				"bpmn:businessRuleTask",
+				"bpmn:callActivity",
+				"bpmn:endEvent",
+				"bpmn:implicitThrowEvent",
+				"bpmn:intermediateCatchEvent",
+				"bpmn:intermediateThrowEvent",
+				"bpmn:receiveTask",
+				"bpmn:scriptTask",
+				"bpmn:sendTask",
+				"bpmn:serviceTask",
+				"bpmn:startEvent",
+				"bpmn:subProcess",
+				"bpmn:transaction",
+				"bpmn:userTask"
+			]
+		},
+		{
+			"name": "jobPriorityDefinition",
+			"description": "Priority of the jobs an element creates.",
+			"attributes": [
+				{
+					"name": "priority",
+					"type": "string"
+				}
+			],
+			"allowedIn": [
+				"bpmn:adHocSubProcess",
+				"bpmn:businessRuleTask",
+				"bpmn:endEvent",
+				"bpmn:intermediateThrowEvent",
+				"bpmn:process",
+				"bpmn:scriptTask",
+				"bpmn:sendTask",
+				"bpmn:serviceTask"
+			]
+		},
+		{
+			"name": "linkedResource",
+			"description": "A resource linked to a service task.",
+			"attributes": [
+				{
+					"name": "resourceId",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "resourceType",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "linkName",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "bindingType",
+					"type": "enum",
+					"values": ["latest", "deployment", "versionTag"],
+					"default": "latest",
+					"description": "What the referenced id resolves against (Camunda 8.6+)."
+				},
+				{
+					"name": "versionTag",
+					"type": "string",
+					"description": "Only meaningful with bindingType versionTag."
+				}
+			],
+			"allowedIn": ["bpmn:serviceTask"]
+		},
+		{
+			"name": "linkedResources",
+			"description": "Resources linked to a service task, e.g. an RPA script.",
+			"children": [
+				{
+					"element": "linkedResource",
+					"multiplicity": "1..*"
+				}
+			],
+			"traits": ["collection"],
+			"allowedIn": ["bpmn:serviceTask"]
+		},
+		{
+			"name": "loopCharacteristics",
+			"description": "Zeebe's multi-instance collection settings.",
+			"attributes": [
+				{
+					"name": "inputCollection",
+					"type": "expression"
+				},
+				{
+					"name": "inputElement",
+					"type": "string"
+				},
+				{
+					"name": "outputCollection",
+					"type": "string"
+				},
+				{
+					"name": "outputElement",
+					"type": "expression"
+				}
+			],
+			"allowedIn": ["bpmn:multiInstanceLoopCharacteristics"]
+		},
+		{
+			"name": "output",
+			"description": "Maps a source expression out to a process variable.",
+			"attributes": [
+				{
+					"name": "source",
+					"type": "expression",
+					"required": true
+				},
+				{
+					"name": "target",
+					"type": "string",
+					"required": true
+				}
+			],
+			"allowedIn": [
+				"bpmn:adHocSubProcess",
+				"bpmn:boundaryEvent",
+				"bpmn:businessRuleTask",
+				"bpmn:callActivity",
+				"bpmn:endEvent",
+				"bpmn:implicitThrowEvent",
+				"bpmn:intermediateCatchEvent",
+				"bpmn:intermediateThrowEvent",
+				"bpmn:receiveTask",
+				"bpmn:scriptTask",
+				"bpmn:sendTask",
+				"bpmn:serviceTask",
+				"bpmn:startEvent",
+				"bpmn:subProcess",
+				"bpmn:transaction",
+				"bpmn:userTask"
+			]
+		},
+		{
+			"name": "priorityDefinition",
+			"description": "Priority of a user task (0-100, default 50).",
+			"attributes": [
+				{
+					"name": "priority",
+					"type": "string",
+					"required": true
+				}
+			],
+			"allowedIn": ["bpmn:userTask"]
+		},
+		{
+			"name": "properties",
+			"description": "Free-form extension properties.",
+			"children": [
+				{
+					"element": "property"
+				}
+			],
+			"traits": ["collection"]
+		},
+		{
+			"name": "property",
+			"description": "One extension property.",
+			"attributes": [
+				{
+					"name": "name",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "value",
+					"type": "string"
+				},
+				{
+					"name": "modelerConfigurationTemplate",
+					"type": "string"
+				},
+				{
+					"name": "modelerConfigurationName",
+					"type": "string"
+				}
+			]
+		},
+		{
+			"name": "script",
+			"description": "The FEEL expression of a script task.",
+			"attributes": [
+				{
+					"name": "expression",
+					"type": "expression",
+					"required": true
+				},
+				{
+					"name": "resultVariable",
+					"type": "string",
+					"required": true
+				}
+			],
+			"allowedIn": ["bpmn:scriptTask"]
+		},
+		{
+			"name": "subscription",
+			"description": "Message correlation of a message catch event, boundary event or receive task.",
+			"attributes": [
+				{
+					"name": "correlationKey",
+					"type": "expression",
+					"required": true
+				}
+			]
+		},
+		{
+			"name": "taskDefinition",
+			"description": "The job type a task creates for its worker.",
+			"attributes": [
+				{
+					"name": "type",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "retries",
+					"type": "string"
+				}
+			],
+			"allowedIn": [
+				"bpmn:adHocSubProcess",
+				"bpmn:businessRuleTask",
+				"bpmn:endEvent",
+				"bpmn:intermediateThrowEvent",
+				"bpmn:scriptTask",
+				"bpmn:sendTask",
+				"bpmn:serviceTask"
+			]
+		},
+		{
+			"name": "taskHeaders",
+			"description": "Static headers passed to the job worker.",
+			"children": [
+				{
+					"element": "header"
+				}
+			],
+			"traits": ["collection"],
+			"allowedIn": [
+				"bpmn:adHocSubProcess",
+				"bpmn:businessRuleTask",
+				"bpmn:endEvent",
+				"bpmn:intermediateThrowEvent",
+				"bpmn:scriptTask",
+				"bpmn:sendTask",
+				"bpmn:serviceTask",
+				"bpmn:userTask",
+				"zeebe:executionListener"
+			]
+		},
+		{
+			"name": "taskListener",
+			"description": "A job-worker listener on a user task's lifecycle.",
+			"attributes": [
+				{
+					"name": "eventType",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "type",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "retries",
+					"type": "string"
+				}
+			],
+			"allowedIn": ["zeebe:taskListeners"]
+		},
+		{
+			"name": "taskListeners",
+			"description": "Task listeners of a user task.",
+			"children": [
+				{
+					"element": "taskListener",
+					"multiplicity": "1..*"
+				}
+			],
+			"traits": ["collection"],
+			"allowedIn": ["bpmn:userTask"]
+		},
+		{
+			"name": "taskSchedule",
+			"description": "Due and follow-up dates of a user task.",
+			"attributes": [
+				{
+					"name": "dueDate",
+					"type": "string"
+				},
+				{
+					"name": "followUpDate",
+					"type": "string"
+				}
+			],
+			"allowedIn": ["bpmn:userTask"]
+		},
+		{
+			"name": "userTask",
+			"description": "Marks a user task as a Camunda 8 native user task.",
+			"allowedIn": ["bpmn:userTask"]
+		},
+		{
+			"name": "userTaskForm",
+			"description": "A Camunda Form embedded in the process (`camunda-forms:bpmn:<id>`).",
+			"attributes": [
+				{
+					"name": "id",
+					"type": "string",
+					"required": true
+				}
+			],
+			"allowedIn": ["bpmn:process"]
+		},
+		{
+			"name": "versionTag",
+			"description": "Version tag of the process.",
+			"attributes": [
+				{
+					"name": "value",
+					"type": "string",
+					"required": true
+				}
+			],
+			"allowedIn": ["bpmn:process"]
+		}
+	]
+}

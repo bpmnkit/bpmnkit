@@ -1,0 +1,69 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "check_order",
+            "name": "Check order",
+            "type": "task"
+          },
+          {
+            "id": "g",
+            "name": "G?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "id": "e2",
+            "name": "E2",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "check_order"
+          },
+          {
+            "from": "check_order",
+            "id": "Flow_2",
+            "to": "g"
+          },
+          {
+            "condition": "= ok",
+            "from": "g",
+            "id": "Flow_3",
+            "name": "Yes",
+            "to": "e"
+          },
+          {
+            "from": "g",
+            "id": "Flow_4",
+            "isDefault": true,
+            "name": "No",
+            "to": "e2"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 5 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

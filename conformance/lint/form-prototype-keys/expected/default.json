@@ -1,0 +1,11 @@
+{
+  "findings": [
+    {
+      "elementId": "b",
+      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"future\" is a custom component registered in your Tasklist. (agent-cards/form.md#traps)",
+      "message": "Component \"b\" has type \"future\", which form-js does not provide.",
+      "rule": "form/unknown-type",
+      "severity": "warning"
+    }
+  ]
+}

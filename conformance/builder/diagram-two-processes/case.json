@@ -1,0 +1,9 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createDiagram","OrderSystem"],
+		["process","caller",{"$ops":[["startEvent","s"],["callActivity","call",{"processId":"callee"}],["endEvent","e"]]}],
+		["process","callee",{"$ops":[["startEvent","s2"],["serviceTask","work",{"name":"work","taskType":"work"}],["endEvent","e2"]]}],
+		["build"]
+	]
+}

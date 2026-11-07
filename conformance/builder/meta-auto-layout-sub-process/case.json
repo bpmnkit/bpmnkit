@@ -1,0 +1,11 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["subProcess","sp",{"$ops":[["startEvent","is"],["serviceTask","a",{"name":"a","taskType":"a"}],["endEvent","ie"]]}],
+		["endEvent","e"],
+		["withAutoLayout"],
+		["build"]
+	]
+}

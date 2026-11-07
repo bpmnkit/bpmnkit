@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Agent"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Ad-hoc sub-process \"Agent\" has a zeebe:taskDefinition, which needs Camunda 8.8 or newer here; this model targets Camunda 8.7.",
+      "processId": "ad-hoc-tools",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or remove it."
+    }
+  ]
+}

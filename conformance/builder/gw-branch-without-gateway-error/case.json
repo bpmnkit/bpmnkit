@@ -1,0 +1,9 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["branch","a",{"$ops":[["endEvent","e"]]}],
+		["build"]
+	]
+}

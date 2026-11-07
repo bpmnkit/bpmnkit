@@ -1,0 +1,36 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 1,
+    "info": 0,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "_de7e721e-a073-4857-b8c3-c6ae886dbb46"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"_de7e721e-a073-4857-b8c3-c6ae886dbb46\" (sendTask) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "plane": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 1
+}

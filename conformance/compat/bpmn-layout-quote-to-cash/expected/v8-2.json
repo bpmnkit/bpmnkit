@@ -1,0 +1,100 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "QuoteToCash"
+      ],
+      "fixable": false,
+      "id": "compat/no-version-tag",
+      "message": "Process \"Quote-to-Cash Process\" has a zeebe:versionTag, which needs Camunda 8.6 or newer; this model targets Camunda 8.2.",
+      "processId": "QuoteToCash",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.6 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "managerApproval"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-form",
+      "message": "User task \"Manager Discount Approval\" links a form by formId, which needs Camunda 8.4 or newer; this model targets Camunda 8.2.",
+      "processId": "QuoteToCash",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.4 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "vpApproval"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-form",
+      "message": "User task \"VP Discount Approval\" links a form by formId, which needs Camunda 8.4 or newer; this model targets Camunda 8.2.",
+      "processId": "QuoteToCash",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.4 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "provisionBundle"
+      ],
+      "fixable": false,
+      "id": "compat/loop-characteristics",
+      "message": "Sub-process \"Provision Bundled Order\" is multi-instance without a zeebe:loopCharacteristics.",
+      "processId": "QuoteToCash",
+      "severity": "error",
+      "suggestion": "Set the input collection to iterate over."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "paymentConfirmed"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Intermediate catch event \"Payment Confirmed\" is not supported by any Camunda 8 version.",
+      "processId": "QuoteToCash",
+      "severity": "error",
+      "suggestion": "Model it with an element Camunda 8 executes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "paymentWindowElapsed"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Intermediate catch event \"Payment Window Elapsed\" is not supported by any Camunda 8 version.",
+      "processId": "QuoteToCash",
+      "severity": "error",
+      "suggestion": "Model it with an element Camunda 8 executes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "awaitPayment1"
+      ],
+      "fixable": false,
+      "id": "compat/subscription",
+      "message": "Message \"payment-confirmed\" used by Receive task \"Await Payment (1)\" has no zeebe:subscription.",
+      "processId": "QuoteToCash",
+      "severity": "error",
+      "suggestion": "Add a zeebe:subscription with a correlationKey to the message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "timerReminder1"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Boundary event \"7 Days\" is not supported by any Camunda 8 version.",
+      "processId": "QuoteToCash",
+      "severity": "error",
+      "suggestion": "Model it with an element Camunda 8 executes."
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "id": "Defs_1",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "s",
+          "type": "startEvent"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "ss",
+                "type": "startEvent"
+              },
+              {
+                "id": "st",
+                "name": "Inner",
+                "type": "task"
+              },
+              {
+                "id": "se",
+                "type": "endEvent"
+              }
+            ],
+            "flows": [
+              {
+                "from": "ss",
+                "id": "sf1",
+                "to": "st"
+              },
+              {
+                "from": "st",
+                "id": "sf2",
+                "to": "se"
+              }
+            ]
+          },
+          "id": "sp",
+          "name": "Sub",
+          "type": "subProcess"
+        },
+        {
+          "id": "e",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "s",
+          "id": "f1",
+          "to": "sp"
+        },
+        {
+          "from": "sp",
+          "id": "f2",
+          "to": "e"
+        }
+      ],
+      "id": "p1",
+      "name": "One"
+    },
+    {
+      "elements": [
+        {
+          "id": "s2",
+          "type": "startEvent"
+        },
+        {
+          "id": "e2",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "s2",
+          "id": "g1",
+          "to": "e2"
+        }
+      ],
+      "id": "p2",
+      "name": "Two"
+    }
+  ]
+}

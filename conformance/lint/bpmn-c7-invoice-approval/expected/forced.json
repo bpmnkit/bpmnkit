@@ -1,0 +1,119 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 4,
+    "info": 0,
+    "warning": 3
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "Gateway_approved"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"Gateway_approved\" has 2 outgoing flows but no default flow set.",
+      "plane": "invoice-approval",
+      "processId": "invoice-approval",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Gateway_approved"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Approved?\" has no default sequence flow.",
+      "plane": "invoice-approval",
+      "processId": "invoice-approval",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Task_book"
+      ],
+      "fixable": false,
+      "id": "pattern/call-activity-no-error-boundary",
+      "message": "Call activity \"Book invoice\" has no error boundary event.",
+      "plane": "invoice-approval",
+      "processId": "invoice-approval",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle errors propagated from the called process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Task_approve"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Approve invoice\" has no timer boundary event.",
+      "plane": "invoice-approval",
+      "processId": "invoice-approval",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_classify"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Classify invoice\" (businessRuleTask) has neither a zeebe:taskDefinition type nor a zeebe:calledDecision.",
+      "plane": "invoice-approval",
+      "processId": "invoice-approval",
+      "severity": "error",
+      "suggestion": "Set a decisionId or a job type."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_archive"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Archive invoice\" (serviceTask) has no zeebe:taskDefinition type.",
+      "plane": "invoice-approval",
+      "processId": "invoice-approval",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_book"
+      ],
+      "fixable": false,
+      "id": "deploy/call-activity-no-process",
+      "message": "Call activity \"Book invoice\" has no zeebe:calledElement processId.",
+      "plane": "invoice-approval",
+      "processId": "invoice-approval",
+      "severity": "error",
+      "suggestion": "Set the process id to call."
+    }
+  ],
+  "platform": {
+    "id": "camunda-platform",
+    "name": "Camunda Platform",
+    "version": "7.22.0"
+  },
+  "total": 7
+}

@@ -1,0 +1,6 @@
+s[start] > a[task A] > ghost
+a[user Again]
+x[frobnicate Odd] > e[end:email Done]
+b[boundary:timer Late] > a
+e > s
+this is prose, not a path

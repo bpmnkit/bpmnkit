@@ -51,11 +51,24 @@ struct Setup {
 async fn setup() -> Option<Setup> {
     let pool = common::setup_db(5).await?;
     let engine = Arc::new(common::start_engine(pool.clone()));
-    let app = reebe_api::create_app(engine.clone(), vec![engine.clone()], 1, pool.clone(), None, AuthConfig::default()).await;
+    let app = reebe_api::create_app(
+        engine.clone(),
+        vec![engine.clone()],
+        1,
+        pool.clone(),
+        None,
+        AuthConfig::default(),
+    )
+    .await;
     let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await.unwrap();
     let base = format!("http://{}", listener.local_addr().unwrap());
     tokio::spawn(async move { axum::serve(listener, app).await.unwrap() });
-    Some(Setup { base, client: reqwest::Client::new(), backend: SqlxBackend::new(pool), engine })
+    Some(Setup {
+        base,
+        client: reqwest::Client::new(),
+        backend: SqlxBackend::new(pool),
+        engine,
+    })
 }
 
 impl Setup {
@@ -72,22 +85,46 @@ impl Setup {
     }
 
     async fn post(&self, path: &str, body: Value) -> (u16, Value) {
-        let response = self.client.post(format!("{}{path}", self.base)).json(&body).send().await.unwrap();
+        let response = self
+            .client
+            .post(format!("{}{path}", self.base))
+            .json(&body)
+            .send()
+            .await
+            .unwrap();
         let status = response.status().as_u16();
         let text = response.text().await.unwrap();
-        (status, serde_json::from_str(&text).unwrap_or(Value::String(text)))
+        (
+            status,
+            serde_json::from_str(&text).unwrap_or(Value::String(text)),
+        )
     }
 
     async fn start(&self) -> i64 {
-        let (status, body) = self.post("/v2/process-instances", json!({ "bpmnProcessId": "proc" })).await;
+        let (status, body) = self
+            .post("/v2/process-instances", json!({ "bpmnProcessId": "proc" }))
+            .await;
         assert!(status < 300, "{status} {body}");
-        body["processInstanceKey"].as_str().and_then(|k| k.parse().ok()).or_else(|| body["processInstanceKey"].as_i64()).unwrap()
+        body["processInstanceKey"]
+            .as_str()
+            .and_then(|k| k.parse().ok())
+            .or_else(|| body["processInstanceKey"].as_i64())
+            .unwrap()
     }
 
     /// Wait until the element instance of `element_id` is in `state`.
-    async fn element(&self, pi: i64, element_id: &str, state: &str) -> reebe_db::state::element_instances::ElementInstance {
+    async fn element(
+        &self,
+        pi: i64,
+        element_id: &str,
+        state: &str,
+    ) -> reebe_db::state::element_instances::ElementInstance {
         for _ in 0..100 {
-            let found = self.backend.get_element_instances_by_process_instance(pi).await.unwrap_or_default()
+            let found = self
+                .backend
+                .get_element_instances_by_process_instance(pi)
+                .await
+                .unwrap_or_default()
                 .into_iter()
                 .find(|e| e.element_id == element_id && e.state == state);
             if let Some(found) = found {
@@ -118,19 +155,34 @@ async fn modification_activates_and_terminates_over_rest() {
     let sp = s.element(pi, "sp", "ACTIVATED").await;
     s.element(pi, "b", "ACTIVATED").await;
     let in_sp = s.backend.get_variables_by_scope(sp.key).await.unwrap();
-    assert!(in_sp.iter().any(|v| v.name == "inSp" && v.value == json!(1)), "{in_sp:?}");
+    assert!(
+        in_sp
+            .iter()
+            .any(|v| v.name == "inSp" && v.value == json!(1)),
+        "{in_sp:?}"
+    );
     let global = s.backend.get_variables_by_scope(pi).await.unwrap();
-    assert!(global.iter().any(|v| v.name == "global" && v.value == json!(2)), "{global:?}");
+    assert!(
+        global
+            .iter()
+            .any(|v| v.name == "global" && v.value == json!(2)),
+        "{global:?}"
+    );
 
     // The 8.9 move instruction: b moves out of the sub-process, which is left with
     // nothing to do and terminated.
-    let (status, body) = s.post(&format!("/v2/process-instances/{pi}/modification"), json!({
-        "moveInstructions": [{
-            "sourceElementInstruction": { "sourceType": "byId", "sourceElementId": "b" },
-            "targetElementId": "after",
-            "ancestorScopeInstruction": { "ancestorScopeType": "inferred" },
-        }],
-    })).await;
+    let (status, body) = s
+        .post(
+            &format!("/v2/process-instances/{pi}/modification"),
+            json!({
+                "moveInstructions": [{
+                    "sourceElementInstruction": { "sourceType": "byId", "sourceElementId": "b" },
+                    "targetElementId": "after",
+                    "ancestorScopeInstruction": { "ancestorScopeType": "inferred" },
+                }],
+            }),
+        )
+        .await;
     assert_eq!(status, 204, "{body}");
     s.element(pi, "b", "TERMINATED").await;
     s.element(pi, "sp", "TERMINATED").await;
@@ -144,11 +196,24 @@ async fn modification_rejections_over_rest() {
     let pi = s.start().await;
     s.element(pi, "a", "ACTIVATED").await;
 
-    let (status, body) = s.post("/v2/process-instances/12345/modification", json!({ "activateInstructions": [{ "elementId": "b" }] })).await;
+    let (status, body) = s
+        .post(
+            "/v2/process-instances/12345/modification",
+            json!({ "activateInstructions": [{ "elementId": "b" }] }),
+        )
+        .await;
     assert_eq!(status, 404, "{body}");
-    assert_eq!(body["detail"], "Expected to modify process instance but no process instance found with key '12345'");
+    assert_eq!(
+        body["detail"],
+        "Expected to modify process instance but no process instance found with key '12345'"
+    );
 
-    let (status, body) = s.post(&format!("/v2/process-instances/{pi}/modification"), json!({ "activateInstructions": [{ "elementId": "ghost" }] })).await;
+    let (status, body) = s
+        .post(
+            &format!("/v2/process-instances/{pi}/modification"),
+            json!({ "activateInstructions": [{ "elementId": "ghost" }] }),
+        )
+        .await;
     assert_eq!(status, 400, "{body}");
     assert_eq!(
         body["detail"],
@@ -157,10 +222,15 @@ async fn modification_rejections_over_rest() {
 
     // The gateway's own checks, as Zeebe's ProcessInstanceRequestValidator makes them (it
     // joins them with ". " and adds a "." when the last does not end with one).
-    let (status, body) = s.post(&format!("/v2/process-instances/{pi}/modification"), json!({
-        "activateInstructions": [{ "variableInstructions": [{ "variables": {} }] }],
-        "terminateInstructions": [{ "elementInstanceKey": "not-a-key" }],
-    })).await;
+    let (status, body) = s
+        .post(
+            &format!("/v2/process-instances/{pi}/modification"),
+            json!({
+                "activateInstructions": [{ "variableInstructions": [{ "variables": {} }] }],
+                "terminateInstructions": [{ "elementInstanceKey": "not-a-key" }],
+            }),
+        )
+        .await;
     assert_eq!(status, 400, "{body}");
     assert_eq!(
         body["detail"],
@@ -172,11 +242,13 @@ async fn modification_rejections_over_rest() {
 
 /// A DRG `greetings` with the literal decision `greet`, which says `{greeting} {name}`.
 fn greeting_dmn(greeting: &str) -> String {
-    format!(r#"<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="greetings" name="Greetings" namespace="t">
+    format!(
+        r#"<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="greetings" name="Greetings" namespace="t">
   <decision id="greet" name="Greet">
     <literalExpression><text>"{greeting} " + name</text></literalExpression>
   </decision>
-</definitions>"#)
+</definitions>"#
+    )
 }
 
 #[tokio::test]
@@ -185,34 +257,69 @@ async fn decision_evaluation_by_id_and_key_over_rest() {
     let v1 = s.deploy("greet.dmn", &greeting_dmn("Hello")).await;
     let duplicate = s.deploy("greet.dmn", &greeting_dmn("Hello")).await;
     let v2 = s.deploy("greet.dmn", &greeting_dmn("Hi")).await;
-    let v1_key = v1["decisions"][0]["decisionKey"].as_str().unwrap().to_string();
-    assert_eq!(duplicate["decisions"][0]["decisionKey"], v1["decisions"][0]["decisionKey"], "a duplicate keeps version 1");
+    let v1_key = v1["decisions"][0]["decisionKey"]
+        .as_str()
+        .unwrap()
+        .to_string();
+    assert_eq!(
+        duplicate["decisions"][0]["decisionKey"], v1["decisions"][0]["decisionKey"],
+        "a duplicate keeps version 1"
+    );
     assert_eq!(v2["decisions"][0]["version"], 2);
 
     // By id: the latest version.
-    let (status, body) = s.post("/v2/decision-definitions/evaluation", json!({
-        "decisionDefinitionId": "greet", "variables": { "name": "Ada" },
-    })).await;
+    let (status, body) = s
+        .post(
+            "/v2/decision-definitions/evaluation",
+            json!({
+                "decisionDefinitionId": "greet", "variables": { "name": "Ada" },
+            }),
+        )
+        .await;
     assert_eq!(status, 200, "{body}");
     assert_eq!(body["output"], r#""Hi Ada""#);
     assert_eq!(body["decisionDefinitionVersion"], 2);
-    assert_eq!(body["decisionDefinitionKey"], v2["decisions"][0]["decisionKey"]);
+    assert_eq!(
+        body["decisionDefinitionKey"],
+        v2["decisions"][0]["decisionKey"]
+    );
     assert_eq!(body["decisionDefinitionName"], "Greet");
     assert_eq!(body["decisionRequirementsId"], "greetings");
     assert_eq!(body["failureMessage"], Value::Null);
 
     // By key: that version.
-    let (status, body) = s.post("/v2/decision-definitions/evaluation", json!({
-        "decisionDefinitionKey": v1_key, "variables": { "name": "Ada" },
-    })).await;
+    let (status, body) = s
+        .post(
+            "/v2/decision-definitions/evaluation",
+            json!({
+                "decisionDefinitionKey": v1_key, "variables": { "name": "Ada" },
+            }),
+        )
+        .await;
     assert_eq!(status, 200, "{body}");
     assert_eq!(body["output"], r#""Hello Ada""#);
     assert_eq!(body["decisionDefinitionVersion"], 1);
 
-    let (status, body) = s.post("/v2/decision-definitions/evaluation", json!({ "decisionDefinitionKey": "424242" })).await;
+    let (status, body) = s
+        .post(
+            "/v2/decision-definitions/evaluation",
+            json!({ "decisionDefinitionKey": "424242" }),
+        )
+        .await;
     assert_eq!(status, 404, "{body}");
-    assert_eq!(body["detail"], "Expected to evaluate decision '424242', but no decision found for key '424242'");
-    let (status, body) = s.post("/v2/decision-definitions/evaluation", json!({ "variables": {} })).await;
+    assert_eq!(
+        body["detail"],
+        "Expected to evaluate decision '424242', but no decision found for key '424242'"
+    );
+    let (status, body) = s
+        .post(
+            "/v2/decision-definitions/evaluation",
+            json!({ "variables": {} }),
+        )
+        .await;
     assert_eq!(status, 400, "{body}");
-    assert_eq!(body["detail"], "At least one of [decisionDefinitionId, decisionDefinitionKey] is required.");
+    assert_eq!(
+        body["detail"],
+        "At least one of [decisionDefinitionId, decisionDefinitionKey] is required."
+    );
 }

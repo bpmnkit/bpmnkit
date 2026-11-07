@@ -1,0 +1,99 @@
+{
+  "id": "Definitions_1",
+  "executionPlatformVersion": "8.10.0",
+  "processes": [
+    {
+      "id": "Agent",
+      "name": "Agent",
+      "elements": [
+        {
+          "id": "start",
+          "type": "startEvent",
+          "name": "Go"
+        },
+        {
+          "id": "run",
+          "type": "exclusiveGateway",
+          "name": "Run agent"
+        },
+        {
+          "id": "agent",
+          "type": "adHocSubProcess",
+          "name": "AI Agent",
+          "children": {
+            "elements": [
+              {
+                "id": "users",
+                "type": "serviceTask",
+                "name": "Find sample users",
+                "jobType": "users"
+              },
+              {
+                "id": "joke",
+                "type": "serviceTask",
+                "name": "Get a safe joke",
+                "jobType": "joke"
+              }
+            ],
+            "flows": []
+          }
+        },
+        {
+          "id": "done",
+          "type": "exclusiveGateway",
+          "name": "Satisfied?"
+        },
+        {
+          "id": "fin",
+          "type": "endEvent",
+          "name": "Done"
+        }
+      ],
+      "flows": [
+        {
+          "id": "Flow_1",
+          "from": "start",
+          "to": "run"
+        },
+        {
+          "id": "Flow_2",
+          "from": "run",
+          "to": "agent"
+        },
+        {
+          "id": "Flow_3",
+          "from": "agent",
+          "to": "done"
+        },
+        {
+          "id": "Flow_4",
+          "from": "done",
+          "to": "fin",
+          "name": "Yes",
+          "condition": "= ok"
+        },
+        {
+          "id": "Flow_5",
+          "from": "done",
+          "to": "run",
+          "name": "No",
+          "isDefault": true
+        }
+      ],
+      "notes": [
+        {
+          "elementId": "start",
+          "text": "Triggered by a user"
+        },
+        {
+          "elementId": "agent",
+          "text": "The agent picks a tool"
+        },
+        {
+          "elementId": "joke",
+          "text": "Each tool is a capability"
+        }
+      ]
+    }
+  ]
+}

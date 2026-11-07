@@ -1,0 +1,53 @@
+{
+  "report": {
+    "counts": {
+      "convertible": 2,
+      "manual": 2,
+      "unsupported": 0
+    },
+    "findings": [
+      {
+        "applied": true,
+        "construct": "timer timeDuration",
+        "elementId": "t1",
+        "elementType": "intermediateCatchEvent",
+        "message": "Timer expression \"${wait}\" became \"=wait\".",
+        "processId": "p",
+        "severity": "convertible",
+        "suggestion": "FEEL timer expression"
+      },
+      {
+        "applied": false,
+        "construct": "timer timeDate",
+        "elementId": "t2",
+        "elementType": "intermediateCatchEvent",
+        "message": "Timer expression \"${dateTime().plusDays(1).toDate()}\" was not translated: \"dateTime\" is a Camunda 7 engine object with no Camunda 8 counterpart.",
+        "processId": "p",
+        "severity": "manual",
+        "suggestion": "Rewrite it as a FEEL expression returning an ISO 8601 duration, date-time or cycle."
+      },
+      {
+        "applied": false,
+        "construct": "timer timeCycle",
+        "elementId": "t3",
+        "elementType": "startEvent",
+        "message": "Cron cycle \"0 0 9 * * ?\" uses Camunda 7's Quartz-style syntax.",
+        "processId": "p",
+        "severity": "manual",
+        "suggestion": "Check it against Camunda 8's cron syntax, or use an ISO 8601 repeating interval."
+      },
+      {
+        "applied": true,
+        "construct": "modeler:executionPlatform",
+        "elementId": "Definitions_test",
+        "elementType": "definitions",
+        "message": "Execution platform set to Camunda Cloud 8.10.0 (was Camunda Platform).",
+        "processId": "",
+        "severity": "convertible",
+        "suggestion": "Camunda Modeler opens the file as a Camunda 8 diagram."
+      }
+    ],
+    "total": 4
+  },
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" id=\"Definitions_test\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.10.0\">\n  <bpmn:process id=\"p\" isExecutable=\"true\">\n    <bpmn:intermediateCatchEvent id=\"t1\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDuration xsi:type=\"bpmn:tFormalExpression\">=wait</bpmn:timeDuration>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:intermediateCatchEvent id=\"t2\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeDate xsi:type=\"bpmn:tFormalExpression\">${dateTime().plusDays(1).toDate()}</bpmn:timeDate>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:startEvent id=\"t3\">\n      <bpmn:timerEventDefinition>\n        <bpmn:timeCycle xsi:type=\"bpmn:tFormalExpression\">0 0 9 * * ?</bpmn:timeCycle>\n      </bpmn:timerEventDefinition>\n    </bpmn:startEvent>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+}

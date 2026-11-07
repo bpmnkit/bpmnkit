@@ -1,0 +1,3 @@
+s[start Order received] > pick[task Pick items] > label[task Print label]
+gw[xor Ready?] > dispatch[service Dispatch package] > done[end Order fulfilled]
+t[catch:timer Too late] > late[task Chase]

@@ -1,0 +1,173 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "id": "decisionTable_0000004",
+        "inputs": [
+          {
+            "id": "i",
+            "inputExpression": {
+              "id": "inputExpression_0000001",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o",
+            "name": "y"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r",
+            "inputEntries": [
+              {
+                "id": "inputEntry_0_0000002",
+                "text": "1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "outputEntry_0_0000003",
+                "text": "1"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "a",
+      "informationRequirements": [],
+      "knowledgeRequirements": []
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "id": "decisionTable_000000a",
+        "inputs": [
+          {
+            "id": "i2",
+            "inputExpression": {
+              "id": "inputExpression_0000007",
+              "text": "y"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o2",
+            "name": "z"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r2",
+            "inputEntries": [
+              {
+                "id": "inputEntry_0_0000008",
+                "text": "1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "outputEntry_0_0000009",
+                "text": "2"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "b",
+      "informationRequirements": [
+        {
+          "id": "InformationRequirement_0000005",
+          "requiredDecision": "a"
+        },
+        {
+          "id": "InformationRequirement_0000006",
+          "requiredInput": "in1"
+        }
+      ],
+      "knowledgeRequirements": []
+    }
+  ],
+  "diagram": {
+    "edges": [
+      {
+        "dmnElementRef": "InformationRequirement_0000005",
+        "waypoints": [
+          {
+            "x": 340,
+            "y": 140
+          },
+          {
+            "x": 400,
+            "y": 182.5
+          }
+        ]
+      },
+      {
+        "dmnElementRef": "InformationRequirement_0000006",
+        "waypoints": [
+          {
+            "x": 285,
+            "y": 242.5
+          },
+          {
+            "x": 400,
+            "y": 182.5
+          }
+        ]
+      }
+    ],
+    "shapes": [
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 160,
+          "y": 100
+        },
+        "dmnElementRef": "a"
+      },
+      {
+        "bounds": {
+          "height": 45,
+          "width": 125,
+          "x": 160,
+          "y": 220
+        },
+        "dmnElementRef": "in1"
+      },
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 400,
+          "y": 142.5
+        },
+        "dmnElementRef": "b"
+      }
+    ]
+  },
+  "id": "defs",
+  "inputData": [
+    {
+      "id": "in1",
+      "name": "Input one"
+    }
+  ],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "Defs",
+  "namespace": "http://bpmn.io/schema/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "dc": "http://www.omg.org/spec/DMN/20180521/DC/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/"
+  },
+  "textAnnotations": []
+}

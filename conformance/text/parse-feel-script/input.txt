@@ -1,0 +1,1 @@
+s[start] > c[script Count open | result=open feel=count(items[state = "open"])] > e[end]

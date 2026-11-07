@@ -18,13 +18,13 @@
 //! element of its flow scope completes, since that may leave the untaken flows
 //! out of reach. A path follows a link throw event to its link catch event.
 
-use std::collections::HashSet;
-use reebe_bpmn::{BpmnProcess, FlowElement, Gateway};
-use reebe_db::state::gateway_tokens::JoinToken;
-use crate::engine::EngineState;
-use crate::error::EngineResult;
 use super::catch_event::boundary_events;
 use super::{CommandToWrite, Writers};
+use crate::engine::EngineState;
+use crate::error::EngineResult;
+use reebe_bpmn::{BpmnProcess, FlowElement, Gateway};
+use reebe_db::state::gateway_tokens::JoinToken;
+use std::collections::HashSet;
 
 /// The gateway, if `element` is a joining gateway, and whether it is inclusive.
 pub(crate) fn joining_gateway(element: &FlowElement) -> Option<(&Gateway, bool)> {
@@ -44,8 +44,13 @@ pub(crate) struct JoinScope<'a> {
     pub position: i64,
 }
 
-async fn tokens_at(state: &EngineState, at: &JoinScope<'_>, gateway_id: &str) -> EngineResult<Vec<JoinToken>> {
-    Ok(state.backend
+async fn tokens_at(
+    state: &EngineState,
+    at: &JoinScope<'_>,
+    gateway_id: &str,
+) -> EngineResult<Vec<JoinToken>> {
+    Ok(state
+        .backend
         .get_join_tokens(at.process_instance_key)
         .await?
         .into_iter()
@@ -65,14 +70,20 @@ pub(crate) async fn arrive(
     arrived_on: Option<&str>,
 ) -> EngineResult<bool> {
     if let Some(flow) = arrived_on {
-        state.backend.add_join_token(at.process_instance_key, at.flow_scope_key, &gw.id, flow).await?;
+        state
+            .backend
+            .add_join_token(at.process_instance_key, at.flow_scope_key, &gw.id, flow)
+            .await?;
     }
     let tokens = tokens_at(state, at, &gw.id).await?;
     if !ready(state, writers, at, gw, inclusive, &tokens).await? {
         return Ok(false);
     }
     for token in &tokens {
-        state.backend.take_join_token(at.flow_scope_key, &gw.id, &token.sequence_flow_id).await?;
+        state
+            .backend
+            .take_join_token(at.flow_scope_key, &gw.id, &token.sequence_flow_id)
+            .await?;
     }
     Ok(true)
 }
@@ -88,7 +99,8 @@ async fn ready(
     if tokens.is_empty() {
         return Ok(false);
     }
-    let untaken: Vec<&str> = gw.incoming
+    let untaken: Vec<&str> = gw
+        .incoming
         .iter()
         .map(String::as_str)
         .filter(|flow| !tokens.iter().any(|t| t.sequence_flow_id == *flow))
@@ -114,7 +126,8 @@ pub(crate) async fn arrived_on(
         return Ok(Some(flow.to_string()));
     }
     let tokens = tokens_at(state, at, &gw.id).await?;
-    Ok(gw.incoming
+    Ok(gw
+        .incoming
         .iter()
         .find(|flow| !tokens.iter().any(|t| &t.sequence_flow_id == *flow))
         .or(gw.incoming.first())
@@ -130,7 +143,8 @@ async fn can_still_be_reached(
     gw: &Gateway,
     untaken: &[&str],
 ) -> EngineResult<bool> {
-    let mut sources: Vec<String> = state.backend
+    let mut sources: Vec<String> = state
+        .backend
         .get_element_instances_by_process_instance(at.process_instance_key)
         .await?
         .into_iter()
@@ -142,7 +156,8 @@ async fn can_still_be_reached(
         .map(|ei| ei.element_id)
         .collect();
     sources.extend(
-        state.backend
+        state
+            .backend
             .get_join_tokens(at.process_instance_key)
             .await?
             .into_iter()
@@ -151,21 +166,31 @@ async fn can_still_be_reached(
     );
 
     let scope_text = at.flow_scope_key.to_string();
-    let mut pending: Vec<serde_json::Value> = writers.commands
+    let mut pending: Vec<serde_json::Value> = writers
+        .commands
         .iter()
-        .filter(|c| c.intent == "ACTIVATE_ELEMENT" && c.payload["flowScopeKey"].as_str() == Some(scope_text.as_str()))
+        .filter(|c| {
+            c.intent == "ACTIVATE_ELEMENT"
+                && c.payload["flowScopeKey"].as_str() == Some(scope_text.as_str())
+        })
         .map(|c| c.payload.clone())
         .collect();
     pending.extend(
-        state.backend
+        state
+            .backend
             .get_pending_activations(state.partition_id, at.position, &scope_text)
             .await?,
     );
     for payload in &pending {
-        let Some(target) = payload["elementId"].as_str() else { continue };
+        let Some(target) = payload["elementId"].as_str() else {
+            continue;
+        };
         if target == gw.id {
             // A token on its way to the join itself.
-            if payload["sequenceFlowId"].as_str().is_some_and(|f| untaken.contains(&f)) {
+            if payload["sequenceFlowId"]
+                .as_str()
+                .is_some_and(|f| untaken.contains(&f))
+            {
                 return Ok(true);
             }
             continue;
@@ -206,7 +231,8 @@ pub(crate) async fn reevaluate_inclusive_joins(
     at: &JoinScope<'_>,
     context: &serde_json::Value,
 ) -> EngineResult<()> {
-    let mut gateway_ids: Vec<String> = state.backend
+    let mut gateway_ids: Vec<String> = state
+        .backend
         .get_join_tokens(at.process_instance_key)
         .await?
         .into_iter()
@@ -216,7 +242,11 @@ pub(crate) async fn reevaluate_inclusive_joins(
     gateway_ids.sort();
     gateway_ids.dedup();
     for gateway_id in gateway_ids {
-        let Some((gw, true)) = at.process.get_element_recursive(&gateway_id).and_then(joining_gateway) else {
+        let Some((gw, true)) = at
+            .process
+            .get_element_recursive(&gateway_id)
+            .and_then(joining_gateway)
+        else {
             continue;
         };
         let tokens = tokens_at(state, at, &gateway_id).await?;

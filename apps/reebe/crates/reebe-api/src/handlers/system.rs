@@ -1,10 +1,12 @@
+use crate::app::ApiState;
+use crate::dto::system::{
+    BrokerInfo, LicenseResponse, PartitionInfo, StatusResponse, TopologyResponse,
+};
+use crate::error::{ApiError, ApiResult};
 use axum::extract::State;
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::Json;
-use crate::app::ApiState;
-use crate::dto::system::{BrokerInfo, LicenseResponse, PartitionInfo, StatusResponse, TopologyResponse};
-use crate::error::{ApiError, ApiResult};
 
 pub async fn topology(State(state): State<ApiState>) -> ApiResult<impl IntoResponse> {
     let owned = state.engine.owned_partitions.read().await.clone();
@@ -104,13 +106,14 @@ pub async fn setup_user(
 
 /// Camunda-compatible health check endpoint (`GET /actuator/health`).
 pub async fn actuator_health(State(state): State<ApiState>) -> impl IntoResponse {
-    let db_ok = sqlx::query("SELECT 1")
-        .fetch_one(&state.pool)
-        .await
-        .is_ok();
+    let db_ok = sqlx::query("SELECT 1").fetch_one(&state.pool).await.is_ok();
 
     let status_str = if db_ok { "UP" } else { "DOWN" };
-    let http_status = if db_ok { StatusCode::OK } else { StatusCode::SERVICE_UNAVAILABLE };
+    let http_status = if db_ok {
+        StatusCode::OK
+    } else {
+        StatusCode::SERVICE_UNAVAILABLE
+    };
 
     (
         http_status,
@@ -119,6 +122,6 @@ pub async fn actuator_health(State(state): State<ApiState>) -> impl IntoResponse
             "components": {
                 "db": { "status": status_str }
             }
-        }))
+        })),
     )
 }

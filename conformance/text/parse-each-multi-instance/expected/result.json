@@ -1,0 +1,65 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "m",
+            "jobType": "send-mail",
+            "multiInstance": {
+              "collection": "=stakeholders",
+              "element": "stakeholder"
+            },
+            "name": "Mail each stakeholder",
+            "type": "serviceTask"
+          },
+          {
+            "id": "r",
+            "inputs": {
+              "l": "=sent"
+            },
+            "name": "Count",
+            "resultVariable": "n",
+            "script": "= count(l)",
+            "type": "scriptTask"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "m"
+          },
+          {
+            "from": "m",
+            "id": "Flow_2",
+            "to": "r"
+          },
+          {
+            "from": "r",
+            "id": "Flow_3",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

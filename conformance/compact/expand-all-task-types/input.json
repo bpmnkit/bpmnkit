@@ -1,0 +1,98 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "a",
+          "type": "task",
+          "name": "A"
+        },
+        {
+          "id": "b",
+          "type": "userTask",
+          "name": "B"
+        },
+        {
+          "id": "c",
+          "type": "serviceTask",
+          "name": "C",
+          "jobType": "c"
+        },
+        {
+          "id": "d",
+          "type": "businessRuleTask",
+          "decisionId": "dec",
+          "resultVariable": "r"
+        },
+        {
+          "id": "e",
+          "type": "sendTask",
+          "jobType": "send"
+        },
+        {
+          "id": "f",
+          "type": "receiveTask"
+        },
+        {
+          "id": "g",
+          "type": "scriptTask",
+          "script": "= 1 + 1",
+          "resultVariable": "two"
+        },
+        {
+          "id": "h",
+          "type": "manualTask"
+        },
+        {
+          "id": "i",
+          "type": "callActivity",
+          "calledProcess": "child"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f1",
+          "from": "a",
+          "to": "b"
+        },
+        {
+          "id": "f2",
+          "from": "b",
+          "to": "c"
+        },
+        {
+          "id": "f3",
+          "from": "c",
+          "to": "d"
+        },
+        {
+          "id": "f4",
+          "from": "d",
+          "to": "e"
+        },
+        {
+          "id": "f5",
+          "from": "e",
+          "to": "f"
+        },
+        {
+          "id": "f6",
+          "from": "f",
+          "to": "g"
+        },
+        {
+          "id": "f7",
+          "from": "g",
+          "to": "h"
+        },
+        {
+          "id": "f8",
+          "from": "h",
+          "to": "i"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+Rule has 2 outputs but table has 1 output columns. See agent-cards/dmn.md#traps.

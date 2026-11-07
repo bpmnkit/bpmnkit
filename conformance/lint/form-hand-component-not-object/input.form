@@ -1,0 +1,11 @@
+{
+  "id": "F",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    1,
+    "x",
+    null,
+    []
+  ]
+}

@@ -1,0 +1,305 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "id": "DecisionTable_0000001",
+        "inputs": [
+          {
+            "id": "Input_0000002",
+            "inputExpression": {
+              "id": "InputExpression_0000003",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "Output_0000004",
+            "name": "topOut"
+          }
+        ],
+        "rules": [
+          {
+            "id": "DecisionRule_0000007",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_0000005",
+                "text": "1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_0000006",
+                "text": "\"v\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "top",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "TOP"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "id": "DecisionTable_0000009",
+        "inputs": [
+          {
+            "id": "Input_000000a",
+            "inputExpression": {
+              "id": "InputExpression_000000b",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "Output_000000c",
+            "name": "leftOut"
+          }
+        ],
+        "rules": [
+          {
+            "id": "DecisionRule_000000f",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_000000d",
+                "text": "1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_000000e",
+                "text": "\"v\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "left",
+      "informationRequirements": [
+        {
+          "id": "InformationRequirement_000000x",
+          "requiredDecision": "top"
+        }
+      ],
+      "knowledgeRequirements": [],
+      "name": "LEFT"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "id": "DecisionTable_000000h",
+        "inputs": [
+          {
+            "id": "Input_000000i",
+            "inputExpression": {
+              "id": "InputExpression_000000j",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "Output_000000k",
+            "name": "rightOut"
+          }
+        ],
+        "rules": [
+          {
+            "id": "DecisionRule_000000n",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_000000l",
+                "text": "1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_000000m",
+                "text": "\"v\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "right",
+      "informationRequirements": [
+        {
+          "id": "InformationRequirement_000000y",
+          "requiredDecision": "top"
+        }
+      ],
+      "knowledgeRequirements": [],
+      "name": "RIGHT"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "id": "DecisionTable_000000p",
+        "inputs": [
+          {
+            "id": "Input_000000q",
+            "inputExpression": {
+              "id": "InputExpression_000000r",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "Output_000000s",
+            "name": "bottomOut"
+          }
+        ],
+        "rules": [
+          {
+            "id": "DecisionRule_000000v",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_000000t",
+                "text": "1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_000000u",
+                "text": "\"v\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "bottom",
+      "informationRequirements": [
+        {
+          "id": "InformationRequirement_000000z",
+          "requiredDecision": "left"
+        },
+        {
+          "id": "InformationRequirement_0000010",
+          "requiredDecision": "right"
+        }
+      ],
+      "knowledgeRequirements": [],
+      "name": "BOTTOM"
+    }
+  ],
+  "diagram": {
+    "edges": [
+      {
+        "dmnElementRef": "InformationRequirement_000000x",
+        "waypoints": [
+          {
+            "x": 340,
+            "y": 200
+          },
+          {
+            "x": 400,
+            "y": 140
+          }
+        ]
+      },
+      {
+        "dmnElementRef": "InformationRequirement_000000y",
+        "waypoints": [
+          {
+            "x": 340,
+            "y": 200
+          },
+          {
+            "x": 400,
+            "y": 260
+          }
+        ]
+      },
+      {
+        "dmnElementRef": "InformationRequirement_000000z",
+        "waypoints": [
+          {
+            "x": 580,
+            "y": 140
+          },
+          {
+            "x": 640,
+            "y": 200
+          }
+        ]
+      },
+      {
+        "dmnElementRef": "InformationRequirement_0000010",
+        "waypoints": [
+          {
+            "x": 580,
+            "y": 260
+          },
+          {
+            "x": 640,
+            "y": 200
+          }
+        ]
+      }
+    ],
+    "shapes": [
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 160,
+          "y": 160
+        },
+        "dmnElementRef": "top"
+      },
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 400,
+          "y": 100
+        },
+        "dmnElementRef": "left"
+      },
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 400,
+          "y": 220
+        },
+        "dmnElementRef": "right"
+      },
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 640,
+          "y": 160
+        },
+        "dmnElementRef": "bottom"
+      }
+    ]
+  },
+  "exporter": "bpmn-sdk",
+  "exporterVersion": "0.0.1",
+  "id": "Definitions_0000011",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {
+    "executionPlatform": "Camunda Cloud",
+    "executionPlatformVersion": "8.10.0"
+  },
+  "name": "Diamond",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "dc": "http://www.omg.org/spec/DMN/20180521/DC/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/",
+    "modeler": "http://camunda.org/schema/modeler/1.0"
+  },
+  "textAnnotations": []
+}

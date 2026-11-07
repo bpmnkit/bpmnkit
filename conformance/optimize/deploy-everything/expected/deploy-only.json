@@ -1,0 +1,194 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "s1"
+      ],
+      "fixable": false,
+      "id": "deploy/message-start-no-name",
+      "message": "Message start event \"Msg start\" has no message name.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a message name — Camunda 8 refuses to deploy an unnamed message reference."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "s3"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"Timer start\" has 1 event definition(s) without an id.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"No type\" (serviceTask) has no zeebe:taskDefinition type.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "snd"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Send no type\" (sendTask) has no zeebe:taskDefinition type.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "br"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Rule none\" (businessRuleTask) has neither a zeebe:taskDefinition type nor a zeebe:calledDecision.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a decisionId or a job type."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "ca"
+      ],
+      "fixable": false,
+      "id": "deploy/call-activity-no-process",
+      "message": "Call activity \"Call none\" has no zeebe:calledElement processId.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set the process id to call."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "ic1"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"Catch no corr\" (intermediateCatchEvent) has no zeebe:subscription correlationKey.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "ic4"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"Catch no id\" has 1 event definition(s) without an id.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "rt1"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"Receive no corr\" (receiveTask) has no zeebe:subscription correlationKey.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "bm"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"bm\" (boundaryEvent) has no zeebe:subscription correlationKey.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "s3"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer start event \"Timer start\" has no timer value; set one of timeCycle, timeDate.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set when the timer fires."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "ic2"
+      ],
+      "fixable": false,
+      "id": "compat/subscription",
+      "message": "Message intermediate catch event \"Catch ext corr\" carries its zeebe:subscription itself; Camunda Modeler expects it on message \"M1\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Move the zeebe:subscription onto the bpmn:message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "rt3"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Receive task \"Receive no msg\" references no message.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "bmk"
+      ],
+      "fixable": false,
+      "id": "compat/subscription",
+      "message": "Message boundary event \"bmk\" carries its zeebe:subscription itself; Camunda Modeler expects it on message \"M3\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Move the zeebe:subscription onto the bpmn:message."
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 14,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 0,
+      "naming": 0,
+      "pattern": 0,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 14,
+      "info": 0,
+      "warning": 0
+    },
+    "total": 14
+  }
+}

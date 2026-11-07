@@ -1,0 +1,5 @@
+s[start] > split[and] > a[task A] > done[end]
+split > b[task B] > done
+s2[start:message] > g[xor Ok?]
+g >(Yes: ok) c[task C] > done2[end]
+g >(No: default) d[task D] > done2

@@ -1,0 +1,34 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "a",
+          "type": "serviceTask",
+          "jobType": "work",
+          "resultVariable": "constructor",
+          "outputs": {}
+        },
+        {
+          "id": "b",
+          "type": "serviceTask",
+          "jobType": "work",
+          "resultVariable": "toString",
+          "outputs": { "other": "= x" }
+        },
+        {
+          "id": "c",
+          "type": "serviceTask",
+          "jobType": "work",
+          "resultVariable": "hasOwnProperty"
+        }
+      ],
+      "flows": [
+        { "id": "f1", "from": "a", "to": "b" },
+        { "id": "f2", "from": "b", "to": "c" }
+      ]
+    }
+  ]
+}

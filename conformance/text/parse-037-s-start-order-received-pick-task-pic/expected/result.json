@@ -1,0 +1,92 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Order received",
+            "type": "startEvent"
+          },
+          {
+            "id": "pick",
+            "name": "Pick items",
+            "type": "task"
+          },
+          {
+            "id": "label",
+            "name": "Print label",
+            "type": "task"
+          },
+          {
+            "id": "dispatch",
+            "jobType": "dispatch",
+            "name": "Dispatch package",
+            "type": "serviceTask"
+          },
+          {
+            "id": "done",
+            "name": "Order fulfilled",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "pick"
+          },
+          {
+            "from": "pick",
+            "id": "Flow_2",
+            "to": "label"
+          },
+          {
+            "from": "dispatch",
+            "id": "Flow_3",
+            "to": "done"
+          },
+          {
+            "from": "label",
+            "id": "Flow_4",
+            "to": "dispatch"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "connected \"label\" to \"gw\", which nothing led to"
+  ],
+  "problems": [
+    {
+      "line": 2,
+      "message": "\"gw\" has only one branch; gateway removed"
+    },
+    {
+      "line": 3,
+      "message": "\"t\" is not connected to a start event; left out"
+    },
+    {
+      "line": 3,
+      "message": "\"late\" is not connected to a start event; left out"
+    }
+  ],
+  "questions": [
+    {
+      "draft": "At \"Ready?\", otherwise ",
+      "elementId": "gw",
+      "options": [],
+      "text": "\"Ready?\" had only one way to go, so it was removed. What happens otherwise?"
+    },
+    {
+      "draft": "Put \"Chase\" after ",
+      "elementId": "late",
+      "options": [],
+      "text": "\"Chase\" was left out: nothing leads to it. Where does it belong?"
+    }
+  ]
+}

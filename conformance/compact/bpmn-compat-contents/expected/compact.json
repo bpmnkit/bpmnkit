@@ -1,0 +1,327 @@
+{
+  "id": "Definitions_contents",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "start",
+          "type": "startEvent"
+        },
+        {
+          "eventType": "message",
+          "id": "webhookStart",
+          "properties": {
+            "consumeUnmatchedEvents": "true",
+            "deduplicationModeManualFlag": "true",
+            "inbound.type": "io.camunda:webhook:1",
+            "messageTtl": "PT1H"
+          },
+          "type": "startEvent"
+        },
+        {
+          "eventType": "message",
+          "id": "pollingCatch",
+          "properties": {
+            "deduplicationModeManualFlag": "true",
+            "inbound.type": "io.camunda:http-polling:1"
+          },
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "id": "loopA",
+          "type": "manualTask"
+        },
+        {
+          "id": "loopGateway",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "loopB",
+          "type": "task"
+        },
+        {
+          "id": "end",
+          "type": "endEvent"
+        },
+        {
+          "id": "feelNew",
+          "inputs": {
+            "data": "=from json(payload)",
+            "id": "=uuid()",
+            "label": "=trim(name) + to base64(name)"
+          },
+          "jobType": "=\"job-\" + string(random number())",
+          "outputs": {
+            "pages": "=partition(items, 10)"
+          },
+          "resultVariable": "pages",
+          "type": "serviceTask"
+        },
+        {
+          "id": "feelShadowed",
+          "inputs": {
+            "a": "={uuid: function() 1, id: uuid()}",
+            "b": "=for trim in [1] return trim(1)",
+            "c": "=uuid(",
+            "d": "uuid()"
+          },
+          "jobType": "t",
+          "taskHeaders": {
+            "k": "=uuid()"
+          },
+          "type": "serviceTask"
+        },
+        {
+          "eventType": "timer",
+          "id": "feelTimer",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "id": "badVars",
+          "inputs": {
+            "1st": "=1"
+          },
+          "jobType": "t",
+          "multiInstance": {
+            "collection": "=items",
+            "element": "item-x",
+            "outputCollection": "results",
+            "outputElement": "=item"
+          },
+          "outputs": {
+            "a.b_c": "=3",
+            "my variable name": "=2"
+          },
+          "type": "serviceTask"
+        },
+        {
+          "id": "badResult",
+          "resultVariable": "a-b",
+          "script": "=1",
+          "type": "scriptTask"
+        },
+        {
+          "decisionId": "d",
+          "id": "badDecisionResult",
+          "resultVariable": "2x",
+          "type": "businessRuleTask"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "adHocInner",
+                "type": "task"
+              }
+            ],
+            "flows": []
+          },
+          "id": "badOutputCollection",
+          "type": "adHocSubProcess"
+        },
+        {
+          "id": "secretsTask",
+          "inputs": {
+            "apiKey": "secrets.API_KEY",
+            "ok": "=camunda.secrets.OK",
+            "token": "{{secrets.TOKEN}}"
+          },
+          "jobType": "t",
+          "properties": {
+            "auth": "Bearer {{secrets.AUTH}}"
+          },
+          "type": "serviceTask"
+        },
+        {
+          "id": "secretReceive",
+          "type": "receiveTask"
+        },
+        {
+          "id": "secretLiteral",
+          "inputs": {
+            "a": "camunda.secrets.PLAIN"
+          },
+          "jobType": "t",
+          "type": "serviceTask"
+        },
+        {
+          "id": "secretQuoted",
+          "inputs": {
+            "a": "=\"Bearer camunda.secrets.QUOTED\""
+          },
+          "jobType": "t",
+          "type": "serviceTask"
+        },
+        {
+          "id": "secretProperty",
+          "jobType": "t",
+          "properties": {
+            "p": "camunda.secrets.PROP"
+          },
+          "type": "serviceTask"
+        },
+        {
+          "id": "secretList",
+          "inputs": {
+            "a": "={keys: [camunda.secrets.A, camunda.secrets.B]}"
+          },
+          "jobType": "t",
+          "type": "serviceTask"
+        },
+        {
+          "id": "secretIfContext",
+          "inputs": {
+            "a": "=if prod then {key: camunda.secrets.PROD} else null"
+          },
+          "jobType": "t",
+          "type": "serviceTask"
+        },
+        {
+          "id": "secretFine",
+          "inputs": {
+            "a": "={auth: {key: camunda.secrets.A}}",
+            "b": "=([camunda.secrets.B])",
+            "c": "=camunda.secrets.C.value",
+            "d": "=if prod then camunda.secrets.D else null"
+          },
+          "jobType": "t",
+          "type": "serviceTask"
+        },
+        {
+          "eventType": "link",
+          "id": "linkNoName",
+          "type": "intermediateThrowEvent"
+        },
+        {
+          "eventType": "link",
+          "id": "linkCatch1",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "eventType": "link",
+                "id": "linkCatch2",
+                "type": "intermediateCatchEvent"
+              },
+              {
+                "eventType": "link",
+                "id": "linkCatchBlank",
+                "type": "intermediateCatchEvent"
+              }
+            ],
+            "flows": []
+          },
+          "id": "linkScope",
+          "type": "subProcess"
+        }
+      ],
+      "flows": [
+        {
+          "from": "start",
+          "id": "toLoopA",
+          "to": "loopA"
+        },
+        {
+          "from": "loopA",
+          "id": "toLoopGateway",
+          "to": "loopGateway"
+        },
+        {
+          "condition": "=is blank(reason)",
+          "from": "loopGateway",
+          "id": "toLoopB",
+          "to": "loopB"
+        },
+        {
+          "from": "loopGateway",
+          "id": "toEnd",
+          "isDefault": true,
+          "to": "end"
+        },
+        {
+          "from": "loopB",
+          "id": "backToA",
+          "to": "loopA"
+        }
+      ],
+      "id": "contents"
+    },
+    {
+      "elements": [
+        {
+          "id": "waitsStart",
+          "type": "startEvent"
+        },
+        {
+          "id": "waitsTask",
+          "type": "task"
+        },
+        {
+          "id": "waitsService",
+          "jobType": "t",
+          "type": "serviceTask"
+        }
+      ],
+      "flows": [
+        {
+          "from": "waitsStart",
+          "id": "waitsToTask",
+          "to": "waitsTask"
+        },
+        {
+          "from": "waitsTask",
+          "id": "waitsToService",
+          "to": "waitsService"
+        },
+        {
+          "from": "waitsService",
+          "id": "waitsBack",
+          "to": "waitsTask"
+        }
+      ],
+      "id": "waits"
+    },
+    {
+      "elements": [
+        {
+          "id": "recursiveStart",
+          "type": "startEvent"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "recursiveSubStart",
+                "type": "startEvent"
+              },
+              {
+                "calledProcess": "recursive",
+                "id": "recursiveCall",
+                "type": "callActivity"
+              }
+            ],
+            "flows": [
+              {
+                "from": "recursiveSubStart",
+                "id": "recursiveToCall",
+                "to": "recursiveCall"
+              }
+            ]
+          },
+          "id": "recursiveSub",
+          "type": "subProcess"
+        }
+      ],
+      "flows": [
+        {
+          "from": "recursiveStart",
+          "id": "recursiveToSub",
+          "to": "recursiveSub"
+        }
+      ],
+      "id": "recursive"
+    }
+  ]
+}

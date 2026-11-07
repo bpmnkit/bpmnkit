@@ -1,0 +1,1 @@
+components[0]: checklist must have a 'label' string

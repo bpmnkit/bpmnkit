@@ -1,0 +1,4 @@
+# Invoice approval
+invoice_received[start:message Invoice received] > classify_invoice[rule Classify invoice] > approve_invoice[user Approve invoice] > approved[xor Approved?]
+approved >(yes: ${approved == true}) archive_invoice[service Archive invoice] > book_invoice[call Book invoice] > compute_total[script Compute total] > invoice_booked[end Invoice booked]
+approved >(no: ${approved == false}) wait_one_day[catch:timer Wait one day | after=P1D] > invoice_rejected[end Invoice rejected]

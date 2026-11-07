@@ -1,0 +1,18 @@
+{
+  "categories": [
+    "deploy",
+    "feel-syntax"
+  ],
+  "counts": {
+    "error": 0,
+    "info": 0,
+    "warning": 0
+  },
+  "diagnostics": [],
+  "platform": {
+    "id": "camunda-cloud",
+    "name": "Camunda Cloud",
+    "version": "8.8.0"
+  },
+  "total": 0
+}

@@ -1,0 +1,100 @@
+{
+	"$schema": "../schema/elements.schema.json",
+	"family": "form",
+	"source": "form-js 1.x, as Camunda Tasklist renders them",
+	"traits": [
+		{
+			"name": "keyed",
+			"description": "Binds a value to a process variable through `key`, so the component needs one."
+		},
+		{
+			"name": "options",
+			"description": "Chooses from a list of options (`values`, `valuesKey` or `valuesExpression`)."
+		},
+		{
+			"name": "scope",
+			"description": "Container whose `path` opens a nested data scope for the keys inside it."
+		}
+	],
+	"elements": [
+		{
+			"name": "text"
+		},
+		{
+			"name": "textfield",
+			"traits": ["keyed"]
+		},
+		{
+			"name": "textarea",
+			"traits": ["keyed"]
+		},
+		{
+			"name": "number",
+			"traits": ["keyed"]
+		},
+		{
+			"name": "datetime",
+			"traits": ["keyed"]
+		},
+		{
+			"name": "select",
+			"traits": ["keyed", "options"]
+		},
+		{
+			"name": "radio",
+			"traits": ["keyed", "options"]
+		},
+		{
+			"name": "checkbox",
+			"traits": ["keyed"]
+		},
+		{
+			"name": "checklist",
+			"traits": ["keyed", "options"]
+		},
+		{
+			"name": "taglist",
+			"traits": ["keyed", "options"]
+		},
+		{
+			"name": "button"
+		},
+		{
+			"name": "group",
+			"traits": ["scope"]
+		},
+		{
+			"name": "dynamiclist",
+			"traits": ["scope"]
+		},
+		{
+			"name": "iframe"
+		},
+		{
+			"name": "image"
+		},
+		{
+			"name": "table"
+		},
+		{
+			"name": "html"
+		},
+		{
+			"name": "separator"
+		},
+		{
+			"name": "spacer"
+		},
+		{
+			"name": "expression",
+			"traits": ["keyed"]
+		},
+		{
+			"name": "filepicker",
+			"traits": ["keyed"]
+		},
+		{
+			"name": "documentPreview"
+		}
+	]
+}

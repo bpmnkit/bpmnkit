@@ -1,0 +1,58 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "n1",
+            "name": "N1",
+            "type": "startEvent"
+          },
+          {
+            "id": "n2",
+            "name": "Two",
+            "type": "task"
+          },
+          {
+            "id": "n3",
+            "name": "N3",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "n1",
+            "id": "Flow_1",
+            "to": "n2"
+          },
+          {
+            "from": "n2",
+            "id": "Flow_2",
+            "to": "n3"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"1\" is not an id; read as \"n1\""
+    },
+    {
+      "line": 1,
+      "message": "\"2\" is not an id; read as \"n2\""
+    },
+    {
+      "line": 1,
+      "message": "\"3\" is not an id; read as \"n3\""
+    }
+  ],
+  "questions": []
+}

@@ -1,18 +1,11 @@
 import { parseExpression, parseUnaryTests } from "@bpmnkit/feel"
 import { type CheckFinding, withCardHint } from "../check-finding.js"
+import { DMN_ATTRIBUTE_VALUES } from "../generated/dmn-elements.js"
 import type { XmlElement } from "../types/xml-element.js"
 import { parseXml } from "../xml/xml-parser.js"
 
-const HIT_POLICIES = [
-	"UNIQUE",
-	"FIRST",
-	"PRIORITY",
-	"ANY",
-	"COLLECT",
-	"RULE ORDER",
-	"OUTPUT ORDER",
-] as const
-const AGGREGATIONS = ["SUM", "MIN", "MAX", "COUNT"] as const
+const HIT_POLICIES = DMN_ATTRIBUTE_VALUES["decisionTable.hitPolicy"]
+const AGGREGATIONS = DMN_ATTRIBUTE_VALUES["decisionTable.aggregation"]
 
 /** The type names Camunda's DMN engine resolves; anything else is silently treated as `Any`. */
 const TYPE_REFS = new Set([
@@ -401,7 +394,12 @@ function checkDecision(decision: XmlElement, findings: CheckFinding[]): void {
 
 	for (const output of outputs) {
 		const outputId = output.attributes.id
-		checkTypeRef(output, outputId, `Output "${output.attributes.name ?? outputId}"`, findings)
+		checkTypeRef(
+			output,
+			outputId,
+			`Output "${output.attributes.name ?? outputId ?? "?"}"`,
+			findings,
+		)
 		if (outputs.length > 1 && (output.attributes.name ?? "") === "") {
 			findings.push({
 				rule: "dmn/missing-output-name",

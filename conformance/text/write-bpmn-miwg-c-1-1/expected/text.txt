@@ -1,0 +1,6 @@
+# Invoice Handling (OMG BPMN MIWG Demo)
+invoice_received[start Invoice received] > assign_approver[user Assign Approver] > approve_invoice[user Approve Invoice] > invoice_approved[xor Invoice approved?]
+invoice_approved >(yes: bpmn:getDataObject('approved')) prepare_bank_transfer[user Prepare Bank Transfer] > archive_invoice[service Archive Invoice] > invoice_processed[end Invoice processed]
+invoice_approved >(no: not(bpmn:getDataObject('approved'))) rechnung_kl_ren[user Rechnung klären] > review_successful[xor Review successful?]
+review_successful >(yes: bpmn:getDataObject('clarified') = 'yes') approve_invoice
+review_successful >(no: bpmn:getDataObject('clarified') = 'no') invoice_not_processed[end Invoice not processed]

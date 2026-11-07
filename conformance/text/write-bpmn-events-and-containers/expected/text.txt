@@ -1,0 +1,7 @@
+# Events and containers
+start[start] > do_the_work[sub Do the work] > escalate[xor Escalate?]
+escalate >(Yes: overdue) throw[throw:escalation] > end[end]
+escalate >(No: default) end
+boundary[boundary:error | on=do_the_work] > end_2[end:terminate]
+boundary_2[boundary:timer | on=do_the_work nonint] > end_3[end]
+on_signal[sub On signal]

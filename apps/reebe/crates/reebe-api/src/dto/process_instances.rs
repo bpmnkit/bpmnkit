@@ -1,6 +1,5 @@
-use serde::{Deserialize, Serialize};
 use crate::pagination::PageRequest;
-
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]

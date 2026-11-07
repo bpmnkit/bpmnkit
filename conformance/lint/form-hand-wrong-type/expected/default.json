@@ -1,0 +1,10 @@
+{
+  "findings": [
+    {
+      "fix": "Set \"type\": \"default\". (agent-cards/form.md#traps)",
+      "message": "The form's top-level \"type\" is \"wizard\", not \"default\".",
+      "rule": "form/invalid-schema",
+      "severity": "error"
+    }
+  ]
+}

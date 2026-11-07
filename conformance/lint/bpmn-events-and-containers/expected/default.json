@@ -1,0 +1,193 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 2,
+    "info": 7,
+    "warning": 5
+  },
+  "diagnostics": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "End_ok"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"End_ok\" (endEvent) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "Process_events",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Sub_event"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Sub_event\" (subProcess) is not reachable from any start event.",
+      "processId": "Process_events",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Sub_event"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Sub_event\" (subProcess) has no outgoing sequence flows.",
+      "processId": "Process_events",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "Start_e"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"Start_e\" has no name.",
+      "plane": "Process_events",
+      "processId": "Process_events",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "End_ok"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"End_ok\" has no name.",
+      "processId": "Process_events",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "End_err"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"End_err\" has no name.",
+      "processId": "Process_events",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "End_late"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"End_late\" has no name.",
+      "processId": "Process_events",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Sub_event"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"On signal\" has no error boundary event.",
+      "processId": "Process_events",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Boundary_error"
+      ],
+      "fixable": false,
+      "id": "pattern/catch-and-swallow",
+      "message": "Error boundary on \"Sub_work\" leads directly to an end event — error is silently consumed.",
+      "processId": "Process_events",
+      "severity": "warning",
+      "suggestion": "Add error logging, compensation, or re-throw the error rather than swallowing it silently."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Start_e"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Start_e\" has no documentation describing expected input variables.",
+      "plane": "Process_events",
+      "processId": "Process_events",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Gateway_check"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:overdue",
+      "message": "Variable \"overdue\" is referenced but never set in this process.",
+      "processId": "Process_events",
+      "severity": "warning",
+      "suggestion": "\"overdue\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Gateway_check"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:Gateway_check",
+      "message": "Element \"Gateway_check\" consumes: overdue.",
+      "processId": "Process_events",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_i1"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_i1",
+      "message": "Variables in scope at flow \"Flow_i1\": item.",
+      "processId": "Process_events",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "Flow_i2"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:Flow_i2",
+      "message": "Variables in scope at flow \"Flow_i2\": item.",
+      "processId": "Process_events",
+      "severity": "info",
+      "suggestion": ""
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 14
+}

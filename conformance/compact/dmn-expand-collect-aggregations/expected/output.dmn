@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="defs" name="Defs" namespace="http://bpmn.io/schema/dmn">
+  <decision id="d0">
+    <decisionTable id="decisionTable_0000006" hitPolicy="COLLECT" aggregation="SUM">
+      <input id="i0">
+        <inputExpression id="inputExpression_0000001">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="o0" name="y" typeRef="number"/>
+      <rule id="r0">
+        <inputEntry id="inputEntry_0_0000002">
+          <text>1</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000003">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="q0">
+        <inputEntry id="inputEntry_0_0000004">
+          <text>2</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000005">
+          <text>2</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="d1">
+    <decisionTable id="decisionTable_000000c" hitPolicy="COLLECT" aggregation="MIN">
+      <input id="i1">
+        <inputExpression id="inputExpression_0000007">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="o1" name="y" typeRef="number"/>
+      <rule id="r1">
+        <inputEntry id="inputEntry_0_0000008">
+          <text>1</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000009">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="q1">
+        <inputEntry id="inputEntry_0_000000a">
+          <text>2</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000b">
+          <text>2</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="d2">
+    <decisionTable id="decisionTable_000000i" hitPolicy="COLLECT" aggregation="MAX">
+      <input id="i2">
+        <inputExpression id="inputExpression_000000d">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="o2" name="y" typeRef="number"/>
+      <rule id="r2">
+        <inputEntry id="inputEntry_0_000000e">
+          <text>1</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000f">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="q2">
+        <inputEntry id="inputEntry_0_000000g">
+          <text>2</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000h">
+          <text>2</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="d3">
+    <decisionTable id="decisionTable_000000o" hitPolicy="COLLECT" aggregation="COUNT">
+      <input id="i3">
+        <inputExpression id="inputExpression_000000j">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="o3" name="y" typeRef="number"/>
+      <rule id="r3">
+        <inputEntry id="inputEntry_0_000000k">
+          <text>1</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000l">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="q3">
+        <inputEntry id="inputEntry_0_000000m">
+          <text>2</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000n">
+          <text>2</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="d0">
+        <dc:Bounds height="80" width="180" x="160" y="100"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="d1">
+        <dc:Bounds height="80" width="180" x="160" y="220"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="d2">
+        <dc:Bounds height="80" width="180" x="160" y="340"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="d3">
+        <dc:Bounds height="80" width="180" x="160" y="460"/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

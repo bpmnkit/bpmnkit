@@ -8,8 +8,8 @@
 //! - Resource type: PROCESS_DEFINITION, PROCESS_INSTANCE, DECISION_DEFINITION, etc.
 //! - Permission: CREATE, READ, UPDATE, DELETE, CREATE_PROCESS_INSTANCE, etc.
 
-use sqlx::Row;
 use crate::auth::AuthenticatedUser;
+use sqlx::Row;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ResourceType {
@@ -180,7 +180,9 @@ pub async fn check_authorization(
 
 #[derive(Debug, thiserror::Error)]
 pub enum AuthorizationError {
-    #[error("User '{user}' does not have permission '{permission}' on resource type '{resource_type}'")]
+    #[error(
+        "User '{user}' does not have permission '{permission}' on resource type '{resource_type}'"
+    )]
     Forbidden {
         user: String,
         resource_type: String,

@@ -1,5 +1,5 @@
-use std::sync::{Arc, Mutex};
 use chrono::{DateTime, Duration, Utc};
+use std::sync::{Arc, Mutex};
 
 /// Injectable clock for testability and WASM virtual time support.
 pub trait Clock: Send + Sync {
@@ -23,12 +23,14 @@ pub struct VirtualClock {
 
 impl VirtualClock {
     pub fn new(start: DateTime<Utc>) -> Self {
-        Self { current: Arc::new(Mutex::new(start)) }
+        Self {
+            current: Arc::new(Mutex::new(start)),
+        }
     }
 
     pub fn advance(&self, duration: Duration) {
         let mut t = self.current.lock().unwrap();
-        *t = *t + duration;
+        *t += duration;
     }
 
     pub fn set(&self, t: DateTime<Utc>) {

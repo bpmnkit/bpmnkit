@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["userTask","u",{"name":"Approve","embeddedForm":{"id":"approval","schema":"{\"components\":[{\"type\":\"textfield\",\"key\":\"x\"}]}"}}],
+		["endEvent","e"],
+		["build"]
+	]
+}

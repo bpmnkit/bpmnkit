@@ -1,0 +1,116 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "Expense submitted",
+            "type": "startEvent"
+          },
+          {
+            "id": "check",
+            "name": "Amount over 1000?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "review",
+            "name": "Review expense",
+            "type": "userTask"
+          },
+          {
+            "id": "auto",
+            "name": "Approve",
+            "type": "manualTask"
+          },
+          {
+            "attachedTo": "pay",
+            "eventType": "error",
+            "id": "failed",
+            "name": "Payment failed",
+            "type": "boundaryEvent"
+          },
+          {
+            "eventType": "error",
+            "id": "notice",
+            "name": "Failure notified",
+            "type": "endEvent"
+          },
+          {
+            "id": "done",
+            "name": "Expense paid",
+            "type": "endEvent"
+          },
+          {
+            "id": "pay",
+            "name": "Pay",
+            "type": "task"
+          },
+          {
+            "id": "pay_join",
+            "type": "exclusiveGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "check"
+          },
+          {
+            "condition": "= amount > 1000",
+            "from": "check",
+            "id": "Flow_2",
+            "name": "Yes",
+            "to": "review"
+          },
+          {
+            "from": "review",
+            "id": "Flow_3",
+            "to": "pay_join"
+          },
+          {
+            "from": "check",
+            "id": "Flow_4",
+            "isDefault": true,
+            "name": "No",
+            "to": "auto"
+          },
+          {
+            "from": "auto",
+            "id": "Flow_5",
+            "to": "pay_join"
+          },
+          {
+            "from": "failed",
+            "id": "Flow_6",
+            "to": "notice"
+          },
+          {
+            "from": "pay",
+            "id": "Flow_7",
+            "to": "done"
+          },
+          {
+            "from": "pay_join",
+            "id": "Flow_8",
+            "to": "pay"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "joined 2 flows into \"pay\" with xor gateway \"pay_join\""
+  ],
+  "problems": [
+    {
+      "line": 2,
+      "message": "\"pay\" is never declared; added as a task"
+    }
+  ],
+  "questions": []
+}

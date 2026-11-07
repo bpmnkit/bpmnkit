@@ -1,0 +1,12 @@
+{
+  "aliases": {
+    "end_event": "_258f51eb-b764-4a71-b681-3a01cca14143",
+    "gateway_merge_flows": "_33c66216-391c-49c2-aa19-d8f0b7f5f91d",
+    "gateway_split_flow": "_35fe57a7-1302-44e2-bf58-032f11af7ecb",
+    "start_event": "_6b5db6a9-037a-49ad-9201-09201e2aaa97",
+    "task_1": "_5a972b87-735d-454a-b31c-f52fb3afc5c7",
+    "task_2": "_4f7d62d7-f0e6-46bc-be00-69e02da38f65",
+    "task_3": "_e6eb725a-34bc-45c7-aed0-9f9596cd7bee",
+    "task_4": "_7d399717-1aba-47ac-8d7d-8aaa033255e0"
+  }
+}

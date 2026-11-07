@@ -1,0 +1,3 @@
+s[start] > t[service Work] > e[end]
+b1[boundary:error Fail | on=t] > a[task A] > e1[end]
+b2[boundary:timer Late | on=t after=PT1H] > c[task B] > e2[end]

@@ -1,0 +1,198 @@
+{
+  "decisions": [
+    {
+      "hitPolicy": "PRIORITY",
+      "id": "priority_single",
+      "inputs": [
+        {
+          "expression": "n",
+          "id": "priority_single_i0"
+        }
+      ],
+      "name": "priority_single",
+      "outputs": [
+        {
+          "id": "priority_single_o0",
+          "name": "tier"
+        }
+      ],
+      "rules": [
+        {
+          "id": "ps_r0",
+          "inputs": [
+            ">= 0"
+          ],
+          "outputs": [
+            "\"bronze\""
+          ]
+        },
+        {
+          "id": "ps_r1",
+          "inputs": [
+            ">= 5"
+          ],
+          "outputs": [
+            "\"gold\""
+          ]
+        },
+        {
+          "id": "ps_r2",
+          "inputs": [
+            ">= 3"
+          ],
+          "outputs": [
+            "\"silver\""
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "OUTPUT ORDER",
+      "id": "order_single",
+      "inputs": [
+        {
+          "expression": "n",
+          "id": "order_single_i0"
+        }
+      ],
+      "name": "order_single",
+      "outputs": [
+        {
+          "id": "order_single_o0",
+          "name": "tier"
+        }
+      ],
+      "rules": [
+        {
+          "id": "os_r0",
+          "inputs": [
+            ">= 0"
+          ],
+          "outputs": [
+            "\"bronze\""
+          ]
+        },
+        {
+          "id": "os_r1",
+          "inputs": [
+            ">= 5"
+          ],
+          "outputs": [
+            "\"gold\""
+          ]
+        },
+        {
+          "id": "os_r2",
+          "inputs": [
+            ">= 3"
+          ],
+          "outputs": [
+            "\"silver\""
+          ]
+        },
+        {
+          "id": "os_r3",
+          "inputs": [
+            ">= 0"
+          ],
+          "outputs": [
+            "\"unlisted\""
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "OUTPUT ORDER",
+      "id": "order_multi",
+      "inputs": [
+        {
+          "expression": "n",
+          "id": "order_multi_i0"
+        }
+      ],
+      "name": "order_multi",
+      "outputs": [
+        {
+          "id": "order_multi_o0",
+          "name": "level"
+        },
+        {
+          "id": "order_multi_o1",
+          "name": "code"
+        }
+      ],
+      "rules": [
+        {
+          "id": "om_r0",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"low\"",
+            "2"
+          ]
+        },
+        {
+          "id": "om_r1",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"high\"",
+            "1"
+          ]
+        },
+        {
+          "id": "om_r2",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"high\"",
+            "2"
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "OUTPUT ORDER",
+      "id": "no_values",
+      "inputs": [
+        {
+          "expression": "n",
+          "id": "no_values_i0"
+        }
+      ],
+      "name": "no_values",
+      "outputs": [
+        {
+          "id": "no_values_o0",
+          "name": "v"
+        }
+      ],
+      "rules": [
+        {
+          "id": "nv_r0",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"b\""
+          ]
+        },
+        {
+          "id": "nv_r1",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"a\""
+          ]
+        }
+      ]
+    }
+  ],
+  "id": "priority-output-order",
+  "inputData": [],
+  "name": "priority-output-order"
+}

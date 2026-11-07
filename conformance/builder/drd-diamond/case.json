@@ -1,0 +1,11 @@
+{
+	"kind": "dmn",
+	"script": [
+		["drd","Diamond"],
+		["$let","top","decision","top",{"$ops":[["name","TOP"],["input",{"expression":"x"}],["output",{"name":"topOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]}],
+		["$let","l","decision","left",{"$ops":[["name","LEFT"],["input",{"expression":"x"}],["output",{"name":"leftOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]},{"requires":[{"$ref":"top"}]}],
+		["$let","r","decision","right",{"$ops":[["name","RIGHT"],["input",{"expression":"x"}],["output",{"name":"rightOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]},{"requires":[{"$ref":"top"}]}],
+		["$let","h9","decision","bottom",{"$ops":[["name","BOTTOM"],["input",{"expression":"x"}],["output",{"name":"bottomOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]},{"requires":[{"$ref":"l"},{"$ref":"r"}]}],
+		["build"]
+	]
+}

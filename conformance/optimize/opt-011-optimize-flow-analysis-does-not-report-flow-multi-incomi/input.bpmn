@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="proc">
+    <bpmn:startEvent id="s"><bpmn:outgoing>f0</bpmn:outgoing><bpmn:outgoing>f0b</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:serviceTask id="task_a">
+      <bpmn:incoming>f0</bpmn:incoming>
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="task_c">
+      <bpmn:incoming>f0b</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="gw1">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:incoming>f2</bpmn:incoming>
+      <bpmn:outgoing>f3</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="e">
+      <bpmn:incoming>f3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f0" sourceRef="s" targetRef="task_a"/>
+    <bpmn:sequenceFlow id="f0b" sourceRef="s" targetRef="task_c"/>
+    <bpmn:sequenceFlow id="f1" sourceRef="task_a" targetRef="gw1"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="task_c" targetRef="gw1"/>
+    <bpmn:sequenceFlow id="f3" sourceRef="gw1" targetRef="e"/>
+  </bpmn:process>
+</bpmn:definitions>
+

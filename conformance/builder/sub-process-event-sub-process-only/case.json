@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["eventSubProcess","esp",{"$ops":[["startEvent","es",{"messageName":"m"}],["endEvent","ee"]]}],
+		["startEvent","s"],
+		["endEvent","e"],
+		["build"]
+	]
+}

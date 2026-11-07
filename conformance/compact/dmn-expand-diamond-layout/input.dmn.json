@@ -1,0 +1,121 @@
+{
+  "id": "defs",
+  "name": "Defs",
+  "decisions": [
+    {
+      "inputs": [
+        {
+          "id": "topi",
+          "expression": "x"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "topo",
+          "name": "y"
+        }
+      ],
+      "rules": [
+        {
+          "id": "topr",
+          "inputs": [
+            "1"
+          ],
+          "outputs": [
+            "1"
+          ]
+        }
+      ],
+      "id": "top"
+    },
+    {
+      "inputs": [
+        {
+          "id": "lefti",
+          "expression": "x"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "lefto",
+          "name": "y"
+        }
+      ],
+      "rules": [
+        {
+          "id": "leftr",
+          "inputs": [
+            "1"
+          ],
+          "outputs": [
+            "1"
+          ]
+        }
+      ],
+      "id": "left",
+      "requires": [
+        "top"
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "id": "righti",
+          "expression": "x"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "righto",
+          "name": "y"
+        }
+      ],
+      "rules": [
+        {
+          "id": "rightr",
+          "inputs": [
+            "1"
+          ],
+          "outputs": [
+            "1"
+          ]
+        }
+      ],
+      "id": "right",
+      "requires": [
+        "top"
+      ]
+    },
+    {
+      "inputs": [
+        {
+          "id": "bottomi",
+          "expression": "x"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "bottomo",
+          "name": "y"
+        }
+      ],
+      "rules": [
+        {
+          "id": "bottomr",
+          "inputs": [
+            "1"
+          ],
+          "outputs": [
+            "1"
+          ]
+        }
+      ],
+      "id": "bottom",
+      "requires": [
+        "left",
+        "right"
+      ]
+    }
+  ],
+  "inputData": []
+}

@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["transaction","tx",{"$ops":[["startEvent","ts"],["serviceTask","book",{"name":"book","taskType":"book"}],["boundaryEvent","cancel",{"attachedTo":"book","compensation":true}],["serviceTask","unbook",{"name":"unbook","taskType":"unbook","isForCompensation":true}],["element","book"],["endEvent","te"]]},{"name":"Booking"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

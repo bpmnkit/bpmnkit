@@ -1,0 +1,65 @@
+{
+  "id": "Defs_1",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "s",
+          "type": "startEvent"
+        },
+        {
+          "id": "g",
+          "name": "Big?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "a",
+          "name": "Big",
+          "type": "task"
+        },
+        {
+          "id": "b",
+          "name": "Small",
+          "type": "task"
+        },
+        {
+          "id": "e",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "s",
+          "id": "f1",
+          "to": "g"
+        },
+        {
+          "condition": "= n > 10",
+          "from": "g",
+          "id": "f2",
+          "name": "Yes",
+          "to": "a"
+        },
+        {
+          "from": "g",
+          "id": "f3",
+          "isDefault": true,
+          "name": "No",
+          "to": "b"
+        },
+        {
+          "from": "a",
+          "id": "f4",
+          "to": "e"
+        },
+        {
+          "from": "b",
+          "id": "f5",
+          "to": "e"
+        }
+      ],
+      "id": "p",
+      "name": "Decide"
+    }
+  ]
+}

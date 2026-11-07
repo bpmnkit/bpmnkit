@@ -1,0 +1,1 @@
+components[0]: number must have a 'label' string

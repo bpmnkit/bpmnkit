@@ -1,0 +1,113 @@
+{
+  "decisions": [
+    {
+      "hitPolicy": "FIRST",
+      "id": "tier",
+      "inputs": [
+        {
+          "expression": "spend",
+          "id": "tier_in",
+          "label": "Spend",
+          "typeRef": "number"
+        }
+      ],
+      "name": "Customer Tier",
+      "outputs": [
+        {
+          "id": "tier_out",
+          "name": "tier",
+          "typeRef": "string"
+        }
+      ],
+      "requires": [
+        "customer"
+      ],
+      "rules": [
+        {
+          "id": "tier_r1",
+          "inputs": [
+            ">= 1000"
+          ],
+          "outputs": [
+            "\"gold\""
+          ]
+        },
+        {
+          "id": "tier_r2",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"basic\""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "rate",
+      "inputs": [],
+      "name": "Rate",
+      "outputs": [],
+      "requires": [
+        "tier"
+      ],
+      "rules": []
+    },
+    {
+      "id": "discount",
+      "inputs": [],
+      "name": "Discount",
+      "outputs": [],
+      "requires": [
+        "rate",
+        "tier"
+      ],
+      "rules": []
+    },
+    {
+      "id": "loop_a",
+      "inputs": [],
+      "name": "A",
+      "outputs": [],
+      "requires": [
+        "loop_b"
+      ],
+      "rules": []
+    },
+    {
+      "id": "loop_b",
+      "inputs": [],
+      "name": "B",
+      "outputs": [],
+      "requires": [
+        "loop_a"
+      ],
+      "rules": []
+    },
+    {
+      "id": "missing_req",
+      "inputs": [],
+      "name": "Missing",
+      "outputs": [],
+      "requires": [
+        "nowhere"
+      ],
+      "rules": []
+    },
+    {
+      "id": "no_body",
+      "inputs": [],
+      "name": "Empty",
+      "outputs": [],
+      "rules": []
+    }
+  ],
+  "id": "drd",
+  "inputData": [
+    {
+      "id": "customer",
+      "name": "customer"
+    }
+  ],
+  "name": "Discount DRD"
+}

@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Signal end event \"end\" needs Camunda 8.3 or newer; this model targets Camunda 8.2.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    }
+  ]
+}

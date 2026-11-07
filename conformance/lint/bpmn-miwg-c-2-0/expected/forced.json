@@ -1,0 +1,287 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 12,
+    "info": 5,
+    "warning": 4
+  },
+  "diagnostics": [
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"WFP-Page_1-1\" is not marked executable.",
+      "processId": "WFP-Page_1-1",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "__0ef615c7-5456-45c8-9cfb-f1fe30c44436"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"Receive Credit Card Information\" has 1 event definition(s) without an id.",
+      "plane": "C1404332496310",
+      "processId": "WFP-Page_1-1",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "__4011aa2d-a7a9-4e1a-9f16-8a662d138bd4"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"Send Result\" has 1 event definition(s) without an id.",
+      "plane": "C1404332496310",
+      "processId": "WFP-Page_1-1",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "__6c41ae4a-64fd-40f9-a764-059b26ef8ebf"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"__6c41ae4a-64fd-40f9-a764-059b26ef8ebf\" has no name.",
+      "plane": "C1404332496310",
+      "processId": "WFP-Page_1-2",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"WFP-Page_1-2\" is not marked executable.",
+      "processId": "WFP-Page_1-2",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "__e6a9dd54-6cb0-4713-8b77-e659f2658e40"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"Pick items\" has 1 event definition(s) without an id.",
+      "plane": "C1404332496310",
+      "processId": "WFP-Page_1-2",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "__a12a7547-373d-47ec-890d-af5c177203ee"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"__a12a7547-373d-47ec-890d-af5c177203ee\" exits a decision gateway without a condition expression.",
+      "plane": "C1404332496310",
+      "processId": "WFP-Page_1-3",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "__ffc1486a-8a32-490a-8835-d14cc5ab0a97"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"__ffc1486a-8a32-490a-8835-d14cc5ab0a97\" exits a decision gateway without a condition expression.",
+      "plane": "C1404332496310",
+      "processId": "WFP-Page_1-3",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "__509f09eb-5518-4995-b98b-db3cf3f8ea00"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"__509f09eb-5518-4995-b98b-db3cf3f8ea00\" has 2 outgoing flows but no default flow set.",
+      "plane": "C1404332496310",
+      "processId": "WFP-Page_1-3",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "__f61e9ae0-855f-4ce6-9e3a-4b4f5c7dd0b8"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"__f61e9ae0-855f-4ce6-9e3a-4b4f5c7dd0b8\" (task) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "plane": "C1404332496310",
+      "processId": "WFP-Page_1-3",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "__f5b8cb41-0574-4c29-aaaa-84ecce589f84"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"__f5b8cb41-0574-4c29-aaaa-84ecce589f84\" has no name.",
+      "plane": "C1404332496310",
+      "processId": "WFP-Page_1-3",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "__e03c9539-b011-46b1-a381-0eee5f0521b8"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"__e03c9539-b011-46b1-a381-0eee5f0521b8\" has no name.",
+      "plane": "C1404332496310",
+      "processId": "WFP-Page_1-3",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "__8f9632f2-9fdb-4e3c-8b10-6a05091de766"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"__8f9632f2-9fdb-4e3c-8b10-6a05091de766\" has no name.",
+      "plane": "C1404332496310",
+      "processId": "WFP-Page_1-3",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "__509f09eb-5518-4995-b98b-db3cf3f8ea00"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Done Shopping?\" has no default sequence flow.",
+      "plane": "C1404332496310",
+      "processId": "WFP-Page_1-3",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "__cec149db-adae-4b69-8ea4-b866f2eef248"
+      ],
+      "fixable": false,
+      "id": "pattern/catch-and-swallow",
+      "message": "Error boundary on \"__5ffa1675-9ad7-46f8-b19a-85cd5878496f\" leads directly to an end event — error is silently consumed.",
+      "plane": "C1404332496310",
+      "processId": "WFP-Page_1-3",
+      "severity": "warning",
+      "suggestion": "Add error logging, compensation, or re-throw the error rather than swallowing it silently."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "__f5b8cb41-0574-4c29-aaaa-84ecce589f84"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"__f5b8cb41-0574-4c29-aaaa-84ecce589f84\" has no documentation describing expected input variables.",
+      "plane": "C1404332496310",
+      "processId": "WFP-Page_1-3",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"WFP-Page_1-3\" is not marked executable.",
+      "processId": "WFP-Page_1-3",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "__cec149db-adae-4b69-8ea4-b866f2eef248"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"__cec149db-adae-4b69-8ea4-b866f2eef248\" has 1 event definition(s) without an id.",
+      "plane": "C1404332496310",
+      "processId": "WFP-Page_1-3",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "__5a9abc77-7371-4213-bede-4056f9cb7808"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"__5a9abc77-7371-4213-bede-4056f9cb7808\" has no name.",
+      "plane": "C1404332496310",
+      "processId": "WFP-Page_1-4",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"WFP-Page_1-4\" is not marked executable.",
+      "processId": "WFP-Page_1-4",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "__fd16081c-ecf9-4e0f-857f-f3404a7ee784"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"Receive Order\" has 1 event definition(s) without an id.",
+      "plane": "C1404332496310",
+      "processId": "WFP-Page_1-4",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 21
+}

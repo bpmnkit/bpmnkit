@@ -1,0 +1,2 @@
+# Order Process | camunda=8.9
+order_received[start Order received] > validate_order[service Validate order | job=validate:1] > process_payment[service Process payment | job=payment:1] > ship_order[service Ship order | job=shipping:1] > order_shipped[end Order shipped]

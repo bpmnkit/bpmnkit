@@ -1,0 +1,1722 @@
+{
+  "decisions": [
+    {
+      "hitPolicy": "UNIQUE",
+      "id": "single_unique",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "single_unique_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "single_unique",
+      "outputs": [
+        {
+          "id": "single_unique_o0",
+          "name": "grade",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "id": "single_unique_r0",
+          "inputs": [
+            "< 10"
+          ],
+          "outputs": [
+            "\"low\""
+          ]
+        },
+        {
+          "id": "single_unique_r1",
+          "inputs": [
+            "[10..20]"
+          ],
+          "outputs": [
+            "\"mid\""
+          ]
+        },
+        {
+          "id": "single_unique_r2",
+          "inputs": [
+            ">= 15"
+          ],
+          "outputs": [
+            "\"high\""
+          ]
+        },
+        {
+          "id": "single_unique_r3",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"any\""
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "UNIQUE",
+      "id": "multi_unique",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "multi_unique_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "multi_unique",
+      "outputs": [
+        {
+          "id": "multi_unique_o0",
+          "name": "label"
+        },
+        {
+          "id": "multi_unique_o1",
+          "name": "score"
+        }
+      ],
+      "rules": [
+        {
+          "id": "multi_unique_r0",
+          "inputs": [
+            "< 10"
+          ],
+          "outputs": [
+            "\"low\"",
+            "1"
+          ]
+        },
+        {
+          "id": "multi_unique_r1",
+          "inputs": [
+            ">= 5"
+          ],
+          "outputs": [
+            "\"five+\"",
+            "x * 2"
+          ]
+        },
+        {
+          "id": "multi_unique_r2",
+          "inputs": [
+            ""
+          ],
+          "outputs": [
+            "\"any\"",
+            "null"
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "FIRST",
+      "id": "single_first",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "single_first_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "single_first",
+      "outputs": [
+        {
+          "id": "single_first_o0",
+          "name": "grade",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "id": "single_first_r0",
+          "inputs": [
+            "< 10"
+          ],
+          "outputs": [
+            "\"low\""
+          ]
+        },
+        {
+          "id": "single_first_r1",
+          "inputs": [
+            "[10..20]"
+          ],
+          "outputs": [
+            "\"mid\""
+          ]
+        },
+        {
+          "id": "single_first_r2",
+          "inputs": [
+            ">= 15"
+          ],
+          "outputs": [
+            "\"high\""
+          ]
+        },
+        {
+          "id": "single_first_r3",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"any\""
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "FIRST",
+      "id": "multi_first",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "multi_first_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "multi_first",
+      "outputs": [
+        {
+          "id": "multi_first_o0",
+          "name": "label"
+        },
+        {
+          "id": "multi_first_o1",
+          "name": "score"
+        }
+      ],
+      "rules": [
+        {
+          "id": "multi_first_r0",
+          "inputs": [
+            "< 10"
+          ],
+          "outputs": [
+            "\"low\"",
+            "1"
+          ]
+        },
+        {
+          "id": "multi_first_r1",
+          "inputs": [
+            ">= 5"
+          ],
+          "outputs": [
+            "\"five+\"",
+            "x * 2"
+          ]
+        },
+        {
+          "id": "multi_first_r2",
+          "inputs": [
+            ""
+          ],
+          "outputs": [
+            "\"any\"",
+            "null"
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "ANY",
+      "id": "single_any",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "single_any_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "single_any",
+      "outputs": [
+        {
+          "id": "single_any_o0",
+          "name": "grade",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "id": "single_any_r0",
+          "inputs": [
+            "< 10"
+          ],
+          "outputs": [
+            "\"low\""
+          ]
+        },
+        {
+          "id": "single_any_r1",
+          "inputs": [
+            "[10..20]"
+          ],
+          "outputs": [
+            "\"mid\""
+          ]
+        },
+        {
+          "id": "single_any_r2",
+          "inputs": [
+            ">= 15"
+          ],
+          "outputs": [
+            "\"high\""
+          ]
+        },
+        {
+          "id": "single_any_r3",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"any\""
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "ANY",
+      "id": "multi_any",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "multi_any_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "multi_any",
+      "outputs": [
+        {
+          "id": "multi_any_o0",
+          "name": "label"
+        },
+        {
+          "id": "multi_any_o1",
+          "name": "score"
+        }
+      ],
+      "rules": [
+        {
+          "id": "multi_any_r0",
+          "inputs": [
+            "< 10"
+          ],
+          "outputs": [
+            "\"low\"",
+            "1"
+          ]
+        },
+        {
+          "id": "multi_any_r1",
+          "inputs": [
+            ">= 5"
+          ],
+          "outputs": [
+            "\"five+\"",
+            "x * 2"
+          ]
+        },
+        {
+          "id": "multi_any_r2",
+          "inputs": [
+            ""
+          ],
+          "outputs": [
+            "\"any\"",
+            "null"
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "RULE ORDER",
+      "id": "single_rule_order",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "single_rule_order_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "single_rule_order",
+      "outputs": [
+        {
+          "id": "single_rule_order_o0",
+          "name": "grade",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "id": "single_rule_order_r0",
+          "inputs": [
+            "< 10"
+          ],
+          "outputs": [
+            "\"low\""
+          ]
+        },
+        {
+          "id": "single_rule_order_r1",
+          "inputs": [
+            "[10..20]"
+          ],
+          "outputs": [
+            "\"mid\""
+          ]
+        },
+        {
+          "id": "single_rule_order_r2",
+          "inputs": [
+            ">= 15"
+          ],
+          "outputs": [
+            "\"high\""
+          ]
+        },
+        {
+          "id": "single_rule_order_r3",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"any\""
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "RULE ORDER",
+      "id": "multi_rule_order",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "multi_rule_order_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "multi_rule_order",
+      "outputs": [
+        {
+          "id": "multi_rule_order_o0",
+          "name": "label"
+        },
+        {
+          "id": "multi_rule_order_o1",
+          "name": "score"
+        }
+      ],
+      "rules": [
+        {
+          "id": "multi_rule_order_r0",
+          "inputs": [
+            "< 10"
+          ],
+          "outputs": [
+            "\"low\"",
+            "1"
+          ]
+        },
+        {
+          "id": "multi_rule_order_r1",
+          "inputs": [
+            ">= 5"
+          ],
+          "outputs": [
+            "\"five+\"",
+            "x * 2"
+          ]
+        },
+        {
+          "id": "multi_rule_order_r2",
+          "inputs": [
+            ""
+          ],
+          "outputs": [
+            "\"any\"",
+            "null"
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "OUTPUT ORDER",
+      "id": "single_output_order",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "single_output_order_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "single_output_order",
+      "outputs": [
+        {
+          "id": "single_output_order_o0",
+          "name": "grade",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "id": "single_output_order_r0",
+          "inputs": [
+            "< 10"
+          ],
+          "outputs": [
+            "\"low\""
+          ]
+        },
+        {
+          "id": "single_output_order_r1",
+          "inputs": [
+            "[10..20]"
+          ],
+          "outputs": [
+            "\"mid\""
+          ]
+        },
+        {
+          "id": "single_output_order_r2",
+          "inputs": [
+            ">= 15"
+          ],
+          "outputs": [
+            "\"high\""
+          ]
+        },
+        {
+          "id": "single_output_order_r3",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"any\""
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "OUTPUT ORDER",
+      "id": "multi_output_order",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "multi_output_order_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "multi_output_order",
+      "outputs": [
+        {
+          "id": "multi_output_order_o0",
+          "name": "label"
+        },
+        {
+          "id": "multi_output_order_o1",
+          "name": "score"
+        }
+      ],
+      "rules": [
+        {
+          "id": "multi_output_order_r0",
+          "inputs": [
+            "< 10"
+          ],
+          "outputs": [
+            "\"low\"",
+            "1"
+          ]
+        },
+        {
+          "id": "multi_output_order_r1",
+          "inputs": [
+            ">= 5"
+          ],
+          "outputs": [
+            "\"five+\"",
+            "x * 2"
+          ]
+        },
+        {
+          "id": "multi_output_order_r2",
+          "inputs": [
+            ""
+          ],
+          "outputs": [
+            "\"any\"",
+            "null"
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "PRIORITY",
+      "id": "single_priority",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "single_priority_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "single_priority",
+      "outputs": [
+        {
+          "id": "single_priority_o0",
+          "name": "grade",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "id": "single_priority_r0",
+          "inputs": [
+            "< 10"
+          ],
+          "outputs": [
+            "\"low\""
+          ]
+        },
+        {
+          "id": "single_priority_r1",
+          "inputs": [
+            "[10..20]"
+          ],
+          "outputs": [
+            "\"mid\""
+          ]
+        },
+        {
+          "id": "single_priority_r2",
+          "inputs": [
+            ">= 15"
+          ],
+          "outputs": [
+            "\"high\""
+          ]
+        },
+        {
+          "id": "single_priority_r3",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"any\""
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "PRIORITY",
+      "id": "multi_priority",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "multi_priority_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "multi_priority",
+      "outputs": [
+        {
+          "id": "multi_priority_o0",
+          "name": "label"
+        },
+        {
+          "id": "multi_priority_o1",
+          "name": "score"
+        }
+      ],
+      "rules": [
+        {
+          "id": "multi_priority_r0",
+          "inputs": [
+            "< 10"
+          ],
+          "outputs": [
+            "\"low\"",
+            "1"
+          ]
+        },
+        {
+          "id": "multi_priority_r1",
+          "inputs": [
+            ">= 5"
+          ],
+          "outputs": [
+            "\"five+\"",
+            "x * 2"
+          ]
+        },
+        {
+          "id": "multi_priority_r2",
+          "inputs": [
+            ""
+          ],
+          "outputs": [
+            "\"any\"",
+            "null"
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "COLLECT",
+      "id": "single_collect",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "single_collect_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "single_collect",
+      "outputs": [
+        {
+          "id": "single_collect_o0",
+          "name": "grade",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "id": "single_collect_r0",
+          "inputs": [
+            "< 10"
+          ],
+          "outputs": [
+            "\"low\""
+          ]
+        },
+        {
+          "id": "single_collect_r1",
+          "inputs": [
+            "[10..20]"
+          ],
+          "outputs": [
+            "\"mid\""
+          ]
+        },
+        {
+          "id": "single_collect_r2",
+          "inputs": [
+            ">= 15"
+          ],
+          "outputs": [
+            "\"high\""
+          ]
+        },
+        {
+          "id": "single_collect_r3",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"any\""
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "COLLECT",
+      "id": "multi_collect",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "multi_collect_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "multi_collect",
+      "outputs": [
+        {
+          "id": "multi_collect_o0",
+          "name": "label"
+        },
+        {
+          "id": "multi_collect_o1",
+          "name": "score"
+        }
+      ],
+      "rules": [
+        {
+          "id": "multi_collect_r0",
+          "inputs": [
+            "< 10"
+          ],
+          "outputs": [
+            "\"low\"",
+            "1"
+          ]
+        },
+        {
+          "id": "multi_collect_r1",
+          "inputs": [
+            ">= 5"
+          ],
+          "outputs": [
+            "\"five+\"",
+            "x * 2"
+          ]
+        },
+        {
+          "id": "multi_collect_r2",
+          "inputs": [
+            ""
+          ],
+          "outputs": [
+            "\"any\"",
+            "null"
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "BOGUS",
+      "id": "single_bogus",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "single_bogus_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "single_bogus",
+      "outputs": [
+        {
+          "id": "single_bogus_o0",
+          "name": "grade",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "id": "single_bogus_r0",
+          "inputs": [
+            "< 10"
+          ],
+          "outputs": [
+            "\"low\""
+          ]
+        },
+        {
+          "id": "single_bogus_r1",
+          "inputs": [
+            "[10..20]"
+          ],
+          "outputs": [
+            "\"mid\""
+          ]
+        },
+        {
+          "id": "single_bogus_r2",
+          "inputs": [
+            ">= 15"
+          ],
+          "outputs": [
+            "\"high\""
+          ]
+        },
+        {
+          "id": "single_bogus_r3",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"any\""
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "BOGUS",
+      "id": "multi_bogus",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "multi_bogus_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "multi_bogus",
+      "outputs": [
+        {
+          "id": "multi_bogus_o0",
+          "name": "label"
+        },
+        {
+          "id": "multi_bogus_o1",
+          "name": "score"
+        }
+      ],
+      "rules": [
+        {
+          "id": "multi_bogus_r0",
+          "inputs": [
+            "< 10"
+          ],
+          "outputs": [
+            "\"low\"",
+            "1"
+          ]
+        },
+        {
+          "id": "multi_bogus_r1",
+          "inputs": [
+            ">= 5"
+          ],
+          "outputs": [
+            "\"five+\"",
+            "x * 2"
+          ]
+        },
+        {
+          "id": "multi_bogus_r2",
+          "inputs": [
+            ""
+          ],
+          "outputs": [
+            "\"any\"",
+            "null"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "single_default",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "single_default_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "single_default",
+      "outputs": [
+        {
+          "id": "single_default_o0",
+          "name": "grade",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "id": "single_default_r0",
+          "inputs": [
+            "< 10"
+          ],
+          "outputs": [
+            "\"low\""
+          ]
+        },
+        {
+          "id": "single_default_r1",
+          "inputs": [
+            "[10..20]"
+          ],
+          "outputs": [
+            "\"mid\""
+          ]
+        },
+        {
+          "id": "single_default_r2",
+          "inputs": [
+            ">= 15"
+          ],
+          "outputs": [
+            "\"high\""
+          ]
+        },
+        {
+          "id": "single_default_r3",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"any\""
+          ]
+        }
+      ]
+    },
+    {
+      "id": "multi_default",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "multi_default_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "multi_default",
+      "outputs": [
+        {
+          "id": "multi_default_o0",
+          "name": "label"
+        },
+        {
+          "id": "multi_default_o1",
+          "name": "score"
+        }
+      ],
+      "rules": [
+        {
+          "id": "multi_default_r0",
+          "inputs": [
+            "< 10"
+          ],
+          "outputs": [
+            "\"low\"",
+            "1"
+          ]
+        },
+        {
+          "id": "multi_default_r1",
+          "inputs": [
+            ">= 5"
+          ],
+          "outputs": [
+            "\"five+\"",
+            "x * 2"
+          ]
+        },
+        {
+          "id": "multi_default_r2",
+          "inputs": [
+            ""
+          ],
+          "outputs": [
+            "\"any\"",
+            "null"
+          ]
+        }
+      ]
+    },
+    {
+      "aggregation": "SUM",
+      "hitPolicy": "COLLECT",
+      "id": "collect_sum",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "collect_sum_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "collect_sum",
+      "outputs": [
+        {
+          "id": "collect_sum_o0",
+          "name": "v"
+        }
+      ],
+      "rules": [
+        {
+          "id": "collect_sum_r0",
+          "inputs": [
+            "> 0"
+          ],
+          "outputs": [
+            "x"
+          ]
+        },
+        {
+          "id": "collect_sum_r1",
+          "inputs": [
+            "> 5"
+          ],
+          "outputs": [
+            "10"
+          ]
+        },
+        {
+          "id": "collect_sum_r2",
+          "inputs": [
+            "> 7"
+          ],
+          "outputs": [
+            "\"text\""
+          ]
+        },
+        {
+          "id": "collect_sum_r3",
+          "inputs": [
+            "> 8"
+          ],
+          "outputs": [
+            "-3.5"
+          ]
+        }
+      ]
+    },
+    {
+      "aggregation": "MIN",
+      "hitPolicy": "COLLECT",
+      "id": "collect_min",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "collect_min_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "collect_min",
+      "outputs": [
+        {
+          "id": "collect_min_o0",
+          "name": "v"
+        }
+      ],
+      "rules": [
+        {
+          "id": "collect_min_r0",
+          "inputs": [
+            "> 0"
+          ],
+          "outputs": [
+            "x"
+          ]
+        },
+        {
+          "id": "collect_min_r1",
+          "inputs": [
+            "> 5"
+          ],
+          "outputs": [
+            "10"
+          ]
+        },
+        {
+          "id": "collect_min_r2",
+          "inputs": [
+            "> 7"
+          ],
+          "outputs": [
+            "\"text\""
+          ]
+        },
+        {
+          "id": "collect_min_r3",
+          "inputs": [
+            "> 8"
+          ],
+          "outputs": [
+            "-3.5"
+          ]
+        }
+      ]
+    },
+    {
+      "aggregation": "MAX",
+      "hitPolicy": "COLLECT",
+      "id": "collect_max",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "collect_max_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "collect_max",
+      "outputs": [
+        {
+          "id": "collect_max_o0",
+          "name": "v"
+        }
+      ],
+      "rules": [
+        {
+          "id": "collect_max_r0",
+          "inputs": [
+            "> 0"
+          ],
+          "outputs": [
+            "x"
+          ]
+        },
+        {
+          "id": "collect_max_r1",
+          "inputs": [
+            "> 5"
+          ],
+          "outputs": [
+            "10"
+          ]
+        },
+        {
+          "id": "collect_max_r2",
+          "inputs": [
+            "> 7"
+          ],
+          "outputs": [
+            "\"text\""
+          ]
+        },
+        {
+          "id": "collect_max_r3",
+          "inputs": [
+            "> 8"
+          ],
+          "outputs": [
+            "-3.5"
+          ]
+        }
+      ]
+    },
+    {
+      "aggregation": "COUNT",
+      "hitPolicy": "COLLECT",
+      "id": "collect_count",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "collect_count_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "collect_count",
+      "outputs": [
+        {
+          "id": "collect_count_o0",
+          "name": "v"
+        }
+      ],
+      "rules": [
+        {
+          "id": "collect_count_r0",
+          "inputs": [
+            "> 0"
+          ],
+          "outputs": [
+            "x"
+          ]
+        },
+        {
+          "id": "collect_count_r1",
+          "inputs": [
+            "> 5"
+          ],
+          "outputs": [
+            "10"
+          ]
+        },
+        {
+          "id": "collect_count_r2",
+          "inputs": [
+            "> 7"
+          ],
+          "outputs": [
+            "\"text\""
+          ]
+        },
+        {
+          "id": "collect_count_r3",
+          "inputs": [
+            "> 8"
+          ],
+          "outputs": [
+            "-3.5"
+          ]
+        }
+      ]
+    },
+    {
+      "aggregation": "AVG",
+      "hitPolicy": "COLLECT",
+      "id": "collect_avg",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "collect_avg_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "collect_avg",
+      "outputs": [
+        {
+          "id": "collect_avg_o0",
+          "name": "v"
+        }
+      ],
+      "rules": [
+        {
+          "id": "collect_avg_r0",
+          "inputs": [
+            "> 0"
+          ],
+          "outputs": [
+            "x"
+          ]
+        },
+        {
+          "id": "collect_avg_r1",
+          "inputs": [
+            "> 5"
+          ],
+          "outputs": [
+            "10"
+          ]
+        },
+        {
+          "id": "collect_avg_r2",
+          "inputs": [
+            "> 7"
+          ],
+          "outputs": [
+            "\"text\""
+          ]
+        },
+        {
+          "id": "collect_avg_r3",
+          "inputs": [
+            "> 8"
+          ],
+          "outputs": [
+            "-3.5"
+          ]
+        }
+      ]
+    },
+    {
+      "aggregation": "SUM",
+      "hitPolicy": "COLLECT",
+      "id": "collect_sum_multi",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "collect_sum_multi_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "collect_sum_multi",
+      "outputs": [
+        {
+          "id": "collect_sum_multi_o0",
+          "name": "a"
+        },
+        {
+          "id": "collect_sum_multi_o1",
+          "name": "b"
+        }
+      ],
+      "rules": [
+        {
+          "id": "collect_sum_multi_r0",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "1",
+            "100"
+          ]
+        },
+        {
+          "id": "collect_sum_multi_r1",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "2",
+            "200"
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "UNIQUE",
+      "id": "keys",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "keys_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "keys",
+      "outputs": [
+        {
+          "id": "keys_o0",
+          "name": "named"
+        },
+        {
+          "id": "keys_o1",
+          "label": "Labelled"
+        },
+        {
+          "id": "keys_o2"
+        }
+      ],
+      "rules": [
+        {
+          "id": "keys_r0",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "1",
+            "2",
+            "3"
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "RULE ORDER",
+      "id": "entries",
+      "inputs": [
+        {
+          "expression": "s",
+          "id": "entries_i0",
+          "label": "in0",
+          "typeRef": "number"
+        },
+        {
+          "expression": "x",
+          "id": "entries_i1",
+          "label": "in1",
+          "typeRef": "number"
+        },
+        {
+          "expression": "flag",
+          "id": "entries_i2",
+          "label": "in2",
+          "typeRef": "number"
+        },
+        {
+          "expression": "d",
+          "id": "entries_i3",
+          "label": "in3",
+          "typeRef": "number"
+        },
+        {
+          "expression": "items",
+          "id": "entries_i4",
+          "label": "in4",
+          "typeRef": "number"
+        }
+      ],
+      "name": "entries",
+      "outputs": [
+        {
+          "id": "entries_o0",
+          "name": "rule"
+        }
+      ],
+      "rules": [
+        {
+          "id": "entries_r0",
+          "inputs": [
+            "\"a\", \"b\"",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "outputs": [
+            "\"str-list\""
+          ]
+        },
+        {
+          "id": "entries_r1",
+          "inputs": [
+            "not(\"a\")",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "outputs": [
+            "\"not-a\""
+          ]
+        },
+        {
+          "id": "entries_r2",
+          "inputs": [
+            "",
+            "not([1..5])",
+            "",
+            "",
+            ""
+          ],
+          "outputs": [
+            "\"outside\""
+          ]
+        },
+        {
+          "id": "entries_r3",
+          "inputs": [
+            "",
+            "> limit",
+            "",
+            "",
+            ""
+          ],
+          "outputs": [
+            "\"over-limit\""
+          ]
+        },
+        {
+          "id": "entries_r4",
+          "inputs": [
+            "",
+            "",
+            "true",
+            "",
+            ""
+          ],
+          "outputs": [
+            "\"flag\""
+          ]
+        },
+        {
+          "id": "entries_r5",
+          "inputs": [
+            "",
+            "",
+            "",
+            "date(\"2024-01-01\")",
+            ""
+          ],
+          "outputs": [
+            "\"new-year\""
+          ]
+        },
+        {
+          "id": "entries_r6",
+          "inputs": [
+            "",
+            "",
+            "",
+            "> date(\"2024-06-30\")",
+            ""
+          ],
+          "outputs": [
+            "\"h2\""
+          ]
+        },
+        {
+          "id": "entries_r7",
+          "inputs": [
+            "",
+            "",
+            "",
+            "",
+            "list contains(?, \"x\")"
+          ],
+          "outputs": [
+            "\"has-x\""
+          ]
+        },
+        {
+          "id": "entries_r8",
+          "inputs": [
+            "",
+            "",
+            "",
+            "",
+            "count(?) > 2"
+          ],
+          "outputs": [
+            "\"many\""
+          ]
+        },
+        {
+          "id": "entries_r9",
+          "inputs": [
+            "",
+            "1,2,3",
+            "",
+            "",
+            ""
+          ],
+          "outputs": [
+            "\"small\""
+          ]
+        },
+        {
+          "id": "entries_r10",
+          "inputs": [
+            "",
+            "(1..3]",
+            "",
+            "",
+            ""
+          ],
+          "outputs": [
+            "\"half-open\""
+          ]
+        },
+        {
+          "id": "entries_r11",
+          "inputs": [
+            "",
+            "null",
+            "",
+            "",
+            ""
+          ],
+          "outputs": [
+            "\"null-x\""
+          ]
+        },
+        {
+          "id": "entries_r12",
+          "inputs": [
+            "",
+            ">>> broken",
+            "",
+            "",
+            ""
+          ],
+          "outputs": [
+            "\"bad-entry-matches\""
+          ]
+        },
+        {
+          "id": "entries_r13",
+          "inputs": [
+            "\"z\"",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "outputs": [
+            "x +"
+          ]
+        },
+        {
+          "id": "entries_r14",
+          "inputs": [
+            "\"z\"",
+            "",
+            "",
+            "",
+            ""
+          ],
+          "outputs": [
+            "s + \"!\" + string(x)"
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "FIRST",
+      "id": "computed_input",
+      "inputs": [
+        {
+          "expression": "a + b",
+          "id": "computed_input_i0",
+          "label": "in0",
+          "typeRef": "number"
+        },
+        {
+          "expression": "upper case(name)",
+          "id": "computed_input_i1",
+          "label": "in1",
+          "typeRef": "number"
+        },
+        {
+          "id": "computed_input_i2",
+          "label": "in2",
+          "typeRef": "number"
+        }
+      ],
+      "name": "computed_input",
+      "outputs": [
+        {
+          "id": "computed_input_o0",
+          "name": "out"
+        }
+      ],
+      "rules": [
+        {
+          "id": "computed_input_r0",
+          "inputs": [
+            "> 10",
+            "\"BOB\"",
+            ""
+          ],
+          "outputs": [
+            "\"big bob\""
+          ]
+        },
+        {
+          "id": "computed_input_r1",
+          "inputs": [
+            "> 10",
+            "",
+            "-"
+          ],
+          "outputs": [
+            "\"big\""
+          ]
+        },
+        {
+          "id": "computed_input_r2",
+          "inputs": [
+            "-",
+            "-",
+            "-"
+          ],
+          "outputs": [
+            "a * b"
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "UNIQUE",
+      "id": "empty_table",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "empty_table_i0",
+          "label": "in0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "empty_table",
+      "outputs": [
+        {
+          "id": "empty_table_o0",
+          "name": "o"
+        }
+      ],
+      "rules": []
+    }
+  ],
+  "id": "hit-policies",
+  "inputData": [],
+  "name": "hit-policies"
+}

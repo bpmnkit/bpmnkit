@@ -1,0 +1,18 @@
+{
+  "aliases": {
+    "analyse_customer_request": "_c73a5f4a-72f1-4e11-bb40-2f98da75fb9a",
+    "boundary": "Bpmn_BoundaryEvent_LwKtwhqHEeWDuOtG0oS24A",
+    "boundary_2_hours": "Bpmn_BoundaryEvent_sS9gABqGEeWDuOtG0oS24A",
+    "emergency_repair_completed": "_b3dc1906-d4d3-40c5-aaf6-5a74148ae887",
+    "fridge_replaced": "_177bd313-c6c9-4df5-8f82-313beb30d2eb",
+    "perform_emergency_repair": "_cd6f230f-13c3-4027-aa3e-57de601a1ab2",
+    "perform_repair_premium_level": "_6a34496f-8cf7-42e5-88a9-d1af98cc3cba",
+    "perform_repair_standard_level": "_d034722f-751d-4f37-a3d7-47993822e979",
+    "receive_customer_request": "_cc9778bd-edd8-4df2-ba15-56c310f90e62",
+    "repair_completed": "_dcee5c64-3010-4ee5-b480-bce856e6f29c",
+    "replace_fridge": "_a92069f7-377b-4dbd-a1fd-1da071aabf6d",
+    "service_level": "_2b6bc88e-d3be-4704-87d1-c264bf704589",
+    "service_type": "_604be023-654c-44df-a64c-365254a100cd",
+    "successful": "_936c0bfa-5ebf-4546-8d1a-cce556148788"
+  }
+}

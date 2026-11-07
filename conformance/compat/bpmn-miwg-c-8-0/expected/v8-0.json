@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_f8fcb377-3d7d-4138-9a7e-6ab58b97e29d"
+      ],
+      "fixable": false,
+      "id": "compat/error-reference",
+      "message": "Error boundary event \"_f8fcb377-3d7d-4138-9a7e-6ab58b97e29d\" references no error; catching every error needs Camunda 8.2 or newer, this model targets Camunda 8.0.",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:error with an error code."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <Vacation A...> not allowed",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "The output target \"Vacation Approval\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    }
+  ]
+}

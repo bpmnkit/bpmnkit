@@ -1,0 +1,29 @@
+[package]
+name = "bpmnkit-builder"
+description = "Fluent BPMN process/diagram builders and DMN decision-table/DRD builders for BPMN Kit (Rust twin of @bpmnkit/core's Bpmn.createProcess and Dmn builders)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["bpmn", "dmn", "builder", "camunda", "workflow"]
+categories = ["development-tools", "data-structures"]
+# Tests and benches read the shared corpus under ../../conformance, outside the package.
+exclude = ["tests/", "benches/"]
+
+[dependencies]
+bpmnkit-bpmn = { workspace = true }
+bpmnkit-dmn = { workspace = true }
+bpmnkit-layout = { workspace = true }
+bpmnkit-xml = { workspace = true }
+indexmap = { workspace = true }
+serde = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true, features = ["float_roundtrip"] }
+
+[[bench]]
+name = "builder"
+harness = false

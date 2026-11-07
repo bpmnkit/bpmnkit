@@ -1,0 +1,11 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["exclusiveGateway","g",{"name":"Approved?"}],
+		["branch","yes",{"$ops":[["condition","=approved"],["label","Yes"],["serviceTask","ship",{"name":"ship","taskType":"ship"}],["endEvent","e1"]]}],
+		["branch","no",{"$ops":[["defaultFlow"],["label","No"],["endEvent","e2"]]}],
+		["build"]
+	]
+}

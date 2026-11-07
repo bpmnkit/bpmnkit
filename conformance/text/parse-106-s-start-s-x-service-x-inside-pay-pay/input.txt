@@ -1,0 +1,1 @@
+s[start S] > x[service X | inside=pay] > pay[task Pay] > e[end E]

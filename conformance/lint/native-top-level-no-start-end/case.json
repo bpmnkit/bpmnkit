@@ -1,0 +1,106 @@
+{
+  "runs": {
+    "default": {},
+    "all": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:all"
+      }
+    },
+    "recommended": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:recommended"
+      }
+    },
+    "start-event-required-error": {
+      "bpmnlintrc": {
+        "rules": {
+          "start-event-required": "error"
+        }
+      }
+    },
+    "start-event-required-off": {
+      "bpmnlintrc": {
+        "rules": {
+          "start-event-required": "off"
+        }
+      }
+    },
+    "end-event-required-error": {
+      "bpmnlintrc": {
+        "rules": {
+          "end-event-required": "error"
+        }
+      }
+    },
+    "end-event-required-off": {
+      "bpmnlintrc": {
+        "rules": {
+          "end-event-required": "off"
+        }
+      }
+    },
+    "no-disconnected-error": {
+      "bpmnlintrc": {
+        "rules": {
+          "no-disconnected": "error"
+        }
+      }
+    },
+    "no-disconnected-off": {
+      "bpmnlintrc": {
+        "rules": {
+          "no-disconnected": "off"
+        }
+      }
+    },
+    "start-event-required-warn-delegated": {
+      "bpmnlintrc": {
+        "rules": {
+          "start-event-required": "warn"
+        }
+      },
+      "bpmnlintDelegated": true
+    },
+    "end-event-required-warn-delegated": {
+      "bpmnlintrc": {
+        "rules": {
+          "end-event-required": "warn"
+        }
+      },
+      "bpmnlintDelegated": true
+    },
+    "no-disconnected-warn-delegated": {
+      "bpmnlintrc": {
+        "rules": {
+          "no-disconnected": "warn"
+        }
+      },
+      "bpmnlintDelegated": true
+    },
+    "standard-size-options": {
+      "bpmnlintrc": {
+        "rules": {
+          "standard-size": [
+            "error",
+            {
+              "bpmn:Task": {
+                "width": 120,
+                "height": 80
+              },
+              "bpmn:EndEvent": {
+                "width": 40,
+                "height": 40
+              }
+            }
+          ]
+        }
+      }
+    },
+    "only-delegated": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:all"
+      },
+      "bpmnlintDelegated": true
+    }
+  }
+}

@@ -1,0 +1,128 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "a",
+            "name": "A",
+            "type": "task"
+          },
+          {
+            "id": "b",
+            "name": "B",
+            "type": "userTask"
+          },
+          {
+            "id": "c",
+            "jobType": "c",
+            "name": "C",
+            "type": "serviceTask"
+          },
+          {
+            "decisionId": "d",
+            "id": "d",
+            "name": "D",
+            "type": "businessRuleTask"
+          },
+          {
+            "id": "e",
+            "jobType": "e",
+            "name": "E",
+            "type": "sendTask"
+          },
+          {
+            "id": "f",
+            "name": "F",
+            "type": "receiveTask"
+          },
+          {
+            "id": "g",
+            "name": "G",
+            "type": "scriptTask"
+          },
+          {
+            "id": "h",
+            "name": "H",
+            "type": "manualTask"
+          },
+          {
+            "id": "i",
+            "name": "I",
+            "type": "callActivity"
+          },
+          {
+            "id": "z",
+            "name": "Z",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "a"
+          },
+          {
+            "from": "a",
+            "id": "Flow_2",
+            "to": "b"
+          },
+          {
+            "from": "b",
+            "id": "Flow_3",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "id": "Flow_4",
+            "to": "d"
+          },
+          {
+            "from": "d",
+            "id": "Flow_5",
+            "to": "e"
+          },
+          {
+            "from": "e",
+            "id": "Flow_6",
+            "to": "f"
+          },
+          {
+            "from": "f",
+            "id": "Flow_7",
+            "to": "g"
+          },
+          {
+            "from": "g",
+            "id": "Flow_8",
+            "to": "h"
+          },
+          {
+            "from": "h",
+            "id": "Flow_9",
+            "to": "i"
+          },
+          {
+            "from": "i",
+            "id": "Flow_10",
+            "to": "z"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

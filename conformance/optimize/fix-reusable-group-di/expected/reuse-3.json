@@ -1,0 +1,335 @@
+{
+  "findings": [
+    {
+      "category": "pattern",
+      "elementIds": [
+        "p1"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"p1\" has no output variable mapping.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"S\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "fixable": false,
+      "id": "pattern/duplicate-job-type",
+      "message": "Job type \"email\" is used by 3 service tasks.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Verify this is intentional — the same worker will handle all these tasks. Consider distinct job types if behaviors differ."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "a"
+      ],
+      "elementIds": [
+        "t1",
+        "p1"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:a",
+      "message": "Variable \"a\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"a\" is never set. Did you mean \"x\"?"
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "r"
+      ],
+      "elementIds": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:r",
+      "message": "Variable \"r\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"r\" is never set. Did you mean \"x\"?"
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "b"
+      ],
+      "elementIds": [
+        "t2"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:b",
+      "message": "Variable \"b\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"b\" is never set. Did you mean \"x\"?"
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "c"
+      ],
+      "elementIds": [
+        "t3"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:c",
+      "message": "Variable \"c\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"c\" is never set. Did you mean \"x\"?"
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "t1",
+        "t2",
+        "t3"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:to",
+      "message": "Variable \"to\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "produces": [
+        "to"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"to\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "t1",
+        "t2"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:res",
+      "message": "Variable \"res\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "produces": [
+        "res"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"res\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "t3"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:other",
+      "message": "Variable \"other\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "produces": [
+        "other"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"other\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "p1"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:x",
+      "message": "Variable \"x\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "produces": [
+        "x"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"x\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "a",
+        "r"
+      ],
+      "elementIds": [
+        "t1"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:t1",
+      "message": "Element \"t1\" produces: to, res; consumes: a, r.",
+      "processId": "proc",
+      "produces": [
+        "to",
+        "res"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "b",
+        "r"
+      ],
+      "elementIds": [
+        "t2"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:t2",
+      "message": "Element \"t2\" produces: to, res; consumes: b, r.",
+      "processId": "proc",
+      "produces": [
+        "to",
+        "res"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "c",
+        "r"
+      ],
+      "elementIds": [
+        "t3"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:t3",
+      "message": "Element \"t3\" produces: to, other; consumes: c, r.",
+      "processId": "proc",
+      "produces": [
+        "to",
+        "other"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "a"
+      ],
+      "elementIds": [
+        "p1"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:p1",
+      "message": "Element \"p1\" produces: x; consumes: a.",
+      "processId": "proc",
+      "produces": [
+        "x"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f2"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f2",
+      "message": "Variables in scope at flow \"f2\": res, to.",
+      "processId": "proc",
+      "produces": [
+        "res",
+        "to"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f3"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f3",
+      "message": "Variables in scope at flow \"f3\": res, to.",
+      "processId": "proc",
+      "produces": [
+        "res",
+        "to"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f4"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f4",
+      "message": "Variables in scope at flow \"f4\": other, res, to.",
+      "processId": "proc",
+      "produces": [
+        "other",
+        "res",
+        "to"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f5"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f5",
+      "message": "Variables in scope at flow \"f5\": other, res, to, x.",
+      "processId": "proc",
+      "produces": [
+        "other",
+        "res",
+        "to",
+        "x"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 16,
+      "deploy": 0,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 0,
+      "naming": 0,
+      "pattern": 3,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 0,
+      "info": 13,
+      "warning": 6
+    },
+    "total": 19
+  }
+}

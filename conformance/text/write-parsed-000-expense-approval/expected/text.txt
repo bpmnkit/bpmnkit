@@ -1,0 +1,5 @@
+# Expense approval
+start[start Expense submitted] > check[xor Amount over 1000?]
+check >(Yes: amount > 1000) review[user Review expense] > pay_join[xor] > pay[service Pay expense | job=pay] > done[end Expense paid]
+check >(No: default) auto[service Approve automatically | job=auto] > pay_join
+failed[boundary:error Payment failed | on=pay] > notify[send Notify submitter | job=notify] > notice[end Payment failed]

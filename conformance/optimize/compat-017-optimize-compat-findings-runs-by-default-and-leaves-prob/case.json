@@ -1,0 +1,9 @@
+{
+  "runs": {
+    "default": {},
+    "opts-2": {
+      "categories": [],
+      "camundaVersion": "8.8"
+    }
+  }
+}

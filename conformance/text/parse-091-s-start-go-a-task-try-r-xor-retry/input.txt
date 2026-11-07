@@ -1,0 +1,2 @@
+s[start Go] > a[task Try] > r[xor Retry?]
+r >(Yes) a

@@ -364,6 +364,7 @@ export type {
 	DmnAuthorityRequirement,
 	DmnInputData,
 	DmnKnowledgeSource,
+	DmnLiteralExpression,
 	DmnBusinessKnowledgeModel,
 	DmnTextAnnotation,
 	DmnAssociation,

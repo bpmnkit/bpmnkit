@@ -1,0 +1,58 @@
+[
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "context",
+          "v": {
+            "carrier": {
+              "t": "string",
+              "v": "Express"
+            },
+            "price": {
+              "t": "number",
+              "v": "19.9"
+            }
+          }
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "shipping",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "context",
+              "v": {
+                "carrier": {
+                  "t": "string",
+                  "v": "Express"
+                },
+                "price": {
+                  "t": "number",
+                  "v": "19.9"
+                }
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "shipping",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  }
+]

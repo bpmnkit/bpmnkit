@@ -1,0 +1,127 @@
+{
+  "report": {
+    "findings": [
+      {
+        "applied": false,
+        "construct": "connector",
+        "elementId": "Task_CreditScoreCheck",
+        "elementType": "serviceTask",
+        "message": "Connector \"io.camunda:http-json:1\" has no Camunda 7 runtime; it becomes a plain external task.",
+        "processId": "loan-approval-process",
+        "severity": "unsupported",
+        "suggestion": "Implement an external task worker for this topic."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "Task_CreditScoreCheck",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=\"GET\"\" (to \"method\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "loan-approval-process",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "Task_CreditScoreCheck",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=\"https://api.creditbureau.example.com/v1/score/\" + applicantId\" (to \"url\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "loan-approval-process",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:output",
+        "elementId": "Task_CreditScoreCheck",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=response.body.creditScore\" (to \"creditScore\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "loan-approval-process",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:taskHeaders",
+        "elementId": "Task_CreditScoreCheck",
+        "elementType": "serviceTask",
+        "message": "zeebe:taskHeaders has no Camunda 7 equivalent and was dropped.",
+        "processId": "loan-approval-process",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:calledDecision",
+        "elementId": "Task_RiskScoring",
+        "elementType": "businessRuleTask",
+        "message": "zeebe:calledDecision has no Camunda 7 equivalent and was dropped.",
+        "processId": "loan-approval-process",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:formDefinition",
+        "elementId": "Task_UnderwriterReview",
+        "elementType": "userTask",
+        "message": "Only formKey forms exist in Camunda 7; formId and external references are dropped.",
+        "processId": "loan-approval-process",
+        "severity": "unsupported",
+        "suggestion": "Link an embedded or generated form by camunda:formKey."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:userTask",
+        "elementId": "Task_UnderwriterReview",
+        "elementType": "userTask",
+        "message": "zeebe:userTask has no Camunda 7 equivalent and was dropped.",
+        "processId": "loan-approval-process",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "Flow_RejectLowScore",
+        "elementType": "element",
+        "message": "FEEL condition \"=creditScore < 580\" kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "loan-approval-process",
+        "severity": "manual",
+        "suggestion": "Rewrite the condition as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "Flow_PassPreScreen",
+        "elementType": "element",
+        "message": "FEEL condition \"=creditScore >= 580\" kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "loan-approval-process",
+        "severity": "manual",
+        "suggestion": "Rewrite the condition as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "Flow_Approved",
+        "elementType": "element",
+        "message": "FEEL condition \"=approved = true\" kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "loan-approval-process",
+        "severity": "manual",
+        "suggestion": "Rewrite the condition as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "Flow_Rejected",
+        "elementType": "element",
+        "message": "FEEL condition \"=approved = false\" kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "loan-approval-process",
+        "severity": "manual",
+        "suggestion": "Rewrite the condition as a JUEL expression."
+      }
+    ]
+  },
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_LoanApproval\" targetNamespace=\"http://bpmn.io/schema/bpmn\" exporter=\"Camunda Modeler\" exporterVersion=\"5.0.0\">\n  <bpmn:process id=\"loan-approval-process\" name=\"Loan Approval Process\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"StartEvent_LoanRequest\" name=\"Loan Application Received\">\n      <bpmn:outgoing>Flow_ToCreditCheck</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"Task_CreditScoreCheck\" camunda:type=\"external\" camunda:topic=\"io.camunda:http-json:1\" name=\"Credit Score Check\">\n      <bpmn:extensionElements>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"method\">=\"GET\"</camunda:inputParameter>\n          <camunda:inputParameter name=\"url\">=\"https://api.creditbureau.example.com/v1/score/\" + applicantId</camunda:inputParameter>\n          <camunda:inputParameter name=\"authentication.type\">noAuth</camunda:inputParameter>\n          <camunda:outputParameter name=\"creditScore\">=response.body.creditScore</camunda:outputParameter>\n        </camunda:inputOutput>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_ToCreditCheck</bpmn:incoming>\n      <bpmn:outgoing>Flow_ToPreScreen</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"Gateway_PreScreen\" name=\"Pre-Screening\">\n      <bpmn:incoming>Flow_ToPreScreen</bpmn:incoming>\n      <bpmn:outgoing>Flow_RejectLowScore</bpmn:outgoing>\n      <bpmn:outgoing>Flow_PassPreScreen</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:businessRuleTask id=\"Task_RiskScoring\" name=\"Risk Scoring\">\n      <bpmn:incoming>Flow_PassPreScreen</bpmn:incoming>\n      <bpmn:outgoing>Flow_ToUnderwriter</bpmn:outgoing>\n    </bpmn:businessRuleTask>\n    <bpmn:userTask id=\"Task_UnderwriterReview\" camunda:candidateGroups=\"underwriters\" name=\"Manual Underwriter Review\">\n      <bpmn:incoming>Flow_ToUnderwriter</bpmn:incoming>\n      <bpmn:outgoing>Flow_ToDecisionGateway</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:exclusiveGateway id=\"Gateway_FinalDecision\" name=\"Underwriter Decision\">\n      <bpmn:incoming>Flow_ToDecisionGateway</bpmn:incoming>\n      <bpmn:outgoing>Flow_Approved</bpmn:outgoing>\n      <bpmn:outgoing>Flow_Rejected</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:endEvent id=\"EndEvent_Approved\" name=\"Loan Approved\">\n      <bpmn:incoming>Flow_Approved</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"EndEvent_Rejected\" name=\"Loan Rejected\">\n      <bpmn:incoming>Flow_RejectLowScore</bpmn:incoming>\n      <bpmn:incoming>Flow_Rejected</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_ToCreditCheck\" sourceRef=\"StartEvent_LoanRequest\" targetRef=\"Task_CreditScoreCheck\"/>\n    <bpmn:sequenceFlow id=\"Flow_ToPreScreen\" sourceRef=\"Task_CreditScoreCheck\" targetRef=\"Gateway_PreScreen\"/>\n    <bpmn:sequenceFlow id=\"Flow_RejectLowScore\" sourceRef=\"Gateway_PreScreen\" targetRef=\"EndEvent_Rejected\" name=\"Score &lt; 580\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">=creditScore &lt; 580</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_PassPreScreen\" sourceRef=\"Gateway_PreScreen\" targetRef=\"Task_RiskScoring\" name=\"Score >= 580\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">=creditScore &gt;= 580</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_ToUnderwriter\" sourceRef=\"Task_RiskScoring\" targetRef=\"Task_UnderwriterReview\"/>\n    <bpmn:sequenceFlow id=\"Flow_ToDecisionGateway\" sourceRef=\"Task_UnderwriterReview\" targetRef=\"Gateway_FinalDecision\"/>\n    <bpmn:sequenceFlow id=\"Flow_Approved\" sourceRef=\"Gateway_FinalDecision\" targetRef=\"EndEvent_Approved\" name=\"Approved\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">=approved = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_Rejected\" sourceRef=\"Gateway_FinalDecision\" targetRef=\"EndEvent_Rejected\" name=\"Rejected\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\">=approved = false</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+}

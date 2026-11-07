@@ -1,0 +1,3 @@
+start_event_3[start Start Event 3] > user_task_12_muti[user User Task 12 Muti-Inst. Seq.] > user_task_13[user User Task 13] > service_task_14[service Service Task 14] > end_event_4[end End Event 4]
+start_event_4_conditional[start:conditional Start Event 4 Conditional] > user_task_12_muti
+boundary_intermediate_event_interrupting[boundary:message Boundary Intermediate Event Interrupting Message | on=user_task_13] > end_event_5_terminate[end:terminate End Event 5 Terminate]

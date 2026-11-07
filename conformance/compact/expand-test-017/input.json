@@ -1,0 +1,84 @@
+{
+  "id": "d",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "S",
+          "type": "startEvent"
+        },
+        {
+          "id": "G",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "A",
+          "type": "task"
+        },
+        {
+          "id": "P1",
+          "type": "parallelGateway"
+        },
+        {
+          "id": "Sub",
+          "type": "subProcess",
+          "children": {
+            "elements": [
+              {
+                "id": "SubG",
+                "type": "exclusiveGateway"
+              },
+              {
+                "id": "B",
+                "type": "task"
+              },
+              {
+                "id": "C",
+                "type": "task"
+              }
+            ],
+            "flows": [
+              {
+                "id": "SF1",
+                "from": "SubG",
+                "to": "B",
+                "condition": "= ok"
+              },
+              {
+                "id": "SF2",
+                "from": "SubG",
+                "to": "C",
+                "isDefault": true
+              }
+            ]
+          }
+        }
+      ],
+      "flows": [
+        {
+          "id": "F1",
+          "from": "S",
+          "to": "G"
+        },
+        {
+          "id": "F2",
+          "from": "G",
+          "to": "A",
+          "condition": "= ok"
+        },
+        {
+          "id": "F3",
+          "from": "G",
+          "to": "P1",
+          "isDefault": true
+        },
+        {
+          "id": "F4",
+          "from": "P1",
+          "to": "Sub"
+        }
+      ]
+    }
+  ]
+}

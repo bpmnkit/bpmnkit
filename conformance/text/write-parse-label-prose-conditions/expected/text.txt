@@ -1,0 +1,3 @@
+s[start S] > g[xor Decide]
+g >(If the customer is a VIP: decide = "If the customer is a VIP") a[task Fast] > e_join[xor] > e[end E]
+g >(Otherwise: default) b[task Slow] > e_join

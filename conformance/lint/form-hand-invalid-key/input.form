@@ -1,0 +1,49 @@
+{
+  "id": "F",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "id": "a",
+      "type": "textfield",
+      "key": "1abc",
+      "label": "a"
+    },
+    {
+      "id": "b",
+      "type": "textfield",
+      "key": "a b",
+      "label": "b"
+    },
+    {
+      "id": "c",
+      "type": "textfield",
+      "key": "a..b",
+      "label": "c"
+    },
+    {
+      "id": "d",
+      "type": "textfield",
+      "key": "a.b.c",
+      "label": "d"
+    },
+    {
+      "id": "e",
+      "type": "textfield",
+      "key": "$ok_1",
+      "label": "e"
+    },
+    {
+      "id": "f",
+      "type": "textfield",
+      "key": "a-b",
+      "label": "f"
+    },
+    {
+      "id": "g",
+      "type": "textfield",
+      "key": ".x",
+      "label": "g"
+    }
+  ]
+}

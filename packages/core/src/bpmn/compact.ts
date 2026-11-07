@@ -715,7 +715,7 @@ export function makeExtensions(el: CompactElement): XmlElement[] {
 		el.jobType &&
 		!el.decisionId &&
 		!isConnectorJobType(el.jobType) &&
-		el.outputs?.[el.resultVariable] === undefined
+		!Object.hasOwn(el.outputs ?? {}, el.resultVariable)
 	) {
 		// A job worker's result: map its `response` variable to the result variable
 		ioMapping.push({

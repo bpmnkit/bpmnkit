@@ -4,6 +4,9 @@
 //! the `gateway_protocol.Gateway` service using the same `EngineHandle`
 //! and DB pool as the REST API.
 
+// tonic handlers return `Result<_, Status>`; boxing Status everywhere would fight the generated trait signatures.
+#![allow(clippy::result_large_err)]
+
 pub mod service;
 
 pub use service::{GatewayService, GatewayState};

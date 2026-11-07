@@ -1,9 +1,9 @@
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 use crate::pool::DbPool;
+use crate::{DbError, Result};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use crate::{Result, DbError};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct UserTask {
@@ -104,13 +104,11 @@ impl<'a> UserTaskRepository<'a> {
     }
 
     pub async fn assign(&self, key: i64, assignee: Option<&str>) -> Result<()> {
-        sqlx::query(
-            "UPDATE user_tasks SET assignee = $1 WHERE key = $2",
-        )
-        .bind(assignee)
-        .bind(key)
-        .execute(self.pool)
-        .await?;
+        sqlx::query("UPDATE user_tasks SET assignee = $1 WHERE key = $2")
+            .bind(assignee)
+            .bind(key)
+            .execute(self.pool)
+            .await?;
         Ok(())
     }
 
@@ -223,7 +221,7 @@ impl<'a> UserTaskRepository<'a> {
         .fetch_all(self.pool)
         .await?;
 
-        Ok(rows.into_iter().map(|r| row_to_user_task(r)).collect())
+        Ok(rows.into_iter().map(row_to_user_task).collect())
     }
 }
 

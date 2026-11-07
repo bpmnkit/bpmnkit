@@ -1,5 +1,38 @@
 # Features
 
+## Rust twin release: differential fuzzing and crates.io packaging (2026-11-07)
+
+`crates/bpmnkit-fuzz` generates FEEL expressions, BPMN diagrams, DMN tables (parsed and evaluated), Camunda forms and process text, runs each through the Rust crates and the TS packages, and reports every disagreement shrunk to a minimal input (`pnpm fuzz --target <name> --seconds N`, `--replay <file>`). A nightly GitHub workflow runs every target and uploads mismatches. The 11 library crates carry full crates.io metadata, dual license files, READMEs and rustdoc examples, and publish in lockstep from a manual, approval-gated workflow. Docs page: `packages/rust-crates`.
+
+## Rust twin: export validation and build-time XSD checks (2026-11-07)
+
+`bpmnkit_lint::export_bpmn` lints before writing (`ExportValidate::Warn` / `Error`), and `bpmnkit-builder` refuses ids that are not XML names and `retries` that are neither a number nor FEEL, matching `Bpmn.export(defs, { validate })` and TS's XSD guards. Builders default to Camunda 8.10.
+
+## `bpmnkit-builder` and `bpmnkit-text`: builder, process text and compact in Rust (2026-11-07)
+
+A Rust fluent builder for BPMN processes, collaborations, decision tables and DRDs whose output (model, XML, auto-layout, error messages) equals `@bpmnkit/core`'s builder, call for call; process text parsing, streaming and writing; compact BPMN and DMN (`compactify`, `expand`, streams). 789 of 790 recorded cases match exactly; the one pending case is a call Rust's types rule out. About 2–3× faster than TS for layout-backed builds, process text and expand.
+
+## `bpmnkit-layout`: auto-layout in Rust (2026-11-06)
+
+Rust auto-layout for BPMN (both engines: semantic and grid; pools, lanes, boundary events, expanded and collapsed sub-processes, annotations, message flows, keeping the source DI's ids and styles) and DMN, with the same shapes, waypoints, labels and XML as `@bpmnkit/core`'s `applyAutoLayout` and `layoutDmn`: all 217 recorded layout runs match exactly. Takes the builder's layout hints (tool grids, annotation sides). About 2.5× faster than TS on the semantic engine and 2.2× on grid.
+
+Auto-layout (TS and Rust) draws the lanes of a process outside any pool on its own plane, and the associations between two text annotations.
+
+## `bpmnkit-lint` and `bpmnkit-compat`: lint, Camunda compatibility and C7 migration in Rust (2026-11-06)
+
+Rust lint (`lint_diagram`, `optimize` with its automatic fixes, `.bpmnlintrc` support with the native bpmnlint rules, DMN and Form lint), the Camunda 8 version compatibility check, and Camunda 7 to 8 migration with JUEL to FEEL (plus C8 to C7 export). Same findings, messages, order and fixed XML as `@bpmnkit/core` on 1717 recorded runs. Rule and compatibility data come from `spec/`, shared with TS. About 2× faster than TS.
+
+## `bpmnkit-dmn` and `bpmnkit-form`: DMN and forms in Rust (2026-11-06)
+
+Rust parsers and serializers for DMN 1.3 and Camunda forms, with the same model JSON, round-trip output and error messages as `@bpmnkit/core` on all 93 DMN and form conformance cases. `bpmnkit_dmn::evaluate_decision_graph` evaluates decision tables (every hit policy and aggregation), literal expressions and required decisions, with the same results as `@bpmnkit/engine`'s new `evaluateDecisionGraph` on 191 recorded evaluations, and reports syntax errors and FEEL warnings. DMN element data comes from `spec/elements/dmn.json`, shared with TS. Reebe evaluates decisions with it.
+
+## `bpmnkit-bpmn`: BPMN I/O in Rust (2026-11-06)
+
+Rust parser and lossless serializer for BPMN 2.0 + Zeebe, with the same model JSON and byte-identical round-trip XML as `@bpmnkit/core` on all 48 BPMN conformance cases. `bpmnkit-xml` keeps prefixes, attribute order and unknown content; `bpmnkit_bpmn::zeebe` reads and writes the typed Zeebe extensions. Element kinds and Zeebe placement come from `spec/elements/{bpmn,zeebe}.json`, shared with TS. Builds for wasm32. Reebe parses deployments with it.
+
+## `bpmnkit-feel`: FEEL in Rust (2026-11-06)
+
+A Rust FEEL lexer, parser and evaluator with every built-in, held to `@bpmnkit/feel` by the shared conformance cases (373 of 374 pass) and passing 95.0% of the DMN TCK. Exact decimals, ordered contexts, zoned date-times, durations. Reebe evaluates FEEL with it.
 ## Agent cards (2026-11-05)
 
 `casen agent-card bpmn|dmn|form` prints a ~1–1.5k-token cheat sheet for an AI agent: a runnable create/export/edit/validate script, the top builder options and the known traps. The same cards are docs pages under "Agent Cards", ranked first by `@bpmnkit/docspack` (whose `llms.txt` opens with them), and Claude plugin skills (`/bpmnkit:bpmn-script`, `:dmn`, `:form`). Every script is typechecked and run in CI.

@@ -1,0 +1,32 @@
+[
+  {
+    "result": {
+      "t": "boolean",
+      "v": false
+    },
+    "evaluated": [
+      {
+        "decision": "eligibility",
+        "result": {
+          "t": "boolean",
+          "v": false
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "boolean",
+      "v": true
+    },
+    "evaluated": [
+      {
+        "decision": "eligibility",
+        "result": {
+          "t": "boolean",
+          "v": true
+        }
+      }
+    ]
+  }
+]

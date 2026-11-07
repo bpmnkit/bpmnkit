@@ -1,0 +1,36 @@
+[package]
+name = "bpmnkit-feel"
+description = "FEEL (DMN 1.5 + Camunda extensions) lexer, parser and evaluator with exact decimals; the Rust twin of @bpmnkit/feel"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["feel", "dmn", "bpmn", "camunda", "expression"]
+categories = ["parser-implementations", "data-structures"]
+# Tests and benches read the shared corpus under ../../conformance, outside the package.
+exclude = ["tests/", "benches/"]
+
+[dependencies]
+bpmnkit-spec = { workspace = true }
+chrono = "0.4"
+chrono-tz = { version = "0.10", optional = true }
+indexmap = "2"
+# The minimum for FEEL `matches()`; `full-regex` restores regex's defaults.
+regex = { version = "1", default-features = false, features = ["std", "unicode-perl", "unicode-case", "unicode-gencat"] }
+rust_decimal = { version = "1", features = ["maths"] }
+serde_json = { workspace = true }
+
+[features]
+default = ["tz", "full-regex"]
+# IANA zone names (chrono-tz, ~150 KB of wasm). Off: only fixed offsets resolve.
+tz = ["dep:chrono-tz"]
+# regex's speed-ups and every Unicode class (~130 KB of wasm). Off: `\p{Greek}`-style
+# script classes are unknown and matching is slower.
+full-regex = ["regex/default"]
+
+[[bench]]
+name = "conformance"
+harness = false

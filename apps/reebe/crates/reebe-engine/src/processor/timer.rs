@@ -1,9 +1,9 @@
-use async_trait::async_trait;
-use reebe_db::records::DbRecord;
-use crate::engine::EngineState;
-use crate::error::{EngineError, EngineResult};
 use super::catch_event::{reschedule_cycle, trigger, CatchRef, Triggered};
 use super::{EventToWrite, RecordProcessor, Writers};
+use crate::engine::EngineState;
+use crate::error::{EngineError, EngineResult};
+use async_trait::async_trait;
+use reebe_db::records::DbRecord;
 
 pub struct TimerProcessor;
 
@@ -29,7 +29,10 @@ impl RecordProcessor for TimerProcessor {
             .ok_or_else(|| EngineError::InvalidState("Missing timerKey".to_string()))?;
 
         let timer = state.backend.get_timer_by_key(timer_key).await?;
-        state.backend.update_timer_state(timer_key, "TRIGGERED").await?;
+        state
+            .backend
+            .update_timer_state(timer_key, "TRIGGERED")
+            .await?;
 
         writers.events.push(EventToWrite {
             value_type: "TIMER".to_string(),

@@ -1,0 +1,52 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "x",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "p",
+          "type": "parallelGateway"
+        },
+        {
+          "id": "i",
+          "type": "inclusiveGateway"
+        },
+        {
+          "id": "ev",
+          "type": "eventBasedGateway"
+        },
+        {
+          "id": "cx",
+          "type": "complexGateway"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f1",
+          "from": "x",
+          "to": "p"
+        },
+        {
+          "id": "f2",
+          "from": "p",
+          "to": "i"
+        },
+        {
+          "id": "f3",
+          "from": "i",
+          "to": "ev"
+        },
+        {
+          "id": "f4",
+          "from": "ev",
+          "to": "cx"
+        }
+      ]
+    }
+  ]
+}

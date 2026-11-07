@@ -1,0 +1,8 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["textAnnotation","orphan"],
+		["build"]
+	]
+}

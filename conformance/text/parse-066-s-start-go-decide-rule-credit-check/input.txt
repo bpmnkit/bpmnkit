@@ -1,0 +1,3 @@
+s[start Go] > decide[rule Credit check]
+decide > ok[user Approve loan] > e[end Approved]
+decide > no[user Reject loan] > f[end Rejected]

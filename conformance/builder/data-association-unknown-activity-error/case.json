@@ -1,0 +1,12 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["dataObject","DO1"],
+		["dataObjectReference","R1","DO1"],
+		["dataAssociation","ghost","R1","input"],
+		["endEvent","e"],
+		["build"]
+	]
+}

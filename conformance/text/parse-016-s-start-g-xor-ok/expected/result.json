@@ -1,0 +1,113 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "g",
+            "name": "Ok?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "a",
+            "name": "A",
+            "type": "task"
+          },
+          {
+            "id": "again",
+            "name": "Retry?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "b",
+            "name": "B",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "Done",
+            "type": "endEvent"
+          },
+          {
+            "id": "a_join",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "again_join",
+            "type": "exclusiveGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "g"
+          },
+          {
+            "condition": "= ok",
+            "from": "g",
+            "id": "Flow_2",
+            "name": "Yes",
+            "to": "a_join"
+          },
+          {
+            "from": "a",
+            "id": "Flow_3",
+            "to": "again_join"
+          },
+          {
+            "from": "g",
+            "id": "Flow_4",
+            "isDefault": true,
+            "name": "No",
+            "to": "b"
+          },
+          {
+            "from": "b",
+            "id": "Flow_5",
+            "to": "again_join"
+          },
+          {
+            "condition": "= retry",
+            "from": "again",
+            "id": "Flow_6",
+            "name": "Yes",
+            "to": "a_join"
+          },
+          {
+            "from": "again",
+            "id": "Flow_7",
+            "isDefault": true,
+            "name": "No",
+            "to": "e"
+          },
+          {
+            "from": "a_join",
+            "id": "Flow_8",
+            "to": "a"
+          },
+          {
+            "from": "again_join",
+            "id": "Flow_9",
+            "to": "again"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "joined 2 flows into \"a\" with xor gateway \"a_join\"",
+    "joined 2 flows into \"again\" with xor gateway \"again_join\"",
+    "named 1 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

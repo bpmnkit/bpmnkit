@@ -1,0 +1,119 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Order placed",
+            "type": "startEvent"
+          },
+          {
+            "eventType": "message",
+            "id": "wait",
+            "name": "Payment confirmed",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "ship",
+            "name": "Ship order",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "Shipped",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "ship",
+            "eventType": "message",
+            "id": "cancel",
+            "name": "Order cancelled",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "c",
+            "name": "Cancelled",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "wait"
+          },
+          {
+            "from": "wait",
+            "id": "Flow_2",
+            "to": "ship"
+          },
+          {
+            "from": "ship",
+            "id": "Flow_3",
+            "to": "e"
+          },
+          {
+            "from": "cancel",
+            "id": "Flow_4",
+            "to": "c"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"wait\" waits for nothing in particular; made it a message event"
+    },
+    {
+      "line": 2,
+      "message": "\"cancel\" waits for nothing in particular; made it a message event"
+    }
+  ],
+  "questions": [
+    {
+      "draft": "\"Payment confirmed\" waits for ",
+      "elementId": "wait",
+      "options": [
+        {
+          "change": "\"Payment confirmed\" waits for a timer, not a message.",
+          "label": "A timer"
+        },
+        {
+          "change": "\"Payment confirmed\" waits for a signal, not a message.",
+          "label": "A signal"
+        },
+        {
+          "change": "\"Payment confirmed\" waits for nothing: make it a plain event, or the end.",
+          "label": "Nothing"
+        }
+      ],
+      "text": "\"Payment confirmed\" was written without a trigger, so it waits for a message. Is it something else?"
+    },
+    {
+      "draft": "\"Order cancelled\" waits for ",
+      "elementId": "cancel",
+      "options": [
+        {
+          "change": "\"Order cancelled\" waits for a timer, not a message.",
+          "label": "A timer"
+        },
+        {
+          "change": "\"Order cancelled\" waits for a signal, not a message.",
+          "label": "A signal"
+        },
+        {
+          "change": "\"Order cancelled\" waits for nothing: make it a plain event, or the end.",
+          "label": "Nothing"
+        }
+      ],
+      "text": "\"Order cancelled\" was written without a trigger, so it waits for a message. Is it something else?"
+    }
+  ]
+}

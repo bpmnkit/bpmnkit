@@ -19,7 +19,9 @@ pub(crate) struct Cron {
     weekdays: u64,
 }
 
-const MONTHS: [&str; 12] = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+const MONTHS: [&str; 12] = [
+    "JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC",
+];
 const WEEKDAYS: [&str; 7] = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 
 impl Cron {
@@ -56,9 +58,15 @@ impl Cron {
         // Bounded, so that an expression that never matches (`0 0 0 31 2 *`) ends.
         for _ in 0..100_000 {
             if !has(self.months, t.month()) {
-                let (y, m) = if t.month() == 12 { (t.year() + 1, 1) } else { (t.year(), t.month() + 1) };
+                let (y, m) = if t.month() == 12 {
+                    (t.year() + 1, 1)
+                } else {
+                    (t.year(), t.month() + 1)
+                };
                 t = midnight(NaiveDate::from_ymd_opt(y, m, 1)?);
-            } else if !has(self.days, t.day()) || !has(self.weekdays, t.weekday().num_days_from_sunday()) {
+            } else if !has(self.days, t.day())
+                || !has(self.weekdays, t.weekday().num_days_from_sunday())
+            {
                 t = midnight(t.date_naive().succ_opt()?);
             } else if !has(self.hours, t.hour()) {
                 t = t.with_minute(0)?.with_second(0)? + Duration::hours(1);
@@ -125,36 +133,82 @@ mod tests {
         // The example from the Camunda timer documentation.
         let cron = Cron::parse("0 0 9-17 * * MON-FRI").unwrap();
         // Friday 2026-09-25 17:30 → Monday 09:00.
-        assert_eq!(cron.next_after(at("2026-09-25T17:30:00Z")), Some(at("2026-09-28T09:00:00Z")));
-        assert_eq!(cron.next_after(at("2026-09-28T09:00:00Z")), Some(at("2026-09-28T10:00:00Z")));
+        assert_eq!(
+            cron.next_after(at("2026-09-25T17:30:00Z")),
+            Some(at("2026-09-28T09:00:00Z"))
+        );
+        assert_eq!(
+            cron.next_after(at("2026-09-28T09:00:00Z")),
+            Some(at("2026-09-28T10:00:00Z"))
+        );
     }
 
     #[test]
     fn steps_lists_and_names() {
         let cron = Cron::parse("*/15 * * * * *").unwrap();
-        assert_eq!(cron.next_after(at("2026-01-01T00:00:14Z")), Some(at("2026-01-01T00:00:15Z")));
-        assert_eq!(cron.next_after(at("2026-01-01T00:00:45Z")), Some(at("2026-01-01T00:01:00Z")));
+        assert_eq!(
+            cron.next_after(at("2026-01-01T00:00:14Z")),
+            Some(at("2026-01-01T00:00:15Z"))
+        );
+        assert_eq!(
+            cron.next_after(at("2026-01-01T00:00:45Z")),
+            Some(at("2026-01-01T00:01:00Z"))
+        );
 
         let cron = Cron::parse("0 30 8 1,15 jan,jul ?").unwrap();
-        assert_eq!(cron.next_after(at("2026-01-15T08:30:00Z")), Some(at("2026-07-01T08:30:00Z")));
+        assert_eq!(
+            cron.next_after(at("2026-01-15T08:30:00Z")),
+            Some(at("2026-07-01T08:30:00Z"))
+        );
 
         // Sunday is 0 and 7.
         let sunday = at("2026-09-27T00:00:00Z");
-        assert_eq!(Cron::parse("0 0 0 * * 7").unwrap().next_after(at("2026-09-26T12:00:00Z")), Some(sunday));
-        assert_eq!(Cron::parse("0 0 0 * * 0").unwrap().next_after(at("2026-09-26T12:00:00Z")), Some(sunday));
+        assert_eq!(
+            Cron::parse("0 0 0 * * 7")
+                .unwrap()
+                .next_after(at("2026-09-26T12:00:00Z")),
+            Some(sunday)
+        );
+        assert_eq!(
+            Cron::parse("0 0 0 * * 0")
+                .unwrap()
+                .next_after(at("2026-09-26T12:00:00Z")),
+            Some(sunday)
+        );
     }
 
     #[test]
     fn macros_and_leap_days() {
-        assert_eq!(Cron::parse("@daily").unwrap().next_after(at("2026-09-24T10:00:00Z")), Some(at("2026-09-25T00:00:00Z")));
+        assert_eq!(
+            Cron::parse("@daily")
+                .unwrap()
+                .next_after(at("2026-09-24T10:00:00Z")),
+            Some(at("2026-09-25T00:00:00Z"))
+        );
         let feb29 = Cron::parse("0 0 12 29 2 *").unwrap();
-        assert_eq!(feb29.next_after(at("2026-03-01T00:00:00Z")), Some(at("2028-02-29T12:00:00Z")));
-        assert_eq!(Cron::parse("0 0 0 31 2 *").unwrap().next_after(at("2026-01-01T00:00:00Z")), None);
+        assert_eq!(
+            feb29.next_after(at("2026-03-01T00:00:00Z")),
+            Some(at("2028-02-29T12:00:00Z"))
+        );
+        assert_eq!(
+            Cron::parse("0 0 0 31 2 *")
+                .unwrap()
+                .next_after(at("2026-01-01T00:00:00Z")),
+            None
+        );
     }
 
     #[test]
     fn rejects_what_is_not_a_cron_expression() {
-        for text in ["R/PT1H", "PT10M", "* * * * *", "0 0 25 * * *", "0 0 0 * * MON#2", "0 0 0 L * *", "0/0 * * * * *"] {
+        for text in [
+            "R/PT1H",
+            "PT10M",
+            "* * * * *",
+            "0 0 25 * * *",
+            "0 0 0 * * MON#2",
+            "0 0 0 L * *",
+            "0/0 * * * * *",
+        ] {
             assert_eq!(Cron::parse(text), None, "{text}");
         }
     }

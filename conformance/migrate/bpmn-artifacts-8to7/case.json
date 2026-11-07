@@ -1,0 +1,8 @@
+{
+  "input": "bpmn/artifacts/input.bpmn",
+  "runs": {
+    "default": {
+      "direction": "8to7"
+    }
+  }
+}

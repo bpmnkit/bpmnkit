@@ -1,0 +1,2 @@
+s[start Go] > a[task A] > e[end Done]
+t[catch:timer Wait] > x[task Remind]

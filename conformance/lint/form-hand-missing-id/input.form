@@ -1,0 +1,17 @@
+{
+  "id": "F",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "type": "textfield",
+      "key": "a",
+      "label": "A"
+    },
+    {
+      "id": "",
+      "type": "text",
+      "text": "x"
+    }
+  ]
+}

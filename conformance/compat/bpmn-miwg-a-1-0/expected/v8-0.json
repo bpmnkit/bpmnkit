@@ -1,0 +1,40 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_ec59e164-68b4-4f94-98de-ffb1c58a84af"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 1\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_820c21c0-45f3-473b-813f-06381cc637cd"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 2\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_e70a6fcb-913c-4a7b-a65d-e83adc73d69c"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"Task 3\" needs Camunda 8.2 or newer; this model targets Camunda 8.0.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    }
+  ]
+}

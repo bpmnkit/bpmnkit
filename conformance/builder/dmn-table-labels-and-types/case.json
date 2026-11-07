@@ -1,0 +1,16 @@
+{
+	"kind": "dmn",
+	"script": [
+		["createDecisionTable","d"],
+		["name","Loan"],
+		["input",{"label":"Applicant age","expression":"applicant.age","typeRef":"integer"}],
+		["input",{"label":"Income","expression":"income","typeRef":"double"}],
+		["input",{"label":"Married","expression":"married","typeRef":"boolean"}],
+		["input",{"label":"Day","expression":"day","typeRef":"date"}],
+		["output",{"label":"Decision","name":"decision","typeRef":"string"}],
+		["output",{"label":"Limit","name":"limit","typeRef":"long"}],
+		["rule",{"description":"adult with income","inputs":["> 18","> 1000","true","date(\"2020-01-01\")"],"outputs":["\"yes\"","5000"]}],
+		["rule",{"inputs":["-","-","-","-"],"outputs":["\"no\"","0"]}],
+		["build"]
+	]
+}

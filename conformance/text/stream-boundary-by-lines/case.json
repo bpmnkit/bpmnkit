@@ -1,0 +1,6 @@
+{
+	"chunks": [
+		"s[start] > t[service Work | job=work] > e[end]\n",
+		"b[boundary:error Fail | on=t] > h[task Handle] > x[end Failed]\n"
+	]
+}

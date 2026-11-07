@@ -1,0 +1,205 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [
+    {
+      "errorCode": "FAIL",
+      "id": "Error_FAIL",
+      "name": "FAIL"
+    }
+  ],
+  "escalations": [],
+  "exporter": "@bpmnkit/core",
+  "exporterVersion": "0.0.23",
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "s",
+          "incoming": [],
+          "outgoing": [
+            "Flow_s_host"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "host"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "host",
+          "incoming": [
+            "Flow_s_host"
+          ],
+          "name": "host",
+          "outgoing": [
+            "Flow_host_e3"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "host",
+          "eventDefinitions": [
+            {
+              "id": "tb_TimerEventDefinition",
+              "timeDuration": "PT1H",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "tb",
+          "incoming": [],
+          "name": "Timeout",
+          "outgoing": [
+            "Flow_tb_escalate"
+          ],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "escalate"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "escalate",
+          "incoming": [
+            "Flow_tb_escalate"
+          ],
+          "name": "escalate",
+          "outgoing": [
+            "Flow_escalate_e1"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e1",
+          "incoming": [
+            "Flow_escalate_e1"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "host",
+          "cancelActivity": true,
+          "eventDefinitions": [
+            {
+              "errorRef": "Error_FAIL",
+              "id": "eb_ErrorEventDefinition",
+              "type": "error"
+            }
+          ],
+          "extensionElements": [],
+          "id": "eb",
+          "incoming": [],
+          "outgoing": [
+            "Flow_eb_e2"
+          ],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e2",
+          "incoming": [
+            "Flow_eb_e2"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e3",
+          "incoming": [
+            "Flow_host_e3"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "p",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_s_host",
+          "sourceRef": "s",
+          "targetRef": "host",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_tb_escalate",
+          "sourceRef": "tb",
+          "targetRef": "escalate",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_escalate_e1",
+          "sourceRef": "escalate",
+          "targetRef": "e1",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_eb_e2",
+          "sourceRef": "eb",
+          "targetRef": "e2",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_host_e3",
+          "sourceRef": "host",
+          "targetRef": "e3",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.10.0"
+  }
+}

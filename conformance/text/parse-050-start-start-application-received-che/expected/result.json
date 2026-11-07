@@ -1,0 +1,52 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "Application received",
+            "type": "startEvent"
+          },
+          {
+            "id": "check",
+            "name": "Check",
+            "type": "task"
+          },
+          {
+            "id": "done",
+            "name": "Done",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "check"
+          },
+          {
+            "from": "check",
+            "id": "Flow_2",
+            "to": "done"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 2,
+      "message": "\"id\" is a second blank start event; left out"
+    },
+    {
+      "line": 3,
+      "message": "\"id\" is already declared on line 2; ignored \"check rule\""
+    }
+  ],
+  "questions": []
+}

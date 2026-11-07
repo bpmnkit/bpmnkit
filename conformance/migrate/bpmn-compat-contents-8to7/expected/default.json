@@ -1,0 +1,307 @@
+{
+  "report": {
+    "findings": [
+      {
+        "applied": false,
+        "construct": "zeebe:subscription",
+        "elementId": "Msg_secret",
+        "elementType": "message",
+        "message": "Camunda 7 does not subscribe messages by correlationKey; the key is dropped.",
+        "processId": "",
+        "severity": "manual",
+        "suggestion": "Correlate with a business key or correlation variables when sending the message."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:executionListeners",
+        "elementId": "contents",
+        "elementType": "process",
+        "message": "zeebe:executionListeners has no Camunda 7 equivalent and was dropped.",
+        "processId": "contents",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:properties",
+        "elementId": "webhookStart",
+        "elementType": "startEvent",
+        "message": "zeebe:properties has no Camunda 7 equivalent and was dropped.",
+        "processId": "contents",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:properties",
+        "elementId": "pollingCatch",
+        "elementType": "intermediateCatchEvent",
+        "message": "zeebe:properties has no Camunda 7 equivalent and was dropped.",
+        "processId": "contents",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:taskDefinition",
+        "elementId": "feelNew",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=\"job-\" + string(random number())\" kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "contents",
+        "severity": "manual",
+        "suggestion": "Rewrite camunda:topic as a JUEL expression such as ${...}."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "feelNew",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=uuid()\" (to \"id\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "contents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "feelNew",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=from json(payload)\" (to \"data\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "contents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "feelNew",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=trim(name) + to base64(name)\" (to \"label\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "contents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:output",
+        "elementId": "feelNew",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=partition(items, 10)\" (to \"pages\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "contents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "feelShadowed",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"={uuid: function() 1, id: uuid()}\" (to \"a\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "contents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "feelShadowed",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=for trim in [1] return trim(1)\" (to \"b\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "contents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "feelShadowed",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=uuid(\" (to \"c\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "contents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:taskHeaders",
+        "elementId": "feelShadowed",
+        "elementType": "serviceTask",
+        "message": "zeebe:taskHeaders has no Camunda 7 equivalent and was dropped.",
+        "processId": "contents",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "badVars",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=1\" (to \"1st\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "contents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:output",
+        "elementId": "badVars",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=2\" (to \"my variable name\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "contents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:output",
+        "elementId": "badVars",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=3\" (to \"a.b_c\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "contents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:script",
+        "elementId": "badResult",
+        "elementType": "scriptTask",
+        "message": "zeebe:script has no Camunda 7 equivalent and was dropped.",
+        "processId": "contents",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:calledDecision",
+        "elementId": "badDecisionResult",
+        "elementType": "businessRuleTask",
+        "message": "zeebe:calledDecision has no Camunda 7 equivalent and was dropped.",
+        "processId": "contents",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:adHoc",
+        "elementId": "badOutputCollection",
+        "elementType": "adHocSubProcess",
+        "message": "zeebe:adHoc has no Camunda 7 equivalent and was dropped.",
+        "processId": "contents",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "secretsTask",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=camunda.secrets.OK\" (to \"ok\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "contents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:properties",
+        "elementId": "secretsTask",
+        "elementType": "serviceTask",
+        "message": "zeebe:properties has no Camunda 7 equivalent and was dropped.",
+        "processId": "contents",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "secretQuoted",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=\"Bearer camunda.secrets.QUOTED\"\" (to \"a\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "contents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:properties",
+        "elementId": "secretProperty",
+        "elementType": "serviceTask",
+        "message": "zeebe:properties has no Camunda 7 equivalent and was dropped.",
+        "processId": "contents",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "secretList",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"={keys: [camunda.secrets.A, camunda.secrets.B]}\" (to \"a\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "contents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "secretIfContext",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=if prod then {key: camunda.secrets.PROD} else null\" (to \"a\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "contents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "secretFine",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"={auth: {key: camunda.secrets.A}}\" (to \"a\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "contents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "secretFine",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=([camunda.secrets.B])\" (to \"b\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "contents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "secretFine",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=camunda.secrets.C.value\" (to \"c\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "contents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "secretFine",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=if prod then camunda.secrets.D else null\" (to \"d\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "contents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "toLoopB",
+        "elementType": "element",
+        "message": "FEEL condition \"=is blank(reason)\" kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "contents",
+        "severity": "manual",
+        "suggestion": "Rewrite the condition as a JUEL expression."
+      }
+    ]
+  },
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_contents\" targetNamespace=\"http://bpmn.io/schema/bpmn\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\">\n  <bpmn:message id=\"Msg_secret\" name=\"secret\"/>\n  <bpmn:message id=\"Msg_webhook\" name=\"webhook\"/>\n  <bpmn:process id=\"contents\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\">\n      <bpmn:outgoing>toLoopA</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:startEvent id=\"webhookStart\">\n      <bpmn:messageEventDefinition id=\"webhookDef\" messageRef=\"Msg_webhook\"/>\n    </bpmn:startEvent>\n    <bpmn:intermediateCatchEvent id=\"pollingCatch\">\n      <bpmn:messageEventDefinition id=\"pollingDef\" messageRef=\"Msg_webhook\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:manualTask id=\"loopA\">\n      <bpmn:incoming>toLoopA</bpmn:incoming>\n      <bpmn:incoming>backToA</bpmn:incoming>\n      <bpmn:outgoing>toLoopGateway</bpmn:outgoing>\n    </bpmn:manualTask>\n    <bpmn:exclusiveGateway id=\"loopGateway\" default=\"toEnd\">\n      <bpmn:incoming>toLoopGateway</bpmn:incoming>\n      <bpmn:outgoing>toLoopB</bpmn:outgoing>\n      <bpmn:outgoing>toEnd</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:task id=\"loopB\">\n      <bpmn:incoming>toLoopB</bpmn:incoming>\n      <bpmn:outgoing>backToA</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:endEvent id=\"end\">\n      <bpmn:incoming>toEnd</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:serviceTask id=\"feelNew\" camunda:type=\"external\" camunda:topic=\"=&quot;job-&quot; + string(random number())\">\n      <bpmn:extensionElements>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"id\">=uuid()</camunda:inputParameter>\n          <camunda:inputParameter name=\"data\">=from json(payload)</camunda:inputParameter>\n          <camunda:inputParameter name=\"label\">=trim(name) + to base64(name)</camunda:inputParameter>\n          <camunda:outputParameter name=\"pages\">=partition(items, 10)</camunda:outputParameter>\n        </camunda:inputOutput>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"feelShadowed\" camunda:type=\"external\" camunda:topic=\"t\">\n      <bpmn:extensionElements>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"a\">={uuid: function() 1, id: uuid()}</camunda:inputParameter>\n          <camunda:inputParameter name=\"b\">=for trim in [1] return trim(1)</camunda:inputParameter>\n          <camunda:inputParameter name=\"c\">=uuid(</camunda:inputParameter>\n          <camunda:inputParameter name=\"d\">uuid()</camunda:inputParameter>\n        </camunda:inputOutput>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:intermediateCatchEvent id=\"feelTimer\">\n      <bpmn:timerEventDefinition id=\"feelTimerDef\">\n        <bpmn:timeDate xsi:type=\"bpmn:tFormalExpression\">=last day of month(today())</bpmn:timeDate>\n      </bpmn:timerEventDefinition>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:serviceTask id=\"badVars\" camunda:type=\"external\" camunda:topic=\"t\">\n      <bpmn:extensionElements>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"1st\">=1</camunda:inputParameter>\n          <camunda:outputParameter name=\"my variable name\">=2</camunda:outputParameter>\n          <camunda:outputParameter name=\"a.b_c\">=3</camunda:outputParameter>\n        </camunda:inputOutput>\n      </bpmn:extensionElements>\n      <bpmn:multiInstanceLoopCharacteristics>\n        <bpmn:extensionElements>\n          <zeebe:loopCharacteristics inputCollection=\"=items\" inputElement=\"item-x\" outputCollection=\"results\" outputElement=\"=item\"/>\n        </bpmn:extensionElements>\n      </bpmn:multiInstanceLoopCharacteristics>\n    </bpmn:serviceTask>\n    <bpmn:scriptTask id=\"badResult\"/>\n    <bpmn:businessRuleTask id=\"badDecisionResult\"/>\n    <bpmn:adHocSubProcess id=\"badOutputCollection\">\n      <bpmn:task id=\"adHocInner\"/>\n    </bpmn:adHocSubProcess>\n    <bpmn:serviceTask id=\"secretsTask\" camunda:type=\"external\" camunda:topic=\"t\">\n      <bpmn:extensionElements>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"apiKey\">secrets.API_KEY</camunda:inputParameter>\n          <camunda:inputParameter name=\"token\">{{secrets.TOKEN}}</camunda:inputParameter>\n          <camunda:inputParameter name=\"ok\">=camunda.secrets.OK</camunda:inputParameter>\n        </camunda:inputOutput>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:receiveTask id=\"secretReceive\" messageRef=\"Msg_secret\"/>\n    <bpmn:serviceTask id=\"secretLiteral\" camunda:type=\"external\" camunda:topic=\"t\">\n      <bpmn:extensionElements>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"a\">camunda.secrets.PLAIN</camunda:inputParameter>\n        </camunda:inputOutput>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"secretQuoted\" camunda:type=\"external\" camunda:topic=\"t\">\n      <bpmn:extensionElements>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"a\">=\"Bearer camunda.secrets.QUOTED\"</camunda:inputParameter>\n        </camunda:inputOutput>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"secretProperty\" camunda:type=\"external\" camunda:topic=\"t\"/>\n    <bpmn:serviceTask id=\"secretList\" camunda:type=\"external\" camunda:topic=\"t\">\n      <bpmn:extensionElements>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"a\">={keys: [camunda.secrets.A, camunda.secrets.B]}</camunda:inputParameter>\n        </camunda:inputOutput>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"secretIfContext\" camunda:type=\"external\" camunda:topic=\"t\">\n      <bpmn:extensionElements>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"a\">=if prod then {key: camunda.secrets.PROD} else null</camunda:inputParameter>\n        </camunda:inputOutput>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:serviceTask id=\"secretFine\" camunda:type=\"external\" camunda:topic=\"t\">\n      <bpmn:extensionElements>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"a\">={auth: {key: camunda.secrets.A}}</camunda:inputParameter>\n          <camunda:inputParameter name=\"b\">=([camunda.secrets.B])</camunda:inputParameter>\n          <camunda:inputParameter name=\"c\">=camunda.secrets.C.value</camunda:inputParameter>\n          <camunda:inputParameter name=\"d\">=if prod then camunda.secrets.D else null</camunda:inputParameter>\n        </camunda:inputOutput>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:intermediateThrowEvent id=\"linkNoName\">\n      <bpmn:linkEventDefinition id=\"linkNoNameDef\"/>\n    </bpmn:intermediateThrowEvent>\n    <bpmn:intermediateCatchEvent id=\"linkCatch1\">\n      <bpmn:linkEventDefinition id=\"linkCatch1Def\" name=\"L\"/>\n    </bpmn:intermediateCatchEvent>\n    <bpmn:subProcess id=\"linkScope\">\n      <bpmn:intermediateCatchEvent id=\"linkCatch2\">\n        <bpmn:linkEventDefinition id=\"linkCatch2Def\" name=\"L\"/>\n      </bpmn:intermediateCatchEvent>\n      <bpmn:intermediateCatchEvent id=\"linkCatchBlank\">\n        <bpmn:linkEventDefinition id=\"linkCatchBlankDef\" name=\" \"/>\n      </bpmn:intermediateCatchEvent>\n    </bpmn:subProcess>\n    <bpmn:sequenceFlow id=\"toLoopA\" sourceRef=\"start\" targetRef=\"loopA\"/>\n    <bpmn:sequenceFlow id=\"toLoopGateway\" sourceRef=\"loopA\" targetRef=\"loopGateway\"/>\n    <bpmn:sequenceFlow id=\"toLoopB\" sourceRef=\"loopGateway\" targetRef=\"loopB\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=is blank(reason)</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"toEnd\" sourceRef=\"loopGateway\" targetRef=\"end\"/>\n    <bpmn:sequenceFlow id=\"backToA\" sourceRef=\"loopB\" targetRef=\"loopA\"/>\n  </bpmn:process>\n  <bpmn:process id=\"waits\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"waitsStart\">\n      <bpmn:outgoing>waitsToTask</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:task id=\"waitsTask\">\n      <bpmn:incoming>waitsToTask</bpmn:incoming>\n      <bpmn:incoming>waitsBack</bpmn:incoming>\n      <bpmn:outgoing>waitsToService</bpmn:outgoing>\n    </bpmn:task>\n    <bpmn:serviceTask id=\"waitsService\" camunda:type=\"external\" camunda:topic=\"t\">\n      <bpmn:incoming>waitsToService</bpmn:incoming>\n      <bpmn:outgoing>waitsBack</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:sequenceFlow id=\"waitsToTask\" sourceRef=\"waitsStart\" targetRef=\"waitsTask\"/>\n    <bpmn:sequenceFlow id=\"waitsToService\" sourceRef=\"waitsTask\" targetRef=\"waitsService\"/>\n    <bpmn:sequenceFlow id=\"waitsBack\" sourceRef=\"waitsService\" targetRef=\"waitsTask\"/>\n  </bpmn:process>\n  <bpmn:process id=\"recursive\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"recursiveStart\">\n      <bpmn:outgoing>recursiveToSub</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:subProcess id=\"recursiveSub\">\n      <bpmn:incoming>recursiveToSub</bpmn:incoming>\n      <bpmn:startEvent id=\"recursiveSubStart\">\n        <bpmn:outgoing>recursiveToCall</bpmn:outgoing>\n      </bpmn:startEvent>\n      <bpmn:callActivity id=\"recursiveCall\" calledElement=\"recursive\">\n        <bpmn:extensionElements>\n          <camunda:in variables=\"all\"/>\n          <camunda:out variables=\"all\"/>\n        </bpmn:extensionElements>\n        <bpmn:incoming>recursiveToCall</bpmn:incoming>\n      </bpmn:callActivity>\n      <bpmn:sequenceFlow id=\"recursiveToCall\" sourceRef=\"recursiveSubStart\" targetRef=\"recursiveCall\"/>\n    </bpmn:subProcess>\n    <bpmn:sequenceFlow id=\"recursiveToSub\" sourceRef=\"recursiveStart\" targetRef=\"recursiveSub\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+}

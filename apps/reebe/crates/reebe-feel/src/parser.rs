@@ -56,7 +56,12 @@ impl Parser {
         self.advance(); // consume 'for'
         let var = match self.advance().clone() {
             Token::Ident(name) => name,
-            tok => return Err(FeelError::ParseError(format!("Expected variable name after 'for', got {:?}", tok))),
+            tok => {
+                return Err(FeelError::ParseError(format!(
+                    "Expected variable name after 'for', got {:?}",
+                    tok
+                )))
+            }
         };
         self.expect(&Token::In)?;
         let list = self.parse_or()?;
@@ -69,7 +74,12 @@ impl Parser {
         self.advance(); // consume 'some'
         let var = match self.advance().clone() {
             Token::Ident(name) => name,
-            tok => return Err(FeelError::ParseError(format!("Expected variable name after 'some', got {:?}", tok))),
+            tok => {
+                return Err(FeelError::ParseError(format!(
+                    "Expected variable name after 'some', got {:?}",
+                    tok
+                )))
+            }
         };
         self.expect(&Token::In)?;
         let list = self.parse_or()?;
@@ -82,7 +92,12 @@ impl Parser {
         self.advance(); // consume 'every'
         let var = match self.advance().clone() {
             Token::Ident(name) => name,
-            tok => return Err(FeelError::ParseError(format!("Expected variable name after 'every', got {:?}", tok))),
+            tok => {
+                return Err(FeelError::ParseError(format!(
+                    "Expected variable name after 'every', got {:?}",
+                    tok
+                )))
+            }
         };
         self.expect(&Token::In)?;
         let list = self.parse_or()?;
@@ -132,7 +147,12 @@ impl Parser {
             self.advance();
             let type_name = match self.advance().clone() {
                 Token::Ident(name) => name,
-                tok => return Err(FeelError::ParseError(format!("Expected type name after 'instance of', got {:?}", tok))),
+                tok => {
+                    return Err(FeelError::ParseError(format!(
+                        "Expected type name after 'instance of', got {:?}",
+                        tok
+                    )))
+                }
             };
             return Ok(Expr::InstanceOf(Box::new(left), type_name));
         }
@@ -170,7 +190,12 @@ impl Parser {
             let end_inclusive = match self.advance().clone() {
                 Token::RBracket => true,
                 Token::RParen => false,
-                tok => return Err(FeelError::ParseError(format!("Expected ']' or ')' to close range, got {:?}", tok))),
+                tok => {
+                    return Err(FeelError::ParseError(format!(
+                        "Expected ']' or ')' to close range, got {:?}",
+                        tok
+                    )))
+                }
             };
             return Ok(Expr::Range {
                 start: Box::new(first),
@@ -200,7 +225,12 @@ impl Parser {
         let end_inclusive = match self.advance().clone() {
             Token::RParen => false,
             Token::RBracket => true,
-            tok => return Err(FeelError::ParseError(format!("Expected ')' or ']' to close range, got {:?}", tok))),
+            tok => {
+                return Err(FeelError::ParseError(format!(
+                    "Expected ')' or ']' to close range, got {:?}",
+                    tok
+                )))
+            }
         };
         Ok(Expr::Range {
             start: Box::new(start),
@@ -313,7 +343,12 @@ impl Parser {
                         Token::Ident(name) => {
                             expr = Expr::Path(Box::new(expr), name);
                         }
-                        tok => return Err(FeelError::ParseError(format!("Expected field name after '.', got {:?}", tok))),
+                        tok => {
+                            return Err(FeelError::ParseError(format!(
+                                "Expected field name after '.', got {:?}",
+                                tok
+                            )))
+                        }
                     }
                 }
                 Token::LBracket => {
@@ -343,12 +378,10 @@ impl Parser {
                 Ok(Expr::Bool(false))
             }
             Token::Integer(n) => {
-                let n = n;
                 self.advance();
                 Ok(Expr::Integer(n))
             }
             Token::Float(f) => {
-                let f = f;
                 self.advance();
                 Ok(Expr::Float(f))
             }
@@ -363,12 +396,8 @@ impl Parser {
                 self.expect(&Token::RParen)?;
                 Ok(expr)
             }
-            Token::LBracket => {
-                self.parse_bracket_range_or_list()
-            }
-            Token::LBrace => {
-                self.parse_context_literal()
-            }
+            Token::LBracket => self.parse_bracket_range_or_list(),
+            Token::LBrace => self.parse_context_literal(),
             Token::If => self.parse_if(),
             Token::For => self.parse_for(),
             Token::Some => self.parse_some(),
@@ -414,7 +443,10 @@ impl Parser {
                     Ok(Expr::Name(name))
                 }
             }
-            tok => Err(FeelError::ParseError(format!("Unexpected token: {:?}", tok))),
+            tok => Err(FeelError::ParseError(format!(
+                "Unexpected token: {:?}",
+                tok
+            ))),
         }
     }
 
@@ -424,7 +456,12 @@ impl Parser {
         while !matches!(self.peek(), Token::RParen | Token::Eof) {
             let arg = match self.advance().clone() {
                 Token::Ident(arg) => arg,
-                tok => return Err(FeelError::ParseError(format!("Expected a parameter name, got {:?}", tok))),
+                tok => {
+                    return Err(FeelError::ParseError(format!(
+                        "Expected a parameter name, got {:?}",
+                        tok
+                    )))
+                }
             };
             self.expect(&Token::Colon)?;
             args.push((arg, self.parse_expr()?));
@@ -443,7 +480,12 @@ impl Parser {
             let key = match self.advance().clone() {
                 Token::Ident(name) => name,
                 Token::StringLit(s) => s,
-                tok => return Err(FeelError::ParseError(format!("Expected context key, got {:?}", tok))),
+                tok => {
+                    return Err(FeelError::ParseError(format!(
+                        "Expected context key, got {:?}",
+                        tok
+                    )))
+                }
             };
             self.expect(&Token::Colon)?;
             let val = self.parse_or()?;
@@ -496,7 +538,10 @@ mod tests {
     fn test_parse_comparison() {
         assert_eq!(
             parse_str("x > 5"),
-            Expr::Gt(Box::new(Expr::Name("x".to_string())), Box::new(Expr::Integer(5)))
+            Expr::Gt(
+                Box::new(Expr::Name("x".to_string())),
+                Box::new(Expr::Integer(5))
+            )
         );
     }
 
@@ -515,7 +560,14 @@ mod tests {
     #[test]
     fn test_parse_range() {
         let expr = parse_str("[1..10]");
-        assert!(matches!(expr, Expr::Range { start_inclusive: true, end_inclusive: true, .. }));
+        assert!(matches!(
+            expr,
+            Expr::Range {
+                start_inclusive: true,
+                end_inclusive: true,
+                ..
+            }
+        ));
     }
 
     #[test]

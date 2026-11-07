@@ -1,0 +1,13 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["serviceTask","t",{"name":"t","taskType":"t"}],
+		["dataObject","DO1",{"name":"Items","isCollection":true}],
+		["dataObjectReference","DOR1","DO1",{"isCollection":true}],
+		["dataAssociation","t","DOR1","output"],
+		["endEvent","e"],
+		["build"]
+	]
+}

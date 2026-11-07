@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/layout-quote-to-cash/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["endEvent","e1"],
+		["serviceTask","orphan",{"name":"orphan","taskType":"orphan"}],
+		["endEvent","e2"],
+		["build"]
+	]
+}

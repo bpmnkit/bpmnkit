@@ -1,0 +1,2 @@
+s[start Go] > pay[service Pay | job=pay] > e[end Done]
+t[boundary:timer Late | on=pay nonint] > l[end Late]

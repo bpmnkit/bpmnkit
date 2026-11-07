@@ -1,0 +1,18 @@
+{
+  "findings": [
+    {
+      "elementId": "a",
+      "fix": "Set \"key\" to the process variable the field reads and writes, e.g. \"amount\". (agent-cards/form.md#traps)",
+      "message": "Component \"a\" (radio) is not bound to a variable — it has no \"key\".",
+      "rule": "form/missing-key",
+      "severity": "error"
+    },
+    {
+      "elementId": "a",
+      "fix": "Add \"values\": [{ \"label\": \"…\", \"value\": \"…\" }], or take them from a variable with \"valuesKey\" or \"valuesExpression\". (agent-cards/form.md#traps)",
+      "message": "Component \"a\" (radio) has no options.",
+      "rule": "form/missing-options",
+      "severity": "error"
+    }
+  ]
+}

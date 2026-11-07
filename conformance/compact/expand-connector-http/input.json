@@ -1,0 +1,25 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "c",
+          "type": "serviceTask",
+          "name": "Call",
+          "jobType": "io.camunda:http-json:1",
+          "inputs": {
+            "url": "https://x.example",
+            "method": "GET"
+          },
+          "taskHeaders": {
+            "retries": "5"
+          },
+          "resultVariable": "out"
+        }
+      ],
+      "flows": []
+    }
+  ]
+}

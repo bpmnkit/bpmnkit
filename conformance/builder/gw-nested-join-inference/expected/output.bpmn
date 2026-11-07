@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_outer</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:parallelGateway id="outer">
+      <bpmn:incoming>Flow_s_outer</bpmn:incoming>
+      <bpmn:outgoing>Flow_outer_inner</bpmn:outgoing>
+      <bpmn:outgoing>Flow_outer_t3</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:exclusiveGateway id="inner" default="Flow_inner_t2">
+      <bpmn:incoming>Flow_outer_inner</bpmn:incoming>
+      <bpmn:outgoing>Flow_inner_t1</bpmn:outgoing>
+      <bpmn:outgoing>Flow_inner_t2</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="t1" name="t1">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="t1"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_inner_t1</bpmn:incoming>
+      <bpmn:outgoing>Flow_t1_inner_join</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="t2" name="t2">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="t2"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_inner_t2</bpmn:incoming>
+      <bpmn:outgoing>Flow_t2_inner_join</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="t3" name="t3">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="t3"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_outer_t3</bpmn:incoming>
+      <bpmn:outgoing>Flow_t3_e</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="e">
+      <bpmn:incoming>Flow_t3_e</bpmn:incoming>
+      <bpmn:incoming>Flow_inner_join_e</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="inner_join">
+      <bpmn:incoming>Flow_t1_inner_join</bpmn:incoming>
+      <bpmn:incoming>Flow_t2_inner_join</bpmn:incoming>
+      <bpmn:outgoing>Flow_inner_join_e</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_s_outer" sourceRef="s" targetRef="outer"/>
+    <bpmn:sequenceFlow id="Flow_outer_inner" sourceRef="outer" targetRef="inner" name="left"/>
+    <bpmn:sequenceFlow id="Flow_inner_t1" sourceRef="inner" targetRef="t1" name="l1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=l1</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_inner_t2" sourceRef="inner" targetRef="t2" name="l2"/>
+    <bpmn:sequenceFlow id="Flow_outer_t3" sourceRef="outer" targetRef="t3" name="right"/>
+    <bpmn:sequenceFlow id="Flow_t1_inner_join" sourceRef="t1" targetRef="inner_join"/>
+    <bpmn:sequenceFlow id="Flow_t2_inner_join" sourceRef="t2" targetRef="inner_join"/>
+    <bpmn:sequenceFlow id="Flow_t3_e" sourceRef="t3" targetRef="e"/>
+    <bpmn:sequenceFlow id="Flow_inner_join_e" sourceRef="inner_join" targetRef="e"/>
+  </bpmn:process>
+</bpmn:definitions>
+

@@ -1,0 +1,50 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "A",
+            "type": "startEvent"
+          },
+          {
+            "id": "t",
+            "inputs": {
+              "x": "=if a = 1 then \"y\" else \"z\""
+            },
+            "jobType": "work",
+            "name": "T",
+            "outputs": {
+              "ok": "=resp.ok"
+            },
+            "type": "serviceTask"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [],
+  "questions": []
+}

@@ -1,0 +1,1 @@
+expand: invalid CompactDiagram — duplicate id "a" (task); flow "f3" references "ghost", which is not an element in process "P"

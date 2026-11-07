@@ -1,8 +1,8 @@
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 use crate::pool::DbPool;
+use crate::{DbError, Result};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use crate::{Result, DbError};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Deployment {
@@ -35,14 +35,12 @@ impl<'a> DeploymentRepository<'a> {
     }
 
     pub async fn insert_deployment(&self, deployment: &Deployment) -> Result<()> {
-        sqlx::query(
-            "INSERT INTO deployments (key, tenant_id, created_at) VALUES ($1, $2, $3)",
-        )
-        .bind(deployment.key)
-        .bind(&deployment.tenant_id)
-        .bind(deployment.created_at)
-        .execute(self.pool)
-        .await?;
+        sqlx::query("INSERT INTO deployments (key, tenant_id, created_at) VALUES ($1, $2, $3)")
+            .bind(deployment.key)
+            .bind(&deployment.tenant_id)
+            .bind(deployment.created_at)
+            .execute(self.pool)
+            .await?;
         Ok(())
     }
 
@@ -109,12 +107,10 @@ impl<'a> DeploymentRepository<'a> {
     }
 
     pub async fn get_process_definition_xml(&self, key: i64) -> Result<String> {
-        let row = sqlx::query(
-            "SELECT bpmn_xml FROM process_definitions WHERE key = $1",
-        )
-        .bind(key)
-        .fetch_optional(self.pool)
-        .await?;
+        let row = sqlx::query("SELECT bpmn_xml FROM process_definitions WHERE key = $1")
+            .bind(key)
+            .fetch_optional(self.pool)
+            .await?;
 
         use sqlx::Row;
         match row {
@@ -173,16 +169,14 @@ impl<'a> DeploymentRepository<'a> {
         .fetch_all(self.pool)
         .await?;
 
-        Ok(rows.into_iter().map(|r| row_to_pd(r)).collect())
+        Ok(rows.into_iter().map(row_to_pd).collect())
     }
 
     pub async fn get_deployment_by_key(&self, key: i64) -> Result<Deployment> {
-        let row = sqlx::query(
-            "SELECT key, tenant_id, created_at FROM deployments WHERE key = $1",
-        )
-        .bind(key)
-        .fetch_optional(self.pool)
-        .await?;
+        let row = sqlx::query("SELECT key, tenant_id, created_at FROM deployments WHERE key = $1")
+            .bind(key)
+            .fetch_optional(self.pool)
+            .await?;
 
         use sqlx::Row;
         match row {

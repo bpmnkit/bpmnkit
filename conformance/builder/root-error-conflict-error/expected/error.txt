@@ -1,0 +1,1 @@
+Error "X" is already declared as "Error_X". Declare it before the events that use it, or name that id instead.

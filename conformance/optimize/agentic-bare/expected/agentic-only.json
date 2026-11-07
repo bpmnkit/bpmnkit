@@ -1,0 +1,62 @@
+{
+  "findings": [
+    {
+      "category": "agentic",
+      "elementIds": [
+        "agent"
+      ],
+      "fixable": false,
+      "id": "agentic/no-output-collection",
+      "message": "AI Agent \"Agent\" has no outputCollection — tool call results won't be aggregated.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Set zeebe:adHoc outputCollection (e.g. \"toolCallResults\")."
+    },
+    {
+      "category": "agentic",
+      "elementIds": [
+        "agent"
+      ],
+      "fixable": false,
+      "id": "agentic/limits-missing",
+      "message": "AI Agent \"Agent\" has no data.limits.maxModelCalls binding.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Set a model-call limit as a safety net against infinite tool loops."
+    },
+    {
+      "category": "agentic",
+      "elementIds": [
+        "t1"
+      ],
+      "fixable": false,
+      "id": "agentic/tool-no-description",
+      "message": "Tool \"t1\" has no documentation — the LLM sees no description for this tool.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Set <bpmn:documentation> describing what this tool does."
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 3,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 0,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 0,
+      "naming": 0,
+      "pattern": 0,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 0,
+      "info": 1,
+      "warning": 2
+    },
+    "total": 3
+  }
+}

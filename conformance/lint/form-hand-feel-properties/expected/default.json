@@ -1,0 +1,18 @@
+{
+  "findings": [
+    {
+      "elementId": "a",
+      "fix": "Fix the FEEL after the `=`; strings need double quotes, and `and`/`or` join conditions. (agent-cards/form.md#traps)",
+      "message": "Component \"a\"'s description is not valid FEEL: Expected expression after '+' in `=1 +`.",
+      "rule": "form/feel-syntax",
+      "severity": "error"
+    },
+    {
+      "elementId": "d",
+      "fix": "Fix the FEEL after the `=`; strings need double quotes, and `and`/`or` join conditions. (agent-cards/form.md#traps)",
+      "message": "Component \"d\"'s text is not valid FEEL: Expected expression after '+' in `=\"ok\" +`.",
+      "rule": "form/feel-syntax",
+      "severity": "error"
+    }
+  ]
+}

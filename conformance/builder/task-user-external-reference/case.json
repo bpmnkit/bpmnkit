@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["userTask","u",{"name":"U","externalReference":"https://example.com/form","zeebeUserTask":true}],
+		["endEvent","e"],
+		["build"]
+	]
+}

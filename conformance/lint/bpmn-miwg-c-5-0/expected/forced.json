@@ -1,0 +1,926 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 27,
+    "info": 1,
+    "warning": 42
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "_fcb09e30-bfe6-46b9-af01-6777c60026f2"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_fcb09e30-bfe6-46b9-af01-6777c60026f2\" exits a decision gateway without a condition expression.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_eec53048-291a-4802-8fec-012857f845eb"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_eec53048-291a-4802-8fec-012857f845eb\" exits a decision gateway without a condition expression.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_1887adee-8291-4640-a5fa-3dc5f33d5a34"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_1887adee-8291-4640-a5fa-3dc5f33d5a34\" exits a decision gateway without a condition expression.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_664f3a71-3efa-4c94-8797-815f2e377cf7"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_664f3a71-3efa-4c94-8797-815f2e377cf7\" exits a decision gateway without a condition expression.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_6912e5ed-5cae-4798-b6e6-8d367ddb3f60"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_6912e5ed-5cae-4798-b6e6-8d367ddb3f60\" exits a decision gateway without a condition expression.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_afc35597-a482-432a-8ace-17adaf609572"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_afc35597-a482-432a-8ace-17adaf609572\" exits a decision gateway without a condition expression.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_470d1a12-e1fa-4471-b753-cfd7dbe20d80"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_470d1a12-e1fa-4471-b753-cfd7dbe20d80\" exits a decision gateway without a condition expression.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_e88d64c7-3aaf-4a5f-9787-4e5ba696312b"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_e88d64c7-3aaf-4a5f-9787-4e5ba696312b\" exits a decision gateway without a condition expression.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_8a77d7f6-320a-47ff-a155-57ee200df478"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_8a77d7f6-320a-47ff-a155-57ee200df478\" exits a decision gateway without a condition expression.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_ae94e0c1-aa12-433f-bd44-a4d8a70a089e"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_ae94e0c1-aa12-433f-bd44-a4d8a70a089e\" exits a decision gateway without a condition expression.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_138f9ebc-0211-4051-b7c0-1c55695d5246"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"_138f9ebc-0211-4051-b7c0-1c55695d5246\" has 2 outgoing flows but no default flow set.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_a4936291-3787-404c-bec7-8a3f3c5fd6e5"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"_a4936291-3787-404c-bec7-8a3f3c5fd6e5\" has 2 outgoing flows but no default flow set.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_000a0565-911b-4f71-9993-1177021edd97"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"_000a0565-911b-4f71-9993-1177021edd97\" has 2 outgoing flows but no default flow set.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_a393c065-4412-4b16-b04f-52d07e76b518"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"_a393c065-4412-4b16-b04f-52d07e76b518\" has 2 outgoing flows but no default flow set.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_5f56934b-8a7e-4c35-b9f7-bf2605711bfd"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"_5f56934b-8a7e-4c35-b9f7-bf2605711bfd\" has 2 outgoing flows but no default flow set.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_dca1cc5b-74a4-453f-8ad2-61609dde35ff"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_dca1cc5b-74a4-453f-8ad2-61609dde35ff\" (dataObjectReference) is not reachable from any start event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_dca1cc5b-74a4-453f-8ad2-61609dde35ff"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_dca1cc5b-74a4-453f-8ad2-61609dde35ff\" (dataObjectReference) has no outgoing sequence flows.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_e0b6d1fe-4ddf-4e22-b84c-6d676afb389a"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_e0b6d1fe-4ddf-4e22-b84c-6d676afb389a\" (dataObjectReference) is not reachable from any start event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_e0b6d1fe-4ddf-4e22-b84c-6d676afb389a"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_e0b6d1fe-4ddf-4e22-b84c-6d676afb389a\" (dataObjectReference) has no outgoing sequence flows.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_4f982ccc-c9e4-43b1-832e-b82992d4d400"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_4f982ccc-c9e4-43b1-832e-b82992d4d400\" (dataObjectReference) is not reachable from any start event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_4f982ccc-c9e4-43b1-832e-b82992d4d400"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_4f982ccc-c9e4-43b1-832e-b82992d4d400\" (dataObjectReference) has no outgoing sequence flows.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_be9fc840-d916-4495-9061-989af6035030"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_be9fc840-d916-4495-9061-989af6035030\" (dataObjectReference) is not reachable from any start event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_be9fc840-d916-4495-9061-989af6035030"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_be9fc840-d916-4495-9061-989af6035030\" (dataObjectReference) has no outgoing sequence flows.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_4257e72e-9c36-4832-8134-b68b8919de7e"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_4257e72e-9c36-4832-8134-b68b8919de7e\" (dataObjectReference) is not reachable from any start event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_4257e72e-9c36-4832-8134-b68b8919de7e"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_4257e72e-9c36-4832-8134-b68b8919de7e\" (dataObjectReference) has no outgoing sequence flows.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_dd653cc9-c874-4cfe-ba6c-146726809ea5"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_dd653cc9-c874-4cfe-ba6c-146726809ea5\" (dataObjectReference) is not reachable from any start event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_dd653cc9-c874-4cfe-ba6c-146726809ea5"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_dd653cc9-c874-4cfe-ba6c-146726809ea5\" (dataObjectReference) has no outgoing sequence flows.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_ffd44905-4f54-4fe0-a156-0312c2a7a3cc"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_ffd44905-4f54-4fe0-a156-0312c2a7a3cc\" (dataStoreReference) is not reachable from any start event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_ffd44905-4f54-4fe0-a156-0312c2a7a3cc"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_ffd44905-4f54-4fe0-a156-0312c2a7a3cc\" (dataStoreReference) has no outgoing sequence flows.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_66f4a1ff-fd8a-4002-ade7-7a4d1b1d529c"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_66f4a1ff-fd8a-4002-ade7-7a4d1b1d529c\" (dataStoreReference) is not reachable from any start event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_66f4a1ff-fd8a-4002-ade7-7a4d1b1d529c"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_66f4a1ff-fd8a-4002-ade7-7a4d1b1d529c\" (dataStoreReference) has no outgoing sequence flows.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_c5285566-0657-47c5-a7ad-d09e144377f3"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_c5285566-0657-47c5-a7ad-d09e144377f3\" (dataStoreReference) is not reachable from any start event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_c5285566-0657-47c5-a7ad-d09e144377f3"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_c5285566-0657-47c5-a7ad-d09e144377f3\" (dataStoreReference) has no outgoing sequence flows.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_0fa2af52-a3d6-4be6-9ecc-9fad8ca4d448"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_0fa2af52-a3d6-4be6-9ecc-9fad8ca4d448\" (dataObject) is not reachable from any start event.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_0fa2af52-a3d6-4be6-9ecc-9fad8ca4d448"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_0fa2af52-a3d6-4be6-9ecc-9fad8ca4d448\" (dataObject) has no outgoing sequence flows.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_79993b0e-60c2-487b-a12e-0cbecc2ef5c1"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_79993b0e-60c2-487b-a12e-0cbecc2ef5c1\" (dataObject) is not reachable from any start event.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_79993b0e-60c2-487b-a12e-0cbecc2ef5c1"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_79993b0e-60c2-487b-a12e-0cbecc2ef5c1\" (dataObject) has no outgoing sequence flows.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_138f9ebc-0211-4051-b7c0-1c55695d5246"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Legal entity or individual?\" has no default sequence flow.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_a4936291-3787-404c-bec7-8a3f3c5fd6e5"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Data complete?\" has no default sequence flow.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_000a0565-911b-4f71-9993-1177021edd97"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Subject to approval?\" has no default sequence flow.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_a393c065-4412-4b16-b04f-52d07e76b518"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Identity of the economic owner certifiable?\" has no default sequence flow.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_5f56934b-8a7e-4c35-b9f7-bf2605711bfd"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Approval?\" has no default sequence flow.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_b9338c62-a257-47dd-8c2e-88b80b73c330"
+      ],
+      "fixable": false,
+      "id": "pattern/call-activity-no-error-boundary",
+      "message": "Call activity \"Check for connected clients\" has no error boundary event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle errors propagated from the called process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_945cd271-46b6-4d71-83a1-530e445af820"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Interview customer\" has no timer boundary event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_17db66a1-badd-4942-9ebd-02bc5595cdde"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Prove/Provide identity\" has no timer boundary event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_664f14a9-c1f1-490a-bbec-1f66ba4e7fe4"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Obtain supporting data and documents of the customer\" has no timer boundary event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_d22de266-6170-4783-91f9-40832e4cc58d"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Check customer documents\" has no timer boundary event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_87785f46-7026-4d3c-b2c0-6a9468da67f6"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Copy, sign, and scan documents\" has no timer boundary event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_a73027a7-615e-4a4d-95ee-c4cd78ab30c4"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"File documents in customer file\" has no timer boundary event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_9c5d383f-df57-4012-b490-fa36f9f90eed"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Add personal data\" has no timer boundary event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_be6ea91a-4f8e-4240-86e8-f85036aee96f"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Perform risk assessment of the customer\" has no timer boundary event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_f006114d-c7cb-4ce0-9bfe-f0938c36a53e"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Document risk assessment\" has no timer boundary event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_b360104e-8410-4b99-827a-776e2083fb96"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Create customer in the system\" has no timer boundary event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_2fd5c7d3-797d-45a5-a0d8-dfa60654ba5e"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Complete data and documents\" has no timer boundary event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_09074897-556d-4fd2-afb6-2f6c774e1820"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Perform know your customer (KYC) activities\" has no timer boundary event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_f0422f0d-396b-4ee7-ad83-fdd34a8bab71"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Document the identity of the economic owner\" has no timer boundary event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_05a1a66a-9308-41c7-a611-4fc57627a058"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"End business relation\" has no timer boundary event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_1fc87527-9cad-4f8e-b9c7-ebe106cbe98d"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Check risk and decide about approval\" has no timer boundary event.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_0254d83d-d943-466f-8b62-20e87cdfda4e"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Customer interested in Bank offer\" has no documentation describing expected input variables.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"_3d1ef204-2d4c-4643-8fc5-c319cc032ec0\" is not marked executable.",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_b9338c62-a257-47dd-8c2e-88b80b73c330"
+      ],
+      "fixable": false,
+      "id": "deploy/call-activity-no-process",
+      "message": "Call activity \"Check for connected clients\" has no zeebe:calledElement processId.",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Set the process id to call."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_e25b9c2d-690e-470b-8993-112002994fc2"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_e25b9c2d-690e-470b-8993-112002994fc2\" exits a decision gateway without a condition expression.",
+      "plane": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "processId": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_c329c58d-4a71-471f-acb9-b7f7113d8547"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_c329c58d-4a71-471f-acb9-b7f7113d8547\" exits a decision gateway without a condition expression.",
+      "plane": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "processId": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_080399c9-3c91-44c6-b510-80367e23a5af"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"_080399c9-3c91-44c6-b510-80367e23a5af\" has 2 outgoing flows but no default flow set.",
+      "plane": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "processId": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_f7ce4bda-22c2-4ef9-aad9-5203dff18538"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"_f7ce4bda-22c2-4ef9-aad9-5203dff18538\" has no name.",
+      "plane": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "processId": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_080399c9-3c91-44c6-b510-80367e23a5af"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Group of connected Clients existing?\" has no default sequence flow.",
+      "plane": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "processId": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_8b104885-149e-4af6-a459-d924dacd81b3"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Check if group of connected clients exists\" has no timer boundary event.",
+      "plane": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "processId": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_7507ae41-a1fa-405c-b4ea-85ed920eace5"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Document group of connected clients according to Capital Requirements Regulation (CRR)\" has no timer boundary event.",
+      "plane": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "processId": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_d8214574-bb4c-42ff-aabb-398eb95b2f2a"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Check for connected clients\" has no documentation describing expected input variables.",
+      "plane": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "processId": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"_774bc005-0917-43d5-ab70-0f9fe123fbd1\" is not marked executable.",
+      "processId": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 70
+}

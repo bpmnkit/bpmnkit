@@ -1,0 +1,53 @@
+{
+  "id": "F",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "id": "a",
+      "type": "select",
+      "key": "a",
+      "label": "A"
+    },
+    {
+      "id": "b",
+      "type": "radio",
+      "key": "b",
+      "label": "B",
+      "values": []
+    },
+    {
+      "id": "c",
+      "type": "checklist",
+      "key": "c",
+      "label": "C",
+      "values": [
+        {
+          "label": "x",
+          "value": "x"
+        }
+      ]
+    },
+    {
+      "id": "d",
+      "type": "taglist",
+      "key": "d",
+      "label": "D",
+      "valuesKey": "opts"
+    },
+    {
+      "id": "e",
+      "type": "select",
+      "key": "e",
+      "label": "E",
+      "valuesExpression": "=opts"
+    },
+    {
+      "id": "f",
+      "type": "radio",
+      "key": "f",
+      "label": "F",
+      "valuesKey": 3
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "id": "greet",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "literalExpression": {
+        "text": "\"Hello \" + name"
+      },
+      "name": "Greet"
+    }
+  ],
+  "id": "d",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "d",
+  "namespace": "t",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/"
+  },
+  "textAnnotations": []
+}

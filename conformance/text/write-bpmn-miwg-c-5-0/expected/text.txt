@@ -1,0 +1,14 @@
+# Bank - Process
+customer_interested_in_bank[start Customer interested in Bank offer] > interview_customer[user Interview customer] > prove_provide_identity[user Prove/Provide identity] > legal_entity_or_individual[xor Legal entity or individual?]
+legal_entity_or_individual >(Individual Person) xor[xor] > obtain_supporting_data_and[user Obtain supporting data and documents of the customer] > check_customer_documents[user Check customer documents] > data_complete[xor Data complete?]
+legal_entity_or_individual >(Legal Entity) document_the_identity_of[user Document the identity of the economic owner] > identity_of_the_economic[xor Identity of the economic owner certifiable?]
+data_complete >(Yes) xor_2[xor] > copy_sign_and_scan[user Copy, sign, and scan documents] > file_documents_in_customer[user File documents in customer file] > and[and]
+data_complete >(No) complete_data_and_documents[user Complete data and documents] > xor_2
+identity_of_the_economic >(Yes) xor
+identity_of_the_economic >(No) end_business_relation[user End business relation] > business_relation_ended[end Business relation ended]
+and > add_personal_data[user Add personal data] > and_2[and] > perform_risk_assessment_of[user Perform risk assessment of the customer] > subject_to_approval[xor Subject to approval?]
+and > perform_know_your_customer[user Perform know your customer (KYC) activities] > and_2
+subject_to_approval >(No) xor_3[xor] > document_risk_assessment[user Document risk assessment] > check_for_connected_clients[call Check for connected clients] > create_customer_in_the[user Create customer in the system] > identity_determined_and_new[end:signal Identity determined and new customer created]
+subject_to_approval >(Yes) check_risk_and_decide[user Check risk and decide about approval] > approval[xor Approval?]
+approval >(Yes) xor_3
+approval >(No) reject_customer_request[task Reject customer request] > no_business_relation_created[end:signal No business relation created]

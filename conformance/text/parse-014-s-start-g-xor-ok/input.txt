@@ -1,0 +1,4 @@
+s[start] > g[xor Ok?]
+g >(Yes: status = "ok" and count(items) > 0) a[end A]
+g >(Maybe) b[end B]
+g >(default) c[end C]

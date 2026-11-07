@@ -1,0 +1,11 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["exclusiveGateway","g",{"defaultFlow":"Flow_manual"}],
+		["branch","a",{"$ops":[["flowId","Flow_manual"],["endEvent","e1"]]}],
+		["branch","b",{"$ops":[["condition","=x"],["endEvent","e2"]]}],
+		["build"]
+	]
+}

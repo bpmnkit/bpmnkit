@@ -1,0 +1,395 @@
+{
+  "id": "Definitions_parity",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "start",
+          "name": "Start",
+          "type": "startEvent"
+        },
+        {
+          "id": "gw_split",
+          "name": "Route?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "task_blank",
+          "name": "   ",
+          "type": "task"
+        },
+        {
+          "id": "gw_xor",
+          "name": "Which?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "task_x1",
+          "name": "X1",
+          "type": "task"
+        },
+        {
+          "id": "task_x2",
+          "name": "X2",
+          "type": "task"
+        },
+        {
+          "attachedTo": "task_x1",
+          "eventType": "timer",
+          "id": "boundary_timer",
+          "name": "Late",
+          "type": "boundaryEvent"
+        },
+        {
+          "attachedTo": "task_x1",
+          "eventType": "compensate",
+          "id": "boundary_comp",
+          "name": "Compensate X1",
+          "type": "boundaryEvent"
+        },
+        {
+          "id": "handler_top",
+          "name": "Undo X1",
+          "type": "task"
+        },
+        {
+          "eventType": "link",
+          "id": "link_throw",
+          "name": "To B",
+          "type": "intermediateThrowEvent"
+        },
+        {
+          "eventType": "link",
+          "id": "link_catch",
+          "name": "From B",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "id": "task_r1",
+          "name": "R1",
+          "type": "task"
+        },
+        {
+          "id": "task_r2",
+          "name": "R2",
+          "type": "task"
+        },
+        {
+          "id": "start_joined",
+          "name": "Restarted",
+          "type": "startEvent"
+        },
+        {
+          "id": "end",
+          "name": "Done",
+          "type": "endEvent"
+        },
+        {
+          "id": "end_other",
+          "name": "Other",
+          "type": "endEvent"
+        },
+        {
+          "id": "end_link",
+          "name": "Linked",
+          "type": "endEvent"
+        },
+        {
+          "id": "end_restart",
+          "name": "Restart done",
+          "type": "endEvent"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "sub_start",
+                "type": "startEvent"
+              },
+              {
+                "id": "sub_fork",
+                "type": "parallelGateway"
+              },
+              {
+                "id": "sub_t1",
+                "name": "T1",
+                "type": "task"
+              },
+              {
+                "id": "sub_t2",
+                "name": "T2",
+                "type": "task"
+              },
+              {
+                "id": "sub_join_task",
+                "name": "Join",
+                "type": "task"
+              },
+              {
+                "id": "sub_orphan",
+                "name": "Orphan",
+                "type": "task"
+              },
+              {
+                "id": "sub_mixed",
+                "name": "Mixed?",
+                "type": "exclusiveGateway"
+              },
+              {
+                "id": "sub_redundant",
+                "type": "exclusiveGateway"
+              },
+              {
+                "id": "sub_dead",
+                "name": "Dead end",
+                "type": "task"
+              },
+              {
+                "id": "sub_end",
+                "name": "Sub done",
+                "type": "endEvent"
+              },
+              {
+                "eventType": "timer",
+                "id": "sub_catch",
+                "type": "intermediateCatchEvent"
+              },
+              {
+                "attachedTo": "sub_t1",
+                "eventType": "compensate",
+                "id": "sub_comp",
+                "name": "Compensate T1",
+                "type": "boundaryEvent"
+              },
+              {
+                "id": "sub_handler",
+                "name": "Undo T1",
+                "type": "task"
+              }
+            ],
+            "flows": [
+              {
+                "from": "sub_start",
+                "id": "sf1",
+                "to": "sub_fork"
+              },
+              {
+                "from": "sub_fork",
+                "id": "sf2",
+                "to": "sub_t1"
+              },
+              {
+                "from": "sub_fork",
+                "id": "sf3",
+                "to": "sub_t2"
+              },
+              {
+                "from": "sub_t1",
+                "id": "sf4",
+                "to": "sub_join_task"
+              },
+              {
+                "from": "sub_t2",
+                "id": "sf5",
+                "to": "sub_join_task"
+              },
+              {
+                "from": "sub_join_task",
+                "id": "sf6",
+                "to": "sub_mixed"
+              },
+              {
+                "from": "sub_orphan",
+                "id": "sf7",
+                "to": "sub_mixed"
+              },
+              {
+                "condition": "= ok",
+                "from": "sub_mixed",
+                "id": "sf8",
+                "name": "ok",
+                "to": "sub_redundant"
+              },
+              {
+                "from": "sub_mixed",
+                "id": "sf9",
+                "to": "sub_dead"
+              },
+              {
+                "from": "sub_redundant",
+                "id": "sf10",
+                "to": "sub_end"
+              }
+            ]
+          },
+          "id": "sub",
+          "name": "Sub",
+          "type": "subProcess"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "tx_start",
+                "type": "startEvent"
+              },
+              {
+                "id": "tx_task",
+                "type": "task"
+              }
+            ],
+            "flows": [
+              {
+                "from": "tx_start",
+                "id": "tf1",
+                "to": "tx_task"
+              }
+            ]
+          },
+          "id": "tx",
+          "name": "Tx",
+          "type": "transaction"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "eventType": "message",
+                "id": "evt_start",
+                "type": "startEvent"
+              },
+              {
+                "id": "evt_task",
+                "name": "Handle",
+                "type": "task"
+              }
+            ],
+            "flows": [
+              {
+                "from": "evt_start",
+                "id": "ef1",
+                "to": "evt_task"
+              }
+            ]
+          },
+          "id": "evt_sub",
+          "name": "On message",
+          "type": "subProcess"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "adhoc_tool",
+                "name": "Tool",
+                "type": "task"
+              },
+              {
+                "id": "adhoc_unnamed",
+                "type": "task"
+              }
+            ],
+            "flows": []
+          },
+          "id": "adhoc",
+          "name": "Tools",
+          "type": "adHocSubProcess"
+        },
+        {
+          "id": "data_obj",
+          "type": "dataObject"
+        },
+        {
+          "dataObjectRef": "data_obj",
+          "id": "data_ref",
+          "type": "dataObjectReference"
+        },
+        {
+          "id": "store_ref",
+          "type": "dataStoreReference"
+        }
+      ],
+      "flows": [
+        {
+          "from": "start",
+          "id": "f_start",
+          "to": "gw_split"
+        },
+        {
+          "condition": "= a",
+          "from": "gw_split",
+          "id": "f_cond",
+          "to": "sub"
+        },
+        {
+          "from": "gw_split",
+          "id": "f_default",
+          "isDefault": true,
+          "name": "Otherwise",
+          "to": "gw_xor"
+        },
+        {
+          "from": "gw_split",
+          "id": "f_plain",
+          "to": "task_blank"
+        },
+        {
+          "from": "task_blank",
+          "id": "f_blank_out",
+          "to": "end"
+        },
+        {
+          "from": "gw_xor",
+          "id": "f_x1",
+          "to": "task_x1"
+        },
+        {
+          "from": "gw_xor",
+          "id": "f_x2",
+          "to": "task_x2"
+        },
+        {
+          "from": "task_x1",
+          "id": "f_x1_out",
+          "to": "end"
+        },
+        {
+          "from": "task_x1",
+          "id": "f_x1_other",
+          "to": "end_other"
+        },
+        {
+          "from": "task_x2",
+          "id": "f_x2_out",
+          "to": "link_throw"
+        },
+        {
+          "from": "link_catch",
+          "id": "f_catch",
+          "to": "end_link"
+        },
+        {
+          "from": "task_r1",
+          "id": "f_r1",
+          "to": "start_joined"
+        },
+        {
+          "from": "task_r2",
+          "id": "f_r2",
+          "to": "start_joined"
+        },
+        {
+          "from": "start_joined",
+          "id": "f_restart",
+          "to": "end_restart"
+        },
+        {
+          "from": "sub",
+          "id": "f_sub_out",
+          "to": "end"
+        }
+      ],
+      "id": "proc"
+    }
+  ]
+}

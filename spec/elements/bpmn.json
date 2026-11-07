@@ -1,0 +1,1050 @@
+{
+	"$schema": "../schema/elements.schema.json",
+	"family": "bpmn",
+	"namespace": {
+		"prefix": "bpmn",
+		"uri": "http://www.omg.org/spec/BPMN/20100524/MODEL"
+	},
+	"source": "OMG BPMN 2.0.2 (formal/2013-12-09), as modelled by @bpmnkit/core's bpmn-model.ts and parser",
+	"traits": [
+		{
+			"name": "flowElement",
+			"description": "Parsed as a flow element of a process or sub-process: exactly the parser's FLOW_ELEMENT_TYPES, including the data elements and the model-only eventSubProcess."
+		},
+		{
+			"name": "event",
+			"description": "Event that may carry event definitions (the parser's EVENT_TYPES)."
+		},
+		{
+			"name": "loop",
+			"description": "Activity whose multiInstanceLoopCharacteristics child is read (the parser's LOOP_TYPES)."
+		},
+		{
+			"name": "container",
+			"description": "Holds a flow of its own: sub-process kinds (the parser's CONTAINER_TYPES)."
+		},
+		{
+			"name": "eventDefinition",
+			"description": "Event definition the parser reads under an event (the parser's EVENT_DEFINITION_TYPES)."
+		},
+		{
+			"name": "defaultFlow",
+			"description": "Gateway that models a `default` sequence flow: exclusive, inclusive and complex."
+		}
+	],
+	"elements": [
+		{
+			"name": "baseElement",
+			"description": "Root of the BPMN type hierarchy: everything may carry an id, documentation and extension elements.",
+			"abstract": true,
+			"attributes": [
+				{
+					"name": "id",
+					"type": "id"
+				}
+			],
+			"children": [
+				{
+					"element": "documentation"
+				},
+				{
+					"element": "extensionElements",
+					"multiplicity": "0..1"
+				}
+			]
+		},
+		{
+			"name": "documentation",
+			"description": "Human-readable text attached to an element.",
+			"extends": "baseElement",
+			"attributes": [
+				{
+					"name": "textFormat",
+					"type": "string",
+					"default": "text/plain"
+				}
+			]
+		},
+		{
+			"name": "extensionElements",
+			"description": "Container for elements of other namespaces, such as zeebe:*; kept verbatim on a round trip.",
+			"extends": "baseElement"
+		},
+		{
+			"name": "rootElement",
+			"description": "An element that sits directly under `definitions`.",
+			"abstract": true,
+			"extends": "baseElement"
+		},
+		{
+			"name": "definitions",
+			"description": "The document element: a set of root elements plus the diagram interchange.",
+			"extends": "baseElement",
+			"attributes": [
+				{
+					"name": "name",
+					"type": "string"
+				},
+				{
+					"name": "targetNamespace",
+					"type": "string",
+					"required": true
+				},
+				{
+					"name": "expressionLanguage",
+					"type": "string"
+				},
+				{
+					"name": "typeLanguage",
+					"type": "string"
+				},
+				{
+					"name": "exporter",
+					"type": "string"
+				},
+				{
+					"name": "exporterVersion",
+					"type": "string"
+				}
+			],
+			"children": [
+				{
+					"element": "rootElement"
+				}
+			]
+		},
+		{
+			"name": "flowElement",
+			"description": "Anything that can sit inside a process or sub-process flow.",
+			"abstract": true,
+			"extends": "baseElement",
+			"attributes": [
+				{
+					"name": "name",
+					"type": "string"
+				}
+			]
+		},
+		{
+			"name": "flowNode",
+			"description": "A flow element that sequence flows connect.",
+			"abstract": true,
+			"extends": "flowElement",
+			"children": [
+				{
+					"element": "incoming"
+				},
+				{
+					"element": "outgoing"
+				}
+			]
+		},
+		{
+			"name": "incoming",
+			"description": "Id reference (element text) to an incoming sequence flow.",
+			"extends": "baseElement"
+		},
+		{
+			"name": "outgoing",
+			"description": "Id reference (element text) to an outgoing sequence flow.",
+			"extends": "baseElement"
+		},
+		{
+			"name": "activity",
+			"description": "Work performed in a process: tasks, call activities and sub-processes.",
+			"abstract": true,
+			"extends": "flowNode",
+			"attributes": [
+				{
+					"name": "isForCompensation",
+					"type": "boolean",
+					"default": false
+				}
+			],
+			"children": [
+				{
+					"element": "property"
+				},
+				{
+					"element": "dataInputAssociation"
+				},
+				{
+					"element": "dataOutputAssociation"
+				},
+				{
+					"element": "multiInstanceLoopCharacteristics",
+					"multiplicity": "0..1"
+				}
+			]
+		},
+		{
+			"name": "task",
+			"description": "An activity with no specific type.",
+			"extends": "activity",
+			"traits": ["flowElement", "loop"]
+		},
+		{
+			"name": "serviceTask",
+			"description": "Automated work done by a service or job worker.",
+			"extends": "task",
+			"traits": ["flowElement", "loop"]
+		},
+		{
+			"name": "scriptTask",
+			"description": "Automated work done by a script.",
+			"extends": "task",
+			"traits": ["flowElement", "loop"]
+		},
+		{
+			"name": "userTask",
+			"description": "Work a person does.",
+			"extends": "task",
+			"traits": ["flowElement", "loop"]
+		},
+		{
+			"name": "sendTask",
+			"description": "Sends a message.",
+			"extends": "task",
+			"traits": ["flowElement", "loop"]
+		},
+		{
+			"name": "receiveTask",
+			"description": "Waits for a message.",
+			"extends": "task",
+			"traits": ["flowElement", "loop"]
+		},
+		{
+			"name": "businessRuleTask",
+			"description": "Evaluates a business rule, e.g. a DMN decision.",
+			"extends": "task",
+			"traits": ["flowElement", "loop"]
+		},
+		{
+			"name": "manualTask",
+			"description": "Work done without any automation.",
+			"extends": "task",
+			"traits": ["flowElement", "loop"]
+		},
+		{
+			"name": "callActivity",
+			"description": "Calls another process.",
+			"extends": "activity",
+			"traits": ["flowElement", "loop"]
+		},
+		{
+			"name": "subProcess",
+			"description": "An activity that contains a flow of its own.",
+			"extends": "activity",
+			"attributes": [
+				{
+					"name": "triggeredByEvent",
+					"type": "boolean",
+					"default": false
+				}
+			],
+			"children": [
+				{
+					"element": "laneSet"
+				},
+				{
+					"element": "flowElement"
+				},
+				{
+					"element": "artifact"
+				}
+			],
+			"traits": ["flowElement", "loop", "container"]
+		},
+		{
+			"name": "adHocSubProcess",
+			"description": "A sub-process whose inner activities run in no fixed order.",
+			"extends": "subProcess",
+			"attributes": [
+				{
+					"name": "cancelRemainingInstances",
+					"type": "boolean",
+					"default": true
+				},
+				{
+					"name": "ordering",
+					"type": "enum",
+					"values": ["Parallel", "Sequential"],
+					"default": "Parallel"
+				}
+			],
+			"children": [
+				{
+					"element": "completionCondition",
+					"multiplicity": "0..1"
+				}
+			],
+			"traits": ["flowElement", "loop", "container"]
+		},
+		{
+			"name": "transaction",
+			"description": "A sub-process whose activities succeed or are compensated together.",
+			"extends": "subProcess",
+			"traits": ["flowElement", "loop", "container"]
+		},
+		{
+			"name": "eventSubProcess",
+			"description": "Model-only name: a bpmn:subProcess with triggeredByEvent=\"true\". BPMN has no element of this name; the parser and writer map it to and from subProcess.",
+			"extends": "subProcess",
+			"traits": ["flowElement", "container"]
+		},
+		{
+			"name": "event",
+			"description": "Something that happens during a process.",
+			"abstract": true,
+			"extends": "flowNode"
+		},
+		{
+			"name": "catchEvent",
+			"description": "An event that waits for a trigger.",
+			"abstract": true,
+			"extends": "event",
+			"children": [
+				{
+					"element": "eventDefinition"
+				}
+			]
+		},
+		{
+			"name": "throwEvent",
+			"description": "An event that raises a trigger.",
+			"abstract": true,
+			"extends": "event",
+			"children": [
+				{
+					"element": "eventDefinition"
+				}
+			]
+		},
+		{
+			"name": "startEvent",
+			"description": "Starts a process or sub-process.",
+			"extends": "catchEvent",
+			"attributes": [
+				{
+					"name": "isInterrupting",
+					"type": "boolean",
+					"default": true
+				}
+			],
+			"traits": ["flowElement", "event"]
+		},
+		{
+			"name": "endEvent",
+			"description": "Ends a path of the flow.",
+			"extends": "throwEvent",
+			"traits": ["flowElement", "event"]
+		},
+		{
+			"name": "intermediateCatchEvent",
+			"description": "Waits for a trigger in the middle of the flow.",
+			"extends": "catchEvent",
+			"traits": ["flowElement", "event"]
+		},
+		{
+			"name": "intermediateThrowEvent",
+			"description": "Raises a trigger in the middle of the flow.",
+			"extends": "throwEvent",
+			"traits": ["flowElement", "event"]
+		},
+		{
+			"name": "boundaryEvent",
+			"description": "Catches a trigger while its host activity runs.",
+			"extends": "catchEvent",
+			"attributes": [
+				{
+					"name": "attachedToRef",
+					"type": "idref",
+					"required": true
+				},
+				{
+					"name": "cancelActivity",
+					"type": "boolean",
+					"default": true
+				}
+			],
+			"traits": ["flowElement", "event"]
+		},
+		{
+			"name": "gateway",
+			"description": "Controls how sequence flows diverge and converge.",
+			"abstract": true,
+			"extends": "flowNode",
+			"attributes": [
+				{
+					"name": "gatewayDirection",
+					"type": "enum",
+					"values": ["Unspecified", "Converging", "Diverging", "Mixed"],
+					"default": "Unspecified"
+				}
+			]
+		},
+		{
+			"name": "exclusiveGateway",
+			"description": "Follows exactly one outgoing flow.",
+			"extends": "gateway",
+			"attributes": [
+				{
+					"name": "default",
+					"type": "idref"
+				}
+			],
+			"traits": ["flowElement", "defaultFlow"]
+		},
+		{
+			"name": "parallelGateway",
+			"description": "Follows all outgoing flows.",
+			"extends": "gateway",
+			"traits": ["flowElement"]
+		},
+		{
+			"name": "inclusiveGateway",
+			"description": "Follows every outgoing flow whose condition holds.",
+			"extends": "gateway",
+			"attributes": [
+				{
+					"name": "default",
+					"type": "idref"
+				}
+			],
+			"traits": ["flowElement", "defaultFlow"]
+		},
+		{
+			"name": "eventBasedGateway",
+			"description": "Follows the flow of the first event that happens.",
+			"extends": "gateway",
+			"attributes": [
+				{
+					"name": "instantiate",
+					"type": "boolean",
+					"default": false
+				},
+				{
+					"name": "eventGatewayType",
+					"type": "enum",
+					"values": ["Exclusive", "Parallel"],
+					"default": "Exclusive"
+				}
+			],
+			"traits": ["flowElement"]
+		},
+		{
+			"name": "complexGateway",
+			"description": "Gateway with a custom activation condition.",
+			"extends": "gateway",
+			"attributes": [
+				{
+					"name": "default",
+					"type": "idref"
+				}
+			],
+			"traits": ["flowElement", "defaultFlow"]
+		},
+		{
+			"name": "dataObject",
+			"description": "Process data scoped to its container.",
+			"extends": "flowElement",
+			"attributes": [
+				{
+					"name": "isCollection",
+					"type": "boolean",
+					"default": false
+				}
+			],
+			"traits": ["flowElement"]
+		},
+		{
+			"name": "dataObjectReference",
+			"description": "Reference to a data object.",
+			"extends": "flowElement",
+			"attributes": [
+				{
+					"name": "dataObjectRef",
+					"type": "idref"
+				}
+			],
+			"traits": ["flowElement"]
+		},
+		{
+			"name": "dataStoreReference",
+			"description": "Reference to a data store.",
+			"extends": "flowElement",
+			"attributes": [
+				{
+					"name": "dataStoreRef",
+					"type": "idref"
+				}
+			],
+			"traits": ["flowElement"]
+		},
+		{
+			"name": "sequenceFlow",
+			"description": "Connects two flow nodes.",
+			"extends": "flowElement",
+			"attributes": [
+				{
+					"name": "sourceRef",
+					"type": "idref",
+					"required": true
+				},
+				{
+					"name": "targetRef",
+					"type": "idref",
+					"required": true
+				}
+			],
+			"children": [
+				{
+					"element": "conditionExpression",
+					"multiplicity": "0..1"
+				}
+			]
+		},
+		{
+			"name": "property",
+			"description": "A data property of a flow element.",
+			"extends": "baseElement",
+			"attributes": [
+				{
+					"name": "name",
+					"type": "string"
+				},
+				{
+					"name": "itemSubjectRef",
+					"type": "idref"
+				}
+			]
+		},
+		{
+			"name": "dataInputAssociation",
+			"description": "Maps data into an activity.",
+			"extends": "baseElement",
+			"children": [
+				{
+					"element": "sourceRef"
+				},
+				{
+					"element": "targetRef",
+					"multiplicity": "0..1"
+				}
+			]
+		},
+		{
+			"name": "dataOutputAssociation",
+			"description": "Maps data out of an activity.",
+			"extends": "baseElement",
+			"children": [
+				{
+					"element": "sourceRef"
+				},
+				{
+					"element": "targetRef",
+					"multiplicity": "0..1"
+				}
+			]
+		},
+		{
+			"name": "sourceRef",
+			"description": "Id reference (element text) to a data source.",
+			"extends": "baseElement"
+		},
+		{
+			"name": "targetRef",
+			"description": "Id reference (element text) to a data target.",
+			"extends": "baseElement"
+		},
+		{
+			"name": "expression",
+			"description": "An expression; FEEL in Camunda 8.",
+			"abstract": true,
+			"extends": "baseElement"
+		},
+		{
+			"name": "formalExpression",
+			"description": "An expression with a language.",
+			"extends": "expression",
+			"attributes": [
+				{
+					"name": "language",
+					"type": "string"
+				},
+				{
+					"name": "evaluatesToTypeRef",
+					"type": "idref"
+				}
+			]
+		},
+		{
+			"name": "conditionExpression",
+			"description": "Condition of a sequence flow.",
+			"extends": "formalExpression"
+		},
+		{
+			"name": "completionCondition",
+			"description": "When a multi-instance activity or ad-hoc sub-process completes.",
+			"extends": "formalExpression"
+		},
+		{
+			"name": "loopCardinality",
+			"description": "How often a multi-instance activity runs.",
+			"extends": "formalExpression"
+		},
+		{
+			"name": "multiInstanceLoopCharacteristics",
+			"description": "Runs an activity once per item or a fixed number of times.",
+			"extends": "baseElement",
+			"attributes": [
+				{
+					"name": "isSequential",
+					"type": "boolean",
+					"default": false
+				}
+			],
+			"children": [
+				{
+					"element": "loopCardinality",
+					"multiplicity": "0..1"
+				},
+				{
+					"element": "completionCondition",
+					"multiplicity": "0..1"
+				}
+			]
+		},
+		{
+			"name": "eventDefinition",
+			"description": "What triggers or is raised by an event.",
+			"abstract": true,
+			"extends": "baseElement"
+		},
+		{
+			"name": "timerEventDefinition",
+			"description": "A point in time, a duration or a cycle.",
+			"extends": "eventDefinition",
+			"children": [
+				{
+					"element": "timeDate",
+					"multiplicity": "0..1"
+				},
+				{
+					"element": "timeDuration",
+					"multiplicity": "0..1"
+				},
+				{
+					"element": "timeCycle",
+					"multiplicity": "0..1"
+				}
+			],
+			"traits": ["eventDefinition"]
+		},
+		{
+			"name": "timeDate",
+			"description": "A fixed date and time.",
+			"extends": "formalExpression"
+		},
+		{
+			"name": "timeDuration",
+			"description": "A duration.",
+			"extends": "formalExpression"
+		},
+		{
+			"name": "timeCycle",
+			"description": "A repeating interval.",
+			"extends": "formalExpression"
+		},
+		{
+			"name": "errorEventDefinition",
+			"description": "Catches or throws a BPMN error.",
+			"extends": "eventDefinition",
+			"attributes": [
+				{
+					"name": "errorRef",
+					"type": "idref"
+				}
+			],
+			"traits": ["eventDefinition"]
+		},
+		{
+			"name": "escalationEventDefinition",
+			"description": "Catches or throws an escalation.",
+			"extends": "eventDefinition",
+			"attributes": [
+				{
+					"name": "escalationRef",
+					"type": "idref"
+				}
+			],
+			"traits": ["eventDefinition"]
+		},
+		{
+			"name": "messageEventDefinition",
+			"description": "Catches or sends a message.",
+			"extends": "eventDefinition",
+			"attributes": [
+				{
+					"name": "messageRef",
+					"type": "idref"
+				}
+			],
+			"traits": ["eventDefinition"]
+		},
+		{
+			"name": "signalEventDefinition",
+			"description": "Catches or broadcasts a signal.",
+			"extends": "eventDefinition",
+			"attributes": [
+				{
+					"name": "signalRef",
+					"type": "idref"
+				}
+			],
+			"traits": ["eventDefinition"]
+		},
+		{
+			"name": "conditionalEventDefinition",
+			"description": "Fires when a condition becomes true.",
+			"extends": "eventDefinition",
+			"children": [
+				{
+					"element": "condition",
+					"multiplicity": "1"
+				}
+			],
+			"traits": ["eventDefinition"]
+		},
+		{
+			"name": "condition",
+			"description": "The condition of a conditional event definition.",
+			"extends": "formalExpression"
+		},
+		{
+			"name": "linkEventDefinition",
+			"description": "Connects a link throw event to its catch event by name.",
+			"extends": "eventDefinition",
+			"attributes": [
+				{
+					"name": "name",
+					"type": "string",
+					"required": true
+				}
+			],
+			"traits": ["eventDefinition"]
+		},
+		{
+			"name": "cancelEventDefinition",
+			"description": "Cancels a transaction.",
+			"extends": "eventDefinition",
+			"traits": ["eventDefinition"]
+		},
+		{
+			"name": "terminateEventDefinition",
+			"description": "Ends the whole process instance.",
+			"extends": "eventDefinition",
+			"traits": ["eventDefinition"]
+		},
+		{
+			"name": "compensateEventDefinition",
+			"description": "Triggers or catches compensation.",
+			"extends": "eventDefinition",
+			"attributes": [
+				{
+					"name": "activityRef",
+					"type": "idref"
+				},
+				{
+					"name": "waitForCompletion",
+					"type": "boolean",
+					"default": true
+				}
+			],
+			"traits": ["eventDefinition"]
+		},
+		{
+			"name": "process",
+			"description": "An executable or documentation-only workflow.",
+			"extends": "rootElement",
+			"attributes": [
+				{
+					"name": "name",
+					"type": "string"
+				},
+				{
+					"name": "isExecutable",
+					"type": "boolean",
+					"default": false
+				},
+				{
+					"name": "processType",
+					"type": "enum",
+					"values": ["None", "Public", "Private"],
+					"default": "None"
+				}
+			],
+			"children": [
+				{
+					"element": "laneSet"
+				},
+				{
+					"element": "flowElement"
+				},
+				{
+					"element": "artifact"
+				}
+			]
+		},
+		{
+			"name": "laneSet",
+			"description": "Groups lanes.",
+			"extends": "baseElement",
+			"attributes": [
+				{
+					"name": "name",
+					"type": "string"
+				}
+			],
+			"children": [
+				{
+					"element": "lane"
+				}
+			]
+		},
+		{
+			"name": "lane",
+			"description": "A partition of a process by role or system.",
+			"extends": "baseElement",
+			"attributes": [
+				{
+					"name": "name",
+					"type": "string"
+				}
+			],
+			"children": [
+				{
+					"element": "flowNodeRef"
+				},
+				{
+					"element": "childLaneSet",
+					"multiplicity": "0..1"
+				}
+			]
+		},
+		{
+			"name": "flowNodeRef",
+			"description": "Id reference (element text) to a flow node in the lane.",
+			"extends": "baseElement"
+		},
+		{
+			"name": "childLaneSet",
+			"description": "Nested lanes.",
+			"extends": "laneSet"
+		},
+		{
+			"name": "collaboration",
+			"description": "Interaction between participants.",
+			"extends": "rootElement",
+			"attributes": [
+				{
+					"name": "name",
+					"type": "string"
+				}
+			],
+			"children": [
+				{
+					"element": "participant"
+				},
+				{
+					"element": "messageFlow"
+				},
+				{
+					"element": "artifact"
+				}
+			]
+		},
+		{
+			"name": "participant",
+			"description": "A pool: a party in a collaboration, optionally backed by a process.",
+			"extends": "baseElement",
+			"attributes": [
+				{
+					"name": "name",
+					"type": "string"
+				},
+				{
+					"name": "processRef",
+					"type": "idref"
+				}
+			]
+		},
+		{
+			"name": "messageFlow",
+			"description": "A message sent between two participants.",
+			"extends": "baseElement",
+			"attributes": [
+				{
+					"name": "name",
+					"type": "string"
+				},
+				{
+					"name": "sourceRef",
+					"type": "idref",
+					"required": true
+				},
+				{
+					"name": "targetRef",
+					"type": "idref",
+					"required": true
+				},
+				{
+					"name": "messageRef",
+					"type": "idref"
+				}
+			]
+		},
+		{
+			"name": "message",
+			"description": "A message payload definition.",
+			"extends": "rootElement",
+			"attributes": [
+				{
+					"name": "name",
+					"type": "string"
+				}
+			]
+		},
+		{
+			"name": "error",
+			"description": "A BPMN error definition.",
+			"extends": "rootElement",
+			"attributes": [
+				{
+					"name": "name",
+					"type": "string"
+				},
+				{
+					"name": "errorCode",
+					"type": "string"
+				}
+			]
+		},
+		{
+			"name": "escalation",
+			"description": "An escalation definition.",
+			"extends": "rootElement",
+			"attributes": [
+				{
+					"name": "name",
+					"type": "string"
+				},
+				{
+					"name": "escalationCode",
+					"type": "string"
+				}
+			]
+		},
+		{
+			"name": "signal",
+			"description": "A signal definition.",
+			"extends": "rootElement",
+			"attributes": [
+				{
+					"name": "name",
+					"type": "string"
+				}
+			]
+		},
+		{
+			"name": "category",
+			"description": "A set of category values, e.g. for groups.",
+			"extends": "rootElement",
+			"attributes": [
+				{
+					"name": "name",
+					"type": "string"
+				}
+			],
+			"children": [
+				{
+					"element": "categoryValue"
+				}
+			]
+		},
+		{
+			"name": "categoryValue",
+			"description": "One value of a category.",
+			"extends": "baseElement",
+			"attributes": [
+				{
+					"name": "value",
+					"type": "string"
+				}
+			]
+		},
+		{
+			"name": "artifact",
+			"description": "Diagram annotation that does not affect the flow.",
+			"abstract": true,
+			"extends": "baseElement"
+		},
+		{
+			"name": "textAnnotation",
+			"description": "Free text attached to the diagram.",
+			"extends": "artifact",
+			"attributes": [
+				{
+					"name": "textFormat",
+					"type": "string",
+					"default": "text/plain"
+				}
+			],
+			"children": [
+				{
+					"element": "text",
+					"multiplicity": "0..1"
+				}
+			]
+		},
+		{
+			"name": "text",
+			"description": "The text of a text annotation.",
+			"extends": "baseElement"
+		},
+		{
+			"name": "association",
+			"description": "Links an artifact to a flow element.",
+			"extends": "artifact",
+			"attributes": [
+				{
+					"name": "sourceRef",
+					"type": "idref",
+					"required": true
+				},
+				{
+					"name": "targetRef",
+					"type": "idref",
+					"required": true
+				},
+				{
+					"name": "associationDirection",
+					"type": "enum",
+					"values": ["None", "One", "Both"],
+					"default": "None"
+				}
+			]
+		},
+		{
+			"name": "group",
+			"description": "Visual grouping of elements, optionally categorised.",
+			"extends": "artifact",
+			"attributes": [
+				{
+					"name": "categoryValueRef",
+					"type": "idref"
+				}
+			]
+		}
+	]
+}

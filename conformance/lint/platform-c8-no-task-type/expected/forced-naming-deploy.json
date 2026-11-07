@@ -1,0 +1,32 @@
+{
+  "categories": [
+    "naming",
+    "deploy"
+  ],
+  "counts": {
+    "error": 1,
+    "info": 0,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "charge"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Charge card\" (serviceTask) has no zeebe:taskDefinition type.",
+      "plane": "proc",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    }
+  ],
+  "platform": {
+    "id": "camunda-cloud",
+    "name": "Camunda Cloud",
+    "version": "8.6.0"
+  },
+  "total": 1
+}

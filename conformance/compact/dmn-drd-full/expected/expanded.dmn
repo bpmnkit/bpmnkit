@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="Definitions_drd" name="Full DRD" namespace="http://bpmn.io/schema/dmn">
+  <decision id="final" name="Final decision">
+    <informationRequirement id="InformationRequirement_0000001">
+      <requiredDecision href="#intermediate"/>
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_0000002">
+      <requiredInput href="#applicant"/>
+    </informationRequirement>
+    <decisionTable id="decisionTable_0000006" hitPolicy="FIRST">
+      <input id="i_final">
+        <inputExpression id="inputExpression_0000003" typeRef="string">
+          <text>level</text>
+        </inputExpression>
+      </input>
+      <output id="o_final" name="approved" typeRef="boolean"/>
+      <rule id="r_final">
+        <inputEntry id="inputEntry_0_0000004">
+          <text>"high"</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000005">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="intermediate" name="Intermediate">
+    <informationRequirement id="InformationRequirement_0000007">
+      <requiredInput href="#applicant"/>
+    </informationRequirement>
+    <decisionTable id="decisionTable_0000009">
+      <input id="i_int">
+        <inputExpression id="inputExpression_0000008" typeRef="number">
+          <text>applicant.age</text>
+        </inputExpression>
+      </input>
+      <output id="o_int" name="level" typeRef="string"/>
+    </decisionTable>
+  </decision>
+  <inputData id="applicant" name="Applicant"/>
+  <inputData id="unnamed"/>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="applicant">
+        <dc:Bounds height="45" width="125" x="160" y="100"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="unnamed">
+        <dc:Bounds height="45" width="125" x="160" y="185"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="intermediate">
+        <dc:Bounds height="80" width="180" x="345" y="125"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="final">
+        <dc:Bounds height="80" width="180" x="585" y="125"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge dmnElementRef="InformationRequirement_0000001">
+        <di:waypoint x="525" y="165"/>
+        <di:waypoint x="585" y="165"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="InformationRequirement_0000002">
+        <di:waypoint x="285" y="122.5"/>
+        <di:waypoint x="585" y="165"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="InformationRequirement_0000007">
+        <di:waypoint x="285" y="122.5"/>
+        <di:waypoint x="345" y="165"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

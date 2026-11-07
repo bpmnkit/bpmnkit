@@ -1,0 +1,12 @@
+{
+	"kind": "bpmn",
+	"input": "builder/from-noop/input.bpmn",
+	"script": [
+		["from","proc"],
+		["name","Renamed"],
+		["versionTag","9"],
+		["at","open"],
+		["endEvent","z"],
+		["build"]
+	]
+}

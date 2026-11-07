@@ -1,0 +1,299 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_1",
+      "plane": {
+        "bpmnElement": "order-process",
+        "edges": [
+          {
+            "bpmnElement": "Flow_TfkhdPux",
+            "id": "Flow_TfkhdPux_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 87,
+                "y": 60
+              },
+              {
+                "x": 169,
+                "y": 60
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_t5C0Tmzj",
+            "id": "Flow_t5C0Tmzj_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 269,
+                "y": 60
+              },
+              {
+                "x": 319,
+                "y": 60
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_lIaZ9rfj",
+            "id": "Flow_lIaZ9rfj_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 419,
+                "y": 60
+              },
+              {
+                "x": 469,
+                "y": 60
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_fX8iY50e",
+            "id": "Flow_fX8iY50e_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 569,
+                "y": 60
+              },
+              {
+                "x": 651,
+                "y": 60
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_1",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 51,
+              "y": 42
+            },
+            "bpmnElement": "Order_received",
+            "id": "Order_received_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 98,
+                "x": 20,
+                "y": 82
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 169,
+              "y": 20
+            },
+            "bpmnElement": "validate_order",
+            "id": "validate_order_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 319,
+              "y": 20
+            },
+            "bpmnElement": "process_payment",
+            "id": "process_payment_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 469,
+              "y": 20
+            },
+            "bpmnElement": "ship_order",
+            "id": "ship_order_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 651,
+              "y": 42
+            },
+            "bpmnElement": "Order_shipped",
+            "id": "Order_shipped_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 91,
+                "x": 624,
+                "y": 82
+              }
+            },
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "exporter": "@bpmnkit/core",
+  "exporterVersion": "0.0.23",
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "Order_received",
+          "incoming": [],
+          "name": "Order received",
+          "outgoing": [
+            "Flow_TfkhdPux"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "validate:1"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "validate_order",
+          "incoming": [
+            "Flow_TfkhdPux"
+          ],
+          "name": "Validate order",
+          "outgoing": [
+            "Flow_t5C0Tmzj"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "payment:1"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "process_payment",
+          "incoming": [
+            "Flow_t5C0Tmzj"
+          ],
+          "name": "Process payment",
+          "outgoing": [
+            "Flow_lIaZ9rfj"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "shipping:1"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "ship_order",
+          "incoming": [
+            "Flow_lIaZ9rfj"
+          ],
+          "name": "Ship order",
+          "outgoing": [
+            "Flow_fX8iY50e"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "Order_shipped",
+          "incoming": [
+            "Flow_fX8iY50e"
+          ],
+          "name": "Order shipped",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "order-process",
+      "isExecutable": true,
+      "name": "Order Process",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_TfkhdPux",
+          "sourceRef": "Order_received",
+          "targetRef": "validate_order",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_t5C0Tmzj",
+          "sourceRef": "validate_order",
+          "targetRef": "process_payment",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_lIaZ9rfj",
+          "sourceRef": "process_payment",
+          "targetRef": "ship_order",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_fX8iY50e",
+          "sourceRef": "ship_order",
+          "targetRef": "Order_shipped",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.9.0"
+  }
+}

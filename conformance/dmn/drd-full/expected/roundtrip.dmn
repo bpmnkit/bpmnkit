@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="Definitions_drd" name="Full DRD" namespace="http://camunda.org/schema/1.0/dmn" exporter="Camunda Modeler" exporterVersion="5.20.0">
+  <decision id="final" name="Final decision">
+    <informationRequirement id="ir1">
+      <requiredDecision href="#intermediate"/>
+    </informationRequirement>
+    <informationRequirement id="ir2">
+      <requiredInput href="#applicant"/>
+    </informationRequirement>
+    <knowledgeRequirement id="kr1">
+      <requiredKnowledge href="#bkm"/>
+    </knowledgeRequirement>
+    <authorityRequirement id="ar1">
+      <requiredAuthority href="#policy"/>
+    </authorityRequirement>
+    <authorityRequirement id="ar2">
+      <requiredDecision href="#intermediate"/>
+    </authorityRequirement>
+    <authorityRequirement id="ar3">
+      <requiredInput href="#applicant"/>
+    </authorityRequirement>
+    <decisionTable id="dt_final" hitPolicy="FIRST">
+      <input id="i_final">
+        <inputExpression id="ie_final" typeRef="string">
+          <text>level</text>
+        </inputExpression>
+      </input>
+      <output id="o_final" name="approved" typeRef="boolean"/>
+      <rule id="r_final">
+        <inputEntry id="re_final">
+          <text>"high"</text>
+        </inputEntry>
+        <outputEntry id="ro_final">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="intermediate" name="Intermediate">
+    <informationRequirement id="ir3">
+      <requiredInput href="#applicant"/>
+    </informationRequirement>
+    <decisionTable id="dt_int">
+      <input id="i_int">
+        <inputExpression id="ie_int" typeRef="number">
+          <text>applicant.age</text>
+        </inputExpression>
+      </input>
+      <output id="o_int" name="level" typeRef="string"/>
+    </decisionTable>
+  </decision>
+  <inputData id="applicant" name="Applicant"/>
+  <inputData id="unnamed"/>
+  <knowledgeSource id="policy" name="Lending policy">
+    <authorityRequirement id="ar4">
+      <requiredDecision href="#intermediate"/>
+    </authorityRequirement>
+    <authorityRequirement id="ar5">
+      <requiredAuthority href="#other"/>
+    </authorityRequirement>
+  </knowledgeSource>
+  <knowledgeSource id="other" name="Other source"/>
+  <businessKnowledgeModel id="bkm" name="Scoring function">
+    <knowledgeRequirement id="kr2">
+      <requiredKnowledge href="#bkm2"/>
+    </knowledgeRequirement>
+    <authorityRequirement id="ar6">
+      <requiredAuthority href="#policy"/>
+    </authorityRequirement>
+  </businessKnowledgeModel>
+  <businessKnowledgeModel id="bkm2" name="Helper"/>
+  <textAnnotation id="note">
+    <text>Reviewed quarterly</text>
+  </textAnnotation>
+  <textAnnotation id="empty_note"/>
+  <association id="assoc1" sourceRef="#note" targetRef="#final"/>
+  <association id="assoc2" sourceRef="#note" targetRef="#intermediate"/>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="final">
+        <dc:Bounds height="80" width="180" x="160" y="100"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="intermediate">
+        <dc:Bounds height="80.5" width="100" x="-20.25" y="300"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="applicant">
+        <dc:Bounds height="0" width="0" x="7" y="16"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="policy">
+        <dc:Bounds height="NaN" width="0" x="1.2345678901234569e+23" y="1e-7"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge dmnElementRef="ir1">
+        <di:waypoint x="250" y="300"/>
+        <di:waypoint x="250.75" y="180"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="ir2"/>
+      <dmndi:DMNEdge dmnElementRef="assoc1">
+        <di:waypoint x="1" y="0"/>
+        <di:waypoint x="0" y="0"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

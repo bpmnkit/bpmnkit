@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="Definitions_loan" name="Loan eligibility" namespace="http://bpmn.io/schema/dmn">
+  <decision id="eligibility" name="Eligibility">
+    <informationRequirement id="InformationRequirement_0000001">
+      <requiredInput href="#InputData_income"/>
+    </informationRequirement>
+    <decisionTable id="decisionTable_0000007" hitPolicy="UNIQUE">
+      <input id="Input_income" label="Monthly income">
+        <inputExpression id="inputExpression_0000002" typeRef="number">
+          <text>income</text>
+        </inputExpression>
+      </input>
+      <output id="Output_eligible" label="Eligible" name="eligible" typeRef="boolean"/>
+      <rule id="Rule_low">
+        <inputEntry id="inputEntry_0_0000003">
+          <text>&lt; 2000</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000004">
+          <text>false</text>
+        </outputEntry>
+      </rule>
+      <rule id="Rule_high">
+        <inputEntry id="inputEntry_0_0000005">
+          <text>&gt;= 2000</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000006">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="InputData_income" name="Income"/>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="InputData_income">
+        <dc:Bounds height="45" width="125" x="160" y="117.5"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="eligibility">
+        <dc:Bounds height="80" width="180" x="345" y="100"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge dmnElementRef="InformationRequirement_0000001">
+        <di:waypoint x="285" y="140"/>
+        <di:waypoint x="345" y="140"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

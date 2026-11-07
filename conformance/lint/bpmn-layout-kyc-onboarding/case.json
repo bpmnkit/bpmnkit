@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/layout-kyc-onboarding/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}

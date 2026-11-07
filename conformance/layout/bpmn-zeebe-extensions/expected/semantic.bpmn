@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_zeebe" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_zeebe" name="Zeebe surface" isExecutable="true">
+    <bpmn:startEvent id="Start_z">
+      <bpmn:outgoing>Flow_z1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Task_service" name="Call API">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1" retries="5"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=customer.id" target="customerId"/>
+          <zeebe:input source="=order.total" target="amount"/>
+          <zeebe:output source="=response.body" target="apiResult"/>
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="url" value="https://example.invalid/orders"/>
+          <zeebe:header key="method" value="POST"/>
+        </zeebe:taskHeaders>
+        <zeebe:properties>
+          <zeebe:property name="team" value="payments"/>
+        </zeebe:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_z1</bpmn:incoming>
+      <bpmn:outgoing>Flow_z2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_human" name="Approve">
+      <bpmn:extensionElements>
+        <zeebe:userTask/>
+        <zeebe:formDefinition formId="approval-form"/>
+        <zeebe:assignmentDefinition assignee="=requester" candidateGroups="approvers"/>
+        <zeebe:taskSchedule dueDate="=now() + duration(&quot;P1D&quot;)" followUpDate="=now()"/>
+        <zeebe:priorityDefinition priority="=order.priority"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_z2</bpmn:incoming>
+      <bpmn:outgoing>Flow_z3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:businessRuleTask id="Task_decide" name="Decide">
+      <bpmn:extensionElements>
+        <zeebe:calledDecision decisionId="risk-decision" resultVariable="risk"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_z3</bpmn:incoming>
+      <bpmn:outgoing>Flow_z4</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:callActivity id="Task_call" name="Fulfil">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="fulfilment" propagateAllChildVariables="false"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_z4</bpmn:incoming>
+      <bpmn:outgoing>Flow_z5</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:scriptTask id="Task_script" name="Summarise">
+      <bpmn:extensionElements>
+        <zeebe:script expression="=risk > 5" resultVariable="highRisk"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_z5</bpmn:incoming>
+      <bpmn:outgoing>Flow_z6</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:endEvent id="End_z">
+      <bpmn:incoming>Flow_z6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_z1" sourceRef="Start_z" targetRef="Task_service"/>
+    <bpmn:sequenceFlow id="Flow_z2" sourceRef="Task_service" targetRef="Task_human"/>
+    <bpmn:sequenceFlow id="Flow_z3" sourceRef="Task_human" targetRef="Task_decide"/>
+    <bpmn:sequenceFlow id="Flow_z4" sourceRef="Task_decide" targetRef="Task_call"/>
+    <bpmn:sequenceFlow id="Flow_z5" sourceRef="Task_call" targetRef="Task_script"/>
+    <bpmn:sequenceFlow id="Flow_z6" sourceRef="Task_script" targetRef="End_z"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_zeebe">
+      <bpmndi:BPMNShape id="Start_z_di" bpmnElement="Start_z">
+        <dc:Bounds x="20" y="42" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_service_di" bpmnElement="Task_service">
+        <dc:Bounds x="116" y="20" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_human_di" bpmnElement="Task_human">
+        <dc:Bounds x="276" y="20" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_decide_di" bpmnElement="Task_decide">
+        <dc:Bounds x="436" y="20" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_call_di" bpmnElement="Task_call">
+        <dc:Bounds x="596" y="20" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_script_di" bpmnElement="Task_script">
+        <dc:Bounds x="756" y="20" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_z_di" bpmnElement="End_z">
+        <dc:Bounds x="916" y="42" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_z1_di" bpmnElement="Flow_z1">
+        <di:waypoint x="56" y="60"/>
+        <di:waypoint x="116" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_z2_di" bpmnElement="Flow_z2">
+        <di:waypoint x="216" y="60"/>
+        <di:waypoint x="276" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_z3_di" bpmnElement="Flow_z3">
+        <di:waypoint x="376" y="60"/>
+        <di:waypoint x="436" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_z4_di" bpmnElement="Flow_z4">
+        <di:waypoint x="536" y="60"/>
+        <di:waypoint x="596" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_z5_di" bpmnElement="Flow_z5">
+        <di:waypoint x="696" y="60"/>
+        <di:waypoint x="756" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_z6_di" bpmnElement="Flow_z6">
+        <di:waypoint x="856" y="60"/>
+        <di:waypoint x="916" y="60"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_outer</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:subProcess id="outer">
+      <bpmn:incoming>Flow_s_outer</bpmn:incoming>
+      <bpmn:outgoing>Flow_outer_e</bpmn:outgoing>
+      <bpmn:startEvent id="os">
+        <bpmn:outgoing>Flow_os_innerSub</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:subProcess id="innerSub">
+        <bpmn:incoming>Flow_os_innerSub</bpmn:incoming>
+        <bpmn:outgoing>Flow_innerSub_oe</bpmn:outgoing>
+        <bpmn:startEvent id="is">
+          <bpmn:outgoing>Flow_is_deep</bpmn:outgoing>
+        </bpmn:startEvent>
+        <bpmn:serviceTask id="deep" name="deep">
+          <bpmn:extensionElements>
+            <zeebe:taskDefinition type="deep"/>
+          </bpmn:extensionElements>
+          <bpmn:incoming>Flow_is_deep</bpmn:incoming>
+          <bpmn:outgoing>Flow_deep_ie</bpmn:outgoing>
+        </bpmn:serviceTask>
+        <bpmn:endEvent id="ie">
+          <bpmn:incoming>Flow_deep_ie</bpmn:incoming>
+        </bpmn:endEvent>
+        <bpmn:sequenceFlow id="Flow_is_deep" sourceRef="is" targetRef="deep"/>
+        <bpmn:sequenceFlow id="Flow_deep_ie" sourceRef="deep" targetRef="ie"/>
+      </bpmn:subProcess>
+      <bpmn:endEvent id="oe">
+        <bpmn:incoming>Flow_innerSub_oe</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_os_innerSub" sourceRef="os" targetRef="innerSub"/>
+      <bpmn:sequenceFlow id="Flow_innerSub_oe" sourceRef="innerSub" targetRef="oe"/>
+    </bpmn:subProcess>
+    <bpmn:endEvent id="e">
+      <bpmn:incoming>Flow_outer_e</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s_outer" sourceRef="s" targetRef="outer"/>
+    <bpmn:sequenceFlow id="Flow_outer_e" sourceRef="outer" targetRef="e"/>
+  </bpmn:process>
+</bpmn:definitions>
+

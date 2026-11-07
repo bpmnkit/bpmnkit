@@ -84,6 +84,16 @@ describe("translateJuelToFeel", () => {
 		})
 	}
 
+	it("translates variables named like Object.prototype members", () => {
+		for (const name of ["constructor", "toString", "valueOf", "hasOwnProperty", "__proto__"]) {
+			expect(translateJuelToFeel(`\${${name} == 1}`)).toEqual({ ok: true, feel: `${name} = 1` })
+			expect(translateJuelToFeel(`\${${name} == 1}`, { multiInstance: true })).toEqual({
+				ok: true,
+				feel: `${name} = 1`,
+			})
+		}
+	})
+
 	it("renames the multi-instance counters inside a completion condition", () => {
 		expect(
 			translateJuelToFeel("${nrOfCompletedInstances / nrOfInstances >= 0.6}", {

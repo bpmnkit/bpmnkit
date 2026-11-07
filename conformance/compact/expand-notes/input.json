@@ -1,0 +1,39 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "s",
+          "type": "startEvent"
+        },
+        {
+          "id": "t",
+          "type": "task"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f",
+          "from": "s",
+          "to": "t"
+        }
+      ],
+      "notes": [
+        {
+          "elementId": "t",
+          "text": "first"
+        },
+        {
+          "elementId": "t",
+          "text": "second"
+        },
+        {
+          "elementId": "s",
+          "text": "start & <note>"
+        }
+      ]
+    }
+  ]
+}

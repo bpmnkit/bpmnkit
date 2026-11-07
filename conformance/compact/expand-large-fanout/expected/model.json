@@ -1,0 +1,651 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_P",
+      "plane": {
+        "bpmnElement": "P",
+        "edges": [
+          {
+            "bpmnElement": "f0",
+            "id": "f0_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 36,
+                "y": 320
+              },
+              {
+                "x": 96,
+                "y": 320
+              }
+            ]
+          },
+          {
+            "bpmnElement": "a1",
+            "id": "a1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 146,
+                "y": 320
+              },
+              {
+                "x": 206,
+                "y": 320
+              }
+            ]
+          },
+          {
+            "bpmnElement": "b1",
+            "id": "b1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 306,
+                "y": 320
+              },
+              {
+                "x": 366,
+                "y": 320
+              }
+            ]
+          },
+          {
+            "bpmnElement": "a2",
+            "id": "a2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 121,
+                "y": 345
+              },
+              {
+                "x": 121,
+                "y": 460
+              },
+              {
+                "x": 206,
+                "y": 460
+              }
+            ]
+          },
+          {
+            "bpmnElement": "b2",
+            "id": "b2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 256,
+                "y": 420
+              },
+              {
+                "x": 256,
+                "y": 390
+              },
+              {
+                "x": 391,
+                "y": 390
+              },
+              {
+                "x": 391,
+                "y": 345
+              }
+            ]
+          },
+          {
+            "bpmnElement": "a3",
+            "id": "a3_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 121,
+                "y": 295
+              },
+              {
+                "x": 121,
+                "y": 180
+              },
+              {
+                "x": 206,
+                "y": 180
+              }
+            ]
+          },
+          {
+            "bpmnElement": "b3",
+            "id": "b3_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 256,
+                "y": 220
+              },
+              {
+                "x": 256,
+                "y": 250
+              },
+              {
+                "x": 391,
+                "y": 250
+              },
+              {
+                "x": 391,
+                "y": 295
+              }
+            ]
+          },
+          {
+            "bpmnElement": "a4",
+            "id": "a4_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 121,
+                "y": 345
+              },
+              {
+                "x": 121,
+                "y": 600
+              },
+              {
+                "x": 206,
+                "y": 600
+              }
+            ]
+          },
+          {
+            "bpmnElement": "b4",
+            "id": "b4_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 306,
+                "y": 600
+              },
+              {
+                "x": 336,
+                "y": 600
+              },
+              {
+                "x": 336,
+                "y": 320
+              },
+              {
+                "x": 366,
+                "y": 320
+              }
+            ]
+          },
+          {
+            "bpmnElement": "a5",
+            "id": "a5_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 121,
+                "y": 295
+              },
+              {
+                "x": 121,
+                "y": 40
+              },
+              {
+                "x": 206,
+                "y": 40
+              }
+            ]
+          },
+          {
+            "bpmnElement": "b5",
+            "id": "b5_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 306,
+                "y": 40
+              },
+              {
+                "x": 336,
+                "y": 40
+              },
+              {
+                "x": 336,
+                "y": 320
+              },
+              {
+                "x": 366,
+                "y": 320
+              }
+            ]
+          },
+          {
+            "bpmnElement": "a6",
+            "id": "a6_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 121,
+                "y": 345
+              },
+              {
+                "x": 121,
+                "y": 740
+              },
+              {
+                "x": 206,
+                "y": 740
+              }
+            ]
+          },
+          {
+            "bpmnElement": "b6",
+            "id": "b6_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 306,
+                "y": 740
+              },
+              {
+                "x": 336,
+                "y": 740
+              },
+              {
+                "x": 336,
+                "y": 320
+              },
+              {
+                "x": 366,
+                "y": 320
+              }
+            ]
+          },
+          {
+            "bpmnElement": "fe",
+            "id": "fe_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 416,
+                "y": 320
+              },
+              {
+                "x": 476,
+                "y": 320
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_P",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 0,
+              "y": 302
+            },
+            "bpmnElement": "s",
+            "id": "s_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 96,
+              "y": 295
+            },
+            "bpmnElement": "g",
+            "id": "g_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 206,
+              "y": 280
+            },
+            "bpmnElement": "t1",
+            "id": "t1_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 206,
+              "y": 420
+            },
+            "bpmnElement": "t2",
+            "id": "t2_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 206,
+              "y": 140
+            },
+            "bpmnElement": "t3",
+            "id": "t3_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 206,
+              "y": 560
+            },
+            "bpmnElement": "t4",
+            "id": "t4_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 206,
+              "y": 0
+            },
+            "bpmnElement": "t5",
+            "id": "t5_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 206,
+              "y": 700
+            },
+            "bpmnElement": "t6",
+            "id": "t6_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 366,
+              "y": 295
+            },
+            "bpmnElement": "j",
+            "id": "j_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 476,
+              "y": 302
+            },
+            "bpmnElement": "e",
+            "id": "e_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "D",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "s",
+          "incoming": [],
+          "outgoing": [
+            "f0"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "g",
+          "incoming": [
+            "f0"
+          ],
+          "outgoing": [
+            "a1",
+            "a2",
+            "a3",
+            "a4",
+            "a5",
+            "a6"
+          ],
+          "type": "parallelGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "t1",
+          "incoming": [
+            "a1"
+          ],
+          "outgoing": [
+            "b1"
+          ],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "t2",
+          "incoming": [
+            "a2"
+          ],
+          "outgoing": [
+            "b2"
+          ],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "t3",
+          "incoming": [
+            "a3"
+          ],
+          "outgoing": [
+            "b3"
+          ],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "t4",
+          "incoming": [
+            "a4"
+          ],
+          "outgoing": [
+            "b4"
+          ],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "t5",
+          "incoming": [
+            "a5"
+          ],
+          "outgoing": [
+            "b5"
+          ],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "t6",
+          "incoming": [
+            "a6"
+          ],
+          "outgoing": [
+            "b6"
+          ],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "j",
+          "incoming": [
+            "b1",
+            "b2",
+            "b3",
+            "b4",
+            "b5",
+            "b6"
+          ],
+          "outgoing": [
+            "fe"
+          ],
+          "type": "parallelGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e",
+          "incoming": [
+            "fe"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "P",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "f0",
+          "sourceRef": "s",
+          "targetRef": "g",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "a1",
+          "sourceRef": "g",
+          "targetRef": "t1",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "b1",
+          "sourceRef": "t1",
+          "targetRef": "j",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "a2",
+          "sourceRef": "g",
+          "targetRef": "t2",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "b2",
+          "sourceRef": "t2",
+          "targetRef": "j",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "a3",
+          "sourceRef": "g",
+          "targetRef": "t3",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "b3",
+          "sourceRef": "t3",
+          "targetRef": "j",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "a4",
+          "sourceRef": "g",
+          "targetRef": "t4",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "b4",
+          "sourceRef": "t4",
+          "targetRef": "j",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "a5",
+          "sourceRef": "g",
+          "targetRef": "t5",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "b5",
+          "sourceRef": "t5",
+          "targetRef": "j",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "a6",
+          "sourceRef": "g",
+          "targetRef": "t6",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "b6",
+          "sourceRef": "t6",
+          "targetRef": "j",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "fe",
+          "sourceRef": "j",
+          "targetRef": "e",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

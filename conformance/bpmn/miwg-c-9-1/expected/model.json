@@ -1,0 +1,661 @@
+{
+  "collaborations": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "groups": [],
+      "id": "Collaboration_0liisio",
+      "messageFlows": [],
+      "participants": [
+        {
+          "id": "Participant_02",
+          "name": "Document Request",
+          "processRef": "requestDocument_en",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_1",
+      "plane": {
+        "bpmnElement": "Collaboration_0liisio",
+        "edges": [
+          {
+            "bpmnElement": "SequenceFlow_6",
+            "id": "BPMNEdge_SequenceFlow_6",
+            "label": {
+              "bounds": {
+                "height": 6,
+                "width": 90,
+                "x": 591,
+                "y": 139
+              }
+            },
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 594,
+                "y": 139
+              },
+              {
+                "x": 900,
+                "y": 139
+              }
+            ]
+          },
+          {
+            "bpmnElement": "SequenceFlow_0i97ejj",
+            "id": "SequenceFlow_0i97ejj_di",
+            "label": {
+              "bounds": {
+                "height": 0,
+                "width": 90,
+                "x": 488,
+                "y": 224
+              }
+            },
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 594,
+                "y": 197
+              },
+              {
+                "x": 594,
+                "y": 224
+              },
+              {
+                "x": 663,
+                "y": 224
+              }
+            ]
+          },
+          {
+            "bpmnElement": "SequenceFlow_1bqpxlf",
+            "id": "SequenceFlow_1bqpxlf_di",
+            "label": {
+              "bounds": {
+                "height": 0,
+                "width": 90,
+                "x": 484,
+                "y": 235
+              }
+            },
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 545,
+                "y": 197
+              },
+              {
+                "x": 545,
+                "y": 320
+              },
+              {
+                "x": 663,
+                "y": 320
+              }
+            ]
+          },
+          {
+            "bpmnElement": "SequenceFlow_2",
+            "id": "BPMNEdge_SequenceFlow_2",
+            "label": {
+              "bounds": {
+                "height": 6,
+                "width": 90,
+                "x": 681,
+                "y": 320
+              }
+            },
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 763,
+                "y": 320
+              },
+              {
+                "x": 900,
+                "y": 320
+              }
+            ]
+          },
+          {
+            "bpmnElement": "SequenceFlow_3",
+            "id": "BPMNEdge_SequenceFlow_3",
+            "label": {
+              "bounds": {
+                "height": 6,
+                "width": 90,
+                "x": 681,
+                "y": 224
+              }
+            },
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 763,
+                "y": 224
+              },
+              {
+                "x": 900,
+                "y": 224
+              }
+            ]
+          },
+          {
+            "bpmnElement": "SequenceFlow_18a0pzl",
+            "id": "SequenceFlow_18a0pzl_di",
+            "label": {
+              "bounds": {
+                "height": 0,
+                "width": 90,
+                "x": 369,
+                "y": 129
+              }
+            },
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 423,
+                "y": 139
+              },
+              {
+                "x": 494,
+                "y": 139
+              }
+            ]
+          },
+          {
+            "bpmnElement": "SequenceFlow_0d7dzn0",
+            "id": "SequenceFlow_0d7dzn0_di",
+            "label": {
+              "bounds": {
+                "height": 0,
+                "width": 90,
+                "x": 152,
+                "y": 121
+              }
+            },
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 248,
+                "y": 139
+              },
+              {
+                "x": 323,
+                "y": 139
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_1",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 301,
+              "width": 829,
+              "x": 156,
+              "y": 76
+            },
+            "bpmnElement": "Participant_02",
+            "id": "Participant_012xlj2_di",
+            "isHorizontal": true,
+            "label": {},
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 323,
+              "y": 99
+            },
+            "bpmnElement": "SendTask_RequestDocument",
+            "id": "SendTask_1hvdsj6_di",
+            "label": {},
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 900,
+              "y": 206
+            },
+            "bpmnElement": "EndEvent_TalkedToCustomer",
+            "id": "_BPMNShape_EndEvent_30",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 81,
+                "x": 879,
+                "y": 247
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 663,
+              "y": 280
+            },
+            "bpmnElement": "SendTask_SendReminderEmail",
+            "id": "SendTask_0rs6zt3_di",
+            "label": {},
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 663,
+              "y": 184
+            },
+            "bpmnElement": "UserTask_CallCustomer",
+            "id": "UserTask_1pu6sug_di",
+            "label": {},
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 494,
+              "y": 99
+            },
+            "bpmnElement": "ReceiveTask_WaitForDocument",
+            "id": "ReceiveTask_1707zk0_di",
+            "label": {},
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 900,
+              "y": 121
+            },
+            "bpmnElement": "EndEvent_GotDocument",
+            "id": "EndEvent_1u6qjao_di",
+            "label": {
+              "bounds": {
+                "height": 27,
+                "width": 52,
+                "x": 893,
+                "y": 157
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 212,
+              "y": 121
+            },
+            "bpmnElement": "StartEvent_DocumentRequested",
+            "id": "_BPMNShape_StartEvent_2",
+            "label": {
+              "bounds": {
+                "height": 27,
+                "width": 52,
+                "x": 205,
+                "y": 157
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 900,
+              "y": 302
+            },
+            "bpmnElement": "EndEvent_ReminderSent",
+            "id": "_BPMNShape_EndEvent_29",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 53,
+                "x": 892,
+                "y": 338
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 576,
+              "y": 161
+            },
+            "bpmnElement": "BoundaryEvent_2",
+            "id": "_BPMNShape_BoundaryEvent_5",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 36,
+                "x": 605,
+                "y": 196
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 527,
+              "y": 161
+            },
+            "bpmnElement": "BoundaryEvent_1",
+            "id": "_BPMNShape_BoundaryEvent_4",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 24,
+                "x": 515,
+                "y": 196
+              }
+            },
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "exporter": "Camunda Web Modeler",
+  "exporterVersion": "3cd8340",
+  "id": "Definitions_1",
+  "messages": [
+    {
+      "extensionElements": [
+        {
+          "attributes": {
+            "correlationKey": "= documentReferenceId"
+          },
+          "children": [],
+          "name": "zeebe:subscription"
+        }
+      ],
+      "id": "Message_1",
+      "name": "MESSAGE_documentReceived",
+      "unknownAttributes": {}
+    }
+  ],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "camunda": "http://camunda.org/schema/1.0/bpmn",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "email"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "SendTask_RequestDocument",
+          "incoming": [
+            "SequenceFlow_0d7dzn0"
+          ],
+          "name": "Request document",
+          "outgoing": [
+            "SequenceFlow_18a0pzl"
+          ],
+          "type": "sendTask",
+          "unknownAttributes": {
+            "camunda:async": "true",
+            "camunda:topic": "emailService",
+            "camunda:type": "external"
+          }
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "EndEvent_TalkedToCustomer",
+          "incoming": [
+            "SequenceFlow_3"
+          ],
+          "name": "Answer received",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {
+            "camunda:asyncAfter": "true"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "email"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "SendTask_SendReminderEmail",
+          "incoming": [
+            "SequenceFlow_1bqpxlf"
+          ],
+          "name": "Send reminder email",
+          "outgoing": [
+            "SequenceFlow_2"
+          ],
+          "type": "sendTask",
+          "unknownAttributes": {
+            "camunda:asyncBefore": "true",
+            "camunda:topic": "emailService",
+            "camunda:type": "external"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "UserTask_CallCustomer",
+          "incoming": [
+            "SequenceFlow_0i97ejj"
+          ],
+          "name": "Call customer",
+          "outgoing": [
+            "SequenceFlow_3"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "ReceiveTask_WaitForDocument",
+          "incoming": [
+            "SequenceFlow_18a0pzl"
+          ],
+          "messageRef": "Message_1",
+          "name": "Wait for answer",
+          "outgoing": [
+            "SequenceFlow_6"
+          ],
+          "type": "receiveTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "EndEvent_GotDocument",
+          "incoming": [
+            "SequenceFlow_6"
+          ],
+          "name": "Document received",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {
+            "camunda:asyncAfter": "true"
+          }
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "StartEvent_DocumentRequested",
+          "incoming": [],
+          "name": "Document requested",
+          "outgoing": [
+            "SequenceFlow_0d7dzn0"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "ReceiveTask_WaitForDocument",
+          "cancelActivity": false,
+          "eventDefinitions": [
+            {
+              "id": "_TimerEventDefinition_2",
+              "timeCycle": "R6/P1D",
+              "timeCycleAttributes": {
+                "xsi:type": "bpmn:tFormalExpression"
+              },
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "BoundaryEvent_1",
+          "incoming": [],
+          "name": "daily",
+          "outgoing": [
+            "SequenceFlow_1bqpxlf"
+          ],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "ReceiveTask_WaitForDocument",
+          "eventDefinitions": [
+            {
+              "id": "_TimerEventDefinition_3",
+              "timeDuration": "P7D",
+              "timeDurationAttributes": {
+                "xsi:type": "bpmn:tFormalExpression"
+              },
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "BoundaryEvent_2",
+          "incoming": [],
+          "name": "1 week",
+          "outgoing": [
+            "SequenceFlow_0i97ejj"
+          ],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "EndEvent_ReminderSent",
+          "incoming": [
+            "SequenceFlow_2"
+          ],
+          "name": "Email sent",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "requestDocument_en",
+      "isExecutable": true,
+      "name": "Document Request",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "SequenceFlow_6",
+          "name": "",
+          "sourceRef": "ReceiveTask_WaitForDocument",
+          "targetRef": "EndEvent_GotDocument",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "SequenceFlow_0i97ejj",
+          "sourceRef": "BoundaryEvent_2",
+          "targetRef": "UserTask_CallCustomer",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "SequenceFlow_1bqpxlf",
+          "sourceRef": "BoundaryEvent_1",
+          "targetRef": "SendTask_SendReminderEmail",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "SequenceFlow_2",
+          "name": "",
+          "sourceRef": "SendTask_SendReminderEmail",
+          "targetRef": "EndEvent_ReminderSent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "SequenceFlow_3",
+          "name": "",
+          "sourceRef": "UserTask_CallCustomer",
+          "targetRef": "EndEvent_TalkedToCustomer",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "SequenceFlow_18a0pzl",
+          "sourceRef": "SendTask_RequestDocument",
+          "targetRef": "ReceiveTask_WaitForDocument",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "SequenceFlow_0d7dzn0",
+          "sourceRef": "StartEvent_DocumentRequested",
+          "targetRef": "SendTask_RequestDocument",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {
+        "camunda:isStartableInTasklist": "false"
+      }
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn/Definitions_1",
+  "unknownAttributes": {
+    "camunda:diagramRelationId": "af86f867-ab21-41fd-aa8f-3d258886a557",
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.1.0",
+    "xsi:schemaLocation": "http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd"
+  }
+}

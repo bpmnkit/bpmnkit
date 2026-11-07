@@ -1,0 +1,15 @@
+{
+  "runs": {
+    "default": {},
+    "c8": {
+      "camundaVersion": "8.6"
+    },
+    "thresholds": {
+      "feelLengthThreshold": 5,
+      "feelNestingThreshold": 1,
+      "feelOperatorThreshold": 1,
+      "feelVariableThreshold": 1,
+      "reuseThreshold": 1
+    }
+  }
+}

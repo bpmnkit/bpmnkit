@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["restConnector","call",{"method":"PUT","url":"https://x","authentication":{"type":"basic","username":"u","password":"{{secrets.P}}"},"headers":"={a: 1}","queryParameters":"={b: 2}"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

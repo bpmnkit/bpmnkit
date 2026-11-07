@@ -1,0 +1,63 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "tx",
+          "type": "transaction",
+          "children": {
+            "elements": [
+              {
+                "id": "ts",
+                "type": "startEvent"
+              },
+              {
+                "id": "te",
+                "type": "endEvent"
+              }
+            ],
+            "flows": [
+              {
+                "id": "g",
+                "from": "ts",
+                "to": "te"
+              }
+            ]
+          }
+        },
+        {
+          "id": "ah",
+          "type": "adHocSubProcess",
+          "name": "Agent",
+          "jobType": "agent",
+          "children": {
+            "elements": [
+              {
+                "id": "tool1",
+                "type": "serviceTask",
+                "jobType": "a",
+                "documentation": "tool a"
+              },
+              {
+                "id": "tool2",
+                "type": "serviceTask",
+                "jobType": "b",
+                "documentation": "tool b"
+              }
+            ],
+            "flows": []
+          }
+        }
+      ],
+      "flows": [
+        {
+          "id": "f",
+          "from": "tx",
+          "to": "ah"
+        }
+      ]
+    }
+  ]
+}

@@ -473,13 +473,13 @@ function evalBinary(
 	if (op === "*") {
 		if (typeof left === "number" && typeof right === "number") return left * right
 		if (typeof left === "number" && isFeelDayTimeDuration(right))
-			return { type: "days-time-duration", seconds: left * right.seconds }
+			return dayTime(left * right.seconds)
 		if (typeof left === "number" && isFeelYearsMonthsDuration(right))
-			return { type: "years-months-duration", months: left * right.months }
+			return yearsMonths(left * right.months)
 		if (isFeelDayTimeDuration(left) && typeof right === "number")
-			return { type: "days-time-duration", seconds: left.seconds * right }
+			return dayTime(left.seconds * right)
 		if (isFeelYearsMonthsDuration(left) && typeof right === "number")
-			return { type: "years-months-duration", months: left.months * right }
+			return yearsMonths(left.months * right)
 		return null
 	}
 	if (op === "/") {
@@ -487,9 +487,9 @@ function evalBinary(
 			return right === 0 ? null : left / right
 		}
 		if (isFeelDayTimeDuration(left) && typeof right === "number")
-			return { type: "days-time-duration", seconds: left.seconds / right }
+			return dayTime(left.seconds / right)
 		if (isFeelYearsMonthsDuration(left) && typeof right === "number")
-			return { type: "years-months-duration", months: left.months / right }
+			return yearsMonths(left.months / right)
 		// How many times one duration fits in another: P1Y / P1M is 12.
 		if (isFeelDayTimeDuration(left) && isFeelDayTimeDuration(right))
 			return right.seconds === 0 ? null : left.seconds / right.seconds
@@ -498,7 +498,12 @@ function evalBinary(
 		return null
 	}
 	if (op === "**") {
-		if (typeof left === "number" && typeof right === "number") return left ** right
+		if (typeof left === "number" && typeof right === "number") {
+			// FEEL numbers have no NaN or infinity: (-8) ** (1/3) and 10 ** 400 are null,
+			// as in the Rust twin, so later operators see null rather than a NaN.
+			const power = left ** right
+			return Number.isFinite(power) ? power : null
+		}
 		return null
 	}
 
@@ -510,6 +515,21 @@ function evalBinary(
 	if (op === ">") return cmp > 0
 	if (op === ">=") return cmp >= 0
 	return null
+}
+
+/** A scaled duration: dividing by zero (or overflowing) has no duration, so it is null. */
+function dayTime(seconds: number): FeelValue {
+	return Number.isFinite(seconds) ? { type: "days-time-duration", seconds } : null
+}
+
+/**
+ * A scaled month count. A duration holds whole months, so a fraction rounds half away from
+ * zero (P1Y2M * 0.1 is P1M), as in the Rust twin; a non-finite count is null.
+ */
+function yearsMonths(months: number): FeelValue {
+	if (!Number.isFinite(months)) return null
+	const whole = Math.sign(months) * Math.round(Math.abs(months))
+	return { type: "years-months-duration", months: whole === 0 ? 0 : whole }
 }
 
 /**
@@ -543,6 +563,16 @@ function evalCall(callee: string, argNodes: FeelNode[], ctx: EvalContext): FeelV
 
 type Binding = { name: string; domain: FeelNode }
 
+/** Whether `name` occurs anywhere under `node` as a name or a callee (conservatively). */
+function mentions(node: unknown, name: string): boolean {
+	if (Array.isArray(node)) return node.some((n) => mentions(n, name))
+	if (typeof node !== "object" || node === null) return false
+	const n = node as { kind?: string; name?: string; callee?: string }
+	if (n.kind === "name" && n.name === name) return true
+	if ((n.kind === "call" || n.kind === "call-named") && n.callee === name) return true
+	return Object.values(node).some((v) => typeof v === "object" && mentions(v, name))
+}
+
 /**
  * Evaluates a `for`. Each binding's domain is evaluated with the bindings to
  * its left already in scope, so `for x in xs, y in x` works, and the body sees
@@ -551,11 +581,16 @@ type Binding = { name: string; domain: FeelNode }
 function evalFor(bindings: Binding[], body: FeelNode, ctx: EvalContext): FeelValue {
 	const results: FeelValue[] = []
 	let failed = false
+	// Copying the results for `partial` on every iteration is quadratic, so it is bound
+	// only when the body can read it.
+	const readsPartial = mentions(body, "partial")
 
 	const iterate = (idx: number, scope: EvalContext): void => {
 		if (failed) return
 		if (idx === bindings.length) {
-			results.push(evaluate(body, childCtx(scope, { partial: [...results] })))
+			results.push(
+				evaluate(body, readsPartial ? childCtx(scope, { partial: [...results] }) : scope),
+			)
 			return
 		}
 		const binding = bindings[idx]
@@ -653,6 +688,8 @@ function deepEqual(a: FeelValue, b: FeelValue): boolean {
 		}
 		return true
 	}
+	// A list is never equal to a context, even an empty one to {}.
+	if (Array.isArray(a) !== Array.isArray(b)) return false
 	if (typeof a === "object" && typeof b === "object") {
 		const aKeys = Object.keys(a)
 		const bKeys = Object.keys(b)

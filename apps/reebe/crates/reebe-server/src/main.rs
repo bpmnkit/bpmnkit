@@ -10,9 +10,9 @@
 
 mod config;
 
-use std::sync::Arc;
 use clap::Parser;
 use config::Config;
+use std::sync::Arc;
 use tokio::signal;
 use tracing::info;
 
@@ -72,8 +72,7 @@ async fn main() -> anyhow::Result<()> {
         let data_dir = directories::ProjectDirs::from("", "", "reebe")
             .map(|p| p.data_dir().to_owned())
             .unwrap_or_else(|| std::path::PathBuf::from(".reebe"));
-        std::fs::create_dir_all(&data_dir)
-            .expect("failed to create embedded database directory");
+        std::fs::create_dir_all(&data_dir).expect("failed to create embedded database directory");
         let db_path = data_dir.join("reebe.db");
         cfg.database.url = format!("sqlite://{}", db_path.display());
         info!(path = %db_path.display(), "Using embedded SQLite database");
@@ -91,20 +90,24 @@ async fn main() -> anyhow::Result<()> {
     info!("Connected to database");
 
     // Connect to read replica if configured.
-    let replica_pool: Option<reebe_db::DbPool> = if let Some(ref replica_url) = cfg.database.replica_url {
-        match reebe_db::pool::create_replica_pool(&db_config, replica_url).await {
-            Ok(p) => {
-                info!("Connected to read replica");
-                Some(p)
+    let replica_pool: Option<reebe_db::DbPool> =
+        if let Some(ref replica_url) = cfg.database.replica_url {
+            match reebe_db::pool::create_replica_pool(&db_config, replica_url).await {
+                Ok(p) => {
+                    info!("Connected to read replica");
+                    Some(p)
+                }
+                Err(e) => {
+                    tracing::warn!(
+                        "Could not connect to read replica: {}; all reads go to primary",
+                        e
+                    );
+                    None
+                }
             }
-            Err(e) => {
-                tracing::warn!("Could not connect to read replica: {}; all reads go to primary", e);
-                None
-            }
-        }
-    } else {
-        None
-    };
+        } else {
+            None
+        };
 
     // Run migrations
     reebe_db::pool::run_migrations(&pool).await?;
@@ -118,7 +121,8 @@ async fn main() -> anyhow::Result<()> {
     let backend = std::sync::Arc::new(reebe_db::SqlxBackend::new(pool.clone()));
     for pid in 1..=(partition_count as i16) {
         reebe_engine::replay::check_and_log_replay_status(&pool, pid).await;
-        let (engine, handle) = reebe_engine::Engine::new(backend.clone(), pid, Arc::new(reebe_engine::RealClock));
+        let (engine, handle) =
+            reebe_engine::Engine::new(backend.clone(), pid, Arc::new(reebe_engine::RealClock));
         let engine = Arc::new(engine);
         let engine_clone = engine.clone();
         tokio::spawn(async move {
@@ -149,7 +153,8 @@ async fn main() -> anyhow::Result<()> {
         pool.clone(),
         replica_pool,
         cfg.auth,
-    ).await;
+    )
+    .await;
 
     // Start the gRPC gateway (26500, the Zeebe standard, unless --grpc-port says otherwise)
     let grpc_state = reebe_grpc::GatewayState {
@@ -184,7 +189,9 @@ async fn main() -> anyhow::Result<()> {
 
 async fn shutdown_signal() {
     let ctrl_c = async {
-        signal::ctrl_c().await.expect("failed to install Ctrl+C handler");
+        signal::ctrl_c()
+            .await
+            .expect("failed to install Ctrl+C handler");
     };
 
     #[cfg(unix)]
@@ -209,12 +216,14 @@ async fn shutdown_signal() {
 fn load_config(path: &str) -> Config {
     // Try reading config file; fall back to defaults
     match std::fs::read_to_string(path) {
-        Ok(content) => {
-            toml::from_str::<Config>(&content).unwrap_or_else(|e| {
-                tracing::warn!("Could not parse config file {}: {}; using defaults", path, e);
-                Config::default()
-            })
-        }
+        Ok(content) => toml::from_str::<Config>(&content).unwrap_or_else(|e| {
+            tracing::warn!(
+                "Could not parse config file {}: {}; using defaults",
+                path,
+                e
+            );
+            Config::default()
+        }),
         Err(_) => {
             tracing::info!("Config file {} not found; using defaults", path);
             Config::default()

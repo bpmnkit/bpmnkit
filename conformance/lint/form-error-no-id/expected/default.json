@@ -1,0 +1,10 @@
+{
+  "findings": [
+    {
+      "fix": "Add a top-level \"id\" — a user task links the form by it (zeebe:formDefinition formId). (agent-cards/form.md#traps)",
+      "message": "The form has no id.",
+      "rule": "form/missing-id",
+      "severity": "error"
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="d" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="P" isExecutable="true">
+    <bpmn:startEvent id="S">
+      <bpmn:outgoing>F1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="G" default="F3">
+      <bpmn:incoming>F1</bpmn:incoming>
+      <bpmn:outgoing>F2</bpmn:outgoing>
+      <bpmn:outgoing>F3</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="A">
+      <bpmn:incoming>F2</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:parallelGateway id="P1">
+      <bpmn:incoming>F3</bpmn:incoming>
+      <bpmn:outgoing>F4</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:subProcess id="Sub">
+      <bpmn:incoming>F4</bpmn:incoming>
+      <bpmn:exclusiveGateway id="SubG" default="SF2">
+        <bpmn:outgoing>SF1</bpmn:outgoing>
+        <bpmn:outgoing>SF2</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:task id="B">
+        <bpmn:incoming>SF1</bpmn:incoming>
+      </bpmn:task>
+      <bpmn:task id="C">
+        <bpmn:incoming>SF2</bpmn:incoming>
+      </bpmn:task>
+      <bpmn:sequenceFlow id="SF1" sourceRef="SubG" targetRef="B">
+        <bpmn:conditionExpression>= ok</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="SF2" sourceRef="SubG" targetRef="C"/>
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="F1" sourceRef="S" targetRef="G"/>
+    <bpmn:sequenceFlow id="F2" sourceRef="G" targetRef="A">
+      <bpmn:conditionExpression>= ok</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="F3" sourceRef="G" targetRef="P1"/>
+    <bpmn:sequenceFlow id="F4" sourceRef="P1" targetRef="Sub"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_P">
+    <bpmndi:BPMNPlane id="BPMNPlane_P" bpmnElement="P">
+      <bpmndi:BPMNShape id="S_di" bpmnElement="S">
+        <dc:Bounds x="0" y="72" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_di" bpmnElement="G" isMarkerVisible="true">
+        <dc:Bounds x="96" y="65" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="A_di" bpmnElement="A">
+        <dc:Bounds x="206" y="175" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="P1_di" bpmnElement="P1">
+        <dc:Bounds x="231" y="65" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Sub_di" bpmnElement="Sub" isExpanded="true">
+        <dc:Bounds x="406" y="0" width="310" height="320"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SubG_di" bpmnElement="SubG" isMarkerVisible="true">
+        <dc:Bounds x="456" y="65" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="B_di" bpmnElement="B">
+        <dc:Bounds x="566" y="190" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="C_di" bpmnElement="C">
+        <dc:Bounds x="566" y="50" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="F1_di" bpmnElement="F1">
+        <di:waypoint x="36" y="90"/>
+        <di:waypoint x="96" y="90"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F2_di" bpmnElement="F2">
+        <di:waypoint x="121" y="115"/>
+        <di:waypoint x="121" y="215"/>
+        <di:waypoint x="206" y="215"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F3_di" bpmnElement="F3">
+        <di:waypoint x="146" y="90"/>
+        <di:waypoint x="231" y="90"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F4_di" bpmnElement="F4">
+        <di:waypoint x="281" y="90"/>
+        <di:waypoint x="406" y="90"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF1_di" bpmnElement="SF1">
+        <di:waypoint x="481" y="115"/>
+        <di:waypoint x="481" y="230"/>
+        <di:waypoint x="566" y="230"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SF2_di" bpmnElement="SF2">
+        <di:waypoint x="506" y="90"/>
+        <di:waypoint x="566" y="90"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

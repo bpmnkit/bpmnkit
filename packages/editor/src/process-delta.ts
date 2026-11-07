@@ -398,6 +398,13 @@ export function applyProcessDelta(
 		const now = element(id)
 		const trigger = now && "eventDefinitions" in now ? now.eventDefinitions[0]?.type : undefined
 		if (node.trigger !== undefined && node.trigger !== trigger) patch.eventType = node.trigger
+		const timer =
+			now && "eventDefinitions" in now
+				? now.eventDefinitions.find((d) => d.type === "timer")
+				: undefined
+		if (node.timerDuration !== undefined && timer && timer.timeDuration !== node.timerDuration) {
+			patch.timerDuration = node.timerDuration
+		}
 		if (node.jobType !== undefined) {
 			const current = now?.extensionElements.find((e) => e.name === "zeebe:taskDefinition")
 				?.attributes.type
@@ -912,6 +919,11 @@ export function applyProcessDelta(
 		if (created) mappingPatch(node, created, patch, problem)
 		if (Object.keys(patch).length > 0) {
 			patches.push({ line: node.line, op: { op: "update", id, patch } })
+		}
+		// After the patch that makes it a timer: a duration needs the timer definition first
+		if (node.timerDuration !== undefined && node.trigger === "timer") {
+			const timerDuration = node.timerDuration
+			patches.push({ line: node.line, op: { op: "update", id, patch: { timerDuration } } })
 		}
 	}
 

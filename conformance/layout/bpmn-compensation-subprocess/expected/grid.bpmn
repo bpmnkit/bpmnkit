@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:subProcess id="Undo" isForCompensation="true">
+      <bpmn:startEvent id="UndoStart"/>
+    </bpmn:subProcess>
+    <bpmn:transaction id="Tx" isForCompensation="true"/>
+    <bpmn:adHocSubProcess id="Adhoc" isForCompensation="true"/>
+    <bpmn:subProcess id="Evt" triggeredByEvent="true" isForCompensation="true"/>
+    <bpmn:subProcess id="Plain"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="Undo_di" bpmnElement="Undo" isExpanded="true">
+        <dc:Bounds x="20" y="20" width="250" height="220"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UndoStart_di" bpmnElement="UndoStart">
+        <dc:Bounds x="127" y="112" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Tx_di" bpmnElement="Tx">
+        <dc:Bounds x="20" y="300" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Adhoc_di" bpmnElement="Adhoc">
+        <dc:Bounds x="20" y="440" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Evt_di" bpmnElement="Evt">
+        <dc:Bounds x="20" y="580" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Plain_di" bpmnElement="Plain">
+        <dc:Bounds x="20" y="720" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

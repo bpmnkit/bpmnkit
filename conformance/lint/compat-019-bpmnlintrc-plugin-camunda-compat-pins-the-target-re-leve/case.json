@@ -1,0 +1,16 @@
+{
+  "runs": {
+    "opts-1": {
+      "bpmnlintrc": {
+        "extends": [
+          "plugin:camunda-compat/camunda-cloud-8-6"
+        ],
+        "rules": {
+          "camunda-compat/element-type": "warn",
+          "camunda-compat/user-task-definition": "off",
+          "camunda-compat/no-such-rule": "error"
+        }
+      }
+    }
+  }
+}

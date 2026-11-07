@@ -1,0 +1,104 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 1,
+    "info": 0,
+    "warning": 5
+  },
+  "diagnostics": [
+    {
+      "category": "pattern",
+      "elementIds": [
+        "prepare"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Prepare Documents\" has no timer boundary event.",
+      "plane": "parallel-approval",
+      "processId": "parallel-approval",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "mgr-approve"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Manager Approval\" has no timer boundary event.",
+      "plane": "parallel-approval",
+      "processId": "parallel-approval",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "legal-review"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Legal Review\" has no timer boundary event.",
+      "plane": "parallel-approval",
+      "processId": "parallel-approval",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "finance-check"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Finance Check\" has no timer boundary event.",
+      "plane": "parallel-approval",
+      "processId": "parallel-approval",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Request Submitted\" has no documentation describing expected input variables.",
+      "plane": "parallel-approval",
+      "processId": "parallel-approval",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "finalize"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Finalize Request\" (serviceTask) has no zeebe:taskDefinition type.",
+      "plane": "parallel-approval",
+      "processId": "parallel-approval",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 6
+}

@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["error","Err1",{"code":"E_CODE","name":"Named error"}],
+		["startEvent","s"],
+		["endEvent","e",{"errorCode":"E_CODE"}],
+		["build"]
+	]
+}

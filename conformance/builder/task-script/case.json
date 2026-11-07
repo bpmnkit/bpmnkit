@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["scriptTask","calc",{"name":"Calc","expression":"=a + b","resultVariable":"sum"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

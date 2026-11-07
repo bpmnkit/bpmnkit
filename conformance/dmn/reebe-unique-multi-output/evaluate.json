@@ -1,0 +1,29 @@
+[
+  {
+    "decision": "riskScore",
+    "context": {
+      "amount": {
+        "t": "number",
+        "v": "500"
+      }
+    }
+  },
+  {
+    "decision": "riskScore",
+    "context": {
+      "amount": {
+        "t": "number",
+        "v": "5000"
+      }
+    }
+  },
+  {
+    "decision": "riskScore",
+    "context": {
+      "amount": {
+        "t": "number",
+        "v": "50000"
+      }
+    }
+  }
+]

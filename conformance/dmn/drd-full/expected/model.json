@@ -1,0 +1,268 @@
+{
+  "associations": [
+    {
+      "id": "assoc1",
+      "sourceRef": "note",
+      "targetRef": "final"
+    },
+    {
+      "id": "assoc2",
+      "sourceRef": "note",
+      "targetRef": "intermediate"
+    }
+  ],
+  "businessKnowledgeModels": [
+    {
+      "authorityRequirements": [
+        {
+          "id": "ar6",
+          "requiredAuthority": "policy"
+        }
+      ],
+      "id": "bkm",
+      "knowledgeRequirements": [
+        {
+          "id": "kr2",
+          "requiredKnowledge": "bkm2"
+        }
+      ],
+      "name": "Scoring function"
+    },
+    {
+      "authorityRequirements": [],
+      "id": "bkm2",
+      "knowledgeRequirements": [],
+      "name": "Helper"
+    }
+  ],
+  "decisions": [
+    {
+      "authorityRequirements": [
+        {
+          "id": "ar1",
+          "requiredAuthority": "policy"
+        },
+        {
+          "id": "ar2",
+          "requiredDecision": "intermediate"
+        },
+        {
+          "id": "ar3",
+          "requiredInput": "applicant"
+        }
+      ],
+      "decisionTable": {
+        "hitPolicy": "FIRST",
+        "id": "dt_final",
+        "inputs": [
+          {
+            "id": "i_final",
+            "inputExpression": {
+              "id": "ie_final",
+              "text": "level",
+              "typeRef": "string"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o_final",
+            "name": "approved",
+            "typeRef": "boolean"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r_final",
+            "inputEntries": [
+              {
+                "id": "re_final",
+                "text": "\"high\""
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "ro_final",
+                "text": "false"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "final",
+      "informationRequirements": [
+        {
+          "id": "ir1",
+          "requiredDecision": "intermediate"
+        },
+        {
+          "id": "ir2",
+          "requiredInput": "applicant"
+        }
+      ],
+      "knowledgeRequirements": [
+        {
+          "id": "kr1",
+          "requiredKnowledge": "bkm"
+        }
+      ],
+      "name": "Final decision"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "id": "dt_int",
+        "inputs": [
+          {
+            "id": "i_int",
+            "inputExpression": {
+              "id": "ie_int",
+              "text": "applicant.age",
+              "typeRef": "number"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o_int",
+            "name": "level",
+            "typeRef": "string"
+          }
+        ],
+        "rules": []
+      },
+      "id": "intermediate",
+      "informationRequirements": [
+        {
+          "id": "ir3",
+          "requiredInput": "applicant"
+        }
+      ],
+      "knowledgeRequirements": [],
+      "name": "Intermediate"
+    }
+  ],
+  "diagram": {
+    "edges": [
+      {
+        "dmnElementRef": "ir1",
+        "waypoints": [
+          {
+            "x": 250,
+            "y": 300
+          },
+          {
+            "x": 250.75,
+            "y": 180
+          }
+        ]
+      },
+      {
+        "dmnElementRef": "ir2",
+        "waypoints": []
+      },
+      {
+        "dmnElementRef": "assoc1",
+        "waypoints": [
+          {
+            "x": 1,
+            "y": 0
+          },
+          {
+            "x": 0,
+            "y": 0
+          }
+        ]
+      }
+    ],
+    "shapes": [
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 160,
+          "y": 100
+        },
+        "dmnElementRef": "final"
+      },
+      {
+        "bounds": {
+          "height": 80.5,
+          "width": 100,
+          "x": -20.25,
+          "y": 300
+        },
+        "dmnElementRef": "intermediate"
+      },
+      {
+        "bounds": {
+          "height": 0,
+          "width": 0,
+          "x": 7,
+          "y": 16
+        },
+        "dmnElementRef": "applicant"
+      },
+      {
+        "bounds": {
+          "height": null,
+          "width": 0,
+          "x": 1.2345678901234569e+23,
+          "y": 1e-7
+        },
+        "dmnElementRef": "policy"
+      }
+    ]
+  },
+  "exporter": "Camunda Modeler",
+  "exporterVersion": "5.20.0",
+  "id": "Definitions_drd",
+  "inputData": [
+    {
+      "id": "applicant",
+      "name": "Applicant"
+    },
+    {
+      "id": "unnamed"
+    }
+  ],
+  "knowledgeSources": [
+    {
+      "authorityRequirements": [
+        {
+          "id": "ar4",
+          "requiredDecision": "intermediate"
+        },
+        {
+          "id": "ar5",
+          "requiredAuthority": "other"
+        }
+      ],
+      "id": "policy",
+      "name": "Lending policy"
+    },
+    {
+      "authorityRequirements": [],
+      "id": "other",
+      "name": "Other source"
+    }
+  ],
+  "modelerAttributes": {},
+  "name": "Full DRD",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "dc": "http://www.omg.org/spec/DMN/20180521/DC/",
+    "di": "http://www.omg.org/spec/DMN/20180521/DI/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/"
+  },
+  "textAnnotations": [
+    {
+      "id": "note",
+      "text": "Reviewed quarterly"
+    },
+    {
+      "id": "empty_note"
+    }
+  ]
+}

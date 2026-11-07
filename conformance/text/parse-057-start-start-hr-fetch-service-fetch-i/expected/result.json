@@ -1,0 +1,101 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "HR",
+            "type": "startEvent"
+          },
+          {
+            "id": "fetch",
+            "jobType": "fetch",
+            "name": "Fetch issues",
+            "type": "serviceTask"
+          },
+          {
+            "id": "done",
+            "name": "Done",
+            "type": "endEvent"
+          },
+          {
+            "id": "page",
+            "jobType": "page",
+            "name": "Create page",
+            "type": "serviceTask"
+          },
+          {
+            "id": "end",
+            "name": "Page created",
+            "type": "endEvent"
+          },
+          {
+            "id": "fetch_split",
+            "type": "parallelGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "fetch"
+          },
+          {
+            "from": "fetch_split",
+            "id": "Flow_2",
+            "to": "done"
+          },
+          {
+            "from": "fetch_split",
+            "id": "Flow_3",
+            "to": "page"
+          },
+          {
+            "from": "page",
+            "id": "Flow_4",
+            "to": "end"
+          },
+          {
+            "from": "fetch",
+            "id": "Flow_5",
+            "to": "fetch_split"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "split the flows out of \"fetch\" with and gateway \"fetch_split\""
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"start[\" is not closed; closed it where its name ends"
+    },
+    {
+      "line": 2,
+      "message": "\"end[\" is not closed; closed it where its name ends"
+    }
+  ],
+  "questions": [
+    {
+      "draft": "After \"Fetch issues\", ",
+      "elementId": "fetch_split",
+      "options": [
+        {
+          "change": "After \"Fetch issues\", only one of \"Done\" and \"Create page\" happens: decide which with an xor gateway.",
+          "label": "Only one of them"
+        },
+        {
+          "change": "After \"Fetch issues\", do \"Done\" and \"Create page\" one after the other, not at the same time.",
+          "label": "One after the other"
+        }
+      ],
+      "text": "After \"Fetch issues\", \"Done\" and \"Create page\" run at the same time. Is that right?"
+    }
+  ]
+}

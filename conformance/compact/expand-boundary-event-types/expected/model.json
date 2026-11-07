@@ -1,0 +1,401 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_P",
+      "plane": {
+        "bpmnElement": "P",
+        "edges": [
+          {
+            "bpmnElement": "f1",
+            "id": "f1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 87.5,
+                "y": 116
+              },
+              {
+                "x": 87.5,
+                "y": 136
+              },
+              {
+                "x": 130,
+                "y": 136
+              },
+              {
+                "x": 130,
+                "y": 58
+              },
+              {
+                "x": 160,
+                "y": 58
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f2",
+            "id": "f2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 12.5,
+                "y": 116
+              },
+              {
+                "x": 12.5,
+                "y": 176
+              },
+              {
+                "x": 160,
+                "y": 176
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_P",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 0,
+              "y": 18
+            },
+            "bpmnElement": "t",
+            "id": "t_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 69.5,
+              "y": 80
+            },
+            "bpmnElement": "b1",
+            "id": "b1_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": -5.5,
+              "y": 80
+            },
+            "bpmnElement": "b2",
+            "id": "b2_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 7,
+              "y": 80
+            },
+            "bpmnElement": "b3",
+            "id": "b3_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 19.5,
+              "y": 80
+            },
+            "bpmnElement": "b4",
+            "id": "b4_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 32,
+              "y": 0
+            },
+            "bpmnElement": "b5",
+            "id": "b5_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 32,
+              "y": 80
+            },
+            "bpmnElement": "b6",
+            "id": "b6_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 44.5,
+              "y": 80
+            },
+            "bpmnElement": "b7",
+            "id": "b7_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 57,
+              "y": 80
+            },
+            "bpmnElement": "b8",
+            "id": "b8_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 160,
+              "y": 40
+            },
+            "bpmnElement": "x1",
+            "id": "x1_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 160,
+              "y": 158
+            },
+            "bpmnElement": "x2",
+            "id": "x2_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "D",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "w"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "t",
+          "incoming": [],
+          "outgoing": [],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "t",
+          "cancelActivity": true,
+          "eventDefinitions": [
+            {
+              "id": "b1_TimerEventDefinition",
+              "timeDuration": "PT1H",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "b1",
+          "incoming": [],
+          "outgoing": [
+            "f1"
+          ],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "t",
+          "cancelActivity": true,
+          "eventDefinitions": [
+            {
+              "id": "b2_ErrorEventDefinition",
+              "type": "error"
+            }
+          ],
+          "extensionElements": [],
+          "id": "b2",
+          "incoming": [],
+          "outgoing": [
+            "f2"
+          ],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "t",
+          "cancelActivity": false,
+          "eventDefinitions": [
+            {
+              "id": "b3_MessageEventDefinition",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [],
+          "id": "b3",
+          "incoming": [],
+          "outgoing": [],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "t",
+          "cancelActivity": true,
+          "eventDefinitions": [
+            {
+              "id": "b4_SignalEventDefinition",
+              "type": "signal"
+            }
+          ],
+          "extensionElements": [],
+          "id": "b4",
+          "incoming": [],
+          "outgoing": [],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "t",
+          "cancelActivity": false,
+          "eventDefinitions": [
+            {
+              "id": "b5_EscalationEventDefinition",
+              "type": "escalation"
+            }
+          ],
+          "extensionElements": [],
+          "id": "b5",
+          "incoming": [],
+          "outgoing": [],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "t",
+          "cancelActivity": true,
+          "eventDefinitions": [
+            {
+              "id": "b6_CompensateEventDefinition",
+              "type": "compensate"
+            }
+          ],
+          "extensionElements": [],
+          "id": "b6",
+          "incoming": [],
+          "outgoing": [],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "t",
+          "cancelActivity": true,
+          "eventDefinitions": [
+            {
+              "condition": "= a",
+              "conditionAttributes": {
+                "xsi:type": "bpmn:tFormalExpression"
+              },
+              "id": "b7_ConditionalEventDefinition",
+              "type": "conditional"
+            }
+          ],
+          "extensionElements": [],
+          "id": "b7",
+          "incoming": [],
+          "outgoing": [],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "t",
+          "cancelActivity": true,
+          "eventDefinitions": [
+            {
+              "id": "b8_CancelEventDefinition",
+              "type": "cancel"
+            }
+          ],
+          "extensionElements": [],
+          "id": "b8",
+          "incoming": [],
+          "outgoing": [],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "x1",
+          "incoming": [
+            "f1"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "x2",
+          "incoming": [
+            "f2"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "P",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "f1",
+          "sourceRef": "b1",
+          "targetRef": "x1",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f2",
+          "sourceRef": "b2",
+          "targetRef": "x2",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

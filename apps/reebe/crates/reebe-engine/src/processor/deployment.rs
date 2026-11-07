@@ -1,12 +1,12 @@
-use std::sync::Arc;
+use super::{EventToWrite, RecordProcessor, Writers};
+use crate::engine::EngineState;
+use crate::error::{EngineError, EngineResult};
+use crate::key_gen::KeyGenerator;
 use async_trait::async_trait;
 use base64::Engine as Base64Engine;
 use reebe_db::records::DbRecord;
 use reebe_db::state::deployments::{Deployment, ProcessDefinition};
-use crate::engine::EngineState;
-use crate::error::{EngineError, EngineResult};
-use crate::key_gen::KeyGenerator;
-use super::{EventToWrite, RecordProcessor, Writers};
+use std::sync::Arc;
 
 pub struct DeploymentProcessor;
 
@@ -29,10 +29,7 @@ impl RecordProcessor for DeploymentProcessor {
         let payload = &record.payload;
 
         // Parse resources from payload
-        let resources = payload["resources"]
-            .as_array()
-            .cloned()
-            .unwrap_or_default();
+        let resources = payload["resources"].as_array().cloned().unwrap_or_default();
 
         // Insert deployment record
         let deployment = Deployment {
@@ -63,9 +60,13 @@ impl RecordProcessor for DeploymentProcessor {
 
             // A DMN resource has at least one decision. BPMN also parses without error
             // (same root element name) but yields zero decisions.
-            let drg = reebe_dmn::parse_dmn(&xml).ok().filter(|drg| !drg.decisions.is_empty());
+            let drg = reebe_dmn::parse_dmn(&xml)
+                .ok()
+                .filter(|drg| !drg.decisions.is_empty());
             let duplicate = match &drg {
-                Some(drg) => dmn::is_duplicate(state, drg, &resource_name, &xml, &tenant_id).await?,
+                Some(drg) => {
+                    dmn::is_duplicate(state, drg, &resource_name, &xml, &tenant_id).await?
+                }
                 None => false,
             };
             decoded.push((resource_name, xml, drg, duplicate));
@@ -76,14 +77,19 @@ impl RecordProcessor for DeploymentProcessor {
 
         for (resource_name, xml, drg, duplicate) in decoded {
             if let Some(drg) = drg {
-                let deployed = dmn::deploy(state, &key_gen, dmn::Resource {
-                    drg: &drg,
-                    resource_name: &resource_name,
-                    xml: &xml,
-                    tenant_id: &tenant_id,
-                    deployment_key,
-                    keep_latest: duplicate && duplicates_only,
-                }).await?;
+                let deployed = dmn::deploy(
+                    state,
+                    &key_gen,
+                    dmn::Resource {
+                        drg: &drg,
+                        resource_name: &resource_name,
+                        xml: &xml,
+                        tenant_id: &tenant_id,
+                        deployment_key,
+                        keep_latest: duplicate && duplicates_only,
+                    },
+                )
+                .await?;
                 deployed_drgs.push(deployed.drg);
                 deployed_decisions.extend(deployed.decisions);
                 continue;
@@ -97,16 +103,22 @@ impl RecordProcessor for DeploymentProcessor {
             for process in &deployment_obj.processes {
                 let errors = reebe_bpmn::validate_bpmn(process);
                 if !errors.is_empty() {
-                    let msg = errors.iter().map(|e| e.to_string()).collect::<Vec<_>>().join("; ");
+                    let msg = errors
+                        .iter()
+                        .map(|e| e.to_string())
+                        .collect::<Vec<_>>()
+                        .join("; ");
                     return Err(EngineError::BpmnParse(msg));
                 }
-                super::ad_hoc::check_from_ai_calls(&process.elements)
-                    .map_err(|message| EngineError::BpmnParse(format!("'{resource_name}': {message}")))?;
+                super::ad_hoc::check_from_ai_calls(&process.elements).map_err(|message| {
+                    EngineError::BpmnParse(format!("'{resource_name}': {message}"))
+                })?;
             }
 
             for process in &deployment_obj.processes {
                 // Get next version
-                let previous = state.backend
+                let previous = state
+                    .backend
                     .get_latest_process_definition(&process.id, &tenant_id)
                     .await
                     .ok();
@@ -130,13 +142,15 @@ impl RecordProcessor for DeploymentProcessor {
 
                 // Populate the in-memory cache with the parsed BPMN processes.
                 let cached_processes = deployment_obj.processes.clone();
-                state.process_def_cache.insert(crate::process_def_cache::CachedProcessDef {
-                    key: pd_key,
-                    bpmn_process_id: process.id.clone(),
-                    version,
-                    tenant_id: tenant_id.clone(),
-                    processes: std::sync::Arc::new(cached_processes),
-                });
+                state
+                    .process_def_cache
+                    .insert(crate::process_def_cache::CachedProcessDef {
+                        key: pd_key,
+                        bpmn_process_id: process.id.clone(),
+                        version,
+                        tenant_id: tenant_id.clone(),
+                        processes: std::sync::Arc::new(cached_processes),
+                    });
 
                 deployed_processes.push(serde_json::json!({
                     "processDefinitionKey": pd_key.to_string(),
@@ -175,11 +189,11 @@ impl RecordProcessor for DeploymentProcessor {
 
 /// DMN resources, versioned as Zeebe's `DmnResourceTransformer` versions them.
 mod dmn {
-    use reebe_db::state::decisions::{DecisionDefinition, DecisionRequirements};
-    use reebe_dmn::DmnDecisionRequirementsGraph;
     use crate::engine::EngineState;
     use crate::error::EngineResult;
     use crate::key_gen::KeyGenerator;
+    use reebe_db::state::decisions::{DecisionDefinition, DecisionRequirements};
+    use reebe_dmn::DmnDecisionRequirementsGraph;
 
     /// Whether the resource is the latest version of its decision requirements graph
     /// again: the same resource name and content, and every decision in it still has
@@ -191,14 +205,19 @@ mod dmn {
         xml: &str,
         tenant_id: &str,
     ) -> EngineResult<bool> {
-        let Some(latest) = state.backend.get_latest_decision_requirements(&drg.id, tenant_id).await? else {
+        let Some(latest) = state
+            .backend
+            .get_latest_decision_requirements(&drg.id, tenant_id)
+            .await?
+        else {
             return Ok(false);
         };
         if latest.resource_name != resource_name || latest.dmn_xml != xml {
             return Ok(false);
         }
         for decision in &drg.decisions {
-            let in_latest = state.backend
+            let in_latest = state
+                .backend
                 .get_latest_decision_definition(&decision.id, tenant_id)
                 .await?
                 .is_some_and(|d| d.decision_requirements_key == latest.key);
@@ -230,8 +249,15 @@ mod dmn {
 
     /// Store a new version of the graph and of each decision in it (the latest
     /// version plus one), or keep the latest versions of a duplicate.
-    pub(super) async fn deploy(state: &EngineState, key_gen: &KeyGenerator, r: Resource<'_>) -> EngineResult<Deployed> {
-        let latest_drg = state.backend.get_latest_decision_requirements(&r.drg.id, r.tenant_id).await?;
+    pub(super) async fn deploy(
+        state: &EngineState,
+        key_gen: &KeyGenerator,
+        r: Resource<'_>,
+    ) -> EngineResult<Deployed> {
+        let latest_drg = state
+            .backend
+            .get_latest_decision_requirements(&r.drg.id, r.tenant_id)
+            .await?;
         let drg = match latest_drg {
             Some(latest) if r.keep_latest => latest,
             latest => {
@@ -251,7 +277,10 @@ mod dmn {
         };
         let mut decisions = Vec::new();
         for decision in &r.drg.decisions {
-            let latest = state.backend.get_latest_decision_definition(&decision.id, r.tenant_id).await?;
+            let latest = state
+                .backend
+                .get_latest_decision_definition(&decision.id, r.tenant_id)
+                .await?;
             let deployed = match latest {
                 Some(latest) if r.keep_latest => latest,
                 latest => {

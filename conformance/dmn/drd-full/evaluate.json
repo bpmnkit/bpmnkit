@@ -1,0 +1,34 @@
+[
+  {
+    "decision": "final",
+    "context": {
+      "applicant": {
+        "t": "context",
+        "v": {
+          "age": {
+            "t": "number",
+            "v": "70"
+          }
+        }
+      }
+    }
+  },
+  {
+    "decision": "final",
+    "context": {
+      "applicant": {
+        "t": "context",
+        "v": {
+          "age": {
+            "t": "number",
+            "v": "20"
+          }
+        }
+      }
+    }
+  },
+  {
+    "decision": "intermediate",
+    "context": {}
+  }
+]

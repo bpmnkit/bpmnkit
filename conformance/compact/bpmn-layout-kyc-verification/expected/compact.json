@@ -1,0 +1,213 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "start",
+          "name": "Onboarding Started",
+          "type": "startEvent"
+        },
+        {
+          "formId": "identity-upload-form",
+          "id": "uploadDocument",
+          "name": "Upload Identity Document",
+          "type": "userTask"
+        },
+        {
+          "id": "verifyDocument",
+          "jobType": "io.camunda:http-json:1",
+          "name": "Verify Document via OCR",
+          "resultVariable": "ocrResponse",
+          "taskHeaders": {
+            "resultExpression": "=ocrResponse.body"
+          },
+          "type": "serviceTask"
+        },
+        {
+          "id": "documentQuality",
+          "name": "Document Verified?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "sanctionsScreening",
+          "jobType": "io.camunda:http-json:1",
+          "name": "Sanctions & PEP Screening",
+          "resultVariable": "screeningResponse",
+          "taskHeaders": {
+            "resultExpression": "=screeningResponse.body"
+          },
+          "type": "serviceTask"
+        },
+        {
+          "id": "riskRouting",
+          "name": "Risk Level?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "standardDueDiligence",
+          "jobType": "io.camunda:http-json:1",
+          "name": "Standard Due Diligence",
+          "resultVariable": "sddResponse",
+          "type": "serviceTask"
+        },
+        {
+          "formId": "compliance-edd-form",
+          "id": "enhancedDueDiligence",
+          "name": "Enhanced Due Diligence Review",
+          "type": "userTask"
+        },
+        {
+          "decisionId": "kyc-risk-classification",
+          "id": "finalRiskClassification",
+          "name": "Final Risk Classification",
+          "resultVariable": "riskClassification",
+          "type": "businessRuleTask"
+        },
+        {
+          "id": "classificationGateway",
+          "name": "Classification Outcome?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "notifyRejection",
+          "jobType": "email-sender",
+          "name": "Notify Rejection",
+          "taskHeaders": {
+            "template": "kyc-rejected"
+          },
+          "type": "serviceTask"
+        },
+        {
+          "id": "notifyApproval",
+          "jobType": "email-sender",
+          "name": "Notify Approval",
+          "taskHeaders": {
+            "template": "kyc-approved"
+          },
+          "type": "serviceTask"
+        },
+        {
+          "id": "endApproved",
+          "name": "Customer Approved",
+          "type": "endEvent"
+        },
+        {
+          "id": "endRejected",
+          "name": "Customer Rejected",
+          "type": "endEvent"
+        },
+        {
+          "id": "endEscalated",
+          "name": "Escalated to Compliance",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "start",
+          "id": "Flow_compact_1",
+          "to": "uploadDocument"
+        },
+        {
+          "from": "uploadDocument",
+          "id": "Flow_compact_2",
+          "to": "verifyDocument"
+        },
+        {
+          "from": "verifyDocument",
+          "id": "Flow_compact_3",
+          "to": "documentQuality"
+        },
+        {
+          "condition": "=ocrResponse.verified = false and (uploadRetries != null and uploadRetries < 2)",
+          "from": "documentQuality",
+          "id": "Flow_compact_4",
+          "name": "verification-failed-retry",
+          "to": "uploadDocument"
+        },
+        {
+          "condition": "=ocrResponse.verified = false and (uploadRetries = null or uploadRetries >= 2)",
+          "from": "documentQuality",
+          "id": "Flow_compact_5",
+          "name": "verification-failed-exhausted",
+          "to": "notifyRejection"
+        },
+        {
+          "condition": "=ocrResponse.verified = true",
+          "from": "documentQuality",
+          "id": "Flow_compact_6",
+          "name": "verification-passed",
+          "to": "sanctionsScreening"
+        },
+        {
+          "from": "sanctionsScreening",
+          "id": "Flow_compact_7",
+          "to": "riskRouting"
+        },
+        {
+          "condition": "=screeningResponse.riskLevel = \"low\"",
+          "from": "riskRouting",
+          "id": "Flow_compact_8",
+          "name": "standard-risk",
+          "to": "standardDueDiligence"
+        },
+        {
+          "condition": "=screeningResponse.riskLevel = \"high\" or screeningResponse.pepMatch = true",
+          "from": "riskRouting",
+          "id": "Flow_compact_9",
+          "name": "enhanced-risk",
+          "to": "enhancedDueDiligence"
+        },
+        {
+          "from": "standardDueDiligence",
+          "id": "Flow_compact_10",
+          "to": "finalRiskClassification"
+        },
+        {
+          "from": "enhancedDueDiligence",
+          "id": "Flow_compact_11",
+          "to": "finalRiskClassification"
+        },
+        {
+          "from": "finalRiskClassification",
+          "id": "Flow_compact_12",
+          "to": "classificationGateway"
+        },
+        {
+          "condition": "=riskClassification.outcome = \"approved\"",
+          "from": "classificationGateway",
+          "id": "Flow_compact_13",
+          "name": "approved",
+          "to": "notifyApproval"
+        },
+        {
+          "condition": "=riskClassification.outcome = \"rejected\"",
+          "from": "classificationGateway",
+          "id": "Flow_compact_14",
+          "name": "rejected",
+          "to": "notifyRejection"
+        },
+        {
+          "condition": "=riskClassification.outcome = \"escalate\"",
+          "from": "classificationGateway",
+          "id": "Flow_compact_15",
+          "name": "escalate",
+          "to": "endEscalated"
+        },
+        {
+          "from": "notifyApproval",
+          "id": "Flow_compact_16",
+          "to": "endApproved"
+        },
+        {
+          "from": "notifyRejection",
+          "id": "Flow_compact_17",
+          "to": "endRejected"
+        }
+      ],
+      "id": "KYCOnboarding",
+      "name": "KYC Customer Onboarding"
+    }
+  ]
+}

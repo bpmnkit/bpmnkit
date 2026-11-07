@@ -1,0 +1,78 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "eventType": "timer",
+            "id": "s",
+            "name": "S",
+            "timerDuration": "PT5M",
+            "type": "startEvent"
+          },
+          {
+            "id": "t",
+            "name": "Work",
+            "type": "task"
+          },
+          {
+            "eventType": "timer",
+            "id": "c",
+            "name": "Pause",
+            "timerDuration": "PT1H30M",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "t",
+            "eventType": "timer",
+            "id": "b",
+            "interrupting": false,
+            "name": "Late",
+            "timerDuration": "P2D",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "x",
+            "name": "X",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "id": "Flow_3",
+            "to": "e"
+          },
+          {
+            "from": "b",
+            "id": "Flow_4",
+            "to": "x"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 3 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

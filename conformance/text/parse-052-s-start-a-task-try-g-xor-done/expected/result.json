@@ -1,0 +1,89 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "a",
+            "name": "Try",
+            "type": "task"
+          },
+          {
+            "id": "g",
+            "name": "Done?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "g_end",
+            "name": "Process completed",
+            "type": "endEvent"
+          },
+          {
+            "id": "a_join",
+            "type": "exclusiveGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "a_join"
+          },
+          {
+            "from": "a",
+            "id": "Flow_2",
+            "to": "g"
+          },
+          {
+            "from": "g",
+            "id": "Flow_3",
+            "isDefault": true,
+            "name": "No",
+            "to": "a_join"
+          },
+          {
+            "condition": "= done = \"Otherwise\"",
+            "from": "g",
+            "id": "Flow_4",
+            "name": "Otherwise",
+            "to": "g_end"
+          },
+          {
+            "from": "a_join",
+            "id": "Flow_5",
+            "to": "a"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "added an exit from the loop at \"g\" to end event \"g_end\"",
+    "joined 2 flows into \"a\" with xor gateway \"a_join\"",
+    "gave g > g_end the condition \"= done = \"Otherwise\"\"",
+    "named 1 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": [
+    {
+      "draft": "Leave the loop at \"Done?\" when ",
+      "elementId": "g",
+      "options": [],
+      "text": "The loop at \"Done?\" had no way out, so one was added. When does it end?"
+    },
+    {
+      "draft": "At \"Done?\", decide on ",
+      "elementId": "g",
+      "options": [],
+      "text": "\"Done?\" decides on \"done\", a variable the diagram made up. What data decides it?"
+    }
+  ]
+}

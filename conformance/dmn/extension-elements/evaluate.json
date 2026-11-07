@@ -1,0 +1,33 @@
+[
+  {
+    "decision": "literal",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "4"
+      }
+    }
+  },
+  {
+    "decision": "with_extension",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "1"
+      }
+    }
+  },
+  {
+    "decision": "empty_extension",
+    "context": {}
+  },
+  {
+    "decision": "plain",
+    "context": {
+      "x": {
+        "t": "number",
+        "v": "1"
+      }
+    }
+  }
+]

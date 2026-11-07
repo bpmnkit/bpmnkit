@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "UserTask_HandleTimeout"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Handle Timeout\" has no zeebe:formDefinition.",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "TerminateEvent_ApplicationCanceledFraud"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Terminate end event \"Application canceled due to fraud\" needs Camunda 8.1 or newer; this model targets Camunda 8.0.",
+      "processId": "customer_onboarding_en",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.1 or newer (modeler:executionPlatformVersion), or remove it."
+    }
+  ]
+}

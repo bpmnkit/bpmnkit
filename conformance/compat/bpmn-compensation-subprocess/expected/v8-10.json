@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Tx"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Transaction \"Tx\" is not supported by any Camunda 8 version.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Model it with an element Camunda 8 executes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Adhoc"
+      ],
+      "fixable": false,
+      "id": "compat/ad-hoc-sub-process",
+      "message": "Ad-hoc sub-process \"Adhoc\" contains no activity.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Add at least one task or sub-process to it."
+    }
+  ]
+}

@@ -83,3 +83,37 @@ jobs:
       # built declarations against the committed snapshot.
       - name: Check the public API surface
         run: pnpm check:api
+
+      - name: conformance-ts
+        run: |
+          pnpm conformance:record
+          git diff --exit-code conformance/
+
+      # spec/ is the single source for shared data; generated TS and Rust may not drift from it.
+      - name: spec-gen
+        run: |
+          pnpm spec:gen
+          git diff --exit-code spec/ crates/bpmnkit-spec packages/
+
+  # The Rust crates: shared conformance cases plus the spec/ data crate.
+  conformance-rs:
+    name: Conformance (Rust)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+
+      - name: Format
+        run: cargo fmt --check
+
+      - name: Clippy
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+      - name: Test (conformance + spec data)
+        run: cargo test --workspace
+
+      - name: Crate metadata (crates.io)
+        run: node scripts/crates-publish.mjs --check

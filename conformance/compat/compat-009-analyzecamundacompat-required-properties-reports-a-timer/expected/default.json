@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "a"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer intermediate catch event \"a\" has no timer value; set one of timeDate, timeDuration.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Set when the timer fires."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "b"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer intermediate catch event \"b\" has timeDuration \"5 minutes\", which is not an ISO 8601 duration (PT15M).",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Write an ISO 8601 duration (PT15M), or a FEEL expression starting with \"=\"."
+    }
+  ]
+}

@@ -1,0 +1,93 @@
+{
+  "decisions": [
+    {
+      "hitPolicy": "UNIQUE",
+      "id": "discount",
+      "inputs": [
+        {
+          "expression": "amount",
+          "id": "discount_i0",
+          "label": "amount",
+          "typeRef": "number"
+        }
+      ],
+      "name": "discount",
+      "outputs": [
+        {
+          "id": "discount_o0",
+          "name": "percent",
+          "typeRef": "number"
+        }
+      ],
+      "rules": [
+        {
+          "id": "small",
+          "inputs": [
+            "< 100"
+          ],
+          "outputs": [
+            "0"
+          ]
+        },
+        {
+          "id": "medium",
+          "inputs": [
+            "[50..500]"
+          ],
+          "outputs": [
+            "5"
+          ]
+        },
+        {
+          "id": "large",
+          "inputs": [
+            "> 300"
+          ],
+          "outputs": [
+            "10"
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "UNIQUE",
+      "id": "same_output",
+      "inputs": [
+        {
+          "expression": "amount",
+          "id": "same_output_i0"
+        }
+      ],
+      "name": "same_output",
+      "outputs": [
+        {
+          "id": "same_output_o0",
+          "name": "v"
+        }
+      ],
+      "rules": [
+        {
+          "id": "same_a",
+          "inputs": [
+            "> 0"
+          ],
+          "outputs": [
+            "1"
+          ]
+        },
+        {
+          "id": "same_b",
+          "inputs": [
+            "> 0"
+          ],
+          "outputs": [
+            "1"
+          ]
+        }
+      ]
+    }
+  ],
+  "id": "unique-multiple-match",
+  "inputData": [],
+  "name": "unique-multiple-match"
+}

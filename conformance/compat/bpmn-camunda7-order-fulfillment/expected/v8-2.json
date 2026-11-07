@@ -1,0 +1,124 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_review"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Review order\" has no zeebe:formDefinition.",
+      "processId": "order-fulfillment",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_charge"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Charge payment\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_awaitPayment"
+      ],
+      "fixable": false,
+      "id": "compat/subscription",
+      "message": "Message \"PaymentConfirmed\" used by Receive task \"Await payment confirmation\" has no zeebe:subscription.",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Add a zeebe:subscription with a correlationKey to the message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_shippingCost"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Business rule task \"Determine shipping cost\" has no implementation; Camunda needs a zeebe:calledDecision or zeebe:taskDefinition.",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_invoice"
+      ],
+      "fixable": false,
+      "id": "compat/called-element",
+      "message": "Call activity \"Create invoice\" has no zeebe:calledElement processId.",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Set the id of the process to call."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_ship"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Ship order\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Timer_wait"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer intermediate catch event \"Wait for delivery window\" has timeDuration \"${deliveryWindow}\", which is not an ISO 8601 duration (PT15M).",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Write an ISO 8601 duration (PT15M), or a FEEL expression starting with \"=\"."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_summary"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Script task \"Build summary\" has no implementation; Camunda needs a zeebe:script or zeebe:taskDefinition.",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_notify"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Notify customer\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_escalate"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Escalate review\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+	"kind": "dmn",
+	"script": [
+		["drd","Bad"],
+		["$let","h20","inputData","age","Applicant Age"],
+		["$let","h21","decision","b",{"$ops":[["name","B"],["input",{"expression":"x"}],["output",{"name":"bOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]},{"requires":["Applicant Age"]}],
+		["build"]
+	]
+}

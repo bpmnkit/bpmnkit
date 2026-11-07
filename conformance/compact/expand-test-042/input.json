@@ -1,0 +1,22 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "id": "Process_1",
+      "name": "Order",
+      "elements": [
+        {
+          "id": "start",
+          "type": "startEvent",
+          "name": "Order Received"
+        },
+        {
+          "id": "ship",
+          "type": "serviceTask",
+          "name": "Ship Order"
+        }
+      ],
+      "flows": []
+    }
+  ]
+}

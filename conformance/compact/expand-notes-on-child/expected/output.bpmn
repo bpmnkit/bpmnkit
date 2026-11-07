@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="D" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="P" isExecutable="true">
+    <bpmn:subProcess id="sp">
+      <bpmn:startEvent id="is"/>
+    </bpmn:subProcess>
+    <bpmn:textAnnotation id="TextAnnotation_is_1">
+      <bpmn:text>inner</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_is_1" sourceRef="is" targetRef="TextAnnotation_is_1" associationDirection="None"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_P">
+    <bpmndi:BPMNPlane id="BPMNPlane_P" bpmnElement="P">
+      <bpmndi:BPMNShape id="sp_di" bpmnElement="sp" isExpanded="true">
+        <dc:Bounds x="32" y="60" width="136" height="136"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="is_di" bpmnElement="is">
+        <dc:Bounds x="82" y="110" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_is_1_di" bpmnElement="TextAnnotation_is_1">
+        <dc:Bounds x="0" y="0" width="200" height="30"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_is_1_di" bpmnElement="Association_is_1">
+        <di:waypoint x="100" y="110"/>
+        <di:waypoint x="100" y="30"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

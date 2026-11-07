@@ -1,0 +1,9 @@
+{
+	"kind": "dmn",
+	"script": [
+		["createDecisionTable","d"],
+		["output",{"name":"y"}],
+		["rule",{"inputs":[],"outputs":["\"const\""]}],
+		["build"]
+	]
+}

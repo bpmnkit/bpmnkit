@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["callActivity","c",{"processId":"child"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

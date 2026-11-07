@@ -1,0 +1,7 @@
+{
+	"chunks": [
+		"{\"flows\":[{\"id\":\"f\",\"from\":\"a\",\"to\":\"b\"}]}",
+		"{\"elements\":[{\"id\":\"a\",\"type\":\"task\"}]}",
+		"{\"elements\":[{\"id\":\"b\",\"type\":\"endEvent\"}]}"
+	]
+}

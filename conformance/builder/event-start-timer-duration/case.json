@@ -1,0 +1,9 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s",{"timerDuration":"PT1H","name":"Hourly"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

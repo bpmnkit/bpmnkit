@@ -1,8 +1,8 @@
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 use crate::pool::DbPool;
+use crate::{DbError, Result};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use crate::{Result, DbError};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ProcessInstance {
@@ -61,14 +61,12 @@ impl<'a> ProcessInstanceRepository<'a> {
         state: &str,
         end_date: Option<DateTime<Utc>>,
     ) -> Result<()> {
-        sqlx::query(
-            "UPDATE process_instances SET state = $1, end_date = $2 WHERE key = $3",
-        )
-        .bind(state)
-        .bind(end_date)
-        .bind(key)
-        .execute(self.pool)
-        .await?;
+        sqlx::query("UPDATE process_instances SET state = $1, end_date = $2 WHERE key = $3")
+            .bind(state)
+            .bind(end_date)
+            .bind(key)
+            .execute(self.pool)
+            .await?;
         Ok(())
     }
 

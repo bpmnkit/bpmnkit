@@ -1,0 +1,17 @@
+[package]
+name = "bpmnkit-spec"
+description = "BPMN Kit's single-source data (FEEL built-ins, lint rules, Camunda compatibility, connector templates, element definitions), generated from spec/"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["bpmn", "dmn", "camunda", "feel", "connectors"]
+categories = ["data-structures", "development-tools"]
+# Tests and benches read the shared corpus under ../../conformance, outside the package.
+exclude = ["tests/", "benches/"]
+
+[dev-dependencies]
+serde_json = { workspace = true }

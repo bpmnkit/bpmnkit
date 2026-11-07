@@ -1,0 +1,203 @@
+{
+  "report": {
+    "counts": {
+      "convertible": 9,
+      "manual": 8,
+      "unsupported": 2
+    },
+    "findings": [
+      {
+        "applied": false,
+        "construct": "camunda:historyTimeToLive",
+        "elementId": "claim-handling",
+        "elementType": "process",
+        "message": "Camunda 8 has no per-process history time to live (was \"P30D\").",
+        "processId": "claim-handling",
+        "severity": "unsupported",
+        "suggestion": "Configure data retention for the cluster (Operate, Tasklist and Optimize archiving)."
+      },
+      {
+        "applied": false,
+        "construct": "camunda:candidateStarterGroups",
+        "elementId": "claim-handling",
+        "elementType": "process",
+        "message": "Camunda 8 does not restrict who may start a process in the model.",
+        "processId": "claim-handling",
+        "severity": "unsupported",
+        "suggestion": "Grant CREATE_PROCESS_INSTANCE on the process definition through authorizations."
+      },
+      {
+        "applied": true,
+        "construct": "bpmn:userTask",
+        "elementId": "Task_assess",
+        "elementType": "userTask",
+        "message": "Implemented as a Camunda user task (zeebe:userTask).",
+        "processId": "claim-handling",
+        "severity": "convertible",
+        "suggestion": "zeebe:userTask"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:candidateUsers",
+        "elementId": "Task_assess",
+        "elementType": "userTask",
+        "message": "candidateUsers expression became \"=assessors\". Camunda 7 accepted a comma-separated string or a collection here; Camunda 8 requires a list of strings.",
+        "processId": "claim-handling",
+        "severity": "manual",
+        "suggestion": "Make sure the expression evaluates to a list of strings."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:formKey",
+        "elementId": "Task_assess",
+        "elementType": "userTask",
+        "message": "Form key \"embedded:app:forms/assess-claim.html\" became a custom form reference (zeebe:formDefinition externalReference).",
+        "processId": "claim-handling",
+        "severity": "manual",
+        "suggestion": "Tasklist does not render embedded HTML forms: rebuild it as a Camunda Form, or serve it from a custom task application that reads externalReference."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:properties",
+        "elementId": "Task_assess",
+        "elementType": "userTask",
+        "message": "Extension properties moved to zeebe:properties.",
+        "processId": "claim-handling",
+        "severity": "convertible",
+        "suggestion": "zeebe:properties"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:field",
+        "elementId": "Task_fraudCheck",
+        "elementType": "serviceTask",
+        "message": "Field injection \"threshold\" became a task header.",
+        "processId": "claim-handling",
+        "severity": "convertible",
+        "suggestion": "zeebe:taskHeaders — read it from the job's custom headers."
+      },
+      {
+        "applied": false,
+        "construct": "camunda:field",
+        "elementId": "Task_fraudCheck",
+        "elementType": "serviceTask",
+        "message": "Field injection \"region\" is an expression evaluated by the engine.",
+        "processId": "claim-handling",
+        "severity": "manual",
+        "suggestion": "Map the value with an input mapping and read it as a job variable."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:class",
+        "elementId": "Task_fraudCheck",
+        "elementType": "serviceTask",
+        "message": "Java delegate class \"com.acme.claims.FraudCheckDelegate\" runs inside the Camunda 7 engine; Camunda 8 runs no user code in the engine.",
+        "processId": "claim-handling",
+        "severity": "manual",
+        "suggestion": "Implement a job worker for type \"fraudCheckDelegate\" (written as zeebe:taskDefinition type; the original is kept as the \"class\" task header, which the Camunda 7 adapter pattern can dispatch on)."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:collection",
+        "elementId": "SubProcess_items",
+        "elementType": "subProcess",
+        "message": "Multi-instance over \"${claim.items}\" became zeebe:loopCharacteristics inputCollection=\"=claim.items\" inputElement=\"item\".",
+        "processId": "claim-handling",
+        "severity": "convertible",
+        "suggestion": "zeebe:loopCharacteristics"
+      },
+      {
+        "applied": true,
+        "construct": "completionCondition",
+        "elementId": "SubProcess_items",
+        "elementType": "subProcess",
+        "message": "Completion condition became \"=numberOfCompletedInstances / numberOfInstances >= 0.6\" (nrOf… variables renamed to numberOf…).",
+        "processId": "claim-handling",
+        "severity": "convertible",
+        "suggestion": "FEEL completion condition"
+      },
+      {
+        "applied": true,
+        "construct": "scriptFormat=\"feel\"",
+        "elementId": "Task_price",
+        "elementType": "scriptTask",
+        "message": "FEEL script became zeebe:script, result in \"itemPrice\".",
+        "processId": "claim-handling",
+        "severity": "convertible",
+        "suggestion": "zeebe:script"
+      },
+      {
+        "applied": false,
+        "construct": "camunda:connector",
+        "elementId": "Task_payout",
+        "elementType": "serviceTask",
+        "message": "Camunda 7 connector \"http-connector\" has no Camunda 8 equivalent with the same inputs.",
+        "processId": "claim-handling",
+        "severity": "manual",
+        "suggestion": "Use the Camunda 8 REST connector (io.camunda:http-json:1) and map its inputs."
+      },
+      {
+        "applied": false,
+        "construct": "camunda:inputParameter",
+        "elementId": "Task_payout",
+        "elementType": "serviceTask",
+        "message": "Input parameter \"note\" was not converted: text mixed with ${…} is string templating, which FEEL does not do implicitly.",
+        "processId": "claim-handling",
+        "severity": "manual",
+        "suggestion": "Write it as <zeebe:input source=\"=…\" target=\"note\"/> by hand."
+      },
+      {
+        "applied": false,
+        "construct": "camunda:inputParameter",
+        "elementId": "Task_payout",
+        "elementType": "serviceTask",
+        "message": "Input parameter \"audit\" was not converted: it is a groovy script.",
+        "processId": "claim-handling",
+        "severity": "manual",
+        "suggestion": "Write it as <zeebe:input source=\"=…\" target=\"audit\"/> by hand."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:inputOutput",
+        "elementId": "Task_payout",
+        "elementType": "serviceTask",
+        "message": "2 input/output parameters moved to zeebe:ioMapping, JUEL translated to FEEL.",
+        "processId": "claim-handling",
+        "severity": "convertible",
+        "suggestion": "zeebe:ioMapping"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:type=external",
+        "elementId": "EndEvent_paid",
+        "elementType": "endEvent",
+        "message": "External task topic \"notify-claimant\" became job type \"notify-claimant\".",
+        "processId": "claim-handling",
+        "severity": "convertible",
+        "suggestion": "zeebe:taskDefinition type — point the external task worker at the Camunda 8 job API with the same type."
+      },
+      {
+        "applied": false,
+        "construct": "camunda:executionListener",
+        "elementId": "EndEvent_fraud",
+        "elementType": "endEvent",
+        "message": "Execution listener on \"end\" (javascript script) runs Java or script code in the engine.",
+        "processId": "claim-handling",
+        "severity": "manual",
+        "suggestion": "Implement it as a job worker and declare it with zeebe:executionListeners (eventType=\"end\", type=\"<job type>\")."
+      },
+      {
+        "applied": true,
+        "construct": "modeler:executionPlatform",
+        "elementId": "Definitions_0d9c2xk",
+        "elementType": "definitions",
+        "message": "Execution platform set to Camunda Cloud 8.10.0 (was Camunda Platform).",
+        "processId": "",
+        "severity": "convertible",
+        "suggestion": "Camunda Modeler opens the file as a Camunda 8 diagram."
+      }
+    ],
+    "total": 19
+  },
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" id=\"Definitions_0d9c2xk\" targetNamespace=\"http://bpmn.io/schema/bpmn\" exporter=\"Camunda Modeler\" exporterVersion=\"5.28.0\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.10.0\">\n  <bpmn:message id=\"Message_ClaimSubmitted\" name=\"ClaimSubmitted\"/>\n  <bpmn:signal id=\"Signal_FraudAlert\" name=\"FraudAlert\"/>\n  <bpmn:process id=\"claim-handling\" camunda:candidateStarterGroups=\"claims\" camunda:historyTimeToLive=\"P30D\" name=\"Claim handling\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"StartEvent_claim\" name=\"Claim submitted\">\n      <bpmn:outgoing>Flow_toAssess</bpmn:outgoing>\n      <bpmn:messageEventDefinition id=\"MessageEventDefinition_start\" messageRef=\"Message_ClaimSubmitted\"/>\n    </bpmn:startEvent>\n    <bpmn:userTask id=\"Task_assess\" name=\"Assess claim\">\n      <bpmn:extensionElements>\n        <zeebe:userTask/>\n        <zeebe:assignmentDefinition candidateUsers=\"=assessors\"/>\n        <zeebe:formDefinition externalReference=\"embedded:app:forms/assess-claim.html\"/>\n        <zeebe:properties>\n          <zeebe:property name=\"sla\" value=\"PT4H\"/>\n        </zeebe:properties>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_toAssess</bpmn:incoming>\n      <bpmn:outgoing>Flow_toFraudCheck</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:serviceTask id=\"Task_fraudCheck\" name=\"Check for fraud\">\n      <bpmn:extensionElements>\n        <camunda:field name=\"region\" expression=\"${claim.region}\"/>\n        <zeebe:taskDefinition type=\"fraudCheckDelegate\"/>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"class\" value=\"com.acme.claims.FraudCheckDelegate\"/>\n          <zeebe:header key=\"threshold\" value=\"0.8\"/>\n        </zeebe:taskHeaders>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_toFraudCheck</bpmn:incoming>\n      <bpmn:outgoing>Flow_toReviewItems</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:subProcess id=\"SubProcess_items\" name=\"Review items\">\n      <bpmn:incoming>Flow_toReviewItems</bpmn:incoming>\n      <bpmn:outgoing>Flow_toPayout</bpmn:outgoing>\n      <bpmn:multiInstanceLoopCharacteristics>\n        <bpmn:extensionElements>\n          <zeebe:loopCharacteristics inputCollection=\"=claim.items\" inputElement=\"item\"/>\n        </bpmn:extensionElements>\n        <bpmn:completionCondition xsi:type=\"bpmn:tFormalExpression\">=numberOfCompletedInstances / numberOfInstances &gt;= 0.6</bpmn:completionCondition>\n      </bpmn:multiInstanceLoopCharacteristics>\n      <bpmn:startEvent id=\"StartEvent_item\">\n        <bpmn:outgoing>Flow_toPrice</bpmn:outgoing>\n      </bpmn:startEvent>\n      <bpmn:scriptTask id=\"Task_price\" name=\"Price item\">\n        <bpmn:extensionElements>\n          <zeebe:script expression=\"=item.quantity * item.unitPrice\" resultVariable=\"itemPrice\"/>\n        </bpmn:extensionElements>\n        <bpmn:incoming>Flow_toPrice</bpmn:incoming>\n        <bpmn:outgoing>Flow_toItemEnd</bpmn:outgoing>\n      </bpmn:scriptTask>\n      <bpmn:endEvent id=\"EndEvent_item\">\n        <bpmn:incoming>Flow_toItemEnd</bpmn:incoming>\n      </bpmn:endEvent>\n      <bpmn:sequenceFlow id=\"Flow_toPrice\" sourceRef=\"StartEvent_item\" targetRef=\"Task_price\"/>\n      <bpmn:sequenceFlow id=\"Flow_toItemEnd\" sourceRef=\"Task_price\" targetRef=\"EndEvent_item\"/>\n    </bpmn:subProcess>\n    <bpmn:serviceTask id=\"Task_payout\" name=\"Pay out claim\">\n      <bpmn:extensionElements>\n        <camunda:connector>\n          <camunda:inputOutput>\n            <camunda:inputParameter name=\"url\">https://payments.example.invalid/payouts</camunda:inputParameter>\n            <camunda:inputParameter name=\"method\">POST</camunda:inputParameter>\n          </camunda:inputOutput>\n          <camunda:connectorId>http-connector</camunda:connectorId>\n        </camunda:connector>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"note\">Paid for ${claim.id}</camunda:inputParameter>\n          <camunda:inputParameter name=\"audit\">\n            <camunda:script scriptFormat=\"groovy\">claim.audit.collect { it.id }</camunda:script>\n          </camunda:inputParameter>\n        </camunda:inputOutput>\n        <zeebe:ioMapping>\n          <zeebe:input source=\"={&quot;claimId&quot;: claim.id, &quot;currency&quot;: &quot;EUR&quot;}\" target=\"payout\"/>\n          <zeebe:input source=\"=[&quot;email&quot;, claim.preferredChannel]\" target=\"channels\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_toPayout</bpmn:incoming>\n      <bpmn:outgoing>Flow_toNotify</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"EndEvent_paid\" name=\"Claim paid\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"notify-claimant\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_toNotify</bpmn:incoming>\n      <bpmn:messageEventDefinition id=\"MessageEventDefinition_paid\"/>\n    </bpmn:endEvent>\n    <bpmn:boundaryEvent id=\"Signal_fraud\" name=\"Fraud alert\" attachedToRef=\"Task_assess\">\n      <bpmn:outgoing>Flow_toFraudEnd</bpmn:outgoing>\n      <bpmn:signalEventDefinition id=\"SignalEventDefinition_fraud\" signalRef=\"Signal_FraudAlert\"/>\n    </bpmn:boundaryEvent>\n    <bpmn:endEvent id=\"EndEvent_fraud\" name=\"Claim blocked\">\n      <bpmn:extensionElements>\n        <camunda:executionListener event=\"end\">\n          <camunda:script scriptFormat=\"javascript\">execution.setVariable(\"blocked\", true)</camunda:script>\n        </camunda:executionListener>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_toFraudEnd</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_toAssess\" sourceRef=\"StartEvent_claim\" targetRef=\"Task_assess\"/>\n    <bpmn:sequenceFlow id=\"Flow_toFraudCheck\" sourceRef=\"Task_assess\" targetRef=\"Task_fraudCheck\"/>\n    <bpmn:sequenceFlow id=\"Flow_toReviewItems\" sourceRef=\"Task_fraudCheck\" targetRef=\"SubProcess_items\"/>\n    <bpmn:sequenceFlow id=\"Flow_toPayout\" sourceRef=\"SubProcess_items\" targetRef=\"Task_payout\"/>\n    <bpmn:sequenceFlow id=\"Flow_toNotify\" sourceRef=\"Task_payout\" targetRef=\"EndEvent_paid\"/>\n    <bpmn:sequenceFlow id=\"Flow_toFraudEnd\" sourceRef=\"Signal_fraud\" targetRef=\"EndEvent_fraud\"/>\n  </bpmn:process>\n  <bpmndi:BPMNDiagram id=\"BPMNDiagram_1\">\n    <bpmndi:BPMNPlane id=\"BPMNPlane_1\" bpmnElement=\"claim-handling\">\n      <bpmndi:BPMNShape id=\"StartEvent_claim_di\" bpmnElement=\"StartEvent_claim\">\n        <dc:Bounds x=\"152\" y=\"182\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_assess_di\" bpmnElement=\"Task_assess\">\n        <dc:Bounds x=\"240\" y=\"160\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_fraudCheck_di\" bpmnElement=\"Task_fraudCheck\">\n        <dc:Bounds x=\"390\" y=\"160\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"SubProcess_items_di\" bpmnElement=\"SubProcess_items\" isExpanded=\"true\">\n        <dc:Bounds x=\"540\" y=\"100\" width=\"350\" height=\"200\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"StartEvent_item_di\" bpmnElement=\"StartEvent_item\">\n        <dc:Bounds x=\"572\" y=\"182\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_price_di\" bpmnElement=\"Task_price\">\n        <dc:Bounds x=\"660\" y=\"160\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"EndEvent_item_di\" bpmnElement=\"EndEvent_item\">\n        <dc:Bounds x=\"812\" y=\"182\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Task_payout_di\" bpmnElement=\"Task_payout\">\n        <dc:Bounds x=\"940\" y=\"160\" width=\"100\" height=\"80\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"EndEvent_paid_di\" bpmnElement=\"EndEvent_paid\">\n        <dc:Bounds x=\"1092\" y=\"182\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"EndEvent_fraud_di\" bpmnElement=\"EndEvent_fraud\">\n        <dc:Bounds x=\"352\" y=\"322\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNShape id=\"Signal_fraud_di\" bpmnElement=\"Signal_fraud\">\n        <dc:Bounds x=\"272\" y=\"222\" width=\"36\" height=\"36\"/>\n      </bpmndi:BPMNShape>\n      <bpmndi:BPMNEdge id=\"Flow_toAssess_di\" bpmnElement=\"Flow_toAssess\">\n        <di:waypoint x=\"188\" y=\"200\"/>\n        <di:waypoint x=\"240\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toFraudCheck_di\" bpmnElement=\"Flow_toFraudCheck\">\n        <di:waypoint x=\"340\" y=\"200\"/>\n        <di:waypoint x=\"390\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toReviewItems_di\" bpmnElement=\"Flow_toReviewItems\">\n        <di:waypoint x=\"490\" y=\"200\"/>\n        <di:waypoint x=\"540\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toPrice_di\" bpmnElement=\"Flow_toPrice\">\n        <di:waypoint x=\"608\" y=\"200\"/>\n        <di:waypoint x=\"660\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toItemEnd_di\" bpmnElement=\"Flow_toItemEnd\">\n        <di:waypoint x=\"760\" y=\"200\"/>\n        <di:waypoint x=\"812\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toPayout_di\" bpmnElement=\"Flow_toPayout\">\n        <di:waypoint x=\"890\" y=\"200\"/>\n        <di:waypoint x=\"940\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toNotify_di\" bpmnElement=\"Flow_toNotify\">\n        <di:waypoint x=\"1040\" y=\"200\"/>\n        <di:waypoint x=\"1092\" y=\"200\"/>\n      </bpmndi:BPMNEdge>\n      <bpmndi:BPMNEdge id=\"Flow_toFraudEnd_di\" bpmnElement=\"Flow_toFraudEnd\">\n        <di:waypoint x=\"290\" y=\"258\"/>\n        <di:waypoint x=\"290\" y=\"340\"/>\n        <di:waypoint x=\"352\" y=\"340\"/>\n      </bpmndi:BPMNEdge>\n    </bpmndi:BPMNPlane>\n  </bpmndi:BPMNDiagram>\n</bpmn:definitions>\n\n"
+}

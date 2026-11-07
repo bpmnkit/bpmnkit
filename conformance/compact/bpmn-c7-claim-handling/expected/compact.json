@@ -1,0 +1,116 @@
+{
+  "id": "Definitions_0d9c2xk",
+  "processes": [
+    {
+      "elements": [
+        {
+          "eventType": "message",
+          "id": "StartEvent_claim",
+          "name": "Claim submitted",
+          "type": "startEvent"
+        },
+        {
+          "id": "Task_assess",
+          "name": "Assess claim",
+          "type": "userTask"
+        },
+        {
+          "id": "Task_fraudCheck",
+          "name": "Check for fraud",
+          "type": "serviceTask"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "StartEvent_item",
+                "type": "startEvent"
+              },
+              {
+                "id": "Task_price",
+                "name": "Price item",
+                "type": "scriptTask"
+              },
+              {
+                "id": "EndEvent_item",
+                "type": "endEvent"
+              }
+            ],
+            "flows": [
+              {
+                "from": "StartEvent_item",
+                "id": "Flow_toPrice",
+                "to": "Task_price"
+              },
+              {
+                "from": "Task_price",
+                "id": "Flow_toItemEnd",
+                "to": "EndEvent_item"
+              }
+            ]
+          },
+          "id": "SubProcess_items",
+          "name": "Review items",
+          "type": "subProcess"
+        },
+        {
+          "id": "Task_payout",
+          "name": "Pay out claim",
+          "type": "serviceTask"
+        },
+        {
+          "eventType": "message",
+          "id": "EndEvent_paid",
+          "name": "Claim paid",
+          "type": "endEvent"
+        },
+        {
+          "attachedTo": "Task_assess",
+          "eventType": "signal",
+          "id": "Signal_fraud",
+          "name": "Fraud alert",
+          "type": "boundaryEvent"
+        },
+        {
+          "id": "EndEvent_fraud",
+          "name": "Claim blocked",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "StartEvent_claim",
+          "id": "Flow_toAssess",
+          "to": "Task_assess"
+        },
+        {
+          "from": "Task_assess",
+          "id": "Flow_toFraudCheck",
+          "to": "Task_fraudCheck"
+        },
+        {
+          "from": "Task_fraudCheck",
+          "id": "Flow_toReviewItems",
+          "to": "SubProcess_items"
+        },
+        {
+          "from": "SubProcess_items",
+          "id": "Flow_toPayout",
+          "to": "Task_payout"
+        },
+        {
+          "from": "Task_payout",
+          "id": "Flow_toNotify",
+          "to": "EndEvent_paid"
+        },
+        {
+          "from": "Signal_fraud",
+          "id": "Flow_toFraudEnd",
+          "to": "EndEvent_fraud"
+        }
+      ],
+      "id": "claim-handling",
+      "name": "Claim handling"
+    }
+  ]
+}

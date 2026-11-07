@@ -58,7 +58,10 @@ impl<'a> CompensationSubscriptionRepository<'a> {
         Ok(())
     }
 
-    pub async fn get_by_process_instance(&self, process_instance_key: i64) -> Result<Vec<CompensationSubscription>> {
+    pub async fn get_by_process_instance(
+        &self,
+        process_instance_key: i64,
+    ) -> Result<Vec<CompensationSubscription>> {
         let rows = sqlx::query(
             r#"SELECT key, process_instance_key, compensable_activity_id, compensable_activity_instance_key,
                       compensable_activity_scope_key, compensation_handler_id, throw_event_instance_key,

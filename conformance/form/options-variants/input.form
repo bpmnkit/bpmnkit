@@ -1,0 +1,101 @@
+{
+  "id": "f",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "type": "select",
+      "id": "a",
+      "label": "A",
+      "key": "a",
+      "values": []
+    },
+    {
+      "type": "select",
+      "id": "b",
+      "label": "B",
+      "key": "b",
+      "valuesKey": "src",
+      "values": [
+        {
+          "label": "x",
+          "value": "y",
+          "extra": 1
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "c",
+      "label": "C",
+      "key": "c",
+      "values": [
+        {
+          "label": 1,
+          "value": true
+        },
+        {
+          "value": null
+        },
+        {
+          "label": [
+            1,
+            [
+              2,
+              null
+            ]
+          ],
+          "value": {
+            "a": 1
+          }
+        },
+        [
+          "arr"
+        ]
+      ]
+    },
+    {
+      "type": "radio",
+      "id": "d",
+      "label": "D",
+      "key": "d",
+      "values": [
+        {
+          "label": "Yes",
+          "value": "1"
+        },
+        {
+          "label": "No",
+          "value": "0"
+        }
+      ],
+      "valuesExpression": "=expr"
+    },
+    {
+      "type": "checklist",
+      "id": "e",
+      "label": "E",
+      "key": "e",
+      "valuesExpression": "=list"
+    },
+    {
+      "type": "taglist",
+      "id": "f",
+      "label": "F",
+      "key": "f",
+      "values": [
+        {
+          "label": "α",
+          "value": "β"
+        }
+      ]
+    },
+    {
+      "type": "select",
+      "id": "g",
+      "label": "G",
+      "key": "g",
+      "values": "not-an-array"
+    }
+  ]
+}

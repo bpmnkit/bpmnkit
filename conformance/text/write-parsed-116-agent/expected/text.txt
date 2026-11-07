@@ -1,0 +1,5 @@
+# Agent
+ask[start Question asked] > agent[adhoc Answer with tools] > review[user Review answer] > done[end Answered]
+users[service Look up users | inside=agent job=users]
+doc users: Returns the list of sample users
+note agent: Picks a tool by its description

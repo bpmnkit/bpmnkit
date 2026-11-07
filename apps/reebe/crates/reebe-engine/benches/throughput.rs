@@ -52,7 +52,11 @@ async fn setup() -> Option<(DbPool, EngineHandle)> {
     .ok()?;
     reebe_db::pool::run_migrations(&pool).await.ok()?;
 
-    let (engine, handle) = Engine::new(Arc::new(SqlxBackend::new(pool.clone())), 1, Arc::new(RealClock));
+    let (engine, handle) = Engine::new(
+        Arc::new(SqlxBackend::new(pool.clone())),
+        1,
+        Arc::new(RealClock),
+    );
     tokio::spawn(Arc::new(engine).run());
 
     // Deploy the benchmark process once.

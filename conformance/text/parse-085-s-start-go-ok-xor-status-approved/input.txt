@@ -1,0 +1,3 @@
+s[start Go] > ok[xor Status approved?]
+ok >(Yes: it is fine) a[task Ship]
+ok >(No) b[task Cancel]

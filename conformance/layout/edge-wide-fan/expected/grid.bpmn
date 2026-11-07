@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="P" isExecutable="true">
+    <bpmn:startEvent id="S" name="Start">
+      <bpmn:outgoing>f0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:parallelGateway id="G">
+      <bpmn:incoming>f0</bpmn:incoming>
+      <bpmn:outgoing>a0</bpmn:outgoing>
+      <bpmn:outgoing>a1</bpmn:outgoing>
+      <bpmn:outgoing>a2</bpmn:outgoing>
+      <bpmn:outgoing>a3</bpmn:outgoing>
+      <bpmn:outgoing>a4</bpmn:outgoing>
+      <bpmn:outgoing>a5</bpmn:outgoing>
+      <bpmn:outgoing>a6</bpmn:outgoing>
+      <bpmn:outgoing>a7</bpmn:outgoing>
+      <bpmn:outgoing>skip</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:task id="T0" name="Task 0">
+      <bpmn:incoming>a0</bpmn:incoming>
+      <bpmn:outgoing>b0</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T1" name="Task 1">
+      <bpmn:incoming>a1</bpmn:incoming>
+      <bpmn:outgoing>b1</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T2" name="Task 2">
+      <bpmn:incoming>a2</bpmn:incoming>
+      <bpmn:outgoing>b2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T3" name="Task 3">
+      <bpmn:incoming>a3</bpmn:incoming>
+      <bpmn:outgoing>b3</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T4" name="Task 4">
+      <bpmn:incoming>a4</bpmn:incoming>
+      <bpmn:outgoing>b4</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T5" name="Task 5">
+      <bpmn:incoming>a5</bpmn:incoming>
+      <bpmn:outgoing>b5</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T6" name="Task 6">
+      <bpmn:incoming>a6</bpmn:incoming>
+      <bpmn:outgoing>b6</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="T7" name="Task 7">
+      <bpmn:incoming>a7</bpmn:incoming>
+      <bpmn:outgoing>b7</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:parallelGateway id="J">
+      <bpmn:incoming>b0</bpmn:incoming>
+      <bpmn:incoming>b1</bpmn:incoming>
+      <bpmn:incoming>b2</bpmn:incoming>
+      <bpmn:incoming>b3</bpmn:incoming>
+      <bpmn:incoming>b4</bpmn:incoming>
+      <bpmn:incoming>b5</bpmn:incoming>
+      <bpmn:incoming>b6</bpmn:incoming>
+      <bpmn:incoming>b7</bpmn:incoming>
+      <bpmn:incoming>skip</bpmn:incoming>
+      <bpmn:outgoing>fe</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:endEvent id="E" name="End">
+      <bpmn:incoming>fe</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f0" sourceRef="S" targetRef="G"/>
+    <bpmn:sequenceFlow id="a0" sourceRef="G" targetRef="T0"/>
+    <bpmn:sequenceFlow id="b0" sourceRef="T0" targetRef="J"/>
+    <bpmn:sequenceFlow id="a1" sourceRef="G" targetRef="T1"/>
+    <bpmn:sequenceFlow id="b1" sourceRef="T1" targetRef="J"/>
+    <bpmn:sequenceFlow id="a2" sourceRef="G" targetRef="T2"/>
+    <bpmn:sequenceFlow id="b2" sourceRef="T2" targetRef="J"/>
+    <bpmn:sequenceFlow id="a3" sourceRef="G" targetRef="T3"/>
+    <bpmn:sequenceFlow id="b3" sourceRef="T3" targetRef="J"/>
+    <bpmn:sequenceFlow id="a4" sourceRef="G" targetRef="T4"/>
+    <bpmn:sequenceFlow id="b4" sourceRef="T4" targetRef="J"/>
+    <bpmn:sequenceFlow id="a5" sourceRef="G" targetRef="T5"/>
+    <bpmn:sequenceFlow id="b5" sourceRef="T5" targetRef="J"/>
+    <bpmn:sequenceFlow id="a6" sourceRef="G" targetRef="T6"/>
+    <bpmn:sequenceFlow id="b6" sourceRef="T6" targetRef="J"/>
+    <bpmn:sequenceFlow id="a7" sourceRef="G" targetRef="T7"/>
+    <bpmn:sequenceFlow id="b7" sourceRef="T7" targetRef="J"/>
+    <bpmn:sequenceFlow id="fe" sourceRef="J" targetRef="E"/>
+    <bpmn:sequenceFlow id="skip" sourceRef="G" targetRef="J"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="P">
+      <bpmndi:BPMNShape id="S_di" bpmnElement="S">
+        <dc:Bounds x="22" y="42" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="20" y="82" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="G_di" bpmnElement="G">
+        <dc:Bounds x="165" y="35" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T0_di" bpmnElement="T0">
+        <dc:Bounds x="290" y="20" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="J_di" bpmnElement="J">
+        <dc:Bounds x="465" y="35" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_di" bpmnElement="E">
+        <dc:Bounds x="622" y="42" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="620" y="82" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T1_di" bpmnElement="T1">
+        <dc:Bounds x="290" y="160" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T2_di" bpmnElement="T2">
+        <dc:Bounds x="290" y="300" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T3_di" bpmnElement="T3">
+        <dc:Bounds x="290" y="440" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T4_di" bpmnElement="T4">
+        <dc:Bounds x="290" y="580" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T5_di" bpmnElement="T5">
+        <dc:Bounds x="290" y="720" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T6_di" bpmnElement="T6">
+        <dc:Bounds x="290" y="860" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T7_di" bpmnElement="T7">
+        <dc:Bounds x="290" y="1000" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f0_di" bpmnElement="f0">
+        <di:waypoint x="58" y="60"/>
+        <di:waypoint x="165" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="a0_di" bpmnElement="a0">
+        <di:waypoint x="215" y="60"/>
+        <di:waypoint x="290" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="a1_di" bpmnElement="a1">
+        <di:waypoint x="190" y="85"/>
+        <di:waypoint x="190" y="200"/>
+        <di:waypoint x="290" y="200"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="a2_di" bpmnElement="a2">
+        <di:waypoint x="190" y="85"/>
+        <di:waypoint x="190" y="340"/>
+        <di:waypoint x="290" y="340"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="a3_di" bpmnElement="a3">
+        <di:waypoint x="190" y="85"/>
+        <di:waypoint x="190" y="480"/>
+        <di:waypoint x="290" y="480"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="a4_di" bpmnElement="a4">
+        <di:waypoint x="190" y="85"/>
+        <di:waypoint x="190" y="620"/>
+        <di:waypoint x="290" y="620"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="a5_di" bpmnElement="a5">
+        <di:waypoint x="190" y="85"/>
+        <di:waypoint x="190" y="760"/>
+        <di:waypoint x="290" y="760"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="a6_di" bpmnElement="a6">
+        <di:waypoint x="190" y="85"/>
+        <di:waypoint x="190" y="900"/>
+        <di:waypoint x="290" y="900"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="a7_di" bpmnElement="a7">
+        <di:waypoint x="190" y="85"/>
+        <di:waypoint x="190" y="1040"/>
+        <di:waypoint x="290" y="1040"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="skip_di" bpmnElement="skip">
+        <di:waypoint x="190" y="85"/>
+        <di:waypoint x="190" y="130"/>
+        <di:waypoint x="490" y="130"/>
+        <di:waypoint x="490" y="85"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="b0_di" bpmnElement="b0">
+        <di:waypoint x="390" y="60"/>
+        <di:waypoint x="465" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="b1_di" bpmnElement="b1">
+        <di:waypoint x="390" y="200"/>
+        <di:waypoint x="490" y="200"/>
+        <di:waypoint x="490" y="85"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="b2_di" bpmnElement="b2">
+        <di:waypoint x="390" y="340"/>
+        <di:waypoint x="490" y="340"/>
+        <di:waypoint x="490" y="85"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="b3_di" bpmnElement="b3">
+        <di:waypoint x="390" y="480"/>
+        <di:waypoint x="490" y="480"/>
+        <di:waypoint x="490" y="85"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="b4_di" bpmnElement="b4">
+        <di:waypoint x="390" y="620"/>
+        <di:waypoint x="490" y="620"/>
+        <di:waypoint x="490" y="85"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="b5_di" bpmnElement="b5">
+        <di:waypoint x="390" y="760"/>
+        <di:waypoint x="490" y="760"/>
+        <di:waypoint x="490" y="85"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="b6_di" bpmnElement="b6">
+        <di:waypoint x="390" y="900"/>
+        <di:waypoint x="490" y="900"/>
+        <di:waypoint x="490" y="85"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="b7_di" bpmnElement="b7">
+        <di:waypoint x="390" y="1040"/>
+        <di:waypoint x="490" y="1040"/>
+        <di:waypoint x="490" y="85"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="fe_di" bpmnElement="fe">
+        <di:waypoint x="515" y="60"/>
+        <di:waypoint x="622" y="60"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

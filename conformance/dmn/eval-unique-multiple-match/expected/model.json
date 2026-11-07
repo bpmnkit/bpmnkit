@@ -1,0 +1,150 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "UNIQUE",
+        "id": "discount_t",
+        "inputs": [
+          {
+            "id": "discount_i0",
+            "inputExpression": {
+              "id": "discount_ie0",
+              "text": "amount",
+              "typeRef": "number"
+            },
+            "label": "amount"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "discount_o0",
+            "name": "percent",
+            "typeRef": "number"
+          }
+        ],
+        "rules": [
+          {
+            "id": "small",
+            "inputEntries": [
+              {
+                "id": "small_i0",
+                "text": "< 100"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "small_o0",
+                "text": "0"
+              }
+            ]
+          },
+          {
+            "id": "medium",
+            "inputEntries": [
+              {
+                "id": "medium_i0",
+                "text": "[50..500]"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "medium_o0",
+                "text": "5"
+              }
+            ]
+          },
+          {
+            "id": "large",
+            "inputEntries": [
+              {
+                "id": "large_i0",
+                "text": "> 300"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "large_o0",
+                "text": "10"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "discount",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "discount"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "UNIQUE",
+        "id": "same_output_t",
+        "inputs": [
+          {
+            "id": "same_output_i0",
+            "inputExpression": {
+              "id": "same_output_ie0",
+              "text": "amount"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "same_output_o0",
+            "name": "v"
+          }
+        ],
+        "rules": [
+          {
+            "id": "same_a",
+            "inputEntries": [
+              {
+                "id": "same_a_i0",
+                "text": "> 0"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "same_a_o0",
+                "text": "1"
+              }
+            ]
+          },
+          {
+            "id": "same_b",
+            "inputEntries": [
+              {
+                "id": "same_b_i0",
+                "text": "> 0"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "same_b_o0",
+                "text": "1"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "same_output",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "same_output"
+    }
+  ],
+  "id": "unique-multiple-match",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "unique-multiple-match",
+  "namespace": "http://bpmnkit.com/conformance",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/"
+  },
+  "textAnnotations": []
+}

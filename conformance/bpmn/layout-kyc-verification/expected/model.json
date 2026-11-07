@@ -1,0 +1,543 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "start",
+          "incoming": [],
+          "name": "Onboarding Started",
+          "outgoing": [
+            "Flow_compact_1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "formId": "identity-upload-form"
+              },
+              "children": [],
+              "name": "zeebe:formDefinition"
+            }
+          ],
+          "id": "uploadDocument",
+          "incoming": [
+            "Flow_compact_1",
+            "Flow_compact_4"
+          ],
+          "name": "Upload Identity Document",
+          "outgoing": [
+            "Flow_compact_2"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "io.camunda:http-json:1"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "resultVariable",
+                    "value": "ocrResponse"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                },
+                {
+                  "attributes": {
+                    "key": "resultExpression",
+                    "value": "=ocrResponse.body"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            }
+          ],
+          "id": "verifyDocument",
+          "incoming": [
+            "Flow_compact_2"
+          ],
+          "name": "Verify Document via OCR",
+          "outgoing": [
+            "Flow_compact_3"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "documentQuality",
+          "incoming": [
+            "Flow_compact_3"
+          ],
+          "name": "Document Verified?",
+          "outgoing": [
+            "Flow_compact_4",
+            "Flow_compact_5",
+            "Flow_compact_6"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "io.camunda:http-json:1"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "resultVariable",
+                    "value": "screeningResponse"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                },
+                {
+                  "attributes": {
+                    "key": "resultExpression",
+                    "value": "=screeningResponse.body"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            }
+          ],
+          "id": "sanctionsScreening",
+          "incoming": [
+            "Flow_compact_6"
+          ],
+          "name": "Sanctions & PEP Screening",
+          "outgoing": [
+            "Flow_compact_7"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "riskRouting",
+          "incoming": [
+            "Flow_compact_7"
+          ],
+          "name": "Risk Level?",
+          "outgoing": [
+            "Flow_compact_8",
+            "Flow_compact_9"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "io.camunda:http-json:1"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "resultVariable",
+                    "value": "sddResponse"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            }
+          ],
+          "id": "standardDueDiligence",
+          "incoming": [
+            "Flow_compact_8"
+          ],
+          "name": "Standard Due Diligence",
+          "outgoing": [
+            "Flow_compact_10"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "formId": "compliance-edd-form"
+              },
+              "children": [],
+              "name": "zeebe:formDefinition"
+            }
+          ],
+          "id": "enhancedDueDiligence",
+          "incoming": [
+            "Flow_compact_9"
+          ],
+          "name": "Enhanced Due Diligence Review",
+          "outgoing": [
+            "Flow_compact_11"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "decisionId": "kyc-risk-classification",
+                "resultVariable": "riskClassification"
+              },
+              "children": [],
+              "name": "zeebe:calledDecision"
+            }
+          ],
+          "id": "finalRiskClassification",
+          "incoming": [
+            "Flow_compact_10",
+            "Flow_compact_11"
+          ],
+          "name": "Final Risk Classification",
+          "outgoing": [
+            "Flow_compact_12"
+          ],
+          "type": "businessRuleTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "classificationGateway",
+          "incoming": [
+            "Flow_compact_12"
+          ],
+          "name": "Classification Outcome?",
+          "outgoing": [
+            "Flow_compact_13",
+            "Flow_compact_14",
+            "Flow_compact_15"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "email-sender"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "template",
+                    "value": "kyc-rejected"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            }
+          ],
+          "id": "notifyRejection",
+          "incoming": [
+            "Flow_compact_5",
+            "Flow_compact_14"
+          ],
+          "name": "Notify Rejection",
+          "outgoing": [
+            "Flow_compact_17"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "email-sender"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "key": "template",
+                    "value": "kyc-approved"
+                  },
+                  "children": [],
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            }
+          ],
+          "id": "notifyApproval",
+          "incoming": [
+            "Flow_compact_13"
+          ],
+          "name": "Notify Approval",
+          "outgoing": [
+            "Flow_compact_16"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "endApproved",
+          "incoming": [
+            "Flow_compact_16"
+          ],
+          "name": "Customer Approved",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "endRejected",
+          "incoming": [
+            "Flow_compact_17"
+          ],
+          "name": "Customer Rejected",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "endEscalated",
+          "incoming": [
+            "Flow_compact_15"
+          ],
+          "name": "Escalated to Compliance",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "KYCOnboarding",
+      "isExecutable": true,
+      "name": "KYC Customer Onboarding",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_compact_1",
+          "sourceRef": "start",
+          "targetRef": "uploadDocument",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_compact_2",
+          "sourceRef": "uploadDocument",
+          "targetRef": "verifyDocument",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_compact_3",
+          "sourceRef": "verifyDocument",
+          "targetRef": "documentQuality",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {},
+            "text": "=ocrResponse.verified = false and (uploadRetries != null and uploadRetries < 2)"
+          },
+          "extensionElements": [],
+          "id": "Flow_compact_4",
+          "name": "verification-failed-retry",
+          "sourceRef": "documentQuality",
+          "targetRef": "uploadDocument",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {},
+            "text": "=ocrResponse.verified = false and (uploadRetries = null or uploadRetries >= 2)"
+          },
+          "extensionElements": [],
+          "id": "Flow_compact_5",
+          "name": "verification-failed-exhausted",
+          "sourceRef": "documentQuality",
+          "targetRef": "notifyRejection",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {},
+            "text": "=ocrResponse.verified = true"
+          },
+          "extensionElements": [],
+          "id": "Flow_compact_6",
+          "name": "verification-passed",
+          "sourceRef": "documentQuality",
+          "targetRef": "sanctionsScreening",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_compact_7",
+          "sourceRef": "sanctionsScreening",
+          "targetRef": "riskRouting",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {},
+            "text": "=screeningResponse.riskLevel = \"low\""
+          },
+          "extensionElements": [],
+          "id": "Flow_compact_8",
+          "name": "standard-risk",
+          "sourceRef": "riskRouting",
+          "targetRef": "standardDueDiligence",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {},
+            "text": "=screeningResponse.riskLevel = \"high\" or screeningResponse.pepMatch = true"
+          },
+          "extensionElements": [],
+          "id": "Flow_compact_9",
+          "name": "enhanced-risk",
+          "sourceRef": "riskRouting",
+          "targetRef": "enhancedDueDiligence",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_compact_10",
+          "sourceRef": "standardDueDiligence",
+          "targetRef": "finalRiskClassification",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_compact_11",
+          "sourceRef": "enhancedDueDiligence",
+          "targetRef": "finalRiskClassification",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_compact_12",
+          "sourceRef": "finalRiskClassification",
+          "targetRef": "classificationGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {},
+            "text": "=riskClassification.outcome = \"approved\""
+          },
+          "extensionElements": [],
+          "id": "Flow_compact_13",
+          "name": "approved",
+          "sourceRef": "classificationGateway",
+          "targetRef": "notifyApproval",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {},
+            "text": "=riskClassification.outcome = \"rejected\""
+          },
+          "extensionElements": [],
+          "id": "Flow_compact_14",
+          "name": "rejected",
+          "sourceRef": "classificationGateway",
+          "targetRef": "notifyRejection",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {},
+            "text": "=riskClassification.outcome = \"escalate\""
+          },
+          "extensionElements": [],
+          "id": "Flow_compact_15",
+          "name": "escalate",
+          "sourceRef": "classificationGateway",
+          "targetRef": "endEscalated",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_compact_16",
+          "sourceRef": "notifyApproval",
+          "targetRef": "endApproved",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_compact_17",
+          "sourceRef": "notifyRejection",
+          "targetRef": "endRejected",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

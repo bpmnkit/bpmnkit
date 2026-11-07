@@ -1,0 +1,20 @@
+{
+  "aliases": {
+    "approved": "Gateway_approved",
+    "await_payment_confirmation": "Task_awaitPayment",
+    "boundary_3_days": "Timer_reviewOverdue",
+    "build_summary": "Task_summary",
+    "charge_payment": "Task_charge",
+    "create_invoice": "Task_invoice",
+    "determine_shipping_cost": "Task_shippingCost",
+    "escalate_review": "Task_escalate",
+    "escalated": "EndEvent_escalated",
+    "notify_customer": "Task_notify",
+    "order_fulfilled": "EndEvent_done",
+    "order_received": "StartEvent_order",
+    "order_rejected": "EndEvent_rejected",
+    "review_order": "Task_review",
+    "ship_order": "Task_ship",
+    "wait_for_delivery_window": "Timer_wait"
+  }
+}

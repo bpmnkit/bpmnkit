@@ -1,0 +1,1 @@
+expand expects a CompactDiagram, received one whose processes[0] has no elements and flows arrays.
