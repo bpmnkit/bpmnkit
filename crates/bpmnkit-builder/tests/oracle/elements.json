@@ -1,0 +1,1224 @@
+{
+	"cases": [
+		{
+			"name": "service minimal",
+			"steps": [
+				{
+					"method": "serviceTask",
+					"id": "t",
+					"args": [
+						"{\"name\":\"T\",\"taskType\":\"work\"}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"t\",\"name\":\"T\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:taskDefinition\",\"attributes\":{\"type\":\"work\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"serviceTask\"}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "service full",
+			"steps": [
+				{
+					"method": "serviceTask",
+					"id": "t",
+					"args": [
+						"{\"name\":\"T\",\"taskType\":\"work\",\"retries\":\"3\",\"ioMapping\":{\"inputs\":[{\"source\":\"=a\",\"target\":\"b\"}],\"outputs\":[{\"source\":\"=c\",\"target\":\"d\"}]},\"taskHeaders\":{\"2\":\"two\",\"10\":\"ten\",\"zed\":\"1\",\"alpha\":\"a\"},\"zeebeProperties\":[{\"name\":\"k\",\"value\":\"v\"}],\"agentDefinition\":{\"agentType\":\"x\"},\"linkedResources\":[{\"resourceType\":\"RPA\",\"resourceId\":\"r\",\"linkName\":\"l\",\"bindingType\":\"latest\"}],\"modelerTemplate\":\"tpl\",\"modelerTemplateVersion\":\"2\",\"modelerTemplateIcon\":\"data:x\",\"isForCompensation\":true,\"documentation\":\"doc\",\"executionListeners\":[{\"eventType\":\"start\",\"type\":\"listen\",\"retries\":\"2\"}],\"multiInstance\":{\"isSequential\":true,\"collection\":\"=items\",\"elementVariable\":\"item\",\"outputCollection\":\"out\",\"outputElement\":\"=r\",\"completionCondition\":\"=done\"}}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"t\",\"name\":\"T\",\"incoming\":[],\"outgoing\":[],\"documentation\":\"doc\",\"extensionElements\":[{\"name\":\"zeebe:taskDefinition\",\"attributes\":{\"type\":\"work\",\"retries\":\"3\"},\"children\":[]},{\"name\":\"zeebe:ioMapping\",\"attributes\":{},\"children\":[{\"name\":\"zeebe:input\",\"attributes\":{\"source\":\"=a\",\"target\":\"b\"},\"children\":[]},{\"name\":\"zeebe:output\",\"attributes\":{\"source\":\"=c\",\"target\":\"d\"},\"children\":[]}]},{\"name\":\"zeebe:taskHeaders\",\"attributes\":{},\"children\":[{\"name\":\"zeebe:header\",\"attributes\":{\"key\":\"2\",\"value\":\"two\"},\"children\":[]},{\"name\":\"zeebe:header\",\"attributes\":{\"key\":\"10\",\"value\":\"ten\"},\"children\":[]},{\"name\":\"zeebe:header\",\"attributes\":{\"key\":\"zed\",\"value\":\"1\"},\"children\":[]},{\"name\":\"zeebe:header\",\"attributes\":{\"key\":\"alpha\",\"value\":\"a\"},\"children\":[]}]},{\"name\":\"zeebe:properties\",\"attributes\":{},\"children\":[{\"name\":\"zeebe:property\",\"attributes\":{\"name\":\"k\",\"value\":\"v\"},\"children\":[]}]},{\"name\":\"zeebe:agentDefinition\",\"attributes\":{\"agentType\":\"x\"},\"children\":[]},{\"name\":\"zeebe:linkedResources\",\"attributes\":{},\"children\":[{\"name\":\"zeebe:linkedResource\",\"attributes\":{\"resourceType\":\"RPA\",\"resourceId\":\"r\",\"linkName\":\"l\",\"bindingType\":\"latest\"},\"children\":[]}]},{\"name\":\"zeebe:executionListeners\",\"attributes\":{},\"children\":[{\"name\":\"zeebe:executionListener\",\"attributes\":{\"eventType\":\"start\",\"type\":\"listen\",\"retries\":\"2\"},\"children\":[]}]}],\"unknownAttributes\":{\"zeebe:modelerTemplate\":\"tpl\",\"zeebe:modelerTemplateVersion\":\"2\",\"zeebe:modelerTemplateIcon\":\"data:x\"},\"type\":\"serviceTask\",\"isForCompensation\":true,\"loopCharacteristics\":{\"isSequential\":true,\"completionCondition\":{\"text\":\"=done\",\"attributes\":{\"xsi:type\":\"bpmn:tFormalExpression\"}},\"extensionElements\":[{\"name\":\"zeebe:loopCharacteristics\",\"attributes\":{\"inputCollection\":\"=items\",\"inputElement\":\"item\",\"outputCollection\":\"out\",\"outputElement\":\"=r\"},\"children\":[]}]}}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "service io mapping empty",
+			"steps": [
+				{
+					"method": "serviceTask",
+					"id": "t",
+					"args": [
+						"{\"name\":\"T\",\"taskType\":\"w\",\"ioMapping\":{},\"taskHeaders\":{}}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"t\",\"name\":\"T\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:taskDefinition\",\"attributes\":{\"type\":\"w\"},\"children\":[]},{\"name\":\"zeebe:ioMapping\",\"attributes\":{},\"children\":[]},{\"name\":\"zeebe:taskHeaders\",\"attributes\":{},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"serviceTask\"}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "service multi instance output only",
+			"steps": [
+				{
+					"method": "serviceTask",
+					"id": "t",
+					"args": [
+						"{\"name\":\"T\",\"taskType\":\"w\",\"multiInstance\":{\"outputCollection\":\"o\",\"isSequential\":false}}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"t\",\"name\":\"T\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:taskDefinition\",\"attributes\":{\"type\":\"w\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"serviceTask\",\"loopCharacteristics\":{\"extensionElements\":[]}}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "service task listener placement error",
+			"steps": [
+				{
+					"method": "serviceTask",
+					"id": "t",
+					"args": [
+						"{\"name\":\"T\",\"taskType\":\"w\",\"taskListeners\":[{\"eventType\":\"assigning\",\"type\":\"x\"}]}"
+					]
+				}
+			],
+			"error": "<zeebe:taskListeners> is not allowed on <bpmn:serviceTask>. The Zeebe schema allows it on: bpmn:userTask."
+		},
+		{
+			"name": "script task",
+			"steps": [
+				{
+					"method": "scriptTask",
+					"id": "s",
+					"args": [
+						"{\"name\":\"S\",\"expression\":\"=1+1\",\"resultVariable\":\"r\",\"documentation\":\"d\",\"isForCompensation\":true,\"multiInstance\":{\"collection\":\"=xs\"}}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"s\",\"name\":\"S\",\"incoming\":[],\"outgoing\":[],\"documentation\":\"d\",\"extensionElements\":[{\"name\":\"zeebe:script\",\"attributes\":{\"expression\":\"=1+1\",\"resultVariable\":\"r\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"scriptTask\",\"isForCompensation\":true,\"loopCharacteristics\":{\"extensionElements\":[{\"name\":\"zeebe:loopCharacteristics\",\"attributes\":{\"inputCollection\":\"=xs\"},\"children\":[]}]}}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "user minimal",
+			"steps": [
+				{
+					"method": "userTask",
+					"id": "u",
+					"args": []
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"u\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"userTask\"}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "user form id",
+			"steps": [
+				{
+					"method": "userTask",
+					"id": "u",
+					"args": [
+						"{\"name\":\"U\",\"formId\":\"f\",\"formBindingType\":\"versionTag\",\"formVersionTag\":\"v1\"}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"u\",\"name\":\"U\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:formDefinition\",\"attributes\":{\"formId\":\"f\",\"bindingType\":\"versionTag\",\"versionTag\":\"v1\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"userTask\"}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "user form key",
+			"steps": [
+				{
+					"method": "userTask",
+					"id": "u",
+					"args": [
+						"{\"formKey\":\"camunda-forms:bpmn:x\"}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"u\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:formDefinition\",\"attributes\":{\"formKey\":\"camunda-forms:bpmn:x\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"userTask\"}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "user external reference",
+			"steps": [
+				{
+					"method": "userTask",
+					"id": "u",
+					"args": [
+						"{\"externalReference\":\"https://x\"}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"u\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:formDefinition\",\"attributes\":{\"externalReference\":\"https://x\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"userTask\"}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "user embedded form",
+			"steps": [
+				{
+					"method": "userTask",
+					"id": "u",
+					"args": [
+						"{\"embeddedForm\":{\"id\":\"form1\",\"schema\":\"{\\\"a\\\":1}\"}}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"u\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:formDefinition\",\"attributes\":{\"formKey\":\"camunda-forms:bpmn:form1\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"userTask\"}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[{\"name\":\"zeebe:userTaskForm\",\"attributes\":{\"id\":\"form1\"},\"children\":[],\"text\":\"{\\\"a\\\":1}\"}]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "user shared embedded form",
+			"steps": [
+				{
+					"method": "userTask",
+					"id": "u1",
+					"args": [
+						"{\"embeddedForm\":{\"id\":\"form1\",\"schema\":\"S\"}}"
+					]
+				},
+				{
+					"method": "userTask",
+					"id": "u2",
+					"args": [
+						"{\"embeddedForm\":{\"id\":\"form1\",\"schema\":\"S\"}}"
+					]
+				},
+				{
+					"method": "userTask",
+					"id": "u3",
+					"args": [
+						"{\"embeddedForm\":{\"id\":\"form2\",\"schema\":\"T\"}}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"u1\",\"incoming\":[],\"outgoing\":[\"Flow_u1_u2\"],\"extensionElements\":[{\"name\":\"zeebe:formDefinition\",\"attributes\":{\"formKey\":\"camunda-forms:bpmn:form1\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"userTask\"},{\"id\":\"u2\",\"incoming\":[\"Flow_u1_u2\"],\"outgoing\":[\"Flow_u2_u3\"],\"extensionElements\":[{\"name\":\"zeebe:formDefinition\",\"attributes\":{\"formKey\":\"camunda-forms:bpmn:form1\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"userTask\"},{\"id\":\"u3\",\"incoming\":[\"Flow_u2_u3\"],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:formDefinition\",\"attributes\":{\"formKey\":\"camunda-forms:bpmn:form2\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"userTask\"}]",
+				"sequenceFlows": "[{\"id\":\"Flow_u1_u2\",\"sourceRef\":\"u1\",\"targetRef\":\"u2\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_u2_u3\",\"sourceRef\":\"u2\",\"targetRef\":\"u3\",\"extensionElements\":[],\"unknownAttributes\":{}}]",
+				"extensionElements": "[{\"name\":\"zeebe:userTaskForm\",\"attributes\":{\"id\":\"form1\"},\"children\":[],\"text\":\"S\"},{\"name\":\"zeebe:userTaskForm\",\"attributes\":{\"id\":\"form2\"},\"children\":[],\"text\":\"T\"}]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "user embedded form conflicting schemas",
+			"steps": [
+				{
+					"method": "userTask",
+					"id": "u1",
+					"args": [
+						"{\"embeddedForm\":{\"id\":\"form1\",\"schema\":\"S\"}}"
+					]
+				},
+				{
+					"method": "userTask",
+					"id": "u2",
+					"args": [
+						"{\"embeddedForm\":{\"id\":\"form1\",\"schema\":\"T\"}}"
+					]
+				}
+			],
+			"error": "embedded form \"form1\" is declared with two different schemas"
+		},
+		{
+			"name": "user two forms error",
+			"steps": [
+				{
+					"method": "userTask",
+					"id": "u",
+					"args": [
+						"{\"formId\":\"a\",\"formKey\":\"b\"}"
+					]
+				}
+			],
+			"error": "userTask: set only one of formId, formKey, externalReference or embeddedForm"
+		},
+		{
+			"name": "user empty form key and form id",
+			"steps": [
+				{
+					"method": "userTask",
+					"id": "u",
+					"args": [
+						"{\"formKey\":\"\"}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"u\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"userTask\"}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "user assignment and schedule",
+			"steps": [
+				{
+					"method": "userTask",
+					"id": "u",
+					"args": [
+						"{\"zeebeUserTask\":true,\"assignee\":\"=me\",\"candidateGroups\":\"g1,g2\",\"candidateUsers\":\"u1\",\"dueDate\":\"=d\",\"followUpDate\":\"=f\",\"priority\":75}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"u\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:userTask\",\"attributes\":{},\"children\":[]},{\"name\":\"zeebe:assignmentDefinition\",\"attributes\":{\"assignee\":\"=me\",\"candidateGroups\":\"g1,g2\",\"candidateUsers\":\"u1\"},\"children\":[]},{\"name\":\"zeebe:taskSchedule\",\"attributes\":{\"dueDate\":\"=d\",\"followUpDate\":\"=f\"},\"children\":[]},{\"name\":\"zeebe:priorityDefinition\",\"attributes\":{\"priority\":\"75\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"userTask\"}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "user priority fraction and zero",
+			"steps": [
+				{
+					"method": "userTask",
+					"id": "u1",
+					"args": [
+						"{\"priority\":2.5}"
+					]
+				},
+				{
+					"method": "userTask",
+					"id": "u2",
+					"args": [
+						"{\"priority\":0}"
+					]
+				},
+				{
+					"method": "userTask",
+					"id": "u3",
+					"args": [
+						"{\"priority\":1e+21}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"u1\",\"incoming\":[],\"outgoing\":[\"Flow_u1_u2\"],\"extensionElements\":[{\"name\":\"zeebe:priorityDefinition\",\"attributes\":{\"priority\":\"2.5\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"userTask\"},{\"id\":\"u2\",\"incoming\":[\"Flow_u1_u2\"],\"outgoing\":[\"Flow_u2_u3\"],\"extensionElements\":[{\"name\":\"zeebe:priorityDefinition\",\"attributes\":{\"priority\":\"0\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"userTask\"},{\"id\":\"u3\",\"incoming\":[\"Flow_u2_u3\"],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:priorityDefinition\",\"attributes\":{\"priority\":\"1e+21\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"userTask\"}]",
+				"sequenceFlows": "[{\"id\":\"Flow_u1_u2\",\"sourceRef\":\"u1\",\"targetRef\":\"u2\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_u2_u3\",\"sourceRef\":\"u2\",\"targetRef\":\"u3\",\"extensionElements\":[],\"unknownAttributes\":{}}]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "user mappings template listeners",
+			"steps": [
+				{
+					"method": "userTask",
+					"id": "u",
+					"args": [
+						"{\"name\":\"U\",\"ioMapping\":{\"inputs\":[{\"source\":\"=a\",\"target\":\"b\"}]},\"taskHeaders\":{\"h\":\"1\"},\"zeebeProperties\":[{\"name\":\"p\",\"value\":\"q\"}],\"modelerTemplate\":\"t\",\"modelerTemplateVersion\":\"3\",\"modelerTemplateIcon\":\"i\",\"isForCompensation\":true,\"executionListeners\":[{\"eventType\":\"end\",\"type\":\"e\"}],\"taskListeners\":[{\"eventType\":\"completing\",\"type\":\"t\"}],\"multiInstance\":{\"collection\":\"=c\",\"elementVariable\":\"e\"}}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"u\",\"name\":\"U\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:ioMapping\",\"attributes\":{},\"children\":[{\"name\":\"zeebe:input\",\"attributes\":{\"source\":\"=a\",\"target\":\"b\"},\"children\":[]}]},{\"name\":\"zeebe:taskHeaders\",\"attributes\":{},\"children\":[{\"name\":\"zeebe:header\",\"attributes\":{\"key\":\"h\",\"value\":\"1\"},\"children\":[]}]},{\"name\":\"zeebe:properties\",\"attributes\":{},\"children\":[{\"name\":\"zeebe:property\",\"attributes\":{\"name\":\"p\",\"value\":\"q\"},\"children\":[]}]},{\"name\":\"zeebe:executionListeners\",\"attributes\":{},\"children\":[{\"name\":\"zeebe:executionListener\",\"attributes\":{\"eventType\":\"end\",\"type\":\"e\"},\"children\":[]}]},{\"name\":\"zeebe:taskListeners\",\"attributes\":{},\"children\":[{\"name\":\"zeebe:taskListener\",\"attributes\":{\"eventType\":\"completing\",\"type\":\"t\"},\"children\":[]}]}],\"unknownAttributes\":{\"zeebe:modelerTemplate\":\"t\",\"zeebe:modelerTemplateVersion\":\"3\",\"zeebe:modelerTemplateIcon\":\"i\"},\"type\":\"userTask\",\"isForCompensation\":true,\"loopCharacteristics\":{\"extensionElements\":[{\"name\":\"zeebe:loopCharacteristics\",\"attributes\":{\"inputCollection\":\"=c\",\"inputElement\":\"e\"},\"children\":[]}]}}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "user execution listener on task",
+			"steps": [
+				{
+					"method": "userTask",
+					"id": "u",
+					"args": [
+						"{\"executionListeners\":[{\"eventType\":\"start\",\"type\":\"x\"}]}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"u\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:executionListeners\",\"attributes\":{},\"children\":[{\"name\":\"zeebe:executionListener\",\"attributes\":{\"eventType\":\"start\",\"type\":\"x\"},\"children\":[]}]}],\"unknownAttributes\":{},\"type\":\"userTask\"}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "business rule empty",
+			"steps": [
+				{
+					"method": "businessRuleTask",
+					"id": "b",
+					"args": []
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"b\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"businessRuleTask\"}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "business rule task type",
+			"steps": [
+				{
+					"method": "businessRuleTask",
+					"id": "b",
+					"args": [
+						"{\"name\":\"B\",\"taskType\":\"dmn\"}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"b\",\"name\":\"B\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:taskDefinition\",\"attributes\":{\"type\":\"dmn\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"businessRuleTask\"}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "business rule decision default result",
+			"steps": [
+				{
+					"method": "businessRuleTask",
+					"id": "b",
+					"args": [
+						"{\"decisionId\":\"d\"}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"b\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:calledDecision\",\"attributes\":{\"decisionId\":\"d\",\"resultVariable\":\"result\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"businessRuleTask\"}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "business rule decision both",
+			"steps": [
+				{
+					"method": "businessRuleTask",
+					"id": "b",
+					"args": [
+						"{\"taskType\":\"t\",\"decisionId\":\"d\",\"resultVariable\":\"\",\"isForCompensation\":true,\"multiInstance\":{\"collection\":\"=c\"}}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"b\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:taskDefinition\",\"attributes\":{\"type\":\"t\"},\"children\":[]},{\"name\":\"zeebe:calledDecision\",\"attributes\":{\"decisionId\":\"d\",\"resultVariable\":\"\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"businessRuleTask\",\"isForCompensation\":true,\"loopCharacteristics\":{\"extensionElements\":[{\"name\":\"zeebe:loopCharacteristics\",\"attributes\":{\"inputCollection\":\"=c\"},\"children\":[]}]}}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "call activity",
+			"steps": [
+				{
+					"method": "callActivity",
+					"id": "c",
+					"args": [
+						"{\"name\":\"C\",\"processId\":\"child\",\"propagateAllChildVariables\":false,\"propagateAllParentVariables\":true,\"bindingType\":\"versionTag\",\"versionTag\":\"v2\",\"ioMapping\":{\"outputs\":[{\"source\":\"=x\",\"target\":\"y\"}]},\"zeebeProperties\":[{\"name\":\"n\",\"value\":\"v\"}],\"taskHeaders\":{\"ignored\":\"yes\"},\"multiInstance\":{\"collection\":\"=c\",\"isSequential\":true},\"isForCompensation\":true}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"c\",\"name\":\"C\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:ioMapping\",\"attributes\":{},\"children\":[{\"name\":\"zeebe:output\",\"attributes\":{\"source\":\"=x\",\"target\":\"y\"},\"children\":[]}]},{\"name\":\"zeebe:properties\",\"attributes\":{},\"children\":[{\"name\":\"zeebe:property\",\"attributes\":{\"name\":\"n\",\"value\":\"v\"},\"children\":[]}]},{\"name\":\"zeebe:calledElement\",\"attributes\":{\"processId\":\"child\",\"propagateAllChildVariables\":\"false\",\"propagateAllParentVariables\":\"true\",\"bindingType\":\"versionTag\",\"versionTag\":\"v2\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"callActivity\",\"isForCompensation\":true,\"loopCharacteristics\":{\"isSequential\":true,\"extensionElements\":[{\"name\":\"zeebe:loopCharacteristics\",\"attributes\":{\"inputCollection\":\"=c\"},\"children\":[]}]}}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "call activity minimal",
+			"steps": [
+				{
+					"method": "callActivity",
+					"id": "c",
+					"args": [
+						"{\"processId\":\"p2\"}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"c\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:calledElement\",\"attributes\":{\"processId\":\"p2\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"callActivity\"}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "manual and plain task",
+			"steps": [
+				{
+					"method": "manualTask",
+					"id": "m",
+					"args": [
+						"{\"name\":\"M\",\"documentation\":\"d\",\"isForCompensation\":true}"
+					]
+				},
+				{
+					"method": "task",
+					"id": "t",
+					"args": [
+						"{\"name\":\"T\",\"executionListeners\":[{\"eventType\":\"start\",\"type\":\"x\"}]}"
+					]
+				},
+				{
+					"method": "task",
+					"id": "t2",
+					"args": []
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"m\",\"name\":\"M\",\"incoming\":[],\"outgoing\":[],\"documentation\":\"d\",\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"manualTask\",\"isForCompensation\":true},{\"id\":\"t\",\"name\":\"T\",\"incoming\":[],\"outgoing\":[\"Flow_t_t2\"],\"extensionElements\":[{\"name\":\"zeebe:executionListeners\",\"attributes\":{},\"children\":[{\"name\":\"zeebe:executionListener\",\"attributes\":{\"eventType\":\"start\",\"type\":\"x\"},\"children\":[]}]}],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"t2\",\"incoming\":[\"Flow_t_t2\"],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"}]",
+				"sequenceFlows": "[{\"id\":\"Flow_t_t2\",\"sourceRef\":\"t\",\"targetRef\":\"t2\",\"extensionElements\":[],\"unknownAttributes\":{}}]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "send task",
+			"steps": [
+				{
+					"method": "sendTask",
+					"id": "s",
+					"args": [
+						"{\"name\":\"S\",\"messageName\":\"Order Placed\",\"isForCompensation\":true}"
+					]
+				},
+				{
+					"method": "sendTask",
+					"id": "s2",
+					"args": [
+						"{\"messageName\":\"Order Placed\",\"multiInstance\":{\"collection\":\"=c\"}}"
+					]
+				},
+				{
+					"method": "sendTask",
+					"id": "s3",
+					"args": []
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"s\",\"name\":\"S\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"sendTask\",\"isForCompensation\":true,\"messageRef\":\"Message_Order_Placed\"},{\"id\":\"s2\",\"incoming\":[],\"outgoing\":[\"Flow_s2_s3\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"sendTask\",\"messageRef\":\"Message_Order_Placed\",\"loopCharacteristics\":{\"extensionElements\":[{\"name\":\"zeebe:loopCharacteristics\",\"attributes\":{\"inputCollection\":\"=c\"},\"children\":[]}]}},{\"id\":\"s3\",\"incoming\":[\"Flow_s2_s3\"],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"sendTask\"}]",
+				"sequenceFlows": "[{\"id\":\"Flow_s2_s3\",\"sourceRef\":\"s2\",\"targetRef\":\"s3\",\"extensionElements\":[],\"unknownAttributes\":{}}]",
+				"extensionElements": "[]",
+				"messages": "[{\"id\":\"Message_Order_Placed\",\"name\":\"Order Placed\",\"unknownAttributes\":{}}]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "receive task correlation",
+			"steps": [
+				{
+					"method": "receiveTask",
+					"id": "r",
+					"args": [
+						"{\"messageName\":\"Reply\",\"correlationKey\":\"=id\"}"
+					]
+				},
+				{
+					"method": "receiveTask",
+					"id": "r2",
+					"args": [
+						"{\"messageName\":\"Reply\",\"correlationKey\":\"=id\"}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"r\",\"incoming\":[],\"outgoing\":[\"Flow_r_r2\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"receiveTask\",\"messageRef\":\"Message_Reply\"},{\"id\":\"r2\",\"incoming\":[\"Flow_r_r2\"],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"receiveTask\",\"messageRef\":\"Message_Reply\"}]",
+				"sequenceFlows": "[{\"id\":\"Flow_r_r2\",\"sourceRef\":\"r\",\"targetRef\":\"r2\",\"extensionElements\":[],\"unknownAttributes\":{}}]",
+				"extensionElements": "[]",
+				"messages": "[{\"id\":\"Message_Reply\",\"name\":\"Reply\",\"unknownAttributes\":{},\"extensionElements\":[{\"name\":\"zeebe:subscription\",\"attributes\":{\"correlationKey\":\"=id\"},\"children\":[]}]}]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "receive task conflicting keys stay on elements",
+			"steps": [
+				{
+					"method": "receiveTask",
+					"id": "r",
+					"args": [
+						"{\"messageName\":\"Reply\",\"correlationKey\":\"=a\"}"
+					]
+				},
+				{
+					"method": "receiveTask",
+					"id": "r2",
+					"args": [
+						"{\"messageName\":\"Reply\",\"correlationKey\":\"=b\"}"
+					]
+				},
+				{
+					"method": "receiveTask",
+					"id": "r3",
+					"args": [
+						"{\"messageName\":\"Other\",\"correlationKey\":\"=c\"}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"r\",\"incoming\":[],\"outgoing\":[\"Flow_r_r2\"],\"extensionElements\":[{\"name\":\"zeebe:subscription\",\"attributes\":{\"correlationKey\":\"=a\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"receiveTask\",\"messageRef\":\"Message_Reply\"},{\"id\":\"r2\",\"incoming\":[\"Flow_r_r2\"],\"outgoing\":[\"Flow_r2_r3\"],\"extensionElements\":[{\"name\":\"zeebe:subscription\",\"attributes\":{\"correlationKey\":\"=b\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"receiveTask\",\"messageRef\":\"Message_Reply\"},{\"id\":\"r3\",\"incoming\":[\"Flow_r2_r3\"],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"receiveTask\",\"messageRef\":\"Message_Other\"}]",
+				"sequenceFlows": "[{\"id\":\"Flow_r_r2\",\"sourceRef\":\"r\",\"targetRef\":\"r2\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_r2_r3\",\"sourceRef\":\"r2\",\"targetRef\":\"r3\",\"extensionElements\":[],\"unknownAttributes\":{}}]",
+				"extensionElements": "[]",
+				"messages": "[{\"id\":\"Message_Reply\",\"name\":\"Reply\",\"unknownAttributes\":{}},{\"id\":\"Message_Other\",\"name\":\"Other\",\"unknownAttributes\":{},\"extensionElements\":[{\"name\":\"zeebe:subscription\",\"attributes\":{\"correlationKey\":\"=c\"},\"children\":[]}]}]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "receive task without key and with empty key",
+			"steps": [
+				{
+					"method": "receiveTask",
+					"id": "r",
+					"args": [
+						"{\"messageName\":\"M1\",\"correlationKey\":\"\"}"
+					]
+				},
+				{
+					"method": "receiveTask",
+					"id": "r2",
+					"args": [
+						"{\"messageName\":\"M1\",\"correlationKey\":\"=k\"}"
+					]
+				},
+				{
+					"method": "receiveTask",
+					"id": "r3",
+					"args": [
+						"{\"correlationKey\":\"=orphan\"}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"r\",\"incoming\":[],\"outgoing\":[\"Flow_r_r2\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"receiveTask\",\"messageRef\":\"Message_M1\"},{\"id\":\"r2\",\"incoming\":[\"Flow_r_r2\"],\"outgoing\":[\"Flow_r2_r3\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"receiveTask\",\"messageRef\":\"Message_M1\"},{\"id\":\"r3\",\"incoming\":[\"Flow_r2_r3\"],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:subscription\",\"attributes\":{\"correlationKey\":\"=orphan\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"receiveTask\"}]",
+				"sequenceFlows": "[{\"id\":\"Flow_r_r2\",\"sourceRef\":\"r\",\"targetRef\":\"r2\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_r2_r3\",\"sourceRef\":\"r2\",\"targetRef\":\"r3\",\"extensionElements\":[],\"unknownAttributes\":{}}]",
+				"extensionElements": "[]",
+				"messages": "[{\"id\":\"Message_M1\",\"name\":\"M1\",\"unknownAttributes\":{},\"extensionElements\":[{\"name\":\"zeebe:subscription\",\"attributes\":{\"correlationKey\":\"=k\"},\"children\":[]}]}]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "gateways",
+			"steps": [
+				{
+					"method": "exclusiveGateway",
+					"id": "x",
+					"args": [
+						"{\"name\":\"X\",\"defaultFlow\":\"Flow_x\"}"
+					]
+				},
+				{
+					"method": "inclusiveGateway",
+					"id": "i",
+					"args": [
+						"{\"defaultFlow\":\"\"}"
+					]
+				},
+				{
+					"method": "complexGateway",
+					"id": "c",
+					"args": [
+						"{\"defaultFlow\":\"Flow_c\",\"documentation\":\"d\"}"
+					]
+				},
+				{
+					"method": "parallelGateway",
+					"id": "p",
+					"args": [
+						"{\"name\":\"P\"}"
+					]
+				},
+				{
+					"method": "eventBasedGateway",
+					"id": "e",
+					"args": []
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"x\",\"name\":\"X\",\"incoming\":[],\"outgoing\":[\"Flow_x_i\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"exclusiveGateway\",\"default\":\"Flow_x\"},{\"id\":\"i\",\"incoming\":[\"Flow_x_i\"],\"outgoing\":[\"Flow_i_c\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"inclusiveGateway\"},{\"id\":\"c\",\"incoming\":[\"Flow_i_c\"],\"outgoing\":[\"Flow_c_p\"],\"documentation\":\"d\",\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"complexGateway\",\"default\":\"Flow_c\"},{\"id\":\"p\",\"name\":\"P\",\"incoming\":[\"Flow_c_p\"],\"outgoing\":[\"Flow_p_e\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"parallelGateway\"},{\"id\":\"e\",\"incoming\":[\"Flow_p_e\"],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"eventBasedGateway\"}]",
+				"sequenceFlows": "[{\"id\":\"Flow_x_i\",\"sourceRef\":\"x\",\"targetRef\":\"i\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_i_c\",\"sourceRef\":\"i\",\"targetRef\":\"c\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_c_p\",\"sourceRef\":\"c\",\"targetRef\":\"p\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_p_e\",\"sourceRef\":\"p\",\"targetRef\":\"e\",\"extensionElements\":[],\"unknownAttributes\":{}}]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "start event shell",
+			"steps": [
+				{
+					"method": "startEvent",
+					"id": "s",
+					"args": []
+				},
+				{
+					"method": "startEvent",
+					"id": "s2",
+					"args": [
+						"{\"name\":\"S2\",\"formId\":\"form\",\"zeebeProperties\":[{\"name\":\"a\",\"value\":\"b\"}]}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"s\",\"incoming\":[],\"outgoing\":[\"Flow_s_s2\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"startEvent\",\"eventDefinitions\":[]},{\"id\":\"s2\",\"name\":\"S2\",\"incoming\":[\"Flow_s_s2\"],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:properties\",\"attributes\":{},\"children\":[{\"name\":\"zeebe:property\",\"attributes\":{\"name\":\"a\",\"value\":\"b\"},\"children\":[]}]},{\"name\":\"zeebe:formDefinition\",\"attributes\":{\"formId\":\"form\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"startEvent\",\"eventDefinitions\":[]}]",
+				"sequenceFlows": "[{\"id\":\"Flow_s_s2\",\"sourceRef\":\"s\",\"targetRef\":\"s2\",\"extensionElements\":[],\"unknownAttributes\":{}}]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "start event definitions",
+			"steps": [
+				{
+					"method": "startEvent",
+					"id": "t",
+					"args": [
+						"{\"timerCycle\":\"R/PT1H\"}"
+					]
+				},
+				{
+					"method": "startEvent",
+					"id": "t2",
+					"args": [
+						"{\"timerDuration\":\"\",\"timerDate\":\"\"}"
+					]
+				},
+				{
+					"method": "startEvent",
+					"id": "m",
+					"args": [
+						"{\"messageName\":\"Go Now\",\"modelerTemplate\":\"tpl\"}"
+					]
+				},
+				{
+					"method": "startEvent",
+					"id": "c",
+					"args": [
+						"{\"condition\":\"=x > 1\",\"conditionVariableEvents\":[\"create\",\"update\"]}"
+					]
+				},
+				{
+					"method": "startEvent",
+					"id": "c2",
+					"args": [
+						"{\"condition\":\"=y\",\"conditionVariableEvents\":[]}"
+					]
+				},
+				{
+					"method": "startEvent",
+					"id": "n",
+					"args": [
+						"{\"isInterrupting\":false}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"t\",\"incoming\":[],\"outgoing\":[\"Flow_t_t2\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"startEvent\",\"eventDefinitions\":[{\"type\":\"timer\",\"timeCycle\":\"R/PT1H\",\"id\":\"t_TimerEventDefinition\"}]},{\"id\":\"t2\",\"incoming\":[\"Flow_t_t2\"],\"outgoing\":[\"Flow_t2_m\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"startEvent\",\"eventDefinitions\":[]},{\"id\":\"m\",\"incoming\":[\"Flow_t2_m\"],\"outgoing\":[\"Flow_m_c\"],\"extensionElements\":[],\"unknownAttributes\":{\"zeebe:modelerTemplate\":\"tpl\"},\"type\":\"startEvent\",\"eventDefinitions\":[{\"type\":\"message\",\"messageRef\":\"Message_Go_Now\",\"id\":\"m_MessageEventDefinition\"}]},{\"id\":\"c\",\"incoming\":[\"Flow_m_c\"],\"outgoing\":[\"Flow_c_c2\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"startEvent\",\"eventDefinitions\":[{\"type\":\"conditional\",\"condition\":\"=x > 1\",\"conditionAttributes\":{\"xsi:type\":\"bpmn:tFormalExpression\"},\"extensionElements\":[{\"name\":\"zeebe:conditionalFilter\",\"attributes\":{\"variableEvents\":\"create,update\"},\"children\":[]}],\"id\":\"c_ConditionalEventDefinition\"}]},{\"id\":\"c2\",\"incoming\":[\"Flow_c_c2\"],\"outgoing\":[\"Flow_c2_n\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"startEvent\",\"eventDefinitions\":[{\"type\":\"conditional\",\"condition\":\"=y\",\"conditionAttributes\":{\"xsi:type\":\"bpmn:tFormalExpression\"},\"id\":\"c2_ConditionalEventDefinition\"}]},{\"id\":\"n\",\"incoming\":[\"Flow_c2_n\"],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"startEvent\",\"eventDefinitions\":[],\"isInterrupting\":false}]",
+				"sequenceFlows": "[{\"id\":\"Flow_t_t2\",\"sourceRef\":\"t\",\"targetRef\":\"t2\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_t2_m\",\"sourceRef\":\"t2\",\"targetRef\":\"m\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_m_c\",\"sourceRef\":\"m\",\"targetRef\":\"c\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_c_c2\",\"sourceRef\":\"c\",\"targetRef\":\"c2\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_c2_n\",\"sourceRef\":\"c2\",\"targetRef\":\"n\",\"extensionElements\":[],\"unknownAttributes\":{}}]",
+				"extensionElements": "[]",
+				"messages": "[{\"id\":\"Message_Go_Now\",\"name\":\"Go Now\",\"unknownAttributes\":{}}]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "end event definitions",
+			"steps": [
+				{
+					"method": "endEvent",
+					"id": "e1",
+					"args": []
+				},
+				{
+					"method": "endEvent",
+					"id": "e2",
+					"args": [
+						"{\"errorCode\":\"E_FAIL\"}"
+					]
+				},
+				{
+					"method": "endEvent",
+					"id": "e3",
+					"args": [
+						"{\"errorRef\":\"E_FAIL\"}"
+					]
+				},
+				{
+					"method": "endEvent",
+					"id": "e4",
+					"args": [
+						"{\"errorCode\":\"\"}"
+					]
+				},
+				{
+					"method": "endEvent",
+					"id": "e5",
+					"args": [
+						"{\"messageName\":\"Done\",\"signalName\":\"Sig\",\"escalationCode\":\"ESC\"}"
+					]
+				},
+				{
+					"method": "endEvent",
+					"id": "e6",
+					"args": [
+						"{\"errorCode\":\"Other Error\",\"name\":\"Err\"}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"e1\",\"incoming\":[],\"outgoing\":[\"Flow_e1_e2\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"endEvent\",\"eventDefinitions\":[]},{\"id\":\"e2\",\"incoming\":[\"Flow_e1_e2\"],\"outgoing\":[\"Flow_e2_e3\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"endEvent\",\"eventDefinitions\":[{\"type\":\"error\",\"errorRef\":\"Error_E_FAIL\",\"id\":\"e2_ErrorEventDefinition\"}]},{\"id\":\"e3\",\"incoming\":[\"Flow_e2_e3\"],\"outgoing\":[\"Flow_e3_e4\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"endEvent\",\"eventDefinitions\":[{\"type\":\"error\",\"errorRef\":\"Error_E_FAIL\",\"id\":\"e3_ErrorEventDefinition\"}]},{\"id\":\"e4\",\"incoming\":[\"Flow_e3_e4\"],\"outgoing\":[\"Flow_e4_e5\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"endEvent\",\"eventDefinitions\":[{\"type\":\"error\",\"errorRef\":\"Error_element\",\"id\":\"e4_ErrorEventDefinition\"}]},{\"id\":\"e5\",\"incoming\":[\"Flow_e4_e5\"],\"outgoing\":[\"Flow_e5_e6\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"endEvent\",\"eventDefinitions\":[{\"type\":\"message\",\"messageRef\":\"Message_Done\",\"id\":\"e5_MessageEventDefinition\"},{\"type\":\"signal\",\"signalRef\":\"Signal_Sig\",\"id\":\"e5_SignalEventDefinition\"},{\"type\":\"escalation\",\"escalationRef\":\"Escalation_ESC\",\"id\":\"e5_EscalationEventDefinition\"}]},{\"id\":\"e6\",\"name\":\"Err\",\"incoming\":[\"Flow_e5_e6\"],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"endEvent\",\"eventDefinitions\":[{\"type\":\"error\",\"errorRef\":\"Error_Other_Error\",\"id\":\"e6_ErrorEventDefinition\"}]}]",
+				"sequenceFlows": "[{\"id\":\"Flow_e1_e2\",\"sourceRef\":\"e1\",\"targetRef\":\"e2\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_e2_e3\",\"sourceRef\":\"e2\",\"targetRef\":\"e3\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_e3_e4\",\"sourceRef\":\"e3\",\"targetRef\":\"e4\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_e4_e5\",\"sourceRef\":\"e4\",\"targetRef\":\"e5\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_e5_e6\",\"sourceRef\":\"e5\",\"targetRef\":\"e6\",\"extensionElements\":[],\"unknownAttributes\":{}}]",
+				"extensionElements": "[]",
+				"messages": "[{\"id\":\"Message_Done\",\"name\":\"Done\",\"unknownAttributes\":{}}]",
+				"errors": "[{\"id\":\"Error_E_FAIL\",\"name\":\"E_FAIL\",\"errorCode\":\"E_FAIL\"},{\"id\":\"Error_element\",\"name\":\"\",\"errorCode\":\"\"},{\"id\":\"Error_Other_Error\",\"name\":\"Other Error\",\"errorCode\":\"Other Error\"}]",
+				"signals": "[{\"id\":\"Signal_Sig\",\"name\":\"Sig\"}]",
+				"escalations": "[{\"id\":\"Escalation_ESC\",\"name\":\"ESC\",\"escalationCode\":\"ESC\"}]"
+			}
+		},
+		{
+			"name": "end event error id clash",
+			"steps": [
+				{
+					"method": "endEvent",
+					"id": "e1",
+					"args": [
+						"{\"errorCode\":\"a b\"}"
+					]
+				},
+				{
+					"method": "endEvent",
+					"id": "e2",
+					"args": [
+						"{\"errorCode\":\"a-b\"}"
+					]
+				},
+				{
+					"method": "endEvent",
+					"id": "e3",
+					"args": [
+						"{\"errorCode\":\"a b\"}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"e1\",\"incoming\":[],\"outgoing\":[\"Flow_e1_e2\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"endEvent\",\"eventDefinitions\":[{\"type\":\"error\",\"errorRef\":\"Error_a_b\",\"id\":\"e1_ErrorEventDefinition\"}]},{\"id\":\"e2\",\"incoming\":[\"Flow_e1_e2\"],\"outgoing\":[\"Flow_e2_e3\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"endEvent\",\"eventDefinitions\":[{\"type\":\"error\",\"errorRef\":\"Error_a_b_2\",\"id\":\"e2_ErrorEventDefinition\"}]},{\"id\":\"e3\",\"incoming\":[\"Flow_e2_e3\"],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"endEvent\",\"eventDefinitions\":[{\"type\":\"error\",\"errorRef\":\"Error_a_b\",\"id\":\"e3_ErrorEventDefinition\"}]}]",
+				"sequenceFlows": "[{\"id\":\"Flow_e1_e2\",\"sourceRef\":\"e1\",\"targetRef\":\"e2\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_e2_e3\",\"sourceRef\":\"e2\",\"targetRef\":\"e3\",\"extensionElements\":[],\"unknownAttributes\":{}}]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[{\"id\":\"Error_a_b\",\"name\":\"a b\",\"errorCode\":\"a b\"},{\"id\":\"Error_a_b_2\",\"name\":\"a-b\",\"errorCode\":\"a-b\"}]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "intermediate throw",
+			"steps": [
+				{
+					"method": "intermediateThrowEvent",
+					"id": "t1",
+					"args": []
+				},
+				{
+					"method": "intermediateThrowEvent",
+					"id": "t2",
+					"args": [
+						"{\"messageName\":\"M\"}"
+					]
+				},
+				{
+					"method": "intermediateThrowEvent",
+					"id": "t3",
+					"args": [
+						"{\"signalName\":\"S\",\"escalationCode\":\"X\"}"
+					]
+				},
+				{
+					"method": "intermediateThrowEvent",
+					"id": "t4",
+					"args": [
+						"{\"compensation\":true,\"activityRef\":\"act\"}"
+					]
+				},
+				{
+					"method": "intermediateThrowEvent",
+					"id": "t5",
+					"args": [
+						"{\"linkName\":\"go\"}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"t1\",\"incoming\":[],\"outgoing\":[\"Flow_t1_t2\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"intermediateThrowEvent\",\"eventDefinitions\":[]},{\"id\":\"t2\",\"incoming\":[\"Flow_t1_t2\"],\"outgoing\":[\"Flow_t2_t3\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"intermediateThrowEvent\",\"eventDefinitions\":[{\"type\":\"message\",\"messageRef\":\"Message_M\",\"id\":\"t2_MessageEventDefinition\"}]},{\"id\":\"t3\",\"incoming\":[\"Flow_t2_t3\"],\"outgoing\":[\"Flow_t3_t4\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"intermediateThrowEvent\",\"eventDefinitions\":[{\"type\":\"signal\",\"signalRef\":\"Signal_S\",\"id\":\"t3_SignalEventDefinition\"},{\"type\":\"escalation\",\"escalationRef\":\"Escalation_X\",\"id\":\"t3_EscalationEventDefinition\"}]},{\"id\":\"t4\",\"incoming\":[\"Flow_t3_t4\"],\"outgoing\":[\"Flow_t4_t5\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"intermediateThrowEvent\",\"eventDefinitions\":[{\"type\":\"compensate\",\"activityRef\":\"act\",\"id\":\"t4_CompensateEventDefinition\"}]},{\"id\":\"t5\",\"incoming\":[\"Flow_t4_t5\"],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"intermediateThrowEvent\",\"eventDefinitions\":[{\"type\":\"link\",\"name\":\"go\",\"id\":\"t5_LinkEventDefinition\"}]}]",
+				"sequenceFlows": "[{\"id\":\"Flow_t1_t2\",\"sourceRef\":\"t1\",\"targetRef\":\"t2\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_t2_t3\",\"sourceRef\":\"t2\",\"targetRef\":\"t3\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_t3_t4\",\"sourceRef\":\"t3\",\"targetRef\":\"t4\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_t4_t5\",\"sourceRef\":\"t4\",\"targetRef\":\"t5\",\"extensionElements\":[],\"unknownAttributes\":{}}]",
+				"extensionElements": "[]",
+				"messages": "[{\"id\":\"Message_M\",\"name\":\"M\",\"unknownAttributes\":{}}]",
+				"errors": "[]",
+				"signals": "[{\"id\":\"Signal_S\",\"name\":\"S\"}]",
+				"escalations": "[{\"id\":\"Escalation_X\",\"name\":\"X\",\"escalationCode\":\"X\"}]"
+			}
+		},
+		{
+			"name": "intermediate catch",
+			"steps": [
+				{
+					"method": "intermediateCatchEvent",
+					"id": "c1",
+					"args": []
+				},
+				{
+					"method": "intermediateCatchEvent",
+					"id": "c2",
+					"args": [
+						"{\"timerDuration\":\"PT5M\"}"
+					]
+				},
+				{
+					"method": "intermediateCatchEvent",
+					"id": "c3",
+					"args": [
+						"{\"messageName\":\"M\",\"correlationKey\":\"=k\"}"
+					]
+				},
+				{
+					"method": "intermediateCatchEvent",
+					"id": "c4",
+					"args": [
+						"{\"signalName\":\"S\",\"timerDate\":\"2030-01-01T00:00:00Z\"}"
+					]
+				},
+				{
+					"method": "intermediateCatchEvent",
+					"id": "c5",
+					"args": [
+						"{\"linkName\":\"go\"}"
+					]
+				},
+				{
+					"method": "intermediateCatchEvent",
+					"id": "c6",
+					"args": [
+						"{\"condition\":\"=a\",\"conditionVariableEvents\":[\"update\"]}"
+					]
+				},
+				{
+					"method": "intermediateCatchEvent",
+					"id": "c7",
+					"args": [
+						"{\"correlationKey\":\"=nomsg\"}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"c1\",\"incoming\":[],\"outgoing\":[\"Flow_c1_c2\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"intermediateCatchEvent\",\"eventDefinitions\":[]},{\"id\":\"c2\",\"incoming\":[\"Flow_c1_c2\"],\"outgoing\":[\"Flow_c2_c3\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"intermediateCatchEvent\",\"eventDefinitions\":[{\"type\":\"timer\",\"timeDuration\":\"PT5M\",\"id\":\"c2_TimerEventDefinition\"}]},{\"id\":\"c3\",\"incoming\":[\"Flow_c2_c3\"],\"outgoing\":[\"Flow_c3_c4\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"intermediateCatchEvent\",\"eventDefinitions\":[{\"type\":\"message\",\"messageRef\":\"Message_M\",\"id\":\"c3_MessageEventDefinition\"}]},{\"id\":\"c4\",\"incoming\":[\"Flow_c3_c4\"],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"intermediateCatchEvent\",\"eventDefinitions\":[{\"type\":\"timer\",\"timeDate\":\"2030-01-01T00:00:00Z\",\"id\":\"c4_TimerEventDefinition\"},{\"type\":\"signal\",\"signalRef\":\"Signal_S\",\"id\":\"c4_SignalEventDefinition\"}]},{\"id\":\"c5\",\"incoming\":[],\"outgoing\":[\"Flow_c5_c6\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"intermediateCatchEvent\",\"eventDefinitions\":[{\"type\":\"link\",\"name\":\"go\",\"id\":\"c5_LinkEventDefinition\"}]},{\"id\":\"c6\",\"incoming\":[\"Flow_c5_c6\"],\"outgoing\":[\"Flow_c6_c7\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"intermediateCatchEvent\",\"eventDefinitions\":[{\"type\":\"conditional\",\"condition\":\"=a\",\"conditionAttributes\":{\"xsi:type\":\"bpmn:tFormalExpression\"},\"extensionElements\":[{\"name\":\"zeebe:conditionalFilter\",\"attributes\":{\"variableEvents\":\"update\"},\"children\":[]}],\"id\":\"c6_ConditionalEventDefinition\"}]},{\"id\":\"c7\",\"incoming\":[\"Flow_c6_c7\"],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:subscription\",\"attributes\":{\"correlationKey\":\"=nomsg\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"intermediateCatchEvent\",\"eventDefinitions\":[]}]",
+				"sequenceFlows": "[{\"id\":\"Flow_c1_c2\",\"sourceRef\":\"c1\",\"targetRef\":\"c2\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_c2_c3\",\"sourceRef\":\"c2\",\"targetRef\":\"c3\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_c3_c4\",\"sourceRef\":\"c3\",\"targetRef\":\"c4\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_c5_c6\",\"sourceRef\":\"c5\",\"targetRef\":\"c6\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_c6_c7\",\"sourceRef\":\"c6\",\"targetRef\":\"c7\",\"extensionElements\":[],\"unknownAttributes\":{}}]",
+				"extensionElements": "[]",
+				"messages": "[{\"id\":\"Message_M\",\"name\":\"M\",\"unknownAttributes\":{},\"extensionElements\":[{\"name\":\"zeebe:subscription\",\"attributes\":{\"correlationKey\":\"=k\"},\"children\":[]}]}]",
+				"errors": "[]",
+				"signals": "[{\"id\":\"Signal_S\",\"name\":\"S\"}]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "boundary events",
+			"steps": [
+				{
+					"method": "task",
+					"id": "host",
+					"args": []
+				},
+				{
+					"method": "boundaryEvent",
+					"id": "b1",
+					"args": [
+						"{\"attachedTo\":\"host\",\"timerDuration\":\"PT1H\"}"
+					]
+				},
+				{
+					"method": "boundaryEvent",
+					"id": "b2",
+					"args": [
+						"{\"attachedTo\":\"host\",\"cancelActivity\":false,\"messageName\":\"M\",\"correlationKey\":\"=k\"}"
+					]
+				},
+				{
+					"method": "boundaryEvent",
+					"id": "b3",
+					"args": [
+						"{\"attachedTo\":\"host\",\"errorCode\":\"E\"}"
+					]
+				},
+				{
+					"method": "boundaryEvent",
+					"id": "b4",
+					"args": [
+						"{\"attachedTo\":\"host\",\"signalName\":\"S\",\"name\":\"B\"}"
+					]
+				},
+				{
+					"method": "boundaryEvent",
+					"id": "b5",
+					"args": [
+						"{\"attachedTo\":\"host\",\"compensation\":true}"
+					]
+				},
+				{
+					"method": "boundaryEvent",
+					"id": "b6",
+					"args": [
+						"{\"attachedTo\":\"host\",\"condition\":\"=c\",\"conditionVariableEvents\":[\"create\"]}"
+					]
+				},
+				{
+					"method": "boundaryEvent",
+					"id": "b7",
+					"args": [
+						"{\"attachedTo\":\"host\"}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"host\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"b1\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"boundaryEvent\",\"attachedToRef\":\"host\",\"eventDefinitions\":[{\"type\":\"timer\",\"timeDuration\":\"PT1H\",\"id\":\"b1_TimerEventDefinition\"}]},{\"id\":\"b2\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"boundaryEvent\",\"attachedToRef\":\"host\",\"eventDefinitions\":[{\"type\":\"message\",\"messageRef\":\"Message_M\",\"id\":\"b2_MessageEventDefinition\"}],\"cancelActivity\":false},{\"id\":\"b3\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"boundaryEvent\",\"attachedToRef\":\"host\",\"eventDefinitions\":[{\"type\":\"error\",\"errorRef\":\"Error_E\",\"id\":\"b3_ErrorEventDefinition\"}]},{\"id\":\"b4\",\"name\":\"B\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"boundaryEvent\",\"attachedToRef\":\"host\",\"eventDefinitions\":[{\"type\":\"signal\",\"signalRef\":\"Signal_S\",\"id\":\"b4_SignalEventDefinition\"}]},{\"id\":\"b5\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"boundaryEvent\",\"attachedToRef\":\"host\",\"eventDefinitions\":[{\"type\":\"compensate\",\"id\":\"b5_CompensateEventDefinition\"}]},{\"id\":\"b6\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"boundaryEvent\",\"attachedToRef\":\"host\",\"eventDefinitions\":[{\"type\":\"conditional\",\"condition\":\"=c\",\"conditionAttributes\":{\"xsi:type\":\"bpmn:tFormalExpression\"},\"extensionElements\":[{\"name\":\"zeebe:conditionalFilter\",\"attributes\":{\"variableEvents\":\"create\"},\"children\":[]}],\"id\":\"b6_ConditionalEventDefinition\"}]},{\"id\":\"b7\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"boundaryEvent\",\"attachedToRef\":\"host\",\"eventDefinitions\":[]}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[{\"id\":\"Message_M\",\"name\":\"M\",\"unknownAttributes\":{},\"extensionElements\":[{\"name\":\"zeebe:subscription\",\"attributes\":{\"correlationKey\":\"=k\"},\"children\":[]}]}]",
+				"errors": "[{\"id\":\"Error_E\",\"name\":\"E\",\"errorCode\":\"E\"}]",
+				"signals": "[{\"id\":\"Signal_S\",\"name\":\"S\"}]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "boundary event without host",
+			"steps": [
+				{
+					"method": "boundaryEvent",
+					"id": "b",
+					"args": [
+						"{\"attachedTo\":\"\"}"
+					]
+				}
+			],
+			"error": "boundaryEvent(\"b\") requires the id of the activity it attaches to. Pass it as options.attachedTo, as boundaryEvent(\"b\", hostId, options), or use withBoundary() to attach to the preceding activity."
+		},
+		{
+			"name": "data elements",
+			"steps": [
+				{
+					"method": "dataObject",
+					"id": "do1",
+					"args": [
+						"{\"name\":\"D\",\"isCollection\":true}"
+					]
+				},
+				{
+					"method": "dataObject",
+					"id": "do2",
+					"args": []
+				},
+				{
+					"method": "dataObjectReference",
+					"id": "dr1",
+					"args": [
+						"\"do1\"",
+						"{\"name\":\"R\",\"isCollection\":true}"
+					]
+				},
+				{
+					"method": "dataObjectReference",
+					"id": "dr2",
+					"args": [
+						"\"do2\""
+					]
+				},
+				{
+					"method": "dataStoreReference",
+					"id": "ds",
+					"args": [
+						"\"store\"",
+						"{\"name\":\"S\"}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"do1\",\"name\":\"D\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"dataObject\",\"isCollection\":true},{\"id\":\"do2\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"dataObject\"},{\"id\":\"dr1\",\"name\":\"R\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"dataObjectReference\",\"dataObjectRef\":\"do1\",\"isCollection\":true},{\"id\":\"dr2\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"dataObjectReference\",\"dataObjectRef\":\"do2\"},{\"id\":\"ds\",\"name\":\"S\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"dataStoreReference\",\"dataStoreRef\":\"store\"}]",
+				"sequenceFlows": "[]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		},
+		{
+			"name": "tool grid columns error",
+			"steps": [
+				{
+					"method": "adHocSubProcess",
+					"id": "ah",
+					"args": [
+						"{\"toolGrid\":{\"columns\":2.5}}"
+					]
+				}
+			],
+			"error": "adHocSubProcess(\"ah\"): toolGrid.columns must be a positive integer, got 2.5"
+		},
+		{
+			"name": "tool grid columns zero error",
+			"steps": [
+				{
+					"method": "adHocSubProcess",
+					"id": "ah",
+					"args": [
+						"{\"toolGrid\":{\"columns\":0}}"
+					]
+				}
+			],
+			"error": "adHocSubProcess(\"ah\"): toolGrid.columns must be a positive integer, got 0"
+		},
+		{
+			"name": "linear chain finalisation",
+			"steps": [
+				{
+					"method": "startEvent",
+					"id": "start",
+					"args": []
+				},
+				{
+					"method": "serviceTask",
+					"id": "t1",
+					"args": [
+						"{\"name\":\"T1\",\"taskType\":\"a\"}"
+					]
+				},
+				{
+					"method": "endEvent",
+					"id": "end",
+					"args": [
+						"{\"errorCode\":\"BOOM\"}"
+					]
+				}
+			],
+			"ok": {
+				"flowElements": "[{\"id\":\"start\",\"incoming\":[],\"outgoing\":[\"Flow_start_t1\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"startEvent\",\"eventDefinitions\":[]},{\"id\":\"t1\",\"name\":\"T1\",\"incoming\":[\"Flow_start_t1\"],\"outgoing\":[\"Flow_t1_end\"],\"extensionElements\":[{\"name\":\"zeebe:taskDefinition\",\"attributes\":{\"type\":\"a\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"serviceTask\"},{\"id\":\"end\",\"incoming\":[\"Flow_t1_end\"],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"endEvent\",\"eventDefinitions\":[{\"type\":\"error\",\"errorRef\":\"Error_BOOM\",\"id\":\"end_ErrorEventDefinition\"}]}]",
+				"sequenceFlows": "[{\"id\":\"Flow_start_t1\",\"sourceRef\":\"start\",\"targetRef\":\"t1\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_t1_end\",\"sourceRef\":\"t1\",\"targetRef\":\"end\",\"extensionElements\":[],\"unknownAttributes\":{}}]",
+				"extensionElements": "[]",
+				"messages": "[]",
+				"errors": "[{\"id\":\"Error_BOOM\",\"name\":\"BOOM\",\"errorCode\":\"BOOM\"}]",
+				"signals": "[]",
+				"escalations": "[]"
+			}
+		}
+	],
+	"nested": {
+		"joins": "{\"id\":\"j\",\"isExecutable\":true,\"extensionElements\":[],\"flowElements\":[{\"id\":\"gw\",\"incoming\":[],\"outgoing\":[\"Flow_gw_A\",\"Flow_gw_B\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"exclusiveGateway\"},{\"id\":\"A\",\"incoming\":[\"Flow_gw_A\"],\"outgoing\":[\"Flow_A_gw_join\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"B\",\"incoming\":[\"Flow_gw_B\"],\"outgoing\":[\"Flow_B_gw_join\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"E\",\"incoming\":[\"Flow_gw_join_E\"],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"gw_join\",\"incoming\":[\"Flow_A_gw_join\",\"Flow_B_gw_join\"],\"outgoing\":[\"Flow_gw_join_E\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"exclusiveGateway\"}],\"sequenceFlows\":[{\"id\":\"Flow_gw_A\",\"sourceRef\":\"gw\",\"targetRef\":\"A\",\"name\":\"a\",\"conditionExpression\":{\"text\":\"x\",\"attributes\":{\"xsi:type\":\"bpmn:tFormalExpression\"}},\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_gw_B\",\"sourceRef\":\"gw\",\"targetRef\":\"B\",\"name\":\"b\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_A_gw_join\",\"sourceRef\":\"A\",\"targetRef\":\"gw_join\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_B_gw_join\",\"sourceRef\":\"B\",\"targetRef\":\"gw_join\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_gw_join_E\",\"sourceRef\":\"gw_join\",\"targetRef\":\"E\",\"extensionElements\":[],\"unknownAttributes\":{}}],\"textAnnotations\":[],\"associations\":[],\"groups\":[],\"unknownAttributes\":{}}",
+		"parallel": "{\"id\":\"j2\",\"isExecutable\":true,\"extensionElements\":[],\"flowElements\":[{\"id\":\"fork\",\"incoming\":[],\"outgoing\":[\"Flow_fork_A\",\"Flow_fork_B\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"parallelGateway\"},{\"id\":\"A\",\"incoming\":[\"Flow_fork_A\"],\"outgoing\":[\"Flow_A_join\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"B\",\"incoming\":[\"Flow_fork_B\"],\"outgoing\":[\"Flow_B_join\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"join\",\"incoming\":[\"Flow_A_join\",\"Flow_B_join\"],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"parallelGateway\"}],\"sequenceFlows\":[{\"id\":\"Flow_fork_A\",\"sourceRef\":\"fork\",\"targetRef\":\"A\",\"name\":\"a\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_fork_B\",\"sourceRef\":\"fork\",\"targetRef\":\"B\",\"name\":\"b\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_A_join\",\"sourceRef\":\"A\",\"targetRef\":\"join\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_B_join\",\"sourceRef\":\"B\",\"targetRef\":\"join\",\"extensionElements\":[],\"unknownAttributes\":{}}],\"textAnnotations\":[],\"associations\":[],\"groups\":[],\"unknownAttributes\":{}}",
+		"eventBased": "{\"id\":\"j3\",\"isExecutable\":true,\"extensionElements\":[],\"flowElements\":[{\"id\":\"eb\",\"incoming\":[],\"outgoing\":[\"Flow_eb_C1\",\"Flow_eb_C2\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"eventBasedGateway\"},{\"id\":\"C1\",\"incoming\":[\"Flow_eb_C1\"],\"outgoing\":[\"Flow_C1_A\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"intermediateCatchEvent\",\"eventDefinitions\":[{\"type\":\"timer\",\"timeDuration\":\"PT1M\",\"id\":\"C1_TimerEventDefinition\"}]},{\"id\":\"A\",\"incoming\":[\"Flow_C1_A\"],\"outgoing\":[\"Flow_A_eb_join\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"C2\",\"incoming\":[\"Flow_eb_C2\"],\"outgoing\":[\"Flow_C2_B\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"intermediateCatchEvent\",\"eventDefinitions\":[{\"type\":\"message\",\"messageRef\":\"Message_m\",\"id\":\"C2_MessageEventDefinition\"}]},{\"id\":\"B\",\"incoming\":[\"Flow_C2_B\"],\"outgoing\":[\"Flow_B_eb_join\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"Z\",\"incoming\":[\"Flow_eb_join_Z\"],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"eb_join\",\"incoming\":[\"Flow_A_eb_join\",\"Flow_B_eb_join\"],\"outgoing\":[\"Flow_eb_join_Z\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"exclusiveGateway\"}],\"sequenceFlows\":[{\"id\":\"Flow_eb_C1\",\"sourceRef\":\"eb\",\"targetRef\":\"C1\",\"name\":\"a\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_C1_A\",\"sourceRef\":\"C1\",\"targetRef\":\"A\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_eb_C2\",\"sourceRef\":\"eb\",\"targetRef\":\"C2\",\"name\":\"b\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_C2_B\",\"sourceRef\":\"C2\",\"targetRef\":\"B\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_A_eb_join\",\"sourceRef\":\"A\",\"targetRef\":\"eb_join\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_B_eb_join\",\"sourceRef\":\"B\",\"targetRef\":\"eb_join\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_eb_join_Z\",\"sourceRef\":\"eb_join\",\"targetRef\":\"Z\",\"extensionElements\":[],\"unknownAttributes\":{}}],\"textAnnotations\":[],\"associations\":[],\"groups\":[],\"unknownAttributes\":{}}",
+		"sub": {
+			"process": "{\"id\":\"n\",\"isExecutable\":true,\"extensionElements\":[{\"name\":\"zeebe:userTaskForm\",\"attributes\":{\"id\":\"nf\"},\"children\":[],\"text\":\"SCHEMA\"}],\"flowElements\":[{\"id\":\"sp\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"subProcess\",\"flowElements\":[{\"id\":\"u\",\"incoming\":[],\"outgoing\":[\"Flow_u_r\"],\"extensionElements\":[{\"name\":\"zeebe:formDefinition\",\"attributes\":{\"formKey\":\"camunda-forms:bpmn:nf\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"userTask\"},{\"id\":\"r\",\"incoming\":[\"Flow_u_r\"],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"receiveTask\",\"messageRef\":\"Message_Nested\"}],\"sequenceFlows\":[{\"id\":\"Flow_u_r\",\"sourceRef\":\"u\",\"targetRef\":\"r\",\"extensionElements\":[],\"unknownAttributes\":{}}],\"textAnnotations\":[],\"associations\":[],\"groups\":[]}],\"sequenceFlows\":[],\"textAnnotations\":[],\"associations\":[],\"groups\":[],\"unknownAttributes\":{}}",
+			"messages": "[{\"id\":\"Message_Nested\",\"name\":\"Nested\",\"unknownAttributes\":{},\"extensionElements\":[{\"name\":\"zeebe:subscription\",\"attributes\":{\"correlationKey\":\"=k\"},\"children\":[]}]}]"
+		}
+	}
+}
