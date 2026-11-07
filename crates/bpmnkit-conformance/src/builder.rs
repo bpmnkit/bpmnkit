@@ -312,6 +312,12 @@ fn replay_process(
     ops: &[J],
 ) -> Option<Result<BpmnDefinitions, BuildError>> {
     for op in ops {
+        let items = op.items();
+        // `["$let", name, "build", opts?]`: an intermediate build; only the last is compared.
+        if items[0].str() == "$let" && items[2].str() == "build" {
+            let _ = b.build(opt(items.get(3)));
+            continue;
+        }
         match split(op) {
             ("build", a) => return Some(b.build(opt(a.first()))),
             ("at", a) => done(b.at(a[0].str())),
