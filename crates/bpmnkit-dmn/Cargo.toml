@@ -5,11 +5,17 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-publish = false
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["dmn", "decision", "feel", "camunda", "parser"]
+categories = ["parser-implementations", "encoding"]
+# Tests and benches read the shared corpus under ../../conformance, outside the package.
+exclude = ["tests/", "benches/"]
 
 [dependencies]
-bpmnkit-feel = { path = "../bpmnkit-feel", default-features = false }
-bpmnkit-xml = { path = "../bpmnkit-xml" }
+bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.1.0", default-features = false }
+bpmnkit-xml = { workspace = true }
 indexmap = { workspace = true }
 serde = { workspace = true }
 
@@ -20,7 +26,7 @@ tz = ["bpmnkit-feel/tz"]
 full-regex = ["bpmnkit-feel/full-regex"]
 
 [dev-dependencies]
-bpmnkit-spec = { path = "../bpmnkit-spec" }
+bpmnkit-spec = { workspace = true }
 serde_json = { workspace = true, features = ["float_roundtrip"] }
 
 [[bench]]

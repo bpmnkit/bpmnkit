@@ -5,11 +5,17 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-publish = false
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["bpmn", "dmn", "layout", "diagram", "camunda"]
+categories = ["visualization", "algorithms"]
+# Tests and benches read the shared corpus under ../../conformance, outside the package.
+exclude = ["tests/", "benches/"]
 
 [dependencies]
-bpmnkit-bpmn = { path = "../bpmnkit-bpmn" }
-bpmnkit-dmn = { path = "../bpmnkit-dmn" }
+bpmnkit-bpmn = { workspace = true }
+bpmnkit-dmn = { workspace = true }
 indexmap = { workspace = true }
 
 [dev-dependencies]

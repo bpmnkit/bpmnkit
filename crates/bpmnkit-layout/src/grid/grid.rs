@@ -2,7 +2,7 @@
 //!
 //! Sparse row/column grid used by the grid layout engine. Port of bpmn-io
 //! bpmn-auto-layout's Grid (lib/Grid.js) with two fixes: an explicit optional
-//! position (upstream conflated [0,0] with "no position") and a working row-splice
+//! position (upstream conflated `[0,0]` with "no position") and a working row-splice
 //! guard.
 
 /// `Grid<T>`. Cells compare by `PartialEq` where TS compares object identity, so the

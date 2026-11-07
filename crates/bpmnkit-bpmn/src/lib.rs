@@ -4,6 +4,24 @@
 //!
 //! Also the small helpers the builder (`bpmnkit-builder`) and text formats (`bpmnkit-text`)
 //! share: `element-shape.ts`, `stable-ids.ts`, `rest-connector.ts` and `plan/slug.ts`.
+//!
+//! ```
+//! use bpmnkit_bpmn::{parse_bpmn, serialize_bpmn};
+//!
+//! let xml = r#"<?xml version="1.0" encoding="UTF-8"?>
+//! <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+//!   <bpmn:process id="p" isExecutable="true">
+//!     <bpmn:startEvent id="s"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
+//!     <bpmn:endEvent id="e"><bpmn:incoming>f1</bpmn:incoming></bpmn:endEvent>
+//!     <bpmn:sequenceFlow id="f1" sourceRef="s" targetRef="e"/>
+//!   </bpmn:process>
+//! </bpmn:definitions>"#;
+//! let definitions = parse_bpmn(xml).unwrap();
+//! assert_eq!(definitions.processes.len(), 1);
+//! // Unknown attributes, prefixes and extension elements survive the round trip.
+//! let again = parse_bpmn(&serialize_bpmn(&definitions)).unwrap();
+//! assert_eq!(again, definitions);
+//! ```
 
 pub mod element_shape;
 pub mod ids;

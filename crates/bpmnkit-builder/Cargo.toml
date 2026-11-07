@@ -5,13 +5,19 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-publish = false
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["bpmn", "dmn", "builder", "camunda", "workflow"]
+categories = ["development-tools", "data-structures"]
+# Tests and benches read the shared corpus under ../../conformance, outside the package.
+exclude = ["tests/", "benches/"]
 
 [dependencies]
-bpmnkit-bpmn = { path = "../bpmnkit-bpmn" }
-bpmnkit-dmn = { path = "../bpmnkit-dmn" }
-bpmnkit-layout = { path = "../bpmnkit-layout" }
-bpmnkit-xml = { path = "../bpmnkit-xml" }
+bpmnkit-bpmn = { workspace = true }
+bpmnkit-dmn = { workspace = true }
+bpmnkit-layout = { workspace = true }
+bpmnkit-xml = { workspace = true }
 indexmap = { workspace = true }
 serde = { workspace = true }
 

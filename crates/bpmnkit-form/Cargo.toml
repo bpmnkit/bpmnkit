@@ -5,10 +5,16 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-publish = false
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["camunda", "form", "bpmn", "parser", "json"]
+categories = ["parser-implementations", "encoding"]
+# Tests and benches read the shared corpus under ../../conformance, outside the package.
+exclude = ["tests/", "benches/"]
 
 [dependencies]
-bpmnkit-spec = { path = "../bpmnkit-spec" }
+bpmnkit-spec = { workspace = true }
 indexmap = { workspace = true }
 serde = { workspace = true }
 # float_roundtrip: JS parses decimals to the nearest double, serde_json's fast path may not.

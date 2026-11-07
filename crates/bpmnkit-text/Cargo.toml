@@ -5,14 +5,20 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-publish = false
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["bpmn", "dmn", "text", "camunda", "llm"]
+categories = ["parser-implementations", "text-processing"]
+# Tests and benches read the shared corpus under ../../conformance, outside the package.
+exclude = ["tests/", "benches/"]
 
 [dependencies]
-bpmnkit-bpmn = { path = "../bpmnkit-bpmn" }
-bpmnkit-dmn = { path = "../bpmnkit-dmn" }
-bpmnkit-feel = { path = "../bpmnkit-feel" }
-bpmnkit-layout = { path = "../bpmnkit-layout" }
-bpmnkit-xml = { path = "../bpmnkit-xml" }
+bpmnkit-bpmn = { workspace = true }
+bpmnkit-dmn = { workspace = true }
+bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.1.0" }
+bpmnkit-layout = { workspace = true }
+bpmnkit-xml = { workspace = true }
 indexmap = { workspace = true }
 regex = { version = "1", default-features = false, features = ["std", "unicode-perl", "unicode-case", "unicode-gencat"] }
 serde = { workspace = true }

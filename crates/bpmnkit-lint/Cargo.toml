@@ -5,16 +5,22 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-publish = false
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["bpmn", "lint", "dmn", "camunda", "bpmnlint"]
+categories = ["development-tools"]
+# Tests and benches read the shared corpus under ../../conformance, outside the package.
+exclude = ["tests/", "benches/"]
 
 [dependencies]
-bpmnkit-bpmn = { path = "../bpmnkit-bpmn" }
-bpmnkit-compat = { path = "../bpmnkit-compat" }
-bpmnkit-dmn = { path = "../bpmnkit-dmn" }
-bpmnkit-feel = { path = "../bpmnkit-feel" }
-bpmnkit-form = { path = "../bpmnkit-form" }
-bpmnkit-spec = { path = "../bpmnkit-spec" }
-bpmnkit-xml = { path = "../bpmnkit-xml" }
+bpmnkit-bpmn = { workspace = true }
+bpmnkit-compat = { workspace = true }
+bpmnkit-dmn = { workspace = true }
+bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.1.0" }
+bpmnkit-form = { workspace = true }
+bpmnkit-spec = { workspace = true }
+bpmnkit-xml = { workspace = true }
 indexmap = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }

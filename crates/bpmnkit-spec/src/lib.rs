@@ -1,6 +1,13 @@
 //! BPMN Kit's single-source data. `spec/` at the repository root holds it as
 //! JSON; `pnpm spec:gen` writes the `generated` modules here and the matching
 //! TypeScript in the packages, so neither side copies a table by hand.
+//!
+//! ```
+//! use bpmnkit_spec::{feel::FEEL_BUILTINS, templates::CONNECTOR_TEMPLATES_JSON};
+//!
+//! assert!(FEEL_BUILTINS.iter().any(|b| b.name == "abs"));
+//! assert!(CONNECTOR_TEMPLATES_JSON.trim_start().starts_with('['));
+//! ```
 
 pub mod compat;
 pub mod elements;

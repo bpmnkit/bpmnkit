@@ -1,8 +1,8 @@
-//! The Camunda connector templates (`spec/templates/connectors.json`), embedded as JSON text.
+//! The Camunda connector templates (`spec/templates/connectors.json`, vendored to `data/connectors.json` by `pnpm spec:gen` so the crate packages on its own), embedded as JSON text.
 //! Too large to turn into Rust literals; callers parse it on demand.
 
 /// A JSON array of element templates, each with at least `id`, `name` and `properties`.
-pub const CONNECTOR_TEMPLATES_JSON: &str = include_str!("../../../spec/templates/connectors.json");
+pub const CONNECTOR_TEMPLATES_JSON: &str = include_str!("../data/connectors.json");
 
 #[cfg(test)]
 mod tests {

@@ -9,6 +9,10 @@ version = "0.1.0"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/bpmnkit/bpmnkit"
+homepage = "https://bpmnkit.com"
+# Highest MSRV among the dependencies as resolved (indexmap 2.14 / hashbrown 0.17: 1.85).
+# `clippy::incompatible_msrv` checks our own std usage against it.
+rust-version = "1.85"
 
 [workspace.dependencies]
 serde = { version = "1", features = ["derive"] }
@@ -16,3 +20,17 @@ serde_json = "1"
 indexmap = { version = "2", features = ["serde"] }
 # Same version as apps/reebe (reebe-bpmn, reebe-dmn), so reebe builds one copy.
 quick-xml = "0.36"
+
+# Internal crates: lockstep versions (see doc/rust-crates-release.md). `path` for the workspace,
+# `version` for crates.io. bpmnkit-feel is declared inline in each member instead, because
+# members differ on `default-features` (a workspace entry cannot be overridden to `false`).
+bpmnkit-spec = { path = "crates/bpmnkit-spec", version = "0.1.0" }
+bpmnkit-xml = { path = "crates/bpmnkit-xml", version = "0.1.0" }
+bpmnkit-bpmn = { path = "crates/bpmnkit-bpmn", version = "0.1.0" }
+bpmnkit-dmn = { path = "crates/bpmnkit-dmn", version = "0.1.0" }
+bpmnkit-form = { path = "crates/bpmnkit-form", version = "0.1.0" }
+bpmnkit-compat = { path = "crates/bpmnkit-compat", version = "0.1.0" }
+bpmnkit-lint = { path = "crates/bpmnkit-lint", version = "0.1.0" }
+bpmnkit-layout = { path = "crates/bpmnkit-layout", version = "0.1.0" }
+bpmnkit-builder = { path = "crates/bpmnkit-builder", version = "0.1.0" }
+bpmnkit-text = { path = "crates/bpmnkit-text", version = "0.1.0" }

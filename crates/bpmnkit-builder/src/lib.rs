@@ -4,6 +4,18 @@
 //!
 //! TS throws at the call that went wrong; here the first error is kept and returned by
 //! `build()` (see `shared.rs`), and every call after it does nothing.
+//!
+//! ```
+//! use bpmnkit_builder::Bpmn;
+//! use bpmnkit_bpmn::serialize_bpmn;
+//!
+//! let definitions = Bpmn::create_process("order")
+//!     .start_event(Some("start"), None)
+//!     .end_event(Some("end"), None)
+//!     .build(None)
+//!     .unwrap();
+//! assert!(serialize_bpmn(&definitions).contains(r#"<bpmn:process id="order""#));
+//! ```
 
 pub mod branch;
 pub mod diagram;

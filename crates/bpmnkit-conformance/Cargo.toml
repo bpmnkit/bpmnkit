@@ -10,13 +10,13 @@ publish = false
 [dependencies]
 serde = { workspace = true }
 serde_json = { workspace = true, features = ["float_roundtrip"] }
-bpmnkit-feel = { path = "../bpmnkit-feel" }
-bpmnkit-bpmn = { path = "../bpmnkit-bpmn" }
-bpmnkit-form = { path = "../bpmnkit-form" }
-bpmnkit-dmn = { path = "../bpmnkit-dmn" }
-bpmnkit-compat = { path = "../bpmnkit-compat" }
-bpmnkit-lint = { path = "../bpmnkit-lint" }
-bpmnkit-layout = { path = "../bpmnkit-layout" }
-bpmnkit-builder = { path = "../bpmnkit-builder" }
-bpmnkit-text = { path = "../bpmnkit-text" }
+bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.1.0" }
+bpmnkit-bpmn = { workspace = true }
+bpmnkit-form = { workspace = true }
+bpmnkit-dmn = { workspace = true }
+bpmnkit-compat = { workspace = true }
+bpmnkit-lint = { workspace = true }
+bpmnkit-layout = { workspace = true }
+bpmnkit-builder = { workspace = true }
+bpmnkit-text = { workspace = true }
 indexmap = { workspace = true }

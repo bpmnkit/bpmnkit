@@ -1,6 +1,26 @@
 //! Lint and optimize: the Rust twin of `@bpmnkit/core`'s `optimize/`, `lint.ts`,
 //! `bpmnlint.ts`, `dmn/lint.ts` and `form/lint.ts`. TS is the oracle:
 //! `conformance/lint/` and `conformance/optimize/` pin the output.
+//!
+//! ```
+//! use bpmnkit_bpmn::parse_bpmn;
+//! use bpmnkit_lint::lint::{lint_diagram, LintOptions};
+//!
+//! let xml = r#"<?xml version="1.0" encoding="UTF-8"?>
+//! <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+//!   <bpmn:process id="p" isExecutable="true">
+//!     <bpmn:startEvent id="s"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
+//!     <bpmn:endEvent id="e"><bpmn:incoming>f1</bpmn:incoming></bpmn:endEvent>
+//!     <bpmn:sequenceFlow id="f1" sourceRef="s" targetRef="e"/>
+//!   </bpmn:process>
+//! </bpmn:definitions>"#;
+//! let definitions = parse_bpmn(xml).unwrap();
+//! let report = lint_diagram(&definitions, LintOptions::default());
+//! for d in &report.diagnostics {
+//!     println!("{} {}: {}", d.id, d.process_id, d.message);
+//! }
+//! assert_eq!(report.total, report.diagnostics.len());
+//! ```
 
 pub mod bpmnlint;
 pub mod bpmnlint_rules;

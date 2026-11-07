@@ -480,7 +480,7 @@ fn encode_base64(bytes: &[u8]) -> String {
 /// Decodes padded base64, or `None` when the text is not base64.
 fn decode_base64(s: &str) -> Option<Vec<u8>> {
     let b = s.as_bytes();
-    if !b.len().is_multiple_of(4) {
+    if b.len() % 4 != 0 {
         return None;
     }
     let pad = b.iter().rev().take_while(|&&c| c == b'=').count();

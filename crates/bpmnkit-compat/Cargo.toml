@@ -5,13 +5,19 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
-publish = false
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["camunda", "bpmn", "migration", "compatibility", "zeebe"]
+categories = ["development-tools", "parser-implementations"]
+# Tests and benches read the shared corpus under ../../conformance, outside the package.
+exclude = ["tests/", "benches/"]
 
 [dependencies]
-bpmnkit-bpmn = { path = "../bpmnkit-bpmn" }
-bpmnkit-feel = { path = "../bpmnkit-feel" }
-bpmnkit-spec = { path = "../bpmnkit-spec" }
-bpmnkit-xml = { path = "../bpmnkit-xml" }
+bpmnkit-bpmn = { workspace = true }
+bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.1.0" }
+bpmnkit-spec = { workspace = true }
+bpmnkit-xml = { workspace = true }
 indexmap = { workspace = true }
 serde = { workspace = true }
 

@@ -114,3 +114,6 @@ jobs:
 
       - name: Test (conformance + spec data)
         run: cargo test --workspace
+
+      - name: Crate metadata (crates.io)
+        run: node scripts/crates-publish.mjs --check

@@ -105,7 +105,7 @@ fn round_float64((neg, digits, exp): (bool, String, i64)) -> (bool, String, i64)
 }
 
 /// Decimal equality on string representations, to float64's precision (see
-/// [`FLOAT64_DIGITS`]); unparsable input falls back to string equality.
+/// `FLOAT64_DIGITS`); unparsable input falls back to string equality.
 pub fn decimal_eq(a: &str, b: &str) -> bool {
     match (normalize(a), normalize(b)) {
         (Some(x), Some(y)) => x == y || round_float64(x) == round_float64(y),

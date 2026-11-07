@@ -7,6 +7,16 @@
 //! entity decoding (the five predefined entities and character references; anything else is kept
 //! as written), CDATA kept raw, comments and processing instructions dropped, text concatenated
 //! per element, and everything after the root element ignored.
+//!
+//! ```
+//! use bpmnkit_xml::{parse_xml, serialize_xml};
+//!
+//! let root = parse_xml(r#"<a:root xmlns:a="urn:x" b="1"><a:child>t</a:child></a:root>"#).unwrap();
+//! assert_eq!(root.name, "a:root"); // prefixes are kept, not resolved
+//! assert_eq!(root.local_name(), "root");
+//! assert_eq!(root.attr("b"), Some("1"));
+//! assert!(serialize_xml(&root).contains("<a:child>t</a:child>"));
+//! ```
 
 use indexmap::IndexMap;
 use quick_xml::events::{BytesStart, Event};

@@ -5,11 +5,16 @@ version.workspace = true
 edition.workspace = true
 license.workspace = true
 repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
 keywords = ["feel", "dmn", "bpmn", "camunda", "expression"]
-publish = false
+categories = ["parser-implementations", "data-structures"]
+# Tests and benches read the shared corpus under ../../conformance, outside the package.
+exclude = ["tests/", "benches/"]
 
 [dependencies]
-bpmnkit-spec = { path = "../bpmnkit-spec" }
+bpmnkit-spec = { workspace = true }
 chrono = "0.4"
 chrono-tz = { version = "0.10", optional = true }
 indexmap = "2"

@@ -3,11 +3,17 @@
 // - @bpmnkit/core/connectors gets what binds, conditions, validates or describes a value;
 // - @bpmnkit/connectors gets the rest, which only a property panel draws (icons, groups,
 //   tooltips, placeholders), and puts the full template back together at load time.
+import { readFileSync } from "node:fs"
+import { dirname, join } from "node:path"
+import { fileURLToPath } from "node:url"
+
 export const source = "spec/templates/connectors.json"
 export const schema = "spec/schema/connector-templates.schema.json"
 
 export const REGISTRY_URL = "https://marketplace.cloud.camunda.io/api/v1/ootb-connectors"
 export const CORE_FILE = "packages/core/src/connectors/templates/generated.ts"
+// A byte-identical copy inside the crate: `cargo package` cannot reach ../../../spec.
+export const RUST_FILE = "crates/bpmnkit-spec/data/connectors.json"
 export const PANEL_FILE = "packages/connectors/src/templates/generated.ts"
 
 const CORE_START = "export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = "
@@ -53,7 +59,9 @@ export function generate(templates) {
 		null,
 		2,
 	)
+	const raw = readFileSync(join(dirname(fileURLToPath(import.meta.url)), "../..", source), "utf8")
 	return {
+		[RUST_FILE]: raw,
 		[CORE_FILE]: `${HEADER}
 // Without icons, groups, tooltips and placeholders: @bpmnkit/connectors adds them back.
 import type { ElementTemplate } from "../template-types.js";

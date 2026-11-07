@@ -1,0 +1,69 @@
+name: Release crates
+
+# Publishes the bpmnkit-* Rust crates to crates.io (doc/rust-crates-release.md). A run without
+# `publish` only verifies: it packages and builds every crate from its .crate file.
+on:
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish to crates.io after the checks pass
+        type: boolean
+        default: false
+
+concurrency:
+  group: release-crates
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+
+      - name: Vendored spec data is current
+        run: node scripts/spec-gen.mjs --check
+
+      - name: Crate metadata
+        run: node scripts/crates-publish.mjs --check
+
+      - name: Test
+        run: cargo test --workspace
+
+      - name: Publish dry run
+        run: node scripts/crates-publish.mjs --dry-run
+
+  publish:
+    name: Publish
+    if: inputs.publish
+    needs: verify
+    runs-on: ubuntu-latest
+    # Manual approval gate: configure required reviewers on the `crates-io` environment.
+    environment: crates-io
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Publish
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: |
+          if [ -z "$CARGO_REGISTRY_TOKEN" ]; then
+            echo "::error::Secret CARGO_REGISTRY_TOKEN is empty. Add it to the crates-io environment."
+            exit 1
+          fi
+          node scripts/crates-publish.mjs --publish
