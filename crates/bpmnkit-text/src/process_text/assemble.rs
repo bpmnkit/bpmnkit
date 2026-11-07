@@ -6,8 +6,8 @@
 //! - TS's locals become [`Assembly`] fields; its closures (`typeOf`, `nameOf`, `add`,
 //!   `outOf`, `into`) become methods. `asks` hold closures run after everything, so a
 //!   question sees the final names: [`Ask::ask`] gets the finished `Assembly`.
-//! - `assemble` copies `reader.nodes` but MUTATES `reader.edges` (a boundary drawn into by
-//!   its host is spliced out), and that persists across stream frames. Hence `&mut Reader`.
+//! - `assemble` copies `reader.nodes` and `reader.edges` (`edges_read`, from which a
+//!   boundary drawn into by its host is spliced out), so stream frames leave the reader as read.
 //! - JS `Map` order: `nodes.delete` is `shift_remove`; re-adding a deleted key appends.
 //! - TS compares edges by identity; here they are indices into the current `edges`, and
 //!   every removal happens after the indices it was computed with are used.
@@ -606,7 +606,7 @@ impl Assembly {
 
     /// Boundary events keep a host that is an activity in this process; `send >
     /// wait[boundary:timer …]` without `on=` takes the one task drawn into it.
-    fn attach_boundaries(&mut self, reader: &mut Reader) {
+    fn attach_boundaries(&mut self, edges: &mut Vec<Edge>) {
         for id in self.node_ids() {
             let Some(node) = self.nodes.get(&id) else {
                 continue;
@@ -616,14 +616,12 @@ impl Assembly {
             }
             let line = node.line;
             let drawn: Vec<usize> = if node.on.is_none() {
-                (0..reader.edges.len())
-                    .filter(|&i| reader.edges[i].to == id)
-                    .collect()
+                (0..edges.len()).filter(|&i| edges[i].to == id).collect()
             } else {
                 vec![]
             };
             if let [only] = drawn[..] {
-                let from = self.nodes.get(&reader.edges[only].from);
+                let from = self.nodes.get(&edges[only].from);
                 if let Some(from) =
                     from.filter(|f| !node_is(f, is_event) && !node_is(f, is_gateway))
                 {
@@ -631,7 +629,7 @@ impl Assembly {
                     if let Some(node) = self.nodes.get_mut(&id) {
                         node.on = Some(host.clone());
                     }
-                    reader.edges.remove(only);
+                    edges.remove(only);
                     self.fixes.push(format!(
                         "put boundary \"{id}\" on \"{host}\", the task drawn into it"
                     ));
@@ -746,6 +744,7 @@ impl Assembly {
 /// notify`) means the path that boundary leads to: nothing can flow into a boundary.
 fn redirect_into_boundaries(
     reader: &Reader,
+    edges_read: &[Edge],
     outside: Vec<Edge>,
     final_: bool,
     fixes: &mut Vec<String>,
@@ -764,7 +763,7 @@ fn redirect_into_boundaries(
         if target.on.as_deref() == Some(edge.from.as_str()) {
             continue;
         }
-        let next: Vec<&Edge> = reader.edges.iter().filter(|o| o.from == edge.to).collect();
+        let next: Vec<&Edge> = edges_read.iter().filter(|o| o.from == edge.to).collect();
         if next.is_empty() {
             written.push(edge);
             continue;
@@ -786,7 +785,9 @@ fn redirect_into_boundaries(
 }
 
 /// TS's `assemble(reader, final)`.
-pub(crate) fn assemble(reader: &mut Reader, final_: bool) -> ProcessTextResult {
+pub(crate) fn assemble(reader: &Reader, final_: bool) -> ProcessTextResult {
+    // A copy: a stream assembles every frame from the same reader, which must stay as read
+    let mut edges_read = reader.edges.clone();
     let mut a = Assembly {
         final_,
         problems: reader.problems.clone(),
@@ -822,9 +823,8 @@ pub(crate) fn assemble(reader: &mut Reader, final_: bool) -> ProcessTextResult {
     a.take_children(reader);
     let inside_ids: IndexSet<String> = a.child_nodes.iter().map(|n| n.element.id.clone()).collect();
     // Flows would make the task run in the main path, which an ad-hoc tool does not.
-    // Cloned before `attach_boundaries` splices `reader.edges`, as TS's arrays are.
-    let (flowing, outside): (Vec<Edge>, Vec<Edge>) = reader
-        .edges
+    // Cloned before `attach_boundaries` splices `edges_read`, as TS's arrays are.
+    let (flowing, outside): (Vec<Edge>, Vec<Edge>) = edges_read
         .iter()
         .cloned()
         .partition(|e| inside_ids.contains(&e.from) || inside_ids.contains(&e.to));
@@ -848,8 +848,8 @@ pub(crate) fn assemble(reader: &mut Reader, final_: bool) -> ProcessTextResult {
         }
     }
 
-    a.attach_boundaries(reader);
-    let written = redirect_into_boundaries(reader, outside, final_, &mut a.fixes);
+    a.attach_boundaries(&mut edges_read);
+    let written = redirect_into_boundaries(reader, &edges_read, outside, final_, &mut a.fixes);
     a.keep_edges(reader, written);
 
     if final_ {
@@ -1084,7 +1084,7 @@ mod tests {
         .into_iter()
         .collect();
         reader.edges = vec![edge("t", "e")];
-        let result = assemble(&mut reader, true);
+        let result = assemble(&reader, true);
         let process = &result.diagram.processes[0];
         assert_eq!(process.id, "My_process");
         assert_eq!(process.name.as_deref(), Some("My process"));
@@ -1107,7 +1107,7 @@ mod tests {
         let mut reader = Reader::new();
         reader.nodes = [node("s", T::StartEvent, "Go")].into_iter().collect();
         reader.edges = vec![edge("s", "later")];
-        let result = assemble(&mut reader, false);
+        let result = assemble(&reader, false);
         let process = &result.diagram.processes[0];
         assert_eq!(process.id, "Process_1");
         assert!(process.flows.is_empty());

@@ -7,7 +7,7 @@ successful >(yes) emergency_repair_completed[end Emergency repair completed]
 successful >(no) replace_fridge
 service_level >(Standard) perform_repair_standard_level[user Perform repair (standard level)] > repair_completed[end Repair completed]
 service_level >(Premium: Service Level == 'Premium') perform_repair_premium_level[user Perform repair (premium level)] > repair_completed
-boundary_2_hours[boundary:timer 2 hours | on=perform_repair_premium_level] > perform_emergency_repair
+boundary_2_hours[boundary:timer 2 hours | on=perform_repair_premium_level after=PT2H] > perform_emergency_repair
 boundary[boundary:message | on=perform_repair_standard_level] > perform_repair_premium_level
 doc analyse_customer_request: First contact with customer
 doc replace_fridge: Fridge replaced if still under warranty.

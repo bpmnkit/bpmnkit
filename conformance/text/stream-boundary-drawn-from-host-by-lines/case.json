@@ -1,0 +1,7 @@
+{
+	"chunks": [
+		"s[start] > t[task Work] > e[end]\n",
+		"t > w[boundary:timer Late | after=5m] > h[task Handle] > x[end]\n",
+		"note h: runs once the timer fires\n"
+	]
+}

@@ -1,0 +1,96 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "a",
+            "name": "constructor X",
+            "type": "task"
+          },
+          {
+            "id": "b",
+            "name": "__proto__ Y",
+            "type": "task"
+          },
+          {
+            "id": "c",
+            "name": "toString Z",
+            "type": "task"
+          },
+          {
+            "id": "d",
+            "name": "hasOwnProperty W",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "a"
+          },
+          {
+            "from": "a",
+            "id": "Flow_2",
+            "to": "b"
+          },
+          {
+            "from": "b",
+            "id": "Flow_3",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "id": "Flow_4",
+            "to": "d"
+          },
+          {
+            "from": "d",
+            "id": "Flow_5",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "unknown kind \"constructor\" for \"a\"; used task"
+    },
+    {
+      "line": 1,
+      "message": "unknown kind \"__proto__\" for \"b\"; used task"
+    },
+    {
+      "line": 1,
+      "message": "unknown kind \"tostring\" for \"c\"; used task"
+    },
+    {
+      "line": 1,
+      "message": "unknown kind \"hasownproperty\" for \"d\"; used task"
+    },
+    {
+      "line": 2,
+      "message": "expected \">\" at \"Do it > e\""
+    }
+  ],
+  "questions": []
+}

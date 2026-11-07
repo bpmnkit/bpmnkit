@@ -288,10 +288,20 @@ function handles(element: CompactElement | undefined): boolean {
 	return HANDLING.test(element.name ?? "") || HANDLING.test(element.id.replace(/[_.-]+/g, " "))
 }
 
+/**
+ * The type a kind word names, or `undefined`. Own keys only: `KINDS["constructor"]`
+ * would find `Object.prototype`'s member and make a node whose type is a function.
+ */
+export function kindOf(word: string): BpmnElementType | undefined {
+	if (Object.hasOwn(KINDS, word)) return KINDS[word]
+	if (Object.hasOwn(ALIASES, word)) return ALIASES[word]
+	return undefined
+}
+
 /** The type a bare id suggests, for a node written without a kind or never declared. */
 function typeFromId(id: string): BpmnElementType {
 	// `pick > and`, `and > dispatch`: the kind written as if it were an id.
-	const kind = KINDS[id.toLowerCase()] ?? ALIASES[id.toLowerCase()]
+	const kind = kindOf(id.toLowerCase())
 	if (kind !== undefined && GATEWAYS.has(kind)) return kind
 	if (/^start/i.test(id)) return "startEvent"
 	if (/^(end|done|finish)/i.test(id)) return "endEvent"
@@ -365,7 +375,7 @@ export function tokenizePath(text: string): PathTokens | { error: string } {
 		// `… > xor Notify sales? >(Yes: …)`: a kind and a name without brackets, after an
 		// arrow. At the start of a line it is more likely prose ("end of the answer").
 		const bare =
-			refs.length > 0 && KINDS[id] !== undefined
+			refs.length > 0 && Object.hasOwn(KINDS, id)
 				? /^ +([^[\]()>|]+?)(?=\s*(?:-{0,2}>|$))/.exec(text.slice(i))
 				: null
 		if (bare?.[1]) {
@@ -661,7 +671,7 @@ class Reader {
 			// `and[kind and]` or `ord[id=ord kind=start]` annotate the node already
 			// there, and `validate[xor …] > …` restarts from it.
 			const word = spec.split(/[\s|]/, 1)[0]?.toLowerCase().split(":")[0] ?? ""
-			const kind = KINDS[word] ?? ALIASES[word]
+			const kind = kindOf(word)
 			// A boundary is always new: it cannot be a revision of the task it sits on.
 			// `send[…] > send[post Slack message to #support]`: a name of several words
 			// after an arrow is a second node, whatever its kind word
@@ -703,7 +713,7 @@ class Reader {
 		const name = space < 0 ? undefined : head.slice(space + 1).trim() || undefined
 		const [kind = "", trigger] = kindWord.toLowerCase().split(":")
 
-		let type = KINDS[kind] ?? ALIASES[kind]
+		let type = kindOf(kind)
 		let label = name
 		if (type === undefined) {
 			// Most often the kind was left out (`start[Order placed]`): the whole
@@ -839,7 +849,16 @@ class Reader {
 		if (feel !== undefined) {
 			// `calc[task Count open issues | feel=…]`: a step that evaluates FEEL is a script task
 			if (element.type === "task") element.type = "scriptTask"
-			if (element.type === "scriptTask") {
+			if (EVENTS.has(element.type) && element.eventType === "conditional") {
+				// `ready[catch:conditional | feel=stock > 0]`: the condition it waits for
+				element.condition = feel
+				if (parseExpression(feel.slice(1)).errors.length > 0) {
+					this.problems.push({
+						line: n,
+						message: `feel= on "${id}" is not FEEL; kept for the reader to correct`,
+					})
+				}
+			} else if (element.type === "scriptTask") {
 				element.script = feel
 				element.resultVariable ??= id
 				if (parseExpression(feel.slice(1)).errors.length > 0) {
@@ -1004,6 +1023,8 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	for (const [id, node] of reader.nodes) {
 		nodes.set(id, { ...node, element: { ...node.element } })
 	}
+	// Copies: a stream assembles every frame from the same reader, which must stay as read
+	const edgesRead = reader.edges.map((edge) => ({ ...edge }))
 	const taken = new Set(nodes.keys())
 	const typeOf = (id: string) => nodes.get(id)?.element.type
 	const nameOf = (id: string) => nodes.get(id)?.element.name ?? nameFromId(id)
@@ -1017,7 +1038,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	// from its id instead — while streaming it may yet be declared. An id only an
 	// `on=` names is not added: nothing would lead to it.
 	if (final) {
-		for (const edge of reader.edges) {
+		for (const edge of edgesRead) {
 			for (const id of [edge.from, edge.to]) {
 				if (nodes.has(id)) continue
 				const type = typeFromId(id)
@@ -1073,7 +1094,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 							: undefined
 		if (why !== undefined) {
 			// A node nothing leads to is dropped later as unconnected; say so rather than "stays"
-			const drawn = reader.edges.some((edge) => edge.from === id || edge.to === id)
+			const drawn = edgesRead.some((edge) => edge.from === id || edge.to === id)
 			problems.push({
 				line: node.line,
 				message: `inside=${parentId} on "${id}": ${why}; "${id}" ${drawn ? "stays at the top level" : "has no flows, so it is left out"}`,
@@ -1088,7 +1109,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	// Flows would make the task run in the main path, which an ad-hoc tool does not
 	const flowing: Edge[] = []
 	const outside: Edge[] = []
-	for (const edge of reader.edges) {
+	for (const edge of edgesRead) {
 		if (insideIds.has(edge.from) || insideIds.has(edge.to)) flowing.push(edge)
 		else outside.push(edge)
 	}
@@ -1107,11 +1128,11 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	for (const [id, node] of nodes) {
 		if (node.element.type !== "boundaryEvent") continue
 		// `send > wait[boundary:timer …]` without on=: the one task drawn into it is its host
-		const drawn = node.on === undefined ? reader.edges.filter((edge) => edge.to === id) : []
+		const drawn = node.on === undefined ? edgesRead.filter((edge) => edge.to === id) : []
 		const from = drawn.length === 1 ? nodes.get(drawn[0]?.from ?? "") : undefined
 		if (from && drawn[0] && !EVENTS.has(from.element.type) && !GATEWAYS.has(from.element.type)) {
 			node.on = from.element.id
-			reader.edges.splice(reader.edges.indexOf(drawn[0]), 1)
+			edgesRead.splice(edgesRead.indexOf(drawn[0]), 1)
 			fixes.push(`put boundary "${id}" on "${from.element.id}", the task drawn into it`)
 		}
 		const host = node.on === undefined ? undefined : nodes.get(node.on)
@@ -1144,7 +1165,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		if (target?.element.type !== "boundaryEvent") return [edge]
 		// `poll > late[… | on=poll]`: the arrow from its own task only says where it sits
 		if (target.on === edge.from) return []
-		const next = reader.edges.filter((out) => out.from === edge.to)
+		const next = edgesRead.filter((out) => out.from === edge.to)
 		if (next.length === 0) return [edge]
 		if (final) {
 			fixes.push(

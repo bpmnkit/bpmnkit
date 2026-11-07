@@ -1,7 +1,7 @@
 # | camunda=8.6
 start[start]
 start2[start]
-start_2[start:timer]
+start_2[start:timer | after=PT5M]
 start_3[start:timer]
 start_4[start:signal]
 catch[catch:timer]

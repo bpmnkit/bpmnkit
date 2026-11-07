@@ -45,7 +45,9 @@
     </bpmn:task>
     <bpmn:boundaryEvent id="b5" name="Cond" attachedToRef="t" cancelActivity="true">
       <bpmn:outgoing>Flow_7</bpmn:outgoing>
-      <bpmn:conditionalEventDefinition id="b5_ConditionalEventDefinition"/>
+      <bpmn:conditionalEventDefinition id="b5_ConditionalEventDefinition">
+        <bpmn:condition xsi:type="bpmn:tFormalExpression">= a &gt; 1</bpmn:condition>
+      </bpmn:conditionalEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:endEvent id="x5" name="X5">
       <bpmn:incoming>Flow_7</bpmn:incoming>

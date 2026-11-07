@@ -1,4 +1,4 @@
 s[start Go] > send[service Send email | job=send] > send_split[and]
 send_split > ok[end Sent]
 send_split > done_join[xor] > done[end Dropped]
-wait[boundary:timer Wait 60s | on=send] > done_join
+wait[boundary:timer Wait 60s | on=send after=PT60S] > done_join

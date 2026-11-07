@@ -1,14 +1,16 @@
 //! Replays `conformance/text` parse and stream cases (format in `conformance/README.md`,
-//! "Process text"). Write cases (`input.bpmn`, or `case.json` with `input`) are the
-//! writer's and are skipped here.
+//! "Process text"), and its write cases (`input.bpmn`, or `case.json` with `input`).
 
 use std::fs;
 use std::path::{Path, PathBuf};
 
 use bpmnkit_bpmn::ids::reset_id_counter;
-use bpmnkit_bpmn::serialize_bpmn;
+use bpmnkit_bpmn::{parse_bpmn, serialize_bpmn};
 use bpmnkit_text::compact::{expand, CompactDiagram};
-use bpmnkit_text::process_text::{parse_process_text, ProcessTextResult, ProcessTextStream};
+use bpmnkit_text::process_text::{
+    parse_process_text, write_process_text, ProcessTextResult, ProcessTextStream,
+    WriteProcessTextOptions,
+};
 use serde_json::Value;
 
 fn text_dir() -> PathBuf {
@@ -115,6 +117,60 @@ fn process_text_cases_match_ts() {
         }
     }
     assert!(ran > 0, "no parse or stream case found");
+    assert!(
+        failures.is_empty(),
+        "{} failing:\n{failures:#?}",
+        failures.len()
+    );
+}
+
+/// A write case: `writeProcessText(parseBpmn(input))` → `text.txt` and `written.json`.
+fn check_write(dir: &Path) -> Result<(), String> {
+    let input = if dir.join("input.bpmn").exists() {
+        dir.join("input.bpmn")
+    } else {
+        let case: Value = serde_json::from_str(&read(&dir.join("case.json"))?)
+            .map_err(|e| format!("case.json: {e}"))?;
+        let input = case["input"].as_str().ok_or("case.json has no input")?;
+        let local = dir.join(input);
+        if local.exists() {
+            local
+        } else {
+            text_dir().join("..").join(input)
+        }
+    };
+    let defs = parse_bpmn(&read(&input)?).map_err(|e| format!("{e:?}"))?;
+    let written = write_process_text(&defs, WriteProcessTextOptions::default());
+    let expected = dir.join("expected");
+    if read(&expected.join("text.txt"))? != written.text {
+        return Err(format!("text differs\n--- got\n{}", written.text));
+    }
+    let want: Value = serde_json::from_str(&read(&expected.join("written.json"))?)
+        .map_err(|e| format!("written.json: {e}"))?;
+    let got = serde_json::to_value(&written.aliases).map_err(|e| e.to_string())?;
+    if want["aliases"] != got {
+        return Err("aliases differ".into());
+    }
+    Ok(())
+}
+
+#[test]
+fn write_cases_match_ts() {
+    let mut dirs: Vec<_> = fs::read_dir(text_dir())
+        .expect("conformance/text")
+        .filter_map(|e| e.ok().map(|e| e.path()))
+        .filter(|p| p.join("expected/text.txt").exists())
+        .collect();
+    dirs.sort();
+    assert!(!dirs.is_empty(), "no write case found");
+    let failures: Vec<String> = dirs
+        .iter()
+        .filter_map(|dir| {
+            check_write(dir)
+                .err()
+                .map(|why| format!("{}: {why}", dir.display()))
+        })
+        .collect();
     assert!(
         failures.is_empty(),
         "{} failing:\n{failures:#?}",

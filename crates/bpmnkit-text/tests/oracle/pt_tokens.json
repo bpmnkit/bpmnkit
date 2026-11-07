@@ -420,71 +420,12 @@
 		["a(label) > b", { "error": "expected \">\" at \"(label) > b\"" }],
 		[
 			"constructor[task X] > toString Do it > valueOf",
-			{
-				"refs": [
-					{ "id": "constructor", "spec": "task X" },
-					{ "id": "toString", "spec": "toString Do it" },
-					{ "id": "valueOf", "spec": null }
-				],
-				"labels": [null, null],
-				"note": null,
-				"joined": [],
-				"unclosed": [],
-				"bracketless": ["toString"]
-			}
+			{ "error": "expected \">\" at \"Do it > valueOf\"" }
 		],
-		[
-			"a > toString Do it > b",
-			{
-				"refs": [
-					{ "id": "a", "spec": null },
-					{ "id": "toString", "spec": "toString Do it" },
-					{ "id": "b", "spec": null }
-				],
-				"labels": [null, null],
-				"note": null,
-				"joined": [],
-				"unclosed": [],
-				"bracketless": ["toString"]
-			}
-		],
-		[
-			"a > hasOwnProperty Run it >(x) b",
-			{
-				"refs": [
-					{ "id": "a", "spec": null },
-					{ "id": "hasOwnProperty", "spec": "hasOwnProperty Run it" },
-					{ "id": "b", "spec": null }
-				],
-				"labels": [null, "x"],
-				"note": null,
-				"joined": [],
-				"unclosed": [],
-				"bracketless": ["hasOwnProperty"]
-			}
-		],
-		[
-			"a > constructor stuff",
-			{
-				"refs": [{ "id": "a", "spec": null }, { "id": "constructor", "spec": "constructor stuff" }],
-				"labels": [null],
-				"note": null,
-				"joined": [],
-				"unclosed": [],
-				"bracketless": ["constructor"]
-			}
-		],
-		[
-			"a > __proto__ stuff",
-			{
-				"refs": [{ "id": "a", "spec": null }, { "id": "__proto__", "spec": "__proto__ stuff" }],
-				"labels": [null],
-				"note": null,
-				"joined": [],
-				"unclosed": [],
-				"bracketless": ["__proto__"]
-			}
-		],
+		["a > toString Do it > b", { "error": "expected \">\" at \"Do it > b\"" }],
+		["a > hasOwnProperty Run it >(x) b", { "error": "expected \">\" at \"Run it >(x) b\"" }],
+		["a > constructor stuff", { "error": "expected \">\" at \"stuff\"" }],
+		["a > __proto__ stuff", { "error": "expected \">\" at \"stuff\"" }],
 		["a > Constructor stuff", { "error": "expected \">\" at \"stuff\"" }],
 		["start:message[x] > a:b", { "error": "expected \">\" at \":message[x] > a:b\"" }],
 		[
@@ -4236,6 +4177,39 @@
 			}
 		],
 		[
+			"s[start:conditional Stock low | feel=stock < 5] > t[task Work] > w[catch:conditional Ready | feel=if then] > e[end]",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start:conditional Stock low | feel=stock < 5" },
+					{ "id": "t", "spec": "task Work" },
+					{ "id": "w", "spec": "catch:conditional Ready | feel=if then" },
+					{ "id": "e", "spec": "end" }
+				],
+				"labels": [null, null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": [],
+				"bracketless": []
+			}
+		],
+		[
+			"b[boundary:conditional Cancelled | on=t nonint feel=order.cancelled = true] > x[end]",
+			{
+				"refs": [
+					{
+						"id": "b",
+						"spec": "boundary:conditional Cancelled | on=t nonint feel=order.cancelled = true"
+					},
+					{ "id": "x", "spec": "end" }
+				],
+				"labels": [null],
+				"note": null,
+				"joined": [],
+				"unclosed": [],
+				"bracketless": []
+			}
+		],
+		[
 			"s[start] > t[user Review] > e[end]",
 			{
 				"refs": [
@@ -4974,6 +4948,25 @@
 			}
 		],
 		[
+			"s[start] > a[constructor X] > b[__proto__ Y] > c[toString Z] > d[hasOwnProperty W] > e[end]",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start" },
+					{ "id": "a", "spec": "constructor X" },
+					{ "id": "b", "spec": "__proto__ Y" },
+					{ "id": "c", "spec": "toString Z" },
+					{ "id": "d", "spec": "hasOwnProperty W" },
+					{ "id": "e", "spec": "end" }
+				],
+				"labels": [null, null, null, null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": [],
+				"bracketless": []
+			}
+		],
+		["c > constructor Do it > e", { "error": "expected \">\" at \"Do it > e\"" }],
+		[
 			"s[start] > g[xor Mode]",
 			{
 				"refs": [{ "id": "s", "spec": "start" }, { "id": "g", "spec": "xor Mode" }],
@@ -5600,6 +5593,36 @@
 					{ "id": "e", "spec": "end" }
 				],
 				"labels": [null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": [],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:timer | after=PT5M] > t[task Work] > c[catch:timer Pause | after=PT1H30M] > e[end]",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start:timer | after=PT5M" },
+					{ "id": "t", "spec": "task Work" },
+					{ "id": "c", "spec": "catch:timer Pause | after=PT1H30M" },
+					{ "id": "e", "spec": "end" }
+				],
+				"labels": [null, null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": [],
+				"bracketless": []
+			}
+		],
+		[
+			"b[boundary:timer Late | on=t nonint after=P2D] > x[end]",
+			{
+				"refs": [
+					{ "id": "b", "spec": "boundary:timer Late | on=t nonint after=P2D" },
+					{ "id": "x", "spec": "end" }
+				],
+				"labels": [null],
 				"note": null,
 				"joined": [],
 				"unclosed": [],
@@ -21458,6 +21481,293 @@
 			}
 		],
 		[
+			"s[start:co",
+			{
+				"refs": [{ "id": "s", "spec": "start:co" }],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["s"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:condition",
+			{
+				"refs": [{ "id": "s", "spec": "start:condition" }],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["s"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:conditional Stoc",
+			{
+				"refs": [{ "id": "s", "spec": "start:conditional Stoc" }],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["s"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:conditional Stock low |",
+			{
+				"refs": [{ "id": "s", "spec": "start:conditional Stock low |" }],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["s"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:conditional Stock low | feel=s",
+			{
+				"refs": [{ "id": "s", "spec": "start:conditional Stock low | feel=s" }],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["s"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:conditional Stock low | feel=stock < ",
+			{
+				"refs": [{ "id": "s", "spec": "start:conditional Stock low | feel=stock <" }],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["s"],
+				"bracketless": []
+			}
+		],
+		["s[start:conditional Stock low | feel=stock < 5] > t[", { "error": "\"t[\" is not closed" }],
+		[
+			"s[start:conditional Stock low | feel=stock < 5] > t[task Wo",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start:conditional Stock low | feel=stock < 5" },
+					{ "id": "t", "spec": "task Wo" }
+				],
+				"labels": [null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["t"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:conditional Stock low | feel=stock < 5] > t[task Work] > w",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start:conditional Stock low | feel=stock < 5" },
+					{ "id": "t", "spec": "task Work" },
+					{ "id": "w", "spec": null }
+				],
+				"labels": [null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": [],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:conditional Stock low | feel=stock < 5] > t[task Work] > w[catch:",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start:conditional Stock low | feel=stock < 5" },
+					{ "id": "t", "spec": "task Work" },
+					{ "id": "w", "spec": "catch:" }
+				],
+				"labels": [null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["w"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:conditional Stock low | feel=stock < 5] > t[task Work] > w[catch:conditi",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start:conditional Stock low | feel=stock < 5" },
+					{ "id": "t", "spec": "task Work" },
+					{ "id": "w", "spec": "catch:conditi" }
+				],
+				"labels": [null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["w"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:conditional Stock low | feel=stock < 5] > t[task Work] > w[catch:conditional Re",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start:conditional Stock low | feel=stock < 5" },
+					{ "id": "t", "spec": "task Work" },
+					{ "id": "w", "spec": "catch:conditional Re" }
+				],
+				"labels": [null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["w"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:conditional Stock low | feel=stock < 5] > t[task Work] > w[catch:conditional Ready | f",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start:conditional Stock low | feel=stock < 5" },
+					{ "id": "t", "spec": "task Work" },
+					{ "id": "w", "spec": "catch:conditional Ready | f" }
+				],
+				"labels": [null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["w"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:conditional Stock low | feel=stock < 5] > t[task Work] > w[catch:conditional Ready | feel=if ",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start:conditional Stock low | feel=stock < 5" },
+					{ "id": "t", "spec": "task Work" },
+					{ "id": "w", "spec": "catch:conditional Ready | feel=if" }
+				],
+				"labels": [null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["w"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:conditional Stock low | feel=stock < 5] > t[task Work] > w[catch:conditional Ready | feel=if then] >",
+			{ "error": "expected a node id at \"\"" }
+		],
+		[
+			"b[boundary:condit",
+			{
+				"refs": [{ "id": "b", "spec": "boundary:condit" }],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["b"],
+				"bracketless": []
+			}
+		],
+		[
+			"b[boundary:conditional C",
+			{
+				"refs": [{ "id": "b", "spec": "boundary:conditional C" }],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["b"],
+				"bracketless": []
+			}
+		],
+		[
+			"b[boundary:conditional Cancelle",
+			{
+				"refs": [{ "id": "b", "spec": "boundary:conditional Cancelle" }],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["b"],
+				"bracketless": []
+			}
+		],
+		[
+			"b[boundary:conditional Cancelled | on=",
+			{
+				"refs": [{ "id": "b", "spec": "boundary:conditional Cancelled | on=" }],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["b"],
+				"bracketless": []
+			}
+		],
+		[
+			"b[boundary:conditional Cancelled | on=t nonin",
+			{
+				"refs": [{ "id": "b", "spec": "boundary:conditional Cancelled | on=t nonin" }],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["b"],
+				"bracketless": []
+			}
+		],
+		[
+			"b[boundary:conditional Cancelled | on=t nonint feel=",
+			{
+				"refs": [{ "id": "b", "spec": "boundary:conditional Cancelled | on=t nonint feel=" }],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["b"],
+				"bracketless": []
+			}
+		],
+		[
+			"b[boundary:conditional Cancelled | on=t nonint feel=order.c",
+			{
+				"refs": [
+					{ "id": "b", "spec": "boundary:conditional Cancelled | on=t nonint feel=order.c" }
+				],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["b"],
+				"bracketless": []
+			}
+		],
+		[
+			"b[boundary:conditional Cancelled | on=t nonint feel=order.cancelle",
+			{
+				"refs": [
+					{ "id": "b", "spec": "boundary:conditional Cancelled | on=t nonint feel=order.cancelle" }
+				],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["b"],
+				"bracketless": []
+			}
+		],
+		[
+			"b[boundary:conditional Cancelled | on=t nonint feel=order.cancelled = tru",
+			{
+				"refs": [
+					{
+						"id": "b",
+						"spec": "boundary:conditional Cancelled | on=t nonint feel=order.cancelled = tru"
+					}
+				],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["b"],
+				"bracketless": []
+			}
+		],
+		[
+			"b[boundary:conditional Cancelled | on=t nonint feel=order.cancelled = true] > x[",
+			{ "error": "\"x[\" is not closed" }
+		],
+		[
 			"s[start] > t[user",
 			{
 				"refs": [{ "id": "s", "spec": "start" }, { "id": "t", "spec": "user" }],
@@ -24039,6 +24349,173 @@
 			"s[start] > a[human Review] > b[decision Check] > c[dmn Check more] > d[event Wait] > e[",
 			{ "error": "\"e[\" is not closed" }
 		],
+		[
+			"s[start] > a[cons",
+			{
+				"refs": [{ "id": "s", "spec": "start" }, { "id": "a", "spec": "cons" }],
+				"labels": [null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["a"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start] > a[constructor",
+			{
+				"refs": [{ "id": "s", "spec": "start" }, { "id": "a", "spec": "constructor" }],
+				"labels": [null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["a"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start] > a[constructor X] > b",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start" },
+					{ "id": "a", "spec": "constructor X" },
+					{ "id": "b", "spec": null }
+				],
+				"labels": [null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": [],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start] > a[constructor X] > b[__prot",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start" },
+					{ "id": "a", "spec": "constructor X" },
+					{ "id": "b", "spec": "__prot" }
+				],
+				"labels": [null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["b"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start] > a[constructor X] > b[__proto__ Y] ",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start" },
+					{ "id": "a", "spec": "constructor X" },
+					{ "id": "b", "spec": "__proto__ Y" }
+				],
+				"labels": [null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": [],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start] > a[constructor X] > b[__proto__ Y] > c[toS",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start" },
+					{ "id": "a", "spec": "constructor X" },
+					{ "id": "b", "spec": "__proto__ Y" },
+					{ "id": "c", "spec": "toS" }
+				],
+				"labels": [null, null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["c"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start] > a[constructor X] > b[__proto__ Y] > c[toString Z",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start" },
+					{ "id": "a", "spec": "constructor X" },
+					{ "id": "b", "spec": "__proto__ Y" },
+					{ "id": "c", "spec": "toString Z" }
+				],
+				"labels": [null, null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["c"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start] > a[constructor X] > b[__proto__ Y] > c[toString Z] > d[h",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start" },
+					{ "id": "a", "spec": "constructor X" },
+					{ "id": "b", "spec": "__proto__ Y" },
+					{ "id": "c", "spec": "toString Z" },
+					{ "id": "d", "spec": "h" }
+				],
+				"labels": [null, null, null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["d"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start] > a[constructor X] > b[__proto__ Y] > c[toString Z] > d[hasOwnPr",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start" },
+					{ "id": "a", "spec": "constructor X" },
+					{ "id": "b", "spec": "__proto__ Y" },
+					{ "id": "c", "spec": "toString Z" },
+					{ "id": "d", "spec": "hasOwnPr" }
+				],
+				"labels": [null, null, null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["d"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start] > a[constructor X] > b[__proto__ Y] > c[toString Z] > d[hasOwnProperty ",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start" },
+					{ "id": "a", "spec": "constructor X" },
+					{ "id": "b", "spec": "__proto__ Y" },
+					{ "id": "c", "spec": "toString Z" },
+					{ "id": "d", "spec": "hasOwnProperty" }
+				],
+				"labels": [null, null, null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["d"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start] > a[constructor X] > b[__proto__ Y] > c[toString Z] > d[hasOwnProperty W] > e[",
+			{ "error": "\"e[\" is not closed" }
+		],
+		[
+			"c > constr",
+			{
+				"refs": [{ "id": "c", "spec": null }, { "id": "constr", "spec": null }],
+				"labels": [null],
+				"note": null,
+				"joined": [],
+				"unclosed": [],
+				"bracketless": []
+			}
+		],
+		["c > constructor D", { "error": "expected \">\" at \"D\"" }],
+		["c > constructor Do it > ", { "error": "expected \">\" at \"Do it > \"" }],
 		["g >(Mail: ", { "error": "edge label is not closed" }],
 		["g >(Mail: channel", { "error": "edge label is not closed" }],
 		["g >(Mail: channel = \"mai", { "error": "edge label is not closed" }],
@@ -25768,73 +26245,6 @@
 			}
 		],
 		[
-			"s[start:co",
-			{
-				"refs": [{ "id": "s", "spec": "start:co" }],
-				"labels": [],
-				"note": null,
-				"joined": [],
-				"unclosed": ["s"],
-				"bracketless": []
-			}
-		],
-		[
-			"s[start:condition",
-			{
-				"refs": [{ "id": "s", "spec": "start:condition" }],
-				"labels": [],
-				"note": null,
-				"joined": [],
-				"unclosed": ["s"],
-				"bracketless": []
-			}
-		],
-		[
-			"s[start:conditional Stoc",
-			{
-				"refs": [{ "id": "s", "spec": "start:conditional Stoc" }],
-				"labels": [],
-				"note": null,
-				"joined": [],
-				"unclosed": ["s"],
-				"bracketless": []
-			}
-		],
-		[
-			"s[start:conditional Stock low |",
-			{
-				"refs": [{ "id": "s", "spec": "start:conditional Stock low |" }],
-				"labels": [],
-				"note": null,
-				"joined": [],
-				"unclosed": ["s"],
-				"bracketless": []
-			}
-		],
-		[
-			"s[start:conditional Stock low | feel=s",
-			{
-				"refs": [{ "id": "s", "spec": "start:conditional Stock low | feel=s" }],
-				"labels": [],
-				"note": null,
-				"joined": [],
-				"unclosed": ["s"],
-				"bracketless": []
-			}
-		],
-		[
-			"s[start:conditional Stock low | feel=stock < ",
-			{
-				"refs": [{ "id": "s", "spec": "start:conditional Stock low | feel=stock <" }],
-				"labels": [],
-				"note": null,
-				"joined": [],
-				"unclosed": ["s"],
-				"bracketless": []
-			}
-		],
-		["s[start:conditional Stock low | feel=stock < 5] > t[", { "error": "\"t[\" is not closed" }],
-		[
 			"s[start:conditional Stock low | feel=stock < 5] > t[task T]",
 			{
 				"refs": [
@@ -26458,6 +26868,203 @@
 			}
 		],
 		["s[start] > a[throw Milestone] >", { "error": "expected a node id at \"\"" }],
+		[
+			"s[start:timer | a",
+			{
+				"refs": [{ "id": "s", "spec": "start:timer | a" }],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["s"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:timer | after=PT",
+			{
+				"refs": [{ "id": "s", "spec": "start:timer | after=PT" }],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["s"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:timer | after=PT5M] > t",
+			{
+				"refs": [{ "id": "s", "spec": "start:timer | after=PT5M" }, { "id": "t", "spec": null }],
+				"labels": [null],
+				"note": null,
+				"joined": [],
+				"unclosed": [],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:timer | after=PT5M] > t[task W",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start:timer | after=PT5M" },
+					{ "id": "t", "spec": "task W" }
+				],
+				"labels": [null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["t"],
+				"bracketless": []
+			}
+		],
+		["s[start:timer | after=PT5M] > t[task Work] > ", { "error": "expected a node id at \"\"" }],
+		[
+			"s[start:timer | after=PT5M] > t[task Work] > c[catch",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start:timer | after=PT5M" },
+					{ "id": "t", "spec": "task Work" },
+					{ "id": "c", "spec": "catch" }
+				],
+				"labels": [null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["c"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:timer | after=PT5M] > t[task Work] > c[catch:timer ",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start:timer | after=PT5M" },
+					{ "id": "t", "spec": "task Work" },
+					{ "id": "c", "spec": "catch:timer" }
+				],
+				"labels": [null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["c"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:timer | after=PT5M] > t[task Work] > c[catch:timer Pause |",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start:timer | after=PT5M" },
+					{ "id": "t", "spec": "task Work" },
+					{ "id": "c", "spec": "catch:timer Pause |" }
+				],
+				"labels": [null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["c"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:timer | after=PT5M] > t[task Work] > c[catch:timer Pause | after=",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start:timer | after=PT5M" },
+					{ "id": "t", "spec": "task Work" },
+					{ "id": "c", "spec": "catch:timer Pause | after=" }
+				],
+				"labels": [null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["c"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:timer | after=PT5M] > t[task Work] > c[catch:timer Pause | after=PT1H30M",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start:timer | after=PT5M" },
+					{ "id": "t", "spec": "task Work" },
+					{ "id": "c", "spec": "catch:timer Pause | after=PT1H30M" }
+				],
+				"labels": [null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["c"],
+				"bracketless": []
+			}
+		],
+		[
+			"s[start:timer | after=PT5M] > t[task Work] > c[catch:timer Pause | after=PT1H30M] > e[e",
+			{
+				"refs": [
+					{ "id": "s", "spec": "start:timer | after=PT5M" },
+					{ "id": "t", "spec": "task Work" },
+					{ "id": "c", "spec": "catch:timer Pause | after=PT1H30M" },
+					{ "id": "e", "spec": "e" }
+				],
+				"labels": [null, null, null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["e"],
+				"bracketless": []
+			}
+		],
+		[
+			"b[boundary:timer Late | ",
+			{
+				"refs": [{ "id": "b", "spec": "boundary:timer Late |" }],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["b"],
+				"bracketless": []
+			}
+		],
+		[
+			"b[boundary:timer Late | on=t no",
+			{
+				"refs": [{ "id": "b", "spec": "boundary:timer Late | on=t no" }],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["b"],
+				"bracketless": []
+			}
+		],
+		[
+			"b[boundary:timer Late | on=t nonint af",
+			{
+				"refs": [{ "id": "b", "spec": "boundary:timer Late | on=t nonint af" }],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["b"],
+				"bracketless": []
+			}
+		],
+		[
+			"b[boundary:timer Late | on=t nonint after=P2D",
+			{
+				"refs": [{ "id": "b", "spec": "boundary:timer Late | on=t nonint after=P2D" }],
+				"labels": [],
+				"note": null,
+				"joined": [],
+				"unclosed": ["b"],
+				"bracketless": []
+			}
+		],
+		[
+			"b[boundary:timer Late | on=t nonint after=P2D] > x[e",
+			{
+				"refs": [
+					{ "id": "b", "spec": "boundary:timer Late | on=t nonint after=P2D" },
+					{ "id": "x", "spec": "e" }
+				],
+				"labels": [null],
+				"note": null,
+				"joined": [],
+				"unclosed": ["x"],
+				"bracketless": []
+			}
+		],
 		["# Only a t", { "error": "expected a node id at \"# Only a t\"" }],
 		["# A | B | ", { "error": "expected a node id at \"# A | B | \"" }],
 		["# A | B | camunda", { "error": "expected a node id at \"# A | B | camunda\"" }],
@@ -27255,6 +27862,33 @@
 		],
 		["b[boundary:error Fail ", { "plain": "b[boundary:error Fail ", "feel": null }],
 		[
+			" feel=stock < 5] > t[task Work] > w[catch:conditional Ready | feel=if then] > e[end]",
+			{
+				"plain": "",
+				"feel": "= stock < 5] > t[task Work] > w[catch:conditional Ready | feel=if then] > e[end]"
+			}
+		],
+		[
+			"| feel=stock < 5] > t[task Work] > w[catch:conditional Ready | feel=if then] > e[end]",
+			{
+				"plain": "|",
+				"feel": "= stock < 5] > t[task Work] > w[catch:conditional Ready | feel=if then] > e[end]"
+			}
+		],
+		["s[start:conditional Stock low ", { "plain": "s[start:conditional Stock low ", "feel": null }],
+		[
+			" on=t nonint feel=order.cancelled = true] > x[end]",
+			{ "plain": " on=t nonint", "feel": "= order.cancelled = true] > x[end]" }
+		],
+		[
+			"| on=t nonint feel=order.cancelled = true] > x[end]",
+			{ "plain": "| on=t nonint", "feel": "= order.cancelled = true] > x[end]" }
+		],
+		[
+			"b[boundary:conditional Cancelled ",
+			{ "plain": "b[boundary:conditional Cancelled ", "feel": null }
+		],
+		[
 			" on=t nonint after=PT1H] > r[send Remind] > e",
 			{ "plain": " on=t nonint after=PT1H] > r[send Remind] > e", "feel": null }
 		],
@@ -27425,7 +28059,6 @@
 			"| feel=stock < 5] > t[task T] > e[end]",
 			{ "plain": "|", "feel": "= stock < 5] > t[task T] > e[end]" }
 		],
-		["s[start:conditional Stock low ", { "plain": "s[start:conditional Stock low ", "feel": null }],
 		[
 			" form=request-form in.n=name] > e[end]",
 			{ "plain": " form=request-form in.n=name] > e[end]", "feel": null }
@@ -27456,6 +28089,30 @@
 			{ "plain": "| on=t] > u[service Refund | job=refund]", "feel": null }
 		],
 		["b[boundary:compensate Undo ", { "plain": "b[boundary:compensate Undo ", "feel": null }],
+		[
+			" after=PT5M] > t[task Work] > c[catch:timer Pause | after=PT1H30M] > e[end]",
+			{
+				"plain": " after=PT5M] > t[task Work] > c[catch:timer Pause | after=PT1H30M] > e[end]",
+				"feel": null
+			}
+		],
+		[
+			"| after=PT5M] > t[task Work] > c[catch:timer Pause | after=PT1H30M] > e[end]",
+			{
+				"plain": "| after=PT5M] > t[task Work] > c[catch:timer Pause | after=PT1H30M] > e[end]",
+				"feel": null
+			}
+		],
+		["s[start:timer ", { "plain": "s[start:timer ", "feel": null }],
+		[
+			" on=t nonint after=P2D] > x[end]",
+			{ "plain": " on=t nonint after=P2D] > x[end]", "feel": null }
+		],
+		[
+			"| on=t nonint after=P2D] > x[end]",
+			{ "plain": "| on=t nonint after=P2D] > x[end]", "feel": null }
+		],
+		["b[boundary:timer Late ", { "plain": "b[boundary:timer Late ", "feel": null }],
 		[" B | camunda=8.10", { "plain": " B | camunda=8.10", "feel": null }],
 		["| B | camunda=8.10", { "plain": "| B | camunda=8.10", "feel": null }],
 		["# A ", { "plain": "# A ", "feel": null }],
@@ -28136,6 +28793,36 @@
 		],
 		["b[boundary:error Fail ", { "plain": "b[boundary:error Fail ", "mappings": [] }],
 		[
+			" feel=stock < 5] > t[task Work] > w[catch:conditional Ready | feel=if then] > e[end]",
+			{
+				"plain": " feel=stock < 5] > t[task Work] > w[catch:conditional Ready | feel=if then] > e[end]",
+				"mappings": []
+			}
+		],
+		[
+			"| feel=stock < 5] > t[task Work] > w[catch:conditional Ready | feel=if then] > e[end]",
+			{
+				"plain": "| feel=stock < 5] > t[task Work] > w[catch:conditional Ready | feel=if then] > e[end]",
+				"mappings": []
+			}
+		],
+		[
+			"s[start:conditional Stock low ",
+			{ "plain": "s[start:conditional Stock low ", "mappings": [] }
+		],
+		[
+			" on=t nonint feel=order.cancelled = true] > x[end]",
+			{ "plain": " on=t nonint feel=order.cancelled = true] > x[end]", "mappings": [] }
+		],
+		[
+			"| on=t nonint feel=order.cancelled = true] > x[end]",
+			{ "plain": "| on=t nonint feel=order.cancelled = true] > x[end]", "mappings": [] }
+		],
+		[
+			"b[boundary:conditional Cancelled ",
+			{ "plain": "b[boundary:conditional Cancelled ", "mappings": [] }
+		],
+		[
 			" on=t nonint after=PT1H] > r[send Remind] > e",
 			{ "plain": " on=t nonint after=PT1H] > r[send Remind] > e", "mappings": [] }
 		],
@@ -28345,10 +29032,6 @@
 			{ "plain": "| feel=stock < 5] > t[task T] > e[end]", "mappings": [] }
 		],
 		[
-			"s[start:conditional Stock low ",
-			{ "plain": "s[start:conditional Stock low ", "mappings": [] }
-		],
-		[
 			" form=request-form in.n=name] > e[end]",
 			{
 				"plain": " form=request-form ",
@@ -28384,6 +29067,30 @@
 			{ "plain": "| on=t] > u[service Refund | job=refund]", "mappings": [] }
 		],
 		["b[boundary:compensate Undo ", { "plain": "b[boundary:compensate Undo ", "mappings": [] }],
+		[
+			" after=PT5M] > t[task Work] > c[catch:timer Pause | after=PT1H30M] > e[end]",
+			{
+				"plain": " after=PT5M] > t[task Work] > c[catch:timer Pause | after=PT1H30M] > e[end]",
+				"mappings": []
+			}
+		],
+		[
+			"| after=PT5M] > t[task Work] > c[catch:timer Pause | after=PT1H30M] > e[end]",
+			{
+				"plain": "| after=PT5M] > t[task Work] > c[catch:timer Pause | after=PT1H30M] > e[end]",
+				"mappings": []
+			}
+		],
+		["s[start:timer ", { "plain": "s[start:timer ", "mappings": [] }],
+		[
+			" on=t nonint after=P2D] > x[end]",
+			{ "plain": " on=t nonint after=P2D] > x[end]", "mappings": [] }
+		],
+		[
+			"| on=t nonint after=P2D] > x[end]",
+			{ "plain": "| on=t nonint after=P2D] > x[end]", "mappings": [] }
+		],
+		["b[boundary:timer Late ", { "plain": "b[boundary:timer Late ", "mappings": [] }],
 		[" B | camunda=8.10", { "plain": " B | camunda=8.10", "mappings": [] }],
 		["| B | camunda=8.10", { "plain": "| B | camunda=8.10", "mappings": [] }],
 		["# A ", { "plain": "# A ", "mappings": [] }],
@@ -28872,6 +29579,11 @@
 		["b7[boundary:error Fail | on=t] > x7[end]", null],
 		["s[start] > t[service Work] > e[end]", null],
 		["b[boundary:error Fail | on=t] > a[task Log] > c[user Fix] > e2[end Fixed]", null],
+		[
+			"s[start:conditional Stock low | feel=stock < 5] > t[task Work] > w[catch:conditional Ready | feel=if then] > e[end]",
+			null
+		],
+		["b[boundary:conditional Cancelled | on=t nonint feel=order.cancelled = true] > x[end]", null],
 		["s[start] > t[user Review] > e[end]", null],
 		["b[boundary:timer Reminder | on=t nonint after=PT1H] > r[send Remind] > e", "PT1H"],
 		["b1[boundary:error Fail | on=t] > a[task A] > e1[end]", null],
@@ -28950,6 +29662,11 @@
 			"s[start] > a[human Review] > b[decision Check] > c[dmn Check more] > d[event Wait] > e[end]",
 			null
 		],
+		[
+			"s[start] > a[constructor X] > b[__proto__ Y] > c[toString Z] > d[hasOwnProperty W] > e[end]",
+			null
+		],
+		["c > constructor Do it > e", null],
 		["s[start] > g[xor Mode]", null],
 		["g >(Mail: channel = \"mail\" and n > 0) a[end]", null],
 		["g >(Other: default) b[end]", null],
@@ -29022,6 +29739,11 @@
 			null
 		],
 		["s[start] > a[throw Milestone] > e[end]", null],
+		[
+			"s[start:timer | after=PT5M] > t[task Work] > c[catch:timer Pause | after=PT1H30M] > e[end]",
+			"PT5M"
+		],
+		["b[boundary:timer Late | on=t nonint after=P2D] > x[end]", "P2D"],
 		["# Only a title", null],
 		["# A | B | camunda=8.10", null],
 		["s1[start First] > a[task A] > e[end]", null],
@@ -30252,6 +30974,16 @@
 		["b7[boundary:error Fail | on=t] > x7[end]", null, null],
 		["s[start] > t[service Work] > e[end]", null, null],
 		["b[boundary:error Fail | on=t] > a[task Log] > c[user Fix] > e2[end Fixed]", null, null],
+		[
+			"s[start:conditional Stock low | feel=stock < 5] > t[task Work] > w[catch:conditional Ready | feel=if then] > e[end]",
+			null,
+			null
+		],
+		[
+			"b[boundary:conditional Cancelled | on=t nonint feel=order.cancelled = true] > x[end]",
+			null,
+			null
+		],
 		["s[start] > t[user Review] > e[end]", null, null],
 		["b[boundary:timer Reminder | on=t nonint after=PT1H] > r[send Remind] > e", null, null],
 		["b1[boundary:error Fail | on=t] > a[task A] > e1[end]", null, null],
@@ -30339,6 +31071,12 @@
 			null,
 			null
 		],
+		[
+			"s[start] > a[constructor X] > b[__proto__ Y] > c[toString Z] > d[hasOwnProperty W] > e[end]",
+			null,
+			null
+		],
+		["c > constructor Do it > e", null, null],
 		["s[start] > g[xor Mode]", null, null],
 		["g >(Mail: channel = \"mail\" and n > 0) a[end]", null, null],
 		["g >(Other: default) b[end]", null, null],
@@ -30414,6 +31152,12 @@
 			null
 		],
 		["s[start] > a[throw Milestone] > e[end]", null, null],
+		[
+			"s[start:timer | after=PT5M] > t[task Work] > c[catch:timer Pause | after=PT1H30M] > e[end]",
+			null,
+			null
+		],
+		["b[boundary:timer Late | on=t nonint after=P2D] > x[end]", null, null],
 		["# Only a title", null, null],
 		["# A | B | camunda=8.10", null, null],
 		["s1[start First] > a[task A] > e[end]", null, null],
@@ -31443,6 +32187,16 @@
 			false,
 			"b[boundary:error Fail | on=t] > a[task Log] > c[user Fix] > e2[end Fixed]"
 		],
+		[
+			"s[start:conditional Stock low | feel=stock < 5] > t[task Work] > w[catch:conditional Ready | feel=if then] > e[end]",
+			false,
+			"s[start:conditional Stock low | feel=stock < 5] > t[task Work] > w[catch:conditional Ready | feel=if then] > e[end]"
+		],
+		[
+			"b[boundary:conditional Cancelled | on=t nonint feel=order.cancelled = true] > x[end]",
+			false,
+			"b[boundary:conditional Cancelled | on=t nonint feel=order.cancelled = true] > x[end]"
+		],
 		["s[start] > t[user Review] > e[end]", false, "s[start] > t[user Review] > e[end]"],
 		[
 			"b[boundary:timer Reminder | on=t nonint after=PT1H] > r[send Remind] > e",
@@ -31590,6 +32344,12 @@
 			false,
 			"s[start] > a[human Review] > b[decision Check] > c[dmn Check more] > d[event Wait] > e[end]"
 		],
+		[
+			"s[start] > a[constructor X] > b[__proto__ Y] > c[toString Z] > d[hasOwnProperty W] > e[end]",
+			false,
+			"s[start] > a[constructor X] > b[__proto__ Y] > c[toString Z] > d[hasOwnProperty W] > e[end]"
+		],
+		["c > constructor Do it > e", false, "c > constructor Do it > e"],
 		["s[start] > g[xor Mode]", false, "s[start] > g[xor Mode]"],
 		[
 			"g >(Mail: channel = \"mail\" and n > 0) a[end]",
@@ -31725,6 +32485,16 @@
 			"s[start] > a[throw:message Tell] > b[throw:signal Shout] > c[throw:escalation Raise] > d[throw:compensate Undo] > e[end]"
 		],
 		["s[start] > a[throw Milestone] > e[end]", false, "s[start] > a[throw Milestone] > e[end]"],
+		[
+			"s[start:timer | after=PT5M] > t[task Work] > c[catch:timer Pause | after=PT1H30M] > e[end]",
+			false,
+			"s[start:timer | after=PT5M] > t[task Work] > c[catch:timer Pause | after=PT1H30M] > e[end]"
+		],
+		[
+			"b[boundary:timer Late | on=t nonint after=P2D] > x[end]",
+			false,
+			"b[boundary:timer Late | on=t nonint after=P2D] > x[end]"
+		],
 		["# Only a title", false, "# Only a title"],
 		["# A | B | camunda=8.10", false, "# A | B | camunda=8.10"],
 		["s1[start First] > a[task A] > e[end]", false, "s1[start First] > a[task A] > e[end]"],
@@ -33608,6 +34378,48 @@
 		["b[boundary:error Fail | on=t] > a[task Log] > c[user Fix] > e2[end Fixed]", 33, "[", "]", 42],
 		["b[boundary:error Fail | on=t] > a[task Log] > c[user Fix] > e2[end Fixed]", 47, "[", "]", 56],
 		["b[boundary:error Fail | on=t] > a[task Log] > c[user Fix] > e2[end Fixed]", 62, "[", "]", 72],
+		[
+			"s[start:conditional Stock low | feel=stock < 5] > t[task Work] > w[catch:conditional Ready | feel=if then] > e[end]",
+			1,
+			"[",
+			"]",
+			46
+		],
+		[
+			"s[start:conditional Stock low | feel=stock < 5] > t[task Work] > w[catch:conditional Ready | feel=if then] > e[end]",
+			51,
+			"[",
+			"]",
+			61
+		],
+		[
+			"s[start:conditional Stock low | feel=stock < 5] > t[task Work] > w[catch:conditional Ready | feel=if then] > e[end]",
+			66,
+			"[",
+			"]",
+			105
+		],
+		[
+			"s[start:conditional Stock low | feel=stock < 5] > t[task Work] > w[catch:conditional Ready | feel=if then] > e[end]",
+			110,
+			"[",
+			"]",
+			114
+		],
+		[
+			"b[boundary:conditional Cancelled | on=t nonint feel=order.cancelled = true] > x[end]",
+			1,
+			"[",
+			"]",
+			74
+		],
+		[
+			"b[boundary:conditional Cancelled | on=t nonint feel=order.cancelled = true] > x[end]",
+			79,
+			"[",
+			"]",
+			83
+		],
 		["s[start] > t[user Review] > e[end]", 1, "[", "]", 7],
 		["s[start] > t[user Review] > e[end]", 12, "[", "]", 24],
 		["s[start] > t[user Review] > e[end]", 29, "[", "]", 33],
@@ -33944,6 +34756,48 @@
 			"]",
 			90
 		],
+		[
+			"s[start] > a[constructor X] > b[__proto__ Y] > c[toString Z] > d[hasOwnProperty W] > e[end]",
+			1,
+			"[",
+			"]",
+			7
+		],
+		[
+			"s[start] > a[constructor X] > b[__proto__ Y] > c[toString Z] > d[hasOwnProperty W] > e[end]",
+			12,
+			"[",
+			"]",
+			26
+		],
+		[
+			"s[start] > a[constructor X] > b[__proto__ Y] > c[toString Z] > d[hasOwnProperty W] > e[end]",
+			31,
+			"[",
+			"]",
+			43
+		],
+		[
+			"s[start] > a[constructor X] > b[__proto__ Y] > c[toString Z] > d[hasOwnProperty W] > e[end]",
+			48,
+			"[",
+			"]",
+			59
+		],
+		[
+			"s[start] > a[constructor X] > b[__proto__ Y] > c[toString Z] > d[hasOwnProperty W] > e[end]",
+			64,
+			"[",
+			"]",
+			81
+		],
+		[
+			"s[start] > a[constructor X] > b[__proto__ Y] > c[toString Z] > d[hasOwnProperty W] > e[end]",
+			86,
+			"[",
+			"]",
+			90
+		],
 		["s[start] > g[xor Mode]", 1, "[", "]", 7],
 		["s[start] > g[xor Mode]", 12, "[", "]", 21],
 		["g >(Mail: channel = \"mail\" and n > 0) a[end]", 3, "(", ")", 36],
@@ -34154,6 +35008,36 @@
 		["s[start] > a[throw Milestone] > e[end]", 1, "[", "]", 7],
 		["s[start] > a[throw Milestone] > e[end]", 12, "[", "]", 28],
 		["s[start] > a[throw Milestone] > e[end]", 33, "[", "]", 37],
+		[
+			"s[start:timer | after=PT5M] > t[task Work] > c[catch:timer Pause | after=PT1H30M] > e[end]",
+			1,
+			"[",
+			"]",
+			26
+		],
+		[
+			"s[start:timer | after=PT5M] > t[task Work] > c[catch:timer Pause | after=PT1H30M] > e[end]",
+			31,
+			"[",
+			"]",
+			41
+		],
+		[
+			"s[start:timer | after=PT5M] > t[task Work] > c[catch:timer Pause | after=PT1H30M] > e[end]",
+			46,
+			"[",
+			"]",
+			80
+		],
+		[
+			"s[start:timer | after=PT5M] > t[task Work] > c[catch:timer Pause | after=PT1H30M] > e[end]",
+			85,
+			"[",
+			"]",
+			89
+		],
+		["b[boundary:timer Late | on=t nonint after=P2D] > x[end]", 1, "[", "]", 45],
+		["b[boundary:timer Late | on=t nonint after=P2D] > x[end]", 50, "[", "]", 54],
 		["s1[start First] > a[task A] > e[end]", 2, "[", "]", 14],
 		["s1[start First] > a[task A] > e[end]", 19, "[", "]", 26],
 		["s1[start First] > a[task A] > e[end]", 31, "[", "]", 35],
@@ -34611,6 +35495,9 @@
 		[{ "id": "x", "name": "Log" }, false],
 		[{ "id": "x", "name": "Fix" }, false],
 		[{ "id": "x", "name": "Fixed" }, false],
+		[{ "id": "x", "name": "Stock low | feel=stock < 5" }, false],
+		[{ "id": "x", "name": "Ready | feel=if then" }, false],
+		[{ "id": "x", "name": "Cancelled | on=t nonint feel=order.cancelled = true" }, true],
 		[{ "id": "x", "name": "Review" }, false],
 		[{ "id": "x", "name": "Reminder | on=t nonint after=PT1H" }, false],
 		[{ "id": "x", "name": "Run child | job=child-process" }, false],
@@ -34645,6 +35532,7 @@
 		[{ "id": "x", "name": "Which?" }, false],
 		[{ "id": "x", "name": "Z" }, false],
 		[{ "id": "x", "name": "Check more" }, false],
+		[{ "id": "x", "name": "W" }, false],
 		[{ "id": "x", "name": "Mode" }, false],
 		[{ "id": "x", "name": "Decide" }, false],
 		[{ "id": "x", "name": "Fast" }, false],
@@ -34683,7 +35571,6 @@
 		[{ "id": "x", "name": "Q&A: \"quotes\" <tags> 'single'" }, false],
 		[{ "id": "x", "name": "Review (urgent) #1" }, false],
 		[{ "id": "x", "name": "50% done" }, false],
-		[{ "id": "x", "name": "Stock low | feel=stock < 5" }, false],
 		[{ "id": "x", "name": "Request | form=request-form in.n=name" }, false],
 		[{ "id": "x", "name": "Alarm" }, false],
 		[{ "id": "x", "name": "Every hour | after=PT1H" }, false],
@@ -34694,6 +35581,9 @@
 		[{ "id": "x", "name": "Raise" }, false],
 		[{ "id": "x", "name": "Undo" }, false],
 		[{ "id": "x", "name": "Milestone" }, false],
+		[{ "id": "x", "name": "| after=PT5M" }, false],
+		[{ "id": "x", "name": "Pause | after=PT1H30M" }, false],
+		[{ "id": "x", "name": "Late | on=t nonint after=P2D" }, true],
 		[{ "id": "x", "name": "First" }, false],
 		[{ "id": "x", "name": "Second" }, false],
 		[{ "id": "x", "name": "Zahlung ✓" }, false],
@@ -35280,6 +36170,10 @@
 		["PT1H", "task"],
 		["Fail", "task"],
 		["Fixed", "task"],
+		["Stock", "task"],
+		["low", "task"],
+		["order.cancelled", "task"],
+		["true", "task"],
 		["Reminder", "task"],
 		["child", "task"],
 		["child-process", "task"],
@@ -35328,6 +36222,8 @@
 		["100", "task"],
 		["Large", "task"],
 		["dmn", "task"],
+		["hasOwnProperty", "task"],
+		["W", "task"],
 		["Mode", "task"],
 		["Other", "task"],
 		["Decide", "task"],
@@ -35373,8 +36269,6 @@
 		["single", "task"],
 		["urgent", "task"],
 		["50", "task"],
-		["Stock", "task"],
-		["low", "task"],
 		["Request", "task"],
 		["request-form", "task"],
 		["Alarm", "task"],
@@ -35385,6 +36279,9 @@
 		["Shout", "task"],
 		["Raise", "task"],
 		["Milestone", "task"],
+		["Pause", "task"],
+		["PT1H30M", "task"],
+		["P2D", "task"],
 		["Only", "task"],
 		["First", "task"],
 		["Second", "task"],
@@ -35419,8 +36316,7 @@
 		["TASK", "task"],
 		["İstart", "task"],
 		["ſtart", "task"],
-		["Kstart", "task"],
-		["hasOwnProperty", "task"]
+		["Kstart", "task"]
 	],
 	"nameFromId": [
 		["constructor", "Constructor"],
@@ -35978,6 +36874,10 @@
 		["PT1H", "Pt1 h"],
 		["Fail", "Fail"],
 		["Fixed", "Fixed"],
+		["Stock", "Stock"],
+		["low", "Low"],
+		["order.cancelled", "Order cancelled"],
+		["true", "True"],
 		["Reminder", "Reminder"],
 		["child", "Child"],
 		["child-process", "Child process"],
@@ -36026,6 +36926,8 @@
 		["100", "100"],
 		["Large", "Large"],
 		["dmn", "Dmn"],
+		["hasOwnProperty", "Has own property"],
+		["W", "W"],
 		["Mode", "Mode"],
 		["Other", "Other"],
 		["Decide", "Decide"],
@@ -36071,8 +36973,6 @@
 		["single", "Single"],
 		["urgent", "Urgent"],
 		["50", "50"],
-		["Stock", "Stock"],
-		["low", "Low"],
 		["Request", "Request"],
 		["request-form", "Request form"],
 		["Alarm", "Alarm"],
@@ -36083,6 +36983,9 @@
 		["Shout", "Shout"],
 		["Raise", "Raise"],
 		["Milestone", "Milestone"],
+		["Pause", "Pause"],
+		["PT1H30M", "Pt1 h30 m"],
+		["P2D", "P2 d"],
 		["Only", "Only"],
 		["First", "First"],
 		["Second", "Second"],
@@ -36118,7 +37021,6 @@
 		["İstart", "İstart"],
 		["ſtart", "Start"],
 		["Kstart", "Kstart"],
-		["hasOwnProperty", "Has own property"],
 		["", ""],
 		["_", ""],
 		["__a__", "A"],
@@ -36470,6 +37372,12 @@
 		["Log", "log"],
 		["Fix", "fix"],
 		["Fixed", "fixed"],
+		["Stock low | feel=stock < 5", "stockLowFeelStock5"],
+		["Ready | feel=if then", "readyFeelIfThen"],
+		[
+			"Cancelled | on=t nonint feel=order.cancelled = true",
+			"cancelledOnTNonintFeelOrderCancelledTrue"
+		],
 		["Review", "review"],
 		["Reminder | on=t nonint after=PT1H", "reminderOnTNonintAfterPt1H"],
 		["Run child | job=child-process", "runChildJobChildProcess"],
@@ -36510,6 +37418,7 @@
 		["Which?", "which"],
 		["Z", "z"],
 		["Check more", "checkMore"],
+		["W", "w"],
 		["Mode", "mode"],
 		["Decide", "decide"],
 		["Fast", "fast"],
@@ -36539,7 +37448,6 @@
 		["Q&A: \"quotes\" <tags> 'single'", "qAQuotesTagsSingle"],
 		["Review (urgent) #1", "reviewUrgent1"],
 		["50% done", "_50Done"],
-		["Stock low | feel=stock < 5", "stockLowFeelStock5"],
 		["Request | form=request-form in.n=name", "requestFormRequestFormInNName"],
 		["Alarm", "alarm"],
 		["Every hour | after=PT1H", "everyHourAfterPt1H"],
@@ -36550,6 +37458,9 @@
 		["Raise", "raise"],
 		["Undo", "undo"],
 		["Milestone", "milestone"],
+		["| after=PT5M", "afterPt5M"],
+		["Pause | after=PT1H30M", "pauseAfterPt1H30M"],
+		["Late | on=t nonint after=P2D", "lateOnTNonintAfterP2D"],
 		["First", "first"],
 		["Second", "second"],
 		["Zahlung ✓", "zahlung"],

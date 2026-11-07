@@ -71,6 +71,7 @@
           },
           {
             "attachedTo": "t",
+            "condition": "= a > 1",
             "eventType": "conditional",
             "id": "b5",
             "name": "Cond",
@@ -172,11 +173,6 @@
     "added end event \"x4_end\" after \"x4\"",
     "named 8 unnamed element(s) from their ids"
   ],
-  "problems": [
-    {
-      "line": 6,
-      "message": "only a script task evaluates feel=; ignored on \"b5\""
-    }
-  ],
+  "problems": [],
   "questions": []
 }

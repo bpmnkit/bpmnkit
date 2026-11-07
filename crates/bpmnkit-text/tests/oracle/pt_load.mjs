@@ -1,7 +1,7 @@
 // Loads TS's process-text.js with its private helpers and `Reader` exported (they are not
 // part of the package's public surface), for the oracle dump scripts next to it.
 // CORE_DIST / FEEL_DIST override the built packages (default: this checkout, else the main one).
-import { existsSync, readdirSync, readFileSync } from "node:fs"
+import { existsSync, readFileSync, readdirSync } from "node:fs"
 import { pathToFileURL } from "node:url"
 
 const main = "/home/user/bpmnkit/"

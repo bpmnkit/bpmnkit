@@ -9,13 +9,8 @@
 //!   at `\n`, `\r`, U+2028, U+2029; `/i` folds case. With the `regex` crate write
 //!   `(?-u:\w)`, `(?-u:\b)`, an explicit JS-space class instead of `\s`, and keep patterns
 //!   in `std::sync::LazyLock<Regex>`. Hand-written scanners are fine where clearer.
-//! - JS object lookups go through the prototype: `KINDS["constructor"]` is a function, not
-//!   `undefined`. [`kind`]/[`alias`] are plain own-key lookups. `tokenize_path` imitates TS
-//!   for its case-sensitive `KINDS[id] !== undefined` (`PROTOTYPE_KEYS`: `a > toString Do it`
-//!   is a bracketless declaration), since a token is all it yields. `Reader::declare` does
-//!   not: for the kind words `constructor` / `__proto__` TS builds an element whose `type`
-//!   is a function / `{}`, which a typed element cannot hold (suspected TS bug, see the
-//!   reader's `prototype_kind_words_are_a_known_divergence` test).
+//! - [`kind`]/[`alias`] are own-key lookups, as TS's `kindOf` / `Object.hasOwn(KINDS, …)`:
+//!   `constructor`, `toString` and the rest of `Object.prototype` are not kind words.
 //! - `typeFromId` and `nameFromId` are used by `assemble`; `nameFromId` lower-cases with
 //!   JS `toLowerCase` (Unicode) and upper-cases the first UTF-16 unit with `toUpperCase`.
 
@@ -282,29 +277,6 @@ pub(crate) fn is_header_segment(s: &str) -> bool {
         rest = after[value_end..].trim_start_matches(sep);
     }
     rest.is_empty()
-}
-
-/// Own property names of `Object.prototype`: `KINDS[id] !== undefined` is true for them in
-/// TS, which `tokenizePath` relies on (`a > toString Do it` reads as a bracketless kind).
-/// Kept only where the result is a token; `declare` reads `KINDS[word] ?? ALIASES[word]`
-/// with a lower-cased word, where only `constructor` / `__proto__` differ (see the notes).
-const PROTOTYPE_KEYS: [&str; 12] = [
-    "constructor",
-    "__proto__",
-    "__defineGetter__",
-    "__defineSetter__",
-    "__lookupGetter__",
-    "__lookupSetter__",
-    "hasOwnProperty",
-    "isPrototypeOf",
-    "propertyIsEnumerable",
-    "toLocaleString",
-    "toString",
-    "valueOf",
-];
-
-fn is_prototype_key(id: &str) -> bool {
-    PROTOTYPE_KEYS.contains(&id)
 }
 
 /// `-{0,2}>` at the start of `s`: the arrow's length.
@@ -780,7 +752,7 @@ pub fn tokenize_path(text: &str) -> Result<PathTokens, String> {
         let mut spec: Option<String> = None;
         // `… > xor Notify sales? >(Yes: …)`: a kind and a name without brackets, after an
         // arrow. At the start of a line it is more likely prose ("end of the answer").
-        if !refs.is_empty() && (kind(&id).is_some() || is_prototype_key(&id)) {
+        if !refs.is_empty() && kind(&id).is_some() {
             if let Some((len, group)) = bare_match(&text[i..]) {
                 // TS tests the group for truthiness; it is never empty.
                 spec = Some(format!("{id} {}", js_trim(group)));

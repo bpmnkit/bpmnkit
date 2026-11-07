@@ -327,14 +327,15 @@ const handwritten = [
 	["#title", "a"],
 ]
 for (const lines of handwritten) cases.push(run(lines))
-// `KINDS[word]` finds `Object.prototype` members in TS: the node's `type` becomes a function
-// (dropped by JSON) or `{}`. Rust looks up own keys only; recorded for the test to document.
-const quirks = [
+// `Object.prototype` members are not kind words: an unknown kind, or a plain id after an arrow.
+for (const lines of [
 	["a > constructor stuff", "a > __proto__ stuff"],
 	["a[constructor X]"],
 	["a[__proto__ X]", "b[toString X]"],
 	["b[task B]", "b[constructor X]", "b[__proto__ Y]"],
-].map((lines) => run(lines))
+]) {
+	cases.push(run(lines))
+}
 // A line left waiting at the end, with and without `finish()`.
 cases.push(
 	run(["a[task A] >"], false),
@@ -356,7 +357,4 @@ for (const input of conformanceInputs()) {
 	}
 }
 
-writeFileSync(
-	new URL("./pt_reader.json", import.meta.url),
-	`${JSON.stringify({ cases, quirks })}\n`,
-)
+writeFileSync(new URL("./pt_reader.json", import.meta.url), `${JSON.stringify({ cases })}\n`)

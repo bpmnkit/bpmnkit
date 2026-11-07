@@ -20,7 +20,7 @@ use bpmnkit_bpmn::{BpmnDefinitions, BpmnElementType, BpmnFlowElement};
 use indexmap::{IndexMap, IndexSet};
 use serde::{Deserialize, Serialize};
 
-use super::tokens::{split_mappings, KINDS};
+use super::tokens::{duration, split_mappings, KINDS};
 use crate::catalog::FIXED_KINDS;
 use crate::compact::{compactify, CompactElement, CompactFlow};
 use crate::js_record::JsRecord;
@@ -262,6 +262,14 @@ fn spec(element: &CompactElement, host: Option<&str>, container: Option<&str>) -
     }
     if element.interrupting == Some(false) {
         attrs.push("nonint".to_owned());
+    }
+    // Only a duration that reads back as itself: a cycle or a FEEL expression would not
+    if let Some(after) = element.timer_duration.as_deref().filter(|s| !s.is_empty()) {
+        if element.event_type.as_deref() == Some("timer")
+            && duration(after).as_deref() == Some(after)
+        {
+            attrs.push(format!("after={after}"));
+        }
     }
     if let Some(job) = element.job_type.as_deref().filter(|s| !s.is_empty()) {
         attrs.push(format!("job={job}"));

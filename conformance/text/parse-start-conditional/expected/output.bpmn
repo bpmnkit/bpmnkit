@@ -3,7 +3,9 @@
   <bpmn:process id="Process_1" isExecutable="true">
     <bpmn:startEvent id="s" name="Stock low">
       <bpmn:outgoing>Flow_1</bpmn:outgoing>
-      <bpmn:conditionalEventDefinition id="s_ConditionalEventDefinition"/>
+      <bpmn:conditionalEventDefinition id="s_ConditionalEventDefinition">
+        <bpmn:condition xsi:type="bpmn:tFormalExpression">= stock &lt; 5</bpmn:condition>
+      </bpmn:conditionalEventDefinition>
     </bpmn:startEvent>
     <bpmn:task id="t" name="T">
       <bpmn:incoming>Flow_1</bpmn:incoming>

@@ -741,7 +741,18 @@ impl Reader {
             if is_type(element, BpmnElementType::Task) {
                 set_type(element, BpmnElementType::ScriptTask);
             }
-            if is_type(element, BpmnElementType::ScriptTask) {
+            if in_types(element, &EVENTS) && element.event_type.as_deref() == Some("conditional") {
+                // `ready[catch:conditional | feel=stock > 0]`: the condition it waits for
+                if !is_feel(&feel[1..]) {
+                    self.problems.push(ProcessTextProblem {
+                        line: n,
+                        message: format!(
+                            "feel= on \"{id}\" is not FEEL; kept for the reader to correct"
+                        ),
+                    });
+                }
+                element.condition = Some(feel);
+            } else if is_type(element, BpmnElementType::ScriptTask) {
                 if element.result_variable.is_none() {
                     element.result_variable = Some(id.clone());
                 }
@@ -894,23 +905,33 @@ mod tests {
         serde_json::from_str(include_str!("../../tests/oracle/pt_reader.json")).expect("oracle")
     }
 
-    /// TS finds `Object.prototype` members in `KINDS` / `ALIASES`: the kind words
-    /// `constructor` and `__proto__` (lower-cased, so only those two) read as a kind whose
-    /// type is a function or `{}`, and the element loses its `type` (`expand` later fails
-    /// on it). Own-key lookups here read them as unknown kinds, so the node is a task.
-    /// `tokenize_path` does list all prototype names, since its output is only tokens.
+    /// `Object.prototype` member names are unknown kinds, not kinds (TS reads own keys too).
     #[test]
-    fn prototype_kind_words_are_a_known_divergence() {
-        for case in oracle()["quirks"].as_array().unwrap() {
-            let mut reader = Reader::new();
-            for (k, line) in case["lines"].as_array().unwrap().iter().enumerate() {
-                reader.line(line.as_str().unwrap(), k as u32 + 1);
-            }
-            assert!(reader
-                .nodes
-                .values()
-                .all(|n| n.element.element_type().is_some()));
+    fn prototype_kind_words_are_unknown_kinds() {
+        let mut reader = Reader::new();
+        reader.line("a[constructor X] > b[__proto__ Y] > c[toString Z]", 1);
+        for id in ["a", "b", "c"] {
+            assert_eq!(
+                reader.nodes[id].element.element_type(),
+                Some(BpmnElementType::Task)
+            );
         }
+        assert!(reader
+            .problems
+            .iter()
+            .any(|p| p.message == "unknown kind \"constructor\" for \"a\"; used task"));
+    }
+
+    /// `feel=` on a conditional event is its condition, not an ignored script.
+    #[test]
+    fn conditional_event_feel_is_its_condition() {
+        let mut reader = Reader::new();
+        reader.line("w[catch:conditional Ready | feel=stock > 0]", 1);
+        assert_eq!(
+            reader.nodes["w"].element.condition.as_deref(),
+            Some("= stock > 0")
+        );
+        assert!(reader.problems.is_empty(), "{:?}", reader.problems);
     }
 
     #[test]

@@ -12,7 +12,9 @@
     <bpmn:intermediateCatchEvent id="b" name="Ready">
       <bpmn:incoming>Flow_2</bpmn:incoming>
       <bpmn:outgoing>Flow_3</bpmn:outgoing>
-      <bpmn:conditionalEventDefinition id="b_ConditionalEventDefinition"/>
+      <bpmn:conditionalEventDefinition id="b_ConditionalEventDefinition">
+        <bpmn:condition xsi:type="bpmn:tFormalExpression">= ready</bpmn:condition>
+      </bpmn:conditionalEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="c" name="Wait">
       <bpmn:incoming>Flow_3</bpmn:incoming>

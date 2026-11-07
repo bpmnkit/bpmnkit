@@ -9,6 +9,15 @@
 
 - TS builder defects found while porting, fixed in `@bpmnkit/core` and `bpmnkit-builder`, kept identical (changeset `builder-parity-fixes`): `withBoundary()` refuses a non-activity host in all three builders (C); `build()` refuses ids duplicated across scopes (D); `BranchBuilder.startEvent()` honours `isInterrupting: false` (E); in a branch after a nested `branch()`, `connectTo()` wires the open ends and `textAnnotation()` throws (F); `at()` / `element()` resolve a pending `insertAfter()` splice (M); `build()` works on a copy, so repeated builds agree and the result shares nothing with the builder (N); the source-topology guard keeps endpoints as a pair, not a `→`-joined string (O). Not defects: a link catch in a branch leaves open ends for the next element, as `ProcessBuilder` does (G); `startEvent()` chains from the cursor, now documented (K).
 - Tests: TS `builder-parity-fixes.test.ts`, Rust `tests/parity_fixes.rs`. Conformance: `boundary-with-boundary-after-boundary` / `-after-start-event` are now error cases; 12 new builder cases (one per fix, plus pins for G and K). The Rust replay runs `["$let", name, "build"]`. `from-insert-after-arrow-in-id` is skipped by `bpmnlint-parity` (an id that is not an XML name, on purpose).
+## 2026-11-07 — Rust twin phase 8: process-text parity fixes
+
+- Fixed in TS (`@bpmnkit/core`) and identically in `bpmnkit-text`, with regression tests on both sides (TS `process-text-parity.test.ts`; Rust unit tests in `reader.rs`, new `write_cases_match_ts` replaying the `write-*` conformance cases, which Rust did not check before). Changeset `text-parity-fixes`.
+  - `writeProcessText` writes a timer's `after=` when the duration reads back as itself (not a cycle or FEEL). The change script (`parseProcessDelta`) reads `after=` (`DeltaNode.timerDuration`) and `applyProcessDelta` (`@bpmnkit/editor`) applies it, since the written text is what a script restates.
+  - `feel=` on a conditional event (start, catch, boundary) is its `condition`; it was ignored with "only a script task evaluates feel=".
+  - Kind lookups use own keys (`kindOf`, `Object.hasOwn`), in process-text and process-delta: `constructor` / `__proto__` made a node whose type was a function / `{}`, and `> toString Do it` read as a bracketless kind. The Rust imitation (`PROTOTYPE_KEYS`) and its divergence test are gone.
+  - `expand`: a job worker's `resultVariable` named like an `Object.prototype` member got no `response` output mapping.
+  - `createProcessTextStream`: `assemble` spliced (and mutated) the reader's edges, so a boundary drawn from its host lost its path in later frames and in `end()`. It now works on a copy.
+- Conformance: re-recorded 3 parse cases (conditional `feel=`) and 10 write cases (`after=`); new `parse-kind-prototype-words`, `parse-boundary-conditional-feel`, `parse-timer-after`, `write-parse-timer-after`, `stream-boundary-drawn-from-host-whole`, `stream-boundary-drawn-from-host-by-lines`, compact `expand-result-prototype-name`.
 
 ## 2026-11-06 — Rust twin phase 7 follow-up: lanes outside pools, annotation links, layout speed
 

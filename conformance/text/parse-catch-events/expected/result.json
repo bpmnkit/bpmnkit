@@ -17,6 +17,7 @@
             "type": "intermediateCatchEvent"
           },
           {
+            "condition": "= ready",
             "eventType": "conditional",
             "id": "b",
             "name": "Ready",
@@ -75,11 +76,6 @@
   "fixes": [
     "named 2 unnamed element(s) from their ids"
   ],
-  "problems": [
-    {
-      "line": 1,
-      "message": "only a script task evaluates feel=; ignored on \"b\""
-    }
-  ],
+  "problems": [],
   "questions": []
 }

@@ -1,0 +1,2 @@
+s[start:timer | after=PT5M] > t[task Work] > c[catch:timer Pause | after=PT1H30M] > e[end]
+b[boundary:timer Late | on=t nonint after=P2D] > x[end]

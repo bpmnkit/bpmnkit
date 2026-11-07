@@ -370,7 +370,7 @@ out.dangling = lines
 // `matching` takes UTF-16 indices: only ASCII lines, where they equal byte offsets.
 out.matching = []
 for (const text of lines) {
-	if (!/^[\x00-\x7f]*$/.test(text)) continue
+	if ([...text].some((c) => c.charCodeAt(0) > 0x7f)) continue
 	for (let i = 0; i < text.length; i++) {
 		const open = text[i] === "[" ? ["[", "]"] : text[i] === "(" ? ["(", ")"] : null
 		if (open) out.matching.push([text, i, open[0], open[1], m.matching(text, i, open[0], open[1])])

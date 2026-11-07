@@ -131,7 +131,7 @@ pub fn parse_process_text(text: &str) -> ProcessTextResult {
         reader.line(line, line_number(index + 1));
     }
     reader.finish();
-    assemble::assemble(&mut reader, true)
+    assemble::assemble(&reader, true)
 }
 
 fn line_number(n: usize) -> u32 {
@@ -164,7 +164,7 @@ impl ProcessTextStream {
         if !changed || self.reader.nodes.is_empty() {
             return Ok(None);
         }
-        let result = assemble::assemble(&mut self.reader, false);
+        let result = assemble::assemble(&self.reader, false);
         expand(&result.diagram).map(Some)
     }
 
@@ -176,6 +176,6 @@ impl ProcessTextStream {
             self.reader.line(&pending, self.line_number);
         }
         self.reader.finish();
-        assemble::assemble(&mut self.reader, true)
+        assemble::assemble(&self.reader, true)
     }
 }

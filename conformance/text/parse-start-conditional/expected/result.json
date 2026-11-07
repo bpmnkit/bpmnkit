@@ -6,6 +6,7 @@
       {
         "elements": [
           {
+            "condition": "= stock < 5",
             "eventType": "conditional",
             "id": "s",
             "name": "Stock low",
@@ -41,11 +42,6 @@
   "fixes": [
     "named 1 unnamed element(s) from their ids"
   ],
-  "problems": [
-    {
-      "line": 1,
-      "message": "only a script task evaluates feel=; ignored on \"s\""
-    }
-  ],
+  "problems": [],
   "questions": []
 }
