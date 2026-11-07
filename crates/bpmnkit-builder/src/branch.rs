@@ -17,13 +17,18 @@
 //!   `is_first_element`; `with_boundary` refuses a cursor at the gateway itself.
 //! - `with_boundary` also saves/restores `connected`.
 //! - Sub-process construction is shared: `crate::subprocess::make_*_el`.
+//! - `connect_to` with no cursor (after a nested `branch()`) gives TS a flow with
+//!   `sourceRef: undefined`; the model has a `String`, so it is `""` here.
 
 use bpmnkit_bpmn::ids::generate_id;
-use bpmnkit_bpmn::BpmnFlowElement;
+use bpmnkit_bpmn::{BpmnElementType, BpmnFlowElement, BpmnSequenceFlow};
 
+use crate::elements::{
+    build_event_definitions, is_link_event, make_condition_expression, make_start_event_el,
+};
 use crate::options::*;
-use crate::shared::{is_failed, BranchOutcome, Scope, SharedRef};
-use crate::subprocess::SubProcessContentBuilder;
+use crate::shared::{check, fail, is_failed, BranchOutcome, Scope, SharedRef};
+use crate::subprocess::{make_event_sub_process_el, scope_methods, SubProcessContentBuilder};
 
 /// Builder for one named path out of a gateway (TS's `BranchBuilder`).
 #[derive(Debug)]
@@ -85,212 +90,199 @@ impl BranchBuilder {
 
     /// TS's private `registerFirstFlow`.
     fn register_first_flow(&mut self, flow_id: &str) {
-        todo!()
+        let mut shared = self.shared.borrow_mut();
+        shared
+            .flow_tags
+            .set_flow_discriminator_source(flow_id, &self.branch_name);
+        if self.pending_flow_id.is_some() {
+            shared.flow_tags.mark_explicit_flow_id(flow_id);
+        }
+    }
+
+    /// The flow out of the gateway (or from the cursor) with the first-element attributes.
+    /// Consumes a `generate_id("Flow")` unless a `flow_id()` was given.
+    fn first_or_next_flow(&mut self, source: &str, target: &str) -> BpmnSequenceFlow {
+        let first = self.is_first_element;
+        let id = if first {
+            self.pending_flow_id
+                .clone()
+                .unwrap_or_else(|| generate_id("Flow"))
+        } else {
+            generate_id("Flow")
+        };
+        BpmnSequenceFlow {
+            id,
+            source_ref: source.to_owned(),
+            target_ref: target.to_owned(),
+            name: first.then(|| {
+                self.pending_label
+                    .clone()
+                    .unwrap_or_else(|| self.branch_name.clone())
+            }),
+            condition_expression: self
+                .pending_condition
+                .as_deref()
+                .filter(|c| first && !c.is_empty())
+                .map(make_condition_expression),
+            ..BpmnSequenceFlow::default()
+        }
     }
 
     /// TS's private `addElement`: wires the element after the cursor (and the open ends).
     fn add_element(&mut self, element: BpmnFlowElement) -> &mut Self {
-        todo!()
+        if self.failed() {
+            return self;
+        }
+        let id = element.base().id.clone();
+        let is_catch = is_link_event(&element, BpmnElementType::IntermediateCatchEvent);
+        let is_throw = is_link_event(&element, BpmnElementType::IntermediateThrowEvent);
+        self.scope.elements.push(element);
+        self.scope.ids.insert(id.clone());
+
+        if is_catch {
+            self.is_first_element = false;
+            self.scope.last_node_id = Some(id);
+            return self;
+        }
+
+        if let Some(last) = self.cursor() {
+            let flow = self.first_or_next_flow(&last, &id);
+            let flow_id = flow.id.clone();
+            self.scope.flows.push(flow);
+            if self.is_first_element {
+                self.register_first_flow(&flow_id);
+                if self.pending_default {
+                    self.default_flow_id = Some(flow_id);
+                }
+            }
+        }
+
+        for end in std::mem::take(&mut self.scope.open_branch_ends) {
+            self.scope.flows.push(BpmnSequenceFlow {
+                id: generate_id("Flow"),
+                source_ref: end,
+                target_ref: id.clone(),
+                ..BpmnSequenceFlow::default()
+            });
+        }
+
+        self.is_first_element = false;
+        self.scope.last_node_id = if is_throw { None } else { Some(id) };
+        self
     }
 
     // ── Flow attributes of the branch's first flow ──
 
     /// TS's `condition()`: FEEL condition on the flow out of the gateway.
     pub fn condition(&mut self, expression: &str) -> &mut Self {
-        todo!()
+        if !self.failed() {
+            self.pending_condition = Some(expression.to_owned());
+        }
+        self
     }
 
     /// TS's `label()`: the flow's name instead of the branch name.
     pub fn label(&mut self, text: &str) -> &mut Self {
-        todo!()
+        if !self.failed() {
+            self.pending_label = Some(text.to_owned());
+        }
+        self
     }
 
     /// TS's `flowId()`: a caller-chosen id for the flow out of the gateway.
     pub fn flow_id(&mut self, id: &str) -> &mut Self {
-        todo!()
+        if !self.failed() {
+            self.pending_flow_id = Some(id.to_owned());
+        }
+        self
     }
 
     /// TS's `defaultFlow()`: this branch is the gateway's default.
     pub fn default_flow(&mut self) -> &mut Self {
-        todo!()
+        if !self.failed() {
+            self.pending_default = true;
+        }
+        self
     }
 
     /// TS's `connectTo()`: a flow from the cursor to `target_id`; the branch is connected.
     pub fn connect_to(&mut self, target_id: &str) -> &mut Self {
-        todo!()
+        if self.failed() {
+            return self;
+        }
+        // TS reads `lastNodeId!` unchecked (see the module notes).
+        let source = self.scope.last_node_id.clone().unwrap_or_default();
+        let flow = self.first_or_next_flow(&source, target_id);
+        let flow_id = flow.id.clone();
+        self.scope.flows.push(flow);
+        if self.is_first_element {
+            self.register_first_flow(&flow_id);
+            if self.pending_default {
+                self.default_flow_id = Some(flow_id);
+            }
+        }
+        self.is_first_element = false;
+        self.scope.last_node_id = Some(target_id.to_owned());
+        self.connected = true;
+        self
     }
-
-    // ── Data elements (beside the chain; no sequence flows) ──
-
-    /// TS's `dataObject()`.
-    pub fn data_object(&mut self, id: &str, options: Option<DataElementOptions>) -> &mut Self {
-        todo!()
-    }
-
-    /// TS's `dataObjectReference()`.
-    pub fn data_object_reference(
-        &mut self,
-        id: &str,
-        data_object_ref: &str,
-        options: Option<DataElementOptions>,
-    ) -> &mut Self {
-        todo!()
-    }
-
-    /// TS's `dataStoreReference()` (only `name` is read).
-    pub fn data_store_reference(
-        &mut self,
-        id: &str,
-        data_store_ref: &str,
-        options: Option<DataElementOptions>,
-    ) -> &mut Self {
-        todo!()
-    }
-
-    /// TS's `dataAssociation()`.
-    pub fn data_association(
-        &mut self,
-        activity_id: &str,
-        data_ref_id: &str,
-        direction: DataDirection,
-    ) -> &mut Self {
-        todo!()
-    }
-
-    // ── Annotations ──
 
     /// TS's `textAnnotation()`: annotates the cursor element.
     pub fn text_annotation(&mut self, text: &str) -> &mut Self {
-        todo!()
-    }
-
-    /// TS's `annotate()`.
-    pub fn annotate(
-        &mut self,
-        element_id: &str,
-        text: &str,
-        options: Option<AnnotateOptions>,
-    ) -> &mut Self {
-        todo!()
-    }
-
-    // ── Tasks ──
-
-    /// TS's `serviceTask()`.
-    pub fn service_task(&mut self, id: &str, options: ServiceTaskOptions) -> &mut Self {
-        todo!()
-    }
-
-    /// TS's `userTask()`.
-    pub fn user_task(&mut self, id: &str, options: Option<UserTaskOptions>) -> &mut Self {
-        todo!()
-    }
-
-    /// TS's `scriptTask()`.
-    pub fn script_task(&mut self, id: &str, options: ScriptTaskOptions) -> &mut Self {
-        todo!()
-    }
-
-    /// TS's `sendTask()`.
-    pub fn send_task(&mut self, id: &str, options: Option<MessageTaskOptions>) -> &mut Self {
-        todo!()
-    }
-
-    /// TS's `receiveTask()`.
-    pub fn receive_task(&mut self, id: &str, options: Option<MessageTaskOptions>) -> &mut Self {
-        todo!()
-    }
-
-    /// TS's `businessRuleTask()`.
-    pub fn business_rule_task(
-        &mut self,
-        id: &str,
-        options: Option<BusinessRuleTaskOptions>,
-    ) -> &mut Self {
-        todo!()
-    }
-
-    /// TS's `callActivity()`.
-    pub fn call_activity(&mut self, id: &str, options: CallActivityOptions) -> &mut Self {
-        todo!()
-    }
-
-    /// TS's `manualTask()`.
-    pub fn manual_task(&mut self, id: &str, options: Option<ElementOptions>) -> &mut Self {
-        todo!()
-    }
-
-    /// TS's `task()`.
-    pub fn task(&mut self, id: &str, options: Option<ElementOptions>) -> &mut Self {
-        todo!()
+        if self.failed() {
+            return self;
+        }
+        // `lastNodeId!` may be undefined in TS; its template string then reads "undefined".
+        let target = self
+            .scope
+            .last_node_id
+            .clone()
+            .unwrap_or_else(|| "undefined".to_owned());
+        self.annotate(&target, text, None)
     }
 
     // ── Events ──
 
-    /// TS's `startEvent()`; `None` id is `generate_id("StartEvent")`.
+    /// TS's `startEvent()`; `None` id is `generate_id("StartEvent")`. `is_interrupting` is
+    /// not applied (TS's `BranchBuilder` never reads it).
     pub fn start_event(
         &mut self,
         id: Option<&str>,
         options: Option<StartEventOptions>,
     ) -> &mut Self {
-        todo!()
+        if self.failed() {
+            return self;
+        }
+        let id = id.map_or_else(|| generate_id("StartEvent"), str::to_owned);
+        self.build_el(|s| {
+            let mut el = make_start_event_el(&id, options.as_ref())?;
+            if let (BpmnFlowElement::StartEvent(ev), Some(o)) = (&mut el, options.as_ref()) {
+                ev.event_definitions = build_event_definitions(&o.into(), s);
+            }
+            Ok(el)
+        })
     }
 
-    /// TS's `endEvent()`; `None` id is `generate_id("EndEvent")`.
-    pub fn end_event(&mut self, id: Option<&str>, options: Option<EndEventOptions>) -> &mut Self {
-        todo!()
-    }
-
-    /// TS's `intermediateThrowEvent()`.
-    pub fn intermediate_throw_event(
-        &mut self,
-        id: Option<&str>,
-        options: Option<IntermediateThrowEventOptions>,
-    ) -> &mut Self {
-        todo!()
-    }
-
-    /// TS's `intermediateCatchEvent()`.
-    pub fn intermediate_catch_event(
-        &mut self,
-        id: Option<&str>,
-        options: Option<IntermediateCatchEventOptions>,
-    ) -> &mut Self {
-        todo!()
-    }
-
-    // ── Gateways ──
-
-    /// TS's `exclusiveGateway()`.
-    pub fn exclusive_gateway(&mut self, id: &str, options: Option<GatewayOptions>) -> &mut Self {
-        todo!()
-    }
-
-    /// TS's `parallelGateway()`.
-    pub fn parallel_gateway(&mut self, id: &str, options: Option<ElementOptions>) -> &mut Self {
-        todo!()
-    }
-
-    /// TS's `inclusiveGateway()`.
-    pub fn inclusive_gateway(&mut self, id: &str, options: Option<GatewayOptions>) -> &mut Self {
-        todo!()
-    }
-
-    /// TS's `eventBasedGateway()`.
-    pub fn event_based_gateway(&mut self, id: &str, options: Option<ElementOptions>) -> &mut Self {
-        todo!()
-    }
-
-    /// TS's `complexGateway()`.
-    pub fn complex_gateway(&mut self, id: &str, options: Option<GatewayOptions>) -> &mut Self {
-        todo!()
-    }
+    scope_methods!();
 
     // ── Boundary events ──
 
     /// TS's `boundaryEvent()`; the positional `(id, hostId, options)` form is `options.attached_to`.
     pub fn boundary_event(&mut self, id: &str, options: BoundaryEventOptions) -> &mut Self {
-        todo!()
+        if self.failed() {
+            return self;
+        }
+        let made =
+            crate::elements::make_boundary_event_el(id, &options, &mut self.shared.borrow_mut());
+        let Ok(el) = check(&self.shared, made) else {
+            return self;
+        };
+        // Pushed directly: no flow, no duplicate check.
+        self.scope.elements.push(el);
+        self.scope.ids.insert(id.to_owned());
+        self.scope.last_node_id = Some(id.to_owned());
+        self.is_first_element = false;
+        self
     }
 
     /// TS's `withBoundary()`: `options.attached_to` is ignored (the cursor element is the host); `handler` gets this builder.
@@ -300,39 +292,50 @@ impl BranchBuilder {
         options: BoundaryEventOptions,
         handler: impl FnOnce(&mut Self),
     ) -> &mut Self {
-        todo!()
-    }
+        if self.failed() {
+            return self;
+        }
+        let attached_to = self.cursor().filter(|a| *a != self.gateway_id);
+        let Some(attached_to) = attached_to else {
+            fail(
+                &self.shared,
+                "withBoundary() must follow a task element inside the branch. Current builder position has no active task.",
+            );
+            return self;
+        };
+        if matches!(
+            self.scope.find(&attached_to),
+            Some(BpmnFlowElement::BoundaryEvent(_))
+        ) {
+            fail(
+                &self.shared,
+                "withBoundary() cannot attach to a boundary event. It must follow a task or activity element.",
+            );
+            return self;
+        }
 
-    // ── Sub-processes ──
+        let saved_last = self.scope.last_node_id.clone();
+        let saved_gateway = self.scope.current_gateway_id.clone();
+        let saved_connected = self.connected;
+        let saved_open_ends = std::mem::take(&mut self.scope.open_branch_ends);
 
-    /// TS's `subProcess()`.
-    pub fn sub_process(
-        &mut self,
-        id: &str,
-        content: impl FnOnce(&mut SubProcessContentBuilder),
-        options: Option<SubProcessOptions>,
-    ) -> &mut Self {
-        todo!()
-    }
+        self.boundary_event(
+            id,
+            BoundaryEventOptions {
+                attached_to,
+                ..options
+            },
+        );
+        if self.failed() {
+            return self;
+        }
+        handler(self);
 
-    /// TS's `transaction()`.
-    pub fn transaction(
-        &mut self,
-        id: &str,
-        content: impl FnOnce(&mut SubProcessContentBuilder),
-        options: Option<SubProcessOptions>,
-    ) -> &mut Self {
-        todo!()
-    }
-
-    /// TS's `adHocSubProcess()`.
-    pub fn ad_hoc_sub_process(
-        &mut self,
-        id: &str,
-        content: impl FnOnce(&mut SubProcessContentBuilder),
-        options: Option<AdHocSubProcessOptions>,
-    ) -> &mut Self {
-        todo!()
+        self.scope.last_node_id = saved_last;
+        self.scope.current_gateway_id = saved_gateway;
+        self.connected = saved_connected;
+        self.scope.open_branch_ends = saved_open_ends;
+        self
     }
 
     /// TS's `eventSubProcess()`: no flows, cursor unmoved.
@@ -342,13 +345,19 @@ impl BranchBuilder {
         content: impl FnOnce(&mut SubProcessContentBuilder),
         options: Option<ElementOptions>,
     ) -> &mut Self {
-        todo!()
-    }
-
-    // ── Branching ──
-
-    /// TS's `branch()`.
-    pub fn branch(&mut self, name: &str, callback: impl FnOnce(&mut BranchBuilder)) -> &mut Self {
-        todo!()
+        if self.failed() {
+            return self;
+        }
+        let Ok(el) = make_event_sub_process_el(&self.shared, id, content, options.as_ref()) else {
+            return self;
+        };
+        let el_id = el.base().id.clone();
+        if self.scope.ids.contains(&el_id) {
+            fail(&self.shared, format!("Duplicate element ID \"{el_id}\""));
+            return self;
+        }
+        self.scope.elements.push(el);
+        self.scope.ids.insert(el_id);
+        self
     }
 }
