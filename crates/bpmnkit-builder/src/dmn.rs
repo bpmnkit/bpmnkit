@@ -85,7 +85,7 @@ impl DecisionTableBuilder {
             label: options.label,
             input_expression: DmnInputExpression {
                 id: expr_id,
-                type_ref: options.type_ref.map(|t| t.as_str().to_owned()),
+                type_ref: options.type_ref,
                 text: Some(options.expression),
             },
         });
@@ -102,7 +102,7 @@ impl DecisionTableBuilder {
             id: output_id,
             label: options.label,
             name: Some(options.name),
-            type_ref: options.type_ref.map(|t| t.as_str().to_owned()),
+            type_ref: options.type_ref,
             output_values: None,
         });
         self

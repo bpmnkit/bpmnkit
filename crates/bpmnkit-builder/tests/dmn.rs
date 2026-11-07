@@ -136,7 +136,7 @@ fn builder_dmn_cases() {
         .map(|e| e.unwrap().path())
         .collect();
     entries.sort();
-    let (mut pass, mut failed, mut skipped) = (0, vec![], vec![]);
+    let (mut pass, mut failed) = (0, vec![]);
     for dir in entries {
         let Ok(text) = std::fs::read_to_string(dir.join("case.json")) else {
             continue;
@@ -146,15 +146,6 @@ fn builder_dmn_cases() {
             continue;
         }
         let name = dir.file_name().unwrap().to_string_lossy().into_owned();
-        // `DmnTypeRef` is a closed enum (string|boolean|number|date); TS accepts any string
-        // at runtime and the corpus uses integer/long/double.
-        if ["integer", "long", "double"]
-            .iter()
-            .any(|t| text.contains(&format!("\"typeRef\":\"{t}\"")))
-        {
-            skipped.push(name);
-            continue;
-        }
         let expected = dir.join("expected");
         let outcome = run_case(&dir);
         let ok = match (
@@ -179,10 +170,7 @@ fn builder_dmn_cases() {
             failed.push(name);
         }
     }
-    eprintln!(
-        "builder dmn: {pass} passed, {} failed, skipped (typeRef): {skipped:?}",
-        failed.len()
-    );
+    eprintln!("builder dmn: {pass} passed, {} failed", failed.len());
     assert!(failed.is_empty(), "failed: {failed:?}");
     assert!(pass > 30);
 }

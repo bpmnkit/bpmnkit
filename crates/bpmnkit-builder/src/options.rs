@@ -587,26 +587,9 @@ impl HitPolicy {
     }
 }
 
-/// TS's `DmnTypeRef`.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Deserialize)]
-#[serde(rename_all = "lowercase")]
-pub enum DmnTypeRef {
-    String,
-    Boolean,
-    Number,
-    Date,
-}
-
-impl DmnTypeRef {
-    pub fn as_str(self) -> &'static str {
-        match self {
-            Self::String => "string",
-            Self::Boolean => "boolean",
-            Self::Number => "number",
-            Self::Date => "date",
-        }
-    }
-}
+/// TS's `DmnTypeRef`: a union of literals in the type, but any string at runtime
+/// (`integer`, `long`, `double` are common), and it is written verbatim.
+pub type DmnTypeRef = String;
 
 /// TS's `InputOptions` (decision-table input column).
 #[derive(Debug, Clone, Default, PartialEq, Deserialize)]
