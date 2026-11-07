@@ -2,7 +2,7 @@
   "findings": [
     {
       "elementId": "o2",
-      "fix": "Use one of string, number, boolean, date, time, dateTime, dayTimeDuration, yearMonthDuration, context, list or Any.",
+      "fix": "Use one of string, number, boolean, date, time, dateTime, dayTimeDuration, yearMonthDuration, context, list or Any. (agent-cards/dmn.md#traps)",
       "message": "Output \"scoreValue\" has typeRef \"integer\", which is not a DMN/FEEL type; the engine treats the value as untyped.",
       "rule": "dmn/invalid-type-ref",
       "severity": "warning"

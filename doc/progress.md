@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-11-07 — Merge main (Camunda 8.10 default, agent cards, export validation) and port to Rust
+
+- Merged `origin/main` (#266, #267 and their version commits). Conflicts: `bpmn-builder.ts` `validate()` keeps the branch's copy-based signature (`elements`, `flows`) and adds main's XSD check on that copy; `dmn/lint.ts` and `form/lint.ts` keep the generated spec imports and add `withCardHint`; this file keeps both sides' entries. Main's version commit released its own changesets; the branch's pending ones are kept.
+- `builder-parity-fixes.test.ts` / `parity_fixes.rs`: the `→`-id regression tests now take their source from parsed XML, as a new build rejects non-NCName ids since #267. Both fixes hold.
+- Rust port: default `executionPlatformVersion` `8.10.0` in `ProcessBuilder`, `DiagramBuilder`, DMN table and DRD builders and C7 migration; the `See agent-cards/<type>.md#traps.` hints on builder and DMN compact errors; `lint_dmn` / `lint_form` fixes end with `(agent-cards/<type>.md#traps)`; new `bpmnkit-builder` `xsd_guards` (NCName ids for process, elements incl. sub-process content and flows on new builds; `retries` whole number or FEEL); new `bpmnkit_lint::export_bpmn(defs, ExportOptions { validate })` (`Off` / `Warn` / `Error`; the warning is returned instead of logged). TS's boolean XSD checks have no twin: those fields are `Option<bool>`.
+- Conformance: re-recorded 572 expected files (version stamps, card hints only). New `export` key on builder cases and 21 cases (`xsd-*`, `export-*`). Builder 284 cases, all exact; whole runner 3294 passed, 2 pending (unchanged), 0 failed. The builder oracle fixtures (`tests/oracle/*.json`) were regenerated for the same two changes.
+
 ## 2026-11-07 — Rust twin phase 8: builder, process text and compact
 
 - New crates (MIT OR Apache-2.0, `publish = false` until phase 9):
@@ -145,6 +152,24 @@
 ## 2026-11-06 — Rust proposal rewritten: TS + Rust twin
 
 - `doc/rust-rewrite-proposal.md` now proposes a Rust twin of the core (BPMN, DMN, Form, FEEL, lint, layout, compat), kept in sync with TS by a shared conformance suite, `spec/` data with generated code on both sides, CI parity gates and nightly differential fuzzing. Reebe moves onto the shared crates. About 35–47 person-weeks. No code changed.
+
+## 2026-11-06 — Export validation and XSD build checks
+
+- `Bpmn.export(defs, { validate: "warn" | "error" | false })` lints and reports deploy errors; default `false` (no change for callers).
+- `ProcessBuilder.build()` throws `ValidationError` for ids that are not XML NCNames, non-boolean `cancelActivity`/`isInterrupting`/`isSequential`, and non-numeric/non-FEEL `retries` (new builds only, not parsed continues).
+
+## 2026-11-06 — Camunda 8.10 is the default target
+
+- Builders stamp `executionPlatformVersion` `8.10.0`: BPMN (was 8.9.0), form (8.7.0), DMN/DRD (8.5.0), Camunda 7 migration (8.8.0). Overrides still work (`.executionPlatformVersion(...)`, `executionPlatformVersion` option). Lint/compat profiles read the model's version, so they follow; no CLI default existed.
+- `@bpmnkit/patterns` AI templates reference the key as `=camunda.secrets.ANTHROPIC_API_KEY`: at 8.10 `compat/secrets` reports `{{secrets.X}}` as legacy, which failed the template lint test in CI.
+- Agent cards (`apps/cli/agent-cards`, synced) drop the "8.10 is not the default" trap and keep a one-line override. Not changed: form `schemaVersion` (16), as no 8.10 form-js schema mapping is documented.
+
+## 2026-11-06 — Agent onboarding: cards ship in `@bpmnkit/core`
+
+- Eval agents with only `@bpmnkit/core` read the 20 KB README and the `.d.ts` every session (32–49% of cost). The package now ships `AGENTS.md` (19 lines), `llms.txt` and `agent-cards/{bpmn,dmn,form}.md`; `scripts/sync-agent-cards.mjs` writes them from `apps/cli/agent-cards`, and the existing `--check` test fails on drift.
+- READMEs of core and cli open with an agent pointer (`scripts/generate-readmes.mjs`, `AGENT_BLOCKS`). The generator now also writes the agent-card line in the root README that had been hand-added.
+- `.d.ts`: `@packageDocumentation` and `@see` card paths. Builder `ValidationError`s, `lintDmn`/`lintForm` fixes and `casen check` BPMN fixes end with `agent-cards/<type>.md#traps`.
+- `scripts/eval-agent-onboarding/measure.mjs` packs and installs core and reports what an agent would find (no LLM). Manual before/after run: its README.
 
 ## 2026-11-04 — Rust core proposal: phase 0 measured
 

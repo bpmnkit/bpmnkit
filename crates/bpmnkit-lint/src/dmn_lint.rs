@@ -1,7 +1,7 @@
 //! `lintDmn` from `@bpmnkit/core`'s `dmn/lint.ts`: the mistakes Zeebe rejects at deploy
 //! time, read from the raw XML so a document the model cannot represent is still reported on.
 
-use crate::check_finding::{CheckFinding, CheckSeverity};
+use crate::check_finding::{with_card_hint, CheckFinding, CheckSeverity};
 use crate::js;
 use bpmnkit_feel::ParseOptions;
 use bpmnkit_spec::elements::dmn_attribute_values;
@@ -96,6 +96,10 @@ fn error(
 /// Checks a DMN document for malformed XML, duplicate ids, requirement references that
 /// resolve to nothing, FEEL that does not parse, invalid hit policies and unknown types.
 pub fn lint_dmn(xml: &str) -> Vec<CheckFinding> {
+    with_card_hint(lint_dmn_findings(xml), "dmn")
+}
+
+fn lint_dmn_findings(xml: &str) -> Vec<CheckFinding> {
     let root = match parse_xml(xml) {
         Ok(root) => root,
         Err(e) => {

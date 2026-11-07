@@ -1,1 +1,1 @@
-Decision "a" requires unknown id "Risk Score". Valid ids: a. Use ids, not names.
+Decision "a" requires unknown id "Risk Score". Valid ids: a. Use ids, not names. See agent-cards/dmn.md#traps.

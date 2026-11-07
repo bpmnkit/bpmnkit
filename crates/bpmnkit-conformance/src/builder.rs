@@ -14,6 +14,7 @@ use bpmnkit_builder::{
     Dmn, ProcessBuilder, SubProcessContentBuilder,
 };
 use bpmnkit_dmn::{serialize_dmn, DmnDefinitions};
+use bpmnkit_lint::{export_bpmn, ExportOptions, ExportValidate};
 use serde::de::DeserializeOwned;
 use serde_json::Value;
 use std::collections::HashMap;
@@ -522,6 +523,39 @@ fn lenient_diff(path: &str, a: &Value, b: &Value) -> Option<String> {
 
 /// Compares a script's outcome with `expected/`: `error.txt`, or `output.<ext>` and
 /// `model.json`.
+/// A case's `"export": { "validate": ... }`: TS writes the result with `Bpmn.export`, which
+/// throws (`error.txt`) or warns (`warning.txt`); the written XML is `serializeBpmn`'s either way.
+fn exported(
+    case: &J,
+    expected: &Path,
+    result: Result<BpmnDefinitions, BuildError>,
+) -> Result<Result<BpmnDefinitions, BuildError>, String> {
+    let Some(export) = case.get("export") else {
+        return Ok(result);
+    };
+    let Ok(defs) = result else {
+        return Ok(result);
+    };
+    let validate = match export.get("validate").and_then(J::as_str) {
+        Some("warn") => ExportValidate::Warn,
+        Some("error") => ExportValidate::Error,
+        _ => ExportValidate::Off,
+    };
+    let warning = match export_bpmn(&defs, ExportOptions { validate }) {
+        Err(message) => return Ok(Err(BuildError { message })),
+        Ok(out) => out.warning,
+    };
+    let warning_path = expected.join("warning.txt");
+    let want = warning_path
+        .exists()
+        .then(|| read(&warning_path))
+        .transpose()?;
+    if warning.as_ref().map(|w| format!("{w}\n")) != want {
+        return Err(format!("warning {warning:?} != {want:?}"));
+    }
+    Ok(Ok(defs))
+}
+
 fn compare<T: serde::Serialize>(
     expected: &Path,
     result: Result<T, BuildError>,
@@ -607,11 +641,13 @@ pub fn check_case(dir: &Path, id: &str) -> Result<(), String> {
         ("createDiagram", a) => {
             let mut b = Bpmn::create_diagram(a.first().map(J::str));
             let result = replay_diagram(&mut b, rest).ok_or_else(no_build)?;
+            let result = exported(&case, &expected, result)?;
             compare(&expected, result, "bpmn", serialize_bpmn, lenient_diff)
         }
         ("createProcess", a) => {
             let mut b = Bpmn::create_process(a[0].str());
             let result = replay_process(&mut b, rest).ok_or_else(no_build)?;
+            let result = exported(&case, &expected, result)?;
             compare(&expected, result, "bpmn", serialize_bpmn, lenient_diff)
         }
         ("from", a) => {
@@ -623,6 +659,7 @@ pub fn check_case(dir: &Path, id: &str) -> Result<(), String> {
             let defs = parse_bpmn(&read(&path)?).map_err(|e| format!("parse: {e}"))?;
             let mut b = Bpmn::continue_process(&defs, a[0].str());
             let result = replay_process(&mut b, rest).ok_or_else(no_build)?;
+            let result = exported(&case, &expected, result)?;
             compare(&expected, result, "bpmn", serialize_bpmn, lenient_diff)
         }
         (other, _) => Err(format!("unsupported first op {other}")),

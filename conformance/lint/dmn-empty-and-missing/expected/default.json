@@ -2,70 +2,70 @@
   "findings": [
     {
       "elementId": "d1",
-      "fix": "Set href=\"#<id of the decision>\".",
+      "fix": "Set href=\"#<id of the decision>\". (agent-cards/dmn.md#traps)",
       "message": "<informationRequirement> on \"d1\" has a <requiredDecision> with no href.",
       "rule": "dmn/unresolved-requirement",
       "severity": "error"
     },
     {
       "elementId": "d1",
-      "fix": "Set href=\"#<id of the inputData>\".",
+      "fix": "Set href=\"#<id of the inputData>\". (agent-cards/dmn.md#traps)",
       "message": "<informationRequirement> on \"d1\" has a <requiredInput> with no href.",
       "rule": "dmn/unresolved-requirement",
       "severity": "error"
     },
     {
       "elementId": "d1",
-      "fix": "Set href=\"#<id of the decision>\".",
+      "fix": "Set href=\"#<id of the decision>\". (agent-cards/dmn.md#traps)",
       "message": "<authorityRequirement> on \"d1\" has a <requiredDecision> with no href.",
       "rule": "dmn/unresolved-requirement",
       "severity": "error"
     },
     {
       "elementId": "d1",
-      "fix": "Point it at the id of an existing <knowledgeSource>, or add a <knowledgeSource id=\"ks\">.",
+      "fix": "Point it at the id of an existing <knowledgeSource>, or add a <knowledgeSource id=\"ks\">. (agent-cards/dmn.md#traps)",
       "message": "<requiredAuthority href=\"#ks\"> on \"d1\" points at \"ks\", which does not exist.",
       "rule": "dmn/unresolved-requirement",
       "severity": "error"
     },
     {
       "elementId": "t1",
-      "fix": "Use one of UNIQUE, FIRST, PRIORITY, ANY, COLLECT, RULE ORDER, OUTPUT ORDER (UNIQUE when omitted).",
+      "fix": "Use one of UNIQUE, FIRST, PRIORITY, ANY, COLLECT, RULE ORDER, OUTPUT ORDER (UNIQUE when omitted). (agent-cards/dmn.md#traps)",
       "message": "Decision \"\" has hitPolicy \"\".",
       "rule": "dmn/invalid-hit-policy",
       "severity": "error"
     },
     {
       "elementId": "t1",
-      "fix": "Use one of SUM, MIN, MAX, COUNT.",
+      "fix": "Use one of SUM, MIN, MAX, COUNT. (agent-cards/dmn.md#traps)",
       "message": "Decision \"\" has aggregation \"\".",
       "rule": "dmn/invalid-aggregation",
       "severity": "error"
     },
     {
       "elementId": "i1",
-      "fix": "Set <inputExpression><text>variableName</text></inputExpression> to the value the column tests.",
+      "fix": "Set <inputExpression><text>variableName</text></inputExpression> to the value the column tests. (agent-cards/dmn.md#traps)",
       "message": "Input \"\" of Decision \"\" has no input expression.",
       "rule": "dmn/empty-input-expression",
       "severity": "error"
     },
     {
       "elementId": "i2",
-      "fix": "Set <inputExpression><text>variableName</text></inputExpression> to the value the column tests.",
+      "fix": "Set <inputExpression><text>variableName</text></inputExpression> to the value the column tests. (agent-cards/dmn.md#traps)",
       "message": "Input \"i2\" of Decision \"\" has no input expression.",
       "rule": "dmn/empty-input-expression",
       "severity": "error"
     },
     {
       "elementId": "r2",
-      "fix": "Give every rule exactly one <inputEntry> per input and one <outputEntry> per output, in column order (use `-` for any).",
+      "fix": "Give every rule exactly one <inputEntry> per input and one <outputEntry> per output, in column order (use `-` for any). (agent-cards/dmn.md#traps)",
       "message": "Rule \"r2\" of Decision \"\" has 0 input and 0 output entries; the table has 2 inputs and 1 outputs.",
       "rule": "dmn/rule-entry-count",
       "severity": "error"
     },
     {
       "elementId": "d2",
-      "fix": "Add a decision table or a literal expression; Zeebe cannot evaluate an empty decision.",
+      "fix": "Add a decision table or a literal expression; Zeebe cannot evaluate an empty decision. (agent-cards/dmn.md#traps)",
       "message": "Decision \"d2\" has neither a <decisionTable> nor a <literalExpression>.",
       "rule": "dmn/decision-no-logic",
       "severity": "error"

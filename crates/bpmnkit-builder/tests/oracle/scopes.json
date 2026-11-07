@@ -16,7 +16,7 @@
 			},
 			"unknownAttributes": {
 				"modeler:executionPlatform": "Camunda Cloud",
-				"modeler:executionPlatformVersion": "8.9.0"
+				"modeler:executionPlatformVersion": "8.10.0"
 			},
 			"errors": [],
 			"escalations": [],
@@ -327,7 +327,7 @@
 			},
 			"unknownAttributes": {
 				"modeler:executionPlatform": "Camunda Cloud",
-				"modeler:executionPlatformVersion": "8.9.0"
+				"modeler:executionPlatformVersion": "8.10.0"
 			},
 			"errors": [],
 			"escalations": [],

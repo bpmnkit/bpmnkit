@@ -7,6 +7,7 @@ pub mod bpmnlint_rules;
 pub mod check_finding;
 pub mod compat_config;
 pub mod dmn_lint;
+pub mod export;
 pub mod form_lint;
 mod js;
 mod js_regex;
@@ -22,5 +23,6 @@ pub use bpmnlint::{
 pub use check_finding::{CheckFinding, CheckSeverity};
 pub use compat_config::{apply_camunda_compat_config, split_camunda_compat_config};
 pub use dmn_lint::lint_dmn;
+pub use export::{export_bpmn, ExportOptions, ExportValidate, Exported};
 pub use form_lint::lint_form;
 pub use lint::{detect_execution_platform, lint_categories, lint_diagram, LintOptions, LintReport};

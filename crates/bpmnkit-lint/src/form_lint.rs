@@ -1,7 +1,7 @@
 //! `lintForm` from `@bpmnkit/core`'s `form/lint.ts`: what Zeebe deploys without complaint
 //! but Tasklist then fails on, read from the raw JSON so every problem is reported.
 
-use crate::check_finding::{CheckFinding, CheckSeverity};
+use crate::check_finding::{with_card_hint, CheckFinding, CheckSeverity};
 use crate::js;
 use bpmnkit_form::Json;
 use bpmnkit_spec::elements::{FormTrait, FORM_ELEMENTS};
@@ -77,6 +77,10 @@ fn single(rule: &str, message: String, fix: &str) -> Vec<CheckFinding> {
 /// Checks a Camunda form (form-js JSON schema) for invalid schema shape, duplicate
 /// component ids or keys, input fields bound to no variable, and FEEL that does not parse.
 pub fn lint_form(json: &str) -> Vec<CheckFinding> {
+    with_card_hint(lint_form_findings(json), "form")
+}
+
+fn lint_form_findings(json: &str) -> Vec<CheckFinding> {
     let root = match js::parse_json(json) {
         Ok(v) => v,
         Err(e) => {

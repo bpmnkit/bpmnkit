@@ -2,7 +2,7 @@
   "findings": [
     {
       "elementId": "a",
-      "fix": "Use \"action\": \"submit\" or \"reset\".",
+      "fix": "Use \"action\": \"submit\" or \"reset\". (agent-cards/form.md#traps)",
       "message": "Component \"a\" has button action \"launch\".",
       "rule": "form/invalid-schema",
       "severity": "error"

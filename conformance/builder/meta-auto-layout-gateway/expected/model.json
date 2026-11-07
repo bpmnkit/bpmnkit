@@ -428,6 +428,6 @@
   "targetNamespace": "http://bpmn.io/schema/bpmn",
   "unknownAttributes": {
     "modeler:executionPlatform": "Camunda Cloud",
-    "modeler:executionPlatformVersion": "8.9.0"
+    "modeler:executionPlatformVersion": "8.10.0"
   }
 }

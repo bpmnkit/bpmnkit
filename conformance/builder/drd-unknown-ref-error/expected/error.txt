@@ -1,1 +1,1 @@
-Decision "b" requires unknown id "nope". Valid ids: a, b.
+Decision "b" requires unknown id "nope". Valid ids: a, b. See agent-cards/dmn.md#traps.

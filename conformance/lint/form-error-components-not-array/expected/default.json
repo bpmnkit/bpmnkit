@@ -1,7 +1,7 @@
 {
   "findings": [
     {
-      "fix": "Add \"components\": [ … ] with the form's fields.",
+      "fix": "Add \"components\": [ … ] with the form's fields. (agent-cards/form.md#traps)",
       "message": "The form has no \"components\" array.",
       "rule": "form/invalid-schema",
       "severity": "error"

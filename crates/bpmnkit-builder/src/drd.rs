@@ -7,7 +7,7 @@
 //!   `Definitions` id; keep that call so later ids match). A table error is recorded here.
 //! - Errors: `Duplicate DRD element id "<id>"`; unknown requirement (checked in `build()`,
 //!   in decision order then `requires` order): `Decision "<owner>" requires unknown id
-//!   "<id>". Valid ids: a, b.<hint>` with `(none)` for no ids and the name/label hint when
+//!   "<id>". Valid ids: a, b.<hint> See agent-cards/dmn.md#traps.` with `(none)` for no ids and the name/label hint when
 //!   the id is some decision's name or input's name.
 //! - `build()` draws `InformationRequirement` ids per requirement, then `Definitions`, then
 //!   `bpmnkit_layout::layout_dmn`. Each requirement is `{ id, requiredDecision }` or
@@ -252,7 +252,7 @@ impl DrdBuilder {
             known.join(", ")
         };
         Err(format!(
-            "Decision \"{owner}\" requires unknown id \"{id}\". Valid ids: {valid}.{hint}"
+            "Decision \"{owner}\" requires unknown id \"{id}\". Valid ids: {valid}.{hint} See agent-cards/dmn.md#traps."
         ))
     }
 
@@ -301,7 +301,7 @@ impl DrdBuilder {
         .collect();
         let modeler_attributes: IndexMap<String, String> = [
             ("executionPlatform", "Camunda Cloud"),
-            ("executionPlatformVersion", "8.5.0"),
+            ("executionPlatformVersion", "8.10.0"),
         ]
         .into_iter()
         .map(|(k, v)| (k.to_owned(), v.to_owned()))

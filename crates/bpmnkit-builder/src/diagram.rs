@@ -50,7 +50,7 @@ impl DiagramBuilder {
             participants: vec![],
             message_flows: vec![],
             collaboration_id: "Collaboration_1".to_owned(),
-            execution_platform_version: "8.9.0".to_owned(),
+            execution_platform_version: "8.10.0".to_owned(),
             error: None,
         }
     }

@@ -26,3 +26,14 @@ pub struct CheckFinding {
     /// A concrete change that resolves the finding.
     pub fix: String,
 }
+
+/// Appends the pointer to a card's trap list, so a fix loop learns where the rule is explained.
+pub(crate) fn with_card_hint(findings: Vec<CheckFinding>, card: &str) -> Vec<CheckFinding> {
+    findings
+        .into_iter()
+        .map(|mut f| {
+            f.fix = format!("{} (agent-cards/{card}.md#traps)", f.fix);
+            f
+        })
+        .collect()
+}

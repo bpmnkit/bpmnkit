@@ -2,14 +2,14 @@
   "findings": [
     {
       "elementId": "a",
-      "fix": "Put a FEEL expression in <literalExpression><text>…</text></literalExpression>.",
+      "fix": "Put a FEEL expression in <literalExpression><text>…</text></literalExpression>. (agent-cards/dmn.md#traps)",
       "message": "Decision \"A\" has an empty literal expression.",
       "rule": "dmn/empty-expression",
       "severity": "error"
     },
     {
       "elementId": "b",
-      "fix": "Put a FEEL expression in <literalExpression><text>…</text></literalExpression>.",
+      "fix": "Put a FEEL expression in <literalExpression><text>…</text></literalExpression>. (agent-cards/dmn.md#traps)",
       "message": "Decision \"B\" has an empty literal expression.",
       "rule": "dmn/empty-expression",
       "severity": "error"

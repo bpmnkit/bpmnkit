@@ -31,13 +31,16 @@ function bpmnFiles(dir: string): string[] {
 // Layout conformance inputs that are malformed on purpose, so neither side has an
 // answer to compare: one has no ids (BPMN Kit's parser refuses it), the other gives
 // two elements one DI id (bpmnlint resolves DI by id, so it sees only one of them).
-// The builder case's input and output have an id that is not an XML name, which
-// bpmn-moddle skips, on purpose: it pins that continuing a document reads such ids whole.
+// The builder cases' inputs and outputs have ids that are not XML names, which
+// bpmn-moddle skips, on purpose: they pin that continuing a document reads such ids
+// whole and that the build-time XSD check leaves a parsed document's ids alone.
 const MALFORMED = new Set([
 	"conformance/layout/edge-no-di-no-ids/input.bpmn",
 	"conformance/layout/edge-existing-di-duplicate-id/input.bpmn",
 	"conformance/builder/from-insert-after-arrow-in-id/input.bpmn",
 	"conformance/builder/from-insert-after-arrow-in-id/expected/output.bpmn",
+	"conformance/builder/xsd-continue-keeps-invalid-ids/input.bpmn",
+	"conformance/builder/xsd-continue-keeps-invalid-ids/expected/output.bpmn",
 ])
 
 const FILES = bpmnFiles(ROOT)

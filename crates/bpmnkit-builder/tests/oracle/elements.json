@@ -973,7 +973,7 @@
 					"args": ["{\"attachedTo\":\"\"}"]
 				}
 			],
-			"error": "boundaryEvent(\"b\") requires the id of the activity it attaches to. Pass it as options.attachedTo, as boundaryEvent(\"b\", hostId, options), or use withBoundary() to attach to the preceding activity."
+			"error": "boundaryEvent(\"b\") requires the id of the activity it attaches to. Pass it as options.attachedTo, as boundaryEvent(\"b\", hostId, options), or use withBoundary() to attach to the preceding activity. See agent-cards/bpmn.md#traps."
 		},
 		{
 			"name": "data elements",

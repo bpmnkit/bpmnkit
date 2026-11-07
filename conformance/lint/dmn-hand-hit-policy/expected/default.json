@@ -2,14 +2,14 @@
   "findings": [
     {
       "elementId": "t1",
-      "fix": "Write hitPolicy=\"UNIQUE\".",
+      "fix": "Write hitPolicy=\"UNIQUE\". (agent-cards/dmn.md#traps)",
       "message": "Decision \"D1\" has hitPolicy \"unique\".",
       "rule": "dmn/invalid-hit-policy",
       "severity": "error"
     },
     {
       "elementId": "t1b",
-      "fix": "Use one of UNIQUE, FIRST, PRIORITY, ANY, COLLECT, RULE ORDER, OUTPUT ORDER (UNIQUE when omitted).",
+      "fix": "Use one of UNIQUE, FIRST, PRIORITY, ANY, COLLECT, RULE ORDER, OUTPUT ORDER (UNIQUE when omitted). (agent-cards/dmn.md#traps)",
       "message": "Decision \"D1\" has hitPolicy \"BOGUS\".",
       "rule": "dmn/invalid-hit-policy",
       "severity": "error"

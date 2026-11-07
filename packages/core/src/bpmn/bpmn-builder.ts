@@ -43,6 +43,7 @@ import {
 	rootDefinitionId,
 	setFlowDiscriminatorSource,
 } from "./stable-ids.js"
+import { assertRetriesOption, assertXsdValues } from "./xsd-guards.js"
 import {
 	type ZeebeExtensions,
 	type ZeebeFormDefinition,
@@ -987,6 +988,7 @@ function buildMappingExtensions(
 }
 
 function buildServiceTaskExtensions(options: ServiceTaskOptions): XmlElement[] {
+	assertRetriesOption(options.retries, options.taskType)
 	const extensions: ZeebeExtensions = {
 		taskDefinition: {
 			type: options.taskType,
@@ -1368,7 +1370,7 @@ function resolveBoundaryEventArgs(
 
 	if (typeof options?.attachedTo !== "string" || options.attachedTo === "") {
 		throw new ValidationError(
-			`boundaryEvent("${id}") requires the id of the activity it attaches to. Pass it as options.attachedTo, as boundaryEvent("${id}", hostId, options), or use withBoundary() to attach to the preceding activity.`,
+			`boundaryEvent("${id}") requires the id of the activity it attaches to. Pass it as options.attachedTo, as boundaryEvent("${id}", hostId, options), or use withBoundary() to attach to the preceding activity. See agent-cards/bpmn.md#traps.`,
 		)
 	}
 	return options
@@ -2821,7 +2823,7 @@ export class ProcessBuilder {
 	private currentGatewayId: string | undefined
 	private openBranchEnds: string[] = []
 	private _autoLayout = false
-	private _executionPlatformVersion = "8.9.0"
+	private _executionPlatformVersion = "8.10.0"
 	private _serviceTaskDefaults: { retries?: string } = {}
 	private _savedMainFlowId: string | undefined = undefined
 	/** Set by {@link ProcessBuilder.from}; makes `build()` update rather than generate. */
@@ -3003,7 +3005,7 @@ export class ProcessBuilder {
 		return this
 	}
 
-	/** Set the Camunda execution platform version stamped into the BPMN definitions. Defaults to `"8.9.0"`. */
+	/** Set the Camunda execution platform version stamped into the BPMN definitions. Defaults to `"8.10.0"`. */
 	executionPlatformVersion(version: string): this {
 		this._executionPlatformVersion = version
 		return this
@@ -3957,6 +3959,14 @@ export class ProcessBuilder {
 	}
 
 	private validate(elements: BpmnFlowElement[], flows: BpmnSequenceFlow[]): void {
+		// A parsed document keeps whatever ids it came with; only new builds are held to the XSD.
+		if (this._source === undefined) {
+			assertXsdValues({
+				id: this.processId,
+				flowElements: elements,
+				sequenceFlows: flows,
+			} as BpmnProcess)
+		}
 		const elementIds = new Set(elements.map((el) => el.id))
 		for (const flow of flows) {
 			if (!elementIds.has(flow.targetRef)) {
@@ -4065,13 +4075,13 @@ export class DiagramBuilder {
 	private readonly _participants: BpmnParticipant[] = []
 	private readonly _messageFlows: BpmnMessageFlow[] = []
 	private _collaborationId = "Collaboration_1"
-	private _executionPlatformVersion = "8.9.0"
+	private _executionPlatformVersion = "8.10.0"
 
 	constructor(id: string) {
 		this._id = id
 	}
 
-	/** Set the Camunda execution platform version stamped into the BPMN definitions. Defaults to `"8.9.0"`. */
+	/** Set the Camunda execution platform version stamped into the BPMN definitions. Defaults to `"8.10.0"`. */
 	executionPlatformVersion(version: string): this {
 		this._executionPlatformVersion = version
 		return this

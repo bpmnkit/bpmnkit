@@ -1,7 +1,7 @@
 {
   "findings": [
     {
-      "fix": "Wrap the decisions in <definitions xmlns=\"https://www.omg.org/spec/DMN/20191111/MODEL/\">.",
+      "fix": "Wrap the decisions in <definitions xmlns=\"https://www.omg.org/spec/DMN/20191111/MODEL/\">. (agent-cards/dmn.md#traps)",
       "message": "The root element is <process>, not <definitions>.",
       "rule": "dmn/not-dmn",
       "severity": "error"

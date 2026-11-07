@@ -2,14 +2,14 @@
   "findings": [
     {
       "elementId": "u",
-      "fix": "Use letters, digits, `_` and `$`, not starting with a digit; separate nested names with dots.",
+      "fix": "Use letters, digits, `_` and `$`, not starting with a digit; separate nested names with dots. (agent-cards/form.md#traps)",
       "message": "Component \"u\" has key \"k\u0000x\", which is not a variable name or dotted path.",
       "rule": "form/invalid-key",
       "severity": "error"
     },
     {
       "elementId": "v",
-      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"x\ny\" is a custom component registered in your Tasklist.",
+      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"x\ny\" is a custom component registered in your Tasklist. (agent-cards/form.md#traps)",
       "message": "Component \"v\" has type \"x\ny\", which form-js does not provide.",
       "rule": "form/unknown-type",
       "severity": "warning"

@@ -1,5 +1,9 @@
 # Features
 
+## Rust twin: export validation and build-time XSD checks (2026-11-07)
+
+`bpmnkit_lint::export_bpmn` lints before writing (`ExportValidate::Warn` / `Error`), and `bpmnkit-builder` refuses ids that are not XML names and `retries` that are neither a number nor FEEL, matching `Bpmn.export(defs, { validate })` and TS's XSD guards. Builders default to Camunda 8.10.
+
 ## `bpmnkit-builder` and `bpmnkit-text`: builder, process text and compact in Rust (2026-11-07)
 
 A Rust fluent builder for BPMN processes, collaborations, decision tables and DRDs whose output (model, XML, auto-layout, error messages) equals `@bpmnkit/core`'s builder, call for call; process text parsing, streaming and writing; compact BPMN and DMN (`compactify`, `expand`, streams). 789 of 790 recorded cases match exactly; the one pending case is a call Rust's types rule out. About 2–3× faster than TS for layout-backed builds, process text and expand.
@@ -28,6 +32,8 @@ A Rust FEEL lexer, parser and evaluator with every built-in, held to `@bpmnkit/f
 ## Agent cards (2026-11-05)
 
 `casen agent-card bpmn|dmn|form` prints a ~1–1.5k-token cheat sheet for an AI agent: a runnable create/export/edit/validate script, the top builder options and the known traps. The same cards are docs pages under "Agent Cards", ranked first by `@bpmnkit/docspack` (whose `llms.txt` opens with them), and Claude plugin skills (`/bpmnkit:bpmn-script`, `:dmn`, `:form`). Every script is typechecked and run in CI.
+
+`@bpmnkit/core` ships the cards too (`AGENTS.md`, `llms.txt`, `agent-cards/`, `"agents"` field), so an agent with only that package installed finds them; its README opens with the pointer and builder errors end with `agent-cards/<type>.md#traps`.
 ## `casen check`: BPMN, DMN and forms in one gate (2026-11-05)
 
 `casen check <file...>` checks any mix of `.bpmn`, `.dmn` and `.form` files and the references between them (a user task's `formId`, a business rule task's `decisionId`). Every finding has a rule id, element id, message and a concrete fix; `--json` for agent loops; non-zero exit on errors. DMN: duplicate ids, requirement hrefs, cycles, FEEL syntax, hit policy, aggregation, types, rule shape. Forms: form-js schema, unique ids and keys, FEEL in conditions and expressions, validation. Profiles: default, `--sketch` (no Camunda 8 rules), `--deploy` (errors only, forms required). The "user task needs a form" rule is off outside the deploy profile. Library: `lintDmn`, `lintForm` in `@bpmnkit/core`.

@@ -82,7 +82,7 @@
   "knowledgeSources": [],
   "modelerAttributes": {
     "executionPlatform": "Camunda Cloud",
-    "executionPlatformVersion": "8.5.0"
+    "executionPlatformVersion": "8.10.0"
   },
   "name": "DRD",
   "namespace": "http://camunda.org/schema/1.0/dmn",

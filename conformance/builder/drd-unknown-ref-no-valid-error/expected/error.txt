@@ -1,1 +1,1 @@
-Decision "a" requires unknown id "zz". Valid ids: a.
+Decision "a" requires unknown id "zz". Valid ids: a. See agent-cards/dmn.md#traps.

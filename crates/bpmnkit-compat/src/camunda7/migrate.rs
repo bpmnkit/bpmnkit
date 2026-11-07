@@ -21,7 +21,7 @@ use std::fmt;
 pub const CAMUNDA7_NS: &str = "http://camunda.org/schema/1.0/bpmn";
 pub const ZEEBE_NS: &str = "http://camunda.org/schema/zeebe/1.0";
 pub const MODELER_NS: &str = "http://camunda.org/schema/modeler/1.0";
-const DEFAULT_PLATFORM_VERSION: &str = "8.8.0";
+const DEFAULT_PLATFORM_VERSION: &str = "8.10.0";
 
 /// How much work a Camunda 7 construct leaves after conversion.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
@@ -90,7 +90,7 @@ impl Camunda7Report {
 
 #[derive(Debug, Clone, Default)]
 pub struct Camunda7ConvertOptions {
-    /// Written as `modeler:executionPlatformVersion`. Default `"8.8.0"`.
+    /// Written as `modeler:executionPlatformVersion`. Default `"8.10.0"`.
     pub execution_platform_version: Option<String>,
 }
 

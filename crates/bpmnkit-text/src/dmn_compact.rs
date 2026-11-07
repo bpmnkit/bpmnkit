@@ -10,7 +10,7 @@
 //!   output or rule) `inputExpression` per input, `inputEntry_<i>` / `outputEntry_<i>` per
 //!   rule entry (rule by rule, inputs before outputs), then `decisionTable`. Then
 //!   `bpmnkit_layout::layout_dmn`. The unknown-requirement message ends
-//!   `Valid ids: a, b. Use ids, not names.` (`(none)` when there are none).
+//!   `Valid ids: a, b. Use ids, not names. See agent-cards/dmn.md#traps.` (`(none)` when there are none).
 //! - `namespaces` is `""`, `dmndi`, `dc` (no `modeler`), `modelerAttributes` empty,
 //!   `namespace` `http://bpmn.io/schema/dmn`, no exporter.
 
@@ -206,7 +206,7 @@ pub fn expand_dmn(compact: &CompactDmn) -> Result<DmnDefinitions, TextError> {
                     .collect::<Vec<_>>()
                     .join(", ");
                 return Err(TextError::new(format!(
-                    "Decision \"{}\" requires unknown id \"{src_id}\". Valid ids: {}. Use ids, not names.",
+                    "Decision \"{}\" requires unknown id \"{src_id}\". Valid ids: {}. Use ids, not names. See agent-cards/dmn.md#traps.",
                     cd.id,
                     if valid.is_empty() { "(none)" } else { &valid }
                 )));

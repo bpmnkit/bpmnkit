@@ -2,21 +2,21 @@
   "findings": [
     {
       "elementId": "a",
-      "fix": "Set \"expression\" to a FEEL expression starting with \"=\", e.g. \"=amount * 1.2\".",
+      "fix": "Set \"expression\" to a FEEL expression starting with \"=\", e.g. \"=amount * 1.2\". (agent-cards/form.md#traps)",
       "message": "Component \"a\" is an expression field with no \"expression\".",
       "rule": "form/missing-expression",
       "severity": "error"
     },
     {
       "elementId": "b",
-      "fix": "Set \"expression\" to a FEEL expression starting with \"=\", e.g. \"=amount * 1.2\".",
+      "fix": "Set \"expression\" to a FEEL expression starting with \"=\", e.g. \"=amount * 1.2\". (agent-cards/form.md#traps)",
       "message": "Component \"b\" is an expression field with no \"expression\".",
       "rule": "form/missing-expression",
       "severity": "error"
     },
     {
       "elementId": "c",
-      "fix": "Set \"expression\" to a FEEL expression starting with \"=\", e.g. \"=amount * 1.2\".",
+      "fix": "Set \"expression\" to a FEEL expression starting with \"=\", e.g. \"=amount * 1.2\". (agent-cards/form.md#traps)",
       "message": "Component \"c\" is an expression field with no \"expression\".",
       "rule": "form/missing-expression",
       "severity": "error"

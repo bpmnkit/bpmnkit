@@ -2,28 +2,28 @@
   "findings": [
     {
       "elementId": "b",
-      "fix": "Give each field its own key; two fields on one key overwrite each other's value on submit.",
+      "fix": "Give each field its own key; two fields on one key overwrite each other's value on submit. (agent-cards/form.md#traps)",
       "message": "Component \"b\" binds key \"k\", which another field already binds.",
       "rule": "form/duplicate-key",
       "severity": "error"
     },
     {
       "elementId": "d",
-      "fix": "Give each field its own key; two fields on one key overwrite each other's value on submit.",
+      "fix": "Give each field its own key; two fields on one key overwrite each other's value on submit. (agent-cards/form.md#traps)",
       "message": "Component \"d\" binds key \"k\" (in \"grp\"), which another field already binds.",
       "rule": "form/duplicate-key",
       "severity": "error"
     },
     {
       "elementId": "f",
-      "fix": "Give each field its own key; two fields on one key overwrite each other's value on submit.",
+      "fix": "Give each field its own key; two fields on one key overwrite each other's value on submit. (agent-cards/form.md#traps)",
       "message": "Component \"f\" binds key \"k\" (in \"items\"), which another field already binds.",
       "rule": "form/duplicate-key",
       "severity": "error"
     },
     {
       "elementId": "j",
-      "fix": "Give each field its own key; two fields on one key overwrite each other's value on submit.",
+      "fix": "Give each field its own key; two fields on one key overwrite each other's value on submit. (agent-cards/form.md#traps)",
       "message": "Component \"j\" binds key \"k\", which another field already binds.",
       "rule": "form/duplicate-key",
       "severity": "error"

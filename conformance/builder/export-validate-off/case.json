@@ -1,0 +1,11 @@
+{
+	"kind": "bpmn",
+	"export": {"validate": false},
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["serviceTask","t",{"name":"t","taskType":""}],
+		["endEvent","e"],
+		["build"]
+	]
+}

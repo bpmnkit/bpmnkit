@@ -2,21 +2,21 @@
   "findings": [
     {
       "elementId": "legacy_i0",
-      "fix": "Use one of string, number, boolean, date, time, dateTime, dayTimeDuration, yearMonthDuration, context, list or Any.",
+      "fix": "Use one of string, number, boolean, date, time, dateTime, dayTimeDuration, yearMonthDuration, context, list or Any. (agent-cards/dmn.md#traps)",
       "message": "Input \"legacy_i0\" of Decision \"legacy_and_any\" has typeRef \"double\", which is not a DMN/FEEL type; the engine treats the value as untyped.",
       "rule": "dmn/invalid-type-ref",
       "severity": "warning"
     },
     {
       "elementId": "legacy_i2",
-      "fix": "Use one of string, number, boolean, date, time, dateTime, dayTimeDuration, yearMonthDuration, context, list or Any.",
+      "fix": "Use one of string, number, boolean, date, time, dateTime, dayTimeDuration, yearMonthDuration, context, list or Any. (agent-cards/dmn.md#traps)",
       "message": "Input \"legacy_i2\" of Decision \"legacy_and_any\" has typeRef \"frobnicate\", which is not a DMN/FEEL type; the engine treats the value as untyped.",
       "rule": "dmn/invalid-type-ref",
       "severity": "warning"
     },
     {
       "elementId": "legacy_o0",
-      "fix": "Use one of string, number, boolean, date, time, dateTime, dayTimeDuration, yearMonthDuration, context, list or Any.",
+      "fix": "Use one of string, number, boolean, date, time, dateTime, dayTimeDuration, yearMonthDuration, context, list or Any. (agent-cards/dmn.md#traps)",
       "message": "Output \"r\" has typeRef \"integer\", which is not a DMN/FEEL type; the engine treats the value as untyped.",
       "rule": "dmn/invalid-type-ref",
       "severity": "warning"

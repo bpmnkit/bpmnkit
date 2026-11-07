@@ -2,14 +2,14 @@
   "findings": [
     {
       "elementId": "a",
-      "fix": "Add a decision table or a literal expression; Zeebe cannot evaluate an empty decision.",
+      "fix": "Add a decision table or a literal expression; Zeebe cannot evaluate an empty decision. (agent-cards/dmn.md#traps)",
       "message": "Decision \"A\" has neither a <decisionTable> nor a <literalExpression>.",
       "rule": "dmn/decision-no-logic",
       "severity": "error"
     },
     {
       "elementId": "b",
-      "fix": "Add a decision table or a literal expression; Zeebe cannot evaluate an empty decision.",
+      "fix": "Add a decision table or a literal expression; Zeebe cannot evaluate an empty decision. (agent-cards/dmn.md#traps)",
       "message": "Decision \"B\" has neither a <decisionTable> nor a <literalExpression>.",
       "rule": "dmn/decision-no-logic",
       "severity": "error"

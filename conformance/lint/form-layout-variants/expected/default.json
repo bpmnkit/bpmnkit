@@ -2,7 +2,7 @@
   "findings": [
     {
       "elementId": "f",
-      "fix": "Give each component its own id.",
+      "fix": "Give each component its own id. (agent-cards/form.md#traps)",
       "message": "The id \"f\" is used by the form and by components[5].",
       "rule": "form/duplicate-id",
       "severity": "error"

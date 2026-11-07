@@ -15,6 +15,7 @@ pub mod options;
 pub mod process;
 mod shared;
 pub mod subprocess;
+mod xsd_guards;
 
 pub use branch::BranchBuilder;
 pub use diagram::DiagramBuilder;

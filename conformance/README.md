@@ -378,7 +378,10 @@ Recorded by `packages/core/tests/conformance-builder.test.ts`. A case drives the
 with a script of method calls, so the same file can be replayed by any implementation of the
 builders. Files:
 
-- `case.json`: `{"kind": "bpmn" | "dmn", "input"?: "<path>", "script": [op, ...]}`.
+- `case.json`: `{"kind": "bpmn" | "dmn", "input"?: "<path>", "export"?: {"validate": "warn" | "error" | false}, "script": [op, ...]}`.
+  `export` (BPMN only) passes the built definitions through `Bpmn.export(defs, export)`
+  (`bpmnkit_lint::export_bpmn`): a throw is recorded as `expected/error.txt`, a `console.warn` as
+  `expected/warning.txt` (the message plus a newline) next to the usual outputs.
 - `input.bpmn` or `input`: only for a script that starts with `["from", processId]` (below). `input`
   is a path relative to the case folder, or else to `conformance/` (several cases share
   `builder/from-noop/input.bpmn`).
@@ -423,12 +426,16 @@ kinds, branches, conditions, labels, default flows, flow ids, nested branches, j
 options and `toolGrid`, event sub-process), `data-*`, `annotation-*` (incl. `side`), `rest-connector-*`,
 `meta-*` (`name`, `executable`, `versionTag`, `executionPlatformVersion`, `defaults`, id counter,
 `withAutoLayout`), `from-*` (`at`, `insertAfter` on a parsed input), `diagram-*` (`DiagramBuilder`:
-processes, participants, message flows, `Invalid collaboration:` errors), `dmn-table-*`, `drd-*`.
+processes, participants, message flows, `Invalid collaboration:` errors), `dmn-table-*`, `drd-*`,
+`xsd-*` (the build-time XSD checks: ids that are not NCNames, `retries` that are neither a whole
+number nor FEEL, and a parsed document whose ids are left alone), `export-*` (`Bpmn.export`'s
+`validate` option: off, warn, error, one and two deploy errors, a continued engine-neutral document).
 `withAutoLayout` runs the semantic layout engine; there is no engine option on the builder.
 
 Hand-written `.bpmn` input (`builder/from-noop/input.bpmn`) spells out `<incoming>` / `<outgoing>`
 (`bpmnlint-parity` lints every `.bpmn`, including the recorded outputs: that is why builder cases keep
-ids unique across scopes and avoid ids that are not valid XML names).
+ids unique across scopes and avoid ids that are not valid XML names; the two `from-insert-after-arrow-in-id`
+and `xsd-continue-keeps-invalid-ids` cases that need such ids are excluded there by name).
 
 ## Process text: `text/<case>/`
 

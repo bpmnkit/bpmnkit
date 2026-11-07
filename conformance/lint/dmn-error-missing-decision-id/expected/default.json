@@ -1,14 +1,14 @@
 {
   "findings": [
     {
-      "fix": "Add an id attribute — requirements and zeebe:calledDecision reference elements by id.",
+      "fix": "Add an id attribute — requirements and zeebe:calledDecision reference elements by id. (agent-cards/dmn.md#traps)",
       "message": "A <decision> named \"Decision without an id\" has no id.",
       "rule": "dmn/missing-id",
       "severity": "error"
     },
     {
       "elementId": "t1",
-      "fix": "Add an <output id=\"…\" name=\"result\" typeRef=\"string\"/> column.",
+      "fix": "Add an <output id=\"…\" name=\"result\" typeRef=\"string\"/> column. (agent-cards/dmn.md#traps)",
       "message": "Decision \"Decision without an id\"'s decision table has no <output>.",
       "rule": "dmn/no-output",
       "severity": "error"

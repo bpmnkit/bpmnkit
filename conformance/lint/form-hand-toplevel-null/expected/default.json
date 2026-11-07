@@ -1,7 +1,7 @@
 {
   "findings": [
     {
-      "fix": "Write the form as { \"id\": \"…\", \"type\": \"default\", \"components\": [ … ] }.",
+      "fix": "Write the form as { \"id\": \"…\", \"type\": \"default\", \"components\": [ … ] }. (agent-cards/form.md#traps)",
       "message": "The form's top level is not a JSON object.",
       "rule": "form/invalid-schema",
       "severity": "error"

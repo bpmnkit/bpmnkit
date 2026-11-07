@@ -11,7 +11,7 @@
 //! - `build()`: `hitPolicy` omitted when UNIQUE; the decision's `name` is the id until
 //!   `name()`; one DI shape at (160, 100, 180×80); the document literal exactly as TS's
 //!   (`name: "DRD"`, namespaces `""`, `dmndi`, `dc`, `modeler` in that order,
-//!   `modelerAttributes` executionPlatform then executionPlatformVersion "8.5.0").
+//!   `modelerAttributes` executionPlatform then executionPlatformVersion "8.10.0").
 
 use bpmnkit_bpmn::ids::generate_id;
 use bpmnkit_dmn::{
@@ -116,7 +116,7 @@ impl DecisionTableBuilder {
         if options.inputs.len() != self.input_columns.len() {
             self.error = Some(BuildError {
                 message: format!(
-                    "Rule has {} inputs but table has {} input columns",
+                    "Rule has {} inputs but table has {} input columns. See agent-cards/dmn.md#traps.",
                     options.inputs.len(),
                     self.input_columns.len()
                 ),
@@ -126,7 +126,7 @@ impl DecisionTableBuilder {
         if options.outputs.len() != self.output_columns.len() {
             self.error = Some(BuildError {
                 message: format!(
-                    "Rule has {} outputs but table has {} output columns",
+                    "Rule has {} outputs but table has {} output columns. See agent-cards/dmn.md#traps.",
                     options.outputs.len(),
                     self.output_columns.len()
                 ),
@@ -208,7 +208,7 @@ impl DecisionTableBuilder {
         .collect();
         let modeler_attributes: IndexMap<String, String> = [
             ("executionPlatform", "Camunda Cloud"),
-            ("executionPlatformVersion", "8.5.0"),
+            ("executionPlatformVersion", "8.10.0"),
         ]
         .into_iter()
         .map(|(k, v)| (k.to_owned(), v.to_owned()))

@@ -666,7 +666,10 @@ pub(crate) fn build_mapping_extensions(
 }
 
 /// TS's `buildServiceTaskExtensions`.
-pub(crate) fn build_service_task_extensions(options: &ServiceTaskOptions) -> Vec<XmlElement> {
+pub(crate) fn build_service_task_extensions(
+    options: &ServiceTaskOptions,
+) -> Result<Vec<XmlElement>, String> {
+    crate::xsd_guards::assert_retries_option(options.retries.as_deref(), &options.task_type)?;
     let mut extensions = build_mapping_extensions(
         options.io_mapping.as_ref(),
         options.task_headers.as_ref(),
@@ -682,7 +685,7 @@ pub(crate) fn build_service_task_extensions(options: &ServiceTaskOptions) -> Vec
     if let Some(linked) = &options.linked_resources {
         extensions.linked_resources = Some(linked.clone());
     }
-    zeebe_extensions_to_xml_elements(&extensions)
+    Ok(zeebe_extensions_to_xml_elements(&extensions))
 }
 
 /// TS's `makeConditionExpression`: `xsi:type="bpmn:tFormalExpression"`.
@@ -805,7 +808,7 @@ pub(crate) fn make_service_task_el(
         FlowElementOptions {
             name: Some(options.name.clone()),
             documentation: options.documentation.clone(),
-            extension_elements: Some(build_service_task_extensions(options)),
+            extension_elements: Some(build_service_task_extensions(options)?),
             execution_listeners: options.execution_listeners.clone(),
             // Not in ServiceTaskOptions; forwarded so an untyped caller gets the placement error, not a silent drop.
             task_listeners: options.task_listeners.clone(),
@@ -1302,7 +1305,7 @@ pub(crate) fn resolve_boundary_event_args(
 ) -> Result<(), String> {
     if options.attached_to.is_empty() {
         return Err(format!(
-            "boundaryEvent(\"{id}\") requires the id of the activity it attaches to. Pass it as options.attachedTo, as boundaryEvent(\"{id}\", hostId, options), or use withBoundary() to attach to the preceding activity."
+            "boundaryEvent(\"{id}\") requires the id of the activity it attaches to. Pass it as options.attachedTo, as boundaryEvent(\"{id}\", hostId, options), or use withBoundary() to attach to the preceding activity. See agent-cards/bpmn.md#traps."
         ));
     }
     Ok(())

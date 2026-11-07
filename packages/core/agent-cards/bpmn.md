@@ -1,0 +1,88 @@
+# BPMN agent card
+
+Write a Camunda 8 BPMN process with `@bpmnkit/core` in one script: create, export, edit, validate. Run it with `node --experimental-strip-types build.ts` (Node 22.6+) or `npx tsx build.ts`. Never write BPMN XML by hand.
+
+<!-- docspack: tags=agent-card,cheat-sheet,build-script,bpmn,process,create,write,script,builder -->
+
+## Minimal BPMN build script: create, export, edit, validate
+
+```ts
+import { readFileSync, writeFileSync } from "node:fs"
+import { Bpmn, exportPreserving, lintDiagram } from "@bpmnkit/core"
+
+// 1. Create. The process id is the deploy key: same id = new version of that process.
+const definitions = Bpmn.createProcess("order")
+	.name("Order")
+	.withAutoLayout()
+	.startEvent("received", { name: "Order received" })
+	.businessRuleTask("score", { name: "Score risk", decisionId: "risk", resultVariable: "risk" })
+	.exclusiveGateway("check", { name: "Risky?" })
+	.branch("yes", (b) =>
+		b
+			.condition('=risk = "high"')
+			.label("Yes")
+			.userTask("review", { name: "Review order", formId: "review-order", zeebeUserTask: true })
+			.connectTo("ship"),
+	)
+	.branch("no", (b) => b.defaultFlow().label("No").connectTo("ship"))
+	.serviceTask("ship", { name: "Ship order", taskType: "ship-order", retries: "3" })
+	.endEvent("done", { name: "Order shipped" })
+	.build()
+
+// 2. Export.
+writeFileSync("order.bpmn", Bpmn.export(definitions))
+
+// 3. Edit an existing file: parse, change, write with exportPreserving to keep layout and formatting.
+const original = readFileSync("order.bpmn", "utf8")
+const edited = Bpmn.parse(original)
+const ship = edited.processes[0]?.flowElements.find((e) => e.id === "ship")
+if (ship) ship.name = "Ship parcel"
+writeFileSync("order.bpmn", exportPreserving(original, edited))
+
+// 4. Validate: Camunda 8 deployability and modelling rules.
+const report = lintDiagram(Bpmn.parse(readFileSync("order.bpmn", "utf8")))
+for (const d of report.diagnostics.filter((d) => d.severity !== "info"))
+	console.log(`${d.severity} ${d.elementIds.join(",")}: ${d.message}`)
+if (report.counts.error > 0) process.exit(1)
+```
+
+`npm i @bpmnkit/core`. The script writes `order.bpmn`, re-opens it, renames a task without moving a shape, and exits 1 on a lint error.
+
+## Top builder options
+
+- `Bpmn.createProcess(id)` … `.build()`; `.withAutoLayout()` before `.build()`, or the file has no shapes.
+- Every element takes `(id, options)`; ids are unique and each element connects to the previous one.
+- `serviceTask(id, { name, taskType, retries, ioMapping: { inputs, outputs }, taskHeaders })`: `taskType` is the job type a worker subscribes to.
+- `userTask(id, { name, zeebeUserTask: true, formId, assignee, candidateGroups, dueDate })`.
+- `businessRuleTask(id, { decisionId, resultVariable })`: both are required to deploy.
+- `scriptTask(id, { expression: "=a + b", resultVariable })`; `callActivity(id, { processId })`.
+- Gateways: `.exclusiveGateway(id)` then `.branch(name, (b) => b.condition("=x > 1")...)`, one branch `b.defaultFlow()`; `.label(text)` sets the flow label. Merge with `.connectTo(id)` and declare that id after the last branch.
+- Events take named options: `timerDuration: "PT1H"`, `messageName` + `correlationKey`, `errorCode`, `signalName`. `.withBoundary(id, { errorCode }, (b) => ...)` hangs a boundary on the previous task.
+- `multiInstance: { collection: "=items", elementVariable: "item" }` on any task.
+- Full method list: `packages/core/builder-reference.md` in `@bpmnkit/core`, or `npx bpmnkit-docs ask "<option>"`.
+
+## Traps
+
+- **Camunda 8.10 is the default target.** To target an older cluster, call `.executionPlatformVersion("8.8.0")` so lint checks that version.
+- **User tasks default to job-worker tasks**, which 8.10 deprecates. Pass `zeebeUserTask: true` for a Camunda user task.
+- **Deploy ids.** The engine keys a process by its process id (`createProcess("order")`), a decision by its `<decision id>`, a form by its JSON `id`. File names and display names do not count. `formId` and `decisionId` must equal those ids exactly; by default they bind to the latest deployed version, so deploy the `.dmn` and `.form` before an instance reaches the task. Redeploying the same id makes a new version.
+- **Reference a DMN decision by its decision id**, not the DMN `definitions` id, the file name or the decision name.
+- **Edit with the preserving writer.** For an existing file, `Bpmn.parse` it, change the model, and write `exportPreserving(original, edited)`. Rebuilding it with `withAutoLayout()`, or `Bpmn.export` alone, moves every shape and reformats the diff.
+- FEEL in the builder starts with `=` (`"=amount > 1000"`); a value without `=` is a literal string.
+- Unknown option names are silently dropped: `timer: { duration }` does nothing; use `timerDuration`.
+
+- **Gate the export.** `Bpmn.export(defs, { validate: "error" })` lints first and throws on what a deploy would reject (`"warn"` logs; default off). `build()` already rejects invalid ids (NCName), non-boolean `cancelActivity`/`isInterrupting`/`isSequential` and non-numeric `retries`.
+
+## Lint before you deploy or test
+
+```sh
+casen check order.bpmn risk.dmn review-order.form --deploy   # one gate: BPMN + DMN + forms, and the ids that link them
+casen lint lint order.bpmn --profile deploy   # BPMN only, errors only
+casen deploy deploy order.bpmn                # local Reebe; --target camunda8 for a cluster
+```
+
+In code, `lintDiagram(definitions)` returns `{ diagnostics, counts }`; fail on `counts.error > 0`. Warnings (no timer boundary, no output mapping) are advice.
+
+## Writing a process as text instead
+
+A model writing the diagram itself can use the line format: `parseProcessText(text)` then `expand(result.diagram)` from `@bpmnkit/core`. `casen agent-card bpmn --text` prints its guide. Related cards: `casen agent-card dmn`, `casen agent-card form`.

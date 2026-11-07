@@ -207,6 +207,7 @@
 			"EndEventOptions": "type",
 			"ErrorCode": "type",
 			"ExecutionPlatform": "type",
+			"ExportOptions": "type",
 			"ExtractResult": "type",
 			"FlowOrderViolation": "type",
 			"Form": "value",

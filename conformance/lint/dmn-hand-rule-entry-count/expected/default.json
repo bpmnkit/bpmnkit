@@ -2,20 +2,20 @@
   "findings": [
     {
       "elementId": "short",
-      "fix": "Give every rule exactly one <inputEntry> per input and one <outputEntry> per output, in column order (use `-` for any).",
+      "fix": "Give every rule exactly one <inputEntry> per input and one <outputEntry> per output, in column order (use `-` for any). (agent-cards/dmn.md#traps)",
       "message": "Rule \"short\" of Decision \"D1\" has 1 input and 1 output entries; the table has 2 inputs and 1 outputs.",
       "rule": "dmn/rule-entry-count",
       "severity": "error"
     },
     {
       "elementId": "long",
-      "fix": "Give every rule exactly one <inputEntry> per input and one <outputEntry> per output, in column order (use `-` for any).",
+      "fix": "Give every rule exactly one <inputEntry> per input and one <outputEntry> per output, in column order (use `-` for any). (agent-cards/dmn.md#traps)",
       "message": "Rule \"long\" of Decision \"D1\" has 3 input and 2 output entries; the table has 2 inputs and 1 outputs.",
       "rule": "dmn/rule-entry-count",
       "severity": "error"
     },
     {
-      "fix": "Give every rule exactly one <inputEntry> per input and one <outputEntry> per output, in column order (use `-` for any).",
+      "fix": "Give every rule exactly one <inputEntry> per input and one <outputEntry> per output, in column order (use `-` for any). (agent-cards/dmn.md#traps)",
       "message": "Rule \"?\" of Decision \"D1\" has 1 input and 0 output entries; the table has 2 inputs and 1 outputs.",
       "rule": "dmn/rule-entry-count",
       "severity": "error"

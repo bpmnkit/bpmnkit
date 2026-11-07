@@ -2,7 +2,7 @@
 //! names); `packages/core/tests/builder-parity-fixes.test.ts` pins the same behaviour in TS.
 
 use bpmnkit_bpmn::ids::reset_id_counter;
-use bpmnkit_bpmn::{BpmnDefinitions, BpmnFlowElement};
+use bpmnkit_bpmn::{parse_bpmn, serialize_bpmn, BpmnDefinitions, BpmnFlowElement};
 use bpmnkit_builder::*;
 
 fn flow_pairs(defs: &BpmnDefinitions) -> Vec<String> {
@@ -357,12 +357,17 @@ fn n_refused_explicit_joins_build_leaves_no_join_behind() {
 #[test]
 fn o_ids_with_an_arrow_are_read_whole() {
     reset_id_counter();
-    let source = Bpmn::create_process("p")
+    // A new build rejects "→" (not an NCName), so the source comes from parsed XML, which keeps any id.
+    let plain = Bpmn::create_process("p")
         .start_event(Some("s"), None)
-        .task("a→b", None)
+        .task("a_b", None)
         .end_event(Some("e"), None)
         .build(None)
         .expect("source");
+    let xml = serialize_bpmn(&plain)
+        .replace("\"a_b\"", "\"a→b\"")
+        .replace(">a_b<", ">a→b<");
+    let source = parse_bpmn(&xml).expect("parse");
     let built = Bpmn::continue_process(&source, "p")
         .insert_after("a→b")
         .task("n", None)

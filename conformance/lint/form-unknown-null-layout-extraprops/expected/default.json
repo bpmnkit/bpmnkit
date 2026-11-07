@@ -2,35 +2,35 @@
   "findings": [
     {
       "elementId": "p1",
-      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"plugin\" is a custom component registered in your Tasklist.",
+      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"plugin\" is a custom component registered in your Tasklist. (agent-cards/form.md#traps)",
       "message": "Component \"p1\" has type \"plugin\", which form-js does not provide.",
       "rule": "form/unknown-type",
       "severity": "warning"
     },
     {
       "elementId": "p2",
-      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"plugin\" is a custom component registered in your Tasklist.",
+      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"plugin\" is a custom component registered in your Tasklist. (agent-cards/form.md#traps)",
       "message": "Component \"p2\" has type \"plugin\", which form-js does not provide.",
       "rule": "form/unknown-type",
       "severity": "warning"
     },
     {
       "elementId": "p3",
-      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"plugin\" is a custom component registered in your Tasklist.",
+      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"plugin\" is a custom component registered in your Tasklist. (agent-cards/form.md#traps)",
       "message": "Component \"p3\" has type \"plugin\", which form-js does not provide.",
       "rule": "form/unknown-type",
       "severity": "warning"
     },
     {
       "elementId": "p4",
-      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"plugin\" is a custom component registered in your Tasklist.",
+      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"plugin\" is a custom component registered in your Tasklist. (agent-cards/form.md#traps)",
       "message": "Component \"p4\" has type \"plugin\", which form-js does not provide.",
       "rule": "form/unknown-type",
       "severity": "warning"
     },
     {
       "elementId": "p5",
-      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"plugin\" is a custom component registered in your Tasklist.",
+      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"plugin\" is a custom component registered in your Tasklist. (agent-cards/form.md#traps)",
       "message": "Component \"p5\" has type \"plugin\", which form-js does not provide.",
       "rule": "form/unknown-type",
       "severity": "warning"

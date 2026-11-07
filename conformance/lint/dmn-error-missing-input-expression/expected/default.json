@@ -2,7 +2,7 @@
   "findings": [
     {
       "elementId": "i1",
-      "fix": "Set <inputExpression><text>variableName</text></inputExpression> to the value the column tests.",
+      "fix": "Set <inputExpression><text>variableName</text></inputExpression> to the value the column tests. (agent-cards/dmn.md#traps)",
       "message": "Input \"x\" of Decision \"No input expression\" has no input expression.",
       "rule": "dmn/empty-input-expression",
       "severity": "error"

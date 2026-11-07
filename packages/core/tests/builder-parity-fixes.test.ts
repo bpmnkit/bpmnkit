@@ -269,15 +269,30 @@ describe("build() shares nothing with the builder (N)", () => {
 	})
 })
 
+// A new build rejects "→" (not an NCName), so the source comes from parsed XML, which keeps any id.
+function withArrowIds(defs: BpmnDefinitions, from: string, to: string): BpmnDefinitions {
+	return Bpmn.parse(
+		Bpmn.export(defs).replaceAll(`"${from}"`, `"${to}"`).replaceAll(`>${from}<`, `>${to}<`),
+	)
+}
+
 describe("continuing a document whose ids contain → (O)", () => {
 	it("does not misread the arrow as the endpoint separator", () => {
-		const source = Bpmn.createProcess("p").startEvent("s").task("a").task("x→y").build()
+		const source = withArrowIds(
+			Bpmn.createProcess("p").startEvent("s").task("a").task("x_y").build(),
+			"x_y",
+			"x→y",
+		)
 		const defs = Bpmn.continueProcess(source, "p").insertAfter("a").task("n").build()
 		expect(flowPairs(defs)).toContain("n->x→y")
 	})
 
 	it("splices into a flow whose source id contains →", () => {
-		const source = Bpmn.createProcess("p").startEvent("s").task("a→b").endEvent("e").build()
+		const source = withArrowIds(
+			Bpmn.createProcess("p").startEvent("s").task("a_b").endEvent("e").build(),
+			"a_b",
+			"a→b",
+		)
 		const built = Bpmn.continueProcess(source, "p").insertAfter("a→b").task("n").build()
 		expect(flowPairs(built)).toEqual(["s->a→b", "n->e", "a→b->n"])
 	})

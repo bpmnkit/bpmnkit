@@ -1,11 +1,12 @@
 import fs from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import { ProcessBuilder } from "../src/bpmn/bpmn-builder.js"
+import type { BpmnDefinitions } from "../src/bpmn/bpmn-model.js"
 import { parseBpmn } from "../src/bpmn/bpmn-parser.js"
 import { serializeBpmn } from "../src/bpmn/bpmn-serializer.js"
-import { Bpmn } from "../src/bpmn/index.js"
+import { Bpmn, type ExportOptions } from "../src/bpmn/index.js"
 import { serializeDmn } from "../src/dmn/dmn-serializer.js"
 import { Dmn, drgId } from "../src/dmn/index.js"
 import { resetIdCounter } from "../src/types/id-generator.js"
@@ -29,6 +30,8 @@ interface CaseFile {
 	kind: "bpmn" | "dmn"
 	input?: string
 	script: Op[]
+	/** BPMN only: write the result with `Bpmn.export(defs, export)` instead of `serializeBpmn`. */
+	export?: ExportOptions
 }
 
 function sortKeys(v: unknown): unknown {
@@ -109,11 +112,25 @@ function run(dir: string, spec: CaseFile): Record<string, string> {
 		return { "error.txt": `${(err as Error).message}\n` }
 	}
 	if (!isDefinitions(result)) throw new Error(`${dir}: the script did not end in definitions`)
+	const warnings: string[] = []
+	if (spec.export !== undefined) {
+		const warn = vi.spyOn(console, "warn").mockImplementation((msg: string) => {
+			warnings.push(msg)
+		})
+		try {
+			Bpmn.export(result as BpmnDefinitions, spec.export)
+		} catch (err) {
+			return { "error.txt": `${(err as Error).message}\n` }
+		} finally {
+			warn.mockRestore()
+		}
+	}
 	const model = `${JSON.stringify(sortKeys(result), null, 2)}\n`
 	return spec.kind === "bpmn"
 		? {
 				"model.json": model,
 				"output.bpmn": serializeBpmn(result as Parameters<typeof serializeBpmn>[0]),
+				...(warnings.length > 0 ? { "warning.txt": `${warnings.join("\n")}\n` } : {}),
 			}
 		: {
 				"model.json": model,

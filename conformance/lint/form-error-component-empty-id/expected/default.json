@@ -1,7 +1,7 @@
 {
   "findings": [
     {
-      "fix": "Give every component a unique \"id\", e.g. \"Field_amount\".",
+      "fix": "Give every component a unique \"id\", e.g. \"Field_amount\". (agent-cards/form.md#traps)",
       "message": "components[0] (button) has no id.",
       "rule": "form/missing-id",
       "severity": "error"

@@ -1,19 +1,19 @@
 {
   "findings": [
     {
-      "fix": "Add an id attribute — requirements and zeebe:calledDecision reference elements by id.",
+      "fix": "Add an id attribute — requirements and zeebe:calledDecision reference elements by id. (agent-cards/dmn.md#traps)",
       "message": "A <decision> named \"NoId\" has no id.",
       "rule": "dmn/missing-id",
       "severity": "error"
     },
     {
-      "fix": "Add an id attribute — requirements and zeebe:calledDecision reference elements by id.",
+      "fix": "Add an id attribute — requirements and zeebe:calledDecision reference elements by id. (agent-cards/dmn.md#traps)",
       "message": "A <inputData> named \"x\" has no id.",
       "rule": "dmn/missing-id",
       "severity": "error"
     },
     {
-      "fix": "Add an id attribute — requirements and zeebe:calledDecision reference elements by id.",
+      "fix": "Add an id attribute — requirements and zeebe:calledDecision reference elements by id. (agent-cards/dmn.md#traps)",
       "message": "A <decision> named \"Empty\" has no id.",
       "rule": "dmn/missing-id",
       "severity": "error"

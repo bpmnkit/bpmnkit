@@ -6,11 +6,11 @@
 
 Writing a BPMN process, DMN decision or form? Read its agent card first: a runnable script, the top options and the traps (`casen agent-card bpmn|dmn|form` prints the same card).
 
-- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 4 chunks, 1264 tokens
+- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 4 chunks, 1311 tokens
 - [DMN agent card](.llms/chunks/agent-cards.dmn.md) — 5 chunks, 1331 tokens
-- [Form agent card](.llms/chunks/agent-cards.form.md) — 4 chunks, 879 tokens
+- [Form agent card](.llms/chunks/agent-cards.form.md) — 4 chunks, 876 tokens
 
-Version 1.2.2. 428 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.3.0. 428 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -19,17 +19,17 @@ npx bpmnkit-docs ask "how do I deploy a process"
 
 ## agent-cards
 
-- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 464 tokens
+- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 461 tokens
 - [BPMN agent card — Top builder options](.llms/chunks/agent-cards.bpmn.top-builder-options.md) — 299 tokens
-- [BPMN agent card — Traps](.llms/chunks/agent-cards.bpmn.traps.md) — 318 tokens
+- [BPMN agent card — Traps](.llms/chunks/agent-cards.bpmn.traps.md) — 368 tokens
 - [BPMN agent card — Lint before you deploy or test](.llms/chunks/agent-cards.bpmn.lint-before-you-deploy-or-test.md) — 183 tokens
 - [DMN agent card](.llms/chunks/agent-cards.dmn.md) — 433 tokens
 - [DMN agent card — Several decisions in one file: `Dmn.drd()`](.llms/chunks/agent-cards.dmn.several-decisions-in-one-file-dmn.drd.md) — 299 tokens
 - [DMN agent card — Top builder options](.llms/chunks/agent-cards.dmn.top-builder-options.md) — 188 tokens
 - [DMN agent card — Traps](.llms/chunks/agent-cards.dmn.traps.md) — 295 tokens
 - [DMN agent card — Validate](.llms/chunks/agent-cards.dmn.validate.md) — 116 tokens
-- [Form agent card](.llms/chunks/agent-cards.form.md) — 400 tokens
-- [Form agent card — Top builder options](.llms/chunks/agent-cards.form.top-builder-options.md) — 145 tokens
+- [Form agent card](.llms/chunks/agent-cards.form.md) — 396 tokens
+- [Form agent card — Top builder options](.llms/chunks/agent-cards.form.top-builder-options.md) — 146 tokens
 - [Form agent card — Traps](.llms/chunks/agent-cards.form.traps.md) — 227 tokens
 - [Form agent card — Validate](.llms/chunks/agent-cards.form.validate.md) — 107 tokens
 
@@ -273,7 +273,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Process Templates — What is in the gallery](.llms/chunks/guides.templates.what-is-in-the-gallery.md) — 261 tokens
 - [Process Templates — Use a template](.llms/chunks/guides.templates.use-a-template.md) — 213 tokens
 - [Process Templates — Run the scenarios](.llms/chunks/guides.templates.run-the-scenarios.md) — 619 tokens
-- [Process Templates — AI templates: model and secrets](.llms/chunks/guides.templates.ai-templates-model-and-secrets.md) — 143 tokens
+- [Process Templates — AI templates: model and secrets](.llms/chunks/guides.templates.ai-templates-model-and-secrets.md) — 160 tokens
 - [Process Templates — From code](.llms/chunks/guides.templates.from-code.md) — 137 tokens
 - [Process Templates — Add a template](.llms/chunks/guides.templates.add-a-template.md) — 103 tokens
 - [Testing AI Agents](.llms/chunks/guides.testing-ai-agents.md) — 145 tokens

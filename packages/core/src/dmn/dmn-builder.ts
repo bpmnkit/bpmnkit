@@ -120,12 +120,12 @@ export class DecisionTableBuilder {
 	rule(options: RuleOptions): this {
 		if (options.inputs.length !== this.inputColumns.length) {
 			throw new ValidationError(
-				`Rule has ${options.inputs.length} inputs but table has ${this.inputColumns.length} input columns`,
+				`Rule has ${options.inputs.length} inputs but table has ${this.inputColumns.length} input columns. See agent-cards/dmn.md#traps.`,
 			)
 		}
 		if (options.outputs.length !== this.outputColumns.length) {
 			throw new ValidationError(
-				`Rule has ${options.outputs.length} outputs but table has ${this.outputColumns.length} output columns`,
+				`Rule has ${options.outputs.length} outputs but table has ${this.outputColumns.length} output columns. See agent-cards/dmn.md#traps.`,
 			)
 		}
 
@@ -192,7 +192,7 @@ export class DecisionTableBuilder {
 			},
 			modelerAttributes: {
 				executionPlatform: "Camunda Cloud",
-				executionPlatformVersion: "8.5.0",
+				executionPlatformVersion: "8.10.0",
 			},
 			decisions: [decision],
 			inputData: [],

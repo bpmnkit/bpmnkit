@@ -80,7 +80,7 @@ stores `camunda:collection` and the implementation of message throw events.
 | `camunda:versionTag` | `zeebe:versionTag` | convertible |
 | `camunda:properties` | `zeebe:properties` | convertible |
 
-The file is marked `modeler:executionPlatform="Camunda Cloud"` (version `8.8.0` by default),
+The file is marked `modeler:executionPlatform="Camunda Cloud"` (version `8.10.0` by default),
 and the `zeebe` namespace is declared. If the converter writes a Camunda 8 equivalent, it
 removes the Camunda 7 original. If it does not, it keeps the original in the file. Camunda 8
 ignores `camunda:` content, so nothing is lost, and the next person can see what the model

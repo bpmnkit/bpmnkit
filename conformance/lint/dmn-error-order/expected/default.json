@@ -1,25 +1,25 @@
 {
   "findings": [
     {
-      "fix": "Add an id attribute — requirements and zeebe:calledDecision reference elements by id.",
+      "fix": "Add an id attribute — requirements and zeebe:calledDecision reference elements by id. (agent-cards/dmn.md#traps)",
       "message": "A <inputData> named \"reported after the decisions\" has no id.",
       "rule": "dmn/missing-id",
       "severity": "error"
     },
     {
-      "fix": "Add an id attribute — requirements and zeebe:calledDecision reference elements by id.",
+      "fix": "Add an id attribute — requirements and zeebe:calledDecision reference elements by id. (agent-cards/dmn.md#traps)",
       "message": "A <decision> has no id.",
       "rule": "dmn/missing-id",
       "severity": "error"
     },
     {
-      "fix": "Give every rule exactly one <inputEntry> per input and one <outputEntry> per output, in column order (use `-` for any).",
+      "fix": "Give every rule exactly one <inputEntry> per input and one <outputEntry> per output, in column order (use `-` for any). (agent-cards/dmn.md#traps)",
       "message": "Rule \"?\" of Decision \"d1\" has 0 input and 0 output entries; the table has 1 inputs and 1 outputs.",
       "rule": "dmn/rule-entry-count",
       "severity": "error"
     },
     {
-      "fix": "Add an <output id=\"…\" name=\"result\" typeRef=\"string\"/> column.",
+      "fix": "Add an <output id=\"…\" name=\"result\" typeRef=\"string\"/> column. (agent-cards/dmn.md#traps)",
       "message": "Decision \"?\"'s decision table has no <output>.",
       "rule": "dmn/no-output",
       "severity": "error"

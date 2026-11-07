@@ -1,5 +1,5 @@
 import { parseExpression, parseUnaryTests } from "@bpmnkit/feel"
-import type { CheckFinding } from "../check-finding.js"
+import { type CheckFinding, withCardHint } from "../check-finding.js"
 import { DMN_ATTRIBUTE_VALUES } from "../generated/dmn-elements.js"
 import type { XmlElement } from "../types/xml-element.js"
 import { parseXml } from "../xml/xml-parser.js"
@@ -76,6 +76,10 @@ function* walk(el: XmlElement): Generator<XmlElement> {
  * ```
  */
 export function lintDmn(xml: string): CheckFinding[] {
+	return withCardHint(lintDmnFindings(xml), "dmn")
+}
+
+function lintDmnFindings(xml: string): CheckFinding[] {
 	let root: XmlElement
 	try {
 		root = parseXml(xml)

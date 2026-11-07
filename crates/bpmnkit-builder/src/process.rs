@@ -130,7 +130,7 @@ impl ProcessBuilder {
             executable_set: false,
             version_tag: None,
             auto_layout: false,
-            execution_platform_version: "8.9.0".to_owned(),
+            execution_platform_version: "8.10.0".to_owned(),
             service_task_defaults: ServiceTaskDefaults::default(),
             saved_main_flow_id: None,
             source: None,
@@ -943,6 +943,10 @@ impl ProcessBuilder {
         elements: &[BpmnFlowElement],
         flows: &[BpmnSequenceFlow],
     ) -> Result<(), String> {
+        // A parsed document keeps whatever ids it came with; only new builds are held to the XSD.
+        if self.source.is_none() {
+            crate::xsd_guards::assert_xsd_values(&self.process_id, elements, flows)?;
+        }
         let element_ids: IndexSet<&str> = elements.iter().map(|el| el.base().id.as_str()).collect();
         for flow in flows {
             if !element_ids.contains(flow.target_ref.as_str()) {
