@@ -4520,6 +4520,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {
+        "group": "authentication",
+        "tooltip": "Choose a reusable RabbitMQ connection credential, or configure one-time connection parameters below."
+      },
+      {
         "group": "authentication"
       },
       {
@@ -4836,6 +4840,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     },
     "properties": [
       {},
+      {
+        "group": "authentication",
+        "tooltip": "Choose a reusable RabbitMQ connection credential, or configure one-time connection parameters below."
+      },
       {
         "group": "authentication"
       },
@@ -8601,6 +8609,9 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
         "group": "authentication"
       },
       {
+        "group": "authentication"
+      },
+      {
         "group": "authentication",
         "tooltip": "The enterprise ID to authenticate against"
       },
@@ -9361,6 +9372,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     },
     "properties": [
       {},
+      {
+        "group": "authentication",
+        "tooltip": "Choose a reusable RabbitMQ connection credential, or configure one-time connection parameters below."
+      },
       {
         "group": "authentication"
       },
@@ -14467,6 +14482,84 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
       }
     ]
   },
+  "io.camunda.connectors.ManagedScript.v1": {
+    "template": {
+      "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+      "category": {
+        "id": "connectors",
+        "name": "Connectors"
+      },
+      "groups": [
+        {
+          "id": "script",
+          "label": "Script"
+        },
+        {
+          "id": "input",
+          "label": "Input"
+        },
+        {
+          "id": "connector",
+          "label": "Connector"
+        },
+        {
+          "id": "output",
+          "label": "Output mapping"
+        },
+        {
+          "id": "error",
+          "label": "Error handling"
+        },
+        {
+          "id": "retries",
+          "label": "Retries"
+        }
+      ]
+    },
+    "properties": [
+      {},
+      {
+        "group": "script"
+      },
+      {
+        "group": "script"
+      },
+      {
+        "group": "script"
+      },
+      {
+        "group": "script"
+      },
+      {
+        "group": "input",
+        "tooltip": "The script defines execute(variables, context), which receives this object as variables and returns an object: the result of the task, mapped by the result variable or expression. Return a business error as data, for example {\"error\": \"INSUFFICIENT_FUNDS\"}, and map it with the error expression."
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "connector"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "output"
+      },
+      {
+        "group": "error"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      },
+      {
+        "group": "retries"
+      }
+    ]
+  },
   "io.camunda.connectors.webhook.WebhookConnectorBoundary.v1": {
     "template": {
       "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
@@ -15098,6 +15191,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     "properties": [
       {},
       {
+        "group": "authentication",
+        "tooltip": "Choose a reusable RabbitMQ connection credential, or configure one-time connection parameters below."
+      },
+      {
         "group": "authentication"
       },
       {
@@ -15224,6 +15321,10 @@ export const TEMPLATE_PANEL_PARTS: Record<string, TemplatePanelParts> = {
     },
     "properties": [
       {},
+      {
+        "group": "authentication",
+        "tooltip": "Choose a reusable RabbitMQ connection credential, or configure one-time connection parameters below."
+      },
       {
         "group": "authentication"
       },

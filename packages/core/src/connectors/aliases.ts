@@ -174,6 +174,7 @@ export const CONNECTOR_ALIASES: Readonly<
 	},
 	"io.camunda.connectors.HuggingFace.v1": { alias: "huggingface" },
 	"io.camunda.connectors.KAFKA.v1": { alias: "kafka" },
+	"io.camunda.connectors.ManagedScript.v1": { alias: "managed-script" },
 	"io.camunda.connectors.inbound.KafkaBoundary.v1": { alias: "kafka-boundary" },
 	"io.camunda.connectors.inbound.KafkaIntermediate.v1": { alias: "kafka-catch" },
 	"io.camunda.connectors.inbound.KafkaMessageStart.v1": { alias: "kafka-message-start" },

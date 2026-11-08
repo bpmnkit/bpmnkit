@@ -20943,7 +20943,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "queue"
     ],
     "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=inbound",
-    "version": 8,
+    "version": 9,
     "appliesTo": [
       "bpmn:BoundaryEvent"
     ],
@@ -20952,7 +20952,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "eventDefinition": "bpmn:MessageEventDefinition"
     },
     "engines": {
-      "camunda": "^8.3"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -20964,12 +20964,28 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "rabbitMqConnection",
+        "label": "Connection credential",
+        "optional": true,
+        "binding": {
+          "name": "rabbitMqConnection",
+          "type": "zeebe:property"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:rabbitmq-connection:1"
+      },
+      {
         "id": "authentication.authType",
         "label": "Connection type",
         "value": "uri",
         "binding": {
           "name": "authentication.authType",
           "type": "zeebe:property"
+        },
+        "condition": {
+          "property": "rabbitMqConnection",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -20999,11 +21015,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "uri",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "uri",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.userName",
@@ -21017,9 +21043,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -21035,11 +21070,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "routing.virtualHost",
@@ -21053,9 +21098,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -21071,9 +21125,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -21089,9 +21152,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -21324,6 +21396,155 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "type": "Text"
+      }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:rabbitmq-connection:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "RabbitMQ Connection",
+        "properties": [
+          {
+            "id": "authentication.authType",
+            "label": "Connection type",
+            "value": "uri",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.authType",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "URI",
+                "value": "uri"
+              },
+              {
+                "name": "Username/Password",
+                "value": "credentials"
+              }
+            ]
+          },
+          {
+            "id": "authentication.uri",
+            "label": "URI",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^(=|(amqps?://|secrets|\\{\\{).*$)",
+                "message": "Must start with amqp(s):// or contain a secret reference"
+              }
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.uri",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "uri",
+              "type": "simple"
+            },
+            "tooltip": "URI should contain username, password, host name, port number, and virtual host",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.userName",
+            "label": "Username",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.userName",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.password",
+            "label": "Password",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.password",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "routing.virtualHost",
+            "label": "Virtual host",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.virtualHost",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          },
+          {
+            "id": "routing.hostName",
+            "label": "Host name",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.hostName",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          },
+          {
+            "id": "routing.port",
+            "label": "Port",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.port",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          }
+        ]
       }
     ]
   },
@@ -21953,7 +22174,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "queue"
     ],
     "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=inbound",
-    "version": 8,
+    "version": 9,
     "appliesTo": [
       "bpmn:ReceiveTask"
     ],
@@ -21961,7 +22182,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "value": "bpmn:ReceiveTask"
     },
     "engines": {
-      "camunda": "^8.3"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -21973,12 +22194,28 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "rabbitMqConnection",
+        "label": "Connection credential",
+        "optional": true,
+        "binding": {
+          "name": "rabbitMqConnection",
+          "type": "zeebe:property"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:rabbitmq-connection:1"
+      },
+      {
         "id": "authentication.authType",
         "label": "Connection type",
         "value": "uri",
         "binding": {
           "name": "authentication.authType",
           "type": "zeebe:property"
+        },
+        "condition": {
+          "property": "rabbitMqConnection",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -22008,11 +22245,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "uri",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "uri",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.userName",
@@ -22026,9 +22273,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -22044,11 +22300,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "routing.virtualHost",
@@ -22062,9 +22328,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -22080,9 +22355,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -22098,9 +22382,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -22333,6 +22626,155 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "type": "Text"
+      }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:rabbitmq-connection:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "RabbitMQ Connection",
+        "properties": [
+          {
+            "id": "authentication.authType",
+            "label": "Connection type",
+            "value": "uri",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.authType",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "URI",
+                "value": "uri"
+              },
+              {
+                "name": "Username/Password",
+                "value": "credentials"
+              }
+            ]
+          },
+          {
+            "id": "authentication.uri",
+            "label": "URI",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^(=|(amqps?://|secrets|\\{\\{).*$)",
+                "message": "Must start with amqp(s):// or contain a secret reference"
+              }
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.uri",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "uri",
+              "type": "simple"
+            },
+            "tooltip": "URI should contain username, password, host name, port number, and virtual host",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.userName",
+            "label": "Username",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.userName",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.password",
+            "label": "Password",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.password",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "routing.virtualHost",
+            "label": "Virtual host",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.virtualHost",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          },
+          {
+            "id": "routing.hostName",
+            "label": "Host name",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.hostName",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          },
+          {
+            "id": "routing.port",
+            "label": "Port",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.port",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          }
+        ]
       }
     ]
   },
@@ -39470,7 +39912,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "value": "bpmn:ServiceTask"
     },
     "engines": {
-      "camunda": "^8.10"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -40065,6 +40507,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Number"
       },
       {
+        "id": "boxCredential",
+        "label": "Box credential",
+        "description": "Choose a reusable Box credential, or configure one-time authentication parameters below.",
+        "optional": true,
+        "binding": {
+          "name": "boxCredential",
+          "type": "zeebe:input"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:box-credential:1"
+      },
+      {
         "id": "authentication.type",
         "label": "Authentication",
         "description": "Specify authentication strategy. Learn more at the <a href=\"https://developer.box.com/guides/authentication/\" target=\"_blank\">documentation page</a>",
@@ -40072,6 +40526,11 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "binding": {
           "name": "authentication.type",
           "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "boxCredential",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -40106,9 +40565,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentialsEnterprise",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentialsEnterprise",
+              "type": "simple"
+            },
+            {
+              "property": "boxCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -40125,11 +40593,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentialsEnterprise",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentialsEnterprise",
+              "type": "simple"
+            },
+            {
+              "property": "boxCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.enterpriseId",
@@ -40144,9 +40622,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentialsEnterprise",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentialsEnterprise",
+              "type": "simple"
+            },
+            {
+              "property": "boxCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -40163,9 +40650,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentialsUser",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentialsUser",
+              "type": "simple"
+            },
+            {
+              "property": "boxCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -40182,11 +40678,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentialsUser",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentialsUser",
+              "type": "simple"
+            },
+            {
+              "property": "boxCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.userId",
@@ -40201,9 +40707,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentialsUser",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentialsUser",
+              "type": "simple"
+            },
+            {
+              "property": "boxCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -40220,11 +40735,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "developerToken",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "developerToken",
+              "type": "simple"
+            },
+            {
+              "property": "boxCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.jsonConfig",
@@ -40239,11 +40764,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "jwtJsonConfig",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "jwtJsonConfig",
+              "type": "simple"
+            },
+            {
+              "property": "boxCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "version",
@@ -40458,6 +40993,174 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "properties": {
           "operation.type": "search"
         }
+      }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:box-credential:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "Box Credential",
+        "properties": [
+          {
+            "id": "authentication.type",
+            "label": "Authentication",
+            "description": "Specify authentication strategy. Learn more at the <a href=\"https://developer.box.com/guides/authentication/\" target=\"_blank\">documentation page</a>",
+            "value": "clientCredentialsEnterprise",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.type",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Client Credentials Enterprise",
+                "value": "clientCredentialsEnterprise"
+              },
+              {
+                "name": "Client Credentials User",
+                "value": "clientCredentialsUser"
+              },
+              {
+                "name": "JWT JSON Config",
+                "value": "jwtJsonConfig"
+              }
+            ]
+          },
+          {
+            "id": "authentication.clientIdEnterprise",
+            "label": "Client id",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentialsEnterprise",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientSecretEnterprise",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentialsEnterprise",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.enterpriseId",
+            "label": "Enterprise ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.enterpriseId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentialsEnterprise",
+              "type": "simple"
+            },
+            "tooltip": "The enterprise ID to authenticate against",
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientIdUser",
+            "label": "Client id",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentialsUser",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientSecretUser",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentialsUser",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.userId",
+            "label": "User ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.userId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentialsUser",
+              "type": "simple"
+            },
+            "tooltip": "The user ID of the account to authenticate against",
+            "type": "String"
+          },
+          {
+            "id": "authentication.jsonConfig",
+            "label": "JSON config",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.jsonConfig",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "jwtJsonConfig",
+              "type": "simple"
+            },
+            "tooltip": "The JSON config as string",
+            "type": "String",
+            "secret": true
+          }
+        ]
       }
     ]
   },
@@ -44659,7 +45362,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "queue"
     ],
     "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=inbound",
-    "version": 8,
+    "version": 9,
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
       "bpmn:IntermediateThrowEvent"
@@ -44669,7 +45372,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "eventDefinition": "bpmn:MessageEventDefinition"
     },
     "engines": {
-      "camunda": "^8.3"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -44681,12 +45384,28 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "rabbitMqConnection",
+        "label": "Connection credential",
+        "optional": true,
+        "binding": {
+          "name": "rabbitMqConnection",
+          "type": "zeebe:property"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:rabbitmq-connection:1"
+      },
+      {
         "id": "authentication.authType",
         "label": "Connection type",
         "value": "uri",
         "binding": {
           "name": "authentication.authType",
           "type": "zeebe:property"
+        },
+        "condition": {
+          "property": "rabbitMqConnection",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -44716,11 +45435,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "uri",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "uri",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.userName",
@@ -44734,9 +45463,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -44752,11 +45490,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "routing.virtualHost",
@@ -44770,9 +45518,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -44788,9 +45545,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -44806,9 +45572,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -45041,6 +45816,155 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "type": "Text"
+      }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:rabbitmq-connection:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "RabbitMQ Connection",
+        "properties": [
+          {
+            "id": "authentication.authType",
+            "label": "Connection type",
+            "value": "uri",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.authType",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "URI",
+                "value": "uri"
+              },
+              {
+                "name": "Username/Password",
+                "value": "credentials"
+              }
+            ]
+          },
+          {
+            "id": "authentication.uri",
+            "label": "URI",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^(=|(amqps?://|secrets|\\{\\{).*$)",
+                "message": "Must start with amqp(s):// or contain a secret reference"
+              }
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.uri",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "uri",
+              "type": "simple"
+            },
+            "tooltip": "URI should contain username, password, host name, port number, and virtual host",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.userName",
+            "label": "Username",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.userName",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.password",
+            "label": "Password",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.password",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "routing.virtualHost",
+            "label": "Virtual host",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.virtualHost",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          },
+          {
+            "id": "routing.hostName",
+            "label": "Host name",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.hostName",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          },
+          {
+            "id": "routing.port",
+            "label": "Port",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.port",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          }
+        ]
       }
     ]
   },
@@ -67751,6 +68675,192 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     ]
   },
   {
+    "name": "Managed script",
+    "id": "io.camunda.connectors.ManagedScript.v1",
+    "description": "Run a Python or JavaScript script without operating a job worker",
+    "version": 1,
+    "appliesTo": [
+      "bpmn:Task"
+    ],
+    "elementType": {
+      "value": "bpmn:ServiceTask"
+    },
+    "engines": {
+      "camunda": "^8.11"
+    },
+    "properties": [
+      {
+        "value": "io.camunda:managed-script:1",
+        "binding": {
+          "property": "type",
+          "type": "zeebe:taskDefinition"
+        },
+        "type": "Hidden"
+      },
+      {
+        "value": "ManagedScript",
+        "binding": {
+          "linkName": "script",
+          "property": "resourceType",
+          "type": "zeebe:linkedResource"
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "script.bindingType",
+        "label": "Script binding",
+        "value": "latest",
+        "binding": {
+          "linkName": "script",
+          "property": "bindingType",
+          "type": "zeebe:linkedResource"
+        },
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "Latest",
+            "value": "latest"
+          },
+          {
+            "name": "Deployment",
+            "value": "deployment"
+          },
+          {
+            "name": "Version tag",
+            "value": "versionTag"
+          }
+        ]
+      },
+      {
+        "id": "script.resourceId",
+        "label": "Script file",
+        "description": "File name of the .py or .js script, deployed as a resource",
+        "feel": "optional",
+        "binding": {
+          "linkName": "script",
+          "property": "resourceId",
+          "type": "zeebe:linkedResource"
+        },
+        "type": "String"
+      },
+      {
+        "id": "script.versionTag",
+        "label": "Version tag",
+        "binding": {
+          "linkName": "script",
+          "property": "versionTag",
+          "type": "zeebe:linkedResource"
+        },
+        "condition": {
+          "property": "script.bindingType",
+          "equals": "versionTag",
+          "type": "simple"
+        },
+        "type": "String"
+      },
+      {
+        "id": "scriptInput",
+        "label": "Script input",
+        "description": "Object passed to the script, for example ={a: order.amount, b: tax}",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "scriptInput",
+          "type": "zeebe:input"
+        },
+        "type": "Text"
+      },
+      {
+        "id": "version",
+        "label": "Version",
+        "description": "Version of the element template",
+        "value": "1",
+        "binding": {
+          "key": "elementTemplateVersion",
+          "type": "zeebe:taskHeader"
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "id",
+        "label": "ID",
+        "description": "ID of the element template",
+        "value": "io.camunda.connectors.ManagedScript.v1",
+        "binding": {
+          "key": "elementTemplateId",
+          "type": "zeebe:taskHeader"
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "resultVariable",
+        "label": "Result variable",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "binding": {
+          "key": "resultVariable",
+          "type": "zeebe:taskHeader"
+        },
+        "type": "String"
+      },
+      {
+        "id": "resultExpression",
+        "label": "Result expression",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "feel": "required",
+        "binding": {
+          "key": "resultExpression",
+          "type": "zeebe:taskHeader"
+        },
+        "type": "Text"
+      },
+      {
+        "id": "errorExpression",
+        "label": "Error expression",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "feel": "required",
+        "binding": {
+          "key": "errorExpression",
+          "type": "zeebe:taskHeader"
+        },
+        "type": "Text"
+      },
+      {
+        "id": "retryCount",
+        "label": "Retries",
+        "description": "Number of retries",
+        "value": "3",
+        "feel": "optional",
+        "binding": {
+          "property": "retries",
+          "type": "zeebe:taskDefinition"
+        },
+        "type": "String"
+      },
+      {
+        "id": "retryBackoff",
+        "label": "Retry backoff",
+        "description": "ISO-8601 duration to wait between retries",
+        "value": "PT30S",
+        "binding": {
+          "key": "retryBackoff",
+          "type": "zeebe:taskHeader"
+        },
+        "type": "String"
+      },
+      {
+        "id": "jobTimeout",
+        "label": "Job timeout",
+        "description": "ISO-8601 duration after which Zeebe considers this job timed out if not yet completed. Leave empty to use the default timeout",
+        "optional": true,
+        "binding": {
+          "key": "jobTimeout",
+          "type": "zeebe:taskHeader"
+        },
+        "type": "String"
+      }
+    ]
+  },
+  {
     "name": "Webhook Boundary Event Connector",
     "id": "io.camunda.connectors.webhook.WebhookConnectorBoundary.v1",
     "description": "Configure webhook to receive callbacks",
@@ -70291,7 +71401,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "queue"
     ],
     "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=inbound",
-    "version": 8,
+    "version": 9,
     "appliesTo": [
       "bpmn:StartEvent"
     ],
@@ -70300,7 +71410,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "eventDefinition": "bpmn:MessageEventDefinition"
     },
     "engines": {
-      "camunda": "^8.3"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -70312,12 +71422,28 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "rabbitMqConnection",
+        "label": "Connection credential",
+        "optional": true,
+        "binding": {
+          "name": "rabbitMqConnection",
+          "type": "zeebe:property"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:rabbitmq-connection:1"
+      },
+      {
         "id": "authentication.authType",
         "label": "Connection type",
         "value": "uri",
         "binding": {
           "name": "authentication.authType",
           "type": "zeebe:property"
+        },
+        "condition": {
+          "property": "rabbitMqConnection",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -70347,11 +71473,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "uri",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "uri",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.userName",
@@ -70365,9 +71501,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -70383,11 +71528,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "routing.virtualHost",
@@ -70401,9 +71556,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -70419,9 +71583,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -70437,9 +71610,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -70704,6 +71886,155 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         },
         "type": "Text"
       }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:rabbitmq-connection:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "RabbitMQ Connection",
+        "properties": [
+          {
+            "id": "authentication.authType",
+            "label": "Connection type",
+            "value": "uri",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.authType",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "URI",
+                "value": "uri"
+              },
+              {
+                "name": "Username/Password",
+                "value": "credentials"
+              }
+            ]
+          },
+          {
+            "id": "authentication.uri",
+            "label": "URI",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^(=|(amqps?://|secrets|\\{\\{).*$)",
+                "message": "Must start with amqp(s):// or contain a secret reference"
+              }
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.uri",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "uri",
+              "type": "simple"
+            },
+            "tooltip": "URI should contain username, password, host name, port number, and virtual host",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.userName",
+            "label": "Username",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.userName",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.password",
+            "label": "Password",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.password",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "routing.virtualHost",
+            "label": "Virtual host",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.virtualHost",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          },
+          {
+            "id": "routing.hostName",
+            "label": "Host name",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.hostName",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          },
+          {
+            "id": "routing.port",
+            "label": "Port",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.port",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          }
+        ]
+      }
     ]
   },
   {
@@ -70720,7 +72051,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "queue"
     ],
     "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound",
-    "version": 6,
+    "version": 7,
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -70728,7 +72059,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "value": "bpmn:ServiceTask"
     },
     "engines": {
-      "camunda": "^8.3"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -70740,12 +72071,28 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "rabbitMqConnection",
+        "label": "Connection credential",
+        "optional": true,
+        "binding": {
+          "name": "rabbitMqConnection",
+          "type": "zeebe:input"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:rabbitmq-connection:1"
+      },
+      {
         "id": "authentication.authType",
         "label": "Connection type",
         "value": "uri",
         "binding": {
           "name": "authentication.authType",
           "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "rabbitMqConnection",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -70776,11 +72123,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "uri",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "uri",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.userName",
@@ -70795,9 +72152,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -70814,11 +72180,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "routing.exchange",
@@ -70861,9 +72237,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -70880,9 +72265,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -70899,9 +72293,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -70935,7 +72338,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "id": "version",
         "label": "Version",
         "description": "Version of the element template",
-        "value": "6",
+        "value": "7",
         "binding": {
           "key": "elementTemplateVersion",
           "type": "zeebe:taskHeader"
@@ -71018,6 +72421,155 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:taskHeader"
         },
         "type": "String"
+      }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:rabbitmq-connection:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "RabbitMQ Connection",
+        "properties": [
+          {
+            "id": "authentication.authType",
+            "label": "Connection type",
+            "value": "uri",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.authType",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "URI",
+                "value": "uri"
+              },
+              {
+                "name": "Username/Password",
+                "value": "credentials"
+              }
+            ]
+          },
+          {
+            "id": "authentication.uri",
+            "label": "URI",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^(=|(amqps?://|secrets|\\{\\{).*$)",
+                "message": "Must start with amqp(s):// or contain a secret reference"
+              }
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.uri",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "uri",
+              "type": "simple"
+            },
+            "tooltip": "URI should contain username, password, host name, port number, and virtual host",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.userName",
+            "label": "Username",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.userName",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.password",
+            "label": "Password",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.password",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "routing.virtualHost",
+            "label": "Virtual host",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.virtualHost",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          },
+          {
+            "id": "routing.hostName",
+            "label": "Host name",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.hostName",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          },
+          {
+            "id": "routing.port",
+            "label": "Port",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.port",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          }
+        ]
       }
     ]
   },
@@ -79077,7 +80629,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "description": "Claude models via the Anthropic API, AWS Bedrock, Microsoft Foundry, or a compatible endpoint.",
         "steps": [
           {
-            "name": "Anthropic API",
+            "name": "AI Agent Sub-process: Anthropic API",
             "keywords": [
               "Anthropic",
               "Claude",
@@ -79086,7 +80638,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "presetId": "type_anthropic_type_anthropic-api"
           },
           {
-            "name": "AWS Bedrock Mantle",
+            "name": "AI Agent Sub-process: AWS Bedrock Mantle",
             "keywords": [
               "Anthropic",
               "Claude",
@@ -79095,7 +80647,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "presetId": "type_anthropic_type_aws-bedrock-mantle"
           },
           {
-            "name": "Microsoft Foundry (Azure)",
+            "name": "AI Agent Sub-process: Microsoft Foundry (Azure)",
             "keywords": [
               "Anthropic",
               "Claude",
@@ -79104,7 +80656,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "presetId": "type_anthropic_type_foundry"
           },
           {
-            "name": "Anthropic custom / compatible endpoint",
+            "name": "AI Agent Sub-process: Anthropic custom / compatible endpoint",
             "keywords": [
               "Anthropic",
               "Claude",
@@ -79115,7 +80667,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         ]
       },
       {
-        "name": "AWS Bedrock Converse",
+        "name": "AI Agent Sub-process: AWS Bedrock Converse",
         "description": "Any Bedrock model via the Converse API.",
         "keywords": [
           "Bedrock",
@@ -79128,7 +80680,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "description": "GPT models via OpenAI, Microsoft Foundry, or an OpenAI-compatible endpoint.",
         "steps": [
           {
-            "name": "OpenAI API",
+            "name": "AI Agent Sub-process: OpenAI API",
             "keywords": [
               "OpenAI",
               "GPT",
@@ -79137,7 +80689,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "presetId": "type_openai_type_openai-api"
           },
           {
-            "name": "Microsoft Foundry (Azure)",
+            "name": "AI Agent Sub-process: Microsoft Foundry (Azure)",
             "keywords": [
               "OpenAI",
               "GPT",
@@ -79146,7 +80698,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "presetId": "type_openai_type_foundry"
           },
           {
-            "name": "OpenAI custom / compatible endpoint",
+            "name": "AI Agent Sub-process: OpenAI custom / compatible endpoint",
             "keywords": [
               "OpenAI",
               "GPT",
@@ -79161,7 +80713,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "description": "Models like Ollama, LM Studio, and Camunda-provided LLM.",
         "steps": [
           {
-            "name": "Ollama",
+            "name": "AI Agent Sub-process: Ollama",
             "description": "Local models via Ollama.",
             "keywords": [
               "Ollama",
@@ -79171,7 +80723,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "presetId": "type_openai_type_custom_ollama"
           },
           {
-            "name": "LM Studio",
+            "name": "AI Agent Sub-process: LM Studio",
             "description": "Local models via LM Studio.",
             "keywords": [
               "LM Studio",
@@ -79180,7 +80732,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "presetId": "type_openai_type_custom_lmstudio"
           },
           {
-            "name": "Camunda-provided LLM (SaaS only)",
+            "name": "AI Agent Sub-process: Camunda-provided LLM (SaaS only)",
             "description": "Only on select plans.",
             "keywords": [
               "Camunda",
@@ -79196,7 +80748,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "description": "Gemini models via the Gemini API or Vertex AI.",
         "steps": [
           {
-            "name": "Google Gemini API",
+            "name": "AI Agent Sub-process: Google Gemini API",
             "keywords": [
               "Gemini",
               "Google",
@@ -79205,7 +80757,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "presetId": "type_google-gemini_type_google-gemini-api"
           },
           {
-            "name": "Enterprise Agent Platform (Vertex AI)",
+            "name": "AI Agent Sub-process: Enterprise Agent Platform (Vertex AI)",
             "keywords": [
               "Gemini",
               "Google",
@@ -79220,7 +80772,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "description": "Mistral models via the Mistral API or a compatible endpoint.",
         "steps": [
           {
-            "name": "Mistral API",
+            "name": "AI Agent Sub-process: Mistral API",
             "keywords": [
               "Mistral",
               "Mistral API"
@@ -79228,7 +80780,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "presetId": "type_mistral_type_mistral-api"
           },
           {
-            "name": "Mistral custom / compatible endpoint",
+            "name": "AI Agent Sub-process: Mistral custom / compatible endpoint",
             "keywords": [
               "Mistral",
               "Custom / compatible endpoint"
@@ -79238,7 +80790,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         ]
       },
       {
-        "name": "Custom Implementation (Self-Managed/Hybrid only)",
+        "name": "AI Agent Sub-process: Custom Implementation (Self-Managed/Hybrid only)",
         "description": "Your own provider implementation.",
         "keywords": [
           "Custom"
@@ -94464,7 +96016,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "description": "Claude models via the Anthropic API, AWS Bedrock, Microsoft Foundry, or a compatible endpoint.",
         "steps": [
           {
-            "name": "Anthropic API",
+            "name": "AI Agent Task: Anthropic API",
             "keywords": [
               "Anthropic",
               "Claude",
@@ -94473,7 +96025,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "presetId": "type_anthropic_type_anthropic-api"
           },
           {
-            "name": "AWS Bedrock Mantle",
+            "name": "AI Agent Task: AWS Bedrock Mantle",
             "keywords": [
               "Anthropic",
               "Claude",
@@ -94482,7 +96034,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "presetId": "type_anthropic_type_aws-bedrock-mantle"
           },
           {
-            "name": "Microsoft Foundry (Azure)",
+            "name": "AI Agent Task: Microsoft Foundry (Azure)",
             "keywords": [
               "Anthropic",
               "Claude",
@@ -94491,7 +96043,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "presetId": "type_anthropic_type_foundry"
           },
           {
-            "name": "Anthropic custom / compatible endpoint",
+            "name": "AI Agent Task: Anthropic custom / compatible endpoint",
             "keywords": [
               "Anthropic",
               "Claude",
@@ -94502,7 +96054,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         ]
       },
       {
-        "name": "AWS Bedrock Converse",
+        "name": "AI Agent Task: AWS Bedrock Converse",
         "description": "Any Bedrock model via the Converse API.",
         "keywords": [
           "Bedrock",
@@ -94515,7 +96067,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "description": "GPT models via OpenAI, Microsoft Foundry, or an OpenAI-compatible endpoint.",
         "steps": [
           {
-            "name": "OpenAI API",
+            "name": "AI Agent Task: OpenAI API",
             "keywords": [
               "OpenAI",
               "GPT",
@@ -94524,7 +96076,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "presetId": "type_openai_type_openai-api"
           },
           {
-            "name": "Microsoft Foundry (Azure)",
+            "name": "AI Agent Task: Microsoft Foundry (Azure)",
             "keywords": [
               "OpenAI",
               "GPT",
@@ -94533,7 +96085,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "presetId": "type_openai_type_foundry"
           },
           {
-            "name": "OpenAI custom / compatible endpoint",
+            "name": "AI Agent Task: OpenAI custom / compatible endpoint",
             "keywords": [
               "OpenAI",
               "GPT",
@@ -94548,7 +96100,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "description": "Models like Ollama, LM Studio, and Camunda-provided LLM.",
         "steps": [
           {
-            "name": "Ollama",
+            "name": "AI Agent Task: Ollama",
             "description": "Local models via Ollama.",
             "keywords": [
               "Ollama",
@@ -94558,7 +96110,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "presetId": "type_openai_type_custom_ollama"
           },
           {
-            "name": "LM Studio",
+            "name": "AI Agent Task: LM Studio",
             "description": "Local models via LM Studio.",
             "keywords": [
               "LM Studio",
@@ -94567,7 +96119,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "presetId": "type_openai_type_custom_lmstudio"
           },
           {
-            "name": "Camunda-provided LLM (SaaS only)",
+            "name": "AI Agent Task: Camunda-provided LLM (SaaS only)",
             "description": "Only on select plans.",
             "keywords": [
               "Camunda",
@@ -94583,7 +96135,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "description": "Gemini models via the Gemini API or Vertex AI.",
         "steps": [
           {
-            "name": "Google Gemini API",
+            "name": "AI Agent Task: Google Gemini API",
             "keywords": [
               "Gemini",
               "Google",
@@ -94592,7 +96144,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "presetId": "type_google-gemini_type_google-gemini-api"
           },
           {
-            "name": "Enterprise Agent Platform (Vertex AI)",
+            "name": "AI Agent Task: Enterprise Agent Platform (Vertex AI)",
             "keywords": [
               "Gemini",
               "Google",
@@ -94607,7 +96159,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "description": "Mistral models via the Mistral API or a compatible endpoint.",
         "steps": [
           {
-            "name": "Mistral API",
+            "name": "AI Agent Task: Mistral API",
             "keywords": [
               "Mistral",
               "Mistral API"
@@ -94615,7 +96167,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "presetId": "type_mistral_type_mistral-api"
           },
           {
-            "name": "Mistral custom / compatible endpoint",
+            "name": "AI Agent Task: Mistral custom / compatible endpoint",
             "keywords": [
               "Mistral",
               "Custom / compatible endpoint"
@@ -94625,7 +96177,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         ]
       },
       {
-        "name": "Custom Implementation (Self-Managed/Hybrid only)",
+        "name": "AI Agent Task: Custom Implementation (Self-Managed/Hybrid only)",
         "description": "Your own provider implementation.",
         "keywords": [
           "Custom"
