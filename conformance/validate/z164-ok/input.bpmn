@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="d" targetNamespace="t" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+<bpmn:process id="p" isExecutable="true">
+<bpmn:startEvent id="s"><bpmn:outgoing>f0</bpmn:outgoing></bpmn:startEvent>
+<bpmn:adHocSubProcess id="sp"><bpmn:extensionElements><zeebe:adHoc activeElementsCollection="=tools" outputCollection="out" outputElement="=r"/></bpmn:extensionElements><bpmn:incoming>f0</bpmn:incoming><bpmn:outgoing>f1</bpmn:outgoing><bpmn:task id="it"></bpmn:task>
+<bpmn:completionCondition xsi:type="bpmn:tFormalExpression">=done</bpmn:completionCondition></bpmn:adHocSubProcess>
+<bpmn:endEvent id="e"><bpmn:incoming>f1</bpmn:incoming></bpmn:endEvent>
+<bpmn:sequenceFlow id="f0" sourceRef="s" targetRef="sp"/>
+<bpmn:sequenceFlow id="f1" sourceRef="sp" targetRef="e"/>
+</bpmn:process>
+</bpmn:definitions>

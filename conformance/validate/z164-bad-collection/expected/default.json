@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sp"
+      ],
+      "fixable": false,
+      "id": "zeebe/ad-hoc-expression",
+      "message": "Expected expression but found static value 'tools'. An expression must start with '=' (e.g. '=tools').",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Write the value as a FEEL expression that starts with '='."
+    }
+  ]
+}

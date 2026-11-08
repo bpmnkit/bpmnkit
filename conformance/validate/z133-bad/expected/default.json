@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/called-decision-attributes",
+      "message": "Attribute 'resultVariable' must be present and not empty",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Set resultVariable on the zeebe:calledDecision."
+    }
+  ]
+}

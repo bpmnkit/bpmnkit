@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/called-decision-expression",
+      "message": "failed to parse expression 'd +'",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Fix the FEEL expression in decisionId, or remove the leading '='."
+    }
+  ]
+}

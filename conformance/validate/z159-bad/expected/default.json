@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sp"
+      ],
+      "fixable": false,
+      "id": "zeebe/ad-hoc-end-event",
+      "message": "Must not contain an end event.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Remove the end event from the ad-hoc sub-process."
+    }
+  ]
+}

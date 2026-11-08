@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/task-definition-expression",
+      "message": "failed to parse expression 'x +'",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Write the job type and retries as a static value or a valid FEEL expression."
+    }
+  ]
+}

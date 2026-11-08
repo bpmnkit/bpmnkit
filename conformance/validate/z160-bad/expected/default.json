@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sp"
+      ],
+      "fixable": false,
+      "id": "zeebe/ad-hoc-agent-cancel-remaining",
+      "message": "Must not define cancelRemainingInstances in combination with zeebe:taskDefinition.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Remove cancelRemainingInstances or the task definition."
+    }
+  ]
+}

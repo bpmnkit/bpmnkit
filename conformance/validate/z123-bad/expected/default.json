@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/task-listener-placement",
+      "message": "Task listeners are only allowed on Camunda user tasks.",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Add zeebe:userTask to the user task, or remove the task listeners."
+    }
+  ]
+}

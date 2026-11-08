@@ -1,0 +1,14 @@
+{
+	"runs": {
+		"default": {
+			"deployment": {
+				"resources": [
+					"script"
+				],
+				"forms": [
+					"f"
+				]
+			}
+		}
+	}
+}

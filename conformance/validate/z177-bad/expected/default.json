@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "F1"
+      ],
+      "fixable": false,
+      "id": "zeebe/execution-listener-placement",
+      "message": "Execution listeners are not supported for the 'sequenceFlow' element. Currently, only [process, subProcess, callActivity, adHocSubProcess, task, sendTask, serviceTask, scriptTask, userTask, receiveTask, businessRuleTask, manualTask, startEvent, intermediateThrowEvent, intermediateCatchEvent, boundaryEvent, endEvent, exclusiveGateway, inclusiveGateway, parallelGateway, eventBasedGateway] elements can have execution listeners.",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Move the execution listeners to a supported element or remove them."
+    }
+  ]
+}

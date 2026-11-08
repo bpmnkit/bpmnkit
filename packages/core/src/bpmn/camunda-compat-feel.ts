@@ -14,7 +14,7 @@
 import { type FeelNode, parseExpression } from "@bpmnkit/feel"
 
 /** Direct sub-expressions of a node, in source order. */
-function feelChildren(node: FeelNode): FeelNode[] {
+export function feelChildren(node: FeelNode): FeelNode[] {
 	switch (node.kind) {
 		case "list":
 			return node.items

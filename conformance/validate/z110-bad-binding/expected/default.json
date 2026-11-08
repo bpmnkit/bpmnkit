@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/linked-resource-attributes",
+      "message": "No enum constant io.camunda.zeebe.model.bpmn.instance.zeebe.ZeebeBindingType.pinned",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Set bindingType to one of: latest, deployment, versionTag."
+    }
+  ]
+}

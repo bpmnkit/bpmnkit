@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sp"
+      ],
+      "fixable": false,
+      "id": "zeebe/ad-hoc-activity",
+      "message": "Must have at least one activity.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Add at least one activity to the ad-hoc sub-process."
+    }
+  ]
+}

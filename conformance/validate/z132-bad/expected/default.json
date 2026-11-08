@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/business-rule-task-implementation",
+      "message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Give the task one zeebe:calledDecision or one zeebe:taskDefinition, not both."
+    }
+  ]
+}

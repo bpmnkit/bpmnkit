@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/before-all-listener",
+      "message": "Execution listeners with event type 'beforeAll' are only supported on multi-instance activities and are not valid on 'serviceTask'",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Remove the beforeAll listener or make the activity multi-instance."
+    }
+  ]
+}

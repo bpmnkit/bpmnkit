@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/job-priority-mode",
+      "message": "'zeebe:jobPriorityDefinition' is only allowed in job-worker mode ('zeebe:taskDefinition')",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Remove zeebe:jobPriorityDefinition, or implement the task as a job worker."
+    }
+  ]
+}

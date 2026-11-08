@@ -121,8 +121,8 @@ interface Verdict {
  * While the rules are being written: the most disagreements and uncovered rules
  * allowed. Like conformance/pending.json, these may only go down, to 0.
  */
-const MAX_DISAGREE = 631
-const MAX_UNCOVERED = 328
+const MAX_DISAGREE = 291
+const MAX_UNCOVERED = 172
 
 const ORACLE: RunOptions = {
 	camundaVersion: "8.9",
@@ -190,25 +190,26 @@ describe("every decidable rule has a negative and a positive case", () => {
 	const spec = JSON.parse(fs.readFileSync(path.join(repo, "spec/zeebe-rules.json"), "utf8")) as {
 		rules: { id: string; name: string; check: string; coveredBy?: string[] }[]
 	}
-	const missing: string[] = []
-	for (const rule of spec.rules) {
-		if (rule.check === "none" || rule.coveredBy !== undefined) continue
-		const prefix = rule.id.toLowerCase()
-		const bad = cases.filter((c) => c.startsWith(`${prefix}-bad`))
-		const ok = cases.filter((c) => c.startsWith(`${prefix}-ok`))
-		const reported = bad.some((c) =>
-			fs
-				.readdirSync(path.join(root, c, "expected"))
-				.some((f) =>
-					fs
-						.readFileSync(path.join(root, c, "expected", f), "utf8")
-						.includes(`"zeebe/${rule.name}"`),
-				),
-		)
-		if (!reported) missing.push(`${rule.id} ${rule.name}: no ${prefix}-bad* case reporting it`)
-		if (ok.length === 0) missing.push(`${rule.id} ${rule.name}: no ${prefix}-ok* case`)
-	}
+	// Read in the test, not at collection: recording rewrites the expected folders first.
 	it("covers the spec", () => {
+		const missing: string[] = []
+		for (const rule of spec.rules) {
+			if (rule.check === "none" || rule.coveredBy !== undefined) continue
+			const prefix = rule.id.toLowerCase()
+			const bad = cases.filter((c) => c.startsWith(`${prefix}-bad`))
+			const ok = cases.filter((c) => c.startsWith(`${prefix}-ok`))
+			const reported = bad.some((c) =>
+				fs
+					.readdirSync(path.join(root, c, "expected"))
+					.some((f) =>
+						fs
+							.readFileSync(path.join(root, c, "expected", f), "utf8")
+							.includes(`"zeebe/${rule.name}"`),
+					),
+			)
+			if (!reported) missing.push(`${rule.id} ${rule.name}: no ${prefix}-bad* case reporting it`)
+			if (ok.length === 0) missing.push(`${rule.id} ${rule.name}: no ${prefix}-ok* case`)
+		}
 		expect(missing.length).toBeLessThanOrEqual(MAX_UNCOVERED)
 	})
 })

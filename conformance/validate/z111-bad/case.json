@@ -1,0 +1,14 @@
+{
+	"runs": {
+		"default": {
+			"deployment": {
+				"resources": [],
+				"forms": []
+			}
+		},
+		"v8_9": {
+			"camundaVersion": "8.9",
+			"deployment": {}
+		}
+	}
+}

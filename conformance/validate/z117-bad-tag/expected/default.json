@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/form-binding-type",
+      "message": "Attribute 'versionTag' may only be used if 'bindingType' is 'versionTag'",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Remove versionTag, or set bindingType to versionTag."
+    }
+  ]
+}

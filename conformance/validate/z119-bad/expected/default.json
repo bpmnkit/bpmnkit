@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/embedded-form",
+      "message": "User task form text content has to be present and not empty",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Add the form schema as the content of the userTaskForm element."
+    }
+  ]
+}

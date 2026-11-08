@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/execution-listener-attributes",
+      "message": "No enum constant io.camunda.zeebe.model.bpmn.instance.zeebe.ZeebeExecutionListenerEventType.beforeAll",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Use the execution listener event type start or end."
+    }
+  ]
+}

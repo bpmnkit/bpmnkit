@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/agent-type-placement",
+      "message": "agentType 'aiAgentSubProcess' is only allowed on an ad-hoc sub-process.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Use the agent type that matches the element, or move the agent definition."
+    }
+  ]
+}

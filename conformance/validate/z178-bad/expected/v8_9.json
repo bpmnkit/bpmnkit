@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/execution-listener-attributes",
+      "message": "No enum constant io.camunda.zeebe.model.bpmn.instance.zeebe.ZeebeExecutionListenerEventType.cancel",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Use the execution listener event type start or end."
+    }
+  ]
+}

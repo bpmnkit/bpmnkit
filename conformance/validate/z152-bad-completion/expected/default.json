@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/multi-instance-expression",
+      "message": "failed to parse expression 'x >>'",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Fix the FEEL syntax of the completion condition."
+    }
+  ]
+}

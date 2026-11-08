@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/output-mapping",
+      "message": "Expected expression but found static value 'result'. An expression must start with '=' (e.g. '=result').",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Use a FEEL expression starting with '=' as source and a variable name or dotted path as target."
+    }
+  ]
+}

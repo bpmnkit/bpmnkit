@@ -552,7 +552,7 @@
 			"messages": [
 				"Start event forms with public access enabled are not supported. Please remove the 'publicAccess' property or set it to 'false'"
 			],
-			"since": "8.4",
+			"since": "8.10",
 			"kind": "static",
 			"severity": "error",
 			"check": "model",
@@ -1305,7 +1305,8 @@
 			"since": "8.0",
 			"kind": "static",
 			"severity": "error",
-			"check": "model",
+			"check": "none",
+			"note": "Unreachable from XML: the model reads an empty retries as absent and falls back to the default \"3\" (zeebe-check accepts retries=\"\").",
 			"source": "V/ZeebeDesignTimeValidators.java:113"
 		},
 		{
@@ -1532,7 +1533,7 @@
 			"messages": [
 				"Secret reference(s) %s must be used as an expression (e.g. '=camunda.secrets.<name>'), not as a string literal, in %s '%s'."
 			],
-			"since": "8.8",
+			"since": "8.10",
 			"kind": "feel",
 			"severity": "error",
 			"check": "model",
@@ -1547,7 +1548,7 @@
 			"messages": [
 				"Input mapping source '%s' puts a secret reference inside a list, or inside a context built by an 'if' branch. ..."
 			],
-			"since": "8.8",
+			"since": "8.10",
 			"kind": "feel",
 			"severity": "error",
 			"check": "model",
@@ -1593,7 +1594,7 @@
 				"Expected to find form with id '%s' in current deployment, but not found.",
 				"Expected to find resource with id '%s' in current deployment, but not found."
 			],
-			"since": "8.6",
+			"since": "8.10",
 			"kind": "context",
 			"severity": "error",
 			"check": "context",
@@ -1832,7 +1833,7 @@
 			"rule": "businessId optional FEEL; static length <= 256",
 			"elements": ["zeebe:calledElement"],
 			"messages": ["Expected static value to be no longer than 256 characters, but found '%s'."],
-			"since": "8.9",
+			"since": "8.10",
 			"kind": "feel",
 			"severity": "error",
 			"check": "model",
@@ -2178,7 +2179,7 @@
 			"messages": [
 				"Execution listeners with event type 'beforeAll' are only supported on multi-instance activities and are not valid on '%s'"
 			],
-			"since": "8.6",
+			"since": "8.10",
 			"kind": "static",
 			"severity": "error",
 			"check": "model",
@@ -2553,7 +2554,7 @@
 			"messages": [
 				"The 'cancel' execution listener event type is not supported for the '%s' element. The 'cancel' event type is only supported on the 'process' element."
 			],
-			"since": "8.6",
+			"since": "8.10",
 			"kind": "static",
 			"severity": "error",
 			"check": "model",

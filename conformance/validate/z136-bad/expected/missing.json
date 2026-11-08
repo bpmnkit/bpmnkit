@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/called-decision-deployment",
+      "message": "Expected to find decision with id 'd' in current deployment, but not found.",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Deploy the decision together with the process, or use another bindingType."
+    }
+  ]
+}

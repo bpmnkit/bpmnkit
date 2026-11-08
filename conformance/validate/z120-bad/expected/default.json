@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/assignment-expression",
+      "message": "Expected static value to be a list of comma-separated values, e.g. 'a,b,c', but found 'a,,b'.",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Write candidateGroups as comma-separated values without empty entries, or as a FEEL expression."
+    }
+  ]
+}

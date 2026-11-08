@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sp"
+      ],
+      "fixable": false,
+      "id": "zeebe/ad-hoc-output-pair",
+      "message": "OutputElement and OutputCollection must both be set, or neither of them set. outputElement:=r and outputCollection:null.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Set both outputElement and outputCollection or neither."
+    }
+  ]
+}

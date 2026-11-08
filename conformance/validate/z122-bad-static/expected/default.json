@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/user-task-priority",
+      "message": "Expected static value to be a valid Number between 0 and 100, but found 'high'.",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Set the priority to a whole number from 0 to 100, or a FEEL expression."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "g"
+      ],
+      "fixable": false,
+      "id": "zeebe/event-based-gateway-target-incoming",
+      "message": "Target elements of an event gateway must not have any additional incoming sequence flows other than that from the event gateway.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Remove the other incoming flows of the catch events behind the gateway."
+    }
+  ]
+}

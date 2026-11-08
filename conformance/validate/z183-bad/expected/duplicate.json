@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "P"
+      ],
+      "fixable": false,
+      "id": "zeebe/duplicate-process-id",
+      "message": "Duplicated process id in resources, 'P' is also defined in another resource of the deployment",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Give each process in the deployment its own id."
+    }
+  ]
+}

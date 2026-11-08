@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/multi-instance-loop-characteristics",
+      "message": "Must have exactly one 'zeebe:loopCharacteristics' extension element",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Add a single zeebe:loopCharacteristics element to the multi-instance loop."
+    }
+  ]
+}
