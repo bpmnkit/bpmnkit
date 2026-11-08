@@ -1,0 +1,94 @@
+{
+	"$schema": "https://json-schema.org/draft/2020-12/schema",
+	"$id": "https://bpmnkit.com/spec/zeebe-rules.schema.json",
+	"title": "Zeebe deployment rejection rules",
+	"description": "One entry per rule Zeebe applies when a BPMN resource is deployed (doc/deployability/zeebe-rules.md). The checks themselves stay in code: packages/core/src/bpmn/zeebe-validate and crates/bpmnkit-compat/src/zeebe.",
+	"type": "object",
+	"required": ["source", "latestVersion", "rules"],
+	"additionalProperties": false,
+	"properties": {
+		"$schema": { "type": "string" },
+		"source": {
+			"type": "object",
+			"required": ["repository", "commit", "zeebeVersion", "verifiedAgainst"],
+			"additionalProperties": { "type": "string" }
+		},
+		"latestVersion": {
+			"description": "The Camunda version validateDeployable targets when none is given.",
+			"$ref": "#/$defs/version"
+		},
+		"rules": {
+			"type": "array",
+			"minItems": 1,
+			"items": {
+				"type": "object",
+				"required": [
+					"id",
+					"name",
+					"section",
+					"rule",
+					"elements",
+					"messages",
+					"since",
+					"kind",
+					"severity",
+					"check",
+					"source"
+				],
+				"additionalProperties": false,
+				"properties": {
+					"id": { "type": "string", "pattern": "^Z\\d{2,3}$" },
+					"name": {
+						"description": "The finding id is `zeebe/<name>`.",
+						"type": "string",
+						"pattern": "^[a-z][a-z0-9-]*$"
+					},
+					"section": { "type": "string", "pattern": "^[A-P]$" },
+					"rule": { "type": "string", "minLength": 1 },
+					"elements": {
+						"type": "array",
+						"minItems": 1,
+						"items": { "type": "string", "minLength": 1 }
+					},
+					"messages": {
+						"description": "Zeebe's message text, `%s` for a placeholder.",
+						"type": "array",
+						"minItems": 1,
+						"items": { "type": "string", "minLength": 1 }
+					},
+					"since": {
+						"description": "First Camunda version the rule applies to.",
+						"$ref": "#/$defs/version"
+					},
+					"until": {
+						"description": "Last Camunda version the rule applies to, when Zeebe dropped it.",
+						"$ref": "#/$defs/version"
+					},
+					"kind": {
+						"description": "static: structure only; feel: needs a FEEL parse or constant evaluation; context: needs other resources or broker state.",
+						"enum": ["static", "feel", "context"]
+					},
+					"severity": { "enum": ["error", "warning", "info"] },
+					"check": {
+						"description": "model: validateDeployable; xml: validateDeployableXml (the text, before parsing); context: only with a resolver; none: not decidable from one BPMN (see note).",
+						"enum": ["model", "xml", "context", "none"]
+					},
+					"coveredBy": {
+						"description": "An umbrella rule: the ids of the specific rules that report it.",
+						"type": "array",
+						"minItems": 1,
+						"items": { "type": "string", "pattern": "^Z\\d{2,3}$" }
+					},
+					"note": { "type": "string", "minLength": 1 },
+					"source": {
+						"description": "File:line in camunda/camunda (abbreviations in zeebe-rules.md).",
+						"type": "string"
+					}
+				}
+			}
+		}
+	},
+	"$defs": {
+		"version": { "type": "string", "pattern": "^\\d+\\.\\d+$" }
+	}
+}

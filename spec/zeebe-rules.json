@@ -1,0 +1,2789 @@
+{
+	"$schema": "./schema/zeebe-rules.schema.json",
+	"source": {
+		"repository": "camunda/camunda",
+		"commit": "9702d8cddb5c5fa97c87f1b5cd1bced27c29b60d",
+		"zeebeVersion": "8.11.0-SNAPSHOT",
+		"verifiedAgainst": "8.9.28",
+		"license": "Camunda License / Apache-2.0 (messages quoted)"
+	},
+	"latestVersion": "8.10",
+	"rules": [
+		{
+			"id": "Z01",
+			"name": "xml-schema",
+			"section": "A",
+			"rule": "XML must be well-formed and validate against BPMN20.xsd (all of Semantic/DI/BPMNDI/DC). Wrong child order surfaces as improved msg",
+			"elements": ["any"],
+			"messages": [
+				"Unable to parse BPMN XML",
+				"Element '%s' appears in the wrong position in the BPMN XML. The BPMN 2.0 schema requires elements to appear in a specific order...",
+				"Element '%s' must be placed before event definitions (e.g., timerEventDefinition, ...)"
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "xml",
+			"source": "ET/BpmnElementOrderErrorTransformer.java:55,130,138; ET/BpmnResourceTransformer.java (readProcessDefinition); zeebe/bpmn-model/.../impl/BpmnParser.java:46"
+		},
+		{
+			"id": "Z02",
+			"name": "target-namespace",
+			"section": "A",
+			"rule": "definitions@targetNamespace required",
+			"elements": ["definitions"],
+			"messages": ["XSD cvc-complex-type.4 missing attribute targetNamespace"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "xml",
+			"source": "X/BPMN20.xsd:22"
+		},
+		{
+			"id": "Z03",
+			"name": "sequence-flow-refs",
+			"section": "A",
+			"rule": "sequenceFlow@sourceRef and @targetRef required",
+			"elements": ["sequenceFlow"],
+			"messages": ["XSD missing attribute"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "xml",
+			"source": "X/Semantic.xsd:70-71"
+		},
+		{
+			"id": "Z04",
+			"name": "boundary-attached-ref",
+			"section": "A",
+			"rule": "boundaryEvent@attachedToRef required (QName)",
+			"elements": ["boundaryEvent"],
+			"messages": ["XSD missing attribute"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "xml",
+			"source": "X/Semantic.xsd:117"
+		},
+		{
+			"id": "Z05",
+			"name": "association-refs",
+			"section": "A",
+			"rule": "messageFlow/association sourceRef+targetRef required (association: IDREF, must resolve)",
+			"elements": ["association", "messageFlow"],
+			"messages": ["XSD missing attribute / IDREF not resolved"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "xml",
+			"source": "X/Semantic.xsd:356-357,1373-1374"
+		},
+		{
+			"id": "Z06",
+			"name": "xsd-required-name",
+			"section": "A",
+			"rule": "message@name / signal / error/ escalation attr \"name\" required by XSD where marked use=required (e.g. tItemDefinition/tResource/tOperation/tInterface names); itemDefinition@structureRef etc.",
+			"elements": ["various"],
+			"messages": ["XSD missing attribute"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "xml",
+			"source": "X/Semantic.xsd:871,969,1078,1274"
+		},
+		{
+			"id": "Z07",
+			"name": "id-ncname-unique",
+			"section": "A",
+			"rule": "id attributes are xsd:ID: unique across whole document, NCName (no spaces, no leading digit, no ':')",
+			"elements": ["all"],
+			"messages": ["There are multiple occurrences of ID value"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "xml",
+			"source": "X/Semantic.xsd:98,108,561 etc."
+		},
+		{
+			"id": "Z08",
+			"name": "idref-resolves",
+			"section": "A",
+			"rule": "IDREF attrs (e.g. dataInputRefs, association refs) must point to existing id; QName refs to wrong ns fail XSD",
+			"elements": ["refs"],
+			"messages": ["cvc-id.1"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "xml",
+			"source": "X/Semantic.xsd"
+		},
+		{
+			"id": "Z09",
+			"name": "xsd-content",
+			"section": "A",
+			"rule": "Unknown/misspelled non-extension elements or enum values rejected by XSD (strict content); extension elements go via anyAttribute/any lax",
+			"elements": ["any"],
+			"messages": ["cvc-complex-type.2.4.a Invalid content"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "xml",
+			"source": "X/Semantic.xsd"
+		},
+		{
+			"id": "Z10",
+			"name": "id-present",
+			"section": "A",
+			"rule": "Every element needs non-empty id (id is optional in XSD, mandatory in Zeebe)",
+			"elements": [
+				"process",
+				"flowNodes",
+				"flowElements",
+				"startEvent",
+				"activity",
+				"gateway",
+				"sequenceFlow",
+				"escalation",
+				"zeebe:userTaskForm"
+			],
+			"messages": ["Element id must be present and not empty."],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/IdentifiableBpmnElementValidator.java:26"
+		},
+		{
+			"id": "Z11",
+			"name": "executable-process",
+			"section": "A",
+			"rule": "At least one process with isExecutable=true",
+			"elements": ["definitions"],
+			"messages": ["Must contain at least one executable process"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/DefinitionsValidator.java:37"
+		},
+		{
+			"id": "Z12",
+			"name": "id-length",
+			"section": "A",
+			"rule": "Id max length (default 32768)",
+			"elements": ["any BaseElement"],
+			"messages": ["IDs must not be longer than the configured max-id-length of N characters."],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/IdLengthValidator.java:34"
+		},
+		{
+			"id": "Z13",
+			"name": "name-length",
+			"section": "A",
+			"rule": "Name max length (default 32768) on FlowElement, Message, Signal, Error, Escalation, LinkEventDefinition, Lane, Participant, Definitions, zeebe:property ...",
+			"elements": ["named"],
+			"messages": ["Names must not be longer than the configured max-name-length of N characters."],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/NameLengthValidator.java:35; EV/ZeebeConfigurationValidators.java"
+		},
+		{
+			"id": "Z14",
+			"name": "worker-type-length",
+			"section": "A",
+			"rule": "Worker type max length (default 32768)",
+			"elements": ["zeebe:taskDefinition"],
+			"messages": [
+				"Worker types must not be longer than the configured max-worker-type-length of N characters."
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/WorkerTypeLengthValidator.java:34"
+		},
+		{
+			"id": "Z15",
+			"name": "element-type",
+			"section": "B",
+			"rule": "FlowElement type whitelist: AdHocSubProcess, BoundaryEvent, BusinessRuleTask, EndEvent, EventBasedGateway, ExclusiveGateway, InclusiveGateway, IntermediateCatchEvent, IntermediateThrowEvent, ParallelGateway, ReceiveTask, ScriptTask, SequenceFlow, SendTask, ServiceTask, StartEvent, SubProcess, CallActivity, UserTask, ManualTask, Task (+ DataObject, DataObjectReference, DataStoreReference ignored). Everything else (ComplexGateway, Transaction, plain Gateway, ImplicitThrowEvent, ...) rejected",
+			"elements": ["flowElements"],
+			"messages": [
+				"Elements of type '%s' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/FlowElementValidator.java:98 (set at 50-75)"
+		},
+		{
+			"id": "Z16",
+			"name": "event-definition-type",
+			"section": "B",
+			"rule": "EventDefinition whitelist: message, timer, error, terminate, signal, link, escalation, compensate, conditional (cancel, ... rejected)",
+			"elements": ["eventDefinition"],
+			"messages": ["Event definition of this type is not supported"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/EventDefinitionValidator.java:58"
+		},
+		{
+			"id": "Z17",
+			"name": "event-sub-process-start-type",
+			"section": "B",
+			"rule": "Start event types in event subprocess: message, timer, error, signal, escalation, conditional (+ compensation only inside a subprocess)",
+			"elements": ["startEvent in event subprocess"],
+			"messages": [
+				"Start events in event subprocesses must be one of: message, timer, error, signal, escalation or conditional"
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/SubProcessValidator.java:94,108"
+		},
+		{
+			"id": "Z18",
+			"name": "intermediate-catch-type",
+			"section": "B",
+			"rule": "Intermediate catch types: message, timer, signal, link, conditional",
+			"elements": ["intermediateCatchEvent"],
+			"messages": ["Event definition must be one of: message, timer, signal, link or conditional"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/IntermediateCatchEventValidator.java:61"
+		},
+		{
+			"id": "Z19",
+			"name": "boundary-type",
+			"section": "B",
+			"rule": "Boundary types: timer, message, error, signal, escalation, compensate, conditional",
+			"elements": ["boundaryEvent"],
+			"messages": [
+				"Boundary events must be one of: timer, message, error, signal, escalation, conditional"
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/BoundaryEventValidator.java:139"
+		},
+		{
+			"id": "Z20",
+			"name": "end-event-type",
+			"section": "B",
+			"rule": "End event types: none, error, message, terminate, signal, escalation, compensate",
+			"elements": ["endEvent"],
+			"messages": [
+				"End events must be one of: none, error, message, terminate, signal, escalation or compensation"
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/EndEventValidator.java:102"
+		},
+		{
+			"id": "Z21",
+			"name": "non-interrupting-type",
+			"section": "B",
+			"rule": "Non-interrupting only for message, timer, signal, escalation, conditional",
+			"elements": [
+				"boundaryEvent@cancelActivity=false",
+				"startEvent@isInterrupting=false (event subprocess)"
+			],
+			"messages": ["Non-Interrupting event of this type is not allowed"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "U:463-466"
+		},
+		{
+			"id": "Z22",
+			"name": "escalation-boundary-host",
+			"section": "B",
+			"rule": "Escalation boundary events only on subprocess / call activity",
+			"elements": ["boundaryEvent", "escalation"],
+			"messages": [
+				"An escalation boundary event should only be attached to a subprocess, or a call activity."
+			],
+			"since": "8.2",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "U:475-481"
+		},
+		{
+			"id": "Z23",
+			"name": "process-start-event",
+			"section": "C",
+			"rule": "Process needs at least one top-level start event",
+			"elements": ["process"],
+			"messages": ["Must have at least one start event"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ProcessValidator.java:40"
+		},
+		{
+			"id": "Z24",
+			"name": "multiple-none-start",
+			"section": "C",
+			"rule": "At most one none start event at process level",
+			"elements": ["process"],
+			"messages": ["Multiple none start events are not allowed"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ProcessValidator.java:42"
+		},
+		{
+			"id": "Z25",
+			"name": "duplicate-event-sub-process-trigger",
+			"section": "C",
+			"rule": "Duplicate event-subprocess triggers in same scope (same message name / signal name / link name)",
+			"elements": ["process", "subProcess"],
+			"messages": [
+				"Multiple message event definitions with the same name '%s' are not allowed.",
+				"Multiple intermediate catch link event definitions with the same name '%s' are not allowed."
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "U:280-288,436-448"
+		},
+		{
+			"id": "Z26",
+			"name": "duplicate-message-start",
+			"section": "C",
+			"rule": "Duplicate message start events (same message name)",
+			"elements": ["process"],
+			"messages": ["Multiple message event definitions with the same name '%s' are not allowed."],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "U:200 -> V/ProcessValidator.java:~46"
+		},
+		{
+			"id": "Z27",
+			"name": "duplicate-signal-start",
+			"section": "C",
+			"rule": "Duplicate signal start events (same signal name)",
+			"elements": ["process"],
+			"messages": ["Multiple signal event definitions with the same name '%s' are not allowed."],
+			"since": "8.2",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "U:192"
+		},
+		{
+			"id": "Z28",
+			"name": "duplicate-error-catch",
+			"section": "C",
+			"rule": "Duplicate error catch handlers in same scope (same errorCode, or >1 catch-all) incl. event subprocesses and boundary events on same activity",
+			"elements": ["boundary", "event subprocess"],
+			"messages": [
+				"Multiple error catch events with the same error code '%s' are not supported on the same scope.",
+				"The same scope can not contain more than one error catch event without error code. An error catch event without error code catches all errors."
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "U:365-402"
+		},
+		{
+			"id": "Z29",
+			"name": "duplicate-escalation-catch",
+			"section": "C",
+			"rule": "Duplicate escalation catch handlers (same code, or >1 catch-all)",
+			"elements": ["boundary", "event subprocess"],
+			"messages": [
+				"Multiple escalation catch events with the same escalation code '%s' are not supported on the same scope.",
+				"...more than one escalation catch event without escalation code..."
+			],
+			"since": "8.2",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "U:322-361"
+		},
+		{
+			"id": "Z30",
+			"name": "duplicate-conditional-start",
+			"section": "C",
+			"rule": "Duplicate conditional start events (same condition text) at process level",
+			"elements": ["startEvent"],
+			"messages": [
+				"Duplicate condition expression '%s' found in conditional start events of process '%s'. Condition expressions for conditional start events must be unique within a process."
+			],
+			"since": "8.9",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ProcessConditionalStartEventValidator.java:41"
+		},
+		{
+			"id": "Z31",
+			"name": "duplicate-event-sub-process-condition",
+			"section": "C",
+			"rule": "Duplicate conditional start events in event subprocesses (same text)",
+			"elements": ["startEvent"],
+			"messages": [
+				"Duplicate condition expression '%s' found in conditional start events of event subprocesses in process '%s'. ..."
+			],
+			"since": "8.9",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ProcessConditionalStartEventValidator.java:55"
+		},
+		{
+			"id": "Z32",
+			"name": "duplicate-boundary-trigger",
+			"section": "C",
+			"rule": "Duplicate boundary events on same activity: same message/signal/link name, error code, escalation code",
+			"elements": ["activity"],
+			"messages": ["(same messages as Z25/Z28/Z29)"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ActivityValidator.java:~35; V/ScopeIndexedActivityValidator.java; U:174-190"
+		},
+		{
+			"id": "Z33",
+			"name": "duplicate-process-extension",
+			"section": "C",
+			"rule": "zeebe:versionTag, zeebe:jobPriorityDefinition, zeebe:case at most once on process",
+			"elements": ["process"],
+			"messages": [
+				"Must have exactly one 'zeebe:%s' extension element when exists. Please check process definition XML and retain only one extension element."
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ExtensionElementDuplicationValidators.java:~58-65; V/ExtensionElementsDuplicationValidator.java:57"
+		},
+		{
+			"id": "Z34",
+			"name": "case-marker",
+			"section": "C",
+			"rule": "zeebe:case only allowed on process; title required, literal (no '=')",
+			"elements": ["process"],
+			"messages": [
+				"The case marker 'zeebe:case' is only allowed on a process, but was found on '%s'",
+				"Attribute 'title' must be present and not empty",
+				"Attribute 'title' must be a variable name, not an expression"
+			],
+			"since": "8.10",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeCaseValidator.java:42,49,55"
+		},
+		{
+			"id": "Z35",
+			"name": "straight-through-loop",
+			"section": "C",
+			"rule": "Straight-through-processing loop (cycle made only of manual task, task, call activity(?), script/business-rule not job-worker, int. throw, gateways, start/end, link catch, subprocess, MI body)",
+			"elements": ["process"],
+			"messages": [
+				"Processes are not allowed to contain a straight-through processing loop: a > b > a",
+				"Process contains a very long chain of tasks of type [...]"
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "none",
+			"note": "Runs after BpmnValidator (transformer + config flag); not covered by zeebe-check. compat/no-loop covers it.",
+			"source": "EV/StraightThroughProcessingLoopValidator.java:368,105 (rejected types :50-57; flag enableStraightThroughProcessingLoopDetector, ET/BpmnResourceTransformer.java:~165)"
+		},
+		{
+			"id": "Z36",
+			"name": "multi-tenant-feature",
+			"section": "C",
+			"rule": "Multi-tenant unsupported features (currently empty set)",
+			"elements": ["any"],
+			"messages": ["`%s`: - Process: %s ... ERROR"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "none",
+			"note": "Not a rule: Zeebe rejects no multi-tenant feature today.",
+			"source": "EV/UnsupportedMultiTenantFeaturesValidator.java:32-34"
+		},
+		{
+			"id": "Z37",
+			"name": "start-event-definitions",
+			"section": "D",
+			"rule": "Start event: at most one event definition",
+			"elements": ["startEvent"],
+			"messages": ["Start event can't have more than one type"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/StartEventValidator.java:46"
+		},
+		{
+			"id": "Z38",
+			"name": "start-form-public-access",
+			"section": "D",
+			"rule": "Start event form with property publicAccess=true unsupported",
+			"elements": ["startEvent", "zeebe:properties"],
+			"messages": [
+				"Start event forms with public access enabled are not supported. Please remove the 'publicAccess' property or set it to 'false'"
+			],
+			"since": "8.4",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/StartEventValidator.java:52"
+		},
+		{
+			"id": "Z39",
+			"name": "start-event-start-listener",
+			"section": "D",
+			"rule": "Execution listener 'start' not allowed on start events",
+			"elements": ["startEvent"],
+			"messages": ["Execution listeners of type 'start' are not supported by start events"],
+			"since": "8.6",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/StartEventValidator.java:65"
+		},
+		{
+			"id": "Z40",
+			"name": "event-sub-process-start-typed",
+			"section": "D",
+			"rule": "Event subprocess start event must have exactly 1 event definition (none start rejected)",
+			"elements": ["startEvent in event subprocess"],
+			"messages": [
+				"Start events in event subprocesses must be one of: message, timer, error, signal, escalation or conditional"
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/SubProcessValidator.java:~108"
+		},
+		{
+			"id": "Z41",
+			"name": "compensation-event-sub-process-level",
+			"section": "D",
+			"rule": "Compensation event subprocess not allowed at process level",
+			"elements": ["subProcess triggeredByEvent"],
+			"messages": ["A compensation event subprocess is not allowed on the process level"],
+			"since": "8.5",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/SubProcessValidator.java:100"
+		},
+		{
+			"id": "Z42",
+			"name": "interrupting-event-sub-process-in-ad-hoc",
+			"section": "D",
+			"rule": "Interrupting event subprocess not allowed inside ad-hoc subprocess",
+			"elements": ["subProcess triggeredByEvent"],
+			"messages": ["An interrupting event subprocess is not allowed inside an ad-hoc subprocess"],
+			"since": "8.7",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/SubProcessValidator.java:116"
+		},
+		{
+			"id": "Z43",
+			"name": "interrupting-timer-cycle",
+			"section": "D",
+			"rule": "Interrupting timer must not use timeCycle (boundary or event-subprocess start)",
+			"elements": ["boundaryEvent", "startEvent"],
+			"messages": ["Interrupting timer event with time cycle is not allowed."],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "U:467-472"
+		},
+		{
+			"id": "Z44",
+			"name": "timer-one-value",
+			"section": "D",
+			"rule": "Timer: exactly one of timeDuration/timeDate/timeCycle",
+			"elements": ["timerEventDefinition"],
+			"messages": ["Must be exactly one type of timer: timeDuration, timeDate or timeCycle"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/TimerEventDefinitionValidator.java:54"
+		},
+		{
+			"id": "Z45",
+			"name": "intermediate-timer-value",
+			"section": "D",
+			"rule": "Intermediate timer catch needs timeDuration or timeDate (cycle rejected)",
+			"elements": ["intermediateCatchEvent"],
+			"messages": [
+				"Intermediate timer catch event must have either a time duration or a time date."
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/IntermediateCatchEventValidator.java:68"
+		},
+		{
+			"id": "Z46",
+			"name": "timer-expression",
+			"section": "D",
+			"rule": "Timer expression must parse as FEEL; if it is static it must be valid (duration ISO-8601, date ISO datetime, cycle R/ISO or cron)",
+			"elements": ["timer def"],
+			"messages": [
+				"Invalid timer %s expression (%s)",
+				"Invalid cycle format '%s' for the %s '%s' of %s: %s"
+			],
+			"since": "8.0",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/TimerCatchEventExpressionValidator.java:124; EV/ZeebeRuntimeValidators.java:111-130; ETR/CatchEventTransformer.java:177"
+		},
+		{
+			"id": "Z47",
+			"name": "timer-date-range",
+			"section": "D",
+			"rule": "Timer date out of range",
+			"elements": ["timer"],
+			"messages": ["TimerFailures.dueDateOutOfRange"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "none",
+			"note": "Needs the broker clock and the transformer's range check; only a real deploy decides it.",
+			"source": "ETR/CatchEventTransformer.java:164"
+		},
+		{
+			"id": "Z48",
+			"name": "boundary-attached",
+			"section": "D",
+			"rule": "Boundary event must have attachedToRef",
+			"elements": ["boundaryEvent"],
+			"messages": ["Must be attached to an activity"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/BoundaryEventValidator.java:63"
+		},
+		{
+			"id": "Z49",
+			"name": "boundary-incoming",
+			"section": "D",
+			"rule": "Boundary event no incoming flows",
+			"elements": ["boundaryEvent"],
+			"messages": ["Cannot have incoming sequence flows"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/BoundaryEventValidator.java:67"
+		},
+		{
+			"id": "Z50",
+			"name": "boundary-event-definitions",
+			"section": "D",
+			"rule": "Boundary event exactly one event definition",
+			"elements": ["boundaryEvent"],
+			"messages": ["Must have exactly one event definition"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/BoundaryEventValidator.java:131"
+		},
+		{
+			"id": "Z51",
+			"name": "compensation-boundary-shape",
+			"section": "D",
+			"rule": "Compensation boundary: needs association and no outgoing flows",
+			"elements": ["boundaryEvent", "compensate"],
+			"messages": [
+				"Compensation boundary events must have a compensation association and no outgoing sequence flows"
+			],
+			"since": "8.5",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/BoundaryEventValidator.java:73"
+		},
+		{
+			"id": "Z52",
+			"name": "boundary-listeners",
+			"section": "D",
+			"rule": "Exec listener 'start' not allowed on boundary events; start+end not on compensation boundary",
+			"elements": ["boundaryEvent"],
+			"messages": [
+				"Execution listeners of type 'start' are not supported by boundary events",
+				"...'start' and 'end' are not supported by [compensation] boundary events"
+			],
+			"since": "8.6",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/BoundaryEventValidator.java:99,90"
+		},
+		{
+			"id": "Z53",
+			"name": "end-event-outgoing",
+			"section": "D",
+			"rule": "End event: no outgoing flows",
+			"elements": ["endEvent"],
+			"messages": ["End events must not have outgoing sequence flows to other elements."],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/EndEventValidator.java:60"
+		},
+		{
+			"id": "Z54",
+			"name": "end-event-definitions",
+			"section": "D",
+			"rule": "End event: at most one event definition",
+			"elements": ["endEvent"],
+			"messages": ["Must have at most one event definition"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/EndEventValidator.java:94"
+		},
+		{
+			"id": "Z55",
+			"name": "compensation-wait-for-completion",
+			"section": "D",
+			"rule": "Compensation end/intermediate-throw: waitForCompletion must be true/absent",
+			"elements": ["endEvent", "intermediateThrowEvent"],
+			"messages": [
+				"A compensation end event waitForCompletion attribute must be true or not present",
+				"A compensation intermediate throwing event waitForCompletion attribute must be true or not present"
+			],
+			"since": "8.5",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/EndEventValidator.java:111; V/IntermediateThrowEventValidator.java:51"
+		},
+		{
+			"id": "Z56",
+			"name": "error-end-end-listener",
+			"section": "D",
+			"rule": "Exec listener 'end' not allowed on error end event",
+			"elements": ["endEvent", "error"],
+			"messages": ["Execution listeners of type 'end' are not supported by [error] end events"],
+			"since": "8.6",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/EndEventValidator.java:82"
+		},
+		{
+			"id": "Z57",
+			"name": "intermediate-catch-definitions",
+			"section": "D",
+			"rule": "Intermediate catch event: exactly one event definition (none-type intermediate catch rejected)",
+			"elements": ["intermediateCatchEvent"],
+			"messages": ["Must have exactly one event definition"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/IntermediateCatchEventValidator.java:54"
+		},
+		{
+			"id": "Z58",
+			"name": "conditional-condition",
+			"section": "D",
+			"rule": "Conditional event/start/boundary condition: zeebe? <condition> text non-empty, FEEL, must be an expression (start with '=')",
+			"elements": ["conditionalEventDefinition", "condition"],
+			"messages": [
+				"Attribute 'condition' must be present and not empty",
+				"Expected expression but found static value '%s'. An expression must start with '=' (e.g. '=%s').",
+				"The condition expression must be non-static..."
+			],
+			"since": "8.9",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeDesignTimeValidators.java:182; EV/ZeebeRuntimeValidators.java:241; ETR/ConditionalTransformer.java:68"
+		},
+		{
+			"id": "Z59",
+			"name": "conditional-filter-events",
+			"section": "D",
+			"rule": "zeebe:conditionalFilter variableEvents only create/update (comma list)",
+			"elements": ["conditionalFilter"],
+			"messages": [
+				"Variable event '%s' is not valid. Must be one of: create, update or a comma-separated list of both."
+			],
+			"since": "8.9",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeConditionalFilterValidator.java:48"
+		},
+		{
+			"id": "Z60",
+			"name": "event-based-gateway-duplicate-condition",
+			"section": "D",
+			"rule": "Conditional events inside event-based gateway: duplicate condition texts",
+			"elements": ["eventBasedGateway targets"],
+			"messages": [
+				"Multiple conditional event definitions with the same condition expression '%s' are not allowed."
+			],
+			"since": "8.9",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "U:486 via V/EventBasedGatewayValidator.java:84"
+		},
+		{
+			"id": "Z61",
+			"name": "message-reference",
+			"section": "E",
+			"rule": "Message event definition must reference message (catch events, receive)",
+			"elements": ["messageEventDefinition"],
+			"messages": ["Must reference a message"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/MessageEventDefinitionValidator.java:37"
+		},
+		{
+			"id": "Z62",
+			"name": "message-name",
+			"section": "E",
+			"rule": "message@name required & non-empty when referenced by catch/boundary/receive/event-subprocess start/throw/send/start event",
+			"elements": ["message"],
+			"messages": ["Name must be present and not empty"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/MessageValidator.java:68"
+		},
+		{
+			"id": "Z63",
+			"name": "message-subscription",
+			"section": "E",
+			"rule": "zeebe:subscription (correlationKey) exactly once on message referenced by catch event/receive task/boundary/event-subprocess start",
+			"elements": ["message"],
+			"messages": ["Must have exactly one zeebe:subscription extension element"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/MessageValidator.java:79"
+		},
+		{
+			"id": "Z64",
+			"name": "subscription-correlation-key",
+			"section": "E",
+			"rule": "zeebe:subscription@correlationKey non-empty",
+			"elements": ["zeebe:subscription"],
+			"messages": ["Attribute 'correlationKey' must be present and not empty"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeDesignTimeValidators.java:131; V/ZeebeElementValidator.java:53"
+		},
+		{
+			"id": "Z65",
+			"name": "correlation-key-expression",
+			"section": "E",
+			"rule": "correlationKey must be FEEL expression (non-static)",
+			"elements": ["zeebe:subscription"],
+			"messages": [
+				"Expected expression but found static value '%s'. An expression must start with '=' ..."
+			],
+			"since": "8.0",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ZeebeRuntimeValidators.java:68-73"
+		},
+		{
+			"id": "Z66",
+			"name": "message-name-expression",
+			"section": "E",
+			"rule": "Message name must be valid FEEL if '=' (optional expr)",
+			"elements": ["message"],
+			"messages": ["FEEL parse failure message"],
+			"since": "8.0",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ZeebeRuntimeValidators.java:62"
+		},
+		{
+			"id": "Z67",
+			"name": "message-start-name-constant",
+			"section": "E",
+			"rule": "Message start event name must be constant-evaluable string (no variables)",
+			"elements": ["startEvent", "message"],
+			"messages": [
+				"Expected constant expression but found '%s', which could not be evaluated without context: %s",
+				"Expected constant expression of type String for message name '%s', but was %s"
+			],
+			"since": "8.0",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ProcessMessageStartEventMessageNameValidator.java:74,80"
+		},
+		{
+			"id": "Z68",
+			"name": "message-start-name-length",
+			"section": "E",
+			"rule": "Message start event name length <= max-name-length (post-evaluation)",
+			"elements": ["startEvent"],
+			"messages": [
+				"Expected message name '%s' to be at most %d characters long (configured max-name-length), but was %d characters."
+			],
+			"since": "8.0",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "ETR/StartEventTransformer.java:121"
+		},
+		{
+			"id": "Z69",
+			"name": "message-throw-implementation",
+			"section": "E",
+			"rule": "Message throw event (intermediate/end): exactly one of zeebe:publishMessage XOR zeebe:taskDefinition",
+			"elements": ["throwEvent", "message"],
+			"messages": [
+				"Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/MessageThrowEventValidator.java:57"
+		},
+		{
+			"id": "Z70",
+			"name": "message-throw-reference",
+			"section": "E",
+			"rule": "Message throw w/o taskDefinition must reference message",
+			"elements": ["throwEvent", "message"],
+			"messages": ["Must reference a message"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/MessageThrowEventValidator.java:61"
+		},
+		{
+			"id": "Z71",
+			"name": "publish-message-correlation-key",
+			"section": "E",
+			"rule": "zeebe:publishMessage@correlationKey non-empty (attribute required)",
+			"elements": ["publishMessage"],
+			"messages": ["Attribute 'correlationKey' must be present and not empty"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeDesignTimeValidators.java:163"
+		},
+		{
+			"id": "Z72",
+			"name": "receive-task-message",
+			"section": "E",
+			"rule": "Receive task must reference message",
+			"elements": ["receiveTask"],
+			"messages": ["Must reference a message"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ReceiveTaskValidator.java:42"
+		},
+		{
+			"id": "Z73",
+			"name": "receive-task-boundary-message",
+			"section": "E",
+			"rule": "Receive task message name must differ from its boundary event message names",
+			"elements": ["receiveTask"],
+			"messages": ["Cannot reference the same message name as a boundary event"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ReceiveTaskValidator.java:61"
+		},
+		{
+			"id": "Z74",
+			"name": "signal-reference",
+			"section": "E",
+			"rule": "Signal event definition must reference signal",
+			"elements": ["signalEventDefinition"],
+			"messages": ["Must reference a signal"],
+			"since": "8.2",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/SignalEventDefinitionValidator.java:35"
+		},
+		{
+			"id": "Z75",
+			"name": "signal-name",
+			"section": "E",
+			"rule": "signal@name required when referenced by catch/throw/end/event subprocess/start",
+			"elements": ["signal"],
+			"messages": ["Name must be present and not empty"],
+			"since": "8.2",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/SignalValidator.java:143"
+		},
+		{
+			"id": "Z76",
+			"name": "signal-name-expression",
+			"section": "E",
+			"rule": "Signal name valid FEEL if expression; signal start events need constant String name",
+			"elements": ["signal", "startEvent"],
+			"messages": [
+				"Expected constant expression but found '%s', which could not be evaluated without context: %s",
+				"Expected constant expression of type String for signal name '%s', but was %s"
+			],
+			"since": "8.2",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ZeebeRuntimeValidators.java:205-209; EV/ProcessSignalStartEventSignalNameValidator.java:73,79"
+		},
+		{
+			"id": "Z77",
+			"name": "error-end-reference",
+			"section": "E",
+			"rule": "Error end event must reference error",
+			"elements": ["endEvent", "error"],
+			"messages": ["Must reference an error"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ErrorEventDefinitionValidator.java:43"
+		},
+		{
+			"id": "Z78",
+			"name": "error-code",
+			"section": "E",
+			"rule": "Error end event: error@errorCode non-empty",
+			"elements": ["error"],
+			"messages": ["ErrorCode must be present and not empty"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ErrorEventDefinitionValidator.java:47"
+		},
+		{
+			"id": "Z79",
+			"name": "error-catch-code-expression",
+			"section": "E",
+			"rule": "Error catch (boundary/event subprocess) errorCode must not be expression (no leading '=')",
+			"elements": ["error"],
+			"messages": ["The errorCode of the error catch event is not allowed to be an expression"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ErrorEventDefinitionValidator.java:55"
+		},
+		{
+			"id": "Z80",
+			"name": "escalation-throw-reference",
+			"section": "E",
+			"rule": "Escalation throw (intermediate throw / end) must reference escalation",
+			"elements": ["escalationEventDefinition"],
+			"messages": ["Must reference an escalation"],
+			"since": "8.2",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/EscalationEventDefinitionValidator.java:45"
+		},
+		{
+			"id": "Z81",
+			"name": "escalation-code",
+			"section": "E",
+			"rule": "escalation@escalationCode non-empty when referenced by throw event",
+			"elements": ["escalation"],
+			"messages": ["EscalationCode must be present and not empty"],
+			"since": "8.2",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/EscalationValidator.java:51"
+		},
+		{
+			"id": "Z82",
+			"name": "escalation-catch-code-expression",
+			"section": "E",
+			"rule": "Escalation catch code must not be expression",
+			"elements": ["escalation"],
+			"messages": [
+				"The escalationCode of the escalation catch event is not allowed to be an expression"
+			],
+			"since": "8.2",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/EscalationEventDefinitionValidator.java:53"
+		},
+		{
+			"id": "Z83",
+			"name": "link-name",
+			"section": "E",
+			"rule": "Link event definition needs non-empty name",
+			"elements": ["linkEventDefinition"],
+			"messages": ["Link name must be present and not empty."],
+			"since": "8.2",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/LinkEventDefinitionValidator.java:34"
+		},
+		{
+			"id": "Z84",
+			"name": "link-throw-catch",
+			"section": "E",
+			"rule": "Link throw needs matching catch of same name in same scope",
+			"elements": ["link throw"],
+			"messages": ["Can't find an catch link event for the throw link event with the name '%s'."],
+			"since": "8.2",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "U:453 (verify at 208-254)"
+		},
+		{
+			"id": "Z85",
+			"name": "duplicate-link-catch",
+			"section": "E",
+			"rule": "Duplicate link catch names in scope",
+			"elements": ["link catch"],
+			"messages": [
+				"Multiple intermediate catch link event definitions with the same name '%s' are not allowed."
+			],
+			"since": "8.2",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "U:447"
+		},
+		{
+			"id": "Z86",
+			"name": "compensation-activity-exists",
+			"section": "E",
+			"rule": "Compensation throw: referenced activity (activityRef) must exist",
+			"elements": ["compensateEventDefinition"],
+			"messages": ["The referenced compensation activity '%s' doesn't exist"],
+			"since": "8.5",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/CompensationEventDefinitionValidator.java:48"
+		},
+		{
+			"id": "Z87",
+			"name": "compensation-activity-handler",
+			"section": "E",
+			"rule": "Referenced activity must have a compensation boundary event or be an embedded subprocess",
+			"elements": ["compensateEventDefinition"],
+			"messages": [
+				"The referenced compensation activity '%s' must have either a compensation boundary event or be a subprocess"
+			],
+			"since": "8.5",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/CompensationEventDefinitionValidator.java:66"
+		},
+		{
+			"id": "Z88",
+			"name": "compensation-activity-scope",
+			"section": "E",
+			"rule": "Referenced compensation activity in same scope as throw",
+			"elements": ["compensateEventDefinition"],
+			"messages": [
+				"The referenced compensation activity '%s' must be in the same scope as the compensation throw event"
+			],
+			"since": "8.5",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/CompensationEventDefinitionValidator.java:74"
+		},
+		{
+			"id": "Z89",
+			"name": "compensation-handler-flows",
+			"section": "E",
+			"rule": "Compensation handler task (isForCompensation=true): no incoming flows / no outgoing flows / no boundary events",
+			"elements": ["task"],
+			"messages": [
+				"A compensation handler should have no incoming sequence flows",
+				"...no outgoing sequence flows",
+				"...no boundary events"
+			],
+			"since": "8.5",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/CompensationTaskValidator.java:41,46,51"
+		},
+		{
+			"id": "Z90",
+			"name": "service-task-definition",
+			"section": "F",
+			"rule": "serviceTask requires exactly one zeebe:taskDefinition",
+			"elements": ["serviceTask"],
+			"messages": ["Must have exactly one 'zeebe:taskDefinition' extension element"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeDesignTimeValidators.java:94; V/ExtensionElementsValidator.java:56"
+		},
+		{
+			"id": "Z91",
+			"name": "task-definition-type",
+			"section": "F",
+			"rule": "taskDefinition@type required non-empty",
+			"elements": ["zeebe:taskDefinition"],
+			"messages": ["Attribute 'type' must be present and not empty"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeDesignTimeValidators.java:111-114; V/ZeebeElementValidator.java:53"
+		},
+		{
+			"id": "Z92",
+			"name": "task-definition-retries",
+			"section": "F",
+			"rule": "taskDefinition@retries required non-empty (Modeler default \"3\" - a generator must write it if using raw model)",
+			"elements": ["zeebe:taskDefinition"],
+			"messages": ["Attribute 'retries' must be present and not empty"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeDesignTimeValidators.java:113"
+		},
+		{
+			"id": "Z93",
+			"name": "task-definition-expression",
+			"section": "F",
+			"rule": "type and retries must be valid FEEL; (static allowed)",
+			"elements": ["zeebe:taskDefinition"],
+			"messages": ["Expected expression but not found."],
+			"since": "8.0",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ZeebeRuntimeValidators.java:89-93"
+		},
+		{
+			"id": "Z94",
+			"name": "duplicate-task-extension",
+			"section": "F",
+			"rule": "Duplicate zeebe:taskHeaders / linkedResources / jobPriorityDefinition / agentDefinition / ioMapping / executionListeners on one element",
+			"elements": [
+				"serviceTask",
+				"sendTask",
+				"scriptTask",
+				"businessRuleTask",
+				"userTask",
+				"flowNode"
+			],
+			"messages": [
+				"Must have exactly one 'zeebe:%s' extension element when exists. Please check process definition XML and retain only one extension element."
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ExtensionElementDuplicationValidators.java:40-130; V/ExtensionElementsDuplicationValidator.java:57"
+		},
+		{
+			"id": "Z95",
+			"name": "header-reserved-key",
+			"section": "F",
+			"rule": "taskHeaders header key reserved prefix (io.camunda.zeebe:)",
+			"elements": ["zeebe:taskHeaders"],
+			"messages": [
+				"Attribute 'key' contains '%s', but header keys starting with '%s' are reserved for internal use."
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ZeebeTaskHeadersValidator.java:23"
+		},
+		{
+			"id": "Z96",
+			"name": "duplicate-header-key",
+			"section": "F",
+			"rule": "taskHeaders duplicate keys",
+			"elements": ["zeebe:taskHeaders"],
+			"messages": ["Headers contain duplicate entries for key '%s'"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ZeebeTaskHeadersValidator.java:26"
+		},
+		{
+			"id": "Z97",
+			"name": "empty-header",
+			"section": "F",
+			"rule": "Empty header key/value silently ignored (warn log only, not rejection)",
+			"elements": ["zeebe:header"],
+			"messages": ["(log only)"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "info",
+			"check": "none",
+			"note": "Not a rejection: Zeebe logs and ignores an empty header.",
+			"source": "ETR/zeebe/TaskHeadersTransformer.java:45"
+		},
+		{
+			"id": "Z98",
+			"name": "script-task-implementation",
+			"section": "F",
+			"rule": "scriptTask: exactly one of zeebe:script XOR zeebe:taskDefinition",
+			"elements": ["scriptTask"],
+			"messages": [
+				"Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ScriptTaskValidator.java:44"
+		},
+		{
+			"id": "Z99",
+			"name": "script-attributes",
+			"section": "F",
+			"rule": "zeebe:script@expression and @resultVariable non-empty",
+			"elements": ["zeebe:script"],
+			"messages": [
+				"Attribute 'expression' must be present and not empty",
+				"Attribute 'resultVariable' ..."
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeDesignTimeValidators.java:144-148"
+		},
+		{
+			"id": "Z100",
+			"name": "script-expression",
+			"section": "F",
+			"rule": "zeebe:script expression must be a FEEL expression (starting '=') and parse",
+			"elements": ["zeebe:script"],
+			"messages": [
+				"Expected expression but found static value '%s'. An expression must start with '='..."
+			],
+			"since": "8.0",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ZeebeRuntimeValidators.java:200-203"
+		},
+		{
+			"id": "Z101",
+			"name": "job-priority-mode",
+			"section": "F",
+			"rule": "jobPriorityDefinition only in job-worker mode (with taskDefinition)",
+			"elements": ["scriptTask", "businessRuleTask", "sendTask", "(serviceTask", "others)"],
+			"messages": [
+				"'zeebe:jobPriorityDefinition' is only allowed in job-worker mode ('zeebe:taskDefinition')"
+			],
+			"since": "8.10",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ScriptTaskValidator.java:~50; V/BusinessRuleTaskValidator.java:~50; V/SendTaskValidator.java:~64"
+		},
+		{
+			"id": "Z102",
+			"name": "job-priority-value",
+			"section": "F",
+			"rule": "jobPriorityDefinition@priority required; literal integer or FEEL ('=...')",
+			"elements": ["zeebe:jobPriorityDefinition"],
+			"messages": [
+				"Attribute 'priority' must be present and not empty",
+				"Expected 'priority' to be a literal integer or a FEEL expression (starting with '='), but got '%s'."
+			],
+			"since": "8.10",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeDesignTimeValidators.java:177-179; V/ZeebeJobPriorityDefinitionValidator.java:45"
+		},
+		{
+			"id": "Z103",
+			"name": "send-task-implementation",
+			"section": "F",
+			"rule": "sendTask: exactly one of zeebe:publishMessage XOR zeebe:taskDefinition",
+			"elements": ["sendTask"],
+			"messages": [
+				"Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/SendTaskValidator.java:52"
+		},
+		{
+			"id": "Z104",
+			"name": "send-task-message",
+			"section": "F",
+			"rule": "sendTask with publishMessage must reference message",
+			"elements": ["sendTask"],
+			"messages": ["Must reference a message"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/SendTaskValidator.java:57"
+		},
+		{
+			"id": "Z105",
+			"name": "input-mapping",
+			"section": "F",
+			"rule": "zeebe:ioMapping input: source optional FEEL; target valid path ([a-zA-Z_][a-zA-Z0-9_]*(.[...])*), not reserved word (null,true,false,function,if,then,else,for,between,instance,of)",
+			"elements": ["zeebe:input"],
+			"messages": [
+				"Expected path expression but not found.",
+				"Expected path expression '%s' but doesn't match the pattern '%s'.",
+				"Expected path expression '%s' but is one of the reserved words (%s)."
+			],
+			"since": "8.0",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ZeebeExpressionValidator.java:85,95,104; EV/ZeebeRuntimeValidators.java:45-50"
+		},
+		{
+			"id": "Z106",
+			"name": "output-mapping",
+			"section": "F",
+			"rule": "zeebe:output source mandatory, must be expression (non-static), target path rule",
+			"elements": ["zeebe:output"],
+			"messages": [
+				"Expected expression but not found.",
+				"Expected expression but found static value ..."
+			],
+			"since": "8.0",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ZeebeRuntimeValidators.java:57-61"
+		},
+		{
+			"id": "Z107",
+			"name": "secret-literal",
+			"section": "F",
+			"rule": "Secret references (camunda.secrets.x) must not be string literals in input source / property value",
+			"elements": ["zeebe:input", "zeebe:property"],
+			"messages": [
+				"Secret reference(s) %s must be used as an expression (e.g. '=camunda.secrets.<name>'), not as a string literal, in %s '%s'."
+			],
+			"since": "8.8",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/SecretReferenceLiteralValidator.java:126"
+		},
+		{
+			"id": "Z108",
+			"name": "secret-in-list",
+			"section": "F",
+			"rule": "Secret reference inside list / if-branch context in input mapping",
+			"elements": ["zeebe:input"],
+			"messages": [
+				"Input mapping source '%s' puts a secret reference inside a list, or inside a context built by an 'if' branch. ..."
+			],
+			"since": "8.8",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/SecretReferenceLeafPrecisionValidator.java:67"
+		},
+		{
+			"id": "Z109",
+			"name": "variable-mapping-build",
+			"section": "F",
+			"rule": "Variable mapping expression build failure (transformer)",
+			"elements": ["ioMapping"],
+			"messages": ["Failed to build variable mapping expression: %s"],
+			"since": "8.0",
+			"kind": "feel",
+			"severity": "error",
+			"check": "none",
+			"note": "A transformer failure on an expression Zeebe already parsed; no static trigger known.",
+			"source": "ETR/VariableMappingTransformer.java:140"
+		},
+		{
+			"id": "Z110",
+			"name": "linked-resource-attributes",
+			"section": "F",
+			"rule": "zeebe:linkedResource: resourceId, bindingType, resourceType attrs required; bindingType enum",
+			"elements": ["zeebe:linkedResource"],
+			"messages": [
+				"Attribute 'resourceId' must be present and not empty",
+				"Attribute 'bindingType' must be one of: ..."
+			],
+			"since": "8.6",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeDesignTimeValidators.java:149-155; V/ZeebeBindingTypeValidator.java"
+		},
+		{
+			"id": "Z111",
+			"name": "linked-resource-deployment",
+			"section": "F",
+			"rule": "Linked resource bindingType=deployment: target must be in same deployment",
+			"elements": ["zeebe:linkedResource"],
+			"messages": [
+				"Expected to find form with id '%s' in current deployment, but not found.",
+				"Expected to find resource with id '%s' in current deployment, but not found."
+			],
+			"since": "8.6",
+			"kind": "context",
+			"severity": "error",
+			"check": "context",
+			"source": "EV/ZeebeLinkedResourceDeploymentBindingValidator.java:49,55"
+		},
+		{
+			"id": "Z112",
+			"name": "agent-type-required",
+			"section": "F",
+			"rule": "agentDefinition@agentType required non-empty enum",
+			"elements": ["zeebe:agentDefinition"],
+			"messages": ["Attribute 'agentType' must be present and not empty"],
+			"since": "8.10",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeDesignTimeValidators.java:102-105"
+		},
+		{
+			"id": "Z113",
+			"name": "agent-type-placement",
+			"section": "F",
+			"rule": "agentType placement: aiAgentSubProcess only on adHocSubProcess; aiAgentTask only on serviceTask; external on serviceTask/adHocSubProcess",
+			"elements": ["zeebe:agentDefinition"],
+			"messages": [
+				"agentType 'aiAgentSubProcess' is only allowed on an ad-hoc sub-process.",
+				"agentType 'aiAgentTask' is only allowed on a service task.",
+				"agentType 'external' is only allowed on a service task or an ad-hoc sub-process."
+			],
+			"since": "8.10",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/AgentDefinitionValidator.java:68,75,83"
+		},
+		{
+			"id": "Z114",
+			"name": "duplicate-user-task-extension",
+			"section": "G",
+			"rule": "Duplicate zeebe:userTask / assignmentDefinition / formDefinition / taskHeaders / taskSchedule",
+			"elements": ["userTask"],
+			"messages": ["Must have exactly one 'zeebe:%s' extension element when exists. ..."],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ExtensionElementDuplicationValidators.java:94-108"
+		},
+		{
+			"id": "Z115",
+			"name": "form-definition-job-worker",
+			"section": "G",
+			"rule": "formDefinition (job-worker user task): exactly one of formKey / formId",
+			"elements": ["zeebe:formDefinition"],
+			"messages": ["Exactly one of the attributes 'formId, formKey' must be present and not blank"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeFormDefinitionValidator.java:28,~53"
+		},
+		{
+			"id": "Z116",
+			"name": "form-definition-native",
+			"section": "G",
+			"rule": "formDefinition (native zeebe:userTask): exactly one of formId / externalReference",
+			"elements": ["zeebe:formDefinition"],
+			"messages": [
+				"Exactly one of the attributes 'formId, externalReference' must be present and not blank for native user tasks"
+			],
+			"since": "8.4",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeFormDefinitionValidator.java:~63"
+		},
+		{
+			"id": "Z117",
+			"name": "form-binding-type",
+			"section": "G",
+			"rule": "formDefinition bindingType=versionTag requires versionTag; versionTag only with bindingType=versionTag; bindingType enum",
+			"elements": ["zeebe:formDefinition"],
+			"messages": [
+				"Attribute 'versionTag' must be present and not empty if 'bindingType' is 'versionTag'",
+				"Attribute 'versionTag' may only be used if 'bindingType' is 'versionTag'",
+				"Attribute 'bindingType' must be one of: deployment, latest, versionTag"
+			],
+			"since": "8.6",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeBindingTypeValidator.java:59,73,81"
+		},
+		{
+			"id": "Z118",
+			"name": "form-deployment",
+			"section": "G",
+			"rule": "formId bindingType=deployment: form must be in same deployment (default binding is latest, so only when explicit)",
+			"elements": ["zeebe:formDefinition"],
+			"messages": ["Expected to find form with id '%s' in current deployment, but not found."],
+			"since": "8.6",
+			"kind": "context",
+			"severity": "error",
+			"check": "context",
+			"source": "EV/ZeebeFormDefinitionDeploymentBindingValidator.java:39"
+		},
+		{
+			"id": "Z119",
+			"name": "embedded-form",
+			"section": "G",
+			"rule": "zeebe:userTaskForm (embedded form) text non-empty and has id",
+			"elements": ["zeebe:userTaskForm"],
+			"messages": ["User task form text content has to be present and not empty"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeUserTaskFormValidator.java:37"
+		},
+		{
+			"id": "Z120",
+			"name": "assignment-expression",
+			"section": "G",
+			"rule": "assignmentDefinition assignee optional FEEL; candidateGroups/candidateUsers FEEL, static must be CSV list",
+			"elements": ["zeebe:assignmentDefinition"],
+			"messages": [
+				"Expected static value to be a list of comma-separated values, e.g. 'a,b,c', but found '%s'."
+			],
+			"since": "8.0",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ZeebeRuntimeValidators.java:132-150"
+		},
+		{
+			"id": "Z121",
+			"name": "task-schedule-date",
+			"section": "G",
+			"rule": "taskSchedule dueDate/followUpDate FEEL; static must be valid DateTime",
+			"elements": ["zeebe:taskSchedule"],
+			"messages": [
+				"Expected static value to be a valid DateTime String, e.g. '2023-03-02T15:35+02:00', but found '%s'."
+			],
+			"since": "8.2",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ZeebeRuntimeValidators.java:153-174"
+		},
+		{
+			"id": "Z122",
+			"name": "user-task-priority",
+			"section": "G",
+			"rule": "zeebe:priorityDefinition@priority required; FEEL/static int; static value 0..100",
+			"elements": ["zeebe:priorityDefinition"],
+			"messages": [
+				"Attribute 'priority' must be present and not empty",
+				"Expected static value to be a valid Number between 0 and 100, but found '%s'.",
+				"Priority must be a number between 0 and 100, but was '%s'."
+			],
+			"since": "8.6",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeDesignTimeValidators.java:173-176; EV/ZeebeRuntimeValidators.java:211-223; V/ZeebePriorityDefinitionValidator.java:44"
+		},
+		{
+			"id": "Z123",
+			"name": "task-listener-placement",
+			"section": "G",
+			"rule": "Task listeners only on Camunda (zeebe:userTask) user tasks",
+			"elements": ["zeebe:taskListeners"],
+			"messages": ["Task listeners are only allowed on Camunda user tasks."],
+			"since": "8.7",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/TaskListenersValidator.java:47"
+		},
+		{
+			"id": "Z124",
+			"name": "task-listener-attributes",
+			"section": "G",
+			"rule": "taskListener eventType, type, retries required non-empty (eventType enum)",
+			"elements": ["zeebe:taskListener"],
+			"messages": ["Attribute 'eventType' must be present and not empty"],
+			"since": "8.7",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeDesignTimeValidators.java:124-128"
+		},
+		{
+			"id": "Z125",
+			"name": "call-activity-called-element",
+			"section": "H",
+			"rule": "callActivity requires exactly one zeebe:calledElement",
+			"elements": ["callActivity"],
+			"messages": ["Must have exactly one 'zeebe:calledElement' extension element"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeDesignTimeValidators.java:69-71; V/ExtensionElementsValidator.java:56"
+		},
+		{
+			"id": "Z126",
+			"name": "called-element-process-id",
+			"section": "H",
+			"rule": "calledElement@processId required non-empty",
+			"elements": ["zeebe:calledElement"],
+			"messages": ["Attribute 'processId' must be present and not empty"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeDesignTimeValidators.java:106-108"
+		},
+		{
+			"id": "Z127",
+			"name": "called-element-expression",
+			"section": "H",
+			"rule": "processId must be a valid FEEL; (static allowed)",
+			"elements": ["zeebe:calledElement"],
+			"messages": ["Expected expression but not found."],
+			"since": "8.0",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ZeebeRuntimeValidators.java:95-100"
+		},
+		{
+			"id": "Z128",
+			"name": "called-element-business-id",
+			"section": "H",
+			"rule": "businessId optional FEEL; static length <= 256",
+			"elements": ["zeebe:calledElement"],
+			"messages": ["Expected static value to be no longer than 256 characters, but found '%s'."],
+			"since": "8.9",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ZeebeRuntimeValidators.java:100-110; zeebe/engine/.../processinstance/BusinessIdValidator.java:23"
+		},
+		{
+			"id": "Z129",
+			"name": "called-element-binding-type",
+			"section": "H",
+			"rule": "calledElement bindingType enum; versionTag rules (same as Z117)",
+			"elements": ["zeebe:calledElement"],
+			"messages": ["see Z117"],
+			"since": "8.6",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeBindingTypeValidator.java"
+		},
+		{
+			"id": "Z130",
+			"name": "called-element-deployment",
+			"section": "H",
+			"rule": "bindingType=deployment: called process must be in the same deployment (static processId compared)",
+			"elements": ["zeebe:calledElement"],
+			"messages": ["Expected to find process with id '%s' in current deployment, but not found."],
+			"since": "8.6",
+			"kind": "context",
+			"severity": "error",
+			"check": "context",
+			"source": "EV/ZeebeCalledElementDeploymentBindingValidator.java:39"
+		},
+		{
+			"id": "Z131",
+			"name": "called-element-latest",
+			"section": "H",
+			"rule": "Called process with default binding (latest) not required at deploy time (no rejection)",
+			"elements": ["callActivity"],
+			"messages": ["(none - runtime incident only)"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "none",
+			"note": "Not a rejection: a missing called process is a runtime incident.",
+			"source": "n/a"
+		},
+		{
+			"id": "Z132",
+			"name": "business-rule-task-implementation",
+			"section": "I",
+			"rule": "businessRuleTask: exactly one of zeebe:calledDecision XOR zeebe:taskDefinition",
+			"elements": ["businessRuleTask"],
+			"messages": [
+				"Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/BusinessRuleTaskValidator.java:44"
+		},
+		{
+			"id": "Z133",
+			"name": "called-decision-attributes",
+			"section": "I",
+			"rule": "calledDecision@decisionId and @resultVariable required",
+			"elements": ["zeebe:calledDecision"],
+			"messages": [
+				"Attribute 'decisionId' must be present and not empty",
+				"Attribute 'resultVariable' ..."
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeDesignTimeValidators.java:138-143"
+		},
+		{
+			"id": "Z134",
+			"name": "called-decision-expression",
+			"section": "I",
+			"rule": "decisionId FEEL-valid (mandatory); versionTag FEEL (only when bindingType=versionTag)",
+			"elements": ["zeebe:calledDecision"],
+			"messages": ["FEEL parse failure"],
+			"since": "8.0",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ZeebeRuntimeValidators.java:178-188"
+		},
+		{
+			"id": "Z135",
+			"name": "called-decision-binding-type",
+			"section": "I",
+			"rule": "calledDecision bindingType enum / versionTag rules",
+			"elements": ["zeebe:calledDecision"],
+			"messages": ["see Z117"],
+			"since": "8.6",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeBindingTypeValidator.java"
+		},
+		{
+			"id": "Z136",
+			"name": "called-decision-deployment",
+			"section": "I",
+			"rule": "bindingType=deployment: decision must be in same deployment",
+			"elements": ["zeebe:calledDecision"],
+			"messages": ["Expected to find decision with id '%s' in current deployment, but not found."],
+			"since": "8.6",
+			"kind": "context",
+			"severity": "error",
+			"check": "context",
+			"source": "EV/ZeebeCalledDecisionDeploymentBindingValidator.java:39"
+		},
+		{
+			"id": "Z137",
+			"name": "duplicate-called-decision",
+			"section": "I",
+			"rule": "Duplicate zeebe:calledDecision on one task",
+			"elements": ["businessRuleTask"],
+			"messages": ["Must have exactly one 'zeebe:calledDecision' extension element when exists..."],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ExtensionElementDuplicationValidators.java:~115"
+		},
+		{
+			"id": "Z138",
+			"name": "exclusive-default-source",
+			"section": "J",
+			"rule": "Exclusive gateway default flow must originate at gateway",
+			"elements": ["exclusiveGateway@default"],
+			"messages": ["Default flow must start at gateway"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ExclusiveGatewayValidator.java:39"
+		},
+		{
+			"id": "Z139",
+			"name": "inclusive-default-source",
+			"section": "J",
+			"rule": "Inclusive gateway default flow must originate at gateway",
+			"elements": ["inclusiveGateway@default"],
+			"messages": ["Default flow must start at gateway"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/InclusiveGatewayValidator.java:38"
+		},
+		{
+			"id": "Z140",
+			"name": "exclusive-flow-condition",
+			"section": "J",
+			"rule": "Exclusive gateway with >1 outgoing: each non-default flow needs conditionExpression",
+			"elements": ["sequenceFlow"],
+			"messages": ["Must have a condition or be default flow"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/SequenceFlowValidator.java:42"
+		},
+		{
+			"id": "Z141",
+			"name": "inclusive-flow-condition",
+			"section": "J",
+			"rule": "Inclusive gateway with >1 outgoing: each non-default flow needs condition",
+			"elements": ["sequenceFlow"],
+			"messages": ["Must have a condition"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/SequenceFlowValidator.java:57"
+		},
+		{
+			"id": "Z142",
+			"name": "conditional-flow-source",
+			"section": "J",
+			"rule": "Conditional sequence flows only from exclusive/inclusive gateways (task/event/parallel with condition rejected)",
+			"elements": ["flowNode outgoing"],
+			"messages": [
+				"Conditional sequence flows are only supported at exclusive or inclusive gateway"
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/FlowNodeValidator.java:44"
+		},
+		{
+			"id": "Z143",
+			"name": "condition-expression",
+			"section": "J",
+			"rule": "Sequence flow condition: non-empty, FEEL parse, must start with '='",
+			"elements": ["conditionExpression"],
+			"messages": [
+				"Expected expression but found static value '%s'. An expression must start with '=' (e.g. '=%s').",
+				"Attribute 'condition' must be present and not empty"
+			],
+			"since": "8.0",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ZeebeRuntimeValidators.java:83-88; V/ZeebeDesignTimeValidators.java:182"
+		},
+		{
+			"id": "Z144",
+			"name": "event-based-gateway-outgoing",
+			"section": "J",
+			"rule": "Event-based gateway >= 2 outgoing flows",
+			"elements": ["eventBasedGateway"],
+			"messages": ["Event-based gateway must have at least 2 outgoing sequence flows."],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/EventBasedGatewayValidator.java:62"
+		},
+		{
+			"id": "Z145",
+			"name": "event-based-gateway-target",
+			"section": "J",
+			"rule": "Event-based gateway targets only message/timer/signal/conditional intermediate catch events (single definition each)",
+			"elements": ["eventBasedGateway"],
+			"messages": [
+				"Event-based gateway must not have an outgoing sequence flow to other elements than message/timer/signal/conditional intermediate catch events."
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/EventBasedGatewayValidator.java:46,68"
+		},
+		{
+			"id": "Z146",
+			"name": "event-based-gateway-duplicate-trigger",
+			"section": "J",
+			"rule": "Event-based gateway: duplicate message/signal/conditional definitions among targets",
+			"elements": ["eventBasedGateway"],
+			"messages": ["Multiple message event definitions with the same name '%s' are not allowed."],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/EventBasedGatewayValidator.java:74-85"
+		},
+		{
+			"id": "Z147",
+			"name": "event-based-gateway-target-incoming",
+			"section": "J",
+			"rule": "Event-based gateway targets must have no other incoming flows",
+			"elements": ["eventBasedGateway"],
+			"messages": [
+				"Target elements of an event gateway must not have any additional incoming sequence flows other than that from the event gateway."
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/EventBasedGatewayValidator.java:90"
+		},
+		{
+			"id": "Z148",
+			"name": "gateway-end-listener",
+			"section": "J",
+			"rule": "Execution listener 'end' not allowed on any gateway",
+			"elements": ["gateways"],
+			"messages": ["Execution listeners of type 'end' are not supported by gateway element"],
+			"since": "8.6",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/GatewayValidator.java:48"
+		},
+		{
+			"id": "Z149",
+			"name": "multi-instance-loop-characteristics",
+			"section": "K",
+			"rule": "multiInstanceLoopCharacteristics needs exactly one zeebe:loopCharacteristics",
+			"elements": ["multiInstanceLoopCharacteristics"],
+			"messages": ["Must have exactly one 'zeebe:loopCharacteristics' extension element"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeDesignTimeValidators.java:87-89; V/ExtensionElementsValidator.java:56"
+		},
+		{
+			"id": "Z150",
+			"name": "multi-instance-input-collection",
+			"section": "K",
+			"rule": "loopCharacteristics@inputCollection required",
+			"elements": ["zeebe:loopCharacteristics"],
+			"messages": ["Attribute 'inputCollection' must be present and not empty"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeLoopCharacteristicsValidator.java:43"
+		},
+		{
+			"id": "Z151",
+			"name": "multi-instance-output-pair",
+			"section": "K",
+			"rule": "outputCollection and outputElement must be set together",
+			"elements": ["zeebe:loopCharacteristics"],
+			"messages": [
+				"Attribute 'outputElement' must be present if the attribute 'outputCollection' is set"
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeLoopCharacteristicsValidator.java:56,63"
+		},
+		{
+			"id": "Z152",
+			"name": "multi-instance-expression",
+			"section": "K",
+			"rule": "inputCollection must be non-static FEEL expression ('=...'); outputElement optional non-static; completionCondition optional FEEL",
+			"elements": ["zeebe:loopCharacteristics", "multiInstanceLoopCharacteristics"],
+			"messages": [
+				"Expected expression but found static value '%s'. An expression must start with '=' ..."
+			],
+			"since": "8.0",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ZeebeRuntimeValidators.java:74-82,191-199"
+		},
+		{
+			"id": "Z153",
+			"name": "before-all-listener",
+			"section": "K",
+			"rule": "Exec listener 'beforeAll' only on multi-instance activities",
+			"elements": ["zeebe:executionListener"],
+			"messages": [
+				"Execution listeners with event type 'beforeAll' are only supported on multi-instance activities and are not valid on '%s'"
+			],
+			"since": "8.6",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ExecutionListenersValidator.java:150"
+		},
+		{
+			"id": "Z154",
+			"name": "sub-process-start-event",
+			"section": "L",
+			"rule": "Embedded/event subprocess: exactly one start event",
+			"elements": ["subProcess (not ad-hoc)"],
+			"messages": ["Must have exactly one start event"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/SubProcessValidator.java:59"
+		},
+		{
+			"id": "Z155",
+			"name": "sub-process-start-none",
+			"section": "L",
+			"rule": "Embedded subprocess start event must be none type",
+			"elements": ["subProcess"],
+			"messages": ["Start events in subprocesses must be of type none"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/SubProcessValidator.java:82"
+		},
+		{
+			"id": "Z156",
+			"name": "sub-process-scope",
+			"section": "L",
+			"rule": "Subprocess scope: link throw/catch pairing and duplicates, event subprocess duplicate handlers",
+			"elements": ["subProcess"],
+			"messages": ["(as Z25,Z28,Z29,Z84,Z85)"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"coveredBy": ["Z25", "Z28", "Z29", "Z84", "Z85"],
+			"note": "Umbrella rule: reported under the specific rules it names in coveredBy.",
+			"source": "V/SubProcessValidator.java:~66-71"
+		},
+		{
+			"id": "Z157",
+			"name": "ad-hoc-activity",
+			"section": "L",
+			"rule": "Ad-hoc subprocess needs >= 1 activity",
+			"elements": ["adHocSubProcess"],
+			"messages": ["Must have at least one activity."],
+			"since": "8.7",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/AdHocSubProcessValidator.java:47"
+		},
+		{
+			"id": "Z158",
+			"name": "ad-hoc-start-event",
+			"section": "L",
+			"rule": "Ad-hoc subprocess must not contain start event",
+			"elements": ["adHocSubProcess"],
+			"messages": ["Must not contain a start event."],
+			"since": "8.7",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/AdHocSubProcessValidator.java:51"
+		},
+		{
+			"id": "Z159",
+			"name": "ad-hoc-end-event",
+			"section": "L",
+			"rule": "Ad-hoc subprocess must not contain end event",
+			"elements": ["adHocSubProcess"],
+			"messages": ["Must not contain an end event."],
+			"since": "8.7",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/AdHocSubProcessValidator.java:55"
+		},
+		{
+			"id": "Z160",
+			"name": "ad-hoc-agent-cancel-remaining",
+			"section": "L",
+			"rule": "Ad-hoc with taskDefinition: cancelRemainingInstances must stay true",
+			"elements": ["adHocSubProcess"],
+			"messages": [
+				"Must not define cancelRemainingInstances in combination with zeebe:taskDefinition."
+			],
+			"since": "8.8",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/AdHocSubProcessValidator.java:79"
+		},
+		{
+			"id": "Z161",
+			"name": "ad-hoc-agent-completion-condition",
+			"section": "L",
+			"rule": "Ad-hoc with taskDefinition: no completionCondition",
+			"elements": ["adHocSubProcess"],
+			"messages": ["Must not define completionCondition in combination with zeebe:taskDefinition."],
+			"since": "8.8",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/AdHocSubProcessValidator.java:84"
+		},
+		{
+			"id": "Z162",
+			"name": "ad-hoc-agent-active-elements",
+			"section": "L",
+			"rule": "Ad-hoc with taskDefinition: no activeElementsCollection",
+			"elements": ["zeebe:adHoc"],
+			"messages": [
+				"Must not define activeElementsCollection in combination with zeebe:taskDefinition."
+			],
+			"since": "8.8",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/AdHocSubProcessValidator.java:95"
+		},
+		{
+			"id": "Z163",
+			"name": "ad-hoc-output-pair",
+			"section": "L",
+			"rule": "Ad-hoc outputElement and outputCollection both or neither",
+			"elements": ["zeebe:adHoc"],
+			"messages": [
+				"OutputElement and OutputCollection must both be set, or neither of them set. outputElement:%s and outputCollection:%s."
+			],
+			"since": "8.8",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/AdHocSubProcessValidator.java:120"
+		},
+		{
+			"id": "Z164",
+			"name": "ad-hoc-expression",
+			"section": "L",
+			"rule": "Ad-hoc completionCondition / activeElementsCollection / outputElement must be non-static FEEL",
+			"elements": ["adHocSubProcess", "zeebe:adHoc"],
+			"messages": ["Expected expression but found static value ..."],
+			"since": "8.7",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ZeebeRuntimeValidators.java:225-240"
+		},
+		{
+			"id": "Z165",
+			"name": "duplicate-ad-hoc-extension",
+			"section": "L",
+			"rule": "Duplicate zeebe:adHoc / agentDefinition on ad-hoc",
+			"elements": ["adHocSubProcess"],
+			"messages": ["Must have exactly one 'zeebe:adHoc' extension element when exists..."],
+			"since": "8.7",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ExtensionElementDuplicationValidators.java:~120"
+		},
+		{
+			"id": "Z166",
+			"name": "ad-hoc-parameters",
+			"section": "L",
+			"rule": "Ad-hoc transformer failure extracting activity parameters",
+			"elements": ["adHocSubProcess"],
+			"messages": ["Failed to extract ad-hoc activity parameters for element '%s'. %s"],
+			"since": "8.8",
+			"kind": "feel",
+			"severity": "error",
+			"check": "none",
+			"note": "A transformer failure extracting fromAi() parameters; compat/agent-fromai-contract covers the contract.",
+			"source": "ETR/AdHocSubProcessTransformerV2.java:214"
+		},
+		{
+			"id": "Z167",
+			"name": "feel-parse",
+			"section": "M",
+			"rule": "Any zeebe expression attribute that is non-static must parse as FEEL",
+			"elements": ["all expr attrs"],
+			"messages": ["failed to parse expression '...': ..."],
+			"since": "8.0",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"source": "EV/ZeebeExpressionValidator.java:189-205"
+		},
+		{
+			"id": "Z168",
+			"name": "expression-required",
+			"section": "M",
+			"rule": "Mandatory expression missing",
+			"elements": ["expr attrs"],
+			"messages": ["Expected expression but not found."],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"coveredBy": ["Z106", "Z99", "Z93"],
+			"note": "Umbrella rule: reported under the specific rules it names in coveredBy.",
+			"source": "EV/ZeebeExpressionValidator.java:189"
+		},
+		{
+			"id": "Z169",
+			"name": "expression-non-static",
+			"section": "M",
+			"rule": "Attribute-specific static requirements (isNonStatic)",
+			"elements": ["see Z58", "Z65", "Z100", "Z143", "Z152", "Z164"],
+			"messages": [
+				"Expected expression but found static value '%s'. An expression must start with '=' (e.g. '=%s')."
+			],
+			"since": "8.0",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"coveredBy": ["Z58", "Z65", "Z100", "Z143", "Z152", "Z164"],
+			"note": "Umbrella rule: reported under the specific rules it names in coveredBy.",
+			"source": "EV/ZeebeExpressionValidator.java:217"
+		},
+		{
+			"id": "Z170",
+			"name": "static-value",
+			"section": "M",
+			"rule": "satisfiesIfStatic failures",
+			"elements": ["candidateGroups", "Users", "dueDate", "followUpDate", "priority", "businessId"],
+			"messages": ["Expected static value to %s, but found '%s'."],
+			"since": "8.0",
+			"kind": "feel",
+			"severity": "error",
+			"check": "model",
+			"coveredBy": ["Z120", "Z121", "Z122", "Z128"],
+			"note": "Umbrella rule: reported under the specific rules it names in coveredBy.",
+			"source": "EV/ZeebeExpressionValidator.java:227"
+		},
+		{
+			"id": "Z171",
+			"name": "required-attribute",
+			"section": "N",
+			"rule": "Required attribute missing/empty on zeebe element",
+			"elements": ["zeebe:*"],
+			"messages": ["Attribute '%s' must be present and not empty"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"coveredBy": [
+				"Z64",
+				"Z71",
+				"Z91",
+				"Z92",
+				"Z99",
+				"Z102",
+				"Z110",
+				"Z112",
+				"Z124",
+				"Z126",
+				"Z133",
+				"Z175"
+			],
+			"note": "Umbrella rule: reported under the specific rules it names in coveredBy.",
+			"source": "V/ZeebeElementValidator.java:53"
+		},
+		{
+			"id": "Z172",
+			"name": "exactly-one-attribute",
+			"section": "N",
+			"rule": "\"Exactly one of attributes\"",
+			"elements": ["zeebe:*"],
+			"messages": ["Exactly one of the attributes '%s' must be present and not blank"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"coveredBy": ["Z115", "Z116"],
+			"note": "Umbrella rule: reported under the specific rules it names in coveredBy.",
+			"source": "V/ZeebeElementValidator.java:64"
+		},
+		{
+			"id": "Z173",
+			"name": "required-extension",
+			"section": "N",
+			"rule": "Required extension element missing/duplicated",
+			"elements": [
+				"serviceTask(taskDefinition)",
+				"callActivity(calledElement)",
+				"MI(loopCharacteristics)"
+			],
+			"messages": ["Must have exactly one 'zeebe:%s' extension element"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"coveredBy": ["Z90", "Z125", "Z149"],
+			"note": "Umbrella rule: reported under the specific rules it names in coveredBy.",
+			"source": "V/ExtensionElementsValidator.java:56"
+		},
+		{
+			"id": "Z174",
+			"name": "duplicate-extension",
+			"section": "N",
+			"rule": "Duplicate extension element when optional",
+			"elements": ["various (see Z33", "Z94", "Z114", "Z137", "Z165)"],
+			"messages": [
+				"Must have exactly one 'zeebe:%s' extension element when exists. Please check process definition XML and retain only one extension element."
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"coveredBy": ["Z33", "Z94", "Z114", "Z137", "Z165"],
+			"note": "Umbrella rule: reported under the specific rules it names in coveredBy.",
+			"source": "V/ExtensionElementsDuplicationValidator.java:57"
+		},
+		{
+			"id": "Z175",
+			"name": "execution-listener-attributes",
+			"section": "N",
+			"rule": "zeebe:executionListener eventType/type/retries required",
+			"elements": ["zeebe:executionListener"],
+			"messages": ["Attribute 'eventType' must be present and not empty"],
+			"since": "8.6",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ZeebeDesignTimeValidators.java:116-121"
+		},
+		{
+			"id": "Z176",
+			"name": "duplicate-execution-listeners-element",
+			"section": "N",
+			"rule": "Only one zeebe:executionListeners per element",
+			"elements": ["flowNode"],
+			"messages": ["Element must not have more than one execution listeners definition"],
+			"since": "8.6",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"coveredBy": ["Z94"],
+			"note": "Umbrella rule: reported under the specific rules it names in coveredBy.",
+			"source": "U:102"
+		},
+		{
+			"id": "Z177",
+			"name": "execution-listener-placement",
+			"section": "N",
+			"rule": "Execution listeners only on process, subProcess, callActivity, adHoc, all task types, start/end/intermediate/boundary events, exclusive/inclusive/parallel/event-based gateways",
+			"elements": ["zeebe:executionListeners"],
+			"messages": [
+				"Execution listeners are not supported for the '%s' element. Currently, only %s elements can have execution listeners."
+			],
+			"since": "8.6",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ExecutionListenersValidator.java:86"
+		},
+		{
+			"id": "Z178",
+			"name": "cancel-listener-placement",
+			"section": "N",
+			"rule": "'cancel' listener event only on process",
+			"elements": ["zeebe:executionListener"],
+			"messages": [
+				"The 'cancel' execution listener event type is not supported for the '%s' element. The 'cancel' event type is only supported on the 'process' element."
+			],
+			"since": "8.6",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ExecutionListenersValidator.java:122"
+		},
+		{
+			"id": "Z179",
+			"name": "duplicate-execution-listener",
+			"section": "N",
+			"rule": "Duplicate execution listeners (same eventType+type)",
+			"elements": ["zeebe:executionListeners"],
+			"messages": [
+				"Found '%d' duplicates based on eventType[%s] and type[%s], these combinations should be unique."
+			],
+			"since": "8.6",
+			"kind": "static",
+			"severity": "error",
+			"check": "model",
+			"source": "V/ExecutionListenersValidator.java:164"
+		},
+		{
+			"id": "Z180",
+			"name": "execution-listener-null",
+			"section": "N",
+			"rule": "Execution listener transformer: null attribute",
+			"elements": ["zeebe:executionListener"],
+			"messages": ["'%s' is null"],
+			"since": "8.6",
+			"kind": "static",
+			"severity": "error",
+			"check": "none",
+			"note": "Unreachable after Z175 (attributes are required).",
+			"source": "ETR/zeebe/ExecutionListenerTransformer.java:120"
+		},
+		{
+			"id": "Z181",
+			"name": "deployment-empty",
+			"section": "O",
+			"rule": "Deployment must contain >= 1 resource",
+			"elements": ["deployment"],
+			"messages": ["Expected to deploy at least one resource, but none given"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "none",
+			"note": "Deployment level: a single BPMN is one resource.",
+			"source": "EV/DeploymentValidator.java:58"
+		},
+		{
+			"id": "Z182",
+			"name": "resource-name-length",
+			"section": "O",
+			"rule": "Resource name max length (config max-name-length)",
+			"elements": ["resource"],
+			"messages": [
+				"- Resource name '%s' exceeds maximum length of %d characters as it has a length of %d characters"
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "none",
+			"note": "Deployment level: depends on the resource name, not the BPMN.",
+			"source": "EV/DeploymentValidator.java:67"
+		},
+		{
+			"id": "Z183",
+			"name": "duplicate-process-id",
+			"section": "O",
+			"rule": "Duplicate process id across resources in one deployment (also within one file: two processes same id)",
+			"elements": ["process"],
+			"messages": ["Duplicated process id '%s' in resources '%s' and '%s'"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "context",
+			"source": "EV/DeploymentValidator.java:112"
+		},
+		{
+			"id": "Z184",
+			"name": "duplicate-resource-id",
+			"section": "O",
+			"rule": "Duplicate DRG id / decision id / form id / generic resource id in one deployment",
+			"elements": ["other resources"],
+			"messages": [
+				"Expected the decision requirements ids to be unique within a deployment but found a duplicated id ..."
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "none",
+			"note": "Deployment level: DMN/form/resource ids across resources.",
+			"source": "EV/DeploymentValidator.java:119,127,135,143"
+		},
+		{
+			"id": "Z185",
+			"name": "resource-extension",
+			"section": "O",
+			"rule": "Unknown resource extension (not .bpmn/.dmn/.form/.rpa/... )",
+			"elements": ["resource"],
+			"messages": ["No transformer found for resource: %s"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "none",
+			"note": "Deployment level: resource file extension.",
+			"source": "ET/DeploymentTransformer.java:207"
+		},
+		{
+			"id": "Z186",
+			"name": "resource-empty",
+			"section": "O",
+			"rule": "Resource name vs content: must have supported extension; empty/blank content -> parse failure",
+			"elements": ["resource"],
+			"messages": ["'<name>': Unable to parse BPMN XML"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "none",
+			"note": "Deployment level: empty resource; the XML check reports a parse failure instead.",
+			"source": "ET/BpmnResourceTransformer.java"
+		},
+		{
+			"id": "Z187",
+			"name": "tenant-authorization",
+			"section": "O",
+			"rule": "Tenant/authorization on deployment",
+			"elements": ["deployment"],
+			"messages": [
+				"Expected to perform operation '%s' on resource '%s' for tenant '%s', but user is not assigned to this tenant"
+			],
+			"since": "8.0",
+			"kind": "context",
+			"severity": "error",
+			"check": "none",
+			"note": "Broker state: tenant authorization.",
+			"source": "DeploymentCreateProcessor.java:155"
+		},
+		{
+			"id": "Z188",
+			"name": "deployment-exists",
+			"section": "O",
+			"rule": "Identical deployment already exists (duplicate deployment by checksum, non-rejecting for same content; ALREADY_EXISTS for same key)",
+			"elements": ["deployment"],
+			"messages": ["Deployment already exists"],
+			"since": "8.0",
+			"kind": "context",
+			"severity": "error",
+			"check": "none",
+			"note": "Broker state: an identical deployment already exists.",
+			"source": "DeploymentCreateProcessor.java:190"
+		},
+		{
+			"id": "Z189",
+			"name": "timer-start-creation",
+			"section": "O",
+			"rule": "Start-event timer creation failure at deploy time",
+			"elements": ["timer start event"],
+			"messages": [
+				"Expected to create timer for start event, but encountered the following error: %s"
+			],
+			"since": "8.0",
+			"kind": "feel",
+			"severity": "error",
+			"check": "none",
+			"note": "Broker state: timer creation at deploy time.",
+			"source": "DeploymentCreateProcessor.java:84"
+		},
+		{
+			"id": "Z190",
+			"name": "error-truncation",
+			"section": "O",
+			"rule": "Aggregated errors truncated by validatorResultsOutputMaxSize",
+			"elements": ["n", "a"],
+			"messages": ["and %d more errors and/or warnings"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "none",
+			"note": "Not a rule: error-list truncation.",
+			"source": "ET/ValidationErrorFormatter.java (OMITTED_RESULTS_SUFFIX_FORMAT)"
+		},
+		{
+			"id": "Z191",
+			"name": "form-resource",
+			"section": "P",
+			"rule": "Form JSON: valid JSON, id present, non-blank, <= max-id-length",
+			"elements": [".form"],
+			"messages": [
+				"Failed to parse form JSON. '%s': %s",
+				"Expected the form id to be present, but none given",
+				"Expected the form id to be filled, but it is blank",
+				"The ID of a form must not be longer than ..."
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "none",
+			"note": "Form resource, not BPMN: lintForm covers it.",
+			"source": "ET/FormResourceTransformer.java:103,125,183,186"
+		},
+		{
+			"id": "Z192",
+			"name": "dmn-resource",
+			"section": "P",
+			"rule": "DMN: parse OK, decision ids present, id/name length limits",
+			"elements": [".dmn"],
+			"messages": [
+				"Expected the decision '%s' to have an ID, but it has none in resource '%s'",
+				"The ID of a decision must not be longer than ..."
+			],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "none",
+			"note": "DMN resource, not BPMN: lintDmn covers it.",
+			"source": "ET/DmnResourceTransformer.java:177-254"
+		},
+		{
+			"id": "Z193",
+			"name": "rpa-resource",
+			"section": "P",
+			"rule": "Generic RPA/resource JSON: id present/non-blank",
+			"elements": [".rpa"],
+			"messages": ["Expected the resource id to be present, but none given"],
+			"since": "8.0",
+			"kind": "static",
+			"severity": "error",
+			"check": "none",
+			"note": "RPA resource, not BPMN.",
+			"source": "ET/RpaTransformer.java:68,71"
+		}
+	]
+}
