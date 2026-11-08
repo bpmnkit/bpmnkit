@@ -1,0 +1,3 @@
+s[start] > p[service Post to Slack] > h[service Fetch] > e[end]
+with p: slack chat.postMessage | data.channel=#ops | data.text== "Order " + orderId
+with h: http GET https://api.example.com/orders | result=order

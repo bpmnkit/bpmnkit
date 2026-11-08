@@ -1,0 +1,14 @@
+{
+  "runs": {
+    "default": {},
+    "v8-0": {
+      "camundaVersion": "8.0"
+    },
+    "v8-10": {
+      "camundaVersion": "8.10"
+    },
+    "forms-off": {
+      "userTaskForms": "off"
+    }
+  }
+}

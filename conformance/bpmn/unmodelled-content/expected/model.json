@@ -1,0 +1,234 @@
+{
+  "collaborations": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "groups": [],
+      "id": "Collaboration_unmodelled",
+      "messageFlows": [],
+      "participants": [
+        {
+          "id": "Participant_main",
+          "name": "Main",
+          "processRef": "Process_unmodelled",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {},
+      "unknownChildren": [
+        {
+          "attributes": {
+            "name": "OrderKey"
+          },
+          "children": [
+            {
+              "attributes": {},
+              "children": [],
+              "name": "bpmn:correlationPropertyRef",
+              "text": "CorrelationProperty_orderId"
+            }
+          ],
+          "name": "bpmn:correlationKey"
+        }
+      ]
+    }
+  ],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "id": "Definitions_unmodelled",
+  "messages": [],
+  "namespaces": {
+    "acme": "http://acme.example/schema/1.0",
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "Start_u",
+          "incoming": [],
+          "outgoing": [
+            "Flow_u1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Task_u",
+          "incoming": [
+            "Flow_u1"
+          ],
+          "name": "Review order",
+          "outgoing": [
+            "Flow_u2"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {},
+          "unknownChildren": [
+            {
+              "attributes": {
+                "id": "PotentialOwner_1"
+              },
+              "children": [
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "bpmn:resourceRef",
+                  "text": "Resource_reviewer"
+                }
+              ],
+              "name": "bpmn:potentialOwner"
+            },
+            {
+              "attributes": {
+                "minutes": "30"
+              },
+              "children": [],
+              "name": "acme:slaBudget"
+            }
+          ]
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "End_u",
+          "incoming": [
+            "Flow_u2"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "Process_unmodelled",
+      "isExecutable": true,
+      "name": "Unmodelled content carrier",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_u1",
+          "sourceRef": "Start_u",
+          "targetRef": "Task_u",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_u2",
+          "sourceRef": "Task_u",
+          "targetRef": "End_u",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {},
+      "unknownChildren": [
+        {
+          "attributes": {
+            "id": "IoSpecification_1"
+          },
+          "children": [
+            {
+              "attributes": {
+                "id": "DataInput_order",
+                "name": "order"
+              },
+              "children": [],
+              "name": "bpmn:dataInput"
+            },
+            {
+              "attributes": {
+                "id": "DataOutput_receipt",
+                "name": "receipt"
+              },
+              "children": [],
+              "name": "bpmn:dataOutput"
+            },
+            {
+              "attributes": {
+                "id": "InputSet_1"
+              },
+              "children": [
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "bpmn:dataInputRefs",
+                  "text": "DataInput_order"
+                }
+              ],
+              "name": "bpmn:inputSet"
+            },
+            {
+              "attributes": {
+                "id": "OutputSet_1"
+              },
+              "children": [
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "bpmn:dataOutputRefs",
+                  "text": "DataOutput_receipt"
+                }
+              ],
+              "name": "bpmn:outputSet"
+            }
+          ],
+          "name": "bpmn:ioSpecification"
+        }
+      ]
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {},
+  "unknownChildren": [
+    {
+      "attributes": {
+        "importType": "http://www.w3.org/2001/XMLSchema",
+        "location": "types.xsd",
+        "namespace": "http://acme.example/types"
+      },
+      "children": [],
+      "name": "bpmn:import"
+    },
+    {
+      "attributes": {
+        "id": "ItemDefinition_order",
+        "structureRef": "acme:Order"
+      },
+      "children": [],
+      "name": "bpmn:itemDefinition"
+    },
+    {
+      "attributes": {
+        "id": "Resource_reviewer",
+        "name": "Reviewer"
+      },
+      "children": [],
+      "name": "bpmn:resource"
+    },
+    {
+      "attributes": {
+        "owner": "risk-office",
+        "reviewCycle": "quarterly"
+      },
+      "children": [
+        {
+          "attributes": {
+            "id": "SOX-114"
+          },
+          "children": [],
+          "name": "acme:control"
+        }
+      ],
+      "name": "acme:governance"
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/compat-events/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}

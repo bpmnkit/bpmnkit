@@ -1,0 +1,2 @@
+s[start] > g[and] > a[end:terminate Stop all]
+g > b[task B] > e[end]

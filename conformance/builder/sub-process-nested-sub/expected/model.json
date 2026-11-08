@@ -1,0 +1,207 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "exporter": "@bpmnkit/core",
+  "exporterVersion": "0.0.23",
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "s",
+          "incoming": [],
+          "outgoing": [
+            "Flow_s_outer"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "os",
+              "incoming": [],
+              "outgoing": [
+                "Flow_os_innerSub"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "associations": [],
+              "extensionElements": [],
+              "flowElements": [
+                {
+                  "eventDefinitions": [],
+                  "extensionElements": [],
+                  "id": "is",
+                  "incoming": [],
+                  "outgoing": [
+                    "Flow_is_deep"
+                  ],
+                  "type": "startEvent",
+                  "unknownAttributes": {}
+                },
+                {
+                  "extensionElements": [
+                    {
+                      "attributes": {
+                        "type": "deep"
+                      },
+                      "children": [],
+                      "name": "zeebe:taskDefinition"
+                    }
+                  ],
+                  "id": "deep",
+                  "incoming": [
+                    "Flow_is_deep"
+                  ],
+                  "name": "deep",
+                  "outgoing": [
+                    "Flow_deep_ie"
+                  ],
+                  "type": "serviceTask",
+                  "unknownAttributes": {}
+                },
+                {
+                  "eventDefinitions": [],
+                  "extensionElements": [],
+                  "id": "ie",
+                  "incoming": [
+                    "Flow_deep_ie"
+                  ],
+                  "outgoing": [],
+                  "type": "endEvent",
+                  "unknownAttributes": {}
+                }
+              ],
+              "groups": [],
+              "id": "innerSub",
+              "incoming": [
+                "Flow_os_innerSub"
+              ],
+              "outgoing": [
+                "Flow_innerSub_oe"
+              ],
+              "sequenceFlows": [
+                {
+                  "extensionElements": [],
+                  "id": "Flow_is_deep",
+                  "sourceRef": "is",
+                  "targetRef": "deep",
+                  "unknownAttributes": {}
+                },
+                {
+                  "extensionElements": [],
+                  "id": "Flow_deep_ie",
+                  "sourceRef": "deep",
+                  "targetRef": "ie",
+                  "unknownAttributes": {}
+                }
+              ],
+              "textAnnotations": [],
+              "type": "subProcess",
+              "unknownAttributes": {}
+            },
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "oe",
+              "incoming": [
+                "Flow_innerSub_oe"
+              ],
+              "outgoing": [],
+              "type": "endEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "outer",
+          "incoming": [
+            "Flow_s_outer"
+          ],
+          "outgoing": [
+            "Flow_outer_e"
+          ],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "Flow_os_innerSub",
+              "sourceRef": "os",
+              "targetRef": "innerSub",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "Flow_innerSub_oe",
+              "sourceRef": "innerSub",
+              "targetRef": "oe",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "type": "subProcess",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e",
+          "incoming": [
+            "Flow_outer_e"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "p",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_s_outer",
+          "sourceRef": "s",
+          "targetRef": "outer",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_outer_e",
+          "sourceRef": "outer",
+          "targetRef": "e",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.10.0"
+  }
+}

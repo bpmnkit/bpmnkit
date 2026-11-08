@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="defs" name="n" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/">
+<decision name="NoId"><literalExpression><text>1</text></literalExpression></decision><inputData name="x"/><decision id="" name="Empty"><literalExpression><text>2</text></literalExpression></decision><knowledgeSource id="ks"/>
+</definitions>

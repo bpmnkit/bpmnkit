@@ -116,3 +116,19 @@ describe("selectConnectors", () => {
 		expect(block.split("\n")[1]).toMatch(/^slack chat\.postMessage — /)
 	})
 })
+
+describe("selectConnectors for an AI agent", () => {
+	it("offers the AI Agent Sub-process card to any ad-hoc sub-process, and http to its tools", () => {
+		const result = picked("Answer customer questions with tools", [
+			{ id: "helper", name: "Support helper", type: "adHocSubProcess" },
+			{ id: "joke", name: "Tell a joke", type: "serviceTask", inside: "helper" },
+		])
+		expect(result.helper?.[0]).toBe("ai-agent-subprocess")
+		expect(result.joke).toContain("http")
+	})
+
+	it("offers the agent card only to an ad-hoc sub-process", () => {
+		const result = picked("AI agent", [{ id: "agent", name: "AI Agent", type: "serviceTask" }])
+		expect(result.agent ?? []).not.toContain("ai-agent-subprocess")
+	})
+})

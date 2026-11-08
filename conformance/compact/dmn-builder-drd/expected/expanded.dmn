@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="Definitions_000000k" name="Approval" namespace="http://bpmn.io/schema/dmn">
+  <decision id="riskScore" name="Risk Score">
+    <informationRequirement id="InformationRequirement_0000001">
+      <requiredInput href="#age"/>
+    </informationRequirement>
+    <decisionTable id="decisionTable_0000005">
+      <input id="Input_0000002">
+        <inputExpression id="inputExpression_0000002" typeRef="number">
+          <text>age</text>
+        </inputExpression>
+      </input>
+      <output id="Output_0000004" name="risk" typeRef="string"/>
+      <rule id="DecisionRule_0000007">
+        <inputEntry id="inputEntry_0_0000003">
+          <text>&lt; 18</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000004">
+          <text>"low"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="approval" name="Approval">
+    <informationRequirement id="InformationRequirement_0000006">
+      <requiredDecision href="#riskScore"/>
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_0000007">
+      <requiredInput href="#age"/>
+    </informationRequirement>
+    <decisionTable id="decisionTable_000000b" hitPolicy="FIRST">
+      <input id="Input_000000a">
+        <inputExpression id="inputExpression_0000008">
+          <text>risk</text>
+        </inputExpression>
+      </input>
+      <output id="Output_000000c" name="approved" typeRef="boolean"/>
+      <rule id="DecisionRule_000000f">
+        <inputEntry id="inputEntry_0_0000009">
+          <text>"low"</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000a">
+          <text>true</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="age" name="Age"/>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="age">
+        <dc:Bounds height="45" width="125" x="160" y="117.5"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="riskScore">
+        <dc:Bounds height="80" width="180" x="345" y="100"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="approval">
+        <dc:Bounds height="80" width="180" x="585" y="100"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge dmnElementRef="InformationRequirement_0000001">
+        <di:waypoint x="285" y="140"/>
+        <di:waypoint x="345" y="140"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="InformationRequirement_0000006">
+        <di:waypoint x="525" y="140"/>
+        <di:waypoint x="585" y="140"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="InformationRequirement_0000007">
+        <di:waypoint x="285" y="140"/>
+        <di:waypoint x="585" y="140"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

@@ -1,0 +1,93 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "g",
+            "name": "Decide",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "a",
+            "name": "Fast",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "id": "b",
+            "name": "Slow",
+            "type": "task"
+          },
+          {
+            "id": "e_join",
+            "type": "exclusiveGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "g"
+          },
+          {
+            "condition": "= decide = \"If the customer is a VIP\"",
+            "from": "g",
+            "id": "Flow_2",
+            "name": "If the customer is a VIP",
+            "to": "a"
+          },
+          {
+            "from": "a",
+            "id": "Flow_3",
+            "to": "e_join"
+          },
+          {
+            "from": "g",
+            "id": "Flow_4",
+            "isDefault": true,
+            "name": "Otherwise",
+            "to": "b"
+          },
+          {
+            "from": "b",
+            "id": "Flow_5",
+            "to": "e_join"
+          },
+          {
+            "from": "e_join",
+            "id": "Flow_6",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "joined 2 flows into \"e\" with xor gateway \"e_join\"",
+    "made g > b the default branch of \"g\"",
+    "gave g > a the condition \"= decide = \"If the customer is a VIP\"\"",
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": [
+    {
+      "draft": "At \"Decide\", decide on ",
+      "elementId": "g",
+      "options": [],
+      "text": "\"Decide\" decides on \"decide\", a variable the diagram made up. What data decides it?"
+    }
+  ]
+}

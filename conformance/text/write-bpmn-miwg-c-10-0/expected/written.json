@@ -1,0 +1,20 @@
+{
+  "aliases": {
+    "answer_client_directly": "_18",
+    "check_client_request": "_34",
+    "check_employee_s_availability": "_24",
+    "client_answered": "_19",
+    "e_mail_received": "_33",
+    "employee_available": "_25",
+    "no_personnel_available": "_36",
+    "notify_client_personel_not": "_31",
+    "on_site_meeting": "_27",
+    "plan_trip": "_29",
+    "prepare_confirmation_email": "_22",
+    "recieve_meeting_details": "_38",
+    "record_meeting_details": "_39",
+    "send_confirmation_email": "_45",
+    "trip_planned": "_41",
+    "update_employee_s_calendar": "_21"
+  }
+}

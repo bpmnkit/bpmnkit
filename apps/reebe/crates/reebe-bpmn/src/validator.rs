@@ -43,7 +43,10 @@ fn validate_process(process: &BpmnProcess, errors: &mut Vec<ValidationError>) {
 
     // Validate sequence flows; those of an unsupported element are reported with it.
     for flow in &process.sequence_flows {
-        let unsupported = process.unsupported_elements.iter().any(|el| el.id == flow.source_ref || el.id == flow.target_ref);
+        let unsupported = process
+            .unsupported_elements
+            .iter()
+            .any(|el| el.id == flow.source_ref || el.id == flow.target_ref);
         if !unsupported {
             validate_sequence_flow(pid, flow, process, errors);
         }
@@ -69,11 +72,18 @@ fn validate_process(process: &BpmnProcess, errors: &mut Vec<ValidationError>) {
 /// name, the XML name with a capital (`complexGateway` → `ComplexGateway`).
 fn model_type_name(xml_name: &str) -> String {
     let mut chars = xml_name.chars();
-    chars.next().map(|first| first.to_uppercase().chain(chars).collect()).unwrap_or_default()
+    chars
+        .next()
+        .map(|first| first.to_uppercase().chain(chars).collect())
+        .unwrap_or_default()
 }
 
 /// Checks that apply to each scope — the process and every sub-process in it.
-fn validate_scope(process_id: &str, elements: &HashMap<String, FlowElement>, errors: &mut Vec<ValidationError>) {
+fn validate_scope(
+    process_id: &str,
+    elements: &HashMap<String, FlowElement>,
+    errors: &mut Vec<ValidationError>,
+) {
     validate_links(process_id, elements, errors);
     validate_compensation(process_id, elements, errors);
     for el in elements.values() {
@@ -85,12 +95,19 @@ fn validate_scope(process_id: &str, elements: &HashMap<String, FlowElement>, err
 
 /// Link events pair up by name within one scope: every link throw event needs a link
 /// catch event of its name, and a name belongs to one catch event only.
-fn validate_links(process_id: &str, elements: &HashMap<String, FlowElement>, errors: &mut Vec<ValidationError>) {
+fn validate_links(
+    process_id: &str,
+    elements: &HashMap<String, FlowElement>,
+    errors: &mut Vec<ValidationError>,
+) {
     let mut catches: HashMap<&str, Vec<&str>> = HashMap::new();
     for el in elements.values() {
         if let FlowElement::IntermediateCatchEvent(e) = el {
             if let Some(EventDefinition::Link(name)) = &e.event_definition {
-                catches.entry(name.as_str()).or_default().push(e.id.as_str());
+                catches
+                    .entry(name.as_str())
+                    .or_default()
+                    .push(e.id.as_str());
             }
         }
     }
@@ -116,14 +133,18 @@ fn validate_links(process_id: &str, elements: &HashMap<String, FlowElement>, err
             FlowElement::IntermediateCatchEvent(e) => (&e.id, &e.event_definition),
             _ => continue,
         };
-        let Some(EventDefinition::Link(name)) = def else { continue };
+        let Some(EventDefinition::Link(name)) = def else {
+            continue;
+        };
         if name.trim().is_empty() {
             errors.push(ValidationError::ElementError {
                 process_id: process_id.to_string(),
                 element_id: id.clone(),
                 message: "Link name must be present and not empty.".to_string(),
             });
-        } else if matches!(el, FlowElement::IntermediateThrowEvent(_)) && !catches.contains_key(name.as_str()) {
+        } else if matches!(el, FlowElement::IntermediateThrowEvent(_))
+            && !catches.contains_key(name.as_str())
+        {
             errors.push(ValidationError::ElementError {
                 process_id: process_id.to_string(),
                 element_id: id.clone(),
@@ -136,7 +157,11 @@ fn validate_links(process_id: &str, elements: &HashMap<String, FlowElement>, err
 /// A compensation throw event's `activityRef` names an activity of its own scope that
 /// has a compensation boundary event. An event sub-process cannot start with a
 /// compensation event: Zeebe does not support compensation start events.
-fn validate_compensation(process_id: &str, elements: &HashMap<String, FlowElement>, errors: &mut Vec<ValidationError>) {
+fn validate_compensation(
+    process_id: &str,
+    elements: &HashMap<String, FlowElement>,
+    errors: &mut Vec<ValidationError>,
+) {
     let has_compensation_boundary = |activity: &str| {
         elements.values().any(|e| matches!(
             e,
@@ -166,10 +191,15 @@ fn validate_compensation(process_id: &str, elements: &HashMap<String, FlowElemen
             }
             _ => continue,
         };
-        let Some(EventDefinition::Compensation(CompensationEventDefinition { activity_ref: Some(activity) })) = def else {
+        let Some(EventDefinition::Compensation(CompensationEventDefinition {
+            activity_ref: Some(activity),
+        })) = def
+        else {
             continue;
         };
-        if !elements.get(activity).is_some_and(FlowElement::is_activity) || !has_compensation_boundary(activity) {
+        if !elements.get(activity).is_some_and(FlowElement::is_activity)
+            || !has_compensation_boundary(activity)
+        {
             errors.push(ValidationError::ElementError {
                 process_id: process_id.to_string(),
                 element_id: id.clone(),
@@ -225,13 +255,20 @@ fn validate_element(
     let is_end = matches!(element, FlowElement::EndEvent(_));
     let is_boundary = matches!(element, FlowElement::BoundaryEvent(_));
     // An event sub-process is started by its event, not by a sequence flow.
-    let is_event_subprocess = matches!(element, FlowElement::SubProcess(sp) if sp.triggered_by_event);
+    let is_event_subprocess =
+        matches!(element, FlowElement::SubProcess(sp) if sp.triggered_by_event);
     // A compensation handler is linked to its boundary event by an association.
     let is_handler = element.is_for_compensation();
 
     if !is_start && !is_end && !is_boundary && !is_event_subprocess && !is_handler {
-        let has_incoming = process.sequence_flows.iter().any(|f| f.target_ref == *element_id);
-        let has_outgoing = process.sequence_flows.iter().any(|f| f.source_ref == *element_id);
+        let has_incoming = process
+            .sequence_flows
+            .iter()
+            .any(|f| f.target_ref == *element_id);
+        let has_outgoing = process
+            .sequence_flows
+            .iter()
+            .any(|f| f.source_ref == *element_id);
 
         if !has_incoming && !has_outgoing && process.elements.len() > 1 {
             errors.push(ValidationError::ElementError {
@@ -267,7 +304,13 @@ fn validate_service_task(
         });
     }
 
-    validate_io_mappings(process_id, element_id, &task.input_mappings, &task.output_mappings, errors);
+    validate_io_mappings(
+        process_id,
+        element_id,
+        &task.input_mappings,
+        &task.output_mappings,
+        errors,
+    );
     validate_multi_instance(process_id, element_id, &task.multi_instance, errors);
 }
 
@@ -279,7 +322,13 @@ fn validate_user_task(
 ) {
     // User task should have a form definition or user task form (not strictly required but recommended)
     // We won't make this a hard error to allow bare user tasks in development
-    validate_io_mappings(process_id, element_id, &task.input_mappings, &task.output_mappings, errors);
+    validate_io_mappings(
+        process_id,
+        element_id,
+        &task.input_mappings,
+        &task.output_mappings,
+        errors,
+    );
     validate_multi_instance(process_id, element_id, &task.multi_instance, errors);
 }
 
@@ -307,7 +356,13 @@ fn validate_call_activity(
         });
     }
 
-    validate_io_mappings(process_id, element_id, &ca.input_mappings, &ca.output_mappings, errors);
+    validate_io_mappings(
+        process_id,
+        element_id,
+        &ca.input_mappings,
+        &ca.output_mappings,
+        errors,
+    );
 }
 
 fn validate_start_event(
@@ -338,7 +393,7 @@ fn validate_end_event(
 ) {
     if let Some(EventDefinition::Error(err)) = &ev.event_definition {
         // Error end events should have an error code
-        if err.error_code.as_ref().map_or(true, |c| c.is_empty()) {
+        if err.error_code.as_ref().is_none_or(|c| c.is_empty()) {
             // Warning only - not a hard validation error in Zeebe
         }
     }
@@ -361,14 +416,12 @@ fn validate_intermediate_catch_event(
         Some(EventDefinition::Timer(timer)) => {
             validate_timer_definition(process_id, element_id, timer, errors);
         }
-        Some(EventDefinition::Message(msg)) => {
-            if msg.message_name.is_empty() {
-                errors.push(ValidationError::ElementError {
-                    process_id: process_id.to_string(),
-                    element_id: element_id.to_string(),
-                    message: "Message catch event must reference a message with a name".to_string(),
-                });
-            }
+        Some(EventDefinition::Message(msg)) if msg.message_name.is_empty() => {
+            errors.push(ValidationError::ElementError {
+                process_id: process_id.to_string(),
+                element_id: element_id.to_string(),
+                message: "Message catch event must reference a message with a name".to_string(),
+            });
         }
         _ => {}
     }
@@ -404,14 +457,12 @@ fn validate_boundary_event(
         Some(EventDefinition::Timer(timer)) => {
             validate_timer_definition(process_id, element_id, timer, errors);
         }
-        Some(EventDefinition::Message(msg)) => {
-            if msg.message_name.is_empty() {
-                errors.push(ValidationError::ElementError {
-                    process_id: process_id.to_string(),
-                    element_id: element_id.to_string(),
-                    message: "Message boundary event must reference a message with a name".to_string(),
-                });
-            }
+        Some(EventDefinition::Message(msg)) if msg.message_name.is_empty() => {
+            errors.push(ValidationError::ElementError {
+                process_id: process_id.to_string(),
+                element_id: element_id.to_string(),
+                message: "Message boundary event must reference a message with a name".to_string(),
+            });
         }
         _ => {}
     }
@@ -430,7 +481,7 @@ fn validate_exclusive_gateway(
 
     let default_flow = &gw.default_flow;
     for flow_id in &gw.outgoing {
-        let is_default = default_flow.as_ref().map_or(false, |d| d == flow_id);
+        let is_default = default_flow.as_ref() == Some(flow_id);
         if is_default {
             continue;
         }
@@ -535,7 +586,8 @@ fn validate_multi_instance(
             errors.push(ValidationError::ElementError {
                 process_id: process_id.to_string(),
                 element_id: element_id.to_string(),
-                message: "Multi-instance loop: inputCollection expression must not be empty".to_string(),
+                message: "Multi-instance loop: inputCollection expression must not be empty"
+                    .to_string(),
             });
         }
     }
@@ -551,14 +603,20 @@ fn validate_sequence_flow(
         errors.push(ValidationError::ElementError {
             process_id: process_id.to_string(),
             element_id: flow.id.clone(),
-            message: format!("Sequence flow references non-existent source '{}'", flow.source_ref),
+            message: format!(
+                "Sequence flow references non-existent source '{}'",
+                flow.source_ref
+            ),
         });
     }
     if !process.elements.contains_key(&flow.target_ref) {
         errors.push(ValidationError::ElementError {
             process_id: process_id.to_string(),
             element_id: flow.id.clone(),
-            message: format!("Sequence flow references non-existent target '{}'", flow.target_ref),
+            message: format!(
+                "Sequence flow references non-existent target '{}'",
+                flow.target_ref
+            ),
         });
     }
 }
@@ -611,15 +669,22 @@ mod tests {
     fn test_service_task_without_task_definition() {
         let processes = parse_bpmn(INVALID_PROCESS_NO_TASK_DEF).unwrap();
         let errors = validate_bpmn(&processes[0]);
-        assert!(!errors.is_empty(), "Expected validation errors for missing task definition");
-        assert!(errors.iter().any(|e| e.to_string().contains("taskDefinition")));
+        assert!(
+            !errors.is_empty(),
+            "Expected validation errors for missing task definition"
+        );
+        assert!(errors
+            .iter()
+            .any(|e| e.to_string().contains("taskDefinition")));
     }
 
     #[test]
     fn test_process_without_start_event() {
         let mut process = BpmnProcess::new("test");
         let end = EndEvent::new("End");
-        process.elements.insert("End".to_string(), FlowElement::EndEvent(end));
+        process
+            .elements
+            .insert("End".to_string(), FlowElement::EndEvent(end));
         let errors = validate_bpmn(&process);
         assert!(errors.iter().any(|e| e.to_string().contains("start event")));
     }
@@ -644,6 +709,9 @@ mod tests {
 </bpmn:definitions>"#;
         let processes = parse_bpmn(xml).unwrap();
         let errors = validate_bpmn(&processes[0]);
-        assert!(!errors.is_empty(), "Expected validation errors for gateway without conditions");
+        assert!(
+            !errors.is_empty(),
+            "Expected validation errors for gateway without conditions"
+        );
     }
 }

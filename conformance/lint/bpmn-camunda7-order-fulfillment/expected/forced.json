@@ -1,0 +1,171 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 9,
+    "info": 0,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "Flow_vip"
+      ],
+      "fixable": false,
+      "id": "feel/complex-condition",
+      "message": "Condition on flow \"Flow_vip\" is complex (length=42, nesting=0, operators=1, variables=6).",
+      "plane": "order-fulfillment",
+      "processId": "order-fulfillment",
+      "severity": "warning",
+      "suggestion": "Consider extracting complex FEEL expressions into named variables or decision tables."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Task_charge"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"Task_charge\" (serviceTask) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "plane": "order-fulfillment",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Task_invoice"
+      ],
+      "fixable": false,
+      "id": "pattern/call-activity-no-error-boundary",
+      "message": "Call activity \"Create invoice\" has no error boundary event.",
+      "plane": "order-fulfillment",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle errors propagated from the called process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "StartEvent_order"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Order received\" has no documentation describing expected input variables.",
+      "plane": "order-fulfillment",
+      "processId": "order-fulfillment",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_charge"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Charge payment\" (serviceTask) has no zeebe:taskDefinition type.",
+      "plane": "order-fulfillment",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_awaitPayment"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"Await payment confirmation\" (receiveTask) has no zeebe:subscription correlationKey.",
+      "plane": "order-fulfillment",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_shippingCost"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Determine shipping cost\" (businessRuleTask) has neither a zeebe:taskDefinition type nor a zeebe:calledDecision.",
+      "plane": "order-fulfillment",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Set a decisionId or a job type."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_invoice"
+      ],
+      "fixable": false,
+      "id": "deploy/call-activity-no-process",
+      "message": "Call activity \"Create invoice\" has no zeebe:calledElement processId.",
+      "plane": "order-fulfillment",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Set the process id to call."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_ship"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Ship order\" (serviceTask) has no zeebe:taskDefinition type.",
+      "plane": "order-fulfillment",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_notify"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Notify customer\" (serviceTask) has no zeebe:taskDefinition type.",
+      "plane": "order-fulfillment",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_escalate"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Escalate review\" (serviceTask) has no zeebe:taskDefinition type.",
+      "plane": "order-fulfillment",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    }
+  ],
+  "platform": {
+    "id": "camunda-platform",
+    "name": "Camunda Platform",
+    "version": "7.22.0"
+  },
+  "total": 11
+}

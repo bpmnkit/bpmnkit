@@ -1,0 +1,37 @@
+{
+  "id": "Definitions_artifacts",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "Start_art",
+          "type": "startEvent"
+        },
+        {
+          "documentation": "Reviewer checks the submission against policy.",
+          "id": "Task_review",
+          "name": "Review",
+          "type": "userTask"
+        },
+        {
+          "id": "End_art",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "Start_art",
+          "id": "Flow_a1",
+          "to": "Task_review"
+        },
+        {
+          "from": "Task_review",
+          "id": "Flow_a2",
+          "to": "End_art"
+        }
+      ],
+      "id": "Process_artifacts",
+      "name": "Annotated process"
+    }
+  ]
+}

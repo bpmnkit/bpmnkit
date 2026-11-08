@@ -1,0 +1,64 @@
+{
+  "decisions": [
+    {
+      "hitPolicy": "FIRST",
+      "id": "tierDecision",
+      "inputs": [
+        {
+          "expression": "score",
+          "id": "i1",
+          "label": "score"
+        }
+      ],
+      "name": "Tier Decision",
+      "outputs": [
+        {
+          "id": "o1",
+          "name": "tier",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r1",
+          "inputs": [
+            ">= 800"
+          ],
+          "outputs": [
+            "\"PLATINUM\""
+          ]
+        },
+        {
+          "id": "r2",
+          "inputs": [
+            ">= 600"
+          ],
+          "outputs": [
+            "\"GOLD\""
+          ]
+        },
+        {
+          "id": "r3",
+          "inputs": [
+            ">= 400"
+          ],
+          "outputs": [
+            "\"SILVER\""
+          ]
+        },
+        {
+          "id": "r4",
+          "inputs": [
+            ">= 0"
+          ],
+          "outputs": [
+            "\"BRONZE\""
+          ]
+        }
+      ]
+    }
+  ],
+  "id": "Definitions_first",
+  "inputData": [],
+  "name": "DRD"
+}

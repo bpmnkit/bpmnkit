@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_agent</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="agent" name="Agent">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="agent-job"/>
+        <zeebe:agentDefinition agentType="langchain"/>
+        <zeebe:linkedResources>
+          <zeebe:linkedResource resourceType="RPA" resourceId="script-1" linkName="rpa"/>
+        </zeebe:linkedResources>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_s_agent</bpmn:incoming>
+      <bpmn:outgoing>Flow_agent_e</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="e">
+      <bpmn:incoming>Flow_agent_e</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s_agent" sourceRef="s" targetRef="agent"/>
+    <bpmn:sequenceFlow id="Flow_agent_e" sourceRef="agent" targetRef="e"/>
+  </bpmn:process>
+</bpmn:definitions>
+

@@ -102,6 +102,12 @@ export interface HudOptions {
 	 */
 	aiButton?: HTMLButtonElement | null
 	/**
+	 * Optional on-device Generate button (from `createAiLocalPlugin(...).button`).
+	 * When provided, it is styled as a HUD button and placed in the action bar.
+	 * The plugin owns its `hidden` state; the HUD never changes it.
+	 */
+	generateButton?: HTMLButtonElement | null
+	/**
 	 * Optional play mode button (from `createProcessRunnerPlugin(...).playButton`).
 	 * When provided, it is styled as a HUD button and placed in the action bar.
 	 */
@@ -237,6 +243,11 @@ export function initEditorHud(
 	if (options.aiButton) {
 		options.aiButton.className = "hud-btn"
 		hudTopCenter.append(hudSep(), options.aiButton)
+	}
+
+	if (options.generateButton) {
+		options.generateButton.className = "hud-btn"
+		hudTopCenter.append(hudSep(), options.generateButton)
 	}
 
 	if (options.playButton) {

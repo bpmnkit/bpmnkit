@@ -93,6 +93,8 @@ vendor/
 
 # Cargo local config overrides (e.g. vendored source config)
 .cargo/config.toml
+# ...except the committed one, which only sets wasm size flags.
+!/.cargo/config.toml
 
 # Rust incremental compilation artifacts
 **/*.pdb

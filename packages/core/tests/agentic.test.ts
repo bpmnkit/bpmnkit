@@ -6,6 +6,17 @@ describe("buildAiAgentSubProcess", () => {
 		resetIdCounter()
 	})
 
+	it("returns the id it was given, so the result feeds adHocSubProcess directly", () => {
+		const agent = buildAiAgentSubProcess({
+			id: "AI_Agent",
+			model: { provider: "anthropic", inputs: {} },
+			systemPrompt: "You are helpful.",
+			userPrompt: "=userMessage",
+			tools: [{ id: "t1", description: "A tool.", serviceTask: { taskType: "io.camunda:x:1" } }],
+		})
+		expect(agent.id).toBe("AI_Agent")
+	})
+
 	it("throws when no tools are given", () => {
 		expect(() =>
 			buildAiAgentSubProcess({

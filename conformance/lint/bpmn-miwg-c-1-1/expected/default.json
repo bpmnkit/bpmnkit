@@ -1,0 +1,343 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 7,
+    "info": 2,
+    "warning": 16
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "invoice_approved"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"invoice_approved\" has 2 outgoing flows but no default flow set.",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "reviewSuccessful_gw"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"reviewSuccessful_gw\" has 2 outgoing flows but no default flow set.",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "approveInvoice"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"approveInvoice\" (userTask) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Bpmn_DataObject_approver"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Bpmn_DataObject_approver\" (dataObject) is not reachable from any start event.",
+      "processId": "handle-invoice",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Bpmn_DataObject_approver"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Bpmn_DataObject_approver\" (dataObject) has no outgoing sequence flows.",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Bpmn_DataObjectReference_assignApprover"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Bpmn_DataObjectReference_assignApprover\" (dataObjectReference) is not reachable from any start event.",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Bpmn_DataObjectReference_assignApprover"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Bpmn_DataObjectReference_assignApprover\" (dataObjectReference) has no outgoing sequence flows.",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Bpmn_DataObject_WUfQYrH1EeSuDf0W70XLGw"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Bpmn_DataObject_WUfQYrH1EeSuDf0W70XLGw\" (dataObject) is not reachable from any start event.",
+      "processId": "handle-invoice",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Bpmn_DataObject_WUfQYrH1EeSuDf0W70XLGw"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Bpmn_DataObject_WUfQYrH1EeSuDf0W70XLGw\" (dataObject) has no outgoing sequence flows.",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Bpmn_DataObjectReference_YGA4YLH1EeSuDf0W70XLGw"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Bpmn_DataObjectReference_YGA4YLH1EeSuDf0W70XLGw\" (dataObjectReference) is not reachable from any start event.",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Bpmn_DataObjectReference_YGA4YLH1EeSuDf0W70XLGw"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Bpmn_DataObjectReference_YGA4YLH1EeSuDf0W70XLGw\" (dataObjectReference) has no outgoing sequence flows.",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Bpmn_DataObject_aT_L0rH1EeSuDf0W70XLGw"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Bpmn_DataObject_aT_L0rH1EeSuDf0W70XLGw\" (dataObject) is not reachable from any start event.",
+      "processId": "handle-invoice",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Bpmn_DataObject_aT_L0rH1EeSuDf0W70XLGw"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Bpmn_DataObject_aT_L0rH1EeSuDf0W70XLGw\" (dataObject) has no outgoing sequence flows.",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Bpmn_DataObjectReference_cdsDQLH1EeSuDf0W70XLGw"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Bpmn_DataObjectReference_cdsDQLH1EeSuDf0W70XLGw\" (dataObjectReference) is not reachable from any start event.",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Bpmn_DataObjectReference_cdsDQLH1EeSuDf0W70XLGw"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Bpmn_DataObjectReference_cdsDQLH1EeSuDf0W70XLGw\" (dataObjectReference) has no outgoing sequence flows.",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "invoice_approved"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Invoice\r\napproved?\" has no default sequence flow.",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "reviewSuccessful_gw"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Review\nsuccessful?\" has no default sequence flow.",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "approveInvoice"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Approve Invoice\" has no timer boundary event.",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "assignApprover"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Assign\r\nApprover\" has no timer boundary event.",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "reviewInvoice"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Rechnung klären\" has no timer boundary event.",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "prepareBankTransfer"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Prepare\r\nBank\r\nTransfer\" has no timer boundary event.",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "StartEvent_1"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Invoice\r\nreceived\" has no documentation describing expected input variables.",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "invoice_approved",
+        "reviewSuccessful_gw"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:bpmn",
+      "message": "Variable \"bpmn\" is referenced but never set in this process.",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "warning",
+      "suggestion": "\"bpmn\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "invoice_approved"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:invoice_approved",
+      "message": "Element \"invoice_approved\" consumes: bpmn.",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "reviewSuccessful_gw"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:reviewSuccessful_gw",
+      "message": "Element \"reviewSuccessful_gw\" consumes: bpmn.",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "info",
+      "suggestion": ""
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 25
+}

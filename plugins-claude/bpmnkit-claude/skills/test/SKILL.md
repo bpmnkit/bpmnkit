@@ -15,7 +15,7 @@ Extract the `.bpmn` filename from $ARGUMENTS, or find the single `.bpmn` in cwd,
 ## 2. Run
 
 ```sh
-casen test <file>.bpmn
+casen test test <file>.bpmn
 ```
 
 ## 3. Report

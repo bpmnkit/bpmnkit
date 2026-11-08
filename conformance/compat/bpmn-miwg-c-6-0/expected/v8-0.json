@@ -1,0 +1,304 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_15fef309-6718-4352-9b71-f757bcd8c023"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message intermediate catch event \"Offer Approved\" references no message.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_e5c69e92-6f98-47c8-bc22-b75d38620f95"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message intermediate catch event \"Cancel Request\" references no message.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_87baeef0-f32e-4a93-b802-fdd588aaf729"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer intermediate catch event \"24 Hours\" uses timeDate, which needs Camunda 8.3 or newer on this event; this model targets Camunda 8.0.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_6a5cdbbf-2618-496e-b728-955dc215ef9d"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Compensate intermediate throw event \"Booking\" needs Camunda 8.5 or newer; this model targets Camunda 8.0.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.5 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_e839800f-ad4f-4bcc-aaf2-d38fe4a32bcd"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Send task \"Request\nCredit Card Information\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_44e3f1fa-42cd-40b7-9980-a51ac49d5fa3"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message start event \"Receive Travel Request\" references no message.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_99bf4db9-3616-4ed1-a0f8-b8175c3fd46f"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Compensate intermediate throw event \"Hotel\" needs Camunda 8.5 or newer; this model targets Camunda 8.0.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.5 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_e4b9fa74-efd8-409f-a2e4-ad917df767b4"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Compensate intermediate throw event \"Flight\" needs Camunda 8.5 or newer; this model targets Camunda 8.0.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.5 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_8af17ed4-6e13-463b-8333-d397b3002c65"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Compensate start event \"Booking\" is not supported by any Camunda 8 version.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Model it with an element Camunda 8 executes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_3a2f133c-3ae1-4e21-94b5-6e8cf51acd74"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Cancel Hotel\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_b595ec43-0769-4864-8f2e-403c405c8217"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Book Hotel\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_ea5cc55d-bfce-49c6-8a1a-a8a41a85da12"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Book Flight\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_0198160d-b56c-4919-9920-db5f32d16b3f"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Cancel Flight\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_b25ecc7c-4eff-4a70-96f2-6b2f94cf19b1"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Compensate boundary event \"Hotel\" needs Camunda 8.5 or newer; this model targets Camunda 8.0.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.5 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_fe3f9094-097b-416d-adeb-4b7e7e753f3c"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Compensate boundary event \"Flight\" needs Camunda 8.5 or newer; this model targets Camunda 8.0.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.5 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_22612d45-65ca-4a74-a6eb-53af7ebcb5ff"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Send task \"Confirm Booking\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_c8fa5253-dde9-471e-b933-58b00e8f374c"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Send task \"Notify Failed Booking\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_614d6469-2bb8-4ad6-a20a-db5db6321c6b"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Charge Credit Card\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_9cc2ac34-f12c-49e0-b37c-144e5a84fd92"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Send task \"Make Flights and Hotel Offer\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_8afc49f0-42c2-4da9-8e79-e08dbe349776"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Update Customer Record\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_de7e721e-a073-4857-b8c3-c6ae886dbb46"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Send task \"Notify Customer\nOffer Expired\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_2d6586cf-81fc-4e2a-83ec-6cfff5b34bb0"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Send task \"Notify Failed Credit Transaction\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_6db9a77f-189f-4c07-b33b-e0c88f09e0db"
+      ],
+      "fixable": false,
+      "id": "compat/error-reference",
+      "message": "Error boundary event \"_6db9a77f-189f-4c07-b33b-e0c88f09e0db\" references no error; catching every error needs Camunda 8.2 or newer, this model targets Camunda 8.0.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:error with an error code."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_54d6e34f-4613-48d4-9143-b90927448adb"
+      ],
+      "fixable": false,
+      "id": "compat/error-reference",
+      "message": "Error boundary event \"_54d6e34f-4613-48d4-9143-b90927448adb\" references no error; catching every error needs Camunda 8.2 or newer, this model targets Camunda 8.0.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:error with an error code."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_32c4138c-74ae-484a-a7e5-0609370d7080"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer boundary event \"24 Hours\" uses timeDate, which needs Camunda 8.3 or newer on this event; this model targets Camunda 8.0.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    }
+  ]
+}

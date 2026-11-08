@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="Def_1" name="DRD" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="Dec_1" name="Test">
+    <decisionTable id="DT_1">
+      <input id="In_1" label="input">
+        <inputExpression id="IE_1" typeRef="string">
+          <text>myVar</text>
+        </inputExpression>
+      </input>
+      <output id="Out_1" label="output" name="result" typeRef="string"/>
+      <rule id="Rule_1">
+        <description>test rule</description>
+        <inputEntry id="UT_1">
+          <text>"hello"</text>
+        </inputEntry>
+        <outputEntry id="LE_1">
+          <text>"world"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>
+

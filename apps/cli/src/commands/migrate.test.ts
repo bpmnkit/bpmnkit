@@ -68,6 +68,19 @@ describe("casen migrate c7", () => {
 		expect(text).not.toContain("MANUAL")
 	})
 
+	it("exports a Camunda 8 model to Camunda 7 with --to camunda7", async () => {
+		const input = join(dir, "job.bpmn")
+		writeFileSync(
+			input,
+			'<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="d" targetNamespace="x"><bpmn:process id="p" isExecutable="true"><bpmn:serviceTask id="t"><bpmn:extensionElements><zeebe:taskDefinition type="charge"/></bpmn:extensionElements></bpmn:serviceTask></bpmn:process></bpmn:definitions>',
+		)
+		const { error } = await run([input], { to: "camunda7" })
+		expect(error).toBeUndefined()
+		const out = readFileSync(join(dir, "job.c7.bpmn"), "utf-8")
+		expect(out).toContain('camunda:topic="charge"')
+		expect(out).not.toContain("zeebe")
+	})
+
 	it("orders groups unsupported, manual, convertible", async () => {
 		const { printed } = await run([fixture("order-fulfillment.bpmn")])
 		const text = String(printed[0])

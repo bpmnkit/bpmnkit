@@ -1,6 +1,8 @@
+import { packAnnotations } from "../layout/annotations.js"
 import { layoutProcess } from "../layout/index.js"
 import type { XmlElement } from "../types/xml-element.js"
 import { assertBpmnDefinitions, assertCompactDiagram } from "./argument-guards.js"
+import { addAnnotationShapes } from "./auto-layout.js"
 import type {
 	BpmnAssociation,
 	BpmnDefinitions,
@@ -16,6 +18,8 @@ import type {
 	BpmnTextAnnotation,
 } from "./bpmn-model.js"
 import { restConnectorTaskType } from "./rest-connector.js"
+import { assignEventDefinitionIds } from "./stable-ids.js"
+import { makeConditionalDefinition } from "./zeebe-extensions.js"
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
@@ -47,12 +51,33 @@ export interface CompactElement {
 	 * optionally `headers`, `queryParameters`, `body`, `authentication.type`.
 	 */
 	inputs?: Record<string, string>
+	/** Zeebe output mappings (target→source), read like {@link inputs}. */
+	outputs?: Record<string, string>
+	/**
+	 * Marks a user task as a Camunda 8 native one (`zeebe:userTask`), which a linked
+	 * form needs from Camunda 8.10.
+	 */
+	nativeUserTask?: boolean
 	/** The element template applied to this element (`zeebe:modelerTemplate`). */
 	modelerTemplate?: { id: string; version?: number }
 	/** Called process ID (callActivity: zeebe:calledElement.processId) */
 	calledProcess?: string
 	/** Linked form ID (userTask: zeebe:formDefinition.formId) */
 	formId?: string
+	/** userTask: who the task is assigned to (`zeebe:assignmentDefinition`); FEEL with `=`. */
+	assignee?: string
+	/** userTask: comma-separated candidate groups, or a FEEL list expression. */
+	candidateGroups?: string
+	/** userTask: comma-separated candidate users, or a FEEL list expression. */
+	candidateUsers?: string
+	/** userTask: due date (`zeebe:taskSchedule`), ISO 8601 or FEEL. */
+	dueDate?: string
+	/** userTask: follow-up date (`zeebe:taskSchedule`), ISO 8601 or FEEL. */
+	followUpDate?: string
+	/** userTask: priority 0–100 (`zeebe:priorityDefinition`), or a FEEL expression. */
+	priority?: number | string
+	/** Zeebe extension properties (`zeebe:properties`, name→value). */
+	properties?: Record<string, string>
 	/** Linked decision ID (businessRuleTask: zeebe:calledDecision.decisionId) */
 	decisionId?: string
 	/**
@@ -82,9 +107,20 @@ export interface CompactElement {
 	 * `collection` is the FEEL expression of the list, `element` the variable each
 	 * instance gets its item in. In parallel unless `sequential`.
 	 */
-	multiInstance?: { collection: string; element?: string; sequential?: boolean }
+	multiInstance?: {
+		collection: string
+		element?: string
+		sequential?: boolean
+		/** Variable collecting each instance's `outputElement`. */
+		outputCollection?: string
+		outputElement?: string
+		/** FEEL expression that ends the loop early. */
+		completionCondition?: string
+	}
 	/** A timer event's ISO 8601 duration (`PT5M`): how long it waits once reached. */
 	timerDuration?: string
+	/** A conditional event's FEEL condition (Camunda 8.9+). */
+	condition?: string
 }
 
 /** A sequence flow in compact form. */
@@ -108,6 +144,13 @@ export interface CompactFlow {
 	isDefault?: boolean
 }
 
+/** A text annotation and the element it is associated with. */
+export interface CompactNote {
+	/** The annotated element, at any depth of the process. */
+	elementId: string
+	text: string
+}
+
 /** A single process in compact form. */
 export interface CompactProcess {
 	id: string
@@ -116,6 +159,12 @@ export interface CompactProcess {
 	documentation?: string
 	elements: CompactElement[]
 	flows: CompactFlow[]
+	/**
+	 * Text annotations, each tied to an element by an association. {@link expand}
+	 * puts them on the process and lays them out; {@link compactify} does not
+	 * produce them.
+	 */
+	notes?: CompactNote[]
 }
 
 /**
@@ -135,6 +184,11 @@ export interface CompactProcess {
  */
 export interface CompactDiagram {
 	id: string
+	/**
+	 * The Camunda 8 version the diagram targets, such as `8.10.0`. {@link expand}
+	 * writes it as `modeler:executionPlatformVersion`; without it none is written.
+	 */
+	executionPlatformVersion?: string
 	processes: CompactProcess[]
 }
 
@@ -222,6 +276,27 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 	const formId = findAttr(ext, "zeebe:formDefinition", "formId")
 	if (formId) result.formId = formId
 
+	for (const key of ["assignee", "candidateGroups", "candidateUsers"] as const) {
+		const value = findAttr(ext, "zeebe:assignmentDefinition", key)
+		if (value) result[key] = value
+	}
+	for (const key of ["dueDate", "followUpDate"] as const) {
+		const value = findAttr(ext, "zeebe:taskSchedule", key)
+		if (value) result[key] = value
+	}
+	const priority = findAttr(ext, "zeebe:priorityDefinition", "priority")
+	if (priority) result.priority = /^\d+$/.test(priority) ? Number(priority) : priority
+
+	const propertiesEl = ext.find((e) => e.name === "zeebe:properties")
+	if (propertiesEl && propertiesEl.children.length > 0) {
+		const properties: Record<string, string> = {}
+		for (const child of propertiesEl.children) {
+			const { name, value } = child.attributes
+			if (name !== undefined) properties[name] = value ?? ""
+		}
+		result.properties = properties
+	}
+
 	const decisionId = findAttr(ext, "zeebe:calledDecision", "decisionId")
 	const script = findAttr(ext, "zeebe:script", "expression")
 	if (decisionId) {
@@ -255,6 +330,16 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 	}
 	if (Object.keys(inputs).length > 0) result.inputs = inputs
 
+	// `source: "= response"` is the job worker's result, which expand writes back from `resultVariable`.
+	const outputs: Record<string, string> = {}
+	for (const output of ext.find((e) => e.name === "zeebe:ioMapping")?.children ?? []) {
+		const { source, target } = output.attributes
+		if (output.name !== "zeebe:output" || source === undefined || target === undefined) continue
+		if (result.jobType !== undefined && source === "= response") continue
+		outputs[target] = source
+	}
+	if (Object.keys(outputs).length > 0) result.outputs = outputs
+
 	const template = el.unknownAttributes["zeebe:modelerTemplate"]
 	if (template) {
 		const version = Number.parseInt(el.unknownAttributes["zeebe:modelerTemplateVersion"] ?? "", 10)
@@ -265,6 +350,7 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 		const def = el.eventDefinitions[0]
 		result.eventType = def?.type
 		if (def?.type === "timer" && def.timeDuration) result.timerDuration = def.timeDuration
+		if (def?.type === "conditional" && def.condition !== undefined) result.condition = def.condition
 	}
 
 	const loop = "loopCharacteristics" in el ? el.loopCharacteristics : undefined
@@ -275,6 +361,12 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 		if (zeebeLoop.attributes.inputElement)
 			result.multiInstance.element = zeebeLoop.attributes.inputElement
 		if (loop.isSequential) result.multiInstance.sequential = true
+		if (zeebeLoop.attributes.outputCollection)
+			result.multiInstance.outputCollection = zeebeLoop.attributes.outputCollection
+		if (zeebeLoop.attributes.outputElement)
+			result.multiInstance.outputElement = zeebeLoop.attributes.outputElement
+		if (loop.completionCondition?.text)
+			result.multiInstance.completionCondition = loop.completionCondition.text
 	}
 
 	if (el.type === "boundaryEvent") {
@@ -391,6 +483,8 @@ const EVENT_TYPES = new Set([
 function compactProblems(compact: CompactDiagram): string[] {
 	const problems: string[] = []
 	const seen = new Set<string>()
+	/** Every element id, at any depth: what a note may name. */
+	const elementIds = new Set<string>()
 	const claim = (id: string, what: string): void => {
 		if (seen.has(id)) problems.push(`duplicate id "${id}" (${what})`)
 		seen.add(id)
@@ -409,6 +503,7 @@ function compactProblems(compact: CompactDiagram): string[] {
 			}
 			claim(el.id, el.type)
 			ids.add(el.id)
+			elementIds.add(el.id)
 			if (el.eventType !== undefined && !EVENT_TYPES.has(el.eventType)) {
 				problems.push(
 					`element "${el.id}" has unknown eventType "${el.eventType}" (expected one of ${[...EVENT_TYPES].join(", ")})`,
@@ -439,6 +534,11 @@ function compactProblems(compact: CompactDiagram): string[] {
 	for (const process of compact.processes) {
 		claim(process.id, "process")
 		checkScope(process.elements, process.flows, `process "${process.id}"`)
+		for (const note of process.notes ?? []) {
+			if (!elementIds.has(note.elementId)) {
+				problems.push(`a note is on "${note.elementId}", which is not an element in the diagram`)
+			}
+		}
 	}
 	return problems
 }
@@ -517,6 +617,16 @@ function zeebeConfig(el: CompactElement): {
 	return { inputs, headers }
 }
 
+/** The given attributes without the unset ones, or `undefined` if none is set. */
+function definedAttributes(
+	attributes: Record<string, string | undefined>,
+): Record<string, string> | undefined {
+	const set = Object.entries(attributes).filter(
+		(entry): entry is [string, string] => entry[1] !== undefined,
+	)
+	return set.length > 0 ? Object.fromEntries(set) : undefined
+}
+
 export function makeExtensions(el: CompactElement): XmlElement[] {
 	const ext: XmlElement[] = []
 	const { inputs, headers } = zeebeConfig(el)
@@ -541,8 +651,39 @@ export function makeExtensions(el: CompactElement): XmlElement[] {
 			children: [],
 		})
 	}
+	if (el.nativeUserTask && el.type === "userTask") {
+		ext.push({ name: "zeebe:userTask", attributes: {}, children: [] })
+	}
 	if (el.formId) {
 		ext.push({ name: "zeebe:formDefinition", attributes: { formId: el.formId }, children: [] })
+	}
+	const assignment = definedAttributes({
+		assignee: el.assignee,
+		candidateGroups: el.candidateGroups,
+		candidateUsers: el.candidateUsers,
+	})
+	if (assignment) {
+		ext.push({ name: "zeebe:assignmentDefinition", attributes: assignment, children: [] })
+	}
+	const schedule = definedAttributes({ dueDate: el.dueDate, followUpDate: el.followUpDate })
+	if (schedule) ext.push({ name: "zeebe:taskSchedule", attributes: schedule, children: [] })
+	if (el.priority !== undefined) {
+		ext.push({
+			name: "zeebe:priorityDefinition",
+			attributes: { priority: String(el.priority) },
+			children: [],
+		})
+	}
+	if (el.properties && Object.keys(el.properties).length > 0) {
+		ext.push({
+			name: "zeebe:properties",
+			attributes: {},
+			children: Object.entries(el.properties).map(([name, value]) => ({
+				name: "zeebe:property",
+				attributes: { name, value },
+				children: [],
+			})),
+		})
 	}
 	if (el.decisionId) {
 		ext.push({
@@ -566,7 +707,16 @@ export function makeExtensions(el: CompactElement): XmlElement[] {
 		attributes: { source, target },
 		children: [],
 	}))
-	if (el.resultVariable && el.jobType && !el.decisionId && !isConnectorJobType(el.jobType)) {
+	for (const [target, source] of Object.entries(el.outputs ?? {})) {
+		ioMapping.push({ name: "zeebe:output", attributes: { source, target }, children: [] })
+	}
+	if (
+		el.resultVariable &&
+		el.jobType &&
+		!el.decisionId &&
+		!isConnectorJobType(el.jobType) &&
+		!Object.hasOwn(el.outputs ?? {}, el.resultVariable)
+	) {
 		// A job worker's result: map its `response` variable to the result variable
 		ioMapping.push({
 			name: "zeebe:output",
@@ -659,18 +809,36 @@ export function buildFlowElement(
 	}
 	const made = el.eventType ? makeEventDef(el.eventType) : undefined
 	const eventDef =
-		made?.type === "timer" && el.timerDuration ? { ...made, timeDuration: el.timerDuration } : made
+		made?.type === "timer" && el.timerDuration
+			? { ...made, timeDuration: el.timerDuration }
+			: made?.type === "conditional" && el.condition !== undefined
+				? makeConditionalDefinition(el.condition)
+				: made
 	const eventDefs: BpmnEventDefinition[] = eventDef ? [eventDef] : []
+	// Zeebe rejects an id-less definition at deploy time; the builder derives the same ids.
+	assignEventDefinitionIds(el.id, eventDefs)
 	const subContent = buildSubContent(el.children)
 	const loop = el.multiInstance && {
 		loopCharacteristics: {
 			isSequential: el.multiInstance.sequential || undefined,
+			completionCondition: el.multiInstance.completionCondition
+				? {
+						text: el.multiInstance.completionCondition,
+						attributes: { "xsi:type": "bpmn:tFormalExpression" },
+					}
+				: undefined,
 			extensionElements: [
 				{
 					name: "zeebe:loopCharacteristics",
 					attributes: {
 						inputCollection: el.multiInstance.collection,
 						...(el.multiInstance.element ? { inputElement: el.multiInstance.element } : {}),
+						...(el.multiInstance.outputCollection
+							? { outputCollection: el.multiInstance.outputCollection }
+							: {}),
+						...(el.multiInstance.outputElement
+							? { outputElement: el.multiInstance.outputElement }
+							: {}),
 					},
 					children: [],
 				},
@@ -772,6 +940,9 @@ function buildDiagram(processId: string, process: BpmnProcess): BpmnDiagram {
 		isExpanded: n.isExpanded,
 		bounds: n.bounds,
 		label: n.labelBounds ? { bounds: n.labelBounds } : undefined,
+		// The bpmn-js Viewer draws the "X" only when the shape says so; the Modeler
+		// assumes it. Spread so other shapes keep no `isMarkerVisible` key.
+		...(n.type === "exclusiveGateway" ? { isMarkerVisible: true } : {}),
 		unknownAttributes: {},
 	}))
 	const edges: BpmnDiEdge[] = layout.edges.map((e) => ({
@@ -780,6 +951,23 @@ function buildDiagram(processId: string, process: BpmnProcess): BpmnDiagram {
 		waypoints: e.waypoints,
 		unknownAttributes: {},
 	}))
+	if (process.textAnnotations.length > 0) {
+		// An annotation may sit above the topmost shape; the plane keeps to the positive quadrant.
+		const placed = packAnnotations(process, layout.nodes, layout.edges)
+		addAnnotationShapes(process, layout.nodes, placed, shapes, edges, 0, 0)
+		const dx = -Math.min(0, ...shapes.map((s) => s.bounds.x))
+		const dy = -Math.min(0, ...shapes.map((s) => s.bounds.y))
+		if (dx !== 0 || dy !== 0) {
+			for (const shape of shapes) {
+				shape.bounds = { ...shape.bounds, x: shape.bounds.x + dx, y: shape.bounds.y + dy }
+				const label = shape.label?.bounds
+				if (label) shape.label = { bounds: { ...label, x: label.x + dx, y: label.y + dy } }
+			}
+			for (const edge of edges) {
+				edge.waypoints = edge.waypoints.map((w) => ({ x: w.x + dx, y: w.y + dy }))
+			}
+		}
+	}
 	return {
 		id: `BPMNDiagram_${processId}`,
 		plane: {
@@ -818,6 +1006,24 @@ function expandProcess(compact: CompactProcess): { process: BpmnProcess; diagram
 		unknownAttributes: {},
 	}))
 
+	// Ids as the builder's `annotate` makes them, numbered per element
+	const textAnnotations: BpmnTextAnnotation[] = []
+	const associations: BpmnAssociation[] = []
+	const noted = new Map<string, number>()
+	for (const note of compact.notes ?? []) {
+		const n = (noted.get(note.elementId) ?? 0) + 1
+		noted.set(note.elementId, n)
+		const id = `TextAnnotation_${note.elementId}_${n}`
+		textAnnotations.push({ id, text: note.text, unknownAttributes: {} })
+		associations.push({
+			id: `Association_${note.elementId}_${n}`,
+			sourceRef: note.elementId,
+			targetRef: id,
+			associationDirection: "None",
+			unknownAttributes: {},
+		})
+	}
+
 	const process: BpmnProcess = {
 		id: compact.id,
 		name: compact.name,
@@ -826,8 +1032,8 @@ function expandProcess(compact: CompactProcess): { process: BpmnProcess; diagram
 		extensionElements: [],
 		flowElements,
 		sequenceFlows,
-		textAnnotations: [],
-		associations: [],
+		textAnnotations,
+		associations,
 		groups: [],
 		unknownAttributes: {},
 	}
@@ -864,6 +1070,7 @@ export function expand(compact: CompactDiagram): BpmnDefinitions {
 		processes.push(process)
 		diagrams.push(diagram)
 	}
+	const platform = compact.executionPlatformVersion
 	return {
 		id: compact.id,
 		targetNamespace: "http://bpmn.io/schema/bpmn",
@@ -873,8 +1080,15 @@ export function expand(compact: CompactDiagram): BpmnDefinitions {
 			dc: "http://www.omg.org/spec/DD/20100524/DC",
 			di: "http://www.omg.org/spec/DD/20100524/DI",
 			zeebe: "http://camunda.org/schema/zeebe/1.0",
+			...(platform === undefined ? {} : { modeler: "http://camunda.org/schema/modeler/1.0" }),
 		},
-		unknownAttributes: {},
+		unknownAttributes:
+			platform === undefined
+				? {}
+				: {
+						"modeler:executionPlatform": "Camunda Cloud",
+						"modeler:executionPlatformVersion": platform,
+					},
 		errors: [],
 		escalations: [],
 		messages: [],

@@ -1,0 +1,13 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["complexGateway","cg",{"name":"Complex"}],
+		["branch","a",{"$ops":[["serviceTask","ta",{"name":"ta","taskType":"ta"}]]}],
+		["branch","b",{"$ops":[["serviceTask","tb",{"name":"tb","taskType":"tb"}]]}],
+		["complexGateway","cj"],
+		["endEvent","e"],
+		["build"]
+	]
+}

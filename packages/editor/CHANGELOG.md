@@ -1,5 +1,43 @@
 # @bpmnkit/editor
 
+## 1.6.0
+
+### Minor Changes
+
+- 939d06a: New `@bpmnkit/plugins/ai-local` plugin generates a diagram from a description with Chrome's on-device model (Prompt API), and the editor dock gains a hidden Generate tab (`setGenerateTabVisible`) and a HUD `generateButton` slot.
+
+### Patch Changes
+
+- Updated dependencies [1ecde83]
+- Updated dependencies [1ecde83]
+- Updated dependencies [9ba0c65]
+- Updated dependencies [1ecde83]
+- Updated dependencies [1ecde83]
+- Updated dependencies [1ecde83]
+  - @bpmnkit/core@1.7.0
+
+## 1.5.1
+
+### Patch Changes
+
+- ab10779: Exclusive gateways created outside auto-layout now carry `isMarkerVisible="true"`, so the bpmn-js Viewer draws their "X": shapes from `expand()` of the compact format, the merge gateway inserted by the `flow/multi-incoming-task` fix, and the editor's `createShape`. `changeElementType` into an exclusive gateway sets the marker unless the shape already has a value (#251).
+- Updated dependencies [ab10779]
+  - @bpmnkit/core@1.6.1
+
+## 1.5.0
+
+### Minor Changes
+
+- fbd45f8: Change scripts (`applyProcessDelta`) apply `form=`, `in.`/`out.` mappings, `note <id>: text` and `doc <id>: text` to existing and new nodes, including tools inside an ad-hoc sub-process; restating what a node already has changes nothing.
+
+### Patch Changes
+
+- Updated dependencies [8bcc25a]
+- Updated dependencies [ca2129e]
+- Updated dependencies [fbd45f8]
+- Updated dependencies [fbd45f8]
+  - @bpmnkit/core@1.6.0
+
 ## 1.4.1
 
 ### Patch Changes

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_sp</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:subProcess id="sp">
+      <bpmn:incoming>Flow_s_sp</bpmn:incoming>
+      <bpmn:outgoing>Flow_sp_e</bpmn:outgoing>
+      <bpmn:startEvent id="is">
+        <bpmn:outgoing>Flow_is_inner</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:serviceTask id="inner" name="inner">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="inner"/>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_is_inner</bpmn:incoming>
+        <bpmn:outgoing>Flow_inner_ie</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:endEvent id="ie">
+        <bpmn:incoming>Flow_inner_ie</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_is_inner" sourceRef="is" targetRef="inner"/>
+      <bpmn:sequenceFlow id="Flow_inner_ie" sourceRef="inner" targetRef="ie"/>
+    </bpmn:subProcess>
+    <bpmn:boundaryEvent id="bt" attachedToRef="sp">
+      <bpmn:outgoing>Flow_bt_timeout</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="bt_TimerEventDefinition">
+        <bpmn:timeDuration>PT1H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="timeout">
+      <bpmn:incoming>Flow_bt_timeout</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="e">
+      <bpmn:incoming>Flow_sp_e</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s_sp" sourceRef="s" targetRef="sp"/>
+    <bpmn:sequenceFlow id="Flow_bt_timeout" sourceRef="bt" targetRef="timeout"/>
+    <bpmn:sequenceFlow id="Flow_sp_e" sourceRef="sp" targetRef="e"/>
+  </bpmn:process>
+</bpmn:definitions>
+

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+  xmlns:modeler="http://camunda.org/schema/modeler/1.0"
+  xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
+  
+  
+  <bpmn:process id="proc" isExecutable="true"><bpmn:extensionElements><zeebe:executionListeners><zeebe:executionListener eventType="cancel" type="pl" /></zeebe:executionListeners></bpmn:extensionElements>
+    <bpmn:startEvent id="start" name="S" ><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent><bpmn:serviceTask id="t" name="T" zeebe:modelerTemplate="tpl.x"><bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing><bpmn:extensionElements><zeebe:taskDefinition type="w" /><zeebe:executionListeners><zeebe:executionListener eventType="cancel" type="l" /><zeebe:executionListener eventType="cancel" type="l" /><zeebe:executionListener eventType="start" type="" /><zeebe:executionListener eventType="end" type="h"><zeebe:taskHeaders><zeebe:header key="a" value="b" /><zeebe:header key="a" value="c" /></zeebe:taskHeaders></zeebe:executionListener></zeebe:executionListeners></bpmn:extensionElements></bpmn:serviceTask><bpmn:endEvent id="end" name="E" ><bpmn:incoming>f2</bpmn:incoming></bpmn:endEvent><bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="t" /><bpmn:sequenceFlow id="f2" sourceRef="t" targetRef="end" />
+  </bpmn:process>
+  
+</bpmn:definitions>

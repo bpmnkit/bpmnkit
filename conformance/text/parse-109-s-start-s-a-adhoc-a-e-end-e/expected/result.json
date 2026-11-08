@@ -1,0 +1,63 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "a",
+            "name": "A",
+            "type": "adHocSubProcess"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "a"
+          },
+          {
+            "from": "a",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 2,
+      "message": "inside=a on \"b\": only a task can be inside an ad-hoc sub-process, not adHocSubProcess; \"b\" has no flows, so it is left out"
+    },
+    {
+      "line": 2,
+      "message": "\"b\" is not connected to a start event; left out"
+    },
+    {
+      "line": 3,
+      "message": "\"t\" is inside \"b\", which was left out; left out"
+    }
+  ],
+  "questions": [
+    {
+      "draft": "Put \"B\" after ",
+      "elementId": "b",
+      "options": [],
+      "text": "\"B\" was left out: nothing leads to it. Where does it belong?"
+    }
+  ]
+}

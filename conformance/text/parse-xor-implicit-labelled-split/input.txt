@@ -1,0 +1,3 @@
+s[start] > a[task Check]
+a >(Fine) b[task Ship] > e[end]
+a >(Broken) c[task Repair] > e

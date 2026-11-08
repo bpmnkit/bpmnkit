@@ -1,0 +1,328 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "PRIORITY",
+        "id": "priority_single_t",
+        "inputs": [
+          {
+            "id": "priority_single_i0",
+            "inputExpression": {
+              "id": "priority_single_ie0",
+              "text": "n"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "priority_single_o0",
+            "name": "tier",
+            "outputValues": "\"gold\",\"silver\",\"bronze\""
+          }
+        ],
+        "rules": [
+          {
+            "id": "ps_r0",
+            "inputEntries": [
+              {
+                "id": "ps_r0_i0",
+                "text": ">= 0"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "ps_r0_o0",
+                "text": "\"bronze\""
+              }
+            ]
+          },
+          {
+            "id": "ps_r1",
+            "inputEntries": [
+              {
+                "id": "ps_r1_i0",
+                "text": ">= 5"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "ps_r1_o0",
+                "text": "\"gold\""
+              }
+            ]
+          },
+          {
+            "id": "ps_r2",
+            "inputEntries": [
+              {
+                "id": "ps_r2_i0",
+                "text": ">= 3"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "ps_r2_o0",
+                "text": "\"silver\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "priority_single",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "priority_single"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "OUTPUT ORDER",
+        "id": "order_single_t",
+        "inputs": [
+          {
+            "id": "order_single_i0",
+            "inputExpression": {
+              "id": "order_single_ie0",
+              "text": "n"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "order_single_o0",
+            "name": "tier",
+            "outputValues": "\"gold\",\"silver\",\"bronze\""
+          }
+        ],
+        "rules": [
+          {
+            "id": "os_r0",
+            "inputEntries": [
+              {
+                "id": "os_r0_i0",
+                "text": ">= 0"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "os_r0_o0",
+                "text": "\"bronze\""
+              }
+            ]
+          },
+          {
+            "id": "os_r1",
+            "inputEntries": [
+              {
+                "id": "os_r1_i0",
+                "text": ">= 5"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "os_r1_o0",
+                "text": "\"gold\""
+              }
+            ]
+          },
+          {
+            "id": "os_r2",
+            "inputEntries": [
+              {
+                "id": "os_r2_i0",
+                "text": ">= 3"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "os_r2_o0",
+                "text": "\"silver\""
+              }
+            ]
+          },
+          {
+            "id": "os_r3",
+            "inputEntries": [
+              {
+                "id": "os_r3_i0",
+                "text": ">= 0"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "os_r3_o0",
+                "text": "\"unlisted\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "order_single",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "order_single"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "OUTPUT ORDER",
+        "id": "order_multi_t",
+        "inputs": [
+          {
+            "id": "order_multi_i0",
+            "inputExpression": {
+              "id": "order_multi_ie0",
+              "text": "n"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "order_multi_o0",
+            "name": "level",
+            "outputValues": "\"high\",\"low\""
+          },
+          {
+            "id": "order_multi_o1",
+            "name": "code",
+            "outputValues": "2,1"
+          }
+        ],
+        "rules": [
+          {
+            "id": "om_r0",
+            "inputEntries": [
+              {
+                "id": "om_r0_i0",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "om_r0_o0",
+                "text": "\"low\""
+              },
+              {
+                "id": "om_r0_o1",
+                "text": "2"
+              }
+            ]
+          },
+          {
+            "id": "om_r1",
+            "inputEntries": [
+              {
+                "id": "om_r1_i0",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "om_r1_o0",
+                "text": "\"high\""
+              },
+              {
+                "id": "om_r1_o1",
+                "text": "1"
+              }
+            ]
+          },
+          {
+            "id": "om_r2",
+            "inputEntries": [
+              {
+                "id": "om_r2_i0",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "om_r2_o0",
+                "text": "\"high\""
+              },
+              {
+                "id": "om_r2_o1",
+                "text": "2"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "order_multi",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "order_multi"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "OUTPUT ORDER",
+        "id": "no_values_t",
+        "inputs": [
+          {
+            "id": "no_values_i0",
+            "inputExpression": {
+              "id": "no_values_ie0",
+              "text": "n"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "no_values_o0",
+            "name": "v"
+          }
+        ],
+        "rules": [
+          {
+            "id": "nv_r0",
+            "inputEntries": [
+              {
+                "id": "nv_r0_i0",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "nv_r0_o0",
+                "text": "\"b\""
+              }
+            ]
+          },
+          {
+            "id": "nv_r1",
+            "inputEntries": [
+              {
+                "id": "nv_r1_i0",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "nv_r1_o0",
+                "text": "\"a\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "no_values",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "no_values"
+    }
+  ],
+  "id": "priority-output-order",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "priority-output-order",
+  "namespace": "http://bpmnkit.com/conformance",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/"
+  },
+  "textAnnotations": []
+}

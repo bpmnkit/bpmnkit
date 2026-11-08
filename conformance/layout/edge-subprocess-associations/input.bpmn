@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:process id="P" isExecutable="true">
+<bpmn:startEvent id="s"><bpmn:outgoing>g1</bpmn:outgoing></bpmn:startEvent><bpmn:subProcess id="Sub" name="Sub"><bpmn:incoming>g1</bpmn:incoming><bpmn:outgoing>g2</bpmn:outgoing>
+<bpmn:startEvent id="ss"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent><bpmn:task id="A" name="A"><bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing></bpmn:task><bpmn:task id="B" name="B"><bpmn:incoming>f2</bpmn:incoming><bpmn:outgoing>f3</bpmn:outgoing></bpmn:task><bpmn:task id="C" name="C"><bpmn:incoming>f3</bpmn:incoming><bpmn:outgoing>f4</bpmn:outgoing></bpmn:task><bpmn:endEvent id="se"><bpmn:incoming>f4</bpmn:incoming></bpmn:endEvent>
+<bpmn:sequenceFlow id="f1" sourceRef="ss" targetRef="A"/><bpmn:sequenceFlow id="f2" sourceRef="A" targetRef="B"/><bpmn:sequenceFlow id="f3" sourceRef="B" targetRef="C"/><bpmn:sequenceFlow id="f4" sourceRef="C" targetRef="se"/>
+<bpmn:textAnnotation id="N"><bpmn:text>Shared note</bpmn:text></bpmn:textAnnotation>
+<bpmn:association id="As1" sourceRef="A" targetRef="N"/><bpmn:association id="As2" sourceRef="C" targetRef="N"/><bpmn:association id="As3" sourceRef="se" targetRef="N"/><bpmn:association id="As4" sourceRef="ss" targetRef="N"/>
+</bpmn:subProcess><bpmn:endEvent id="e"><bpmn:incoming>g2</bpmn:incoming></bpmn:endEvent>
+<bpmn:sequenceFlow id="g1" sourceRef="s" targetRef="Sub"/><bpmn:sequenceFlow id="g2" sourceRef="Sub" targetRef="e"/>
+</bpmn:process></bpmn:definitions>

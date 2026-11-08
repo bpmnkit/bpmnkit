@@ -1,0 +1,245 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_P",
+      "plane": {
+        "bpmnElement": "P",
+        "edges": [
+          {
+            "bpmnElement": "f1",
+            "id": "f1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 50,
+                "y": 25
+              },
+              {
+                "x": 110,
+                "y": 25
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f2",
+            "id": "f2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 160,
+                "y": 25
+              },
+              {
+                "x": 220,
+                "y": 25
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f3",
+            "id": "f3_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 270,
+                "y": 25
+              },
+              {
+                "x": 330,
+                "y": 25
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f4",
+            "id": "f4_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 380,
+                "y": 25
+              },
+              {
+                "x": 440,
+                "y": 25
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_P",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 0,
+              "y": 0
+            },
+            "bpmnElement": "x",
+            "id": "x_di",
+            "isMarkerVisible": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 110,
+              "y": 0
+            },
+            "bpmnElement": "p",
+            "id": "p_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 220,
+              "y": 0
+            },
+            "bpmnElement": "i",
+            "id": "i_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 330,
+              "y": 0
+            },
+            "bpmnElement": "ev",
+            "id": "ev_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 440,
+              "y": 0
+            },
+            "bpmnElement": "cx",
+            "id": "cx_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "D",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "extensionElements": [],
+          "id": "x",
+          "incoming": [],
+          "outgoing": [
+            "f1"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "p",
+          "incoming": [
+            "f1"
+          ],
+          "outgoing": [
+            "f2"
+          ],
+          "type": "parallelGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "i",
+          "incoming": [
+            "f2"
+          ],
+          "outgoing": [
+            "f3"
+          ],
+          "type": "inclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "ev",
+          "incoming": [
+            "f3"
+          ],
+          "outgoing": [
+            "f4"
+          ],
+          "type": "eventBasedGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "cx",
+          "incoming": [
+            "f4"
+          ],
+          "outgoing": [],
+          "type": "complexGateway",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "P",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "f1",
+          "sourceRef": "x",
+          "targetRef": "p",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f2",
+          "sourceRef": "p",
+          "targetRef": "i",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f3",
+          "sourceRef": "i",
+          "targetRef": "ev",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f4",
+          "sourceRef": "ev",
+          "targetRef": "cx",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

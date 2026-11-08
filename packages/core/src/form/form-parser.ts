@@ -9,7 +9,7 @@ import type {
 	FormValueOption,
 } from "./form-model.js"
 
-const KNOWN_COMPONENT_TYPES = new Set([
+export const KNOWN_COMPONENT_TYPES = new Set([
 	"text",
 	"textfield",
 	"textarea",
@@ -91,6 +91,28 @@ export function parseForm(json: string): FormDefinition {
 }
 
 function parseComponent(raw: unknown, path: string): FormComponent {
+	const component = parseKnownComponent(raw, path)
+	const obj = raw as Record<string, unknown>
+	const cond = obj.conditional
+	if (typeof cond === "object" && cond !== null && !Array.isArray(cond)) {
+		const { hide, ...rest } = cond as Record<string, unknown>
+		// A conditional form-js adds keys to later is kept whole, never narrowed to `hide`.
+		if (typeof hide === "string" && Object.keys(rest).length === 0) {
+			component.conditional = { hide }
+		}
+	}
+	const known = component as unknown as Record<string, unknown>
+	const extra: Record<string, unknown> = {}
+	for (const [key, value] of Object.entries(obj)) {
+		if (!(key in known) && !(key === "conditional" && component.conditional)) extra[key] = value
+	}
+	if (Object.keys(extra).length > 0 && component.extraProps === undefined) {
+		component.extraProps = extra
+	}
+	return component
+}
+
+function parseKnownComponent(raw: unknown, path: string): FormComponent {
 	if (typeof raw !== "object" || raw === null || Array.isArray(raw)) {
 		throw new ParseError(`${path}: component must be an object`)
 	}
@@ -167,6 +189,16 @@ function parseComponent(raw: unknown, path: string): FormComponent {
 	}
 }
 
+/**
+ * The entries of `obj` that the model did not take. A key whose value had the wrong type
+ * for its modelled field is left out of `used`, so it stays here instead of vanishing.
+ */
+function leftover(obj: Record<string, unknown>, used: readonly string[]) {
+	// fromEntries defines own properties, so a "__proto__" key survives as data.
+	const rest = Object.fromEntries(Object.entries(obj).filter(([k]) => !used.includes(k)))
+	return Object.keys(rest).length > 0 ? { extraProps: rest } : {}
+}
+
 function parseLayout(raw: unknown, path: string): FormLayout | undefined {
 	if (raw === undefined || raw === null) return undefined
 	if (typeof raw !== "object" || Array.isArray(raw)) {
@@ -174,13 +206,19 @@ function parseLayout(raw: unknown, path: string): FormLayout | undefined {
 	}
 	const obj = raw as Record<string, unknown>
 	const layout: FormLayout = {}
-	if (typeof obj.row === "string") layout.row = obj.row
+	const used: string[] = []
+	if (typeof obj.row === "string") {
+		layout.row = obj.row
+		used.push("row")
+	}
 	if (obj.columns === null) {
 		layout.columns = null
+		used.push("columns")
 	} else if (typeof obj.columns === "number") {
 		layout.columns = obj.columns
+		used.push("columns")
 	}
-	return layout
+	return Object.assign(layout, leftover(obj, used))
 }
 
 function parseValidation(raw: unknown, path: string): FormValidation | undefined {
@@ -190,10 +228,24 @@ function parseValidation(raw: unknown, path: string): FormValidation | undefined
 	}
 	const obj = raw as Record<string, unknown>
 	const v: FormValidation = {}
-	if (typeof obj.required === "boolean") v.required = obj.required
-	if (typeof obj.minLength === "number") v.minLength = obj.minLength
-	if (typeof obj.maxLength === "number") v.maxLength = obj.maxLength
-	return v
+	const used: string[] = []
+	if (typeof obj.required === "boolean") {
+		v.required = obj.required
+		used.push("required")
+	}
+	for (const key of ["minLength", "maxLength", "min", "max"] as const) {
+		if (typeof obj[key] === "number") {
+			v[key] = obj[key]
+			used.push(key)
+		}
+	}
+	for (const key of ["pattern", "validationType"] as const) {
+		if (typeof obj[key] === "string") {
+			v[key] = obj[key]
+			used.push(key)
+		}
+	}
+	return Object.assign(v, leftover(obj, used))
 }
 
 function parseValues(raw: unknown, path: string): FormValueOption[] {
@@ -208,6 +260,8 @@ function parseValues(raw: unknown, path: string): FormValueOption[] {
 		return {
 			label: String(vo.label ?? ""),
 			value: String(vo.value ?? ""),
+			// An array passes the check above but has no keys of its own to keep.
+			...(Array.isArray(vo) ? {} : leftover(vo, ["label", "value"])),
 		}
 	})
 }
@@ -377,13 +431,15 @@ function parseNumberComponent(
 
 function parseDatetimeComponent(
 	obj: Record<string, unknown>,
-	_path: string,
+	path: string,
 	layout: FormLayout | undefined,
 ): FormComponent {
 	const c: FormComponent = { type: "datetime", id: obj.id as string, key: String(obj.key ?? "") }
 	if (typeof obj.subtype === "string") c.subtype = obj.subtype
 	if (typeof obj.dateLabel === "string") c.dateLabel = obj.dateLabel
 	if (typeof obj.timeLabel === "string") c.timeLabel = obj.timeLabel
+	const validate = parseValidation(obj.validate, path)
+	if (validate) c.validate = validate
 	if (layout) c.layout = layout
 	return c
 }
@@ -417,13 +473,15 @@ function parseTaglistComponent(
 	}
 	if (Array.isArray(obj.values)) c.values = parseValues(obj.values, path)
 	if (typeof obj.valuesKey === "string") c.valuesKey = obj.valuesKey
+	const validate = parseValidation(obj.validate, path)
+	if (validate) c.validate = validate
 	if (layout) c.layout = layout
 	return c
 }
 
 function parseTableComponent(
 	obj: Record<string, unknown>,
-	_path: string,
+	path: string,
 	layout: FormLayout | undefined,
 ): FormComponent {
 	const c: FormComponent = { type: "table", id: obj.id as string }
@@ -431,7 +489,9 @@ function parseTableComponent(
 	if (typeof obj.dataSource === "string") c.dataSource = obj.dataSource
 	if (typeof obj.rowCount === "number") c.rowCount = obj.rowCount
 	if (Array.isArray(obj.columns)) {
-		c.columns = obj.columns.map((col: unknown) => {
+		c.columns = obj.columns.map((col: unknown, i: number) => {
+			// Reading `.label` off null would surface as a TypeError instead of bad input.
+			if (col === null) throw new ParseError(`${path}.columns[${i}]: must be an object`)
 			const co = col as Record<string, unknown>
 			return { label: String(co.label ?? ""), key: String(co.key ?? "") }
 		})

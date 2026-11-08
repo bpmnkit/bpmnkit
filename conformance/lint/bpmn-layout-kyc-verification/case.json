@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/layout-kyc-verification/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}

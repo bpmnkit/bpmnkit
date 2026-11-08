@@ -1,0 +1,76 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "COLLECT",
+        "id": "dt1",
+        "inputs": [
+          {
+            "id": "i1",
+            "inputExpression": {
+              "id": "ie1",
+              "text": "name"
+            },
+            "label": "name"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o1",
+            "name": "error",
+            "typeRef": "string"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r1",
+            "inputEntries": [
+              {
+                "id": "ie1r1",
+                "text": "null"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "oe1r1",
+                "text": "\"name is required\""
+              }
+            ]
+          },
+          {
+            "id": "r2",
+            "inputEntries": [
+              {
+                "id": "ie1r2",
+                "text": "\"\""
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "oe1r2",
+                "text": "\"name must not be empty\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "inputValidation",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Input Validation"
+    }
+  ],
+  "id": "Definitions_validation",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "DRD",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/"
+  },
+  "textAnnotations": []
+}

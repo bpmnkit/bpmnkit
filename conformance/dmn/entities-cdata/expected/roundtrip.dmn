@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="Definitions_text" name="Fish &amp; &quot;Chips&quot; &lt;ok>" namespace="urn:text">
+  <decision id="d1" name="Tom &amp; Jerry's AB é &amp;unknown; 100%">
+    <decisionTable id="t1">
+      <input id="i1" label="a &lt; b">
+        <inputExpression id="ie1" typeRef="string">
+          <text>a &lt; b &amp;&amp; c &gt; "d"</text>
+        </inputExpression>
+      </input>
+      <output id="o1" label="single &quot;quoted&quot;" name="result"/>
+      <rule id="r1">
+        <description>Uses &lt;, &gt;, &amp; and a CDATA &lt;tag&gt; &amp; more end</description>
+        <inputEntry id="e1">
+          <text>&lt;= 10 and &gt;= 2</text>
+        </inputEntry>
+        <outputEntry id="p1">
+          <text>"x" + "&lt;y&gt;"</text>
+        </outputEntry>
+      </rule>
+      <rule id="r2">
+        <inputEntry id="e2">
+          <text>
+          multi
+          line   spaced
+        </text>
+        </inputEntry>
+        <outputEntry id="p2">
+          <text>"tab	newline
+done"</text>
+        </outputEntry>
+      </rule>
+      <rule id="r3">
+        <inputEntry id="e3">
+          <text>"日本語 ünïcode 😀"</text>
+        </inputEntry>
+        <outputEntry id="p3">
+          <text></text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <textAnnotation id="ta">
+    <text>1 &lt; 2 &amp;&amp; 3 &gt; 2</text>
+  </textAnnotation>
+</definitions>
+

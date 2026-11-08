@@ -1,0 +1,3 @@
+start[start] > adhoc[adhoc | job=agent] > end[end]
+service[service | inside=adhoc job=t1]
+service_2[service | inside=adhoc job=t2]

@@ -26,6 +26,7 @@ describe("FormBuilder", () => {
 		expect(form.id).toBe("test-form")
 		expect(form.type).toBe("default")
 		expect(form.executionPlatform).toBe("Camunda Cloud")
+		expect(form.executionPlatformVersion).toBe("8.10.0")
 		expect(form.components).toEqual([])
 	})
 

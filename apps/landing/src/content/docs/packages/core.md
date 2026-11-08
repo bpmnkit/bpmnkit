@@ -18,6 +18,8 @@ BPMN 2.0 programmatically:
 
 Zero runtime dependencies. ESM-only. Runs in browsers, Node.js, Deno, Bun, and edge runtimes.
 
+For a worked build script that targets Camunda 8.10, see [Build an Executable Camunda Process](/docs/guides/executable-camunda-process).
+
 ## Installation
 
 ```sh
@@ -238,6 +240,35 @@ import { applyBpmnOperations } from "@bpmnkit/core";
 const { definitions, applied } = applyBpmnOperations(parsed, [
   { op: "rename", id: "Task_1", name: "Approve invoice" },
   { op: "update", id: "Task_1", patch: { jobType: "approve" } },
+]);
+```
+
+**What `update` can patch.** Any compact field (`name`, `jobType`, `formId`, `inputs`,
+`outputs`, `taskHeaders`, …) plus the user-task configuration — `assignee`, `candidateGroups`,
+`candidateUsers`, `dueDate`, `followUpDate`, `priority` — and `properties` (`zeebe:properties`).
+Each sets one attribute, so an existing `assignee` survives a patch that only adds
+`candidateGroups`. `correlationKey` writes the `zeebe:subscription` of the `bpmn:message` the
+element references, so every element sharing that message gets it; an element that references
+no message is reported. A field whose extension the Zeebe schema does not allow on the element
+(`assignee` on a service task) is reported rather than written. An empty string for `assignee`,
+`candidateGroups`, `candidateUsers`, `dueDate`, `followUpDate` or `priority` removes that
+attribute, an extension left with nothing in it is removed, and `properties: {}` removes
+`zeebe:properties`.
+
+`update` also edits event definitions, listeners and multi-instance. `messageName`, `errorCode`,
+`escalationCode` and `signalName` are written on the root `bpmn:message` / `bpmn:error` /
+`bpmn:escalation` / `bpmn:signal` the event references, which is created when the reference is
+missing; a root shared by several elements is reported, not changed for all of them.
+`timerDuration`, `timerDate`, `timerCycle` and `condition` set the timer or conditional event
+definition. `multiInstance` changes only the parts it names (`collection`, `element`, `sequential`,
+`outputCollection`, `outputElement`, `completionCondition`) and keeps the rest of the loop; an empty
+string clears one, and an empty `collection` removes the loop. `executionListeners` and
+`taskListeners` replace the whole list. An empty string clears these event fields too.
+
+```typescript
+applyBpmnOperations(parsed, [
+  { op: "update", id: "Review", patch: { candidateGroups: "reviewers", priority: 80 } },
+  { op: "update", id: "WaitForPayment", patch: { correlationKey: "=order.id" } },
 ]);
 ```
 
@@ -640,14 +671,14 @@ All builder methods return `this` for chaining.
 | `.inclusiveGateway(id, options?)` | Add an inclusive gateway |
 | `.eventBasedGateway(id, options?)` | Add an event-based gateway |
 | `.complexGateway(id, options?)` | Add a complex gateway (aspirational — Zeebe does not execute these) |
-| `.subProcess(id, builder, options?)` | Add an embedded sub-process |
+| `.subProcess(id, builder, options?)` | Add an embedded sub-process. The callback comes second and the options third; a call with the two swapped is accepted too (as for `adHocSubProcess`, `eventSubProcess` and `transaction`) |
 | `.adHocSubProcess(id, builder, options?)` | Add an ad-hoc sub-process — its children are **not** auto-chained, see below |
 | `.eventSubProcess(id, builder, options?)` | Add an event sub-process (emits `subProcess triggeredByEvent="true"`) |
 | `.transaction(id, builder, options?)` | Add a transaction sub-process (atomic scope) |
-| `.callActivity(id, options?)` | Add a call activity |
+| `.callActivity(id, options)` | Add a call activity. Options: `processId`, `propagateAllChildVariables`, `propagateAllParentVariables`, `bindingType` (`"latest" \| "deployment" \| "versionTag"`), `versionTag`, `ioMapping`, `zeebeProperties` (no `taskHeaders`: the schema forbids them here) |
 | `.intermediateCatchEvent(id, options?)` | Add a catch event |
 | `.intermediateThrowEvent(id, options?)` | Add a throw event |
-| `.branch(id, builder)` | Define a gateway branch |
+| `.branch(id, builder)` | Define a gateway branch; inside it `.label(text)` names the first flow and `.flowId(id)` fixes its id |
 | `.boundaryEvent(id, options)` | Attach a boundary event to the previous task |
 | `.withBoundary(id, options, handler)` | Attach a boundary event and build its error/timeout path; cursor auto-restores to the main flow after the handler |
 | `.defaults(options)` | Set process-wide defaults (e.g. `{ serviceTask: { retries: "5" } }`) applied to all subsequent tasks |
@@ -660,6 +691,37 @@ data types (`dataObject`, `dataObjectReference`, `dataStoreReference`) — those
 data associations rather than sequence flows, so the chain has nowhere to put them. A
 compile-time table, `BUILDER_COVERAGE`, holds the SDK to that: adding an element type without
 a builder method fails the build. Run `pnpm --filter @bpmnkit/core check:builder` to print it.
+
+### Forms, mappings and branch flows
+
+- `multiInstance: { collection, elementVariable, outputCollection, outputElement, completionCondition, isSequential }`
+  runs any activity once per item: `serviceTask`, `userTask`, `scriptTask`, `sendTask`,
+  `receiveTask`, `businessRuleTask`, `callActivity` and sub-processes. The output options need
+  `collection`.
+- `executionListeners: [{ eventType: "start", type: "audit", retries: "3" }]` on any activity,
+  event or gateway writes `zeebe:executionListeners`; `taskListeners` does the same for a
+  `userTask` (`zeebe:taskListeners`) and throws a `ZeebePlacementError` anywhere else. The
+  `update` patch replaces either list; `[]` removes it.
+- `startEvent(id, { formId })` writes `zeebe:formDefinition formId`. Camunda uses start forms
+  only on the process's none start event, so do not set it on message, timer or signal starts.
+- `userTask(id, { formId, formBindingType, formVersionTag })`, `{ formKey }` and
+  `{ externalReference }` write the matching `zeebe:formDefinition` attributes (`bindingType` other
+  than `latest` needs Camunda 8.6+). `{ embeddedForm: { id, schema } }` writes a process-level
+  `zeebe:userTaskForm` and `formKey="camunda-forms:bpmn:<id>"`. Setting more than one of these throws.
+- `startEvent`, `intermediateCatchEvent` and `boundaryEvent` take `condition` (FEEL) to make a
+  conditional event (Camunda 8.9+) and `conditionVariableEvents: ["create", "update"]` for the
+  `zeebe:conditionalFilter`. Compact elements take `condition` with `eventType: "conditional"`.
+- `userTask(id, { ioMapping, taskHeaders, zeebeProperties, modelerTemplate,
+  modelerTemplateVersion })` take the same shapes as `serviceTask`, for example
+  `ioMapping: { inputs: [{ source: "=order", target: "order" }] }`.
+- `.branch("no", (b) => b.label("No").flowId("Flow_No")...)`: `label()` sets the flow's name
+  (otherwise the branch id), `flowId()` keeps the id you chose. The build throws when a
+  `flowId` repeats another element or flow id anywhere in the process, nested sub-processes
+  included.
+- `buildAiAgentSubProcess` builds the v1 job-worker agent. For the v2 template of Camunda 8.10
+  (`io.camunda.connectors.agenticai.ai-agent-subprocess.v2`), build the ad-hoc sub-process
+  yourself and apply the template after `build()` with `applyTemplates` from
+  `@bpmnkit/core/connectors`.
 
 ### Ad-hoc sub-processes: children are a set, not a chain
 
@@ -700,6 +762,42 @@ s.serviceTask("listUsers", {
   documentation: "Call this to retrieve all users. Returns id, name, email.",
 });
 ```
+
+With `.withAutoLayout()`, unconnected children are packed into a grid in declaration order,
+row by row in `ceil(sqrt(n))` columns. `toolGrid` fixes the column count, and
+`fill: "column"` reads the order top to bottom instead. Like the annotation `side` below, it
+steers the layout only and is not written to the XML.
+
+```typescript
+.adHocSubProcess("agent", (s) => {
+  s.serviceTask("users",    { taskType: "x" });   // left column, top
+  s.serviceTask("recipes",  { taskType: "x" });   // left column, bottom
+  s.serviceTask("joke",     { taskType: "x" });   // right column, top
+  s.serviceTask("products", { taskType: "x" });   // right column, bottom
+}, { toolGrid: { columns: 2, fill: "column" } })
+.annotate("joke", "Each task is a capability of the agent.", { side: "below" })
+```
+
+`.annotate(elementId, text, { side: "above" | "below" })` overrides the side the layout picks
+for a text annotation; it still steps clear of shapes and other annotations on that side. Call
+it on the process builder, also for an element inside a sub-process: annotations added with
+`annotate()` inside a sub-process callback get no diagram shape from the auto layout.
+
+### Data elements and linked resources
+
+Data elements sit beside the chain: they add no sequence flow and do not move the cursor.
+
+```typescript
+.serviceTask("t", { name: "T", taskType: "work",
+  linkedResources: [{ resourceType: "RPA", resourceId: "script-1", linkName: "script" }] })
+.dataObject("order", { name: "Order" })
+.dataObjectReference("orderRef", "order", { name: "Order" })
+.dataStoreReference("dbRef", "db", { name: "DB" })
+.dataAssociation("t", "orderRef", "input")   // the task reads it
+.dataAssociation("t", "dbRef", "output")     // the task writes it
+```
+
+Auto layout gives the data shapes a place but draws no association edges.
 
 ### Joins: inferred by default, or declared
 
@@ -864,6 +962,39 @@ const empty = Dmn.makeEmpty();
 // Export back to XML
 const dmnXml = Dmn.export(dmnDefs);
 ```
+
+### Multi-decision DRDs: `Dmn.drd()`
+
+`decision()` returns a typed handle. A decision that depends on another lists the handle
+(or a `drgId("id")`) in `requires`. Use ids, never names or labels: an unknown ref throws a
+`ValidationError` at `build()` that lists the valid ids, and a label that matches a decision
+name gets the right id suggested. The output has `informationRequirement` hrefs and DMNDI
+shapes and edges with automatic layout.
+
+```typescript
+import { Dmn } from "@bpmnkit/core";
+
+const drd = Dmn.drd("Approval");
+const risk = drd.decision("riskScore", (t) =>
+  t.name("Risk Score")
+    .input({ expression: "age", typeRef: "number" })
+    .output({ name: "risk", typeRef: "string" })
+    .rule({ inputs: ["< 18"], outputs: ['"low"'] }),
+);
+drd.decision(
+  "approval",
+  (t) =>
+    t.name("Approval")
+      .input({ expression: "risk" })
+      .output({ name: "approved" })
+      .rule({ inputs: ['"low"'], outputs: ["true"] }),
+  { requires: [risk] }, // handle or drgId("riskScore"), not "Risk Score"
+);
+const xml = drd.toXml();
+```
+
+`Dmn.expand()` (compact DMN) also throws on a `requires` entry that is not a decision or
+input data id.
 
 ## TypeScript Types
 

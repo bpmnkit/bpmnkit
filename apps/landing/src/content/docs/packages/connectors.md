@@ -10,6 +10,8 @@ sidebar:
 `@bpmnkit/connectors` answers two questions about Camunda 8 connectors: **which ones exist**,
 and **what happens to a task when you apply one**.
 
+For applying a template inside a build script, see [Build an Executable Camunda Process](/docs/guides/executable-camunda-process).
+
 It bundles the 133 out-of-the-box Camunda connector templates as data, plus the
 [templates BPMN Kit maintains](#templates-maintained-by-bpmn-kit), so a catalog, a search box
 or an AI tool call can work offline. And it resolves a template plus a set of values into
@@ -402,6 +404,80 @@ The keys for these properties, where the template gives no `id`, are `message.na
 `message.correlationKey` and `linkedResource.<linkName>.<property>` — for example
 `linkedResource.RPAScript.resourceId`. `listConnectors` reports them like any other input.
 
+### Task-level bindings
+
+Besides `zeebe:input`, `zeebe:output` and friends, a template may bind a task's own Zeebe
+extensions. `applyTemplateToElement` writes them; `applyElementTemplate` (builder options) reports
+them as not expressible.
+
+| Binding | `property` values |
+| --- | --- |
+| `zeebe:calledElement` | `processId`, `bindingType`, `versionTag`, `propagateAllParentVariables`, `propagateAllChildVariables` |
+| `zeebe:calledDecision` | `decisionId`, `resultVariable`, `bindingType`, `versionTag` |
+| `zeebe:userTask` | none — a flag: an active property marks a Camunda user task |
+| `zeebe:formDefinition` | `formId`, `externalReference`, `bindingType`, `versionTag` |
+| `zeebe:assignmentDefinition` | `assignee`, `candidateGroups`, `candidateUsers` |
+| `zeebe:taskSchedule` | `dueDate`, `followUpDate` |
+| `zeebe:priorityDefinition` | `priority` |
+| `zeebe:script` | `expression`, `resultVariable` |
+
+`bindingType` is `latest`, `deployment` or `versionTag`. An extension missing a required attribute
+is not written and comes back as a problem. Re-applying a template to an element that already
+carries its id owns all of these, so a binding a newer version dropped is removed.
+
+## Applying several templates by name — `applyTemplates`
+
+`applyTemplates` is a batch wrapper over `applyTemplateToElement` for values written by hand,
+such as a script or an agent's output. It runs the entries in order and returns every problem,
+each naming its element:
+
+```typescript
+import { applyTemplates } from "@bpmnkit/connectors";
+import { Bpmn } from "@bpmnkit/core";
+
+const { definitions, problems } = applyTemplates(Bpmn.parse(xml), [
+  {
+    elementId: "SearchRecipes", // may sit inside a sub-process or ad-hoc sub-process
+    template: "io.camunda.connectors.HttpJson.v2@18",
+    values: {
+      url: "https://dummyjson.com/recipes/search",
+      retryCount: 3,
+      resultExpression: `={
+  toolCallResult: if count(response.body.recipes) > 0
+    then response.body.recipes
+    else "No result found."
+}`,
+    },
+  },
+]);
+// problems: [] — or, for { retries: 3 }:
+// { elementId: "SearchRecipes", key: "retries", suggestion: "retryCount", message: "…" }
+```
+
+- **`{ omitDefaults: true }`** (third argument, default `false`) leaves out any property whose value
+  would only be the template's default: a key the entry does not give, on a property that is not
+  Hidden and not required (`constraints.notEmpty`). The REST connector then carries no
+  `followRedirects` or `documentReturnFormat.choice`, and an OpenAI agent no
+  `provider.openai.api.responses.effort`. Hidden bindings (the task type) and the
+  `zeebe:modelerTemplate` stamp are always written, and a value you pass is written even when it
+  equals the default. Re-applying replaces the element's extensions, so an earlier apply's default
+  does not survive. `applyTemplateToElement` and `applyElementTemplate` take the same option.
+- **`template`** is a template id, `id@version`, an alias from `CONNECTOR_ALIASES` (`http`), or a
+  template object. The catalog holds one version of each id, so a different `@version` is a
+  problem naming the version available, and that element is left unchanged.
+- **Keys are template property ids**, for example `retryCount` and `retryBackoff` on the REST
+  connector, not the names of the extensions they write (`retries`). A key that does not match
+  is reported with a `suggestion` when a property id or binding name is close; the rest of the
+  entry is still applied.
+- **A value the template switches off is reported.** Some properties apply only under a
+  condition: the REST connector's `ignoreNullValues` exists only for POST, PUT and PATCH. A value
+  for such a property is not written, and the problem names the condition it needs.
+- **Properties you omit keep their template default.**
+- **Values** may be strings, numbers or booleans; the last two are written in string form.
+  Strings are written as given, so pass a real newline (`"\n\n"` in code, never the two
+  characters backslash and `n`) for a paragraph break and keep a multi-line FEEL expression as
+  one string.
+
 ## Workspace templates
 
 A project can ship its own `.camunda/element-templates/`. The filesystem half lives behind its
@@ -497,6 +573,7 @@ for CI and takes `--format json`.
 | `applyConnectorTemplate(id, values)` | Catalog template → builder options + problems |
 | `applyElementTemplate(template, values)` | Template object → builder options + problems |
 | `applyTemplateToElement(definitions, elementId, template, values)` | Template written onto an element of a parsed model → `{ definitions, problems }` |
+| `applyTemplates(definitions, entries, { omitDefaults? })` | Several templates by id, `id@version` or alias, with key suggestions → `{ definitions, problems }` |
 | `validateElementTemplate(template)` | `{ valid, problems, warnings }` |
 | `readTemplateDocument(text)` | Parse a file holding one template or many |
 | `registerElementTemplates(templates)` | Merge templates into the catalog |

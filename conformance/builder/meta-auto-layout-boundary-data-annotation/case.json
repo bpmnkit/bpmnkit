@@ -1,0 +1,16 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["serviceTask","t",{"name":"t","taskType":"t"}],
+		["withBoundary","bt",{"timerDuration":"PT1H"},{"$ops":[["endEvent","timeout"]]}],
+		["dataObject","DO",{"name":"d"}],
+		["dataObjectReference","R","DO"],
+		["dataAssociation","t","R","input"],
+		["annotate","t","note"],
+		["endEvent","e"],
+		["withAutoLayout"],
+		["build"]
+	]
+}

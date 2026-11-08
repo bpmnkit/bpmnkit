@@ -1,0 +1,16 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createDiagram","Collab"],
+		["process","buyer",{"$ops":[["startEvent","bs"],["sendTask","order",{"messageName":"order"}],["receiveTask","invoice",{"messageName":"invoice","correlationKey":"=id"}],["endEvent","be"]]}],
+		["process","seller",{"$ops":[["startEvent","ss",{"messageName":"order"}],["serviceTask","ship",{"name":"ship","taskType":"ship"}],["sendTask","bill",{"messageName":"invoice"}],["endEvent","se"]]}],
+		["collaborationId","Collab_1"],
+		["participant","Buyer",{"name":"Buyer","processId":"buyer"}],
+		["participant","Seller",{"name":"Seller","processId":"seller"}],
+		["message","Msg_Order",{"name":"order","correlationKey":"=orderId"}],
+		["message","Msg_Invoice",{"name":"invoice"}],
+		["messageFlow","MF1",{"source":"order","target":"ss","name":"Order","messageRef":"Msg_Order"}],
+		["messageFlow","MF2",{"source":"bill","target":"invoice","messageRef":"Msg_Invoice"}],
+		["build"]
+	]
+}

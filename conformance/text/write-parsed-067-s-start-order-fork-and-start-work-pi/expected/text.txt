@@ -1,0 +1,4 @@
+s[start Order] > fork[and Start work]
+fork > pick[service Pick items | job=pick] > joined[and Ready] > ship[send Dispatch | job=ship] > e[end Done]
+fork > pack[service Pack box | job=pack] > joined
+fork > label[service Print label | job=label] > joined

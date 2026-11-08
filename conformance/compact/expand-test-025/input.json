@@ -1,0 +1,54 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "s",
+          "type": "startEvent"
+        },
+        {
+          "id": "a",
+          "type": "userTask",
+          "name": "A"
+        },
+        {
+          "id": "e",
+          "type": "endEvent"
+        },
+        {
+          "id": "sub",
+          "type": "subProcess",
+          "children": {
+            "elements": [
+              {
+                "id": "inner",
+                "type": "task"
+              }
+            ],
+            "flows": [
+              {
+                "id": "fx",
+                "from": "inner",
+                "to": "a"
+              }
+            ]
+          }
+        }
+      ],
+      "flows": [
+        {
+          "id": "f1",
+          "from": "s",
+          "to": "a"
+        },
+        {
+          "id": "f2",
+          "from": "a",
+          "to": "e"
+        }
+      ]
+    }
+  ]
+}

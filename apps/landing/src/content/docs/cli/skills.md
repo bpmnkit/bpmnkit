@@ -5,11 +5,11 @@ sidebar:
   order: 6
 ---
 
-`casen` ships four lightweight Claude Code slash commands that automate the process
+`casen` ships six lightweight Claude Code slash commands that automate the process
 development lifecycle — from natural language description to deployed, running process.
 They drive `casen` directly (no MCP server, no proxy daemon).
 
-For the full skill set — `/bpmnkit:implement`, `:extend`, `:agent`, `:connect`, plus generated
+For the full skill set — `/bpmnkit:implement`, `:extend`, `:agent`, `:connect`, `:bpmn-script`, `:dmn`, `:form`, plus generated
 reference docs the skills read before authoring a plan — install the
 [Claude Code plugin](/docs/guides/ai-implement#the-claude-code-plugin) instead.
 
@@ -105,7 +105,7 @@ Run scenario tests on a BPMN process and report path/branch coverage.
 **What it does:**
 
 1. Looks for the `<file>.bpmn.tests.json` sidecar (written automatically by `casen synth` from a plan's `tests` array); writes one if missing
-2. Runs `casen test <file>.bpmn`
+2. Runs `casen test test <file>.bpmn`
 3. Cross-references gateway branches and error/timer boundaries against which scenarios exercise them
 4. Reports pass/fail counts and any uncovered paths
 
@@ -144,6 +144,20 @@ Gate a BPMN process on deploy-readiness, then deploy it to local Reebe or Camund
 
 - **Local Reebe** — deploys via `ZEEBE_ADDRESS` (default `http://localhost:26500`). Start Reebe first: `casen reebe start --port 26500`
 - **Camunda 8** — deploys using the active `casen` profile. Set one up: `casen profile create`
+
+---
+
+## `/dmn` and `/form`
+
+Write or edit a DMN decision table or a Camunda form. Each runs `casen agent-card dmn` or
+`casen agent-card form` and follows the [agent card](/docs/agent-cards/dmn) it prints: a
+runnable build script, the top builder options and the traps (decision and form ids, hit
+policy, keeping the layout on edit).
+
+```
+/dmn order risk by amount and country
+/form review form with a decision and a comment
+```
 
 ---
 

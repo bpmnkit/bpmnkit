@@ -1,10 +1,10 @@
+use crate::app::ApiState;
+use crate::dto::signals::BroadcastSignalRequest;
+use crate::error::{ApiError, ApiResult};
 use axum::extract::State;
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::Json;
-use crate::app::ApiState;
-use crate::dto::signals::BroadcastSignalRequest;
-use crate::error::{ApiError, ApiResult};
 
 pub async fn broadcast(
     State(state): State<ApiState>,

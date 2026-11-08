@@ -119,6 +119,8 @@ export interface AiAgentOptions {
 
 /** The two pieces `adHocSubProcess(id, content, options)` needs to build the agent. */
 export interface AiAgentBuild {
+	/** Echoes `AiAgentOptions.id`, the element id to pass to `.adHocSubProcess()`. */
+	id: string
 	content: (b: SubProcessContentBuilder) => void
 	options: AdHocSubProcessOptions
 }
@@ -170,12 +172,17 @@ function buildToolElement(spec: AiAgentToolSpec) {
 
 /**
  * Builds the ad-hoc sub-process content callback + options for the Camunda 8
- * AI Agent Sub-process connector. Feed the result into `.adHocSubProcess()`:
+ * AI Agent connector. Feed the result into `.adHocSubProcess()`:
  *
  * ```ts
  * const agent = buildAiAgentSubProcess({ ... })
- * builder.adHocSubProcess(agent.options.id ?? "Agent_1", agent.content, agent.options)
+ * builder.adHocSubProcess(agent.id, agent.content, agent.options)
  * ```
+ *
+ * This helper builds the v1 job-worker agent (`io.camunda.agenticai:aiagent-job-worker:1`).
+ * For the `io.camunda.connectors.agenticai.ai-agent-subprocess.v2` template of Camunda 8.10,
+ * build the ad-hoc sub-process yourself and apply that template after `build()` with
+ * `applyTemplates` from `@bpmnkit/core/connectors`.
  */
 export function buildAiAgentSubProcess(opts: AiAgentOptions): AiAgentBuild {
 	if (opts.tools.length === 0) {
@@ -218,5 +225,5 @@ export function buildAiAgentSubProcess(opts: AiAgentOptions): AiAgentBuild {
 		}
 	}
 
-	return { content, options }
+	return { id: opts.id, content, options }
 }

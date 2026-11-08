@@ -1,0 +1,340 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "plainAdHoc"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Ad-hoc sub-process \"Plain\" needs Camunda 8.7 or newer; this model targets Camunda 1.0.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.7 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "tools"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Ad-hoc sub-process \"Tools\" needs Camunda 8.7 or newer; this model targets Camunda 1.0.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.7 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "tools"
+      ],
+      "fixable": false,
+      "id": "compat/no-zeebe-properties",
+      "message": "Ad-hoc sub-process \"Tools\" has a zeebe:properties, which needs Camunda 8.1 or newer; this model targets Camunda 1.0.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.1 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "chainC"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Script task \"chainC\" needs Camunda 1.1 or newer; this model targets Camunda 1.0.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 1.1 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolBoundaryError"
+      ],
+      "fixable": false,
+      "id": "compat/error-reference",
+      "message": "Error boundary event \"toolBoundaryError\" references no error; catching every error needs Camunda 8.2 or newer, this model targets Camunda 1.0.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:error with an error code."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "branchToA"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"branchToA\" has a condition, but only flows leaving an exclusive or inclusive gateway may.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Remove the condition, or route the flow through a gateway."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "legacyAgent"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Ad-hoc sub-process \"legacyAgent\" needs Camunda 8.7 or newer; this model targets Camunda 1.0.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.7 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "legacyAgent"
+      ],
+      "fixable": false,
+      "id": "compat/no-template",
+      "message": "Ad-hoc sub-process \"legacyAgent\" applies element template \"io.camunda.connectors.agenticai.aiagent.jobworker.v1\", which needs Camunda 8.0 or newer; this model targets Camunda 1.0.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.0 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "forkedAgent"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Ad-hoc sub-process \"forkedAgent\" needs Camunda 8.7 or newer; this model targets Camunda 1.0.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.7 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "definedAgent"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Ad-hoc sub-process \"definedAgent\" needs Camunda 8.7 or newer; this model targets Camunda 1.0.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.7 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "outsideTool"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "plainTool"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolGood"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolGood"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolUnmapped"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolUnmapped"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolUnmapped"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolCasing"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolCasing"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolCasing"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolCasing"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolCasing"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolDuplicateKey"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolDuplicateKey"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolOutputFromAi"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "chainB"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolSubStep"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "branchToA"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+[
+  {
+    "result": {
+      "t": "number",
+      "v": "0"
+    },
+    "evaluated": [
+      {
+        "decision": "discount",
+        "result": {
+          "t": "number",
+          "v": "0"
+        }
+      }
+    ]
+  },
+  {
+    "error": "Hit policy UNIQUE violated in decision 'discount': 2 rules match (small, medium)"
+  },
+  {
+    "result": {
+      "t": "number",
+      "v": "5"
+    },
+    "evaluated": [
+      {
+        "decision": "discount",
+        "result": {
+          "t": "number",
+          "v": "5"
+        }
+      }
+    ]
+  },
+  {
+    "error": "Hit policy UNIQUE violated in decision 'discount': 2 rules match (medium, large)"
+  },
+  {
+    "result": {
+      "t": "number",
+      "v": "10"
+    },
+    "evaluated": [
+      {
+        "decision": "discount",
+        "result": {
+          "t": "number",
+          "v": "10"
+        }
+      }
+    ]
+  },
+  {
+    "error": "Hit policy UNIQUE violated in decision 'same_output': 2 rules match (same_a, same_b)"
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "same_output",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  }
+]

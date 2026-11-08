@@ -1,0 +1,12 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["defaults",{"serviceTask":{"retries":"7"}}],
+		["startEvent","s"],
+		["serviceTask","a",{"name":"a","taskType":"a"}],
+		["serviceTask","b",{"name":"b","taskType":"b","retries":"1"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

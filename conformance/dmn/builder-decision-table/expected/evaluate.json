@@ -1,0 +1,60 @@
+[
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "review"
+        },
+        {
+          "t": "string",
+          "v": "ok"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "Decision_credit",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "review"
+            },
+            {
+              "t": "string",
+              "v": "ok"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "ok"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "Decision_credit",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "ok"
+            }
+          ]
+        }
+      }
+    ]
+  }
+]

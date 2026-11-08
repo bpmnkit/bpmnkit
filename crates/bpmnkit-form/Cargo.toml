@@ -1,0 +1,21 @@
+[package]
+name = "bpmnkit-form"
+description = "Camunda Form model, parser and serializer for BPMN Kit (Rust twin of @bpmnkit/core's form parser and exporter)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["camunda", "form", "bpmn", "parser", "json"]
+categories = ["parser-implementations", "encoding"]
+# Tests and benches read the shared corpus under ../../conformance, outside the package.
+exclude = ["tests/", "benches/"]
+
+[dependencies]
+bpmnkit-spec = { workspace = true }
+indexmap = { workspace = true }
+serde = { workspace = true }
+# float_roundtrip: JS parses decimals to the nearest double, serde_json's fast path may not.
+serde_json = { workspace = true, features = ["float_roundtrip"] }

@@ -1,0 +1,109 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Order",
+            "type": "startEvent"
+          },
+          {
+            "id": "fork",
+            "name": "Start work",
+            "type": "parallelGateway"
+          },
+          {
+            "id": "pick",
+            "jobType": "pick",
+            "name": "Pick items",
+            "type": "serviceTask"
+          },
+          {
+            "id": "pack",
+            "jobType": "pack",
+            "name": "Pack box",
+            "type": "serviceTask"
+          },
+          {
+            "id": "label",
+            "jobType": "label",
+            "name": "Print label",
+            "type": "serviceTask"
+          },
+          {
+            "id": "joined",
+            "name": "Ready",
+            "type": "parallelGateway"
+          },
+          {
+            "id": "ship",
+            "jobType": "ship",
+            "name": "Dispatch",
+            "type": "sendTask"
+          },
+          {
+            "id": "e",
+            "name": "Done",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "fork"
+          },
+          {
+            "from": "joined",
+            "id": "Flow_2",
+            "to": "ship"
+          },
+          {
+            "from": "ship",
+            "id": "Flow_3",
+            "to": "e"
+          },
+          {
+            "from": "fork",
+            "id": "Flow_4",
+            "to": "pick"
+          },
+          {
+            "from": "pick",
+            "id": "Flow_5",
+            "to": "joined"
+          },
+          {
+            "from": "fork",
+            "id": "Flow_6",
+            "to": "pack"
+          },
+          {
+            "from": "pack",
+            "id": "Flow_7",
+            "to": "joined"
+          },
+          {
+            "from": "fork",
+            "id": "Flow_8",
+            "to": "label"
+          },
+          {
+            "from": "label",
+            "id": "Flow_9",
+            "to": "joined"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "ran \"pick\", \"pack\", \"label\" in parallel between \"fork\" and \"joined\", as their and nodes say"
+  ],
+  "problems": [],
+  "questions": []
+}

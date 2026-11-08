@@ -1,0 +1,17 @@
+# Quote-to-Cash Process | camunda=8.9
+start[start Opportunity Received] > generate_quote_from_catalog[service Generate Quote from Catalog | job=quote-generator in.lineItems=opportunity.lineItems in.pricingTier=customer.tier out.quoteTotal=quote.total out.discountPercent=quote.discountPercent] > discount_level[xor Discount Level?]
+discount_level >(no-approval-needed: discountPercent <= 10) generate_contract[service Generate Contract | job=contract-generator in.quote=quote in.customer=customer out.contractId=contract.id] > send_contract_for_e[service Send Contract for E-Signature | job=io.camunda:http-json:1 in.authentication.type="bearer" in.authentication.token=secrets.ESIGN_TOKEN in.method="POST" in.url=esignatureUrl + "/envelopes" in.connectionTimeoutInSeconds="20" in.readTimeoutInSeconds="20"] > contract_signed[xor Contract Signed?]
+discount_level >(manager-approval: discountPercent > 10 and discountPercent <= 25) manager_discount_approval[user Manager Discount Approval | form=discount-approval-form] > discount_approved[xor Discount Approved?]
+discount_level >(vp-approval: default) vp_discount_approval[user VP Discount Approval | form=discount-approval-form] > discount_approved
+contract_signed >(signature-declined: signatureResponse.status = "declined") contract_rejected[end Contract Rejected]
+contract_signed >(signature-signed: signatureResponse.status = "signed") order_type[xor Order Type?]
+discount_approved >(discount-approved: discountApproved = true) generate_contract
+discount_approved >(discount-rejected: default) contract_rejected
+order_type >(standard-order: order.type = "standard") provision_standard_order[service Provision Standard Order | job=provisioning-service in.order=order] > xor[xor] > generate_invoice[service Generate Invoice | job=invoice-generator in.order=order in.amountDue=quote.total out.invoiceId=invoice.id] > charge_payment_gateway[service Charge Payment Gateway | job=io.camunda:http-json:1 in.authentication.type="bearer" in.authentication.token=secrets.PAYMENT_GATEWAY_TOKEN in.method="POST" in.url=paymentGatewayUrl + "/charges" in.connectionTimeoutInSeconds="20" in.readTimeoutInSeconds="20"] > payment_outcome[eventgw Payment Outcome?]
+order_type >(bundled-order: default) provision_bundled_order[sub Provision Bundled Order] > xor
+payment_outcome >(paid-immediately) payment_confirmed[catch Payment Confirmed] > payment_received[end Payment Received]
+payment_outcome >(payment-overdue) payment_window_elapsed[catch Payment Window Elapsed] > dunning[sub Dunning & Cash Collection] > payment_collected[xor Payment Collected?]
+payment_collected >(collected-during-dunning: paymentReceived = true) payment_received
+payment_collected >(still-unpaid: default) escalate_to_collections_agency[service Escalate to Collections Agency | job=collections-agency in.invoiceId=invoiceId out.recovered=collectionResult.recovered] > debt_recovered[xor Debt Recovered?]
+debt_recovered >(debt-recovered: recovered = true) payment_received
+debt_recovered >(debt-written-off: default) written_off_collections_failed[end Written Off — Collections Failed]

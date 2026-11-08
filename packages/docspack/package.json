@@ -1,6 +1,6 @@
 {
 	"name": "@bpmnkit/docspack",
-	"version": "1.2.0",
+	"version": "1.3.0",
 	"type": "module",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -11,9 +11,9 @@
 		}
 	},
 	"bin": {
-		"bpmnkit-docs": "./dist/cli.js"
+		"bpmnkit-docs": "./bin/bpmnkit-docs.mjs"
 	},
-	"files": ["LICENSE", "README.md", "llms.txt", ".llms", "dist/**/*.js", "dist/**/*.d.ts"],
+	"files": ["bin", "LICENSE", "README.md", "llms.txt", ".llms", "dist/**/*.js", "dist/**/*.d.ts"],
 	"engines": {
 		"node": ">=20"
 	},
@@ -28,6 +28,10 @@
 		"siteUrl": "https://bpmnkit.com/docs",
 		"maxTokens": 800,
 		"minTokens": 120,
+		"startHere": {
+			"intro": "Writing a BPMN process, DMN decision or form? Read its agent card first: a runnable script, the top options and the traps (`casen agent-card bpmn|dmn|form` prints the same card).",
+			"docs": ["agent-cards/bpmn", "agent-cards/dmn", "agent-cards/form"]
+		},
 		"documents": [
 			"@bpmnkit/core",
 			"@bpmnkit/canvas",

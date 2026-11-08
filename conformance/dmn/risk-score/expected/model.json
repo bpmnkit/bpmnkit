@@ -1,0 +1,117 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "FIRST",
+        "id": "DecisionTable_09p6b1n",
+        "inputs": [
+          {
+            "id": "Input_1",
+            "inputExpression": {
+              "id": "InputExpression_1",
+              "text": "amount",
+              "typeRef": "number"
+            },
+            "label": "Amount"
+          },
+          {
+            "id": "InputClause_1jt5c6d",
+            "inputExpression": {
+              "id": "LiteralExpression_1c5rr1i",
+              "text": "country",
+              "typeRef": "string"
+            },
+            "label": "Country"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "Output_1",
+            "label": "Risk",
+            "name": "risk",
+            "typeRef": "string"
+          }
+        ],
+        "rules": [
+          {
+            "id": "DecisionRule_0lqw1jd",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_1cq5cpb",
+                "text": "< 1000"
+              },
+              {
+                "id": "UnaryTests_0u1nbmn",
+                "text": "\"DE\", \"AT\""
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_1s7v0mz",
+                "text": "\"low\""
+              }
+            ]
+          },
+          {
+            "id": "DecisionRule_1n5vqz8",
+            "inputEntries": [
+              {
+                "id": "UnaryTests_0dqk8jz",
+                "text": ">= 1000"
+              },
+              {
+                "id": "UnaryTests_1p9xk4b",
+                "text": ""
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "LiteralExpression_0y2jw4n",
+                "text": "\"high\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "risk_score",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Risk score"
+    }
+  ],
+  "diagram": {
+    "edges": [],
+    "shapes": [
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 160,
+          "y": 100
+        },
+        "dmnElementRef": "risk_score"
+      }
+    ]
+  },
+  "exporter": "Camunda Modeler",
+  "exporterVersion": "5.28.0",
+  "id": "Definitions_0y9k2xh",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {
+    "executionPlatform": "Camunda Cloud",
+    "executionPlatformVersion": "8.6.0"
+  },
+  "name": "DRD",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "dc": "http://www.omg.org/spec/DMN/20180521/DC/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/",
+    "modeler": "http://camunda.org/schema/modeler/1.0"
+  },
+  "textAnnotations": []
+}

@@ -1,11 +1,11 @@
-use std::sync::Arc;
-use async_trait::async_trait;
-use reebe_db::records::DbRecord;
-use reebe_db::state::variables::Variable;
+use super::{EventToWrite, RecordProcessor, Writers};
 use crate::engine::EngineState;
 use crate::error::{EngineError, EngineResult};
 use crate::key_gen::KeyGenerator;
-use super::{EventToWrite, RecordProcessor, Writers};
+use async_trait::async_trait;
+use reebe_db::records::DbRecord;
+use reebe_db::state::variables::Variable;
+use std::sync::Arc;
 
 pub struct VariableDocumentProcessor;
 
@@ -29,7 +29,12 @@ impl RecordProcessor for VariableDocumentProcessor {
         // The gRPC `SetVariables` call names the scope by `elementInstanceKey`: a process
         // instance or an element instance. `local: false` propagates from it, as Zeebe
         // does: each variable goes to the nearest scope that has it, else the process.
-        let key = |name: &str| payload[name].as_str().and_then(|s| s.parse().ok()).or_else(|| payload[name].as_i64());
+        let key = |name: &str| {
+            payload[name]
+                .as_str()
+                .and_then(|s| s.parse().ok())
+                .or_else(|| payload[name].as_i64())
+        };
         if let Some(scope_key) = key("elementInstanceKey") {
             let process_instance_key = match state.backend.get_element_instance_by_key(scope_key).await {
                 Ok(scope) => scope.process_instance_key,
@@ -39,13 +44,31 @@ impl RecordProcessor for VariableDocumentProcessor {
                     ))
                 })?,
             };
-            let variables = payload["variables"].as_object().cloned().unwrap_or_default();
+            let variables = payload["variables"]
+                .as_object()
+                .cloned()
+                .unwrap_or_default();
             if payload["local"].as_bool() == Some(true) {
                 for (name, value) in variables {
-                    super::scope::set_local(state, process_instance_key, scope_key, &name, value, &tenant_id).await?;
+                    super::scope::set_local(
+                        state,
+                        process_instance_key,
+                        scope_key,
+                        &name,
+                        value,
+                        &tenant_id,
+                    )
+                    .await?;
                 }
             } else {
-                super::scope::propagate(state, process_instance_key, scope_key, &variables, &tenant_id).await?;
+                super::scope::propagate(
+                    state,
+                    process_instance_key,
+                    scope_key,
+                    &variables,
+                    &tenant_id,
+                )
+                .await?;
             }
             writers.response = Some(serde_json::json!({
                 "processInstanceKey": process_instance_key.to_string(),

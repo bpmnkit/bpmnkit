@@ -1,0 +1,49 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 1,
+    "info": 0,
+    "warning": 1
+  },
+  "diagnostics": [
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_93c466ab-b271-4376-a427-f4c353d55ce8"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Start Event\" has no documentation describing expected input variables.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"WFP-6-\" is not marked executable.",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 2
+}

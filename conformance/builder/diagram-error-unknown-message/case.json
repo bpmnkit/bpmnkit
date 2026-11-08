@@ -1,0 +1,12 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createDiagram","D"],
+		["process","p",{"$ops":[["startEvent","s"],["endEvent","e"]]}],
+		["process","q",{"$ops":[["startEvent","s2"],["endEvent","e2"]]}],
+		["participant","A",{"processId":"p"}],
+		["participant","B",{"processId":"q"}],
+		["messageFlow","MF",{"source":"A","target":"B","messageRef":"Msg_none"}],
+		["build"]
+	]
+}

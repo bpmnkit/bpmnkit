@@ -1,0 +1,37 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "a",
+          "type": "serviceTask",
+          "jobType": "w",
+          "multiInstance": {
+            "collection": "= items",
+            "element": "item"
+          }
+        },
+        {
+          "id": "b",
+          "type": "userTask",
+          "multiInstance": {
+            "collection": "= xs",
+            "sequential": true,
+            "outputCollection": "o",
+            "outputElement": "= r",
+            "completionCondition": "= done"
+          }
+        }
+      ],
+      "flows": [
+        {
+          "id": "f",
+          "from": "a",
+          "to": "b"
+        }
+      ]
+    }
+  ]
+}

@@ -12,6 +12,7 @@
  */
 
 import {
+	clusterApiUrl,
 	createClientFromProfile,
 	getActiveName,
 	getAuthHeader,
@@ -126,7 +127,7 @@ export async function deployResource(
 
 	let response: Response
 	try {
-		response = await fetch(`${baseUrl.replace(/\/$/, "")}/v2/deployments`, {
+		response = await fetch(clusterApiUrl(baseUrl, "/deployments"), {
 			method: "POST",
 			headers: { authorization: await getAuthHeader(target.config) },
 			body,

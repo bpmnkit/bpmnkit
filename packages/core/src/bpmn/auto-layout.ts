@@ -9,7 +9,7 @@ import { layoutProcess } from "../layout/layout-engine.js"
 import type { Side } from "../layout/orthogonal.js"
 import type { ConnectionKind, PlaneEdge, PlaneShape } from "../layout/repair.js"
 import { repairRoutes } from "../layout/repair.js"
-import type { Bounds, LayoutEdge, LayoutNode, LayoutResult } from "../layout/types.js"
+import type { Bounds, LayoutEdge, LayoutHints, LayoutNode, LayoutResult } from "../layout/types.js"
 import type {
 	BpmnBounds,
 	BpmnCollaboration,
@@ -74,6 +74,9 @@ function nodeToShape(node: LayoutNode, dx: number, dy: number): BpmnDiShape {
 		unknownAttributes: {},
 	}
 	if (node.isExpanded !== undefined) shape.isExpanded = node.isExpanded
+	// The bpmn-js Viewer draws the "X" only when the shape says so; the Modeler
+	// assumes it. `keepDiAttributes` lets an explicit value in the source win.
+	if (node.type === "exclusiveGateway") shape.isMarkerVisible = true
 	if (node.labelBounds) {
 		shape.label = {
 			bounds: {
@@ -108,6 +111,36 @@ function edgeToShape(edge: LayoutEdge, dx: number, dy: number): BpmnDiEdge {
 		}
 	}
 	return diEdge
+}
+
+/**
+ * Lane shapes for one process: the engine's bands when it placed nodes by lane,
+ * otherwise the top-level lanes tiled proportionally over the content height.
+ */
+function laneShapesFor(
+	lanes: BpmnLane[],
+	laneBands: Array<{ id: string; bounds: Bounds }> | undefined,
+	nodes: LayoutNode[],
+	dx: number,
+	dy: number,
+	top: number,
+	x: number,
+	width: number,
+	height: number,
+): BpmnDiShape[] {
+	if (!laneBands) return buildLaneShapes(lanes, nodes, dx, dy, top, x, width, height)
+	return laneBands.map((lane) => ({
+		id: `${lane.id}_di`,
+		bpmnElement: lane.id,
+		isHorizontal: true,
+		bounds: {
+			x: Math.round(x),
+			y: Math.round(lane.bounds.y + dy),
+			width: Math.round(width),
+			height: Math.round(lane.bounds.height),
+		},
+		unknownAttributes: {},
+	}))
 }
 
 function buildLaneShapes(
@@ -185,7 +218,39 @@ function buildLaneShapes(
 	})
 }
 
-function addAnnotationShapes(
+/**
+ * A view of `process` whose annotations and associations include those declared
+ * inside (nested) sub-processes. The builder stores them on the sub-process
+ * element, so packing only the process-level lists left them without a shape
+ * or edge. Layout nodes are already flat in diagram space, so one pass suffices.
+ */
+function withNestedAnnotations(process: BpmnProcess): BpmnProcess {
+	const textAnnotations = [...process.textAnnotations]
+	const associations = [...process.associations]
+	const walk = (elements: BpmnFlowElement[]): void => {
+		for (const el of elements) {
+			const scope = el as unknown as {
+				flowElements?: BpmnFlowElement[]
+				textAnnotations?: BpmnProcess["textAnnotations"]
+				associations?: BpmnProcess["associations"]
+			}
+			if (scope.textAnnotations) textAnnotations.push(...scope.textAnnotations)
+			if (scope.associations) associations.push(...scope.associations)
+			if (scope.flowElements) walk(scope.flowElements)
+		}
+	}
+	walk(process.flowElements)
+	if (
+		textAnnotations.length === process.textAnnotations.length &&
+		associations.length === process.associations.length
+	) {
+		return process
+	}
+	return { ...process, textAnnotations, associations }
+}
+
+/** Also used by `expand`, which lays out one process without the pool handling above. */
+export function addAnnotationShapes(
 	process: BpmnProcess,
 	layoutNodes: LayoutNode[],
 	annLocalBounds: Map<string, Bounds>,
@@ -215,6 +280,23 @@ function addAnnotationShapes(
 	}
 
 	for (const assoc of process.associations) {
+		// Two annotations: both boxes are packed, so dock edge to edge between them.
+		const sourceAnn = annLocalBounds.get(assoc.sourceRef)
+		const targetAnn = annLocalBounds.get(assoc.targetRef)
+		if (sourceAnn && targetAnn) {
+			const { pElem, pAnn } = associationWaypoints(sourceAnn, targetAnn)
+			allEdges.push({
+				id: `${assoc.id}_di`,
+				bpmnElement: assoc.id,
+				waypoints: [
+					{ x: Math.round(pElem.x + dx), y: Math.round(pElem.y + dy) },
+					{ x: Math.round(pAnn.x + dx), y: Math.round(pAnn.y + dy) },
+				],
+				unknownAttributes: {},
+			})
+			continue
+		}
+
 		const annId = annLocalBounds.has(assoc.sourceRef)
 			? assoc.sourceRef
 			: annLocalBounds.has(assoc.targetRef)
@@ -721,10 +803,13 @@ function ancestorIndex(defs: BpmnDefinitions, collab: BpmnCollaboration): Map<st
  *
  * @param engine - Which process layout algorithm to run. Defaults to `semantic`;
  *   `grid` runs the older cell-grid walk and is used to compare the two.
+ * @param hints - Tool-grid shapes and annotation sides the builder collected;
+ *   they steer placement only and are not written to `defs`.
  */
 export function applyAutoLayout(
 	defs: BpmnDefinitions,
 	engine: LayoutEngine = "semantic",
+	hints?: LayoutHints,
 ): BpmnDefinitions {
 	if (defs.processes.length === 0) return defs
 
@@ -759,7 +844,7 @@ export function applyAutoLayout(
 		// stack follows the message flows rather than the declaration order.
 		for (const pool of participantPools) {
 			if (pool.process && !layoutOf.has(pool.process)) {
-				layoutOf.set(pool.process, layoutProcess(pool.process, engine, collapsed))
+				layoutOf.set(pool.process, layoutProcess(pool.process, engine, collapsed, hints?.grids))
 			}
 		}
 		const depths = depthIndex(layoutOf.values())
@@ -782,7 +867,7 @@ export function applyAutoLayout(
 	// geometry is committed.
 	const layouts = pools.map((pool) =>
 		pool.process
-			? (layoutOf.get(pool.process) ?? layoutProcess(pool.process, engine, collapsed))
+			? (layoutOf.get(pool.process) ?? layoutProcess(pool.process, engine, collapsed, hints?.grids))
 			: { nodes: [], edges: [] },
 	)
 	const alignment = alignPools(
@@ -809,8 +894,12 @@ export function applyAutoLayout(
 
 		// A participant with no process, or one whose process has no flow nodes,
 		// is a black box: it still needs a pool of its own to dock message flows
-		// onto, and to stay visible at all.
-		if (result.nodes.length === 0) {
+		// onto, and to stay visible at all. One whose process holds annotations
+		// is not: it takes the content path below, so the pool is sized around them
+		// and they get shapes instead of being dropped.
+		const annotationsOnlyPool =
+			participantId !== undefined && process !== undefined && process.textAnnotations.length > 0
+		if (result.nodes.length === 0 && !annotationsOnlyPool) {
 			// A process can be nothing but annotations; they still belong on the plane.
 			if (!participantId && process && process.textAnnotations.length > 0) {
 				const annOnly = packAnnotations(process, [])
@@ -847,8 +936,9 @@ export function applyAutoLayout(
 		const engineLanes = result.lanes
 
 		// Pre-compute annotation positions in layout space so they're included in the bbox
-		const annBounds = process
-			? packAnnotations(process, result.nodes, result.edges)
+		const annProcess = process ? withNestedAnnotations(process) : undefined
+		const annBounds = annProcess
+			? packAnnotations(annProcess, result.nodes, result.edges, hints?.annotationSides)
 			: new Map<string, Bounds>()
 
 		const { minX, minY, maxX, maxY } = contentBbox(result.nodes, annBounds.values())
@@ -858,7 +948,7 @@ export function applyAutoLayout(
 		// Engine lane bands already stack the content vertically, so the pool
 		// aligns to the band space rather than to the content bounding box —
 		// otherwise the shapes drift out of the lanes drawn around them.
-		const laneBands = participantId && hasLanes ? engineLanes : undefined
+		const laneBands = hasLanes ? engineLanes : undefined
 		// Bands arrive outermost first and nested lanes overlap their parent, so the
 		// pool spans their extent rather than the first band or the sum of heights.
 		const bandTop = laneBands ? Math.min(...laneBands.map((lane) => lane.bounds.y)) : 0
@@ -866,6 +956,8 @@ export function applyAutoLayout(
 			? Math.max(...laneBands.map((lane) => lane.bounds.y + lane.bounds.height)) - bandTop
 			: 0
 
+		// Below any pools already stacked; poolY is 0 without a collaboration.
+		const processTop = process?.id === primaryProcessId ? poolY : 0
 		let dx: number
 		let dy: number
 		if (participantId) {
@@ -873,9 +965,28 @@ export function applyAutoLayout(
 			dx = elemX - minX + alignDx
 			dy = laneBands ? poolY - bandTop : poolY + PADDING - minY
 		} else {
-			dx = PADDING - minX
-			dy = PADDING - minY
+			// A process outside any pool draws its lanes on the plane itself (bpmn-js
+			// imports lane DI under a process root), header at x 0, so the content
+			// clears the lane header the way it does in a pool.
+			// A layout pass must not invent a participant to hold them.
+			dx = (hasLanes ? LANE_HEADER : 0) + PADDING - minX
+			dy = laneBands ? processTop - bandTop : processTop + PADDING - minY
 		}
+		/** Lanes of a process outside any pool, drawn straight on its plane. */
+		const bareLanes =
+			!participantId && hasLanes
+				? laneShapesFor(
+						lanes,
+						laneBands,
+						result.nodes,
+						dx,
+						dy,
+						processTop,
+						0,
+						LANE_HEADER + contentW + 2 * PADDING,
+						laneBands ? bandHeight : contentH + 2 * PADDING,
+					)
+				: []
 
 		// Only the primary process shares the root plane; any other root process
 		// owns one, instead of being stacked on top of the first at the origin.
@@ -884,7 +995,8 @@ export function applyAutoLayout(
 			const edges: BpmnDiEdge[] = []
 			for (const node of result.nodes) shapes.push(nodeToShape(node, dx, dy))
 			for (const edge of result.edges) edges.push(edgeToShape(edge, dx, dy))
-			addAnnotationShapes(process, result.nodes, annBounds, shapes, edges, dx, dy)
+			addAnnotationShapes(annProcess ?? process, result.nodes, annBounds, shapes, edges, dx, dy)
+			shapes.push(...bareLanes)
 			rootPlanes.push({ elementId: process.id, shapes, edges })
 			continue
 		}
@@ -892,8 +1004,17 @@ export function applyAutoLayout(
 		for (const node of result.nodes) allShapes.push(nodeToShape(node, dx, dy))
 		for (const edge of result.edges) allEdges.push(edgeToShape(edge, dx, dy))
 		if (process) {
-			addAnnotationShapes(process, result.nodes, annBounds, allShapes, allEdges, dx, dy)
+			addAnnotationShapes(
+				annProcess ?? process,
+				result.nodes,
+				annBounds,
+				allShapes,
+				allEdges,
+				dx,
+				dy,
+			)
 		}
+		allShapes.push(...bareLanes)
 
 		if (participantId) {
 			const innerW = (hasLanes ? LANE_HEADER : 0) + contentW + 2 * PADDING + alignDx
@@ -910,21 +1031,19 @@ export function applyAutoLayout(
 			})
 
 			if (hasLanes) {
-				const laneShapes = laneBands
-					? laneBands.map((lane) => ({
-							id: `${lane.id}_di`,
-							bpmnElement: lane.id,
-							isHorizontal: true,
-							bounds: {
-								x: Math.round(POOL_HEADER),
-								y: Math.round(lane.bounds.y + dy),
-								width: Math.round(innerW),
-								height: Math.round(lane.bounds.height),
-							},
-							unknownAttributes: {},
-						}))
-					: buildLaneShapes(lanes, result.nodes, dx, dy, poolY, POOL_HEADER, innerW, innerH)
-				allShapes.push(...laneShapes)
+				allShapes.push(
+					...laneShapesFor(
+						lanes,
+						laneBands,
+						result.nodes,
+						dx,
+						dy,
+						poolY,
+						POOL_HEADER,
+						innerW,
+						innerH,
+					),
+				)
 			}
 
 			poolY += innerH + POOL_GAP
@@ -1048,11 +1167,23 @@ export function applyAutoLayout(
 	for (const plane of rootPlanes) repair(plane.shapes, plane.edges)
 
 	const planeBpmnElement = collab?.id ?? defs.processes[0]?.id ?? "plane"
-	const existingDiagram = defs.diagrams[0]
+	// The primary plane keeps the ids of the source diagram that drew the same
+	// element. The first diagram is the fallback only while no other plane
+	// reuses it: a root or sub-process plane keeps its own source diagram, and
+	// two diagrams with one id lose a plane to any reader that resolves by id.
+	const claimed = new Set<string>([
+		...rootPlanes.map((plane) => plane.elementId),
+		...childPlanes.map((plane) => plane.elementId),
+		...collapsed,
+	])
+	const firstDiagram = defs.diagrams[0]
+	const existingDiagram =
+		defs.diagrams.find((d) => d.plane.bpmnElement === planeBpmnElement) ??
+		(firstDiagram && !claimed.has(firstDiagram.plane.bpmnElement) ? firstDiagram : undefined)
 
 	return {
 		...defs,
-		diagrams: [
+		diagrams: keepDiAttributes(defs.diagrams, [
 			{
 				id: existingDiagram?.id ?? "BPMNDiagram_1",
 				plane: {
@@ -1075,8 +1206,105 @@ export function applyAutoLayout(
 				}
 			}),
 			...childPlaneDiagrams(childPlanes, defs, collapsed),
-		],
+		]),
 	}
+}
+
+/**
+ * Layout recomputes geometry only: bounds, waypoints, label bounds, and the
+ * `isExpanded` / `isHorizontal` that describe them. Everything else the source
+ * diagram said carries over by `bpmnElement` (DI ids, gateway markers, colours
+ * and other vendor attributes, diagram names and label styles), as a plain
+ * parse and export would keep it.
+ */
+function keepDiAttributes(source: BpmnDiagram[], laidOut: BpmnDiagram[]): BpmnDiagram[] {
+	// Diagrams match by the element their plane draws; `id` is optional in DI,
+	// and matching on an empty one would hand every diagram the first one's
+	// attributes and label styles (duplicate XML ids).
+	const diagramByElement = new Map<string, BpmnDiagram>()
+	const diagramById = new Map<string, BpmnDiagram>()
+	const shapeByElement = new Map<string, BpmnDiShape>()
+	const edgeByElement = new Map<string, BpmnDiEdge>()
+	const sourceIds = new Set<string>()
+	for (const diagram of source) {
+		const element = diagram.plane.bpmnElement
+		if (element && !diagramByElement.has(element)) diagramByElement.set(element, diagram)
+		if (diagram.id && !diagramById.has(diagram.id)) diagramById.set(diagram.id, diagram)
+		for (const shape of diagram.plane.shapes) {
+			if (!shapeByElement.has(shape.bpmnElement)) shapeByElement.set(shape.bpmnElement, shape)
+			sourceIds.add(shape.id)
+		}
+		for (const edge of diagram.plane.edges) {
+			if (!edgeByElement.has(edge.bpmnElement)) edgeByElement.set(edge.bpmnElement, edge)
+			sourceIds.add(edge.id)
+		}
+	}
+
+	// A source id is reused only once, so a malformed source with two shapes
+	// for one element cannot produce duplicate ids. A generated `X_di` may
+	// already be the source id of another element (one renamed from `X`), so
+	// generated ids steer clear of every source id.
+	const used = new Set<string>()
+	// An empty source id means the source omitted it; that is not one to keep.
+	const keepId = (generated: string, previous: string | undefined): string => {
+		if (previous && !used.has(previous)) {
+			used.add(previous)
+			return previous
+		}
+		// Checked even when `generated` equals a previous id already taken (two
+		// source shapes sharing `X_di`): that id is in use, so it is not free.
+		let id = generated
+		for (let n = 2; sourceIds.has(id) || used.has(id); n++) id = `${generated}_${n}`
+		used.add(id)
+		return id
+	}
+	const keepLabel = <T extends BpmnDiShape | BpmnDiEdge>(item: T, previous: T): T => {
+		const attrs = previous.label?.unknownAttributes
+		if (!attrs) return item
+		// When layout gives the element no label bounds, the label still carries
+		// its style; BPMN DI allows a `BPMNLabel` without bounds.
+		return { ...item, label: { ...item.label, unknownAttributes: { ...attrs } } }
+	}
+
+	return laidOut.map((diagram) => {
+		const previousDiagram =
+			(diagram.plane.bpmnElement && diagramByElement.get(diagram.plane.bpmnElement)) ||
+			(diagram.id ? diagramById.get(diagram.id) : undefined)
+		const shapes = diagram.plane.shapes.map((shape) => {
+			const previous = shapeByElement.get(shape.bpmnElement)
+			if (!previous) return { ...shape, id: keepId(shape.id, undefined) }
+			const kept: BpmnDiShape = {
+				...shape,
+				id: keepId(shape.id, previous.id),
+				unknownAttributes: { ...previous.unknownAttributes },
+			}
+			// Layout sets the marker only on exclusive gateways; a source value on
+			// any other shape is stale (left from an element whose type changed).
+			if (shape.isMarkerVisible !== undefined && previous.isMarkerVisible !== undefined)
+				kept.isMarkerVisible = previous.isMarkerVisible
+			return keepLabel(kept, previous)
+		})
+		const edges = diagram.plane.edges.map((edge) => {
+			const previous = edgeByElement.get(edge.bpmnElement)
+			if (!previous) return { ...edge, id: keepId(edge.id, undefined) }
+			const kept: BpmnDiEdge = {
+				...edge,
+				id: keepId(edge.id, previous.id),
+				unknownAttributes: { ...previous.unknownAttributes },
+			}
+			return keepLabel(kept, previous)
+		})
+		const plane = { ...diagram.plane, shapes, edges }
+		const planeAttrs = previousDiagram?.plane.unknownAttributes
+		if (planeAttrs) plane.unknownAttributes = { ...planeAttrs }
+
+		const result: BpmnDiagram = { ...diagram, plane }
+		if (previousDiagram?.unknownAttributes)
+			result.unknownAttributes = { ...previousDiagram.unknownAttributes }
+		if (previousDiagram?.unknownChildren)
+			result.unknownChildren = structuredClone(previousDiagram.unknownChildren)
+		return result
+	})
 }
 
 /**
@@ -1119,6 +1347,7 @@ function routeRepair(defs: BpmnDefinitions): (shapes: BpmnDiShape[], edges: Bpmn
 			const scope = element as unknown as {
 				flowElements?: BpmnFlowElement[]
 				sequenceFlows?: Array<{ id: string; sourceRef: string; targetRef: string }>
+				associations?: BpmnProcess["associations"]
 			}
 			for (const flow of scope.sequenceFlows ?? []) {
 				connections.set(flow.id, {
@@ -1126,6 +1355,11 @@ function routeRepair(defs: BpmnDefinitions): (shapes: BpmnDiShape[], edges: Bpmn
 					source: flow.sourceRef,
 					target: flow.targetRef,
 				})
+			}
+			// A sub-process's associations are drawn on the same plane as the
+			// process's own (withNestedAnnotations), so they need the same repair.
+			for (const a of scope.associations ?? []) {
+				connections.set(a.id, { kind: "association", source: a.sourceRef, target: a.targetRef })
 			}
 			if (scope.flowElements) walk(scope.flowElements, element.id)
 		}

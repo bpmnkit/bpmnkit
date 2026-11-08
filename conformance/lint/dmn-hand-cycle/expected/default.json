@@ -1,0 +1,18 @@
+{
+  "findings": [
+    {
+      "elementId": "a",
+      "fix": "Remove one of the <requiredDecision> references so the requirement graph is acyclic. (agent-cards/dmn.md#traps)",
+      "message": "Decisions require each other in a cycle: a → b → c → a.",
+      "rule": "dmn/requirement-cycle",
+      "severity": "error"
+    },
+    {
+      "elementId": "s",
+      "fix": "Remove one of the <requiredDecision> references so the requirement graph is acyclic. (agent-cards/dmn.md#traps)",
+      "message": "Decisions require each other in a cycle: s → s.",
+      "rule": "dmn/requirement-cycle",
+      "severity": "error"
+    }
+  ]
+}

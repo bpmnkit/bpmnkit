@@ -1,0 +1,361 @@
+{
+  "decisions": [
+    {
+      "hitPolicy": "UNIQUE",
+      "id": "d_unique",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "i1",
+          "label": "x",
+          "typeRef": "number"
+        }
+      ],
+      "name": "Unique",
+      "outputs": [
+        {
+          "id": "o1",
+          "name": "y",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r1",
+          "inputs": [
+            "< 10"
+          ],
+          "outputs": [
+            "\"small\""
+          ]
+        },
+        {
+          "id": "r2",
+          "inputs": [
+            ">= 10"
+          ],
+          "outputs": [
+            "\"large\""
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "FIRST",
+      "id": "d_first",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "i2"
+        }
+      ],
+      "name": "First",
+      "outputs": [
+        {
+          "id": "o2",
+          "name": "y"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r3",
+          "inputs": [
+            "1"
+          ],
+          "outputs": [
+            "\"a\""
+          ]
+        },
+        {
+          "id": "r4",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"b\""
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "ANY",
+      "id": "d_any",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "i3"
+        }
+      ],
+      "name": "Any",
+      "outputs": [
+        {
+          "id": "o3",
+          "name": "y"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r5",
+          "inputs": [
+            "1"
+          ],
+          "outputs": [
+            "\"a\""
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "RULE ORDER",
+      "id": "d_rule_order",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "i4"
+        }
+      ],
+      "name": "Rule order",
+      "outputs": [
+        {
+          "id": "o4",
+          "name": "y"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r6",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "1"
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "OUTPUT ORDER",
+      "id": "d_output_order",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "i5"
+        }
+      ],
+      "name": "Output order",
+      "outputs": [
+        {
+          "id": "o5",
+          "name": "y"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r7",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"low\""
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "PRIORITY",
+      "id": "d_priority",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "i6"
+        }
+      ],
+      "name": "Priority",
+      "outputs": [
+        {
+          "id": "o6",
+          "name": "y"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r8",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"low\""
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "COLLECT",
+      "id": "d_collect",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "i7"
+        }
+      ],
+      "name": "Collect",
+      "outputs": [
+        {
+          "id": "o7",
+          "name": "y"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r9",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "1"
+          ]
+        }
+      ]
+    },
+    {
+      "aggregation": "SUM",
+      "hitPolicy": "COLLECT",
+      "id": "d_sum",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "i8"
+        }
+      ],
+      "name": "Collect sum",
+      "outputs": [
+        {
+          "id": "o8",
+          "name": "y",
+          "typeRef": "number"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r10",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "1"
+          ]
+        }
+      ]
+    },
+    {
+      "aggregation": "MIN",
+      "hitPolicy": "COLLECT",
+      "id": "d_min",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "i9"
+        }
+      ],
+      "name": "Collect min",
+      "outputs": [
+        {
+          "id": "o9",
+          "name": "y",
+          "typeRef": "number"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r11",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "1"
+          ]
+        }
+      ]
+    },
+    {
+      "aggregation": "MAX",
+      "hitPolicy": "COLLECT",
+      "id": "d_max",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "i10"
+        }
+      ],
+      "name": "Collect max",
+      "outputs": [
+        {
+          "id": "o10",
+          "name": "y",
+          "typeRef": "number"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r12",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "1"
+          ]
+        }
+      ]
+    },
+    {
+      "aggregation": "COUNT",
+      "hitPolicy": "COLLECT",
+      "id": "d_count",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "i11"
+        }
+      ],
+      "name": "Collect count",
+      "outputs": [
+        {
+          "id": "o11",
+          "name": "y",
+          "typeRef": "number"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r13",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "1"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "d_default",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "i12"
+        }
+      ],
+      "name": "No hit policy",
+      "outputs": [
+        {
+          "id": "o12",
+          "name": "y"
+        }
+      ],
+      "rules": []
+    }
+  ],
+  "id": "Definitions_hp",
+  "inputData": [],
+  "name": "Hit policies"
+}

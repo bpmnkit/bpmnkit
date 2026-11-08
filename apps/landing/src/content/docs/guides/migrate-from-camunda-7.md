@@ -80,7 +80,7 @@ stores `camunda:collection` and the implementation of message throw events.
 | `camunda:versionTag` | `zeebe:versionTag` | convertible |
 | `camunda:properties` | `zeebe:properties` | convertible |
 
-The file is marked `modeler:executionPlatform="Camunda Cloud"` (version `8.8.0` by default),
+The file is marked `modeler:executionPlatform="Camunda Cloud"` (version `8.10.0` by default),
 and the `zeebe` namespace is declared. If the converter writes a Camunda 8 equivalent, it
 removes the Camunda 7 original. If it does not, it keeps the original in the file. Camunda 8
 ignores `camunda:` content, so nothing is lost, and the next person can see what the model
@@ -184,6 +184,23 @@ it fails the job.
 The converted output is checked against BPMN Kit's Camunda 8 deploy lint. Everything reported
 as convertible lints clean. The remaining deploy errors belong to elements with a manual
 finding. An example is a receive task that has no correlation key yet.
+
+## Going back: Camunda 8 to Camunda 7
+
+Camunda 8 stays the focus, but you can export a model for Camunda 7 or Operaton, best effort:
+
+```sh
+casen migrate c7 order.bpmn --to camunda7   # writes order.c7.bpmn
+```
+
+In code, `convertCamunda8To7(Bpmn.parse(xml))` returns `{ definitions, findings }`. It maps job types to
+`camunda:type="external"` with `camunda:topic`, I/O mappings to `camunda:inputOutput`, assignment,
+form keys, call activities (`camunda:in` / `camunda:out`) and version tags. It removes every `zeebe:` and
+`modeler:` element, attribute and namespace.
+
+It does not translate FEEL to JUEL: such expressions are kept as written and reported as `manual`
+findings. Message correlation keys, connectors and Zeebe-only features (task headers, listeners and
+similar) are dropped and reported.
 
 ## Camunda's own tools
 

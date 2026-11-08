@@ -18,8 +18,10 @@ import {
 	connectApis,
 	connectMessages,
 	connectTasks,
+	countAgents,
 	createConnectLineFilter,
 	finishConnect,
+	maxConnectRequestChars,
 	maxConnectTokens,
 } from "../lib/connect.js"
 import { MODEL_PROFILES, neuronsFor } from "../lib/generate.js"
@@ -50,14 +52,14 @@ interface ConnectRequest {
 	token?: string
 }
 
-function readBody(raw: unknown): ConnectRequest | string {
+function readBody(raw: unknown, maxRequest: number): ConnectRequest | string {
 	if (typeof raw !== "object" || raw === null) return 'expected JSON: { "xml" }'
 	const body = raw as Record<string, unknown>
 	if (typeof body.xml !== "string" || body.xml.length === 0) return "the diagram is missing"
 	if (body.xml.length > MAX_ROW_BYTES) return "the diagram is too large"
 	const request = typeof body.request === "string" ? body.request.trim() : ""
-	if (request.length > MAX_CONNECT_REQUEST_CHARS) {
-		return `a request is at most ${MAX_CONNECT_REQUEST_CHARS} characters`
+	if (request.length > maxRequest) {
+		return `a request is at most ${maxRequest} characters`
 	}
 	if (body.lines !== undefined && typeof body.lines !== "string") return "lines must be text"
 	if (typeof body.lines === "string" && body.lines.length > MAX_CONNECT_REQUEST_CHARS) {
@@ -100,7 +102,10 @@ export async function handleConnect(request: Request, env: Env, now: number): Pr
 	const denied = await checkAiPasscode(request, env, env.AI_PASSCODE, now)
 	if (denied) return denied
 
-	const parsed = readBody(await request.json().catch(() => null))
+	const parsed = readBody(
+		await request.json().catch(() => null),
+		maxConnectRequestChars(new URL(request.url).searchParams),
+	)
 	if (typeof parsed === "string") return fail(400, parsed)
 
 	const { denied: unverified, pass } = await checkAiChallenge(request, env, parsed.token, now)
@@ -191,7 +196,7 @@ async function answer(
 			{
 				messages,
 				stream: true,
-				max_tokens: maxConnectTokens(selection.length),
+				max_tokens: maxConnectTokens(selection.length, countAgents(selection)),
 				...(MODEL_PROFILES[model]?.options ?? {}),
 			},
 			// One instance per model, so the fixed system prompt stays in its prefix cache.

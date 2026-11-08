@@ -1,0 +1,1 @@
+s[start:conditional Stock low | feel=stock < 5] > t[task T] > e[end]

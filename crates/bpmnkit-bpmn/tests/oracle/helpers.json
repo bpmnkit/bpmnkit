@@ -1,0 +1,1123 @@
+{
+	"slugs": [
+		{
+			"text": "Review application",
+			"slug": "Review_application"
+		},
+		{
+			"text": "  ünïcödé — text!  ",
+			"slug": "n_c_d_text"
+		},
+		{
+			"text": "___",
+			"slug": "element"
+		},
+		{
+			"text": "",
+			"slug": "element"
+		},
+		{
+			"text": "﻿a",
+			"slug": "a"
+		},
+		{
+			"text": "123 go",
+			"slug": "123_go"
+		},
+		{
+			"text": "😀 smile",
+			"slug": "smile"
+		}
+	],
+	"uniques": [
+		{
+			"base": "a",
+			"id": "a_3"
+		},
+		{
+			"base": "a",
+			"id": "a_4"
+		},
+		{
+			"base": "b",
+			"id": "b_2"
+		},
+		{
+			"base": "c",
+			"id": "c"
+		},
+		{
+			"base": "c",
+			"id": "c_2"
+		}
+	],
+	"flowCases": [
+		{
+			"name": "single and parallel flows, branch and condition discriminators",
+			"elements": [
+				{
+					"id": "gw",
+					"incoming": [],
+					"outgoing": [],
+					"extensionElements": [],
+					"unknownAttributes": {},
+					"type": "exclusiveGateway",
+					"default": "f2"
+				},
+				{
+					"id": "a",
+					"incoming": [],
+					"outgoing": [],
+					"extensionElements": [],
+					"unknownAttributes": {},
+					"type": "task"
+				},
+				{
+					"id": "1b",
+					"incoming": [],
+					"outgoing": [],
+					"extensionElements": [],
+					"unknownAttributes": {},
+					"type": "task"
+				}
+			],
+			"flows": [
+				{
+					"id": "f1",
+					"sourceRef": "gw",
+					"targetRef": "a",
+					"extensionElements": [],
+					"unknownAttributes": {},
+					"name": "Yes"
+				},
+				{
+					"id": "f2",
+					"sourceRef": "gw",
+					"targetRef": "a",
+					"extensionElements": [],
+					"unknownAttributes": {},
+					"name": "No"
+				},
+				{
+					"id": "f3",
+					"sourceRef": "gw",
+					"targetRef": "1b",
+					"extensionElements": [],
+					"unknownAttributes": {},
+					"conditionExpression": {
+						"text": "= x > 1",
+						"attributes": {}
+					}
+				},
+				{
+					"id": "f4",
+					"sourceRef": "gw",
+					"targetRef": "1b",
+					"extensionElements": [],
+					"unknownAttributes": {}
+				},
+				{
+					"id": "f5",
+					"sourceRef": "gw",
+					"targetRef": "1b",
+					"extensionElements": [],
+					"unknownAttributes": {}
+				},
+				{
+					"id": "f6",
+					"sourceRef": "a",
+					"targetRef": "1b",
+					"extensionElements": [],
+					"unknownAttributes": {}
+				}
+			],
+			"branch": {
+				"f1": "Approved path"
+			},
+			"explicit": [],
+			"preserve": null,
+			"result": {
+				"ok": {
+					"elements": [
+						{
+							"id": "gw",
+							"incoming": [],
+							"outgoing": [],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "exclusiveGateway",
+							"default": "Flow_gw_a_No"
+						},
+						{
+							"id": "a",
+							"incoming": [],
+							"outgoing": [],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "task"
+						},
+						{
+							"id": "1b",
+							"incoming": [],
+							"outgoing": [],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "task"
+						}
+					],
+					"flows": [
+						{
+							"id": "Flow_gw_a_Approved_path",
+							"sourceRef": "gw",
+							"targetRef": "a",
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"name": "Yes"
+						},
+						{
+							"id": "Flow_gw_a_No",
+							"sourceRef": "gw",
+							"targetRef": "a",
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"name": "No"
+						},
+						{
+							"id": "Flow_gw_b_c1owdwa5",
+							"sourceRef": "gw",
+							"targetRef": "1b",
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"conditionExpression": {
+								"text": "= x > 1",
+								"attributes": {}
+							}
+						},
+						{
+							"id": "Flow_gw_b",
+							"sourceRef": "gw",
+							"targetRef": "1b",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						},
+						{
+							"id": "Flow_gw_b_2",
+							"sourceRef": "gw",
+							"targetRef": "1b",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						},
+						{
+							"id": "Flow_a_b",
+							"sourceRef": "a",
+							"targetRef": "1b",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						}
+					]
+				}
+			}
+		},
+		{
+			"name": "explicit and preserved ids are kept and reserved",
+			"elements": [
+				{
+					"id": "Flow_a_b",
+					"incoming": [],
+					"outgoing": [],
+					"extensionElements": [],
+					"unknownAttributes": {},
+					"type": "task"
+				},
+				{
+					"id": "a",
+					"incoming": [],
+					"outgoing": [],
+					"extensionElements": [],
+					"unknownAttributes": {},
+					"type": "task"
+				},
+				{
+					"id": "b",
+					"incoming": [],
+					"outgoing": [],
+					"extensionElements": [],
+					"unknownAttributes": {},
+					"type": "task"
+				}
+			],
+			"flows": [
+				{
+					"id": "keep",
+					"sourceRef": "a",
+					"targetRef": "b",
+					"extensionElements": [],
+					"unknownAttributes": {}
+				},
+				{
+					"id": "mine",
+					"sourceRef": "a",
+					"targetRef": "b",
+					"extensionElements": [],
+					"unknownAttributes": {}
+				},
+				{
+					"id": "gen",
+					"sourceRef": "a",
+					"targetRef": "b",
+					"extensionElements": [],
+					"unknownAttributes": {}
+				}
+			],
+			"branch": {},
+			"explicit": ["mine"],
+			"preserve": ["keep"],
+			"result": {
+				"ok": {
+					"elements": [
+						{
+							"id": "Flow_a_b",
+							"incoming": [],
+							"outgoing": [],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "task"
+						},
+						{
+							"id": "a",
+							"incoming": [],
+							"outgoing": [],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "task"
+						},
+						{
+							"id": "b",
+							"incoming": [],
+							"outgoing": [],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "task"
+						}
+					],
+					"flows": [
+						{
+							"id": "keep",
+							"sourceRef": "a",
+							"targetRef": "b",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						},
+						{
+							"id": "mine",
+							"sourceRef": "a",
+							"targetRef": "b",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						},
+						{
+							"id": "Flow_a_b_2",
+							"sourceRef": "a",
+							"targetRef": "b",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						}
+					]
+				}
+			}
+		},
+		{
+			"name": "explicit id colliding with an element",
+			"elements": [
+				{
+					"id": "a",
+					"incoming": [],
+					"outgoing": [],
+					"extensionElements": [],
+					"unknownAttributes": {},
+					"type": "task"
+				},
+				{
+					"id": "b",
+					"incoming": [],
+					"outgoing": [],
+					"extensionElements": [],
+					"unknownAttributes": {},
+					"type": "task"
+				}
+			],
+			"flows": [
+				{
+					"id": "a",
+					"sourceRef": "a",
+					"targetRef": "b",
+					"extensionElements": [],
+					"unknownAttributes": {}
+				}
+			],
+			"branch": {},
+			"explicit": ["a"],
+			"preserve": null,
+			"result": {
+				"error": "Flow id \"a\" (a -> b) is already used by element \"a\". Pick a different flowId()."
+			}
+		},
+		{
+			"name": "long ids are capped",
+			"elements": [
+				{
+					"id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+					"incoming": [],
+					"outgoing": [],
+					"extensionElements": [],
+					"unknownAttributes": {},
+					"type": "task"
+				},
+				{
+					"id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2",
+					"incoming": [],
+					"outgoing": [],
+					"extensionElements": [],
+					"unknownAttributes": {},
+					"type": "task"
+				}
+			],
+			"flows": [
+				{
+					"id": "f1",
+					"sourceRef": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+					"targetRef": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2",
+					"extensionElements": [],
+					"unknownAttributes": {}
+				},
+				{
+					"id": "f2",
+					"sourceRef": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+					"targetRef": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2",
+					"extensionElements": [],
+					"unknownAttributes": {},
+					"name": "branch"
+				}
+			],
+			"branch": {},
+			"explicit": [],
+			"preserve": null,
+			"result": {
+				"ok": {
+					"elements": [
+						{
+							"id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+							"incoming": [],
+							"outgoing": [],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "task"
+						},
+						{
+							"id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2",
+							"incoming": [],
+							"outgoing": [],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "task"
+						}
+					],
+					"flows": [
+						{
+							"id": "Flow_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx_1xqaznv",
+							"sourceRef": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+							"targetRef": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						},
+						{
+							"id": "Flow_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx__smcjdk",
+							"sourceRef": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+							"targetRef": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx2",
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"name": "branch"
+						}
+					]
+				}
+			}
+		}
+	],
+	"roots": [
+		{
+			"prefix": "Message",
+			"source": "Order placed",
+			"existing": [],
+			"id": "Message_Order_placed"
+		},
+		{
+			"prefix": "Message",
+			"source": "Order placed",
+			"existing": ["Message_Order_placed"],
+			"id": "Message_Order_placed_2"
+		},
+		{
+			"prefix": "Error",
+			"source": "500",
+			"existing": [],
+			"id": "Error_x"
+		},
+		{
+			"prefix": "Signal",
+			"source": "",
+			"existing": [],
+			"id": "Signal_element"
+		}
+	],
+	"eventDefs": [
+		{
+			"owner": "Start",
+			"defs": [
+				{
+					"type": "timer"
+				},
+				{
+					"type": "message"
+				},
+				{
+					"type": "timer"
+				}
+			],
+			"out": [
+				{
+					"type": "timer",
+					"id": "Start_TimerEventDefinition"
+				},
+				{
+					"type": "message",
+					"id": "Start_MessageEventDefinition"
+				},
+				{
+					"type": "timer",
+					"id": "Start_TimerEventDefinition_2"
+				}
+			]
+		},
+		{
+			"owner": "1 odd id",
+			"defs": [
+				{
+					"type": "message",
+					"id": "1_odd_id_MessageEventDefinition_2"
+				},
+				{
+					"type": "message"
+				},
+				{
+					"type": "message"
+				}
+			],
+			"out": [
+				{
+					"type": "message",
+					"id": "1_odd_id_MessageEventDefinition_2"
+				},
+				{
+					"type": "message",
+					"id": "_odd_id_MessageEventDefinition_2"
+				},
+				{
+					"type": "message",
+					"id": "_odd_id_MessageEventDefinition_3"
+				}
+			]
+		},
+		{
+			"owner": "End",
+			"defs": [
+				{
+					"type": "terminate"
+				}
+			],
+			"out": [
+				{
+					"type": "terminate",
+					"id": "End_TerminateEventDefinition"
+				}
+			]
+		}
+	],
+	"rest": [
+		{
+			"config": {
+				"method": "GET",
+				"url": "https://x"
+			},
+			"inputs": [
+				{
+					"source": "noAuth",
+					"target": "authentication.type"
+				},
+				{
+					"source": "GET",
+					"target": "method"
+				},
+				{
+					"source": "https://x",
+					"target": "url"
+				},
+				{
+					"source": "20",
+					"target": "connectionTimeoutInSeconds"
+				},
+				{
+					"source": "20",
+					"target": "readTimeoutInSeconds"
+				}
+			],
+			"headers": [],
+			"retries": "3"
+		},
+		{
+			"config": {
+				"name": "Call",
+				"method": "POST",
+				"url": "=url",
+				"authentication": {
+					"type": "bearer",
+					"token": "t"
+				},
+				"headers": {
+					"2": "two",
+					"b": "1",
+					"a": "x"
+				},
+				"queryParameters": "={q: 1}",
+				"body": "={}",
+				"connectionTimeoutInSeconds": 1.5,
+				"readTimeoutInSeconds": 30,
+				"retries": "5",
+				"resultVariable": "r",
+				"resultExpression": "={a: response}",
+				"retryBackoff": "PT1S"
+			},
+			"inputs": [
+				{
+					"source": "bearer",
+					"target": "authentication.type"
+				},
+				{
+					"source": "t",
+					"target": "authentication.token"
+				},
+				{
+					"source": "POST",
+					"target": "method"
+				},
+				{
+					"source": "=url",
+					"target": "url"
+				},
+				{
+					"source": "={\"2\":\"two\", \"b\":\"1\", \"a\":\"x\"}",
+					"target": "headers"
+				},
+				{
+					"source": "={q: 1}",
+					"target": "queryParameters"
+				},
+				{
+					"source": "={}",
+					"target": "body"
+				},
+				{
+					"source": "1.5",
+					"target": "connectionTimeoutInSeconds"
+				},
+				{
+					"source": "30",
+					"target": "readTimeoutInSeconds"
+				}
+			],
+			"headers": [
+				{
+					"key": "resultVariable",
+					"value": "r"
+				},
+				{
+					"key": "resultExpression",
+					"value": "={a: response}"
+				},
+				{
+					"key": "retryBackoff",
+					"value": "PT1S"
+				}
+			],
+			"retries": "5"
+		}
+	],
+	"shapes": [
+		{
+			"type": "startEvent",
+			"element": {
+				"id": "startEvent_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "startEvent",
+				"eventDefinitions": []
+			}
+		},
+		{
+			"type": "endEvent",
+			"element": {
+				"id": "endEvent_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "endEvent",
+				"eventDefinitions": []
+			}
+		},
+		{
+			"type": "intermediateThrowEvent",
+			"element": {
+				"id": "intermediateThrowEvent_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "intermediateThrowEvent",
+				"eventDefinitions": []
+			}
+		},
+		{
+			"type": "intermediateCatchEvent",
+			"element": {
+				"id": "intermediateCatchEvent_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "intermediateCatchEvent",
+				"eventDefinitions": []
+			}
+		},
+		{
+			"type": "boundaryEvent",
+			"element": {
+				"id": "boundaryEvent_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "boundaryEvent",
+				"attachedToRef": "",
+				"eventDefinitions": []
+			}
+		},
+		{
+			"type": "task",
+			"element": {
+				"id": "task_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "task"
+			}
+		},
+		{
+			"type": "serviceTask",
+			"element": {
+				"id": "serviceTask_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "serviceTask"
+			}
+		},
+		{
+			"type": "scriptTask",
+			"element": {
+				"id": "scriptTask_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "scriptTask"
+			}
+		},
+		{
+			"type": "userTask",
+			"element": {
+				"id": "userTask_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "userTask"
+			}
+		},
+		{
+			"type": "sendTask",
+			"element": {
+				"id": "sendTask_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "sendTask"
+			}
+		},
+		{
+			"type": "receiveTask",
+			"element": {
+				"id": "receiveTask_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "receiveTask"
+			}
+		},
+		{
+			"type": "businessRuleTask",
+			"element": {
+				"id": "businessRuleTask_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "businessRuleTask"
+			}
+		},
+		{
+			"type": "manualTask",
+			"element": {
+				"id": "manualTask_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "manualTask"
+			}
+		},
+		{
+			"type": "callActivity",
+			"element": {
+				"id": "callActivity_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "callActivity"
+			}
+		},
+		{
+			"type": "exclusiveGateway",
+			"element": {
+				"id": "exclusiveGateway_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "exclusiveGateway"
+			}
+		},
+		{
+			"type": "parallelGateway",
+			"element": {
+				"id": "parallelGateway_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "parallelGateway"
+			}
+		},
+		{
+			"type": "inclusiveGateway",
+			"element": {
+				"id": "inclusiveGateway_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "inclusiveGateway"
+			}
+		},
+		{
+			"type": "eventBasedGateway",
+			"element": {
+				"id": "eventBasedGateway_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "eventBasedGateway"
+			}
+		},
+		{
+			"type": "complexGateway",
+			"element": {
+				"id": "complexGateway_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "complexGateway"
+			}
+		},
+		{
+			"type": "subProcess",
+			"element": {
+				"id": "subProcess_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "subProcess",
+				"flowElements": [],
+				"sequenceFlows": [],
+				"textAnnotations": [],
+				"associations": [],
+				"groups": []
+			}
+		},
+		{
+			"type": "adHocSubProcess",
+			"element": {
+				"id": "adHocSubProcess_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "adHocSubProcess",
+				"flowElements": [],
+				"sequenceFlows": [],
+				"textAnnotations": [],
+				"associations": [],
+				"groups": []
+			}
+		},
+		{
+			"type": "eventSubProcess",
+			"element": {
+				"id": "eventSubProcess_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "eventSubProcess",
+				"flowElements": [],
+				"sequenceFlows": [],
+				"textAnnotations": [],
+				"associations": [],
+				"groups": []
+			}
+		},
+		{
+			"type": "transaction",
+			"element": {
+				"id": "transaction_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "transaction",
+				"flowElements": [],
+				"sequenceFlows": [],
+				"textAnnotations": [],
+				"associations": [],
+				"groups": []
+			}
+		},
+		{
+			"type": "dataObject",
+			"element": {
+				"id": "dataObject_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "dataObject"
+			}
+		},
+		{
+			"type": "dataObjectReference",
+			"element": {
+				"id": "dataObjectReference_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "dataObjectReference"
+			}
+		},
+		{
+			"type": "dataStoreReference",
+			"element": {
+				"id": "dataStoreReference_1",
+				"name": "N",
+				"incoming": [],
+				"outgoing": [],
+				"documentation": "D",
+				"extensionElements": [],
+				"unknownAttributes": {},
+				"type": "dataStoreReference"
+			}
+		}
+	],
+	"conditionals": [
+		{
+			"condition": "= a > 1",
+			"events": null,
+			"definition": {
+				"type": "conditional",
+				"condition": "= a > 1",
+				"conditionAttributes": {
+					"xsi:type": "bpmn:tFormalExpression"
+				}
+			}
+		},
+		{
+			"condition": "= a > 1",
+			"events": [],
+			"definition": {
+				"type": "conditional",
+				"condition": "= a > 1",
+				"conditionAttributes": {
+					"xsi:type": "bpmn:tFormalExpression"
+				}
+			}
+		},
+		{
+			"condition": "= a > 1",
+			"events": ["create", "update"],
+			"definition": {
+				"type": "conditional",
+				"condition": "= a > 1",
+				"conditionAttributes": {
+					"xsi:type": "bpmn:tFormalExpression"
+				},
+				"extensionElements": [
+					{
+						"name": "zeebe:conditionalFilter",
+						"attributes": {
+							"variableEvents": "create,update"
+						},
+						"children": []
+					}
+				]
+			}
+		}
+	],
+	"ensures": [
+		{
+			"type": "process",
+			"extensionElements": [],
+			"extension": "zeebe:versionTag",
+			"result": {
+				"ok": [
+					{
+						"name": "zeebe:versionTag",
+						"attributes": {
+							"marked": "yes"
+						},
+						"children": []
+					}
+				]
+			}
+		},
+		{
+			"type": "process",
+			"extensionElements": [
+				{
+					"name": "zeebe:versionTag",
+					"attributes": {
+						"value": "1"
+					},
+					"children": []
+				}
+			],
+			"extension": "zeebe:versionTag",
+			"result": {
+				"ok": [
+					{
+						"name": "zeebe:versionTag",
+						"attributes": {
+							"value": "1",
+							"marked": "yes"
+						},
+						"children": []
+					}
+				]
+			}
+		},
+		{
+			"type": "manualTask",
+			"extensionElements": [],
+			"extension": "zeebe:taskDefinition",
+			"result": {
+				"error": "<zeebe:taskDefinition> is not allowed on <bpmn:manualTask>. The Zeebe schema allows it on: bpmn:adHocSubProcess, bpmn:businessRuleTask, bpmn:endEvent, bpmn:intermediateThrowEvent, bpmn:scriptTask, bpmn:sendTask, bpmn:serviceTask."
+			}
+		},
+		{
+			"type": "eventSubProcess",
+			"extensionElements": [],
+			"extension": "zeebe:taskDefinition",
+			"result": {
+				"error": "<zeebe:taskDefinition> is not allowed on <bpmn:subProcess>. The Zeebe schema allows it on: bpmn:adHocSubProcess, bpmn:businessRuleTask, bpmn:endEvent, bpmn:intermediateThrowEvent, bpmn:scriptTask, bpmn:sendTask, bpmn:serviceTask."
+			}
+		}
+	]
+}

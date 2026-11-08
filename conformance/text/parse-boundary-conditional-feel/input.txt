@@ -1,0 +1,2 @@
+s[start:conditional Stock low | feel=stock < 5] > t[task Work] > w[catch:conditional Ready | feel=if then] > e[end]
+b[boundary:conditional Cancelled | on=t nonint feel=order.cancelled = true] > x[end]

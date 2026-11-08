@@ -1,0 +1,1 @@
+components[0]: group must have a 'label' string

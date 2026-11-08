@@ -1,0 +1,1 @@
+components[0]: button must have a 'label' string

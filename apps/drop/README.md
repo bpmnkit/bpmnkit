@@ -155,13 +155,22 @@ that already has its shape (`doc/ai-connector-generation-plan.md` §4).
     line is applied without a model (`lines` in the body).
   - **On a shared diagram:** **Add connectors** runs it while editing. The result is one
     undoable editor change.
-- **Checks on the result.** A draft with connectors gets two lines above its questions:
+- **Checks on the result.** Every draft gets a verdict and, above its questions, these lines:
+  - **Deploy:** one badge from `readiness()` (`src/lib/readiness.ts`, built on
+    `lintDiagram` with the engine rules forced on). "Ready to deploy (8.10)" means no deploy,
+    connector, agentic or compat error and nothing left to configure. "Shape only — N steps
+    need configuration" lists (on hover) the service, send, business-rule, script and user
+    tasks that cannot run as drafted: a placeholder job type no worker serves, no form,
+    no script. "N deploy errors" means lint found an error that stops a deploy.
+  - **Connectors:** "Connectors not configured" when the connect pass is off (404) or failed.
   - **Secrets:** the secrets to create in the cluster before deploying (`listSecrets`).
   - **Dry run:** whether the process runs from start to end with every call mocked, or
     where it stops (`dryRun` from `@bpmnkit/engine/testing`).
 
-  The dry run is its own bundle, `dry-run.js` (about 94 KB gzipped). It is fetched only
-  once a draft has connectors, so `landing.js` does not grow.
+  The dry run is its own bundle, `dry-run.js` (about 94 KB gzipped). It is fetched when a
+  draft is first checked, so `landing.js` does not grow.
+- **Diagram text.** A collapsible panel shows the streamed text the diagram was drawn from,
+  the "process text" notation (one line per step), so a reader sees what to edit or ask for.
 - **Benchmark.** `bench:generate --connect` runs it after each golden prompt and scores the
   connected diagram. `mustCallUrls` checks that a REST call goes to the index's endpoint.
   Each connected diagram is dry-run, and its secrets are listed.

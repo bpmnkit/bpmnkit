@@ -1,0 +1,63 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "poll",
+            "name": "Poll",
+            "type": "task"
+          },
+          {
+            "eventType": "timer",
+            "id": "wait",
+            "name": "2 minutes",
+            "timerDuration": "PT2M",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "wait_end",
+            "name": "2 minutes",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "poll"
+          },
+          {
+            "from": "poll",
+            "id": "Flow_2",
+            "to": "wait"
+          },
+          {
+            "from": "wait",
+            "id": "Flow_3",
+            "to": "wait_end"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "added end event \"wait_end\" after \"wait\"",
+    "named 1 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "a flow cannot lead back to where it starts; flow wait > wait left out"
+    }
+  ],
+  "questions": []
+}

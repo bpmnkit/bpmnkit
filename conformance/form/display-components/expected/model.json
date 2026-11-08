@@ -1,0 +1,121 @@
+{
+  "components": [
+    {
+      "id": "a",
+      "security": {},
+      "type": "iframe"
+    },
+    {
+      "extraProps": {
+        "height": "100",
+        "url": 5
+      },
+      "id": "b",
+      "security": {},
+      "type": "iframe"
+    },
+    {
+      "id": "c",
+      "security": {},
+      "type": "iframe"
+    },
+    {
+      "extraProps": {
+        "security": null
+      },
+      "id": "d",
+      "type": "iframe"
+    },
+    {
+      "id": "e",
+      "type": "table"
+    },
+    {
+      "columns": [],
+      "extraProps": {
+        "rowCount": "5"
+      },
+      "id": "f",
+      "type": "table"
+    },
+    {
+      "columns": [
+        {
+          "key": "k",
+          "label": "L"
+        },
+        {
+          "key": "",
+          "label": ""
+        },
+        {
+          "key": "",
+          "label": ""
+        },
+        {
+          "key": "",
+          "label": ""
+        },
+        {
+          "key": "",
+          "label": ""
+        },
+        {
+          "key": "false",
+          "label": "3"
+        }
+      ],
+      "id": "g",
+      "type": "table"
+    },
+    {
+      "extraProps": {
+        "columns": "none",
+        "dataSource": 1
+      },
+      "id": "h",
+      "type": "table"
+    },
+    {
+      "id": "i",
+      "type": "image"
+    },
+    {
+      "id": "j",
+      "type": "html"
+    },
+    {
+      "id": "k",
+      "type": "expression"
+    },
+    {
+      "extraProps": {
+        "multiple": "true"
+      },
+      "id": "l",
+      "type": "filepicker"
+    },
+    {
+      "extraProps": {
+        "dataSource": "=doc"
+      },
+      "id": "m",
+      "type": "documentPreview"
+    },
+    {
+      "id": "n",
+      "type": "spacer"
+    },
+    {
+      "id": "o",
+      "layout": {
+        "columns": 2,
+        "row": "r"
+      },
+      "type": "separator"
+    }
+  ],
+  "id": "f",
+  "schemaVersion": 16,
+  "type": "default"
+}

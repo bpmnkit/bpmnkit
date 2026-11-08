@@ -1,0 +1,8 @@
+{
+  "input": "bpmn/compat-events/input.bpmn",
+  "runs": {
+    "default": {
+      "direction": "8to7"
+    }
+  }
+}

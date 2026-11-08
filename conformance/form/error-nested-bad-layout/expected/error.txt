@@ -1,0 +1,1 @@
+components[0].components[0].layout: must be an object

@@ -8,14 +8,23 @@ import { cors } from "hono/cors"
 import { streamSSE } from "hono/streaming"
 import type { Recording, TokenUsage } from "../shared/recording-types.js"
 import { executeCompactDsl } from "./compact-executor.js"
-import { extractCompactBlock, extractTsBlock, extractXmlBlock } from "./extractor.js"
+import { executeCompactJson } from "./compact-json-executor.js"
+import {
+	extractCompactBlock,
+	extractJsonBlock,
+	extractTsBlock,
+	extractXmlBlock,
+} from "./extractor.js"
+import { executePlan } from "./plan-executor.js"
 import { saveRecording } from "./recordings-store.js"
 import { DEFAULT_SCENARIO_ID, SCENARIOS, getScenario } from "./scenarios.js"
 import { executeSdkCode } from "./sdk-executor.js"
-import { extractDeltaText, extractResultUsage } from "./stream-parsers.js"
+import { extractDeltaText, extractInitModel, extractResultUsage } from "./stream-parsers.js"
 import {
 	WITHOUT_SDK_SYSTEM_PROMPT,
+	buildCompactJsonSystemPrompt,
 	buildCompactSystemPrompt,
+	buildPlanSystemPrompt,
 	buildSdkSystemPrompt,
 } from "./system-prompt.js"
 
@@ -25,6 +34,9 @@ const PORT = 3001
 
 const SDK_SYSTEM_PROMPT = buildSdkSystemPrompt(REPO_ROOT)
 const COMPACT_SYSTEM_PROMPT = buildCompactSystemPrompt(REPO_ROOT)
+const COMPACT_JSON_SYSTEM_PROMPT = buildCompactJsonSystemPrompt(REPO_ROOT)
+const PLAN_SYSTEM_PROMPT = buildPlanSystemPrompt(REPO_ROOT)
+const MODEL = "claude-opus-4-8"
 
 // Tools the harness exposes that the spawned `claude` subprocess must not be able to use —
 // this is a demo generating text/code from a prompt, not an agent that should touch the filesystem
@@ -76,6 +88,8 @@ app.get("/prompts", (c) =>
 	c.json({
 		withSdk: SDK_SYSTEM_PROMPT,
 		withSdkCompact: COMPACT_SYSTEM_PROMPT,
+		compactJson: COMPACT_JSON_SYSTEM_PROMPT,
+		plan: PLAN_SYSTEM_PROMPT,
 		withoutSdk: WITHOUT_SDK_SYSTEM_PROMPT,
 	}),
 )
@@ -96,14 +110,14 @@ async function streamLlm(
 	scenarioPrompt: string,
 	systemPrompt: string,
 	onChunk: (text: string) => Promise<void>,
-): Promise<{ text: string; usage: TokenUsage | null }> {
+): Promise<{ text: string; usage: TokenUsage | null; model: string }> {
 	const child = spawn(
 		"claude",
 		[
 			"-p",
 			scenarioPrompt,
 			"--model",
-			"claude-opus-4-8",
+			MODEL,
 			"--system-prompt",
 			systemPrompt,
 			"--safe-mode",
@@ -130,6 +144,7 @@ async function streamLlm(
 
 	let accumulated = ""
 	let usage: TokenUsage | null = null
+	let model = MODEL
 	const readLines = async () => {
 		const rl = createInterface({ input: child.stdout })
 		for await (const line of rl) {
@@ -145,6 +160,7 @@ async function streamLlm(
 				accumulated += text
 				await onChunk(text)
 			}
+			model = extractInitModel(parsed) ?? model
 			const resultUsage = extractResultUsage(parsed)
 			if (resultUsage !== null) {
 				usage = resultUsage
@@ -162,7 +178,7 @@ async function streamLlm(
 		throw new Error(`claude CLI exited with code ${exitCode}${stderr ? `: ${stderr}` : ""}`)
 	}
 
-	return { text: accumulated, usage }
+	return { text: accumulated, usage, model }
 }
 
 app.get("/stream/with-sdk", (c) => {
@@ -173,11 +189,13 @@ app.get("/stream/with-sdk", (c) => {
 	}
 	return streamSSE(c, async (stream) => {
 		let usage: TokenUsage | null = null
+		let model = MODEL
 		try {
 			const result = await streamLlm(scenario.prompt, SDK_SYSTEM_PROMPT, async (text) => {
 				await stream.writeSSE({ event: "chunk", data: JSON.stringify({ text }) })
 			})
 			usage = result.usage
+			model = result.model
 			await stream.writeSSE({ event: "done", data: "{}" })
 
 			const tsCode = extractTsBlock(result.text)
@@ -187,16 +205,17 @@ app.get("/stream/with-sdk", (c) => {
 					data: JSON.stringify({
 						message: "No TypeScript code block found in LLM output",
 						usage,
+						model,
 					}),
 				})
 				return
 			}
 
 			const xml = await executeSdkCode(tsCode, REPO_ROOT)
-			await stream.writeSSE({ event: "bpmn", data: JSON.stringify({ xml, usage }) })
+			await stream.writeSSE({ event: "bpmn", data: JSON.stringify({ xml, usage, model }) })
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err)
-			await stream.writeSSE({ event: "error", data: JSON.stringify({ message, usage }) })
+			await stream.writeSSE({ event: "error", data: JSON.stringify({ message, usage, model }) })
 		}
 	})
 })
@@ -209,11 +228,13 @@ app.get("/stream/with-sdk-compact", (c) => {
 	}
 	return streamSSE(c, async (stream) => {
 		let usage: TokenUsage | null = null
+		let model = MODEL
 		try {
 			const result = await streamLlm(scenario.prompt, COMPACT_SYSTEM_PROMPT, async (text) => {
 				await stream.writeSSE({ event: "chunk", data: JSON.stringify({ text }) })
 			})
 			usage = result.usage
+			model = result.model
 			await stream.writeSSE({ event: "done", data: "{}" })
 
 			const dslText = extractCompactBlock(result.text)
@@ -223,16 +244,17 @@ app.get("/stream/with-sdk-compact", (c) => {
 					data: JSON.stringify({
 						message: "No compact notation block found in LLM output",
 						usage,
+						model,
 					}),
 				})
 				return
 			}
 
 			const xml = executeCompactDsl(dslText)
-			await stream.writeSSE({ event: "bpmn", data: JSON.stringify({ xml, usage }) })
+			await stream.writeSSE({ event: "bpmn", data: JSON.stringify({ xml, usage, model }) })
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err)
-			await stream.writeSSE({ event: "error", data: JSON.stringify({ message, usage }) })
+			await stream.writeSSE({ event: "error", data: JSON.stringify({ message, usage, model }) })
 		}
 	})
 })
@@ -245,28 +267,77 @@ app.get("/stream/without-sdk", (c) => {
 	}
 	return streamSSE(c, async (stream) => {
 		let usage: TokenUsage | null = null
+		let model = MODEL
 		try {
 			const result = await streamLlm(scenario.prompt, WITHOUT_SDK_SYSTEM_PROMPT, async (text) => {
 				await stream.writeSSE({ event: "chunk", data: JSON.stringify({ text }) })
 			})
 			usage = result.usage
+			model = result.model
 			await stream.writeSSE({ event: "done", data: "{}" })
 
 			const xml = extractXmlBlock(result.text)
 			if (!xml) {
 				await stream.writeSSE({
 					event: "error",
-					data: JSON.stringify({ message: "No BPMN XML found in LLM output", usage }),
+					data: JSON.stringify({ message: "No BPMN XML found in LLM output", usage, model }),
 				})
 				return
 			}
-			await stream.writeSSE({ event: "bpmn", data: JSON.stringify({ xml, usage }) })
+			await stream.writeSSE({ event: "bpmn", data: JSON.stringify({ xml, usage, model }) })
 		} catch (err) {
 			const message = err instanceof Error ? err.message : String(err)
-			await stream.writeSSE({ event: "error", data: JSON.stringify({ message, usage }) })
+			await stream.writeSSE({ event: "error", data: JSON.stringify({ message, usage, model }) })
 		}
 	})
 })
+
+/** The routes added in 2026-11: the model writes JSON, and a server-side step produces the XML. */
+function jsonRoute(
+	path: string,
+	systemPrompt: string,
+	run: (json: string) => string,
+	what: string,
+) {
+	app.get(path, (c) => {
+		const scenarioId = c.req.query("scenario") ?? DEFAULT_SCENARIO_ID
+		const scenario = getScenario(scenarioId)
+		if (!scenario) {
+			return c.json({ error: `Unknown scenario "${scenarioId}"` }, 400)
+		}
+		return streamSSE(c, async (stream) => {
+			let usage: TokenUsage | null = null
+			let model = MODEL
+			try {
+				const result = await streamLlm(scenario.prompt, systemPrompt, async (text) => {
+					await stream.writeSSE({ event: "chunk", data: JSON.stringify({ text }) })
+				})
+				usage = result.usage
+				model = result.model
+				await stream.writeSSE({ event: "done", data: "{}" })
+
+				const json = extractJsonBlock(result.text)
+				if (!json) {
+					await stream.writeSSE({
+						event: "error",
+						data: JSON.stringify({ message: `No ${what} JSON found in LLM output`, usage, model }),
+					})
+					return
+				}
+				await stream.writeSSE({
+					event: "bpmn",
+					data: JSON.stringify({ xml: run(json), usage, model }),
+				})
+			} catch (err) {
+				const message = err instanceof Error ? err.message : String(err)
+				await stream.writeSSE({ event: "error", data: JSON.stringify({ message, usage, model }) })
+			}
+		})
+	})
+}
+
+jsonRoute("/stream/compact-json", COMPACT_JSON_SYSTEM_PROMPT, executeCompactJson, "CompactDiagram")
+jsonRoute("/stream/plan", PLAN_SYSTEM_PROMPT, executePlan, "ProcessPlan")
 
 serve({ fetch: app.fetch, port: PORT }, () => {
 	console.log(`Demo server running on http://localhost:${PORT}`)

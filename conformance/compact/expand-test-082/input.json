@@ -1,0 +1,54 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "id": "Process_1",
+      "elements": [
+        {
+          "id": "s",
+          "type": "startEvent",
+          "name": "S"
+        },
+        {
+          "id": "box",
+          "type": "adHocSubProcess",
+          "name": "Box",
+          "children": {
+            "elements": [
+              {
+                "id": "t",
+                "type": "serviceTask",
+                "name": "T",
+                "jobType": "t"
+              }
+            ],
+            "flows": []
+          }
+        },
+        {
+          "id": "e",
+          "type": "endEvent",
+          "name": "E"
+        }
+      ],
+      "flows": [
+        {
+          "id": "Flow_1",
+          "from": "s",
+          "to": "box"
+        },
+        {
+          "id": "Flow_2",
+          "from": "box",
+          "to": "e"
+        }
+      ],
+      "notes": [
+        {
+          "elementId": "t",
+          "text": "Tool"
+        }
+      ]
+    }
+  ]
+}

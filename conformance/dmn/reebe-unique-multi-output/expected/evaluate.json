@@ -1,0 +1,71 @@
+[
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "riskLevel": {
+          "t": "string",
+          "v": "LOW"
+        },
+        "scoreValue": {
+          "t": "number",
+          "v": "10"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "riskScore",
+        "result": {
+          "t": "context",
+          "v": {
+            "riskLevel": {
+              "t": "string",
+              "v": "LOW"
+            },
+            "scoreValue": {
+              "t": "number",
+              "v": "10"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "riskLevel": {
+          "t": "string",
+          "v": "MEDIUM"
+        },
+        "scoreValue": {
+          "t": "number",
+          "v": "50"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "riskScore",
+        "result": {
+          "t": "context",
+          "v": {
+            "riskLevel": {
+              "t": "string",
+              "v": "MEDIUM"
+            },
+            "scoreValue": {
+              "t": "number",
+              "v": "50"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "error": "Hit policy UNIQUE violated in decision 'riskScore': 2 rules match (r1, r2)"
+  }
+]

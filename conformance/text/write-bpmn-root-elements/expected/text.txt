@@ -1,0 +1,2 @@
+# Root element carrier | camunda=8.6
+start[start:message] > end[end]

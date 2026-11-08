@@ -1,8 +1,8 @@
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 use crate::pool::DbPool;
+use crate::{DbError, Result};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use crate::{Result, DbError};
 
 // ---- Tenant ----
 
@@ -301,24 +301,20 @@ impl<'a> GroupRepository<'a> {
     }
 
     pub async fn insert(&self, group: &Group) -> Result<()> {
-        sqlx::query(
-            "INSERT INTO groups (group_id, name, created_at) VALUES ($1, $2, $3)",
-        )
-        .bind(&group.group_id)
-        .bind(&group.name)
-        .bind(group.created_at)
-        .execute(self.pool)
-        .await?;
+        sqlx::query("INSERT INTO groups (group_id, name, created_at) VALUES ($1, $2, $3)")
+            .bind(&group.group_id)
+            .bind(&group.name)
+            .bind(group.created_at)
+            .execute(self.pool)
+            .await?;
         Ok(())
     }
 
     pub async fn get_by_id(&self, group_id: &str) -> Result<Group> {
-        let row = sqlx::query(
-            "SELECT group_id, name, created_at FROM groups WHERE group_id = $1",
-        )
-        .bind(group_id)
-        .fetch_optional(self.pool)
-        .await?;
+        let row = sqlx::query("SELECT group_id, name, created_at FROM groups WHERE group_id = $1")
+            .bind(group_id)
+            .fetch_optional(self.pool)
+            .await?;
 
         use sqlx::Row;
         match row {
@@ -407,7 +403,8 @@ impl<'a> AuthorizationRepository<'a> {
 
         #[cfg(feature = "sqlite")]
         {
-            let perms_json = serde_json::to_string(&authz.permissions).unwrap_or_else(|_| "[]".to_string());
+            let perms_json =
+                serde_json::to_string(&authz.permissions).unwrap_or_else(|_| "[]".to_string());
             sqlx::query(
                 r#"INSERT INTO authorizations
                    (key, owner_key, owner_type, resource_type, resource_id, permissions, created_at)
@@ -458,7 +455,7 @@ impl<'a> AuthorizationRepository<'a> {
         .fetch_all(self.pool)
         .await?;
 
-        Ok(rows.into_iter().map(|r| row_to_authz(r)).collect())
+        Ok(rows.into_iter().map(row_to_authz).collect())
     }
 
     pub async fn delete(&self, key: i64) -> Result<()> {
@@ -487,9 +484,8 @@ fn row_to_authz(r: crate::DbRow) -> Authorization {
 
     #[cfg(feature = "sqlite")]
     {
-        let permissions: Vec<String> = serde_json::from_str(
-            &r.get::<String, _>("permissions")
-        ).unwrap_or_default();
+        let permissions: Vec<String> =
+            serde_json::from_str(&r.get::<String, _>("permissions")).unwrap_or_default();
         let created_at: chrono::DateTime<chrono::Utc> = r
             .get::<String, _>("created_at")
             .parse()

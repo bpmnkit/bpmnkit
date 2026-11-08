@@ -160,6 +160,10 @@ describe("analyzePatterns", () => {
 			)
 			const findings = analyzePatterns(p)
 			expect(findings.some((f) => f.id === "pattern/gateway-no-default-flow")).toBe(true)
+			// Camunda's own reference diagrams omit the default flow, so this is advice, not an error.
+			expect(findings.find((f) => f.id === "pattern/gateway-no-default-flow")?.severity).toBe(
+				"warning",
+			)
 		})
 
 		it("does not flag exclusive gateway with default flow set", () => {

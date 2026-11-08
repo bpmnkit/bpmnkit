@@ -1,0 +1,7 @@
+{
+  "runs": {
+    "default": {
+      "direction": "8to7"
+    }
+  }
+}

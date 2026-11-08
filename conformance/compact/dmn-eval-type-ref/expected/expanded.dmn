@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="type-ref" name="type-ref" namespace="http://bpmn.io/schema/dmn">
+  <decision id="number_in" name="number_in">
+    <decisionTable id="decisionTable_0000004" hitPolicy="FIRST">
+      <input id="number_in_i0">
+        <inputExpression id="inputExpression_0000001" typeRef="number">
+          <text>v</text>
+        </inputExpression>
+      </input>
+      <output id="number_in_o0" name="r" typeRef="string"/>
+      <rule id="ni_r0">
+        <inputEntry id="inputEntry_0_0000002">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000003">
+          <text>"ok"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="legacy_and_any" name="legacy_and_any">
+    <decisionTable id="decisionTable_000000c" hitPolicy="FIRST">
+      <input id="legacy_i0">
+        <inputExpression id="inputExpression_0000005" typeRef="double">
+          <text>v</text>
+        </inputExpression>
+      </input>
+      <input id="legacy_i1">
+        <inputExpression id="inputExpression_0000006" typeRef="Any">
+          <text>w</text>
+        </inputExpression>
+      </input>
+      <input id="legacy_i2">
+        <inputExpression id="inputExpression_0000007" typeRef="frobnicate">
+          <text>w</text>
+        </inputExpression>
+      </input>
+      <output id="legacy_o0" name="r" typeRef="integer"/>
+      <rule id="la_r0">
+        <inputEntry id="inputEntry_0_0000008">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_0000009">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_000000a">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000b">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="bad_output" name="bad_output">
+    <decisionTable id="decisionTable_000000g" hitPolicy="FIRST">
+      <input id="bad_output_i0">
+        <inputExpression id="inputExpression_000000d">
+          <text>v</text>
+        </inputExpression>
+      </input>
+      <output id="bad_output_o0" name="r" typeRef="boolean"/>
+      <rule id="bo_r0">
+        <inputEntry id="inputEntry_0_000000e">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000f">
+          <text>"yes"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="date_in" name="date_in">
+    <decisionTable id="decisionTable_000000m" hitPolicy="FIRST">
+      <input id="date_in_i0">
+        <inputExpression id="inputExpression_000000h" typeRef="date">
+          <text>d</text>
+        </inputExpression>
+      </input>
+      <output id="date_in_o0" name="r" typeRef="string"/>
+      <rule id="di_r0">
+        <inputEntry id="inputEntry_0_000000i">
+          <text>&lt; date("2025-01-01")</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000j">
+          <text>"old"</text>
+        </outputEntry>
+      </rule>
+      <rule id="di_r1">
+        <inputEntry id="inputEntry_0_000000k">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000l">
+          <text>"new"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="number_in">
+        <dc:Bounds height="80" width="180" x="160" y="100"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="legacy_and_any">
+        <dc:Bounds height="80" width="180" x="160" y="220"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="bad_output">
+        <dc:Bounds height="80" width="180" x="160" y="340"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="date_in">
+        <dc:Bounds height="80" width="180" x="160" y="460"/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

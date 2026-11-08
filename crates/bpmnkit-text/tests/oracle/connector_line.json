@@ -1,0 +1,155 @@
+[
+	{
+		"text": "with post: slack chat.postMessage | data.channel=#ops | data.text== \"Order \" + orderId",
+		"line": 1,
+		"result": {
+			"id": "post",
+			"alias": "slack",
+			"args": ["chat.postMessage"],
+			"values": {
+				"data.channel": "#ops",
+				"data.text": "= \"Order \" + orderId"
+			},
+			"line": 1
+		},
+		"problems": []
+	},
+	{
+		"text": "with fetch: http GET https://api.example.com/orders | result=order",
+		"line": 2,
+		"result": {
+			"id": "fetch",
+			"alias": "http",
+			"args": ["GET", "https://api.example.com/orders"],
+			"values": {
+				"result": "order"
+			},
+			"line": 2
+		},
+		"problems": []
+	},
+	{
+		"text": "WITH a.b-c :  HTTPS://Example.com/X  |  2=two b=1 a=x | token*={{secrets.T}}",
+		"line": 3,
+		"result": {
+			"id": "a.b-c",
+			"alias": "HTTPS://Example.com/X",
+			"args": [],
+			"values": {
+				"2": "two",
+				"b": "1",
+				"a": "x",
+				"token": "{{secrets.T}}"
+			},
+			"line": 3
+		},
+		"problems": []
+	},
+	{
+		"text": "with x: | a=1",
+		"line": 4,
+		"result": null,
+		"problems": [
+			{
+				"line": 4,
+				"message": "\"with x:\" names no connector; ignored"
+			}
+		]
+	},
+	{
+		"text": "with x: rest | =bad | k=(a | b) c='q|r' d=\"x\\\" y\" | ünï=1 | 1abc=2",
+		"line": 5,
+		"result": {
+			"id": "x",
+			"alias": "rest",
+			"args": [],
+			"values": {
+				"k": "(a | b)",
+				"c": "'q|r'",
+				"d": "\"x\\\" y\"",
+				"1abc": "2"
+			},
+			"line": 5
+		},
+		"problems": [
+			{
+				"line": 5,
+				"message": "expected \"key=value\" at \"=bad\"; ignored"
+			},
+			{
+				"line": 5,
+				"message": "expected \"key=value\" at \"ünï=1\"; ignored"
+			}
+		]
+	},
+	{
+		"text": "with y: Mail send | to=a@b.c　subject=Hi there",
+		"line": 6,
+		"result": {
+			"id": "y",
+			"alias": "mail",
+			"args": ["send"],
+			"values": {
+				"to": "a@b.c",
+				"subject": "Hi there"
+			},
+			"line": 6
+		},
+		"problems": []
+	},
+	{
+		"text": "with z: alias | a==x == 1 b=2",
+		"line": 7,
+		"result": {
+			"id": "z",
+			"alias": "alias",
+			"args": [],
+			"values": {
+				"a": "=x == 1 b=2"
+			},
+			"line": 7
+		},
+		"problems": []
+	},
+	{
+		"text": "with q: alias | thisisaverylongpartwithoutanyequalsign😀😀😀😀more",
+		"line": 8,
+		"result": {
+			"id": "q",
+			"alias": "alias",
+			"args": [],
+			"values": {},
+			"line": 8
+		},
+		"problems": [
+			{
+				"line": 8,
+				"message": "expected \"key=value\" at \"thisisaverylongpartwithoutanye\"; ignored"
+			}
+		]
+	},
+	{
+		"text": "without: x",
+		"line": 9,
+		"result": null,
+		"problems": []
+	},
+	{
+		"text": "with 1x: y",
+		"line": 10,
+		"result": null,
+		"problems": []
+	},
+	{
+		"text": "  with t: tool  ",
+		"line": 11,
+		"result": {
+			"id": "t",
+			"alias": "tool",
+			"args": [],
+			"values": {},
+			"line": 11
+		},
+		"problems": []
+	}
+]

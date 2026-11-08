@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="P1" name="First" isExecutable="true">
+    <bpmn:startEvent id="a1" name="Start 1">
+      <bpmn:outgoing>fa1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="a2" name="Task 1">
+      <bpmn:incoming>fa1</bpmn:incoming>
+      <bpmn:outgoing>fa2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="a3" name="End 1">
+      <bpmn:incoming>fa2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="fa1" sourceRef="a1" targetRef="a2"/>
+    <bpmn:sequenceFlow id="fa2" sourceRef="a2" targetRef="a3"/>
+  </bpmn:process>
+  <bpmn:process id="P2" name="Second" isExecutable="true">
+    <bpmn:startEvent id="b1" name="Start 2">
+      <bpmn:outgoing>fb1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="b2" name="Task 2">
+      <bpmn:incoming>fb1</bpmn:incoming>
+      <bpmn:outgoing>fb2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="b3" name="Task 3">
+      <bpmn:incoming>fb2</bpmn:incoming>
+      <bpmn:outgoing>fb3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="b4" name="End 2">
+      <bpmn:incoming>fb3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="fb1" sourceRef="b1" targetRef="b2"/>
+    <bpmn:sequenceFlow id="fb2" sourceRef="b2" targetRef="b3"/>
+    <bpmn:sequenceFlow id="fb3" sourceRef="b3" targetRef="b4"/>
+  </bpmn:process>
+</bpmn:definitions>
+

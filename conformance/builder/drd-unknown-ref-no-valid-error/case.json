@@ -1,0 +1,8 @@
+{
+	"kind": "dmn",
+	"script": [
+		["drd","Bad"],
+		["$let","h17","decision","a",{"$ops":[["name","A"],["input",{"expression":"x"}],["output",{"name":"aOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]},{"requires":["zz"]}],
+		["build"]
+	]
+}

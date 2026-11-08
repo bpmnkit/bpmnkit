@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmn:definitions xmlns:dmn="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:camunda="http://camunda.org/schema/1.0/dmn" xmlns:x="urn:x" x:id="Definitions_prefixed" dmn:name="Prefixed" dmn:namespace="urn:prefixed">
+  <dmn:decision dmn:id="d1" x:name="Prefixed decision">
+    <dmn:informationRequirement id="ir1">
+      <dmn:requiredInput dmn:href="#in1"/>
+    </dmn:informationRequirement>
+    <dmn:decisionTable id="t1" dmn:hitPolicy="COLLECT" x:aggregation="SUM">
+      <dmn:input id="i1" x:label="Amount">
+        <dmn:inputExpression id="ie1" x:typeRef="number">
+          <dmn:text>amount</dmn:text>
+        </dmn:inputExpression>
+      </dmn:input>
+      <dmn:output id="o1" x:name="fee" x:typeRef="number"/>
+      <dmn:rule id="r1">
+        <dmn:description>fee for any amount</dmn:description>
+        <dmn:inputEntry id="e1"><dmn:text>&gt; 0</dmn:text></dmn:inputEntry>
+        <dmn:outputEntry id="p1"><dmn:text>2.5</dmn:text></dmn:outputEntry>
+      </dmn:rule>
+    </dmn:decisionTable>
+  </dmn:decision>
+  <dmn:inputData id="in1" dmn:name="Amount"/>
+  <dmn:textAnnotation id="ta"><dmn:text>note</dmn:text></dmn:textAnnotation>
+  <dmn:association id="as1" dmn:sourceRef="#ta" x:targetRef="#d1"/>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape x:dmnElementRef="d1">
+        <dc:Bounds height="80" width="180" x="1" y="2"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge dmnElementRef="as1">
+        <di:waypoint x="3" y="4"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</dmn:definitions>

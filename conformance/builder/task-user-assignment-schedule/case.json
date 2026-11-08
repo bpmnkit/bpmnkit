@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["userTask","u",{"name":"Assigned","zeebeUserTask":true,"assignee":"=manager","candidateGroups":"sales, support","candidateUsers":"=users","dueDate":"2025-01-01T00:00:00Z","followUpDate":"=now() + duration(\"P1D\")","priority":80,"taskHeaders":{"h":"v"},"ioMapping":{"inputs":[{"source":"=a","target":"b"}]},"zeebeProperties":[{"name":"p","value":"q"}],"taskListeners":[{"eventType":"completing","type":"check"}],"executionListeners":[{"eventType":"end","type":"audit"}]}],
+		["endEvent","e"],
+		["build"]
+	]
+}

@@ -17,6 +17,7 @@ import type { AddressInfo } from "node:net"
 import { tmpdir } from "node:os"
 import { basename, dirname, extname, join, relative } from "node:path"
 import { fileURLToPath } from "node:url"
+import type { ProcessInstanceStateEnum } from "@bpmnkit/api"
 import {
 	Bpmn,
 	applyBpmnOperations,
@@ -77,6 +78,16 @@ import { handleWebhook, matchWebhookRoute, startTriggers } from "./triggers/inde
 import { WORKER_TEMPLATES } from "./worker-templates.js"
 import { startWorkerDaemon, workerState } from "./worker.js"
 import { WorkspaceRoots } from "./workspace.js"
+
+const PROCESS_INSTANCE_STATES: readonly string[] = [
+	"ACTIVE",
+	"COMPLETED",
+	"TERMINATED",
+] satisfies ProcessInstanceStateEnum[]
+
+function isProcessInstanceState(value: string | null): value is ProcessInstanceStateEnum {
+	return value !== null && PROCESS_INSTANCE_STATES.includes(value)
+}
 
 export type { ProxyServerOptions } from "./access.js"
 export { type AiCli, askText } from "./adapters/text.js"
@@ -720,19 +731,6 @@ const handleRequest: http.RequestListener = async (req, res) => {
 
 		const client = createClientFromProfile(profileParam)
 
-		// The generated TS types only declare `page` on search results; the runtime
-		// response also contains `items`. Cast results through SearchResult<T>.
-		type SearchResult<T> = { page: { totalItems: number }; items: T[] }
-		function items<T>(result: unknown): T[] {
-			return ((result as SearchResult<T>).items ?? []) as T[]
-		}
-		function total(result: unknown): number {
-			return (result as SearchResult<unknown>).page?.totalItems ?? 0
-		}
-
-		// The query types also don't declare `filter` in TS, but the API accepts it.
-		type AnyQuery = Record<string, unknown>
-
 		// Fetch the payload for a given topic once, returning plain data.
 		async function fetchPayload(): Promise<unknown> {
 			switch (topicParam) {
@@ -740,10 +738,10 @@ const handleRequest: http.RequestListener = async (req, res) => {
 					const [inst, inc, jobs, tasks, defs, usage] = await Promise.all([
 						client.processInstance.searchProcessInstances({
 							filter: { state: "ACTIVE" },
-						} as AnyQuery),
-						client.incident.searchIncidents({ filter: { state: "ACTIVE" } } as AnyQuery),
-						client.job.searchJobs({ filter: { state: "CREATED" } } as AnyQuery),
-						client.userTask.searchUserTasks({ filter: { state: "CREATED" } } as AnyQuery),
+						}),
+						client.incident.searchIncidents({ filter: { state: "ACTIVE" } }),
+						client.job.searchJobs({ filter: { state: "CREATED" } }),
+						client.userTask.searchUserTasks({ filter: { state: "CREATED" } }),
 						client.processDefinition.searchProcessDefinitions({}),
 						client.system.getUsageMetrics().catch(() => null),
 					])
@@ -762,53 +760,51 @@ const handleRequest: http.RequestListener = async (req, res) => {
 					const result = await client.processDefinition.searchProcessDefinitions({
 						page: { limit: 1000 },
 						sort: [{ field: "version", order: "DESC" }],
-					} as AnyQuery)
-					return { items: items(result) }
+					})
+					return { items: result.items }
 				}
 				case "instances": {
 					const stateFilter = url.searchParams.get("state")
 					const pdKey = url.searchParams.get("processDefinitionKey")
-					const filter: AnyQuery = {}
-					if (stateFilter) filter.state = stateFilter
-					if (pdKey) filter.processDefinitionKey = pdKey
 					const result = await client.processInstance.searchProcessInstances({
-						filter,
+						filter: {
+							...(isProcessInstanceState(stateFilter) ? { state: stateFilter } : {}),
+							...(pdKey ? { processDefinitionKey: pdKey } : {}),
+						},
 						page: { limit: 1000 },
 						sort: [{ field: "startDate", order: "DESC" }],
-					} as AnyQuery)
-					return { items: items(result), total: total(result) }
+					})
+					return { items: result.items, total: result.page.totalItems }
 				}
 				case "incidents": {
 					const piKey = url.searchParams.get("processInstanceKey")
-					const filter: AnyQuery = {}
-					if (piKey) filter.processInstanceKey = piKey
 					const result = await client.incident.searchIncidents({
-						filter,
+						filter: piKey ? { processInstanceKey: piKey } : {},
 						page: { limit: 1000 },
 						sort: [{ field: "creationTime", order: "DESC" }],
-					} as AnyQuery)
-					return { items: items(result), total: total(result) }
+					})
+					return { items: result.items, total: result.page.totalItems }
 				}
 				case "jobs": {
 					const result = await client.job.searchJobs({
 						page: { limit: 1000 },
 						sort: [{ field: "jobKey", order: "DESC" }],
-					} as AnyQuery)
-					return { items: items(result), total: total(result) }
+					})
+					return { items: result.items, total: result.page.totalItems }
 				}
 				case "tasks": {
 					const result = await client.userTask.searchUserTasks({
 						page: { limit: 1000 },
 						sort: [{ field: "creationDate", order: "DESC" }],
-					} as AnyQuery)
-					return { items: items(result), total: total(result) }
+					})
+					return { items: result.items, total: result.page.totalItems }
 				}
 				case "decisions": {
 					const result = await client.decisionDefinition.searchDecisionDefinitions({
 						page: { limit: 1000 },
 						sort: [{ field: "version", order: "DESC" }],
-					} as AnyQuery)
-					return { items: items(result) }
+					})
+					return { items: result.items }
 				}
 				default:
 					throw new Error(`Unknown topic: ${topicParam}`)

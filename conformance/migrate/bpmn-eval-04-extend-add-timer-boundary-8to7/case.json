@@ -1,0 +1,8 @@
+{
+  "input": "bpmn/eval-04-extend-add-timer-boundary/input.bpmn",
+  "runs": {
+    "default": {
+      "direction": "8to7"
+    }
+  }
+}

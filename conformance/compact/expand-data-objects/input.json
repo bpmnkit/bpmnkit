@@ -1,0 +1,32 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "t",
+          "type": "task"
+        },
+        {
+          "id": "do",
+          "type": "dataObject",
+          "name": "Order",
+          "isCollection": true
+        },
+        {
+          "id": "ref",
+          "type": "dataObjectReference",
+          "dataObjectRef": "do"
+        },
+        {
+          "id": "ds",
+          "type": "dataStoreReference",
+          "dataStoreRef": "Store_1",
+          "name": "DB"
+        }
+      ],
+      "flows": []
+    }
+  ]
+}

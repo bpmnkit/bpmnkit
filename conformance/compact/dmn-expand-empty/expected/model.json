@@ -1,0 +1,17 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [],
+  "id": "defs",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "Defs",
+  "namespace": "http://bpmn.io/schema/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "dc": "http://www.omg.org/spec/DMN/20180521/DC/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/"
+  },
+  "textAnnotations": []
+}

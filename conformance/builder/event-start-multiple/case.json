@@ -1,0 +1,15 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s1",{"name":"a"}],
+		["serviceTask","t1",{"name":"t1","taskType":"t1"}],
+		["endEvent","e1"],
+		["addStartEvent","s2",{"messageName":"m2"}],
+		["serviceTask","t2",{"name":"t2","taskType":"t2"}],
+		["endEvent","e2"],
+		["disconnectedStartEvent","s3",{"timerDuration":"PT5S"}],
+		["endEvent","e3"],
+		["build"]
+	]
+}

@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"input": "input.bpmn",
+	"script": [
+		["from","proc"],
+		["insertAfter","start"],
+		["task","n"],
+		["build"]
+	]
+}

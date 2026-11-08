@@ -1,0 +1,18 @@
+[
+  {
+    "error": "Decision '' not found"
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "d2",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  }
+]

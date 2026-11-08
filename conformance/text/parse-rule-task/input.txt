@@ -1,0 +1,3 @@
+s[start] > r[rule Check credit] > g[xor Approved?]
+g >(Yes: approved) a[end Approved]
+g >(No: default) b[end Declined]

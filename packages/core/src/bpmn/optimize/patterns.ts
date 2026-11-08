@@ -85,7 +85,7 @@ export function analyzePatterns(p: BpmnProcess): OptimizationFinding[] {
 			findings.push({
 				id: "pattern/gateway-no-default-flow",
 				category: "pattern",
-				severity: "error",
+				severity: "warning",
 				message: `Exclusive gateway "${el.name ?? el.id}" has no default sequence flow.`,
 				suggestion:
 					"Add a default flow to ensure the process does not get stuck when no condition matches.",
@@ -103,7 +103,7 @@ export function analyzePatterns(p: BpmnProcess): OptimizationFinding[] {
 			findings.push({
 				id: "pattern/subprocess-no-error-boundary",
 				category: "pattern",
-				severity: "error",
+				severity: "warning",
 				message: `Sub-process "${el.name ?? el.id}" has no error boundary event.`,
 				suggestion:
 					"Add an error boundary event to catch unhandled errors thrown inside the sub-process.",

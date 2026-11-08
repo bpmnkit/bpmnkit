@@ -1,0 +1,66 @@
+{
+  "components": [
+    {
+      "defaultValue": 0.1,
+      "id": "n1",
+      "key": "n",
+      "label": "N",
+      "type": "number"
+    },
+    {
+      "defaultValue": 1e+21,
+      "id": "n2",
+      "key": "n",
+      "label": "N",
+      "type": "number"
+    },
+    {
+      "defaultValue": 0,
+      "id": "n3",
+      "key": "n",
+      "label": "N",
+      "type": "number"
+    },
+    {
+      "height": 0.000001,
+      "id": "n4",
+      "type": "spacer"
+    },
+    {
+      "height": 1.5e-7,
+      "id": "n5",
+      "type": "spacer"
+    },
+    {
+      "height": 123456789012345680000,
+      "id": "n6",
+      "type": "spacer"
+    },
+    {
+      "height": 5e-324,
+      "id": "n7",
+      "type": "iframe"
+    },
+    {
+      "components": [],
+      "defaultRepetitions": 3,
+      "id": "n8",
+      "type": "dynamiclist"
+    },
+    {
+      "id": "n9",
+      "rowCount": 1e+300,
+      "type": "table"
+    },
+    {
+      "big": 12345678901234567000,
+      "exp": 25000000000,
+      "id": "n10",
+      "neg": -3.25,
+      "type": "future"
+    }
+  ],
+  "id": "f",
+  "schemaVersion": 16.5,
+  "type": "default"
+}

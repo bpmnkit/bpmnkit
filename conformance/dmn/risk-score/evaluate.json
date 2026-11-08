@@ -1,0 +1,41 @@
+[
+  {
+    "decision": "risk_score",
+    "context": {
+      "amount": {
+        "t": "number",
+        "v": "500"
+      },
+      "country": {
+        "t": "string",
+        "v": "DE"
+      }
+    }
+  },
+  {
+    "decision": "risk_score",
+    "context": {
+      "amount": {
+        "t": "number",
+        "v": "5000"
+      },
+      "country": {
+        "t": "string",
+        "v": "US"
+      }
+    }
+  },
+  {
+    "decision": "risk_score",
+    "context": {
+      "amount": {
+        "t": "number",
+        "v": "5000"
+      },
+      "country": {
+        "t": "string",
+        "v": "AT"
+      }
+    }
+  }
+]

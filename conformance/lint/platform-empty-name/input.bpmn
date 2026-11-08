@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+  xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+  xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+  xmlns:modeler="http://camunda.org/schema/modeler/1.0"
+  xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" modeler:executionPlatform="" modeler:executionPlatformVersion="8.6" targetNamespace="http://bpmn.io/schema/bpmn">
+  
+  
+  <bpmn:process id="proc" isExecutable="true">
+    
+  <bpmn:startEvent id="start" name="Started" ><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
+  <bpmn:task id="a" name="Do A" ><bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing></bpmn:task>
+  <bpmn:endEvent id="end" name="Done" ><bpmn:incoming>f2</bpmn:incoming></bpmn:endEvent>
+  <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="a" />
+  <bpmn:sequenceFlow id="f2" sourceRef="a" targetRef="end" />
+  </bpmn:process>
+  
+</bpmn:definitions>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="proc" isExecutable="true">
+    <bpmn:startEvent id="start">
+      <bpmn:outgoing>Flow_start_n</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="a→b" name="Arrow">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="end">
+      <bpmn:incoming>f2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="n">
+      <bpmn:incoming>Flow_start_n</bpmn:incoming>
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="f1" sourceRef="n" targetRef="a→b"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="a→b" targetRef="end"/>
+    <bpmn:sequenceFlow id="Flow_start_n" sourceRef="start" targetRef="n"/>
+  </bpmn:process>
+</bpmn:definitions>
+

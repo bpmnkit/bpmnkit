@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_g</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="g" default="Flow_g_tc">
+      <bpmn:incoming>Flow_s_g</bpmn:incoming>
+      <bpmn:outgoing>Flow_g_ta</bpmn:outgoing>
+      <bpmn:outgoing>Flow_g_tb</bpmn:outgoing>
+      <bpmn:outgoing>Flow_g_tc</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="ta" name="ta">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="ta"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_g_ta</bpmn:incoming>
+      <bpmn:outgoing>Flow_ta_e1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="e1">
+      <bpmn:incoming>Flow_ta_e1</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="tb" name="tb">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="tb"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_g_tb</bpmn:incoming>
+      <bpmn:outgoing>Flow_tb_e2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="e2">
+      <bpmn:incoming>Flow_tb_e2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="tc" name="tc">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="tc"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_g_tc</bpmn:incoming>
+      <bpmn:outgoing>Flow_tc_e3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="e3">
+      <bpmn:incoming>Flow_tc_e3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s_g" sourceRef="s" targetRef="g"/>
+    <bpmn:sequenceFlow id="Flow_g_ta" sourceRef="g" targetRef="ta" name="a">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=a</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_ta_e1" sourceRef="ta" targetRef="e1"/>
+    <bpmn:sequenceFlow id="Flow_g_tb" sourceRef="g" targetRef="tb" name="b">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=b</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_tb_e2" sourceRef="tb" targetRef="e2"/>
+    <bpmn:sequenceFlow id="Flow_g_tc" sourceRef="g" targetRef="tc" name="c"/>
+    <bpmn:sequenceFlow id="Flow_tc_e3" sourceRef="tc" targetRef="e3"/>
+  </bpmn:process>
+</bpmn:definitions>
+

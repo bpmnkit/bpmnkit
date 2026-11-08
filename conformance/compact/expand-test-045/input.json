@@ -1,0 +1,16 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "id": "Process_1",
+      "elements": [
+        {
+          "id": "inner",
+          "type": "serviceTask",
+          "name": "Charge Card"
+        }
+      ],
+      "flows": []
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+{"id":"lists/1","expr":"[1,2,3][1]","context":{},"expected":{"t":"number","v":"1"}}
+{"id":"lists/2","expr":"[1,2,3][-1]","context":{},"expected":{"t":"number","v":"3"}}
+{"id":"lists/3","expr":"[1,2,3][item > 1]","context":{},"expected":{"t":"list","v":[{"t":"number","v":"2"},{"t":"number","v":"3"}]}}
+{"id":"lists/4","expr":"count([1,2,3])","context":{},"expected":{"t":"number","v":"3"}}
+{"id":"lists/5","expr":"sum([1,2,3])","context":{},"expected":{"t":"number","v":"6"}}
+{"id":"lists/6","expr":"mean([1,2,3,4])","context":{},"expected":{"t":"number","v":"2.5"}}
+{"id":"lists/7","expr":"median([3,1,2])","context":{},"expected":{"t":"number","v":"2"}}
+{"id":"lists/8","expr":"max([4,9,2])","context":{},"expected":{"t":"number","v":"9"}}
+{"id":"lists/9","expr":"min(3,1,2)","context":{},"expected":{"t":"number","v":"1"}}
+{"id":"lists/10","expr":"append([1,2],3)","context":{},"expected":{"t":"list","v":[{"t":"number","v":"1"},{"t":"number","v":"2"},{"t":"number","v":"3"}]}}
+{"id":"lists/11","expr":"concatenate([1],[2,3])","context":{},"expected":{"t":"list","v":[{"t":"number","v":"1"},{"t":"number","v":"2"},{"t":"number","v":"3"}]}}
+{"id":"lists/12","expr":"reverse([1,2,3])","context":{},"expected":{"t":"list","v":[{"t":"number","v":"3"},{"t":"number","v":"2"},{"t":"number","v":"1"}]}}
+{"id":"lists/13","expr":"sort([3,1,2], function(a,b) a < b)","context":{},"expected":{"t":"list","v":[{"t":"number","v":"1"},{"t":"number","v":"2"},{"t":"number","v":"3"}]}}
+{"id":"lists/14","expr":"index of([1,2,3,2],2)","context":{},"expected":{"t":"list","v":[{"t":"number","v":"2"},{"t":"number","v":"4"}]}}
+{"id":"lists/15","expr":"distinct values([1,2,1,3])","context":{},"expected":{"t":"list","v":[{"t":"number","v":"1"},{"t":"number","v":"2"},{"t":"number","v":"3"}]}}
+{"id":"lists/16","expr":"flatten([[1,2],[3,[4]]])","context":{},"expected":{"t":"list","v":[{"t":"number","v":"1"},{"t":"number","v":"2"},{"t":"number","v":"3"},{"t":"number","v":"4"}]}}
+{"id":"lists/17","expr":"[1,2,3][5]","context":{},"expected":{"t":"null"}}
+{"id":"lists/18","expr":"for i in 1..4 return i * i","context":{},"expected":{"t":"list","v":[{"t":"number","v":"1"},{"t":"number","v":"4"},{"t":"number","v":"9"},{"t":"number","v":"16"}]}}
+{"id":"lists/19","expr":"some x in [1,2,3] satisfies x > 2","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"lists/20","expr":"every x in [1,2,3] satisfies x > 2","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"lists/21","expr":"xs[item.a > 1]","context":{"xs":{"t":"list","v":[{"t":"context","v":{"a":{"t":"number","v":"1"}}},{"t":"context","v":{"a":{"t":"number","v":"2"}}}]}},"expected":{"t":"list","v":[{"t":"context","v":{"a":{"t":"number","v":"2"}}}]}}
+{"id":"lists/22","expr":"sublist([1,2,3,4],2,2)","context":{},"expected":{"t":"list","v":[{"t":"number","v":"2"},{"t":"number","v":"3"}]}}
+{"id":"lists/23","expr":"list contains([1,2],2)","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"lists/24","expr":"[1,2] = [1,2]","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"lists/25","expr":"1 in [1,2,3]","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"lists/26","expr":"[1, 2, 3]","context":{},"expected":{"t":"list","v":[{"t":"number","v":"1"},{"t":"number","v":"2"},{"t":"number","v":"3"}]}}
+{"id":"lists/27","expr":"[1, 2, 3][item > 1]","context":{},"expected":{"t":"list","v":[{"t":"number","v":"2"},{"t":"number","v":"3"}]}}
+{"id":"lists/28","expr":"for x in [1, 2, 3] return x * 2","context":{},"expected":{"t":"list","v":[{"t":"number","v":"2"},{"t":"number","v":"4"},{"t":"number","v":"6"}]}}
+{"id":"lists/29","expr":"some x in [1, 2, 3] satisfies x > 2","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"lists/30","expr":"some x in [1, 2, 3] satisfies x > 10","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"lists/31","expr":"every x in [1, 2, 3] satisfies x > 0","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"lists/32","expr":"every x in [1, 2, 3] satisfies x > 1","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"lists/33","expr":"count([1, 2, 3])","context":{},"expected":{"t":"number","v":"3"}}
+{"id":"lists/34","expr":"min([3, 1, 2])","context":{},"expected":{"t":"number","v":"1"}}
+{"id":"lists/35","expr":"max([3, 1, 2])","context":{},"expected":{"t":"number","v":"3"}}
+{"id":"lists/36","expr":"sum([1, 2, 3])","context":{},"expected":{"t":"number","v":"6"}}
+{"id":"lists/37","expr":"mean([1, 2, 3])","context":{},"expected":{"t":"number","v":"2"}}
+{"id":"lists/38","expr":"append([1, 2], 3)","context":{},"expected":{"t":"list","v":[{"t":"number","v":"1"},{"t":"number","v":"2"},{"t":"number","v":"3"}]}}
+{"id":"lists/39","expr":"concatenate([1, 2], [3, 4])","context":{},"expected":{"t":"list","v":[{"t":"number","v":"1"},{"t":"number","v":"2"},{"t":"number","v":"3"},{"t":"number","v":"4"}]}}
+{"id":"lists/40","expr":"reverse([1, 2, 3])","context":{},"expected":{"t":"list","v":[{"t":"number","v":"3"},{"t":"number","v":"2"},{"t":"number","v":"1"}]}}
+{"id":"lists/41","expr":"for i in 1..3 return i * i","context":{},"expected":{"t":"list","v":[{"t":"number","v":"1"},{"t":"number","v":"4"},{"t":"number","v":"9"}]}}
+{"id":"lists/42","expr":"for i in 3..1 return i","context":{},"expected":{"t":"list","v":[{"t":"number","v":"3"},{"t":"number","v":"2"},{"t":"number","v":"1"}]}}
+{"id":"lists/43","expr":"some x in 1..3 satisfies x > 2","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"lists/44","expr":"every x in 1..3 satisfies x > 0","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"lists/45","expr":"for x in [1,2], y in 1..2 return x * y","context":{},"expected":{"t":"list","v":[{"t":"number","v":"1"},{"t":"number","v":"2"},{"t":"number","v":"2"},{"t":"number","v":"4"}]}}
+{"id":"lists/46","expr":"count([1,2])","context":{},"expected":{"t":"number","v":"2"}}
+{"id":"lists/47","expr":"count([])","context":{},"expected":{"t":"number","v":"0"}}
+{"id":"lists/48","expr":"count(null)","context":{},"expected":{"t":"null"}}
+{"id":"lists/49","expr":"[1,2,3] in [[1,2,3,4], [1,2,3]]","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"lists/50","expr":"[{a: 1}, {a: 2}, {a: 3}][a >= 2]","context":{},"expected":{"t":"list","v":[{"t":"context","v":{"a":{"t":"number","v":"2"}}},{"t":"context","v":{"a":{"t":"number","v":"3"}}}]}}
+{"id":"lists/51","expr":"for x in [[1,2],[3,4]], y in x return y","context":{},"expected":{"t":"list","v":[{"t":"number","v":"1"},{"t":"number","v":"2"},{"t":"number","v":"3"},{"t":"number","v":"4"}]}}
+{"id":"lists/52","expr":"for i in 0..4 return if i = 0 then 1 else i * partial[-1]","context":{},"expected":{"t":"list","v":[{"t":"number","v":"1"},{"t":"number","v":"1"},{"t":"number","v":"2"},{"t":"number","v":"6"},{"t":"number","v":"24"}]}}
+{"id":"lists/53","expr":"count(for i in @\"1980-01-01\"..@\"1980-01-03\" return i)","context":{},"expected":{"t":"number","v":"3"}}
+{"id":"lists/54","expr":"for i in \"a\"..\"z\" return i","context":{},"expected":{"t":"null"}}

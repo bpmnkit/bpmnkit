@@ -1,0 +1,1 @@
+flow "f1" is marked isDefault but leaves a task. Only an exclusive, inclusive or complex gateway has a default flow.

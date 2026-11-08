@@ -1,0 +1,476 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 15,
+    "info": 3,
+    "warning": 17
+  },
+  "diagnostics": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "_c57a5344-213f-4834-a6c3-94ce878b413c"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"_c57a5344-213f-4834-a6c3-94ce878b413c\" (userTask) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "plane": "C1373638080953",
+      "processId": "Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_c57a5344-213f-4834-a6c3-94ce878b413c"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"User Task 12 Muti-Inst. Seq.\" has no timer boundary event.",
+      "plane": "C1373638080953",
+      "processId": "Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_7f4fe4ea-901f-4c74-bcd4-e933495712fd"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"User Task 13\" has no timer boundary event.",
+      "plane": "C1373638080953",
+      "processId": "Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_200f43e7-1385-46e2-a380-3ef16ebe7847"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Start Event 3\" has no documentation describing expected input variables.",
+      "plane": "C1373638080953",
+      "processId": "Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_a9966baf-d9b9-4be1-a4d9-2906ab5add30"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_a9966baf-d9b9-4be1-a4d9-2906ab5add30\" exits a decision gateway without a condition expression.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "DF1373638080458"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"DF1373638080458\" (dataObject) is not reachable from any start event.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "DF1373638080458"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"DF1373638080458\" (dataObject) has no outgoing sequence flows.",
+      "processId": "WFP-6-1",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_149a6e1d-0385-4d0f-a90c-c2150a291a67"
+      ],
+      "fixable": false,
+      "id": "flow/empty-subprocess",
+      "message": "Sub-process \"_149a6e1d-0385-4d0f-a90c-c2150a291a67\" (subProcess) contains no flow elements.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-1",
+      "severity": "warning",
+      "suggestion": "Add flow elements inside the sub-process or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_aa8c769a-276c-4589-b182-7c7bbd0a9e1e"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_aa8c769a-276c-4589-b182-7c7bbd0a9e1e\" (dataObjectReference) is not reachable from any start event.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_aa8c769a-276c-4589-b182-7c7bbd0a9e1e"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_aa8c769a-276c-4589-b182-7c7bbd0a9e1e\" (dataObjectReference) has no outgoing sequence flows.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-1",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_dec393e7-f182-4d31-b05f-e33ac3a5e35f"
+      ],
+      "fixable": false,
+      "id": "naming/gateway-not-a-question",
+      "message": "Gateway \"_dec393e7-f182-4d31-b05f-e33ac3a5e35f\" is named \"Inclusive Gateway 1\" — split gateways should be phrased as questions.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-1",
+      "severity": "info",
+      "suggestion": "Rephrase as a question, e.g. \"Inclusive Gateway 1?\""
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_149a6e1d-0385-4d0f-a90c-c2150a291a67"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Collapsed Sub-Process 1 Multi-Instances\" has no error boundary event.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-1",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_303e68ec-dbb3-4d90-8a96-26e0be44f5f3"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Expanded Sub-Process 1\" has no error boundary event.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-1",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_a74c1d4d-db90-43ff-8920-139a300b39a5"
+      ],
+      "fixable": false,
+      "id": "pattern/call-activity-no-error-boundary",
+      "message": "Call activity \"Call Activity calling a Global User Task\" has no error boundary event.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle errors propagated from the called process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_c9870992-6643-4094-acfd-d76e5e37941b"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"User Task 8\" has no timer boundary event.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-1",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_0e87da16-736e-45b2-95e5-8f45940f3adf"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"User Task 3\" has no timer boundary event.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-1",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_8b98cde1-aec2-46e8-8be2-d9aa244fcda6"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_8b98cde1-aec2-46e8-8be2-d9aa244fcda6\" exits a decision gateway without a condition expression.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_73343358-7838-48a1-baf2-2b0266e3a55b"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"_73343358-7838-48a1-baf2-2b0266e3a55b\" (task) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_dbca671f-08b6-4b58-a614-62b98fa36be5"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"_dbca671f-08b6-4b58-a614-62b98fa36be5\" (task) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_087d0602-ff51-491e-a021-d2e7c940dbd8"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"_087d0602-ff51-491e-a021-d2e7c940dbd8\" (endEvent) has 3 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_f27040d5-765c-493c-bbe7-9fb6ad04cbdc"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_f27040d5-765c-493c-bbe7-9fb6ad04cbdc\" (intermediateThrowEvent) has no outgoing sequence flows.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_0263ca9e-2ca0-4f4e-b7dd-86e15dcf2447"
+      ],
+      "fixable": false,
+      "id": "flow/empty-subprocess",
+      "message": "Sub-process \"_0263ca9e-2ca0-4f4e-b7dd-86e15dcf2447\" (subProcess) contains no flow elements.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "warning",
+      "suggestion": "Add flow elements inside the sub-process or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_4f5e6e50-d9d0-4f97-959a-d1b8e1e32788"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_4f5e6e50-d9d0-4f97-959a-d1b8e1e32788\" (intermediateCatchEvent) is not reachable from any start event.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_189118eb-65fc-43e8-8a34-a155b113914f"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"_189118eb-65fc-43e8-8a34-a155b113914f\" (subProcess) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_dfb273c6-0ad3-4030-9e72-638adf7ca75f"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"_dfb273c6-0ad3-4030-9e72-638adf7ca75f\" (endEvent) has 3 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_b9385abf-d293-40b7-848b-8add4db48415"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_b9385abf-d293-40b7-848b-8add4db48415\" (dataStoreReference) is not reachable from any start event.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_b9385abf-d293-40b7-848b-8add4db48415"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_b9385abf-d293-40b7-848b-8add4db48415\" (dataStoreReference) has no outgoing sequence flows.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_49e94b5f-ce21-4c2b-b78d-3cde5c09c15e"
+      ],
+      "fixable": false,
+      "id": "naming/gateway-not-a-question",
+      "message": "Gateway \"_49e94b5f-ce21-4c2b-b78d-3cde5c09c15e\" is named \"Exclusive Gateway 4\" — split gateways should be phrased as questions.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "info",
+      "suggestion": "Rephrase as a question, e.g. \"Exclusive Gateway 4?\""
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_49e94b5f-ce21-4c2b-b78d-3cde5c09c15e",
+        "_8b98cde1-aec2-46e8-8be2-d9aa244fcda6"
+      ],
+      "fixable": false,
+      "id": "naming/missing-flow-condition",
+      "message": "Sequence flow \"_8b98cde1-aec2-46e8-8be2-d9aa244fcda6\" from split gateway \"_49e94b5f-ce21-4c2b-b78d-3cde5c09c15e\" has no condition label.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "warning",
+      "suggestion": "Label each outgoing flow with the condition answer, e.g. \"Yes\", \"No\", \"Approved\", \"Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_10ecbff1-cd15-4a5c-9aa5-6f2a35479416"
+      ],
+      "fixable": false,
+      "id": "naming/join-gateway-labeled",
+      "message": "Gateway \"_10ecbff1-cd15-4a5c-9aa5-6f2a35479416\" (join) is named \"Inclusive Gateway 6\" — join gateways should not have labels.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "info",
+      "suggestion": "Remove the label from join-only gateways; their semantics are implicit."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_0263ca9e-2ca0-4f4e-b7dd-86e15dcf2447"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Collapsed Sub-Process 2\" has no error boundary event.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_189118eb-65fc-43e8-8a34-a155b113914f"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Expanded Sub-Process 3\" has no error boundary event.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_1237e756-d53c-4591-a731-dafffbf0b3f9"
+      ],
+      "fixable": false,
+      "id": "pattern/call-activity-no-error-boundary",
+      "message": "Call activity \"Collapsed Call Activity\" has no error boundary event.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle errors propagated from the called process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_ba16239e-181e-4b9f-bc5b-0bb2ee973450"
+      ],
+      "fixable": false,
+      "id": "pattern/call-activity-no-error-boundary",
+      "message": "Call activity \"Expanded Call Activity\" has no error boundary event.",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle errors propagated from the called process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_820dcc70-45ac-4a1e-88ae-f1b4ff925ef6"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Start Event 8\" has no documentation describing expected input variables.",
+      "processId": "WFP-0-",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 35
+}

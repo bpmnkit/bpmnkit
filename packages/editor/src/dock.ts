@@ -123,11 +123,23 @@ export interface SideDock {
 	docsPane: HTMLDivElement
 	deployPane: HTMLDivElement
 	testsPane: HTMLDivElement
-	switchTab(tab: "properties" | "history" | "ai" | "play" | "docs" | "deploy" | "tests"): void
+	/** Host pane for the on-device Generate panel (tab hidden until shown). */
+	generatePane: HTMLDivElement
+	switchTab(
+		tab: "properties" | "history" | "ai" | "play" | "docs" | "deploy" | "tests" | "generate",
+	): void
 	expand(): void
 	collapse(): void
 	get collapsed(): boolean
-	get activeTab(): "properties" | "history" | "ai" | "play" | "docs" | "deploy" | "tests"
+	get activeTab():
+		| "properties"
+		| "history"
+		| "ai"
+		| "play"
+		| "docs"
+		| "deploy"
+		| "tests"
+		| "generate"
 	/** Update the info shown in the Properties empty state. */
 	setDiagramInfo(processName: string | null, fileName: string | null): void
 	/** Hide the empty state when a config panel is displayed. */
@@ -156,6 +168,8 @@ export interface SideDock {
 	setTestsTabVisible(visible: boolean): void
 	/** Register a callback invoked when the Tests tab is clicked. */
 	setTestsTabClickHandler(fn: () => void): void
+	/** Show or hide the Generate tab. */
+	setGenerateTabVisible(visible: boolean): void
 }
 
 export interface SideDockOptions {
@@ -216,6 +230,11 @@ export function createSideDock(options: SideDockOptions = {}): SideDock {
 	testsTab.textContent = t("Tests")
 	testsTab.style.display = "none"
 
+	const generateTab = document.createElement("button")
+	generateTab.className = "bpmnkit-side-dock__tab"
+	generateTab.textContent = t("Generate")
+	generateTab.style.display = "none"
+
 	tabStrip.appendChild(propertiesTab)
 	tabStrip.appendChild(historyTab)
 	tabStrip.appendChild(aiTab)
@@ -223,6 +242,7 @@ export function createSideDock(options: SideDockOptions = {}): SideDock {
 	tabStrip.appendChild(docsTab)
 	tabStrip.appendChild(deployTab)
 	tabStrip.appendChild(testsTab)
+	tabStrip.appendChild(generateTab)
 
 	// Longer languages overflow the strip (German and Polish at the default
 	// width). It scrolls, but a mouse wheel only scrolls vertically — so turn
@@ -300,6 +320,10 @@ export function createSideDock(options: SideDockOptions = {}): SideDock {
 	const testsPane = document.createElement("div")
 	testsPane.className = "bpmnkit-side-dock__pane bpmnkit-side-dock__pane--hidden"
 
+	// Generate pane
+	const generatePane = document.createElement("div")
+	generatePane.className = "bpmnkit-side-dock__pane bpmnkit-side-dock__pane--hidden"
+
 	el.appendChild(collapseHandle)
 	el.appendChild(resizeHandle)
 	el.appendChild(tabStrip)
@@ -310,12 +334,20 @@ export function createSideDock(options: SideDockOptions = {}): SideDock {
 	el.appendChild(docsPane)
 	el.appendChild(deployPane)
 	el.appendChild(testsPane)
+	el.appendChild(generatePane)
 
 	// ── State ──
 	let _collapsed = false
 	let _width = DEFAULT_WIDTH
-	let _activeTab: "properties" | "history" | "ai" | "play" | "docs" | "deploy" | "tests" =
-		"properties"
+	let _activeTab:
+		| "properties"
+		| "history"
+		| "ai"
+		| "play"
+		| "docs"
+		| "deploy"
+		| "tests"
+		| "generate" = "properties"
 	let _aiTabHandler: (() => void) | null = null
 	let _historyTabHandler: (() => void) | null = null
 	let _playTabHandler: (() => void) | null = null
@@ -359,7 +391,7 @@ export function createSideDock(options: SideDockOptions = {}): SideDock {
 
 	// ── Tab switching ──
 	function switchTab(
-		tab: "properties" | "history" | "ai" | "play" | "docs" | "deploy" | "tests",
+		tab: "properties" | "history" | "ai" | "play" | "docs" | "deploy" | "tests" | "generate",
 	): void {
 		_activeTab = tab
 		propertiesTab.classList.toggle("active", tab === "properties")
@@ -369,6 +401,7 @@ export function createSideDock(options: SideDockOptions = {}): SideDock {
 		docsTab.classList.toggle("active", tab === "docs")
 		deployTab.classList.toggle("active", tab === "deploy")
 		testsTab.classList.toggle("active", tab === "tests")
+		generateTab.classList.toggle("active", tab === "generate")
 		propertiesPane.classList.toggle("bpmnkit-side-dock__pane--hidden", tab !== "properties")
 		historyPane.classList.toggle("bpmnkit-side-dock__pane--hidden", tab !== "history")
 		aiPane.classList.toggle("bpmnkit-side-dock__pane--hidden", tab !== "ai")
@@ -376,6 +409,7 @@ export function createSideDock(options: SideDockOptions = {}): SideDock {
 		docsPane.classList.toggle("bpmnkit-side-dock__pane--hidden", tab !== "docs")
 		deployPane.classList.toggle("bpmnkit-side-dock__pane--hidden", tab !== "deploy")
 		testsPane.classList.toggle("bpmnkit-side-dock__pane--hidden", tab !== "tests")
+		generatePane.classList.toggle("bpmnkit-side-dock__pane--hidden", tab !== "generate")
 		// A tab past the strip's edge (a long language, a narrow dock) is brought into view.
 		tabStrip
 			.querySelector<HTMLElement>(".bpmnkit-side-dock__tab.active")
@@ -474,6 +508,13 @@ export function createSideDock(options: SideDockOptions = {}): SideDock {
 		}
 	}
 
+	function setGenerateTabVisible(visible: boolean): void {
+		generateTab.style.display = visible ? "" : "none"
+		if (!visible && generateTab.classList.contains("active")) {
+			switchTab("properties")
+		}
+	}
+
 	function setTestsTabClickHandler(fn: () => void): void {
 		_testsTabHandler = fn
 	}
@@ -513,6 +554,9 @@ export function createSideDock(options: SideDockOptions = {}): SideDock {
 	testsTab.addEventListener("click", () => {
 		switchTab("tests")
 		_testsTabHandler?.()
+	})
+	generateTab.addEventListener("click", () => {
+		switchTab("generate")
 	})
 	collapseHandle.addEventListener("click", () => {
 		if (_collapsed) expand()
@@ -555,6 +599,7 @@ export function createSideDock(options: SideDockOptions = {}): SideDock {
 		docsPane,
 		deployPane,
 		testsPane,
+		generatePane,
 		switchTab,
 		expand,
 		collapse,
@@ -572,6 +617,7 @@ export function createSideDock(options: SideDockOptions = {}): SideDock {
 		setDeployTabClickHandler,
 		setTestsTabVisible,
 		setTestsTabClickHandler,
+		setGenerateTabVisible,
 		get collapsed() {
 			return _collapsed
 		},

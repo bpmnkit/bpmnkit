@@ -1,0 +1,309 @@
+{
+  "findings": [
+    {
+      "category": "feel-syntax",
+      "elementIds": [
+        "scr"
+      ],
+      "fixable": false,
+      "id": "feel-syntax/parse-error",
+      "message": "Invalid FEEL expression on script expression of \"scr\": Expected expression after '+'",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Fix the FEEL syntax — see the error position for the offending token."
+    },
+    {
+      "category": "feel-syntax",
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": false,
+      "id": "feel-syntax/parse-error",
+      "message": "Invalid FEEL expression on output \"o\" of \"svc\": Unexpected token ')'",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Fix the FEEL syntax — see the error position for the offending token."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "gw",
+        "f2"
+      ],
+      "fixable": false,
+      "id": "naming/missing-flow-condition",
+      "message": "Sequence flow \"f2\" from split gateway \"gw\" has no condition label.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Label each outgoing flow with the condition answer, e.g. \"Yes\", \"No\", \"Approved\", \"Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "gw",
+        "f3"
+      ],
+      "fixable": false,
+      "id": "naming/missing-flow-condition",
+      "message": "Sequence flow \"f3\" from split gateway \"gw\" has no condition label.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Label each outgoing flow with the condition answer, e.g. \"Yes\", \"No\", \"Approved\", \"Rejected\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "gw",
+        "f4"
+      ],
+      "fixable": false,
+      "id": "naming/missing-flow-condition",
+      "message": "Sequence flow \"f4\" from split gateway \"gw\" has no condition label.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Label each outgoing flow with the condition answer, e.g. \"Yes\", \"No\", \"Approved\", \"Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "sub"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Sub\" has no error boundary event.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Adhoc\" has no error boundary event.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"S\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "a"
+      ],
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:a",
+      "message": "Variable \"a\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"a\" is never set. Did you mean \"o\"?"
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "ok"
+      ],
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:ok",
+      "message": "Variable \"ok\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"ok\" is never set. Did you mean \"o\"?"
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "x"
+      ],
+      "elementIds": [
+        "gw"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:x",
+      "message": "Variable \"x\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"x\" is never set. Did you mean \"o\"?"
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:bad",
+      "message": "Variable \"bad\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "produces": [
+        "bad"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"bad\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:good",
+      "message": "Variable \"good\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "produces": [
+        "good"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"good\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:literal",
+      "message": "Variable \"literal\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "produces": [
+        "literal"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"literal\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:o",
+      "message": "Variable \"o\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "produces": [
+        "o"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"o\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "a",
+        "ok"
+      ],
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:svc",
+      "message": "Element \"svc\" produces: bad, good, literal, o; consumes: a, ok.",
+      "processId": "proc",
+      "produces": [
+        "bad",
+        "good",
+        "literal",
+        "o"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "x"
+      ],
+      "elementIds": [
+        "gw"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:gw",
+      "message": "Element \"gw\" consumes: x.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f6"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f6",
+      "message": "Variables in scope at flow \"f6\": bad, good, literal, o.",
+      "processId": "proc",
+      "produces": [
+        "bad",
+        "good",
+        "literal",
+        "o"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sf2"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"sf2\" has a condition, but only flows leaving an exclusive or inclusive gateway may.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Remove the condition, or route the flow through a gateway."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Ad-hoc sub-process \"Adhoc\" needs Camunda 8.7 or newer; this model targets Camunda 8.6.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.7 or newer (modeler:executionPlatformVersion), or remove it."
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 10,
+      "deploy": 2,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 2,
+      "flow": 0,
+      "naming": 3,
+      "pattern": 3,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 4,
+      "info": 7,
+      "warning": 9
+    },
+    "total": 20
+  }
+}

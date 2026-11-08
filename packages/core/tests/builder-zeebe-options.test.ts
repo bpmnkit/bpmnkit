@@ -1,0 +1,308 @@
+import { describe, expect, it } from "vitest"
+import { getZeebeExtensions } from "../src/bpmn/utils.js"
+import { Bpmn, ProcessBuilder, analyzeCamundaCompat } from "../src/index.js"
+
+describe("builder zeebe options", () => {
+	it("writes linkedResources on a service task and reads them back", () => {
+		const linkedResources = [
+			{ resourceType: "RPA", resourceId: "r1", linkName: "script", bindingType: "latest" as const },
+		]
+		const xml = Bpmn.export(
+			Bpmn.createProcess("p")
+				.startEvent("s")
+				.serviceTask("t", { name: "T", taskType: "rpa", linkedResources })
+				.endEvent("e")
+				.build(),
+		)
+		expect(xml).toContain("<zeebe:linkedResources>")
+		expect(xml).toContain('linkName="script"')
+		const task = Bpmn.parse(xml).processes[0]?.flowElements.find((e) => e.id === "t")
+		expect(getZeebeExtensions(task?.extensionElements ?? []).linkedResources).toEqual(
+			linkedResources,
+		)
+	})
+
+	it("emits zeebe:formDefinition on a top-level start event", () => {
+		const xml = Bpmn.export(
+			Bpmn.createProcess("p")
+				.startEvent("s", { name: "S", formId: "ai-agent-chat-initial-request" })
+				.endEvent("e")
+				.build(),
+		)
+		expect(xml).toContain('<zeebe:formDefinition formId="ai-agent-chat-initial-request"')
+	})
+
+	it("emits the form on a start event inside an event sub-process", () => {
+		const xml = Bpmn.export(
+			Bpmn.createProcess("p")
+				.startEvent("s")
+				.endEvent("e")
+				.eventSubProcess("es", (sub) =>
+					sub.startEvent("es-s", { formId: "sub-form", isInterrupting: false }).endEvent("es-e"),
+				)
+				.build(),
+		)
+		expect(xml).toContain('<zeebe:formDefinition formId="sub-form"')
+	})
+
+	it("maps user-task inputs alongside zeebe:userTask and the form", () => {
+		const xml = Bpmn.export(
+			Bpmn.createProcess("p")
+				.startEvent("s")
+				.userTask("u", {
+					name: "User Feedback",
+					formId: "ai-agent-chat-user-feedback",
+					zeebeUserTask: true,
+					ioMapping: { inputs: [{ source: "=agent.responseText", target: "responseText" }] },
+				})
+				.endEvent("e")
+				.build(),
+		)
+		// The serializer owns child order (ioMapping first); the task must carry all three.
+		expect(xml).toMatch(/<zeebe:userTask\s*\/>/)
+		expect(xml).toContain('<zeebe:formDefinition formId="ai-agent-chat-user-feedback"')
+		expect(xml).toMatch(
+			/<zeebe:ioMapping>\s*<zeebe:input source="=agent.responseText" target="responseText"\s*\/>\s*<\/zeebe:ioMapping>/,
+		)
+	})
+
+	it("emits user-task headers, properties and template attributes", () => {
+		const xml = Bpmn.export(
+			Bpmn.createProcess("p")
+				.startEvent("s")
+				.userTask("u", {
+					name: "U",
+					taskHeaders: { k: "v" },
+					zeebeProperties: [{ name: "pn", value: "pv" }],
+					modelerTemplate: "tpl.id",
+					modelerTemplateVersion: "2",
+					modelerTemplateIcon: "data:x",
+				})
+				.endEvent("e")
+				.build(),
+		)
+		expect(xml).toContain('<zeebe:header key="k" value="v"')
+		expect(xml).toContain('<zeebe:property name="pn" value="pv"')
+		expect(xml).toContain('zeebe:modelerTemplate="tpl.id"')
+		expect(xml).toContain('zeebe:modelerTemplateVersion="2"')
+		expect(xml).toContain('zeebe:modelerTemplateIcon="data:x"')
+	})
+
+	it("keeps a start event's modelerTemplate and properties inside a branch", () => {
+		const xml = Bpmn.export(
+			Bpmn.createProcess("p")
+				.startEvent("s")
+				.exclusiveGateway("g")
+				.branch("A", (b) =>
+					b
+						.startEvent("bs", {
+							modelerTemplate: "tpl.start",
+							modelerTemplateVersion: "3",
+							zeebeProperties: [{ name: "pn", value: "pv" }],
+							formId: "branch-form",
+						})
+						.endEvent("be"),
+				)
+				.branch("B", (b) => b.endEvent("e2"))
+				.build(),
+		)
+		expect(xml).toContain('zeebe:modelerTemplate="tpl.start"')
+		expect(xml).toContain('zeebe:modelerTemplateVersion="3"')
+		expect(xml).toContain('<zeebe:property name="pn" value="pv"')
+		expect(xml).toContain('<zeebe:formDefinition formId="branch-form"')
+	})
+
+	it("keeps a start event's modelerTemplate and properties inside an event sub-process", () => {
+		const xml = Bpmn.export(
+			Bpmn.createProcess("p")
+				.startEvent("s")
+				.endEvent("e")
+				.eventSubProcess("es", (sub) =>
+					sub
+						.startEvent("es-s", {
+							modelerTemplate: "tpl.sub",
+							zeebeProperties: [{ name: "pn", value: "pv" }],
+						})
+						.endEvent("es-e"),
+				)
+				.build(),
+		)
+		expect(xml).toContain('zeebe:modelerTemplate="tpl.sub"')
+		expect(xml).toContain('<zeebe:property name="pn" value="pv"')
+	})
+
+	it("keeps a multi-instance completion condition", () => {
+		const process = Bpmn.parse(
+			Bpmn.export(
+				Bpmn.createProcess("p")
+					.startEvent("s")
+					.subProcess("sub", (inner) => inner.startEvent("is").endEvent("ie"), {
+						multiInstance: {
+							collection: "=items",
+							elementVariable: "item",
+							completionCondition: "=approved",
+						},
+					})
+					.endEvent("e")
+					.build(),
+			),
+		).processes[0]
+		const sub = process?.flowElements.find((element) => element.id === "sub")
+		const loop = sub && "loopCharacteristics" in sub ? sub.loopCharacteristics : undefined
+		expect(loop?.completionCondition?.text).toBe("=approved")
+	})
+	describe("call activity options", () => {
+		function callActivity(options: Record<string, unknown>, version = "8.7.0") {
+			const xml = Bpmn.export(
+				Bpmn.createProcess("p")
+					.startEvent("s")
+					.callActivity("c", { processId: "child", ...options } as never)
+					.endEvent("e")
+					.build(),
+			).replace(
+				"<bpmn:definitions ",
+				`<bpmn:definitions xmlns:modeler="http://camunda.org/schema/modeler/1.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="${version}" `,
+			)
+			const defs = Bpmn.parse(xml)
+			const el = defs.processes[0]?.flowElements.find((e) => e.id === "c")
+			const ext = getZeebeExtensions(el?.extensionElements)
+			return { xml, defs, ext }
+		}
+		const ids = (defs: ReturnType<typeof Bpmn.parse>, version: string) =>
+			analyzeCamundaCompat(defs, version).map((f) => f.id)
+
+		it("writes ioMapping", () => {
+			const { xml, ext } = callActivity({
+				ioMapping: {
+					inputs: [{ source: "=a", target: "b" }],
+					outputs: [{ source: "=c", target: "d" }],
+				},
+			})
+			expect(xml).toContain("<zeebe:input")
+			expect(xml).toContain("<zeebe:output")
+			expect(ext.ioMapping?.inputs).toEqual([{ source: "=a", target: "b" }])
+			expect(ext.ioMapping?.outputs).toEqual([{ source: "=c", target: "d" }])
+		})
+
+		it("never emits taskHeaders, which the schema forbids on a call activity", () => {
+			const { xml } = callActivity({ taskHeaders: { k: "v" } })
+			expect(xml).not.toContain("zeebe:taskHeaders")
+		})
+
+		it("writes zeebeProperties", () => {
+			const { xml, ext } = callActivity({ zeebeProperties: [{ name: "n", value: "v" }] })
+			expect(xml).toContain("<zeebe:property")
+			expect(ext.properties?.properties).toEqual([{ name: "n", value: "v" }])
+		})
+
+		it("writes propagateAllParentVariables and keeps propagateAllChildVariables", () => {
+			const { xml, ext, defs } = callActivity({
+				propagateAllParentVariables: false,
+				propagateAllChildVariables: false,
+			})
+			expect(xml).toContain('propagateAllParentVariables="false"')
+			expect(xml).toContain('propagateAllChildVariables="false"')
+			expect(ext.calledElement?.propagateAllParentVariables).toBe(false)
+			expect(ext.calledElement?.propagateAllChildVariables).toBe(false)
+			expect(ids(defs, "8.7")).not.toContain("compat/no-propagate-all-parent-variables")
+			expect(ids(defs, "8.1")).toContain("compat/no-propagate-all-parent-variables")
+		})
+
+		it("writes bindingType", () => {
+			const { xml, ext, defs } = callActivity({ bindingType: "deployment" })
+			expect(xml).toContain('bindingType="deployment"')
+			expect(ext.calledElement?.bindingType).toBe("deployment")
+			expect(ids(defs, "8.5")).toContain("compat/no-binding-type")
+			expect(ids(defs, "8.7")).not.toContain("compat/no-binding-type")
+		})
+
+		it("writes versionTag", () => {
+			const { xml, ext } = callActivity({ bindingType: "versionTag", versionTag: "v1" })
+			expect(xml).toContain('versionTag="v1"')
+			expect(ext.calledElement?.versionTag).toBe("v1")
+		})
+	})
+})
+
+describe("user task forms", () => {
+	const form = (opts: Record<string, unknown>) => {
+		const defs = Bpmn.createProcess("p").startEvent("s").userTask("u", opts).endEvent("e").build()
+		return { defs, xml: Bpmn.export(defs) }
+	}
+
+	it("emits formKey and externalReference", () => {
+		expect(form({ formKey: "camunda-forms:bpmn:x" }).xml).toContain(
+			'<zeebe:formDefinition formKey="camunda-forms:bpmn:x"',
+		)
+		expect(form({ externalReference: "https://e.com/f" }).xml).toContain(
+			'<zeebe:formDefinition externalReference="https://e.com/f"',
+		)
+	})
+
+	it("emits bindingType and versionTag next to formId", () => {
+		const { xml } = form({ formId: "f", formBindingType: "versionTag", formVersionTag: "v1" })
+		expect(xml).toContain('formId="f"')
+		expect(xml).toContain('bindingType="versionTag"')
+		expect(xml).toContain('versionTag="v1"')
+	})
+
+	it("throws when more than one form reference is set", () => {
+		expect(() => form({ formId: "f", formKey: "k" })).toThrow(/only one/i)
+		expect(() => form({ formKey: "k", externalReference: "r" })).toThrow(/only one/i)
+	})
+
+	it("writes an embedded form as a process-level zeebe:userTaskForm", () => {
+		const schema = '{"components":[]}'
+		const { defs, xml } = form({ embeddedForm: { id: "emb", schema } })
+		expect(xml).toContain('formKey="camunda-forms:bpmn:emb"')
+		expect(xml).toMatch(/<zeebe:userTaskForm id="emb">/)
+		expect(xml).toContain("components")
+		const roundTrip = Bpmn.parse(xml)
+		expect(analyzeCamundaCompat(roundTrip, "8.6").filter((f) => f.id === "user-task-form")).toEqual(
+			[],
+		)
+		expect(defs.processes[0]?.extensionElements.some((e) => e.name === "zeebe:userTaskForm")).toBe(
+			true,
+		)
+	})
+
+	it("collects an embedded form from a user task inside a sub-process", () => {
+		const xml = Bpmn.export(
+			Bpmn.createProcess("p")
+				.startEvent("s")
+				.subProcess("sp", (sub) =>
+					sub
+						.startEvent("ss")
+						.userTask("u", { embeddedForm: { id: "in", schema: "{}" } })
+						.endEvent("se"),
+				)
+				.endEvent("e")
+				.build(),
+		)
+		expect(xml).toMatch(/<zeebe:userTaskForm id="in">/)
+	})
+
+	it("hoists an embedded form when continuing a parsed process", () => {
+		const base = Bpmn.parse(Bpmn.export(Bpmn.createProcess("p").startEvent("s").build()))
+		const xml = Bpmn.export(
+			ProcessBuilder.from(base, "p")
+				.at("s")
+				.userTask("u", { embeddedForm: { id: "emb", schema: "{}" } })
+				.build(),
+		)
+		expect(xml).toMatch(/<zeebe:userTaskForm id="emb">/)
+	})
+
+	it("writes one zeebe:userTaskForm per id and rejects a conflicting schema", () => {
+		const two = (a: string, b: string) =>
+			Bpmn.export(
+				Bpmn.createProcess("p")
+					.startEvent("s")
+					.userTask("u1", { embeddedForm: { id: "f", schema: a } })
+					.userTask("u2", { embeddedForm: { id: "f", schema: b } })
+					.build(),
+			)
+		expect(two("{}", "{}").match(/<zeebe:userTaskForm/g)).toHaveLength(1)
+		expect(() => two("{}", '{"a":1}')).toThrow(/embedded form "f"/)
+	})
+})

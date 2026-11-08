@@ -1,0 +1,11 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["adHocSubProcess","ah",{"$ops":[["serviceTask","a",{"name":"a","taskType":"a"}],["serviceTask","b",{"name":"b","taskType":"b"}],["serviceTask","c",{"name":"c","taskType":"c"}],["serviceTask","d",{"name":"d","taskType":"d"}]]},{"toolGrid":{"columns":2,"fill":"column"}}],
+		["endEvent","e"],
+		["withAutoLayout"],
+		["build"]
+	]
+}

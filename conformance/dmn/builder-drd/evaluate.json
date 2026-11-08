@@ -1,0 +1,29 @@
+[
+  {
+    "decision": "approval",
+    "context": {
+      "age": {
+        "t": "number",
+        "v": "15"
+      }
+    }
+  },
+  {
+    "decision": "approval",
+    "context": {
+      "age": {
+        "t": "number",
+        "v": "40"
+      }
+    }
+  },
+  {
+    "decision": "riskScore",
+    "context": {
+      "age": {
+        "t": "number",
+        "v": "10"
+      }
+    }
+  }
+]

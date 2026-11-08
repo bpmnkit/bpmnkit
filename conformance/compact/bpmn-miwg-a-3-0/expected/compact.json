@@ -1,0 +1,107 @@
+{
+  "id": "_1373649919111",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "_1ac4b759-40e3-4dfb-b0e3-ad1d201d6c3d",
+          "name": "Start Event",
+          "type": "startEvent"
+        },
+        {
+          "id": "_65f5459f-44ae-436d-a089-a91d6d78075b",
+          "name": "Task 1",
+          "type": "task"
+        },
+        {
+          "id": "_1ae31d1b-2559-4f78-a3ec-47986a49db48",
+          "name": "Collapsed\nSub-Process",
+          "type": "subProcess"
+        },
+        {
+          "attachedTo": "_1ae31d1b-2559-4f78-a3ec-47986a49db48",
+          "eventType": "message",
+          "id": "_428dcbf5-8e5e-48e0-9c0c-d93003fa8c82",
+          "interrupting": false,
+          "name": "Boundary Intermediate Event Non-Interrupting Message",
+          "type": "boundaryEvent"
+        },
+        {
+          "attachedTo": "_1ae31d1b-2559-4f78-a3ec-47986a49db48",
+          "eventType": "escalation",
+          "id": "_178e16eb-4c9e-4ea0-9644-7c5fb2b71825",
+          "name": "Boundary Intermediate Event Interrupting Escalation",
+          "type": "boundaryEvent"
+        },
+        {
+          "id": "_9fad8da5-a28c-4b6b-bb71-fbd5c65b9681",
+          "name": "Task 4",
+          "type": "task"
+        },
+        {
+          "id": "_ce253897-4300-4b24-b71f-4c9535698c70",
+          "name": "End Event 1",
+          "type": "endEvent"
+        },
+        {
+          "id": "_72204cd7-709c-4656-9554-3ae29b3844ce",
+          "name": "Task 3",
+          "type": "task"
+        },
+        {
+          "id": "_2d2d0d29-896f-49f9-8109-77a7304309c5",
+          "name": "Task 2",
+          "type": "task"
+        },
+        {
+          "id": "_10ce0b26-1b3e-46a2-85a5-62538ed2da13",
+          "name": "End Event 2",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "_1ac4b759-40e3-4dfb-b0e3-ad1d201d6c3d",
+          "id": "_83f6ca65-43f7-496e-a7eb-2a4a2fc28f22",
+          "to": "_65f5459f-44ae-436d-a089-a91d6d78075b"
+        },
+        {
+          "from": "_65f5459f-44ae-436d-a089-a91d6d78075b",
+          "id": "_68ba9b96-b1e9-4691-bc25-a36bf5731502",
+          "to": "_1ae31d1b-2559-4f78-a3ec-47986a49db48"
+        },
+        {
+          "from": "_178e16eb-4c9e-4ea0-9644-7c5fb2b71825",
+          "id": "_7742093f-cd2c-415e-be71-d2514bc559c9",
+          "to": "_9fad8da5-a28c-4b6b-bb71-fbd5c65b9681"
+        },
+        {
+          "from": "_428dcbf5-8e5e-48e0-9c0c-d93003fa8c82",
+          "id": "_fe023d13-58bc-4f08-b60a-ebe4489f4190",
+          "to": "_72204cd7-709c-4656-9554-3ae29b3844ce"
+        },
+        {
+          "from": "_1ae31d1b-2559-4f78-a3ec-47986a49db48",
+          "id": "_250377d0-628d-463f-95f6-1f4ceed9bd8a",
+          "to": "_2d2d0d29-896f-49f9-8109-77a7304309c5"
+        },
+        {
+          "from": "_2d2d0d29-896f-49f9-8109-77a7304309c5",
+          "id": "_719b757a-fc92-46bd-8d10-cca5a5bbf3bf",
+          "to": "_ce253897-4300-4b24-b71f-4c9535698c70"
+        },
+        {
+          "from": "_72204cd7-709c-4656-9554-3ae29b3844ce",
+          "id": "_88b9f814-764e-492b-b38d-d5e8dfa68400",
+          "to": "_ce253897-4300-4b24-b71f-4c9535698c70"
+        },
+        {
+          "from": "_9fad8da5-a28c-4b6b-bb71-fbd5c65b9681",
+          "id": "_c425e783-e839-4990-9a2c-28b7341d9b2e",
+          "to": "_10ce0b26-1b3e-46a2-85a5-62538ed2da13"
+        }
+      ],
+      "id": "WFP-6-"
+    }
+  ]
+}

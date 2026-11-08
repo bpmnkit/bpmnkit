@@ -10,6 +10,7 @@ import {
 	type BpmnDefinitions,
 	type ConnectorLine,
 	expand,
+	findElement,
 	parseConnectorLine,
 	parseProcessDelta,
 	parseProcessText,
@@ -120,6 +121,11 @@ describe("resolveConnectorLine", () => {
 })
 
 describe("CONNECT_GUIDE", () => {
+	it("mentions \\n for a == value, once and briefly", () => {
+		expect(CONNECT_GUIDE).toContain("\\n")
+		expect(CONNECT_GUIDE.split("\\n").length).toBeLessThanOrEqual(2)
+	})
+
 	it("teaches lines that parse and resolve without a problem", () => {
 		const example = CONNECT_GUIDE.slice(CONNECT_GUIDE.indexOf("Example:") + "Example:".length)
 		const delta = parseProcessDelta(example)
@@ -130,6 +136,47 @@ describe("CONNECT_GUIDE", () => {
 			expect(resolved.problems).toEqual([])
 			expect(resolved.questions).toEqual([])
 		}
+	})
+})
+
+describe("\\n in FEEL values", () => {
+	const prompt = (value: string) =>
+		resolveConnectorLine(line(`with a: ai-agent-subprocess | data.systemPrompt.prompt=${value}`))
+			.values["data.systemPrompt.prompt"]
+
+	it("reads \\n in a == value as a newline", () => {
+		expect(prompt('="A\\n\\nB"')).toBe('="A\n\nB"')
+	})
+
+	it("keeps \\\\n a literal backslash and n", () => {
+		expect(prompt('="A\\\\nB"')).toBe('="A\\nB"')
+	})
+
+	it("leaves a literal (single =) value alone", () => {
+		expect(prompt("A\\nB")).toBe("A\\nB")
+	})
+})
+
+describe("an ad-hoc sub-process and its tools", () => {
+	const parsed = parseProcessText(`start[start Go] > agent[adhoc AI Agent] > done[end Done]
+fetch[service Get joke | inside=agent]
+with agent: ai-agent-subprocess | provider.type=openai | provider.openai.backend.openai.apiKey==camunda.secrets.OPENAI_API_KEY | provider.openai.model.model=gpt-4o | data.systemPrompt.prompt=="A\\n\\nB" | data.userPrompt.prompt==inputText
+with fetch: http GET https://v2.jokeapi.dev/joke/Any | result=toolCallResult: response.body`)
+
+	it("applies both and writes a real blank line into the prompt", () => {
+		const applied = applyConnectorLines(expand(parsed.diagram), parsed.connectors)
+		expect(applied.problems).toEqual([])
+		expect(applied.questions).toEqual([])
+		const xml = Bpmn.export(applied.definitions)
+		const again = Bpmn.parse(xml)
+		const agent = findElement(again, "agent")
+		const io = agent?.extensionElements.find((x) => x.name === "zeebe:ioMapping")
+		const system = io?.children.find((c) => c.attributes.target === "data.systemPrompt.prompt")
+		expect(system?.attributes.source).toBe('="A\n\nB"')
+		const tool = findElement(again, "fetch")
+		expect(tool?.unknownAttributes["zeebe:modelerTemplate"]).toBe(
+			"io.camunda.connectors.HttpJson.v2",
+		)
 	})
 })
 

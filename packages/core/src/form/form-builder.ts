@@ -4,6 +4,7 @@ import type {
 	FormCheckboxComponent,
 	FormChecklistComponent,
 	FormComponent,
+	FormConditional,
 	FormDefinition,
 	FormExporter,
 	FormGroupComponent,
@@ -27,12 +28,14 @@ interface ResolvedLayout {
 interface ComponentNames {
 	id: string
 	layout: ResolvedLayout
+	conditional?: FormConditional
 }
 
 /** The parts of a component's options that naming reads. */
 interface NamingOptions {
 	id?: string
 	layout?: FormLayoutInput
+	conditional?: FormConditional
 }
 
 /**
@@ -80,6 +83,7 @@ class ScopeNames {
 				row: options?.layout?.row ?? stableToken("Row", [...segments, "row"]),
 				columns: options?.layout?.columns ?? null,
 			},
+			...(options?.conditional !== undefined ? { conditional: options.conditional } : {}),
 		}
 	}
 }
@@ -89,7 +93,7 @@ export class FormBuilder {
 	private _id: string
 	private _type = "default"
 	private _executionPlatform = "Camunda Cloud"
-	private _executionPlatformVersion = "8.7.0"
+	private _executionPlatformVersion = "8.10.0"
 	private _exporter?: FormExporter
 	private _schemaVersion?: number
 	private _generated?: boolean
@@ -147,7 +151,15 @@ export class FormBuilder {
 	}
 
 	/** Adds a static text component. */
-	text(text: string, options?: { id?: string; label?: string; layout?: FormLayoutInput }): this {
+	text(
+		text: string,
+		options?: {
+			id?: string
+			label?: string
+			layout?: FormLayoutInput
+			conditional?: FormConditional
+		},
+	): this {
 		const names = this._names.resolve("text", text, options)
 		const component: FormTextComponent = {
 			type: "text",
@@ -156,6 +168,7 @@ export class FormBuilder {
 		}
 		if (options?.label !== undefined) component.label = options.label
 		component.layout = names.layout
+		if (names.conditional !== undefined) component.conditional = names.conditional
 		this._components.push(component)
 		return this
 	}
@@ -172,6 +185,7 @@ export class FormBuilder {
 		if (options?.validate !== undefined) component.validate = options.validate
 		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
 		component.layout = names.layout
+		if (names.conditional !== undefined) component.conditional = names.conditional
 		this._components.push(component)
 		return this
 	}
@@ -188,6 +202,7 @@ export class FormBuilder {
 		if (options?.validate !== undefined) component.validate = options.validate
 		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
 		component.layout = names.layout
+		if (names.conditional !== undefined) component.conditional = names.conditional
 		this._components.push(component)
 		return this
 	}
@@ -207,6 +222,7 @@ export class FormBuilder {
 		if (options?.searchable !== undefined) component.searchable = options.searchable
 		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
 		component.layout = names.layout
+		if (names.conditional !== undefined) component.conditional = names.conditional
 		this._components.push(component)
 		return this
 	}
@@ -224,6 +240,7 @@ export class FormBuilder {
 		if (options?.validate !== undefined) component.validate = options.validate
 		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
 		component.layout = names.layout
+		if (names.conditional !== undefined) component.conditional = names.conditional
 		this._components.push(component)
 		return this
 	}
@@ -240,6 +257,7 @@ export class FormBuilder {
 		if (options?.validate !== undefined) component.validate = options.validate
 		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
 		component.layout = names.layout
+		if (names.conditional !== undefined) component.conditional = names.conditional
 		this._components.push(component)
 		return this
 	}
@@ -261,6 +279,7 @@ export class FormBuilder {
 		}
 		if (options?.validate !== undefined) component.validate = options.validate
 		component.layout = names.layout
+		if (names.conditional !== undefined) component.conditional = names.conditional
 		this._components.push(component)
 		return this
 	}
@@ -278,6 +297,7 @@ export class FormBuilder {
 		}
 		if (options?.showOutline !== undefined) component.showOutline = options.showOutline
 		component.layout = names.layout
+		if (names.conditional !== undefined) component.conditional = names.conditional
 		this._components.push(component)
 		return this
 	}
@@ -322,7 +342,15 @@ export class GroupBuilder {
 		this._names = new ScopeNames(this._id)
 	}
 
-	text(text: string, options?: { id?: string; label?: string; layout?: FormLayoutInput }): this {
+	text(
+		text: string,
+		options?: {
+			id?: string
+			label?: string
+			layout?: FormLayoutInput
+			conditional?: FormConditional
+		},
+	): this {
 		const names = this._names.resolve("text", text, options)
 		const component: FormTextComponent = {
 			type: "text",
@@ -331,6 +359,7 @@ export class GroupBuilder {
 		}
 		if (options?.label !== undefined) component.label = options.label
 		component.layout = names.layout
+		if (names.conditional !== undefined) component.conditional = names.conditional
 		this._components.push(component)
 		return this
 	}
@@ -346,6 +375,7 @@ export class GroupBuilder {
 		if (options?.validate !== undefined) component.validate = options.validate
 		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
 		component.layout = names.layout
+		if (names.conditional !== undefined) component.conditional = names.conditional
 		this._components.push(component)
 		return this
 	}
@@ -361,6 +391,7 @@ export class GroupBuilder {
 		if (options?.validate !== undefined) component.validate = options.validate
 		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
 		component.layout = names.layout
+		if (names.conditional !== undefined) component.conditional = names.conditional
 		this._components.push(component)
 		return this
 	}
@@ -379,6 +410,7 @@ export class GroupBuilder {
 		if (options?.searchable !== undefined) component.searchable = options.searchable
 		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
 		component.layout = names.layout
+		if (names.conditional !== undefined) component.conditional = names.conditional
 		this._components.push(component)
 		return this
 	}
@@ -395,6 +427,7 @@ export class GroupBuilder {
 		if (options?.validate !== undefined) component.validate = options.validate
 		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
 		component.layout = names.layout
+		if (names.conditional !== undefined) component.conditional = names.conditional
 		this._components.push(component)
 		return this
 	}
@@ -410,6 +443,7 @@ export class GroupBuilder {
 		if (options?.validate !== undefined) component.validate = options.validate
 		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
 		component.layout = names.layout
+		if (names.conditional !== undefined) component.conditional = names.conditional
 		this._components.push(component)
 		return this
 	}
@@ -430,6 +464,7 @@ export class GroupBuilder {
 		}
 		if (options?.validate !== undefined) component.validate = options.validate
 		component.layout = names.layout
+		if (names.conditional !== undefined) component.conditional = names.conditional
 		this._components.push(component)
 		return this
 	}
@@ -446,6 +481,7 @@ export class GroupBuilder {
 		}
 		if (options?.showOutline !== undefined) component.showOutline = options.showOutline
 		component.layout = names.layout
+		if (names.conditional !== undefined) component.conditional = names.conditional
 		this._components.push(component)
 		return this
 	}
@@ -457,6 +493,7 @@ export interface TextFieldOptions {
 	validate?: FormValidation
 	defaultValue?: string
 	layout?: FormLayoutInput
+	conditional?: FormConditional
 }
 
 /** Options for select components. */
@@ -468,6 +505,7 @@ export interface SelectOptions {
 	searchable?: boolean
 	defaultValue?: string
 	layout?: FormLayoutInput
+	conditional?: FormConditional
 }
 
 /** Options for radio components. */
@@ -476,6 +514,7 @@ export interface RadioOptions {
 	validate?: FormValidation
 	defaultValue?: string
 	layout?: FormLayoutInput
+	conditional?: FormConditional
 }
 
 /** Options for checkbox components. */
@@ -484,6 +523,7 @@ export interface CheckboxOptions {
 	validate?: FormValidation
 	defaultValue?: boolean
 	layout?: FormLayoutInput
+	conditional?: FormConditional
 }
 
 /** Options for checklist components. */
@@ -491,6 +531,7 @@ export interface ChecklistOptions {
 	id?: string
 	validate?: FormValidation
 	layout?: FormLayoutInput
+	conditional?: FormConditional
 }
 
 /** Options for group components. */
@@ -498,4 +539,5 @@ export interface GroupOptions {
 	id?: string
 	showOutline?: boolean
 	layout?: FormLayoutInput
+	conditional?: FormConditional
 }

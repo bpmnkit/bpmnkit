@@ -6,6 +6,7 @@ import {
 	Bpmn,
 	CAMUNDA_COMPAT_RULES,
 	CAMUNDA_COMPAT_VERSIONS,
+	USER_TASK_FORM_RULE,
 	analyzeCamundaCompat,
 	lintDiagram,
 	normalizeCamundaVersion,
@@ -126,6 +127,27 @@ describe("analyzeCamundaCompat — required properties", () => {
 		expect(bad?.message).toBe(
 			'Timer intermediate catch event "b" has timeDuration "5 minutes", which is not an ISO 8601 duration (PT15M).',
 		)
+	})
+
+	it("accepts an ISO date-time in a time zone west of UTC", () => {
+		// Regression: the calendar check read the month in local time, so in New York
+		// 2026-01-01T09:00:00Z became December and was reported as invalid.
+		const tz = process.env.TZ
+		process.env.TZ = "America/New_York"
+		try {
+			const at = (date: string) =>
+				compat(
+					model(
+						`    <bpmn:intermediateCatchEvent id="a"><bpmn:timerEventDefinition id="t"><bpmn:timeDate>${date}</bpmn:timeDate></bpmn:timerEventDefinition></bpmn:intermediateCatchEvent>`,
+					),
+				)
+			expect(at("2026-01-01T09:00:00Z")).toEqual([])
+			expect(at("2026-03-01T00:00:00Z")).toEqual([])
+			expect(rules(at("2026-02-29T09:00:00Z"))).toEqual(["compat/timer a"])
+		} finally {
+			if (tz === undefined) Reflect.deleteProperty(process.env, "TZ")
+			else process.env.TZ = tz
+		}
 	})
 
 	it("reports missing error codes, message names and signal names", () => {
@@ -485,5 +507,21 @@ describe.skipIf(MODULES === undefined)("matches the installed plugin", () => {
 				})
 			}
 		}
+	})
+})
+
+describe("userTaskForms option", () => {
+	const xml = model('    <bpmn:userTask id="review" name="Review" />\n')
+
+	it("reports a user task with no form by default", () => {
+		const ids = optimize(Bpmn.parse(xml)).findings.map((f) => f.id)
+		expect(ids).toContain(USER_TASK_FORM_RULE)
+	})
+
+	it('"off" drops only that finding', () => {
+		const on = optimize(Bpmn.parse(xml)).findings.map((f) => f.id)
+		const off = optimize(Bpmn.parse(xml), { userTaskForms: "off" }).findings.map((f) => f.id)
+		expect(off).not.toContain(USER_TASK_FORM_RULE)
+		expect(off).toEqual(on.filter((id) => id !== USER_TASK_FORM_RULE))
 	})
 })

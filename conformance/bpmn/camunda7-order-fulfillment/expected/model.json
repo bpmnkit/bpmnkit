@@ -1,0 +1,1004 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_1",
+      "plane": {
+        "bpmnElement": "order-fulfillment",
+        "edges": [
+          {
+            "bpmnElement": "Flow_toReview",
+            "id": "Flow_toReview_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 188,
+                "y": 200
+              },
+              {
+                "x": 240,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toApproved",
+            "id": "Flow_toApproved_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 340,
+                "y": 200
+              },
+              {
+                "x": 395,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_approved",
+            "id": "Flow_approved_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 445,
+                "y": 200
+              },
+              {
+                "x": 500,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_vip",
+            "id": "Flow_vip_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 420,
+                "y": 225
+              },
+              {
+                "x": 420,
+                "y": 260
+              },
+              {
+                "x": 550,
+                "y": 260
+              },
+              {
+                "x": 550,
+                "y": 240
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_rejected",
+            "id": "Flow_rejected_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 420,
+                "y": 225
+              },
+              {
+                "x": 420,
+                "y": 340
+              },
+              {
+                "x": 500,
+                "y": 340
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toConfirm",
+            "id": "Flow_toConfirm_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 600,
+                "y": 200
+              },
+              {
+                "x": 650,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toShippingCost",
+            "id": "Flow_toShippingCost_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 750,
+                "y": 200
+              },
+              {
+                "x": 800,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toInvoice",
+            "id": "Flow_toInvoice_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 900,
+                "y": 200
+              },
+              {
+                "x": 950,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toShip",
+            "id": "Flow_toShip_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 1050,
+                "y": 200
+              },
+              {
+                "x": 1100,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toWait",
+            "id": "Flow_toWait_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 1200,
+                "y": 200
+              },
+              {
+                "x": 1252,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toSummary",
+            "id": "Flow_toSummary_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 1288,
+                "y": 200
+              },
+              {
+                "x": 1340,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toDone",
+            "id": "Flow_toDone_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 1440,
+                "y": 200
+              },
+              {
+                "x": 1492,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toRejectedEnd",
+            "id": "Flow_toRejectedEnd_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 600,
+                "y": 340
+              },
+              {
+                "x": 652,
+                "y": 340
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toEscalate",
+            "id": "Flow_toEscalate_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 290,
+                "y": 142
+              },
+              {
+                "x": 290,
+                "y": 80
+              },
+              {
+                "x": 330,
+                "y": 80
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_toEscalated",
+            "id": "Flow_toEscalated_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 430,
+                "y": 80
+              },
+              {
+                "x": 482,
+                "y": 80
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_1",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 152,
+              "y": 182
+            },
+            "bpmnElement": "StartEvent_order",
+            "id": "StartEvent_order_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 75,
+                "x": 133,
+                "y": 225
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 240,
+              "y": 160
+            },
+            "bpmnElement": "Task_review",
+            "id": "Task_review_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 395,
+              "y": 175
+            },
+            "bpmnElement": "Gateway_approved",
+            "id": "Gateway_approved_di",
+            "isMarkerVisible": true,
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 52,
+                "x": 394,
+                "y": 145
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 500,
+              "y": 160
+            },
+            "bpmnElement": "Task_charge",
+            "id": "Task_charge_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 650,
+              "y": 160
+            },
+            "bpmnElement": "Task_awaitPayment",
+            "id": "Task_awaitPayment_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 800,
+              "y": 160
+            },
+            "bpmnElement": "Task_shippingCost",
+            "id": "Task_shippingCost_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 950,
+              "y": 160
+            },
+            "bpmnElement": "Task_invoice",
+            "id": "Task_invoice_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 1100,
+              "y": 160
+            },
+            "bpmnElement": "Task_ship",
+            "id": "Task_ship_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 1252,
+              "y": 182
+            },
+            "bpmnElement": "Timer_wait",
+            "id": "Timer_wait_di",
+            "label": {
+              "bounds": {
+                "height": 27,
+                "width": 85,
+                "x": 1228,
+                "y": 225
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 1340,
+              "y": 160
+            },
+            "bpmnElement": "Task_summary",
+            "id": "Task_summary_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 1492,
+              "y": 182
+            },
+            "bpmnElement": "EndEvent_done",
+            "id": "EndEvent_done_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 72,
+                "x": 1474,
+                "y": 225
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 500,
+              "y": 300
+            },
+            "bpmnElement": "Task_notify",
+            "id": "Task_notify_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 652,
+              "y": 322
+            },
+            "bpmnElement": "EndEvent_rejected",
+            "id": "EndEvent_rejected_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 72,
+                "x": 634,
+                "y": 365
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 330,
+              "y": 40
+            },
+            "bpmnElement": "Task_escalate",
+            "id": "Task_escalate_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 482,
+              "y": 62
+            },
+            "bpmnElement": "EndEvent_escalated",
+            "id": "EndEvent_escalated_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 51,
+                "x": 475,
+                "y": 105
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 272,
+              "y": 142
+            },
+            "bpmnElement": "Timer_reviewOverdue",
+            "id": "Timer_reviewOverdue_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 33,
+                "x": 304,
+                "y": 123
+              }
+            },
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "exporter": "Camunda Modeler",
+  "exporterVersion": "5.28.0",
+  "id": "Definitions_1k3v0qa",
+  "messages": [
+    {
+      "id": "Message_PaymentConfirmed",
+      "name": "PaymentConfirmed",
+      "unknownAttributes": {}
+    }
+  ],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "camunda": "http://camunda.org/schema/1.0/bpmn",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [
+        {
+          "attributes": {
+            "class": "com.acme.orders.AuditListener",
+            "event": "start"
+          },
+          "children": [],
+          "name": "camunda:executionListener"
+        }
+      ],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "StartEvent_order",
+          "incoming": [],
+          "name": "Order received",
+          "outgoing": [
+            "Flow_toReview"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {
+            "camunda:initiator": "starter"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "class": "com.acme.orders.NotifyReviewer",
+                "event": "create"
+              },
+              "children": [],
+              "name": "camunda:taskListener"
+            }
+          ],
+          "id": "Task_review",
+          "incoming": [
+            "Flow_toReview"
+          ],
+          "name": "Review order",
+          "outgoing": [
+            "Flow_toApproved"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {
+            "camunda:assignee": "${starter}",
+            "camunda:candidateGroups": "sales,management",
+            "camunda:dueDate": "${reviewDueDate}",
+            "camunda:formRef": "review-order",
+            "camunda:formRefBinding": "deployment",
+            "camunda:priority": "80"
+          }
+        },
+        {
+          "default": "Flow_rejected",
+          "extensionElements": [],
+          "id": "Gateway_approved",
+          "incoming": [
+            "Flow_toApproved"
+          ],
+          "name": "Approved?",
+          "outgoing": [
+            "Flow_approved",
+            "Flow_rejected",
+            "Flow_vip"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "name": "amount"
+                  },
+                  "children": [],
+                  "name": "camunda:inputParameter",
+                  "text": "${order.total}"
+                },
+                {
+                  "attributes": {
+                    "name": "currency"
+                  },
+                  "children": [],
+                  "name": "camunda:inputParameter",
+                  "text": "EUR"
+                },
+                {
+                  "attributes": {
+                    "name": "paymentId"
+                  },
+                  "children": [],
+                  "name": "camunda:outputParameter",
+                  "text": "${transactionId}"
+                }
+              ],
+              "name": "camunda:inputOutput"
+            },
+            {
+              "attributes": {},
+              "children": [],
+              "name": "camunda:failedJobRetryTimeCycle",
+              "text": "R5/PT5M"
+            }
+          ],
+          "id": "Task_charge",
+          "incoming": [
+            "Flow_approved",
+            "Flow_vip"
+          ],
+          "name": "Charge payment",
+          "outgoing": [
+            "Flow_toConfirm"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {
+            "camunda:asyncBefore": "true",
+            "camunda:jobPriority": "10",
+            "camunda:topic": "charge-payment",
+            "camunda:type": "external"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "Task_awaitPayment",
+          "incoming": [
+            "Flow_toConfirm"
+          ],
+          "messageRef": "Message_PaymentConfirmed",
+          "name": "Await payment confirmation",
+          "outgoing": [
+            "Flow_toShippingCost"
+          ],
+          "type": "receiveTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Task_shippingCost",
+          "incoming": [
+            "Flow_toShippingCost"
+          ],
+          "name": "Determine shipping cost",
+          "outgoing": [
+            "Flow_toInvoice"
+          ],
+          "type": "businessRuleTask",
+          "unknownAttributes": {
+            "camunda:decisionRef": "shipping-cost",
+            "camunda:mapDecisionResult": "singleEntry",
+            "camunda:resultVariable": "shippingCost"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "source": "orderId",
+                "target": "orderId"
+              },
+              "children": [],
+              "name": "camunda:in"
+            },
+            {
+              "attributes": {
+                "sourceExpression": "${order.total + shippingCost}",
+                "target": "invoiceTotal"
+              },
+              "children": [],
+              "name": "camunda:in"
+            },
+            {
+              "attributes": {
+                "source": "invoiceId",
+                "target": "invoiceId"
+              },
+              "children": [],
+              "name": "camunda:out"
+            }
+          ],
+          "id": "Task_invoice",
+          "incoming": [
+            "Flow_toInvoice"
+          ],
+          "name": "Create invoice",
+          "outgoing": [
+            "Flow_toShip"
+          ],
+          "type": "callActivity",
+          "unknownAttributes": {
+            "calledElement": "invoice-process",
+            "camunda:calledElementBinding": "deployment"
+          }
+        },
+        {
+          "extensionElements": [],
+          "id": "Task_ship",
+          "incoming": [
+            "Flow_toShip"
+          ],
+          "name": "Ship order",
+          "outgoing": [
+            "Flow_toWait"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {
+            "camunda:class": "com.acme.orders.ShipOrderDelegate"
+          }
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "TimerEventDefinition_wait",
+              "timeDuration": "${deliveryWindow}",
+              "timeDurationAttributes": {
+                "xsi:type": "bpmn:tFormalExpression"
+              },
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "Timer_wait",
+          "incoming": [
+            "Flow_toWait"
+          ],
+          "name": "Wait for delivery window",
+          "outgoing": [
+            "Flow_toSummary"
+          ],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Task_summary",
+          "incoming": [
+            "Flow_toSummary"
+          ],
+          "name": "Build summary",
+          "outgoing": [
+            "Flow_toDone"
+          ],
+          "type": "scriptTask",
+          "unknownAttributes": {
+            "camunda:resultVariable": "summary",
+            "scriptFormat": "groovy"
+          },
+          "unknownChildren": [
+            {
+              "attributes": {},
+              "children": [],
+              "name": "bpmn:script",
+              "text": "\"Order ${orderId} shipped at ${new Date()}\""
+            }
+          ]
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "EndEvent_done",
+          "incoming": [
+            "Flow_toDone"
+          ],
+          "name": "Order fulfilled",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Task_notify",
+          "incoming": [
+            "Flow_rejected"
+          ],
+          "name": "Notify customer",
+          "outgoing": [
+            "Flow_toRejectedEnd"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {
+            "camunda:delegateExpression": "${notificationService}"
+          }
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "EndEvent_rejected",
+          "incoming": [
+            "Flow_toRejectedEnd"
+          ],
+          "name": "Order rejected",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "Task_review",
+          "cancelActivity": false,
+          "eventDefinitions": [
+            {
+              "id": "TimerEventDefinition_overdue",
+              "timeDuration": "P3D",
+              "timeDurationAttributes": {
+                "xsi:type": "bpmn:tFormalExpression"
+              },
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "Timer_reviewOverdue",
+          "incoming": [],
+          "name": "3 days",
+          "outgoing": [
+            "Flow_toEscalate"
+          ],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Task_escalate",
+          "incoming": [
+            "Flow_toEscalate"
+          ],
+          "name": "Escalate review",
+          "outgoing": [
+            "Flow_toEscalated"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {
+            "camunda:expression": "${escalation.raise(execution)}",
+            "camunda:resultVariable": "escalationId"
+          }
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "EndEvent_escalated",
+          "incoming": [
+            "Flow_toEscalated"
+          ],
+          "name": "Escalated",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "order-fulfillment",
+      "isExecutable": true,
+      "name": "Order fulfillment",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_toReview",
+          "sourceRef": "StartEvent_order",
+          "targetRef": "Task_review",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toApproved",
+          "sourceRef": "Task_review",
+          "targetRef": "Gateway_approved",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "${approved && order.total <= 1000}"
+          },
+          "extensionElements": [],
+          "id": "Flow_approved",
+          "name": "yes",
+          "sourceRef": "Gateway_approved",
+          "targetRef": "Task_charge",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "${approved and order.customer.vip eq true}"
+          },
+          "extensionElements": [],
+          "id": "Flow_vip",
+          "name": "vip",
+          "sourceRef": "Gateway_approved",
+          "targetRef": "Task_charge",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_rejected",
+          "name": "no",
+          "sourceRef": "Gateway_approved",
+          "targetRef": "Task_notify",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toConfirm",
+          "sourceRef": "Task_charge",
+          "targetRef": "Task_awaitPayment",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toShippingCost",
+          "sourceRef": "Task_awaitPayment",
+          "targetRef": "Task_shippingCost",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toInvoice",
+          "sourceRef": "Task_shippingCost",
+          "targetRef": "Task_invoice",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toShip",
+          "sourceRef": "Task_invoice",
+          "targetRef": "Task_ship",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toWait",
+          "sourceRef": "Task_ship",
+          "targetRef": "Timer_wait",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toSummary",
+          "sourceRef": "Timer_wait",
+          "targetRef": "Task_summary",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toDone",
+          "sourceRef": "Task_summary",
+          "targetRef": "EndEvent_done",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toRejectedEnd",
+          "sourceRef": "Task_notify",
+          "targetRef": "EndEvent_rejected",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toEscalate",
+          "sourceRef": "Timer_reviewOverdue",
+          "targetRef": "Task_escalate",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_toEscalated",
+          "sourceRef": "Task_escalate",
+          "targetRef": "EndEvent_escalated",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {
+        "camunda:historyTimeToLive": "180",
+        "camunda:versionTag": "3.1"
+      }
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Platform",
+    "modeler:executionPlatformVersion": "7.22.0"
+  }
+}

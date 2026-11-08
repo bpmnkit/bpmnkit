@@ -1,0 +1,226 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_P",
+      "plane": {
+        "bpmnElement": "P",
+        "edges": [
+          {
+            "bpmnElement": "f",
+            "id": "f_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 118,
+                "y": 200
+              },
+              {
+                "x": 178,
+                "y": 200
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Association_t_1",
+            "id": "Association_t_1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 228,
+                "y": 160
+              },
+              {
+                "x": 228,
+                "y": 80
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Association_t_2",
+            "id": "Association_t_2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 228,
+                "y": 160
+              },
+              {
+                "x": 228,
+                "y": 30
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Association_s_1",
+            "id": "Association_s_1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 100,
+                "y": 182
+              },
+              {
+                "x": 100,
+                "y": 130
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_P",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 82,
+              "y": 182
+            },
+            "bpmnElement": "s",
+            "id": "s_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 178,
+              "y": 160
+            },
+            "bpmnElement": "t",
+            "id": "t_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 30,
+              "width": 200,
+              "x": 128,
+              "y": 50
+            },
+            "bpmnElement": "TextAnnotation_t_1",
+            "id": "TextAnnotation_t_1_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 30,
+              "width": 200,
+              "x": 128,
+              "y": 0
+            },
+            "bpmnElement": "TextAnnotation_t_2",
+            "id": "TextAnnotation_t_2_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 30,
+              "width": 200,
+              "x": 0,
+              "y": 100
+            },
+            "bpmnElement": "TextAnnotation_s_1",
+            "id": "TextAnnotation_s_1_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "D",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [
+        {
+          "associationDirection": "None",
+          "id": "Association_t_1",
+          "sourceRef": "t",
+          "targetRef": "TextAnnotation_t_1",
+          "unknownAttributes": {}
+        },
+        {
+          "associationDirection": "None",
+          "id": "Association_t_2",
+          "sourceRef": "t",
+          "targetRef": "TextAnnotation_t_2",
+          "unknownAttributes": {}
+        },
+        {
+          "associationDirection": "None",
+          "id": "Association_s_1",
+          "sourceRef": "s",
+          "targetRef": "TextAnnotation_s_1",
+          "unknownAttributes": {}
+        }
+      ],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "s",
+          "incoming": [],
+          "outgoing": [
+            "f"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "t",
+          "incoming": [
+            "f"
+          ],
+          "outgoing": [],
+          "type": "task",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "P",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "f",
+          "sourceRef": "s",
+          "targetRef": "t",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [
+        {
+          "id": "TextAnnotation_t_1",
+          "text": "first",
+          "unknownAttributes": {}
+        },
+        {
+          "id": "TextAnnotation_t_2",
+          "text": "second",
+          "unknownAttributes": {}
+        },
+        {
+          "id": "TextAnnotation_s_1",
+          "text": "start & <note>",
+          "unknownAttributes": {}
+        }
+      ],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

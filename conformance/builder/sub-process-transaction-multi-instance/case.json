@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["transaction","tx",{"$ops":[["startEvent","ts"],["endEvent","te"]]},{"multiInstance":{"collection":"=xs"}}],
+		["endEvent","e"],
+		["build"]
+	]
+}

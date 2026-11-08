@@ -60,6 +60,9 @@ On first enable, Claude Code prompts for two optional values:
 | `/bpmnkit:review [file]` | Full static analysis, grouped by severity, with an explicit deploy-ready verdict |
 | `/bpmnkit:test [file]` | Run scenario tests, report path/branch coverage |
 | `/bpmnkit:deploy [file] [--local\|--camunda]` | Deploy-readiness gate, then deploy to Reebe or Camunda 8 |
+| `/bpmnkit:bpmn-script <description>` | Write a process as a TypeScript build script (BPMN agent card) |
+| `/bpmnkit:dmn <description>` | Write a DMN decision table (DMN agent card) |
+| `/bpmnkit:form <description>` | Write a Camunda form (form agent card) |
 | `/bpmnkit:instances [id] [--active\|--failed]` | List running process instances |
 | `/bpmnkit:incidents [--process-id X]` | List open incidents with suggested actions |
 
@@ -71,7 +74,7 @@ Every skill that writes or changes a process goes through the same pipeline: **p
 |------|----------|
 | `references/plan-format.md` | The `ProcessPlan` JSON schema + annotated, tested examples |
 | `references/connectors.md` | The bundled connector catalog index + how to apply one |
-| `references/agentic.md` | The AI Agent Sub-process pattern — binding keys, `fromAi()`, a full example |
+| `references/agentic.md` | The AI Agent Sub-process: v2 builder flow for 8.10, v1 plan step for older clusters, `fromAi()`, examples |
 | `references/feel.md` | FEEL syntax crib sheet + the `"="`-means-expression convention |
 | `references/modeling-style.md` | Camunda naming/structure conventions for generated processes |
 
@@ -116,6 +119,9 @@ skills/
   review/           /bpmnkit:review
   test/             /bpmnkit:test
   deploy/           /bpmnkit:deploy
+  bpmn-script/      /bpmnkit:bpmn-script  (generated from apps/cli/agent-cards)
+  dmn/              /bpmnkit:dmn          (generated)
+  form/             /bpmnkit:form         (generated)
   instances/        /bpmnkit:instances
   incidents/        /bpmnkit:incidents
 agents/

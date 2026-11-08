@@ -1,0 +1,3 @@
+s[start] > g[xor Ok?]
+g >(Yes: status = "ok" and count(items) > 0) a[end]
+g >(No) b[end]

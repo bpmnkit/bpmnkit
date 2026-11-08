@@ -1,0 +1,22 @@
+[package]
+name = "bpmnkit-xml"
+description = "Lossless XML reader and writer for BPMN Kit: keeps prefixes, attribute order and unknown content, as @bpmnkit/core does"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["xml", "bpmn", "lossless", "parser", "camunda"]
+categories = ["parser-implementations", "encoding"]
+# Tests and benches read the shared corpus under ../../conformance, outside the package.
+exclude = ["tests/", "benches/"]
+
+[dependencies]
+indexmap = { workspace = true }
+quick-xml = { workspace = true }
+serde = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true }

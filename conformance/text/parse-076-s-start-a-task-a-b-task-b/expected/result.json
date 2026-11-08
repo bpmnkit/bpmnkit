@@ -1,0 +1,164 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "a",
+            "name": "A",
+            "type": "task"
+          },
+          {
+            "id": "b",
+            "name": "B",
+            "type": "task"
+          },
+          {
+            "id": "c",
+            "name": "C",
+            "type": "task"
+          },
+          {
+            "id": "m",
+            "name": "Merge?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "d",
+            "name": "D",
+            "type": "task"
+          },
+          {
+            "id": "d_end",
+            "name": "Process completed",
+            "type": "endEvent"
+          },
+          {
+            "id": "a_split",
+            "type": "parallelGateway"
+          },
+          {
+            "id": "a_join",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "m_join",
+            "type": "parallelGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "a_join"
+          },
+          {
+            "from": "a_split",
+            "id": "Flow_2",
+            "to": "b"
+          },
+          {
+            "from": "a_split",
+            "id": "Flow_3",
+            "to": "c"
+          },
+          {
+            "from": "b",
+            "id": "Flow_4",
+            "to": "m_join"
+          },
+          {
+            "from": "c",
+            "id": "Flow_5",
+            "to": "m_join"
+          },
+          {
+            "condition": "= merge = \"ok\"",
+            "from": "m",
+            "id": "Flow_6",
+            "name": "ok",
+            "to": "d"
+          },
+          {
+            "from": "m",
+            "id": "Flow_7",
+            "isDefault": true,
+            "to": "a_join"
+          },
+          {
+            "from": "d",
+            "id": "Flow_8",
+            "to": "d_end"
+          },
+          {
+            "from": "a",
+            "id": "Flow_9",
+            "to": "a_split"
+          },
+          {
+            "from": "a_join",
+            "id": "Flow_10",
+            "to": "a"
+          },
+          {
+            "from": "m_join",
+            "id": "Flow_11",
+            "to": "m"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "added end event \"d_end\" after \"d\"",
+    "split the flows out of \"a\" with and gateway \"a_split\"",
+    "joined 2 flows into \"a\" with xor gateway \"a_join\"",
+    "joined 2 flows into \"m\" with and gateway \"m_join\"",
+    "made m > a_join the default branch of \"m\"",
+    "gave m > d the condition \"= merge = \"ok\"\"",
+    "named 1 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": [
+    {
+      "draft": "After \"A\", ",
+      "elementId": "a_split",
+      "options": [
+        {
+          "change": "After \"A\", only one of \"B\" and \"C\" happens: decide which with an xor gateway.",
+          "label": "Only one of them"
+        },
+        {
+          "change": "After \"A\", do \"B\" and \"C\" one after the other, not at the same time.",
+          "label": "One after the other"
+        }
+      ],
+      "text": "After \"A\", \"B\" and \"C\" run at the same time. Is that right?"
+    },
+    {
+      "draft": "At \"Merge?\", when nothing else holds, ",
+      "elementId": "m",
+      "options": [
+        {
+          "change": "At \"Merge?\", make \"ok\" the default branch.",
+          "label": "ok"
+        }
+      ],
+      "text": "When no condition at \"Merge?\" holds, it takes \"A join\". Is that the right fallback?"
+    },
+    {
+      "draft": "At \"Merge?\", decide on ",
+      "elementId": "m",
+      "options": [],
+      "text": "\"Merge?\" decides on \"merge\", a variable the diagram made up. What data decides it?"
+    }
+  ]
+}

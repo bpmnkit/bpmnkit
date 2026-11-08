@@ -1,0 +1,8 @@
+{
+  "aliases": {
+    "agent": "agent",
+    "done": "done",
+    "joke": "joke",
+    "start": "start"
+  }
+}

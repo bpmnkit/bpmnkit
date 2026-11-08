@@ -1,0 +1,54 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "e",
+            "name": "C",
+            "type": "endEvent"
+          },
+          {
+            "id": "t",
+            "name": "T",
+            "type": "task"
+          },
+          {
+            "id": "start",
+            "name": "Process started",
+            "type": "startEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "added start event \"start\" before \"t\""
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "expected \">\" at \"\t >\t t[task B]\""
+    },
+    {
+      "line": 2,
+      "message": "\"t\" is never declared; added as a task"
+    }
+  ],
+  "questions": []
+}

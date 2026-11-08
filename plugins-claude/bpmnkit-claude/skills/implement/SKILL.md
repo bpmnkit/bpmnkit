@@ -9,6 +9,8 @@ You never write BPMN XML by hand. Every step below produces or consumes a `Proce
 
 When `@bpmnkit/docspack` is installed, `npx bpmnkit-docs ask "<question>"` answers from the BPMN Kit version this project has, and `--pack @bpmnkit/camunda-docspack` answers from the Camunda 8 documentation — engine semantics, FEEL, the REST API. Prefer either over recalled knowledge.
 
+If the task asks for a TypeScript build script, or a DMN decision or a form beside the process, use `/bpmnkit:bpmn-script`, `/bpmnkit:dmn` or `/bpmnkit:form` (or `casen agent-card bpmn|dmn|form`) for that part.
+
 Before starting, read `references/plan-format.md`. If the request involves any external system (Slack, email, HTTP, a database, cloud service, etc.), also read `references/connectors.md`. If it involves an AI agent / LLM-in-the-loop step, also read `references/agentic.md`. Read `references/modeling-style.md` for naming conventions. Skim `references/feel.md` whenever you write a gateway condition or any FEEL expression.
 
 ## 1. Clarify only genuinely ambiguous requirements
@@ -52,7 +54,7 @@ If problems are reported, they're keyed by JSON path (e.g. `steps[2].connector.v
 If the plan didn't already include a `tests` array, add scenarios covering the happy path and every gateway branch / error boundary, then re-run step 5 (synth writes `<slug>.bpmn.tests.json` from `plan.tests` automatically). Run:
 
 ```sh
-casen test <slug>.bpmn
+casen test test <slug>.bpmn
 ```
 
 ## 7. Scaffold missing workers

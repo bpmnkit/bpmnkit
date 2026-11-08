@@ -1,0 +1,8 @@
+{
+	"chunks": [
+		"{\"flows\":[{\"id\":\"f1\",\"from\":\"gw\",\"to\":\"end\",\"",
+		"isDefault\":true}],\"elements\":[{\"id\":\"gw\",\"typ",
+		"e\":\"exclusiveGateway\",\"name\":\"Valid?\"},{\"id\":",
+		"\"end\",\"type\":\"endEvent\",\"name\":\"Done\"}]}"
+	]
+}

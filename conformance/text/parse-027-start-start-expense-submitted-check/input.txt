@@ -1,0 +1,5 @@
+start[start Expense submitted] > check[xor Amount over 1000?]
+check >(Yes: amount > 1000) review[user Review expense] > pay
+check >(No: default) auto[manual Approve] > pay
+failed[boundary:error Payment failed | on=pay] > notice[end:error Failure notified]
+pay > done[end Expense paid]

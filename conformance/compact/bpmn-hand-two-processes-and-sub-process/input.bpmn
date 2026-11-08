@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="p1" name="One" isExecutable="true">
+    <bpmn:startEvent id="s"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:subProcess id="sp" name="Sub"><bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing>
+      <bpmn:startEvent id="ss"><bpmn:outgoing>sf1</bpmn:outgoing></bpmn:startEvent>
+      <bpmn:task id="st" name="Inner"><bpmn:incoming>sf1</bpmn:incoming><bpmn:outgoing>sf2</bpmn:outgoing></bpmn:task>
+      <bpmn:endEvent id="se"><bpmn:incoming>sf2</bpmn:incoming></bpmn:endEvent>
+      <bpmn:sequenceFlow id="sf1" sourceRef="ss" targetRef="st"/>
+      <bpmn:sequenceFlow id="sf2" sourceRef="st" targetRef="se"/>
+    </bpmn:subProcess>
+    <bpmn:endEvent id="e"><bpmn:incoming>f2</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="s" targetRef="sp"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="sp" targetRef="e"/>
+  </bpmn:process>
+  <bpmn:process id="p2" name="Two" isExecutable="false">
+    <bpmn:startEvent id="s2"><bpmn:outgoing>g1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:endEvent id="e2"><bpmn:incoming>g1</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="g1" sourceRef="s2" targetRef="e2"/>
+  </bpmn:process>
+</bpmn:definitions>

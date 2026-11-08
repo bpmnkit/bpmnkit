@@ -1,0 +1,112 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "prepare"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Prepare Documents\" is a job-worker user task; Camunda 8.8 deprecates those in favour of Camunda user tasks.",
+      "processId": "parallel-approval",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "prepare"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Prepare Documents\" has no zeebe:formDefinition.",
+      "processId": "parallel-approval",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "mgr-approve"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Manager Approval\" is a job-worker user task; Camunda 8.8 deprecates those in favour of Camunda user tasks.",
+      "processId": "parallel-approval",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "mgr-approve"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Manager Approval\" has no zeebe:formDefinition.",
+      "processId": "parallel-approval",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "legal-review"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Legal Review\" is a job-worker user task; Camunda 8.8 deprecates those in favour of Camunda user tasks.",
+      "processId": "parallel-approval",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "legal-review"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Legal Review\" has no zeebe:formDefinition.",
+      "processId": "parallel-approval",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "finance-check"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Finance Check\" is a job-worker user task; Camunda 8.8 deprecates those in favour of Camunda user tasks.",
+      "processId": "parallel-approval",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "finance-check"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Finance Check\" has no zeebe:formDefinition.",
+      "processId": "parallel-approval",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "finalize"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Finalize Request\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "parallel-approval",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    }
+  ]
+}

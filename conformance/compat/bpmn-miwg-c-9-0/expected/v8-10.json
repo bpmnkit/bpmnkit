@@ -1,0 +1,52 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "UserTask_HandleTimeout"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Handle Timeout\" is a job-worker user task; Camunda 8.10 deprecates those in favour of Camunda user tasks.",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "UserTask_HandleTimeout"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Handle Timeout\" has no zeebe:formDefinition.",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "SendTask_SendPolicy"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <source> uses deprecated secret expression format",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "Reference the secret as =camunda.secrets.NAME."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "SendTask_SendRejection"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <source> uses deprecated secret expression format",
+      "processId": "customer_onboarding_en",
+      "severity": "warning",
+      "suggestion": "Reference the secret as =camunda.secrets.NAME."
+    }
+  ]
+}

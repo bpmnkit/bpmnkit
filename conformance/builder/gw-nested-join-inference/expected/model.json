@@ -1,0 +1,239 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "exporter": "@bpmnkit/core",
+  "exporterVersion": "0.0.23",
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "s",
+          "incoming": [],
+          "outgoing": [
+            "Flow_s_outer"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "outer",
+          "incoming": [
+            "Flow_s_outer"
+          ],
+          "outgoing": [
+            "Flow_outer_inner",
+            "Flow_outer_t3"
+          ],
+          "type": "parallelGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "default": "Flow_inner_t2",
+          "extensionElements": [],
+          "id": "inner",
+          "incoming": [
+            "Flow_outer_inner"
+          ],
+          "outgoing": [
+            "Flow_inner_t1",
+            "Flow_inner_t2"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "t1"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "t1",
+          "incoming": [
+            "Flow_inner_t1"
+          ],
+          "name": "t1",
+          "outgoing": [
+            "Flow_t1_inner_join"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "t2"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "t2",
+          "incoming": [
+            "Flow_inner_t2"
+          ],
+          "name": "t2",
+          "outgoing": [
+            "Flow_t2_inner_join"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "t3"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "t3",
+          "incoming": [
+            "Flow_outer_t3"
+          ],
+          "name": "t3",
+          "outgoing": [
+            "Flow_t3_e"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e",
+          "incoming": [
+            "Flow_t3_e",
+            "Flow_inner_join_e"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "inner_join",
+          "incoming": [
+            "Flow_t1_inner_join",
+            "Flow_t2_inner_join"
+          ],
+          "outgoing": [
+            "Flow_inner_join_e"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "p",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_s_outer",
+          "sourceRef": "s",
+          "targetRef": "outer",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_outer_inner",
+          "name": "left",
+          "sourceRef": "outer",
+          "targetRef": "inner",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=l1"
+          },
+          "extensionElements": [],
+          "id": "Flow_inner_t1",
+          "name": "l1",
+          "sourceRef": "inner",
+          "targetRef": "t1",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_inner_t2",
+          "name": "l2",
+          "sourceRef": "inner",
+          "targetRef": "t2",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_outer_t3",
+          "name": "right",
+          "sourceRef": "outer",
+          "targetRef": "t3",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_t1_inner_join",
+          "sourceRef": "t1",
+          "targetRef": "inner_join",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_t2_inner_join",
+          "sourceRef": "t2",
+          "targetRef": "inner_join",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_t3_e",
+          "sourceRef": "t3",
+          "targetRef": "e",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_inner_join_e",
+          "sourceRef": "inner_join",
+          "targetRef": "e",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.10.0"
+  }
+}

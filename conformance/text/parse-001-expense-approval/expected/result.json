@@ -1,0 +1,122 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "Expense submitted",
+            "type": "startEvent"
+          },
+          {
+            "id": "check",
+            "name": "Amount over 1000?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "review",
+            "name": "Review expense",
+            "type": "userTask"
+          },
+          {
+            "id": "pay_join",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "pay",
+            "jobType": "pay",
+            "name": "Pay expense",
+            "type": "serviceTask"
+          },
+          {
+            "id": "done",
+            "name": "Expense paid",
+            "type": "endEvent"
+          },
+          {
+            "id": "auto",
+            "jobType": "auto",
+            "name": "Approve automatically",
+            "type": "serviceTask"
+          },
+          {
+            "attachedTo": "pay",
+            "eventType": "error",
+            "id": "failed",
+            "name": "Payment failed",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "notify",
+            "jobType": "notify",
+            "name": "Notify submitter",
+            "type": "sendTask"
+          },
+          {
+            "id": "notice",
+            "name": "Payment failed",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "check"
+          },
+          {
+            "condition": "= amount > 1000",
+            "from": "check",
+            "id": "Flow_2",
+            "name": "Yes",
+            "to": "review"
+          },
+          {
+            "from": "review",
+            "id": "Flow_3",
+            "to": "pay_join"
+          },
+          {
+            "from": "pay_join",
+            "id": "Flow_4",
+            "to": "pay"
+          },
+          {
+            "from": "pay",
+            "id": "Flow_5",
+            "to": "done"
+          },
+          {
+            "from": "check",
+            "id": "Flow_6",
+            "isDefault": true,
+            "name": "No",
+            "to": "auto"
+          },
+          {
+            "from": "auto",
+            "id": "Flow_7",
+            "to": "pay_join"
+          },
+          {
+            "from": "failed",
+            "id": "Flow_8",
+            "to": "notify"
+          },
+          {
+            "from": "notify",
+            "id": "Flow_9",
+            "to": "notice"
+          }
+        ],
+        "id": "Expense_approval",
+        "name": "Expense approval"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [],
+  "questions": []
+}

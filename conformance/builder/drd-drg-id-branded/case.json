@@ -1,0 +1,9 @@
+{
+	"kind": "dmn",
+	"script": [
+		["drd","Branded"],
+		["$let","h6","decision","a",{"$ops":[["name","A"],["input",{"expression":"x"}],["output",{"name":"aOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]}],
+		["$let","h7","decision","b",{"$ops":[["name","B"],["input",{"expression":"x"}],["output",{"name":"bOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]},{"requires":[{"$drgId":"a"}]}],
+		["build"]
+	]
+}

@@ -1,0 +1,46 @@
+{
+  "findings": [
+    {
+      "elementId": "u1",
+      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"future-widget\" is a custom component registered in your Tasklist. (agent-cards/form.md#traps)",
+      "message": "Component \"u1\" has type \"future-widget\", which form-js does not provide.",
+      "rule": "form/unknown-type",
+      "severity": "warning"
+    },
+    {
+      "elementId": "u2",
+      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"plugin/rating\" is a custom component registered in your Tasklist. (agent-cards/form.md#traps)",
+      "message": "Component \"u2\" has type \"plugin/rating\", which form-js does not provide.",
+      "rule": "form/unknown-type",
+      "severity": "warning"
+    },
+    {
+      "elementId": "u3",
+      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"ui:map\" is a custom component registered in your Tasklist. (agent-cards/form.md#traps)",
+      "message": "Component \"u3\" has type \"ui:map\", which form-js does not provide.",
+      "rule": "form/unknown-type",
+      "severity": "warning"
+    },
+    {
+      "elementId": "nested_raw",
+      "fix": "Set \"key\" to the process variable the field reads and writes, e.g. \"amount\". (agent-cards/form.md#traps)",
+      "message": "Component \"nested_raw\" (textfield) is not bound to a variable — it has no \"key\".",
+      "rule": "form/missing-key",
+      "severity": "error"
+    },
+    {
+      "elementId": "u4",
+      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"Textfield\" is a custom component registered in your Tasklist. (agent-cards/form.md#traps)",
+      "message": "Component \"u4\" has type \"Textfield\", which form-js does not provide.",
+      "rule": "form/unknown-type",
+      "severity": "warning"
+    },
+    {
+      "elementId": "u5",
+      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"spacer-x\" is a custom component registered in your Tasklist. (agent-cards/form.md#traps)",
+      "message": "Component \"u5\" has type \"spacer-x\", which form-js does not provide.",
+      "rule": "form/unknown-type",
+      "severity": "warning"
+    }
+  ]
+}

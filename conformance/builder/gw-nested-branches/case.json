@@ -1,0 +1,11 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["exclusiveGateway","outer"],
+		["branch","left",{"$ops":[["condition","=l"],["exclusiveGateway","inner"],["branch","l1",{"$ops":[["condition","=l1"],["serviceTask","t1",{"name":"t1","taskType":"t1"}]]}],["branch","l2",{"$ops":[["defaultFlow"],["serviceTask","t2",{"name":"t2","taskType":"t2"}]]}],["endEvent","el"]]}],
+		["branch","right",{"$ops":[["defaultFlow"],["serviceTask","t3",{"name":"t3","taskType":"t3"}],["endEvent","er"]]}],
+		["build"]
+	]
+}

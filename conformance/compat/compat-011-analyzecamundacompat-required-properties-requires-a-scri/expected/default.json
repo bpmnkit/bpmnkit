@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "none"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Script task \"none\" has no implementation; Camunda needs a zeebe:script or zeebe:taskDefinition.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "half"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Script task \"half\" has a zeebe:script with no resultVariable.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Set resultVariable on the zeebe:script."
+    }
+  ]
+}

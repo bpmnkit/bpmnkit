@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="Definitions_quirks" name="Quirks" namespace="https://www.omg.org/spec/DMN/20191111/MODEL/">
+  <decision id="d1">
+    <informationRequirement id="ir_empty"/>
+    <informationRequirement id="ir_hash"/>
+    <informationRequirement id="ir_blank_href"/>
+    <informationRequirement id="ir_plain_href">
+      <requiredInput href="#no-hash"/>
+    </informationRequirement>
+    <informationRequirement id="ir_both">
+      <requiredDecision href="#d2"/>
+    </informationRequirement>
+    <knowledgeRequirement id="kr_empty"/>
+    <authorityRequirement id="ar_empty"/>
+    <authorityRequirement id="ar_hash"/>
+    <authorityRequirement id="ar_both">
+      <requiredInput href="#in"/>
+    </authorityRequirement>
+    <decisionTable id="t1">
+      <input id="i1">
+        <inputExpression id="ie1"/>
+      </input>
+      <input id="i2">
+        <inputExpression id="ie2"/>
+      </input>
+      <output id="o1"/>
+      <rule id="r1">
+        <inputEntry id="e1">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="e2">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="p1">
+          <text></text>
+        </outputEntry>
+      </rule>
+      <rule id="r2"/>
+    </decisionTable>
+  </decision>
+  <decision id="d2"/>
+  <inputData id="in"/>
+  <textAnnotation id="ta"/>
+  <association id="as1" sourceRef="#" targetRef="#"/>
+  <association id="as2" sourceRef="#" targetRef="#"/>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="d2">
+        <dc:Bounds height="80" width="180" x="160" y="100"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="in">
+        <dc:Bounds height="45" width="125" x="160" y="220"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="d1">
+        <dc:Bounds height="80" width="180" x="400" y="142.5"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge dmnElementRef="ir_both">
+        <di:waypoint x="340" y="140"/>
+        <di:waypoint x="400" y="182.5"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

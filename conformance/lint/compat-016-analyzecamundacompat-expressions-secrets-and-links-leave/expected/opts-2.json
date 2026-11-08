@@ -1,0 +1,87 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 3,
+    "info": 0,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "bpmnlintRule": "start-event-required",
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-start-event",
+      "message": "Process \"p\" has no start event.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Add a start event to define where the process begins."
+    },
+    {
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-end-event",
+      "message": "Process \"p\" has no end event.",
+      "processId": "p",
+      "severity": "warning",
+      "suggestion": "Add an end event to properly terminate the process."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "go"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"go\" (intermediateThrowEvent) is not reachable from any start event.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "go"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"go\" (intermediateThrowEvent) has no outgoing sequence flows.",
+      "processId": "p",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "bpmnlintRule": "link-event",
+      "category": "flow",
+      "elementIds": [
+        "go"
+      ],
+      "fixable": false,
+      "id": "flow/link-event-mismatch",
+      "message": "Link event \"go\" has no link name.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Name the link — a throw and its catch are paired by name."
+    }
+  ],
+  "platform": {
+    "id": "camunda-cloud",
+    "name": "Camunda Cloud",
+    "version": "8.6.0"
+  },
+  "total": 5
+}

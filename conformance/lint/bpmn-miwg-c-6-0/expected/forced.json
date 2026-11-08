@@ -1,0 +1,283 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 20,
+    "info": 0,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "_de7e721e-a073-4857-b8c3-c6ae886dbb46"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"_de7e721e-a073-4857-b8c3-c6ae886dbb46\" (sendTask) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "plane": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"_898aa942-9a96-4405-ae71-22b5e2e3d235\" is not marked executable.",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_15fef309-6718-4352-9b71-f757bcd8c023"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"Offer Approved\" has 1 event definition(s) without an id.",
+      "plane": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_15fef309-6718-4352-9b71-f757bcd8c023"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"Offer Approved\" (intermediateCatchEvent) has no zeebe:subscription correlationKey.",
+      "plane": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_e5c69e92-6f98-47c8-bc22-b75d38620f95"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"Cancel Request\" has 1 event definition(s) without an id.",
+      "plane": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_e5c69e92-6f98-47c8-bc22-b75d38620f95"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"Cancel Request\" (intermediateCatchEvent) has no zeebe:subscription correlationKey.",
+      "plane": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_87baeef0-f32e-4a93-b802-fdd588aaf729"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"24 Hours\" has 1 event definition(s) without an id.",
+      "plane": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_6a5cdbbf-2618-496e-b728-955dc215ef9d"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"Booking\" has 1 event definition(s) without an id.",
+      "plane": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_e839800f-ad4f-4bcc-aaf2-d38fe4a32bcd"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Request\nCredit Card Information\" (sendTask) has no zeebe:taskDefinition type.",
+      "plane": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_44e3f1fa-42cd-40b7-9980-a51ac49d5fa3"
+      ],
+      "fixable": false,
+      "id": "deploy/message-start-no-name",
+      "message": "Message start event \"Receive Travel Request\" has no message name.",
+      "plane": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a message name — Camunda 8 refuses to deploy an unnamed message reference."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_22612d45-65ca-4a74-a6eb-53af7ebcb5ff"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Confirm Booking\" (sendTask) has no zeebe:taskDefinition type.",
+      "plane": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_c8fa5253-dde9-471e-b933-58b00e8f374c"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Notify Failed Booking\" (sendTask) has no zeebe:taskDefinition type.",
+      "plane": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_614d6469-2bb8-4ad6-a20a-db5db6321c6b"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Charge Credit Card\" (serviceTask) has no zeebe:taskDefinition type.",
+      "plane": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_9cc2ac34-f12c-49e0-b37c-144e5a84fd92"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Make Flights and Hotel Offer\" (sendTask) has no zeebe:taskDefinition type.",
+      "plane": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_8afc49f0-42c2-4da9-8e79-e08dbe349776"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Update Customer Record\" (serviceTask) has no zeebe:taskDefinition type.",
+      "plane": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_de7e721e-a073-4857-b8c3-c6ae886dbb46"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Notify Customer\nOffer Expired\" (sendTask) has no zeebe:taskDefinition type.",
+      "plane": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_2d6586cf-81fc-4e2a-83ec-6cfff5b34bb0"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Notify Failed Credit Transaction\" (sendTask) has no zeebe:taskDefinition type.",
+      "plane": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_6db9a77f-189f-4c07-b33b-e0c88f09e0db"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"_6db9a77f-189f-4c07-b33b-e0c88f09e0db\" has 1 event definition(s) without an id.",
+      "plane": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_54d6e34f-4613-48d4-9143-b90927448adb"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"_54d6e34f-4613-48d4-9143-b90927448adb\" has 1 event definition(s) without an id.",
+      "plane": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_32c4138c-74ae-484a-a7e5-0609370d7080"
+      ],
+      "fixable": false,
+      "id": "deploy/event-definition-no-id",
+      "message": "\"24 Hours\" has 1 event definition(s) without an id.",
+      "plane": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 20
+}

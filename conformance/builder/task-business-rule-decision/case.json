@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["businessRuleTask","rule",{"name":"Rule","decisionId":"risk","resultVariable":"riskResult"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

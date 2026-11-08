@@ -1,0 +1,385 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 25,
+    "info": 1,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Started\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "g2"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:ok",
+      "message": "Variable \"ok\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"ok\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "g2"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:g2",
+      "message": "Element \"g2\" consumes: ok.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "bpmnlintRule": "conditional-flows",
+      "category": "feel",
+      "elementIds": [
+        "e3"
+      ],
+      "fixable": false,
+      "id": "feel/missing-condition",
+      "message": "Sequence flow \"e3\" leaves \"g2\", which routes by condition, but has no condition and is not the default flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make this flow the default."
+    },
+    {
+      "bpmnlintRule": "event-based-gateway",
+      "category": "flow",
+      "elementIds": [
+        "g1"
+      ],
+      "fixable": false,
+      "id": "flow/event-gateway-invalid",
+      "message": "Event-based gateway \"g1\" has 1 outgoing flow; it needs at least 2.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect the gateway to two or more catch events — it waits for the first of them."
+    },
+    {
+      "bpmnlintRule": "event-based-gateway",
+      "category": "flow",
+      "elementIds": [
+        "e2"
+      ],
+      "fixable": false,
+      "id": "flow/event-gateway-invalid",
+      "message": "Sequence flow \"e2\" leaves event-based gateway \"g2\" with a condition.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Remove the condition — the event that arrives first decides the path."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "m1"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "intermediateCatchEvent element \"m1\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "m2"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "intermediateCatchEvent element \"m2\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "m3"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "intermediateCatchEvent element \"m3\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "e2"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "Conditional sequence flow \"e2\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"start\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "a"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"a\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"end\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "g1"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"g1\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "m1"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"m1\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "g2"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"g2\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "m2"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"m2\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "m3"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"m3\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f1"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f1\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f2"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f2\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "e1"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"e1\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "e2"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"e2\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "e3"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"e3\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "m1"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"m1\" (intermediateCatchEvent) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "m2"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"m2\" (intermediateCatchEvent) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "m3"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"m3\" (intermediateCatchEvent) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-start",
+      "category": "flow",
+      "elementIds": [
+        "g1"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-start",
+      "message": "Element \"g1\" (eventBasedGateway) has no incoming sequence flow, so it starts the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it from a start event or an upstream element."
+    },
+    {
+      "bpmnlintRule": "no-implicit-start",
+      "category": "flow",
+      "elementIds": [
+        "g2"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-start",
+      "message": "Element \"g2\" (eventBasedGateway) has no incoming sequence flow, so it starts the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it from a start event or an upstream element."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 28
+}

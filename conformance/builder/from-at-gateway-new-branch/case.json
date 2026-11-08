@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"input": "builder/from-noop/input.bpmn",
+	"script": [
+		["from","proc"],
+		["at","gw"],
+		["branch","extra",{"$ops":[["condition","=z"],["serviceTask","zt",{"name":"zt","taskType":"zt"}],["endEvent","ze"]]}],
+		["build"]
+	]
+}

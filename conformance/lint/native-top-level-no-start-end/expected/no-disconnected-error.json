@@ -1,0 +1,81 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 3,
+    "info": 0,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-start-event",
+      "message": "Process \"proc\" has no start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add a start event to define where the process begins."
+    },
+    {
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-end-event",
+      "message": "Process \"proc\" has no end event.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an end event to properly terminate the process."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "a"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"a\" (task) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "a"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"a\" (task) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "bpmnlintRule": "no-disconnected",
+      "category": "flow",
+      "elementIds": [
+        "a"
+      ],
+      "fixable": false,
+      "id": "flow/disconnected",
+      "message": "Element \"a\" (task) is not connected to any sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to the process flow or remove it."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 5
+}

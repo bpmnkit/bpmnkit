@@ -1,0 +1,40 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "elements": [
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "UndoStart",
+                "type": "startEvent"
+              }
+            ],
+            "flows": []
+          },
+          "id": "Undo",
+          "type": "subProcess"
+        },
+        {
+          "id": "Tx",
+          "type": "transaction"
+        },
+        {
+          "id": "Adhoc",
+          "type": "adHocSubProcess"
+        },
+        {
+          "id": "Evt",
+          "type": "subProcess"
+        },
+        {
+          "id": "Plain",
+          "type": "subProcess"
+        }
+      ],
+      "flows": [],
+      "id": "Process_1"
+    }
+  ]
+}

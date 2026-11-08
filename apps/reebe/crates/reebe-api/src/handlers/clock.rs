@@ -1,10 +1,10 @@
+use crate::app::ApiState;
+use crate::dto::system::ClockResponse;
+use crate::error::ApiResult;
 use axum::extract::State;
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::Json;
-use crate::app::ApiState;
-use crate::dto::system::ClockResponse;
-use crate::error::ApiResult;
 
 pub async fn get_clock(State(_state): State<ApiState>) -> ApiResult<impl IntoResponse> {
     let now = chrono::Utc::now();

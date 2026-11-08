@@ -1,0 +1,891 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "id": "Definitions_agents",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "t"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "source": "=fromAi(toolCall.x, \"x\")",
+                    "target": "x"
+                  },
+                  "children": [],
+                  "name": "zeebe:input"
+                }
+              ],
+              "name": "zeebe:ioMapping"
+            }
+          ],
+          "id": "outsideTool",
+          "incoming": [],
+          "outgoing": [],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "t"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "source": "=fromAi(toolCall.x)",
+                        "target": "x"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    }
+                  ],
+                  "name": "zeebe:ioMapping"
+                }
+              ],
+              "id": "plainTool",
+              "incoming": [],
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "plainAdHoc",
+          "incoming": [],
+          "name": "Plain",
+          "outgoing": [],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "type": "adHocSubProcess",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [
+                {
+                  "attributes": {
+                    "name": "io.camunda.agenticai.toolContainer",
+                    "value": "true"
+                  },
+                  "children": [],
+                  "name": "zeebe:property"
+                }
+              ],
+              "name": "zeebe:properties"
+            }
+          ],
+          "flowElements": [
+            {
+              "documentation": "Looks up the weather.",
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "t"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "source": "=fromAi(toolCall.city, \"The city\", \"string\")",
+                        "target": "city"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "=fromAi(value: toolCall.days, description: \"Days\")",
+                        "target": "days"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "=weather",
+                        "target": "toolCallResult"
+                      },
+                      "children": [],
+                      "name": "zeebe:output"
+                    }
+                  ],
+                  "name": "zeebe:ioMapping"
+                }
+              ],
+              "id": "toolGood",
+              "incoming": [],
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "t"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                }
+              ],
+              "id": "toolNoResult",
+              "incoming": [],
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "t"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "source": "=fromAi(\"city\")",
+                        "target": "a"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "=fromAi(city, 1)",
+                        "target": "b"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "=fromAi()",
+                        "target": "c"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "=r",
+                        "target": "result"
+                      },
+                      "children": [],
+                      "name": "zeebe:output"
+                    }
+                  ],
+                  "name": "zeebe:ioMapping"
+                }
+              ],
+              "id": "toolUnmapped",
+              "incoming": [],
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "t"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "source": "=FromAI(toolCall.x)",
+                        "target": "a"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "=fromAi(toolCall.a.b) + fromAi(other.x)",
+                        "target": "b"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "=fromAi(if x then toolCall.x else toolCall.y)",
+                        "target": "c"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "=fromAi(toolCall[\"x\"], null)",
+                        "target": "d"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "=fromAi(null) + fromAi(1 + 2) + fromAi(-1)",
+                        "target": "e"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "=fromAi([1]) + fromAi((toolCall.p)) + fromAi(toolCall.q, (\"d\"))",
+                        "target": "f"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "=r",
+                        "target": "ToolCallResult"
+                      },
+                      "children": [],
+                      "name": "zeebe:output"
+                    }
+                  ],
+                  "name": "zeebe:ioMapping"
+                }
+              ],
+              "id": "toolCasing",
+              "incoming": [],
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "t"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "source": "=fromAi(toolCall.q)",
+                        "target": "a"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "=fromAi(toolCall.q, \"again\")",
+                        "target": "b"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "=r",
+                        "target": "toolCallResult"
+                      },
+                      "children": [],
+                      "name": "zeebe:output"
+                    },
+                    {
+                      "attributes": {
+                        "source": "=r",
+                        "target": "toolcallresult.extra"
+                      },
+                      "children": [],
+                      "name": "zeebe:output"
+                    }
+                  ],
+                  "name": "zeebe:ioMapping"
+                }
+              ],
+              "id": "toolDuplicateKey",
+              "incoming": [],
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "t"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "source": "=fromAi(toolCall.o)",
+                        "target": "toolCallResult"
+                      },
+                      "children": [],
+                      "name": "zeebe:output"
+                    }
+                  ],
+                  "name": "zeebe:ioMapping"
+                }
+              ],
+              "id": "toolOutputFromAi",
+              "incoming": [],
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "t"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "source": "=r",
+                        "target": "toolCallResult"
+                      },
+                      "children": [],
+                      "name": "zeebe:output"
+                    }
+                  ],
+                  "name": "zeebe:ioMapping"
+                }
+              ],
+              "id": "chainA",
+              "incoming": [],
+              "name": "Fetch",
+              "outgoing": [
+                "chainAtoB"
+              ],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "t"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "source": "=fromAi(toolCall.y)",
+                        "target": "y"
+                      },
+                      "children": [],
+                      "name": "zeebe:input"
+                    },
+                    {
+                      "attributes": {
+                        "source": "=r",
+                        "target": "toolCallResult"
+                      },
+                      "children": [],
+                      "name": "zeebe:output"
+                    },
+                    {
+                      "attributes": {
+                        "source": "=context put(toolCallResult, \"b\", 1)",
+                        "target": "toolCallResult"
+                      },
+                      "children": [],
+                      "name": "zeebe:output"
+                    }
+                  ],
+                  "name": "zeebe:ioMapping"
+                }
+              ],
+              "id": "chainB",
+              "incoming": [
+                "chainAtoB"
+              ],
+              "outgoing": [
+                "chainBtoC"
+              ],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "expression": "=1",
+                    "resultVariable": "toolCallResult"
+                  },
+                  "children": [],
+                  "name": "zeebe:script"
+                }
+              ],
+              "id": "chainC",
+              "incoming": [
+                "chainBtoC"
+              ],
+              "outgoing": [],
+              "type": "scriptTask",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "t"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                }
+              ],
+              "id": "branch",
+              "incoming": [],
+              "outgoing": [
+                "branchToA",
+                "branchToB"
+              ],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "t"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "source": "=a",
+                        "target": "toolCallResult"
+                      },
+                      "children": [],
+                      "name": "zeebe:output"
+                    }
+                  ],
+                  "name": "zeebe:ioMapping"
+                }
+              ],
+              "id": "branchA",
+              "incoming": [
+                "branchToA"
+              ],
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "t"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "key": "resultExpression",
+                        "value": "={toolCallResult: b, other: toolcallresult}"
+                      },
+                      "children": [],
+                      "name": "zeebe:header"
+                    }
+                  ],
+                  "name": "zeebe:taskHeaders"
+                }
+              ],
+              "id": "branchB",
+              "incoming": [
+                "branchToB"
+              ],
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            },
+            {
+              "associations": [],
+              "extensionElements": [],
+              "flowElements": [
+                {
+                  "eventDefinitions": [],
+                  "extensionElements": [],
+                  "id": "toolSubStart",
+                  "incoming": [],
+                  "outgoing": [
+                    "toolSubToStep"
+                  ],
+                  "type": "startEvent",
+                  "unknownAttributes": {}
+                },
+                {
+                  "extensionElements": [
+                    {
+                      "attributes": {
+                        "type": "t"
+                      },
+                      "children": [],
+                      "name": "zeebe:taskDefinition"
+                    },
+                    {
+                      "attributes": {},
+                      "children": [
+                        {
+                          "attributes": {
+                            "source": "=fromAi(toolCall.k)",
+                            "target": "k"
+                          },
+                          "children": [],
+                          "name": "zeebe:input"
+                        }
+                      ],
+                      "name": "zeebe:ioMapping"
+                    },
+                    {
+                      "attributes": {},
+                      "children": [
+                        {
+                          "attributes": {
+                            "key": "resultVariable",
+                            "value": "toolResult"
+                          },
+                          "children": [],
+                          "name": "zeebe:header"
+                        }
+                      ],
+                      "name": "zeebe:taskHeaders"
+                    }
+                  ],
+                  "id": "toolSubStep",
+                  "incoming": [
+                    "toolSubToStep"
+                  ],
+                  "outgoing": [],
+                  "type": "serviceTask",
+                  "unknownAttributes": {}
+                }
+              ],
+              "groups": [],
+              "id": "toolSub",
+              "incoming": [],
+              "outgoing": [],
+              "sequenceFlows": [
+                {
+                  "extensionElements": [],
+                  "id": "toolSubToStep",
+                  "sourceRef": "toolSubStart",
+                  "targetRef": "toolSubStep",
+                  "unknownAttributes": {}
+                }
+              ],
+              "textAnnotations": [],
+              "type": "subProcess",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "t"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                },
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "source": "=a",
+                        "target": "toolCallResult"
+                      },
+                      "children": [],
+                      "name": "zeebe:output"
+                    }
+                  ],
+                  "name": "zeebe:ioMapping"
+                }
+              ],
+              "id": "toolBoundary",
+              "incoming": [],
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            },
+            {
+              "attachedToRef": "toolBoundary",
+              "eventDefinitions": [
+                {
+                  "id": "toolBoundaryErrorDef",
+                  "type": "error"
+                }
+              ],
+              "extensionElements": [
+                {
+                  "attributes": {},
+                  "children": [
+                    {
+                      "attributes": {
+                        "source": "=e",
+                        "target": "toolCallResult"
+                      },
+                      "children": [],
+                      "name": "zeebe:output"
+                    }
+                  ],
+                  "name": "zeebe:ioMapping"
+                }
+              ],
+              "id": "toolBoundaryError",
+              "incoming": [],
+              "outgoing": [],
+              "type": "boundaryEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "tools",
+          "incoming": [],
+          "name": "Tools",
+          "outgoing": [],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "chainAtoB",
+              "sourceRef": "chainA",
+              "targetRef": "chainB",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "chainBtoC",
+              "sourceRef": "chainB",
+              "targetRef": "chainC",
+              "unknownAttributes": {}
+            },
+            {
+              "conditionExpression": {
+                "attributes": {
+                  "xsi:type": "bpmn:tFormalExpression"
+                },
+                "text": "=fromAi(toolCall.z) = 1"
+              },
+              "extensionElements": [],
+              "id": "branchToA",
+              "sourceRef": "branch",
+              "targetRef": "branchA",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "branchToB",
+              "sourceRef": "branch",
+              "targetRef": "branchB",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "type": "adHocSubProcess",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "agent"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "flowElements": [
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "t"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                }
+              ],
+              "id": "legacyTool",
+              "incoming": [],
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "legacyAgent",
+          "incoming": [],
+          "outgoing": [],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "type": "adHocSubProcess",
+          "unknownAttributes": {
+            "zeebe:modelerTemplate": "io.camunda.connectors.agenticai.aiagent.jobworker.v1"
+          }
+        },
+        {
+          "associations": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "io.camunda.agenticai:aiagent-job-worker:1"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "flowElements": [
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "t"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                }
+              ],
+              "id": "forkedTool",
+              "incoming": [],
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "forkedAgent",
+          "incoming": [],
+          "outgoing": [],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "type": "adHocSubProcess",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [
+            {
+              "attributes": {},
+              "children": [],
+              "name": "zeebe:agentDefinition"
+            }
+          ],
+          "flowElements": [
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "t"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                }
+              ],
+              "id": "definedTool",
+              "incoming": [],
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "definedAgent",
+          "incoming": [],
+          "outgoing": [],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "type": "adHocSubProcess",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "agents",
+      "isExecutable": true,
+      "sequenceFlows": [],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.8.0"
+  }
+}

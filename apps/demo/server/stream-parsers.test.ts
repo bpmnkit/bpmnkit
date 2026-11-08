@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { extractDeltaText, extractResultUsage } from "./stream-parsers.js"
+import { extractDeltaText, extractInitModel, extractResultUsage } from "./stream-parsers.js"
 
 describe("extractDeltaText", () => {
 	it("extracts text from a valid content_block_delta line", () => {
@@ -81,5 +81,17 @@ describe("extractResultUsage", () => {
 		expect(extractResultUsage(null)).toBeNull()
 		expect(extractResultUsage("not an object")).toBeNull()
 		expect(extractResultUsage(42)).toBeNull()
+	})
+})
+
+describe("extractInitModel", () => {
+	it("reads the model id from the system init line", () => {
+		expect(extractInitModel({ type: "system", subtype: "init", model: "claude-x" })).toBe(
+			"claude-x",
+		)
+	})
+	it("returns null for other lines", () => {
+		expect(extractInitModel({ type: "result" })).toBeNull()
+		expect(extractInitModel({ type: "system", subtype: "init" })).toBeNull()
 	})
 })

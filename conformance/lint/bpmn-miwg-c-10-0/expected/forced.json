@@ -1,0 +1,647 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 24,
+    "info": 2,
+    "warning": 23
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "_26"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_26\" exits a decision gateway without a condition expression.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_30"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_30\" exits a decision gateway without a condition expression.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_42"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_42\" exits a decision gateway without a condition expression.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_43"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_43\" exits a decision gateway without a condition expression.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_27"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"_27\" has 2 outgoing flows but no default flow set.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_25"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"_25\" has 2 outgoing flows but no default flow set.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Reference__2"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Reference__2\" (dataStoreReference) is not reachable from any start event.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Reference__2"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Reference__2\" (dataStoreReference) has no outgoing sequence flows.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Reference__11"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Reference__11\" (dataObjectReference) is not reachable from any start event.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Reference__11"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Reference__11\" (dataObjectReference) has no outgoing sequence flows.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Reference__13"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Reference__13\" (dataObjectReference) is not reachable from any start event.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Reference__13"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Reference__13\" (dataObjectReference) has no outgoing sequence flows.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Reference__1"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Reference__1\" (dataStoreReference) is not reachable from any start event.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Reference__1"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Reference__1\" (dataStoreReference) has no outgoing sequence flows.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Reference__12"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Reference__12\" (dataObjectReference) is not reachable from any start event.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Reference__12"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Reference__12\" (dataObjectReference) has no outgoing sequence flows.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Reference__10"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Reference__10\" (dataObjectReference) is not reachable from any start event.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Reference__10"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Reference__10\" (dataObjectReference) has no outgoing sequence flows.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_10"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_10\" (dataObject) is not reachable from any start event.",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_10"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_10\" (dataObject) has no outgoing sequence flows.",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_13"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_13\" (dataObject) is not reachable from any start event.",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_13"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_13\" (dataObject) has no outgoing sequence flows.",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_12"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_12\" (dataObject) is not reachable from any start event.",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_12"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_12\" (dataObject) has no outgoing sequence flows.",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_11"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_11\" (dataObject) is not reachable from any start event.",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_11"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_11\" (dataObject) has no outgoing sequence flows.",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_27"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"On-site Meeting?\" has no default sequence flow.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_25"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Employee \navailable?\" has no default sequence flow.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_29"
+      ],
+      "fixable": false,
+      "id": "pattern/call-activity-no-error-boundary",
+      "message": "Call activity \"Plan trip\" has no error boundary event.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Add an error boundary event to handle errors propagated from the called process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_39"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Record meeting details\" has no timer boundary event.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_22"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Prepare confirmation email\" has no timer boundary event.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_34"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Check client request\" has no timer boundary event.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_24"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Check employee's availability\" has no timer boundary event.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"_8\" is not marked executable.",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_29"
+      ],
+      "fixable": false,
+      "id": "deploy/call-activity-no-process",
+      "message": "Call activity \"Plan trip\" has no zeebe:calledElement processId.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Set the process id to call."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_21"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Update employee's calendar\" (serviceTask) has no zeebe:taskDefinition type.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_38"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"Recieve meeting details\" (intermediateCatchEvent) has no zeebe:subscription correlationKey.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_45"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Send confirmation email\" (sendTask) has no zeebe:taskDefinition type.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_33"
+      ],
+      "fixable": false,
+      "id": "deploy/message-start-no-name",
+      "message": "Message start event \"E-mail received\" has no message name.",
+      "plane": "_4",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Set a message name — Camunda 8 refuses to deploy an unnamed message reference."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ID-ee745c8c-43de-11f1-744d-b02628b36240"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"ID-ee745c8c-43de-11f1-744d-b02628b36240\" (dataObject) is not reachable from any start event.",
+      "processId": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "ID-ee745c8c-43de-11f1-744d-b02628b36240"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"ID-ee745c8c-43de-11f1-744d-b02628b36240\" (dataObject) has no outgoing sequence flows.",
+      "processId": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240\" (dataObjectReference) is not reachable from any start event.",
+      "plane": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "processId": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240\" (dataObjectReference) has no outgoing sequence flows.",
+      "plane": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "processId": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "ID-ee745c80-43de-11f1-744d-b02628b36240"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"ID-ee745c80-43de-11f1-744d-b02628b36240\" has no name.",
+      "plane": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "processId": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_2a76b8fa-b11b-4f0a-9835-2a144fada546"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"_2a76b8fa-b11b-4f0a-9835-2a144fada546\" has no name.",
+      "plane": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "processId": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "ID-ee745c82-43de-11f1-744d-b02628b36240"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Request employee preferences\" has no timer boundary event.",
+      "plane": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "processId": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_5e0cd331-db4a-4561-9f7f-141eecba6967"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Book trip\" has no timer boundary event.",
+      "plane": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "processId": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "ID-ee745c80-43de-11f1-744d-b02628b36240"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"ID-ee745c80-43de-11f1-744d-b02628b36240\" has no documentation describing expected input variables.",
+      "plane": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "processId": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"Process_ID-73a31a41-43d5-11f1-744d-b02628b36240\" is not marked executable.",
+      "processId": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 49
+}

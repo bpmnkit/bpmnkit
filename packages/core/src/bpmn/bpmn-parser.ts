@@ -1,4 +1,5 @@
 import { ParseError } from "../errors.js"
+import { BPMN_ELEMENTS_BY_TRAIT } from "../generated/bpmn-elements.js"
 import type { XmlElement } from "../types/xml-element.js"
 import { Visit, type XmlSink, scanXml } from "../xml/xml-parser.js"
 import type {
@@ -566,78 +567,17 @@ function contentsChild(
 // Flow elements
 // ---------------------------------------------------------------------------
 
-const FLOW_ELEMENT_TYPES = new Set<string>([
-	"startEvent",
-	"endEvent",
-	"intermediateCatchEvent",
-	"intermediateThrowEvent",
-	"boundaryEvent",
-	"task",
-	"serviceTask",
-	"scriptTask",
-	"userTask",
-	"sendTask",
-	"receiveTask",
-	"businessRuleTask",
-	"manualTask",
-	"callActivity",
-	"subProcess",
-	"adHocSubProcess",
-	"eventSubProcess",
-	"transaction",
-	"exclusiveGateway",
-	"parallelGateway",
-	"inclusiveGateway",
-	"eventBasedGateway",
-	"complexGateway",
-	"dataObject",
-	"dataObjectReference",
-	"dataStoreReference",
-])
+// The type sets come from the spec (spec/elements/bpmn.json traits), shared with the Rust parser.
+const FLOW_ELEMENT_TYPES = new Set<string>(BPMN_ELEMENTS_BY_TRAIT.flowElement)
 
-const EVENT_TYPES = new Set<string>([
-	"startEvent",
-	"endEvent",
-	"intermediateCatchEvent",
-	"intermediateThrowEvent",
-	"boundaryEvent",
-])
+const EVENT_TYPES = new Set<string>(BPMN_ELEMENTS_BY_TRAIT.event)
 
 /** Types whose <multiInstanceLoopCharacteristics> child is read. */
-const LOOP_TYPES = new Set<string>([
-	"task",
-	"serviceTask",
-	"scriptTask",
-	"userTask",
-	"businessRuleTask",
-	"manualTask",
-	"callActivity",
-	"sendTask",
-	"receiveTask",
-	"adHocSubProcess",
-	"subProcess",
-	"transaction",
-])
+const LOOP_TYPES = new Set<string>(BPMN_ELEMENTS_BY_TRAIT.loop)
 
-const CONTAINER_TYPES = new Set<string>([
-	"adHocSubProcess",
-	"subProcess",
-	"eventSubProcess",
-	"transaction",
-])
+const CONTAINER_TYPES = new Set<string>(BPMN_ELEMENTS_BY_TRAIT.container)
 
-const EVENT_DEFINITION_TYPES = new Set<string>([
-	"timerEventDefinition",
-	"errorEventDefinition",
-	"escalationEventDefinition",
-	"messageEventDefinition",
-	"signalEventDefinition",
-	"conditionalEventDefinition",
-	"linkEventDefinition",
-	"cancelEventDefinition",
-	"terminateEventDefinition",
-	"compensateEventDefinition",
-])
+const EVENT_DEFINITION_TYPES = new Set<string>(BPMN_ELEMENTS_BY_TRAIT.eventDefinition)
 
 class FlowNodeFrame extends Frame implements TextOwner {
 	private readonly id: string
@@ -833,6 +773,7 @@ class FlowNodeFrame extends Frame implements TextOwner {
 				el = {
 					...base,
 					type: "adHocSubProcess",
+					isForCompensation: attr(attrs, "isForCompensation") === "true" ? true : undefined,
 					loopCharacteristics: this.loopCharacteristics,
 					completionCondition: this.completionCondition,
 					cancelRemainingInstances:
@@ -847,6 +788,7 @@ class FlowNodeFrame extends Frame implements TextOwner {
 				el = {
 					...base,
 					type: "subProcess",
+					isForCompensation: attr(attrs, "isForCompensation") === "true" ? true : undefined,
 					triggeredByEvent:
 						attr(attrs, "triggeredByEvent") !== undefined
 							? attr(attrs, "triggeredByEvent") === "true"
@@ -857,13 +799,19 @@ class FlowNodeFrame extends Frame implements TextOwner {
 				break
 
 			case "eventSubProcess":
-				el = { ...base, type: "eventSubProcess", ...contents }
+				el = {
+					...base,
+					type: "eventSubProcess",
+					isForCompensation: attr(attrs, "isForCompensation") === "true" ? true : undefined,
+					...contents,
+				}
 				break
 
 			case "transaction":
 				el = {
 					...base,
 					type: "transaction",
+					isForCompensation: attr(attrs, "isForCompensation") === "true" ? true : undefined,
 					loopCharacteristics: this.loopCharacteristics,
 					...contents,
 				}
@@ -1091,6 +1039,7 @@ class ConditionalDefinitionFrame extends Frame implements TextOwner {
 	private conditionSeen = false
 	private condition: string | undefined
 	private conditionAttributes: Attrs | undefined
+	private extensionElements: XmlElement[] | null = null
 
 	constructor(
 		private readonly attrs: Attrs,
@@ -1100,6 +1049,11 @@ class ConditionalDefinitionFrame extends Frame implements TextOwner {
 	}
 
 	override child(local: string, _name: string, attrs: Attrs): Frame | null {
+		if (local === "extensionElements") {
+			if (this.extensionElements !== null) return null
+			this.extensionElements = []
+			return new TreeFrame(this.extensionElements)
+		}
 		if (local !== "condition" || this.conditionSeen) return null
 		this.conditionSeen = true
 		if (Object.keys(attrs).length > 0) this.conditionAttributes = { ...attrs }
@@ -1117,6 +1071,7 @@ class ConditionalDefinitionFrame extends Frame implements TextOwner {
 			// Present but empty stays "", like a timer part: the element is still there.
 			condition: this.conditionSeen ? (this.condition?.trim() ?? "") : undefined,
 			...(this.conditionAttributes ? { conditionAttributes: this.conditionAttributes } : {}),
+			...(this.extensionElements ? { extensionElements: this.extensionElements } : {}),
 			...definitionExtras(this.attrs, ID_ATTRS),
 		})
 	}
@@ -1515,7 +1470,12 @@ class ProcessFrame extends Frame implements LaneSetOwner, TextOwner {
 		this.target.push({
 			id: this.id,
 			name: attr(attrs, "name"),
-			isExecutable: attr(attrs, "isExecutable") === "true" ? true : undefined,
+			// Absent, "true" and "false" are three states: BPMN reads an absent flag as
+			// false, but a file that says "false" out loud should say it again.
+			isExecutable:
+				attr(attrs, "isExecutable") === undefined
+					? undefined
+					: attr(attrs, "isExecutable") === "true",
 			...(this.documentation !== undefined ? { documentation: this.documentation } : {}),
 			...(this.documentationAttributes
 				? { documentationAttributes: this.documentationAttributes }

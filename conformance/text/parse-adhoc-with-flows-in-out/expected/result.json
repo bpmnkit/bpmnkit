@@ -1,0 +1,85 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "children": {
+              "elements": [
+                {
+                  "id": "t",
+                  "jobType": "t",
+                  "name": "Tool",
+                  "type": "serviceTask"
+                }
+              ],
+              "flows": []
+            },
+            "id": "a",
+            "name": "Agent",
+            "type": "adHocSubProcess"
+          },
+          {
+            "id": "g",
+            "name": "Again?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "id": "a_join",
+            "type": "exclusiveGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "a_join"
+          },
+          {
+            "from": "a",
+            "id": "Flow_2",
+            "to": "g"
+          },
+          {
+            "condition": "= again",
+            "from": "g",
+            "id": "Flow_3",
+            "name": "Yes",
+            "to": "a_join"
+          },
+          {
+            "from": "g",
+            "id": "Flow_4",
+            "isDefault": true,
+            "name": "No",
+            "to": "e"
+          },
+          {
+            "from": "a_join",
+            "id": "Flow_5",
+            "to": "a"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "joined 2 flows into \"a\" with xor gateway \"a_join\"",
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

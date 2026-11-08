@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs"
+import { Bpmn, writeProcessText } from "@bpmnkit/core"
 import { describe, expect, it } from "vitest"
 import { completes, draftGaps, gapChange } from "../src/lib/check.js"
 
@@ -42,6 +44,27 @@ describe("draftGaps", () => {
 		const request = "Call the billing REST API. If the call fails, alert finance."
 		const draft = "# B\ns[start Go] > call[service Call billing API] > e[end Done]"
 		expect(kinds(request, draft)).toEqual(["failure"])
+	})
+
+	it("no longer asks for an error boundary on a REST call alone", () => {
+		const request = "Call the REST Outbound connector to list users."
+		const draft = "# B\ns[start Go] > call[service List users] > e[end Done]"
+		expect(kinds(request, draft)).toEqual([])
+	})
+
+	it("asks for an ad-hoc agent where the request names an AI agent", () => {
+		const request = "An AI agent answers questions using tools."
+		const draft = "# A\ns[start Go] > a[task Answer] > e[end Done]"
+		expect(kinds(request, draft)).toEqual(["agent"])
+		const agent = "# A\ns[start Go] > a[adhoc Answer] > e[end Done]\nt[service Look up | inside=a]"
+		expect(kinds(request, agent)).toEqual([])
+	})
+
+	it("asks for notes where the request asks for annotations", () => {
+		const request = "Add annotations explaining each step."
+		const draft = "# A\ns[start Go] > a[task Answer] > e[end Done]"
+		expect(kinds(request, draft)).toEqual(["note"])
+		expect(kinds(request, `${draft}\nnote a: Explains`)).toEqual([])
 	})
 
 	it("reads 'for each new ticket' as each instance, and 'every recipient in a list' as a list", () => {
@@ -98,5 +121,53 @@ describe("completes", () => {
 			false,
 		)
 		expect(completes(request, draft, draft)).toBe(false)
+	})
+})
+
+describe("draftGaps on the bake-off spec", () => {
+	const fixture = (name: string) =>
+		readFileSync(
+			new URL(`../../../packages/core/tests/fixtures/bakeoff/${name}`, import.meta.url),
+			"utf8",
+		)
+	const spec = fixture("spec.md")
+	// `with` lines are the connect pass's work, not the draft's
+	const ideal = writeProcessText(Bpmn.parse(fixture("expected.bpmn")))
+		.text.split("\n")
+		.filter((line) => !/^\s*with\b/.test(line))
+		.join("\n")
+
+	it("finds nothing missing in the reference draft (a connector timeout is no deadline)", () => {
+		expect(ideal).toContain("adhoc")
+		expect(draftGaps(spec, ideal)).toEqual([])
+	})
+
+	it("asks for no timer on a plain draft", () => {
+		const plain = "# P\nstart[start Go] > a[service Do it] > f[end Done]"
+		expect(kinds(spec, plain)).not.toContain("deadline")
+		expect(kinds(spec, plain)).toEqual(expect.arrayContaining(["agent", "note"]))
+	})
+
+	it("still reads a real timeout as a deadline", () => {
+		for (const request of [
+			"If it times out after 2 days, escalate.",
+			"Approve the order with a 24h deadline.",
+			"Set a connection timeout of 20 s, but if the approval times out, escalate.",
+		])
+			expect(kinds(request, "# P\nstart[start Go] > f[end Done]")).toContain("deadline")
+	})
+})
+
+describe("agent gap", () => {
+	it("is not asked for by an unrelated ad-hoc", () => {
+		expect(
+			kinds("Handle ad-hoc requests from customers", "# P\nstart[start Go] > f[end Done]"),
+		).toEqual([])
+	})
+
+	it("is asked for by an ad-hoc sub-process", () => {
+		expect(
+			kinds("Use an ad-hoc sub-process for the research", "# P\nstart[start Go] > f[end Done]"),
+		).toEqual(["agent"])
 	})
 })

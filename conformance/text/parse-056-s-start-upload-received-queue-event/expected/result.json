@@ -1,0 +1,84 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Upload received",
+            "type": "startEvent"
+          },
+          {
+            "id": "queue",
+            "jobType": "queue",
+            "name": "Send to SQS",
+            "type": "serviceTask"
+          },
+          {
+            "eventType": "message",
+            "id": "wait",
+            "name": "Reply received",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "e",
+            "name": "Done",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "queue"
+          },
+          {
+            "from": "queue",
+            "id": "Flow_2",
+            "to": "wait"
+          },
+          {
+            "from": "wait",
+            "id": "Flow_3",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"queue\" is named for a call it makes, \"Send to SQS\"; made it a service task"
+    },
+    {
+      "line": 1,
+      "message": "\"wait\" waits for nothing in particular; made it a message event"
+    }
+  ],
+  "questions": [
+    {
+      "draft": "\"Reply received\" waits for ",
+      "elementId": "wait",
+      "options": [
+        {
+          "change": "\"Reply received\" waits for a timer, not a message.",
+          "label": "A timer"
+        },
+        {
+          "change": "\"Reply received\" waits for a signal, not a message.",
+          "label": "A signal"
+        },
+        {
+          "change": "\"Reply received\" waits for nothing: make it a plain event, or the end.",
+          "label": "Nothing"
+        }
+      ],
+      "text": "\"Reply received\" was written without a trigger, so it waits for a message. Is it something else?"
+    }
+  ]
+}

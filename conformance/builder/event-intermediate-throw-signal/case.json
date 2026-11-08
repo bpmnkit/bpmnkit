@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["intermediateThrowEvent","i",{"signalName":"go"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

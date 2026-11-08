@@ -821,6 +821,8 @@ function collectOperations(allFiles, entryFile = ENTRY_FILE) {
 
 			// Request body schema — keep as schema ref name if possible
 			let requestBodySchema = null
+			/** File-upload operations: their body is multipart, so `requestBodySchema` stays null. */
+			let multipart = null
 			const rb = op.requestBody
 			if (rb) {
 				// rb may itself be a $ref
@@ -829,11 +831,14 @@ function collectOperations(allFiles, entryFile = ENTRY_FILE) {
 				const content = rbResolved?.content ?? {}
 				const jsonContent = content["application/json"]
 				requestBodySchema = jsonContent?.schema ?? null
+				if (!jsonContent) multipart = multipartFileField(content["multipart/form-data"]?.schema)
 			}
 			const requestBodyRequired = rb?.required === true
 
 			// Response schema (200 or 201) — keep as schema ref name if possible
 			let responseSchema = null
+			/** Media type of a plain-text response (the XML endpoints answer `text/xml`). */
+			let responseText = null
 			const responses = op.responses ?? {}
 			for (const code of ["200", "201"]) {
 				const resp = responses[code]
@@ -844,9 +849,12 @@ function collectOperations(allFiles, entryFile = ENTRY_FILE) {
 					const content = respResolved?.content ?? {}
 					const jsonContent = content["application/json"]
 					responseSchema = jsonContent?.schema ?? null
+					if (!jsonContent) responseText = Object.keys(content).find((t) => t.startsWith("text/"))
 					break
 				}
 			}
+			// A 204 next to a 200 means the call can answer with no body at all
+			const responseMayBeEmpty = "200" in responses && "204" in responses
 
 			const eventuallyConsistent = op["x-eventually-consistent"] === true
 			const summary = op.summary ?? ""
@@ -860,7 +868,10 @@ function collectOperations(allFiles, entryFile = ENTRY_FILE) {
 				parameters,
 				requestBodySchema,
 				requestBodyRequired,
+				multipart,
 				responseSchema,
+				responseText: responseText ?? null,
+				responseMayBeEmpty,
 				eventuallyConsistent,
 				summary,
 				description,
@@ -945,13 +956,14 @@ function schemaToTs(schema, schemas, depth = 0, seen = new Set(), prefixTypes = 
 
 	// allOf — merge/intersection
 	if (schema.allOf && Array.isArray(schema.allOf)) {
-		const parts = schema.allOf.map((s) => schemaToTs(s, schemas, depth, seen, prefixTypes))
+		const members = allOfMembers(schema)
+		const parts = members.map((s) => schemaToTs(s, schemas, depth, seen, prefixTypes))
 		const unique = [...new Set(parts.filter((p) => p !== "unknown"))]
 		if (unique.length === 0) return "unknown"
 		if (unique.length === 1) return unique[0]
 		// If all are objects, produce merged object type
 		if (unique.every((p) => p.startsWith("{"))) {
-			return mergeObjectTypes(schema.allOf, schemas, depth, seen, prefixTypes)
+			return mergeObjectTypes(members, schemas, depth, seen, prefixTypes)
 		}
 		return unique.join(" & ")
 	}
@@ -1035,9 +1047,22 @@ function schemaToTs(schema, schemas, depth = 0, seen = new Set(), prefixTypes = 
 	return `unknown${nullSuffix}`
 }
 
+/**
+ * The members an allOf schema is made of, flattened through nested allOf. A schema can extend its
+ * members with properties of its own (every search query adds `filter` and `sort` to
+ * SearchQueryRequest; ProcessInstanceFilterFields adds to BaseProcessInstanceFilterFields), so
+ * those count as one more member.
+ */
+function allOfMembers(schema) {
+	if (!schema || typeof schema !== "object" || !Array.isArray(schema.allOf)) return [schema]
+	const { allOf, ...own } = schema
+	const members = allOf.flatMap(allOfMembers)
+	return schema.properties ? [...members, own] : members
+}
+
 function mergeObjectTypes(schemas, allSchemas, depth, seen, prefixTypes = false) {
 	const lines = []
-	for (const s of schemas) {
+	for (const s of schemas.flatMap(allOfMembers)) {
 		if (!s || typeof s !== "object") continue
 		const props = s.properties ?? {}
 		const required = new Set(Array.isArray(s.required) ? s.required : [])
@@ -1167,7 +1192,19 @@ function withTypesNs(tsType) {
 	return `Types.${tsType}`
 }
 
-function buildParamList(parameters, requestBodySchema, requestBodyRequired) {
+/**
+ * The binary field of a multipart request body (`resources` for deployments, `file` or `files`
+ * for documents), or null when the body has none.
+ */
+function multipartFileField(schema) {
+	for (const [field, prop] of Object.entries(schema?.properties ?? {})) {
+		if (prop.format === "binary") return { field, array: false }
+		if (prop.type === "array" && prop.items?.format === "binary") return { field, array: true }
+	}
+	return null
+}
+
+function buildParamList(parameters, requestBodySchema, requestBodyRequired, multipart) {
 	const pathParams = parameters.filter((p) => p?.in === "path")
 	const queryParams = parameters.filter((p) => p?.in === "query")
 
@@ -1187,6 +1224,8 @@ function buildParamList(parameters, requestBodySchema, requestBodyRequired) {
 		const tsType = withTypesNs(schemaToTsRef(requestBodySchema))
 		const optional = requestBodyRequired ? "" : "?"
 		parts.push(`body${optional}: ${tsType}`)
+	} else if (multipart) {
+		parts.push(`body${requestBodyRequired ? "" : "?"}: FormData`)
 	}
 
 	// Query params as optional object
@@ -1201,6 +1240,18 @@ function buildParamList(parameters, requestBodySchema, requestBodyRequired) {
 	}
 
 	return parts
+}
+
+/** The TypeScript type a generated method resolves to. */
+function responseTsType(op) {
+	const type = op.responseSchema
+		? withTypesNs(schemaToTsRef(op.responseSchema))
+		: op.responseText
+			? "string"
+			: "void"
+	// Only for text responses: widening the JSON ones that can also answer 204
+	// (getStartProcessForm, getUserTaskForm) would change a stable return type
+	return op.responseText && op.responseMayBeEmpty ? `${type} | undefined` : type
 }
 
 function buildMethodBody(op) {
@@ -1219,8 +1270,13 @@ function buildMethodBody(op) {
 		lines.push(`      path: "${op.path}",`)
 	}
 
-	if (op.requestBodySchema) {
+	if (op.requestBodySchema || op.multipart) {
 		lines.push("      body,")
+	}
+
+	if (op.responseText) {
+		lines.push(`      accept: "${op.responseText}",`)
+		lines.push('      responseType: "text",')
 	}
 
 	if (queryParams.length > 0) {
@@ -1271,8 +1327,13 @@ function generateResources(
 
 		for (const op of ops) {
 			const methodName = operationToMethodName(op.operationId)
-			const returnType = op.responseSchema ? withTypesNs(schemaToTsRef(op.responseSchema)) : "void"
-			const paramList = buildParamList(op.parameters, op.requestBodySchema, op.requestBodyRequired)
+			const returnType = responseTsType(op)
+			const paramList = buildParamList(
+				op.parameters,
+				op.requestBodySchema,
+				op.requestBodyRequired,
+				op.multipart,
+			)
 
 			// JSDoc
 			if (op.summary || op.description) {
@@ -1643,6 +1704,7 @@ function generateCliCommandsContent(
 		"  makeCreateCmd,",
 		"  makeUpdateCmd,",
 		"  makeDeleteCmd,",
+		...(operations.some((op) => op.multipart) ? ["  makeUploadCmd,"] : []),
 		"  parseJson,",
 		`} from "${sharedImportPath}";`,
 		"",
@@ -1713,6 +1775,14 @@ function generateCliCommandsContent(
 				lines.push(`      description: ${JSON.stringify(desc)},`)
 				lines.push(`      argName: "${keyParam}",`)
 				lines.push(`      get: (client, key) => client.${clientProp}.${methodName}(key),`)
+				lines.push("    }),")
+			} else if (cmdType === "create" && op.multipart) {
+				lines.push("    makeUploadCmd({")
+				lines.push(`      name: ${JSON.stringify(cmdName)},`)
+				lines.push(`      description: ${JSON.stringify(desc)},`)
+				lines.push(`      field: ${JSON.stringify(op.multipart.field)},`)
+				if (!op.multipart.array) lines.push("      single: true,")
+				lines.push(`      upload: (client, form) => client.${clientProp}.${methodName}(form),`)
 				lines.push("    }),")
 			} else if (cmdType === "create") {
 				const bodySpecs = extractJsonFieldSpecs(op.requestBodySchema, schemas)
@@ -1793,7 +1863,7 @@ function generateCliCommandsContent(
 					...pathParams.map((p) => p.name),
 					...(hasBody ? ["body as never"] : []),
 				].join(", ")
-				if (op.responseSchema) {
+				if (op.responseSchema || op.responseText) {
 					lines.push(
 						`        const result = await client.${clientProp}.${methodName}(${callArgs});`,
 					)
@@ -1907,6 +1977,11 @@ function generateCliDocumentationContent(operations, tagDescriptions) {
 						: ""
 
 			const flagParts = []
+			if (op.multipart && cmdType === "create") {
+				const fileArg = op.multipart.array ? "<file...>" : "<file>"
+				lines.push(`| \`${cmdName}\` | \`${fileArg}\` |  | ${desc} |`)
+				continue
+			}
 			if (cmdType === "list") flagParts.push("`--filter`", "`--limit`", "`--sort-by`")
 			if (hasBody) flagParts.push(bodyRequired ? "`--data` \\*" : "`--data`")
 			const flagsCol = flagParts.join(" ")

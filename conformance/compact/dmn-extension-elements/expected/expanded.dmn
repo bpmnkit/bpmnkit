@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="Definitions_ext" name="Extensions" namespace="http://bpmn.io/schema/dmn">
+  <decision id="with_extension" name="Own extensionElements">
+    <decisionTable id="decisionTable_0000002">
+      <input id="i1">
+        <inputExpression id="inputExpression_0000001">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="o1" name="y"/>
+    </decisionTable>
+  </decision>
+  <decision id="literal" name="Literal expression">
+    <informationRequirement id="InformationRequirement_0000003">
+      <requiredInput href="#x"/>
+    </informationRequirement>
+  </decision>
+  <decision id="empty_extension" name="Empty extensionElements"/>
+  <decision id="plain" name="Nothing unknown">
+    <decisionTable id="decisionTable_0000005">
+      <input id="i2">
+        <inputExpression id="inputExpression_0000004">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="o2" name="y"/>
+    </decisionTable>
+  </decision>
+  <inputData id="x" name="x"/>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="with_extension">
+        <dc:Bounds height="80" width="180" x="160" y="100"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="empty_extension">
+        <dc:Bounds height="80" width="180" x="160" y="220"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="plain">
+        <dc:Bounds height="80" width="180" x="160" y="340"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="x">
+        <dc:Bounds height="45" width="125" x="160" y="460"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="literal">
+        <dc:Bounds height="80" width="180" x="400" y="262.5"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge dmnElementRef="InformationRequirement_0000003">
+        <di:waypoint x="285" y="482.5"/>
+        <di:waypoint x="400" y="302.5"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

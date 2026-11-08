@@ -1,8 +1,8 @@
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 use crate::pool::DbPool;
+use crate::Result;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use crate::Result;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DbRecord {
@@ -68,15 +68,15 @@ impl<'a> RecordRepository<'a> {
         );
         qb.push_values(records, |mut b, r| {
             b.push_bind(r.partition_id)
-             .push_bind(r.position)
-             .push_bind(&r.record_type)
-             .push_bind(&r.value_type)
-             .push_bind(&r.intent)
-             .push_bind(r.record_key)
-             .push_bind(r.timestamp_ms)
-             .push_bind(&r.payload)
-             .push_bind(r.source_position)
-             .push_bind(&r.tenant_id);
+                .push_bind(r.position)
+                .push_bind(&r.record_type)
+                .push_bind(&r.value_type)
+                .push_bind(&r.intent)
+                .push_bind(r.record_key)
+                .push_bind(r.timestamp_ms)
+                .push_bind(&r.payload)
+                .push_bind(r.source_position)
+                .push_bind(&r.tenant_id);
         });
         qb.build().execute(self.pool).await?;
         Ok(())

@@ -1,0 +1,12 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent"],
+		["serviceTask","t",{"name":"x","taskType":"y"}],
+		["exclusiveGateway","g"],
+		["branch","a",{"$ops":[["condition","=1"],["endEvent"]]}],
+		["branch","b",{"$ops":[["defaultFlow"],["endEvent"]]}],
+		["build"]
+	]
+}

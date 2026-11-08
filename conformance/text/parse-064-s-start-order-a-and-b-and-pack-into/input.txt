@@ -1,0 +1,2 @@
+s[start Order] > a[and] > b[and Pack into box] > c[service Ship] > e[end Done]
+a > h[xor Wait?] > b

@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["callActivity","call",{"name":"Call","processId":"child","propagateAllChildVariables":false,"propagateAllParentVariables":false,"bindingType":"versionTag","versionTag":"v1","ioMapping":{"inputs":[{"source":"=x","target":"y"}],"outputs":[{"source":"=z","target":"w"}]},"zeebeProperties":[{"name":"a","value":"b"}]}],
+		["endEvent","e"],
+		["build"]
+	]
+}

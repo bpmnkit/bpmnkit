@@ -1,0 +1,59 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "g",
+            "name": "Mode",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "a",
+            "name": "A",
+            "type": "endEvent"
+          },
+          {
+            "id": "b",
+            "name": "B",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "g"
+          },
+          {
+            "condition": "= channel = \"mail\" and n > 0",
+            "from": "g",
+            "id": "Flow_2",
+            "name": "Mail",
+            "to": "a"
+          },
+          {
+            "from": "g",
+            "id": "Flow_3",
+            "isDefault": true,
+            "name": "Other",
+            "to": "b"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 3 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

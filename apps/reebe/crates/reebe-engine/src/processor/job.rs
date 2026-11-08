@@ -1,13 +1,13 @@
-use std::sync::Arc;
+use super::throw_event::{element_was_terminated, throw_event, Thrown};
+use super::{CommandToWrite, EventToWrite, RecordProcessor, Writers};
+use crate::engine::EngineState;
+use crate::error::{EngineError, EngineResult};
+use crate::key_gen::KeyGenerator;
 use async_trait::async_trait;
 use reebe_db::records::DbRecord;
 use reebe_db::state::incidents::Incident;
 use reebe_db::state::jobs::Job;
-use crate::engine::EngineState;
-use crate::error::{EngineError, EngineResult};
-use crate::key_gen::KeyGenerator;
-use super::{CommandToWrite, EventToWrite, RecordProcessor, Writers};
-use super::throw_event::{element_was_terminated, throw_event, Thrown};
+use std::sync::Arc;
 
 pub struct JobProcessor {
     pub job_notifier: std::sync::Arc<crate::JobNotifier>,
@@ -17,7 +17,16 @@ pub struct JobProcessor {
 impl RecordProcessor for JobProcessor {
     fn accepts(&self, value_type: &str, intent: &str) -> bool {
         value_type == "JOB"
-            && matches!(intent, "CREATE" | "COMPLETE" | "FAIL" | "THROW_ERROR" | "TIME_OUT" | "UPDATE_RETRIES" | "UPDATE_TIMEOUT")
+            && matches!(
+                intent,
+                "CREATE"
+                    | "COMPLETE"
+                    | "FAIL"
+                    | "THROW_ERROR"
+                    | "TIME_OUT"
+                    | "UPDATE_RETRIES"
+                    | "UPDATE_TIMEOUT"
+            )
     }
 
     async fn process(
@@ -99,8 +108,11 @@ impl JobProcessor {
             // element (its input mappings included), inner scopes winning.
             variables: serde_json::Value::Object(
                 crate::processor::scope::visible_variables(
-                    state, process_instance_key, element_instance_key,
-                ).await,
+                    state,
+                    process_instance_key,
+                    element_instance_key,
+                )
+                .await,
             ),
             created_at: state.clock.now(),
             tenant_id: tenant_id.clone(),
@@ -146,20 +158,32 @@ impl JobProcessor {
 
         let job = state.backend.get_job_by_key(job_key).await?;
         // Look up the element instance to recover the correct flowScopeKey (e.g. subprocess scope)
-        let ei = state.backend.get_element_instance_by_key(job.element_instance_key).await?;
+        let ei = state
+            .backend
+            .get_element_instance_by_key(job.element_instance_key)
+            .await?;
         let flow_scope_key = ei.flow_scope_key.unwrap_or(job.process_instance_key);
 
         // The job of an ad-hoc sub-process may complete with a result that activates
         // inner elements or fulfils the completion condition. An invalid result
         // rejects the completion before anything changes.
         let ad_hoc = if ei.element_type == super::ad_hoc::AD_HOC {
-            let process = super::throw_event::load_process(state, ei.process_definition_key, &ei.bpmn_process_id).await?;
-            super::ad_hoc::job_result(&process, &job, payload.get("result"))?.map(|result| (process, result))
+            let process = super::throw_event::load_process(
+                state,
+                ei.process_definition_key,
+                &ei.bpmn_process_id,
+            )
+            .await?;
+            super::ad_hoc::job_result(&process, &job, payload.get("result"))?
+                .map(|result| (process, result))
         } else {
             None
         };
 
-        state.backend.complete_job(job_key, variables.clone()).await?;
+        state
+            .backend
+            .complete_job(job_key, variables.clone())
+            .await?;
 
         writers.events.push(EventToWrite {
             value_type: "JOB".to_string(),
@@ -175,9 +199,12 @@ impl JobProcessor {
         });
 
         if let Some((process, result)) = ad_hoc {
-            if let Some(reebe_bpmn::FlowElement::SubProcess(sp)) = process.get_element_recursive(&ei.element_id) {
+            if let Some(reebe_bpmn::FlowElement::SubProcess(sp)) =
+                process.get_element_recursive(&ei.element_id)
+            {
                 let vars = variables.as_ref().and_then(|v| v.as_object());
-                return super::ad_hoc::apply_job_result(state, writers, sp, &ei, vars, result).await;
+                return super::ad_hoc::apply_job_result(state, writers, sp, &ei, vars, result)
+                    .await;
             }
         }
 
@@ -223,13 +250,28 @@ impl JobProcessor {
         let retry_back_off_ms = payload["retryBackOff"].as_i64();
 
         let job = state.backend.get_job_by_key(job_key).await?;
-        state.backend
-            .fail_job(job_key, retries, error_message.as_deref(), None, retry_back_off_ms)
+        state
+            .backend
+            .fail_job(
+                job_key,
+                retries,
+                error_message.as_deref(),
+                None,
+                retry_back_off_ms,
+            )
             .await?;
         // The variables a job is failed with become local variables of its task, as in Zeebe.
         if let Some(variables) = payload["variables"].as_object() {
             for (name, value) in variables {
-                super::scope::set_local(state, job.process_instance_key, job.element_instance_key, name, value.clone(), &tenant_id).await?;
+                super::scope::set_local(
+                    state,
+                    job.process_instance_key,
+                    job.element_instance_key,
+                    name,
+                    value.clone(),
+                    &tenant_id,
+                )
+                .await?;
             }
         }
 
@@ -300,11 +342,21 @@ impl JobProcessor {
 
         let error_code = payload["errorCode"].as_str().unwrap_or("").to_string();
         let error_message = payload["errorMessage"].as_str().map(|s| s.to_string());
-        let error_variables = payload.get("variables").filter(|v| v.as_object().is_some_and(|o| !o.is_empty())).cloned();
+        let error_variables = payload
+            .get("variables")
+            .filter(|v| v.as_object().is_some_and(|o| !o.is_empty()))
+            .cloned();
 
         let job = state.backend.get_job_by_key(job_key).await?;
-        state.backend
-            .fail_job(job_key, 0, error_message.as_deref(), Some(&error_code), None)
+        state
+            .backend
+            .fail_job(
+                job_key,
+                0,
+                error_message.as_deref(),
+                Some(&error_code),
+                None,
+            )
             .await?;
 
         writers.events.push(EventToWrite {
@@ -320,12 +372,19 @@ impl JobProcessor {
         });
 
         // Hand the error to the nearest catch event; an uncaught error raises an incident.
-        let thrower = state.backend.get_element_instance_by_key(job.element_instance_key).await?;
+        let thrower = state
+            .backend
+            .get_element_instance_by_key(job.element_instance_key)
+            .await?;
         throw_event(
             state,
             writers,
             &thrower,
-            &Thrown::Error { code: error_code, message: error_message, variables: error_variables },
+            &Thrown::Error {
+                code: error_code,
+                message: error_message,
+                variables: error_variables,
+            },
             Some(job_key),
         )
         .await?;
@@ -348,7 +407,10 @@ impl JobProcessor {
             .or_else(|| payload["jobKey"].as_i64())
             .ok_or_else(|| EngineError::InvalidState("Missing jobKey".to_string()))?;
 
-        state.backend.fail_job(job_key, 0, Some("Job timeout"), None, None).await?;
+        state
+            .backend
+            .fail_job(job_key, 0, Some("Job timeout"), None, None)
+            .await?;
 
         writers.events.push(EventToWrite {
             value_type: "JOB".to_string(),

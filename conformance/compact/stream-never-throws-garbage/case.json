@@ -1,0 +1,9 @@
+{
+	"chunks": [
+		"{\"id\":\"x\",\"type\":\"notAType\"}",
+		"{\"id\":\"\",\"type\":\"startEvent\"}",
+		"{\"id\":\"y\",\"type\":\"startEvent\",\"name\":",
+		"}}}]]]",
+		"{\"id\":\"z\",\"from\":\"a\"}"
+	]
+}

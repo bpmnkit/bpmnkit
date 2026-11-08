@@ -1,11 +1,11 @@
-use std::sync::Arc;
-use async_trait::async_trait;
-use reebe_db::records::DbRecord;
+use super::catch_event::{trigger, CatchRef, Triggered};
+use super::{EventToWrite, RecordProcessor, Writers};
 use crate::engine::EngineState;
 use crate::error::EngineResult;
 use crate::key_gen::KeyGenerator;
-use super::catch_event::{trigger, CatchRef, Triggered};
-use super::{EventToWrite, RecordProcessor, Writers};
+use async_trait::async_trait;
+use reebe_db::records::DbRecord;
+use std::sync::Arc;
 
 pub struct SignalProcessor;
 
@@ -27,7 +27,9 @@ impl RecordProcessor for SignalProcessor {
 
         let signal_key = key_gen.next_key().await?;
         let signal_name = payload["signalName"].as_str().unwrap_or("").to_string();
-        let variables = payload.get("variables").cloned()
+        let variables = payload
+            .get("variables")
+            .cloned()
             .unwrap_or_else(|| serde_json::Value::Object(Default::default()));
 
         writers.events.push(EventToWrite {
@@ -43,7 +45,8 @@ impl RecordProcessor for SignalProcessor {
         });
 
         // Activate all waiting signal catch events
-        let subscriptions = state.backend
+        let subscriptions = state
+            .backend
             .get_signal_subscriptions_by_name(&signal_name, &tenant_id)
             .await
             .unwrap_or_default();

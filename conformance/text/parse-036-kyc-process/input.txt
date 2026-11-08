@@ -1,0 +1,4 @@
+# KYC process
+start[start:kyc Start KYC] > collect[user Collect data] > verify[rule Verify data] > enrich[service Enrich customer profile] > status[xor Status approved?]
+status > done[end]
+gov[boundary:error Governance check failed | on=governance] > cancel[end:error KYC cancelled]

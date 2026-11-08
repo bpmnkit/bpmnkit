@@ -1,0 +1,74 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Order",
+            "type": "startEvent"
+          },
+          {
+            "id": "b",
+            "name": "Pack into box",
+            "type": "task"
+          },
+          {
+            "id": "c",
+            "jobType": "c",
+            "name": "Ship",
+            "type": "serviceTask"
+          },
+          {
+            "id": "e",
+            "name": "Done",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "b"
+          },
+          {
+            "from": "b",
+            "id": "Flow_2",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "id": "Flow_3",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"a\" has only one branch; gateway removed"
+    },
+    {
+      "line": 1,
+      "message": "\"b\" is a gateway with one way in and out, named like a step; made it a task"
+    },
+    {
+      "line": 2,
+      "message": "\"h\" has only one branch; gateway removed"
+    }
+  ],
+  "questions": [
+    {
+      "draft": "At \"Wait?\", otherwise ",
+      "elementId": "h",
+      "options": [],
+      "text": "\"Wait?\" had only one way to go, so it was removed. What happens otherwise?"
+    }
+  ]
+}

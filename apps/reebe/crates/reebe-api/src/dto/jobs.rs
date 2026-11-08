@@ -1,5 +1,5 @@
-use serde::{Deserialize, Serialize};
 use crate::pagination::PageRequest;
+use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -45,10 +45,7 @@ pub struct ActivatedJob {
 
 impl From<reebe_db::state::jobs::Job> for ActivatedJob {
     fn from(job: reebe_db::state::jobs::Job) -> Self {
-        let deadline = job
-            .deadline
-            .map(|d| d.timestamp_millis())
-            .unwrap_or(0);
+        let deadline = job.deadline.map(|d| d.timestamp_millis()).unwrap_or(0);
         Self {
             job_key: job.key.to_string(),
             job_type: job.job_type,

@@ -1,0 +1,57 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "a",
+            "name": "A",
+            "type": "userTask"
+          },
+          {
+            "id": "b",
+            "jobType": "b",
+            "name": "B",
+            "type": "serviceTask"
+          },
+          {
+            "id": "start",
+            "name": "Process started",
+            "type": "startEvent"
+          },
+          {
+            "id": "b_end",
+            "name": "Process completed",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "a"
+          },
+          {
+            "from": "a",
+            "id": "Flow_2",
+            "to": "b"
+          },
+          {
+            "from": "b",
+            "id": "Flow_3",
+            "to": "b_end"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "added start event \"start\" before \"a\"",
+    "added end event \"b_end\" after \"b\""
+  ],
+  "problems": [],
+  "questions": []
+}

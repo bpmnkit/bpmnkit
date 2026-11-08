@@ -1,0 +1,28 @@
+{
+  "id": "Definitions_roots",
+  "processes": [
+    {
+      "documentation": "Process-level documentation.",
+      "elements": [
+        {
+          "eventType": "message",
+          "id": "Start_order",
+          "type": "startEvent"
+        },
+        {
+          "id": "End_done",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "Start_order",
+          "id": "Flow_start_end",
+          "to": "End_done"
+        }
+      ],
+      "id": "Process_roots",
+      "name": "Root element carrier"
+    }
+  ]
+}

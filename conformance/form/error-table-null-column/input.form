@@ -1,0 +1,7 @@
+{
+  "id": "f",
+  "type": "default",
+  "components": [
+    { "type": "table", "id": "t", "columns": [{ "label": "A", "key": "a" }, null] }
+  ]
+}

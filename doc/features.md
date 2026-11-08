@@ -1,5 +1,144 @@
 # Features
 
+## Rust twin release: differential fuzzing and crates.io packaging (2026-11-07)
+
+`crates/bpmnkit-fuzz` generates FEEL expressions, BPMN diagrams, DMN tables (parsed and evaluated), Camunda forms and process text, runs each through the Rust crates and the TS packages, and reports every disagreement shrunk to a minimal input (`pnpm fuzz --target <name> --seconds N`, `--replay <file>`). A nightly GitHub workflow runs every target and uploads mismatches. The 11 library crates carry full crates.io metadata, dual license files, READMEs and rustdoc examples, and publish in lockstep from a manual, approval-gated workflow. Docs page: `packages/rust-crates`.
+
+## Rust twin: export validation and build-time XSD checks (2026-11-07)
+
+`bpmnkit_lint::export_bpmn` lints before writing (`ExportValidate::Warn` / `Error`), and `bpmnkit-builder` refuses ids that are not XML names and `retries` that are neither a number nor FEEL, matching `Bpmn.export(defs, { validate })` and TS's XSD guards. Builders default to Camunda 8.10.
+
+## `bpmnkit-builder` and `bpmnkit-text`: builder, process text and compact in Rust (2026-11-07)
+
+A Rust fluent builder for BPMN processes, collaborations, decision tables and DRDs whose output (model, XML, auto-layout, error messages) equals `@bpmnkit/core`'s builder, call for call; process text parsing, streaming and writing; compact BPMN and DMN (`compactify`, `expand`, streams). 789 of 790 recorded cases match exactly; the one pending case is a call Rust's types rule out. About 2–3× faster than TS for layout-backed builds, process text and expand.
+
+## `bpmnkit-layout`: auto-layout in Rust (2026-11-06)
+
+Rust auto-layout for BPMN (both engines: semantic and grid; pools, lanes, boundary events, expanded and collapsed sub-processes, annotations, message flows, keeping the source DI's ids and styles) and DMN, with the same shapes, waypoints, labels and XML as `@bpmnkit/core`'s `applyAutoLayout` and `layoutDmn`: all 217 recorded layout runs match exactly. Takes the builder's layout hints (tool grids, annotation sides). About 2.5× faster than TS on the semantic engine and 2.2× on grid.
+
+Auto-layout (TS and Rust) draws the lanes of a process outside any pool on its own plane, and the associations between two text annotations.
+
+## `bpmnkit-lint` and `bpmnkit-compat`: lint, Camunda compatibility and C7 migration in Rust (2026-11-06)
+
+Rust lint (`lint_diagram`, `optimize` with its automatic fixes, `.bpmnlintrc` support with the native bpmnlint rules, DMN and Form lint), the Camunda 8 version compatibility check, and Camunda 7 to 8 migration with JUEL to FEEL (plus C8 to C7 export). Same findings, messages, order and fixed XML as `@bpmnkit/core` on 1717 recorded runs. Rule and compatibility data come from `spec/`, shared with TS. About 2× faster than TS.
+
+## `bpmnkit-dmn` and `bpmnkit-form`: DMN and forms in Rust (2026-11-06)
+
+Rust parsers and serializers for DMN 1.3 and Camunda forms, with the same model JSON, round-trip output and error messages as `@bpmnkit/core` on all 93 DMN and form conformance cases. `bpmnkit_dmn::evaluate_decision_graph` evaluates decision tables (every hit policy and aggregation), literal expressions and required decisions, with the same results as `@bpmnkit/engine`'s new `evaluateDecisionGraph` on 191 recorded evaluations, and reports syntax errors and FEEL warnings. DMN element data comes from `spec/elements/dmn.json`, shared with TS. Reebe evaluates decisions with it.
+
+## `bpmnkit-bpmn`: BPMN I/O in Rust (2026-11-06)
+
+Rust parser and lossless serializer for BPMN 2.0 + Zeebe, with the same model JSON and byte-identical round-trip XML as `@bpmnkit/core` on all 48 BPMN conformance cases. `bpmnkit-xml` keeps prefixes, attribute order and unknown content; `bpmnkit_bpmn::zeebe` reads and writes the typed Zeebe extensions. Element kinds and Zeebe placement come from `spec/elements/{bpmn,zeebe}.json`, shared with TS. Builds for wasm32. Reebe parses deployments with it.
+
+## `bpmnkit-feel`: FEEL in Rust (2026-11-06)
+
+A Rust FEEL lexer, parser and evaluator with every built-in, held to `@bpmnkit/feel` by the shared conformance cases (373 of 374 pass) and passing 95.0% of the DMN TCK. Exact decimals, ordered contexts, zoned date-times, durations. Reebe evaluates FEEL with it.
+## Agent cards (2026-11-05)
+
+`casen agent-card bpmn|dmn|form` prints a ~1–1.5k-token cheat sheet for an AI agent: a runnable create/export/edit/validate script, the top builder options and the known traps. The same cards are docs pages under "Agent Cards", ranked first by `@bpmnkit/docspack` (whose `llms.txt` opens with them), and Claude plugin skills (`/bpmnkit:bpmn-script`, `:dmn`, `:form`). Every script is typechecked and run in CI.
+
+`@bpmnkit/core` ships the cards too (`AGENTS.md`, `llms.txt`, `agent-cards/`, `"agents"` field), so an agent with only that package installed finds them; its README opens with the pointer and builder errors end with `agent-cards/<type>.md#traps`.
+## `casen check`: BPMN, DMN and forms in one gate (2026-11-05)
+
+`casen check <file...>` checks any mix of `.bpmn`, `.dmn` and `.form` files and the references between them (a user task's `formId`, a business rule task's `decisionId`). Every finding has a rule id, element id, message and a concrete fix; `--json` for agent loops; non-zero exit on errors. DMN: duplicate ids, requirement hrefs, cycles, FEEL syntax, hit policy, aggregation, types, rule shape. Forms: form-js schema, unique ids and keys, FEEL in conditions and expressions, validation. Profiles: default, `--sketch` (no Camunda 8 rules), `--deploy` (errors only, forms required). The "user task needs a form" rule is off outside the deploy profile. Library: `lintDmn`, `lintForm` in `@bpmnkit/core`.
+## `Dmn.drd()` multi-decision DRD builder (2026-11-05)
+
+Build DRDs where decisions require each other via typed handles or branded ids; labels are rejected with the valid ids listed. Output carries requirement hrefs and DMNDI layout.
+
+## Vendor-neutral export: `stripCamunda8` (2026-11-05)
+
+`stripCamunda8(definitions)` returns a copy without Camunda 8 vendor bits (`zeebe:*`, `modeler:*`, their `xmlns`) plus a list of what was dropped, as a base for Camunda 7/Operaton export. Opt-in; Camunda 8 output is unchanged.
+
+## Builder: data elements and linked resources (2026-11-05)
+
+- `.dataObject()`, `.dataObjectReference()`, `.dataStoreReference()` and `.dataAssociation(activityId, dataRefId, "input" | "output")` sit beside the chain and add no sequence flows.
+- `serviceTask({ linkedResources })` writes `zeebe:linkedResources` (RPA scripts).
+
+## Same-input comparison page (2026-10-22)
+
+`/compare/same-input` shows one prompt through the recorded LLM routes and a hand-written no-AI reference, with the rendered diagram, tokens, time, validity and closeness for each. Data comes from `node scripts/build-compare-data.mjs` and is committed. Since 2026-11-05 each run also shows its model, a list-price cost (only with a recorded model and token split) and a `casen test` result on reebe-wasm; `node scripts/record-compare.mjs` records compact-JSON and plan routes (see the plan doc for the maintainer command).
+
+## Multi-instance and listeners in the builder (2026-10-22)
+
+- `multiInstance` (with `outputCollection` / `outputElement`) works on every task type, not just sub-processes; the compact format keeps it.
+- `executionListeners` on activities, events and gateways and `taskListeners` on user tasks are builder options and `update` patch fields; placement is checked against the Zeebe schema.
+- `userTask` forms: `formId` (+ `formBindingType`, `formVersionTag`), `formKey`, `externalReference` or `embeddedForm: { id, schema }` (process-level `zeebe:userTaskForm`); setting more than one throws.
+- Conditional events: `condition` and `conditionVariableEvents` (`zeebe:conditionalFilter`) on start, catch and boundary events; compact `condition`.
+
+## Edit user-task configuration and correlation keys (2026-10-22)
+
+- `applyBpmnOperations` `update` patches (and the compact format) carry `assignee`, `candidateGroups`, `candidateUsers`, `dueDate`, `followUpDate`, `priority` and `properties`; `correlationKey` sets the message subscription of the referenced message. Editing an existing diagram's user-task configuration no longer needs raw extension elements.
+- `applyBpmnOperations` `update` patches edit event definitions (`messageName`, `errorCode`, `escalationCode`, `signalName` on the referenced root element, created if missing and refused when shared; `timerDuration`/`timerDate`/`timerCycle`; `condition`) and multi-instance (`multiInstance`, per field). The MCP `update_element` tool exposes these and the listener lists.
+
+## On-device diagram generation in the web editor (2026-10-21)
+
+- `@bpmnkit/plugins/ai-local` (`createAiLocalPlugin`) and a Generate dock tab and HUD button in the landing editor turn a description into a new diagram with Chrome's built-in model (Gemini Nano, Prompt API): English only, generate only, nothing leaves the device, hidden where the model is unavailable. Opt-in on bpmnkit.com via `/editor?ai=on-device`, and on Drop's describe-to-diagram page via `/drop?ai=on-device` (first draft only; server-side follow-ups off). Maintainer step: register the origin trial and set `PUBLIC_CHROME_AI_OT_TOKEN`.
+
+## casen test runs Camunda process-test JSON on reebe (2026-10-18)
+
+- `casen test <file.bpmn>` runs `<name>.test.json` (Camunda process-test format) on reebe-wasm, reports each case and the failing instruction, and `--case <name>` (repeatable) runs selected cases. Existing `.bpmn.tests.json` scenario files work unchanged.
+
+## Drop connects the AI Agent and its tools (2026-10-18)
+
+- The connect pass offers the AI Agent Sub-process connector to any ad-hoc sub-process of a draft, and the REST connector to its `inside=` tools; `with <id>:` lines (also for `inside=` tools in `parseProcessText`) configure them. In a `==` FEEL value `\n` is a line break, so an agent's prompt can have paragraphs; `\\n` stays a literal backslash and n, and a literal (single `=`) value is never decoded.
+
+## Process text: ad-hoc sub-processes and notes (2026-10-18)
+
+- `adhoc` kind, `inside=<adhoc id>` on a flowless task, and `note <id>: text` and `doc <id>: text` (the element's documentation, an AI agent tool's description) in the line format, read by `parseProcessText`, expanded (with grid layout and laid-out annotations) by `expand`, written back by `writeProcessText` and applied or reported by change scripts.
+
+## Process text: forms, mappings and platform version (2026-10-18)
+
+- `form=`, `in.x=`, `out.x=` and `# Name | camunda=8.10` in the line format, read by `parseProcessText`, expanded by `expand` and written back by `writeProcessText`.
+
+## Executable-process recipe and `bpmnkit-docs` at the repo root (2026-10-17)
+
+- `npx bpmnkit-docs ask "set a form on a start event"` answers from a task-shaped recipe page,
+  and works from the repo root.
+
+## Auto layout takes a tool grid and annotation sides (2026-10-17)
+
+- `adHocSubProcess(id, tools, { toolGrid: { columns: 2, fill: "column" } })` lays the tools out in
+  a fixed number of columns, filled top to bottom or left to right.
+- `annotate(id, text, { side: "below" })` puts the annotation on the side asked for.
+- `side: "left"` / `"right"` (2026-11-05) put it beside the element, preferably level with its centre.
+
+## Task-level template bindings (2026-11-05)
+
+- Element templates may bind `zeebe:calledElement`, `calledDecision`, `userTask`, `formDefinition`,
+  `assignmentDefinition`, `taskSchedule`, `priorityDefinition` and `script`. `applyTemplateToElement`
+  writes them and, on re-apply, removes the ones a newer version of the same template dropped.
+
+## `omitDefaults` for template application (2026-10-22)
+
+- `applyTemplates(definitions, entries, { omitDefaults: true })` (also `applyTemplateToElement` and
+  `applyElementTemplate`) skips properties that would only carry the template's default, unless
+  they are Hidden or required. Off by default.
+
+## `applyTemplates` configures connectors in-process (2026-10-17)
+
+- `applyTemplates(definitions, entries)` applies element templates by id, `id@version` or alias to
+  elements anywhere in a model, including inside ad-hoc sub-processes, and answers a wrong key
+  with the property id it probably meant (`retries` -> `retryCount`).
+
+## `casen connector apply` and filtered `show` (2026-10-17)
+
+- `casen connector apply file.bpmn Call http --values call.json --set retryCount=5` configures an
+  element from the shell without quoting multi-line FEEL; a wrong key is reported with a suggestion.
+- `casen connector show <template> --filter timeout --condensed` prints one line per matching
+  property: key, type, default, required, condition.
+
+## Branch flows take a label and an explicit id (2026-10-17)
+
+- `branch(id, b => b.label("Yes").flowId("Flow_Yes"))` names the branch's first flow and fixes its
+  id, also before `connectTo()`. Generated ids for other flows do not change.
+
+## The builder sets a start-event form and user-task mappings (2026-10-17)
+
+- `startEvent(id, { formId })` puts a form on a start event, in the process, in a branch and in
+  an event sub-process.
+- `userTask(id, { ioMapping, taskHeaders, zeebeProperties, modelerTemplate })` takes the same
+  options as a service task.
+
 ## Camunda docspack covers the Modeler, the guides and the reference (2026-10-09)
 
 - **`@bpmnkit/camunda-docspack`** now also carries DMN, Camunda Forms, element templates, the
@@ -58,6 +197,7 @@
 - **Proving it runs.** A generated diagram is dry-run with every outside call mocked, and
   the secrets it needs are listed.
   - Drop's generator shows both.
+  - Drop also gives every draft a deploy verdict (ready, shape only, or N deploy errors) and a collapsible "Diagram text" panel with the process text it was drawn from.
   - `casen synth --check` gates on the dry run.
   - Studio's **Try it** runs it on the local engine, sending only GET requests for real.
 - **CLI.** `casen connector cards "<request>"`, `casen connector api "<request>"` and
@@ -181,6 +321,10 @@
 - `mockAiAgent` in `@bpmnkit/engine/testing` scripts an AI Agent's tool calls turn by turn
   inside its ad-hoc sub-process, with record/replay cassettes, a `toHaveCalledTools` matcher
   and tool coverage. The simulator runs ad-hoc sub-processes driven by a job worker.
+
+## Camunda 8 → 7 export (2026-11-05)
+
+- `convertCamunda8To7` / `casen migrate c7 --to camunda7`: best-effort export of a Camunda 8 model to Camunda 7/Operaton. Maps job types, I/O mappings, assignment, form keys, call activities and version tags; reports FEEL expressions, correlation keys, connectors and Zeebe-only features as findings.
 
 ## Camunda 7 → 8 migration (2026-09-24)
 
@@ -1084,8 +1228,9 @@ matching the command CI already runs, alongside the one `apps/drop` had. A relea
   its id, name, documentation and its incoming/outgoing sequence flows. Carries nested content
   between containers and a multi-instance marker between types that allow one; drops Zeebe
   extensions the new type cannot legally hold, using the `ZEEBE_PLACEMENT` table.
-- **MCP `update_element` applies `name` and `type`**, and refuses any other key instead of
-  accepting it and doing nothing.
+- **MCP `update_element` applies `name`, `type` and the Zeebe patch fields** (user-task
+  assignment, schedule, priority, `properties`, `correlationKey`, job type, …) through
+  `applyBpmnOperations`; `""` clears a value, and unknown or misplaced keys are tool errors.
 - **`createFlowElement(id, type, options?)`** — the one place that knows each type's shape; the
   fluent builder uses it too.
 - **Data elements survive the compact format.** `dataObject`, `dataObjectReference` and
@@ -1831,7 +1976,8 @@ Workflows now start automatically without a "Run" click.
 - Any HTTP client can start a process instance; request body becomes process variables
 - Optional `WEBHOOK_TOKEN` env var for Bearer token protection
 
-**Timer trigger** (scan + schedule):
+**Timer trigger** (scan + schedule) — *removed 2026-10-09: the engines fire timer start
+events themselves, so the trigger started each instance twice*:
 - Parses `<timeDuration>`, `<timeDate>`, `<timeCycle>` from deployed BPMN timer start events
 - ISO 8601 duration/date/repeating-interval support (`PT1H`, `R/PT30M`, `2026-01-01T00:00:00Z`)
 - Persists last-fired timestamps to `~/.bpmnkit/timer-state.json`
@@ -2445,6 +2591,7 @@ New package that wires storage and tabs together so client apps don't need to ma
 ## BPMN Element Config — Call Activity, Script Task, Sequence Flow (2026-02-26, updated 2026-02-26)
 
 - **Call activity** — configure `zeebe:calledElement processId` and `propagateAllChildVariables` in the config panel; "Select process…" button picks from open BPMN tabs; "New process" button creates a new blank BPMN and auto-links it; optional "Open Process ↗" action button navigates to the matching BPMN tab; navigate icon button in the element toolbar (HUD) above a selected call activity
+- **Call activity builder options** — `callActivity` accepts `ioMapping`, `zeebeProperties`, `propagateAllParentVariables`, `bindingType` (`latest` / `deployment` / `versionTag`) and `versionTag`, alongside `propagateAllChildVariables`; `getZeebeExtensions` reads `calledElement` back (typed `ZeebeCalledElement`)
 - **Script task** — configure `zeebe:script expression` (FEEL expression, textarea) and `resultVariable`; replaces the generic name-only panel
 - **Sequence flow condition expression** — clicking any sequence flow (edge) opens the config panel showing an editable `conditionExpression` FEEL textarea; works for gateway outgoing edges and any other flows; empty expression removes the condition element from the XML
 

@@ -1,0 +1,4 @@
+s[start S] > agent[adhoc A] > e[end E]
+t[service T | inside=agent]
+doc t: Searches the recipe catalogue.
+doc s: Starts it

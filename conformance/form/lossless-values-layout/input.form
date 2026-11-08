@@ -1,0 +1,44 @@
+{
+  "id": "f",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "type": "select",
+      "id": "s",
+      "label": "S",
+      "key": "s",
+      "values": [
+        { "label": "A", "value": "a", "disabled": true },
+        { "label": "B", "value": "b", "meta": { "k": [1] }, "toString": "x" },
+        ["not", "an", "object"]
+      ],
+      "layout": { "row": "r1", "columns": 4, "hint": "x", "__proto__": 1 }
+    },
+    {
+      "type": "radio",
+      "id": "r",
+      "label": "R",
+      "key": "r",
+      "values": [{ "label": "A", "value": "a", "description": "d" }],
+      "layout": { "row": 5, "columns": "wide" }
+    },
+    {
+      "type": "taglist",
+      "id": "t",
+      "label": "T",
+      "key": "t",
+      "values": [{ "label": "A", "value": "a", "x": null }],
+      "layout": { "hint": "no row, no columns" }
+    },
+    {
+      "type": "group",
+      "id": "g",
+      "label": "G",
+      "layout": { "columns": null, "extra": true },
+      "components": [
+        { "type": "button", "id": "b", "label": "B", "layout": { "row": "r2", "gap": 2 } }
+      ]
+    }
+  ]
+}

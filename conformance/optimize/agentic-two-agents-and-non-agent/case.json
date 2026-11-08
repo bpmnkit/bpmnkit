@@ -1,0 +1,22 @@
+{
+  "runs": {
+    "default": {},
+    "agentic-only": {
+      "categories": [
+        "agentic"
+      ]
+    },
+    "v8-8": {
+      "camundaVersion": "8.8"
+    },
+    "v8-6": {
+      "camundaVersion": "8.6"
+    },
+    "lint-forced": {
+      "categories": [
+        "agentic",
+        "deploy"
+      ]
+    }
+  }
+}

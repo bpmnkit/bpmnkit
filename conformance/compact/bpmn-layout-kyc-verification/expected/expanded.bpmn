@@ -1,0 +1,291 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="KYCOnboarding" name="KYC Customer Onboarding" isExecutable="true">
+    <bpmn:startEvent id="start" name="Onboarding Started">
+      <bpmn:outgoing>Flow_compact_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="uploadDocument" name="Upload Identity Document">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formId="identity-upload-form"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_compact_1</bpmn:incoming>
+      <bpmn:incoming>Flow_compact_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_compact_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="verifyDocument" name="Verify Document via OCR">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1"/>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultExpression" value="=ocrResponse.body"/>
+          <zeebe:header key="resultVariable" value="ocrResponse"/>
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_compact_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_compact_3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="documentQuality" name="Document Verified?">
+      <bpmn:incoming>Flow_compact_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_compact_4</bpmn:outgoing>
+      <bpmn:outgoing>Flow_compact_5</bpmn:outgoing>
+      <bpmn:outgoing>Flow_compact_6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="sanctionsScreening" name="Sanctions &amp; PEP Screening">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1"/>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultExpression" value="=screeningResponse.body"/>
+          <zeebe:header key="resultVariable" value="screeningResponse"/>
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_compact_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_compact_7</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="riskRouting" name="Risk Level?">
+      <bpmn:incoming>Flow_compact_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_compact_8</bpmn:outgoing>
+      <bpmn:outgoing>Flow_compact_9</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="standardDueDiligence" name="Standard Due Diligence">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1"/>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultVariable" value="sddResponse"/>
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_compact_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_compact_10</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="enhancedDueDiligence" name="Enhanced Due Diligence Review">
+      <bpmn:extensionElements>
+        <zeebe:formDefinition formId="compliance-edd-form"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_compact_9</bpmn:incoming>
+      <bpmn:outgoing>Flow_compact_11</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:businessRuleTask id="finalRiskClassification" name="Final Risk Classification">
+      <bpmn:extensionElements>
+        <zeebe:calledDecision decisionId="kyc-risk-classification" resultVariable="riskClassification"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_compact_10</bpmn:incoming>
+      <bpmn:incoming>Flow_compact_11</bpmn:incoming>
+      <bpmn:outgoing>Flow_compact_12</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:exclusiveGateway id="classificationGateway" name="Classification Outcome?">
+      <bpmn:incoming>Flow_compact_12</bpmn:incoming>
+      <bpmn:outgoing>Flow_compact_13</bpmn:outgoing>
+      <bpmn:outgoing>Flow_compact_14</bpmn:outgoing>
+      <bpmn:outgoing>Flow_compact_15</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="notifyRejection" name="Notify Rejection">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="email-sender"/>
+        <zeebe:taskHeaders>
+          <zeebe:header key="template" value="kyc-rejected"/>
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_compact_5</bpmn:incoming>
+      <bpmn:incoming>Flow_compact_14</bpmn:incoming>
+      <bpmn:outgoing>Flow_compact_17</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="notifyApproval" name="Notify Approval">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="email-sender"/>
+        <zeebe:taskHeaders>
+          <zeebe:header key="template" value="kyc-approved"/>
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_compact_13</bpmn:incoming>
+      <bpmn:outgoing>Flow_compact_16</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="endApproved" name="Customer Approved">
+      <bpmn:incoming>Flow_compact_16</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="endRejected" name="Customer Rejected">
+      <bpmn:incoming>Flow_compact_17</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="endEscalated" name="Escalated to Compliance">
+      <bpmn:incoming>Flow_compact_15</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_compact_1" sourceRef="start" targetRef="uploadDocument"/>
+    <bpmn:sequenceFlow id="Flow_compact_2" sourceRef="uploadDocument" targetRef="verifyDocument"/>
+    <bpmn:sequenceFlow id="Flow_compact_3" sourceRef="verifyDocument" targetRef="documentQuality"/>
+    <bpmn:sequenceFlow id="Flow_compact_4" sourceRef="documentQuality" targetRef="uploadDocument" name="verification-failed-retry">
+      <bpmn:conditionExpression>=ocrResponse.verified = false and (uploadRetries != null and uploadRetries &lt; 2)</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_compact_5" sourceRef="documentQuality" targetRef="notifyRejection" name="verification-failed-exhausted">
+      <bpmn:conditionExpression>=ocrResponse.verified = false and (uploadRetries = null or uploadRetries &gt;= 2)</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_compact_6" sourceRef="documentQuality" targetRef="sanctionsScreening" name="verification-passed">
+      <bpmn:conditionExpression>=ocrResponse.verified = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_compact_7" sourceRef="sanctionsScreening" targetRef="riskRouting"/>
+    <bpmn:sequenceFlow id="Flow_compact_8" sourceRef="riskRouting" targetRef="standardDueDiligence" name="standard-risk">
+      <bpmn:conditionExpression>=screeningResponse.riskLevel = "low"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_compact_9" sourceRef="riskRouting" targetRef="enhancedDueDiligence" name="enhanced-risk">
+      <bpmn:conditionExpression>=screeningResponse.riskLevel = "high" or screeningResponse.pepMatch = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_compact_10" sourceRef="standardDueDiligence" targetRef="finalRiskClassification"/>
+    <bpmn:sequenceFlow id="Flow_compact_11" sourceRef="enhancedDueDiligence" targetRef="finalRiskClassification"/>
+    <bpmn:sequenceFlow id="Flow_compact_12" sourceRef="finalRiskClassification" targetRef="classificationGateway"/>
+    <bpmn:sequenceFlow id="Flow_compact_13" sourceRef="classificationGateway" targetRef="notifyApproval" name="approved">
+      <bpmn:conditionExpression>=riskClassification.outcome = "approved"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_compact_14" sourceRef="classificationGateway" targetRef="notifyRejection" name="rejected">
+      <bpmn:conditionExpression>=riskClassification.outcome = "rejected"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_compact_15" sourceRef="classificationGateway" targetRef="endEscalated" name="escalate">
+      <bpmn:conditionExpression>=riskClassification.outcome = "escalate"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_compact_16" sourceRef="notifyApproval" targetRef="endApproved"/>
+    <bpmn:sequenceFlow id="Flow_compact_17" sourceRef="notifyRejection" targetRef="endRejected"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_KYCOnboarding">
+    <bpmndi:BPMNPlane id="BPMNPlane_KYCOnboarding" bpmnElement="KYCOnboarding">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start">
+        <dc:Bounds x="0" y="22" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-45" y="62" width="126" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="uploadDocument_di" bpmnElement="uploadDocument">
+        <dc:Bounds x="99" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="verifyDocument_di" bpmnElement="verifyDocument">
+        <dc:Bounds x="259" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="documentQuality_di" bpmnElement="documentQuality" isMarkerVisible="true">
+        <dc:Bounds x="419" y="15" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="452" y="69" width="126" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sanctionsScreening_di" bpmnElement="sanctionsScreening">
+        <dc:Bounds x="622" y="140" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="riskRouting_di" bpmnElement="riskRouting" isMarkerVisible="true">
+        <dc:Bounds x="782" y="155" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="768.5" y="137" width="77" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="standardDueDiligence_di" bpmnElement="standardDueDiligence">
+        <dc:Bounds x="943" y="140" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="enhancedDueDiligence_di" bpmnElement="enhancedDueDiligence">
+        <dc:Bounds x="943" y="280" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="finalRiskClassification_di" bpmnElement="finalRiskClassification">
+        <dc:Bounds x="1103" y="140" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="classificationGateway_di" bpmnElement="classificationGateway" isMarkerVisible="true">
+        <dc:Bounds x="1276.5" y="155" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1221" y="209" width="161" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="notifyRejection_di" bpmnElement="notifyRejection">
+        <dc:Bounds x="1430.5" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="notifyApproval_di" bpmnElement="notifyApproval">
+        <dc:Bounds x="1430.5" y="140" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="endApproved_di" bpmnElement="endApproved">
+        <dc:Bounds x="1620.5" y="162" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1579" y="202" width="119" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="endRejected_di" bpmnElement="endRejected">
+        <dc:Bounds x="1620.5" y="22" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1579" y="62" width="119" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="endEscalated_di" bpmnElement="endEscalated">
+        <dc:Bounds x="1462.5" y="302" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1400" y="342" width="161" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_compact_1_di" bpmnElement="Flow_compact_1">
+        <di:waypoint x="36" y="40"/>
+        <di:waypoint x="99" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_compact_2_di" bpmnElement="Flow_compact_2">
+        <di:waypoint x="199" y="40"/>
+        <di:waypoint x="259" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_compact_3_di" bpmnElement="Flow_compact_3">
+        <di:waypoint x="359" y="40"/>
+        <di:waypoint x="419" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_compact_4_di" bpmnElement="Flow_compact_4">
+        <di:waypoint x="444" y="15"/>
+        <di:waypoint x="444" y="-40"/>
+        <di:waypoint x="149" y="-40"/>
+        <di:waypoint x="149" y="0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_compact_5_di" bpmnElement="Flow_compact_5">
+        <di:waypoint x="469" y="40"/>
+        <di:waypoint x="1430.5" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_compact_6_di" bpmnElement="Flow_compact_6">
+        <di:waypoint x="444" y="65"/>
+        <di:waypoint x="444" y="180"/>
+        <di:waypoint x="622" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_compact_7_di" bpmnElement="Flow_compact_7">
+        <di:waypoint x="722" y="180"/>
+        <di:waypoint x="782" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_compact_8_di" bpmnElement="Flow_compact_8">
+        <di:waypoint x="832" y="180"/>
+        <di:waypoint x="943" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_compact_9_di" bpmnElement="Flow_compact_9">
+        <di:waypoint x="807" y="205"/>
+        <di:waypoint x="807" y="320"/>
+        <di:waypoint x="943" y="320"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_compact_10_di" bpmnElement="Flow_compact_10">
+        <di:waypoint x="1043" y="180"/>
+        <di:waypoint x="1103" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_compact_11_di" bpmnElement="Flow_compact_11">
+        <di:waypoint x="993" y="280"/>
+        <di:waypoint x="993" y="250"/>
+        <di:waypoint x="1153" y="250"/>
+        <di:waypoint x="1153" y="220"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_compact_12_di" bpmnElement="Flow_compact_12">
+        <di:waypoint x="1203" y="180"/>
+        <di:waypoint x="1276.5" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_compact_13_di" bpmnElement="Flow_compact_13">
+        <di:waypoint x="1326.5" y="180"/>
+        <di:waypoint x="1430.5" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_compact_14_di" bpmnElement="Flow_compact_14">
+        <di:waypoint x="1301.5" y="155"/>
+        <di:waypoint x="1301.5" y="110"/>
+        <di:waypoint x="1480.5" y="110"/>
+        <di:waypoint x="1480.5" y="80"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_compact_15_di" bpmnElement="Flow_compact_15">
+        <di:waypoint x="1301.5" y="205"/>
+        <di:waypoint x="1301.5" y="320"/>
+        <di:waypoint x="1462.5" y="320"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_compact_16_di" bpmnElement="Flow_compact_16">
+        <di:waypoint x="1530.5" y="180"/>
+        <di:waypoint x="1620.5" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_compact_17_di" bpmnElement="Flow_compact_17">
+        <di:waypoint x="1530.5" y="40"/>
+        <di:waypoint x="1620.5" y="40"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

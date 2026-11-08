@@ -1,0 +1,4 @@
+s[start] > g[and] > a[end:error Failed]
+g > b[end:message Notified]
+g > c[end:escalation Escalated]
+g > d[end:signal Broadcast]

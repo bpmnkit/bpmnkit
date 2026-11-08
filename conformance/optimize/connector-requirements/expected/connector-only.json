@@ -1,0 +1,86 @@
+{
+  "findings": [
+    {
+      "category": "connector",
+      "elementIds": [
+        "c1"
+      ],
+      "fixable": false,
+      "id": "connector/missing-required",
+      "message": "\"c1\" is missing required connector value \"method\" for template \"tpl.http\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a value for \"method\"."
+    },
+    {
+      "category": "connector",
+      "elementIds": [
+        "c1"
+      ],
+      "fixable": false,
+      "id": "connector/missing-required",
+      "message": "\"c1\" is missing required connector value \"authentication.token\" for template \"tpl.http\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a value for \"authentication.token\"."
+    },
+    {
+      "category": "connector",
+      "elementIds": [
+        "c2"
+      ],
+      "fixable": false,
+      "id": "connector/missing-required",
+      "message": "\"c2\" is missing required connector value \"result\" for template \"tpl.http\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a value for \"result\"."
+    },
+    {
+      "category": "connector",
+      "elementIds": [
+        "c2"
+      ],
+      "fixable": false,
+      "id": "connector/missing-required",
+      "message": "\"c2\" is missing required connector value \"authentication.token\" for template \"tpl.http\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a value for \"authentication.token\"."
+    },
+    {
+      "category": "connector",
+      "elementIds": [
+        "c3"
+      ],
+      "fixable": false,
+      "id": "connector/missing-required",
+      "message": "\"c3\" is missing required connector value \"x\" for template \"tpl.other\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a value for \"x\"."
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 5,
+      "data-flow": 0,
+      "deploy": 0,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 0,
+      "naming": 0,
+      "pattern": 0,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 5,
+      "info": 0,
+      "warning": 0
+    },
+    "total": 5
+  }
+}

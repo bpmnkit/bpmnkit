@@ -1,0 +1,5 @@
+s[start] > g[or Which?]
+g >(A: a) x[task X] > j[or]
+g >(B: b) y[task Y] > j
+g >(C: default) z[task Z] > j
+j > e[end]

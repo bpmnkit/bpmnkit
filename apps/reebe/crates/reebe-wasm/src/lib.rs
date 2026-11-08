@@ -1,19 +1,19 @@
-use std::sync::Arc;
 use base64::Engine as Base64Engine;
-use serde::{Deserialize, Serialize};
-use wasm_bindgen::prelude::*;
-use reebe_db::{InMemoryBackend, StateBackend};
 use reebe_db::records::DbRecord;
+use reebe_db::{InMemoryBackend, StateBackend};
 use reebe_engine::{
-    Clock, EngineState, VirtualClock, JobNotifier,
     processor::{
-        RecordProcessor, Writers,
-        DeploymentProcessor, ProcessInstanceCreationProcessor, ProcessInstanceCancelProcessor,
-        BpmnElementProcessor, JobProcessor, MessageProcessor, TimerProcessor, IncidentProcessor,
-        UserTaskProcessor, SignalProcessor, IdentityProcessor, VariableDocumentProcessor,
-        AdHocSubProcessInstructionProcessor, ProcessInstanceModificationProcessor, DecisionEvaluationProcessor,
+        AdHocSubProcessInstructionProcessor, BpmnElementProcessor, DecisionEvaluationProcessor,
+        DeploymentProcessor, IdentityProcessor, IncidentProcessor, JobProcessor, MessageProcessor,
+        ProcessInstanceCancelProcessor, ProcessInstanceCreationProcessor,
+        ProcessInstanceModificationProcessor, RecordProcessor, SignalProcessor, TimerProcessor,
+        UserTaskProcessor, VariableDocumentProcessor, Writers,
     },
+    Clock, EngineState, JobNotifier, VirtualClock,
 };
+use serde::{Deserialize, Serialize};
+use std::sync::Arc;
+use wasm_bindgen::prelude::*;
 
 fn block<F: std::future::Future>(f: F) -> F::Output {
     futures::executor::block_on(f)
@@ -61,6 +61,12 @@ pub struct WasmEngine {
     partition_id: i16,
 }
 
+impl Default for WasmEngine {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[wasm_bindgen]
 impl WasmEngine {
     #[wasm_bindgen(constructor)]
@@ -79,7 +85,9 @@ impl WasmEngine {
             Arc::new(ProcessInstanceCreationProcessor),
             Arc::new(ProcessInstanceCancelProcessor),
             Arc::new(BpmnElementProcessor),
-            Arc::new(JobProcessor { job_notifier: job_notifier.clone() }),
+            Arc::new(JobProcessor {
+                job_notifier: job_notifier.clone(),
+            }),
             Arc::new(MessageProcessor),
             Arc::new(TimerProcessor),
             Arc::new(IncidentProcessor),
@@ -91,77 +99,117 @@ impl WasmEngine {
             Arc::new(ProcessInstanceModificationProcessor),
             Arc::new(DecisionEvaluationProcessor),
         ];
-        Self { backend, clock, state, processors, partition_id: 0 }
+        Self {
+            backend,
+            clock,
+            state,
+            processors,
+            partition_id: 0,
+        }
     }
 
     /// Deploy a BPMN XML string. Returns a JSON object with deployment info.
     pub fn deploy(&mut self, bpmn_xml: &str) -> Result<JsValue, JsValue> {
         let encoded = base64::engine::general_purpose::STANDARD.encode(bpmn_xml.as_bytes());
-        let result = self.submit_and_drain(
-            "DEPLOYMENT", "CREATE",
-            serde_json::json!({
-                "resources": [{ "name": "process.bpmn", "content": encoded }]
-            }),
-            "<default>",
-        ).map_err(|e| JsValue::from_str(&e))?;
+        let result = self
+            .submit_and_drain(
+                "DEPLOYMENT",
+                "CREATE",
+                serde_json::json!({
+                    "resources": [{ "name": "process.bpmn", "content": encoded }]
+                }),
+                "<default>",
+            )
+            .map_err(|e| JsValue::from_str(&e))?;
         to_js_result(&result)
     }
 
     /// Create a process instance. `variables` is a JSON string.
-    pub fn create_process_instance(&mut self, bpmn_process_id: &str, variables: &str) -> Result<JsValue, JsValue> {
+    pub fn create_process_instance(
+        &mut self,
+        bpmn_process_id: &str,
+        variables: &str,
+    ) -> Result<JsValue, JsValue> {
         let vars: serde_json::Value = serde_json::from_str(variables)
             .unwrap_or(serde_json::Value::Object(Default::default()));
-        let result = self.submit_and_drain(
-            "PROCESS_INSTANCE_CREATION", "CREATE",
-            serde_json::json!({
-                "bpmnProcessId": bpmn_process_id,
-                "version": -1,
-                "variables": vars,
-            }),
-            "<default>",
-        ).map_err(|e| JsValue::from_str(&e))?;
+        let result = self
+            .submit_and_drain(
+                "PROCESS_INSTANCE_CREATION",
+                "CREATE",
+                serde_json::json!({
+                    "bpmnProcessId": bpmn_process_id,
+                    "version": -1,
+                    "variables": vars,
+                }),
+                "<default>",
+            )
+            .map_err(|e| JsValue::from_str(&e))?;
         to_js_result(&result)
     }
 
     /// Cancel a process instance by its key.
-    pub fn cancel_process_instance(&mut self, process_instance_key: f64) -> Result<JsValue, JsValue> {
+    pub fn cancel_process_instance(
+        &mut self,
+        process_instance_key: f64,
+    ) -> Result<JsValue, JsValue> {
         let key = process_instance_key as i64;
-        let result = self.submit_and_drain(
-            "PROCESS_INSTANCE", "CANCEL",
-            serde_json::json!({ "processInstanceKey": key.to_string() }),
-            "<default>",
-        ).map_err(|e| JsValue::from_str(&e))?;
+        let result = self
+            .submit_and_drain(
+                "PROCESS_INSTANCE",
+                "CANCEL",
+                serde_json::json!({ "processInstanceKey": key.to_string() }),
+                "<default>",
+            )
+            .map_err(|e| JsValue::from_str(&e))?;
         to_js_result(&result)
     }
 
     /// Activate a job. Returns the job activation info.
-    pub fn activate_job(&mut self, key: f64, worker: &str, timeout_ms: f64) -> Result<JsValue, JsValue> {
+    pub fn activate_job(
+        &mut self,
+        key: f64,
+        worker: &str,
+        timeout_ms: f64,
+    ) -> Result<JsValue, JsValue> {
         let job_key = key as i64;
-        let result = self.submit_and_drain(
-            "JOB", "ACTIVATE",
-            serde_json::json!({
-                "jobKey": job_key.to_string(),
-                "worker": worker,
-                "timeout": timeout_ms as i64,
-            }),
-            "<default>",
-        ).map_err(|e| JsValue::from_str(&e))?;
+        let result = self
+            .submit_and_drain(
+                "JOB",
+                "ACTIVATE",
+                serde_json::json!({
+                    "jobKey": job_key.to_string(),
+                    "worker": worker,
+                    "timeout": timeout_ms as i64,
+                }),
+                "<default>",
+            )
+            .map_err(|e| JsValue::from_str(&e))?;
         to_js_result(&result)
     }
 
     /// Complete a job. `variables` is a JSON string.
     pub fn complete_job(&mut self, key: f64, variables: &str) -> Result<JsValue, JsValue> {
-        let job_key = key as i64;
-        let vars: serde_json::Value = serde_json::from_str(variables)
-            .unwrap_or(serde_json::Value::Object(Default::default()));
-        let result = self.submit_and_drain(
-            "JOB", "COMPLETE",
-            serde_json::json!({
-                "jobKey": job_key.to_string(),
-                "variables": vars,
-            }),
-            "<default>",
-        ).map_err(|e| JsValue::from_str(&e))?;
+        let payload =
+            job_complete_payload(key as i64, variables, None).map_err(|e| JsValue::from_str(&e))?;
+        let result = self
+            .submit_and_drain("JOB", "COMPLETE", payload, "<default>")
+            .map_err(|e| JsValue::from_str(&e))?;
+        to_js_result(&result)
+    }
+
+    /// Complete a job with a completion result (JSON string), as an ad-hoc
+    /// sub-process job does to activate elements or fulfil its completion condition.
+    pub fn complete_job_with_result(
+        &mut self,
+        key: f64,
+        variables: &str,
+        result: &str,
+    ) -> Result<JsValue, JsValue> {
+        let payload = job_complete_payload(key as i64, variables, Some(result))
+            .map_err(|e| JsValue::from_str(&e))?;
+        let result = self
+            .submit_and_drain("JOB", "COMPLETE", payload, "<default>")
+            .map_err(|e| JsValue::from_str(&e))?;
         to_js_result(&result)
     }
 
@@ -170,82 +218,117 @@ impl WasmEngine {
         let task_key = key as i64;
         let vars: serde_json::Value = serde_json::from_str(variables)
             .unwrap_or(serde_json::Value::Object(Default::default()));
-        let result = self.submit_and_drain(
-            "USER_TASK", "COMPLETE",
-            serde_json::json!({
-                "userTaskKey": task_key.to_string(),
-                "variables": vars,
-            }),
-            "<default>",
-        ).map_err(|e| JsValue::from_str(&e))?;
+        let result = self
+            .submit_and_drain(
+                "USER_TASK",
+                "COMPLETE",
+                serde_json::json!({
+                    "userTaskKey": task_key.to_string(),
+                    "variables": vars,
+                }),
+                "<default>",
+            )
+            .map_err(|e| JsValue::from_str(&e))?;
         to_js_result(&result)
     }
 
     /// Fail a job.
-    pub fn fail_job(&mut self, key: f64, retries: i32, error_message: &str) -> Result<JsValue, JsValue> {
+    pub fn fail_job(
+        &mut self,
+        key: f64,
+        retries: i32,
+        error_message: &str,
+    ) -> Result<JsValue, JsValue> {
         let job_key = key as i64;
-        let result = self.submit_and_drain(
-            "JOB", "FAIL",
-            serde_json::json!({
-                "jobKey": job_key.to_string(),
-                "retries": retries,
-                "errorMessage": error_message,
-            }),
-            "<default>",
-        ).map_err(|e| JsValue::from_str(&e))?;
+        let result = self
+            .submit_and_drain(
+                "JOB",
+                "FAIL",
+                serde_json::json!({
+                    "jobKey": job_key.to_string(),
+                    "retries": retries,
+                    "errorMessage": error_message,
+                }),
+                "<default>",
+            )
+            .map_err(|e| JsValue::from_str(&e))?;
         to_js_result(&result)
     }
 
     /// Throw a BPMN error from a job.
-    pub fn throw_error(&mut self, key: f64, error_code: &str, error_message: &str) -> Result<JsValue, JsValue> {
+    pub fn throw_error(
+        &mut self,
+        key: f64,
+        error_code: &str,
+        error_message: &str,
+    ) -> Result<JsValue, JsValue> {
         let job_key = key as i64;
-        let result = self.submit_and_drain(
-            "JOB", "THROW_ERROR",
-            serde_json::json!({
-                "jobKey": job_key.to_string(),
-                "errorCode": error_code,
-                "errorMessage": error_message,
-            }),
-            "<default>",
-        ).map_err(|e| JsValue::from_str(&e))?;
+        let result = self
+            .submit_and_drain(
+                "JOB",
+                "THROW_ERROR",
+                serde_json::json!({
+                    "jobKey": job_key.to_string(),
+                    "errorCode": error_code,
+                    "errorMessage": error_message,
+                }),
+                "<default>",
+            )
+            .map_err(|e| JsValue::from_str(&e))?;
         to_js_result(&result)
     }
 
     /// Publish a message. `variables` is a JSON string.
-    pub fn publish_message(&mut self, name: &str, correlation_key: &str, variables: &str) -> Result<JsValue, JsValue> {
+    pub fn publish_message(
+        &mut self,
+        name: &str,
+        correlation_key: &str,
+        variables: &str,
+    ) -> Result<JsValue, JsValue> {
         let vars: serde_json::Value = serde_json::from_str(variables)
             .unwrap_or(serde_json::Value::Object(Default::default()));
-        let result = self.submit_and_drain(
-            "MESSAGE", "PUBLISH",
-            serde_json::json!({
-                "messageName": name,
-                "correlationKey": correlation_key,
-                "variables": vars,
-                "timeToLive": 3600000,
-            }),
-            "<default>",
-        ).map_err(|e| JsValue::from_str(&e))?;
+        let result = self
+            .submit_and_drain(
+                "MESSAGE",
+                "PUBLISH",
+                serde_json::json!({
+                    "messageName": name,
+                    "correlationKey": correlation_key,
+                    "variables": vars,
+                    "timeToLive": 3600000,
+                }),
+                "<default>",
+            )
+            .map_err(|e| JsValue::from_str(&e))?;
         to_js_result(&result)
     }
 
     /// Broadcast a signal. `variables` is a JSON string.
-    pub fn broadcast_signal(&mut self, signal_name: &str, variables: &str) -> Result<JsValue, JsValue> {
+    pub fn broadcast_signal(
+        &mut self,
+        signal_name: &str,
+        variables: &str,
+    ) -> Result<JsValue, JsValue> {
         let vars: serde_json::Value = serde_json::from_str(variables)
             .unwrap_or(serde_json::Value::Object(Default::default()));
-        let result = self.submit_and_drain(
-            "SIGNAL", "BROADCAST",
-            serde_json::json!({
-                "signalName": signal_name,
-                "variables": vars,
-            }),
-            "<default>",
-        ).map_err(|e| JsValue::from_str(&e))?;
+        let result = self
+            .submit_and_drain(
+                "SIGNAL",
+                "BROADCAST",
+                serde_json::json!({
+                    "signalName": signal_name,
+                    "variables": vars,
+                }),
+                "<default>",
+            )
+            .map_err(|e| JsValue::from_str(&e))?;
         to_js_result(&result)
     }
 
     /// Advance the virtual clock by `ms` milliseconds, then process due timers.
     pub fn advance_clock(&mut self, ms: f64) -> Result<JsValue, JsValue> {
-        self.clock.advance(chrono::Duration::milliseconds(ms as i64));
+        self.clock
+            .advance(chrono::Duration::milliseconds(ms as i64));
         self.tick()
     }
 
@@ -264,10 +347,12 @@ impl WasmEngine {
             block(self.backend.update_timer_state(timer.key, "FIRED"))
                 .map_err(|e| JsValue::from_str(&e.to_string()))?;
             self.submit_and_drain(
-                "TIMER", "TRIGGER",
+                "TIMER",
+                "TRIGGER",
                 serde_json::json!({ "timerKey": timer.key.to_string() }),
                 &timer.tenant_id,
-            ).ok();
+            )
+            .ok();
         }
         Ok(JsValue::NULL)
     }
@@ -290,7 +375,9 @@ impl WasmEngine {
 
     /// Get jobs that are in ACTIVATABLE state for a given job type.
     pub fn get_activatable_jobs(&self, job_type: &str) -> JsValue {
-        let jobs: Vec<_> = self.backend.list_jobs()
+        let jobs: Vec<_> = self
+            .backend
+            .list_jobs()
             .into_iter()
             .filter(|j| j.state == "ACTIVATABLE" && j.job_type == job_type)
             .collect();
@@ -308,6 +395,28 @@ impl WasmEngine {
         let records = self.backend.list_records();
         to_js(&records)
     }
+}
+
+/// Build the JOB COMPLETE command payload. Unparseable `variables` fall back to
+/// `{}` (long-standing `complete_job` behaviour); a malformed `result` is an error
+/// because silently dropping it would complete an ad-hoc job with no effect.
+fn job_complete_payload(
+    job_key: i64,
+    variables: &str,
+    result: Option<&str>,
+) -> Result<serde_json::Value, String> {
+    let vars: serde_json::Value =
+        serde_json::from_str(variables).unwrap_or(serde_json::Value::Object(Default::default()));
+    let mut payload = serde_json::json!({
+        "jobKey": job_key.to_string(),
+        "variables": vars,
+    });
+    if let Some(r) = result {
+        let parsed: serde_json::Value =
+            serde_json::from_str(r).map_err(|e| format!("invalid job result JSON: {e}"))?;
+        payload["result"] = parsed;
+    }
+    Ok(payload)
 }
 
 impl WasmEngine {
@@ -350,8 +459,12 @@ impl WasmEngine {
         let mut first_response: Option<serde_json::Value> = None;
 
         loop {
-            let records = block(self.backend.fetch_commands_from(self.partition_id, last_position + 1, 100))
-                .map_err(|e| e.to_string())?;
+            let records = block(self.backend.fetch_commands_from(
+                self.partition_id,
+                last_position + 1,
+                100,
+            ))
+            .map_err(|e| e.to_string())?;
 
             if records.is_empty() {
                 break;
@@ -384,8 +497,9 @@ impl WasmEngine {
                 let total = writers.events.len() + writers.commands.len();
                 if total > 0 {
                     let now_ms = self.clock.now().timestamp_millis();
-                    let first_pos = block(self.backend.next_position_batch(self.partition_id, total))
-                        .map_err(|e| e.to_string())?;
+                    let first_pos =
+                        block(self.backend.next_position_batch(self.partition_id, total))
+                            .map_err(|e| e.to_string())?;
 
                     let mut db_records = Vec::with_capacity(total);
 
@@ -430,5 +544,39 @@ impl WasmEngine {
 
         // No processor matched — not an error
         Ok(None)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_json::json;
+
+    #[test]
+    fn payload_without_result_matches_complete_job() {
+        let p = job_complete_payload(7, "{\"a\":1}", None).unwrap();
+        assert_eq!(p, json!({"jobKey":"7","variables":{"a":1}}));
+    }
+
+    #[test]
+    fn payload_carries_result() {
+        let p = job_complete_payload(
+            7,
+            "{}",
+            Some("{\"activateElements\":[{\"elementId\":\"T1\"}]}"),
+        )
+        .unwrap();
+        assert_eq!(p["result"]["activateElements"][0]["elementId"], "T1");
+    }
+
+    #[test]
+    fn payload_rejects_invalid_result_json() {
+        assert!(job_complete_payload(7, "{}", Some("{")).is_err());
+    }
+
+    #[test]
+    fn payload_defaults_bad_variables_to_empty_object() {
+        let p = job_complete_payload(7, "not json", None).unwrap();
+        assert_eq!(p["variables"], json!({}));
     }
 }

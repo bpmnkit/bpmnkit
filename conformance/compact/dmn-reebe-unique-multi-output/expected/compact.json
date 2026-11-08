@@ -1,0 +1,63 @@
+{
+  "decisions": [
+    {
+      "hitPolicy": "UNIQUE",
+      "id": "riskScore",
+      "inputs": [
+        {
+          "expression": "amount",
+          "id": "i1",
+          "label": "amount"
+        }
+      ],
+      "name": "Risk Score",
+      "outputs": [
+        {
+          "id": "o1",
+          "name": "riskLevel",
+          "typeRef": "string"
+        },
+        {
+          "id": "o2",
+          "name": "scoreValue",
+          "typeRef": "integer"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r1",
+          "inputs": [
+            ">= 10000"
+          ],
+          "outputs": [
+            "\"HIGH\"",
+            "90"
+          ]
+        },
+        {
+          "id": "r2",
+          "inputs": [
+            ">= 1000"
+          ],
+          "outputs": [
+            "\"MEDIUM\"",
+            "50"
+          ]
+        },
+        {
+          "id": "r3",
+          "inputs": [
+            "< 1000"
+          ],
+          "outputs": [
+            "\"LOW\"",
+            "10"
+          ]
+        }
+      ]
+    }
+  ],
+  "id": "Definitions_risk",
+  "inputData": [],
+  "name": "DRD"
+}

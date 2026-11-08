@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["intermediateCatchEvent","c",{"timerDate":"2031-05-05T10:00:00Z"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

@@ -1,0 +1,178 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "t",
+            "jobType": "work",
+            "name": "Work",
+            "type": "serviceTask"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "t",
+            "eventType": "message",
+            "id": "b1",
+            "name": "Cancel",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "x1",
+            "name": "X1",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "t",
+            "eventType": "signal",
+            "id": "b2",
+            "name": "Stop",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "x2",
+            "name": "X2",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "t",
+            "eventType": "escalation",
+            "id": "b3",
+            "name": "Esc",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "x3",
+            "name": "X3",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "t",
+            "eventType": "compensate",
+            "id": "b4",
+            "name": "Undo",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "x4",
+            "name": "Undo it",
+            "type": "task"
+          },
+          {
+            "attachedTo": "t",
+            "condition": "= a > 1",
+            "eventType": "conditional",
+            "id": "b5",
+            "name": "Cond",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "x5",
+            "name": "X5",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "t",
+            "eventType": "timer",
+            "id": "b6",
+            "name": "Late",
+            "timerDuration": "PT1H",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "x6",
+            "name": "X6",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "t",
+            "eventType": "error",
+            "id": "b7",
+            "name": "Fail",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "x7",
+            "name": "X7",
+            "type": "endEvent"
+          },
+          {
+            "id": "x4_end",
+            "name": "Process completed",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "e"
+          },
+          {
+            "from": "b1",
+            "id": "Flow_3",
+            "to": "x1"
+          },
+          {
+            "from": "b2",
+            "id": "Flow_4",
+            "to": "x2"
+          },
+          {
+            "from": "b3",
+            "id": "Flow_5",
+            "to": "x3"
+          },
+          {
+            "from": "b4",
+            "id": "Flow_6",
+            "to": "x4"
+          },
+          {
+            "from": "b5",
+            "id": "Flow_7",
+            "to": "x5"
+          },
+          {
+            "from": "b6",
+            "id": "Flow_8",
+            "to": "x6"
+          },
+          {
+            "from": "b7",
+            "id": "Flow_9",
+            "to": "x7"
+          },
+          {
+            "from": "x4",
+            "id": "Flow_10",
+            "to": "x4_end"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "added end event \"x4_end\" after \"x4\"",
+    "named 8 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

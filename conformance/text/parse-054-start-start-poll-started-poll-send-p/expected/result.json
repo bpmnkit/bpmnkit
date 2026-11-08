@@ -1,0 +1,88 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "Poll started",
+            "type": "startEvent"
+          },
+          {
+            "id": "poll",
+            "jobType": "poll",
+            "name": "Poll external system",
+            "type": "sendTask"
+          },
+          {
+            "eventType": "timer",
+            "id": "timeout",
+            "name": "0:PT5M",
+            "timerDuration": "PT5M",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "fail",
+            "name": "Poll failed",
+            "type": "endEvent"
+          },
+          {
+            "eventType": "message",
+            "id": "get",
+            "name": "Report from external system",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "done",
+            "name": "Poll successful",
+            "type": "endEvent"
+          },
+          {
+            "id": "poll_split",
+            "type": "eventBasedGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "poll"
+          },
+          {
+            "from": "poll_split",
+            "id": "Flow_2",
+            "to": "timeout"
+          },
+          {
+            "from": "timeout",
+            "id": "Flow_3",
+            "to": "fail"
+          },
+          {
+            "from": "poll_split",
+            "id": "Flow_4",
+            "to": "get"
+          },
+          {
+            "from": "get",
+            "id": "Flow_5",
+            "to": "done"
+          },
+          {
+            "from": "poll",
+            "id": "Flow_6",
+            "to": "poll_split"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "split the flows out of \"poll\" with event gateway \"poll_split\""
+  ],
+  "problems": [],
+  "questions": []
+}

@@ -1,0 +1,3 @@
+s[start Go] > a[task Pack]
+a > b[task Print label]
+a > c[task Invoice]

@@ -1,0 +1,131 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "documentation": "Definitions-level documentation.",
+  "errors": [
+    {
+      "errorCode": "PAYMENT_FAILED",
+      "id": "Error_payment",
+      "name": "PaymentFailed",
+      "unknownAttributes": {}
+    }
+  ],
+  "escalations": [
+    {
+      "escalationCode": "MANUAL_REVIEW",
+      "id": "Escalation_manual",
+      "name": "NeedsManualReview",
+      "unknownAttributes": {}
+    }
+  ],
+  "exporter": "BPMN Kit",
+  "exporterVersion": "0.1.0",
+  "id": "Definitions_roots",
+  "messages": [
+    {
+      "extensionElements": [
+        {
+          "attributes": {
+            "correlationKey": "=orderId"
+          },
+          "children": [],
+          "name": "zeebe:subscription"
+        }
+      ],
+      "id": "Message_order_placed",
+      "name": "OrderPlaced",
+      "unknownAttributes": {}
+    },
+    {
+      "extensionElements": [
+        {
+          "attributes": {
+            "correlationKey": "=cancellationId"
+          },
+          "children": [],
+          "name": "zeebe:subscription"
+        }
+      ],
+      "id": "Message_cancelled",
+      "name": "OrderCancelled",
+      "unknownAttributes": {}
+    }
+  ],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "documentation": "Process-level documentation.",
+      "extensionElements": [
+        {
+          "attributes": {
+            "value": "v3"
+          },
+          "children": [],
+          "name": "zeebe:versionTag"
+        }
+      ],
+      "flowElements": [
+        {
+          "eventDefinitions": [
+            {
+              "id": "MED_start",
+              "messageRef": "Message_order_placed",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [],
+          "id": "Start_order",
+          "incoming": [],
+          "outgoing": [
+            "Flow_start_end"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "End_done",
+          "incoming": [
+            "Flow_start_end"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "Process_roots",
+      "isExecutable": true,
+      "name": "Root element carrier",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_start_end",
+          "sourceRef": "Start_order",
+          "targetRef": "End_done",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [
+    {
+      "id": "Signal_halt",
+      "name": "HaltProcessing",
+      "unknownAttributes": {}
+    }
+  ],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.6.0"
+  }
+}

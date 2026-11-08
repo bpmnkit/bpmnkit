@@ -51,16 +51,6 @@ export function hasBuilderMethod(support: BuilderSupport): support is BuilderMet
 }
 
 /**
- * Data elements are not sequence-flow participants, and the fluent builder has
- * no data-association API. Every builder method appends to the chain and wires
- * a sequence flow from the previous node, so a `.dataObject()` would either
- * emit invalid BPMN or leave an orphan shape. Parsing and serialising keep
- * these types; authoring them is a separate API, not a chain method.
- */
-const NOT_A_CHAIN_PARTICIPANT =
-	"Connected by data associations, not sequence flows; the chain has nowhere to put it"
-
-/**
  * Every `BpmnElementType`, mapped to the builder method that creates it.
  *
  * Adding a type to the union without adding it here is a compile error.
@@ -97,10 +87,10 @@ export const BUILDER_COVERAGE: Record<BpmnElementType, BuilderSupport> = {
 	eventSubProcess: { method: "eventSubProcess", emits: "subProcess" },
 	transaction: { method: "transaction" },
 
-	// ---- Data ----
-	dataObject: { exempt: NOT_A_CHAIN_PARTICIPANT },
-	dataObjectReference: { exempt: NOT_A_CHAIN_PARTICIPANT },
-	dataStoreReference: { exempt: NOT_A_CHAIN_PARTICIPANT },
+	// ---- Data: non-chain methods — they add no sequence flow and leave the cursor alone ----
+	dataObject: { method: "dataObject" },
+	dataObjectReference: { method: "dataObjectReference" },
+	dataStoreReference: { method: "dataStoreReference" },
 }
 
 /**

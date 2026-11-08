@@ -47,6 +47,80 @@ function capLength(id: string): string {
 	return id.slice(0, MAX_ID_LENGTH - suffix.length) + suffix
 }
 
+/**
+ * Builder-side facts about a flow that must not leak into the XML: the branch
+ * id a branch flow is told apart by (its label is free text and may change
+ * without renaming the flow), and ids the caller chose. Keyed by the flow
+ * object, which the builder pushes into the scope by reference.
+ */
+const branchIds = new WeakMap<BpmnSequenceFlow, string>()
+const explicitIds = new WeakSet<BpmnSequenceFlow>()
+
+/** Records the branch id to build `flow`'s discriminator from, instead of its label. */
+export function setFlowDiscriminatorSource(flow: BpmnSequenceFlow, branchId: string): void {
+	branchIds.set(flow, branchId)
+}
+
+/** Marks `flow.id` as caller-chosen: `assignStableFlowIds` keeps it and reserves it. */
+export function markExplicitFlowId(flow: BpmnSequenceFlow): void {
+	explicitIds.add(flow)
+}
+
+/** Gives `to`, a copy of `flow`, the builder-side facts recorded for `flow`. */
+export function copyFlowTags(flow: BpmnSequenceFlow, to: BpmnSequenceFlow): void {
+	const branchId = branchIds.get(flow)
+	if (branchId !== undefined) branchIds.set(to, branchId)
+	if (explicitIds.has(flow)) explicitIds.add(to)
+}
+
+/** A scope's contents, as far as id checking needs: sub-processes carry both lists. */
+interface IdScope {
+	flowElements: BpmnFlowElement[]
+	sequenceFlows: BpmnSequenceFlow[]
+}
+
+function isIdScope(element: BpmnFlowElement): element is BpmnFlowElement & IdScope {
+	return "flowElements" in element && "sequenceFlows" in element
+}
+
+/**
+ * Throws when a caller-chosen flow id is also the id of another element or
+ * flow anywhere in the process, nested sub-processes included.
+ * `assignStableFlowIds` only sees one scope, and BPMN ids are unique per
+ * document; run this once the outermost scope is final.
+ */
+export function assertExplicitFlowIdsUnique(
+	elements: BpmnFlowElement[],
+	flows: BpmnSequenceFlow[],
+): void {
+	const owners = new Map<string, { owner: object; label: string }[]>()
+	const add = (id: string, owner: object, label: string) => {
+		const list = owners.get(id)
+		if (list) list.push({ owner, label })
+		else owners.set(id, [{ owner, label }])
+	}
+	const explicit: BpmnSequenceFlow[] = []
+	const walk = (scopeElements: BpmnFlowElement[], scopeFlows: BpmnSequenceFlow[]) => {
+		for (const element of scopeElements) {
+			add(element.id, element, `element "${element.id}"`)
+			if (isIdScope(element)) walk(element.flowElements, element.sequenceFlows)
+		}
+		for (const flow of scopeFlows) {
+			add(flow.id, flow, `the flow ${flow.sourceRef} -> ${flow.targetRef}`)
+			if (explicitIds.has(flow)) explicit.push(flow)
+		}
+	}
+	walk(elements, flows)
+	for (const flow of explicit) {
+		const other = owners.get(flow.id)?.find((entry) => entry.owner !== flow)
+		if (other) {
+			throw new Error(
+				`Flow id "${flow.id}" (${flow.sourceRef} -> ${flow.targetRef}) is already used by ${other.label}. Pick a different flowId().`,
+			)
+		}
+	}
+}
+
 /** The id a flow gets when it is the only one between its two endpoints. */
 function baseId(flow: BpmnSequenceFlow): string {
 	return capLength(`Flow_${ncName(flow.sourceRef)}_${ncName(flow.targetRef)}`)
@@ -58,7 +132,8 @@ function baseId(flow: BpmnSequenceFlow): string {
  * `uniqueId` to number genuinely identical edges.
  */
 function discriminator(flow: BpmnSequenceFlow): string | undefined {
-	if (flow.name !== undefined && flow.name.trim().length > 0) return ncName(slugify(flow.name))
+	const source = branchIds.get(flow) ?? flow.name
+	if (source !== undefined && source.trim().length > 0) return ncName(slugify(source))
 	const condition = flow.conditionExpression?.text
 	if (condition !== undefined && condition.trim().length > 0) return `c${shortHash(condition)}`
 	return undefined
@@ -83,15 +158,28 @@ export function assignStableFlowIds(
 	flows: BpmnSequenceFlow[],
 	preserve?: ReadonlySet<string>,
 ): void {
-	const renamable = preserve === undefined ? flows : flows.filter((flow) => !preserve.has(flow.id))
-	if (renamable.length === 0) return
-
+	const isFixed = (flow: BpmnSequenceFlow) => explicitIds.has(flow) || preserve?.has(flow.id)
 	// Reserved up front so a derived id can never land on an element id or on a
 	// flow id this pass is not allowed to touch.
-	const taken = new Set<string>(elements.map((element) => element.id))
-	if (preserve !== undefined) {
-		for (const flow of flows) if (preserve.has(flow.id)) taken.add(flow.id)
+	const taken = new Set<string>()
+	const owners = new Map<string, string>()
+	for (const element of elements) {
+		taken.add(element.id)
+		owners.set(element.id, `element "${element.id}"`)
 	}
+	for (const flow of flows) {
+		if (!isFixed(flow)) continue
+		if (explicitIds.has(flow) && taken.has(flow.id)) {
+			throw new Error(
+				`Flow id "${flow.id}" (${flow.sourceRef} -> ${flow.targetRef}) is already used by ${owners.get(flow.id) ?? "another flow"}. Pick a different flowId().`,
+			)
+		}
+		taken.add(flow.id)
+		owners.set(flow.id, `the flow ${flow.sourceRef} -> ${flow.targetRef}`)
+	}
+
+	const renamable = flows.filter((flow) => !isFixed(flow))
+	if (renamable.length === 0) return
 
 	// Flows sharing a base id all get a discriminator, so which one was built
 	// first — and so the order branches were declared in — does not decide who
@@ -139,4 +227,36 @@ export function rootDefinitionId(
 ): string {
 	const taken = new Set(existing.map((definition) => definition.id))
 	return uniqueId(capLength(`${prefix}_${ncName(slugify(source))}`), taken)
+}
+
+/**
+ * Id for an event definition that carries none. Zeebe rejects a definition
+ * without an `id` at deploy time, so one is derived from the owning event
+ * (`Start_TimerEventDefinition`), with a counter when an event holds several
+ * of one kind. Ids already present on sibling definitions are never reused.
+ */
+export function eventDefinitionId(
+	ownerId: string,
+	defs: readonly { id?: string; type: string }[],
+	index: number,
+): string {
+	const def = defs[index]
+	if (def === undefined) return `${ncName(ownerId)}_EventDefinition`
+	const kind = def.type.charAt(0).toUpperCase() + def.type.slice(1)
+	const base = `${ncName(ownerId)}_${kind}EventDefinition`
+	const taken = new Set(defs.map((d) => d.id).filter((id): id is string => id !== undefined))
+	const sameKind = defs.slice(0, index + 1).filter((d) => d.type === def.type).length
+	let candidate = sameKind > 1 ? `${base}_${sameKind}` : base
+	for (let n = sameKind + 1; taken.has(candidate); n++) candidate = `${base}_${n}`
+	return candidate
+}
+
+/** Gives every id-less definition of `defs` a derived id; see `eventDefinitionId`. */
+export function assignEventDefinitionIds(
+	ownerId: string,
+	defs: { id?: string; type: string }[],
+): void {
+	defs.forEach((d, i) => {
+		if (d.id === undefined) d.id = eventDefinitionId(ownerId, defs, i)
+	})
 }

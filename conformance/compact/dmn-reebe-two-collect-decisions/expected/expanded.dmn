@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="Definitions_multi" name="DRD" namespace="http://bpmn.io/schema/dmn">
+  <decision id="multiValidation" name="Multi-field Validation">
+    <decisionTable id="decisionTable_0000004" hitPolicy="COLLECT">
+      <input id="i1" label="name">
+        <inputExpression id="inputExpression_0000001">
+          <text>name</text>
+        </inputExpression>
+      </input>
+      <output id="o1" name="error" typeRef="string"/>
+      <rule id="r1">
+        <inputEntry id="inputEntry_0_0000002">
+          <text>null</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000003">
+          <text>"name is required"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="ageValidation" name="Age Validation">
+    <decisionTable id="decisionTable_0000008" hitPolicy="COLLECT">
+      <input id="i2" label="age">
+        <inputExpression id="inputExpression_0000005">
+          <text>age</text>
+        </inputExpression>
+      </input>
+      <output id="o2" name="error" typeRef="string"/>
+      <rule id="r2">
+        <inputEntry id="inputEntry_0_0000006">
+          <text>&lt; 0</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000007">
+          <text>"age cannot be negative"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="multiValidation">
+        <dc:Bounds height="80" width="180" x="160" y="100"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="ageValidation">
+        <dc:Bounds height="80" width="180" x="160" y="220"/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

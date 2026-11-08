@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_agent</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:adHocSubProcess id="agent" zeebe:modelerTemplate="io.camunda.connectors.agenticai.aiagent.jobworker.v1" zeebe:modelerTemplateVersion="6" name="AI Agent" cancelRemainingInstances="false">
+      <bpmn:documentation>agent</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda.agenticai:aiagent-job-worker:1" retries="4"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=x" target="y"/>
+          <zeebe:output source="=a" target="b"/>
+        </zeebe:ioMapping>
+        <zeebe:taskHeaders>
+          <zeebe:header key="k" value="v"/>
+        </zeebe:taskHeaders>
+        <zeebe:properties>
+          <zeebe:property name="p" value="q"/>
+        </zeebe:properties>
+        <zeebe:agentDefinition agentType="default"/>
+        <zeebe:adHoc activeElementsCollection="=toolCalls" outputCollection="toolCallResults" outputElement="={id: id}"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_s_agent</bpmn:incoming>
+      <bpmn:outgoing>Flow_agent_e</bpmn:outgoing>
+      <bpmn:serviceTask id="toolA" name="A">
+        <bpmn:documentation>tool a</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="a"/>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="toolB" name="B">
+        <bpmn:documentation>tool b</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="b"/>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:completionCondition xsi:type="bpmn:tFormalExpression">=done</bpmn:completionCondition>
+    </bpmn:adHocSubProcess>
+    <bpmn:endEvent id="e">
+      <bpmn:incoming>Flow_agent_e</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s_agent" sourceRef="s" targetRef="agent"/>
+    <bpmn:sequenceFlow id="Flow_agent_e" sourceRef="agent" targetRef="e"/>
+  </bpmn:process>
+</bpmn:definitions>
+

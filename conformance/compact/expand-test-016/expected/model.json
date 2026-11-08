@@ -1,0 +1,158 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_P",
+      "plane": {
+        "bpmnElement": "P",
+        "edges": [
+          {
+            "bpmnElement": "Flow_S_Task_Y",
+            "id": "Flow_S_Task_Y_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 36,
+                "y": 40
+              },
+              {
+                "x": 96,
+                "y": 40
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_Task_Y_E",
+            "id": "Flow_Task_Y_E_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 196,
+                "y": 40
+              },
+              {
+                "x": 256,
+                "y": 40
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_P",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 0,
+              "y": 22
+            },
+            "bpmnElement": "S",
+            "id": "S_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 96,
+              "y": 0
+            },
+            "bpmnElement": "Task_Y",
+            "id": "Task_Y_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 256,
+              "y": 22
+            },
+            "bpmnElement": "E",
+            "id": "E_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "S",
+          "incoming": [],
+          "outgoing": [
+            "Flow_S_Task_Y"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "documentation": "Approve if the amount exceeds 500.",
+          "extensionElements": [],
+          "id": "Task_Y",
+          "incoming": [
+            "Flow_S_Task_Y"
+          ],
+          "name": "Y",
+          "outgoing": [
+            "Flow_Task_Y_E"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "E",
+          "incoming": [
+            "Flow_Task_Y_E"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "P",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_S_Task_Y",
+          "sourceRef": "S",
+          "targetRef": "Task_Y",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_Task_Y_E",
+          "sourceRef": "Task_Y",
+          "targetRef": "E",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

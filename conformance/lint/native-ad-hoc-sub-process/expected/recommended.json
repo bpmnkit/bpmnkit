@@ -1,0 +1,281 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 17,
+    "info": 1,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "category": "naming",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"adhoc\" (adHocSubProcess) has no name.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"adhoc\" has no error boundary event.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Started\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "bpmnlintRule": "ad-hoc-sub-process",
+      "category": "flow",
+      "elementIds": [
+        "s"
+      ],
+      "fixable": false,
+      "id": "flow/ad-hoc-start-end-event",
+      "message": "Start event \"s\" is not allowed in ad-hoc sub-process \"adhoc\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Remove it — an ad-hoc sub-process has no start or end events; its activities run on demand."
+    },
+    {
+      "bpmnlintRule": "ad-hoc-sub-process",
+      "category": "flow",
+      "elementIds": [
+        "e"
+      ],
+      "fixable": false,
+      "id": "flow/ad-hoc-start-end-event",
+      "message": "End event \"e\" is not allowed in ad-hoc sub-process \"adhoc\".",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Remove it — an ad-hoc sub-process has no start or end events; its activities run on demand."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "s"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "startEvent element \"s\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "task element \"t\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "e"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "endEvent element \"e\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"start\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "a"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"a\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"end\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"adhoc\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "s"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"s\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"t\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "e"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"e\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f1"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f1\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f2"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f2\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-disconnected",
+      "category": "flow",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": false,
+      "id": "flow/disconnected",
+      "message": "Element \"adhoc\" (adHocSubProcess) is not connected to any sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to the process flow or remove it."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"adhoc\" (adHocSubProcess) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-start",
+      "category": "flow",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-start",
+      "message": "Element \"adhoc\" (adHocSubProcess) has no incoming sequence flow, so it starts the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it from a start event or an upstream element."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 20
+}

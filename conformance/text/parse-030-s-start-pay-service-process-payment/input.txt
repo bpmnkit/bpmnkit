@@ -1,0 +1,2 @@
+s[start] > pay[service Process payment] > done[end Paid]
+pay[boundary:error Payment failed | on=pay] > failed[end:error Failure notified]

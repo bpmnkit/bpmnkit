@@ -12,6 +12,8 @@ Extract the `.bpmn` filename (find the single `.bpmn` in cwd, or ask, if not giv
 
 ```sh
 casen lint lint <file>.bpmn --profile deploy
+# with forms or decisions shipping alongside: one call checks them all and their references
+casen check <file>.bpmn <name>.form <name>.dmn --deploy --json
 ```
 
 If this reports any errors, stop and fix them first (or run `/review`) — do not deploy with deploy-profile errors.

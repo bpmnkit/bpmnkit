@@ -1,0 +1,9 @@
+[
+  { "decision": "discount", "context": { "amount": { "t": "number", "v": "10" } } },
+  { "decision": "discount", "context": { "amount": { "t": "number", "v": "75" } } },
+  { "decision": "discount", "context": { "amount": { "t": "number", "v": "200" } } },
+  { "decision": "discount", "context": { "amount": { "t": "number", "v": "400" } } },
+  { "decision": "discount", "context": { "amount": { "t": "number", "v": "600" } } },
+  { "decision": "same_output", "context": { "amount": { "t": "number", "v": "1" } } },
+  { "decision": "same_output", "context": { "amount": { "t": "number", "v": "-1" } } }
+]

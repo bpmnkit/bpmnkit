@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_human"
+      ],
+      "fixable": false,
+      "id": "compat/no-priority-definition",
+      "message": "User task \"Approve\" has a zeebe:priorityDefinition, which needs Camunda 8.6 or newer; this model targets Camunda 8.5.",
+      "processId": "Process_zeebe",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.6 or newer (modeler:executionPlatformVersion), or remove it."
+    }
+  ]
+}

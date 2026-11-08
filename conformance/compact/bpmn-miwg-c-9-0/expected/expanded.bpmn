@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="_5SVkEIXnEeSmwfgVk-ryvQ" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="customer_onboarding_en" name="Customer Onboarding" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_ApplicationReceived" name="Application received">
+      <bpmn:extensionElements>
+        <zeebe:ioMapping>
+          <zeebe:output source="= string(now())" target="documentReferenceId"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>SequenceFlow_6</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:subProcess id="Activity_1ke2ixr">
+      <bpmn:endEvent id="EndMessageEvent_Timeout" name="Timeout handled">
+        <bpmn:documentation>Ends the subprocess and send message timeout handled</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="timeoutHandled"/>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0dppbeu</bpmn:incoming>
+        <bpmn:messageEventDefinition id="EndMessageEvent_Timeout_MessageEventDefinition"/>
+      </bpmn:endEvent>
+      <bpmn:startEvent id="StartErrorEvent_Timeout" name="Timeout">
+        <bpmn:documentation>Catches timeout error event and starts the subprocess</bpmn:documentation>
+        <bpmn:outgoing>Flow_151qlxc</bpmn:outgoing>
+        <bpmn:errorEventDefinition id="StartErrorEvent_Timeout_ErrorEventDefinition"/>
+      </bpmn:startEvent>
+      <bpmn:userTask id="UserTask_HandleTimeout" name="Handle Timeout">
+        <bpmn:documentation>Manually handles the timeout</bpmn:documentation>
+        <bpmn:incoming>Flow_151qlxc</bpmn:incoming>
+        <bpmn:outgoing>Flow_0dppbeu</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:sequenceFlow id="Flow_151qlxc" sourceRef="StartErrorEvent_Timeout" targetRef="UserTask_HandleTimeout"/>
+      <bpmn:sequenceFlow id="Flow_0dppbeu" sourceRef="UserTask_HandleTimeout" targetRef="EndMessageEvent_Timeout"/>
+    </bpmn:subProcess>
+    <bpmn:subProcess id="Activity_0vp33kx">
+      <bpmn:startEvent id="StartMessageEvent_CancellationRequested" name="Cancelation requested">
+        <bpmn:documentation>Customer onboarding cancellation message received</bpmn:documentation>
+        <bpmn:outgoing>Flow_12nmks0</bpmn:outgoing>
+        <bpmn:messageEventDefinition id="StartMessageEvent_CancellationRequested_MessageEventDefinition"/>
+      </bpmn:startEvent>
+      <bpmn:serviceTask id="ServiceTask_CancelApplication" name="Cancel application">
+        <bpmn:documentation>Cancel application</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="cancelApplication"/>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_12nmks0</bpmn:incoming>
+        <bpmn:outgoing>Flow_19iipc6</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:endEvent id="EndMessageEvent_InformCustomer" name="Customer notified about successful cancelation">
+        <bpmn:documentation>Inform customer of a successful cancelation</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="informCustomerSuccessfulCancelation"/>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_0qrakss</bpmn:incoming>
+        <bpmn:messageEventDefinition id="EndMessageEvent_InformCustomer_MessageEventDefinition"/>
+      </bpmn:endEvent>
+      <bpmn:parallelGateway id="ParallelGateway_CancelApplication">
+        <bpmn:incoming>Flow_19iipc6</bpmn:incoming>
+        <bpmn:outgoing>Flow_0qrakss</bpmn:outgoing>
+        <bpmn:outgoing>Flow_1jml1az</bpmn:outgoing>
+      </bpmn:parallelGateway>
+      <bpmn:endEvent id="EndMessageEvent_InformOperations" name="Operations Team notified about successful cancelation">
+        <bpmn:documentation>Inform operations team of a successful cancelation</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="informOperationsSuccessfulCancelation"/>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_1jml1az</bpmn:incoming>
+        <bpmn:messageEventDefinition id="EndMessageEvent_InformOperations_MessageEventDefinition"/>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_12nmks0" sourceRef="StartMessageEvent_CancellationRequested" targetRef="ServiceTask_CancelApplication"/>
+      <bpmn:sequenceFlow id="Flow_19iipc6" sourceRef="ServiceTask_CancelApplication" targetRef="ParallelGateway_CancelApplication"/>
+      <bpmn:sequenceFlow id="Flow_0qrakss" sourceRef="ParallelGateway_CancelApplication" targetRef="EndMessageEvent_InformCustomer"/>
+      <bpmn:sequenceFlow id="Flow_1jml1az" sourceRef="ParallelGateway_CancelApplication" targetRef="EndMessageEvent_InformOperations"/>
+    </bpmn:subProcess>
+    <bpmn:callActivity id="Activity_ManualCheck" name="Manual Check">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="ManualCheck"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_Yellow</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ik8h65</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="EndEvent_ApplicationIssued" name="Application&#10; issued">
+      <bpmn:documentation>Customer onboarding process end application issued</bpmn:documentation>
+      <bpmn:incoming>SequenceFlow_11</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="SendTask_SendPolicy" zeebe:modelerTemplate="io.camunda.connectors.SendGrid.v1.template" name="Send confirmation">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:sendgrid:1"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="demo@camunda.com" target="from.email"/>
+          <zeebe:input source="d-0d0120b0c7f148ef8a1c262f2cf07092" target="template.id"/>
+          <zeebe:input source="secrets.SENDGRID_DEMO" target="apiKey"/>
+          <zeebe:input source="= corporation" target="from.name"/>
+          <zeebe:input source="= applicant.name" target="to.name"/>
+          <zeebe:input source="= applicant.email" target="to.email"/>
+          <zeebe:input source="= {&#10;    &quot;name&quot;: applicant.name,&#10;    &quot;applicationNumber&quot;: applicationNumber,&#10;    &quot;product&quot;: product&#10;}" target="template.data"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_10</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_11</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="ServiceTask_DeliverPolicy" name="Deliver confirmation">
+      <bpmn:documentation>Deliver policy</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="issuePolicy"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_Green</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_ApplicationAccepted</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_10</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_Decision" name="Decision?">
+      <bpmn:incoming>Flow_0ik8h65</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_ApplicationAccepted</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_ApplicationDeclined</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="EndEvent_ApplicationRejected" name="Application &#10;rejected">
+      <bpmn:documentation>Customer onboarding process end application rejected</bpmn:documentation>
+      <bpmn:incoming>SequenceFlow_13</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="ServiceTask_RejectPolicy" name="Reject application">
+      <bpmn:documentation>Reject policy</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="rejectPolicy"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_Red</bpmn:incoming>
+      <bpmn:incoming>SequenceFlow_ApplicationDeclined</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_01vh1zw</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="SendTask_SendRejection" zeebe:modelerTemplate="io.camunda.connectors.SendGrid.v1.template" name="Send rejection">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:sendgrid:1"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="secrets.SENDGRID_DEMO" target="apiKey"/>
+          <zeebe:input source="demo@camunda.com" target="from.email"/>
+          <zeebe:input source="d-aa6a58aaded54a83884518433ac2dd56" target="template.id"/>
+          <zeebe:input source="= {&#10;    &quot;name&quot;: applicant.name&#10;}" target="template.data"/>
+          <zeebe:input source="= applicant.email" target="to.email"/>
+          <zeebe:input source="= applicant.name" target="to.name"/>
+          <zeebe:input source="= corporation" target="from.name"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_01vh1zw</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_13</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="ErrorBoundaryEvent_FraudDetected" name="Fraud detected" attachedToRef="Activity_ManualCheck" cancelActivity="true">
+      <bpmn:documentation>Captures error if fraud is detected</bpmn:documentation>
+      <bpmn:outgoing>Flow_177paze</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="ErrorBoundaryEvent_FraudDetected_ErrorEventDefinition"/>
+    </bpmn:boundaryEvent>
+    <bpmn:sendTask id="SendTask_ReportFraud" name="Report fraud">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="reportFraud"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_177paze</bpmn:incoming>
+      <bpmn:outgoing>Flow_0cvhizd</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:endEvent id="TerminateEvent_ApplicationCanceledFraud" name="Application canceled due to fraud">
+      <bpmn:documentation>Customer onboarding process terminated due to fraud</bpmn:documentation>
+      <bpmn:incoming>Flow_0cvhizd</bpmn:incoming>
+      <bpmn:terminateEventDefinition id="TerminateEvent_ApplicationCanceledFraud_TerminateEventDefinition"/>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="ExclusiveGateway_Risk" name="Risk?" default="SequenceFlow_Green">
+      <bpmn:documentation>Route process based on risk, "green" automatic onboarding, "yellow" manual check, "red" automatic rejection</bpmn:documentation>
+      <bpmn:incoming>SequenceFlow_2</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_Red</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_Green</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_Yellow</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:businessRuleTask id="BusinessRuleTask_CheckApplicationAutomatically" name="Check application automatically">
+      <bpmn:documentation>Identify risk for prospect client</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:calledDecision decisionId="risk_check" resultVariable="result"/>
+        <zeebe:ioMapping>
+          <zeebe:output source="= if result != null then result.riskLevel else [&quot;green&quot;]" target="riskLevels"/>
+          <zeebe:output source="= if result != null then result.risk else []" target="risks"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1gd6p37</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_2</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:serviceTask id="ServiceTask_GetCreditScore" name="Get credit score">
+      <bpmn:documentation>Gets credit score for prospect client</bpmn:documentation>
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="calculateScore"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_6</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1gd6p37</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="SequenceFlow_1gd6p37" sourceRef="ServiceTask_GetCreditScore" targetRef="BusinessRuleTask_CheckApplicationAutomatically"/>
+    <bpmn:sequenceFlow id="SequenceFlow_01vh1zw" sourceRef="ServiceTask_RejectPolicy" targetRef="SendTask_SendRejection"/>
+    <bpmn:sequenceFlow id="SequenceFlow_13" sourceRef="SendTask_SendRejection" targetRef="EndEvent_ApplicationRejected"/>
+    <bpmn:sequenceFlow id="SequenceFlow_Red" sourceRef="ExclusiveGateway_Risk" targetRef="ServiceTask_RejectPolicy" name="Red (severe risk)">
+      <bpmn:conditionExpression>= some risk in riskLevels satisfies risk = "red"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_2" sourceRef="BusinessRuleTask_CheckApplicationAutomatically" targetRef="ExclusiveGateway_Risk"/>
+    <bpmn:sequenceFlow id="SequenceFlow_Green" sourceRef="ExclusiveGateway_Risk" targetRef="ServiceTask_DeliverPolicy" name="Green (no risk)"/>
+    <bpmn:sequenceFlow id="SequenceFlow_10" sourceRef="ServiceTask_DeliverPolicy" targetRef="SendTask_SendPolicy"/>
+    <bpmn:sequenceFlow id="SequenceFlow_11" sourceRef="SendTask_SendPolicy" targetRef="EndEvent_ApplicationIssued"/>
+    <bpmn:sequenceFlow id="SequenceFlow_ApplicationAccepted" sourceRef="ExclusiveGateway_Decision" targetRef="ServiceTask_DeliverPolicy" name="Application accepted">
+      <bpmn:conditionExpression>= approved </bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_ApplicationDeclined" sourceRef="ExclusiveGateway_Decision" targetRef="ServiceTask_RejectPolicy" name="Application declined">
+      <bpmn:conditionExpression>= not(approved)</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_6" sourceRef="StartEvent_ApplicationReceived" targetRef="ServiceTask_GetCreditScore"/>
+    <bpmn:sequenceFlow id="SequenceFlow_Yellow" sourceRef="ExclusiveGateway_Risk" targetRef="Activity_ManualCheck" name="Yellow (moderate risk)">
+      <bpmn:conditionExpression>= every risk in riskLevels satisfies risk = "yellow"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0ik8h65" sourceRef="Activity_ManualCheck" targetRef="ExclusiveGateway_Decision"/>
+    <bpmn:sequenceFlow id="Flow_177paze" sourceRef="ErrorBoundaryEvent_FraudDetected" targetRef="SendTask_ReportFraud"/>
+    <bpmn:sequenceFlow id="Flow_0cvhizd" sourceRef="SendTask_ReportFraud" targetRef="TerminateEvent_ApplicationCanceledFraud"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_customer_onboarding_en">
+    <bpmndi:BPMNPlane id="BPMNPlane_customer_onboarding_en" bpmnElement="customer_onboarding_en">
+      <bpmndi:BPMNShape id="StartEvent_ApplicationReceived_di" bpmnElement="StartEvent_ApplicationReceived">
+        <dc:Bounds x="414" y="162" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="362" y="202" width="140" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ke2ixr_di" bpmnElement="Activity_1ke2ixr" isExpanded="true">
+        <dc:Bounds x="215.5" y="418" width="433" height="180"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0vp33kx_di" bpmnElement="Activity_0vp33kx" isExpanded="true">
+        <dc:Bounds x="0" y="678" width="864" height="290"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_ManualCheck_di" bpmnElement="Activity_ManualCheck">
+        <dc:Bounds x="1508" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_ApplicationIssued_di" bpmnElement="EndEvent_ApplicationIssued">
+        <dc:Bounds x="2285" y="162" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2236.5" y="202" width="133" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SendTask_SendPolicy_di" bpmnElement="SendTask_SendPolicy">
+        <dc:Bounds x="2111.5" y="140" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_DeliverPolicy_di" bpmnElement="ServiceTask_DeliverPolicy">
+        <dc:Bounds x="1928" y="140" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_Decision_di" bpmnElement="ExclusiveGateway_Decision" isMarkerVisible="true">
+        <dc:Bounds x="1693" y="15" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1686.5" y="-3" width="63" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_ApplicationRejected_di" bpmnElement="EndEvent_ApplicationRejected">
+        <dc:Bounds x="2285" y="22" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2229.5" y="62" width="147" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_RejectPolicy_di" bpmnElement="ServiceTask_RejectPolicy">
+        <dc:Bounds x="1928" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SendTask_SendRejection_di" bpmnElement="SendTask_SendRejection">
+        <dc:Bounds x="2111.5" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ErrorBoundaryEvent_FraudDetected_di" bpmnElement="ErrorBoundaryEvent_FraudDetected">
+        <dc:Bounds x="1540" y="62" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1456" y="102" width="98" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SendTask_ReportFraud_di" bpmnElement="SendTask_ReportFraud">
+        <dc:Bounds x="1668" y="258" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TerminateEvent_ApplicationCanceledFraud_di" bpmnElement="TerminateEvent_ApplicationCanceledFraud">
+        <dc:Bounds x="1960" y="280" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1862.5" y="320" width="231" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_Risk_di" bpmnElement="ExclusiveGateway_Risk" isMarkerVisible="true">
+        <dc:Bounds x="1284" y="155" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1289" y="209" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BusinessRuleTask_CheckApplicationAutomatically_di" bpmnElement="BusinessRuleTask_CheckApplicationAutomatically">
+        <dc:Bounds x="1124" y="140" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_GetCreditScore_di" bpmnElement="ServiceTask_GetCreditScore">
+        <dc:Bounds x="964" y="140" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndMessageEvent_Timeout_di" bpmnElement="EndMessageEvent_Timeout">
+        <dc:Bounds x="528" y="490" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="493.5" y="530" width="105" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartErrorEvent_Timeout_di" bpmnElement="StartErrorEvent_Timeout">
+        <dc:Bounds x="272" y="490" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="265.5" y="530" width="49" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_HandleTimeout_di" bpmnElement="UserTask_HandleTimeout">
+        <dc:Bounds x="368" y="468" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartMessageEvent_CancellationRequested_di" bpmnElement="StartMessageEvent_CancellationRequested">
+        <dc:Bounds x="105.5" y="750" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="50" y="790" width="147" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_CancelApplication_di" bpmnElement="ServiceTask_CancelApplication">
+        <dc:Bounds x="215" y="728" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndMessageEvent_InformCustomer_di" bpmnElement="EndMessageEvent_InformCustomer">
+        <dc:Bounds x="610.5" y="750" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="467.5" y="790" width="322" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ParallelGateway_CancelApplication_di" bpmnElement="ParallelGateway_CancelApplication">
+        <dc:Bounds x="375" y="743" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndMessageEvent_InformOperations_di" bpmnElement="EndMessageEvent_InformOperations">
+        <dc:Bounds x="610.5" y="864" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="443" y="904" width="371" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1gd6p37_di" bpmnElement="SequenceFlow_1gd6p37">
+        <di:waypoint x="1064" y="180"/>
+        <di:waypoint x="1124" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_01vh1zw_di" bpmnElement="SequenceFlow_01vh1zw">
+        <di:waypoint x="2028" y="40"/>
+        <di:waypoint x="2111.5" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_13_di" bpmnElement="SequenceFlow_13">
+        <di:waypoint x="2211.5" y="40"/>
+        <di:waypoint x="2285" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_Red_di" bpmnElement="SequenceFlow_Red">
+        <di:waypoint x="1334" y="180"/>
+        <di:waypoint x="1848" y="180"/>
+        <di:waypoint x="1848" y="40"/>
+        <di:waypoint x="1928" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_2_di" bpmnElement="SequenceFlow_2">
+        <di:waypoint x="1224" y="180"/>
+        <di:waypoint x="1284" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_Green_di" bpmnElement="SequenceFlow_Green">
+        <di:waypoint x="1334" y="180"/>
+        <di:waypoint x="1928" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_10_di" bpmnElement="SequenceFlow_10">
+        <di:waypoint x="2028" y="180"/>
+        <di:waypoint x="2111.5" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_11_di" bpmnElement="SequenceFlow_11">
+        <di:waypoint x="2211.5" y="180"/>
+        <di:waypoint x="2285" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_ApplicationAccepted_di" bpmnElement="SequenceFlow_ApplicationAccepted">
+        <di:waypoint x="1718" y="65"/>
+        <di:waypoint x="1718" y="90"/>
+        <di:waypoint x="1978" y="90"/>
+        <di:waypoint x="1978" y="140"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_ApplicationDeclined_di" bpmnElement="SequenceFlow_ApplicationDeclined">
+        <di:waypoint x="1743" y="40"/>
+        <di:waypoint x="1928" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_6_di" bpmnElement="SequenceFlow_6">
+        <di:waypoint x="450" y="180"/>
+        <di:waypoint x="964" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_Yellow_di" bpmnElement="SequenceFlow_Yellow">
+        <di:waypoint x="1309" y="155"/>
+        <di:waypoint x="1309" y="40"/>
+        <di:waypoint x="1508" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ik8h65_di" bpmnElement="Flow_0ik8h65">
+        <di:waypoint x="1608" y="40"/>
+        <di:waypoint x="1693" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_177paze_di" bpmnElement="Flow_177paze">
+        <di:waypoint x="1558" y="98"/>
+        <di:waypoint x="1558" y="298"/>
+        <di:waypoint x="1668" y="298"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cvhizd_di" bpmnElement="Flow_0cvhizd">
+        <di:waypoint x="1768" y="298"/>
+        <di:waypoint x="1960" y="298"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_151qlxc_di" bpmnElement="Flow_151qlxc">
+        <di:waypoint x="308" y="508"/>
+        <di:waypoint x="368" y="508"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dppbeu_di" bpmnElement="Flow_0dppbeu">
+        <di:waypoint x="468" y="508"/>
+        <di:waypoint x="528" y="508"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12nmks0_di" bpmnElement="Flow_12nmks0">
+        <di:waypoint x="141.5" y="768"/>
+        <di:waypoint x="215" y="768"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_19iipc6_di" bpmnElement="Flow_19iipc6">
+        <di:waypoint x="315" y="768"/>
+        <di:waypoint x="375" y="768"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qrakss_di" bpmnElement="Flow_0qrakss">
+        <di:waypoint x="425" y="768"/>
+        <di:waypoint x="610.5" y="768"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1jml1az_di" bpmnElement="Flow_1jml1az">
+        <di:waypoint x="400" y="793"/>
+        <di:waypoint x="400" y="882"/>
+        <di:waypoint x="610.5" y="882"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

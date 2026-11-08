@@ -8,10 +8,10 @@
 use chrono::{Duration, Utc};
 use reebe_db::state::batch_operations::{BatchOperation, BatchOperationRepository};
 use reebe_db::state::incidents::{Incident, IncidentRepository};
-use reebe_db::state::user_tasks::{UserTask, UserTaskRepository};
 use reebe_db::state::messages::{
     Message, MessageRepository, MessageSubscription, MessageSubscriptionRepository,
 };
+use reebe_db::state::user_tasks::{UserTask, UserTaskRepository};
 use reebe_db::{create_pool, pool::run_migrations, DbConfig, DbPool};
 
 /// A fresh in-memory database. One connection, since each in-memory
@@ -58,7 +58,10 @@ async fn message_subscription_opens() {
     })
     .await
     .expect("insert subscription");
-    let found = repo.get_by_correlation("ci-passed", "42", "<default>").await.unwrap();
+    let found = repo
+        .get_by_correlation("ci-passed", "42", "<default>")
+        .await
+        .unwrap();
     assert_eq!(found.len(), 1);
     assert_eq!(found[0].element_instance_key, 11);
 }
@@ -67,10 +70,17 @@ async fn message_subscription_opens() {
 async fn buffered_messages_are_found_until_they_expire() {
     let pool = pool().await;
     let repo = MessageRepository::new(&pool);
-    repo.insert(&message(1, Duration::minutes(5))).await.unwrap();
-    repo.insert(&message(2, Duration::milliseconds(-1))).await.unwrap();
+    repo.insert(&message(1, Duration::minutes(5)))
+        .await
+        .unwrap();
+    repo.insert(&message(2, Duration::milliseconds(-1)))
+        .await
+        .unwrap();
 
-    let live = repo.get_by_correlation("ci-passed", "42", "<default>").await.unwrap();
+    let live = repo
+        .get_by_correlation("ci-passed", "42", "<default>")
+        .await
+        .unwrap();
     assert_eq!(live.iter().map(|m| m.key).collect::<Vec<_>>(), vec![1]);
     assert_eq!(repo.expire_old().await.unwrap(), 1);
 }
@@ -153,8 +163,12 @@ fn user_task(key: i64, candidate_groups: Option<Vec<String>>) -> UserTask {
 async fn user_tasks_with_and_without_candidates_round_trip() {
     let pool = pool().await;
     let repo = UserTaskRepository::new(&pool);
-    repo.insert(&user_task(1, None)).await.expect("insert without candidates");
-    repo.insert(&user_task(2, Some(vec!["leads".to_string()]))).await.unwrap();
+    repo.insert(&user_task(1, None))
+        .await
+        .expect("insert without candidates");
+    repo.insert(&user_task(2, Some(vec!["leads".to_string()])))
+        .await
+        .unwrap();
 
     assert_eq!(repo.get_by_key(1).await.unwrap().candidate_groups, None);
     assert_eq!(

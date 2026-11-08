@@ -1,0 +1,14 @@
+{
+  "aliases": {
+    "agent": "agent",
+    "done": "done",
+    "fb": "fb",
+    "fin": "fin",
+    "joke": "joke",
+    "products": "products",
+    "recipes": "recipes",
+    "run": "run",
+    "start": "start",
+    "users": "users"
+  }
+}

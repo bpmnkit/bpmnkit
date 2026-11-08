@@ -87,6 +87,7 @@ npm install @bpmnkit/plugins
 | Subpath | Factory | Description |
 |---------|---------|-------------|
 | `/ai-bridge` | `createAiBridgePlugin(options)` | AI chat panel with diagram apply/checkpoint |
+| `/ai-local` | `createAiLocalPlugin(options)` | Describe-to-diagram with Chrome's on-device model |
 | `/element-docs` | `createElementDocsPlugin(options)` | Built-in BPMN element reference docs |
 | `/main-menu` | `createMainMenuPlugin(options)` | File/Edit top-level menu |
 | `/story-view` | `createStoryViewPlugin(options)` | Read a process as a top-to-bottom story of cards |

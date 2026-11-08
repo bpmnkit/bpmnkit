@@ -1,0 +1,4 @@
+Invalid collaboration:
+  Duplicate element ID "A"
+  Duplicate element ID "A"
+  Message flow "A" starts and ends in participant "A"; a message flow crosses pools, a sequence flow stays inside one

@@ -342,8 +342,13 @@ of Zeebe's semantics. A `mode: "wasm"` option for `createProcessTest` is planned
 yet available. The runner drives a scenario from start to end in one call; `casen test`
 uses it, and every scenario in the [template gallery](/templates) passes on it.
 
+### Camunda process-test JSON
+
+`casen test test <file>.bpmn` also runs Camunda process-test JSON files on Reebe, with no
+Java or Maven. See [Does it run? Test it with casen test](/docs/guides/executable-camunda-process#does-it-run-test-it-with-casen-test).
+
 ## See also
 
 - [Simulation](/docs/guides/simulation): the `Engine` API under these helpers.
-- `casen test`: runs the `.bpmn.tests.json` scenario sidecars that `casen synth` writes,
+- `casen test test`: runs the `.bpmn.tests.json` scenario sidecars that `casen synth` writes,
   without a test runner.

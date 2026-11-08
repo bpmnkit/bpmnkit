@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="D" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="A" name="First" isExecutable="true">
+    <bpmn:documentation>doc A</bpmn:documentation>
+    <bpmn:startEvent id="s1"/>
+  </bpmn:process>
+  <bpmn:process id="B" isExecutable="true">
+    <bpmn:startEvent id="s2">
+      <bpmn:outgoing>f</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="t2">
+      <bpmn:incoming>f</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="f" sourceRef="s2" targetRef="t2"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_A">
+    <bpmndi:BPMNPlane id="BPMNPlane_A" bpmnElement="A">
+      <bpmndi:BPMNShape id="s1_di" bpmnElement="s1">
+        <dc:Bounds x="0" y="0" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_B">
+    <bpmndi:BPMNPlane id="BPMNPlane_B" bpmnElement="B">
+      <bpmndi:BPMNShape id="s2_di" bpmnElement="s2">
+        <dc:Bounds x="0" y="22" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t2_di" bpmnElement="t2">
+        <dc:Bounds x="96" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f_di" bpmnElement="f">
+        <di:waypoint x="36" y="40"/>
+        <di:waypoint x="96" y="40"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

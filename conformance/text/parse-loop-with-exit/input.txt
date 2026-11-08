@@ -1,0 +1,3 @@
+s[start] > t[task Try] > g[xor Again?]
+g >(Yes: retry) t
+g >(No: default) e[end]

@@ -1,0 +1,37 @@
+{
+  "id": "defs",
+  "name": "Defs",
+  "decisions": [
+    {
+      "inputs": [
+        {
+          "id": "i",
+          "label": "Größe",
+          "expression": "größe"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "o",
+          "label": "Ergebnis",
+          "name": "ergebnis"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r",
+          "inputs": [
+            "\"ä\""
+          ],
+          "outputs": [
+            "\"ö\""
+          ],
+          "description": "a <&> b"
+        }
+      ],
+      "id": "t",
+      "name": "A & B <c> ✓"
+    }
+  ],
+  "inputData": []
+}

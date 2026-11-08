@@ -12,6 +12,7 @@ import type {
 	DmnInputData,
 	DmnKnowledgeRequirement,
 	DmnKnowledgeSource,
+	DmnLiteralExpression,
 	DmnOutput,
 	DmnRule,
 	DmnTextAnnotation,
@@ -54,7 +55,15 @@ function serializeOutput(output: DmnOutput): XmlElement {
 	if (output.name) attrs.name = output.name
 	if (output.typeRef) attrs.typeRef = output.typeRef
 
-	return { name: "output", attributes: attrs, children: [] }
+	const children: XmlElement[] = []
+	if (output.outputValues) {
+		children.push({
+			name: "outputValues",
+			attributes: {},
+			children: [textElement(output.outputValues)],
+		})
+	}
+	return { name: "output", attributes: attrs, children }
 }
 
 function serializeRule(rule: DmnRule): XmlElement {
@@ -112,61 +121,52 @@ function serializeDecisionTable(table: DmnDecisionTable): XmlElement {
 	return { name: "decisionTable", attributes: attrs, children }
 }
 
+function refElement(name: string, target: string | undefined): XmlElement[] {
+	// A reference that parsed to nothing stays nothing: \`href="#undefined"\` would
+	// read back as a reference to an element with that id.
+	return target ? [{ name, attributes: { href: `#${target}` }, children: [] }] : []
+}
+
 function serializeInformationRequirements(decision: DmnDecision): XmlElement[] {
-	return decision.informationRequirements.map((req) => {
-		const child: XmlElement = req.requiredDecision
-			? { name: "requiredDecision", attributes: { href: `#${req.requiredDecision}` }, children: [] }
-			: { name: "requiredInput", attributes: { href: `#${req.requiredInput}` }, children: [] }
-		return {
-			name: "informationRequirement",
-			attributes: { id: req.id },
-			children: [child],
-		}
-	})
+	return decision.informationRequirements.map((req) => ({
+		name: "informationRequirement",
+		attributes: { id: req.id },
+		children: req.requiredDecision
+			? refElement("requiredDecision", req.requiredDecision)
+			: refElement("requiredInput", req.requiredInput),
+	}))
 }
 
 function serializeKnowledgeRequirements(reqs: DmnKnowledgeRequirement[]): XmlElement[] {
 	return reqs.map((req) => ({
 		name: "knowledgeRequirement",
 		attributes: { id: req.id },
-		children: [
-			{
-				name: "requiredKnowledge",
-				attributes: { href: `#${req.requiredKnowledge}` },
-				children: [],
-			},
-		],
+		children: refElement("requiredKnowledge", req.requiredKnowledge),
 	}))
 }
 
 function serializeAuthorityRequirements(reqs: DmnAuthorityRequirement[]): XmlElement[] {
-	return reqs.map((req) => {
-		let child: XmlElement
-		if (req.requiredDecision) {
-			child = {
-				name: "requiredDecision",
-				attributes: { href: `#${req.requiredDecision}` },
-				children: [],
-			}
-		} else if (req.requiredInput) {
-			child = {
-				name: "requiredInput",
-				attributes: { href: `#${req.requiredInput}` },
-				children: [],
-			}
-		} else {
-			child = {
-				name: "requiredAuthority",
-				attributes: { href: `#${req.requiredAuthority ?? ""}` },
-				children: [],
-			}
-		}
-		return {
-			name: "authorityRequirement",
-			attributes: { id: req.id },
-			children: [child],
-		}
-	})
+	return reqs.map((req) => ({
+		name: "authorityRequirement",
+		attributes: { id: req.id },
+		children: req.requiredDecision
+			? refElement("requiredDecision", req.requiredDecision)
+			: req.requiredInput
+				? refElement("requiredInput", req.requiredInput)
+				: refElement("requiredAuthority", req.requiredAuthority),
+	}))
+}
+
+function serializeLiteralExpression(literal: DmnLiteralExpression): XmlElement {
+	const attrs: Record<string, string> = {}
+	if (literal.id) attrs.id = literal.id
+	if (literal.typeRef) attrs.typeRef = literal.typeRef
+	if (literal.expressionLanguage) attrs.expressionLanguage = literal.expressionLanguage
+	return {
+		name: "literalExpression",
+		attributes: attrs,
+		children: literal.text ? [textElement(literal.text)] : [],
+	}
 }
 
 function serializeDecision(decision: DmnDecision): XmlElement {
@@ -186,6 +186,9 @@ function serializeDecision(decision: DmnDecision): XmlElement {
 
 	if (decision.decisionTable) {
 		children.push(serializeDecisionTable(decision.decisionTable))
+	}
+	if (decision.literalExpression) {
+		children.push(serializeLiteralExpression(decision.literalExpression))
 	}
 
 	const attrs: Record<string, string> = { id: decision.id }

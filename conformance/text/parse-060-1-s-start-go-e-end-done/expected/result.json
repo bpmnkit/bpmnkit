@@ -1,0 +1,41 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "Process started",
+            "type": "startEvent"
+          },
+          {
+            "id": "start_end",
+            "name": "Process started",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "start_end"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "added start event \"start\"",
+    "added end event \"start_end\" after \"start\""
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "expected a node id at \"1. s[start Go] > e[e\""
+    }
+  ],
+  "questions": []
+}

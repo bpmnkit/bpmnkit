@@ -457,6 +457,9 @@ export function createShape(
 		bounds,
 		unknownAttributes: {},
 	}
+	// The bpmn-js Viewer draws the "X" only when the shape says so; the Modeler
+	// assumes it.
+	if (type === "exclusiveGateway") diShape.isMarkerVisible = true
 
 	const cx = bounds.x + bounds.width / 2
 	const cy = bounds.y + bounds.height / 2
@@ -1543,9 +1546,25 @@ export function changeElementType(
 	const newElements = [...process.flowElements]
 	newElements[elIndex] = newEl
 
-	return {
+	const newDefs: BpmnDefinitions = {
 		...defs,
 		processes: [{ ...process, flowElements: newElements }, ...defs.processes.slice(1)],
+	}
+	// Same reason as in createShape; an explicit value on the shape wins.
+	if (newEl.type !== "exclusiveGateway") return newDefs
+	return {
+		...newDefs,
+		diagrams: newDefs.diagrams.map((diagram) => ({
+			...diagram,
+			plane: {
+				...diagram.plane,
+				shapes: diagram.plane.shapes.map((s) =>
+					s.bpmnElement === id && s.isMarkerVisible === undefined
+						? { ...s, isMarkerVisible: true }
+						: s,
+				),
+			},
+		})),
 	}
 }
 

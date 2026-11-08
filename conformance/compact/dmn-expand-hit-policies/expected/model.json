@@ -1,0 +1,380 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "UNIQUE",
+        "id": "decisionTable_0000004",
+        "inputs": [
+          {
+            "id": "i0",
+            "inputExpression": {
+              "id": "inputExpression_0000001",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o0",
+            "name": "y"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r0",
+            "inputEntries": [
+              {
+                "id": "inputEntry_0_0000002",
+                "text": "1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "outputEntry_0_0000003",
+                "text": "\"a\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d0",
+      "informationRequirements": [],
+      "knowledgeRequirements": []
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "FIRST",
+        "id": "decisionTable_0000008",
+        "inputs": [
+          {
+            "id": "i1",
+            "inputExpression": {
+              "id": "inputExpression_0000005",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o1",
+            "name": "y"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r1",
+            "inputEntries": [
+              {
+                "id": "inputEntry_0_0000006",
+                "text": "1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "outputEntry_0_0000007",
+                "text": "\"a\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d1",
+      "informationRequirements": [],
+      "knowledgeRequirements": []
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "PRIORITY",
+        "id": "decisionTable_000000c",
+        "inputs": [
+          {
+            "id": "i2",
+            "inputExpression": {
+              "id": "inputExpression_0000009",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o2",
+            "name": "y"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r2",
+            "inputEntries": [
+              {
+                "id": "inputEntry_0_000000a",
+                "text": "1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "outputEntry_0_000000b",
+                "text": "\"a\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d2",
+      "informationRequirements": [],
+      "knowledgeRequirements": []
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "ANY",
+        "id": "decisionTable_000000g",
+        "inputs": [
+          {
+            "id": "i3",
+            "inputExpression": {
+              "id": "inputExpression_000000d",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o3",
+            "name": "y"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r3",
+            "inputEntries": [
+              {
+                "id": "inputEntry_0_000000e",
+                "text": "1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "outputEntry_0_000000f",
+                "text": "\"a\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d3",
+      "informationRequirements": [],
+      "knowledgeRequirements": []
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "COLLECT",
+        "id": "decisionTable_000000k",
+        "inputs": [
+          {
+            "id": "i4",
+            "inputExpression": {
+              "id": "inputExpression_000000h",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o4",
+            "name": "y"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r4",
+            "inputEntries": [
+              {
+                "id": "inputEntry_0_000000i",
+                "text": "1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "outputEntry_0_000000j",
+                "text": "\"a\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d4",
+      "informationRequirements": [],
+      "knowledgeRequirements": []
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "RULE ORDER",
+        "id": "decisionTable_000000o",
+        "inputs": [
+          {
+            "id": "i5",
+            "inputExpression": {
+              "id": "inputExpression_000000l",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o5",
+            "name": "y"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r5",
+            "inputEntries": [
+              {
+                "id": "inputEntry_0_000000m",
+                "text": "1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "outputEntry_0_000000n",
+                "text": "\"a\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d5",
+      "informationRequirements": [],
+      "knowledgeRequirements": []
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "OUTPUT ORDER",
+        "id": "decisionTable_000000s",
+        "inputs": [
+          {
+            "id": "i6",
+            "inputExpression": {
+              "id": "inputExpression_000000p",
+              "text": "x"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o6",
+            "name": "y"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r6",
+            "inputEntries": [
+              {
+                "id": "inputEntry_0_000000q",
+                "text": "1"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "outputEntry_0_000000r",
+                "text": "\"a\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "d6",
+      "informationRequirements": [],
+      "knowledgeRequirements": []
+    }
+  ],
+  "diagram": {
+    "edges": [],
+    "shapes": [
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 160,
+          "y": 100
+        },
+        "dmnElementRef": "d0"
+      },
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 160,
+          "y": 220
+        },
+        "dmnElementRef": "d1"
+      },
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 160,
+          "y": 340
+        },
+        "dmnElementRef": "d2"
+      },
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 160,
+          "y": 460
+        },
+        "dmnElementRef": "d3"
+      },
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 160,
+          "y": 580
+        },
+        "dmnElementRef": "d4"
+      },
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 160,
+          "y": 700
+        },
+        "dmnElementRef": "d5"
+      },
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 160,
+          "y": 820
+        },
+        "dmnElementRef": "d6"
+      }
+    ]
+  },
+  "id": "defs",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "Defs",
+  "namespace": "http://bpmn.io/schema/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "dc": "http://www.omg.org/spec/DMN/20180521/DC/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/"
+  },
+  "textAnnotations": []
+}

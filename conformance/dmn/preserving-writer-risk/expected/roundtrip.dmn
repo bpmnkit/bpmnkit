@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="Definitions_1" name="Risk" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="risk" name="Risk score">
+    <decisionTable id="table" hitPolicy="FIRST">
+      <input id="in1" label="Amount">
+        <inputExpression id="ie1" typeRef="number">
+          <text>amount</text>
+        </inputExpression>
+      </input>
+      <output id="out1" label="Risk" name="risk" typeRef="string"/>
+      <rule id="r1">
+        <inputEntry id="ue1">
+          <text>&lt; 100</text>
+        </inputEntry>
+        <outputEntry id="oe1">
+          <text>"low"</text>
+        </outputEntry>
+      </rule>
+      <rule id="r2">
+        <inputEntry id="ue2">
+          <text>&gt;= 100</text>
+        </inputEntry>
+        <outputEntry id="oe2">
+          <text>"high"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>
+

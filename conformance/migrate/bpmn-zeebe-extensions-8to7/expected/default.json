@@ -1,0 +1,147 @@
+{
+  "report": {
+    "findings": [
+      {
+        "applied": false,
+        "construct": "connector",
+        "elementId": "Task_service",
+        "elementType": "serviceTask",
+        "message": "Connector \"io.camunda:http-json:1\" has no Camunda 7 runtime; it becomes a plain external task.",
+        "processId": "Process_zeebe",
+        "severity": "unsupported",
+        "suggestion": "Implement an external task worker for this topic."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:taskDefinition retries",
+        "elementId": "Task_service",
+        "elementType": "serviceTask",
+        "message": "Job retries are not exported.",
+        "processId": "Process_zeebe",
+        "severity": "manual",
+        "suggestion": "Set camunda:failedJobRetryTimeCycle if needed."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "Task_service",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=customer.id\" (to \"customerId\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "Process_zeebe",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "Task_service",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=order.total\" (to \"amount\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "Process_zeebe",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:output",
+        "elementId": "Task_service",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=response.body\" (to \"apiResult\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "Process_zeebe",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:taskHeaders",
+        "elementId": "Task_service",
+        "elementType": "serviceTask",
+        "message": "zeebe:taskHeaders has no Camunda 7 equivalent and was dropped.",
+        "processId": "Process_zeebe",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:properties",
+        "elementId": "Task_service",
+        "elementType": "serviceTask",
+        "message": "zeebe:properties has no Camunda 7 equivalent and was dropped.",
+        "processId": "Process_zeebe",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:assignmentDefinition",
+        "elementId": "Task_human",
+        "elementType": "userTask",
+        "message": "FEEL expression \"=requester\" kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "Process_zeebe",
+        "severity": "manual",
+        "suggestion": "Rewrite camunda:assignee as a JUEL expression such as ${...}."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:formDefinition",
+        "elementId": "Task_human",
+        "elementType": "userTask",
+        "message": "Only formKey forms exist in Camunda 7; formId and external references are dropped.",
+        "processId": "Process_zeebe",
+        "severity": "unsupported",
+        "suggestion": "Link an embedded or generated form by camunda:formKey."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:userTask",
+        "elementId": "Task_human",
+        "elementType": "userTask",
+        "message": "zeebe:userTask has no Camunda 7 equivalent and was dropped.",
+        "processId": "Process_zeebe",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:taskSchedule",
+        "elementId": "Task_human",
+        "elementType": "userTask",
+        "message": "zeebe:taskSchedule has no Camunda 7 equivalent and was dropped.",
+        "processId": "Process_zeebe",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:priorityDefinition",
+        "elementId": "Task_human",
+        "elementType": "userTask",
+        "message": "zeebe:priorityDefinition has no Camunda 7 equivalent and was dropped.",
+        "processId": "Process_zeebe",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:calledDecision",
+        "elementId": "Task_decide",
+        "elementType": "businessRuleTask",
+        "message": "zeebe:calledDecision has no Camunda 7 equivalent and was dropped.",
+        "processId": "Process_zeebe",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:script",
+        "elementId": "Task_script",
+        "elementType": "scriptTask",
+        "message": "zeebe:script has no Camunda 7 equivalent and was dropped.",
+        "processId": "Process_zeebe",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      }
+    ]
+  },
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_zeebe\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"Process_zeebe\" name=\"Zeebe surface\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"Start_z\">\n      <bpmn:outgoing>Flow_z1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"Task_service\" camunda:type=\"external\" camunda:topic=\"io.camunda:http-json:1\" name=\"Call API\">\n      <bpmn:extensionElements>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"customerId\">=customer.id</camunda:inputParameter>\n          <camunda:inputParameter name=\"amount\">=order.total</camunda:inputParameter>\n          <camunda:outputParameter name=\"apiResult\">=response.body</camunda:outputParameter>\n        </camunda:inputOutput>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_z1</bpmn:incoming>\n      <bpmn:outgoing>Flow_z2</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:userTask id=\"Task_human\" camunda:assignee=\"=requester\" camunda:candidateGroups=\"approvers\" name=\"Approve\">\n      <bpmn:incoming>Flow_z2</bpmn:incoming>\n      <bpmn:outgoing>Flow_z3</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:businessRuleTask id=\"Task_decide\" name=\"Decide\">\n      <bpmn:incoming>Flow_z3</bpmn:incoming>\n      <bpmn:outgoing>Flow_z4</bpmn:outgoing>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"Task_call\" calledElement=\"fulfilment\" name=\"Fulfil\">\n      <bpmn:extensionElements>\n        <camunda:in variables=\"all\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_z4</bpmn:incoming>\n      <bpmn:outgoing>Flow_z5</bpmn:outgoing>\n    </bpmn:callActivity>\n    <bpmn:scriptTask id=\"Task_script\" name=\"Summarise\">\n      <bpmn:incoming>Flow_z5</bpmn:incoming>\n      <bpmn:outgoing>Flow_z6</bpmn:outgoing>\n    </bpmn:scriptTask>\n    <bpmn:endEvent id=\"End_z\">\n      <bpmn:incoming>Flow_z6</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_z1\" sourceRef=\"Start_z\" targetRef=\"Task_service\"/>\n    <bpmn:sequenceFlow id=\"Flow_z2\" sourceRef=\"Task_service\" targetRef=\"Task_human\"/>\n    <bpmn:sequenceFlow id=\"Flow_z3\" sourceRef=\"Task_human\" targetRef=\"Task_decide\"/>\n    <bpmn:sequenceFlow id=\"Flow_z4\" sourceRef=\"Task_decide\" targetRef=\"Task_call\"/>\n    <bpmn:sequenceFlow id=\"Flow_z5\" sourceRef=\"Task_call\" targetRef=\"Task_script\"/>\n    <bpmn:sequenceFlow id=\"Flow_z6\" sourceRef=\"Task_script\" targetRef=\"End_z\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+}

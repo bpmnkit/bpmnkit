@@ -1,0 +1,312 @@
+{
+  "id": "Definitions_testing",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "start",
+          "type": "startEvent"
+        },
+        {
+          "id": "payment",
+          "jobType": "payment",
+          "name": "Charge card",
+          "taskHeaders": {
+            "provider": "stripe"
+          },
+          "type": "serviceTask"
+        },
+        {
+          "id": "paid_gw",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "ship",
+          "jobType": "ship",
+          "name": "Ship",
+          "type": "serviceTask"
+        },
+        {
+          "id": "end_ok",
+          "type": "endEvent"
+        },
+        {
+          "id": "end_cancel",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "start",
+          "id": "f_start",
+          "to": "payment"
+        },
+        {
+          "from": "payment",
+          "id": "f_paid",
+          "to": "paid_gw"
+        },
+        {
+          "condition": "=paid = true",
+          "from": "paid_gw",
+          "id": "f_ship",
+          "to": "ship"
+        },
+        {
+          "from": "paid_gw",
+          "id": "f_unpaid",
+          "isDefault": true,
+          "to": "end_cancel"
+        },
+        {
+          "from": "ship",
+          "id": "f_shipped",
+          "to": "end_ok"
+        }
+      ],
+      "id": "order-process"
+    },
+    {
+      "elements": [
+        {
+          "id": "t_start",
+          "type": "startEvent"
+        },
+        {
+          "eventType": "timer",
+          "id": "wait_hour",
+          "timerDuration": "PT1H",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "id": "t_end",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "t_start",
+          "id": "tf1",
+          "to": "wait_hour"
+        },
+        {
+          "from": "wait_hour",
+          "id": "tf2",
+          "to": "t_end"
+        }
+      ],
+      "id": "timer-process"
+    },
+    {
+      "elements": [
+        {
+          "id": "d_start",
+          "type": "startEvent"
+        },
+        {
+          "eventType": "timer",
+          "id": "wait_new_year",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "id": "d_end",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "d_start",
+          "id": "df1",
+          "to": "wait_new_year"
+        },
+        {
+          "from": "wait_new_year",
+          "id": "df2",
+          "to": "d_end"
+        }
+      ],
+      "id": "date-process"
+    },
+    {
+      "elements": [
+        {
+          "id": "r_start",
+          "type": "startEvent"
+        },
+        {
+          "id": "review",
+          "name": "Review",
+          "type": "userTask"
+        },
+        {
+          "attachedTo": "review",
+          "eventType": "timer",
+          "id": "review_timeout",
+          "timerDuration": "P1D",
+          "type": "boundaryEvent"
+        },
+        {
+          "id": "r_done",
+          "type": "endEvent"
+        },
+        {
+          "id": "escalate",
+          "jobType": "escalate",
+          "type": "serviceTask"
+        },
+        {
+          "id": "r_escalated",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "r_start",
+          "id": "rf1",
+          "to": "review"
+        },
+        {
+          "from": "review",
+          "id": "rf2",
+          "to": "r_done"
+        },
+        {
+          "from": "review_timeout",
+          "id": "rf3",
+          "to": "escalate"
+        },
+        {
+          "from": "escalate",
+          "id": "rf4",
+          "to": "r_escalated"
+        }
+      ],
+      "id": "review-process"
+    },
+    {
+      "elements": [
+        {
+          "id": "m_start",
+          "type": "startEvent"
+        },
+        {
+          "eventType": "message",
+          "id": "await_confirmation",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "id": "m_end",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "m_start",
+          "id": "mf1",
+          "to": "await_confirmation"
+        },
+        {
+          "from": "await_confirmation",
+          "id": "mf2",
+          "to": "m_end"
+        }
+      ],
+      "id": "message-process"
+    },
+    {
+      "elements": [
+        {
+          "id": "c_start",
+          "type": "startEvent"
+        },
+        {
+          "id": "fetch_weather",
+          "jobType": "io.camunda:http-json:1",
+          "resultVariable": "weatherResponse",
+          "taskHeaders": {
+            "resultExpression": "={temperature: body.main.temp, ok: status = 200}"
+          },
+          "type": "serviceTask"
+        },
+        {
+          "id": "c_end",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "c_start",
+          "id": "cf1",
+          "to": "fetch_weather"
+        },
+        {
+          "from": "fetch_weather",
+          "id": "cf2",
+          "to": "c_end"
+        }
+      ],
+      "id": "connector-process"
+    },
+    {
+      "elements": [
+        {
+          "id": "p_start",
+          "type": "startEvent"
+        },
+        {
+          "id": "fork",
+          "type": "parallelGateway"
+        },
+        {
+          "id": "branch_a",
+          "type": "task"
+        },
+        {
+          "id": "branch_b",
+          "type": "task"
+        },
+        {
+          "id": "join",
+          "type": "parallelGateway"
+        },
+        {
+          "id": "p_end",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "p_start",
+          "id": "pf1",
+          "to": "fork"
+        },
+        {
+          "from": "fork",
+          "id": "pf2",
+          "to": "branch_a"
+        },
+        {
+          "from": "fork",
+          "id": "pf3",
+          "to": "branch_b"
+        },
+        {
+          "from": "branch_a",
+          "id": "pf4",
+          "to": "join"
+        },
+        {
+          "from": "branch_b",
+          "id": "pf5",
+          "to": "join"
+        },
+        {
+          "from": "join",
+          "id": "pf6",
+          "to": "p_end"
+        }
+      ],
+      "id": "parallel-process"
+    }
+  ]
+}

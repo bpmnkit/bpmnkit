@@ -1,0 +1,76 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "KycOnboarding"
+      ],
+      "fixable": false,
+      "id": "compat/no-version-tag",
+      "message": "Process \"KYC Onboarding Process\" has a zeebe:versionTag, which needs Camunda 8.6 or newer; this model targets Camunda 8.5.",
+      "processId": "KycOnboarding",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.6 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "compat/io-mapping",
+      "message": "Service task \"Verify Document (OCR)\" has an input mapping with no source, which needs Camunda 8.8 or newer; this model targets Camunda 8.5.",
+      "processId": "KycOnboarding",
+      "severity": "error",
+      "suggestion": "Set the source."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sanctionsScreening"
+      ],
+      "fixable": false,
+      "id": "compat/io-mapping",
+      "message": "Service task \"Sanctions & PEP Screening\" has an input mapping with no source, which needs Camunda 8.8 or newer; this model targets Camunda 8.5.",
+      "processId": "KycOnboarding",
+      "severity": "error",
+      "suggestion": "Set the source."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "finalRiskClassification"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Business rule task \"Final Risk Classification\" has no implementation; Camunda needs a zeebe:calledDecision or zeebe:taskDefinition.",
+      "processId": "KycOnboarding",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "verifyDocument"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <source> uses deprecated secret expression format",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Write the secret as {{secrets.NAME}}."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sanctionsScreening"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <source> uses deprecated secret expression format",
+      "processId": "KycOnboarding",
+      "severity": "warning",
+      "suggestion": "Write the secret as {{secrets.NAME}}."
+    }
+  ]
+}

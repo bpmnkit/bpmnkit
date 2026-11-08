@@ -1,0 +1,75 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 1,
+    "info": 0,
+    "warning": 3
+  },
+  "diagnostics": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "_1ae31d1b-2559-4f78-a3ec-47986a49db48"
+      ],
+      "fixable": false,
+      "id": "flow/empty-subprocess",
+      "message": "Sub-process \"_1ae31d1b-2559-4f78-a3ec-47986a49db48\" (subProcess) contains no flow elements.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "warning",
+      "suggestion": "Add flow elements inside the sub-process or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_ce253897-4300-4b24-b71f-4c9535698c70"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"_ce253897-4300-4b24-b71f-4c9535698c70\" (endEvent) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_1ae31d1b-2559-4f78-a3ec-47986a49db48"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Collapsed\nSub-Process\" has no error boundary event.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_1ac4b759-40e3-4dfb-b0e3-ad1d201d6c3d"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Start Event\" has no documentation describing expected input variables.",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 4
+}

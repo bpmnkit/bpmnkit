@@ -1,0 +1,128 @@
+{
+	"version": 1,
+	"process": {
+		"id": "ai-agent-chat-with-tools",
+		"name": "AI Agent Chat With Tools"
+	},
+	"steps": [
+		{
+			"kind": "start",
+			"id": "StartEvent_TaskReceived",
+			"name": "Task to perform received"
+		},
+		{
+			"kind": "aiAgent",
+			"id": "AI_Agent",
+			"name": "AI Agent",
+			"provider": "openai",
+			"model": "=camunda.secrets.CAMUNDA_PROVIDED_LLM_DEFAULT_MODEL",
+			"providerInputs": {
+				"provider.openai.authentication.apiKey": "=camunda.secrets.CAMUNDA_PROVIDED_LLM_API_KEY"
+			},
+			"systemPrompt": "=\"You are **TaskAgent**, a helpful, generic chat agent that can handle a wide variety of customer requests using your own domain knowledge **and** any tools explicitly provided to you at runtime.\\n\\nIf tools are provided, you should prefer them instead of guessing an answer. You can call the same tool multiple times by providing different input values. Don't guess any tools which were not explicitly configured. If no tool matches the request, try to generate an answer. If you're not able to find a good answer, return with a message stating why you're not able to.\"",
+			"userPrompt": "=if is defined(followUpInput) then followUpInput else inputText",
+			"memoryStorageType": "in-process",
+			"maxModelCalls": 10,
+			"outputVariable": "agent",
+			"retries": "3",
+			"tools": [
+				{
+					"id": "LookupSampleUsers",
+					"description": "Lists available users. Use this tool to look up names, usernames, or IDs. Do not use it for details not returned by the service. Input: none. Returns: an array of user objects containing id, name, and username.",
+					"connector": {
+						"template": "io.camunda.connectors.HttpJson.v2",
+						"values": {
+							"method": "get",
+							"url": "https://jsonplaceholder.typicode.com/users"
+						}
+					},
+					"resultExpression": "={toolCallResult: for user in response.body return {id: user.id, name: user.name, username: user.username}}",
+					"name": "Find sample users"
+				},
+				{
+					"id": "SearchRecipes",
+					"description": "Searches the recipe catalog. Use this tool when a request asks for a recipe, dish, cuisine, or cooking instructions. Do not use it for unrelated food facts or guaranteed dietary safety. Input: searchQuery describing the desired dish or cuisine. Returns: matching recipe objects, or \"No result found.\"",
+					"connector": {
+						"template": "io.camunda.connectors.HttpJson.v2",
+						"values": {
+							"method": "get",
+							"url": "https://dummyjson.com/recipes/search"
+						}
+					},
+					"resultExpression": "={toolCallResult: if count(response.body.recipes) > 0 then response.body.recipes else \"No result found.\"}",
+					"params": [
+						{
+							"name": "searchQuery",
+							"description": "The query describing which recipe to search (e.g. a specific dish or the cuisine).",
+							"type": "string",
+							"target": "queryParameters.q"
+						}
+					],
+					"name": "Search recipes"
+				},
+				{
+					"id": "FetchSafeJoke",
+					"description": "Fetches one random safe-mode joke. Use this tool when the user asks for a joke or humorous response. Do not use it when the request requires a specific factual answer or a particular joke topic. Input: none. Returns: the joke as plain text.",
+					"connector": {
+						"template": "io.camunda.connectors.HttpJson.v2",
+						"values": {
+							"method": "get",
+							"url": "https://v2.jokeapi.dev/joke/Any?format=txt&safe-mode"
+						}
+					},
+					"resultExpression": "={toolCallResult: response.body}",
+					"name": "Get a safe joke"
+				},
+				{
+					"id": "ListSampleTechnologyProducts",
+					"description": "Lists technology products. Use this tool when a request asks which devices or technology products are available or needs their attributes. Do not use it for live inventory, pricing, or purchasing. Input: none. Returns: an array of product objects with identifiers, names, and available attribute data.",
+					"connector": {
+						"template": "io.camunda.connectors.HttpJson.v2",
+						"values": {
+							"method": "get",
+							"url": "https://api.restful-api.dev/objects"
+						}
+					},
+					"resultExpression": "={toolCallResult: response.body}",
+					"name": "List sample technology products"
+				}
+			]
+		},
+		{
+			"kind": "userTask",
+			"id": "UserTask_ReviewAgentResponse",
+			"name": "User Feedback",
+			"formId": "ai-agent-chat-user-feedback"
+		},
+		{
+			"kind": "gateway",
+			"id": "Gateway_UserSatisfied",
+			"name": "User satisfied?",
+			"gatewayType": "exclusive",
+			"branches": [
+				{
+					"name": "Yes",
+					"condition": "=userSatisfied",
+					"steps": [
+						{
+							"kind": "end",
+							"id": "EndEvent_UserSatisfied",
+							"name": "User satisfied"
+						}
+					]
+				},
+				{
+					"name": "No",
+					"condition": "=userSatisfied = null or userSatisfied = false",
+					"steps": [
+						{
+							"kind": "end",
+							"id": "EndEvent_NotSatisfied",
+							"name": "User not satisfied"
+						}
+					]
+				}
+			]
+		}
+	]
+}

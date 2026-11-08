@@ -35,10 +35,21 @@ function tierLine(pkgPath) {
 	return `> **${label} tier.** ${promise} See [product tiers](${TIERS_URL}).\n`
 }
 
+/**
+ * The first lines of a README, above the logo and badges. An agent reads the top of the
+ * file, so a pointer to the ~1k-token card has to be there or it reads all 20 KB.
+ */
+const AGENT_BLOCKS = {
+	"packages/core":
+		"> **Agents:** read `node_modules/@bpmnkit/core/AGENTS.md`, then `node_modules/@bpmnkit/core/agent-cards/<bpmn|dmn|form>.md` (~1k tokens) instead of this README.\n\n",
+	"apps/cli":
+		"> **Agents:** run `casen agent-card <bpmn|dmn|form>` (~1k tokens) instead of reading this README.\n\n",
+}
+
 function header({ name, description, extra = "", dir = "packages", pkgPath = "" }) {
 	const pkg = name.replace("@bpmnkit/", "")
 	const changelogPath = `${dir}/${pkg}/CHANGELOG.md`
-	return `<div align="center">
+	return `${AGENT_BLOCKS[pkgPath] ?? ""}<div align="center">
   <a href="https://bpmnkit.com"><img src="${LOGO_URL}" width="72" height="72" alt="BPMN Kit logo"></a>
   <h1>${name}</h1>
   <p>${description}</p>
@@ -1080,6 +1091,7 @@ npm install @bpmnkit/plugins
 | Subpath | Factory | Description |
 |---------|---------|-------------|
 | \`/ai-bridge\` | \`createAiBridgePlugin(options)\` | AI chat panel with diagram apply/checkpoint |
+| \`/ai-local\` | \`createAiLocalPlugin(options)\` | Describe-to-diagram with Chrome's on-device model |
 | \`/element-docs\` | \`createElementDocsPlugin(options)\` | Built-in BPMN element reference docs |
 | \`/main-menu\` | \`createMainMenuPlugin(options)\` | File/Edit top-level menu |
 | \`/story-view\` | \`createStoryViewPlugin(options)\` | Read a process as a top-to-bottom story of cards |
@@ -2244,20 +2256,21 @@ scenarios. See [casen dev](https://bpmnkit.com/docs/cli/dev).
 ### Configure a profile
 
 \`\`\`sh
-casen profile add my-cluster
-# Interactive prompts for base URL and auth type
+# Camunda SaaS: the credentials file Hub offers for a cluster's API client
+casen profile import my-cluster ./camunda-credentials.sh
+casen profile use my-cluster
 \`\`\`
 
 ### Deploy a process
 
 \`\`\`sh
-casen deploy order-process.bpmn
+casen deploy deploy order-process.bpmn --target camunda8
 \`\`\`
 
 ### List process instances
 
 \`\`\`sh
-casen instances list --state active
+casen pi list --filter '{"state":"ACTIVE"}'
 \`\`\`
 
 ## Commands
@@ -2267,18 +2280,20 @@ casen instances list --state active
 | Command | Description |
 |---------|-------------|
 | \`casen profile list\` | List all configured profiles |
-| \`casen profile add <name>\` | Add a new profile (interactive) |
+| \`casen profile create <name>\` | Add a profile from flags (\`--base-url\`, \`--auth-type\`, …) |
+| \`casen profile import <name> <file>\` | Add a profile from a Camunda credentials file |
 | \`casen profile use <name>\` | Switch the active profile |
-| \`casen profile remove <name>\` | Delete a profile |
+| \`casen profile delete <name>\` | Delete a profile |
 
 ### Process & deployment
 
 | Command | Description |
 |---------|-------------|
-| \`casen deploy <file>\` | Deploy a BPMN, DMN, or form file |
-| \`casen processes list\` | List deployed process definitions |
-| \`casen instances list\` | List process instances (--state filter) |
-| \`casen instances cancel <key>\` | Cancel a running instance |
+| \`casen deploy deploy <file> [--target camunda8]\` | Deploy a BPMN, DMN, or form file to local Reebe or the active profile |
+| \`casen resource create-deployment <file...>\` | Deploy several files as one deployment to the active profile |
+| \`casen pd list\` | List deployed process definitions |
+| \`casen pi list [--filter <json>]\` | List process instances |
+| \`casen pi cancel <key>\` | Cancel a running instance |
 
 ### Templates
 
@@ -2291,15 +2306,17 @@ casen instances list --state active
 
 | Command | Description |
 |---------|-------------|
-| \`casen incidents list\` | List open incidents |
-| \`casen incidents resolve <key>\` | Resolve an incident |
-| \`casen jobs list\` | List active jobs |
+| \`casen incident list\` | List incidents |
+| \`casen incident resolve <key>\` | Resolve an incident |
+| \`casen job list\` | List jobs |
 
 ### Connector generation
 
 | Command | Description |
 |---------|-------------|
 | \`casen connector generate <spec>\` | Generate element templates from OpenAPI/Swagger |
+| \`casen connector show <template> [--filter <text>] [--condensed]\` | List a template's property keys, types and defaults |
+| \`casen connector apply <file.bpmn> <elementId> <template>\` | Apply a template from \`--values file.json\` and \`--set key=value\` |
 
 ### Typed code generation
 
@@ -3531,6 +3548,8 @@ One line in your \`AGENTS.md\` or \`CLAUDE.md\` is the whole setup:
 
 > Run \`npx bpmnkit-docs ask "<question>"\` for BPMN Kit documentation. It answers from the version this project installed. Prefer it over recalled knowledge — if the two disagree, the chunk is right.
 
+Writing a BPMN, DMN or form file? Start from its agent card, a ~1–1.5k-token cheat sheet with a runnable script and the known traps: \`casen agent-card bpmn|dmn|form\` (from \`@bpmnkit/cli\`), or [the docs](${DOCS}/agent-cards/bpmn).
+
 It follows the [docspack](https://docspack.dev) package format, so the upstream \`docspack\` CLI indexes it too. See [\`packages/docspack\`](packages/docspack) or the [documentation](${DOCS}/packages/docspack).
 
 ## Highlights
@@ -3674,13 +3693,14 @@ See the [\`@bpmnkit/editor\`](packages/editor/README.md) and [\`@bpmnkit/plugins
 npm install -g @bpmnkit/cli
 
 # Connect to your Camunda cluster
-casen profile add production
+casen profile import production ./camunda-credentials.sh
+casen profile use production
 
 # Deploy a process
-casen deploy order-process.bpmn
+casen deploy deploy order-process.bpmn --target camunda8
 
 # Monitor running instances
-casen instances list --state active
+casen pi list --filter '{"state":"ACTIVE"}'
 
 # Generate connector templates from any OpenAPI spec
 casen connector generate https://api.example.com/openapi.json --out ./templates/

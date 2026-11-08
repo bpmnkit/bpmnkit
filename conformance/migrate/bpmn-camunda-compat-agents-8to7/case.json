@@ -1,0 +1,8 @@
+{
+  "input": "bpmn/camunda-compat-agents/input.bpmn",
+  "runs": {
+    "default": {
+      "direction": "8to7"
+    }
+  }
+}

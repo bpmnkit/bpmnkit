@@ -1,0 +1,7 @@
+{
+	"chunks": [
+		"a[task A] > b\n",
+		"s[start S] > a\n",
+		"b[task B] > e[end E]\n"
+	]
+}

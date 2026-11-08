@@ -1,0 +1,469 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_P",
+      "plane": {
+        "bpmnElement": "P",
+        "edges": [
+          {
+            "bpmnElement": "f1",
+            "id": "f1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 100,
+                "y": 40
+              },
+              {
+                "x": 160,
+                "y": 40
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f2",
+            "id": "f2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 260,
+                "y": 40
+              },
+              {
+                "x": 320,
+                "y": 40
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f3",
+            "id": "f3_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 420,
+                "y": 40
+              },
+              {
+                "x": 480,
+                "y": 40
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f4",
+            "id": "f4_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 580,
+                "y": 40
+              },
+              {
+                "x": 640,
+                "y": 40
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f5",
+            "id": "f5_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 740,
+                "y": 40
+              },
+              {
+                "x": 800,
+                "y": 40
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f6",
+            "id": "f6_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 900,
+                "y": 40
+              },
+              {
+                "x": 960,
+                "y": 40
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f7",
+            "id": "f7_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 1060,
+                "y": 40
+              },
+              {
+                "x": 1120,
+                "y": 40
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f8",
+            "id": "f8_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 1220,
+                "y": 40
+              },
+              {
+                "x": 1280,
+                "y": 40
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_P",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 0,
+              "y": 0
+            },
+            "bpmnElement": "a",
+            "id": "a_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 160,
+              "y": 0
+            },
+            "bpmnElement": "b",
+            "id": "b_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 320,
+              "y": 0
+            },
+            "bpmnElement": "c",
+            "id": "c_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 480,
+              "y": 0
+            },
+            "bpmnElement": "d",
+            "id": "d_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 640,
+              "y": 0
+            },
+            "bpmnElement": "e",
+            "id": "e_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 800,
+              "y": 0
+            },
+            "bpmnElement": "f",
+            "id": "f_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 960,
+              "y": 0
+            },
+            "bpmnElement": "g",
+            "id": "g_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 1120,
+              "y": 0
+            },
+            "bpmnElement": "h",
+            "id": "h_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 1280,
+              "y": 0
+            },
+            "bpmnElement": "i",
+            "id": "i_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "D",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "extensionElements": [],
+          "id": "a",
+          "incoming": [],
+          "name": "A",
+          "outgoing": [
+            "f1"
+          ],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "b",
+          "incoming": [
+            "f1"
+          ],
+          "name": "B",
+          "outgoing": [
+            "f2"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "c"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "c",
+          "incoming": [
+            "f2"
+          ],
+          "name": "C",
+          "outgoing": [
+            "f3"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "decisionId": "dec",
+                "resultVariable": "r"
+              },
+              "children": [],
+              "name": "zeebe:calledDecision"
+            }
+          ],
+          "id": "d",
+          "incoming": [
+            "f3"
+          ],
+          "outgoing": [
+            "f4"
+          ],
+          "type": "businessRuleTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "send"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "e",
+          "incoming": [
+            "f4"
+          ],
+          "outgoing": [
+            "f5"
+          ],
+          "type": "sendTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f",
+          "incoming": [
+            "f5"
+          ],
+          "outgoing": [
+            "f6"
+          ],
+          "type": "receiveTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "expression": "= 1 + 1",
+                "resultVariable": "two"
+              },
+              "children": [],
+              "name": "zeebe:script"
+            }
+          ],
+          "id": "g",
+          "incoming": [
+            "f6"
+          ],
+          "outgoing": [
+            "f7"
+          ],
+          "type": "scriptTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "h",
+          "incoming": [
+            "f7"
+          ],
+          "outgoing": [
+            "f8"
+          ],
+          "type": "manualTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "processId": "child"
+              },
+              "children": [],
+              "name": "zeebe:calledElement"
+            }
+          ],
+          "id": "i",
+          "incoming": [
+            "f8"
+          ],
+          "outgoing": [],
+          "type": "callActivity",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "P",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "f1",
+          "sourceRef": "a",
+          "targetRef": "b",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f2",
+          "sourceRef": "b",
+          "targetRef": "c",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f3",
+          "sourceRef": "c",
+          "targetRef": "d",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f4",
+          "sourceRef": "d",
+          "targetRef": "e",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f5",
+          "sourceRef": "e",
+          "targetRef": "f",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f6",
+          "sourceRef": "f",
+          "targetRef": "g",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f7",
+          "sourceRef": "g",
+          "targetRef": "h",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f8",
+          "sourceRef": "h",
+          "targetRef": "i",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

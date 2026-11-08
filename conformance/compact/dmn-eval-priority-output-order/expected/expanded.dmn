@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="priority-output-order" name="priority-output-order" namespace="http://bpmn.io/schema/dmn">
+  <decision id="priority_single" name="priority_single">
+    <decisionTable id="decisionTable_0000008" hitPolicy="PRIORITY">
+      <input id="priority_single_i0">
+        <inputExpression id="inputExpression_0000001">
+          <text>n</text>
+        </inputExpression>
+      </input>
+      <output id="priority_single_o0" name="tier"/>
+      <rule id="ps_r0">
+        <inputEntry id="inputEntry_0_0000002">
+          <text>&gt;= 0</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000003">
+          <text>"bronze"</text>
+        </outputEntry>
+      </rule>
+      <rule id="ps_r1">
+        <inputEntry id="inputEntry_0_0000004">
+          <text>&gt;= 5</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000005">
+          <text>"gold"</text>
+        </outputEntry>
+      </rule>
+      <rule id="ps_r2">
+        <inputEntry id="inputEntry_0_0000006">
+          <text>&gt;= 3</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000007">
+          <text>"silver"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="order_single" name="order_single">
+    <decisionTable id="decisionTable_000000i" hitPolicy="OUTPUT ORDER">
+      <input id="order_single_i0">
+        <inputExpression id="inputExpression_0000009">
+          <text>n</text>
+        </inputExpression>
+      </input>
+      <output id="order_single_o0" name="tier"/>
+      <rule id="os_r0">
+        <inputEntry id="inputEntry_0_000000a">
+          <text>&gt;= 0</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000b">
+          <text>"bronze"</text>
+        </outputEntry>
+      </rule>
+      <rule id="os_r1">
+        <inputEntry id="inputEntry_0_000000c">
+          <text>&gt;= 5</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000d">
+          <text>"gold"</text>
+        </outputEntry>
+      </rule>
+      <rule id="os_r2">
+        <inputEntry id="inputEntry_0_000000e">
+          <text>&gt;= 3</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000f">
+          <text>"silver"</text>
+        </outputEntry>
+      </rule>
+      <rule id="os_r3">
+        <inputEntry id="inputEntry_0_000000g">
+          <text>&gt;= 0</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000h">
+          <text>"unlisted"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="order_multi" name="order_multi">
+    <decisionTable id="decisionTable_000000t" hitPolicy="OUTPUT ORDER">
+      <input id="order_multi_i0">
+        <inputExpression id="inputExpression_000000j">
+          <text>n</text>
+        </inputExpression>
+      </input>
+      <output id="order_multi_o0" name="level"/>
+      <output id="order_multi_o1" name="code"/>
+      <rule id="om_r0">
+        <inputEntry id="inputEntry_0_000000k">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000l">
+          <text>"low"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000000m">
+          <text>2</text>
+        </outputEntry>
+      </rule>
+      <rule id="om_r1">
+        <inputEntry id="inputEntry_0_000000n">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000o">
+          <text>"high"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000000p">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="om_r2">
+        <inputEntry id="inputEntry_0_000000q">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000r">
+          <text>"high"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000000s">
+          <text>2</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="no_values" name="no_values">
+    <decisionTable id="decisionTable_000000z" hitPolicy="OUTPUT ORDER">
+      <input id="no_values_i0">
+        <inputExpression id="inputExpression_000000u">
+          <text>n</text>
+        </inputExpression>
+      </input>
+      <output id="no_values_o0" name="v"/>
+      <rule id="nv_r0">
+        <inputEntry id="inputEntry_0_000000v">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000w">
+          <text>"b"</text>
+        </outputEntry>
+      </rule>
+      <rule id="nv_r1">
+        <inputEntry id="inputEntry_0_000000x">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000y">
+          <text>"a"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="priority_single">
+        <dc:Bounds height="80" width="180" x="160" y="100"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="order_single">
+        <dc:Bounds height="80" width="180" x="160" y="220"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="order_multi">
+        <dc:Bounds height="80" width="180" x="160" y="340"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="no_values">
+        <dc:Bounds height="80" width="180" x="160" y="460"/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

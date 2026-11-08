@@ -41,9 +41,7 @@ const EMPTY_EXTENSIONS =
 
 const ALLOWED: Record<string, AllowedChange[]> = {
 	"01-root-elements.bpmn": [],
-	"02-collaboration.bpmn": [
-		{ feature: "attr:bpmn:process@isExecutable", kind: "normalised", reason: OPTIONAL_FALSE },
-	],
+	"02-collaboration.bpmn": [],
 	"03-data-elements.bpmn": [],
 	"04-artifacts.bpmn": [],
 	"05-zeebe-extensions.bpmn": [],
@@ -57,19 +55,15 @@ const ALLOWED: Record<string, AllowedChange[]> = {
 	],
 	// The OMG BPMN Model Interchange Working Group reference models — see PROVENANCE.md.
 	"miwg-A.1.0.bpmn": [
-		{ feature: "attr:bpmn:process@isExecutable", kind: "normalised", reason: OPTIONAL_FALSE },
 		{ feature: "attr:bpmn:task@isForCompensation", kind: "normalised", reason: OPTIONAL_FALSE },
 	],
 	"miwg-A.2.0.bpmn": [
-		{ feature: "attr:bpmn:process@isExecutable", kind: "normalised", reason: OPTIONAL_FALSE },
 		{ feature: "attr:bpmn:task@isForCompensation", kind: "normalised", reason: OPTIONAL_FALSE },
 	],
 	"miwg-A.2.1.bpmn": [
-		{ feature: "attr:bpmn:process@isExecutable", kind: "normalised", reason: OPTIONAL_FALSE },
 		{ feature: "attr:bpmn:task@isForCompensation", kind: "normalised", reason: OPTIONAL_FALSE },
 	],
 	"miwg-A.3.0.bpmn": [
-		{ feature: "attr:bpmn:process@isExecutable", kind: "normalised", reason: OPTIONAL_FALSE },
 		{
 			feature: "attr:bpmn:subProcess@isForCompensation",
 			kind: "normalised",
@@ -78,7 +72,6 @@ const ALLOWED: Record<string, AllowedChange[]> = {
 		{ feature: "attr:bpmn:task@isForCompensation", kind: "normalised", reason: OPTIONAL_FALSE },
 	],
 	"miwg-A.4.0.bpmn": [
-		{ feature: "attr:bpmn:process@isExecutable", kind: "normalised", reason: OPTIONAL_FALSE },
 		{
 			feature: "attr:bpmn:subProcess@isForCompensation",
 			kind: "normalised",
@@ -87,7 +80,6 @@ const ALLOWED: Record<string, AllowedChange[]> = {
 		{ feature: "attr:bpmn:task@isForCompensation", kind: "normalised", reason: OPTIONAL_FALSE },
 	],
 	"miwg-A.4.1.bpmn": [
-		{ feature: "attr:bpmn:process@isExecutable", kind: "normalised", reason: OPTIONAL_FALSE },
 		{
 			feature: "attr:bpmn:subProcess@isForCompensation",
 			kind: "normalised",
@@ -108,7 +100,6 @@ const ALLOWED: Record<string, AllowedChange[]> = {
 			reason: OPTIONAL_FALSE,
 		},
 		{ feature: "attr:bpmn:dataObject@isCollection", kind: "normalised", reason: OPTIONAL_FALSE },
-		{ feature: "attr:bpmn:process@isExecutable", kind: "normalised", reason: OPTIONAL_FALSE },
 		{
 			feature: "attr:bpmn:serviceTask@isForCompensation",
 			kind: "normalised",
@@ -134,7 +125,6 @@ const ALLOWED: Record<string, AllowedChange[]> = {
 			kind: "normalised",
 			reason: OPTIONAL_FALSE,
 		},
-		{ feature: "attr:bpmn:process@isExecutable", kind: "normalised", reason: OPTIONAL_FALSE },
 		{
 			feature: "attr:bpmn:receiveTask@isForCompensation",
 			kind: "normalised",
@@ -155,7 +145,6 @@ const ALLOWED: Record<string, AllowedChange[]> = {
 		{ feature: "attr:bpmn:userTask@isForCompensation", kind: "normalised", reason: OPTIONAL_FALSE },
 	],
 	"miwg-C.1.0.bpmn": [
-		{ feature: "attr:bpmn:process@isExecutable", kind: "normalised", reason: OPTIONAL_FALSE },
 		{
 			feature: "attr:bpmn:serviceTask@isForCompensation",
 			kind: "normalised",
@@ -175,10 +164,8 @@ const ALLOWED: Record<string, AllowedChange[]> = {
 	],
 	"miwg-C.10.0.bpmn": [
 		{ feature: "attr:bpmn:dataObject@isCollection", kind: "normalised", reason: OPTIONAL_FALSE },
-		{ feature: "attr:bpmn:process@isExecutable", kind: "normalised", reason: OPTIONAL_FALSE },
 	],
 	"miwg-C.2.0.bpmn": [
-		{ feature: "attr:bpmn:process@isExecutable", kind: "normalised", reason: OPTIONAL_FALSE },
 		{
 			feature: "attr:bpmn:subProcess@isForCompensation",
 			kind: "normalised",
@@ -207,9 +194,7 @@ const ALLOWED: Record<string, AllowedChange[]> = {
 			reason: OPTIONAL_FALSE,
 		},
 	],
-	"miwg-C.8.0.bpmn": [
-		{ feature: "attr:bpmn:process@isExecutable", kind: "normalised", reason: OPTIONAL_FALSE },
-	],
+	"miwg-C.8.0.bpmn": [],
 	"miwg-C.8.1.bpmn": [
 		{ feature: "attr:bpmn:dataObject@isCollection", kind: "normalised", reason: OPTIONAL_FALSE },
 		{

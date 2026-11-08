@@ -1,0 +1,107 @@
+{
+  "findings": [
+    {
+      "category": "pattern",
+      "elementIds": [
+        "agent"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Agent\" has no error boundary event.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"S\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:data.limits.maxModelCalls",
+      "message": "Variable \"data.limits.maxModelCalls\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "produces": [
+        "data.limits.maxModelCalls"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"data.limits.maxModelCalls\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "agent"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:agent",
+      "message": "Element \"agent\" produces: data.limits.maxModelCalls.",
+      "processId": "proc",
+      "produces": [
+        "data.limits.maxModelCalls"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f2"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f2",
+      "message": "Variables in scope at flow \"f2\": data.limits.maxModelCalls.",
+      "processId": "proc",
+      "produces": [
+        "data.limits.maxModelCalls"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t1"
+      ],
+      "fixable": false,
+      "id": "compat/agent-tool-output-key",
+      "message": "Tool returns nothing to the agent. Set a \"toolCallResult\" (at minimum, note the task completed).",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an output mapping with target toolCallResult."
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 3,
+      "deploy": 1,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 0,
+      "naming": 0,
+      "pattern": 2,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 0,
+      "info": 3,
+      "warning": 3
+    },
+    "total": 6
+  }
+}

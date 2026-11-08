@@ -1,0 +1,67 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "a",
+            "name": "A",
+            "type": "startEvent"
+          },
+          {
+            "id": "t",
+            "inputs": {
+              "x": "=if"
+            },
+            "name": "T",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "a",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 1,
+      "message": "unknown attribute \"a=1\" on \"t\"; ignored"
+    },
+    {
+      "line": 1,
+      "message": "unknown attribute \"then\" on \"t\"; ignored"
+    },
+    {
+      "line": 1,
+      "message": "unknown attribute \"2\" on \"t\"; ignored"
+    },
+    {
+      "line": 1,
+      "message": "unknown attribute \"else\" on \"t\"; ignored"
+    },
+    {
+      "line": 1,
+      "message": "unknown attribute \"3\" on \"t\"; ignored"
+    }
+  ],
+  "questions": []
+}

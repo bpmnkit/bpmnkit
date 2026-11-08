@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns:dmn="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" xmlns:camunda="http://camunda.org/schema/1.0/dmn" xmlns:x="urn:x" id="Definitions_prefixed" name="Prefixed" namespace="urn:prefixed">
+  <decision id="d1" name="Prefixed decision">
+    <informationRequirement id="ir1">
+      <requiredInput href="#in1"/>
+    </informationRequirement>
+    <decisionTable id="t1" hitPolicy="COLLECT" aggregation="SUM">
+      <input id="i1" label="Amount">
+        <inputExpression id="ie1" typeRef="number">
+          <text>amount</text>
+        </inputExpression>
+      </input>
+      <output id="o1" name="fee" typeRef="number"/>
+      <rule id="r1">
+        <description>fee for any amount</description>
+        <inputEntry id="e1">
+          <text>&gt; 0</text>
+        </inputEntry>
+        <outputEntry id="p1">
+          <text>2.5</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <inputData id="in1" name="Amount"/>
+  <textAnnotation id="ta">
+    <text>note</text>
+  </textAnnotation>
+  <association id="as1" sourceRef="#ta" targetRef="#d1"/>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="d1">
+        <dc:Bounds height="80" width="180" x="1" y="2"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge dmnElementRef="as1">
+        <di:waypoint x="3" y="4"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["businessRuleTask","rule",{"name":"Rule","taskType":"dmn-worker","documentation":"d"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

@@ -1,0 +1,76 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "UNIQUE",
+        "id": "dt1",
+        "inputs": [
+          {
+            "id": "i1",
+            "inputExpression": {
+              "id": "ie1",
+              "text": "age"
+            },
+            "label": "age"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o1",
+            "name": "eligible",
+            "typeRef": "boolean"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r1",
+            "inputEntries": [
+              {
+                "id": "ie1r1",
+                "text": ">= 18"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "oe1r1",
+                "text": "true"
+              }
+            ]
+          },
+          {
+            "id": "r2",
+            "inputEntries": [
+              {
+                "id": "ie1r2",
+                "text": "< 18"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "oe1r2",
+                "text": "false"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "eligibility",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Eligibility"
+    }
+  ],
+  "id": "Definitions_eligible",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "DRD",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/"
+  },
+  "textAnnotations": []
+}

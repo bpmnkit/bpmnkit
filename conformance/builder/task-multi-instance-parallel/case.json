@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["serviceTask","mi",{"name":"MI","taskType":"w","multiInstance":{"collection":"=items","elementVariable":"item","outputCollection":"results","outputElement":"=r","completionCondition":"=count(results) > 2"}}],
+		["endEvent","e"],
+		["build"]
+	]
+}

@@ -493,10 +493,12 @@ export class DecisionDefinitionResource extends ResourceBase {
    * Returns decision definition as XML.
    * @see GET /decision-definitions/{decisionDefinitionKey}/xml
    */
-  async getDecisionDefinitionXML(decisionDefinitionKey: string): Promise<void> {
+  async getDecisionDefinitionXML(decisionDefinitionKey: string): Promise<string> {
     return this._http.request({
       method: "GET",
       path: `/decision-definitions/${decisionDefinitionKey}/xml`,
+      accept: "text/xml",
+      responseType: "text",
       cacheable: true,
     });
   }
@@ -588,10 +590,12 @@ export class DecisionRequirementsResource extends ResourceBase {
    * Returns decision requirements as XML.
    * @see GET /decision-requirements/{decisionRequirementsKey}/xml
    */
-  async getDecisionRequirementsXML(decisionRequirementsKey: string): Promise<void> {
+  async getDecisionRequirementsXML(decisionRequirementsKey: string): Promise<string> {
     return this._http.request({
       method: "GET",
       path: `/decision-requirements/${decisionRequirementsKey}/xml`,
+      accept: "text/xml",
+      responseType: "text",
       cacheable: true,
     });
   }
@@ -607,10 +611,11 @@ export class ResourceResource extends ResourceBase {
    *  This is an atomic call, i.e. either all resources are deployed or none of them are.
    * @see POST /deployments
    */
-  async createDeployment(): Promise<Types.DeploymentResult> {
+  async createDeployment(body: FormData): Promise<Types.DeploymentResult> {
     return this._http.request({
       method: "POST",
       path: "/deployments",
+      body,
     });
   }
 
@@ -672,10 +677,11 @@ export class DocumentResource extends ResourceBase {
    *  Note that this is currently supported for document stores of type: AWS, GCP, in-memory (non-production), local (non-production)
    * @see POST /documents
    */
-  async createDocument(query?: { storeId?: string; documentId?: Types.DocumentId }): Promise<Types.DocumentReference> {
+  async createDocument(body: FormData, query?: { storeId?: string; documentId?: Types.DocumentId }): Promise<Types.DocumentReference> {
     return this._http.request({
       method: "POST",
       path: "/documents",
+      body,
       query: query as Record<string, unknown> | undefined,
     });
   }
@@ -688,10 +694,11 @@ export class DocumentResource extends ResourceBase {
    *  The caller must provide a file name for each document, which will be used in case of a multi-status response
    * @see POST /documents/batch
    */
-  async createDocuments(query?: { storeId?: string }): Promise<Types.DocumentCreationBatchResponse> {
+  async createDocuments(body: FormData, query?: { storeId?: string }): Promise<Types.DocumentCreationBatchResponse> {
     return this._http.request({
       method: "POST",
       path: "/documents/batch",
+      body,
       query: query as Record<string, unknown> | undefined,
     });
   }
@@ -1596,10 +1603,12 @@ export class ProcessDefinitionResource extends ResourceBase {
    * Returns process definition as XML.
    * @see GET /process-definitions/{processDefinitionKey}/xml
    */
-  async getProcessDefinitionXML(processDefinitionKey: string): Promise<void> {
+  async getProcessDefinitionXML(processDefinitionKey: string): Promise<string | undefined> {
     return this._http.request({
       method: "GET",
       path: `/process-definitions/${processDefinitionKey}/xml`,
+      accept: "text/xml",
+      responseType: "text",
       cacheable: true,
     });
   }

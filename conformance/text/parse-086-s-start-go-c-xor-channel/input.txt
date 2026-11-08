@@ -1,0 +1,3 @@
+s[start Go] > c[xor Channel?]
+c >(Mail: channel = "mail") m[task Send letter]
+c >(Phone: channel = "phone") p[task Call]

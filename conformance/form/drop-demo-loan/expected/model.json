@@ -1,0 +1,56 @@
+{
+  "components": [
+    {
+      "id": "Field_name",
+      "key": "applicantName",
+      "label": "Applicant name",
+      "type": "textfield",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "id": "Field_amount",
+      "key": "amount",
+      "label": "Requested amount",
+      "type": "number"
+    },
+    {
+      "id": "Field_score",
+      "key": "creditScore",
+      "label": "Credit score",
+      "type": "number"
+    },
+    {
+      "id": "Field_emp",
+      "key": "employment",
+      "label": "Employment status",
+      "type": "select",
+      "values": [
+        {
+          "label": "Employed",
+          "value": "employed"
+        },
+        {
+          "label": "Self-employed",
+          "value": "self"
+        },
+        {
+          "label": "Unemployed",
+          "value": "none"
+        }
+      ]
+    },
+    {
+      "id": "Field_confirm",
+      "key": "confirmed",
+      "label": "I confirm the information is accurate",
+      "type": "checkbox"
+    }
+  ],
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.5.0",
+  "id": "loanApplicationForm",
+  "schemaVersion": 16,
+  "type": "default"
+}

@@ -1,0 +1,107 @@
+[
+  {
+    "result": {
+      "t": "string",
+      "v": "ok"
+    },
+    "evaluated": [
+      {
+        "decision": "number_in",
+        "result": {
+          "t": "string",
+          "v": "ok"
+        }
+      }
+    ]
+  },
+  {
+    "error": "Decision 'number_in': input 'v' is of type 'string' but its typeRef is 'number'"
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "ok"
+    },
+    "evaluated": [
+      {
+        "decision": "number_in",
+        "result": {
+          "t": "string",
+          "v": "ok"
+        }
+      }
+    ]
+  },
+  {
+    "error": "Decision 'number_in': input 'v' is of type 'boolean' but its typeRef is 'number'"
+  },
+  {
+    "result": {
+      "t": "number",
+      "v": "1"
+    },
+    "evaluated": [
+      {
+        "decision": "legacy_and_any",
+        "result": {
+          "t": "number",
+          "v": "1"
+        }
+      }
+    ]
+  },
+  {
+    "error": "Decision 'bad_output': output 'r' of rule 'bo_r0' is of type 'string' but its typeRef is 'boolean'"
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "old"
+    },
+    "evaluated": [
+      {
+        "decision": "date_in",
+        "result": {
+          "t": "string",
+          "v": "old"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "old"
+    },
+    "evaluated": [
+      {
+        "decision": "date_in",
+        "result": {
+          "t": "string",
+          "v": "old"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "new"
+    },
+    "evaluated": [
+      {
+        "decision": "date_in",
+        "result": {
+          "t": "string",
+          "v": "new"
+        }
+      }
+    ]
+  },
+  {
+    "error": "Decision 'date_in': input 'd' is of type 'string' but its typeRef is 'date'"
+  },
+  {
+    "error": "Decision 'date_in': input 'd' is of type 'number' but its typeRef is 'date'"
+  }
+]

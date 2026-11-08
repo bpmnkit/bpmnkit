@@ -148,3 +148,60 @@ describe("parseProcessDelta", () => {
 		expect(delta.problems.map((p) => p.line)).toEqual([1, 2])
 	})
 })
+
+describe("parseProcessDelta forms and mappings", () => {
+	it("carries form= and mappings on the node, apart from result=", () => {
+		const delta = parseProcessDelta(
+			'review[user Review | form=f in.x=if a = 1 then "y" else "z" out.ok=resp.ok result=r]',
+		)
+		expect(delta.problems).toEqual([])
+		expect(delta.nodes[0]).toMatchObject({
+			formId: "f",
+			inputs: { x: '=if a = 1 then "y" else "z"' },
+			outputs: { ok: "=resp.ok" },
+			resultVariable: "r",
+		})
+	})
+})
+
+describe("parseProcessDelta — ad-hoc sub-processes and notes", () => {
+	it("reads adhoc, inside= and note lines", () => {
+		const delta = parseProcessDelta(
+			"box[adhoc Tools]\nt[service Search | inside=box]\nnote t: Looks things up\nnote box: Pick one",
+		)
+		expect(delta.problems).toEqual([])
+		expect(delta.nodes).toEqual([
+			{ id: "box", type: "adHocSubProcess", name: "Tools", line: 1 },
+			{ id: "t", type: "serviceTask", name: "Search", inside: "box", line: 2 },
+		])
+		expect(delta.notes).toEqual([
+			{ id: "t", text: "Looks things up", line: 3 },
+			{ id: "box", text: "Pick one", line: 4 },
+		])
+	})
+
+	it("reports a note with no text", () => {
+		const delta = parseProcessDelta("note t:")
+		expect(delta.notes).toEqual([])
+		expect(delta.problems.map((p) => p.message).join()).toContain("no text")
+	})
+
+	it("has no notes in the guide's example", () => {
+		expect(parseProcessDelta(EXAMPLE).notes).toEqual([])
+	})
+})
+
+describe("parseProcessDelta review fixes", () => {
+	it("does not let a mapping value absorb a following bar or comma", () => {
+		const bar = parseProcessDelta("u[user U | in.a=x | form=f]")
+		expect(bar.nodes[0]).toMatchObject({ inputs: { a: "=x" }, formId: "f" })
+		const comma = parseProcessDelta("u[user U | in.a=x, out.b=y]")
+		expect(comma.nodes[0]).toMatchObject({ inputs: { a: "=x" }, outputs: { b: "=y" } })
+	})
+
+	it("reads doc lines, and reports one with no text", () => {
+		const delta = parseProcessDelta("doc t: Looks things up\ndoc u:")
+		expect(delta.docs).toEqual([{ id: "t", text: "Looks things up", line: 1 }])
+		expect(delta.problems.map((p) => p.message).join()).toMatch(/doc u.*no text/)
+	})
+})

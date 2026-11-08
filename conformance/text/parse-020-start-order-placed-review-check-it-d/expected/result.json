@@ -1,0 +1,56 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "order placed",
+            "type": "startEvent"
+          },
+          {
+            "id": "review",
+            "name": "Check it",
+            "type": "task"
+          },
+          {
+            "id": "done",
+            "name": "Order shipped",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "review"
+          },
+          {
+            "from": "review",
+            "id": "Flow_2",
+            "to": "done"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 1,
+      "message": "unknown kind \"order\" for \"start\"; used startEvent"
+    },
+    {
+      "line": 1,
+      "message": "unknown kind \"check\" for \"review\"; used task"
+    },
+    {
+      "line": 1,
+      "message": "unknown kind \"order\" for \"done\"; used endEvent"
+    }
+  ],
+  "questions": []
+}

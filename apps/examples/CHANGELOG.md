@@ -1,5 +1,61 @@
 # @bpmnkit/examples
 
+## 0.0.54
+
+### Patch Changes
+
+- Updated dependencies [671f55d]
+  - @bpmnkit/core@1.9.0
+
+## 0.0.53
+
+### Patch Changes
+
+- Updated dependencies [1ab40d0]
+- Updated dependencies [f6cc4ac]
+- Updated dependencies [1ab40d0]
+- Updated dependencies [1ab40d0]
+- Updated dependencies [f6cc4ac]
+- Updated dependencies [1ab40d0]
+- Updated dependencies [1ab40d0]
+- Updated dependencies [1ab40d0]
+  - @bpmnkit/docspack@1.3.0
+  - @bpmnkit/core@1.8.0
+
+## 0.0.52
+
+### Patch Changes
+
+- Updated dependencies [1ecde83]
+- Updated dependencies [1ecde83]
+- Updated dependencies [9ba0c65]
+- Updated dependencies [1ecde83]
+- Updated dependencies [1ecde83]
+- Updated dependencies [1ecde83]
+  - @bpmnkit/core@1.7.0
+  - @bpmnkit/docspack@1.2.2
+
+## 0.0.51
+
+### Patch Changes
+
+- Updated dependencies [ab10779]
+  - @bpmnkit/core@1.6.1
+
+## 0.0.50
+
+### Patch Changes
+
+- Updated dependencies [fbd45f8]
+- Updated dependencies [8bcc25a]
+- Updated dependencies [ca2129e]
+- Updated dependencies [fbd45f8]
+- Updated dependencies [fbd45f8]
+- Updated dependencies [fbd45f8]
+  - @bpmnkit/engine@1.3.0
+  - @bpmnkit/core@1.6.0
+  - @bpmnkit/docspack@1.2.1
+
 ## 0.0.49
 
 ### Patch Changes

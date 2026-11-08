@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="P" isExecutable="true">
+    <bpmn:startEvent id="S" name="Start">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:transaction id="Tx" name="Book trip">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+      <bpmn:startEvent id="tS" name="Begin">
+        <bpmn:outgoing>tf1</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:task id="tA" name="Book flight">
+        <bpmn:incoming>tf1</bpmn:incoming>
+        <bpmn:outgoing>tf2</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:task id="tB" name="Book hotel">
+        <bpmn:incoming>tf2</bpmn:incoming>
+        <bpmn:outgoing>tf3</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:endEvent id="tE" name="Booked">
+        <bpmn:incoming>tf3</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="tf1" sourceRef="tS" targetRef="tA"/>
+      <bpmn:sequenceFlow id="tf2" sourceRef="tA" targetRef="tB"/>
+      <bpmn:sequenceFlow id="tf3" sourceRef="tB" targetRef="tE"/>
+    </bpmn:transaction>
+    <bpmn:boundaryEvent id="BC" name="Cancel" attachedToRef="Tx">
+      <bpmn:outgoing>b1</bpmn:outgoing>
+      <bpmn:cancelEventDefinition id="ed1"/>
+    </bpmn:boundaryEvent>
+    <bpmn:task id="Refund" name="Refund">
+      <bpmn:incoming>b1</bpmn:incoming>
+      <bpmn:outgoing>f3</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="E" name="End">
+      <bpmn:incoming>f2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="E2" name="Cancelled">
+      <bpmn:incoming>f3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="Tx"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="Tx" targetRef="E"/>
+    <bpmn:sequenceFlow id="b1" sourceRef="BC" targetRef="Refund"/>
+    <bpmn:sequenceFlow id="f3" sourceRef="Refund" targetRef="E2"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="P">
+      <bpmndi:BPMNShape id="S_di" bpmnElement="S">
+        <dc:Bounds x="22" y="120" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="20" y="160" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Tx_di" bpmnElement="Tx" isExpanded="true">
+        <dc:Bounds x="158" y="20" width="557" height="208"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BC_di" bpmnElement="BC">
+        <dc:Bounds x="419" y="210" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="391" y="250" width="42" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Refund_di" bpmnElement="Refund">
+        <dc:Bounds x="815" y="284" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_di" bpmnElement="E">
+        <dc:Bounds x="847" y="120" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="845" y="160" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E2_di" bpmnElement="E2">
+        <dc:Bounds x="975" y="306" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="962" y="346" width="63" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="tS_di" bpmnElement="tS">
+        <dc:Bounds x="210" y="120" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="208" y="160" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="tA_di" bpmnElement="tA">
+        <dc:Bounds x="306" y="98" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="tB_di" bpmnElement="tB">
+        <dc:Bounds x="466" y="98" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="tE_di" bpmnElement="tE">
+        <dc:Bounds x="626" y="120" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="623" y="160" width="42" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1">
+        <di:waypoint x="58" y="138"/>
+        <di:waypoint x="158" y="138"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2">
+        <di:waypoint x="715" y="138"/>
+        <di:waypoint x="847" y="138"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="b1_di" bpmnElement="b1">
+        <di:waypoint x="437" y="246"/>
+        <di:waypoint x="437" y="324"/>
+        <di:waypoint x="815" y="324"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3">
+        <di:waypoint x="915" y="324"/>
+        <di:waypoint x="975" y="324"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="tf1_di" bpmnElement="tf1">
+        <di:waypoint x="246" y="138"/>
+        <di:waypoint x="306" y="138"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="tf2_di" bpmnElement="tf2">
+        <di:waypoint x="406" y="138"/>
+        <di:waypoint x="466" y="138"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="tf3_di" bpmnElement="tf3">
+        <di:waypoint x="566" y="138"/>
+        <di:waypoint x="626" y="138"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

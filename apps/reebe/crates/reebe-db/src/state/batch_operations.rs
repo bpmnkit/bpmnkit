@@ -1,9 +1,9 @@
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 use crate::pool::DbPool;
+use crate::{DbError, Result};
 use chrono::{DateTime, Utc};
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 use sqlx::Row;
-use crate::{Result, DbError};
 
 #[derive(Debug, Clone)]
 pub struct BatchOperation {
@@ -66,12 +66,7 @@ impl<'a> BatchOperationRepository<'a> {
         }
     }
 
-    pub async fn update_progress(
-        &self,
-        key: i64,
-        completed: i64,
-        failed: i64,
-    ) -> Result<()> {
+    pub async fn update_progress(&self, key: i64, completed: i64, failed: i64) -> Result<()> {
         sqlx::query(
             "UPDATE batch_operations SET completed_items = $1, failed_items = $2 WHERE key = $3",
         )

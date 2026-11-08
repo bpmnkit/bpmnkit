@@ -1,0 +1,146 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "exporter": "@bpmnkit/core",
+  "exporterVersion": "0.0.23",
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [
+        {
+          "associationDirection": "One",
+          "id": "Association_0000001",
+          "sourceRef": "s",
+          "targetRef": "m",
+          "unknownAttributes": {}
+        }
+      ],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "s",
+          "incoming": [],
+          "outgoing": [],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "documentation": "doc",
+          "extensionElements": [],
+          "id": "m",
+          "incoming": [],
+          "isForCompensation": true,
+          "outgoing": [],
+          "type": "manualTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "t",
+          "incoming": [],
+          "isForCompensation": true,
+          "outgoing": [],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "documentation": "d",
+          "extensionElements": [
+            {
+              "attributes": {
+                "expression": "=1",
+                "resultVariable": "r"
+              },
+              "children": [],
+              "name": "zeebe:script"
+            }
+          ],
+          "id": "s2",
+          "incoming": [],
+          "isForCompensation": true,
+          "outgoing": [],
+          "type": "scriptTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "processId": "x"
+              },
+              "children": [],
+              "name": "zeebe:calledElement"
+            }
+          ],
+          "id": "c",
+          "incoming": [],
+          "isForCompensation": true,
+          "outgoing": [],
+          "type": "callActivity",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "x"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "b",
+          "incoming": [],
+          "isForCompensation": true,
+          "outgoing": [],
+          "type": "businessRuleTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "u",
+          "incoming": [],
+          "isForCompensation": true,
+          "outgoing": [],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e",
+          "incoming": [],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "p",
+      "isExecutable": true,
+      "sequenceFlows": [],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.10.0"
+  }
+}

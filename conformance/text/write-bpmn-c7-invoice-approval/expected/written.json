@@ -1,0 +1,14 @@
+{
+  "aliases": {
+    "approve_invoice": "Task_approve",
+    "approved": "Gateway_approved",
+    "archive_invoice": "Task_archive",
+    "book_invoice": "Task_book",
+    "classify_invoice": "Task_classify",
+    "compute_total": "Task_total",
+    "invoice_booked": "EndEvent_done",
+    "invoice_received": "StartEvent_invoice",
+    "invoice_rejected": "EndEvent_rejected",
+    "wait_one_day": "Timer_clarify"
+  }
+}

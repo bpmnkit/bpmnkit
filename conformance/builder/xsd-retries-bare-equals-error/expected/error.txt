@@ -1,0 +1,1 @@
+retries on "pay" must be a whole-number string like "3" or a FEEL expression like "=retries", got "=". See agent-cards/bpmn.md#traps.

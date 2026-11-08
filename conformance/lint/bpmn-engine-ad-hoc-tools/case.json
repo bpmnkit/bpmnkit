@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/engine-ad-hoc-tools/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}

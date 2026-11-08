@@ -1,0 +1,44 @@
+{
+  "components": [
+    {
+      "data": 1,
+      "id": "p1",
+      "layout": null,
+      "type": "plugin"
+    },
+    {
+      "extraProps": "abc",
+      "id": "p2",
+      "type": "plugin"
+    },
+    {
+      "extraProps": {
+        "a": 1
+      },
+      "id": "p3",
+      "type": "plugin"
+    },
+    {
+      "extraProps": [
+        1,
+        2
+      ],
+      "id": "p4",
+      "layout": {
+        "extraProps": {
+          "x": 1
+        },
+        "row": "r"
+      },
+      "type": "plugin"
+    },
+    {
+      "extraProps": null,
+      "id": "p5",
+      "type": "plugin"
+    }
+  ],
+  "id": "f",
+  "schemaVersion": 16,
+  "type": "default"
+}

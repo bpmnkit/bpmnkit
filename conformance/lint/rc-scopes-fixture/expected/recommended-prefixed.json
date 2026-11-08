@@ -1,0 +1,1690 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 104,
+    "info": 1,
+    "warning": 24
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "gw_xor"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"gw_xor\" has 2 outgoing flows but no default flow set.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "bpmnlintRule": "fake-join",
+      "category": "flow",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"end\" (endEvent) has 3 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "gw_xor"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Which?\" has no default sequence flow.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "sub"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Sub\" has no error boundary event.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "tx"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Tx\" has no error boundary event.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "evt_sub"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"On message\" has no error boundary event.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Tools\" has no error boundary event.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Start\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "boundary_timer"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"task_x1\" has no outgoing sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "boundary_comp"
+      ],
+      "fixable": false,
+      "id": "pattern/boundary-no-outgoing",
+      "message": "Boundary event on \"task_x1\" has no outgoing sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect the boundary event to a handler task or end event."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "gw_split"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:a",
+      "message": "Variable \"a\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"a\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "gw_split"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:gw_split",
+      "message": "Element \"gw_split\" consumes: a.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "bpmnlintRule": "conditional-flows",
+      "category": "feel",
+      "elementIds": [
+        "f_plain"
+      ],
+      "fixable": false,
+      "id": "feel/missing-condition",
+      "message": "Sequence flow \"f_plain\" leaves \"gw_split\", which routes by condition, but has no condition and is not the default flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make this flow the default."
+    },
+    {
+      "bpmnlintRule": "conditional-flows",
+      "category": "feel",
+      "elementIds": [
+        "f_x1_other"
+      ],
+      "fixable": false,
+      "id": "feel/missing-condition",
+      "message": "Sequence flow \"f_x1_other\" leaves \"task_x1\", which routes by condition, but has no condition and is not the default flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make this flow the default."
+    },
+    {
+      "bpmnlintRule": "conditional-flows",
+      "category": "feel",
+      "elementIds": [
+        "sf9"
+      ],
+      "fixable": false,
+      "id": "feel/missing-condition",
+      "message": "Sequence flow \"sf9\" leaves \"sub_mixed\", which routes by condition, but has no condition and is not the default flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make this flow the default."
+    },
+    {
+      "bpmnlintRule": "end-event-required",
+      "category": "flow",
+      "elementIds": [
+        "tx"
+      ],
+      "fixable": false,
+      "id": "flow/sub-process-no-end-event",
+      "message": "Sub-process \"tx\" has no end event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add an end event so the sub-process completes explicitly."
+    },
+    {
+      "bpmnlintRule": "end-event-required",
+      "category": "flow",
+      "elementIds": [
+        "evt_sub"
+      ],
+      "fixable": false,
+      "id": "flow/sub-process-no-end-event",
+      "message": "Sub-process \"evt_sub\" has no end event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add an end event so the sub-process completes explicitly."
+    },
+    {
+      "bpmnlintRule": "fake-join",
+      "category": "flow",
+      "elementIds": [
+        "start_joined"
+      ],
+      "fixable": false,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"start_joined\" (startEvent) has 2 incoming flows, which do not join.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Join the flows with a gateway before this element."
+    },
+    {
+      "bpmnlintRule": "fake-join",
+      "category": "flow",
+      "elementIds": [
+        "sub_join_task"
+      ],
+      "fixable": false,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"sub_join_task\" (task) has 2 incoming flows, which do not join.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Join the flows with a gateway before this element."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "pool"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "Participant \"pool\" has no label.",
+      "processId": "Definitions_parity",
+      "severity": "warning",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "blackbox"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "Participant \"blackbox\" has no label.",
+      "processId": "Definitions_parity",
+      "severity": "warning",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "lane_unnamed"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "Lane \"lane_unnamed\" has no label.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "lane_child"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "Lane \"lane_child\" has no label.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "task_blank"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "task element \"task_blank\" has no label.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "f_cond"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "Conditional sequence flow \"f_cond\" has no label.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "sub_start"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "startEvent element \"sub_start\" has no label.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "sub_catch"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "intermediateCatchEvent element \"sub_catch\" has no label.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "tx_start"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "startEvent element \"tx_start\" has no label.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "tx_task"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "task element \"tx_task\" has no label.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "evt_start"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "startEvent element \"evt_start\" has no label.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "adhoc_unnamed"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "task element \"adhoc_unnamed\" has no label.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "pool"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"pool\" has no diagram information (BPMNDI).",
+      "processId": "Definitions_parity",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "blackbox"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"blackbox\" has no diagram information (BPMNDI).",
+      "processId": "Definitions_parity",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"start\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "gw_split"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"gw_split\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "task_blank"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"task_blank\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "gw_xor"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"gw_xor\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "task_x1"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"task_x1\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "task_x2"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"task_x2\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "boundary_timer"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"boundary_timer\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "boundary_comp"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"boundary_comp\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "handler_top"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"handler_top\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "link_throw"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"link_throw\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "link_catch"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"link_catch\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "task_r1"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"task_r1\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "task_r2"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"task_r2\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "start_joined"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"start_joined\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"end\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "end_other"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"end_other\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "end_link"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"end_link\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "end_restart"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"end_restart\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sub"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sub\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sub_start"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sub_start\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sub_fork"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sub_fork\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sub_t1"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sub_t1\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sub_t2"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sub_t2\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sub_join_task"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sub_join_task\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sub_orphan"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sub_orphan\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sub_mixed"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sub_mixed\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sub_redundant"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sub_redundant\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sub_dead"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sub_dead\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sub_end"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sub_end\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sub_catch"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sub_catch\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sub_comp"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sub_comp\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sub_handler"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sub_handler\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sf1"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sf1\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sf2"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sf2\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sf3"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sf3\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sf4"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sf4\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sf5"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sf5\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sf6"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sf6\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sf7"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sf7\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sf8"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sf8\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sf9"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sf9\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sf10"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sf10\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "sub_assoc"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"sub_assoc\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "tx"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"tx\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "tx_start"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"tx_start\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "tx_task"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"tx_task\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "tf1"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"tf1\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "evt_sub"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"evt_sub\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "evt_start"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"evt_start\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "evt_task"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"evt_task\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "ef1"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"ef1\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"adhoc\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "adhoc_tool"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"adhoc_tool\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "adhoc_unnamed"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"adhoc_unnamed\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "data_ref"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"data_ref\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "store_ref"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"store_ref\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f_start"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f_start\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f_cond"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f_cond\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f_default"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f_default\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f_plain"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f_plain\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f_blank_out"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f_blank_out\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f_x1"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f_x1\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f_x2"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f_x2\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f_x1_out"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f_x1_out\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f_x1_other"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f_x1_other\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f_x2_out"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f_x2_out\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f_catch"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f_catch\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f_r1"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f_r1\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f_r2"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f_r2\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f_restart"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f_restart\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f_sub_out"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f_sub_out\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "assoc_top"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"assoc_top\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "lane_unnamed"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"lane_unnamed\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "lane_named"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"lane_named\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "lane_child"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"lane_child\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-disconnected",
+      "category": "flow",
+      "elementIds": [
+        "boundary_timer"
+      ],
+      "fixable": false,
+      "id": "flow/disconnected",
+      "message": "Element \"boundary_timer\" (boundaryEvent) is not connected to any sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to the process flow or remove it."
+    },
+    {
+      "bpmnlintRule": "no-disconnected",
+      "category": "flow",
+      "elementIds": [
+        "tx"
+      ],
+      "fixable": false,
+      "id": "flow/disconnected",
+      "message": "Element \"tx\" (transaction) is not connected to any sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to the process flow or remove it."
+    },
+    {
+      "bpmnlintRule": "no-disconnected",
+      "category": "flow",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": false,
+      "id": "flow/disconnected",
+      "message": "Element \"adhoc\" (adHocSubProcess) is not connected to any sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to the process flow or remove it."
+    },
+    {
+      "bpmnlintRule": "no-disconnected",
+      "category": "flow",
+      "elementIds": [
+        "sub_catch"
+      ],
+      "fixable": false,
+      "id": "flow/disconnected",
+      "message": "Element \"sub_catch\" (intermediateCatchEvent) is not connected to any sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to the process flow or remove it."
+    },
+    {
+      "bpmnlintRule": "no-gateway-join-fork",
+      "category": "flow",
+      "elementIds": [
+        "sub_mixed"
+      ],
+      "fixable": false,
+      "id": "flow/mixed-gateway",
+      "message": "Gateway \"sub_mixed\" (exclusiveGateway) has 2 incoming and 2 outgoing flows — it both joins and forks.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Split it into a joining gateway followed by a forking one."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "boundary_timer"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"boundary_timer\" (boundaryEvent) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "tx"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"tx\" (transaction) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"adhoc\" (adHocSubProcess) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "sub_dead"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"sub_dead\" (task) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "sub_catch"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"sub_catch\" (intermediateCatchEvent) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "sub_comp"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"sub_comp\" (boundaryEvent) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "tx_task"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"tx_task\" (task) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "evt_task"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"evt_task\" (task) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-start",
+      "category": "flow",
+      "elementIds": [
+        "task_r1"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-start",
+      "message": "Element \"task_r1\" (task) has no incoming sequence flow, so it starts the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it from a start event or an upstream element."
+    },
+    {
+      "bpmnlintRule": "no-implicit-start",
+      "category": "flow",
+      "elementIds": [
+        "task_r2"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-start",
+      "message": "Element \"task_r2\" (task) has no incoming sequence flow, so it starts the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it from a start event or an upstream element."
+    },
+    {
+      "bpmnlintRule": "no-implicit-start",
+      "category": "flow",
+      "elementIds": [
+        "tx"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-start",
+      "message": "Element \"tx\" (transaction) has no incoming sequence flow, so it starts the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it from a start event or an upstream element."
+    },
+    {
+      "bpmnlintRule": "no-implicit-start",
+      "category": "flow",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-start",
+      "message": "Element \"adhoc\" (adHocSubProcess) has no incoming sequence flow, so it starts the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it from a start event or an upstream element."
+    },
+    {
+      "bpmnlintRule": "no-implicit-start",
+      "category": "flow",
+      "elementIds": [
+        "sub_orphan"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-start",
+      "message": "Element \"sub_orphan\" (task) has no incoming sequence flow, so it starts the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it from a start event or an upstream element."
+    },
+    {
+      "bpmnlintRule": "no-implicit-start",
+      "category": "flow",
+      "elementIds": [
+        "sub_catch"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-start",
+      "message": "Element \"sub_catch\" (intermediateCatchEvent) has no incoming sequence flow, so it starts the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it from a start event or an upstream element."
+    },
+    {
+      "bpmnlintRule": "single-blank-start-event",
+      "category": "flow",
+      "elementIds": [
+        "proc"
+      ],
+      "fixable": false,
+      "id": "flow/multiple-blank-start-events",
+      "message": "Process \"proc\" has 2 blank start events.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Keep one blank start event per scope; give the others a trigger or remove them."
+    },
+    {
+      "bpmnlintRule": "superfluous-gateway",
+      "category": "flow",
+      "elementIds": [
+        "sub_redundant"
+      ],
+      "fixable": false,
+      "id": "flow/redundant-gateway",
+      "message": "Gateway \"sub_redundant\" (exclusiveGateway) has only 1 incoming and 1 outgoing flow — it is redundant.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Remove this gateway and connect its source directly to its target."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 129
+}

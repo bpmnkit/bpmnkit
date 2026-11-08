@@ -1,0 +1,10 @@
+{
+	"kind": "dmn",
+	"script": [
+		["drd","Order"],
+		["$let","h12","decision","z",{"$ops":[["name","Z"],["input",{"expression":"x"}],["output",{"name":"zOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]}],
+		["$let","h13","inputData","m"],
+		["$let","h14","decision","a",{"$ops":[["name","A"],["input",{"expression":"x"}],["output",{"name":"aOut"}],["rule",{"inputs":["1"],"outputs":["\"v\""]}]]},{"requires":[{"$drgId":"m"},{"$drgId":"z"}]}],
+		["build"]
+	]
+}

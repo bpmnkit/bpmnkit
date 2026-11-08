@@ -1,0 +1,21 @@
+{
+  "components": [
+    {
+      "id": "Field_1",
+      "key": "name",
+      "label": "Name",
+      "type": "textfield"
+    },
+    {
+      "id": "Field_2",
+      "key": "agree",
+      "label": "Agree",
+      "type": "checkbox"
+    }
+  ],
+  "executionPlatform": "Camunda Cloud",
+  "executionPlatformVersion": "8.5.0",
+  "id": "Form_registration",
+  "schemaVersion": 16,
+  "type": "default"
+}

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_g</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="g">
+      <bpmn:incoming>Flow_s_g</bpmn:incoming>
+      <bpmn:outgoing>Flow_g_g2</bpmn:outgoing>
+      <bpmn:outgoing>Flow_g_lt</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="g2">
+      <bpmn:incoming>Flow_g_g2</bpmn:incoming>
+      <bpmn:outgoing>Flow_g2_t1</bpmn:outgoing>
+      <bpmn:outgoing>Flow_g2_t2</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="t1" name="t1">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="t"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_g2_t1</bpmn:incoming>
+      <bpmn:outgoing>Flow_t1_g2_join</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="t2" name="t2">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="t"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_g2_t2</bpmn:incoming>
+      <bpmn:outgoing>Flow_t2_g2_join</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:intermediateCatchEvent id="lc">
+      <bpmn:outgoing>Flow_lc_t3</bpmn:outgoing>
+      <bpmn:linkEventDefinition id="lc_LinkEventDefinition" name="L"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:serviceTask id="t3" name="t3">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="t"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_lc_t3</bpmn:incoming>
+      <bpmn:incoming>Flow_g2_join_t3</bpmn:incoming>
+      <bpmn:outgoing>Flow_t3_end</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:intermediateThrowEvent id="lt">
+      <bpmn:incoming>Flow_g_lt</bpmn:incoming>
+      <bpmn:linkEventDefinition id="lt_LinkEventDefinition" name="L"/>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:endEvent id="end">
+      <bpmn:incoming>Flow_t3_end</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="g2_join">
+      <bpmn:incoming>Flow_t1_g2_join</bpmn:incoming>
+      <bpmn:incoming>Flow_t2_g2_join</bpmn:incoming>
+      <bpmn:outgoing>Flow_g2_join_t3</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_s_g" sourceRef="s" targetRef="g"/>
+    <bpmn:sequenceFlow id="Flow_g_g2" sourceRef="g" targetRef="g2" name="a"/>
+    <bpmn:sequenceFlow id="Flow_g2_t1" sourceRef="g2" targetRef="t1" name="x"/>
+    <bpmn:sequenceFlow id="Flow_g2_t2" sourceRef="g2" targetRef="t2" name="y"/>
+    <bpmn:sequenceFlow id="Flow_lc_t3" sourceRef="lc" targetRef="t3"/>
+    <bpmn:sequenceFlow id="Flow_t1_g2_join" sourceRef="t1" targetRef="g2_join"/>
+    <bpmn:sequenceFlow id="Flow_t2_g2_join" sourceRef="t2" targetRef="g2_join"/>
+    <bpmn:sequenceFlow id="Flow_g_lt" sourceRef="g" targetRef="lt" name="b"/>
+    <bpmn:sequenceFlow id="Flow_t3_end" sourceRef="t3" targetRef="end"/>
+    <bpmn:sequenceFlow id="Flow_g2_join_t3" sourceRef="g2_join" targetRef="t3"/>
+  </bpmn:process>
+</bpmn:definitions>
+

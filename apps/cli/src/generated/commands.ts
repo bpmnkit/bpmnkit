@@ -11,6 +11,7 @@ import {
   makeCreateCmd,
   makeUpdateCmd,
   makeDeleteCmd,
+  makeUploadCmd,
   parseJson,
 } from "../commands/shared.js";
 
@@ -466,10 +467,11 @@ export const resourceGroup: CommandGroup = {
   name: "resource",
   description: "Resource",
   commands: [
-    makeCreateCmd({
+    makeUploadCmd({
       name: "create-deployment",
       description: "Deploy resources",
-      create: (client, body) => client.resource.createDeployment(),
+      field: "resources",
+      upload: (client, form) => client.resource.createDeployment(form),
     }),
     makeGetCmd({
       description: "Get resource",
@@ -504,14 +506,18 @@ export const documentGroup: CommandGroup = {
   name: "document",
   description: "Document",
   commands: [
-    makeCreateCmd({
+    makeUploadCmd({
+      name: "create",
       description: "Upload document",
-      create: (client, body) => client.document.createDocument(),
+      field: "file",
+      single: true,
+      upload: (client, form) => client.document.createDocument(form),
     }),
-    makeCreateCmd({
+    makeUploadCmd({
       name: "create-2",
       description: "Upload multiple documents",
-      create: (client, body) => client.document.createDocuments(),
+      field: "files",
+      upload: (client, form) => client.document.createDocuments(form),
     }),
     makeGetCmd({
       description: "Download document",

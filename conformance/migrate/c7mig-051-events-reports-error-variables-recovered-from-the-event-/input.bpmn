@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_test" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.22.0">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:task id="a"/>
+    <bpmn:boundaryEvent id="b" attachedToRef="a">
+      <bpmn:errorEventDefinition camunda:errorCodeVariable="code"/>
+    </bpmn:boundaryEvent>
+  </bpmn:process>
+</bpmn:definitions>
+

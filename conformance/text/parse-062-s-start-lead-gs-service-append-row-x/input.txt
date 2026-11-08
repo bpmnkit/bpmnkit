@@ -1,0 +1,3 @@
+s[start Lead] > gs[service Append row] > xor Notify sales?
+xor >(Yes: isNew) t[send Notify] > end Lead added
+xor >(No: default) end

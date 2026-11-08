@@ -197,7 +197,7 @@ export function extractFeelIdentifiers(expression: string): string[] {
 // Levenshtein distance (for typo suggestions)
 // ---------------------------------------------------------------------------
 
-function levenshtein(a: string, b: string): number {
+export function levenshtein(a: string, b: string): number {
 	const m = a.length
 	const n = b.length
 	// Flat row buffers — avoids noUncheckedIndexedAccess issues with 2D arrays

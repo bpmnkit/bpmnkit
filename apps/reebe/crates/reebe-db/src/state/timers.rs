@@ -1,8 +1,8 @@
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 use crate::pool::DbPool;
+use crate::{DbError, Result};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use crate::{Result, DbError};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Timer {
@@ -63,7 +63,7 @@ impl<'a> TimerRepository<'a> {
         .fetch_all(self.pool)
         .await?;
 
-        Ok(rows.into_iter().map(|r| row_to_timer(r)).collect())
+        Ok(rows.into_iter().map(row_to_timer).collect())
     }
 
     pub async fn update_state(&self, key: i64, state: &str) -> Result<()> {
@@ -83,10 +83,7 @@ impl<'a> TimerRepository<'a> {
         Ok(())
     }
 
-    pub async fn get_by_process_instance(
-        &self,
-        process_instance_key: i64,
-    ) -> Result<Vec<Timer>> {
+    pub async fn get_by_process_instance(&self, process_instance_key: i64) -> Result<Vec<Timer>> {
         let rows = sqlx::query(
             r#"SELECT key, process_instance_key, process_definition_key, element_instance_key,
                       element_id, due_date, repetitions, state, tenant_id
@@ -96,7 +93,7 @@ impl<'a> TimerRepository<'a> {
         .fetch_all(self.pool)
         .await?;
 
-        Ok(rows.into_iter().map(|r| row_to_timer(r)).collect())
+        Ok(rows.into_iter().map(row_to_timer).collect())
     }
 
     pub async fn get_by_key(&self, key: i64) -> Result<Timer> {

@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_post"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Post to ledger\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "Process_data",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    }
+  ]
+}

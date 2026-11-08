@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"input": "builder/from-noop/input.bpmn",
+	"script": [
+		["from","proc"],
+		["at","open"],
+		["connectTo","validate"],
+		["build"]
+	]
+}

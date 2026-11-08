@@ -1,6 +1,6 @@
 {
 	"name": "@bpmnkit/core",
-	"version": "1.5.0",
+	"version": "1.9.0",
 	"type": "module",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -18,13 +18,23 @@
 			"import": "./dist/connectors/index.js"
 		}
 	},
-	"files": ["LICENSE", "README.md", "dist/**/*.js", "dist/**/*.d.ts"],
+	"files": [
+		"LICENSE",
+		"README.md",
+		"AGENTS.md",
+		"llms.txt",
+		"agent-cards",
+		"builder-reference.md",
+		"dist/**/*.js",
+		"dist/**/*.d.ts"
+	],
+	"agents": "./AGENTS.md",
 	"engines": {
 		"node": ">=20"
 	},
 	"scripts": {
 		"build": "tsc",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsc --noEmit && tsc -p tsconfig.test.json",
 		"check": "biome check .",
 		"test": "vitest run",
 		"check:descriptors": "tsx scripts/descriptor-report.ts",

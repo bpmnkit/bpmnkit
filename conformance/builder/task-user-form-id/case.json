@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["userTask","review",{"name":"Review","formId":"review-form"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

@@ -35,7 +35,7 @@ Fix plan problems and retry (bounded, same as `/bpmnkit:implement`) — never ha
 
 ```sh
 casen lint lint <file>.bpmn --profile deploy
-casen test <file>.bpmn
+casen test test <file>.bpmn
 ```
 
 Summarize the diff at the **element level** — which steps were added/changed/removed — not as an XML diff. If the change touched an area with existing tests, re-run them and report pass/fail; if it's untested, mention that.

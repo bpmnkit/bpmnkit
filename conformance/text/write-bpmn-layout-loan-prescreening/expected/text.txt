@@ -1,0 +1,6 @@
+# Loan Approval Process | camunda=8.5
+loan_application_received[start Loan Application Received] > credit_score_check[service Credit Score Check | job=io.camunda:http-json:1 in.method="GET" in.url="https://api.creditbureau.example.com/v1/score/" + applicantId in.authentication.type="noAuth" out.creditScore=response.body.creditScore] > pre_screening[xor Pre-Screening]
+pre_screening >(Score < 580: creditScore < 580) loan_rejected[end Loan Rejected]
+pre_screening >(Score >= 580: creditScore >= 580) risk_scoring[rule Risk Scoring] > manual_underwriter_review[user Manual Underwriter Review | form=underwriter-review-form] > underwriter_decision[xor Underwriter Decision]
+underwriter_decision >(Approved: approved = true) loan_approved[end Loan Approved]
+underwriter_decision >(Rejected: approved = false) loan_rejected

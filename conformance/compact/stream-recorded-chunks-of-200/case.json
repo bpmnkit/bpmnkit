@@ -1,0 +1,12 @@
+{
+	"chunks": [
+		"{\"diagram\": {\n  \"id\": \"customer-order-process\",\n  \"processes\": [\n    {\n      \"id\": \"Process_OrderFulfillment\",\n      \"name\": \"Customer Order Process\",\n      \"elements\": [\n        { \"id\": \"start_order_",
+		"received\", \"type\": \"startEvent\", \"name\": \"Order Received\" },\n        { \"id\": \"task_check_stock\", \"type\": \"task\", \"name\": \"Check Stock\" },\n        { \"id\": \"gw_in_stock\", \"type\": \"exclusiveGateway\", \"na",
+		"me\": \"In Stock?\" },\n        { \"id\": \"task_charge_card\", \"type\": \"task\", \"name\": \"Charge Card\" },\n        { \"id\": \"task_ship_order\", \"type\": \"task\", \"name\": \"Ship Order\" },\n        { \"id\": \"task_notify",
+		"_unavailable\", \"type\": \"task\", \"name\": \"Notify Customer of Unavailability\" },\n        { \"id\": \"end_fulfilled\", \"type\": \"endEvent\", \"name\": \"Order Fulfilled\" },\n        { \"id\": \"end_cancelled\", \"type\":",
+		" \"endEvent\", \"name\": \"Order Cancelled\" }\n      ],\n      \"flows\": [\n        { \"id\": \"flow_1\", \"from\": \"start_order_received\", \"to\": \"task_check_stock\" },\n        { \"id\": \"flow_2\", \"from\": \"task_check_s",
+		"tock\", \"to\": \"gw_in_stock\" },\n        { \"id\": \"flow_3\", \"from\": \"gw_in_stock\", \"to\": \"task_charge_card\", \"name\": \"In Stock\", \"condition\": \"= stockAvailable = true\" },\n        { \"id\": \"flow_4\", \"from\":",
+		" \"task_charge_card\", \"to\": \"task_ship_order\" },\n        { \"id\": \"flow_5\", \"from\": \"task_ship_order\", \"to\": \"end_fulfilled\" },\n        { \"id\": \"flow_6\", \"from\": \"gw_in_stock\", \"to\": \"task_notify_unavai",
+		"lable\", \"name\": \"Out of Stock\", \"condition\": \"= stockAvailable = false\" },\n        { \"id\": \"flow_7\", \"from\": \"task_notify_unavailable\", \"to\": \"end_cancelled\" }\n      ]\n    }\n  ]\n}}"
+	]
+}

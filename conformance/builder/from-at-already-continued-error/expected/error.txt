@@ -1,0 +1,1 @@
+"validate" already has an outgoing sequence flow. Continuing from it would give a serviceTask two outgoing flows, which is an uncontrolled split. Use insertAfter("validate") to splice into that path instead.

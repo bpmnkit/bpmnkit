@@ -1,0 +1,81 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "eventType": "signal",
+            "id": "a",
+            "name": "Wake",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "condition": "= ready",
+            "eventType": "conditional",
+            "id": "b",
+            "name": "Ready",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "eventType": "timer",
+            "id": "c",
+            "name": "Wait",
+            "timerDuration": "PT30S",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "eventType": "message",
+            "id": "d",
+            "name": "Reply",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "a"
+          },
+          {
+            "from": "a",
+            "id": "Flow_2",
+            "to": "b"
+          },
+          {
+            "from": "b",
+            "id": "Flow_3",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "id": "Flow_4",
+            "to": "d"
+          },
+          {
+            "from": "d",
+            "id": "Flow_5",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

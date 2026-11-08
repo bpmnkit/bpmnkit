@@ -1,0 +1,11 @@
+# Simple Travel Booking
+receive_travel_request[start:message Receive Travel Request] > make_flights_and_hotel[send Make Flights and Hotel Offer] > eventgw[eventgw]
+eventgw > catch_24_hours[catch:timer 24 Hours] > notify_customer_offer_expired[send Notify Customer Offer Expired] > offer_expired[end Offer Expired]
+eventgw > offer_approved[catch:message Offer Approved] > request_credit_card_information[send Request Credit Card Information] > make_booking[sub Make Booking] > charge_credit_card[service Charge Credit Card] > confirm_booking[send Confirm Booking] > booking_confirmed[end Booking Confirmed]
+eventgw > cancel_request[catch:message Cancel Request] > update_customer_record[service Update Customer Record] > request_cancelled[end Request Cancelled]
+booking[throw:compensate Booking] > notify_failed_credit_transaction[send Notify Failed Credit Transaction] > failed_credit_transaction[end Failed Credit Transaction]
+failed_booking[end Failed Booking]
+notify_failed_booking[send Notify Failed Booking] > failed_booking
+boundary[boundary:error | on=charge_credit_card] > booking
+boundary_2[boundary:error | on=make_booking] > notify_failed_booking
+boundary_24_hours[boundary:timer 24 Hours | on=request_credit_card_information] > notify_customer_offer_expired

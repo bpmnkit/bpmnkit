@@ -1,21 +1,20 @@
+use crate::app::ApiState;
+use crate::dto::incidents::IncidentDto;
+use crate::dto::process_instances::{
+    CreateProcessInstanceRequest, ProcessInstanceDto, SearchProcessInstancesRequest,
+};
+use crate::error::{ApiError, ApiResult};
+use crate::pagination::{PageRequest, PageResponse};
+use crate::tenant::tenant_from_headers;
 use axum::extract::{Path, State};
 use axum::http::{HeaderMap, StatusCode};
 use axum::response::IntoResponse;
 use axum::Json;
-use serde_json::json;
-use reebe_db::state::process_instances::ProcessInstanceRepository;
-use reebe_db::state::incidents::IncidentRepository;
-use reebe_db::state::element_instances::ElementInstanceRepository;
 use reebe_db::state::batch_operations::{BatchOperation, BatchOperationRepository};
-use crate::app::ApiState;
-use crate::dto::process_instances::{
-    CreateProcessInstanceRequest,
-    ProcessInstanceDto, SearchProcessInstancesRequest,
-};
-use crate::dto::incidents::IncidentDto;
-use crate::error::{ApiError, ApiResult};
-use crate::pagination::{PageRequest, PageResponse};
-use crate::tenant::tenant_from_headers;
+use reebe_db::state::element_instances::ElementInstanceRepository;
+use reebe_db::state::incidents::IncidentRepository;
+use reebe_db::state::process_instances::ProcessInstanceRepository;
+use serde_json::json;
 
 pub async fn create_process_instance(
     State(state): State<ApiState>,
@@ -64,18 +63,19 @@ pub async fn get_process_instance(
     State(state): State<ApiState>,
     Path(key): Path<String>,
 ) -> ApiResult<impl IntoResponse> {
-    let key_i64: i64 = key.parse().map_err(|_| {
-        ApiError::InvalidRequest(format!("Invalid key: {key}"))
-    })?;
+    let key_i64: i64 = key
+        .parse()
+        .map_err(|_| ApiError::InvalidRequest(format!("Invalid key: {key}")))?;
 
     let pool = state.replica_pool.as_ref().unwrap_or(&state.pool);
     let repo = ProcessInstanceRepository::new(pool);
-    let pi = repo.get_by_key(key_i64).await.map_err(|_e| {
-        ApiError::NotFound {
+    let pi = repo
+        .get_by_key(key_i64)
+        .await
+        .map_err(|_e| ApiError::NotFound {
             resource: "process instance".to_string(),
             key: key.clone(),
-        }
-    })?;
+        })?;
 
     Ok(Json(ProcessInstanceDto::from(pi)))
 }
@@ -114,9 +114,9 @@ pub async fn cancel_process_instance(
     State(state): State<ApiState>,
     Path(key): Path<String>,
 ) -> ApiResult<impl IntoResponse> {
-    let _key_i64: i64 = key.parse().map_err(|_| {
-        ApiError::InvalidRequest(format!("Invalid key: {key}"))
-    })?;
+    let _key_i64: i64 = key
+        .parse()
+        .map_err(|_| ApiError::InvalidRequest(format!("Invalid key: {key}")))?;
 
     let payload = serde_json::json!({
         "processInstanceKey": key,
@@ -152,7 +152,10 @@ pub async fn batch_cancel_process_instances(
         .and_then(|v| v.as_array())
         .map(|arr| {
             arr.iter()
-                .filter_map(|v| v.as_i64().or_else(|| v.as_str().and_then(|s| s.parse().ok())))
+                .filter_map(|v| {
+                    v.as_i64()
+                        .or_else(|| v.as_str().and_then(|s| s.parse().ok()))
+                })
                 .collect()
         })
         .unwrap_or_default();
@@ -224,7 +227,10 @@ pub async fn delete_process_instances(
         .and_then(|v| v.as_array())
         .map(|arr| {
             arr.iter()
-                .filter_map(|v| v.as_i64().or_else(|| v.as_str().and_then(|s| s.parse().ok())))
+                .filter_map(|v| {
+                    v.as_i64()
+                        .or_else(|| v.as_str().and_then(|s| s.parse().ok()))
+                })
                 .collect()
         })
         .unwrap_or_default();
@@ -322,7 +328,10 @@ fn rest_key(value: &serde_json::Value, field: &str, violations: &mut Vec<String>
 }
 
 /// `ModifyProcessInstanceVariableInstruction`s as the engine's variable instructions.
-fn rest_variable_instructions(value: &serde_json::Value, violations: &mut Vec<String>) -> Vec<serde_json::Value> {
+fn rest_variable_instructions(
+    value: &serde_json::Value,
+    violations: &mut Vec<String>,
+) -> Vec<serde_json::Value> {
     value
         .as_array()
         .into_iter()
@@ -340,7 +349,10 @@ fn rest_variable_instructions(value: &serde_json::Value, violations: &mut Vec<St
 /// The engine command for `POST /v2/process-instances/{key}/modification`, from the body
 /// the specification defines (`ProcessInstanceModificationInstruction`), checked as
 /// Zeebe's `ProcessInstanceRequestValidator` checks it; `Err` is a 400.
-pub fn modification_payload(key: &str, body: &serde_json::Value) -> Result<serde_json::Value, ApiError> {
+pub fn modification_payload(
+    key: &str,
+    body: &serde_json::Value,
+) -> Result<serde_json::Value, ApiError> {
     let mut violations = Vec::new();
     let once = |violations: &mut Vec<String>, message: &str| {
         if !violations.iter().any(|v| v == message) {
@@ -464,9 +476,9 @@ pub async fn resolve_incident_for_process_instance(
     State(state): State<ApiState>,
     Path(key): Path<String>,
 ) -> ApiResult<impl IntoResponse> {
-    let key_i64: i64 = key.parse().map_err(|_| {
-        ApiError::InvalidRequest(format!("Invalid key: {key}"))
-    })?;
+    let key_i64: i64 = key
+        .parse()
+        .map_err(|_| ApiError::InvalidRequest(format!("Invalid key: {key}")))?;
 
     let repo = IncidentRepository::new(&state.pool);
     let incidents = repo
@@ -504,16 +516,19 @@ pub async fn get_call_hierarchy(
     State(state): State<ApiState>,
     Path(key): Path<String>,
 ) -> ApiResult<impl IntoResponse> {
-    let key_i64: i64 = key.parse().map_err(|_| {
-        ApiError::InvalidRequest(format!("Invalid key: {key}"))
-    })?;
+    let key_i64: i64 = key
+        .parse()
+        .map_err(|_| ApiError::InvalidRequest(format!("Invalid key: {key}")))?;
 
     let pool = state.replica_pool.as_ref().unwrap_or(&state.pool);
     let repo = ProcessInstanceRepository::new(pool);
-    let pi = repo.get_by_key(key_i64).await.map_err(|_| ApiError::NotFound {
-        resource: "process instance".to_string(),
-        key: key.clone(),
-    })?;
+    let pi = repo
+        .get_by_key(key_i64)
+        .await
+        .map_err(|_| ApiError::NotFound {
+            resource: "process instance".to_string(),
+            key: key.clone(),
+        })?;
 
     // Walk up parent chain
     let parent_info = if let Some(parent_key) = pi.parent_process_instance_key {
@@ -535,10 +550,12 @@ pub async fn get_call_hierarchy(
         .map_err(|e| ApiError::InternalError(e.to_string()))?
         .into_iter()
         .filter(|child| child.parent_process_instance_key == Some(key_i64))
-        .map(|child| json!({
-            "key": child.key.to_string(),
-            "bpmnProcessId": child.bpmn_process_id,
-        }))
+        .map(|child| {
+            json!({
+                "key": child.key.to_string(),
+                "bpmnProcessId": child.bpmn_process_id,
+            })
+        })
         .collect::<Vec<_>>();
 
     Ok(Json(json!({
@@ -553,9 +570,9 @@ pub async fn get_sequence_flows(
     State(state): State<ApiState>,
     Path(key): Path<String>,
 ) -> ApiResult<impl IntoResponse> {
-    let key_i64: i64 = key.parse().map_err(|_| {
-        ApiError::InvalidRequest(format!("Invalid key: {key}"))
-    })?;
+    let key_i64: i64 = key
+        .parse()
+        .map_err(|_| ApiError::InvalidRequest(format!("Invalid key: {key}")))?;
 
     let pool = state.replica_pool.as_ref().unwrap_or(&state.pool);
     let repo = ElementInstanceRepository::new(pool);
@@ -567,12 +584,14 @@ pub async fn get_sequence_flows(
     let sequence: Vec<_> = elements
         .into_iter()
         .filter(|e| e.state == "COMPLETED" || e.state == "ACTIVE")
-        .map(|e| json!({
-            "elementInstanceKey": e.key.to_string(),
-            "elementId": e.element_id,
-            "elementType": e.element_type,
-            "state": e.state,
-        }))
+        .map(|e| {
+            json!({
+                "elementInstanceKey": e.key.to_string(),
+                "elementId": e.element_id,
+                "elementType": e.element_type,
+                "state": e.state,
+            })
+        })
         .collect();
 
     Ok(Json(json!({ "items": sequence })))
@@ -597,9 +616,9 @@ pub async fn search_process_instance_incidents(
     Path(key): Path<String>,
     Json(req): Json<SearchIncidentsForInstanceRequest>,
 ) -> ApiResult<impl IntoResponse> {
-    let key_i64: i64 = key.parse().map_err(|_| {
-        ApiError::InvalidRequest(format!("Invalid key: {key}"))
-    })?;
+    let key_i64: i64 = key
+        .parse()
+        .map_err(|_| ApiError::InvalidRequest(format!("Invalid key: {key}")))?;
 
     let page = req.page.unwrap_or_default();
     let page_size = page.page_size_or_default();

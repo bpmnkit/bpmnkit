@@ -11,5 +11,7 @@ BPMN 2.0 programmatically:
 
 Zero runtime dependencies. ESM-only. Runs in browsers, Node.js, Deno, Bun, and edge runtimes.
 
+For a worked build script that targets Camunda 8.10, see [Build an Executable Camunda Process](/docs/guides/executable-camunda-process).
+
 ---
 Source: https://bpmnkit.com/docs/packages/core

@@ -1,0 +1,3 @@
+s[start S] > box[adhoc Box] > e[end E]
+t[service T | inside=box]
+note t: Tool

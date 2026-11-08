@@ -1,0 +1,535 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_parity" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:collaboration id="collab">
+    <bpmn:participant id="pool" processRef="proc"/>
+    <bpmn:participant id="blackbox" name="  "/>
+  </bpmn:collaboration>
+  <bpmn:process id="proc" isExecutable="true">
+    <bpmn:laneSet id="lanes">
+      <bpmn:lane id="lane_unnamed"/>
+      <bpmn:lane id="lane_named" name="Clerks">
+        <bpmn:childLaneSet id="child_lanes">
+          <bpmn:lane id="lane_child"/>
+        </bpmn:childLaneSet>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="start" name="Start">
+      <bpmn:outgoing>f_start</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="gw_split" name="Route?" default="f_default">
+      <bpmn:incoming>f_start</bpmn:incoming>
+      <bpmn:outgoing>f_cond</bpmn:outgoing>
+      <bpmn:outgoing>f_default</bpmn:outgoing>
+      <bpmn:outgoing>f_plain</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="task_blank" name="   ">
+      <bpmn:incoming>f_plain</bpmn:incoming>
+      <bpmn:outgoing>f_blank_out</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="gw_xor" name="Which?">
+      <bpmn:incoming>f_default</bpmn:incoming>
+      <bpmn:outgoing>f_x1</bpmn:outgoing>
+      <bpmn:outgoing>f_x2</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="task_x1" default="f_x1_out" name="X1">
+      <bpmn:incoming>f_x1</bpmn:incoming>
+      <bpmn:outgoing>f_x1_out</bpmn:outgoing>
+      <bpmn:outgoing>f_x1_other</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="task_x2" name="X2">
+      <bpmn:incoming>f_x2</bpmn:incoming>
+      <bpmn:outgoing>f_x2_out</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:boundaryEvent id="boundary_timer" name="Late" attachedToRef="task_x1">
+      <bpmn:timerEventDefinition id="timer_def"/>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="boundary_comp" name="Compensate X1" attachedToRef="task_x1">
+      <bpmn:compensateEventDefinition id="comp_def"/>
+    </bpmn:boundaryEvent>
+    <bpmn:task id="handler_top" name="Undo X1" isForCompensation="true"/>
+    <bpmn:intermediateThrowEvent id="link_throw" name="To B">
+      <bpmn:incoming>f_x2_out</bpmn:incoming>
+      <bpmn:linkEventDefinition id="link_throw_def" name="B"/>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateCatchEvent id="link_catch" name="From B">
+      <bpmn:outgoing>f_catch</bpmn:outgoing>
+      <bpmn:linkEventDefinition id="link_catch_def" name="B"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:task id="task_r1" name="R1">
+      <bpmn:outgoing>f_r1</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="task_r2" name="R2">
+      <bpmn:outgoing>f_r2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:startEvent id="start_joined" name="Restarted">
+      <bpmn:incoming>f_r1</bpmn:incoming>
+      <bpmn:incoming>f_r2</bpmn:incoming>
+      <bpmn:outgoing>f_restart</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="end" name="Done">
+      <bpmn:incoming>f_blank_out</bpmn:incoming>
+      <bpmn:incoming>f_x1_out</bpmn:incoming>
+      <bpmn:incoming>f_sub_out</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="end_other" name="Other">
+      <bpmn:incoming>f_x1_other</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="end_link" name="Linked">
+      <bpmn:incoming>f_catch</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="end_restart" name="Restart done">
+      <bpmn:incoming>f_restart</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:subProcess id="sub" name="Sub">
+      <bpmn:incoming>f_cond</bpmn:incoming>
+      <bpmn:outgoing>f_sub_out</bpmn:outgoing>
+      <bpmn:startEvent id="sub_start">
+        <bpmn:outgoing>sf1</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:parallelGateway id="sub_fork">
+        <bpmn:incoming>sf1</bpmn:incoming>
+        <bpmn:outgoing>sf2</bpmn:outgoing>
+        <bpmn:outgoing>sf3</bpmn:outgoing>
+      </bpmn:parallelGateway>
+      <bpmn:task id="sub_t1" name="T1">
+        <bpmn:incoming>sf2</bpmn:incoming>
+        <bpmn:outgoing>sf4</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:task id="sub_t2" name="T2">
+        <bpmn:incoming>sf3</bpmn:incoming>
+        <bpmn:outgoing>sf5</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:task id="sub_join_task" name="Join">
+        <bpmn:incoming>sf4</bpmn:incoming>
+        <bpmn:incoming>sf5</bpmn:incoming>
+        <bpmn:outgoing>sf6</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:task id="sub_orphan" name="Orphan">
+        <bpmn:outgoing>sf7</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:exclusiveGateway id="sub_mixed" name="Mixed?">
+        <bpmn:incoming>sf6</bpmn:incoming>
+        <bpmn:incoming>sf7</bpmn:incoming>
+        <bpmn:outgoing>sf8</bpmn:outgoing>
+        <bpmn:outgoing>sf9</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:exclusiveGateway id="sub_redundant">
+        <bpmn:incoming>sf8</bpmn:incoming>
+        <bpmn:outgoing>sf10</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:task id="sub_dead" name="Dead end">
+        <bpmn:incoming>sf9</bpmn:incoming>
+      </bpmn:task>
+      <bpmn:endEvent id="sub_end" name="Sub done">
+        <bpmn:incoming>sf10</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:intermediateCatchEvent id="sub_catch">
+        <bpmn:timerEventDefinition id="sub_timer_def"/>
+      </bpmn:intermediateCatchEvent>
+      <bpmn:boundaryEvent id="sub_comp" name="Compensate T1" attachedToRef="sub_t1">
+        <bpmn:compensateEventDefinition id="sub_comp_def"/>
+      </bpmn:boundaryEvent>
+      <bpmn:task id="sub_handler" name="Undo T1" isForCompensation="true"/>
+      <bpmn:sequenceFlow id="sf1" sourceRef="sub_start" targetRef="sub_fork"/>
+      <bpmn:sequenceFlow id="sf2" sourceRef="sub_fork" targetRef="sub_t1"/>
+      <bpmn:sequenceFlow id="sf3" sourceRef="sub_fork" targetRef="sub_t2"/>
+      <bpmn:sequenceFlow id="sf4" sourceRef="sub_t1" targetRef="sub_join_task"/>
+      <bpmn:sequenceFlow id="sf5" sourceRef="sub_t2" targetRef="sub_join_task"/>
+      <bpmn:sequenceFlow id="sf6" sourceRef="sub_join_task" targetRef="sub_mixed"/>
+      <bpmn:sequenceFlow id="sf7" sourceRef="sub_orphan" targetRef="sub_mixed"/>
+      <bpmn:sequenceFlow id="sf8" sourceRef="sub_mixed" targetRef="sub_redundant" name="ok">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= ok</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="sf9" sourceRef="sub_mixed" targetRef="sub_dead"/>
+      <bpmn:sequenceFlow id="sf10" sourceRef="sub_redundant" targetRef="sub_end"/>
+      <bpmn:association id="sub_assoc" sourceRef="sub_comp" targetRef="sub_handler"/>
+    </bpmn:subProcess>
+    <bpmn:transaction id="tx" name="Tx">
+      <bpmn:startEvent id="tx_start">
+        <bpmn:outgoing>tf1</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:task id="tx_task">
+        <bpmn:incoming>tf1</bpmn:incoming>
+      </bpmn:task>
+      <bpmn:sequenceFlow id="tf1" sourceRef="tx_start" targetRef="tx_task"/>
+    </bpmn:transaction>
+    <bpmn:subProcess id="evt_sub" triggeredByEvent="true" name="On message">
+      <bpmn:startEvent id="evt_start">
+        <bpmn:outgoing>ef1</bpmn:outgoing>
+        <bpmn:messageEventDefinition id="evt_msg_def"/>
+      </bpmn:startEvent>
+      <bpmn:task id="evt_task" name="Handle">
+        <bpmn:incoming>ef1</bpmn:incoming>
+      </bpmn:task>
+      <bpmn:sequenceFlow id="ef1" sourceRef="evt_start" targetRef="evt_task"/>
+    </bpmn:subProcess>
+    <bpmn:adHocSubProcess id="adhoc" name="Tools">
+      <bpmn:task id="adhoc_tool" name="Tool"/>
+      <bpmn:task id="adhoc_unnamed"/>
+    </bpmn:adHocSubProcess>
+    <bpmn:dataObject id="data_obj"/>
+    <bpmn:dataObjectReference id="data_ref" dataObjectRef="data_obj"/>
+    <bpmn:dataStoreReference id="store_ref"/>
+    <bpmn:sequenceFlow id="f_start" sourceRef="start" targetRef="gw_split"/>
+    <bpmn:sequenceFlow id="f_cond" sourceRef="gw_split" targetRef="sub">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= a</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_default" sourceRef="gw_split" targetRef="gw_xor" name="Otherwise"/>
+    <bpmn:sequenceFlow id="f_plain" sourceRef="gw_split" targetRef="task_blank"/>
+    <bpmn:sequenceFlow id="f_blank_out" sourceRef="task_blank" targetRef="end"/>
+    <bpmn:sequenceFlow id="f_x1" sourceRef="gw_xor" targetRef="task_x1"/>
+    <bpmn:sequenceFlow id="f_x2" sourceRef="gw_xor" targetRef="task_x2"/>
+    <bpmn:sequenceFlow id="f_x1_out" sourceRef="task_x1" targetRef="end"/>
+    <bpmn:sequenceFlow id="f_x1_other" sourceRef="task_x1" targetRef="end_other"/>
+    <bpmn:sequenceFlow id="f_x2_out" sourceRef="task_x2" targetRef="link_throw"/>
+    <bpmn:sequenceFlow id="f_catch" sourceRef="link_catch" targetRef="end_link"/>
+    <bpmn:sequenceFlow id="f_r1" sourceRef="task_r1" targetRef="start_joined"/>
+    <bpmn:sequenceFlow id="f_r2" sourceRef="task_r2" targetRef="start_joined"/>
+    <bpmn:sequenceFlow id="f_restart" sourceRef="start_joined" targetRef="end_restart"/>
+    <bpmn:sequenceFlow id="f_sub_out" sourceRef="sub" targetRef="end"/>
+    <bpmn:association id="assoc_top" sourceRef="boundary_comp" targetRef="handler_top"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="collab">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start">
+        <dc:Bounds x="112" y="42" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="110" y="82" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_split_di" bpmnElement="gw_split" isMarkerVisible="true">
+        <dc:Bounds x="555" y="35" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="559" y="89" width="42" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_di" bpmnElement="sub" isExpanded="true">
+        <dc:Bounds x="680" y="20" width="1150" height="640"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_start_di" bpmnElement="sub_start">
+        <dc:Bounds x="787" y="112" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_fork_di" bpmnElement="sub_fork">
+        <dc:Bounds x="930" y="105" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_t1_di" bpmnElement="sub_t1">
+        <dc:Bounds x="1055" y="90" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_comp_di" bpmnElement="sub_comp">
+        <dc:Bounds x="1087" y="152" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1060" y="192" width="91" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_join_task_di" bpmnElement="sub_join_task">
+        <dc:Bounds x="1205" y="90" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_mixed_di" bpmnElement="sub_mixed" isMarkerVisible="true">
+        <dc:Bounds x="1380" y="105" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1384" y="159" width="42" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_redundant_di" bpmnElement="sub_redundant" isMarkerVisible="true">
+        <dc:Bounds x="1530" y="105" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_end_di" bpmnElement="sub_end">
+        <dc:Bounds x="1687" y="112" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1677" y="152" width="56" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_orphan_di" bpmnElement="sub_orphan">
+        <dc:Bounds x="755" y="230" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_t2_di" bpmnElement="sub_t2">
+        <dc:Bounds x="1055" y="230" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_dead_di" bpmnElement="sub_dead">
+        <dc:Bounds x="1505" y="230" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_catch_di" bpmnElement="sub_catch">
+        <dc:Bounds x="787" y="392" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_handler_di" bpmnElement="sub_handler">
+        <dc:Bounds x="755" y="510" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="gw_xor_di" bpmnElement="gw_xor" isMarkerVisible="true">
+        <dc:Bounds x="1905" y="35" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1909" y="89" width="42" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_x1_di" bpmnElement="task_x1">
+        <dc:Bounds x="2030" y="20" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="boundary_timer_di" bpmnElement="boundary_timer">
+        <dc:Bounds x="2045" y="82" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2043" y="122" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="boundary_comp_di" bpmnElement="boundary_comp">
+        <dc:Bounds x="2079" y="82" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2051" y="122" width="91" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_di" bpmnElement="end">
+        <dc:Bounds x="2212" y="42" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2210" y="82" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="handler_top_di" bpmnElement="handler_top">
+        <dc:Bounds x="80" y="720" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_blank_di" bpmnElement="task_blank">
+        <dc:Bounds x="1880" y="720" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_x2_di" bpmnElement="task_x2">
+        <dc:Bounds x="2030" y="720" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="link_throw_di" bpmnElement="link_throw">
+        <dc:Bounds x="2212" y="742" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2210" y="782" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_other_di" bpmnElement="end_other">
+        <dc:Bounds x="2362" y="742" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2360" y="782" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="link_catch_di" bpmnElement="link_catch">
+        <dc:Bounds x="112" y="882" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="109" y="922" width="42" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_link_di" bpmnElement="end_link">
+        <dc:Bounds x="562" y="882" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="559" y="922" width="42" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_r1_di" bpmnElement="task_r1">
+        <dc:Bounds x="80" y="1000" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="start_joined_di" bpmnElement="start_joined">
+        <dc:Bounds x="562" y="1022" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="549" y="1062" width="63" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_restart_di" bpmnElement="end_restart">
+        <dc:Bounds x="712" y="1022" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="688" y="1062" width="84" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="task_r2_di" bpmnElement="task_r2">
+        <dc:Bounds x="80" y="1140" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="tx_di" bpmnElement="tx" isExpanded="true">
+        <dc:Bounds x="80" y="1280" width="400" height="220"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="tx_start_di" bpmnElement="tx_start">
+        <dc:Bounds x="187" y="1372" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="tx_task_di" bpmnElement="tx_task">
+        <dc:Bounds x="305" y="1350" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_sub_di" bpmnElement="evt_sub" isExpanded="true">
+        <dc:Bounds x="80" y="1560" width="400" height="220"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_start_di" bpmnElement="evt_start">
+        <dc:Bounds x="187" y="1652" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evt_task_di" bpmnElement="evt_task">
+        <dc:Bounds x="305" y="1630" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="adhoc_di" bpmnElement="adhoc" isExpanded="true">
+        <dc:Bounds x="80" y="1840" width="400" height="220"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="adhoc_tool_di" bpmnElement="adhoc_tool">
+        <dc:Bounds x="155" y="1910" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="adhoc_unnamed_di" bpmnElement="adhoc_unnamed">
+        <dc:Bounds x="305" y="1910" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="data_obj_di" bpmnElement="data_obj">
+        <dc:Bounds x="112" y="2135" width="36" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="data_ref_di" bpmnElement="data_ref">
+        <dc:Bounds x="112" y="2275" width="36" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="store_ref_di" bpmnElement="store_ref">
+        <dc:Bounds x="105" y="2415" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="pool_di" bpmnElement="pool" isHorizontal="true">
+        <dc:Bounds x="0" y="0" width="2420" height="2485"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="lane_unnamed_di" bpmnElement="lane_unnamed" isHorizontal="true">
+        <dc:Bounds x="30" y="0" width="2390" height="1243"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="lane_named_di" bpmnElement="lane_named" isHorizontal="true">
+        <dc:Bounds x="30" y="1243" width="2390" height="1242"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="blackbox_di" bpmnElement="blackbox" isHorizontal="true">
+        <dc:Bounds x="0" y="2515" width="2420" height="60"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="sf1_di" bpmnElement="sf1">
+        <di:waypoint x="823" y="130"/>
+        <di:waypoint x="930" y="130"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf2_di" bpmnElement="sf2">
+        <di:waypoint x="980" y="130"/>
+        <di:waypoint x="1055" y="130"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf3_di" bpmnElement="sf3">
+        <di:waypoint x="955" y="155"/>
+        <di:waypoint x="955" y="270"/>
+        <di:waypoint x="1055" y="270"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf4_di" bpmnElement="sf4">
+        <di:waypoint x="1155" y="130"/>
+        <di:waypoint x="1205" y="130"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf5_di" bpmnElement="sf5">
+        <di:waypoint x="1155" y="270"/>
+        <di:waypoint x="1255" y="270"/>
+        <di:waypoint x="1255" y="170"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf6_di" bpmnElement="sf6">
+        <di:waypoint x="1305" y="130"/>
+        <di:waypoint x="1380" y="130"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf7_di" bpmnElement="sf7">
+        <di:waypoint x="855" y="270"/>
+        <di:waypoint x="880" y="270"/>
+        <di:waypoint x="880" y="200"/>
+        <di:waypoint x="1330" y="200"/>
+        <di:waypoint x="1330" y="130"/>
+        <di:waypoint x="1380" y="130"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf8_di" bpmnElement="sf8">
+        <di:waypoint x="1430" y="130"/>
+        <di:waypoint x="1530" y="130"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf9_di" bpmnElement="sf9">
+        <di:waypoint x="1405" y="155"/>
+        <di:waypoint x="1405" y="270"/>
+        <di:waypoint x="1505" y="270"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf10_di" bpmnElement="sf10">
+        <di:waypoint x="1580" y="130"/>
+        <di:waypoint x="1687" y="130"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="tf1_di" bpmnElement="tf1">
+        <di:waypoint x="223" y="1390"/>
+        <di:waypoint x="305" y="1390"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="ef1_di" bpmnElement="ef1">
+        <di:waypoint x="223" y="1670"/>
+        <di:waypoint x="305" y="1670"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_start_di" bpmnElement="f_start">
+        <di:waypoint x="148" y="60"/>
+        <di:waypoint x="555" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_cond_di" bpmnElement="f_cond">
+        <di:waypoint x="605" y="60"/>
+        <di:waypoint x="680" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_default_di" bpmnElement="f_default">
+        <di:waypoint x="580" y="35"/>
+        <di:waypoint x="580" y="4"/>
+        <di:waypoint x="1930" y="4"/>
+        <di:waypoint x="1930" y="35"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="549" y="106" width="63" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_plain_di" bpmnElement="f_plain">
+        <di:waypoint x="580" y="85"/>
+        <di:waypoint x="580" y="760"/>
+        <di:waypoint x="1880" y="760"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_blank_out_di" bpmnElement="f_blank_out">
+        <di:waypoint x="1980" y="760"/>
+        <di:waypoint x="2005" y="760"/>
+        <di:waypoint x="2005" y="130"/>
+        <di:waypoint x="2155" y="130"/>
+        <di:waypoint x="2155" y="60"/>
+        <di:waypoint x="2212" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_x1_di" bpmnElement="f_x1">
+        <di:waypoint x="1955" y="60"/>
+        <di:waypoint x="2030" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_x2_di" bpmnElement="f_x2">
+        <di:waypoint x="1955" y="60"/>
+        <di:waypoint x="2005" y="60"/>
+        <di:waypoint x="2005" y="760"/>
+        <di:waypoint x="2030" y="760"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_x1_out_di" bpmnElement="f_x1_out">
+        <di:waypoint x="2130" y="60"/>
+        <di:waypoint x="2212" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_x1_other_di" bpmnElement="f_x1_other">
+        <di:waypoint x="2130" y="60"/>
+        <di:waypoint x="2155" y="60"/>
+        <di:waypoint x="2155" y="690"/>
+        <di:waypoint x="2305" y="690"/>
+        <di:waypoint x="2305" y="760"/>
+        <di:waypoint x="2362" y="760"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_x2_out_di" bpmnElement="f_x2_out">
+        <di:waypoint x="2130" y="760"/>
+        <di:waypoint x="2212" y="760"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_catch_di" bpmnElement="f_catch">
+        <di:waypoint x="148" y="900"/>
+        <di:waypoint x="562" y="900"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_r1_di" bpmnElement="f_r1">
+        <di:waypoint x="180" y="1040"/>
+        <di:waypoint x="562" y="1040"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_r2_di" bpmnElement="f_r2">
+        <di:waypoint x="180" y="1180"/>
+        <di:waypoint x="580" y="1180"/>
+        <di:waypoint x="580" y="1058"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_restart_di" bpmnElement="f_restart">
+        <di:waypoint x="598" y="1040"/>
+        <di:waypoint x="712" y="1040"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_sub_out_di" bpmnElement="f_sub_out">
+        <di:waypoint x="1255" y="660"/>
+        <di:waypoint x="1255" y="690"/>
+        <di:waypoint x="2230" y="690"/>
+        <di:waypoint x="2230" y="78"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="assoc_top_di" bpmnElement="assoc_top">
+        <di:waypoint x="2097" y="118"/>
+        <di:waypoint x="2097" y="708"/>
+        <di:waypoint x="2014" y="708"/>
+        <di:waypoint x="2014" y="812"/>
+        <di:waypoint x="130" y="812"/>
+        <di:waypoint x="130" y="800"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sub_assoc_di" bpmnElement="sub_assoc">
+        <di:waypoint x="1105" y="188"/>
+        <di:waypoint x="1105" y="214"/>
+        <di:waypoint x="914" y="214"/>
+        <di:waypoint x="914" y="550"/>
+        <di:waypoint x="855" y="550"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

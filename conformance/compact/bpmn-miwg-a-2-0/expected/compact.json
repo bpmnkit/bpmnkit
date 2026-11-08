@@ -1,0 +1,97 @@
+{
+  "id": "_1373649889746",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "_6b5db6a9-037a-49ad-9201-09201e2aaa97",
+          "name": "Start Event",
+          "type": "startEvent"
+        },
+        {
+          "id": "_5a972b87-735d-454a-b31c-f52fb3afc5c7",
+          "name": "Task 1",
+          "type": "task"
+        },
+        {
+          "id": "_258f51eb-b764-4a71-b681-3a01cca14143",
+          "name": "End Event",
+          "type": "endEvent"
+        },
+        {
+          "id": "_4f7d62d7-f0e6-46bc-be00-69e02da38f65",
+          "name": "Task 2",
+          "type": "task"
+        },
+        {
+          "id": "_e6eb725a-34bc-45c7-aed0-9f9596cd7bee",
+          "name": "Task 3",
+          "type": "task"
+        },
+        {
+          "id": "_35fe57a7-1302-44e2-bf58-032f11af7ecb",
+          "name": "Gateway\n(Split Flow)",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "_7d399717-1aba-47ac-8d7d-8aaa033255e0",
+          "name": "Task 4",
+          "type": "task"
+        },
+        {
+          "id": "_33c66216-391c-49c2-aa19-d8f0b7f5f91d",
+          "name": "Gateway\n(Merge Flows)",
+          "type": "exclusiveGateway"
+        }
+      ],
+      "flows": [
+        {
+          "from": "_6b5db6a9-037a-49ad-9201-09201e2aaa97",
+          "id": "_b50f530c-3450-4e1a-b81f-ea346dc6e1cb",
+          "to": "_5a972b87-735d-454a-b31c-f52fb3afc5c7"
+        },
+        {
+          "from": "_5a972b87-735d-454a-b31c-f52fb3afc5c7",
+          "id": "_fe74c141-8843-4b00-a704-5e5e13be53b0",
+          "to": "_35fe57a7-1302-44e2-bf58-032f11af7ecb"
+        },
+        {
+          "from": "_35fe57a7-1302-44e2-bf58-032f11af7ecb",
+          "id": "_f1478fb7-98c4-4c01-8c15-68bd04c91535",
+          "to": "_4f7d62d7-f0e6-46bc-be00-69e02da38f65"
+        },
+        {
+          "from": "_4f7d62d7-f0e6-46bc-be00-69e02da38f65",
+          "id": "_a3d40a56-9b7f-417e-911e-d39e7f18b90c",
+          "to": "_258f51eb-b764-4a71-b681-3a01cca14143"
+        },
+        {
+          "from": "_e6eb725a-34bc-45c7-aed0-9f9596cd7bee",
+          "id": "_e9ebc7c7-995d-46db-86ce-d823bc2b4687",
+          "to": "_33c66216-391c-49c2-aa19-d8f0b7f5f91d"
+        },
+        {
+          "from": "_7d399717-1aba-47ac-8d7d-8aaa033255e0",
+          "id": "_698b593f-18eb-42ea-b8cd-bcd51e1514cc",
+          "to": "_33c66216-391c-49c2-aa19-d8f0b7f5f91d"
+        },
+        {
+          "from": "_33c66216-391c-49c2-aa19-d8f0b7f5f91d",
+          "id": "_d4ce87c6-1373-45d6-a3b4-fbb2a04ee2e5",
+          "to": "_258f51eb-b764-4a71-b681-3a01cca14143"
+        },
+        {
+          "from": "_35fe57a7-1302-44e2-bf58-032f11af7ecb",
+          "id": "_a1570a53-28d2-41b1-a3a2-3e50c00d747e",
+          "to": "_e6eb725a-34bc-45c7-aed0-9f9596cd7bee"
+        },
+        {
+          "from": "_35fe57a7-1302-44e2-bf58-032f11af7ecb",
+          "id": "_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b",
+          "to": "_7d399717-1aba-47ac-8d7d-8aaa033255e0"
+        }
+      ],
+      "id": "WFP-6-"
+    }
+  ]
+}

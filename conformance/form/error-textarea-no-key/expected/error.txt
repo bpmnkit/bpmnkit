@@ -1,0 +1,1 @@
+components[0]: textarea must have a 'key' string

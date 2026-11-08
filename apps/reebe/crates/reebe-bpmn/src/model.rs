@@ -57,7 +57,10 @@ impl BpmnProcess {
     }
 
     pub fn outgoing_flows(&self, element_id: &str) -> Vec<&SequenceFlow> {
-        self.sequence_flows.iter().filter(|f| f.source_ref == element_id).collect()
+        self.sequence_flows
+            .iter()
+            .filter(|f| f.source_ref == element_id)
+            .collect()
     }
 
     /// Like `outgoing_flows`, but also searches inside embedded subprocesses.
@@ -67,7 +70,10 @@ impl BpmnProcess {
             elements: &'a HashMap<String, FlowElement>,
             element_id: &str,
         ) -> Vec<&'a SequenceFlow> {
-            let here: Vec<&SequenceFlow> = flows.iter().filter(|f| f.source_ref == element_id).collect();
+            let here: Vec<&SequenceFlow> = flows
+                .iter()
+                .filter(|f| f.source_ref == element_id)
+                .collect();
             if !here.is_empty() {
                 return here;
             }
@@ -85,12 +91,18 @@ impl BpmnProcess {
     }
 
     pub fn incoming_flows(&self, element_id: &str) -> Vec<&SequenceFlow> {
-        self.sequence_flows.iter().filter(|f| f.target_ref == element_id).collect()
+        self.sequence_flows
+            .iter()
+            .filter(|f| f.target_ref == element_id)
+            .collect()
     }
 
     /// The elements and associations of the scope (the process, or a sub-process at
     /// any depth) that directly contains `element_id`.
-    pub fn scope_of(&self, element_id: &str) -> Option<(&HashMap<String, FlowElement>, &[Association])> {
+    pub fn scope_of(
+        &self,
+        element_id: &str,
+    ) -> Option<(&HashMap<String, FlowElement>, &[Association])> {
         fn search<'a>(
             elements: &'a HashMap<String, FlowElement>,
             associations: &'a [Association],

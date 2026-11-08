@@ -7,7 +7,10 @@ import type {
 	FormLayout,
 	FormTableComponent,
 	FormUnknownComponent,
+	FormValidation,
+	FormValueOption,
 } from "./form-model.js"
+import { KNOWN_COMPONENT_TYPES } from "./form-parser.js"
 
 /** Serializes a FormDefinition to a JSON string. */
 export function exportForm(form: FormDefinition): string {
@@ -36,6 +39,28 @@ export function exportForm(form: FormDefinition): string {
 }
 
 function serializeComponent(component: FormComponent): Record<string, unknown> {
+	const out = serializeKnownComponent(component)
+	if (component.conditional !== undefined) out.conditional = { ...component.conditional }
+	// An unknown component keeps every raw key at the top level already, so a raw
+	// `extraProps` key there is data, not the bag (a string would spread per character).
+	if (KNOWN_COMPONENT_TYPES.has(component.type)) {
+		for (const [key, value] of Object.entries(component.extraProps ?? {})) {
+			if (!(key in out)) out[key] = value
+		}
+	}
+	return out
+}
+
+/** Writes `extra` into `out` unless the key is taken; defineProperty keeps "__proto__" as data. */
+function addExtras(out: Record<string, unknown>, extra: Record<string, unknown> | undefined) {
+	for (const [key, value] of Object.entries(extra ?? {})) {
+		if (Object.hasOwn(out, key)) continue
+		Object.defineProperty(out, key, { value, enumerable: true, writable: true, configurable: true })
+	}
+	return out
+}
+
+function serializeKnownComponent(component: FormComponent): Record<string, unknown> {
 	// Use the type discriminant, casting where TypeScript can't narrow through FormUnknownComponent
 	const type = component.type
 	switch (type) {
@@ -69,6 +94,7 @@ function serializeComponent(component: FormComponent): Record<string, unknown> {
 			return buildObj(component, [
 				"label",
 				"values",
+				"valuesExpression",
 				"type",
 				"layout",
 				"id",
@@ -87,7 +113,16 @@ function serializeComponent(component: FormComponent): Record<string, unknown> {
 				"layout",
 			])
 		case "checklist":
-			return buildObj(component, ["label", "values", "type", "layout", "id", "key", "validate"])
+			return buildObj(component, [
+				"label",
+				"values",
+				"valuesExpression",
+				"type",
+				"layout",
+				"id",
+				"key",
+				"validate",
+			])
 		case "group":
 			return buildGroupObj(component as FormGroupComponent)
 		case "number":
@@ -158,12 +193,11 @@ function buildObj(component: FormComponent, keys: readonly string[]): Record<str
 		if (key === "layout") {
 			out.layout = serializeLayout(value as FormLayout)
 		} else if (key === "validate") {
-			out.validate = { ...(value as Record<string, unknown>) }
+			out.validate = serializeValidation(value as FormValidation)
 		} else if (key === "values") {
-			out.values = (value as Array<Record<string, unknown>>).map((v) => ({
-				label: v.label,
-				value: v.value,
-			}))
+			out.values = (value as FormValueOption[]).map((v) =>
+				addExtras({ label: v.label, value: v.value }, v.extraProps),
+			)
 		} else {
 			out[key] = value
 		}
@@ -182,15 +216,17 @@ function buildGroupObj(component: FormGroupComponent): Record<string, unknown> {
 	return out
 }
 
+function serializeValidation(validate: FormValidation): Record<string, unknown> {
+	const { extraProps, ...known } = validate
+	return addExtras({ ...known }, extraProps)
+}
+
 function serializeLayout(layout: FormLayout): Record<string, unknown> {
 	const out: Record<string, unknown> = {}
 	if (layout.row !== undefined) out.row = layout.row
-	if (layout.columns !== undefined) {
-		out.columns = layout.columns
-	} else {
-		out.columns = null
-	}
-	return out
+	// An unmodelled `columns` (wrong type) is kept rather than replaced by the null default.
+	out.columns = layout.columns !== undefined ? layout.columns : (layout.extraProps?.columns ?? null)
+	return addExtras(out, layout.extraProps)
 }
 
 function buildTableObj(component: FormTableComponent): Record<string, unknown> {
@@ -231,6 +267,9 @@ function buildIframeObj(component: FormIframeComponent): Record<string, unknown>
 
 function buildUnknownObj(component: FormUnknownComponent): Record<string, unknown> {
 	const out: Record<string, unknown> = { ...component }
-	if (component.layout !== undefined) out.layout = serializeLayout(component.layout as FormLayout)
+	// `layout: null` is a raw key the parser reads as "no layout"; it is written back as given.
+	if (component.layout !== undefined && component.layout !== null) {
+		out.layout = serializeLayout(component.layout as FormLayout)
+	}
 	return out
 }

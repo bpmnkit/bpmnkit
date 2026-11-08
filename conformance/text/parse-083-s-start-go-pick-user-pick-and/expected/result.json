@@ -1,0 +1,104 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "id": "pick",
+            "name": "Pick",
+            "type": "userTask"
+          },
+          {
+            "id": "pack",
+            "name": "Pack",
+            "type": "userTask"
+          },
+          {
+            "id": "dispatch",
+            "name": "Dispatch",
+            "type": "userTask"
+          },
+          {
+            "id": "label",
+            "jobType": "label",
+            "name": "Label",
+            "type": "serviceTask"
+          },
+          {
+            "id": "e",
+            "name": "Done",
+            "type": "endEvent"
+          },
+          {
+            "id": "and",
+            "type": "parallelGateway"
+          },
+          {
+            "id": "dispatch_join",
+            "type": "parallelGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "pick"
+          },
+          {
+            "from": "pick",
+            "id": "Flow_2",
+            "to": "and"
+          },
+          {
+            "from": "and",
+            "id": "Flow_3",
+            "to": "pack"
+          },
+          {
+            "from": "pack",
+            "id": "Flow_4",
+            "to": "dispatch_join"
+          },
+          {
+            "from": "and",
+            "id": "Flow_5",
+            "to": "label"
+          },
+          {
+            "from": "label",
+            "id": "Flow_6",
+            "to": "dispatch_join"
+          },
+          {
+            "from": "dispatch",
+            "id": "Flow_7",
+            "to": "e"
+          },
+          {
+            "from": "dispatch_join",
+            "id": "Flow_8",
+            "to": "dispatch"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "joined 2 flows into \"dispatch\" with and gateway \"dispatch_join\""
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"and\" is never declared; added as a parallelGateway"
+    }
+  ],
+  "questions": []
+}

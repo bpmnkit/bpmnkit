@@ -1,0 +1,59 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "id": "a",
+            "name": "A",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "Done",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "a"
+          },
+          {
+            "from": "a",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 2,
+      "message": "\"t\" is not connected to a start event; left out"
+    },
+    {
+      "line": 2,
+      "message": "\"x\" is not connected to a start event; left out"
+    }
+  ],
+  "questions": [
+    {
+      "draft": "Put \"Remind\" after ",
+      "elementId": "x",
+      "options": [],
+      "text": "\"Remind\" was left out: nothing leads to it. Where does it belong?"
+    }
+  ]
+}

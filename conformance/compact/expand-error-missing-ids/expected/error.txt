@@ -1,0 +1,1 @@
+expand: invalid CompactDiagram — a task in process "P" has no id; flow from "a" to "b" has no id; flow from "a" to "b" references "a", which is not an element in process "P"; flow from "a" to "b" references "b", which is not an element in process "P"

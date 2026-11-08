@@ -1,0 +1,64 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "t",
+            "jobType": "report.poll",
+            "name": "Poll",
+            "type": "serviceTask"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "t",
+            "eventType": "timer",
+            "id": "w",
+            "interrupting": false,
+            "name": "Late",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "f",
+            "name": "F",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "e"
+          },
+          {
+            "from": "w",
+            "id": "Flow_3",
+            "to": "f"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 3 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

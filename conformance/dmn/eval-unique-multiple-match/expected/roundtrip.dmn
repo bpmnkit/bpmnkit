@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="unique-multiple-match" name="unique-multiple-match" namespace="http://bpmnkit.com/conformance">
+  <decision id="discount" name="discount">
+    <decisionTable id="discount_t" hitPolicy="UNIQUE">
+      <input id="discount_i0" label="amount">
+        <inputExpression id="discount_ie0" typeRef="number">
+          <text>amount</text>
+        </inputExpression>
+      </input>
+      <output id="discount_o0" name="percent" typeRef="number"/>
+      <rule id="small">
+        <inputEntry id="small_i0">
+          <text>&lt; 100</text>
+        </inputEntry>
+        <outputEntry id="small_o0">
+          <text>0</text>
+        </outputEntry>
+      </rule>
+      <rule id="medium">
+        <inputEntry id="medium_i0">
+          <text>[50..500]</text>
+        </inputEntry>
+        <outputEntry id="medium_o0">
+          <text>5</text>
+        </outputEntry>
+      </rule>
+      <rule id="large">
+        <inputEntry id="large_i0">
+          <text>&gt; 300</text>
+        </inputEntry>
+        <outputEntry id="large_o0">
+          <text>10</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="same_output" name="same_output">
+    <decisionTable id="same_output_t" hitPolicy="UNIQUE">
+      <input id="same_output_i0">
+        <inputExpression id="same_output_ie0">
+          <text>amount</text>
+        </inputExpression>
+      </input>
+      <output id="same_output_o0" name="v"/>
+      <rule id="same_a">
+        <inputEntry id="same_a_i0">
+          <text>&gt; 0</text>
+        </inputEntry>
+        <outputEntry id="same_a_o0">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="same_b">
+        <inputEntry id="same_b_i0">
+          <text>&gt; 0</text>
+        </inputEntry>
+        <outputEntry id="same_b_o0">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>
+

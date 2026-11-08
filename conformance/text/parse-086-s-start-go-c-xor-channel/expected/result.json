@@ -1,0 +1,93 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "id": "c",
+            "name": "Channel?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "m",
+            "name": "Send letter",
+            "type": "task"
+          },
+          {
+            "id": "p",
+            "name": "Call",
+            "type": "task"
+          },
+          {
+            "id": "m_end",
+            "name": "Process completed",
+            "type": "endEvent"
+          },
+          {
+            "id": "p_end",
+            "name": "Process completed",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "c"
+          },
+          {
+            "condition": "= channel = \"mail\"",
+            "from": "c",
+            "id": "Flow_2",
+            "name": "Mail",
+            "to": "m"
+          },
+          {
+            "from": "c",
+            "id": "Flow_3",
+            "isDefault": true,
+            "name": "Phone",
+            "to": "p"
+          },
+          {
+            "from": "m",
+            "id": "Flow_4",
+            "to": "m_end"
+          },
+          {
+            "from": "p",
+            "id": "Flow_5",
+            "to": "p_end"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "added end event \"m_end\" after \"m\"",
+    "added end event \"p_end\" after \"p\"",
+    "made c > p the default branch of \"c\" instead of its condition"
+  ],
+  "problems": [],
+  "questions": [
+    {
+      "draft": "At \"Channel?\", when nothing else holds, ",
+      "elementId": "c",
+      "options": [
+        {
+          "change": "At \"Channel?\", make \"Mail\" the default branch.",
+          "label": "Mail"
+        }
+      ],
+      "text": "When no condition at \"Channel?\" holds, it takes \"Phone\". Is that the right fallback?"
+    }
+  ]
+}

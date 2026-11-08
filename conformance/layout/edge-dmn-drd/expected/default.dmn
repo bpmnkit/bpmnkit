@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="Defs_drd" name="DRD" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="dFinal" name="Final decision">
+    <informationRequirement id="r1">
+      <requiredDecision href="#dMid"/>
+    </informationRequirement>
+    <informationRequirement id="r2">
+      <requiredInput href="#inA"/>
+    </informationRequirement>
+    <knowledgeRequirement id="r3">
+      <requiredKnowledge href="#bkm1"/>
+    </knowledgeRequirement>
+    <authorityRequirement id="r4">
+      <requiredAuthority href="#ks1"/>
+    </authorityRequirement>
+    <literalExpression id="le1">
+      <text>1</text>
+    </literalExpression>
+  </decision>
+  <decision id="dMid" name="Intermediate">
+    <informationRequirement id="r5">
+      <requiredDecision href="#dLeaf"/>
+    </informationRequirement>
+    <informationRequirement id="r6">
+      <requiredInput href="#inB"/>
+    </informationRequirement>
+    <literalExpression id="le2">
+      <text>2</text>
+    </literalExpression>
+  </decision>
+  <decision id="dLeaf" name="Leaf decision with a long name">
+    <informationRequirement id="r7">
+      <requiredInput href="#inA"/>
+    </informationRequirement>
+    <knowledgeRequirement id="r8">
+      <requiredKnowledge href="#bkm2"/>
+    </knowledgeRequirement>
+    <literalExpression id="le3">
+      <text>3</text>
+    </literalExpression>
+  </decision>
+  <inputData id="inA" name="Applicant"/>
+  <inputData id="inB" name="Income"/>
+  <inputData id="inUnused" name="Unused input"/>
+  <knowledgeSource id="ks1" name="Policy">
+    <authorityRequirement id="r10">
+      <requiredInput href="#inB"/>
+    </authorityRequirement>
+  </knowledgeSource>
+  <businessKnowledgeModel id="bkm1" name="Scoring">
+    <knowledgeRequirement id="r9">
+      <requiredKnowledge href="#bkm2"/>
+    </knowledgeRequirement>
+  </businessKnowledgeModel>
+  <businessKnowledgeModel id="bkm2" name="Helper"/>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="inA">
+        <dc:Bounds height="45" width="125" x="160" y="100"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="inB">
+        <dc:Bounds height="45" width="125" x="160" y="185"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="inUnused">
+        <dc:Bounds height="45" width="125" x="160" y="270"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="bkm2">
+        <dc:Bounds height="80" width="160" x="160" y="355"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="dLeaf">
+        <dc:Bounds height="80" width="180" x="380" y="116"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="ks1">
+        <dc:Bounds height="63" width="100" x="380" y="236"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="bkm1">
+        <dc:Bounds height="80" width="160" x="380" y="339"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="dMid">
+        <dc:Bounds height="80" width="180" x="620" y="227.5"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="dFinal">
+        <dc:Bounds height="80" width="180" x="860" y="227.5"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge dmnElementRef="r1">
+        <di:waypoint x="800" y="267.5"/>
+        <di:waypoint x="860" y="267.5"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="r2">
+        <di:waypoint x="285" y="122.5"/>
+        <di:waypoint x="860" y="267.5"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="r3">
+        <di:waypoint x="540" y="379"/>
+        <di:waypoint x="860" y="267.5"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="r4">
+        <di:waypoint x="480" y="267.5"/>
+        <di:waypoint x="860" y="267.5"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="r5">
+        <di:waypoint x="560" y="156"/>
+        <di:waypoint x="620" y="267.5"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="r6">
+        <di:waypoint x="285" y="207.5"/>
+        <di:waypoint x="620" y="267.5"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="r7">
+        <di:waypoint x="285" y="122.5"/>
+        <di:waypoint x="380" y="156"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="r8">
+        <di:waypoint x="320" y="395"/>
+        <di:waypoint x="380" y="156"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="r9">
+        <di:waypoint x="320" y="395"/>
+        <di:waypoint x="380" y="379"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="r10">
+        <di:waypoint x="285" y="207.5"/>
+        <di:waypoint x="380" y="267.5"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

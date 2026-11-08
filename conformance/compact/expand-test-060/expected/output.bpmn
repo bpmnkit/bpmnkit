@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
+  <bpmn:process id="Agent" name="Agent" isExecutable="true">
+    <bpmn:startEvent id="start" name="Go">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="run" name="Run agent">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:adHocSubProcess id="agent" name="AI Agent">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+      <bpmn:serviceTask id="users" name="Find sample users">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="users"/>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="joke" name="Get a safe joke">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="joke"/>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+    </bpmn:adHocSubProcess>
+    <bpmn:exclusiveGateway id="done" name="Satisfied?" default="Flow_5">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="fin" name="Done">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="start" targetRef="run"/>
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="run" targetRef="agent"/>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="agent" targetRef="done"/>
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="done" targetRef="fin" name="Yes">
+      <bpmn:conditionExpression>= ok</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="done" targetRef="run" name="No"/>
+    <bpmn:textAnnotation id="TextAnnotation_start_1">
+      <bpmn:text>Triggered by a user</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_agent_1">
+      <bpmn:text>The agent picks a tool</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_joke_1">
+      <bpmn:text>Each tool is a capability</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_start_1" sourceRef="start" targetRef="TextAnnotation_start_1" associationDirection="None"/>
+    <bpmn:association id="Association_agent_1" sourceRef="agent" targetRef="TextAnnotation_agent_1" associationDirection="None"/>
+    <bpmn:association id="Association_joke_1" sourceRef="joke" targetRef="TextAnnotation_joke_1" associationDirection="None"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Agent">
+    <bpmndi:BPMNPlane id="BPMNPlane_Agent" bpmnElement="Agent">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start">
+        <dc:Bounds x="82" y="152" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="80" y="192" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="run_di" bpmnElement="run" isMarkerVisible="true">
+        <dc:Bounds x="178" y="145" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="171.5" y="127" width="63" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="agent_di" bpmnElement="agent" isExpanded="true">
+        <dc:Bounds x="328" y="130" width="340" height="208"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="done_di" bpmnElement="done" isMarkerVisible="true">
+        <dc:Bounds x="768" y="145" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="758" y="127" width="70" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="fin_di" bpmnElement="fin">
+        <dc:Bounds x="878" y="152" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="876" y="192" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="users_di" bpmnElement="users">
+        <dc:Bounds x="378" y="208" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="joke_di" bpmnElement="joke">
+        <dc:Bounds x="518" y="208" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_start_1_di" bpmnElement="TextAnnotation_start_1">
+        <dc:Bounds x="0" y="67" width="200" height="30"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_agent_1_di" bpmnElement="TextAnnotation_agent_1">
+        <dc:Bounds x="398" y="50" width="200" height="30"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_joke_1_di" bpmnElement="TextAnnotation_joke_1">
+        <dc:Bounds x="468" y="0" width="200" height="30"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="118" y="170"/>
+        <di:waypoint x="178" y="170"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="228" y="170"/>
+        <di:waypoint x="328" y="170"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="668" y="170"/>
+        <di:waypoint x="768" y="170"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="818" y="170"/>
+        <di:waypoint x="878" y="170"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="793" y="195"/>
+        <di:waypoint x="793" y="378"/>
+        <di:waypoint x="203" y="378"/>
+        <di:waypoint x="203" y="195"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_start_1_di" bpmnElement="Association_start_1">
+        <di:waypoint x="100" y="152"/>
+        <di:waypoint x="100" y="97"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_agent_1_di" bpmnElement="Association_agent_1">
+        <di:waypoint x="498" y="130"/>
+        <di:waypoint x="498" y="80"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_joke_1_di" bpmnElement="Association_joke_1">
+        <di:waypoint x="568" y="208"/>
+        <di:waypoint x="568" y="30"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

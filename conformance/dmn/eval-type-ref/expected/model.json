@@ -1,0 +1,234 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "FIRST",
+        "id": "number_in_t",
+        "inputs": [
+          {
+            "id": "number_in_i0",
+            "inputExpression": {
+              "id": "number_in_ie0",
+              "text": "v",
+              "typeRef": "number"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "number_in_o0",
+            "name": "r",
+            "typeRef": "string"
+          }
+        ],
+        "rules": [
+          {
+            "id": "ni_r0",
+            "inputEntries": [
+              {
+                "id": "ni_r0_i0",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "ni_r0_o0",
+                "text": "\"ok\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "number_in",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "number_in"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "FIRST",
+        "id": "legacy_and_any_t",
+        "inputs": [
+          {
+            "id": "legacy_i0",
+            "inputExpression": {
+              "id": "legacy_ie0",
+              "text": "v",
+              "typeRef": "double"
+            }
+          },
+          {
+            "id": "legacy_i1",
+            "inputExpression": {
+              "id": "legacy_ie1",
+              "text": "w",
+              "typeRef": "Any"
+            }
+          },
+          {
+            "id": "legacy_i2",
+            "inputExpression": {
+              "id": "legacy_ie2",
+              "text": "w",
+              "typeRef": "frobnicate"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "legacy_o0",
+            "name": "r",
+            "typeRef": "integer"
+          }
+        ],
+        "rules": [
+          {
+            "id": "la_r0",
+            "inputEntries": [
+              {
+                "id": "la_r0_i0",
+                "text": "-"
+              },
+              {
+                "id": "la_r0_i1",
+                "text": "-"
+              },
+              {
+                "id": "la_r0_i2",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "la_r0_o0",
+                "text": "1"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "legacy_and_any",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "legacy_and_any"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "FIRST",
+        "id": "bad_output_t",
+        "inputs": [
+          {
+            "id": "bad_output_i0",
+            "inputExpression": {
+              "id": "bad_output_ie0",
+              "text": "v"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "bad_output_o0",
+            "name": "r",
+            "typeRef": "boolean"
+          }
+        ],
+        "rules": [
+          {
+            "id": "bo_r0",
+            "inputEntries": [
+              {
+                "id": "bo_r0_i0",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "bo_r0_o0",
+                "text": "\"yes\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "bad_output",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "bad_output"
+    },
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "FIRST",
+        "id": "date_in_t",
+        "inputs": [
+          {
+            "id": "date_in_i0",
+            "inputExpression": {
+              "id": "date_in_ie0",
+              "text": "d",
+              "typeRef": "date"
+            }
+          }
+        ],
+        "outputs": [
+          {
+            "id": "date_in_o0",
+            "name": "r",
+            "typeRef": "string"
+          }
+        ],
+        "rules": [
+          {
+            "id": "di_r0",
+            "inputEntries": [
+              {
+                "id": "di_r0_i0",
+                "text": "< date(\"2025-01-01\")"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "di_r0_o0",
+                "text": "\"old\""
+              }
+            ]
+          },
+          {
+            "id": "di_r1",
+            "inputEntries": [
+              {
+                "id": "di_r1_i0",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "di_r1_o0",
+                "text": "\"new\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "date_in",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "date_in"
+    }
+  ],
+  "id": "type-ref",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "type-ref",
+  "namespace": "http://bpmnkit.com/conformance",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/"
+  },
+  "textAnnotations": []
+}

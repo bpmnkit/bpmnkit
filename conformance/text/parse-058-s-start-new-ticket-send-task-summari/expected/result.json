@@ -1,0 +1,62 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "New ticket",
+            "type": "startEvent"
+          },
+          {
+            "id": "send",
+            "name": "Summarise ticket",
+            "type": "task"
+          },
+          {
+            "id": "send_2",
+            "name": "post Slack message to #support",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "Done",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "send"
+          },
+          {
+            "from": "send",
+            "id": "Flow_2",
+            "to": "send_2"
+          },
+          {
+            "from": "send_2",
+            "id": "Flow_3",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"send\" on line 1 is a different node; this one is \"send_2\""
+    },
+    {
+      "line": 1,
+      "message": "unknown kind \"post\" for \"send_2\"; used task"
+    }
+  ],
+  "questions": []
+}

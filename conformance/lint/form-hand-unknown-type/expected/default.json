@@ -1,0 +1,23 @@
+{
+  "findings": [
+    {
+      "elementId": "a",
+      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"sparkline\" is a custom component registered in your Tasklist. (agent-cards/form.md#traps)",
+      "message": "Component \"a\" has type \"sparkline\", which form-js does not provide.",
+      "rule": "form/unknown-type",
+      "severity": "warning"
+    },
+    {
+      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"sparkline2\" is a custom component registered in your Tasklist. (agent-cards/form.md#traps)",
+      "message": "components[1] has type \"sparkline2\", which form-js does not provide.",
+      "rule": "form/unknown-type",
+      "severity": "warning"
+    },
+    {
+      "fix": "Give every component a unique \"id\", e.g. \"Field_amount\". (agent-cards/form.md#traps)",
+      "message": "components[1] (sparkline2) has no id.",
+      "rule": "form/missing-id",
+      "severity": "error"
+    }
+  ]
+}

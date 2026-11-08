@@ -1,0 +1,84 @@
+{
+  "runs": {
+    "default": {},
+    "all": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:all"
+      }
+    },
+    "recommended": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:recommended"
+      }
+    },
+    "single-blank-start-event-error": {
+      "bpmnlintrc": {
+        "rules": {
+          "single-blank-start-event": "error"
+        }
+      }
+    },
+    "single-blank-start-event-off": {
+      "bpmnlintrc": {
+        "rules": {
+          "single-blank-start-event": "off"
+        }
+      }
+    },
+    "single-event-definition-error": {
+      "bpmnlintrc": {
+        "rules": {
+          "single-event-definition": "error"
+        }
+      }
+    },
+    "single-event-definition-off": {
+      "bpmnlintrc": {
+        "rules": {
+          "single-event-definition": "off"
+        }
+      }
+    },
+    "single-blank-start-event-warn-delegated": {
+      "bpmnlintrc": {
+        "rules": {
+          "single-blank-start-event": "warn"
+        }
+      },
+      "bpmnlintDelegated": true
+    },
+    "single-event-definition-warn-delegated": {
+      "bpmnlintrc": {
+        "rules": {
+          "single-event-definition": "warn"
+        }
+      },
+      "bpmnlintDelegated": true
+    },
+    "standard-size-options": {
+      "bpmnlintrc": {
+        "rules": {
+          "standard-size": [
+            "error",
+            {
+              "bpmn:Task": {
+                "width": 120,
+                "height": 80
+              },
+              "bpmn:EndEvent": {
+                "width": 40,
+                "height": 40
+              }
+            }
+          ]
+        }
+      }
+    },
+    "only-delegated": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:all"
+      },
+      "bpmnlintDelegated": true
+    }
+  }
+}

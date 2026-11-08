@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/miwg-c-2-0/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}

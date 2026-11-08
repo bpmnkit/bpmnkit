@@ -21,7 +21,7 @@ const definitions = Bpmn.createProcess("EmployeeOnboarding")
 	// Determine equipment list from role via DMN decision table
 	.businessRuleTask("determineEquipment", {
 		name: "Determine Equipment",
-		decisionRef: "equipment-by-role",
+		decisionId: "equipment-by-role",
 		resultVariable: "equipmentList",
 	})
 

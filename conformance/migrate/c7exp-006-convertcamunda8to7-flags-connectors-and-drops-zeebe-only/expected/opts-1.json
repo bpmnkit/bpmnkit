@@ -1,0 +1,27 @@
+{
+  "report": {
+    "findings": [
+      {
+        "applied": false,
+        "construct": "connector",
+        "elementId": "t",
+        "elementType": "serviceTask",
+        "message": "Connector \"io.camunda:http-json:1\" has no Camunda 7 runtime; it becomes a plain external task.",
+        "processId": "p",
+        "severity": "unsupported",
+        "suggestion": "Implement an external task worker for this topic."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:taskHeaders",
+        "elementId": "t",
+        "elementType": "serviceTask",
+        "message": "zeebe:taskHeaders has no Camunda 7 equivalent and was dropped.",
+        "processId": "p",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      }
+    ]
+  },
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"d\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"p\" isExecutable=\"true\">\n    <bpmn:serviceTask id=\"t\" camunda:type=\"external\" camunda:topic=\"io.camunda:http-json:1\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+}

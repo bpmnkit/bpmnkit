@@ -1,0 +1,424 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "compat/no-multiple-none-start-events",
+      "message": "Start event \"start\" is one of 2 blank start events in process \"events\"; Camunda allows one.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Keep one blank start event and give the others an event definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "start2"
+      ],
+      "fixable": false,
+      "id": "compat/no-multiple-none-start-events",
+      "message": "Start event \"start2\" is one of 2 blank start events in process \"events\"; Camunda allows one.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Keep one blank start event and give the others an event definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "startTimerDuration"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer start event \"startTimerDuration\" uses timeDuration, which Camunda does not allow on this event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Use another kind of timer."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "startCron"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer start event \"startCron\" uses a cron expression, which needs Camunda 8.1 or newer; this model targets Camunda 1.0.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Use an ISO 8601 repeating interval (R/PT1H), or target Camunda 8.1 or newer."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "startSignal"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Signal start event \"startSignal\" needs Camunda 8.2 or newer; this model targets Camunda 1.0.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchNoTimer"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer intermediate catch event \"catchNoTimer\" has no timer value; set one of timeDuration.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Set when the timer fires."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchBadDuration"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer intermediate catch event \"catchBadDuration\" has timeDuration \"5 minutes\", which is not an ISO 8601 duration (PT15M).",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Write an ISO 8601 duration (PT15M), or a FEEL expression starting with \"=\"."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchDate"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer intermediate catch event \"catchDate\" uses timeDate, which needs Camunda 8.3 or newer on this event; this model targets Camunda 1.0.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchCycle"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer intermediate catch event \"catchCycle\" uses timeCycle, which Camunda does not allow on this event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Use another kind of timer."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchMsgNoRef"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message intermediate catch event \"catchMsgNoRef\" references no message.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchMsgNoName"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message intermediate catch event \"catchMsgNoName\" references message \"Msg_noname\", which has no name.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Name the message — Camunda correlates on it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchMsgNoName"
+      ],
+      "fixable": false,
+      "id": "compat/subscription",
+      "message": "Message \"Msg_noname\" used by Message intermediate catch event \"catchMsgNoName\" has no zeebe:subscription.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Add a zeebe:subscription with a correlationKey to the message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchMsgNoKey"
+      ],
+      "fixable": false,
+      "id": "compat/subscription",
+      "message": "Message \"nokey\" used by Message intermediate catch event \"catchMsgNoKey\" has no zeebe:subscription.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Add a zeebe:subscription with a correlationKey to the message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchLink"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Link intermediate catch event \"catchLink\" needs Camunda 8.2 or newer; this model targets Camunda 1.0.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchSignalNoName"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Signal intermediate catch event \"catchSignalNoName\" needs Camunda 8.3 or newer; this model targets Camunda 1.0.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "catchConditional"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Conditional intermediate catch event \"catchConditional\" needs Camunda 8.9 or newer; this model targets Camunda 1.0.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.9 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "boundaryCycle"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer boundary event \"boundaryCycle\" uses timeCycle, which Camunda does not allow on this event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Use another kind of timer."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "boundaryErrorNoRef"
+      ],
+      "fixable": false,
+      "id": "compat/error-reference",
+      "message": "Error boundary event \"boundaryErrorNoRef\" references no error; catching every error needs Camunda 8.2 or newer, this model targets Camunda 1.0.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:error with an error code."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "boundaryErrorExpr"
+      ],
+      "fixable": false,
+      "id": "compat/no-expression",
+      "message": "Error boundary event \"boundaryErrorExpr\" catches error code \"=code\", an expression, which Camunda 1.0 does not support in a catch event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Use a static error code."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "boundaryEscalation"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Escalation boundary event \"boundaryEscalation\" needs Camunda 8.2 or newer; this model targets Camunda 1.0.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "boundaryCompensation"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Compensate boundary event \"boundaryCompensation\" needs Camunda 8.5 or newer; this model targets Camunda 1.0.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.5 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "throwNone"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Intermediate throw event \"throwNone\" needs Camunda 1.1 or newer; this model targets Camunda 1.0.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Target Camunda 1.1 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "throwEscalationNoRef"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Escalation intermediate throw event \"throwEscalationNoRef\" needs Camunda 8.2 or newer; this model targets Camunda 1.0.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "throwEscalationNoCode"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Escalation intermediate throw event \"throwEscalationNoCode\" needs Camunda 8.2 or newer; this model targets Camunda 1.0.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "throwMessage"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Message intermediate throw event \"throwMessage\" needs Camunda 1.2 or newer; this model targets Camunda 1.0.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Target Camunda 1.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "throwMessageTyped"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Message intermediate throw event \"throwMessageTyped\" needs Camunda 1.2 or newer; this model targets Camunda 1.0.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Target Camunda 1.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "throwCompensation"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Compensate intermediate throw event \"throwCompensation\" needs Camunda 8.5 or newer; this model targets Camunda 1.0.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.5 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "endErrorNoRef"
+      ],
+      "fixable": false,
+      "id": "compat/error-reference",
+      "message": "Error end event \"endErrorNoRef\" references no error.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:error with an error code."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "endErrorNoCode"
+      ],
+      "fixable": false,
+      "id": "compat/error-reference",
+      "message": "Error end event \"endErrorNoCode\" references error \"no code\", which has no error code.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Set the error code."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "endErrorExpr"
+      ],
+      "fixable": false,
+      "id": "compat/no-expression",
+      "message": "Error end event \"endErrorExpr\" throws error code \"=code\", an expression, which needs Camunda 8.2 or newer; this model targets Camunda 1.0.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "endTerminate"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Terminate end event \"endTerminate\" needs Camunda 8.1 or newer; this model targets Camunda 1.0.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.1 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "endSignalNoRef"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Signal end event \"endSignalNoRef\" needs Camunda 8.3 or newer; this model targets Camunda 1.0.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "subTimerCycle"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer start event \"subTimerCycle\" uses timeCycle, which Camunda does not allow on this event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Use another kind of timer."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "subSignal"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Signal start event \"subSignal\" needs Camunda 8.2 or newer; this model targets Camunda 1.0.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "subMessage"
+      ],
+      "fixable": false,
+      "id": "compat/subscription",
+      "message": "Message \"nokey\" used by Message start event \"subMessage\" has no zeebe:subscription.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Add a zeebe:subscription with a correlationKey to the message."
+    }
+  ]
+}

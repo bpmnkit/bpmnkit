@@ -1,0 +1,7 @@
+{
+	"chunks": [
+		"s[start] > g[xor Ok?]\n",
+		"g >(Yes: ok) a[task A] > e[end]\n",
+		"g >(No: default) b[task B] > e\n"
+	]
+}

@@ -1,0 +1,257 @@
+{
+  "report": {
+    "findings": [
+      {
+        "applied": false,
+        "construct": "zeebe:formDefinition",
+        "elementId": "uploadDocument",
+        "elementType": "userTask",
+        "message": "Only formKey forms exist in Camunda 7; formId and external references are dropped.",
+        "processId": "KycOnboarding",
+        "severity": "unsupported",
+        "suggestion": "Link an embedded or generated form by camunda:formKey."
+      },
+      {
+        "applied": false,
+        "construct": "connector",
+        "elementId": "verifyDocument",
+        "elementType": "serviceTask",
+        "message": "Connector \"io.camunda:http-json:1\" has no Camunda 7 runtime; it becomes a plain external task.",
+        "processId": "KycOnboarding",
+        "severity": "unsupported",
+        "suggestion": "Implement an external task worker for this topic."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:taskDefinition retries",
+        "elementId": "verifyDocument",
+        "elementType": "serviceTask",
+        "message": "Job retries are not exported.",
+        "processId": "KycOnboarding",
+        "severity": "manual",
+        "suggestion": "Set camunda:failedJobRetryTimeCycle if needed."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "verifyDocument",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=secrets.OCR_SERVICE_TOKEN\" (to \"authentication.token\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "KycOnboarding",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "verifyDocument",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=ocrServiceUrl + \"/verify\"\" (to \"url\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "KycOnboarding",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "verifyDocument",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"={ documentId: documentId, documentType: documentType }\" (to \"body\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "KycOnboarding",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:taskHeaders",
+        "elementId": "verifyDocument",
+        "elementType": "serviceTask",
+        "message": "zeebe:taskHeaders has no Camunda 7 equivalent and was dropped.",
+        "processId": "KycOnboarding",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:script",
+        "elementId": "incrementRetry",
+        "elementType": "scriptTask",
+        "message": "zeebe:script has no Camunda 7 equivalent and was dropped.",
+        "processId": "KycOnboarding",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:taskHeaders",
+        "elementId": "sendVerificationRejection",
+        "elementType": "serviceTask",
+        "message": "zeebe:taskHeaders has no Camunda 7 equivalent and was dropped.",
+        "processId": "KycOnboarding",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "connector",
+        "elementId": "screening",
+        "elementType": "serviceTask",
+        "message": "Connector \"io.camunda:http-json:1\" has no Camunda 7 runtime; it becomes a plain external task.",
+        "processId": "KycOnboarding",
+        "severity": "unsupported",
+        "suggestion": "Implement an external task worker for this topic."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:taskDefinition retries",
+        "elementId": "screening",
+        "elementType": "serviceTask",
+        "message": "Job retries are not exported.",
+        "processId": "KycOnboarding",
+        "severity": "manual",
+        "suggestion": "Set camunda:failedJobRetryTimeCycle if needed."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "screening",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=secrets.SCREENING_SERVICE_TOKEN\" (to \"authentication.token\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "KycOnboarding",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "screening",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=screeningServiceUrl + \"/screen\"\" (to \"url\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "KycOnboarding",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "screening",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"={ fullName: applicant.fullName, dateOfBirth: applicant.dateOfBirth, nationality: applicant.nationality }\" (to \"body\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "KycOnboarding",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:taskHeaders",
+        "elementId": "screening",
+        "elementType": "serviceTask",
+        "message": "zeebe:taskHeaders has no Camunda 7 equivalent and was dropped.",
+        "processId": "KycOnboarding",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:taskHeaders",
+        "elementId": "standardDueDiligence",
+        "elementType": "serviceTask",
+        "message": "zeebe:taskHeaders has no Camunda 7 equivalent and was dropped.",
+        "processId": "KycOnboarding",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:formDefinition",
+        "elementId": "complianceReview",
+        "elementType": "userTask",
+        "message": "Only formKey forms exist in Camunda 7; formId and external references are dropped.",
+        "processId": "KycOnboarding",
+        "severity": "unsupported",
+        "suggestion": "Link an embedded or generated form by camunda:formKey."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "activateAccount",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=applicant.id\" (to \"customerId\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "KycOnboarding",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:taskHeaders",
+        "elementId": "escalateToCompliance",
+        "elementType": "serviceTask",
+        "message": "zeebe:taskHeaders has no Camunda 7 equivalent and was dropped.",
+        "processId": "KycOnboarding",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:taskHeaders",
+        "elementId": "sendFinalRejection",
+        "elementType": "serviceTask",
+        "message": "zeebe:taskHeaders has no Camunda 7 equivalent and was dropped.",
+        "processId": "KycOnboarding",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "Flow_Vp0HOfCz",
+        "elementType": "element",
+        "message": "FEEL condition \"=verified = true\" kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "KycOnboarding",
+        "severity": "manual",
+        "suggestion": "Rewrite the condition as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "Flow_8reekDVI",
+        "elementType": "element",
+        "message": "FEEL condition \"=retryCount <= 2\" kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "KycOnboarding",
+        "severity": "manual",
+        "suggestion": "Rewrite the condition as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "Flow_hyodCBEu",
+        "elementType": "element",
+        "message": "FEEL condition \"=sanctionsHit = false and pep = false\" kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "KycOnboarding",
+        "severity": "manual",
+        "suggestion": "Rewrite the condition as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "Flow_hHN1OOEM",
+        "elementType": "element",
+        "message": "FEEL condition \"=riskClassification.decision = \"approve\"\" kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "KycOnboarding",
+        "severity": "manual",
+        "suggestion": "Rewrite the condition as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "Flow_VHWI1YqZ",
+        "elementType": "element",
+        "message": "FEEL condition \"=riskClassification.decision = \"escalate\"\" kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "KycOnboarding",
+        "severity": "manual",
+        "suggestion": "Rewrite the condition as a JUEL expression."
+      }
+    ]
+  },
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\" xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\" xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" exporter=\"@bpmnkit/core\" exporterVersion=\"0.0.23\">\n  <bpmn:process id=\"KycOnboarding\" camunda:versionTag=\"1.0.0\" name=\"KYC Onboarding Process\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\" name=\"Customer Onboarding Started\">\n      <bpmn:outgoing>Flow_xMEWWQ9P</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:userTask id=\"uploadDocument\" name=\"Upload Identity Document\">\n      <bpmn:incoming>Flow_xMEWWQ9P</bpmn:incoming>\n      <bpmn:incoming>Flow_8reekDVI</bpmn:incoming>\n      <bpmn:outgoing>Flow_aFggSXlz</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:serviceTask id=\"verifyDocument\" camunda:type=\"external\" camunda:topic=\"io.camunda:http-json:1\" name=\"Verify Document (OCR)\">\n      <bpmn:extensionElements>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"authentication.type\">bearer</camunda:inputParameter>\n          <camunda:inputParameter name=\"authentication.token\">=secrets.OCR_SERVICE_TOKEN</camunda:inputParameter>\n          <camunda:inputParameter name=\"method\">POST</camunda:inputParameter>\n          <camunda:inputParameter name=\"url\">=ocrServiceUrl + \"/verify\"</camunda:inputParameter>\n          <camunda:inputParameter name=\"body\">={ documentId: documentId, documentType: documentType }</camunda:inputParameter>\n          <camunda:inputParameter name=\"connectionTimeoutInSeconds\">20</camunda:inputParameter>\n          <camunda:inputParameter name=\"readTimeoutInSeconds\">20</camunda:inputParameter>\n        </camunda:inputOutput>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_aFggSXlz</bpmn:incoming>\n      <bpmn:outgoing>Flow_nrWGBeCZ</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"qualityGateway\" name=\"Document Verified?\" default=\"Flow_RETXa3Vt\">\n      <bpmn:incoming>Flow_nrWGBeCZ</bpmn:incoming>\n      <bpmn:outgoing>Flow_Vp0HOfCz</bpmn:outgoing>\n      <bpmn:outgoing>Flow_RETXa3Vt</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:scriptTask id=\"incrementRetry\" name=\"Increment Retry Count\">\n      <bpmn:incoming>Flow_RETXa3Vt</bpmn:incoming>\n      <bpmn:outgoing>Flow_i4OMbS2y</bpmn:outgoing>\n    </bpmn:scriptTask>\n    <bpmn:exclusiveGateway id=\"retryGateway\" name=\"Retries Remaining?\" default=\"Flow_Y4q86h1Q\">\n      <bpmn:incoming>Flow_i4OMbS2y</bpmn:incoming>\n      <bpmn:outgoing>Flow_8reekDVI</bpmn:outgoing>\n      <bpmn:outgoing>Flow_Y4q86h1Q</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"sendVerificationRejection\" camunda:type=\"external\" camunda:topic=\"email-sender\" name=\"Send Rejection Notice\">\n      <bpmn:incoming>Flow_Y4q86h1Q</bpmn:incoming>\n      <bpmn:outgoing>Flow_VNppp5Gg</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endRejectedVerification\" name=\"Rejected — Verification Failed\">\n      <bpmn:incoming>Flow_VNppp5Gg</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:serviceTask id=\"screening\" camunda:type=\"external\" camunda:topic=\"io.camunda:http-json:1\" name=\"Sanctions &amp; PEP Screening\">\n      <bpmn:extensionElements>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"authentication.type\">bearer</camunda:inputParameter>\n          <camunda:inputParameter name=\"authentication.token\">=secrets.SCREENING_SERVICE_TOKEN</camunda:inputParameter>\n          <camunda:inputParameter name=\"method\">POST</camunda:inputParameter>\n          <camunda:inputParameter name=\"url\">=screeningServiceUrl + \"/screen\"</camunda:inputParameter>\n          <camunda:inputParameter name=\"body\">={ fullName: applicant.fullName, dateOfBirth: applicant.dateOfBirth, nationality: applicant.nationality }</camunda:inputParameter>\n          <camunda:inputParameter name=\"connectionTimeoutInSeconds\">20</camunda:inputParameter>\n          <camunda:inputParameter name=\"readTimeoutInSeconds\">20</camunda:inputParameter>\n        </camunda:inputOutput>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_Vp0HOfCz</bpmn:incoming>\n      <bpmn:outgoing>Flow_8ZqbzajU</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:exclusiveGateway id=\"dueDiligenceGateway\" name=\"Due Diligence Level?\" default=\"Flow_LXaUZMEX\">\n      <bpmn:incoming>Flow_8ZqbzajU</bpmn:incoming>\n      <bpmn:outgoing>Flow_hyodCBEu</bpmn:outgoing>\n      <bpmn:outgoing>Flow_LXaUZMEX</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"standardDueDiligence\" camunda:type=\"external\" camunda:topic=\"due-diligence-service\" name=\"Standard Due Diligence\">\n      <bpmn:incoming>Flow_hyodCBEu</bpmn:incoming>\n      <bpmn:outgoing>Flow_Fj3alEoq</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:userTask id=\"complianceReview\" name=\"Enhanced Due Diligence Review\">\n      <bpmn:incoming>Flow_LXaUZMEX</bpmn:incoming>\n      <bpmn:outgoing>Flow_1u29yKxb</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:businessRuleTask id=\"riskClassification\" name=\"Final Risk Classification\">\n      <bpmn:incoming>Flow_WuhSJujP</bpmn:incoming>\n      <bpmn:outgoing>Flow_NFb6OA8f</bpmn:outgoing>\n    </bpmn:businessRuleTask>\n    <bpmn:exclusiveGateway id=\"outcomeGateway\" name=\"Classification Outcome?\" default=\"Flow_y162Zfc7\">\n      <bpmn:incoming>Flow_NFb6OA8f</bpmn:incoming>\n      <bpmn:outgoing>Flow_hHN1OOEM</bpmn:outgoing>\n      <bpmn:outgoing>Flow_VHWI1YqZ</bpmn:outgoing>\n      <bpmn:outgoing>Flow_y162Zfc7</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:serviceTask id=\"activateAccount\" camunda:type=\"external\" camunda:topic=\"account-activation-service\" name=\"Activate Customer Account\">\n      <bpmn:extensionElements>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"customerId\">=applicant.id</camunda:inputParameter>\n        </camunda:inputOutput>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_hHN1OOEM</bpmn:incoming>\n      <bpmn:outgoing>Flow_1busQeAe</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endApproved\" name=\"Customer Approved\">\n      <bpmn:incoming>Flow_1busQeAe</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:serviceTask id=\"escalateToCompliance\" camunda:type=\"external\" camunda:topic=\"compliance-escalation-service\" name=\"Escalate to Compliance\">\n      <bpmn:incoming>Flow_VHWI1YqZ</bpmn:incoming>\n      <bpmn:outgoing>Flow_KmLNM32V</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endEscalated\" name=\"Escalated to Compliance\">\n      <bpmn:incoming>Flow_KmLNM32V</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:serviceTask id=\"sendFinalRejection\" camunda:type=\"external\" camunda:topic=\"email-sender\" name=\"Send Rejection Notice\">\n      <bpmn:incoming>Flow_y162Zfc7</bpmn:incoming>\n      <bpmn:outgoing>Flow_b0dqg7ck</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"endRejected\" name=\"Customer Rejected\">\n      <bpmn:incoming>Flow_b0dqg7ck</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:exclusiveGateway id=\"dueDiligenceGateway_join\">\n      <bpmn:incoming>Flow_Fj3alEoq</bpmn:incoming>\n      <bpmn:incoming>Flow_1u29yKxb</bpmn:incoming>\n      <bpmn:outgoing>Flow_WuhSJujP</bpmn:outgoing>\n    </bpmn:exclusiveGateway>\n    <bpmn:sequenceFlow id=\"Flow_xMEWWQ9P\" sourceRef=\"start\" targetRef=\"uploadDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_aFggSXlz\" sourceRef=\"uploadDocument\" targetRef=\"verifyDocument\"/>\n    <bpmn:sequenceFlow id=\"Flow_nrWGBeCZ\" sourceRef=\"verifyDocument\" targetRef=\"qualityGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_Vp0HOfCz\" sourceRef=\"qualityGateway\" targetRef=\"screening\" name=\"verification-passed\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=verified = true</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_RETXa3Vt\" sourceRef=\"qualityGateway\" targetRef=\"incrementRetry\" name=\"verification-failed\"/>\n    <bpmn:sequenceFlow id=\"Flow_i4OMbS2y\" sourceRef=\"incrementRetry\" targetRef=\"retryGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_8reekDVI\" sourceRef=\"retryGateway\" targetRef=\"uploadDocument\" name=\"retry-upload\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=retryCount &lt;= 2</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_Y4q86h1Q\" sourceRef=\"retryGateway\" targetRef=\"sendVerificationRejection\" name=\"retries-exhausted\"/>\n    <bpmn:sequenceFlow id=\"Flow_VNppp5Gg\" sourceRef=\"sendVerificationRejection\" targetRef=\"endRejectedVerification\"/>\n    <bpmn:sequenceFlow id=\"Flow_8ZqbzajU\" sourceRef=\"screening\" targetRef=\"dueDiligenceGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_hyodCBEu\" sourceRef=\"dueDiligenceGateway\" targetRef=\"standardDueDiligence\" name=\"standard-dd\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=sanctionsHit = false and pep = false</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_Fj3alEoq\" sourceRef=\"standardDueDiligence\" targetRef=\"dueDiligenceGateway_join\"/>\n    <bpmn:sequenceFlow id=\"Flow_LXaUZMEX\" sourceRef=\"dueDiligenceGateway\" targetRef=\"complianceReview\" name=\"enhanced-dd\"/>\n    <bpmn:sequenceFlow id=\"Flow_1u29yKxb\" sourceRef=\"complianceReview\" targetRef=\"dueDiligenceGateway_join\"/>\n    <bpmn:sequenceFlow id=\"Flow_NFb6OA8f\" sourceRef=\"riskClassification\" targetRef=\"outcomeGateway\"/>\n    <bpmn:sequenceFlow id=\"Flow_hHN1OOEM\" sourceRef=\"outcomeGateway\" targetRef=\"activateAccount\" name=\"approved\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=riskClassification.decision = \"approve\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_1busQeAe\" sourceRef=\"activateAccount\" targetRef=\"endApproved\"/>\n    <bpmn:sequenceFlow id=\"Flow_VHWI1YqZ\" sourceRef=\"outcomeGateway\" targetRef=\"escalateToCompliance\" name=\"escalated\">\n      <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=riskClassification.decision = \"escalate\"</bpmn:conditionExpression>\n    </bpmn:sequenceFlow>\n    <bpmn:sequenceFlow id=\"Flow_KmLNM32V\" sourceRef=\"escalateToCompliance\" targetRef=\"endEscalated\"/>\n    <bpmn:sequenceFlow id=\"Flow_y162Zfc7\" sourceRef=\"outcomeGateway\" targetRef=\"sendFinalRejection\" name=\"rejected\"/>\n    <bpmn:sequenceFlow id=\"Flow_b0dqg7ck\" sourceRef=\"sendFinalRejection\" targetRef=\"endRejected\"/>\n    <bpmn:sequenceFlow id=\"Flow_WuhSJujP\" sourceRef=\"dueDiligenceGateway_join\" targetRef=\"riskClassification\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+}

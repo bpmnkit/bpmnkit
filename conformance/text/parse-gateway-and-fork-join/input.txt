@@ -1,0 +1,3 @@
+s[start] > f[and Fork] > a[task A] > j[and Join]
+f > b[task B] > j
+j > e[end]

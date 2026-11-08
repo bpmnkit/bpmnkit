@@ -1,0 +1,37 @@
+{
+  "id": "F",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "id": "a",
+      "type": "textfield",
+      "key": "k1",
+      "label": "a"
+    },
+    {
+      "id": "a",
+      "type": "textfield",
+      "key": "k2",
+      "label": "a"
+    },
+    {
+      "id": "F",
+      "type": "text",
+      "text": "x"
+    },
+    {
+      "id": "g",
+      "type": "group",
+      "label": "G",
+      "components": [
+        {
+          "id": "a",
+          "type": "textfield",
+          "key": "k3",
+          "label": "a"
+        }
+      ]
+    }
+  ]
+}

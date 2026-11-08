@@ -1,0 +1,792 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 31,
+    "info": 6,
+    "warning": 27
+  },
+  "diagnostics": [
+    {
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-start-event",
+      "message": "Process \"agents\" has no start event.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Add a start event to define where the process begins."
+    },
+    {
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-end-event",
+      "message": "Process \"agents\" has no end event.",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Add an end event to properly terminate the process."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "outsideTool"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"outsideTool\" (serviceTask) is not reachable from any start event.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "outsideTool"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"outsideTool\" (serviceTask) has no outgoing sequence flows.",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "plainAdHoc"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"plainAdHoc\" (adHocSubProcess) is not reachable from any start event.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "plainAdHoc"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"plainAdHoc\" (adHocSubProcess) has no outgoing sequence flows.",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "tools"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"tools\" (adHocSubProcess) is not reachable from any start event.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "tools"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"tools\" (adHocSubProcess) has no outgoing sequence flows.",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "legacyAgent"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"legacyAgent\" (adHocSubProcess) is not reachable from any start event.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "legacyAgent"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"legacyAgent\" (adHocSubProcess) has no outgoing sequence flows.",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "forkedAgent"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"forkedAgent\" (adHocSubProcess) is not reachable from any start event.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "forkedAgent"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"forkedAgent\" (adHocSubProcess) has no outgoing sequence flows.",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "definedAgent"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"definedAgent\" (adHocSubProcess) is not reachable from any start event.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "definedAgent"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"definedAgent\" (adHocSubProcess) has no outgoing sequence flows.",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "outsideTool"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"outsideTool\" (serviceTask) has no name.",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "legacyAgent"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"legacyAgent\" (adHocSubProcess) has no name.",
+      "processId": "agents",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "forkedAgent"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"forkedAgent\" (adHocSubProcess) has no name.",
+      "processId": "agents",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "definedAgent"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"definedAgent\" (adHocSubProcess) has no name.",
+      "processId": "agents",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "plainAdHoc"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Plain\" has no error boundary event.",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "tools"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Tools\" has no error boundary event.",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "legacyAgent"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"legacyAgent\" has no error boundary event.",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "forkedAgent"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"forkedAgent\" has no error boundary event.",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "definedAgent"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"definedAgent\" has no error boundary event.",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "outsideTool"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"outsideTool\" has no output variable mapping.",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "outsideTool"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:toolCall",
+      "message": "Variable \"toolCall\" is referenced but never set in this process.",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "\"toolCall\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "outsideTool"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:x",
+      "message": "Variable \"x\" is set but never read by any downstream element.",
+      "processId": "agents",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"x\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "outsideTool"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:outsideTool",
+      "message": "Element \"outsideTool\" produces: x; consumes: toolCall.",
+      "processId": "agents",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "agentic",
+      "elementIds": [
+        "forkedAgent"
+      ],
+      "fixable": false,
+      "id": "agentic/no-output-collection",
+      "message": "AI Agent \"forkedAgent\" has no outputCollection — tool call results won't be aggregated.",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Set zeebe:adHoc outputCollection (e.g. \"toolCallResults\")."
+    },
+    {
+      "category": "agentic",
+      "elementIds": [
+        "forkedAgent"
+      ],
+      "fixable": false,
+      "id": "agentic/limits-missing",
+      "message": "AI Agent \"forkedAgent\" has no data.limits.maxModelCalls binding.",
+      "processId": "agents",
+      "severity": "info",
+      "suggestion": "Set a model-call limit as a safety net against infinite tool loops."
+    },
+    {
+      "category": "agentic",
+      "elementIds": [
+        "forkedTool"
+      ],
+      "fixable": false,
+      "id": "agentic/tool-no-description",
+      "message": "Tool \"forkedTool\" has no documentation — the LLM sees no description for this tool.",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Set <bpmn:documentation> describing what this tool does."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "branchToA"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"branchToA\" has a condition, but only flows leaving an exclusive or inclusive gateway may.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Remove the condition, or route the flow through a gateway."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "outsideTool"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() should only be used inside an agentic sub-process.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Use fromAi() only in a tool of an AI Agent ad-hoc sub-process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "plainTool"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "The \"Plain\" sub-process is not marked as agentic, so fromAi() has no effect.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Set the zeebe:property io.camunda.agenticai.toolContainer=\"true\" on the ad-hoc sub-process, or apply the AI Agent template."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolNoResult"
+      ],
+      "fixable": false,
+      "id": "compat/agent-tool-output-key",
+      "message": "Tool returns nothing to the agent. Set a \"toolCallResult\" (at minimum, note the task completed).",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Add an output mapping with target toolCallResult."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolUnmapped"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() key must be a FEEL path, not a string literal. Remove the quotes around \"city\".",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Pass the parameter as fromAi(toolCall.name, ...)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolUnmapped"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() key must start with \"toolCall.\". Use toolCall.city instead of a bare name.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Pass the parameter as fromAi(toolCall.name, ...)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolUnmapped"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() description must be a string literal: a quoted string describing what the agent should provide.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Describe the parameter in a quoted string: fromAi(toolCall.name, \"…\")."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolUnmapped"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() requires a key argument: a FEEL path like toolCall.url.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Pass the parameter as fromAi(toolCall.name, ...)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolUnmapped"
+      ],
+      "fixable": false,
+      "id": "compat/agent-tool-output-key",
+      "message": "\"toolCallResult\" output is not mapped.",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Map the tool's result to toolCallResult — the agent reads nothing else."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolCasing"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "Wrong function name \"FromAI\". Use fromAi (case-sensitive).",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Write fromAi exactly."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolCasing"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() key must be a single name under toolCall. Use toolCall.b instead of toolCall.a.b.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Pass the parameter as fromAi(toolCall.name, ...)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolCasing"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() key must start with \"toolCall.\". Got other.x.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Pass the parameter as fromAi(toolCall.name, ...)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolCasing"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() key must be a FEEL path starting with \"toolCall.\", not a conditional expression. The connector requires a plain reference regardless of which branch would apply at runtime.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Pass the parameter as fromAi(toolCall.name, ...)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolCasing"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() key must use dot notation, not bracket notation. Use toolCall.name instead of toolCall[\"name\"].",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Pass the parameter as fromAi(toolCall.name, ...)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolCasing"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() description must be a string literal: a quoted string describing what the agent should provide.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Describe the parameter in a quoted string: fromAi(toolCall.name, \"…\")."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolCasing"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() key must be a FEEL path starting with \"toolCall.\", not null.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Pass the parameter as fromAi(toolCall.name, ...)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolCasing"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() key must be a FEEL path starting with \"toolCall.\", not an arithmetic expression.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Pass the parameter as fromAi(toolCall.name, ...)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolCasing"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() key must be a FEEL path starting with \"toolCall.\", not a number.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Pass the parameter as fromAi(toolCall.name, ...)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolCasing"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() key must be a FEEL path starting with \"toolCall.\", not a List.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Pass the parameter as fromAi(toolCall.name, ...)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolCasing"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() key must be a FEEL path starting with \"toolCall.\", not a ParenthesizedExpression.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Pass the parameter as fromAi(toolCall.name, ...)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolCasing"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() description must be a string literal: a quoted string describing what the agent should provide.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Describe the parameter in a quoted string: fromAi(toolCall.name, \"…\")."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolCasing"
+      ],
+      "fixable": false,
+      "id": "compat/agent-tool-output-key",
+      "message": "Wrong casing \"ToolCallResult\": use toolCallResult (case-sensitive).",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Write toolCallResult exactly; Camunda reads variable names case-sensitively."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolDuplicateKey"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() key toolCall.q is declared more than once in this tool. Declare it once and reference it directly elsewhere.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Declare each tool parameter once."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolDuplicateKey"
+      ],
+      "fixable": false,
+      "id": "compat/agent-tool-output-key",
+      "message": "Wrong casing \"toolcallresult.extra\": use toolCallResult (case-sensitive).",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Write toolCallResult exactly; Camunda reads variable names case-sensitively."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolOutputFromAi"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() defines a tool input and has no effect in an output mapping. Define it in an input mapping on the tool's entry element.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Move the fromAi() call to an input mapping."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "chainB"
+      ],
+      "fixable": false,
+      "id": "compat/agent-tool-output-key",
+      "message": "This overwrites the \"toolCallResult\" value set on \"Fetch\".",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Write parts of the result (toolCallResult.part), or combine them with context put(toolCallResult, ...)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "chainC"
+      ],
+      "fixable": false,
+      "id": "compat/agent-tool-output-key",
+      "message": "This overwrites the \"toolCallResult\" value set on \"chainB\".",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Write parts of the result (toolCallResult.part), or combine them with context put(toolCallResult, ...)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "chainB"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() is ignored here: only the tool's entry element defines AI inputs. Define it there and read the toolCall variable directly.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Move the fromAi() call to the tool's first element."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "branchB"
+      ],
+      "fixable": false,
+      "id": "compat/agent-tool-output-key",
+      "message": "Wrong casing \"toolcallresult\": use toolCallResult (case-sensitive).",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Write toolCallResult exactly; Camunda reads variable names case-sensitively."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolSubStep"
+      ],
+      "fixable": false,
+      "id": "compat/agent-tool-output-key",
+      "message": "\"toolCallResult\" output is not mapped.",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Map the tool's result to toolCallResult — the agent reads nothing else."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toolSubStep"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() is ignored here: only the tool's entry element defines AI inputs. Define it there and read the toolCall variable directly.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Move the fromAi() call to the tool's first element."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "legacyTool"
+      ],
+      "fixable": false,
+      "id": "compat/agent-tool-output-key",
+      "message": "Tool returns nothing to the agent. Set a \"toolCallResult\" (at minimum, note the task completed).",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Add an output mapping with target toolCallResult."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "forkedTool"
+      ],
+      "fixable": false,
+      "id": "compat/agent-tool-output-key",
+      "message": "Tool returns nothing to the agent. Set a \"toolCallResult\" (at minimum, note the task completed).",
+      "processId": "agents",
+      "severity": "warning",
+      "suggestion": "Add an output mapping with target toolCallResult."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "branchToA"
+      ],
+      "fixable": false,
+      "id": "compat/agent-fromai-contract",
+      "message": "fromAi() defines a tool input and cannot be used in a sequence flow condition. Define it in an input mapping on the tool's entry element.",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Read the value from the toolCall variable instead."
+    }
+  ],
+  "platform": {
+    "id": "camunda-cloud",
+    "name": "Camunda Cloud",
+    "version": "8.8.0"
+  },
+  "total": 64
+}

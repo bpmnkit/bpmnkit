@@ -1,0 +1,39 @@
+{
+  "findings": [
+    {
+      "elementId": "a",
+      "fix": "Fix the FEEL expression; strings need double quotes and DMN entries have no leading `=`. (agent-cards/dmn.md#traps)",
+      "message": "Decision \"A\"'s literal expression is not valid FEEL: Expected expression after '+' (at 3) in `1 +`.",
+      "rule": "dmn/feel-syntax",
+      "severity": "error"
+    },
+    {
+      "elementId": "i1",
+      "fix": "Fix the FEEL expression; strings need double quotes and DMN entries have no leading `=`. (agent-cards/dmn.md#traps)",
+      "message": "Input \"Li1\" of Decision \"B\"'s expression is not valid FEEL: Expected expression after '+' (at 3) in `x +`.",
+      "rule": "dmn/feel-syntax",
+      "severity": "error"
+    },
+    {
+      "elementId": "r1i0",
+      "fix": "Write unary tests: a value (`\"gold\"`, `42`), a comparison (`> 10`), a range (`[1..5]`), a list (`\"a\",\"b\"`), `not(...)`, or `-` for any. (agent-cards/dmn.md#traps)",
+      "message": "Input entry of rule \"r1\" is not valid FEEL unary tests: Unexpected token '>' (at 2) in `> >`.",
+      "rule": "dmn/feel-syntax",
+      "severity": "error"
+    },
+    {
+      "elementId": "r1o0",
+      "fix": "Fix the FEEL expression; strings need double quotes and DMN entries have no leading `=`. (agent-cards/dmn.md#traps)",
+      "message": "Output entry of rule \"r1\" is not valid FEEL: Expected expression after '+' (at 5) in `\"a\" +`.",
+      "rule": "dmn/feel-syntax",
+      "severity": "error"
+    },
+    {
+      "elementId": "r3i0",
+      "fix": "Write unary tests: a value (`\"gold\"`, `42`), a comparison (`> 10`), a range (`[1..5]`), a list (`\"a\",\"b\"`), `not(...)`, or `-` for any. (agent-cards/dmn.md#traps)",
+      "message": "Input entry of rule \"r3\" is not valid FEEL unary tests: Expected ) (at 4) in `not(`.",
+      "rule": "dmn/feel-syntax",
+      "severity": "error"
+    }
+  ]
+}

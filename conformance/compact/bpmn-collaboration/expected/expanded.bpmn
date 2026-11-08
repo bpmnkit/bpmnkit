@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_collab" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_buyer" name="Buyer" isExecutable="true">
+    <bpmn:startEvent id="Start_buyer" name="Need identified">
+      <bpmn:outgoing>Flow_b1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Task_place_order" name="Place order">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="place-order"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_b1</bpmn:incoming>
+      <bpmn:outgoing>Flow_b2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="End_buyer" name="Ordered">
+      <bpmn:incoming>Flow_b2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_b1" sourceRef="Start_buyer" targetRef="Task_place_order"/>
+    <bpmn:sequenceFlow id="Flow_b2" sourceRef="Task_place_order" targetRef="End_buyer"/>
+  </bpmn:process>
+  <bpmn:process id="Process_seller" name="Seller" isExecutable="true">
+    <bpmn:startEvent id="Start_seller">
+      <bpmn:outgoing>Flow_s1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="End_seller">
+      <bpmn:incoming>Flow_s1</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s1" sourceRef="Start_seller" targetRef="End_seller"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Process_buyer">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_buyer" bpmnElement="Process_buyer">
+      <bpmndi:BPMNShape id="Start_buyer_di" bpmnElement="Start_buyer">
+        <dc:Bounds x="0" y="22" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-34.5" y="62" width="105" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_place_order_di" bpmnElement="Task_place_order">
+        <dc:Bounds x="96" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_buyer_di" bpmnElement="End_buyer">
+        <dc:Bounds x="256" y="22" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="249.5" y="62" width="49" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_b1_di" bpmnElement="Flow_b1">
+        <di:waypoint x="36" y="40"/>
+        <di:waypoint x="96" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_b2_di" bpmnElement="Flow_b2">
+        <di:waypoint x="196" y="40"/>
+        <di:waypoint x="256" y="40"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Process_seller">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_seller" bpmnElement="Process_seller">
+      <bpmndi:BPMNShape id="Start_seller_di" bpmnElement="Start_seller">
+        <dc:Bounds x="0" y="0" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_seller_di" bpmnElement="End_seller">
+        <dc:Bounds x="96" y="0" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_s1_di" bpmnElement="Flow_s1">
+        <di:waypoint x="36" y="18"/>
+        <di:waypoint x="96" y="18"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

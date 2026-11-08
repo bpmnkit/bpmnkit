@@ -1,0 +1,508 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_Agent",
+      "plane": {
+        "bpmnElement": "Agent",
+        "edges": [
+          {
+            "bpmnElement": "Flow_1",
+            "id": "Flow_1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 118,
+                "y": 170
+              },
+              {
+                "x": 178,
+                "y": 170
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_2",
+            "id": "Flow_2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 228,
+                "y": 170
+              },
+              {
+                "x": 328,
+                "y": 170
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_3",
+            "id": "Flow_3_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 668,
+                "y": 170
+              },
+              {
+                "x": 768,
+                "y": 170
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_4",
+            "id": "Flow_4_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 818,
+                "y": 170
+              },
+              {
+                "x": 878,
+                "y": 170
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_5",
+            "id": "Flow_5_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 793,
+                "y": 195
+              },
+              {
+                "x": 793,
+                "y": 378
+              },
+              {
+                "x": 203,
+                "y": 378
+              },
+              {
+                "x": 203,
+                "y": 195
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Association_start_1",
+            "id": "Association_start_1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 100,
+                "y": 152
+              },
+              {
+                "x": 100,
+                "y": 97
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Association_agent_1",
+            "id": "Association_agent_1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 498,
+                "y": 130
+              },
+              {
+                "x": 498,
+                "y": 80
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Association_joke_1",
+            "id": "Association_joke_1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 568,
+                "y": 208
+              },
+              {
+                "x": 568,
+                "y": 30
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_Agent",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 82,
+              "y": 152
+            },
+            "bpmnElement": "start",
+            "id": "start_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 40,
+                "x": 80,
+                "y": 192
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 178,
+              "y": 145
+            },
+            "bpmnElement": "run",
+            "id": "run_di",
+            "isMarkerVisible": true,
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 63,
+                "x": 171.5,
+                "y": 127
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 208,
+              "width": 340,
+              "x": 328,
+              "y": 130
+            },
+            "bpmnElement": "agent",
+            "id": "agent_di",
+            "isExpanded": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 768,
+              "y": 145
+            },
+            "bpmnElement": "done",
+            "id": "done_di",
+            "isMarkerVisible": true,
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 70,
+                "x": 758,
+                "y": 127
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 878,
+              "y": 152
+            },
+            "bpmnElement": "fin",
+            "id": "fin_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 40,
+                "x": 876,
+                "y": 192
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 378,
+              "y": 208
+            },
+            "bpmnElement": "users",
+            "id": "users_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 518,
+              "y": 208
+            },
+            "bpmnElement": "joke",
+            "id": "joke_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 30,
+              "width": 200,
+              "x": 0,
+              "y": 67
+            },
+            "bpmnElement": "TextAnnotation_start_1",
+            "id": "TextAnnotation_start_1_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 30,
+              "width": 200,
+              "x": 398,
+              "y": 50
+            },
+            "bpmnElement": "TextAnnotation_agent_1",
+            "id": "TextAnnotation_agent_1_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 30,
+              "width": 200,
+              "x": 468,
+              "y": 0
+            },
+            "bpmnElement": "TextAnnotation_joke_1",
+            "id": "TextAnnotation_joke_1_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [
+        {
+          "associationDirection": "None",
+          "id": "Association_start_1",
+          "sourceRef": "start",
+          "targetRef": "TextAnnotation_start_1",
+          "unknownAttributes": {}
+        },
+        {
+          "associationDirection": "None",
+          "id": "Association_agent_1",
+          "sourceRef": "agent",
+          "targetRef": "TextAnnotation_agent_1",
+          "unknownAttributes": {}
+        },
+        {
+          "associationDirection": "None",
+          "id": "Association_joke_1",
+          "sourceRef": "joke",
+          "targetRef": "TextAnnotation_joke_1",
+          "unknownAttributes": {}
+        }
+      ],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "start",
+          "incoming": [],
+          "name": "Go",
+          "outgoing": [
+            "Flow_1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "run",
+          "incoming": [
+            "Flow_1",
+            "Flow_5"
+          ],
+          "name": "Run agent",
+          "outgoing": [
+            "Flow_2"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "users"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                }
+              ],
+              "id": "users",
+              "incoming": [],
+              "name": "Find sample users",
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "joke"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                }
+              ],
+              "id": "joke",
+              "incoming": [],
+              "name": "Get a safe joke",
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "agent",
+          "incoming": [
+            "Flow_2"
+          ],
+          "name": "AI Agent",
+          "outgoing": [
+            "Flow_3"
+          ],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "type": "adHocSubProcess",
+          "unknownAttributes": {}
+        },
+        {
+          "default": "Flow_5",
+          "extensionElements": [],
+          "id": "done",
+          "incoming": [
+            "Flow_3"
+          ],
+          "name": "Satisfied?",
+          "outgoing": [
+            "Flow_4",
+            "Flow_5"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "fin",
+          "incoming": [
+            "Flow_4"
+          ],
+          "name": "Done",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "Agent",
+      "isExecutable": true,
+      "name": "Agent",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_1",
+          "sourceRef": "start",
+          "targetRef": "run",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_2",
+          "sourceRef": "run",
+          "targetRef": "agent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_3",
+          "sourceRef": "agent",
+          "targetRef": "done",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {},
+            "text": "= ok"
+          },
+          "extensionElements": [],
+          "id": "Flow_4",
+          "name": "Yes",
+          "sourceRef": "done",
+          "targetRef": "fin",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_5",
+          "name": "No",
+          "sourceRef": "done",
+          "targetRef": "run",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [
+        {
+          "id": "TextAnnotation_start_1",
+          "text": "Triggered by a user",
+          "unknownAttributes": {}
+        },
+        {
+          "id": "TextAnnotation_agent_1",
+          "text": "The agent picks a tool",
+          "unknownAttributes": {}
+        },
+        {
+          "id": "TextAnnotation_joke_1",
+          "text": "Each tool is a capability",
+          "unknownAttributes": {}
+        }
+      ],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.10.0"
+  }
+}

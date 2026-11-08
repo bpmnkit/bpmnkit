@@ -1,0 +1,1 @@
+expand: invalid CompactDiagram — duplicate id "P" (process)

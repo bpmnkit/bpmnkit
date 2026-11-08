@@ -140,4 +140,4 @@ For an `aiAgent` step example, see `references/agentic.md`.
 1. Write `<name>.plan.json`.
 2. `casen synth <name>.plan.json -o <name>.bpmn` — if problems are reported, they're keyed by `path` (e.g. `steps[1].branches[0].condition`); fix the **plan**, never the XML, and re-run. Bound retries to 2 attempts before surfacing the problem to the user.
 3. Extending an existing process: `casen plan extract <name>.bpmn` to get the current plan back (elements it can't losslessly lift are reported, not guessed at), write a small delta plan with just the new/changed steps, then `casen synth <delta>.plan.json --merge <name>.bpmn`.
-4. `plan.tests` (see schema above) compiles to a `<name>.bpmn.tests.json` sidecar automatically — run `casen test <name>.bpmn` to execute them.
+4. `plan.tests` (see schema above) compiles to a `<name>.bpmn.tests.json` sidecar automatically — run `casen test test <name>.bpmn` to execute them.

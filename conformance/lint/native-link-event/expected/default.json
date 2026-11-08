@@ -1,0 +1,227 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 8,
+    "info": 0,
+    "warning": 9
+  },
+  "diagnostics": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "t1"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"t1\" (intermediateThrowEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "t1"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"t1\" (intermediateThrowEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "c1"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"c1\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "c1"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"c1\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "t2"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"t2\" (intermediateThrowEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "t2"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"t2\" (intermediateThrowEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "c3"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"c3\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "c3"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"c3\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "c4"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"c4\" (intermediateCatchEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "c4"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"c4\" (intermediateCatchEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "t5"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"t5\" (intermediateThrowEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "t5"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"t5\" (intermediateThrowEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "t6"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"t6\" (intermediateThrowEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "t6"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"t6\" (intermediateThrowEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "x"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"x\" (intermediateThrowEvent) is not reachable from any start event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "x"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"x\" (intermediateThrowEvent) has no outgoing sequence flows.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Started\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 17
+}

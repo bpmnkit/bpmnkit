@@ -1,0 +1,61 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "Order_received",
+          "name": "Order received",
+          "type": "startEvent"
+        },
+        {
+          "id": "validate_order",
+          "jobType": "validate:1",
+          "name": "Validate order",
+          "type": "serviceTask"
+        },
+        {
+          "id": "process_payment",
+          "jobType": "payment:1",
+          "name": "Process payment",
+          "type": "serviceTask"
+        },
+        {
+          "id": "ship_order",
+          "jobType": "shipping:1",
+          "name": "Ship order",
+          "type": "serviceTask"
+        },
+        {
+          "id": "Order_shipped",
+          "name": "Order shipped",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "Order_received",
+          "id": "Flow_TfkhdPux",
+          "to": "validate_order"
+        },
+        {
+          "from": "validate_order",
+          "id": "Flow_t5C0Tmzj",
+          "to": "process_payment"
+        },
+        {
+          "from": "process_payment",
+          "id": "Flow_lIaZ9rfj",
+          "to": "ship_order"
+        },
+        {
+          "from": "ship_order",
+          "id": "Flow_fX8iY50e",
+          "to": "Order_shipped"
+        }
+      ],
+      "id": "order-process",
+      "name": "Order Process"
+    }
+  ]
+}

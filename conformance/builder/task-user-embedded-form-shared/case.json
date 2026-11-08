@@ -1,0 +1,11 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["userTask","u1",{"embeddedForm":{"id":"f","schema":"{\"a\":1}"}}],
+		["userTask","u2",{"embeddedForm":{"id":"f","schema":"{\"a\":1}"}}],
+		["endEvent","e"],
+		["build"]
+	]
+}

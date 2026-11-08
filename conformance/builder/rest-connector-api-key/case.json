@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["restConnector","call",{"method":"DELETE","url":"https://x","authentication":{"type":"apiKey","apiKeyLocation":"headers","name":"X-Key","value":"{{secrets.K}}"}}],
+		["endEvent","e"],
+		["build"]
+	]
+}

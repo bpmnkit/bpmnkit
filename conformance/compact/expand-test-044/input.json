@@ -1,0 +1,21 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "id": "Process_1",
+      "elements": [
+        {
+          "id": "call",
+          "type": "serviceTask",
+          "name": "Fetch Order",
+          "jobType": "io.camunda:http-json:1",
+          "taskHeaders": {
+            "url": "https://example.com",
+            "method": "GET"
+          }
+        }
+      ],
+      "flows": []
+    }
+  ]
+}

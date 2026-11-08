@@ -26,6 +26,15 @@ export interface BuildOptions {
 	siteUrl?: string
 	maxTokens?: number
 	minTokens?: number
+	/** Pages listed first in `llms.txt`, so an agent reading only its head still finds them. */
+	startHere?: StartHere
+}
+
+export interface StartHere {
+	/** One line saying who the pages are for. */
+	intro: string
+	/** Doc slugs, as in the source tree without `.md` (`agent-cards/bpmn`). */
+	docs: string[]
 }
 
 export interface BuildResult {
@@ -93,6 +102,7 @@ export function buildPack(options: BuildOptions): BuildResult {
 function tableOfContents(options: BuildOptions, chunks: BuiltChunk[]): string {
 	const lines = [`# ${options.name}`, ""]
 	if (options.description) lines.push(`> ${options.description}`, "")
+	if (options.startHere) lines.push(...startHereSection(options.startHere, chunks))
 	lines.push(
 		`Version ${options.version}. ${chunks.length} chunks documenting ${options.documents.join(", ")}.`,
 		"",
@@ -118,6 +128,22 @@ function tableOfContents(options: BuildOptions, chunks: BuiltChunk[]): string {
 	}
 
 	return lines.join("\n")
+}
+
+function startHereSection(start: StartHere, chunks: BuiltChunk[]): string[] {
+	const lines = ["## Start here", "", start.intro, ""]
+	for (const slug of start.docs) {
+		const prefix = slug.split("/").join(".")
+		const page = chunks.filter((c) => c.id === prefix || c.id.startsWith(`${prefix}.`))
+		if (page.length === 0) throw new Error(`startHere: no document "${slug}" in the source`)
+		const tokens = page.reduce((sum, c) => sum + c.tokens, 0)
+		const title = page[0]?.title ?? slug
+		lines.push(
+			`- [${title}](.llms/chunks/${page[0]?.id}.md) — ${page.length} chunks, ${tokens} tokens`,
+		)
+	}
+	lines.push("")
+	return lines
 }
 
 function markdownFiles(dir: string): string[] {

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="P1" name="First" isExecutable="true">
+    <bpmn:startEvent id="P1_s">
+      <bpmn:outgoing>P1_f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="P1_e">
+      <bpmn:incoming>P1_f1</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="P1_f1" sourceRef="P1_s" targetRef="P1_e"/>
+  </bpmn:process>
+  <bpmn:process id="P2" name="Second" isExecutable="true">
+    <bpmn:laneSet id="P2_LS">
+      <bpmn:lane id="P2_L1" name="Clerk">
+        <bpmn:flowNodeRef>P2_s</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>P2_A</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="P2_L2" name="Manager">
+        <bpmn:flowNodeRef>P2_B</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>P2_e</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="P2_s" name="Request">
+      <bpmn:outgoing>P2_f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="P2_A" name="Fill form">
+      <bpmn:incoming>P2_f1</bpmn:incoming>
+      <bpmn:outgoing>P2_f2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="P2_B" name="Approve">
+      <bpmn:incoming>P2_f2</bpmn:incoming>
+      <bpmn:outgoing>P2_f3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="P2_e" name="Done">
+      <bpmn:incoming>P2_f3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="P2_f1" sourceRef="P2_s" targetRef="P2_A"/>
+    <bpmn:sequenceFlow id="P2_f2" sourceRef="P2_A" targetRef="P2_B"/>
+    <bpmn:sequenceFlow id="P2_f3" sourceRef="P2_B" targetRef="P2_e"/>
+  </bpmn:process>
+</bpmn:definitions>

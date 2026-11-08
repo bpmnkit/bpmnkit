@@ -1,0 +1,33 @@
+{
+  "report": {
+    "counts": {
+      "convertible": 1,
+      "manual": 1,
+      "unsupported": 0
+    },
+    "findings": [
+      {
+        "applied": false,
+        "construct": "scriptFormat=\"\"",
+        "elementId": "Task_script",
+        "elementType": "scriptTask",
+        "message": "Script was not converted: untyped scripts do not run in Camunda 8.",
+        "processId": "Process_zeebe",
+        "severity": "manual",
+        "suggestion": "Rewrite it as a FEEL expression in zeebe:script (expression, resultVariable), or implement it as a job worker with zeebe:taskDefinition."
+      },
+      {
+        "applied": true,
+        "construct": "modeler:executionPlatform",
+        "elementId": "Definitions_zeebe",
+        "elementType": "definitions",
+        "message": "Execution platform set to Camunda Cloud 8.2.0.",
+        "processId": "",
+        "severity": "convertible",
+        "suggestion": "Camunda Modeler opens the file as a Camunda 8 diagram."
+      }
+    ],
+    "total": 2
+  },
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" id=\"Definitions_zeebe\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.2.0\">\n  <bpmn:process id=\"Process_zeebe\" name=\"Zeebe surface\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"Start_z\">\n      <bpmn:outgoing>Flow_z1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"Task_service\" name=\"Call API\">\n      <bpmn:extensionElements>\n        <zeebe:taskDefinition type=\"io.camunda:http-json:1\" retries=\"5\"/>\n        <zeebe:ioMapping>\n          <zeebe:input source=\"=customer.id\" target=\"customerId\"/>\n          <zeebe:input source=\"=order.total\" target=\"amount\"/>\n          <zeebe:output source=\"=response.body\" target=\"apiResult\"/>\n        </zeebe:ioMapping>\n        <zeebe:taskHeaders>\n          <zeebe:header key=\"url\" value=\"https://example.invalid/orders\"/>\n          <zeebe:header key=\"method\" value=\"POST\"/>\n        </zeebe:taskHeaders>\n        <zeebe:properties>\n          <zeebe:property name=\"team\" value=\"payments\"/>\n        </zeebe:properties>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_z1</bpmn:incoming>\n      <bpmn:outgoing>Flow_z2</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:userTask id=\"Task_human\" name=\"Approve\">\n      <bpmn:extensionElements>\n        <zeebe:userTask/>\n        <zeebe:formDefinition formId=\"approval-form\"/>\n        <zeebe:assignmentDefinition assignee=\"=requester\" candidateGroups=\"approvers\"/>\n        <zeebe:taskSchedule dueDate=\"=now() + duration(&quot;P1D&quot;)\" followUpDate=\"=now()\"/>\n        <zeebe:priorityDefinition priority=\"=order.priority\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_z2</bpmn:incoming>\n      <bpmn:outgoing>Flow_z3</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:businessRuleTask id=\"Task_decide\" name=\"Decide\">\n      <bpmn:extensionElements>\n        <zeebe:calledDecision decisionId=\"risk-decision\" resultVariable=\"risk\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_z3</bpmn:incoming>\n      <bpmn:outgoing>Flow_z4</bpmn:outgoing>\n    </bpmn:businessRuleTask>\n    <bpmn:callActivity id=\"Task_call\" name=\"Fulfil\">\n      <bpmn:extensionElements>\n        <zeebe:calledElement processId=\"fulfilment\" propagateAllChildVariables=\"false\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_z4</bpmn:incoming>\n      <bpmn:outgoing>Flow_z5</bpmn:outgoing>\n    </bpmn:callActivity>\n    <bpmn:scriptTask id=\"Task_script\" name=\"Summarise\">\n      <bpmn:extensionElements>\n        <zeebe:script expression=\"=risk > 5\" resultVariable=\"highRisk\"/>\n      </bpmn:extensionElements>\n      <bpmn:incoming>Flow_z5</bpmn:incoming>\n      <bpmn:outgoing>Flow_z6</bpmn:outgoing>\n    </bpmn:scriptTask>\n    <bpmn:endEvent id=\"End_z\">\n      <bpmn:incoming>Flow_z6</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_z1\" sourceRef=\"Start_z\" targetRef=\"Task_service\"/>\n    <bpmn:sequenceFlow id=\"Flow_z2\" sourceRef=\"Task_service\" targetRef=\"Task_human\"/>\n    <bpmn:sequenceFlow id=\"Flow_z3\" sourceRef=\"Task_human\" targetRef=\"Task_decide\"/>\n    <bpmn:sequenceFlow id=\"Flow_z4\" sourceRef=\"Task_decide\" targetRef=\"Task_call\"/>\n    <bpmn:sequenceFlow id=\"Flow_z5\" sourceRef=\"Task_call\" targetRef=\"Task_script\"/>\n    <bpmn:sequenceFlow id=\"Flow_z6\" sourceRef=\"Task_script\" targetRef=\"End_z\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+}

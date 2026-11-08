@@ -1,0 +1,7 @@
+<definitions id="D" name="n">
+  <decision id="d1">
+    <decisionTable id="t1">
+      <input label="no id and no expression"/>
+    </decisionTable>
+  </decision>
+</definitions>

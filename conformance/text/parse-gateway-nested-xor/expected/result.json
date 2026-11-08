@@ -1,0 +1,113 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "g1",
+            "name": "One?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "g2",
+            "name": "Two?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "n1",
+            "name": "N1",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "id": "y",
+            "name": "Y",
+            "type": "task"
+          },
+          {
+            "id": "n2",
+            "name": "N2",
+            "type": "task"
+          },
+          {
+            "id": "e_join",
+            "type": "exclusiveGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "g1"
+          },
+          {
+            "condition": "= a",
+            "from": "g1",
+            "id": "Flow_2",
+            "name": "Yes",
+            "to": "g2"
+          },
+          {
+            "from": "g1",
+            "id": "Flow_3",
+            "isDefault": true,
+            "name": "No",
+            "to": "n1"
+          },
+          {
+            "from": "n1",
+            "id": "Flow_4",
+            "to": "e_join"
+          },
+          {
+            "condition": "= b",
+            "from": "g2",
+            "id": "Flow_5",
+            "name": "Yes",
+            "to": "y"
+          },
+          {
+            "from": "y",
+            "id": "Flow_6",
+            "to": "e_join"
+          },
+          {
+            "from": "g2",
+            "id": "Flow_7",
+            "isDefault": true,
+            "name": "No",
+            "to": "n2"
+          },
+          {
+            "from": "n2",
+            "id": "Flow_8",
+            "to": "e_join"
+          },
+          {
+            "from": "e_join",
+            "id": "Flow_9",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "joined 3 flows into \"e\" with xor gateway \"e_join\"",
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

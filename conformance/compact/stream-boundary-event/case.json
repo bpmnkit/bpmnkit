@@ -1,0 +1,9 @@
+{
+	"chunks": [
+		"{\"elements\":[{\"id\":\"t\",\"type\":\"serviceTask\",\"name\"",
+		":\"Work\"},{\"id\":\"b\",\"type\":\"boundaryEvent\",\"attache",
+		"dTo\":\"t\",\"eventType\":\"timer\",\"timerDuration\":\"PT1H",
+		"\"},{\"id\":\"x\",\"type\":\"endEvent\"}],\"flows\":[{\"id\":\"f",
+		"\",\"from\":\"b\",\"to\":\"x\"}]}"
+	]
+}

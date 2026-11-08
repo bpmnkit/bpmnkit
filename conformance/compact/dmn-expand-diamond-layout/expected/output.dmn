@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="defs" name="Defs" namespace="http://bpmn.io/schema/dmn">
+  <decision id="top">
+    <decisionTable id="decisionTable_0000004">
+      <input id="topi">
+        <inputExpression id="inputExpression_0000001">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="topo" name="y"/>
+      <rule id="topr">
+        <inputEntry id="inputEntry_0_0000002">
+          <text>1</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000003">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="left">
+    <informationRequirement id="InformationRequirement_0000005">
+      <requiredDecision href="#top"/>
+    </informationRequirement>
+    <decisionTable id="decisionTable_0000009">
+      <input id="lefti">
+        <inputExpression id="inputExpression_0000006">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="lefto" name="y"/>
+      <rule id="leftr">
+        <inputEntry id="inputEntry_0_0000007">
+          <text>1</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000008">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="right">
+    <informationRequirement id="InformationRequirement_000000a">
+      <requiredDecision href="#top"/>
+    </informationRequirement>
+    <decisionTable id="decisionTable_000000e">
+      <input id="righti">
+        <inputExpression id="inputExpression_000000b">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="righto" name="y"/>
+      <rule id="rightr">
+        <inputEntry id="inputEntry_0_000000c">
+          <text>1</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000d">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="bottom">
+    <informationRequirement id="InformationRequirement_000000f">
+      <requiredDecision href="#left"/>
+    </informationRequirement>
+    <informationRequirement id="InformationRequirement_000000g">
+      <requiredDecision href="#right"/>
+    </informationRequirement>
+    <decisionTable id="decisionTable_000000k">
+      <input id="bottomi">
+        <inputExpression id="inputExpression_000000h">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="bottomo" name="y"/>
+      <rule id="bottomr">
+        <inputEntry id="inputEntry_0_000000i">
+          <text>1</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000j">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="top">
+        <dc:Bounds height="80" width="180" x="160" y="160"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="left">
+        <dc:Bounds height="80" width="180" x="400" y="100"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="right">
+        <dc:Bounds height="80" width="180" x="400" y="220"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="bottom">
+        <dc:Bounds height="80" width="180" x="640" y="160"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge dmnElementRef="InformationRequirement_0000005">
+        <di:waypoint x="340" y="200"/>
+        <di:waypoint x="400" y="140"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="InformationRequirement_000000a">
+        <di:waypoint x="340" y="200"/>
+        <di:waypoint x="400" y="260"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="InformationRequirement_000000f">
+        <di:waypoint x="580" y="140"/>
+        <di:waypoint x="640" y="200"/>
+      </dmndi:DMNEdge>
+      <dmndi:DMNEdge dmnElementRef="InformationRequirement_000000g">
+        <di:waypoint x="580" y="260"/>
+        <di:waypoint x="640" y="200"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

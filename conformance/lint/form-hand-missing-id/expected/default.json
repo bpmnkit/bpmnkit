@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "fix": "Give every component a unique \"id\", e.g. \"Field_amount\". (agent-cards/form.md#traps)",
+      "message": "components[0] (textfield) has no id.",
+      "rule": "form/missing-id",
+      "severity": "error"
+    },
+    {
+      "fix": "Give every component a unique \"id\", e.g. \"Field_amount\". (agent-cards/form.md#traps)",
+      "message": "components[1] (text) has no id.",
+      "rule": "form/missing-id",
+      "severity": "error"
+    }
+  ]
+}

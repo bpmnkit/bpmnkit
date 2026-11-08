@@ -17,3 +17,4 @@ packages/feel/tests/tck/
 
 # VS Code extension package
 *.vsix
+.docspack/

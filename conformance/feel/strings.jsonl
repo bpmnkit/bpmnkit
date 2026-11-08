@@ -1,0 +1,50 @@
+{"id":"strings/1","expr":"\"a\" + \"b\"","context":{},"expected":{"t":"string","v":"ab"}}
+{"id":"strings/2","expr":"string length(\"héllo\")","context":{},"expected":{"t":"number","v":"5"}}
+{"id":"strings/3","expr":"upper case(\"abc\")","context":{},"expected":{"t":"string","v":"ABC"}}
+{"id":"strings/4","expr":"substring(\"foobar\", 3, 2)","context":{},"expected":{"t":"string","v":"ob"}}
+{"id":"strings/5","expr":"contains(\"foobar\",\"oba\")","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"strings/6","expr":"replace(\"abcabc\",\"b\",\"X\")","context":{},"expected":{"t":"string","v":"aXcaXc"}}
+{"id":"strings/7","expr":"split(\"a,b,c\", \",\")","context":{},"expected":{"t":"list","v":[{"t":"string","v":"a"},{"t":"string","v":"b"},{"t":"string","v":"c"}]}}
+{"id":"strings/8","expr":"\"x\" + 1","context":{},"expected":{"t":"null"}}
+{"id":"strings/9","expr":"name + \"!\"","context":{"name":{"t":"string","v":"hi"}},"expected":{"t":"string","v":"hi!"}}
+{"id":"strings/10","expr":"string join([\"a\",\"b\"], \"-\")","context":{},"expected":{"t":"string","v":"a-b"}}
+{"id":"strings/11","expr":"\"hello\"","context":{},"expected":{"t":"string","v":"hello"}}
+{"id":"strings/12","expr":"\"visa\" in \"visa\"","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"strings/13","expr":"string length(\"hello\")","context":{},"expected":{"t":"number","v":"5"}}
+{"id":"strings/14","expr":"contains(\"hello world\", \"world\")","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"strings/15","expr":"upper case(\"hello\")","context":{},"expected":{"t":"string","v":"HELLO"}}
+{"id":"strings/16","expr":"starts with(\"hello\", \"he\")","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"strings/17","expr":"ends with(\"hello\", \"lo\")","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"strings/18","expr":"substring(\"hello\", 2, 3)","context":{},"expected":{"t":"string","v":"ell"}}
+{"id":"strings/19","expr":"\"hello\" instance of number","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"strings/20","expr":"\"hi\" instance of string","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"strings/21","expr":"\"a\\nb\"","context":{},"expected":{"t":"string","v":"a\nb"}}
+{"id":"strings/22","expr":"\"a\\tb\"","context":{},"expected":{"t":"string","v":"a\tb"}}
+{"id":"strings/23","expr":"\"a\\rb\"","context":{},"expected":{"t":"string","v":"a\rb"}}
+{"id":"strings/24","expr":"\"a\\'b\"","context":{},"expected":{"t":"string","v":"a'b"}}
+{"id":"strings/25","expr":"\"a\\\"b\"","context":{},"expected":{"t":"string","v":"a\"b"}}
+{"id":"strings/26","expr":"\"a\\\\b\"","context":{},"expected":{"t":"string","v":"a\\b"}}
+{"id":"strings/27","expr":"\"\\u0041\"","context":{},"expected":{"t":"string","v":"A"}}
+{"id":"strings/28","expr":"\"\\U01F40E\"","context":{},"expected":{"t":"string","v":"🐎"}}
+{"id":"strings/29","expr":"string length(\"\\U01F40E\")","context":{},"expected":{"t":"number","v":"1"}}
+{"id":"strings/30","expr":"substring(\"\\U01F40Eab\", 2)","context":{},"expected":{"t":"string","v":"ab"}}
+{"id":"strings/31","expr":"substring(start position: 2, string: \"hello\")","context":{},"expected":{"t":"string","v":"ello"}}
+{"id":"strings/32","expr":"replace(replacement: \"x\", pattern: \"b\", input: \"abc\")","context":{},"expected":{"t":"string","v":"axc"}}
+{"id":"strings/33","expr":"substring(string: \"hello\", start position: 2)","context":{},"expected":{"t":"string","v":"ello"}}
+{"id":"strings/34","expr":"substring(string: \"hello\", start position: 2, length: 2)","context":{},"expected":{"t":"string","v":"el"}}
+{"id":"strings/35","expr":"substring(str: \"hello\", start position: 2)","context":{},"expected":{"t":"null"}}
+{"id":"strings/36","expr":"string(null)","context":{},"expected":{"t":"null"}}
+{"id":"strings/37","expr":"string([1,2])","context":{},"expected":{"t":"string","v":"[1, 2]"}}
+{"id":"strings/38","expr":"string([\"a\",1])","context":{},"expected":{"t":"string","v":"[\"a\", 1]"}}
+{"id":"strings/39","expr":"string({a: \"x\"})","context":{},"expected":{"t":"string","v":"{a: \"x\"}"}}
+{"id":"strings/40","expr":"string({a: {b: 1}})","context":{},"expected":{"t":"string","v":"{a: {b: 1}}"}}
+{"id":"strings/41","expr":"string([])","context":{},"expected":{"t":"string","v":"[]"}}
+{"id":"strings/42","expr":"matches(\"a\\nb\", \"a.b\", \"s\")","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"strings/43","expr":"matches(\"a\\nb\", \"a.b\")","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"strings/44","expr":"matches(\"ABC\", \"abc\", \"i\")","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"strings/45","expr":"matches(\"a\\nb\", \"^b$\", \"m\")","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"strings/46","expr":"matches(\"a.c\", \"a.c\", \"q\")","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"strings/47","expr":"matches(\"abc\", \"a.c\", \"q\")","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"strings/48","expr":"matches(\"abc\", \"a b c\", \"x\")","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"strings/49","expr":"matches(\"a c\", \"a[ ]c\", \"x\")","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"strings/50","expr":"matches(\"abc\", \"abc\", \"z\")","context":{},"expected":{"t":"null"}}

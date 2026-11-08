@@ -131,7 +131,8 @@ actually execute shell commands, call an LLM, and read/write files.
 
 ### Action items
 
-- [x] `apps/proxy/src/triggers/timer.ts` — Timer trigger scheduler
+- [x] `apps/proxy/src/triggers/timer.ts` — Timer trigger scheduler *(removed 2026-10-09:
+  Reebe and Camunda 8 fire timer start events themselves, so it started each instance twice)*
   - On startup, queries reebe for deployed processes with timer start events
   - Parses ISO 8601 `timeDuration`, `timeDate`, `timeCycle` from BPMN XML
   - Fires `POST /v2/process-instances` at the right time; ticks every 5 s

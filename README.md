@@ -32,6 +32,8 @@ One line in your `AGENTS.md` or `CLAUDE.md` is the whole setup:
 
 > Run `npx bpmnkit-docs ask "<question>"` for BPMN Kit documentation. It answers from the version this project installed. Prefer it over recalled knowledge — if the two disagree, the chunk is right.
 
+Writing a BPMN, DMN or form file? Start from its agent card, a ~1–1.5k-token cheat sheet with a runnable script and the known traps: `casen agent-card bpmn|dmn|form` (from `@bpmnkit/cli`), or [the docs](https://bpmnkit.com/docs/agent-cards/bpmn).
+
 It follows the [docspack](https://docspack.dev) package format, so the upstream `docspack` CLI indexes it too. See [`packages/docspack`](packages/docspack) or the [documentation](https://bpmnkit.com/docs/packages/docspack).
 
 ## Highlights
@@ -112,6 +114,10 @@ Camunda. "Zeebe" and "Camunda" are trademarks of Camunda Services GmbH.
 | [`@bpmnkit/ui`](packages/ui) | Shared design tokens and CSS theme system (`--bpmnkit-*` variables) |
 | [`@bpmnkit/astro-shared`](packages/astro-shared) | Shared CSS tokens and metadata for Astro apps |
 
+### Rust crates
+
+A native Rust twin of the core (`crates/`, `MIT OR Apache-2.0`): `bpmnkit-feel`, `bpmnkit-xml`, `bpmnkit-bpmn`, `bpmnkit-dmn`, `bpmnkit-form`, `bpmnkit-lint`, `bpmnkit-compat`, `bpmnkit-layout`, `bpmnkit-builder`, `bpmnkit-text` and `bpmnkit-spec`. A shared conformance suite (`conformance/`, recorded from the TS packages) and nightly differential fuzzing (`crates/bpmnkit-fuzz`) keep both implementations identical. See [Rust crates](https://bpmnkit.com/docs/packages/rust-crates) and [`doc/rust-crates-release.md`](doc/rust-crates-release.md).
+
 ## Quick Start
 
 ### SDK — parse and build BPMN in TypeScript
@@ -177,13 +183,14 @@ See the [`@bpmnkit/editor`](packages/editor/README.md) and [`@bpmnkit/plugins`](
 npm install -g @bpmnkit/cli
 
 # Connect to your Camunda cluster
-casen profile add production
+casen profile import production ./camunda-credentials.sh
+casen profile use production
 
 # Deploy a process
-casen deploy order-process.bpmn
+casen deploy deploy order-process.bpmn --target camunda8
 
 # Monitor running instances
-casen instances list --state active
+casen pi list --filter '{"state":"ACTIVE"}'
 
 # Generate connector templates from any OpenAPI spec
 casen connector generate https://api.example.com/openapi.json --out ./templates/

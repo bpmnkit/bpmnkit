@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "hitPolicy": "FIRST",
+      "id": "risk_score",
+      "inputs": [
+        {
+          "expression": "amount",
+          "id": "Input_1",
+          "label": "Amount",
+          "typeRef": "number"
+        },
+        {
+          "expression": "country",
+          "id": "InputClause_1jt5c6d",
+          "label": "Country",
+          "typeRef": "string"
+        }
+      ],
+      "name": "Risk score",
+      "outputs": [
+        {
+          "id": "Output_1",
+          "label": "Risk",
+          "name": "risk",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "id": "DecisionRule_0lqw1jd",
+          "inputs": [
+            "< 1000",
+            "\"DE\", \"AT\""
+          ],
+          "outputs": [
+            "\"low\""
+          ]
+        },
+        {
+          "id": "DecisionRule_1n5vqz8",
+          "inputs": [
+            ">= 1000",
+            ""
+          ],
+          "outputs": [
+            "\"high\""
+          ]
+        }
+      ]
+    }
+  ],
+  "id": "Definitions_0y9k2xh",
+  "inputData": [],
+  "name": "DRD"
+}

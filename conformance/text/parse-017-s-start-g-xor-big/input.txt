@@ -1,0 +1,3 @@
+s[start] > g[xor Big?]
+g >(Yes: size > 10) a[end]
+g >(No) b[end]

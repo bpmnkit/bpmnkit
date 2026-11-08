@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="Def_1" name="DRD" namespace="http://bpmn.io/schema/dmn">
+  <decision id="Dec_1" name="Test">
+    <decisionTable id="decisionTable_0000004">
+      <input id="In_1" label="input">
+        <inputExpression id="inputExpression_0000001" typeRef="string">
+          <text>myVar</text>
+        </inputExpression>
+      </input>
+      <output id="Out_1" label="output" name="result" typeRef="string"/>
+      <rule id="Rule_1">
+        <description>test rule</description>
+        <inputEntry id="inputEntry_0_0000002">
+          <text>"hello"</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000003">
+          <text>"world"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="Dec_1">
+        <dc:Bounds height="80" width="180" x="160" y="100"/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

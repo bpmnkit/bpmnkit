@@ -1,0 +1,63 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "COLLECT",
+        "id": "DecisionTable_1",
+        "inputs": [
+          {
+            "id": "Input_1",
+            "inputExpression": {
+              "id": "InputExpression_1",
+              "text": "amount",
+              "typeRef": "number"
+            },
+            "label": "amount"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "Output_1",
+            "name": "error",
+            "typeRef": "string"
+          }
+        ],
+        "rules": [
+          {
+            "id": "Rule_1",
+            "inputEntries": [
+              {
+                "id": "InputEntry_1",
+                "text": "< 0"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "OutputEntry_1",
+                "text": "\"Amount must be positive\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "validate-order",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Validate Order"
+    }
+  ],
+  "id": "Definitions_dmn",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "dmn",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/"
+  },
+  "textAnnotations": []
+}

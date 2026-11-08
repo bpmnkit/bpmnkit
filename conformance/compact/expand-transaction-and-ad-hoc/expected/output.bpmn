@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="D" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="P" isExecutable="true">
+    <bpmn:transaction id="tx">
+      <bpmn:outgoing>f</bpmn:outgoing>
+      <bpmn:startEvent id="ts">
+        <bpmn:outgoing>g</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:endEvent id="te">
+        <bpmn:incoming>g</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="g" sourceRef="ts" targetRef="te"/>
+    </bpmn:transaction>
+    <bpmn:adHocSubProcess id="ah" name="Agent">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="agent"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>f</bpmn:incoming>
+      <bpmn:serviceTask id="tool1">
+        <bpmn:documentation>tool a</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="a"/>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="tool2">
+        <bpmn:documentation>tool b</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="b"/>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+    </bpmn:adHocSubProcess>
+    <bpmn:sequenceFlow id="f" sourceRef="tx" targetRef="ah"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_P">
+    <bpmndi:BPMNPlane id="BPMNPlane_P" bpmnElement="P">
+      <bpmndi:BPMNShape id="tx_di" bpmnElement="tx" isExpanded="true">
+        <dc:Bounds x="0" y="0" width="232" height="136"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ah_di" bpmnElement="ah" isExpanded="true">
+        <dc:Bounds x="332" y="28" width="340" height="208"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ts_di" bpmnElement="ts">
+        <dc:Bounds x="50" y="50" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="te_di" bpmnElement="te">
+        <dc:Bounds x="146" y="50" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="tool1_di" bpmnElement="tool1">
+        <dc:Bounds x="382" y="106" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="tool2_di" bpmnElement="tool2">
+        <dc:Bounds x="522" y="106" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f_di" bpmnElement="f">
+        <di:waypoint x="232" y="68"/>
+        <di:waypoint x="332" y="68"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="g_di" bpmnElement="g">
+        <di:waypoint x="86" y="68"/>
+        <di:waypoint x="146" y="68"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

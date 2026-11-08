@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="defs" name="n" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/">
+<decision id="a" name="A"><informationRequirement><requiredDecision href="#b"/></informationRequirement><literalExpression><text>1</text></literalExpression></decision>
+<decision id="b" name="B"><informationRequirement><requiredDecision href="#c"/></informationRequirement><literalExpression><text>1</text></literalExpression></decision>
+<decision id="c" name="C"><informationRequirement><requiredDecision href="#a"/></informationRequirement><literalExpression><text>1</text></literalExpression></decision>
+<decision id="s" name="S"><informationRequirement><requiredDecision href="#s"/></informationRequirement><literalExpression><text>1</text></literalExpression></decision>
+<decision id="ok" name="OK"><informationRequirement><requiredDecision href="#a"/></informationRequirement><literalExpression><text>1</text></literalExpression></decision>
+</definitions>

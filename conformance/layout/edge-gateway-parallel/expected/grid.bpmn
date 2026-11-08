@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="P" isExecutable="true">
+    <bpmn:startEvent id="S" name="Start">
+      <bpmn:outgoing>f0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:parallelGateway id="Split">
+      <bpmn:incoming>f0</bpmn:incoming>
+      <bpmn:outgoing>a</bpmn:outgoing>
+      <bpmn:outgoing>b</bpmn:outgoing>
+      <bpmn:outgoing>c</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:task id="A" name="Branch A">
+      <bpmn:incoming>a</bpmn:incoming>
+      <bpmn:outgoing>ja</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="B" name="Branch B">
+      <bpmn:incoming>b</bpmn:incoming>
+      <bpmn:outgoing>bd</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="C" name="Branch C">
+      <bpmn:incoming>c</bpmn:incoming>
+      <bpmn:outgoing>jc</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="D" name="After B">
+      <bpmn:incoming>bd</bpmn:incoming>
+      <bpmn:outgoing>jd</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:parallelGateway id="Join">
+      <bpmn:incoming>ja</bpmn:incoming>
+      <bpmn:incoming>jd</bpmn:incoming>
+      <bpmn:incoming>jc</bpmn:incoming>
+      <bpmn:outgoing>fe</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:endEvent id="E" name="End">
+      <bpmn:incoming>fe</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f0" sourceRef="S" targetRef="Split"/>
+    <bpmn:sequenceFlow id="a" sourceRef="Split" targetRef="A"/>
+    <bpmn:sequenceFlow id="b" sourceRef="Split" targetRef="B"/>
+    <bpmn:sequenceFlow id="c" sourceRef="Split" targetRef="C"/>
+    <bpmn:sequenceFlow id="bd" sourceRef="B" targetRef="D"/>
+    <bpmn:sequenceFlow id="ja" sourceRef="A" targetRef="Join"/>
+    <bpmn:sequenceFlow id="jd" sourceRef="D" targetRef="Join"/>
+    <bpmn:sequenceFlow id="jc" sourceRef="C" targetRef="Join"/>
+    <bpmn:sequenceFlow id="fe" sourceRef="Join" targetRef="E"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="P">
+      <bpmndi:BPMNShape id="S_di" bpmnElement="S">
+        <dc:Bounds x="22" y="42" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="20" y="82" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Split_di" bpmnElement="Split">
+        <dc:Bounds x="165" y="35" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="A_di" bpmnElement="A">
+        <dc:Bounds x="290" y="20" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Join_di" bpmnElement="Join">
+        <dc:Bounds x="615" y="35" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_di" bpmnElement="E">
+        <dc:Bounds x="772" y="42" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="770" y="82" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="B_di" bpmnElement="B">
+        <dc:Bounds x="290" y="160" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="D_di" bpmnElement="D">
+        <dc:Bounds x="440" y="160" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="C_di" bpmnElement="C">
+        <dc:Bounds x="290" y="300" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f0_di" bpmnElement="f0">
+        <di:waypoint x="58" y="60"/>
+        <di:waypoint x="165" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="a_di" bpmnElement="a">
+        <di:waypoint x="215" y="60"/>
+        <di:waypoint x="290" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="b_di" bpmnElement="b">
+        <di:waypoint x="190" y="85"/>
+        <di:waypoint x="190" y="200"/>
+        <di:waypoint x="290" y="200"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="c_di" bpmnElement="c">
+        <di:waypoint x="190" y="85"/>
+        <di:waypoint x="190" y="340"/>
+        <di:waypoint x="290" y="340"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="bd_di" bpmnElement="bd">
+        <di:waypoint x="390" y="200"/>
+        <di:waypoint x="440" y="200"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="ja_di" bpmnElement="ja">
+        <di:waypoint x="390" y="60"/>
+        <di:waypoint x="615" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="jd_di" bpmnElement="jd">
+        <di:waypoint x="540" y="200"/>
+        <di:waypoint x="640" y="200"/>
+        <di:waypoint x="640" y="85"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="jc_di" bpmnElement="jc">
+        <di:waypoint x="390" y="340"/>
+        <di:waypoint x="640" y="340"/>
+        <di:waypoint x="640" y="85"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="fe_di" bpmnElement="fe">
+        <di:waypoint x="665" y="60"/>
+        <di:waypoint x="772" y="60"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

@@ -24,6 +24,14 @@ Required inputs:
   ...
 ```
 
+Large templates have dozens of inputs. `--filter <text>` keeps the ones whose key or label contains
+the text, and `--condensed` prints one line each (`key  type  default  required  when …`, the last
+part naming the condition that switches the property on):
+
+```sh
+casen connector show io.camunda.connectors.HttpJson.v2 --filter timeout --condensed
+```
+
 A field marked `(secret)` should be supplied as a `{{secrets.NAME}}` placeholder, never a literal
 credential. This is the same catalog `@bpmnkit/connectors`' `listConnectors()`/`searchConnectors()`
 expose programmatically.

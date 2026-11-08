@@ -1,0 +1,2 @@
+s[start] > t[service Work] > e[end]
+b[boundary:error Fail | on=t] > a[task Log] > c[user Fix] > e2[end Fixed]

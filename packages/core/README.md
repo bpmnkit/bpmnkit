@@ -1,3 +1,5 @@
+> **Agents:** read `node_modules/@bpmnkit/core/AGENTS.md`, then `node_modules/@bpmnkit/core/agent-cards/<bpmn|dmn|form>.md` (~1k tokens) instead of this README.
+
 <div align="center">
   <a href="https://bpmnkit.com"><img src="https://bpmnkit.com/favicon.svg" width="72" height="72" alt="BPMN Kit logo"></a>
   <h1>@bpmnkit/core</h1>

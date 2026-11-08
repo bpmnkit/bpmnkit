@@ -1,0 +1,21 @@
+{
+  "aliases": {
+    "application_canceled_due_to": "TerminateEvent_ApplicationCanceledFraud",
+    "application_issued": "EndEvent_ApplicationIssued",
+    "application_received": "StartEvent_ApplicationReceived",
+    "application_rejected": "EndEvent_ApplicationRejected",
+    "check_application_automatically": "BusinessRuleTask_CheckApplicationAutomatically",
+    "decision": "ExclusiveGateway_Decision",
+    "deliver_confirmation": "ServiceTask_DeliverPolicy",
+    "fraud_detected": "ErrorBoundaryEvent_FraudDetected",
+    "get_credit_score": "ServiceTask_GetCreditScore",
+    "manual_check": "Activity_ManualCheck",
+    "reject_application": "ServiceTask_RejectPolicy",
+    "report_fraud": "SendTask_ReportFraud",
+    "risk": "ExclusiveGateway_Risk",
+    "send_confirmation": "SendTask_SendPolicy",
+    "send_rejection": "SendTask_SendRejection",
+    "sub": "Activity_1ke2ixr",
+    "sub_2": "Activity_0vp33kx"
+  }
+}

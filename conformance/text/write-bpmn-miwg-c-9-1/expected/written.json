@@ -1,0 +1,14 @@
+{
+  "aliases": {
+    "answer_received": "EndEvent_TalkedToCustomer",
+    "boundary_1_week": "BoundaryEvent_2",
+    "call_customer": "UserTask_CallCustomer",
+    "daily": "BoundaryEvent_1",
+    "document_received": "EndEvent_GotDocument",
+    "document_requested": "StartEvent_DocumentRequested",
+    "email_sent": "EndEvent_ReminderSent",
+    "request_document": "SendTask_RequestDocument",
+    "send_reminder_email": "SendTask_SendReminderEmail",
+    "wait_for_answer": "ReceiveTask_WaitForDocument"
+  }
+}

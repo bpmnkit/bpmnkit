@@ -1,0 +1,49 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 2,
+      "message": "inside=agnet on \"t\": \"agnet\" is never declared; \"t\" has no flows, so it is left out"
+    },
+    {
+      "line": 2,
+      "message": "\"t\" is not connected to a start event; left out"
+    }
+  ],
+  "questions": [
+    {
+      "draft": "Put \"T\" after ",
+      "elementId": "t",
+      "options": [],
+      "text": "\"T\" was left out: nothing leads to it. Where does it belong?"
+    }
+  ]
+}

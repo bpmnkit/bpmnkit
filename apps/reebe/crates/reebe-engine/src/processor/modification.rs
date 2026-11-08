@@ -23,18 +23,18 @@
 //! process instance, which is then terminated. A process instance that a call
 //! activity started cannot be terminated this way.
 
-use std::collections::{HashMap, HashSet, VecDeque};
-use std::sync::Arc;
+use super::catch_event::{arm_boundary_events, arm_event_subprocesses};
+use super::{ad_hoc, multi_instance, scope};
+use super::{CommandToWrite, EventToWrite, RecordProcessor, Writers};
+use crate::engine::EngineState;
+use crate::error::{EngineError, EngineResult};
+use crate::key_gen::KeyGenerator;
 use async_trait::async_trait;
 use reebe_bpmn::{BpmnProcess, FlowElement, SequenceFlow, SubProcess};
 use reebe_db::records::DbRecord;
 use reebe_db::state::element_instances::ElementInstance;
-use crate::engine::EngineState;
-use crate::error::{EngineError, EngineResult};
-use crate::key_gen::KeyGenerator;
-use super::catch_event::{arm_boundary_events, arm_event_subprocesses};
-use super::{ad_hoc, multi_instance, scope};
-use super::{CommandToWrite, EventToWrite, RecordProcessor, Writers};
+use std::collections::{HashMap, HashSet, VecDeque};
+use std::sync::Arc;
 
 pub struct ProcessInstanceModificationProcessor;
 
@@ -100,7 +100,10 @@ fn variable_instructions(value: &serde_json::Value) -> Vec<VariableInstruction> 
         .collect()
 }
 
-fn list<'a>(payload: &'a serde_json::Value, name: &str) -> impl Iterator<Item = &'a serde_json::Value> {
+fn list<'a>(
+    payload: &'a serde_json::Value,
+    name: &str,
+) -> impl Iterator<Item = &'a serde_json::Value> {
     payload[name].as_array().into_iter().flatten()
 }
 
@@ -141,12 +144,17 @@ fn locate<'a>(
 
 /// The element, its Zeebe element type and its flow scopes (outermost first), or `None`
 /// when the process has no element or sequence flow with the id.
-fn find<'a>(process: &'a BpmnProcess, id: &str) -> Option<(Option<&'a FlowElement>, &'static str, Vec<&'a SubProcess>)> {
+fn find<'a>(
+    process: &'a BpmnProcess,
+    id: &str,
+) -> Option<(Option<&'a FlowElement>, &'static str, Vec<&'a SubProcess>)> {
     let mut path = Vec::new();
     let located = locate(&process.elements, &process.sequence_flows, id, &mut path)?;
     Some(match located {
         Located::Flow => (None, "SEQUENCE_FLOW", path),
-        Located::Element(el) if el.multi_instance().is_some() => (Some(el), multi_instance::BODY, path),
+        Located::Element(el) if el.multi_instance().is_some() => {
+            (Some(el), multi_instance::BODY, path)
+        }
         Located::Element(el) => (Some(el), el.bpmn_element_type(), path),
     })
 }
@@ -162,11 +170,19 @@ fn is_flow_scope_of(process: &BpmnProcess, element_id: &str, scope_id: &str) -> 
 
 /// A catch event (or receive task) that an event-based gateway leads to.
 fn after_event_based_gateway(process: &BpmnProcess, element: &FlowElement) -> bool {
-    if !matches!(element, FlowElement::IntermediateCatchEvent(_) | FlowElement::ReceiveTask(_)) {
+    if !matches!(
+        element,
+        FlowElement::IntermediateCatchEvent(_) | FlowElement::ReceiveTask(_)
+    ) {
         return false;
     }
     let mut path = Vec::new();
-    locate(&process.elements, &process.sequence_flows, element.id(), &mut path);
+    locate(
+        &process.elements,
+        &process.sequence_flows,
+        element.id(),
+        &mut path,
+    );
     let (elements, flows) = match path.last() {
         Some(sp) => (&sp.elements, &sp.sequence_flows),
         None => (&process.elements, &process.sequence_flows),
@@ -174,7 +190,12 @@ fn after_event_based_gateway(process: &BpmnProcess, element: &FlowElement) -> bo
     flows
         .iter()
         .filter(|f| f.target_ref == element.id())
-        .any(|f| matches!(elements.get(&f.source_ref), Some(FlowElement::EventBasedGateway(_))))
+        .any(|f| {
+            matches!(
+                elements.get(&f.source_ref),
+                Some(FlowElement::EventBasedGateway(_))
+            )
+        })
 }
 
 /// One level of the element instances an activated element is nested in.
@@ -202,15 +223,24 @@ fn levels(path: &[&SubProcess], target: Option<&FlowElement>) -> Vec<Level> {
     let mut levels = Vec::new();
     for (i, sp) in path.iter().enumerate() {
         if sp.multi_instance.is_some() {
-            levels.push(Level { element_id: sp.id.clone(), element_type: multi_instance::BODY });
+            levels.push(Level {
+                element_id: sp.id.clone(),
+                element_type: multi_instance::BODY,
+            });
         }
-        levels.push(Level { element_id: sp.id.clone(), element_type: sub_process_type(sp) });
+        levels.push(Level {
+            element_id: sp.id.clone(),
+            element_type: sub_process_type(sp),
+        });
         let child_is_event_sub_process = match path.get(i + 1) {
             Some(next) => next.triggered_by_event,
             None => matches!(target, Some(FlowElement::SubProcess(t)) if t.triggered_by_event),
         };
         if sp.ad_hoc && !child_is_event_sub_process {
-            levels.push(Level { element_id: sp.id.clone(), element_type: ad_hoc::INNER });
+            levels.push(Level {
+                element_id: sp.id.clone(),
+                element_type: ad_hoc::INNER,
+            });
         }
     }
     levels
@@ -234,7 +264,9 @@ impl Snapshot {
     }
 
     fn children(&self, key: i64) -> impl Iterator<Item = &ElementInstance> {
-        self.instances.iter().filter(move |ei| ei.flow_scope_key == Some(key))
+        self.instances
+            .iter()
+            .filter(move |ei| ei.flow_scope_key == Some(key))
     }
 
     /// Whether `ancestor` is a (direct or indirect) flow scope of `instance`.
@@ -252,8 +284,15 @@ impl Snapshot {
 
 /// How an activation reaches an instance of one level of its flow scopes.
 enum Step {
-    Reuse { level: Level, key: i64 },
-    Create { level: Level, key: i64, flow_scope_key: i64 },
+    Reuse {
+        level: Level,
+        key: i64,
+    },
+    Create {
+        level: Level,
+        key: i64,
+        flow_scope_key: i64,
+    },
 }
 
 struct PlannedActivation {
@@ -282,7 +321,13 @@ impl Context<'_> {
 
     /// Zeebe's `findReusableSubprocessInstanceKey`: the instance of `level` below
     /// `flow_scope_key` to reuse, or `None` to create one.
-    fn reusable(&self, snapshot: &Snapshot, level: &Level, flow_scope_key: i64, ancestor: i64) -> EngineResult<Option<i64>> {
+    fn reusable(
+        &self,
+        snapshot: &Snapshot,
+        level: &Level,
+        flow_scope_key: i64,
+        ancestor: i64,
+    ) -> EngineResult<Option<i64>> {
         let instances: Vec<&ElementInstance> = snapshot
             .children(flow_scope_key)
             .filter(|ei| ei.element_id == level.element_id && ei.element_type == level.element_type)
@@ -294,11 +339,18 @@ impl Context<'_> {
             [one] => Ok(Some(one.key)),
             _ if !selected => Err(self.multiple_flow_scope_instances(&level.element_id)),
             _ if instances.iter().any(|ei| ei.key == ancestor) => Ok(Some(ancestor)),
-            _ if instances.iter().any(|ei| snapshot.is_ancestor_of(ancestor, ei)) => Ok(None),
+            _ if instances
+                .iter()
+                .any(|ei| snapshot.is_ancestor_of(ancestor, ei)) =>
+            {
+                Ok(None)
+            }
             _ => {
-                let around = snapshot
-                    .get(ancestor)
-                    .and_then(|selected| instances.iter().find(|ei| snapshot.is_ancestor_of(ei.key, selected)));
+                let around = snapshot.get(ancestor).and_then(|selected| {
+                    instances
+                        .iter()
+                        .find(|ei| snapshot.is_ancestor_of(ei.key, selected))
+                });
                 match around {
                     Some(ei) => Ok(Some(ei.key)),
                     None => Err(self.multiple_flow_scope_instances(&level.element_id)),
@@ -311,7 +363,10 @@ impl Context<'_> {
     /// of the element, adding the ones to create to `snapshot`.
     fn plan(&self, snapshot: &mut Snapshot, activate: Activate) -> EngineResult<PlannedActivation> {
         let Some((target, _, path)) = find(self.process, &activate.element_id) else {
-            return Err(EngineError::Internal(format!("Element {} disappeared", activate.element_id)));
+            return Err(EngineError::Internal(format!(
+                "Element {} disappeared",
+                activate.element_id
+            )));
         };
         let levels = levels(&path, target);
         let mut steps = Vec::new();
@@ -319,7 +374,10 @@ impl Context<'_> {
         for (i, level) in levels.iter().enumerate() {
             match self.reusable(snapshot, level, flow_scope_key, activate.ancestor)? {
                 Some(key) => {
-                    steps.push(Step::Reuse { level: level.clone(), key });
+                    steps.push(Step::Reuse {
+                        level: level.clone(),
+                        key,
+                    });
                     flow_scope_key = key;
                 }
                 None => {
@@ -344,18 +402,32 @@ impl Context<'_> {
                         incident_key: None,
                         ..self.process_ei.clone()
                     });
-                    steps.push(Step::Create { level: level.clone(), key, flow_scope_key });
+                    steps.push(Step::Create {
+                        level: level.clone(),
+                        key,
+                        flow_scope_key,
+                    });
                     flow_scope_key = key;
                 }
             }
         }
-        Ok(PlannedActivation { element_id: activate.element_id, steps, flow_scope_key, variables: activate.variables })
+        Ok(PlannedActivation {
+            element_id: activate.element_id,
+            steps,
+            flow_scope_key,
+            variables: activate.variables,
+        })
     }
 }
 
 /// Zeebe's `determineAncestorScopeKey` for a move instruction whose source element
 /// instance has the flow scope `source_parent`.
-fn move_ancestor(ctx: &Context<'_>, snapshot: &Snapshot, instruction: &Move, source_parent: i64) -> i64 {
+fn move_ancestor(
+    ctx: &Context<'_>,
+    snapshot: &Snapshot,
+    instruction: &Move,
+    source_parent: i64,
+) -> i64 {
     if instruction.source_parent_as_ancestor {
         return source_parent;
     }
@@ -364,7 +436,9 @@ fn move_ancestor(ctx: &Context<'_>, snapshot: &Snapshot, instruction: &Move, sou
     }
     // Zeebe's `findProperAncestorScopeKeyForTarget`: the nearest instance around the
     // source of an element around the target.
-    let Some((_, _, path)) = find(ctx.process, &instruction.target_id) else { return source_parent };
+    let Some((_, _, path)) = find(ctx.process, &instruction.target_id) else {
+        return source_parent;
+    };
     let Some(direct) = path.last() else { return -1 };
     let parent = snapshot.get(source_parent);
     if parent.is_some_and(|p| p.element_id == direct.id) {
@@ -388,23 +462,43 @@ impl RecordProcessor for ProcessInstanceModificationProcessor {
         value_type == "PROCESS_INSTANCE_MODIFICATION" && intent == "MODIFY"
     }
 
-    async fn process(&self, record: &DbRecord, state: &EngineState, writers: &mut Writers) -> EngineResult<()> {
+    async fn process(
+        &self,
+        record: &DbRecord,
+        state: &EngineState,
+        writers: &mut Writers,
+    ) -> EngineResult<()> {
         let payload = &record.payload;
         let pik = key_of(&payload["processInstanceKey"]);
-        let not_found = || EngineError::NotFound(format!(
+        let not_found = || {
+            EngineError::NotFound(format!(
             "Expected to modify process instance but no process instance found with key '{pik}'"
-        ));
+        ))
+        };
         let pi = match state.backend.get_process_instance_by_key(pik).await {
             Ok(pi) if pi.state == "ACTIVE" => pi,
             _ => return Err(not_found()),
         };
-        let all = state.backend.get_element_instances_by_process_instance(pik).await?;
+        let all = state
+            .backend
+            .get_element_instances_by_process_instance(pik)
+            .await?;
         let mut active: Vec<ElementInstance> = all.into_iter().filter(is_active).collect();
         active.sort_by_key(|ei| ei.key);
-        let process_ei = active.iter().find(|ei| ei.element_type == "PROCESS").cloned().ok_or_else(not_found)?;
-        let process = super::throw_event::load_process(state, pi.process_definition_key, &pi.bpmn_process_id).await?;
+        let process_ei = active
+            .iter()
+            .find(|ei| ei.element_type == "PROCESS")
+            .cloned()
+            .ok_or_else(not_found)?;
+        let process =
+            super::throw_event::load_process(state, pi.process_definition_key, &pi.bpmn_process_id)
+                .await?;
         let pid = pi.bpmn_process_id.as_str();
-        let ctx = Context { process: &process, process_ei: &process_ei, bpmn_process_id: pid };
+        let ctx = Context {
+            process: &process,
+            process_ei: &process_ei,
+            bpmn_process_id: pid,
+        };
         // The process instance key names the process's element instance.
         let norm = |key: i64| if key == pik { process_ei.key } else { key };
 
@@ -416,7 +510,10 @@ impl RecordProcessor for ProcessInstanceModificationProcessor {
             })
             .collect();
         let terminate_input: Vec<Terminate> = list(payload, "terminateInstructions")
-            .map(|t| Terminate { key: norm(key_of(&t["elementInstanceKey"])), element_id: text_of(&t["elementId"]) })
+            .map(|t| Terminate {
+                key: norm(key_of(&t["elementInstanceKey"])),
+                element_id: text_of(&t["elementId"]),
+            })
             .collect();
         let moves: Vec<Move> = list(payload, "moveInstructions")
             .map(|m| Move {
@@ -425,14 +522,18 @@ impl RecordProcessor for ProcessInstanceModificationProcessor {
                 target_id: text_of(&m["targetElementId"]),
                 ancestor: norm(key_of(&m["ancestorScopeKey"])),
                 infer_ancestor: m["inferAncestorScopeFromSourceHierarchy"].as_bool() == Some(true),
-                source_parent_as_ancestor: m["useSourceParentKeyAsAncestorScopeKey"].as_bool() == Some(true),
+                source_parent_as_ancestor: m["useSourceParentKeyAsAncestorScopeKey"].as_bool()
+                    == Some(true),
                 variables: variable_instructions(&m["variableInstructions"]),
             })
             .collect();
 
         validate_command(pid, &terminate_input, &moves)?;
 
-        let mut snapshot = Snapshot { instances: active, next_virtual: -1 };
+        let mut snapshot = Snapshot {
+            instances: active,
+            next_virtual: -1,
+        };
         let mut terminates: Vec<Terminate> = Vec::new();
 
         // Move instructions by source element instance key.
@@ -441,7 +542,11 @@ impl RecordProcessor for ProcessInstanceModificationProcessor {
         let mut foreign = Vec::new();
         let mut sources = HashMap::new();
         for m in &by_key {
-            match state.backend.get_element_instance_by_key(m.source_key).await {
+            match state
+                .backend
+                .get_element_instance_by_key(m.source_key)
+                .await
+            {
                 Ok(ei) if is_active(&ei) => {
                     if ei.process_instance_key != pik && !foreign.contains(&m.source_key) {
                         foreign.push(m.source_key);
@@ -452,7 +557,12 @@ impl RecordProcessor for ProcessInstanceModificationProcessor {
                 _ => {}
             }
         }
-        let keys = |keys: &[i64]| keys.iter().map(i64::to_string).collect::<Vec<_>>().join("', '");
+        let keys = |keys: &[i64]| {
+            keys.iter()
+                .map(i64::to_string)
+                .collect::<Vec<_>>()
+                .join("', '")
+        };
         if !missing.is_empty() {
             return Err(invalid(format!(
                 "Expected to modify instance of process '{pid}' but it contains one or more move instructions \
@@ -475,13 +585,19 @@ impl RecordProcessor for ProcessInstanceModificationProcessor {
                 ancestor: move_ancestor(&ctx, &snapshot, m, parent),
                 variables: copy_variables(&m.variables),
             });
-            terminates.push(Terminate { key: m.source_key, element_id: source.element_id.clone() });
+            terminates.push(Terminate {
+                key: m.source_key,
+                element_id: source.element_id.clone(),
+            });
         }
 
         // Move instructions by source element id and terminate instructions: each
         // active element instance with the id, not inside one already terminated.
-        let moves_by_id: HashMap<&str, &Move> =
-            moves.iter().filter(|m| !m.source_id.trim().is_empty()).map(|m| (m.source_id.as_str(), m)).collect();
+        let moves_by_id: HashMap<&str, &Move> = moves
+            .iter()
+            .filter(|m| !m.source_id.trim().is_empty())
+            .map(|m| (m.source_id.as_str(), m))
+            .collect();
         let mut terminate_ids = HashSet::new();
         let mut terminate_keys = HashSet::new();
         for t in terminate_input {
@@ -493,7 +609,8 @@ impl RecordProcessor for ProcessInstanceModificationProcessor {
             }
         }
         if !moves_by_id.is_empty() || !terminate_ids.is_empty() {
-            let mut queue: VecDeque<ElementInstance> = snapshot.children(process_ei.key).cloned().collect();
+            let mut queue: VecDeque<ElementInstance> =
+                snapshot.children(process_ei.key).cloned().collect();
             while let Some(ei) = queue.pop_front() {
                 let mut terminated = false;
                 if let Some(m) = moves_by_id.get(ei.element_id.as_str()) {
@@ -503,11 +620,17 @@ impl RecordProcessor for ProcessInstanceModificationProcessor {
                         ancestor: move_ancestor(&ctx, &snapshot, m, parent),
                         variables: copy_variables(&m.variables),
                     });
-                    terminates.push(Terminate { key: ei.key, element_id: String::new() });
+                    terminates.push(Terminate {
+                        key: ei.key,
+                        element_id: String::new(),
+                    });
                     terminated = true;
                 }
                 if !terminated && terminate_ids.contains(&ei.element_id) {
-                    terminates.push(Terminate { key: ei.key, element_id: String::new() });
+                    terminates.push(Terminate {
+                        key: ei.key,
+                        element_id: String::new(),
+                    });
                     terminated = true;
                 }
                 if !terminated && !terminate_keys.contains(&ei.key) {
@@ -527,25 +650,50 @@ impl RecordProcessor for ProcessInstanceModificationProcessor {
         // The flow scope instances the activations run in, the process's included.
         let required: HashSet<i64> = planned
             .iter()
-            .flat_map(|p| p.steps.iter().map(|s| match s { Step::Reuse { key, .. } | Step::Create { key, .. } => *key }))
+            .flat_map(|p| {
+                p.steps.iter().map(|s| match s {
+                    Step::Reuse { key, .. } | Step::Create { key, .. } => *key,
+                })
+            })
             .chain(planned.first().map(|_| process_ei.key))
             .collect();
-        let doomed = plan_terminations(state, record.position, &ctx, &pi, &snapshot, &terminates, &required).await?;
+        let doomed = plan_terminations(
+            state,
+            record.position,
+            &ctx,
+            &pi,
+            &snapshot,
+            &terminates,
+            &required,
+        )
+        .await?;
 
         // Activate.
         let key_gen = KeyGenerator::new(Arc::clone(&state.backend), state.partition_id);
         let mut real_keys: HashMap<i64, i64> = HashMap::new();
-        let real = |key: i64, real_keys: &HashMap<i64, i64>| real_keys.get(&key).copied().unwrap_or(key);
+        let real =
+            |key: i64, real_keys: &HashMap<i64, i64>| real_keys.get(&key).copied().unwrap_or(key);
         for activation in &planned {
             set_variables(state, &pi, &activation.variables, pid, pik).await?;
             for step in &activation.steps {
                 match step {
                     Step::Reuse { level, key } => {
                         if level.element_type != ad_hoc::INNER {
-                            set_variables(state, &pi, &activation.variables, &level.element_id, *key).await?;
+                            set_variables(
+                                state,
+                                &pi,
+                                &activation.variables,
+                                &level.element_id,
+                                *key,
+                            )
+                            .await?;
                         }
                     }
-                    Step::Create { level, key, flow_scope_key } => {
+                    Step::Create {
+                        level,
+                        key,
+                        flow_scope_key,
+                    } => {
                         let created = ElementInstance {
                             key: key_gen.next_key().await?,
                             element_id: level.element_id.clone(),
@@ -555,14 +703,28 @@ impl RecordProcessor for ProcessInstanceModificationProcessor {
                             incident_key: None,
                             ..process_ei.clone()
                         };
-                        let created = ElementInstance { scope_key: Some(created.key), ..created };
+                        let created = ElementInstance {
+                            scope_key: Some(created.key),
+                            ..created
+                        };
                         real_keys.insert(*key, created.key);
                         state.backend.insert_element_instance(&created).await?;
-                        writers.events.push(element_event(&created, "ELEMENT_ACTIVATING"));
+                        writers
+                            .events
+                            .push(element_event(&created, "ELEMENT_ACTIVATING"));
                         if level.element_type != ad_hoc::INNER {
-                            set_variables(state, &pi, &activation.variables, &level.element_id, created.key).await?;
+                            set_variables(
+                                state,
+                                &pi,
+                                &activation.variables,
+                                &level.element_id,
+                                created.key,
+                            )
+                            .await?;
                         }
-                        writers.events.push(element_event(&created, "ELEMENT_ACTIVATED"));
+                        writers
+                            .events
+                            .push(element_event(&created, "ELEMENT_ACTIVATED"));
                         if level.element_type != ad_hoc::INNER {
                             arm_boundary_events(state, writers, &process, &created).await?;
                             arm_event_subprocesses(state, writers, &process, &created).await?;
@@ -595,18 +757,24 @@ impl RecordProcessor for ProcessInstanceModificationProcessor {
         // Terminate, each with what runs inside it, and resolve the incidents of what
         // was terminated.
         for key in &doomed {
-            let Ok(ei) = state.backend.get_element_instance_by_key(*key).await else { continue };
+            let Ok(ei) = state.backend.get_element_instance_by_key(*key).await else {
+                continue;
+            };
             if !is_active(&ei) {
                 continue;
             }
             super::throw_event::terminate_subtree(state, writers, &ei).await?;
             if ei.element_type == "PROCESS" {
-                state.backend.update_process_instance_state(pik, "TERMINATED", Some(state.clock.now())).await?;
+                state
+                    .backend
+                    .update_process_instance_state(pik, "TERMINATED", Some(state.clock.now()))
+                    .await?;
                 super::start_event::instance_ended(state, writers, pik).await?;
             }
         }
         for incident in state.backend.get_incidents_by_process_instance(pik).await? {
-            let ended = state.backend
+            let ended = state
+                .backend
                 .get_element_instance_by_key(incident.element_instance_key)
                 .await
                 .is_ok_and(|ei| ei.state == "TERMINATED");
@@ -644,7 +812,10 @@ impl RecordProcessor for ProcessInstanceModificationProcessor {
 fn copy_variables(variables: &[VariableInstruction]) -> Vec<VariableInstruction> {
     variables
         .iter()
-        .map(|vi| VariableInstruction { scope_id: vi.scope_id.clone(), variables: vi.variables.clone() })
+        .map(|vi| VariableInstruction {
+            scope_id: vi.scope_id.clone(),
+            variables: vi.variables.clone(),
+        })
         .collect()
 }
 
@@ -658,7 +829,10 @@ async fn set_variables(
     scope_key: i64,
 ) -> EngineResult<()> {
     let for_process = element_id == pi.bpmn_process_id;
-    for vi in instructions.iter().filter(|vi| vi.scope_id == element_id || (vi.scope_id.is_empty() && for_process)) {
+    for vi in instructions
+        .iter()
+        .filter(|vi| vi.scope_id == element_id || (vi.scope_id.is_empty() && for_process))
+    {
         for (name, value) in &vi.variables {
             scope::set_local(state, pi.key, scope_key, name, value.clone(), &pi.tenant_id).await?;
         }
@@ -713,9 +887,15 @@ fn validate_command(pid: &str, terminates: &[Terminate], moves: &[Move]) -> Engi
     }
     let incomplete: Vec<String> = moves
         .iter()
-        .filter(|m| (m.source_key <= 0 && m.source_id.trim().is_empty()) || m.target_id.trim().is_empty())
+        .filter(|m| {
+            (m.source_key <= 0 && m.source_id.trim().is_empty()) || m.target_id.trim().is_empty()
+        })
         .map(|m| {
-            let source = if m.source_id.trim().is_empty() && m.source_key > 0 { m.source_key.to_string() } else { m.source_id.clone() };
+            let source = if m.source_id.trim().is_empty() && m.source_key > 0 {
+                m.source_key.to_string()
+            } else {
+                m.source_id.clone()
+            };
             format!("({source}, {})", m.target_id)
         })
         .collect();
@@ -754,9 +934,23 @@ fn validate_command(pid: &str, terminates: &[Terminate], moves: &[Move]) -> Engi
     }
     let ambiguous: Vec<String> = moves
         .iter()
-        .filter(|m| [m.ancestor > 0, m.infer_ancestor, m.source_parent_as_ancestor].iter().filter(|b| **b).count() > 1)
+        .filter(|m| {
+            [
+                m.ancestor > 0,
+                m.infer_ancestor,
+                m.source_parent_as_ancestor,
+            ]
+            .iter()
+            .filter(|b| **b)
+            .count()
+                > 1
+        })
         .map(|m| {
-            let source = if m.source_id.trim().is_empty() { m.source_key.to_string() } else { m.source_id.clone() };
+            let source = if m.source_id.trim().is_empty() {
+                m.source_key.to_string()
+            } else {
+                m.source_id.clone()
+            };
             format!("({source}, {})", m.target_id)
         })
         .collect();
@@ -791,7 +985,12 @@ async fn validate_instructions(
 ) -> EngineResult<()> {
     let pid = ctx.bpmn_process_id;
     let process = ctx.process;
-    let unknown = distinct(activates.iter().map(|a| a.element_id.clone()).filter(|id| find(process, id).is_none()));
+    let unknown = distinct(
+        activates
+            .iter()
+            .map(|a| a.element_id.clone())
+            .filter(|id| find(process, id).is_none()),
+    );
     if !unknown.is_empty() {
         return Err(invalid(format!(
             "Expected to modify instance of process '{pid}' but it contains one or more activate instructions \
@@ -809,13 +1008,18 @@ async fn validate_instructions(
     let ids = distinct(activates.iter().map(|a| a.element_id.clone()));
     let after_gateway: Vec<String> = ids
         .iter()
-        .filter(|id| find(process, id).is_some_and(|(el, _, _)| el.is_some_and(|el| after_event_based_gateway(process, el))))
+        .filter(|id| {
+            find(process, id).is_some_and(|(el, _, _)| {
+                el.is_some_and(|el| after_event_based_gateway(process, el))
+            })
+        })
         .cloned()
         .collect();
     if !after_gateway.is_empty() {
         return Err(unsupported(
             after_gateway,
-            "The activation of events belonging to an event-based gateway is not supported".to_string(),
+            "The activation of events belonging to an event-based gateway is not supported"
+                .to_string(),
         ));
     }
     let typed: Vec<(String, &'static str)> = ids
@@ -844,7 +1048,10 @@ async fn validate_instructions(
         }
     }
     if !missing.is_empty() {
-        let shown: Vec<String> = missing.iter().map(|k| if *k == ctx.process_ei.key { pik } else { *k }.to_string()).collect();
+        let shown: Vec<String> = missing
+            .iter()
+            .map(|k| if *k == ctx.process_ei.key { pik } else { *k }.to_string())
+            .collect();
         return Err(invalid(format!(
             "Expected to modify instance of process '{pid}' but it contains one or more terminate instructions \
              with an element instance that could not be found: '{}'",
@@ -867,7 +1074,9 @@ async fn validate_instructions(
     }
     let outside = activates.iter().any(|a| {
         a.variables.iter().any(|vi| {
-            !vi.scope_id.is_empty() && vi.scope_id != a.element_id && !is_flow_scope_of(process, &a.element_id, &vi.scope_id)
+            !vi.scope_id.is_empty()
+                && vi.scope_id != a.element_id
+                && !is_flow_scope_of(process, &a.element_id, &vi.scope_id)
         })
     });
     if outside {
@@ -882,15 +1091,25 @@ async fn validate_instructions(
     let shown = |key: i64| if key == ctx.process_ei.key { pik } else { key };
     let mut ancestors: HashMap<i64, Option<ElementInstance>> = HashMap::new();
     for a in activates.iter().filter(|a| a.ancestor > 0) {
-        if !ancestors.contains_key(&a.ancestor) {
-            ancestors.insert(a.ancestor, state.backend.get_element_instance_by_key(a.ancestor).await.ok());
+        if let std::collections::hash_map::Entry::Vacant(e) = ancestors.entry(a.ancestor) {
+            e.insert(
+                state
+                    .backend
+                    .get_element_instance_by_key(a.ancestor)
+                    .await
+                    .ok(),
+            );
         }
     }
     let inactive = distinct(
         activates
             .iter()
             .filter(|a| a.ancestor > 0)
-            .filter(|a| !ancestors[&a.ancestor].as_ref().is_some_and(|ei| ei.state == "ACTIVATED"))
+            .filter(|a| {
+                !ancestors[&a.ancestor]
+                    .as_ref()
+                    .is_some_and(|ei| ei.state == "ACTIVATED")
+            })
             .map(|a| shown(a.ancestor).to_string()),
     );
     if !inactive.is_empty() {
@@ -923,7 +1142,9 @@ async fn validate_instructions(
         .map(|(a, ei)| {
             format!(
                 "\n- instance '{}' of element '{}' is not an ancestor of element '{}'",
-                shown(a.ancestor), ei.element_id, a.element_id,
+                shown(a.ancestor),
+                ei.element_id,
+                a.element_id,
             )
         })
         .collect();
@@ -947,7 +1168,8 @@ async fn validate_instructions(
             if conflict {
                 conflicts.push(format!(
                     "element '{}' requires flow scope instance '{}' which is being terminated",
-                    a.element_id, shown(ei.key),
+                    a.element_id,
+                    shown(ei.key),
                 ));
             }
         }
@@ -1000,14 +1222,22 @@ async fn plan_terminations(
         doomed.push(ei.key);
         let mut current = ei.flow_scope_key;
         while let Some(scope_key) = current {
-            let Some(scope) = snapshot.get(scope_key) else { break };
+            let Some(scope) = snapshot.get(scope_key) else {
+                break;
+            };
             if gone.contains(&scope_key) || required.contains(&scope_key) {
                 break;
             }
             let busy = snapshot.children(scope_key).any(|c| !gone.contains(&c.key))
                 || join_tokens.iter().any(|j| j.flow_scope_key == scope_key)
-                || state.backend
-                    .has_pending_activation(state.partition_id, position, "flowScopeKey", &scope_key.to_string())
+                || state
+                    .backend
+                    .has_pending_activation(
+                        state.partition_id,
+                        position,
+                        "flowScopeKey",
+                        &scope_key.to_string(),
+                    )
                     .await?;
             if busy {
                 break;

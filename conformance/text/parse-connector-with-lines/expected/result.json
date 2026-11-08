@@ -1,0 +1,84 @@
+{
+  "connectors": [
+    {
+      "alias": "slack",
+      "args": [
+        "chat.postMessage"
+      ],
+      "elementId": "p",
+      "id": "p",
+      "line": 2,
+      "values": {
+        "data.channel": "#ops",
+        "data.text": "= \"Order \" + orderId"
+      }
+    },
+    {
+      "alias": "http",
+      "args": [
+        "GET",
+        "https://api.example.com/orders"
+      ],
+      "elementId": "h",
+      "id": "h",
+      "line": 3,
+      "values": {
+        "result": "order"
+      }
+    }
+  ],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "p",
+            "jobType": "p",
+            "name": "Post to Slack",
+            "type": "serviceTask"
+          },
+          {
+            "id": "h",
+            "jobType": "h",
+            "name": "Fetch",
+            "type": "serviceTask"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "p"
+          },
+          {
+            "from": "p",
+            "id": "Flow_2",
+            "to": "h"
+          },
+          {
+            "from": "h",
+            "id": "Flow_3",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

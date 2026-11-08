@@ -1,12 +1,12 @@
-use std::sync::Arc;
-use async_trait::async_trait;
-use reebe_db::records::DbRecord;
-use reebe_db::state::messages::Message;
+use super::catch_event::{trigger, CatchRef, Triggered};
+use super::{CommandToWrite, EventToWrite, RecordProcessor, Writers};
 use crate::engine::EngineState;
 use crate::error::{EngineError, EngineResult};
 use crate::key_gen::KeyGenerator;
-use super::catch_event::{trigger, CatchRef, Triggered};
-use super::{CommandToWrite, EventToWrite, RecordProcessor, Writers};
+use async_trait::async_trait;
+use reebe_db::records::DbRecord;
+use reebe_db::state::messages::Message;
+use std::sync::Arc;
 
 pub struct MessageProcessor;
 
@@ -45,18 +45,12 @@ impl MessageProcessor {
         let tenant_id = record.tenant_id.clone();
 
         let msg_key = key_gen.next_key().await?;
-        let name = payload["messageName"]
-            .as_str()
-            .unwrap_or("")
-            .to_string();
-        let correlation_key = payload["correlationKey"]
-            .as_str()
-            .unwrap_or("")
-            .to_string();
-        let ttl_ms = payload["timeToLive"]
-            .as_i64()
-            .unwrap_or(3600000); // 1 hour default
-        let variables = payload.get("variables").cloned()
+        let name = payload["messageName"].as_str().unwrap_or("").to_string();
+        let correlation_key = payload["correlationKey"].as_str().unwrap_or("").to_string();
+        let ttl_ms = payload["timeToLive"].as_i64().unwrap_or(3600000); // 1 hour default
+        let variables = payload
+            .get("variables")
+            .cloned()
             .unwrap_or_else(|| serde_json::Value::Object(Default::default()));
         let expires_at = state.clock.now() + chrono::Duration::milliseconds(ttl_ms);
 
@@ -86,7 +80,8 @@ impl MessageProcessor {
         });
 
         // Check for waiting subscriptions
-        let subs = state.backend
+        let subs = state
+            .backend
             .get_message_subscriptions_by_correlation(&name, &correlation_key, &tenant_id)
             .await
             .unwrap_or_default();
@@ -141,7 +136,10 @@ impl MessageProcessor {
             .ok_or_else(|| EngineError::InvalidState("Missing elementInstanceKey".to_string()))?;
 
         let message_name = payload["messageName"].as_str().unwrap_or("");
-        let variables = payload.get("variables").cloned().unwrap_or(serde_json::Value::Null);
+        let variables = payload
+            .get("variables")
+            .cloned()
+            .unwrap_or(serde_json::Value::Null);
         // The subscription's owner is the waiting catch event or receive task, an
         // activity with a message boundary event, or an event-based gateway.
         let outcome = trigger(
@@ -158,7 +156,10 @@ impl MessageProcessor {
         }
         // A non-interrupting boundary event keeps its subscription open.
         if outcome == Triggered::Done {
-            state.backend.update_message_subscription_state(sub_key, "CORRELATED").await?;
+            state
+                .backend
+                .update_message_subscription_state(sub_key, "CORRELATED")
+                .await?;
         }
 
         writers.events.push(EventToWrite {

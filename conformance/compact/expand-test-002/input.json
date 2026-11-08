@@ -1,0 +1,40 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "id": "Process_1",
+      "elements": [
+        {
+          "id": "start",
+          "type": "startEvent"
+        },
+        {
+          "id": "call",
+          "type": "serviceTask",
+          "jobType": "io.camunda:http-json:1",
+          "inputs": {
+            "url": "https://api.example.com",
+            "method": "GET"
+          },
+          "resultVariable": "order"
+        },
+        {
+          "id": "end",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f1",
+          "from": "start",
+          "to": "call"
+        },
+        {
+          "id": "f2",
+          "from": "call",
+          "to": "end"
+        }
+      ]
+    }
+  ]
+}

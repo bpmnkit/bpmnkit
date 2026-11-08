@@ -1,0 +1,91 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "p",
+            "type": "parallelGateway"
+          },
+          {
+            "eventType": "message",
+            "id": "w",
+            "name": "Report received",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "decisionId": "d",
+            "id": "d",
+            "name": "Check credit",
+            "type": "businessRuleTask"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "id": "h",
+            "name": "Review report",
+            "type": "userTask"
+          },
+          {
+            "id": "e_join",
+            "type": "parallelGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "p"
+          },
+          {
+            "from": "p",
+            "id": "Flow_2",
+            "to": "w"
+          },
+          {
+            "from": "w",
+            "id": "Flow_3",
+            "to": "d"
+          },
+          {
+            "from": "d",
+            "id": "Flow_4",
+            "to": "e_join"
+          },
+          {
+            "from": "p",
+            "id": "Flow_5",
+            "to": "h"
+          },
+          {
+            "from": "h",
+            "id": "Flow_6",
+            "to": "e_join"
+          },
+          {
+            "from": "e_join",
+            "id": "Flow_7",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "joined 2 flows into \"e\" with and gateway \"e_join\"",
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

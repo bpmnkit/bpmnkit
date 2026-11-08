@@ -1,0 +1,103 @@
+{
+  "findings": [
+    {
+      "category": "flow",
+      "elementIds": [
+        "gw1"
+      ],
+      "fixable": true,
+      "id": "flow/redundant-gateway",
+      "message": "Gateway \"gw1\" (exclusiveGateway) has only 1 incoming and 1 outgoing flow — it is redundant.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Remove this gateway and connect its source directly to its target."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "s"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"s\" has no name.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "e"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"e\" has no name.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "gw1"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-single-outgoing",
+      "message": "Exclusive gateway \"gw1\" has only one outgoing flow and is a pass-through.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Remove this gateway and connect its source directly to its target."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "s"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"s\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"proc\" is not marked executable.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    }
+  ],
+  "fixes": [
+    {
+      "description": "Removed redundant gateway \"gw1\" and connected \"s\" → \"e\"",
+      "id": "flow/redundant-gateway",
+      "index": 0,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"proc\">\n    <bpmn:startEvent id=\"s\">\n      <bpmn:outgoing>Flow_0000001</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:endEvent id=\"e\">\n      <bpmn:incoming>Flow_0000001</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000001\" sourceRef=\"s\" targetRef=\"e\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    }
+  ],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 1,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 1,
+      "naming": 2,
+      "pattern": 2,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 1,
+      "info": 3,
+      "warning": 2
+    },
+    "total": 6
+  }
+}

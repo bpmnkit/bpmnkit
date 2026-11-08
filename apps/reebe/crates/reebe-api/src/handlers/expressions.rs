@@ -1,9 +1,9 @@
+use crate::app::ApiState;
+use crate::error::{ApiError, ApiResult};
 use axum::extract::State;
 use axum::response::IntoResponse;
 use axum::Json;
 use serde::Deserialize;
-use crate::app::ApiState;
-use crate::error::{ApiError, ApiResult};
 
 #[derive(Debug, Deserialize)]
 #[serde(rename_all = "camelCase")]

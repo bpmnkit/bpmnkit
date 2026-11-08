@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["restConnector","call",{"name":"Fetch","method":"GET","url":"https://api.example.com/x"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

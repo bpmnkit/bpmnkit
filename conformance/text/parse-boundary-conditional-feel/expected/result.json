@@ -1,0 +1,83 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "condition": "= stock < 5",
+            "eventType": "conditional",
+            "id": "s",
+            "name": "Stock low",
+            "type": "startEvent"
+          },
+          {
+            "id": "t",
+            "name": "Work",
+            "type": "task"
+          },
+          {
+            "condition": "= if then",
+            "eventType": "conditional",
+            "id": "w",
+            "name": "Ready",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "t",
+            "condition": "= order.cancelled = true",
+            "eventType": "conditional",
+            "id": "b",
+            "interrupting": false,
+            "name": "Cancelled",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "x",
+            "name": "X",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "w"
+          },
+          {
+            "from": "w",
+            "id": "Flow_3",
+            "to": "e"
+          },
+          {
+            "from": "b",
+            "id": "Flow_4",
+            "to": "x"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "feel= on \"w\" is not FEEL; kept for the reader to correct"
+    }
+  ],
+  "questions": []
+}

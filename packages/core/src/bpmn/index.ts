@@ -1,8 +1,10 @@
+import { ValidationError } from "../errors.js"
 import { applyAutoLayout } from "./auto-layout.js"
 import { DiagramBuilder, ProcessBuilder } from "./bpmn-builder.js"
 import type { BpmnDefinitions } from "./bpmn-model.js"
 import { parseBpmn } from "./bpmn-parser.js"
 import { serializeBpmn } from "./bpmn-serializer.js"
+import { lintDiagram } from "./lint.js"
 
 /** A minimal 3-element BPMN diagram useful for first-launch or "New Diagram" defaults. */
 export const SAMPLE_BPMN_XML = `<?xml version="1.0" encoding="UTF-8"?>
@@ -69,7 +71,15 @@ export const SAMPLE_BPMN_XML = `<?xml version="1.0" encoding="UTF-8"?>
  *
  * const xml2 = Bpmn.export(defs2)
  * ```
+ *
+ * @see node_modules/@bpmnkit/core/agent-cards/bpmn.md — runnable script and traps (~1k tokens)
  */
+/** Options for {@link Bpmn.export}. */
+export interface ExportOptions {
+	/** Lint before writing: `"warn"` logs deploy errors, `"error"` throws; `false` (default) skips. */
+	validate?: "warn" | "error" | false
+}
+
 export const Bpmn = {
 	/**
 	 * Create a new BPMN process using the fluent builder API.
@@ -156,6 +166,7 @@ export const Bpmn = {
 	 * Serialise a {@link BpmnDefinitions} model back to BPMN 2.0 XML.
 	 *
 	 * @param definitions - The typed BPMN model to export.
+	 * @param options - `validate: "warn" | "error"` lints first and reports what a deploy would reject (default `false`: no lint).
 	 * @returns A BPMN 2.0 XML string.
 	 *
 	 * @example
@@ -164,7 +175,21 @@ export const Bpmn = {
 	 * fs.writeFileSync("diagram.bpmn", xml, "utf-8")
 	 * ```
 	 */
-	export(definitions: BpmnDefinitions): string {
+	export(definitions: BpmnDefinitions, options: ExportOptions = {}): string {
+		const mode = options.validate ?? false
+		if (mode !== false) {
+			// Only the errors a Camunda 8 deploy would reject; an engine-neutral model is not judged.
+			const errors = lintDiagram(definitions).diagnostics.filter((d) => d.severity === "error")
+			if (errors.length > 0) {
+				const text = errors
+					.map((d) => `${d.id} [${d.elementIds.join(", ")}]: ${d.message} Fix: ${d.suggestion}`)
+					.join("\n")
+				if (mode === "error") {
+					throw new ValidationError(`Bpmn.export: ${errors.length} deploy error(s):\n${text}`)
+				}
+				console.warn(`Bpmn.export: ${errors.length} deploy error(s):\n${text}`)
+			}
+		}
 		return serializeBpmn(definitions)
 	},
 

@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/compat-tasks/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}
