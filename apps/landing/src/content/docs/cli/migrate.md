@@ -36,6 +36,28 @@ order.bpmn → order.c8.bpmn
 The groups come in order of work: `unsupported` (Camunda 8 has no equivalent), `manual`
 (Camunda 8 has one, but a person must write or check it), `convertible` (done).
 
+## A model Camunda 8 would refuse
+
+The converted model must deploy. When Zeebe would reject it, nothing is written, the report is
+still printed, and the reasons come first:
+
+```
+order.bpmn
+  ✖ Not deployable on Camunda 8.10: 2 error(s)
+    - Message_PaymentConfirmed: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)
+    - Task_summary: Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element (zeebe/script-task-implementation)
+    Nothing written. Pass --placeholders to fill placeholder values (reported as manual
+    work to replace), or --no-validate to write the model as it is.
+  19 convertible · 8 manual · 2 unsupported
+  …
+```
+
+The command exits 1 with `1 of 1 file would not deploy on Camunda 8 — pass --placeholders or
+--no-validate`. With `--placeholders`, each value the conversion could not derive (a job type,
+a correlation key) gets a placeholder such as `placeholder-Task_summary`, listed under `MANUAL`
+as `placeholder jobType`; replace it before going live. In JSON, a refused file has
+`"refused": true`, the `error`, and the `counts` and `findings` of the report.
+
 ## Where the output goes
 
 - By default, each `name.bpmn` is written to `name.c8.bpmn` beside it. The Camunda 7 file is
@@ -56,6 +78,8 @@ Camunda 7 file shows only what the migration changed.
 | `--check` | off | Report only. Write nothing, and exit 1 if any `manual` or `unsupported` finding remains |
 | `--format` | `text` | `text` or `json` |
 | `--force` | off | Overwrite converted files that already exist |
+| `--placeholders` | off | Fill placeholder values the conversion cannot derive, instead of refusing the model |
+| `--no-validate` | validate | Write the converted model even when Camunda 8 would not deploy it |
 
 Put the flags after the file names: `casen migrate c7 models/*.bpmn --check`.
 

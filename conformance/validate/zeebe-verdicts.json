@@ -8912,8 +8912,1504 @@
 				}
 			]
 		},
+		"conformance/migrate/bpmn-artifacts-7to8/expected/default.bpmn": {
+			"sha256": "56d61f4a0e7ddf53ccf04935135fccea99e29e6beebebb603072e2598e668341",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/bpmn-artifacts-7to8/expected/v8-2.bpmn": {
+			"sha256": "c048da46f669941bae0e68305cdad3c8fd83737e515c71cc84717f5f389dc8d3",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/bpmn-artifacts-8to7/expected/default.bpmn": {
+			"sha256": "53d4c2d02e1de10b5101181e55488d3b74f4a21fdaa16437839b2c901c027816",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/bpmn-bakeoff-expected-8to7/expected/default.bpmn": {
+			"sha256": "f7885a66389b1d831bc86a61214c312386eedc83712700085d27f252c387863b",
+			"ok": false,
+			"errors": [
+				{
+					"element": "FetchSafeJoke",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "ListSampleTechnologyProducts",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "SearchRecipes",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "LookupSampleUsers",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-bpmnlint-scopes-and-exemptions-8to7/expected/default.bpmn": {
+			"sha256": "a0f88c112b6b44bffad237a3728572054da0990e6459cd8549ed6111e97d9b15",
+			"ok": false,
+			"errors": [
+				{
+					"element": "sub_catch",
+					"message": "Intermediate timer catch event must have either a time duration or a time date."
+				},
+				{
+					"element": "timer_def",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				},
+				{
+					"element": "f_x2",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "sf9",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "tx",
+					"message": "Elements of type 'Transaction' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
+				},
+				{
+					"element": "f_x1",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "f_plain",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "proc",
+					"message": "Multiple none start events are not allowed"
+				},
+				{
+					"element": "evt_msg_def",
+					"message": "Must reference a message"
+				},
+				{
+					"element": "sub_timer_def",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-c7-claim-handling/expected/placeholders-8-6.bpmn": {
+			"sha256": "7c855ae29b9694c4d1c412fc4519dc233336be1a54ecfe55853e7ab8ed2cbe4a",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/bpmn-c7-claim-handling/expected/placeholders.bpmn": {
+			"sha256": "7c855ae29b9694c4d1c412fc4519dc233336be1a54ecfe55853e7ab8ed2cbe4a",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/bpmn-c7-claim-handling/expected/to-c7-roundtrip.bpmn": {
+			"sha256": "78542181d91bdd7a0c4802b4896996cd79b283f96b951f1e3dd7d8da3049f610",
+			"ok": false,
+			"errors": [
+				{
+					"element": "SubProcess_items > multiInstanceLoopCharacteristics",
+					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
+				},
+				{
+					"element": "Task_price",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_payout",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_fraudCheck",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "EndEvent_paid",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-c7-invoice-approval/expected/default.bpmn": {
+			"sha256": "e53df3b655ccd80571f7d8d9c647fe5f5c7863db726ab81117286f8391854adb",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/bpmn-c7-invoice-approval/expected/to-c7-roundtrip.bpmn": {
+			"sha256": "57154c5e6bddda32cc7893b1a4c97d2c541a55df1f3b75774eea410f21159268",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Task_total",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Flow_no > conditionExpression",
+					"message": "Expected expression but found static value '${approved == false}'. An expression must start with '=' (e.g. '=${approved == false}')."
+				},
+				{
+					"element": "Task_archive",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_classify",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Flow_yes > conditionExpression",
+					"message": "Expected expression but found static value '${approved == true}'. An expression must start with '=' (e.g. '=${approved == true}')."
+				},
+				{
+					"element": "Task_book",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-c7-invoice-approval/expected/v8-6.bpmn": {
+			"sha256": "7bb9bc19cca1dd1aa1948393b5a6749dd274018728fa8569d870417a1fc97b87",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/bpmn-camunda-compat-agents-8to7/expected/default.bpmn": {
+			"sha256": "e676f514027bd2654170bd46cb32f643681ed5707149c1265366c526a8dbc3cc",
+			"ok": false,
+			"errors": [
+				{
+					"element": "definedTool",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "agents",
+					"message": "Must have at least one start event"
+				},
+				{
+					"element": "legacyTool",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "toolSubStep",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "toolCasing",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "branchB",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "toolNoResult",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "chainA",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "chainC",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "forkedTool",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "outsideTool",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "chainB",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "plainTool",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "branchA",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "branch",
+					"message": "Conditional sequence flows are only supported at exclusive or inclusive gateway"
+				},
+				{
+					"element": "branch",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "toolOutputFromAi",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "toolUnmapped",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "toolBoundary",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "toolDuplicateKey",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "toolGood",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-camunda7-order-fulfillment/expected/placeholders.bpmn": {
+			"sha256": "f6d333ab1e336454ba59f41afec801c3f04bfaa0ae4c5ab37826a557703a6428",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/bpmn-camunda7-order-fulfillment/expected/to-c7-roundtrip.bpmn": {
+			"sha256": "0c3f01d210de73f57a7cac0e2e8cb325a40364fc0502f08e826317af19c62fde",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Task_shippingCost",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_charge",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_escalate",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_ship",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Timer_wait",
+					"message": "Invalid timer duration expression (Invalid duration format '${deliveryWindow}' for expression '${deliveryWindow}'.)"
+				},
+				{
+					"element": "Flow_approved > conditionExpression",
+					"message": "Expected expression but found static value '${approved && order.total <= 1000}'. An expression must start with '=' (e.g. '=${approved && order.total <= 1000}')."
+				},
+				{
+					"element": "Task_summary",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_notify",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Message_PaymentConfirmed",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "Flow_vip > conditionExpression",
+					"message": "Expected expression but found static value '${approved and order.customer.vip eq true}'. An expression must start with '=' (e.g. '=${approved and order.customer.vip eq true}')."
+				},
+				{
+					"element": "Task_invoice",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-collaboration-7to8/expected/default.bpmn": {
+			"sha256": "2309aa845f77439f7c55e92c058e77551d2652f0ae1c037c6403708819b56f64",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/bpmn-collaboration-7to8/expected/v8-2.bpmn": {
+			"sha256": "5233fc8ce4bdf715d51eb9fbd30c76400448e8a4eb1c46c83aa1492fa5d36f26",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/bpmn-collaboration-8to7/expected/default.bpmn": {
+			"sha256": "7eca65d0dce027bd2c8dd3144f56e14055e6e38876570718bae66ac1bcc3365b",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Task_place_order",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-compat-contents-8to7/expected/default.bpmn": {
+			"sha256": "f08a9dd9eef9cf79cb2994fb5690ca76e2274e9c9d7deb87d6e887188c998449",
+			"ok": false,
+			"errors": [
+				{
+					"element": "badResult",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Msg_webhook",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "Msg_secret",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "secretsTask",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "feelShadowed",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "contents",
+					"message": "Multiple intermediate catch link event definitions with the same name 'L' are not allowed."
+				},
+				{
+					"element": "feelNew",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "recursiveCall",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				},
+				{
+					"element": "badDecisionResult",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "waitsService",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "secretQuoted",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "secretFine",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "secretList",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "secretLiteral",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "linkScope",
+					"message": "Must have exactly one start event"
+				},
+				{
+					"element": "linkNoNameDef",
+					"message": "Link name must be present and not empty."
+				},
+				{
+					"element": "secretIfContext",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "secretProperty",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "badVars",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-compat-events-8to7/expected/default.bpmn": {
+			"sha256": "1c3a6cc9cdeb73f7bcee974599642b29f549fa4f1f445154d37641b6812a65b4",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Msg_noname",
+					"message": "Name must be present and not empty"
+				},
+				{
+					"element": "Msg_noname",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "work",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Sig_noname",
+					"message": "Name must be present and not empty"
+				},
+				{
+					"element": "E3",
+					"message": "Must reference an error"
+				},
+				{
+					"element": "T3",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				},
+				{
+					"element": "E2",
+					"message": "The errorCode of the error catch event is not allowed to be an expression"
+				},
+				{
+					"element": "X2",
+					"message": "Must reference an escalation"
+				},
+				{
+					"element": "events",
+					"message": "Multiple none start events are not allowed"
+				},
+				{
+					"element": "catchNoTimer",
+					"message": "Intermediate timer catch event must have either a time duration or a time date."
+				},
+				{
+					"element": "E4",
+					"message": "ErrorCode must be present and not empty"
+				},
+				{
+					"element": "throwMessage",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "boundaryCycle",
+					"message": "Interrupting timer event with time cycle is not allowed."
+				},
+				{
+					"element": "Msg_nokey",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "Esc_nocode",
+					"message": "EscalationCode must be present and not empty"
+				},
+				{
+					"element": "catchBadDuration",
+					"message": "Invalid timer duration expression (Invalid duration format '5 minutes' for expression '5 minutes'.)"
+				},
+				{
+					"element": "catchCycle",
+					"message": "Intermediate timer catch event must have either a time duration or a time date."
+				},
+				{
+					"element": "Msg_ok",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "eventSub",
+					"message": "Interrupting timer event with time cycle is not allowed."
+				},
+				{
+					"element": "throwCompensation",
+					"message": "A compensation intermediate throwing event waitForCompletion attribute must be true or not present"
+				},
+				{
+					"element": "M1",
+					"message": "Must reference a message"
+				},
+				{
+					"element": "boundaryCompensation",
+					"message": "Compensation boundary events must have a compensation association and no outgoing sequence flows"
+				},
+				{
+					"element": "boundaryEscalation",
+					"message": "An escalation boundary event should only be attached to a subprocess, or a call activity."
+				},
+				{
+					"element": "S3",
+					"message": "Must reference a signal"
+				},
+				{
+					"element": "throwMessageTyped",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-compat-tasks-8to7/expected/default.bpmn": {
+			"sha256": "4be45e6fd177f04b94f4586af8e62f9c0ea36152391d12cb2623cf5a98c9a5ce",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Msg_ok",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "brtTagExpr",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "complex",
+					"message": "Elements of type 'ComplexGateway' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
+				},
+				{
+					"element": "sendNoType",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "noType",
+					"message": "Conditional sequence flows are only supported at exclusive or inclusive gateway"
+				},
+				{
+					"element": "noType",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "brtBinding",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "scriptFeel",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "multi > multiInstanceLoopCharacteristics > extensionElements > loopCharacteristics",
+					"message": "Expected expression but not found."
+				},
+				{
+					"element": "tx",
+					"message": "Elements of type 'Transaction' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
+				},
+				{
+					"element": "multiNoZeebe",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "emptyType",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "multi",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "multiNoZeebe > multiInstanceLoopCharacteristics",
+					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
+				},
+				{
+					"element": "callNoProcess",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				},
+				{
+					"element": "scriptNone",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "receiveNoRef",
+					"message": "Must reference a message"
+				},
+				{
+					"element": "flowNoCondition",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "headers",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "adHocEventSub",
+					"message": "An interrupting event subprocess is not allowed inside an ad-hoc subprocess"
+				},
+				{
+					"element": "eventGateway",
+					"message": "Event-based gateway must have at least 2 outgoing sequence flows."
+				},
+				{
+					"element": "eventGateway",
+					"message": "Event-based gateway must not have an outgoing sequence flow to other elements than message/timer/signal/conditional intermediate catch events."
+				},
+				{
+					"element": "callOptions",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				},
+				{
+					"element": "brtNoResult",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-compensation-subprocess-8to7/expected/default.bpmn": {
+			"sha256": "12491811358a5c0e27fc26db2114b0e0b81eac498fd65cd61f5466acd49fd2c0",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Evt",
+					"message": "Must have exactly one start event"
+				},
+				{
+					"element": "Process_1",
+					"message": "Must have at least one start event"
+				},
+				{
+					"element": "Plain",
+					"message": "Must have exactly one start event"
+				},
+				{
+					"element": "Adhoc",
+					"message": "Must have at least one activity."
+				},
+				{
+					"element": "Tx",
+					"message": "Elements of type 'Transaction' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
+				},
+				{
+					"element": "Tx",
+					"message": "Must have exactly one start event"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-data-elements-7to8/expected/placeholders.bpmn": {
+			"sha256": "22eabcdbc24c8db0a5ba41d05fc3e37a72e5d9e4a9da2bc144c90b3c77cce3c8",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/bpmn-data-elements-8to7/expected/default.bpmn": {
+			"sha256": "852f759e29f8e7ea915f7e1e1000aee81f995a79a7ab26376a5fabacb34e45f9",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Task_post",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-engine-ad-hoc-tools-8to7/expected/default.bpmn": {
+			"sha256": "52e21b0aa463664345788114f1c5cda8b28ab27d56d7e6ae95506deeb39d3ec5",
+			"ok": false,
+			"errors": [
+				{
+					"element": "T1",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "T2",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-engine-testing-8to7/expected/default.bpmn": {
+			"sha256": "a0142e73f1e2ab9b16bcc7abdabd940a6923c7d929c49a6a15c1a8af47130c56",
+			"ok": false,
+			"errors": [
+				{
+					"element": "fetch_weather",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "escalate",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "ship",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "payment",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Msg_Confirm",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-eval-04-extend-add-timer-boundary-8to7/expected/default.bpmn": {
+			"sha256": "d8c7bcae48f31ad1232dc2883e784b32b7c95fcb1e1cba3f19ebbfa9178ab7bf",
+			"ok": false,
+			"errors": [
+				{
+					"element": "ship_order",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "validate_order",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "process_payment",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-events-and-containers-7to8/expected/default.bpmn": {
+			"sha256": "0deec32489fb6d4180fa887c9cda5dc6240d312040de2651a2a6ee85bdb68d70",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/bpmn-events-and-containers-7to8/expected/v8-2.bpmn": {
+			"sha256": "4ad4996834dcc5f0f627bf54d5dea0a569bf2d59b64baa43cad748b2075db20b",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/bpmn-events-and-containers-8to7/expected/default.bpmn": {
+			"sha256": "468c34fc8ae38af9da9b55507a68ac8e09b452357d7ceadd05ddbc77fc9c3c0a",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/bpmn-is-executable-absent-8to7/expected/default.bpmn": {
+			"sha256": "406ec227611684eaeff91dc1f33d8507e4e514962827535dbc74e93777594690",
+			"ok": false,
+			"errors": [
+				{
+					"element": "definitions",
+					"message": "Must contain at least one executable process"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-is-executable-false-8to7/expected/default.bpmn": {
+			"sha256": "8f790e9fff78bbebc726cdcd6950bc94b3e6d9885d660405cd32be6396c61beb",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/bpmn-layout-kyc-onboarding-8to7/expected/default.bpmn": {
+			"sha256": "8d03c9cf9f11abda11be25616cd4f7bc7b7893fe6a185e971482a0ed29cbf5dc",
+			"ok": false,
+			"errors": [
+				{
+					"element": "escalateToCompliance",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "sendVerificationRejection",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "screening",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "verifyDocument",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "standardDueDiligence",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "activateAccount",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "riskClassification",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "incrementRetry",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "sendFinalRejection",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-layout-kyc-risk-classification-8to7/expected/default.bpmn": {
+			"sha256": "f0652cee2dc65ed29a829a73d8f5d0c6966fe6ddfa47a50e45aee759fcd9bbba",
+			"ok": false,
+			"errors": [
+				{
+					"element": "standardDueDiligence",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "finalRiskClassification",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "activateAccount",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "verifyDocument",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "sendKycRejection",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "escalateToCompliance",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "incrementRetry",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "sendVerificationRejection",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "sanctionsScreening",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-layout-kyc-verification-8to7/expected/default.bpmn": {
+			"sha256": "d146307fa84cb71bade3b9b81005607a806a57c0c8249f10bb6d532734e573bd",
+			"ok": false,
+			"errors": [
+				{
+					"element": "verifyDocument",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "finalRiskClassification",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "notifyRejection",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "standardDueDiligence",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "sanctionsScreening",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "notifyApproval",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-layout-loan-prescreening-8to7/expected/default.bpmn": {
+			"sha256": "63759cdcfa6ce77e321dec14fc5dc5a2ef8452dbd66ce9256c5562aaa002044e",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Task_RiskScoring",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_CreditScoreCheck",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-layout-quote-to-cash-8to7/expected/default.bpmn": {
+			"sha256": "6afe4c7d2cd72dc6fe8ef2290bbf530be91d12bd06deff9c00e8765ef9e90ed3",
+			"ok": false,
+			"errors": [
+				{
+					"element": "provisionBundle > multiInstanceLoopCharacteristics",
+					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
+				},
+				{
+					"element": "sendForSignature",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "provisionLine",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "paymentOutcome",
+					"message": "Event-based gateway must not have an outgoing sequence flow to other elements than message/timer/signal/conditional intermediate catch events."
+				},
+				{
+					"element": "timerReminder1",
+					"message": "Must have exactly one event definition"
+				},
+				{
+					"element": "generateInvoice",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "generateQuote",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "generateContract",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "processPayment",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Message_VgqDdPrJ",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "collectionsAgency",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "provisionStandard",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "paymentConfirmed",
+					"message": "Must have exactly one event definition"
+				},
+				{
+					"element": "sendReminder1",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "paymentWindowElapsed",
+					"message": "Must have exactly one event definition"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-a-1-0-8to7/expected/default.bpmn": {
+			"sha256": "ffb47d5623cc64ef88675154f25ec21acb7833e7fe9314c47c358e370d1ac1ee",
+			"ok": false,
+			"errors": [
+				{
+					"element": "definitions",
+					"message": "Must contain at least one executable process"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-a-2-0-8to7/expected/default.bpmn": {
+			"sha256": "0154813390f7220753263db4f48b4fe2ef17cc3ddf069d371a66a76994fb5ddf",
+			"ok": false,
+			"errors": [
+				{
+					"element": "definitions",
+					"message": "Must contain at least one executable process"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-a-2-1-8to7/expected/default.bpmn": {
+			"sha256": "d0f4458c5ff82824a6576309796f233d6992ae6bf38277846be5e4ee729ec0d9",
+			"ok": false,
+			"errors": [
+				{
+					"element": "definitions",
+					"message": "Must contain at least one executable process"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-a-3-0-8to7/expected/default.bpmn": {
+			"sha256": "ee882116f4e7aa2a2166326d022b91971e2fad12765054b87eadc31e8257781a",
+			"ok": false,
+			"errors": [
+				{
+					"element": "definitions",
+					"message": "Must contain at least one executable process"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-a-4-0-8to7/expected/default.bpmn": {
+			"sha256": "b7a25f928bccc20e9698553882291a6154c7752640f5ae78dab437f5879bd070",
+			"ok": false,
+			"errors": [
+				{
+					"element": "definitions",
+					"message": "Must contain at least one executable process"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-a-4-1-8to7/expected/default.bpmn": {
+			"sha256": "ede029dd57afe37b4d8990bb257b37814332d28673de0dab8229a1a4643e0e9e",
+			"ok": false,
+			"errors": [
+				{
+					"element": "definitions",
+					"message": "Must contain at least one executable process"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-b-1-0-8to7/expected/default.bpmn": {
+			"sha256": "cb93552c26053b29846114d4ad2dea51d5f39f857c0874cf2b0142e7c801ff1d",
+			"ok": false,
+			"errors": [
+				{
+					"element": "definitions",
+					"message": "Must contain at least one executable process"
+				},
+				{
+					"element": "Message_1373655174959",
+					"message": "Name must be present and not empty"
+				},
+				{
+					"element": "Message_1373655174960",
+					"message": "Name must be present and not empty"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-b-2-0-8to7/expected/default.bpmn": {
+			"sha256": "a193a394c7bcbfb9aa00b5e64a071dc6f3eefb984335f00a3498084b1952fb41",
+			"ok": false,
+			"errors": [
+				{
+					"element": "definitions",
+					"message": "Must contain at least one executable process"
+				},
+				{
+					"element": "Message_1373638080955",
+					"message": "Name must be present and not empty"
+				},
+				{
+					"element": "Message_1373638080954",
+					"message": "Name must be present and not empty"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-c-1-0-7to8/expected/placeholders.bpmn": {
+			"sha256": "1f851dbd1c5f45f262e33a18c5d0581adeca2a834a303de54b1c860e3c9b671f",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/bpmn-miwg-c-1-0-8to7/expected/default.bpmn": {
+			"sha256": "109e148decdc8224f40feb988e47f86f9f4390eaccb826ae353ff10be3a27306",
+			"ok": false,
+			"errors": [
+				{
+					"element": "archiveInvoice",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "sid-628a2fdc-7654-4273-930d-8e3127b9e8b2",
+					"message": "Expected expression but found static value '${clarified == 'no'}'. An expression must start with '=' (e.g. '=${clarified == 'no'}')."
+				},
+				{
+					"element": "sid-e669aead-8bad-4dbb-b282-e9f811e02f77",
+					"message": "Expected expression but found static value '${clarified == 'yes'}'. An expression must start with '=' (e.g. '=${clarified == 'yes'}')."
+				},
+				{
+					"element": "sid-0ed8a0cb-f28a-4689-bbd8-77dafd0ccfa0",
+					"message": "Expected expression but found static value '${approved}'. An expression must start with '=' (e.g. '=${approved}')."
+				},
+				{
+					"element": "sid-d4f3f0f7-79c3-4b1c-817e-13d9bdd96666",
+					"message": "Expected expression but found static value '${!approved}'. An expression must start with '=' (e.g. '=${!approved}')."
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-c-1-1-8to7/expected/default.bpmn": {
+			"sha256": "1bf857ac62f816c0d122e56e0e0e6a69e870c27ea8ce4b9093ac30649cfab463",
+			"ok": false,
+			"errors": [
+				{
+					"element": "sid-0ed8a0cb-f28a-4689-bbd8-77dafd0ccfa0",
+					"message": "Expected expression but found static value 'bpmn:getDataObject('approved')'. An expression must start with '=' (e.g. '=bpmn:getDataObject('approved')')."
+				},
+				{
+					"element": "archiveInvoice",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "sid-e669aead-8bad-4dbb-b282-e9f811e02f77",
+					"message": "Expected expression but found static value 'bpmn:getDataObject('clarified') = 'yes''. An expression must start with '=' (e.g. '=bpmn:getDataObject('clarified') = 'yes'')."
+				},
+				{
+					"element": "sid-d4f3f0f7-79c3-4b1c-817e-13d9bdd96666",
+					"message": "Expected expression but found static value 'not(bpmn:getDataObject('approved'))'. An expression must start with '=' (e.g. '=not(bpmn:getDataObject('approved'))')."
+				},
+				{
+					"element": "sid-628a2fdc-7654-4273-930d-8e3127b9e8b2",
+					"message": "Expected expression but found static value 'bpmn:getDataObject('clarified') = 'no''. An expression must start with '=' (e.g. '=bpmn:getDataObject('clarified') = 'no'')."
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-c-10-0-8to7/expected/default.bpmn": {
+			"sha256": "ff310dac2017cecefd0622ef5b65387b74d0f88cf2332d686aa90e6c58952894",
+			"ok": false,
+			"errors": [
+				{
+					"element": "definitions",
+					"message": "Must contain at least one executable process"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-c-2-0-8to7/expected/default.bpmn": {
+			"sha256": "217725b49865ac191d5ba06c2b59b055a3a61945c10823e3c1a8dcd096db7007",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Message_1404332496323",
+					"message": "Name must be present and not empty"
+				},
+				{
+					"element": "Message_1404332496319",
+					"message": "Name must be present and not empty"
+				},
+				{
+					"element": "Message_1404332496321",
+					"message": "Name must be present and not empty"
+				},
+				{
+					"element": "Message_1404332496320",
+					"message": "Name must be present and not empty"
+				},
+				{
+					"element": "definitions",
+					"message": "Must contain at least one executable process"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-c-3-0-8to7/expected/default.bpmn": {
+			"sha256": "15e203f504e2e5ee6044f0b3488c0d17eee7d52c4501b68f7832c36a0f7edc5f",
+			"ok": false,
+			"errors": [
+				{
+					"element": "_3fb323d5-2c59-487a-af63-804208f6c5cb",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_b99800c3-c340-460c-a43e-098014a365d0",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_437e5969-1e61-4cb9-aa76-4f8854f32eeb",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_cd6f230f-13c3-4027-aa3e-57de601a1ab2",
+					"message": "Must have exactly one start event"
+				},
+				{
+					"element": "_cddf9325-a85b-4347-8c57-8b909fa77ae9",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_ada039b6-94dd-4a15-a6b1-c7fe662c64ee",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_cf380e47-1401-4e7e-b710-193b626e49eb",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_6840c92f-f02c-46b3-9565-f5e5b1792ba0",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "Bpmn_FormalExpression_ipW2kBqIEeWDuOtG0oS24A",
+					"message": "Expected expression but found static value 'Service Level == 'Premium''. An expression must start with '=' (e.g. '=Service Level == 'Premium'')."
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-c-4-0-8to7/expected/default.bpmn": {
+			"sha256": "bd031956694105e1053ccf898bbdcf35f4bc2253671b5ea7159501caa2844580",
+			"ok": false,
+			"errors": [
+				{
+					"element": "definitions",
+					"message": "Must contain at least one executable process"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-c-5-0-8to7/expected/default.bpmn": {
+			"sha256": "56a1c5e9e66f4273acbcdec2c5e8284cbc15c3f40b2c6218f2f1c63f58c8f2b7",
+			"ok": false,
+			"errors": [
+				{
+					"element": "definitions",
+					"message": "Must contain at least one executable process"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-c-6-0-8to7/expected/default.bpmn": {
+			"sha256": "fbb5cd6873c0ae6280e34716ce98d753272ca34d473392e77935df52d801e2eb",
+			"ok": false,
+			"errors": [
+				{
+					"element": "definitions",
+					"message": "Must contain at least one executable process"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-c-7-0-8to7/expected/default.bpmn": {
+			"sha256": "7f16ebe9671b95f588cbfbe7f6aaf6e23af8a135ae7da1063b4ce223b1ffb669",
+			"ok": false,
+			"errors": [
+				{
+					"element": "definitions",
+					"message": "Must contain at least one executable process"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-c-8-0-8to7/expected/default.bpmn": {
+			"sha256": "6f464c05d49b350cbab29b032d0782a6ffbb2bb0a526c93e7a1e55bfaee5922f",
+			"ok": false,
+			"errors": [
+				{
+					"element": "definitions",
+					"message": "Must contain at least one executable process"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-c-8-1-8to7/expected/default.bpmn": {
+			"sha256": "c05aac466d2206d656938b8f53c6f1e5d944d646e9d9ac303016f95c72d8b9c6",
+			"ok": false,
+			"errors": [
+				{
+					"element": "_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_4b72053b-8ebb-4ae6-99c6-7c93cf1c1d1b",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_2b960d84-feb1-46a9-a1a1-c300dd996b99",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_93ec9873-edf1-4549-b052-961994ec8234",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_325973e7-0bc8-4136-b6df-be1e681d8608 > conditionExpression",
+					"message": "Expected expression but found static value 'Vacation Approval = \"Approved\"'. An expression must start with '=' (e.g. '=Vacation Approval = \"Approved\"')."
+				},
+				{
+					"element": "_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_f2b0da63-d841-4457-ad85-7d86c8b5c1d2 > conditionExpression",
+					"message": "Expected expression but found static value 'Vacation Approval = \"Approved\"'. An expression must start with '=' (e.g. '=Vacation Approval = \"Approved\"')."
+				},
+				{
+					"element": "_02232e32-c3d2-473c-a15d-9c5dca00eadc",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_a97c1a48-faba-447b-bfa6-7aa81a6fe0a0",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_5e16a4e0-0f23-482a-be47-d3edbc5741ba",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_0a1c4f20-509f-4aeb-baf9-acc762f4fdf9 > conditionExpression",
+					"message": "Expected expression but found static value 'Vacation Approval = \"Manual Validation Required\"'. An expression must start with '=' (e.g. '=Vacation Approval = \"Manual Validation Required\"')."
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-c-9-0-8to7/expected/default.bpmn": {
+			"sha256": "3d7f6f390e60a5424d37fb7715c11191738ef95b7fd981f1e7e69a4e20b133a6",
+			"ok": false,
+			"errors": [
+				{
+					"element": "EndMessageEvent_InformOperations",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Message_0dm6uaq",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "SendTask_SendPolicy",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Activity_ManualCheck",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				},
+				{
+					"element": "EndMessageEvent_InformCustomer",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "ServiceTask_DeliverPolicy",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "SendTask_ReportFraud",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "ServiceTask_RejectPolicy",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "ServiceTask_CancelApplication",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "BusinessRuleTask_CheckApplicationAutomatically",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "EndMessageEvent_Timeout",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "SendTask_SendRejection",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "ServiceTask_GetCreditScore",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-c-9-1-8to7/expected/default.bpmn": {
+			"sha256": "cb8a7e7c7fe0b872abffdf1d52e506b50ad0c18a1a254bf321ff47491732458c",
+			"ok": false,
+			"errors": [
+				{
+					"element": "SendTask_SendReminderEmail",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Message_1",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "SendTask_RequestDocument",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-miwg-c-9-2-8to7/expected/default.bpmn": {
+			"sha256": "c0726f79493e39886c1ba9a8d6de5f2415b36c0d6e70ba3ce31bbec9d34c44a2",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Message_0fvpzfg",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "SendTask_NotifyCustomerDelay",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Message_10rm6h0",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "CallActivity_RequestDocument",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-root-elements-8to7/expected/default.bpmn": {
+			"sha256": "aa12fe7eb9f18e8ffb605b78732b95f331490b02abf358c36c1fdd1b659c8fd6",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=3: cvc-complex-type.2.4.a: Invalid content was found starting with element '{\"http://www.omg.org/spec/BPMN/20100524/MODEL\":documentation}'. One of '{\"http://www.omg.org/spec/BPMN/20100524/MODEL\":import, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":extension, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":rootElement, \"http://www.omg.org/spec/BPMN/20100524/DI\":BPMNDiagram, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":relationship}' is expected."
+				}
+			]
+		},
+		"conformance/migrate/bpmn-sample-order-process-7to8/expected/placeholders.bpmn": {
+			"sha256": "af6a586b2bab9e0f751bef8466afe3d1b63df0399f066f0306833f318002f3ee",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/bpmn-sample-order-process-8to7/expected/default.bpmn": {
+			"sha256": "a24bb3a7bbf0c1f3c840dfba9e3f8e427c163908daff27bbd98d0a03b4d9d5e9",
+			"ok": false,
+			"errors": [
+				{
+					"element": "process",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "flow-no",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "notify",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "reject",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "validate",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "flow-yes",
+					"message": "Must have a condition or be default flow"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-sample-parallel-approval-7to8/expected/placeholders.bpmn": {
+			"sha256": "7b523530d2ded86a86f252b77c3b679df989ea93933a20ebfc8536eaafe3d1bf",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/bpmn-sample-parallel-approval-8to7/expected/default.bpmn": {
+			"sha256": "7c6edebc5adbd29b79b0e62220af525139b03a98d9177c89f4ae85e37f94e7c2",
+			"ok": false,
+			"errors": [
+				{
+					"element": "finalize",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/bpmn-unmodelled-content-8to7/expected/default.bpmn": {
+			"sha256": "738c8531342d82ef31059beb6d34aed7d33ba58961b10308e062d487a91b6ab8",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=6: cvc-complex-type.2.4.a: Invalid content was found starting with element '{\"http://acme.example/schema/1.0\":governance}'. One of '{\"http://www.omg.org/spec/BPMN/20100524/MODEL\":rootElement, \"http://www.omg.org/spec/BPMN/20100524/DI\":BPMNDiagram, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":relationship}' is expected."
+				}
+			]
+		},
+		"conformance/migrate/bpmn-zeebe-extensions-7to8/expected/default.bpmn": {
+			"sha256": "55803da450f4ab29bb0cd75b83122b67675d1d242a0d757cbddb9dfee434e78d",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/bpmn-zeebe-extensions-7to8/expected/v8-2.bpmn": {
+			"sha256": "abbf754ccc5c34d69a1916688b1ff08a72205c519ad199d9f14e0b9d39315084",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/bpmn-zeebe-extensions-8to7/expected/default.bpmn": {
+			"sha256": "eb4cce3a64b41d6044807aabaf2c01f1f30271da8a7f828d7e4850d2ea8adc1a",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Task_script",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_decide",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_service",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_call",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				}
+			]
+		},
+		"conformance/migrate/c7exp-001-convertcamunda8to7-maps-a-service-task-job-type-to-an-ex/expected/opts-1.bpmn": {
+			"sha256": "db77edd32f77ad519f5363dc64eef39d5b524e96028bff70c0816bacb86fab83",
+			"ok": false,
+			"errors": [
+				{
+					"element": "t",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7exp-001-convertcamunda8to7-maps-a-service-task-job-type-to-an-ex/input.bpmn": {
 			"sha256": "4eb37f50c918352f01af55682351a4acf7cd36e6899f386a4ba9d363c9c3e046",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7exp-002-convertcamunda8to7-maps-user-task-assignment-and-form-ke/expected/opts-1.bpmn": {
+			"sha256": "e9262562c0da2b008f755567044a305870d670fa97573c8911f76c86b8f72905",
 			"ok": false,
 			"errors": [
 				{
@@ -8932,10 +10428,38 @@
 				}
 			]
 		},
+		"conformance/migrate/c7exp-003-convertcamunda8to7-reports-a-message-correlation-key-and/expected/opts-1.bpmn": {
+			"sha256": "451e493fa4336c2a449341ae0a1ce82899ec45052febd0f4a52e212eca720303",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				},
+				{
+					"element": "m",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				}
+			]
+		},
 		"conformance/migrate/c7exp-003-convertcamunda8to7-reports-a-message-correlation-key-and/input.bpmn": {
 			"sha256": "01efeaffda8dacfad480c293d9c12024b999c68d2d04da85f51685c401cd7613",
 			"ok": false,
 			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7exp-004-convertcamunda8to7-maps-a-call-activity-and-variable-pro/expected/opts-1.bpmn": {
+			"sha256": "35ebf764220fbe4773bde0a942a07a79c8581b8817906dec871ca908b095913d",
+			"ok": false,
+			"errors": [
+				{
+					"element": "c",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				},
 				{
 					"element": "p",
 					"message": "Must have at least one start event"
@@ -8952,6 +10476,20 @@
 				}
 			]
 		},
+		"conformance/migrate/c7exp-005-convertcamunda8to7-maps-io-mapping-and-flags-feel/expected/opts-1.bpmn": {
+			"sha256": "0702bb8bb3340a01914b28f5b0bcd733351756dac1fb7cca85c7e57399def89a",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				},
+				{
+					"element": "t",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
 		"conformance/migrate/c7exp-005-convertcamunda8to7-maps-io-mapping-and-flags-feel/input.bpmn": {
 			"sha256": "0e019c8741058eb90352559e02b074762aa5b82403a79b9de1ca5bb8272426d2",
 			"ok": false,
@@ -8959,6 +10497,20 @@
 				{
 					"element": "p",
 					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7exp-006-convertcamunda8to7-flags-connectors-and-drops-zeebe-only/expected/opts-1.bpmn": {
+			"sha256": "7d37213bea5128bb4ee2128b6f24d0ede5834414bfb0ee9a77c292f2c17111c0",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				},
+				{
+					"element": "t",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -8972,6 +10524,20 @@
 				}
 			]
 		},
+		"conformance/migrate/c7exp-007-convertcamunda8to7-does-not-mutate-the-input/expected/opts-1.bpmn": {
+			"sha256": "25e2349a85f39a6ff1d1f57a8d5674ce2c3b8b00be74213d6d47f430c88ba4a1",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				},
+				{
+					"element": "t",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
 		"conformance/migrate/c7exp-007-convertcamunda8to7-does-not-mutate-the-input/input.bpmn": {
 			"sha256": "79cf45df6b689be5c8bdd3741585f5b32c1a78c8f930d973665e6322c29441b6",
 			"ok": false,
@@ -8982,8 +10548,32 @@
 				}
 			]
 		},
+		"conformance/migrate/c7exp-008-convertcamunda8to7-round-trips-task-types-and-io-mapping/expected/opts-1.bpmn": {
+			"sha256": "5c5b861cf6cd728ea94019a3cb50938fff0c767fdf9eb42d4e71396736470839",
+			"ok": false,
+			"errors": [
+				{
+					"element": "t",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7exp-008-convertcamunda8to7-round-trips-task-types-and-io-mapping/input.bpmn": {
 			"sha256": "70dea579a101a420feee5b8d069357c4b4df9df5342d7700a94ae75f39c28cf9",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7exp-009-convertcamunda8to7-round-trips-task-types-and-io-mapping/expected/default.bpmn": {
+			"sha256": "a46d1a4b4769a1ff3bf516c1dc5427ac94f477599fd4b3c95fd5e44d71231b0d",
 			"ok": false,
 			"errors": [
 				{
@@ -9006,68 +10596,55 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-001-/expected/default.bpmn": {
+			"sha256": "e53df3b655ccd80571f7d8d9c647fe5f5c7863db726ab81117286f8391854adb",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/c7mig-001-/expected/opts-2.bpmn": {
+			"sha256": "e53df3b655ccd80571f7d8d9c647fe5f5c7863db726ab81117286f8391854adb",
+			"ok": true,
+			"errors": []
+		},
 		"conformance/migrate/c7mig-001-/input.bpmn": {
 			"sha256": "d807e8cda387d853987e651b0fe8173d11a6e3e62d6efdcfcc7200953cef32a2",
 			"ok": false,
 			"errors": [
 				{
-					"element": "Flow_yes > conditionExpression",
-					"message": "Expected expression but found static value '${approved == true}'. An expression must start with '=' (e.g. '=${approved == true}')."
-				},
-				{
-					"element": "Flow_no > conditionExpression",
-					"message": "Expected expression but found static value '${approved == false}'. An expression must start with '=' (e.g. '=${approved == false}')."
-				},
-				{
 					"element": "Task_archive",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "Task_classify",
-					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "Task_total",
 					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
+					"element": "Flow_no > conditionExpression",
+					"message": "Expected expression but found static value '${approved == false}'. An expression must start with '=' (e.g. '=${approved == false}')."
+				},
+				{
 					"element": "Task_book",
 					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				},
+				{
+					"element": "Task_classify",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Flow_yes > conditionExpression",
+					"message": "Expected expression but found static value '${approved == true}'. An expression must start with '=' (e.g. '=${approved == true}')."
 				}
 			]
+		},
+		"conformance/migrate/c7mig-002-/expected/placeholders.bpmn": {
+			"sha256": "f6d333ab1e336454ba59f41afec801c3f04bfaa0ae4c5ab37826a557703a6428",
+			"ok": true,
+			"errors": []
 		},
 		"conformance/migrate/c7mig-002-/input.bpmn": {
 			"sha256": "5b20dccfe3c68a1991d5ae261aec6f48cf4fc9c3b26c4fd199d23da773c4441d",
 			"ok": false,
 			"errors": [
-				{
-					"element": "Task_charge",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "Flow_vip > conditionExpression",
-					"message": "Expected expression but found static value '${approved and order.customer.vip eq true}'. An expression must start with '=' (e.g. '=${approved and order.customer.vip eq true}')."
-				},
-				{
-					"element": "Task_escalate",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "Timer_wait",
-					"message": "Invalid timer duration expression (Invalid duration format '${deliveryWindow}' for expression '${deliveryWindow}'.)"
-				},
-				{
-					"element": "Flow_approved > conditionExpression",
-					"message": "Expected expression but found static value '${approved && order.total <= 1000}'. An expression must start with '=' (e.g. '=${approved && order.total <= 1000}')."
-				},
-				{
-					"element": "Task_ship",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "Message_PaymentConfirmed",
-					"message": "Must have exactly one zeebe:subscription extension element"
-				},
 				{
 					"element": "Task_invoice",
 					"message": "Must have exactly one 'zeebe:calledElement' extension element"
@@ -9081,34 +10658,77 @@
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
+					"element": "Task_escalate",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Timer_wait",
+					"message": "Invalid timer duration expression (Invalid duration format '${deliveryWindow}' for expression '${deliveryWindow}'.)"
+				},
+				{
+					"element": "Task_ship",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_charge",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Flow_approved > conditionExpression",
+					"message": "Expected expression but found static value '${approved && order.total <= 1000}'. An expression must start with '=' (e.g. '=${approved && order.total <= 1000}')."
+				},
+				{
+					"element": "Flow_vip > conditionExpression",
+					"message": "Expected expression but found static value '${approved and order.customer.vip eq true}'. An expression must start with '=' (e.g. '=${approved and order.customer.vip eq true}')."
+				},
+				{
 					"element": "Task_summary",
 					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Message_PaymentConfirmed",
+					"message": "Must have exactly one zeebe:subscription extension element"
 				}
 			]
+		},
+		"conformance/migrate/c7mig-003-/expected/placeholders.bpmn": {
+			"sha256": "7c855ae29b9694c4d1c412fc4519dc233336be1a54ecfe55853e7ab8ed2cbe4a",
+			"ok": true,
+			"errors": []
 		},
 		"conformance/migrate/c7mig-003-/input.bpmn": {
 			"sha256": "659fc78b158aac2a1955322f3b6a1e391659d918eab0d2fdc17c70c7da15f205",
 			"ok": false,
 			"errors": [
 				{
-					"element": "Task_price",
-					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+					"element": "EndEvent_paid",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "SubProcess_items > multiInstanceLoopCharacteristics",
 					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
 				},
 				{
-					"element": "EndEvent_paid",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "Task_fraudCheck",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+					"element": "Task_price",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "Task_payout",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_fraudCheck",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-004-service-task-implementations-turns-an-external-task-topi/expected/default.bpmn": {
+			"sha256": "4b653b4a59e4e9fd8e9ccc4cfcb5e89f927095046645ce17f7bb8a2f369b6e70",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -9126,8 +10746,8 @@
 				}
 			]
 		},
-		"conformance/migrate/c7mig-005-service-task-implementations-keeps-a-topic-expression-it/input.bpmn": {
-			"sha256": "2d5b819dcadb614875a42851a5fb9f9ce3bef9c4acb06ffc60e2614478ae463e",
+		"conformance/migrate/c7mig-005-service-task-implementations-keeps-a-topic-expression-it/expected/default.bpmn": {
+			"sha256": "ebf1fc01be3edf46188a97d2c7400336ced958831e6a9ab5ed7d018a4c12cce2",
 			"ok": false,
 			"errors": [
 				{
@@ -9137,6 +10757,30 @@
 				{
 					"element": "t",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-005-service-task-implementations-keeps-a-topic-expression-it/input.bpmn": {
+			"sha256": "2d5b819dcadb614875a42851a5fb9f9ce3bef9c4acb06ffc60e2614478ae463e",
+			"ok": false,
+			"errors": [
+				{
+					"element": "t",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-006-service-task-implementations-names-the-job-type-after-th/expected/default.bpmn": {
+			"sha256": "84e4bf235746de8e7737166d9313fc0d54abd038e129025c3841f0e003bc17ee",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -9145,12 +10789,22 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "p",
-					"message": "Must have at least one start event"
-				},
-				{
 					"element": "t",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-007-service-task-implementations-uses-the-bean-of-a-simple-d/expected/default.bpmn": {
+			"sha256": "e7e3ec085a5382f88e3fdc4c9310d54aaa28cdc9adea70788815cef8fb2ae0e7",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -9159,16 +10813,26 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "complex",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "p",
 					"message": "Must have at least one start event"
 				},
 				{
 					"element": "simple",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "complex",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-008-service-task-implementations-carries-an-expression-and-i/expected/default.bpmn": {
+			"sha256": "54f1e8365915f194bee449e57ff2506a024e6c2d5d4f82343439307fd63d1a82",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -9177,12 +10841,22 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "p",
-					"message": "Must have at least one start event"
-				},
-				{
 					"element": "t",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-009-service-task-implementations-turns-static-field-injectio/expected/default.bpmn": {
+			"sha256": "59bf34816a22845b37f575d39d851af98f01072396a8f3dd3b9afac8cc33e159",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -9200,17 +10874,41 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-010-service-task-implementations-reports-a-camunda-7-connect/expected/default.bpmn": {
+			"sha256": "8db4100e4539a16d34139092351f8b8f717b3acd4fdf201b4581109ea43690a7",
+			"ok": false,
+			"errors": [
+				{
+					"element": "t",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-010-service-task-implementations-reports-a-camunda-7-connect/input.bpmn": {
 			"sha256": "d7c5ca8cde9260d61865674ee8805be5767aa225cc83dff74efee470761fbdb3",
 			"ok": false,
 			"errors": [
 				{
-					"element": "p",
-					"message": "Must have at least one start event"
-				},
-				{
 					"element": "t",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-011-service-task-implementations-implements-a-message-end-ev/expected/default.bpmn": {
+			"sha256": "6e9c15dc624dd2f1be91341fd63b58c6594e1455a1caf5116988add864659da4",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -9228,17 +10926,41 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-012-service-task-implementations-keeps-an-event-definition-s/expected/default.bpmn": {
+			"sha256": "418b4156ac1e2721a0365d4d97af227ef1502f8afe9a91e2125928a4cdfd8209",
+			"ok": false,
+			"errors": [
+				{
+					"element": "e",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-012-service-task-implementations-keeps-an-event-definition-s/input.bpmn": {
 			"sha256": "b4a78792e8eaa7b6113e7cbc7c1bc359a00070496ad227cad6f1957f134fa49b",
 			"ok": false,
 			"errors": [
 				{
-					"element": "p",
-					"message": "Must have at least one start event"
-				},
-				{
 					"element": "e",
 					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-013-input-output-mappings-translates-expressions-and-turns-t/expected/default.bpmn": {
+			"sha256": "9a22985b02ba57b43e6f7815a67a370a673cbbd3ac9c0e73166568947200e985",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -9256,6 +10978,16 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-014-input-output-mappings-builds-feel-lists-and-contexts-fro/expected/default.bpmn": {
+			"sha256": "9eabac1dbfb80f6a492af3c998f8f21be4184e9f086ce66dbfb817c09d52882d",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-014-input-output-mappings-builds-feel-lists-and-contexts-fro/input.bpmn": {
 			"sha256": "87885945cfc0a812cb73a53a611ef9f79457a283ab78c1dd9a60b636fa414503",
 			"ok": false,
@@ -9264,6 +10996,16 @@
 					"element": "t",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-015-input-output-mappings-keeps-what-it-cannot-translate-nex/expected/default.bpmn": {
+			"sha256": "2f5d4cbb8e54eecb476acb26c790448fe6ad51603d04b98e48328dc7aa93060e",
+			"ok": false,
+			"errors": [
 				{
 					"element": "p",
 					"message": "Must have at least one start event"
@@ -9284,8 +11026,28 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-016-input-output-mappings-refuses-mappings-on-an-element-cam/expected/default.bpmn": {
+			"sha256": "3be365aa1005316aea5cecd329c1089c9208ba0d48879032fd98018ea21f980b",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-016-input-output-mappings-refuses-mappings-on-an-element-cam/input.bpmn": {
 			"sha256": "0757e40e1b3ac2dd44409a07b997825867d8b20715376fad4cb902b78ad583cc",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-017-sequence-flow-conditions-translates-a-provable-juel-cond/expected/default.bpmn": {
+			"sha256": "0c6616d9375ce99326a15486ddf826fa07401e3e20f71ba5d3c7d86b9cb14989",
 			"ok": false,
 			"errors": [
 				{
@@ -9308,22 +11070,36 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-018-sequence-flow-conditions-leaves-script-conditions-and-un/expected/default.bpmn": {
+			"sha256": "a5ab68bb793b30b5743d3937a66639eda6f6d436e879de7fe53dbdc1e68e8590",
+			"ok": false,
+			"errors": [
+				{
+					"element": "f > conditionExpression",
+					"message": "Expected expression but found static value 'amount > 1'. An expression must start with '=' (e.g. '=amount > 1')."
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-018-sequence-flow-conditions-leaves-script-conditions-and-un/input.bpmn": {
 			"sha256": "343c30b3e75cbf8134193e18ff2abcc569f9d33583216c12fef75039ef93d51e",
 			"ok": false,
 			"errors": [
 				{
-					"element": "p",
-					"message": "Must have at least one start event"
-				},
-				{
 					"element": "f > conditionExpression",
 					"message": "Expected expression but found static value 'amount > 1'. An expression must start with '=' (e.g. '=amount > 1')."
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
-		"conformance/migrate/c7mig-019-sequence-flow-conditions-leaves-script-conditions-and-un/input.bpmn": {
-			"sha256": "1893395e9f6d90f773a2ad7c73f2dd82a8716e2bc0cc296bfa15309834f836aa",
+		"conformance/migrate/c7mig-019-sequence-flow-conditions-leaves-script-conditions-and-un/expected/default.bpmn": {
+			"sha256": "f8a3e9aab96ee93fd13fb968e19e7286c62bd22d0be6b31bc128c00dd1363c8e",
 			"ok": false,
 			"errors": [
 				{
@@ -9336,8 +11112,42 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-019-sequence-flow-conditions-leaves-script-conditions-and-un/input.bpmn": {
+			"sha256": "1893395e9f6d90f773a2ad7c73f2dd82a8716e2bc0cc296bfa15309834f836aa",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				},
+				{
+					"element": "f > conditionExpression",
+					"message": "Expected expression but found static value '${empty items}'. An expression must start with '=' (e.g. '=${empty items}')."
+				}
+			]
+		},
+		"conformance/migrate/c7mig-020-sequence-flow-conditions-reports-a-listener-on-taking-a-/expected/default.bpmn": {
+			"sha256": "1905a37d4b7ae5b0fea081560045df747a86810b2cee947d4433c288ba4ef1f9",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-020-sequence-flow-conditions-reports-a-listener-on-taking-a-/input.bpmn": {
 			"sha256": "446ee00778eaba1b71b266047fbcdb19e00534728970b57828b42ca9e9cc2b7f",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-021-asynchronous-continuations-and-retries-drops-async-marke/expected/default.bpmn": {
+			"sha256": "abeaac54e143827c6b9107b2c2aaf6318836ece7b67542adf1ed74c8db0875cc",
 			"ok": false,
 			"errors": [
 				{
@@ -9360,8 +11170,42 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-022-asynchronous-continuations-and-retries-moves-the-retry-c/expected/default.bpmn": {
+			"sha256": "a2859daf9048acbee5bce6211bd387083dacc84cd702c3a6177fd33b668a2deb",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-022-asynchronous-continuations-and-retries-moves-the-retry-c/input.bpmn": {
 			"sha256": "0975a8323dcc46a8bde7d87624f8c02422d58082814f9927cbf2eccf1435f81e",
+			"ok": false,
+			"errors": [
+				{
+					"element": "t",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-023-asynchronous-continuations-and-retries-needs-no-back-off/expected/default.bpmn": {
+			"sha256": "b9eb7821303ed404938d9e5967e44d6b99294a9f286fac76523d238ce3df297e",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-023-asynchronous-continuations-and-retries-needs-no-back-off/input.bpmn": {
+			"sha256": "d472a30aadc2cb72b0ae9a0cb2a175d953262e4b00ecdd1826b031a7043f23df",
 			"ok": false,
 			"errors": [
 				{
@@ -9374,14 +11218,10 @@
 				}
 			]
 		},
-		"conformance/migrate/c7mig-023-asynchronous-continuations-and-retries-needs-no-back-off/input.bpmn": {
-			"sha256": "d472a30aadc2cb72b0ae9a0cb2a175d953262e4b00ecdd1826b031a7043f23df",
+		"conformance/migrate/c7mig-024-asynchronous-continuations-and-retries-counts-a-list-of-/expected/default.bpmn": {
+			"sha256": "b9eb7821303ed404938d9e5967e44d6b99294a9f286fac76523d238ce3df297e",
 			"ok": false,
 			"errors": [
-				{
-					"element": "t",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
 				{
 					"element": "p",
 					"message": "Must have at least one start event"
@@ -9402,6 +11242,16 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-025-asynchronous-continuations-and-retries-keeps-a-cycle-it-/expected/default.bpmn": {
+			"sha256": "f464df07a8e11b0b802636770a9d709ce9416c84ebe4a61d41bdbe9ed8efc8bc",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-025-asynchronous-continuations-and-retries-keeps-a-cycle-it-/input.bpmn": {
 			"sha256": "95a06684ae487ff13dedb67e33c168210a20e733865846b0ded39481fe5edf3c",
 			"ok": false,
@@ -9416,8 +11266,28 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-026-asynchronous-continuations-and-retries-reports-retries-o/expected/default.bpmn": {
+			"sha256": "e80e0f9fc08e229a81fd1714251651b4fd883a86459acd9bef14125358cdac8e",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-026-asynchronous-continuations-and-retries-reports-retries-o/input.bpmn": {
 			"sha256": "c0ef583626233c44429847f2a789e79de92cb79f3ff283eecc48bb07cb10d254",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-027-user-tasks-becomes-a-camunda-user-task-with-its-assignme/expected/default.bpmn": {
+			"sha256": "e775ca6f67aa063cf4e5742dea60d042f11ea0a2f4e3c7aa3714a938a6c8716e",
 			"ok": false,
 			"errors": [
 				{
@@ -9436,8 +11306,28 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-028-user-tasks-flags-a-candidate-expression-since-camunda-8-/expected/default.bpmn": {
+			"sha256": "cd28e16b08f2b89db292078d6ed2318c49db52e54ad01779a1eab9528433d50d",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-028-user-tasks-flags-a-candidate-expression-since-camunda-8-/input.bpmn": {
 			"sha256": "eb8cd9492e77da6f0ae6e439a0994a57247f6d55d5ddb3c7df534d239c8b3b26",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-029-user-tasks-schedules-only-iso-date-times-with-a-zone-or-/expected/default.bpmn": {
+			"sha256": "438114b5013723e44ac5e5608c3211d672a112a27352507eb792e0628c4d6800",
 			"ok": false,
 			"errors": [
 				{
@@ -9456,8 +11346,28 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-030-user-tasks-converts-a-priority-within-0-100-and-flags-on/expected/default.bpmn": {
+			"sha256": "45a4a0186db31ed56967dd0d89ca65513f45a46bd139af9abbca8ae17562273e",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-030-user-tasks-converts-a-priority-within-0-100-and-flags-on/input.bpmn": {
 			"sha256": "f6d2c2e92253cad3bba39ecfdfaa0db18063408dfa511c8b75ee183f0b6513e5",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-031-user-tasks-converts-a-priority-within-0-100-and-flags-on/expected/default.bpmn": {
+			"sha256": "fb66188cecff9e83386e7657b37b6f13e3eaba76199ddbab906214988cc11e29",
 			"ok": false,
 			"errors": [
 				{
@@ -9476,8 +11386,28 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-032-user-tasks-links-a-camunda-form-by-id-and-binding/expected/default.bpmn": {
+			"sha256": "54b937d9786ea2d1dc06ee3feb61b2a7643c8f5eef777eb25d2756cc36d8c769",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-032-user-tasks-links-a-camunda-form-by-id-and-binding/input.bpmn": {
 			"sha256": "aae8405f328e12861b3f6d014689801be179a8e1deb87fc5d561571605332df3",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-033-user-tasks-flags-a-form-bound-to-a-version-number/expected/default.bpmn": {
+			"sha256": "27490911bc29c1aff965aae4ecd171c68cea53cea051d0abc36951651a483b21",
 			"ok": false,
 			"errors": [
 				{
@@ -9496,8 +11426,28 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-034-user-tasks-maps-form-keys-by-kind/expected/default.bpmn": {
+			"sha256": "1785391611bb8414bc9d1506c1cd50c7b23be1d396ac8268259b308a17db5918",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-034-user-tasks-maps-form-keys-by-kind/input.bpmn": {
 			"sha256": "9e00065680305dc4815d4aa896f6ce7359818721cc12adf005e3350f0e5e5efd",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-035-user-tasks-maps-form-keys-by-kind/expected/default.bpmn": {
+			"sha256": "f4dcd2aa489b31d914093ca3280862fa6532b49bc2ffc57bb64e9ea846c8f68c",
 			"ok": false,
 			"errors": [
 				{
@@ -9516,8 +11466,28 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-036-user-tasks-maps-form-keys-by-kind/expected/default.bpmn": {
+			"sha256": "f54237a0ea03623406ad1ce581430a26d212691a460fbc925736514c1c204f46",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-036-user-tasks-maps-form-keys-by-kind/input.bpmn": {
 			"sha256": "36abe875ef7eee5281dda9a53f0660957f61bc61e083ce339b7af08b990ec7a5",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-037-user-tasks-reports-task-listeners-by-what-camunda-8-offe/expected/default.bpmn": {
+			"sha256": "af5d91ce69c8dfb123c0e6bb7c30b73773025ff9f3dab511eb0aeca8db6a32bf",
 			"ok": false,
 			"errors": [
 				{
@@ -9536,19 +11506,44 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-038-start-events-links-a-start-form-and-reports-the-initiato/expected/default.bpmn": {
+			"sha256": "89d868ae179f53d365a43f2cf9110ac4aab50f332dd9b3e1f217e7d10a2e1b86",
+			"ok": true,
+			"errors": []
+		},
 		"conformance/migrate/c7mig-038-start-events-links-a-start-form-and-reports-the-initiato/input.bpmn": {
 			"sha256": "09db175abe4a82dba45d919c44ee6ac55057dadf071f67e62066a3b7b02f02f3",
 			"ok": true,
 			"errors": []
+		},
+		"conformance/migrate/c7mig-039-business-rule-tasks-calls-the-decision-and-keeps-the-res/expected/default.bpmn": {
+			"sha256": "92d55e6fbdc93658aebcd1f3fee275aaa0b55bcaccee477b6b0cf677bedd3680",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
 		},
 		"conformance/migrate/c7mig-039-business-rule-tasks-calls-the-decision-and-keeps-the-res/input.bpmn": {
 			"sha256": "1c70363539059ecfffa5e1e03e3681c4decb78200d06cfa66cc03889d0889173",
 			"ok": false,
 			"errors": [
 				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				},
+				{
 					"element": "b",
 					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
-				},
+				}
+			]
+		},
+		"conformance/migrate/c7mig-040-business-rule-tasks-supplies-a-result-variable-and-flags/expected/default.bpmn": {
+			"sha256": "34633917422b0ce79d8dfcf9c5f301884e4103b13ad87468ca183715d904bada",
+			"ok": false,
+			"errors": [
 				{
 					"element": "p",
 					"message": "Must have at least one start event"
@@ -9560,12 +11555,22 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "p",
-					"message": "Must have at least one start event"
-				},
-				{
 					"element": "b",
 					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-041-call-activities-maps-camunda-in-out-and-pins-camunda-7-s/expected/default.bpmn": {
+			"sha256": "35e0af44107321a70d668704ba4178bbffa3bb9d4c9ab39475dc7e483bdf2c0a",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -9577,6 +11582,16 @@
 					"element": "c",
 					"message": "Must have exactly one 'zeebe:calledElement' extension element"
 				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-042-call-activities-passes-nothing-back-when-camunda-7-had-n/expected/default.bpmn": {
+			"sha256": "1c4cbc20b0baca31645a0f5c75b046530d71e41740f906feb141880d3263166b",
+			"ok": false,
+			"errors": [
 				{
 					"element": "p",
 					"message": "Must have at least one start event"
@@ -9597,17 +11612,37 @@
 				}
 			]
 		},
-		"conformance/migrate/c7mig-043-call-activities-drops-the-default-business-key-hand-over/input.bpmn": {
-			"sha256": "3569b18fe8068490dac5cadd234779ce9432a9b8962b699c0e929e02bbd77c0a",
+		"conformance/migrate/c7mig-043-call-activities-drops-the-default-business-key-hand-over/expected/default.bpmn": {
+			"sha256": "95d16c0b90e78eb038d9e4eb2de194fe9be2357827f21ab216628ef33932a09d",
 			"ok": false,
 			"errors": [
 				{
 					"element": "p",
 					"message": "Must have at least one start event"
-				},
+				}
+			]
+		},
+		"conformance/migrate/c7mig-043-call-activities-drops-the-default-business-key-hand-over/input.bpmn": {
+			"sha256": "3569b18fe8068490dac5cadd234779ce9432a9b8962b699c0e929e02bbd77c0a",
+			"ok": false,
+			"errors": [
 				{
 					"element": "c",
 					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-044-call-activities-flags-a-version-number-binding/expected/default.bpmn": {
+			"sha256": "7d53bfc8c233fca7e75f4ad086df3bbb3ea910f45a6af7ad1dfdb7542b0583b4",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -9625,14 +11660,34 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-045-script-tasks-turns-a-feel-script-into-zeebe-script/expected/default.bpmn": {
+			"sha256": "6a9073d308c24353697e39be0548a4a9b69abd3a067300d264b6ffbf01c0c023",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-045-script-tasks-turns-a-feel-script-into-zeebe-script/input.bpmn": {
 			"sha256": "d3530b577955ab8dcf48ee45bbca515fea6feda496a3a5c41b0bfb6f57977b8b",
 			"ok": false,
 			"errors": [
 				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				},
+				{
 					"element": "s",
 					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
-				},
+				}
+			]
+		},
+		"conformance/migrate/c7mig-046-script-tasks-translates-a-juel-script/expected/default.bpmn": {
+			"sha256": "1999c112db1babeeee15d8959065ed240dcbb2bc83bd871cf32cff71e31f83c7",
+			"ok": false,
+			"errors": [
 				{
 					"element": "p",
 					"message": "Must have at least one start event"
@@ -9653,8 +11708,36 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-047-script-tasks-leaves-groovy-and-a-feel-script-without-a-r/expected/default.bpmn": {
+			"sha256": "d4f1e871425fc622c3e82f4ff39ccdd6992f43e67219156e8206de598b0bcb17",
+			"ok": false,
+			"errors": [
+				{
+					"element": "s",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-047-script-tasks-leaves-groovy-and-a-feel-script-without-a-r/input.bpmn": {
 			"sha256": "cd40765d55914025ed4e0aa56e35b6dd8e83768f4ac08383bd2a72439df193d7",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				},
+				{
+					"element": "s",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-048-script-tasks-leaves-groovy-and-a-feel-script-without-a-r/expected/default.bpmn": {
+			"sha256": "0b75f8fcf848e81bbf0658a75bae24fd202fad6ff1e1bd79e718e4fce3ec85c1",
 			"ok": false,
 			"errors": [
 				{
@@ -9681,6 +11764,16 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-049-events-asks-for-a-correlation-key-on-message-catches/expected/default.bpmn": {
+			"sha256": "6051998757a608b731e014ee608027c69150f526eceb5759c523af9bb57c9430",
+			"ok": false,
+			"errors": [
+				{
+					"element": "m",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-049-events-asks-for-a-correlation-key-on-message-catches/input.bpmn": {
 			"sha256": "f431ec206255070a18e8b519240b79118fa9960ff4233a4d748faf4368c927f8",
 			"ok": false,
@@ -9688,6 +11781,16 @@
 				{
 					"element": "m",
 					"message": "Must have exactly one zeebe:subscription extension element"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-050-events-translates-timer-expressions-and-flags-cron-cycle/expected/default.bpmn": {
+			"sha256": "c8de052759b483d7a2a8e4e725a48d9a84680e91f7f5f0e35420a8ada14726d4",
+			"ok": false,
+			"errors": [
+				{
+					"element": "t2",
+					"message": "Invalid timer date expression (Invalid date-time format '${dateTime().plusDays(1).toDate()}' for expression '${dateTime().plusDays(1).toDate()}'.)"
 				}
 			]
 		},
@@ -9705,8 +11808,28 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-051-events-reports-error-variables-recovered-from-the-event-/expected/default.bpmn": {
+			"sha256": "6fd20291b6dcee9fcb64d6357e33d3978856ddab66ec384c0fb1b4d7ef6a9e0d",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-051-events-reports-error-variables-recovered-from-the-event-/input.bpmn": {
 			"sha256": "ba2d1d5cbd4e0c1a5d5b491b6e307d58f61a55bdcdfd24b98edc62ff5432e32d",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-052-multi-instance-recovers-the-collection-from-the-source-a/expected/default.bpmn": {
+			"sha256": "357e1611b8813772ec4b2375051d24f5947ca4440475acf7292e1d5242f99911",
 			"ok": false,
 			"errors": [
 				{
@@ -9729,17 +11852,37 @@
 				}
 			]
 		},
-		"conformance/migrate/c7mig-053-multi-instance-accepts-a-bare-variable-name-as-collectio/input.bpmn": {
-			"sha256": "accca8f1ded70e046e2f109e807199e8ac290401675ab7a424fa14b001632b75",
+		"conformance/migrate/c7mig-053-multi-instance-accepts-a-bare-variable-name-as-collectio/expected/default.bpmn": {
+			"sha256": "7d23713ab9ab9c40506dfbff9cc3c687280ad27935db6838648d1759cf4b5924",
 			"ok": false,
 			"errors": [
 				{
 					"element": "p",
 					"message": "Must have at least one start event"
-				},
+				}
+			]
+		},
+		"conformance/migrate/c7mig-053-multi-instance-accepts-a-bare-variable-name-as-collectio/input.bpmn": {
+			"sha256": "accca8f1ded70e046e2f109e807199e8ac290401675ab7a424fa14b001632b75",
+			"ok": false,
+			"errors": [
 				{
 					"element": "u > multiInstanceLoopCharacteristics",
 					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-054-multi-instance-removes-the-converted-loop-attributes-and/expected/default.bpmn": {
+			"sha256": "222e3ba720ad3260b81674834964601229e0242950020cc236e05309ef9acc61",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -9757,8 +11900,36 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-055-multi-instance-removes-the-converted-loop-attributes-and/expected/default.bpmn": {
+			"sha256": "5c6e7281604d1b76ad97436103ee4c25a32ad5fb10ba902a39a858fde50211e0",
+			"ok": false,
+			"errors": [
+				{
+					"element": "u > multiInstanceLoopCharacteristics",
+					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-055-multi-instance-removes-the-converted-loop-attributes-and/input.bpmn": {
 			"sha256": "abf0e1f2b5425bb0e547c7d0bbaf07ae0bc319128ac255713c67941e590f2dc2",
+			"ok": false,
+			"errors": [
+				{
+					"element": "u > multiInstanceLoopCharacteristics",
+					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-056-multi-instance-reports-a-loop-that-names-no-collection/expected/default.bpmn": {
+			"sha256": "592fc7936d52e2a04f298fdd15a7d4e5eee8be77484694b0efd2dfd7ae844015",
 			"ok": false,
 			"errors": [
 				{
@@ -9776,6 +11947,20 @@
 			"ok": false,
 			"errors": [
 				{
+					"element": "u > multiInstanceLoopCharacteristics",
+					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-057-multi-instance-reports-a-cardinality-which-camunda-8-doe/expected/default.bpmn": {
+			"sha256": "00956567f59041d01e3ee5db86b9b949403d0b02edaaa3f38ce3e9b1f0662480",
+			"ok": false,
+			"errors": [
+				{
 					"element": "p",
 					"message": "Must have at least one start event"
 				},
@@ -9790,9 +11975,19 @@
 			"ok": false,
 			"errors": [
 				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				},
+				{
 					"element": "u > multiInstanceLoopCharacteristics",
 					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
-				},
+				}
+			]
+		},
+		"conformance/migrate/c7mig-058-multi-instance-reports-a-standard-loop-as-unsupported/expected/default.bpmn": {
+			"sha256": "0c582b6595858d7039a77bcab3987c04327109b7c8ebef22df654ea6ab40251c",
+			"ok": false,
+			"errors": [
 				{
 					"element": "p",
 					"message": "Must have at least one start event"
@@ -9801,6 +11996,16 @@
 		},
 		"conformance/migrate/c7mig-058-multi-instance-reports-a-standard-loop-as-unsupported/input.bpmn": {
 			"sha256": "143a62dbb583b71c8128dab43f25bde8837b20ee9baf5f800dab1e2dbb43a082",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-059-process-and-document-moves-the-version-tag-and-reports-w/expected/default.bpmn": {
+			"sha256": "c6f1b2012af5fff405513926fe2104b02f284a2bf84e6f1a80fe17a944fa2668",
 			"ok": false,
 			"errors": [
 				{
@@ -9819,6 +12024,16 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-060-process-and-document-reports-every-camunda-7-construct-n/expected/default.bpmn": {
+			"sha256": "9392af161c3c590b1b9959f381aa921c92af3de073815afe8bb32ab1069409e4",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-060-process-and-document-reports-every-camunda-7-construct-n/input.bpmn": {
 			"sha256": "37c52ebf41aae030fb3d7a35dec83da4668ca2b73bb142c5e7e2ed2da34f11df",
 			"ok": false,
@@ -9829,8 +12044,38 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-061-process-and-document-targets-camunda-8-and-declares-the-/expected/default.bpmn": {
+			"sha256": "4bae327e866b5f81627f9bb28611936b972b719275d45125f28a23d1183b0727",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-061-process-and-document-targets-camunda-8-and-declares-the-/expected/opts-2.bpmn": {
+			"sha256": "9c7a694c5795759efc2f7fe5aa8197a503ef77c9444ec6e093ac505ac9150290",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-061-process-and-document-targets-camunda-8-and-declares-the-/input.bpmn": {
 			"sha256": "d7c5c704fff7b762ebffd57e02d6171172057880bf45a9935bd65320ba7df7a0",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-062-process-and-document-reads-a-camunda-7-namespace-bound-t/expected/default.bpmn": {
+			"sha256": "fb1a8c050fffc0685f6a4f2f2aff2fe227b98a23a5998bf6c937a829283a13b2",
 			"ok": false,
 			"errors": [
 				{
@@ -9850,6 +12095,16 @@
 				{
 					"element": "t",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/migrate/c7mig-063-process-and-document-does-not-modify-its-input/expected/default.bpmn": {
+			"sha256": "abeaac54e143827c6b9107b2c2aaf6318836ece7b67542adf1ed74c8db0875cc",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -9877,8 +12132,52 @@
 				}
 			]
 		},
+		"conformance/migrate/c7mig-065-process-and-document-analyzes-with-the-same-findings-it-/expected/default.bpmn": {
+			"sha256": "0344cfbf9250e2d55522445c0d32d63eda8573ec23dc31c41f7575d17f4051ed",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
 		"conformance/migrate/c7mig-065-process-and-document-analyzes-with-the-same-findings-it-/input.bpmn": {
 			"sha256": "0fbe50c9905588d582af83eed45eb417bd3267a39b05534c4dc8d50fefd6b248",
+			"ok": false,
+			"errors": [
+				{
+					"element": "t",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/migrate/options-platform-version/expected/default.bpmn": {
+			"sha256": "e53df3b655ccd80571f7d8d9c647fe5f5c7863db726ab81117286f8391854adb",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/options-platform-version/expected/source.bpmn": {
+			"sha256": "e53df3b655ccd80571f7d8d9c647fe5f5c7863db726ab81117286f8391854adb",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/options-platform-version/expected/v8_10.bpmn": {
+			"sha256": "e53df3b655ccd80571f7d8d9c647fe5f5c7863db726ab81117286f8391854adb",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/options-platform-version/expected/v8_5.bpmn": {
+			"sha256": "8c949eadf66b9465e0349962dfd1dff5001557061a90d88b21b4b4e96f061e81",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/migrate/ts-bug-export-mi-loop-id/expected/default.bpmn": {
+			"sha256": "748ce646e5b08beee0974d88087645367c8467a8aea628a71d67498a35d6f896",
 			"ok": false,
 			"errors": [
 				{
@@ -9886,8 +12185,8 @@
 					"message": "Must have at least one start event"
 				},
 				{
-					"element": "t",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+					"element": "m",
+					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
 				}
 			]
 		},
@@ -9902,6 +12201,16 @@
 				{
 					"element": "m",
 					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
+				}
+			]
+		},
+		"conformance/migrate/ts-bug-task-listener-event-named-constructor/expected/default.bpmn": {
+			"sha256": "93090bf827fd95c85e691b9008c45522f184d38e1382068ec71521f7a3d72318",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -9970,12 +12279,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "svc",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "g",
 					"message": "Elements of type 'ComplexGateway' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
+				},
+				{
+					"element": "svc",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "p",
@@ -10018,8 +12327,20 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "ca",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+					"element": "s3 > timerEventDefinition",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				},
+				{
+					"element": "s1d",
+					"message": "Must reference a message"
+				},
+				{
+					"element": "m3",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "snd",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "rt3",
@@ -10034,24 +12355,12 @@
 					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "s1d",
-					"message": "Must reference a message"
-				},
-				{
-					"element": "snd",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "m3",
-					"message": "Must have exactly one zeebe:subscription extension element"
-				},
-				{
 					"element": "svc",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "s3 > timerEventDefinition",
-					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+					"element": "ca",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
 				}
 			]
 		},
@@ -14408,12 +16717,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Start",
-					"message": "Expected constant expression but found '=1+', which could not be evaluated without context: failed to parse expression '1+': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:2, found \"+\""
-				},
-				{
 					"element": "M",
 					"message": "failed to parse expression '1+': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:2, found \"+\""
+				},
+				{
+					"element": "Start",
+					"message": "Expected constant expression but found '=1+', which could not be evaluated without context: failed to parse expression '1+': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:2, found \"+\""
 				}
 			]
 		},
@@ -14722,11 +17031,11 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "C0_d",
+					"element": "T_d",
 					"message": "Link name must be present and not empty."
 				},
 				{
-					"element": "T_d",
+					"element": "C0_d",
 					"message": "Link name must be present and not empty."
 				}
 			]

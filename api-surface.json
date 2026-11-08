@@ -566,6 +566,7 @@
 			"ApplyProblem": "type",
 			"ApplyResult": "type",
 			"ApplyToElementResult": "type",
+			"ApplyToModelOptions": "type",
 			"BPMNKIT_CONNECTOR_TEMPLATES": "value",
 			"BUNDLED_CONNECTOR_TEMPLATES": "value",
 			"CONNECTOR_ALIASES": "value",

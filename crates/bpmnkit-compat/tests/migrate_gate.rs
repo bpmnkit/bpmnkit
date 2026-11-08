@@ -2,7 +2,9 @@
 //! `camunda7-migrate.test.ts` "deploy gate".
 
 use bpmnkit_bpmn::{parse_bpmn, BpmnDefinitions};
-use bpmnkit_compat::camunda7::migrate::{analyze_camunda7, convert_camunda7, Camunda7ConvertOptions};
+use bpmnkit_compat::camunda7::migrate::{
+    analyze_camunda7, convert_camunda7, Camunda7ConvertOptions,
+};
 use bpmnkit_compat::zeebe::gate::{assert_deployable, AssertOptions, PlaceholderField};
 
 fn input(case: &str) -> BpmnDefinitions {
@@ -15,8 +17,11 @@ fn input(case: &str) -> BpmnDefinitions {
 
 #[test]
 fn returns_a_model_zeebe_accepts() {
-    let c = convert_camunda7(&input("c7-invoice-approval"), &Camunda7ConvertOptions::default())
-        .expect("deploys");
+    let c = convert_camunda7(
+        &input("c7-invoice-approval"),
+        &Camunda7ConvertOptions::default(),
+    )
+    .expect("deploys");
     assert!(c.placeholders.is_empty());
     assert!(assert_deployable(&c.definitions, &AssertOptions::default()).is_ok());
 }

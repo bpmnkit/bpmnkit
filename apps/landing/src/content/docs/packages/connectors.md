@@ -425,6 +425,24 @@ them as not expressible.
 is not written and comes back as a problem. Re-applying a template to an element that already
 carries its id owns all of these, so a binding a newer version dropped is removed.
 
+### What Zeebe would refuse
+
+`applyTemplateToElement`, `applyTemplates` and `applyConnectorLines` check the elements they
+wrote with Zeebe's deploy rules and report each error as a problem, after the template's own
+problems (a missing required value is still `missing-required`):
+
+```
+Not deployable on Camunda 8.10: call: Must have exactly one 'zeebe:taskDefinition' extension element (zeebe/service-task-definition)
+```
+
+`applyTemplateToElement` gives it `kind: "not-deployable"`; `applyTemplates` names the element;
+`applyConnectorLines` puts it on the line that configured the element. The model is still
+returned, as for any other problem. Only the applied elements (and the message an inbound
+template writes) are checked, so applying a template to an unfinished diagram does not report
+the rest of it. The version is `camundaVersion`, else the model's `executionPlatformVersion`,
+else the newest. Pass `{ validate: false }` to skip the check. `applyElementTemplate` and
+`applyConnectorTemplate` return builder options, not a model; `build()` checks those.
+
 ## Applying several templates by name — `applyTemplates`
 
 `applyTemplates` is a batch wrapper over `applyTemplateToElement` for values written by hand,
@@ -572,8 +590,8 @@ for CI and takes `--format json`.
 | `propertyKey(property)` | The variable name a template property binds to |
 | `applyConnectorTemplate(id, values)` | Catalog template → builder options + problems |
 | `applyElementTemplate(template, values)` | Template object → builder options + problems |
-| `applyTemplateToElement(definitions, elementId, template, values)` | Template written onto an element of a parsed model → `{ definitions, problems }` |
-| `applyTemplates(definitions, entries, { omitDefaults? })` | Several templates by id, `id@version` or alias, with key suggestions → `{ definitions, problems }` |
+| `applyTemplateToElement(definitions, elementId, template, values, { omitDefaults?, validate?, camundaVersion? })` | Template written onto an element of a parsed model → `{ definitions, problems }`, deploy errors included |
+| `applyTemplates(definitions, entries, { omitDefaults?, validate?, camundaVersion? })` | Several templates by id, `id@version` or alias, with key suggestions → `{ definitions, problems }`, deploy errors included |
 | `validateElementTemplate(template)` | `{ valid, problems, warnings }` |
 | `readTemplateDocument(text)` | Parse a file holding one template or many |
 | `registerElementTemplates(templates)` | Merge templates into the catalog |

@@ -340,7 +340,7 @@
 		{
 			"id": "cli.casen.bpmn-generation-pipeline",
 			"file": "chunks/cli.casen.bpmn-generation-pipeline.md",
-			"tokens": 333,
+			"tokens": 444,
 			"tags": [
 				"cli",
 				"casen",
@@ -349,7 +349,11 @@
 				"pipeline"
 			],
 			"entities": [
-				"ProcessPlan"
+				"ProcessPlan",
+				"compilePlan",
+				"mergePlan",
+				"camundaVersion",
+				"result.placeholders"
 			]
 		},
 		{
@@ -904,6 +908,20 @@
 			"entities": []
 		},
 		{
+			"id": "cli.migrate.a-model-camunda-8-would-refuse",
+			"file": "chunks/cli.migrate.a-model-camunda-8-would-refuse.md",
+			"tokens": 255,
+			"tags": [
+				"cli",
+				"migrate",
+				"model",
+				"camunda",
+				"would",
+				"refuse"
+			],
+			"entities": []
+		},
+		{
 			"id": "cli.migrate.where-the-output-goes",
 			"file": "chunks/cli.migrate.where-the-output-goes.md",
 			"tokens": 139,
@@ -921,7 +939,7 @@
 		{
 			"id": "cli.migrate.flags",
 			"file": "chunks/cli.migrate.flags.md",
-			"tokens": 267,
+			"tokens": 319,
 			"tags": [
 				"cli",
 				"migrate",
@@ -3263,13 +3281,18 @@
 		{
 			"id": "guides.migrate-from-camunda-7.who-this-is-for",
 			"file": "chunks/guides.migrate-from-camunda-7.who-this-is-for.md",
-			"tokens": 290,
+			"tokens": 578,
 			"tags": [
 				"guides",
 				"migrate-from-camunda-7",
 				"run"
 			],
 			"entities": [
+				"convertCamunda7",
+				"assertDeployable",
+				"DeployabilityError",
+				"result.placeholders",
+				"executionPlatformVersion",
 				"sourceXml"
 			]
 		},
@@ -3391,16 +3414,26 @@
 		{
 			"id": "guides.patterns",
 			"file": "chunks/guides.patterns.md",
-			"tokens": 304,
+			"tokens": 147,
 			"tags": [
 				"guides",
-				"patterns",
-				"available"
+				"patterns"
 			],
 			"entities": [
 				"@bpmnkit/patterns",
 				"ProcessPlan"
 			]
+		},
+		{
+			"id": "guides.patterns.available-patterns",
+			"file": "chunks/guides.patterns.available-patterns.md",
+			"tokens": 190,
+			"tags": [
+				"guides",
+				"patterns",
+				"available"
+			],
+			"entities": []
 		},
 		{
 			"id": "guides.patterns.how-matching-works",
@@ -3446,7 +3479,7 @@
 		{
 			"id": "guides.patterns.pattern-schema",
 			"file": "chunks/guides.patterns.pattern-schema.md",
-			"tokens": 212,
+			"tokens": 213,
 			"tags": [
 				"guides",
 				"patterns",
@@ -5271,6 +5304,33 @@
 			]
 		},
 		{
+			"id": "packages.connectors.applying-to-an-element-inbound-connectors-and-linked-resources-what-zeebe-would-refuse",
+			"file": "chunks/packages.connectors.applying-to-an-element-inbound-connectors-and-linked-resources-what-zeebe-would-refuse.md",
+			"tokens": 234,
+			"tags": [
+				"packages",
+				"connectors",
+				"applying",
+				"element",
+				"inbound",
+				"linked",
+				"resources",
+				"zeebe",
+				"would",
+				"refuse"
+			],
+			"entities": [
+				"applyTemplateToElement",
+				"applyTemplates",
+				"applyConnectorLines",
+				"camundaVersion",
+				"executionPlatformVersion",
+				"applyElementTemplate",
+				"applyConnectorTemplate",
+				"build()"
+			]
+		},
+		{
 			"id": "packages.connectors.applying-several-templates-by-name-applytemplates",
 			"file": "chunks/packages.connectors.applying-several-templates-by-name-applytemplates.md",
 			"tokens": 632,
@@ -5339,7 +5399,7 @@
 		{
 			"id": "packages.connectors.api-reference",
 			"file": "chunks/packages.connectors.api-reference.md",
-			"tokens": 672,
+			"tokens": 693,
 			"tags": [
 				"packages",
 				"connectors",

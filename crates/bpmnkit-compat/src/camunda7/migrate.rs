@@ -8,12 +8,12 @@ use super::juel::{
     contains_juel, feel_string, is_feel_name, is_js_space, js_trim, translate_juel_to_feel,
     JuelToFeelOptions, JuelToFeelResult,
 };
+use crate::zeebe::gate::{assert_deployable, AssertOptions, DeployabilityError, PlaceholderFill};
 use bpmnkit_bpmn::zeebe::{bpmn_element_name, is_zeebe_placement_allowed};
 use bpmnkit_bpmn::{
     Attrs, BpmnConditionExpression, BpmnDefinitions, BpmnEventDefinition, BpmnFlowElement,
     BpmnMultiInstanceLoopCharacteristics, BpmnProcess, BpmnProcessContents, XmlElement,
 };
-use crate::zeebe::gate::{assert_deployable, AssertOptions, DeployabilityError, PlaceholderFill};
 use bpmnkit_feel::{parse_partial, ParseOptions};
 use serde::Serialize;
 use std::collections::HashSet;
@@ -617,7 +617,9 @@ impl Converter {
                 "Placeholder {field} \"{}\" written so the model deploys ({}).",
                 fill.value, fill.rule
             ),
-            suggestion: "Replace it with the real value; the placeholder does nothing useful at runtime.".into(),
+            suggestion:
+                "Replace it with the real value; the placeholder does nothing useful at runtime."
+                    .into(),
             applied: true,
         });
     }
@@ -2727,7 +2729,8 @@ mod tests {
 
     fn convert(body: &str) -> Converted {
         let defs = parse_bpmn(&c7(body, "")).expect("parses");
-        let r = convert_camunda7(&defs, &Camunda7ConvertOptions::default()).expect("converts");
+        // Each case is a fragment that pins one rule; the gate has its own tests.
+        let r = convert_camunda7(&defs, &Camunda7ConvertOptions::ungated()).expect("converts");
         Converted {
             xml: serialize_bpmn(&r.definitions),
             findings: r.report.findings,
@@ -2936,6 +2939,7 @@ mod tests {
             &defs,
             &Camunda7ConvertOptions {
                 execution_platform_version: Some("8.6.0".into()),
+                ..Camunda7ConvertOptions::ungated()
             },
         )
         .expect("converts");

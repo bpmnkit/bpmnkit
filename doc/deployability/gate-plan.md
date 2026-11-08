@@ -106,3 +106,9 @@ sources Zeebe rejects), each with a reason. Everything else must pass `pnpm zeeb
 - Process-text repairs stay deterministic and identical in Rust: the id stands in for a missing message name, message throw/end job type, signal name, thrown error/escalation code and called process, as it does for `job=`. A correlation key and a timer's time have no stand-in; the gate names them. Caught errors and escalations without a code stay catch-alls.
 - Compact cases that pin how a non-Camunda-8 model expands (round trips of rejected sources, cancel/compensate boundaries, complex gateways, transactions, an empty process) use `case.json` `"expand": {"validate": false}`; text cases written by a model without a key or timer time record the gate's error, with the parser's repairs still pinned in `result.json`.
 
+## Phase 4 decisions (2026-11-08)
+
+- Migration: the gate runs on the converted model and throws; the report is not attached to the error. `analyzeCamunda7` never gates, so callers (the CLI) get the report of a refused model from it. Placeholder fills are `manual` findings (construct `placeholder <field>`) and `Camunda7Conversion.placeholders`. Gate version: `camundaVersion`, else `executionPlatformVersion`, else 8.10.0.
+- Connector templates report deploy errors as problems instead of throwing: they already return a model with problems and run on unfinished diagrams, so only the applied elements (and the message an inbound template writes) are checked. Builder-option functions (`applyElementTemplate`, `applyConnectorTemplate`) are gated by `build()`.
+- `compilePlan` / `mergePlan`: a refused model has no `xml`; the reasons are `problems` (`element:<id>`). `mergePlan` gates the merged model, not the delta.
+- Pattern compact templates were made deployable and expand gated. Conformance `migrate/` fragments convert with `validate: false` and are `deployable: false`.

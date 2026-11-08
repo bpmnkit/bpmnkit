@@ -1,5 +1,9 @@
 # Features
 
+## Deploy gate on migration, connector templates, plans and optimize fixes (2026-11-08)
+
+`convertCamunda7` refuses a Camunda 8 result Zeebe would reject (`DeployabilityError`, every reason listed); `analyzeCamunda7` still gives the report, `placeholders: true` fills what only a person knows and lists each fill as `manual` work, `validate: false` returns the conversion as it is. `casen migrate c7` writes nothing for a refused model, says why, and offers `--placeholders` and `--no-validate`. `applyTemplateToElement`, `applyTemplates` and `applyConnectorLines` report Zeebe errors on the applied elements as problems (`not-deployable`). `compilePlan` / `mergePlan` return no XML for a model Zeebe would refuse, with the reasons as problems, and take `placeholders` (`casen synth --placeholders`). Pattern compact templates expand through the gate, and optimize auto-fixes keep a deployable model deployable (the extracted reusable process now deploys). Rust: `convert_camunda7` with the same options, messages and report.
+
 ## Compact and process text for Camunda 8: names, codes, timers and the `expand` gate (2026-11-08)
 
 `expand(compact)` refuses a diagram Zeebe would reject (`DeployabilityError`, every reason listed) and marks its output as Camunda 8; `validate: false` for previews, `placeholders: true` to fill, `camundaVersion` to choose the version. Compact elements carry `messageName` + `correlationKey`, `signalName`, `errorCode`, `escalationCode`, `timerDate` and `timerCycle`, written as root messages (with their `zeebe:subscription`), signals, errors and escalations and read back by `compactify`. The line format gains `msg=`, `key=`, `signal=`, `error=`, `escalation=`, `at=`, `every=` and `called=`, written back by `writeProcessText` and read by change scripts; the id stands in for a missing name or code, as it does for `job=`. Rust: `expand(compact, &ExpandOptions)`, same fields, syntax and messages.
