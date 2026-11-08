@@ -98,7 +98,9 @@ describe.runIf(cases.length > 0)("conformance/validate", () => {
 				})
 			: {}
 		const input =
-			spec.input === undefined ? path.join(dir, "input.bpmn") : path.join(repo, "conformance", spec.input)
+			spec.input === undefined
+				? path.join(dir, "input.bpmn")
+				: path.join(repo, "conformance", spec.input)
 		const runs = spec.runs ?? { default: {} }
 		if (RECORD) {
 			fs.rmSync(path.join(dir, "expected"), { recursive: true, force: true })
