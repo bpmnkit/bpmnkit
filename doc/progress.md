@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-08 — Rust crates: crates.io trusted publishing (OIDC)
+
+- `release-crates.yml` publish job: `id-token: write`; publishes with `rust-lang/crates-io-auth-action@v1`'s short-lived token. When any crate has no version on crates.io yet (`crates-publish.mjs --print-new`, sparse index), the run falls back to the `CARGO_REGISTRY_TOKEN` secret and then registers the workflow as every crate's trusted publisher (`--trust`, crates.io API, idempotent).
+- `scripts/crates-publish.mjs`: `--print-new`, `--trust`; tests for the index path and the publisher match. `doc/rust-crates-release.md`: bootstrap, then OIDC, and the maintainer's steps.
+
 ## 2026-11-08 — Landing: Rust crates presented
 
 - Home: hero eyebrow names Rust; the packages section gets an "Also in Rust" row (`cargo add bpmnkit`, link to the docs page), styled as one hairline box with a mono label on the existing ink-band tokens.

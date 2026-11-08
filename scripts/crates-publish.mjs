@@ -9,6 +9,10 @@
 //   node scripts/crates-publish.mjs --dry-run   `cargo publish --dry-run` for the whole workspace
 //                                               (+ --allow-dirty for a working tree with changes)
 //   node scripts/crates-publish.mjs --publish   publish in order; needs CARGO_REGISTRY_TOKEN
+//   node scripts/crates-publish.mjs --print-new the crates with no version on crates.io yet
+//   node scripts/crates-publish.mjs --trust     register the release workflow as each crate's
+//                                               trusted publisher; needs CARGO_REGISTRY_TOKEN
+//                                               with the trusted-publishing scope
 //
 // Only workspace members with `publish` unset (or a registry list) are handled; the conformance
 // crate stays `publish = false`. The `bpmnkit` facade depends on every other crate, so it is
@@ -105,20 +109,59 @@ export function check(crates) {
 	return problems
 }
 
-/** Whether `name@version` is already on crates.io, by the sparse index. */
-async function published(name, version) {
+/** Sparse index path of a crate: `bp/mn/bpmnkit-xml`. */
+export function indexPath(name) {
 	const n = name.toLowerCase()
-	const path =
-		n.length <= 2
-			? `${n.length}/${n}`
-			: n.length === 3
-				? `3/${n[0]}/${n}`
-				: `${n.slice(0, 2)}/${n.slice(2, 4)}/${n}`
-	const response = await fetch(`https://index.crates.io/${path}`)
-	if (response.status === 404) return false
+	if (n.length <= 2) return `${n.length}/${n}`
+	if (n.length === 3) return `3/${n[0]}/${n}`
+	return `${n.slice(0, 2)}/${n.slice(2, 4)}/${n}`
+}
+
+/** The versions of `name` on crates.io, by the sparse index; empty when the crate does not exist. */
+async function publishedVersions(name) {
+	const response = await fetch(`https://index.crates.io/${indexPath(name)}`)
+	if (response.status === 404) return []
 	if (!response.ok) throw new Error(`crates.io index answered ${response.status} for ${name}`)
 	const lines = (await response.text()).split("\n").filter(Boolean)
-	return lines.some((line) => JSON.parse(line).vers === version)
+	return lines.map((line) => JSON.parse(line).vers)
+}
+
+/** The GitHub workflow allowed to publish by OIDC (crates.io trusted publishing). */
+export const TRUSTED_PUBLISHER = {
+	repository_owner: "bpmnkit",
+	repository_name: "bpmnkit",
+	workflow_filename: "release-crates.yml",
+	environment: "crates-io",
+}
+
+/** Whether a crate's existing configs already include our workflow (owner and repo ignore case). */
+export function hasTrustedPublisher(configs) {
+	const t = TRUSTED_PUBLISHER
+	return configs.some(
+		(c) =>
+			c.repository_owner.toLowerCase() === t.repository_owner &&
+			c.repository_name.toLowerCase() === t.repository_name &&
+			c.workflow_filename === t.workflow_filename &&
+			c.environment === t.environment,
+	)
+}
+
+async function cratesApi(path, token, init = {}) {
+	const response = await fetch(`https://crates.io/api/v1${path}`, {
+		...init,
+		headers: {
+			Authorization: token,
+			"Content-Type": "application/json",
+			// crates.io rejects requests without a User-Agent that names the client.
+			"User-Agent": "bpmnkit-release (https://github.com/bpmnkit/bpmnkit)",
+		},
+	})
+	if (!response.ok) {
+		throw new Error(
+			`crates.io ${init.method ?? "GET"} ${path}: ${response.status} ${await response.text()}`,
+		)
+	}
+	return response.json()
 }
 
 function cargo(args) {
@@ -161,7 +204,7 @@ async function main() {
 		const versions = new Map(crates.map((c) => [c.name, c.version]))
 		for (const name of order) {
 			const version = versions.get(name)
-			if (await published(name, version)) {
+			if ((await publishedVersions(name)).includes(version)) {
 				console.log(`skip ${name}@${version}: already on crates.io`)
 				continue
 			}
@@ -171,9 +214,34 @@ async function main() {
 			// The index needs a moment before dependents can resolve this version.
 			await new Promise((resolve) => setTimeout(resolve, 15000))
 		}
+	} else if (args.includes("--print-new")) {
+		for (const name of order) if ((await publishedVersions(name)).length === 0) console.log(name)
+	} else if (args.includes("--trust")) {
+		const token = process.env.CARGO_REGISTRY_TOKEN
+		if (!token) {
+			console.error("crates-publish: CARGO_REGISTRY_TOKEN is not set")
+			process.exit(1)
+		}
+		for (const name of order) {
+			const { github_configs } = await cratesApi(
+				`/trusted_publishing/github_configs?crate=${encodeURIComponent(name)}`,
+				token,
+			)
+			if (hasTrustedPublisher(github_configs)) {
+				console.log(`skip ${name}: trusted publisher already set`)
+				continue
+			}
+			await cratesApi("/trusted_publishing/github_configs", token, {
+				method: "POST",
+				body: JSON.stringify({ github_config: { crate: name, ...TRUSTED_PUBLISHER } }),
+			})
+			console.log(
+				`trust ${name}: ${TRUSTED_PUBLISHER.workflow_filename} (${TRUSTED_PUBLISHER.environment})`,
+			)
+		}
 	} else {
 		console.error(
-			"usage: crates-publish.mjs --check | --print | --check-features | --dry-run | --publish",
+			"usage: crates-publish.mjs --check | --print | --check-features | --dry-run | --publish | --print-new | --trust",
 		)
 		process.exit(2)
 	}
