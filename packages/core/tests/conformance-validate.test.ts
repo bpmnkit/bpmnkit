@@ -121,7 +121,7 @@ interface Verdict {
  * While the rules are being written: the most disagreements and uncovered rules
  * allowed. Like conformance/pending.json, these may only go down, to 0.
  */
-const MAX_DISAGREE = 291
+const MAX_DISAGREE = 280
 const MAX_UNCOVERED = 172
 
 const ORACLE: RunOptions = {
