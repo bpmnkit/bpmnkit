@@ -108,6 +108,102 @@
       "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
       "severity": "error",
       "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Bpmn_Definitions_--SwsH2BEeWQ6qGdY3x14w"
+      ],
+      "fixable": false,
+      "id": "zeebe/executable-process",
+      "message": "Must contain at least one executable process",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "error",
+      "suggestion": "Mark the process isExecutable=\"true\"."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_To9ZtjOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": false,
+      "id": "zeebe/conditional-flow-source",
+      "message": "Conditional sequence flows are only supported at exclusive or inclusive gateway",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "error",
+      "suggestion": "Remove the condition or route the flow through an exclusive or inclusive gateway."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_To9ZzzOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": false,
+      "id": "zeebe/conditional-flow-source",
+      "message": "Conditional sequence flows are only supported at exclusive or inclusive gateway",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "error",
+      "suggestion": "Remove the condition or route the flow through an exclusive or inclusive gateway."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_To9Z7TOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value 'true'. An expression must start with '=' (e.g. '=true').",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_To9Z8zOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value ''. An expression must start with '=' (e.g. '=').",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_To9Z9jOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value ''. An expression must start with '=' (e.g. '=').",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_To9Z-TOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value ''. An expression must start with '=' (e.g. '=').",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_To9Z_DOCEeSknpIVFCxNIQ"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value ''. An expression must start with '=' (e.g. '=').",
+      "processId": "_To9ZoTOCEeSknpIVFCxNIQ",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
     }
   ],
   "fixes": [
@@ -129,7 +225,7 @@
       "agentic": 0,
       "connector": 0,
       "data-flow": 0,
-      "deploy": 1,
+      "deploy": 9,
       "extract": 0,
       "feel": 0,
       "feel-syntax": 0,
@@ -139,10 +235,10 @@
       "task-reuse": 0
     },
     "bySeverity": {
-      "error": 3,
+      "error": 11,
       "info": 3,
       "warning": 3
     },
-    "total": 9
+    "total": 17
   }
 }

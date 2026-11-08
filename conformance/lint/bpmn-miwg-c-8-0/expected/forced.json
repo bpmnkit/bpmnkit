@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 13,
+    "error": 17,
     "info": 27,
     "warning": 15
   },
@@ -745,10 +745,61 @@
       "processId": "VacationRequestProcess",
       "severity": "error",
       "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Definitions__a9e3a63e-db87-4fa1-9091-328acae4f490"
+      ],
+      "fixable": false,
+      "id": "zeebe/executable-process",
+      "message": "Must contain at least one executable process",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "Mark the process isExecutable=\"true\"."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_f2b0da63-d841-4457-ad85-7d86c8b5c1d2"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value 'Vacation Approval = \"Approved\"'. An expression must start with '=' (e.g. '=Vacation Approval = \"Approved\"').",
+      "plane": "VacationRequestProcess",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_325973e7-0bc8-4136-b6df-be1e681d8608"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value 'Vacation Approval = \"Approved\"'. An expression must start with '=' (e.g. '=Vacation Approval = \"Approved\"').",
+      "plane": "VacationRequestProcess",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_0a1c4f20-509f-4aeb-baf9-acc762f4fdf9"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value 'Vacation Approval = \"Manual Validation Required\"'. An expression must start with '=' (e.g. '=Vacation Approval = \"Manual Validation Required\"').",
+      "plane": "VacationRequestProcess",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
     }
   ],
   "platform": {
     "id": "none"
   },
-  "total": 55
+  "total": 59
 }

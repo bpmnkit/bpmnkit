@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 4,
+    "error": 7,
     "info": 0,
     "warning": 3
   },
@@ -108,6 +108,45 @@
       "processId": "invoice-approval",
       "severity": "error",
       "suggestion": "Set the process id to call."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_total"
+      ],
+      "fixable": false,
+      "id": "zeebe/script-task-implementation",
+      "message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element",
+      "plane": "invoice-approval",
+      "processId": "invoice-approval",
+      "severity": "error",
+      "suggestion": "Give the script task one zeebe:script or one zeebe:taskDefinition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Flow_yes"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value '${approved == true}'. An expression must start with '=' (e.g. '=${approved == true}').",
+      "plane": "invoice-approval",
+      "processId": "invoice-approval",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Flow_no"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value '${approved == false}'. An expression must start with '=' (e.g. '=${approved == false}').",
+      "plane": "invoice-approval",
+      "processId": "invoice-approval",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
     }
   ],
   "platform": {
@@ -115,5 +154,5 @@
     "name": "Camunda Platform",
     "version": "7.22.0"
   },
-  "total": 7
+  "total": 10
 }

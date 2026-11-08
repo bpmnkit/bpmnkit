@@ -67,6 +67,18 @@
       "processId": "sid-54D696FD-DEDC-45F3-99DB-1404DA433FC4",
       "severity": "error",
       "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sid-ad44e239-e96e-4a80-b0e4-cf63b741c3cb"
+      ],
+      "fixable": false,
+      "id": "zeebe/executable-process",
+      "message": "Must contain at least one executable process",
+      "processId": "sid-34746A54-1D7D-46CA-B219-0C4CEAE51170",
+      "severity": "error",
+      "suggestion": "Mark the process isExecutable=\"true\"."
     }
   ],
   "fixes": [],
@@ -75,7 +87,7 @@
       "agentic": 0,
       "connector": 0,
       "data-flow": 0,
-      "deploy": 2,
+      "deploy": 3,
       "extract": 0,
       "feel": 0,
       "feel-syntax": 0,
@@ -85,10 +97,10 @@
       "task-reuse": 0
     },
     "bySeverity": {
-      "error": 2,
+      "error": 3,
       "info": 0,
       "warning": 4
     },
-    "total": 6
+    "total": 7
   }
 }

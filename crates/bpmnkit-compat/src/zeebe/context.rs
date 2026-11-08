@@ -255,19 +255,19 @@ impl<'a> ZeebeContext<'a> {
     }
 
     pub fn message(&self, id: Option<&str>) -> Option<&'a BpmnMessage> {
-        id.and_then(|id| self.defs.messages.iter().find(|m| m.id == id))
+        id.and_then(|id| self.defs.messages.iter().find(|m| m.id == local_ref(id)))
     }
 
     pub fn error(&self, id: Option<&str>) -> Option<&'a BpmnError> {
-        id.and_then(|id| self.defs.errors.iter().find(|m| m.id == id))
+        id.and_then(|id| self.defs.errors.iter().find(|m| m.id == local_ref(id)))
     }
 
     pub fn signal(&self, id: Option<&str>) -> Option<&'a BpmnSignal> {
-        id.and_then(|id| self.defs.signals.iter().find(|m| m.id == id))
+        id.and_then(|id| self.defs.signals.iter().find(|m| m.id == local_ref(id)))
     }
 
     pub fn escalation(&self, id: Option<&str>) -> Option<&'a BpmnEscalation> {
-        id.and_then(|id| self.defs.escalations.iter().find(|m| m.id == id))
+        id.and_then(|id| self.defs.escalations.iter().find(|m| m.id == local_ref(id)))
     }
 
     /// Whether an element name such as `zeebe:taskDefinition` is in the Zeebe namespace.
@@ -390,6 +390,11 @@ impl<'a> ZeebeContext<'a> {
         });
         unique.into_iter().map(Finding::new).collect()
     }
+}
+
+/// `localRef`: a reference without its QName prefix (`bpmn:m` → `m`), as Zeebe resolves it.
+pub fn local_ref(r: &str) -> &str {
+    r.rsplit_once(':').map_or(r, |(_, local)| local)
 }
 
 /// `isExpression`: Zeebe matches the whole text against `=(.+)`.

@@ -165,7 +165,11 @@ fn event_definition(d: &BpmnEventDefinition, bp: &str) -> XmlElement {
         BpmnEventDefinition::Message(m) => {
             set_truthy(&mut attrs, "id", &m.id);
             set_truthy(&mut attrs, "messageRef", &m.message_ref);
-            ("messageEventDefinition", &m.unknown_attributes, Vec::new())
+            (
+                "messageEventDefinition",
+                &m.unknown_attributes,
+                extension_elements(m.extension_elements.as_deref().unwrap_or(&[]), bp),
+            )
         }
         BpmnEventDefinition::Signal(s) => {
             set_truthy(&mut attrs, "id", &s.id);

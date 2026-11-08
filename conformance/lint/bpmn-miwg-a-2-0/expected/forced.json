@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 5,
+    "error": 9,
     "info": 2,
     "warning": 6
   },
@@ -186,10 +186,61 @@
       "processId": "WFP-6-",
       "severity": "error",
       "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_1373649889746"
+      ],
+      "fixable": false,
+      "id": "zeebe/executable-process",
+      "message": "Must contain at least one executable process",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Mark the process isExecutable=\"true\"."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_f1478fb7-98c4-4c01-8c15-68bd04c91535"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_a1570a53-28d2-41b1-a3a2-3e50c00d747e"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_20ebb3c1-5178-4c7c-a91d-23e58f2aa73b"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
     }
   ],
   "platform": {
     "id": "none"
   },
-  "total": 13
+  "total": 17
 }

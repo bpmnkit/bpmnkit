@@ -282,6 +282,42 @@
       "processId": "proc",
       "severity": "error",
       "suggestion": "Target Camunda 8.7 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "scr"
+      ],
+      "fixable": false,
+      "id": "zeebe/script-expression",
+      "message": "failed to parse expression '1 +'",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Write the script as a valid FEEL expression starting with '='."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": false,
+      "id": "zeebe/output-mapping",
+      "message": "failed to parse expression ')'",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Use a FEEL expression starting with '=' as source and a variable name or dotted path as target."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "st"
+      ],
+      "fixable": false,
+      "id": "zeebe/conditional-flow-source",
+      "message": "Conditional sequence flows are only supported at exclusive or inclusive gateway",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Remove the condition or route the flow through an exclusive or inclusive gateway."
     }
   ],
   "fixes": [],
@@ -290,7 +326,7 @@
       "agentic": 0,
       "connector": 0,
       "data-flow": 10,
-      "deploy": 2,
+      "deploy": 5,
       "extract": 0,
       "feel": 0,
       "feel-syntax": 2,
@@ -300,10 +336,10 @@
       "task-reuse": 0
     },
     "bySeverity": {
-      "error": 4,
+      "error": 7,
       "info": 7,
       "warning": 9
     },
-    "total": 20
+    "total": 23
   }
 }

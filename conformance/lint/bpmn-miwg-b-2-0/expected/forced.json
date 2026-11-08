@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 60,
+    "error": 75,
     "info": 3,
     "warning": 17
   },
@@ -1043,10 +1043,202 @@
       "processId": "WFP-0-",
       "severity": "error",
       "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_1373638079286"
+      ],
+      "fixable": false,
+      "id": "zeebe/executable-process",
+      "message": "Must contain at least one executable process",
+      "processId": "Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+      "severity": "error",
+      "suggestion": "Mark the process isExecutable=\"true\"."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Message_1373638080954"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-name",
+      "message": "Name must be present and not empty",
+      "processId": "Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+      "severity": "error",
+      "suggestion": "Give the message a non-empty name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Message_1373638080955"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-name",
+      "message": "Name must be present and not empty",
+      "processId": "Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+      "severity": "error",
+      "suggestion": "Give the message a non-empty name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_f07e4bd2-768d-42c6-a8d5-24d1c3bfa3cb"
+      ],
+      "fixable": false,
+      "id": "zeebe/receive-task-message",
+      "message": "Must reference a message",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Set messageRef on the receive task to a message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_e233b5e1-244d-422e-8886-4588b7566122"
+      ],
+      "fixable": false,
+      "id": "zeebe/signal-reference",
+      "message": "Must reference a signal",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Reference a signal with signalRef on the signal event definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_d60db966-c03d-4f0e-a5bd-945525fa0aaf"
+      ],
+      "fixable": false,
+      "id": "zeebe/error-end-reference",
+      "message": "Must reference an error",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Reference an error with errorRef on the error event definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_8021571a-7a77-426b-b824-545cc61f7334"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_5d70a293-03ea-4a73-bed0-65ad145796d6"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_8b98cde1-aec2-46e8-8be2-d9aa244fcda6"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_a9966baf-d9b9-4be1-a4d9-2906ab5add30"
+      ],
+      "fixable": false,
+      "id": "zeebe/inclusive-flow-condition",
+      "message": "Must have a condition",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_c57a5344-213f-4834-a6c3-94ce878b413c"
+      ],
+      "fixable": false,
+      "id": "zeebe/multi-instance-loop-characteristics",
+      "message": "Must have exactly one 'zeebe:loopCharacteristics' extension element",
+      "plane": "C1373638080953",
+      "processId": "Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+      "severity": "error",
+      "suggestion": "Add a single zeebe:loopCharacteristics element to the multi-instance loop."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_149a6e1d-0385-4d0f-a90c-c2150a291a67"
+      ],
+      "fixable": false,
+      "id": "zeebe/multi-instance-loop-characteristics",
+      "message": "Must have exactly one 'zeebe:loopCharacteristics' extension element",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Add a single zeebe:loopCharacteristics element to the multi-instance loop."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_6936f794-7bbb-4aa1-ae48-3a35bab4e2f4"
+      ],
+      "fixable": false,
+      "id": "zeebe/multi-instance-loop-characteristics",
+      "message": "Must have exactly one 'zeebe:loopCharacteristics' extension element",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Add a single zeebe:loopCharacteristics element to the multi-instance loop."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_149a6e1d-0385-4d0f-a90c-c2150a291a67"
+      ],
+      "fixable": false,
+      "id": "zeebe/sub-process-start-event",
+      "message": "Must have exactly one start event",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Give the sub-process exactly one start event."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_0263ca9e-2ca0-4f4e-b7dd-86e15dcf2447"
+      ],
+      "fixable": false,
+      "id": "zeebe/sub-process-start-event",
+      "message": "Must have exactly one start event",
+      "plane": "C1373638080953",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Give the sub-process exactly one start event."
     }
   ],
   "platform": {
     "id": "none"
   },
-  "total": 80
+  "total": 95
 }

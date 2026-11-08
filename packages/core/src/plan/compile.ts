@@ -345,7 +345,11 @@ function emitStep(
 		case "subProcess":
 			b.subProcess(
 				id,
-				(sb) => emitSteps(sb, step.steps, idOf, resolve, problems, `${path}.steps`),
+				(sb) => {
+					// Zeebe rejects an embedded sub-process without exactly one none start event.
+					sb.startEvent(`${id}_start`)
+					emitSteps(sb, step.steps, idOf, resolve, problems, `${path}.steps`)
+				},
 				{
 					name: step.name,
 					documentation: step.documentation,

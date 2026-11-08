@@ -13,7 +13,10 @@ pub mod variable_flow;
 
 use crate::{Category, Finding, Severity};
 use bpmnkit_bpmn::BpmnDefinitions;
-use bpmnkit_compat::compat::{analyze_camunda_compat, dedupe_camunda_compat};
+use bpmnkit_compat::compat::{
+    analyze_camunda_compat, dedupe_camunda_compat, target_camunda_version,
+};
+use bpmnkit_compat::zeebe::{validate_deployable, ValidateOptions};
 use indexmap::IndexMap;
 use serde::Serialize;
 
@@ -139,6 +142,32 @@ pub fn optimize(defs: &BpmnDefinitions, options: &OptimizeOptions) -> Optimizati
         if options.user_task_forms == UserTaskForms::Off {
             findings.retain(|f| f.data.id != USER_TASK_FORM_RULE);
         }
+    }
+
+    // Zeebe's own deploy rules (`zeebe/…`); an element another deploy finding already
+    // marks as an error keeps that finding, which carries the fix (as in TS).
+    if r.has(Category::Deploy) {
+        let flagged: std::collections::HashSet<String> = findings
+            .iter()
+            .filter(|f| f.data.category == Category::Deploy && f.data.severity == Severity::Error)
+            .flat_map(|f| f.data.element_ids.iter().cloned())
+            .collect();
+        let camunda_version = options
+            .camunda_version
+            .clone()
+            .or_else(|| target_camunda_version(defs).map(|v| v.as_str().to_string()));
+        let zeebe = validate_deployable(
+            defs,
+            &ValidateOptions {
+                camunda_version,
+                ..ValidateOptions::default()
+            },
+        );
+        findings.extend(
+            zeebe
+                .into_iter()
+                .filter(|f| !f.data.element_ids.iter().any(|id| flagged.contains(id))),
+        );
     }
 
     let count = |pred: &dyn Fn(&Finding) -> bool| findings.iter().filter(|f| pred(f)).count();

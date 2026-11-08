@@ -11,10 +11,12 @@ mod references;
 mod structure;
 mod tasks;
 mod xml;
+mod xsd;
 
 pub use context::{
-    feel_error, feel_failure, is_expression, non_empty, static_value_message, FlowEntry, NodeEntry,
-    Scope, ScopeKind, ValidateOptions, ZeebeContext, ZeebeLimits, ZeebeResolver, ZEEBE_NS,
+    feel_error, feel_failure, is_expression, local_ref, non_empty, static_value_message, FlowEntry,
+    NodeEntry, Scope, ScopeKind, ValidateOptions, ZeebeContext, ZeebeLimits, ZeebeResolver,
+    ZEEBE_NS,
 };
 
 use crate::finding::{Finding, Severity};

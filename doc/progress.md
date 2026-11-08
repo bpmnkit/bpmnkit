@@ -1,5 +1,15 @@
 # Progress
 
+## 2026-11-08 — Zeebe deployability, session 2: the static Zeebe validator
+
+- `spec/zeebe-rules.json` (schema `spec/schema/zeebe-rules.schema.json`): the 193 rows of `doc/deployability/zeebe-rules.md` with name (`zeebe/<name>`), elements, Zeebe's messages, `since`/`until`, kind, severity and `check` (`model` 158, `xml` 9, `context` 5, `none` 21 with a note; 9 umbrella rules name their specific rules in `coveredBy`). spec-gen writes `packages/core/src/generated/zeebe-rules.ts` and `bpmnkit_spec::zeebe`.
+- TS `packages/core/src/bpmn/zeebe-validate/` (`validateDeployable`, `validateDeployableXml`, `isDeployable`, exported from `@bpmnkit/core`) and its Rust twin `bpmnkit_compat::zeebe`: every decidable rule, ported from Zeebe 8.9.28's validator sources (8.10 rules from `main`), recursive, version-aware, not gated on `executionPlatform`; a strict XML/XSD stage with Zeebe's (Xerces') messages; a resolver for the context rules.
+- Lint: `optimize`'s `deploy` category runs the validator (TS and Rust), skipping elements another deploy finding already marks as an error; `lint/` and `optimize/` conformance re-recorded.
+- `compat/no-expression`: catch-event error/escalation code expressions are flagged on every version (Zeebe 8.9.28 rejects them); the plugin-parity test documents the divergence.
+- Fixes the validator surfaced: the parser keeps `extensionElements` on `messageEventDefinition` (TS and Rust), so `zeebe:publishMessage` is not lost; `compilePlan` adds a start event to each sub-process (Z154).
+- Conformance `conformance/validate/`: a `-bad` and an `-ok` case per decidable rule (462 runs), the 26 repros, and `zeebe-verdicts.json`, Zeebe's recorded verdict on all 1,596 BPMN files (`node scripts/zeebe-verdicts.mjs`, `--check`). TS and Rust agree with Zeebe on 1,596/1,596 files (1,644 of 1,665 Zeebe errors matched by message); `undecidable.json` documents `z68-bad` (checked by Zeebe's transformer, which zeebe-check does not run).
+- Gaps left: see the "Validator gaps" section of `doc/deployability/REPORT.md`. reebe's deploy path is not wired yet (session 4).
+
 ## 2026-11-08 — reebe: job-timeout test no longer races the engine's checker
 
 - `reebe-engine/tests/compatibility.rs` `test_job_worker_timeout_retry` asserted that its own `mark_timed_out` call released the timed-out job. The engine's background timeout checker (every second) can release it first, which made the count 0 and failed CI once. The test now checks only that the job can be activated again.

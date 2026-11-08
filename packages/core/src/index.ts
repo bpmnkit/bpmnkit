@@ -70,6 +70,22 @@ export type {
 	ProcessContract,
 	ProcessTypesOptions,
 } from "./bpmn/process-types.js"
+export {
+	isDeployable,
+	validateDeployable,
+	validateDeployableXml,
+} from "./bpmn/zeebe-validate/index.js"
+export type {
+	ValidateDeployableOptions,
+	ZeebeLimits,
+	ZeebeResolver,
+} from "./bpmn/zeebe-validate/index.js"
+export {
+	ZEEBE_LATEST_VERSION,
+	ZEEBE_RULES,
+	ZEEBE_VERIFIED_VERSION,
+} from "./generated/zeebe-rules.js"
+export type { ZeebeRuleMeta, ZeebeRuleName } from "./generated/zeebe-rules.js"
 export { detectExecutionPlatform, lintCategories, lintDiagram } from "./bpmn/lint.js"
 export type {
 	DetectedPlatform,

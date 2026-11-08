@@ -20,7 +20,7 @@
     "connector"
   ],
   "counts": {
-    "error": 3,
+    "error": 4,
     "info": 0,
     "warning": 7
   },
@@ -142,6 +142,18 @@
       "processId": "p",
       "severity": "warning",
       "suggestion": "Target Camunda 8.7 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "p"
+      ],
+      "fixable": false,
+      "id": "zeebe/process-start-event",
+      "message": "Must have at least one start event",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Add a start event to the process."
     }
   ],
   "platform": {
@@ -149,5 +161,5 @@
     "name": "Camunda Cloud",
     "version": "8.8.0"
   },
-  "total": 10
+  "total": 11
 }

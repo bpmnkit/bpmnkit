@@ -988,11 +988,9 @@ fn event_definition_child(
                 unknown_attributes: extras(&attrs, &["id", "escalationRef"]),
             })
         }
-        "messageEventDefinition" => BpmnEventDefinition::Message(BpmnMessageEventDefinition {
-            id: id(),
-            message_ref: attr_string(&attrs, "messageRef"),
-            unknown_attributes: extras(&attrs, &["id", "messageRef"]),
-        }),
+        "messageEventDefinition" => {
+            return Child::Push(Box::new(MessageDefinitionFrame::new(attrs)))
+        }
         "signalEventDefinition" => BpmnEventDefinition::Signal(BpmnSignalEventDefinition {
             id: id(),
             signal_ref: attr_string(&attrs, "signalRef"),
@@ -1094,6 +1092,46 @@ impl Frame for TimerDefinitionFrame {
                 time_cycle: part_text(&cycle),
                 time_cycle_attributes: part_attributes(cycle),
                 unknown_attributes: extras(&self.attrs, &["id"]),
+            },
+        )))
+    }
+}
+
+/// Keeps `zeebe:publishMessage`, which Zeebe reads from the message event definition.
+struct MessageDefinitionFrame {
+    attrs: Attrs,
+    extension_elements: Option<Vec<XmlElement>>,
+}
+
+impl MessageDefinitionFrame {
+    fn new(attrs: Attrs) -> Self {
+        Self {
+            attrs,
+            extension_elements: None,
+        }
+    }
+}
+
+impl Frame for MessageDefinitionFrame {
+    fn child(&mut self, local: &str, _name: &str, _attrs: Attrs) -> Res<Child> {
+        if local != "extensionElements" || self.extension_elements.is_some() {
+            return Ok(Child::Skip);
+        }
+        self.extension_elements = Some(Vec::new());
+        Ok(tree_child())
+    }
+    fn accept(&mut self, out: Out) {
+        if let Out::Ext(v) = out {
+            self.extension_elements = Some(v);
+        }
+    }
+    fn finish(self: Box<Self>) -> Res<Out> {
+        Ok(Out::EventDef(BpmnEventDefinition::Message(
+            BpmnMessageEventDefinition {
+                id: attr_string(&self.attrs, "id"),
+                message_ref: attr_string(&self.attrs, "messageRef"),
+                extension_elements: self.extension_elements,
+                unknown_attributes: extras(&self.attrs, &["id", "messageRef"]),
             },
         )))
     }

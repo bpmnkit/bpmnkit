@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 41,
+    "error": 46,
     "info": 38,
     "warning": 68
   },
@@ -1808,6 +1808,66 @@
       "processId": "recursive",
       "severity": "error",
       "suggestion": "Put a wait state in the loop — a service, user or receive task, or a catch event — or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Msg_webhook"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-subscription",
+      "message": "Must have exactly one zeebe:subscription extension element",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Add one zeebe:subscription with a correlationKey to the message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Msg_secret"
+      ],
+      "fixable": false,
+      "id": "zeebe/correlation-key-expression",
+      "message": "Expected expression but found static value 'secrets.KEY'. An expression must start with '=' (e.g. '=secrets.KEY').",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Start the correlationKey with '=' so it is a FEEL expression."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "feelShadowed"
+      ],
+      "fixable": false,
+      "id": "zeebe/input-mapping",
+      "message": "failed to parse expression 'uuid('",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Use a valid FEEL source and a variable name or dotted path as target."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretFine"
+      ],
+      "fixable": false,
+      "id": "zeebe/secret-in-list",
+      "message": "Input mapping source '=([camunda.secrets.B])' puts a secret reference inside a list, or inside a context built by an 'if' branch. Camunda can only replace a secret where the mapping assigns it directly to a value, so this secret would never be filled in. Assign each secret reference to its own input mapping instead.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Map each secret reference to its own input variable."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "linkScope"
+      ],
+      "fixable": false,
+      "id": "zeebe/sub-process-start-event",
+      "message": "Must have exactly one start event",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Give the sub-process exactly one start event."
     }
   ],
   "platform": {
@@ -1815,5 +1875,5 @@
     "name": "Camunda Cloud",
     "version": "8.10.0"
   },
-  "total": 147
+  "total": 152
 }

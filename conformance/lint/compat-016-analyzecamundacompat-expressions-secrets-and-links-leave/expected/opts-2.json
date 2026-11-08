@@ -14,7 +14,7 @@
     "connector"
   ],
   "counts": {
-    "error": 3,
+    "error": 4,
     "info": 0,
     "warning": 2
   },
@@ -65,6 +65,18 @@
       "suggestion": "Connect this element to a downstream element or an end event."
     },
     {
+      "category": "deploy",
+      "elementIds": [
+        "p"
+      ],
+      "fixable": false,
+      "id": "zeebe/process-start-event",
+      "message": "Must have at least one start event",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Add a start event to the process."
+    },
+    {
       "bpmnlintRule": "link-event",
       "category": "flow",
       "elementIds": [
@@ -83,5 +95,5 @@
     "name": "Camunda Cloud",
     "version": "8.6.0"
   },
-  "total": 5
+  "total": 6
 }

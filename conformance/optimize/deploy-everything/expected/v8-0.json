@@ -179,6 +179,30 @@
       "processId": "proc",
       "severity": "error",
       "suggestion": "Move the zeebe:subscription onto the bpmn:message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "m1"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-subscription",
+      "message": "Must have exactly one zeebe:subscription extension element",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add one zeebe:subscription with a correlationKey to the message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "m3"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-subscription",
+      "message": "Must have exactly one zeebe:subscription extension element",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add one zeebe:subscription with a correlationKey to the message."
     }
   ],
   "fixes": [],
@@ -187,7 +211,7 @@
       "agentic": 0,
       "connector": 0,
       "data-flow": 0,
-      "deploy": 15,
+      "deploy": 17,
       "extract": 0,
       "feel": 0,
       "feel-syntax": 0,
@@ -197,10 +221,10 @@
       "task-reuse": 0
     },
     "bySeverity": {
-      "error": 15,
+      "error": 17,
       "info": 0,
       "warning": 0
     },
-    "total": 15
+    "total": 17
   }
 }

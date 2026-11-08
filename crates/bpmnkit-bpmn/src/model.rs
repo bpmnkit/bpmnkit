@@ -86,6 +86,9 @@ pub struct BpmnMessageEventDefinition {
     pub id: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub message_ref: Option<String>,
+    /// `<extensionElements>` of the definition, e.g. `zeebe:publishMessage` of a message throw event.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub extension_elements: Option<Vec<XmlElement>>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub unknown_attributes: Option<Attrs>,
 }

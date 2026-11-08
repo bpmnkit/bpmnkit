@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 20,
+    "error": 28,
     "info": 0,
     "warning": 29
   },
@@ -642,10 +642,113 @@
       "processId": "_3486bf55-0a7f-4ff1-be15-1555669f58ad",
       "severity": "error",
       "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_e7ccc12c-2987-48ae-92aa-08112101d9c9"
+      ],
+      "fixable": false,
+      "id": "zeebe/executable-process",
+      "message": "Must contain at least one executable process",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "error",
+      "suggestion": "Mark the process isExecutable=\"true\"."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_c82dd8eb-ce54-4aa7-b8c4-b8d3e8fd654e"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-throw-implementation",
+      "message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element",
+      "plane": "_674b5898-d454-4114-a8eb-66c790366e94",
+      "processId": "_f0035388-f829-470c-b82b-0b15c3da3399",
+      "severity": "error",
+      "suggestion": "Add a zeebe:publishMessage to the message event definition, or a zeebe:taskDefinition to the event."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_efbd0983-76cd-4a4c-acf3-6dde71d7c760"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-throw-implementation",
+      "message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element",
+      "plane": "_bbdf487b-c3a3-4bfa-8ba3-79be59f08203",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "error",
+      "suggestion": "Add a zeebe:publishMessage to the message event definition, or a zeebe:taskDefinition to the event."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_5ee09fe4-f38f-454d-b6e4-1c3703a6a239"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-throw-implementation",
+      "message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element",
+      "plane": "_8d4bb408-4175-4fbb-8131-18c32b7aa022",
+      "processId": "_3486bf55-0a7f-4ff1-be15-1555669f58ad",
+      "severity": "error",
+      "suggestion": "Add a zeebe:publishMessage to the message event definition, or a zeebe:taskDefinition to the event."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_237c8380-5449-446e-a323-aad80181176d"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_7e9d8b8b-faa9-4264-858b-7454702c4ec2"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_ca6f904d-e30d-4777-a7dd-661650e1e3a2"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "_bbdf487b-c3a3-4bfa-8ba3-79be59f08203",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_12e2f256-ec10-4a8d-934c-329143c588d8"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "_bbdf487b-c3a3-4bfa-8ba3-79be59f08203",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
     }
   ],
   "platform": {
     "id": "none"
   },
-  "total": 49
+  "total": 57
 }

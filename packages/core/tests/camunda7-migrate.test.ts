@@ -818,7 +818,13 @@ describe("fixture conversions", () => {
 				const needsWork = new Set(
 					report.findings.filter((f) => f.severity !== "convertible").map((f) => f.elementId),
 				)
-				const errors = lintDiagram(Bpmn.parse(exported), { categories: ["deploy", "feel-syntax"] })
+				const parsed = Bpmn.parse(exported)
+				// A message is part of the to-do of the element that waits for it: Zeebe
+				// reports a missing subscription on the message, the migrator on the task.
+				for (const el of parsed.processes.flatMap((p) => p.flowElements))
+					if (needsWork.has(el.id) && "messageRef" in el && el.messageRef !== undefined)
+						needsWork.add(el.messageRef)
+				const errors = lintDiagram(parsed, { categories: ["deploy", "feel-syntax"] })
 					.diagnostics.filter((d) => d.severity === "error")
 					.filter((d) => d.elementIds.length === 0 || d.elementIds.some((id) => !needsWork.has(id)))
 				expect(errors.map((d) => d.message)).toEqual([])

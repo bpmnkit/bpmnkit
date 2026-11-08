@@ -103,6 +103,18 @@
       "processId": "p",
       "severity": "error",
       "suggestion": "Model it with an element Camunda 8 executes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "p"
+      ],
+      "fixable": false,
+      "id": "zeebe/process-start-event",
+      "message": "Must have at least one start event",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Add a start event to the process."
     }
   ],
   "fixes": [
@@ -124,7 +136,7 @@
       "agentic": 0,
       "connector": 0,
       "data-flow": 0,
-      "deploy": 2,
+      "deploy": 3,
       "extract": 0,
       "feel": 0,
       "feel-syntax": 0,
@@ -134,10 +146,10 @@
       "task-reuse": 0
     },
     "bySeverity": {
-      "error": 5,
+      "error": 6,
       "info": 0,
       "warning": 4
     },
-    "total": 9
+    "total": 10
   }
 }

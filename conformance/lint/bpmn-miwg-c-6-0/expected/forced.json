@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 20,
+    "error": 21,
     "info": 0,
     "warning": 0
   },
@@ -274,10 +274,22 @@
       "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
       "severity": "error",
       "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_af3cbf6a-9c69-460b-9a1d-276711d30213"
+      ],
+      "fixable": false,
+      "id": "zeebe/executable-process",
+      "message": "Must contain at least one executable process",
+      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
+      "severity": "error",
+      "suggestion": "Mark the process isExecutable=\"true\"."
     }
   ],
   "platform": {
     "id": "none"
   },
-  "total": 20
+  "total": 21
 }

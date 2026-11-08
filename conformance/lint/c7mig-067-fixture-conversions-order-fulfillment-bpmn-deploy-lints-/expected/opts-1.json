@@ -4,7 +4,7 @@
     "feel-syntax"
   ],
   "counts": {
-    "error": 2,
+    "error": 3,
     "info": 0,
     "warning": 0
   },
@@ -34,6 +34,18 @@
       "processId": "order-fulfillment",
       "severity": "error",
       "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Message_PaymentConfirmed"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-subscription",
+      "message": "Must have exactly one zeebe:subscription extension element",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Add one zeebe:subscription with a correlationKey to the message."
     }
   ],
   "platform": {
@@ -41,5 +53,5 @@
     "name": "Camunda Cloud",
     "version": "8.8.0"
   },
-  "total": 2
+  "total": 3
 }

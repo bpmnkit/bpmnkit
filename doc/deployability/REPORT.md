@@ -62,3 +62,18 @@ Some rejected cases are deliberately incomplete. Most are gaps.
 4. **Real broker and reebe.**
    - A nightly Docker deploy across several Camunda versions.
    - reebe adopts the shared validator.
+
+## Validator gaps (session 2, 2026-11-08)
+
+`validateDeployable` / `validateDeployableXml` (TS) and `bpmnkit_compat::zeebe` (Rust) agree with Zeebe 8.9.28 on all 1,596 BPMN files in `conformance/` and the repros (file verdicts; 1,644 of 1,665 Zeebe errors matched by message). What they do not decide, or decide differently:
+
+- **Not decidable from one BPMN** (`check: "none"` in `spec/zeebe-rules.json`, each with a note): Z35 straight-through loop (after BpmnValidator; `compat/no-loop` covers it), Z47 timer date range, Z92 empty retries (Zeebe's model turns it into 3), Z109/Z166 transformer failures, Z180, deployment-level Z181/Z182/Z184-Z186, broker state Z187-Z189, other resource types Z191-Z193, and the non-rules Z36/Z97/Z131/Z190.
+- **Only with a resolver**: Z111, Z118, Z130, Z136 (`bindingType="deployment"` targets) and Z183 (duplicate process id across resources). zeebe-check runs one file at a time, so these are checked against Zeebe's source only.
+- **Rules newer than 8.9.28** (`since` 8.10: Z34, Z38, Z101, Z102, Z107, Z108, Z111-Z113, Z128, Z153, Z178, and the 8.10 entries of Z33/Z94): taken from camunda/camunda `main`; each case has an 8.9 run showing no finding. `since` values before 8.9 come from reading the sources and the compat tables, not from running older Zeebe versions.
+- **Transformer-only**: Z68 (evaluated message-start name length) is reported, but zeebe-check does not run the transformer, so `z68-bad` is listed in `conformance/validate/undecidable.json`.
+- **Message differences, same verdict**: FEEL parse failures give `failed to parse expression '<expr>'` without feel-scala's detail. When Zeebe prints only the runtime error for an element (missing `correlationKey`, `processId`, `decisionId`, job `type`, script), the validator also reports the design-time rule (Z64, Z91, Z99, Z126, Z133). Z48 on an `attachedToRef` that is not an activity (Zeebe throws a ClassCastException). Z183 cannot name the other resource.
+- **FEEL parser**: `@bpmnkit/feel` accepts some expressions feel-scala rejects (e.g. `=x >`), and has no backtick names, so a secret reference written `camunda.secrets.\`a-b\`` is missed by Z108. Process-level timer start events with a FEEL value are only parsed, not evaluated.
+- **TS/Rust**: Z67/Z76 decide "could not be evaluated without context" in TS by watching variable lookups and in Rust by an AST walk, which counts `if true then 1 else x` as touching `x`; no case hits it. A file whose only problem is an attribute with no name gets `processId` `""` in Rust and the first process in TS (Rust's XML scanner is stricter).
+- **Parser**: a `definitions` element without an `id` is refused by BPMN Kit's parser (reported as a parse failure); Zeebe accepts it.
+- **Lint**: `zeebe/*` findings are left out of lint on elements another `deploy` error (a `deploy/*` or `compat/*` finding) already flags; `validateDeployable` reports them all.
+- **reebe**: its deploy path still uses its own validator. Wiring `bpmnkit_compat::zeebe::validate_deployable_xml` in is left to session 4, because many reebe tests deploy BPMN that Zeebe would reject and `bpmnkit-compat` would join reebe's dependencies.
