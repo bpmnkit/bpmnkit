@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-08 — Zeebe validator accepts partial models
+
+- `validateDeployable` threw `defs.messages is not iterable` when the lint plugin passed a model without its root-element lists (plugins CI). It now treats missing `processes`, `messages`, `errors`, `signals`, `escalations`, `collaborations` and `diagrams` as empty. Regression test: `packages/core/tests/zeebe-validate-partial-model.test.ts`.
+
 ## 2026-11-08 — Zeebe deployability, session 2: the static Zeebe validator
 
 - `spec/zeebe-rules.json` (schema `spec/schema/zeebe-rules.schema.json`): the 193 rows of `doc/deployability/zeebe-rules.md` with name (`zeebe/<name>`), elements, Zeebe's messages, `since`/`until`, kind, severity and `check` (`model` 158, `xml` 9, `context` 5, `none` 21 with a note; 9 umbrella rules name their specific rules in `coveredBy`). spec-gen writes `packages/core/src/generated/zeebe-rules.ts` and `bpmnkit_spec::zeebe`.

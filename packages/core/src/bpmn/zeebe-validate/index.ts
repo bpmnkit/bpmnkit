@@ -48,9 +48,23 @@ export function validateDeployable(
 	definitions: BpmnDefinitions,
 	options: ValidateDeployableOptions = {},
 ): OptimizationFinding[] {
-	const ctx = new ZeebeContext(definitions, options)
+	const ctx = new ZeebeContext(withRootLists(definitions), options)
 	for (const check of CHECKS) check(ctx)
 	return ctx.finish()
+}
+
+/** Lint callers may hand over a partial model; missing root-element lists count as empty. */
+function withRootLists(defs: BpmnDefinitions): BpmnDefinitions {
+	return {
+		...defs,
+		processes: defs.processes ?? [],
+		messages: defs.messages ?? [],
+		errors: defs.errors ?? [],
+		signals: defs.signals ?? [],
+		escalations: defs.escalations ?? [],
+		collaborations: defs.collaborations ?? [],
+		diagrams: defs.diagrams ?? [],
+	}
 }
 
 /** Whether Zeebe would accept the model: no finding of severity `error`. */
