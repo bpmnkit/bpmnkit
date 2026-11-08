@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-08 — CI: retry the wasm-pack download
+
+- `ci.yml` fetches wasm-pack from GitHub releases with `curl`; two runs failed on a 504 from that download. It now retries five times on any error.
+
 ## 2026-11-08 — Zeebe deployability, session 1: serializer fixes and the Zeebe CI oracle
 
 - Fixed in TS and Rust, each with a regression test on both sides and a conformance case:
