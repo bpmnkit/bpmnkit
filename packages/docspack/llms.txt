@@ -6,11 +6,11 @@
 
 Writing a BPMN process, DMN decision or form? Read its agent card first: a runnable script, the top options and the traps (`casen agent-card bpmn|dmn|form` prints the same card).
 
-- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 4 chunks, 1311 tokens
+- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 4 chunks, 1330 tokens
 - [DMN agent card](.llms/chunks/agent-cards.dmn.md) — 5 chunks, 1331 tokens
 - [Form agent card](.llms/chunks/agent-cards.form.md) — 4 chunks, 876 tokens
 
-Version 1.3.0. 436 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.3.0. 437 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -21,7 +21,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 
 - [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 461 tokens
 - [BPMN agent card — Top builder options](.llms/chunks/agent-cards.bpmn.top-builder-options.md) — 299 tokens
-- [BPMN agent card — Traps](.llms/chunks/agent-cards.bpmn.traps.md) — 368 tokens
+- [BPMN agent card — Traps](.llms/chunks/agent-cards.bpmn.traps.md) — 387 tokens
 - [BPMN agent card — Lint before you deploy or test](.llms/chunks/agent-cards.bpmn.lint-before-you-deploy-or-test.md) — 183 tokens
 - [DMN agent card](.llms/chunks/agent-cards.dmn.md) — 433 tokens
 - [DMN agent card — Several decisions in one file: `Dmn.drd()`](.llms/chunks/agent-cards.dmn.several-decisions-in-one-file-dmn.drd.md) — 299 tokens
@@ -193,12 +193,13 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [bpmnlint Compatibility — Camunda version compatibility — What is covered](.llms/chunks/guides.bpmnlint.camunda-version-compatibility-what-is-covered.md) — 504 tokens
 - [bpmnlint Compatibility — From your own code](.llms/chunks/guides.bpmnlint.from-your-own-code.md) — 233 tokens
 - [Building Processes — Service Tasks](.llms/chunks/guides.building-processes.service-tasks.md) — 202 tokens
-- [Building Processes — Events](.llms/chunks/guides.building-processes.events.md) — 378 tokens
+- [Building Processes — Events](.llms/chunks/guides.building-processes.events.md) — 388 tokens
 - [Building Processes — Sub-Processes](.llms/chunks/guides.building-processes.sub-processes.md) — 180 tokens
 - [Building Processes — Boundary Events](.llms/chunks/guides.building-processes.boundary-events.md) — 294 tokens
 - [Building Processes — Call Activities](.llms/chunks/guides.building-processes.call-activities.md) — 216 tokens
 - [Building Processes — Task Defaults](.llms/chunks/guides.building-processes.task-defaults.md) — 141 tokens
-- [Building Processes — Multi-Instance](.llms/chunks/guides.building-processes.multi-instance.md) — 687 tokens
+- [Building Processes — Multi-Instance](.llms/chunks/guides.building-processes.multi-instance.md) — 590 tokens
+- [Building Processes — Generated IDs](.llms/chunks/guides.building-processes.generated-ids.md) — 610 tokens
 - [Claude Code Plugin](.llms/chunks/guides.claude-code-plugin.md) — 205 tokens
 - [Claude Code Plugin — Configuration](.llms/chunks/guides.claude-code-plugin.configuration.md) — 679 tokens
 - [Claude Code Plugin — Reference docs](.llms/chunks/guides.claude-code-plugin.reference-docs.md) — 410 tokens
@@ -399,7 +400,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/core — Installation — `createFlowElement(id, type, options?)`](.llms/chunks/packages.core.installation-createflowelement-id-type-options.md) — 61 tokens
 - [@bpmnkit/core — Installation — Element catalog](.llms/chunks/packages.core.installation-element-catalog.md) — 96 tokens
 - [@bpmnkit/core — Installation — `layoutProcess(process)`](.llms/chunks/packages.core.installation-layoutprocess-process.md) — 85 tokens
-- [@bpmnkit/core — Installation — ProcessBuilder methods](.llms/chunks/packages.core.installation-processbuilder-methods.md) — 788 tokens
+- [@bpmnkit/core — Installation — ProcessBuilder methods](.llms/chunks/packages.core.installation-processbuilder-methods.md) — 831 tokens
 - [@bpmnkit/core — Installation — Forms, mappings and branch flows](.llms/chunks/packages.core.installation-forms-mappings-and-branch-flows.md) — 466 tokens
 - [@bpmnkit/core — Installation — Ad-hoc sub-processes: children are a set, not a chain](.llms/chunks/packages.core.installation-ad-hoc-sub-processes-children-are-a-set-not-a-chain.md) — 642 tokens
 - [@bpmnkit/core — Installation — Data elements and linked resources](.llms/chunks/packages.core.installation-data-elements-and-linked-resources.md) — 159 tokens

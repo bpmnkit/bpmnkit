@@ -1,5 +1,9 @@
 # Features
 
+## Builder deploy gate: `build({ validate, placeholders, camundaVersion })` (2026-11-08)
+
+`ProcessBuilder.build()` and `DiagramBuilder.build()` refuse a Camunda 8 model Zeebe would reject. The builder's own rules come first and name the fix: a gateway branch without `.condition()`/`.defaultFlow()`, a send task or message throw/end event without `taskType` (new option, written as `zeebe:taskDefinition`), forbidden AI-agent ad-hoc combinations, static correlation keys and collections; then `assertDeployable`. `validate: false` skips both for a model that is not meant for Camunda 8; `placeholders: true` returns the filled model; `camundaVersion` overrides the model's version. Chaining after an end event throws at the call. Rust: `BuildOptions`/`BuildGateOptions`, `BuildError.deployability`, same messages.
+
 ## Deployability gate: `assertDeployable` and `Bpmn.export` validate "auto" (2026-11-08)
 
 `assertDeployable(definitions, { camundaVersion?, placeholders? })` refuses a model Zeebe would reject on deploy with one `DeployabilityError` that lists every reason (`Not deployable on Camunda 8.8: 2 error(s)` and a `- <elementId>: <message> (zeebe/<rule>)` line each), or returns the model with its warnings. With `placeholders: true` it fills documented values (`PLACEHOLDERS`: `placeholder-<elementId>` job types, names, codes and called ids, `="placeholder-<elementId>"` correlation keys, `PT1H` timers, `=false` conditions) on a copy and reports each fill. `Bpmn.export` runs it by default for models that target Camunda 8 (`validate: "auto"`; `"error"`, `"warn"`, `false`). Rust: `bpmnkit_compat::zeebe::assert_deployable` and `bpmnkit_lint::export_bpmn`, with the same messages.

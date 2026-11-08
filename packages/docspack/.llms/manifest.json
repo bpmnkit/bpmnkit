@@ -65,7 +65,7 @@
 		{
 			"id": "agent-cards.bpmn.traps",
 			"file": "chunks/agent-cards.bpmn.traps.md",
-			"tokens": 368,
+			"tokens": 387,
 			"tags": [
 				"agent-cards",
 				"bpmn",
@@ -79,9 +79,9 @@
 				"Bpmn.export",
 				"timerDuration",
 				"build()",
-				"cancelActivity",
-				"isInterrupting",
-				"isSequential"
+				"defaultFlow",
+				"taskType",
+				"DeployabilityError"
 			]
 		},
 		{
@@ -2578,7 +2578,7 @@
 		{
 			"id": "guides.building-processes.events",
 			"file": "chunks/guides.building-processes.events.md",
-			"tokens": 378,
+			"tokens": 388,
 			"tags": [
 				"guides",
 				"building-processes",
@@ -2640,11 +2640,35 @@
 		{
 			"id": "guides.building-processes.multi-instance",
 			"file": "chunks/guides.building-processes.multi-instance.md",
-			"tokens": 687,
+			"tokens": 590,
 			"tags": [
 				"guides",
 				"building-processes",
 				"multi-instance",
+				"deployable",
+				"default"
+			],
+			"entities": [
+				"build()",
+				"assertDeployable",
+				"DeployabilityError",
+				"taskType",
+				"taskDefinition",
+				"activeElementsCollection",
+				"completionCondition",
+				"outputCollection",
+				"outputElement",
+				"executionPlatformVersion",
+				"Bpmn.continueProcess"
+			]
+		},
+		{
+			"id": "guides.building-processes.generated-ids",
+			"file": "chunks/guides.building-processes.generated-ids.md",
+			"tokens": 610,
+			"tags": [
+				"guides",
+				"building-processes",
 				"generated",
 				"ids"
 			],
@@ -5823,7 +5847,7 @@
 		{
 			"id": "packages.core.installation-processbuilder-methods",
 			"file": "chunks/packages.core.installation-processbuilder-methods.md",
-			"tokens": 788,
+			"tokens": 831,
 			"tags": [
 				"packages",
 				"core",
@@ -5832,6 +5856,7 @@
 				"methods"
 			],
 			"entities": [
+				"taskType",
 				"adHocSubProcess",
 				"eventSubProcess",
 				"processId",
@@ -5842,8 +5867,7 @@
 				"ioMapping",
 				"zeebeProperties",
 				"taskHeaders",
-				"addStartEvent",
-				"BpmnDefinitions"
+				"addStartEvent"
 			]
 		},
 		{

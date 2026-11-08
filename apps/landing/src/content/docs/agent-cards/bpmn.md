@@ -78,7 +78,7 @@ if (report.counts.error > 0) process.exit(1)
 - FEEL in the builder starts with `=` (`"=amount > 1000"`); a value without `=` is a literal string.
 - Unknown option names are silently dropped: `timer: { duration }` does nothing; use `timerDuration`.
 
-- **Gate the export.** `Bpmn.export(defs, { validate: "error" })` lints first and throws on what a deploy would reject (`"warn"` logs; default off). `build()` already rejects invalid ids (NCName), non-boolean `cancelActivity`/`isInterrupting`/`isSequential` and non-numeric `retries`.
+- **`build()` refuses what Camunda 8 cannot deploy**: a gateway branch without `condition`/`defaultFlow`, a send task or message throw/end event without `taskType`, a static correlation key, anything after an end event; then Zeebe's rules (`DeployabilityError`). `build({ validate: false })` for a draft; `Bpmn.export` gates Camunda 8 models the same way.
 
 ## Lint before you deploy or test
 

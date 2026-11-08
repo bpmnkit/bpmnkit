@@ -64,18 +64,18 @@ A user task waits for a human actor. Optionally attach a Camunda form:
 
 ```typescript
 // Catch a timer (delay)
-.intermediateCatchEvent("wait-1h", {
-  timer: { timeDuration: "PT1H" },
-})
+.intermediateCatchEvent("wait-1h", { timerDuration: "PT1H" })
 
 // Catch a message (wait for external signal)
 .intermediateCatchEvent("wait-for-payment", {
-  message: { name: "payment-confirmed", correlationKey: "= orderId" },
+  messageName: "payment-confirmed",
+  correlationKey: "= orderId",
 })
 
-// Throw a message
+// Throw a message: Camunda 8 hands it to a job worker, so it needs a taskType
 .intermediateThrowEvent("notify-warehouse", {
-  message: { name: "order-ready" },
+  messageName: "order-ready",
+  taskType: "publish-order-ready",
 })
 ```
 
@@ -97,13 +97,12 @@ builder stops chaining at the throw and starts a new chain at the catch:
 .endEvent("end")
 
 // Error end (triggers error boundary event)
-.endEvent("end-error", {
-  error: { code: "PAYMENT_FAILED", message: "Payment processing failed" },
-})
+.endEvent("end-error", { errorCode: "PAYMENT_FAILED" })
 
-// Message end
+// Message end: a job worker publishes the message, so it needs a taskType
 .endEvent("end-notify", {
-  message: { name: "process-complete" },
+  messageName: "process-complete",
+  taskType: "publish-process-complete",
 })
 ```
 
@@ -268,6 +267,37 @@ Run a task or sub-process once per item in a collection:
 })
 ```
 
+## Deployable by default
+
+A model that targets Camunda 8 (every new one does: the builder writes
+`modeler:executionPlatform="Camunda Cloud"`) must deploy. `build()` first applies the builder's
+own rules, which name the call or option that fixes the model, and then runs
+[`assertDeployable`](/docs/guides/executable-camunda-process), which throws a
+`DeployabilityError` listing everything Zeebe would still reject.
+
+| Rule | Error (example) |
+|---|---|
+| Every branch of an exclusive or inclusive gateway with several outgoing flows has `.condition("= …")` or `.defaultFlow()` | `Flow "Flow_g_e2" leaves exclusive gateway "g" without a condition: …` |
+| A send task, message throw event or message end event has a `taskType` (Camunda 8 runs it as a job) | `Send task "send" needs a taskType: …` |
+| An AI-agent ad-hoc sub-process (`taskDefinition`) sets no `activeElementsCollection`, `completionCondition` or `cancelRemainingInstances: false`; `outputCollection` and `outputElement` come together | `Ad-hoc sub-process "agent" has a taskDefinition (an AI agent) and activeElementsCollection; …` |
+| A correlation key, multi-instance collection or `activeElementsCollection` is a FEEL expression (`=…`); a condition without `=` is converted for you | `correlationKey "orderId" of "recv" is a static value; … e.g. "=orderId"` |
+| Nothing is chained after an end event (refused at the call) | `Cannot chain "t" after end event "e": …` |
+
+`build()` options:
+
+- `validate: false` skips the Camunda 8 rules and the deploy check, for a model that is not meant
+  for Camunda 8 (a complex gateway, a transaction) or not finished. Chaining after an end event is
+  refused either way.
+- `placeholders: true` fills the documented placeholder values (job types, `=false` conditions,
+  message names, …) instead of refusing, and returns the filled model. To see what was filled,
+  build with `validate: false` and call `assertDeployable(defs, { placeholders: true })`, whose
+  `placeholders` lists every value written.
+- `camundaVersion: "8.7"` checks for that version instead of the model's
+  `executionPlatformVersion`.
+
+`Bpmn.createDiagram(...).build(options)` takes the same three options and checks the whole
+document. A document continued with `Bpmn.continueProcess` is checked when it targets Camunda 8.
+
 ## Generated IDs
 
 You name every flow node. The builder names everything else, and it derives those names from
@@ -291,8 +321,8 @@ unnamed:
 
 ```typescript
 .exclusiveGateway("gw")
-.branch("approved", (b) => b.connectTo("done"))
-.branch("rejected", (b) => b.connectTo("done"))
+.branch("approved", (b) => b.condition("= approved").connectTo("done"))
+.branch("rejected", (b) => b.defaultFlow().connectTo("done"))
 // Flow_gw_gw_join_approved, Flow_gw_gw_join_rejected
 ```
 
