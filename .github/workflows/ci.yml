@@ -142,9 +142,14 @@ jobs:
         # wasm-opt rejects current rustc output.
         run: |
           mkdir -p "$HOME/.cargo/bin" "$RUNNER_TEMP/wasm-pack"
-          curl -fsSL --retry 5 --retry-all-errors --retry-delay 5 https://github.com/rustwasm/wasm-pack/releases/download/v0.15.0/wasm-pack-v0.15.0-x86_64-unknown-linux-musl.tar.gz \
-            | tar xz -C "$RUNNER_TEMP/wasm-pack" --strip-components=1
-          install -m 755 "$RUNNER_TEMP/wasm-pack/wasm-pack" "$HOME/.cargo/bin/wasm-pack"
+          # GitHub release downloads sometimes 504 for minutes; build from crates.io then.
+          if curl -fsSL --retry 3 --retry-all-errors --retry-delay 5 -o "$RUNNER_TEMP/wasm-pack.tgz" \
+              https://github.com/rustwasm/wasm-pack/releases/download/v0.15.0/wasm-pack-v0.15.0-x86_64-unknown-linux-musl.tar.gz \
+            && tar xzf "$RUNNER_TEMP/wasm-pack.tgz" -C "$RUNNER_TEMP/wasm-pack" --strip-components=1; then
+            install -m 755 "$RUNNER_TEMP/wasm-pack/wasm-pack" "$HOME/.cargo/bin/wasm-pack"
+          else
+            cargo install wasm-pack --version 0.15.0 --locked
+          fi
           wasm-pack --version
 
       - name: Build reebe-wasm

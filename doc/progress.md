@@ -2,7 +2,7 @@
 
 ## 2026-11-08 — CI: retry the wasm-pack download
 
-- `ci.yml` fetches wasm-pack from GitHub releases with `curl`; two runs failed on a 504 from that download. It now retries five times on any error.
+- `ci.yml` fetches wasm-pack from GitHub releases with `curl`; two runs failed on a 504 from that download. It retries, and if GitHub still fails it builds wasm-pack 0.15.0 from crates.io (`cargo install --locked`).
 
 ## 2026-11-08 — Zeebe deployability, session 1: serializer fixes and the Zeebe CI oracle
 
