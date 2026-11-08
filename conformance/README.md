@@ -332,6 +332,17 @@ suites run `validateDeployableXml` with Zeebe's version and zeebe-check's 255-ch
 fresh entry and fail on a verdict they disagree with, except for the files `validate/undecidable.json`
 lists with the reason. Stale entries are skipped and counted.
 
+## Gate: `gate/`
+
+Recorded by `packages/core/tests/conformance-gate.test.ts`; the Rust runner is
+`crates/bpmnkit-conformance/src/gate.rs`. Each case is a folder with `input.bpmn` (or `case.json`
+`"input"`, a path from `conformance/`) and `case.json` `"runs"`, each run the options of
+`assertDeployable(parseBpmn(input), run)` (`camundaVersion`, `placeholders`). `expected/<run>.json` is
+`{"error", "camundaVersion", "findings"}` when it throws a `DeployabilityError` (`findings` as
+`"<rule> <elementIds>"`), else `{"placeholders", "warnings"}`; when placeholders were filled,
+`expected/<run>.bpmn` is `serializeBpmn` of the filled model, compared byte for byte. `zeebe-check`
+deploys every `gate/*/expected/fill.bpmn`, so a placeholder Zeebe rejects fails CI.
+
 ## Layout: `layout/`
 
 Recorded by `packages/core/tests/conformance-layout.test.ts`; the Rust runner is
@@ -410,7 +421,7 @@ Recorded by `packages/core/tests/conformance-builder.test.ts`. A case drives the
 with a script of method calls, so the same file can be replayed by any implementation of the
 builders. Files:
 
-- `case.json`: `{"kind": "bpmn" | "dmn", "input"?: "<path>", "export"?: {"validate": "warn" | "error" | false}, "script": [op, ...]}`.
+- `case.json`: `{"kind": "bpmn" | "dmn", "input"?: "<path>", "export"?: {"validate"?: "auto" | "warn" | "error" | false}, "script": [op, ...]}`.
   `export` (BPMN only) passes the built definitions through `Bpmn.export(defs, export)`
   (`bpmnkit_lint::export_bpmn`): a throw is recorded as `expected/error.txt`, a `console.warn` as
   `expected/warning.txt` (the message plus a newline) next to the usual outputs.

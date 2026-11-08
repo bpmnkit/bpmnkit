@@ -1,5 +1,15 @@
 # Progress
 
+## 2026-11-08 — Zeebe deployability, session 3 phase 1: the assertDeployable gate
+
+- `assertDeployable` (`packages/core/src/bpmn/zeebe-validate/gate.ts`), `DeployabilityError` (code `deployability-error`, `findings`, `camundaVersion`), `AssertDeployableOptions`, `PlaceholderFill`, `PlaceholderField`, `DeployableResult` and `PLACEHOLDERS`, exported from `@bpmnkit/core`. The check is `validateDeployableXml(serializeBpmn(defs))`. Message: `Not deployable on Camunda <version>: <n> error(s)` plus `- <elementId>: <message> (zeebe/<rule>)` per error.
+- `placeholders: true` fills, on a `structuredClone`, what the error findings ask for: job types, message names (a missing message is created, with a subscription when it is caught outside a process start), correlation keys, signal names, error and escalation codes (missing root elements are created), `PT1H` timers, called process ids, decision ids and `=false` conditions; up to 4 rounds, then a final check.
+- Rust twin `bpmnkit_compat::zeebe::gate` (`assert_deployable`, `AssertOptions`, `Deployable`, `DeployabilityError` with `Display` + `Error`, `PLACEHOLDERS`), byte-identical messages and fills.
+- `Bpmn.export` `validate` defaults to `"auto"` (gate when `modeler:executionPlatform` names Camunda Cloud, version from `executionPlatformVersion`, else the newest); `"error"` gates any model, `"warn"` logs, `false` skips. The old `lintDiagram` check is gone. `bpmnkit_lint::export_bpmn` mirrors it (`ExportValidate::Auto` default; `Err` is the `DeployabilityError`).
+- Conformance: new `conformance/gate/` (6 cases, 9 runs; TS records, Rust compares, filled BPMN byte for byte); `builder/export-validate-auto` added and the `export-validate-*` messages re-recorded. `zeebe-check` and the broker check also deploy `gate/*/expected/fill.bpmn`: Zeebe 8.9.28 accepts all 3. Verdicts for the 8 new files added to `zeebe-verdicts.json`.
+- Callers that export a work-in-progress or the user's own diagram pass `validate: false`: editor `exportXml`, plugins (tabs, storage, checkpoints, command palette, optimize, AI improve), desktop and landing editors, drop (doc, viewer, watcher), markdown links, proxy (MCP state, previews, `/improve`), CLI `lint --fix` and `connector` write-backs, `compilePlan`/`mergePlan` (they report deploy errors as `problems`), and the fix/bench/layout scripts. Serializer-focused core tests do the same; the ascii gateway and proxy model-write fixtures were made deployable.
+- Found while gating round trips: a definitions-level `<bpmn:documentation>` is not allowed by the BPMN XSD (`roundtrip-corpus`, `semantic-hash` fixtures); left for the serializer work.
+
 ## 2026-11-08 — Zeebe deployability, session 4: nightly real-broker check; reebe adopts the Zeebe validator
 
 - Nightly `.github/workflows/zeebe-broker-nightly.yml` (schedule + `workflow_dispatch`) starts a real engine per version and deploys the corpus through `POST /v2/deployments`. The four versions, pinned by tag and digest:

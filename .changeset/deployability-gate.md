@@ -1,0 +1,7 @@
+---
+"@bpmnkit/core": minor
+---
+
+Deployability gate. `assertDeployable(definitions, { camundaVersion?, resolver?, limits?, placeholders? })` checks the serialized model with `validateDeployableXml` and returns `{ definitions, placeholders, warnings }`, or throws a `DeployabilityError` (code `"deployability-error"`, with `findings` and `camundaVersion`) whose message lists every error: `Not deployable on Camunda <version>: <n> error(s)` and one `- <elementId>: <message> (zeebe/<rule>)` line each. With `placeholders: true` it fills missing job types, message names, correlation keys, signal names, error and escalation codes, timers, called process ids, decision ids and gateway conditions on a copy (the values are in `PLACEHOLDERS`, each fill is reported) and checks again; the input is never mutated.
+
+Behaviour change: `Bpmn.export(definitions, { validate })` now defaults to `"auto"`, which throws a `DeployabilityError` when the model targets Camunda 8 (`modeler:executionPlatform="Camunda Cloud"`, checked for its `executionPlatformVersion`) and Zeebe would reject it. Models for other platforms are not checked. `"error"` checks any model, `"warn"` logs the message instead of throwing, and `validate: false` restores the old behaviour, for example for a work-in-progress diagram. `"warn"` and `"error"` now use the Zeebe validator instead of `lintDiagram`, and `"error"` throws `DeployabilityError` instead of `ValidationError`.

@@ -90,3 +90,11 @@ sources Zeebe rejects), each with a reason. Everything else must pass `pnpm zeeb
 4. Migration, connectors, patterns, optimize auto-fixes, `compilePlan`.
 5. Callers: CLI, studio, proxy, MCP, AI paths, examples, docs snippets, landing docs.
 6. Shrink `known-undeployable.json`, progress/features/docs, final report.
+
+## Phase 1 decisions (2026-11-08)
+
+- `Bpmn.export` "auto" treats any `modeler:executionPlatform` containing "cloud" (case-insensitive) as Camunda 8, as `targetCamundaVersion` already does; an unparseable `executionPlatformVersion` is checked as the newest version.
+- `"error"` now throws `DeployabilityError` (a `BpmnSdkError`), not `ValidationError`; `"warn"` logs the `DeployabilityError` message. Rust's `export_bpmn` returns the `DeployabilityError` as its `Err`.
+- A message created for a missing `messageRef` on a catching element gets its `zeebe:subscription` at once, keyed `="placeholder-<elementId>"` on the catching element, so the key does not repeat the generated message id. Process-level message starts get no subscription.
+- Rust's `Deployable.definitions` is a `Cow`: borrowed when nothing was filled.
+- `compilePlan` / `mergePlan` export with `validate: false` until phase 4 gates them (they already report deploy errors as `problems`).
