@@ -40,6 +40,15 @@ version (they are released together).
 ## Installation
 
 ```sh
+cargo add bpmnkit                      # feel, bpmn, dmn and form
+cargo add bpmnkit --features full      # every crate
+```
+
+The `bpmnkit` crate re-exports each crate as a module behind a feature of the same name
+(`bpmnkit::feel`, `bpmnkit::bpmn`, `bpmnkit::dmn`, …). Its defaults are `feel`, `bpmn`, `dmn` and
+`form`; `full` turns on all eleven. The crates can also be added one by one:
+
+```sh
 cargo add bpmnkit-bpmn bpmnkit-feel
 ```
 

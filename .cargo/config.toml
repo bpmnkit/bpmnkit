@@ -1,0 +1,4 @@
+# Resolve dependencies to versions that support the workspace `rust-version`, so `cargo update`
+# does not pull in, say, a proptest that needs a newer rustc than the MSRV job runs.
+[resolver]
+incompatible-rust-versions = "fallback"

@@ -454,7 +454,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [@bpmnkit/plugins — Styles](.llms/chunks/packages.plugins.styles.md) — 247 tokens
 - [Rust crates — Overview](.llms/chunks/packages.rust-crates.overview.md) — 176 tokens
 - [Rust crates — Crates](.llms/chunks/packages.rust-crates.crates.md) — 348 tokens
-- [Rust crates — Installation](.llms/chunks/packages.rust-crates.installation.md) — 206 tokens
+- [Rust crates — Installation](.llms/chunks/packages.rust-crates.installation.md) — 300 tokens
 - [Rust crates — How the Rust API maps to TypeScript](.llms/chunks/packages.rust-crates.how-the-rust-api-maps-to-typescript.md) — 201 tokens
 - [Rust crates — Differential fuzzing](.llms/chunks/packages.rust-crates.differential-fuzzing.md) — 174 tokens
 - [@bpmnkit/worker-client](.llms/chunks/packages.worker-client.md) — 141 tokens

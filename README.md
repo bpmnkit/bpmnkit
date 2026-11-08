@@ -116,7 +116,7 @@ Camunda. "Zeebe" and "Camunda" are trademarks of Camunda Services GmbH.
 
 ### Rust crates
 
-A native Rust twin of the core (`crates/`, `MIT OR Apache-2.0`): `bpmnkit-feel`, `bpmnkit-xml`, `bpmnkit-bpmn`, `bpmnkit-dmn`, `bpmnkit-form`, `bpmnkit-lint`, `bpmnkit-compat`, `bpmnkit-layout`, `bpmnkit-builder`, `bpmnkit-text` and `bpmnkit-spec`. A shared conformance suite (`conformance/`, recorded from the TS packages) and nightly differential fuzzing (`crates/bpmnkit-fuzz`) keep both implementations identical. See [Rust crates](https://bpmnkit.com/docs/packages/rust-crates) and [`doc/rust-crates-release.md`](doc/rust-crates-release.md).
+A native Rust twin of the core (`crates/`, `MIT OR Apache-2.0`), one `cargo add bpmnkit` away (a facade crate with a feature per crate): `bpmnkit-feel`, `bpmnkit-xml`, `bpmnkit-bpmn`, `bpmnkit-dmn`, `bpmnkit-form`, `bpmnkit-lint`, `bpmnkit-compat`, `bpmnkit-layout`, `bpmnkit-builder`, `bpmnkit-text` and `bpmnkit-spec`. A shared conformance suite (`conformance/`, recorded from the TS packages) and nightly differential fuzzing (`crates/bpmnkit-fuzz`) keep both implementations identical. See [Rust crates](https://bpmnkit.com/docs/packages/rust-crates) and [`doc/rust-crates-release.md`](doc/rust-crates-release.md).
 
 ## Quick Start
 

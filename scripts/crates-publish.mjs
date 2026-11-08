@@ -3,12 +3,16 @@
 //
 //   node scripts/crates-publish.mjs --check     every publishable crate has its crates.io metadata
 //   node scripts/crates-publish.mjs --print     the publish order, dependencies first
+//   node scripts/crates-publish.mjs --check-features
+//                                               `cargo check` the facade with no features, then
+//                                               each feature on its own
 //   node scripts/crates-publish.mjs --dry-run   `cargo publish --dry-run` for the whole workspace
 //                                               (+ --allow-dirty for a working tree with changes)
 //   node scripts/crates-publish.mjs --publish   publish in order; needs CARGO_REGISTRY_TOKEN
 //
 // Only workspace members with `publish` unset (or a registry list) are handled; the conformance
-// crate stays `publish = false`.
+// crate stays `publish = false`. The `bpmnkit` facade depends on every other crate, so it is
+// published last.
 import { spawnSync } from "node:child_process"
 import { existsSync } from "node:fs"
 import { dirname, join } from "node:path"
@@ -58,8 +62,21 @@ export function publishOrder(crates) {
 	return order
 }
 
+/** The facade name; it re-exports every other published crate behind a feature. */
+export const FACADE = "bpmnkit"
+
+/** A new crate that the facade does not re-export would ship without a way in through it. */
+export function facadeProblems(crates) {
+	const facade = crates.find((c) => c.name === FACADE)
+	if (!facade) return [`${FACADE}: the facade crate is missing`]
+	const deps = new Set(facade.internalAll.map((d) => d.name))
+	return crates
+		.filter((c) => c.name !== FACADE && !deps.has(c.name))
+		.map((c) => `${FACADE}: the facade does not re-export ${c.name}`)
+}
+
 export function check(crates) {
-	const problems = []
+	const problems = [...facadeProblems(crates)]
 	// Lockstep: every crate inherits `[workspace.package] version`.
 	const version = crates[0]?.version
 	for (const c of crates) {
@@ -122,6 +139,14 @@ async function main() {
 			process.exit(1)
 		}
 		console.log(`crates-publish: ${order.length} crates ok (${order.join(", ")})`)
+	} else if (args.includes("--check-features")) {
+		const facade = crates.find((c) => c.name === FACADE)
+		const features = Object.keys(facade.features).filter((f) => f !== "default")
+		for (const f of ["", ...features]) {
+			console.log(`check ${FACADE} --features "${f}"`)
+			const status = cargo(["check", "-p", FACADE, "--no-default-features", "--features", f])
+			if (status !== 0) process.exit(status)
+		}
 	} else if (args.includes("--dry-run")) {
 		// The workspace form lets crates whose dependencies are not on crates.io yet verify.
 		const exclude = loadExcluded()
@@ -147,7 +172,9 @@ async function main() {
 			await new Promise((resolve) => setTimeout(resolve, 15000))
 		}
 	} else {
-		console.error("usage: crates-publish.mjs --check | --print | --dry-run | --publish")
+		console.error(
+			"usage: crates-publish.mjs --check | --print | --check-features | --dry-run | --publish",
+		)
 		process.exit(2)
 	}
 }

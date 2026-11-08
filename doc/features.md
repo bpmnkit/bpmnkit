@@ -1,5 +1,9 @@
 # Features
 
+## `bpmnkit` facade crate and MSRV check (2026-11-08)
+
+`cargo add bpmnkit` gives the whole Rust twin through one dependency: each `bpmnkit-*` crate is a module (`bpmnkit::feel`, `bpmnkit::bpmn`, `bpmnkit::dmn`, …) behind a cargo feature of the same name. Defaults are `feel`, `bpmn`, `dmn` and `form`; `full` turns on all eleven. CI now builds and tests the crates on their minimum supported Rust version (1.85).
+
 ## Rust twin release: differential fuzzing and crates.io packaging (2026-11-07)
 
 `crates/bpmnkit-fuzz` generates FEEL expressions, BPMN diagrams, DMN tables (parsed and evaluated), Camunda forms and process text, runs each through the Rust crates and the TS packages, and reports every disagreement shrunk to a minimal input (`pnpm fuzz --target <name> --seconds N`, `--replay <file>`). A nightly GitHub workflow runs every target and uploads mismatches. The 11 library crates carry full crates.io metadata, dual license files, READMEs and rustdoc examples, and publish in lockstep from a manual, approval-gated workflow. Docs page: `packages/rust-crates`.

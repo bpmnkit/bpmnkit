@@ -6755,7 +6755,7 @@
 		{
 			"id": "packages.rust-crates.installation",
 			"file": "chunks/packages.rust-crates.installation.md",
-			"tokens": 206,
+			"tokens": 300,
 			"tags": [
 				"packages",
 				"rust-crates",

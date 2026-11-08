@@ -117,3 +117,34 @@ jobs:
 
       - name: Crate metadata (crates.io)
         run: node scripts/crates-publish.mjs --check
+
+      # The `bpmnkit` facade with no features and each feature alone, so a feature that only
+      # builds alongside the defaults fails here rather than for a user.
+      - name: Facade features
+        run: node scripts/crates-publish.mjs --check-features
+
+  # `rust-version` in Cargo.toml is a promise to users; build and test on exactly that toolchain.
+  # .cargo/config.toml makes the resolver pick dependency versions that support it.
+  msrv-rs:
+    name: MSRV (Rust)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install the MSRV toolchain
+        run: |
+          MSRV=$(sed -n 's/^rust-version = "\(.*\)"/\1/p' Cargo.toml)
+          rustup toolchain install "$MSRV" --profile minimal
+          echo "MSRV=$MSRV" >> "$GITHUB_ENV"
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: msrv
+
+      - name: Check
+        run: cargo +"$MSRV" check --workspace --all-targets --locked
+
+      - name: Test
+        run: cargo +"$MSRV" test --workspace --locked

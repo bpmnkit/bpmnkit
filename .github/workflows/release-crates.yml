@@ -1,7 +1,8 @@
 name: Release crates
 
 # Publishes the bpmnkit-* Rust crates to crates.io (doc/rust-crates-release.md). A run without
-# `publish` only verifies: it packages and builds every crate from its .crate file.
+# `publish` only verifies: it packages and builds every crate from its .crate file. The
+# `bpmnkit` facade depends on all the others, so crates-publish.mjs publishes it last.
 on:
   workflow_dispatch:
     inputs:
@@ -39,6 +40,10 @@ jobs:
       - name: Test
         run: cargo test --workspace
 
+      - name: Facade features
+        run: node scripts/crates-publish.mjs --check-features
+
+      # Packages every crate, the `bpmnkit` facade included, and builds each from its .crate file.
       - name: Publish dry run
         run: node scripts/crates-publish.mjs --dry-run
 

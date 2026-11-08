@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-11-08 — Rust crates: MSRV job, `bpmnkit` facade, package sizes
+
+- MSRV 1.85: `cargo +1.85 check --workspace --all-targets` failed on `proptest` 1.12 (needs 1.88), a dev-dependency of the unpublished `bpmnkit-fuzz`. The lockfile now pins `proptest` 1.11 and `.cargo/config.toml` sets `resolver.incompatible-rust-versions = "fallback"`, so `cargo update` keeps MSRV-compatible versions. Check and test pass on 1.85; the MSRV stays 1.85. New CI job `msrv-rs` (check + test on the toolchain named by `rust-version`).
+- New crate `crates/bpmnkit`: re-exports the 11 crates as modules behind same-named features; defaults `feel`, `bpmn`, `dmn`, `form`, plus `full`. README doubles as crate rustdoc (feature table, doctested example). CI checks it with no features and each feature alone.
+- `scripts/crates-publish.mjs`: the facade is published last (it depends on every crate); `--check` fails when a published crate is missing from the facade. Test: `scripts/crates-publish.test.mjs` (in `test:scripts`).
+- Packaged sizes recorded in `doc/rust-crates-release.md`; the largest, `bpmnkit-spec`, is 536 KiB compressed (limit 10 MB).
+
 ## 2026-11-07 — Studio scenario-runner tests on the shared reebe crates
 
 - `apps/studio/tests/scenario-runner.test.ts` failed in CI after reebe switched to the shared `bpmnkit-xml`/`bpmnkit-bpmn` parser. The fixture's `resultExpression` header was invalid XML (`value="={\"mytest\": true}"`; XML has no backslash escape) and used `zeebe:` without declaring it. The old hand-written reebe parser accepted both; the shared one rejects them, as Zeebe does. The fixture now uses `&quot;` and declares `xmlns:zeebe`.
