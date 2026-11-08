@@ -15,6 +15,9 @@ import {
 } from "../src/index.js"
 import { diffSignatures, formatChange, xmlSignature } from "./support/xml-signature.js"
 
+// Exports here check what the serializer writes, not whether Zeebe would deploy the
+// model (a fragment, a round trip), so they pass `validate: false` to skip the gate.
+
 const C7_NS = 'xmlns:camunda="http://camunda.org/schema/1.0/bpmn"'
 
 /** A Camunda 7 document around `body`, as Camunda Modeler writes one. */
@@ -812,7 +815,7 @@ describe("fixture conversions", () => {
 		describe(name, () => {
 			const source = readFileSync(join(fixtureDirectory, name), "utf-8")
 			const { definitions, report } = convertCamunda7(Bpmn.parse(source))
-			const exported = Bpmn.export(definitions)
+			const exported = Bpmn.export(definitions, { validate: false })
 
 			it("deploy-lints clean everywhere it reported nothing to do by hand", () => {
 				const needsWork = new Set(
@@ -835,7 +838,7 @@ describe("fixture conversions", () => {
 			})
 
 			it("re-exports identically", () => {
-				const twice = Bpmn.export(Bpmn.parse(exported))
+				const twice = Bpmn.export(Bpmn.parse(exported), { validate: false })
 				expect(
 					diffSignatures(xmlSignature(exported), xmlSignature(twice)).map(formatChange),
 				).toEqual([])
@@ -869,14 +872,16 @@ describe("fixture conversions", () => {
 			it("converts the same without the source XML, which is no longer needed", () => {
 				const withSource = convertCamunda7(Bpmn.parse(source), { sourceXml: source })
 				expect(withSource.report).toEqual(report)
-				expect(Bpmn.export(withSource.definitions)).toBe(exported)
+				expect(Bpmn.export(withSource.definitions, { validate: false })).toBe(exported)
 			})
 		})
 	}
 
 	it("removes the loop and event-definition attributes it converted from the claim model", () => {
 		const source = readFileSync(join(fixtureDirectory, "claim-handling.bpmn"), "utf-8")
-		const exported = Bpmn.export(convertCamunda7(Bpmn.parse(source)).definitions)
+		const exported = Bpmn.export(convertCamunda7(Bpmn.parse(source)).definitions, {
+			validate: false,
+		})
 		expect(exported).toContain('inputCollection="=claim.items"')
 		expect(exported).toContain('type="notify-claimant"')
 		for (const attribute of ["collection", "elementVariable", "type", "topic"]) {

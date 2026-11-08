@@ -1,3 +1,4 @@
+import type { OptimizationFinding } from "./bpmn/optimize/types.js"
 import type { SemanticDiff } from "./bpmn/semantic-hash.js"
 
 /**
@@ -25,6 +26,8 @@ export type ErrorCode =
 	| "write-verification-error"
 	/** The output file could not be written. */
 	| "write-error"
+	/** Zeebe would reject the model on deploy. */
+	| "deployability-error"
 
 /**
  * Base class for all errors thrown by `@bpmnkit/core`.
@@ -136,5 +139,38 @@ export class WriteError extends BpmnSdkError {
 	constructor(message: string) {
 		super(message, "write-error")
 		this.name = "WriteError"
+	}
+}
+
+/**
+ * Thrown when Zeebe would reject a model on deploy (see `assertDeployable`).
+ *
+ * The message names the Camunda version and lists one line per error finding,
+ * `- <elementId>: <Zeebe's message> (zeebe/<rule>)`; {@link findings} has them all.
+ *
+ * @example
+ * ```typescript
+ * import { assertDeployable, DeployabilityError } from "@bpmnkit/core"
+ *
+ * try {
+ *   assertDeployable(definitions)
+ * } catch (err) {
+ *   if (err instanceof DeployabilityError) {
+ *     for (const f of err.findings) console.error(f.elementIds[0], f.message)
+ *   }
+ * }
+ * ```
+ */
+export class DeployabilityError extends BpmnSdkError {
+	/** The findings of severity `error`, in the validator's order. */
+	readonly findings: OptimizationFinding[]
+	/** The `major.minor` Camunda version the model was checked for. */
+	readonly camundaVersion: string
+
+	constructor(message: string, findings: OptimizationFinding[], camundaVersion: string) {
+		super(message, "deployability-error")
+		this.name = "DeployabilityError"
+		this.findings = findings
+		this.camundaVersion = camundaVersion
 	}
 }

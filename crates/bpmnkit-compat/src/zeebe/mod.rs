@@ -6,6 +6,7 @@
 mod context;
 mod events;
 mod extensions;
+pub mod gate;
 mod gateways;
 mod references;
 mod structure;
@@ -17,6 +18,11 @@ pub use context::{
     feel_error, feel_failure, is_expression, local_ref, non_empty, static_value_message, FlowEntry,
     NodeEntry, Scope, ScopeKind, ValidateOptions, ZeebeContext, ZeebeLimits, ZeebeResolver,
     ZEEBE_NS,
+};
+
+pub use gate::{
+    assert_deployable, deployability_message, AssertOptions, DeployabilityError, Deployable,
+    Placeholder, PlaceholderField, PlaceholderFill, PLACEHOLDERS,
 };
 
 use crate::finding::{Finding, Severity};

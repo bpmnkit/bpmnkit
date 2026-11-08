@@ -3,6 +3,9 @@ import { applyBpmnOperations } from "../src/bpmn/full-operations.js"
 import { getZeebeExtensions } from "../src/bpmn/utils.js"
 import { Bpmn, analyzeCamundaCompat } from "../src/index.js"
 
+// Exports here check what the serializer writes, not whether Zeebe would deploy the
+// model (a fragment, a round trip), so they pass `validate: false` to skip the gate.
+
 const EXEC = [
 	{ eventType: "start", type: "audit-start" },
 	{ eventType: "end", type: "audit-end", retries: "5" },
@@ -22,6 +25,7 @@ describe("builder listeners", () => {
 				.exclusiveGateway("g", { executionListeners: EXEC })
 				.endEvent("e", { executionListeners: EXEC })
 				.build(),
+			{ validate: false },
 		)
 		expect(xml).toContain('<zeebe:executionListener eventType="start" type="audit-start"')
 		expect(xml).toContain('retries="5"')
@@ -102,6 +106,7 @@ describe("builder listeners", () => {
 				})
 				.endEvent("e")
 				.build(),
+			{ validate: false },
 		)
 		const findings = analyzeCamundaCompat(Bpmn.parse(xml), "8.7.0")
 		expect(findings.map((f) => f.id)).toContain("compat/duplicate-execution-listeners")

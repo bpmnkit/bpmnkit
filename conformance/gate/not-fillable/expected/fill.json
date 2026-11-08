@@ -1,0 +1,7 @@
+{
+  "error": "Not deployable on Camunda 8.10: 1 error(s)\n- order: Multiple none start events are not allowed (zeebe/multiple-none-start)",
+  "camundaVersion": "8.10",
+  "findings": [
+    "zeebe/multiple-none-start order"
+  ]
+}

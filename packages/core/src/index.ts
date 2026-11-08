@@ -10,6 +10,7 @@ export {
 	ValidationError,
 	WriteError,
 	WriteVerificationError,
+	DeployabilityError,
 } from "./errors.js"
 export type { ErrorCode } from "./errors.js"
 export {
@@ -80,6 +81,13 @@ export type {
 	ZeebeLimits,
 	ZeebeResolver,
 } from "./bpmn/zeebe-validate/index.js"
+export { assertDeployable, PLACEHOLDERS } from "./bpmn/zeebe-validate/gate.js"
+export type {
+	AssertDeployableOptions,
+	DeployableResult,
+	PlaceholderField,
+	PlaceholderFill,
+} from "./bpmn/zeebe-validate/gate.js"
 export {
 	ZEEBE_LATEST_VERSION,
 	ZEEBE_RULES,

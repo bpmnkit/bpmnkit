@@ -1,6 +1,9 @@
 import { beforeEach, describe, expect, it } from "vitest"
 import { Bpmn, ValidationError, optimize, resetIdCounter } from "../src/index.js"
 
+// Exports here check what the serializer writes, not whether Zeebe would deploy the
+// model (a fragment, a round trip), so they pass `validate: false` to skip the gate.
+
 /** Extracts the first process from BpmnDefinitions with a runtime assertion. */
 function firstProcess(defs: ReturnType<ReturnType<typeof Bpmn.createProcess>["build"]>) {
 	const p = defs.processes[0]
@@ -1191,6 +1194,7 @@ describe("BpmnProcessBuilder", () => {
 							.endEvent("t-end")
 					})
 					.build(),
+				{ validate: false },
 			)
 
 			expect(xml).toContain('isInterrupting="false"')
@@ -1203,6 +1207,7 @@ describe("BpmnProcessBuilder", () => {
 						sub.startEvent("t-start", { timerDuration: "PT1H" }).endEvent("t-end")
 					})
 					.build(),
+				{ validate: false },
 			)
 
 			expect(xml).not.toContain("isInterrupting")
@@ -2653,11 +2658,11 @@ describe("BpmnProcessBuilder", () => {
 				.build()
 
 			// First cycle: export → parse
-			const xml1 = Bpmn.export(defs)
+			const xml1 = Bpmn.export(defs, { validate: false })
 			const parsed1 = Bpmn.parse(xml1)
 
 			// Second cycle: re-export → re-parse
-			const xml2 = Bpmn.export(parsed1)
+			const xml2 = Bpmn.export(parsed1, { validate: false })
 			const parsed2 = Bpmn.parse(xml2)
 
 			const diag1 = defined(parsed1.diagrams[0])
@@ -3041,7 +3046,7 @@ describe("BpmnProcessBuilder", () => {
 				.endEvent("e")
 				.build()
 
-			const xml = Bpmn.export(defs)
+			const xml = Bpmn.export(defs, { validate: false })
 			expect(xml).toContain("<bpmn:documentation>DOC_SUB_START</bpmn:documentation>")
 			expect(xml).toContain("<bpmn:documentation>DOC_ESUB_START</bpmn:documentation>")
 		})
@@ -3068,7 +3073,7 @@ describe("BpmnProcessBuilder", () => {
 				.endEvent("e", { documentation: "DOC_end" })
 				.build()
 
-			const xml = Bpmn.export(defs)
+			const xml = Bpmn.export(defs, { validate: false })
 			const missing = [
 				"start",
 				"service",
@@ -3948,6 +3953,7 @@ describe("compensation — isForCompensation serialization", () => {
 			Bpmn.createProcess("proc")
 				.serviceTask("handler", { name: "Cancel", taskType: "cancel", isForCompensation: true })
 				.build(),
+			{ validate: false },
 		)
 		expect(xml).toContain('isForCompensation="true"')
 		expect(xml).toContain('id="handler"')
@@ -3958,8 +3964,9 @@ describe("compensation — isForCompensation serialization", () => {
 			Bpmn.createProcess("proc")
 				.serviceTask("handler", { name: "Cancel", taskType: "cancel", isForCompensation: true })
 				.build(),
+			{ validate: false },
 		)
-		const xml2 = Bpmn.export(Bpmn.parse(xml1))
+		const xml2 = Bpmn.export(Bpmn.parse(xml1), { validate: false })
 		expect(xml2).toContain('isForCompensation="true"')
 	})
 })
@@ -3973,6 +3980,7 @@ describe("compensation", () => {
 				.boundaryEvent("CompBoundary", { attachedTo: "BookHotel", compensation: true })
 				.endEvent("end")
 				.build(),
+			{ validate: false },
 		)
 		expect(xml).toContain("compensateEventDefinition")
 		expect(xml).toContain('id="CompBoundary"')
@@ -3989,6 +3997,7 @@ describe("compensation", () => {
 				})
 				.endEvent("end")
 				.build(),
+			{ validate: false },
 		)
 		expect(xml).toContain("compensateEventDefinition")
 		expect(xml).toContain('activityRef="BookHotel"')

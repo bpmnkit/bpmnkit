@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest"
 import { getZeebeExtensions } from "../src/bpmn/utils.js"
 import { Bpmn, ProcessBuilder, analyzeCamundaCompat } from "../src/index.js"
 
+// Exports here check what the serializer writes, not whether Zeebe would deploy the
+// model (a fragment, a round trip), so they pass `validate: false` to skip the gate.
+
 describe("builder zeebe options", () => {
 	it("writes linkedResources on a service task and reads them back", () => {
 		const linkedResources = [
@@ -41,6 +44,7 @@ describe("builder zeebe options", () => {
 					sub.startEvent("es-s", { formId: "sub-form", isInterrupting: false }).endEvent("es-e"),
 				)
 				.build(),
+			{ validate: false },
 		)
 		expect(xml).toContain('<zeebe:formDefinition formId="sub-form"')
 	})
@@ -105,6 +109,7 @@ describe("builder zeebe options", () => {
 				)
 				.branch("B", (b) => b.endEvent("e2"))
 				.build(),
+			{ validate: false },
 		)
 		expect(xml).toContain('zeebe:modelerTemplate="tpl.start"')
 		expect(xml).toContain('zeebe:modelerTemplateVersion="3"')
@@ -126,6 +131,7 @@ describe("builder zeebe options", () => {
 						.endEvent("es-e"),
 				)
 				.build(),
+			{ validate: false },
 		)
 		expect(xml).toContain('zeebe:modelerTemplate="tpl.sub"')
 		expect(xml).toContain('<zeebe:property name="pn" value="pv"')
@@ -227,7 +233,7 @@ describe("builder zeebe options", () => {
 describe("user task forms", () => {
 	const form = (opts: Record<string, unknown>) => {
 		const defs = Bpmn.createProcess("p").startEvent("s").userTask("u", opts).endEvent("e").build()
-		return { defs, xml: Bpmn.export(defs) }
+		return { defs, xml: Bpmn.export(defs, { validate: false }) }
 	}
 
 	it("emits formKey and externalReference", () => {

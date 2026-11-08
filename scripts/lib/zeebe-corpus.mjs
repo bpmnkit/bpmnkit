@@ -9,6 +9,8 @@ export const OUTPUTS = {
 	text: ["expected/output.bpmn"],
 	compact: ["expected/expanded.bpmn", "expected/output.bpmn"],
 	bpmn: ["expected/roundtrip.bpmn"],
+	// What assertDeployable filled with placeholders must deploy.
+	gate: ["expected/fill.bpmn"],
 }
 
 const subdirs = (d) =>

@@ -1,0 +1,15 @@
+{
+  "error": "Not deployable on Camunda 8.10: 9 error(s)\n- reply_msg: Attribute 'correlationKey' must be present and not empty (zeebe/subscription-correlation-key)\n- publish: Attribute 'correlationKey' must be present and not empty (zeebe/publish-message-correlation-key)\n- sig: Name must be present and not empty (zeebe/signal-name)\n- fail: ErrorCode must be present and not empty (zeebe/error-code)\n- esc: EscalationCode must be present and not empty (zeebe/escalation-code)\n- sub: Attribute 'processId' must be present and not empty (zeebe/called-element-process-id)\n- sub: Expected expression but not found. (zeebe/called-element-expression)\n- f_a: Must have a condition (zeebe/inclusive-flow-condition)\n- f_b: Must have a condition (zeebe/inclusive-flow-condition)",
+  "camundaVersion": "8.10",
+  "findings": [
+    "zeebe/subscription-correlation-key reply_msg",
+    "zeebe/publish-message-correlation-key publish",
+    "zeebe/signal-name sig",
+    "zeebe/error-code fail",
+    "zeebe/escalation-code esc",
+    "zeebe/called-element-process-id sub",
+    "zeebe/called-element-expression sub",
+    "zeebe/inclusive-flow-condition f_a",
+    "zeebe/inclusive-flow-condition f_b"
+  ]
+}

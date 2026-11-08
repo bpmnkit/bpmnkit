@@ -1,3 +1,4 @@
-Bpmn.export: 2 deploy error(s):
-deploy/service-task-no-type [t]: "t" (serviceTask) has no zeebe:taskDefinition type. Fix: Set a job type — Camunda 8 refuses to deploy a task with no task definition.
-deploy/service-task-no-type [r]: "r" (businessRuleTask) has neither a zeebe:taskDefinition type nor a zeebe:calledDecision. Fix: Set a decisionId or a job type.
+Not deployable on Camunda 8.10: 3 error(s)
+- t: Attribute 'type' must be present and not empty (zeebe/task-definition-type)
+- t: Expected expression but not found. (zeebe/task-definition-expression)
+- r: Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element (zeebe/business-rule-task-implementation)

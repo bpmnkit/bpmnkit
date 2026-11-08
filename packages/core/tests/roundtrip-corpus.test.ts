@@ -4,6 +4,9 @@ import { describe, expect, it } from "vitest"
 import { Bpmn, semanticHash } from "../src/index.js"
 import { diffSignatures, formatChange, xmlSignature } from "./support/xml-signature.js"
 
+// Exports here check what the serializer writes, not whether Zeebe would deploy the
+// model (a fragment, a round trip), so they pass `validate: false` to skip the gate.
+
 /**
  * The round-trip fidelity gate.
  *
@@ -230,7 +233,7 @@ describe("BPMN round-trip fidelity", () => {
 	for (const name of fixtures()) {
 		describe(name, () => {
 			const source = readFileSync(join(fixtureDirectory, name), "utf-8")
-			const exported = Bpmn.export(Bpmn.parse(source))
+			const exported = Bpmn.export(Bpmn.parse(source), { validate: false })
 			const changes = diffSignatures(xmlSignature(source), xmlSignature(exported))
 			const allowed = ALLOWED[name] ?? []
 			const allowedFeatures = new Set(allowed.map((entry) => entry.feature))
@@ -275,7 +278,7 @@ describe("BPMN round-trip fidelity", () => {
 				// Whatever the first pass normalises or drops, the second pass must be a
 				// fixed point. A round trip that keeps changing the file would make every
 				// save a fresh diff.
-				const twice = Bpmn.export(Bpmn.parse(exported))
+				const twice = Bpmn.export(Bpmn.parse(exported), { validate: false })
 				expect(
 					diffSignatures(xmlSignature(exported), xmlSignature(twice)).map(formatChange),
 				).toEqual([])

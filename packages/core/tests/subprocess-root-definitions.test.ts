@@ -2,6 +2,9 @@ import { beforeEach, describe, expect, it } from "vitest"
 import { Bpmn, resetIdCounter } from "../src/index.js"
 import type { BpmnDefinitions, SubProcessContentBuilder } from "../src/index.js"
 
+// Exports here check what the serializer writes, not whether Zeebe would deploy the
+// model (a fragment, a round trip), so they pass `validate: false` to skip the gate.
+
 /** Every `*Ref` attribute an event definition carries in the exported XML. */
 function eventRefs(xml: string): string[] {
 	return [...xml.matchAll(/(?:errorRef|messageRef|signalRef|escalationRef)="([^"]+)"/g)].map(
@@ -84,7 +87,7 @@ describe("SubProcessContentBuilder root definitions (#220)", () => {
 			})
 			.endEvent("e")
 			.build()
-		const xml = Bpmn.export(defs)
+		const xml = Bpmn.export(defs, { validate: false })
 
 		const ids = rootIds(defs)
 		const refs = eventRefs(xml)
@@ -146,7 +149,7 @@ describe("SubProcessContentBuilder root definitions (#220)", () => {
 					.endEvent("evte"),
 			)
 			.build()
-		const xml = Bpmn.export(defs)
+		const xml = Bpmn.export(defs, { validate: false })
 
 		const ids = rootIds(defs)
 		const refs = eventRefs(xml)
@@ -174,7 +177,7 @@ describe("SubProcessContentBuilder root definitions (#220)", () => {
 
 		expect(defs.escalations).toHaveLength(1)
 		expect(defs.errors).toHaveLength(1)
-		const xml = Bpmn.export(defs)
+		const xml = Bpmn.export(defs, { validate: false })
 		const escalationId = defs.escalations[0]?.id
 		expect(xml.match(new RegExp(`escalationRef="${escalationId}"`, "g"))).toHaveLength(2)
 	})

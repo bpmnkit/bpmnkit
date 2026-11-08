@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest"
-import { Bpmn, ValidationError } from "../src/index.js"
+import { Bpmn, DeployabilityError, ValidationError } from "../src/index.js"
 
 const build = (id: string) =>
 	Bpmn.createProcess("p1").startEvent("start").userTask(id).endEvent("end")
@@ -42,9 +42,10 @@ describe("Bpmn.export validate", () => {
 <bpmn:process id="p" isExecutable="true"><bpmn:startEvent id="s"/><bpmn:serviceTask id="t"/><bpmn:endEvent id="e"/>
 <bpmn:sequenceFlow id="f1" sourceRef="s" targetRef="t"/><bpmn:sequenceFlow id="f2" sourceRef="t" targetRef="e"/></bpmn:process></bpmn:definitions>`
 
-	it("is off by default", () => {
+	it("refuses a Camunda 8 model Zeebe rejects by default", () => {
+		expect(() => Bpmn.export(Bpmn.parse(xml))).toThrow(DeployabilityError)
 		const warn = vi.spyOn(console, "warn").mockImplementation(() => {})
-		Bpmn.export(Bpmn.parse(xml))
+		Bpmn.export(Bpmn.parse(xml), { validate: false })
 		expect(warn).not.toHaveBeenCalled()
 		warn.mockRestore()
 	})
@@ -55,6 +56,6 @@ describe("Bpmn.export validate", () => {
 		expect(Bpmn.export(defs, { validate: "warn" })).toContain("serviceTask")
 		expect(warn).toHaveBeenCalledTimes(1)
 		warn.mockRestore()
-		expect(() => Bpmn.export(defs, { validate: "error" })).toThrow(ValidationError)
+		expect(() => Bpmn.export(defs, { validate: "error" })).toThrow(DeployabilityError)
 	})
 })

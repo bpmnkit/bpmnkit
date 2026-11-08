@@ -87,5 +87,6 @@ export function mergePlan(
 		}
 	}
 
-	return { defs: laidOut, xml: Bpmn.export(laidOut), problems }
+	// Deploy errors are reported as `problems` above, not thrown.
+	return { defs: laidOut, xml: Bpmn.export(laidOut, { validate: false }), problems }
 }

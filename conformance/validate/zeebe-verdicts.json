@@ -5847,6 +5847,162 @@
 				}
 			]
 		},
+		"conformance/gate/deployable/input.bpmn": {
+			"sha256": "22bc9f062fde8a40552e042eb5d251b0a0aef5e06530d9a8b4c205b5a820429e",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/gate/every-placeholder-attribute/expected/fill.bpmn": {
+			"sha256": "95dba218c1dce6dbb0062162ccd7f65b4394a5fa4788b14a66ada92f937b9643",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/gate/every-placeholder-attribute/input.bpmn": {
+			"sha256": "9c8a5e2bfb682066eb8afded4148352a688036aab312008b5da5ea660b6ef0e5",
+			"ok": false,
+			"errors": [
+				{
+					"element": "sub > extensionElements > calledElement",
+					"message": "Expected expression but not found."
+				},
+				{
+					"element": "f_a",
+					"message": "Must have a condition"
+				},
+				{
+					"element": "fail_def",
+					"message": "ErrorCode must be present and not empty"
+				},
+				{
+					"element": "publish_def > extensionElements > publishMessage",
+					"message": "Attribute 'correlationKey' must be present and not empty"
+				},
+				{
+					"element": "esc",
+					"message": "EscalationCode must be present and not empty"
+				},
+				{
+					"element": "reply_msg > extensionElements > subscription",
+					"message": "Expected expression but not found."
+				},
+				{
+					"element": "f_b",
+					"message": "Must have a condition"
+				},
+				{
+					"element": "sig",
+					"message": "Name must be present and not empty"
+				}
+			]
+		},
+		"conformance/gate/every-placeholder/expected/fill.bpmn": {
+			"sha256": "0b51cf2164f11c368a443f539b0718b560611ad4bf1597df164bf698a80e80fc",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/gate/every-placeholder/input.bpmn": {
+			"sha256": "0aa84cf4143eb916e7a414a7b81c868a55ef9148793f15ad2f554dece4b4df35",
+			"ok": false,
+			"errors": [
+				{
+					"element": "decide > extensionElements > calledDecision",
+					"message": "Expected expression but not found."
+				},
+				{
+					"element": "rules",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "notify > extensionElements > taskDefinition",
+					"message": "Expected expression but not found."
+				},
+				{
+					"element": "m2",
+					"message": "Name must be present and not empty"
+				},
+				{
+					"element": "m2",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "compute",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "wait",
+					"message": "Intermediate timer catch event must have either a time duration or a time date."
+				},
+				{
+					"element": "done",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "sub",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				},
+				{
+					"element": "fail_def",
+					"message": "Must reference an error"
+				},
+				{
+					"element": "charge",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "broadcast_def",
+					"message": "Must reference a signal"
+				},
+				{
+					"element": "wait_def",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				},
+				{
+					"element": "f_no",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "escalate_def",
+					"message": "Must reference an escalation"
+				},
+				{
+					"element": "reply_def",
+					"message": "Must reference a message"
+				}
+			]
+		},
+		"conformance/gate/not-fillable/input.bpmn": {
+			"sha256": "fff3c65536b1de7b17c031cb162a6cf35147180660c51ae45c905783b43d4afe",
+			"ok": false,
+			"errors": [
+				{
+					"element": "order",
+					"message": "Multiple none start events are not allowed"
+				},
+				{
+					"element": "charge",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/gate/two-errors/expected/fill.bpmn": {
+			"sha256": "68a1fad84cb2ebe6a2f44696c9d9539a812ef6f7fe9cdc4fe72b497ce04c6c85",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/gate/two-errors/input.bpmn": {
+			"sha256": "a6e961b29e68774251c17b6df61c5ba42b3b55e495b44134f5e5e41c92a650d8",
+			"ok": false,
+			"errors": [
+				{
+					"element": "charge",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "notify",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
 		"conformance/layout/bpmn-artifacts/expected/grid.bpmn": {
 			"sha256": "3021db79c2c26a827030b1e703b1f721e999fcd46caa18a6ed3c569881fd1357",
 			"ok": false,

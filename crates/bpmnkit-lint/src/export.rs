@@ -1,21 +1,23 @@
-//! TS's `Bpmn.export(definitions, { validate })`: serialise, optionally linting first for
-//! what a Camunda 8 deploy would reject.
+//! TS's `Bpmn.export(definitions, { validate })`: serialise, refusing first what a Camunda 8
+//! deploy would reject (`bpmnkit_compat::zeebe::assert_deployable`).
 
 use bpmnkit_bpmn::{serialize_bpmn, BpmnDefinitions};
-
-use crate::lint::{lint_diagram, LintOptions};
-use crate::Severity;
+use bpmnkit_compat::compat::normalize_camunda_version;
+use bpmnkit_compat::zeebe::{assert_deployable, AssertOptions, DeployabilityError};
 
 /// TS's `ExportOptions.validate`.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
 pub enum ExportValidate {
-    /// `false` (default): no lint.
+    /// `"auto"` (default): refuse when the model targets Camunda 8
+    /// (`modeler:executionPlatform="Camunda Cloud"`), for its `executionPlatformVersion`.
     #[default]
-    Off,
-    /// `"warn"`: TS logs the deploy errors and exports anyway.
-    Warn,
-    /// `"error"`: TS throws a `ValidationError`.
+    Auto,
+    /// `"error"`: refuse whatever the platform.
     Error,
+    /// `"warn"`: check whatever the platform; TS logs the message, here it is `warning`.
+    Warn,
+    /// `false`: no check.
+    Off,
 }
 
 /// TS's `ExportOptions`.
@@ -31,39 +33,41 @@ pub struct Exported {
     pub warning: Option<String>,
 }
 
-/// TS's `Bpmn.export`. `Err` carries the message TS's `ValidationError` would have.
+/// `modeler:executionPlatform` names Camunda 8 ("Camunda Cloud"), as `target_camunda_version` reads it.
+fn targets_camunda8(definitions: &BpmnDefinitions) -> bool {
+    definitions
+        .unknown_attributes
+        .get("modeler:executionPlatform")
+        .is_some_and(|p| p.to_lowercase().contains("cloud"))
+}
+
+/// TS's `Bpmn.export`. `Err` is the `DeployabilityError` TS would throw.
 pub fn export_bpmn(
     definitions: &BpmnDefinitions,
     options: ExportOptions,
-) -> Result<Exported, String> {
+) -> Result<Exported, DeployabilityError> {
     let mut warning = None;
-    if options.validate != ExportValidate::Off {
-        // Only the errors a Camunda 8 deploy would reject; an engine-neutral model is not judged.
-        let report = lint_diagram(definitions, LintOptions::default());
-        let errors: Vec<String> = report
-            .diagnostics
-            .iter()
-            .filter(|d| d.severity == Severity::Error)
-            .map(|d| {
-                format!(
-                    "{} [{}]: {} Fix: {}",
-                    d.id,
-                    d.element_ids.join(", "),
-                    d.message,
-                    d.suggestion
-                )
-            })
-            .collect();
-        if !errors.is_empty() {
-            let text = format!(
-                "Bpmn.export: {} deploy error(s):\n{}",
-                errors.len(),
-                errors.join("\n")
-            );
-            if options.validate == ExportValidate::Error {
-                return Err(text);
-            }
-            warning = Some(text);
+    let check = match options.validate {
+        ExportValidate::Off => false,
+        ExportValidate::Auto => targets_camunda8(definitions),
+        ExportValidate::Error | ExportValidate::Warn => true,
+    };
+    if check {
+        let camunda_version = normalize_camunda_version(
+            definitions
+                .unknown_attributes
+                .get("modeler:executionPlatformVersion")
+                .map(String::as_str),
+        )
+        .map(|v| v.as_str().to_string());
+        let options_ = AssertOptions {
+            camunda_version,
+            ..AssertOptions::default()
+        };
+        match assert_deployable(definitions, &options_) {
+            Ok(_) => {}
+            Err(e) if options.validate == ExportValidate::Warn => warning = Some(e.to_string()),
+            Err(e) => return Err(e),
         }
     }
     Ok(Exported {

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.8.0">
+  <bpmn:message id="reply_msg" name="reply">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="" />
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="out_msg" name="out" />
+  <bpmn:signal id="sig" />
+  <bpmn:error id="err" name="Failure" />
+  <bpmn:escalation id="esc" name="Escalation" />
+  <bpmn:process id="order" isExecutable="true">
+    <bpmn:startEvent id="start">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:intermediateCatchEvent id="reply" name="Reply">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="reply_def" messageRef="reply_msg" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateThrowEvent id="publish" name="Publish">
+      <bpmn:incoming>f2</bpmn:incoming>
+      <bpmn:outgoing>f3</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="publish_def" messageRef="out_msg">
+        <bpmn:extensionElements>
+          <zeebe:publishMessage />
+        </bpmn:extensionElements>
+      </bpmn:messageEventDefinition>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateThrowEvent id="broadcast" name="Broadcast">
+      <bpmn:incoming>f3</bpmn:incoming>
+      <bpmn:outgoing>f4</bpmn:outgoing>
+      <bpmn:signalEventDefinition id="broadcast_def" signalRef="sig" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateThrowEvent id="escalate" name="Escalate">
+      <bpmn:incoming>f4</bpmn:incoming>
+      <bpmn:outgoing>f5</bpmn:outgoing>
+      <bpmn:escalationEventDefinition id="escalate_def" escalationRef="esc" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:callActivity id="sub" name="Sub">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>f5</bpmn:incoming>
+      <bpmn:outgoing>f6</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:inclusiveGateway id="which" name="Which?">
+      <bpmn:incoming>f6</bpmn:incoming>
+      <bpmn:outgoing>f_a</bpmn:outgoing>
+      <bpmn:outgoing>f_b</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:endEvent id="fail" name="Fail">
+      <bpmn:incoming>f_a</bpmn:incoming>
+      <bpmn:errorEventDefinition id="fail_def" errorRef="err" />
+    </bpmn:endEvent>
+    <bpmn:endEvent id="done" name="Done">
+      <bpmn:incoming>f_b</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="reply" />
+    <bpmn:sequenceFlow id="f2" sourceRef="reply" targetRef="publish" />
+    <bpmn:sequenceFlow id="f3" sourceRef="publish" targetRef="broadcast" />
+    <bpmn:sequenceFlow id="f4" sourceRef="broadcast" targetRef="escalate" />
+    <bpmn:sequenceFlow id="f5" sourceRef="escalate" targetRef="sub" />
+    <bpmn:sequenceFlow id="f6" sourceRef="sub" targetRef="which" />
+    <bpmn:sequenceFlow id="f_a" sourceRef="which" targetRef="fail" />
+    <bpmn:sequenceFlow id="f_b" sourceRef="which" targetRef="done" />
+  </bpmn:process>
+</bpmn:definitions>

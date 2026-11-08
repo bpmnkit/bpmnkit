@@ -13,6 +13,9 @@ import {
 } from "../src/bpmn/builder-coverage.js"
 import { Bpmn } from "../src/bpmn/index.js"
 
+// Exports here check what the serializer writes, not whether Zeebe would deploy the
+// model (a fragment, a round trip), so they pass `validate: false` to skip the gate.
+
 /**
  * The check that stops the fluent builder drifting from the element model.
  *
@@ -122,6 +125,7 @@ describe("the newly covered types round-trip", () => {
 	it("builds a complex gateway", () => {
 		const xml = Bpmn.export(
 			Bpmn.createProcess("P").startEvent("s").complexGateway("g").endEvent("e").build(),
+			{ validate: false },
 		)
 
 		expect(xml).toContain('<bpmn:complexGateway id="g"')
@@ -139,6 +143,7 @@ describe("the newly covered types round-trip", () => {
 				})
 				.endEvent("e")
 				.build(),
+			{ validate: false },
 		)
 
 		expect(xml).toContain('<bpmn:transaction id="tx"')
@@ -177,7 +182,7 @@ describe("the newly covered types round-trip", () => {
 			.endEvent("e")
 			.build()
 
-		const xml = Bpmn.export(definitions)
+		const xml = Bpmn.export(definitions, { validate: false })
 		for (const fragment of [
 			'<bpmn:manualTask id="bm"',
 			'<bpmn:complexGateway id="bg"',
@@ -190,7 +195,9 @@ describe("the newly covered types round-trip", () => {
 		}
 
 		// The round trip must not quietly drop the nested elements.
-		expect(Bpmn.export(Bpmn.parse(xml))).toContain('<bpmn:transaction id="stx"')
+		expect(Bpmn.export(Bpmn.parse(xml), { validate: false })).toContain(
+			'<bpmn:transaction id="stx"',
+		)
 	})
 
 	it("emits event sub-processes in the spec form the table records", () => {
@@ -208,6 +215,7 @@ describe("the newly covered types round-trip", () => {
 					b.startEvent("es").endEvent("ee")
 				})
 				.build(),
+			{ validate: false },
 		)
 
 		expect(xml).toContain('triggeredByEvent="true"')

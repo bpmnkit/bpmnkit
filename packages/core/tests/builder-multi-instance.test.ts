@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest"
 import { compactify, expand } from "../src/bpmn/compact.js"
 import { Bpmn } from "../src/index.js"
 
+// Exports here check what the serializer writes, not whether Zeebe would deploy the
+// model (a fragment, a round trip), so they pass `validate: false` to skip the gate.
+
 const MI = {
 	collection: "=items",
 	elementVariable: "item",
@@ -28,7 +31,9 @@ const CASES: Array<[string, Add]> = [
 
 describe("multi-instance on every activity", () => {
 	it.each(CASES)("%s survives builder, export and parse", (type, add) => {
-		const xml = Bpmn.export(add(Bpmn.createProcess("p").startEvent("s")).endEvent("e").build())
+		const xml = Bpmn.export(add(Bpmn.createProcess("p").startEvent("s")).endEvent("e").build(), {
+			validate: false,
+		})
 		expect(xml).toContain('outputCollection="results"')
 		expect(xml).toContain('outputElement="=result"')
 		const el = Bpmn.parse(xml).processes[0]?.flowElements.find((e) => e.id === "t")
@@ -59,6 +64,7 @@ describe("multi-instance on every activity", () => {
 						.endEvent("e2"),
 				)
 				.build(),
+			{ validate: false },
 		)
 		expect(xml.match(/outputCollection="results"/g)?.length).toBe(2)
 	})

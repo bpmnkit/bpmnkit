@@ -554,6 +554,8 @@ export function compilePlan(plan: ProcessPlan, opts: CompilePlanOptions = {}): S
 		}
 	}
 
-	const xml = Bpmn.export(laidOut)
+	// Deploy errors are already reported as `problems` above; compilePlan returns them
+	// instead of throwing (the deployability gate for plans is a later phase).
+	const xml = Bpmn.export(laidOut, { validate: false })
 	return { defs: laidOut, xml, problems }
 }
