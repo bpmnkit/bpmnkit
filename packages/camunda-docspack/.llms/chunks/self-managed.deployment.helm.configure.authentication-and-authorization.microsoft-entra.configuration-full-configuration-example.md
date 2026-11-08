@@ -36,7 +36,7 @@ global:
       console:
         clientId: "<console-app-id>"
         audience: "<console-app-id>"
-        redirectUrl: "http://localhost:8087"
+        redirectUrl: "<CONSOLE_URL>"
   security:
     authentication:
       method: oidc

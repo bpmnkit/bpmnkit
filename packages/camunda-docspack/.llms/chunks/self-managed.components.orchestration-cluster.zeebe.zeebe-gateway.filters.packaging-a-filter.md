@@ -16,14 +16,13 @@ The file path for `jar` should match the package name. For example, if your pack
 
 ```sh
 # both runtime libraries and the manifest must be packaged together with the compiled classes
-jar cvfm LoggingFilter.jar ./MANIFEST.MF ./*.class ./lib
+jar cvfm LoggingFilter.jar ./MANIFEST.MF ./io/camunda/zeebe/example/*.class ./lib
 
 # let's verify the contents of the JAR
 jar tf ./LoggingFilter.jar
 # META-INF/
 # META-INF/MANIFEST.MF
-# LoggingFilter.java
-# LoggingFilter$1.class
+# io/camunda/zeebe/example/LoggingFilter.class
 # lib/
 # lib/jakarta.servlet-api.jar
 # lib/slf4j-api.jar

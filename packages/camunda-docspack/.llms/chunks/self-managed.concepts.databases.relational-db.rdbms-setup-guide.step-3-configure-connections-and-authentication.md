@@ -45,7 +45,7 @@ Camunda Hub uses Spring Boot datasource configuration (separate from Orchestrati
 In your `values.yaml`:
 
 ```yaml
-webModeler:
+camundaHub:
   restapi:
     externalDatabase:
       enabled: true
@@ -104,7 +104,7 @@ orchestration:
     secondaryStorage:
       type: rdbms
       rdbms:
-        url: "jdbc:postgresql://aurora-cluster.123456789012.us-east-1.rds.amazonaws.com:5432/camunda?sslmode=require"
+        url: "jdbc:aws-wrapper:postgresql://aurora-cluster.123456789012.us-east-1.rds.amazonaws.com:5432/camunda?wrapperPlugins=iam&sslmode=require"
         username: db_user # IAM database user
         # No password needed; IAM token generated at runtime
         # Requires IAM role attached to pod (IRSA or Karpenter)
@@ -113,13 +113,16 @@ orchestration:
 **Camunda Hub (Helm)**:
 
 ```yaml
-webModeler:
+camundaHub:
   restapi:
     externalDatabase:
       enabled: true
       url: "jdbc:aws-wrapper:postgresql://aurora-cluster.123456789012.us-east-1.rds.amazonaws.com:5432/camunda?wrapperPlugins=iam"
       username: db_user # IAM database user
       # No password needed; IAM token generated at runtime
+    env:
+      - name: SPRING_DATASOURCE_DRIVERCLASSNAME
+        value: software.amazon.jdbc.Driver
 ```
 
 For detailed Aurora setup, see [Orchestration Cluster RDBMS configuration](https://docs.camunda.io/docs/next/self-managed/concepts/databases/relational-db/configuration) and [Camunda Hub configuration](https://docs.camunda.io/docs/next/self-managed/components/hub/configuration/database).

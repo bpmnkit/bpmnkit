@@ -1,4 +1,4 @@
-# Use the Camunda Helm Toolkit — Interpret reports and exit codes
+# Prepare Helm upgrades with the Camunda Helm Toolkit — Interpret reports and exit codes
 
 Reports identify changes, warnings, and validation errors that need review before deployment.
 

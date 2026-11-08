@@ -20,8 +20,7 @@ global:
           enabled: true
           caSecret:
             secret:
-              existingSecret: orchestration-upstream-ca # PEM CA bundle
-              existingSecretKey: ca.crt
+              existingSecret: orchestration-upstream-ca # PEM CA bundle, under the fixed ca.crt key
           sniHost: "" # set when the cert SAN does not match the in-cluster service name
 ```
 

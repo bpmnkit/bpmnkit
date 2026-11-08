@@ -4,7 +4,7 @@ Deploy Keycloak without external access:
 
 ```bash
 # Deploy the PostgreSQL database for Keycloak
-CLUSTER_FILTER=pg-keycloak (cd generic/kubernetes/operator-based/postgresql && ./deploy.sh)
+(cd generic/kubernetes/operator-based/postgresql && CLUSTER_FILTER="pg-keycloak" ./deploy.sh)
 
 # Deploy Keycloak
 export KEYCLOAK_CONFIG_FILE="keycloak-instance-no-domain.yml"

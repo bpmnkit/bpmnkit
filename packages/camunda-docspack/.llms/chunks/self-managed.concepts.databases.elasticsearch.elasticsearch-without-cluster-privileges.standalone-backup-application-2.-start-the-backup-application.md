@@ -37,7 +37,7 @@ camunda_webapps_123_8.8.0_part_6_of_7
 camunda_webapps_123_8.8.0_part_7_of_7
 ```
 
-Once completed, you can proceed with step 7 of the [backup procedure](https://docs.camunda.io/docs/next/self-managed/operational-guides/backup-restore/backup-and-restore#backup-process).
+This application replaces steps 2 and 4 of the [backup procedure](https://docs.camunda.io/docs/next/self-managed/operational-guides/backup-restore/elasticsearch/backup#back-up-process). Once it completes, continue with the remaining steps of that procedure.
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/concepts/databases/elasticsearch/elasticsearch-without-cluster-privileges

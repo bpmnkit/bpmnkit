@@ -1,6 +1,6 @@
 # Connect Admin to an identity provider — Machine-to-machine (M2M) API access — Prerequisites
 
-- The Orchestration Cluster (Self-Managed) user interface is [configured against your IdP](#user-interface).
+- The Orchestration Cluster (Self-Managed) user interface is [configured against your IdP](#web-components).
 - Client credentials (client ID, client secret, authorization server URI) from your IdP.
 
 ---

@@ -2,7 +2,7 @@
 
 The `OAuthCredentialsProvider` requires the specification of a client ID and a client secret. These are then used to request an access token from an OAuth 2.0 authorization server through a [client credentials flow](https://tools.ietf.org/html/rfc6749#section-4.4).
 
-By default, the authorization server is the one used by Camunda 8, but any other can be used. Using the access token returned by the authorization server, the `OAuthCredentialsProvider` adds it to the gRPC headers of each request as a bearer token. Requests which fail with due to authentication errors (i.e. HTTP 401 or `UNAUTHENTICATED` gRPC code) are seamlessly retried only if a new access token can be obtained.
+By default, the authorization server is the one used by Camunda 8, but any other can be used. Using the access token returned by the authorization server, the `OAuthCredentialsProvider` adds it to the gRPC headers of each request as a bearer token. Requests that fail due to authentication errors (i.e. HTTP 401 or `UNAUTHENTICATED` gRPC code) are seamlessly retried only if a new access token can be obtained.
 
 #### Java
 
@@ -46,7 +46,7 @@ public class AuthorizedClient {
 }
 ```
 
-The client creates an `OAuthCredentialProvider` with the credentials specified through the environment variables and the audience is extracted from the address specified through the `CamundaClientBuilder`.
+The client creates an `OAuthCredentialsProvider` with the credentials specified through the environment variables and the audience is extracted from the address specified through the `CamundaClientBuilder`.
 
 **Note**
 Zeebe's Java client will not prevent you from adding credentials to requests while using an insecure connection, but you should be aware that doing so will expose your access token by transmitting it in plaintext.

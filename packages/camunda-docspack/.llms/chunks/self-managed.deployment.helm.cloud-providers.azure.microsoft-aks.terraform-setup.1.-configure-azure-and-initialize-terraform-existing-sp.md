@@ -12,7 +12,7 @@ az login --service-principal \
   --tenant <tenant-id>
 ```
 
-Replace `<appId>`, `<password>`, and `<tenant-id>` with the actual values of your Service Principal.
+Replace `<appId>` and `<tenant-id>` with the actual values of your Service Principal.
 
 Also, ensure that you export the `<appId>` by running the below command after logging in as the SP, as it will be needed [in the next step](#creating-terraformtfvars).
 

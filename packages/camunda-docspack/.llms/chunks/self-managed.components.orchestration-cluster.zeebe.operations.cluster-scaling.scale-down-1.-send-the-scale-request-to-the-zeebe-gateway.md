@@ -1,6 +1,6 @@
 # Cluster scaling — Scale down — 1. Send the scale request to the Zeebe Gateway
 
-Now we should tell Zeebe to move partitions away from the brokers that will be removed. For that, we send a POST request to the Zeebe Gateway's management endpoint. See [API reference](#api-reference) for more details.
+Now we should tell Zeebe to move partitions away from the brokers that will be removed. For that, we send a PATCH request to the Zeebe Gateway's management endpoint. See [API reference](#api-reference) for more details.
 
 If you haven't set up Ingress, you can first port-forward to access the Zeebe Gateway in your local machine:
 

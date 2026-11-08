@@ -128,21 +128,17 @@ camundaHub:
 
 **Placeholders to replace:**
 
-| Placeholder                                               | Replace with                                       |
-| --------------------------------------------------------- | -------------------------------------------------- |
-| `https://your-provider.example.com`                       | Your OIDC provider's issuer URL                    |
-| `identity`, `orchestration`, `optimize`, etc.             | Your actual client IDs                             |
-| `identity`, `orchestration`, `optimize` (audience values) | The unique audience you assigned to each component |
-| `admin@example.com`                                       | Your admin user's claim value                      |
-
-### Verify before deploying
-
-- All `<placeholders>` replaced with actual values.
-- All client secrets stored in the `oidc-credentials` secret.
-- Database credentials provided by the operator-managed database secrets (for example, `pg-identity-secret` and `pg-hub-secret`).
-- Redirect URIs in OIDC provider match `redirectUrl` values.
-- Each component has a distinct resource audience by default. Any cross-component audience acceptance supports a documented integration.
-- Verify tokens contain `preferred_username` and `client_id` claims, or uncomment and configure alternative claim names.
+| Placeholder                                                                                                                      | Replace with                                                                             |
+| -------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `<issuer-url>`                                                                                                                   | Your OIDC provider's issuer URL                                                          |
+| `<authorization-endpoint-url>`, `<token-endpoint-url>`, `<jwks-endpoint-url>`                                                    | The authorization, token, and JWKS endpoint URLs of your OIDC provider                   |
+| `<identity-client-id>`, `<optimize-client-id>`, `<web-modeler-ui-client-id>`, `<console-client-id>`, `<orchestration-client-id>` | The client ID of each component from your OIDC provider                                  |
+| `<identity-audience>`, `<optimize-audience>`, `<web-modeler-ui-audience>`, `<console-audience>`, `<orchestration-audience>`      | The unique audience you assigned to each component                                       |
+| `<web-modeler-api-audience>`                                                                                                     | The audience for external Web Modeler API access: the API client ID or a custom audience |
+| `<identity-base-url>`, `<optimize-url>`, `<web-modeler-url>`, `<console-url>`, `<orchestration-url>`                             | The URL where each component is accessible                                               |
+| `<user-claim-name>`                                                                                                              | The claim that identifies users in your tokens, such as `email` or `sub`                 |
+| `<admin-user-claim-value>`                                                                                                       | Your admin user's value for that claim, for example `admin@example.com`                  |
+| `<your-email-address>`                                                                                                           | The sender address Web Modeler uses for email notifications                              |
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/authentication-and-authorization/generic-oidc-provider

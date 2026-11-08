@@ -16,11 +16,11 @@
             {
                "backupId": 1748937221,
                "scheduledSnapshots":[
-                  "camunda_webapps_1_8.10.0_part_1_of_5",
-                  "camunda_webapps_1_8.10.0_part_2_of_5",
-                  "camunda_webapps_1_8.10.0_part_3_of_5",
-                  "camunda_webapps_1_8.10.0_part_4_of_5",
-                  "camunda_webapps_1_8.10.0_part_5_of_5"
+                  "camunda_webapps_1748937221_8.8.0_part_1_of_5",
+                  "camunda_webapps_1748937221_8.8.0_part_2_of_5",
+                  "camunda_webapps_1748937221_8.8.0_part_3_of_5",
+                  "camunda_webapps_1748937221_8.8.0_part_4_of_5",
+                  "camunda_webapps_1748937221_8.8.0_part_5_of_5"
                ]
             }
             ```

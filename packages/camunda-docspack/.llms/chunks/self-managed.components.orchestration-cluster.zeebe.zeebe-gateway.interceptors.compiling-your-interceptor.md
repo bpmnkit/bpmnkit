@@ -12,7 +12,8 @@ level of the compiled code must be the same as Zeebe's (i.e. currently JDK 21) o
 
 ```sh
 # to compile LoggingInterceptor.java, we'll need to provide the api libraries
-javac -classpath .:lib/grpc-api.jar:lib/slf4j-api.jar ./LoggingInterceptor.java
+# -d . places the class files in a directory that matches the package name
+javac -d . -classpath .:lib/grpc-api.jar:lib/slf4j-api.jar ./LoggingInterceptor.java
 ```
 
 ---

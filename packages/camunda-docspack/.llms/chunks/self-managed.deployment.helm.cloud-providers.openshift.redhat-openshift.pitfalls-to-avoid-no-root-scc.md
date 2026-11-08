@@ -2,7 +2,7 @@
 
 #### Non-root SCCs
 
-If you intend to deploy Camunda 8 while restricting applications from running as root (e.g., using the `nonroot` built-in SCCs), you'll need to configure each pod and container to run as a non-root user. For example, when deploying Zeebe using a stateful set, you would include the following YAML, replacing `1000` with the desired user ID:
+If you intend to deploy Camunda 8 while restricting applications from running as root (e.g., using the `nonroot` built-in SCCs), you'll need to configure each pod and container to run as a non-root user. For example, when deploying Zeebe using a stateful set, you would include the following YAML, replacing `1000` with the desired user ID and `<container-name>` with the name of the container:
 
 ```yaml
 spec:
@@ -11,8 +11,9 @@ spec:
       securityContext:
         runAsUser: 1000
       containers:
-        securityContext:
-          runAsUser: 1000
+        - name: <container-name>
+          securityContext:
+            runAsUser: 1000
 ```
 
 **Note**

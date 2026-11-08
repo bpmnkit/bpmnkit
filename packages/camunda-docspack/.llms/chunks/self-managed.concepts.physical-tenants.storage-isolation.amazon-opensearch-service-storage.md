@@ -86,8 +86,7 @@ camunda:
 For this to authenticate correctly, two conditions must hold:
 
 - **Every instance must authorize the pod's IAM role**: attach an IAM policy to the role allowing `es:ESHttp*` on each instance's ARN, and allow the role in each instance's access policy (or map the role ARN in its fine-grained access control configuration). This also works for an instance in a different AWS account, granted through that instance's resource-based access policy. The signing identity is still the single pod role.
-**Warning**
-  **All instances must be in the same AWS region as the pod.** The request signature is scoped to the region resolved from the pod's environment (for example `AWS_REGION`), not derived from each endpoint. An instance in a different region rejects the signature with an authentication error.
+- **All instances must be in the same AWS region as the pod**: the request signature is scoped to the region resolved from the pod's environment (for example `AWS_REGION`), not derived from each endpoint. An instance in a different region rejects the signature with an authentication error.
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/concepts/physical-tenants/storage-isolation

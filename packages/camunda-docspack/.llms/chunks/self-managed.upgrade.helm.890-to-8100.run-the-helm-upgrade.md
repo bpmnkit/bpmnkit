@@ -1,5 +1,7 @@
 # Upgrade Camunda 8.9 to 8.10 using Helm — Run the Helm upgrade
 
+Before upgrading production, complete the non-production test and verify your [backups](#prerequisites). If you run Web Modeler, follow the [Hub backup timing and migration procedure](#migrate-web-modeler-and-console-to-camunda-hub), including stopping writes before the database backup.
+
 If your 8.9 release doesn't run Web Modeler, run the upgrade in one step:
 
 ```bash

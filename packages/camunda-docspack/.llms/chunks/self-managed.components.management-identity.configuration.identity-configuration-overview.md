@@ -5,7 +5,7 @@ Learn more about how Management Identity plays together with Keycloak and other 
 Configure Management Identity for your Camunda 8 Self-Managed deployment. This guide covers application-level configuration, including environment variables and IdP settings.
 
 **Info: Deploying with Helm?**
-If you deploy Camunda 8 Self-Managed with Helm, use the [Helm chart authentication and authorization guides](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/authentication-and-authorization/index) to configure OIDC and Management Identity:
+If you deploy Camunda 8 Self-Managed with Helm, use the [Helm chart authentication and authorization guides](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/authentication-and-authorization/index) to configure OIDC and Management Identity.
 
 
 ## Configure Management Identity IdP
@@ -30,7 +30,7 @@ You can configure your Management Identity IdP using the following options:
 | [Configure an external IdP using Keycloak](https://docs.camunda.io/docs/next/self-managed/components/management-identity/configuration/configure-external-identity-provider) | Configure an external identity provider using Keycloak, such as OpenID Connect, SAML, LDAP, or Active Directory. |
 
 **Note**
-Management Identity relies on a PostgreSQL. When running Management Identity with an external OIDC provider, you can [connect to an alternative Database](https://docs.camunda.io/docs/next/self-managed/components/management-identity/configuration/alternative-db) if your internal policies or compliance requirements prevent the use of PostgreSQL.
+Management Identity relies on a PostgreSQL database. When running Management Identity with an external OIDC provider, you can [connect to an alternative Database](https://docs.camunda.io/docs/next/self-managed/components/management-identity/configuration/alternative-db) if your internal policies or compliance requirements prevent the use of PostgreSQL.
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/components/management-identity/configuration/identity-configuration-overview

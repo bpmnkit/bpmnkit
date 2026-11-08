@@ -9,7 +9,7 @@ The init container builds a PKCS12 truststore; the chart omits `-Djavax.net.ssl.
 The chart sets both `SSL_CERT_FILE` and `NODE_EXTRA_CA_CERTS` on Node.js components automatically. Do not add `NODE_EXTRA_CA_CERTS` via `camundaHub.websockets.env` (or the deprecated `webModeler.websockets.env`) — Kubernetes last-wins env semantics make the value undefined.
 
 
-## In-cluster transport (service mesh required)
+## Encrypt in-cluster transport {#in-cluster-transport-service-mesh-required}
 
 `global.tls.caBundle` covers component-to-datastore and component-to-IdP connections only.
 The following in-cluster connections are plaintext by default:
@@ -20,7 +20,7 @@ The following in-cluster connections are plaintext by default:
 | Web Modeler / Console / Optimize → Identity     | REST     |
 | Spring Boot management / metrics (probes)       | HTTP     |
 
-Encrypt these at the pod level with a service mesh (Linkerd, Istio, or Cilium). See the
+Encrypt these at the pod level with a service mesh (Linkerd, Istio, or Cilium). For the Orchestration REST and gRPC servers, you can instead enable pod-level TLS with the opt-in Helm values in [Orchestration TLS modes](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/orchestration-tls-modes). See the
 [TLS coverage matrix](https://github.com/camunda/camunda-platform-helm/blob/main/docs/tls-coverage-810.md) for the full connection inventory.
 
 ---

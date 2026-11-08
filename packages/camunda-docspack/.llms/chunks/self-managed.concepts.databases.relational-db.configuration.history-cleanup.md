@@ -29,7 +29,6 @@ camunda.data.secondary-storage.rdbms.history.*
 | `batch-operation-migrate-process-instance-ttl` | TTL for migrate-process-instance batch operations                                               | P5D        |
 | `batch-operation-modify-process-instance-ttl`  | TTL for modify-process-instance batch operations                                                | P5D        |
 | `batch-operation-resolve-incident-ttl`         | TTL for resolve-incident batch operations                                                       | P5D        |
-| `historyCleanupBatchSize`                      | Maximum number of entries deleted per cleanup run                                               | 1000       |
 | `min-history-cleanup-interval`                 | Minimum duration between cleanup runs (ISO-8601 duration)                                       | PT1M       |
 | `max-history-cleanup-interval`                 | Maximum duration between cleanup runs (ISO-8601 duration)                                       | PT60M      |
 | `max-history-cleanup-usage`                    | Maximum percentage of usage time the history cleanup is allowed to use (values between 0 and 1) | 0.25 (25%) |

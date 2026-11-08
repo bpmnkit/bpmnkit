@@ -16,7 +16,7 @@
 - **Versions 8.5-8.6**: ILM policies sometimes missing after configuration; may require manual creation or new record export to trigger policy creation
 
 **Info**
-For Camunda 8.7 and earlier, if you change retention configuration after initial deployment, you must manually update the policies in Elasticsearch/OpenSearch for Operate and Tasklist. Zeebe automatically applies configuration updates. See [Manually creating or updating policies](#manually-creating-or-updating-policies-87-and-earlier).
+For Camunda 8.7 and earlier, if you change retention configuration after initial deployment, you must manually update the policies in Elasticsearch/OpenSearch for Operate and Tasklist. Zeebe automatically applies configuration updates.
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/data-retention

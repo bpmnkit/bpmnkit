@@ -60,18 +60,18 @@ Create a configuration for the Camunda single application with the following val
 camunda:
   data:
     secondary-storage:
-    type: elasticsearch
-    elasticsearch:
-      # Example assuming an existing user called 'camunda-app' with the privileges described in 2.1
-      username: camunda-app
-      password: camunda123
-      url: https://localhost:9200
-      # If custom SSL configuration is necessary
-      security:
-        enabled: true
-        self-signed: true
-        verify-hostname: false
-        certificate-path: PATH_TO_CA_CERT
+      type: elasticsearch
+      elasticsearch:
+        # Example assuming an existing user called 'camunda-app' with the privileges described in 2.1
+        username: camunda-app
+        password: camunda123
+        url: https://localhost:9200
+        # If custom SSL configuration is necessary
+        security:
+          enabled: true
+          self-signed: true
+          verify-hostname: false
+          certificate-path: PATH_TO_CA_CERT
   database:
     schema-manager:
       createSchema: false

@@ -8,11 +8,13 @@ If nothing within your cluster relies on the implicit node role, Camunda recomme
 
 **For new node groups** that use a Terraform module such as the [Amazon EKS module](https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest), you can define the following:
 
-```json
-eks_managed_node_group_defaults {
+```hcl
+eks_managed_node_groups = {
+  services = {
     metadata_options = {
-        http_put_response_hop_limit = 1
+      http_put_response_hop_limit = 1
     }
+  }
 }
 ```
 

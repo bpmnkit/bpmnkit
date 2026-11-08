@@ -5,7 +5,7 @@ Upgrade to a more recent version of the Camunda Helm charts, and view configurat
 Upgrade a Camunda 8 Self-Managed deployment installation using the official Camunda Helm charts.
 
 **Caution: earlier versions**
-If you are upgrading from a version earlier than 8.8, see [upgrading from an earlier version](https://docs.camunda.io/docs/next/self-managed/upgrade/index#upgrading-from-an-earlier-version).
+If you are upgrading from a version earlier than 8.9, see [upgrading from an earlier version](https://docs.camunda.io/docs/next/self-managed/upgrade/index#upgrading-from-an-earlier-version).
 
 **Note: Helm CLI support**
 Camunda 8.10 (chart 15.x) supports Helm CLI v3 and v4.

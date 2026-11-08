@@ -10,7 +10,8 @@ After deploying your IdP, merge the corresponding auth overlay into your `values
 **Keycloak Operator overlays:**
 
 ```bash
-# Merge the Keycloak Operator Helm values (use "domain" or "no-domain" variant)
+# Merge the Keycloak Operator Helm values
+# Without a domain, use camunda-keycloak-no-domain-values.yml instead of camunda-keycloak-domain-values.yml
 yq ". *+ load(\"camunda-keycloak-domain-values.yml\")" values.yml > values-merged.yml && mv values-merged.yml values.yml
 
 # Merge the identity secrets overlay
@@ -20,7 +21,7 @@ yq ". *+ load(\"camunda-values-identity-secrets.yml\")" values.yml > values-merg
 The overlay files are available in the [Keycloak operator-based directory](https://github.com/camunda/camunda-deployment-references/tree/main/generic/kubernetes/operator-based/keycloak). The identity secrets are created automatically by the Keycloak Operator.
 
 **Warning: No-domain deployments and IdP choice**
-If you deploy Camunda **without a domain** (using `kubectl port-forward`), you'll generally need to use Keycloak as your IdP. Most external OIDC providers (for example, Microsoft Entra ID and Okta) don't allow `localhost` as a valid redirect URI for security reasons. Keycloak, when deployed locally in the cluster, can be configured to accept localhost-based redirect URIs.
+If you deploy Camunda **without a domain** (using `kubectl port-forward`), you reach Camunda through `localhost`, so your IdP must accept `localhost` redirect URIs. Keycloak, when deployed locally in the cluster, can be configured to accept localhost-based redirect URIs. If you use an external OIDC provider, check its redirect URI rules first.
 
 **Tip: Why isn't an IdP included by default?**
 The choice of identity provider is highly specific to each organization's security requirements, existing infrastructure, and compliance needs. Rather than bundling a default IdP that may not match your setup, the reference architecture leaves this choice to you.

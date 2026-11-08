@@ -15,7 +15,7 @@ If you need to use authorizations for access control, you must protect APIs by d
   
 ### env
 
-```yaml
+```shell
 CAMUNDA_SECURITY_AUTHENTICATION_UNPROTECTEDAPI=true
 ```
   
@@ -30,7 +30,14 @@ camunda.security.authentication.unprotected-api: true
 ### helm
 
 ```yaml
-orchestration.security.authentication.unprotectedApi=true
+orchestration:
+  extraConfiguration:
+    - file: unprotected-api.yaml
+      content: |
+        camunda:
+          security:
+            authentication:
+              unprotected-api: true
 ```
 
 ---

@@ -7,8 +7,8 @@ All required Camunda images published on Docker Hub are also available in the Ca
 For example, you can pull the Camunda image from Docker Hub or the Camunda registry:
 
 ```shell
-docker pull camunda/camunda:latest
-docker pull registry.camunda.cloud/camunda/camunda:latest
+docker pull camunda/camunda:<DOCKER_TAG>
+docker pull registry.camunda.cloud/camunda/camunda:<DOCKER_TAG>
 ```
 
 ---

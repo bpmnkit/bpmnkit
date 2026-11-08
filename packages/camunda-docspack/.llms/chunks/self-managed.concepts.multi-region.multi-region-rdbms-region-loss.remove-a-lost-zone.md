@@ -2,7 +2,7 @@
 
 Whether the lost zone has to be removed depends on the replicas it held, not on how many zones there are. A partition keeps its quorum as long as the lost zone held fewer than half its replicas:
 
-- Under a layout that satisfies this, such as the default `2-2-1` across three zones, the majority holds. Processing continues whether or not you remove the zone.
+- Under a layout that satisfies this, such as a `2-2-1` replica layout across three zones, the majority holds. Processing continues whether or not you remove the zone.
 - When one zone holds half the replicas or more, losing that zone costs the quorum. Processing only resumes once the zone is removed from the partition distribution.
 
 An evenly split two-zone cluster, such as the `2-2` bootstrap, always loses its quorum with a zone. Bring the lost zone back before you add the third region. The same limit applies to [Dual-Region](https://docs.camunda.io/docs/next/self-managed/concepts/multi-region/dual-region). An uneven two-zone layout keeps its quorum only when it loses the smaller zone.
