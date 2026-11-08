@@ -8,6 +8,7 @@ import {
 	PLACEHOLDERS,
 	type PlaceholderField,
 	assertDeployable,
+	assertDeployableXml,
 	isDeployable,
 	validateDeployableXml,
 } from "../src/index.js"
@@ -174,5 +175,54 @@ describe("Bpmn.export validate", () => {
 		for (const validate of ["auto", "error", "warn", false] as const) {
 			expect(Bpmn.export(defs, { validate })).toContain('id="charge"')
 		}
+	})
+})
+
+const DEFINITIONS_DOCUMENTATION = `<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="d" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:documentation>About these models</bpmn:documentation>
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s"/>
+  </bpmn:process>
+</bpmn:definitions>`
+
+describe("definitions-level documentation", () => {
+	it("is refused by the XSD stage, as Zeebe refuses it (repro z00)", () => {
+		const findings = validateDeployableXml(DEFINITIONS_DOCUMENTATION)
+		expect(isDeployable(findings)).toBe(false)
+		expect(findings[0]?.message).toContain("documentation")
+	})
+
+	it("is written inside a bpmn:extension, which deploys and reads back", () => {
+		const xml = Bpmn.export(Bpmn.parse(DEFINITIONS_DOCUMENTATION), { validate: false })
+		expect(xml).toContain("<bpmn:extension>")
+		expect(isDeployable(validateDeployableXml(xml))).toBe(true)
+		const back = Bpmn.parse(xml)
+		expect(back.documentation).toBe("About these models")
+		expect(back.unknownChildren).toBeUndefined()
+		expect(Bpmn.export(back, { validate: false })).toBe(xml)
+	})
+})
+
+describe("assertDeployableXml", () => {
+	it("returns the warnings of XML that deploys", () => {
+		expect(assertDeployableXml(fixture("deployable"))).toEqual(
+			validateDeployableXml(fixture("deployable")),
+		)
+	})
+
+	it("throws the gate's message for the bytes as they are", () => {
+		// The fixture declares 8.8.0, which is what is checked.
+		const err = thrown(() => assertDeployableXml(fixture("two-errors")))
+		expect(err.message).toBe(TWO_ERRORS)
+		expect(err.camundaVersion).toBe("8.8")
+	})
+
+	it("checks the document's own executionPlatformVersion by default", () => {
+		const xml = fixture("two-errors").replace(
+			'executionPlatformVersion="8.8.0"',
+			'executionPlatformVersion="8.7.0"',
+		)
+		expect(thrown(() => assertDeployableXml(xml)).camundaVersion).toBe("8.7")
 	})
 })

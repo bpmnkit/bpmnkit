@@ -1855,7 +1855,29 @@ class DefinitionsFrame extends Frame implements TextOwner {
 		this.documentationAttributes = documentationAttrs(attrs)
 	}
 
+	/**
+	 * The serializer writes the definitions' documentation inside a bare `extension`
+	 * (the schema allows no `documentation` on `definitions`); read it back from there.
+	 */
+	private adoptExtensionDocumentation(): void {
+		if (this.documentationSeen) return
+		const index = this.unknownChildren.findIndex(
+			(c) =>
+				localName(c.name) === "extension" &&
+				Object.keys(c.attributes).length === 0 &&
+				c.children.length === 1 &&
+				localName(c.children[0]?.name ?? "") === "documentation" &&
+				c.children[0]?.children.length === 0,
+		)
+		const doc = this.unknownChildren[index]?.children[0]
+		if (doc === undefined) return
+		this.unknownChildren.splice(index, 1)
+		this.documentation = doc.text ?? ""
+		this.documentationAttributes = documentationAttrs(doc.attributes)
+	}
+
 	finish(): void {
+		this.adoptExtensionDocumentation()
 		const attrs = this.attrs
 		const namespaces: Record<string, string> = {}
 		const unknownAttributes: Record<string, string> = {}

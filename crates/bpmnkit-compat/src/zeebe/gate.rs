@@ -267,6 +267,48 @@ pub fn assert_deployable<'a>(
     })
 }
 
+/// `assertDeployableXml`: refuses XML Zeebe would reject, the bytes as they are. The
+/// version defaults to the document's `modeler:executionPlatformVersion`, else the newest.
+/// Returns the findings below severity `error`.
+pub fn assert_deployable_xml(
+    xml: &str,
+    options: &ValidateOptions,
+) -> Result<Vec<FindingData>, DeployabilityError> {
+    let declared = if options.camunda_version.is_none() {
+        bpmnkit_bpmn::parse_bpmn(xml).ok().and_then(|d| {
+            d.unknown_attributes
+                .get("modeler:executionPlatformVersion")
+                .cloned()
+        })
+    } else {
+        None
+    };
+    let camunda_version = options.camunda_version.clone().or(declared);
+    let findings = validate_deployable_xml(
+        xml,
+        &ValidateOptions {
+            camunda_version: camunda_version.clone(),
+            resolver: options.resolver,
+            limits: options.limits,
+        },
+    );
+    let version = crate::compat::normalize_camunda_version(camunda_version.as_deref())
+        .map(|v| v.as_str())
+        .unwrap_or(ZEEBE_LATEST_VERSION);
+    let (errors, warnings): (Vec<FindingData>, Vec<FindingData>) = findings
+        .into_iter()
+        .map(|f| f.data)
+        .partition(|f| f.severity == Severity::Error);
+    if !errors.is_empty() {
+        return Err(DeployabilityError {
+            message: deployability_message(version, &errors),
+            findings: errors,
+            camunda_version: version.to_string(),
+        });
+    }
+    Ok(warnings)
+}
+
 // ---------------------------------------------------------------------------
 // Filling
 // ---------------------------------------------------------------------------

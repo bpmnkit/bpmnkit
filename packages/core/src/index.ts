@@ -81,7 +81,7 @@ export type {
 	ZeebeLimits,
 	ZeebeResolver,
 } from "./bpmn/zeebe-validate/index.js"
-export { assertDeployable, PLACEHOLDERS } from "./bpmn/zeebe-validate/gate.js"
+export { assertDeployable, assertDeployableXml, PLACEHOLDERS } from "./bpmn/zeebe-validate/gate.js"
 export type {
 	AssertDeployableOptions,
 	DeployableResult,

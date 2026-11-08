@@ -1,4 +1,10 @@
 {
+	"z00_definitions_documentation.bpmn": {
+		"ok": false,
+		"errors": [
+			"PARSE: SAXException while parsing input stream / Error: URI=null Line=3: cvc-complex-type.2.4.a: Invalid content was found starting with element '{\"http://www.omg.org/spec/BPMN/20100524/MODEL\":documentation}'. One of '{\"http://www.omg.org/spec/BPMN/20100524/MODEL\":import, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":extension, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":rootElement, \"http://www.omg.org/spec/BPMN/20100524/DI\":BPMNDiagram, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":relationship}' is expected."
+		]
+	},
 	"z07_ncname_nested.bpmn": {
 		"ok": false,
 		"errors": [

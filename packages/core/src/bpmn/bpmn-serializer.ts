@@ -846,14 +846,27 @@ export function serializeBpmn(definitions: BpmnDefinitions): string {
 
 	const children: XmlElement[] = []
 
+	// Unmodelled children first: `import` and `extension` precede the root
+	// elements in the schema, and the rest are root elements themselves, so they
+	// sit legally alongside the modelled ones.
+	// `relationship` is the exception: the schema puts it after the diagrams.
+	const unknown = definitions.unknownChildren ?? []
+	const isRelationship = (c: XmlElement) => localName(c.name) === "relationship"
+	const isImport = (c: XmlElement) => localName(c.name) === "import"
+	children.push(...unknown.filter(isImport))
+
+	// The schema's `tDefinitions` has no `documentation` child (Zeebe refuses one), but an
+	// `extension` may carry documentation; the parser reads it back from there.
 	if (definitions.documentation !== undefined) {
 		children.push(
-			el(
-				`${bp}documentation`,
-				definitions.documentationAttributes ?? {},
-				[],
-				definitions.documentation,
-			),
+			el(`${bp}extension`, {}, [
+				el(
+					`${bp}documentation`,
+					definitions.documentationAttributes ?? {},
+					[],
+					definitions.documentation,
+				),
+			]),
 		)
 	}
 
@@ -862,13 +875,7 @@ export function serializeBpmn(definitions: BpmnDefinitions): string {
 		children.push(serializeCategory(category, bp))
 	}
 
-	// Unmodelled children first: `import` and `extension` precede the root
-	// elements in the schema, and the rest are root elements themselves, so they
-	// sit legally alongside the modelled ones.
-	// `relationship` is the exception: the schema puts it after the diagrams.
-	const unknown = definitions.unknownChildren ?? []
-	const isRelationship = (c: XmlElement) => localName(c.name) === "relationship"
-	children.push(...unknown.filter((c) => !isRelationship(c)))
+	children.push(...unknown.filter((c) => !isRelationship(c) && !isImport(c)))
 
 	// Root elements: errors, escalations, messages, signals first
 	for (const e of definitions.escalations) {

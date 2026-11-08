@@ -933,8 +933,23 @@ pub fn serialize_bpmn(definitions: &BpmnDefinitions) -> String {
     }
 
     let mut children = Vec::new();
+    // Unmodelled children first: `import` and `extension` precede the root elements in the
+    // schema, and the rest are root elements themselves, so they sit legally alongside the
+    // modelled ones. `relationship` is the exception: the schema puts it after the diagrams.
+    let is_relationship = |c: &&XmlElement| local_name(&c.name) == "relationship";
+    let is_import = |c: &&XmlElement| local_name(&c.name) == "import";
+    children.extend(
+        definitions
+            .unknown_children
+            .iter()
+            .filter(is_import)
+            .cloned(),
+    );
+    // The schema's `tDefinitions` has no `documentation` child (Zeebe refuses one), but an
+    // `extension` may carry documentation; the parser reads it back from there.
     if let Some(d) = &definitions.documentation {
-        children.push(leaf(
+        let mut extension = XmlElement::new(format!("{bp}extension"));
+        extension.children.push(leaf(
             format!("{bp}documentation"),
             definitions
                 .documentation_attributes
@@ -942,17 +957,14 @@ pub fn serialize_bpmn(definitions: &BpmnDefinitions) -> String {
                 .unwrap_or_default(),
             d,
         ));
+        children.push(extension);
     }
     children.extend(definitions.categories.iter().map(|c| category(c, bp)));
-    // Unmodelled children first: `import` and `extension` precede the root elements in the
-    // schema, and the rest are root elements themselves, so they sit legally alongside the
-    // modelled ones. `relationship` is the exception: the schema puts it after the diagrams.
-    let is_relationship = |c: &&XmlElement| local_name(&c.name) == "relationship";
     children.extend(
         definitions
             .unknown_children
             .iter()
-            .filter(|c| !is_relationship(c))
+            .filter(|c| !is_relationship(c) && !is_import(c))
             .cloned(),
     );
     children.extend(definitions.escalations.iter().map(|e| escalation(e, bp)));

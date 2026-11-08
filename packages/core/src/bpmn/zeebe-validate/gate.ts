@@ -8,6 +8,7 @@ import type {
 	BpmnMessage,
 	BpmnSequenceFlow,
 } from "../bpmn-model.js"
+import { parseBpmn } from "../bpmn-parser.js"
 import { serializeBpmn } from "../bpmn-serializer.js"
 import { normalizeCamundaVersion } from "../camunda-compat.js"
 import type { OptimizationFinding } from "../optimize/types.js"
@@ -189,6 +190,45 @@ export function assertDeployable(
 		throw new DeployabilityError(deployabilityMessage(version, errors), errors, version)
 	}
 	return { definitions: result, placeholders: fills, warnings: findings }
+}
+
+/**
+ * Refuses BPMN XML Zeebe would reject on deploy: the bytes as they are, for a caller
+ * that deploys, writes or returns XML it did not serialize itself (a file, a model's
+ * answer). No placeholders: to fill them, parse the XML and call {@link assertDeployable}.
+ *
+ * @param xml - The document to check.
+ * @param options - As for {@link validateDeployableXml}; `camundaVersion` defaults to the
+ *   document's `modeler:executionPlatformVersion`, else the newest supported version.
+ * @returns The findings below severity `error`.
+ * @throws {DeployabilityError} When an error finding remains, with the same message
+ *   {@link assertDeployable} gives.
+ *
+ * @example
+ * ```typescript
+ * assertDeployableXml(readFileSync("order.bpmn", "utf8")) // throws before a deploy would fail
+ * ```
+ */
+export function assertDeployableXml(
+	xml: string,
+	options: ValidateDeployableOptions = {},
+): OptimizationFinding[] {
+	let declared: string | undefined
+	if (options.camundaVersion === undefined) {
+		try {
+			declared = parseBpmn(xml).unknownAttributes["modeler:executionPlatformVersion"]
+		} catch {
+			// The validator reports the parse error.
+		}
+	}
+	const camundaVersion = options.camundaVersion ?? declared
+	const findings = validateDeployableXml(xml, { ...options, camundaVersion })
+	const version = normalizeCamundaVersion(camundaVersion) ?? ZEEBE_LATEST_VERSION
+	const errors = findings.filter((f) => f.severity === "error")
+	if (errors.length > 0) {
+		throw new DeployabilityError(deployabilityMessage(version, errors), errors, version)
+	}
+	return findings
 }
 
 // ---------------------------------------------------------------------------

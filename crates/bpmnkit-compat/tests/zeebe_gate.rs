@@ -132,3 +132,57 @@ fn still_refuses_what_no_placeholder_can_fix() {
         "Not deployable on Camunda 8.10: 1 error(s)\n- order: Multiple none start events are not allowed (zeebe/multiple-none-start)"
     );
 }
+
+/// The BPMN XSD's `tDefinitions` has no `documentation` child; Zeebe refuses one there.
+const DEFINITIONS_DOCUMENTATION: &str = r#"<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="d" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:documentation>About these models</bpmn:documentation>
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s"/>
+  </bpmn:process>
+</bpmn:definitions>"#;
+
+#[test]
+fn refuses_documentation_on_the_definitions() {
+    let findings = validate_deployable_xml(DEFINITIONS_DOCUMENTATION, &ValidateOptions::default());
+    assert!(!is_deployable(&findings));
+    assert!(
+        findings[0].data.message.contains("documentation"),
+        "{}",
+        findings[0].data.message
+    );
+}
+
+#[test]
+fn never_writes_documentation_on_the_definitions() {
+    let defs = parse_bpmn(DEFINITIONS_DOCUMENTATION).expect("parses");
+    let xml = serialize_bpmn(&defs);
+    assert!(
+        is_deployable(&validate_deployable_xml(&xml, &ValidateOptions::default())),
+        "{xml}"
+    );
+    assert!(xml.contains("<bpmn:extension>"), "{xml}");
+    let back = parse_bpmn(&xml).expect("reparses");
+    assert_eq!(back.documentation.as_deref(), Some("About these models"));
+    assert!(back.unknown_children.is_empty());
+    assert_eq!(serialize_bpmn(&back), xml);
+}
+
+#[test]
+fn assert_deployable_xml_checks_the_bytes_for_their_declared_version() {
+    let xml = std::fs::read_to_string(format!(
+        "{}/../../conformance/gate/two-errors/input.bpmn",
+        env!("CARGO_MANIFEST_DIR")
+    ))
+    .expect("fixture");
+    let err = bpmnkit_compat::zeebe::assert_deployable_xml(&xml, &ValidateOptions::default())
+        .expect_err("refused");
+    assert_eq!(err.message(), TWO_ERRORS);
+    let older = xml.replace(
+        "executionPlatformVersion=\"8.8.0\"",
+        "executionPlatformVersion=\"8.7.0\"",
+    );
+    let err = bpmnkit_compat::zeebe::assert_deployable_xml(&older, &ValidateOptions::default())
+        .expect_err("refused");
+    assert_eq!(err.camunda_version, "8.7");
+}

@@ -29,7 +29,7 @@ Each file isolates a group of constructs, so a failure names its own cause:
 
 | File | Covers |
 |---|---|
-| `01-root-elements.bpmn` | root `message` / `error` / `escalation` / `signal`, `zeebe:subscription`, documentation at definitions and process level, `zeebe:versionTag` |
+| `01-root-elements.bpmn` | root `message` / `error` / `escalation` / `signal`, `zeebe:subscription`, documentation at definitions level (inside a `bpmn:extension`, the only place the XSD allows it) and process level, `zeebe:versionTag` |
 | `02-collaboration.bpmn` | participants (including a black-box pool), message flows, lanes and `flowNodeRef`, collaboration-level extensions, a non-executable process |
 | `03-data-elements.bpmn` | data objects, object and store references, `dataInputAssociation` / `dataOutputAssociation`, `bpmn:property` |
 | `04-artifacts.bpmn` | text annotations, associations, groups, `category` / `categoryValue`, task documentation |

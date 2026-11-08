@@ -2046,6 +2046,31 @@ struct DefinitionsFrame {
     unknown_children: Vec<XmlElement>,
 }
 
+impl DefinitionsFrame {
+    /// The serializer writes the definitions' documentation inside a bare `extension` (the
+    /// schema allows no `documentation` on `definitions`); read it back from there.
+    fn adopt_extension_documentation(&mut self) {
+        if self.documentation_seen {
+            return;
+        }
+        let Some(index) = self.unknown_children.iter().position(|c| {
+            local_name(&c.name) == "extension"
+                && c.attributes.is_empty()
+                && c.children.len() == 1
+                && local_name(&c.children[0].name) == "documentation"
+                && c.children[0].children.is_empty()
+        }) else {
+            return;
+        };
+        let extension = self.unknown_children.remove(index);
+        let Some(doc) = extension.children.into_iter().next() else {
+            return;
+        };
+        self.documentation = Some(doc.text.unwrap_or_default());
+        self.documentation_attributes = other_attrs(&doc.attributes, &[]);
+    }
+}
+
 impl Frame for DefinitionsFrame {
     fn child(&mut self, local: &str, name: &str, attrs: Attrs) -> Res<Child> {
         Ok(match local {
@@ -2111,7 +2136,8 @@ impl Frame for DefinitionsFrame {
             _ => {}
         }
     }
-    fn finish(self: Box<Self>) -> Res<Out> {
+    fn finish(mut self: Box<Self>) -> Res<Out> {
+        self.adopt_extension_documentation();
         let attrs = &self.attrs;
         let mut namespaces = Attrs::new();
         let mut unknown_attributes = Attrs::new();

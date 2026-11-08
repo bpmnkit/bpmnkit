@@ -407,6 +407,7 @@
 			"applyCamundaCompatConfig": "value",
 			"applyOperations": "value",
 			"assertDeployable": "value",
+			"assertDeployableXml": "value",
 			"assertZeebePlacement": "value",
 			"benchmarkDmnLayout": "value",
 			"benchmarkLayout": "value",
@@ -867,7 +868,9 @@
 			"DEPLOY_STYLE_ID": "value",
 			"DeployPlugin": "type",
 			"DeployPluginOptions": "type",
+			"DeployVerdict": "type",
 			"createDeployPlugin": "value",
+			"deployVerdict": "value",
 			"injectDeployStyles": "value"
 		},
 		"./diff": {

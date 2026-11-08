@@ -5,7 +5,9 @@
   id="Definitions_roots" targetNamespace="http://bpmn.io/schema/bpmn"
   exporter="BPMN Kit" exporterVersion="0.1.0"
   modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
-  <bpmn:documentation>Definitions-level documentation.</bpmn:documentation>
+  <bpmn:extension>
+    <bpmn:documentation>Definitions-level documentation.</bpmn:documentation>
+  </bpmn:extension>
   <bpmn:message id="Message_order_placed" name="OrderPlaced">
     <bpmn:extensionElements>
       <zeebe:subscription correlationKey="=orderId" />
