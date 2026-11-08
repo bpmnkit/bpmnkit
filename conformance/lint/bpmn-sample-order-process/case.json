@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/sample-order-process/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}

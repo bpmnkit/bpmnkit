@@ -1,0 +1,94 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "Start",
+            "type": "startEvent"
+          },
+          {
+            "id": "read",
+            "jobType": "read",
+            "name": "Read github issues",
+            "type": "serviceTask"
+          },
+          {
+            "attachedTo": "read",
+            "eventType": "error",
+            "id": "err",
+            "name": "API error",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "handle",
+            "name": "Handle failure",
+            "type": "task"
+          },
+          {
+            "id": "fail",
+            "name": "API error",
+            "type": "endEvent"
+          },
+          {
+            "id": "calc",
+            "name": "Calculate count of open issues",
+            "type": "task"
+          },
+          {
+            "id": "post",
+            "jobType": "post",
+            "name": "Post the number to slack",
+            "type": "serviceTask"
+          },
+          {
+            "id": "done",
+            "name": "Done",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "read"
+          },
+          {
+            "from": "err",
+            "id": "Flow_2",
+            "to": "handle"
+          },
+          {
+            "from": "handle",
+            "id": "Flow_3",
+            "to": "fail"
+          },
+          {
+            "from": "read",
+            "id": "Flow_4",
+            "to": "calc"
+          },
+          {
+            "from": "calc",
+            "id": "Flow_5",
+            "to": "post"
+          },
+          {
+            "from": "post",
+            "id": "Flow_6",
+            "to": "done"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "moved err > calc onto \"read\": a boundary leads only to its handling"
+  ],
+  "problems": [],
+  "questions": []
+}

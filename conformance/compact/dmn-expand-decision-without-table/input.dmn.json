@@ -1,0 +1,14 @@
+{
+  "id": "defs",
+  "name": "Defs",
+  "decisions": [
+    {
+      "inputs": [],
+      "outputs": [],
+      "rules": [],
+      "id": "lit",
+      "name": "Literal"
+    }
+  ],
+  "inputData": []
+}

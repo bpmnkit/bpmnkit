@@ -1,0 +1,167 @@
+{
+  "id": "_7e80c232-2bf0-46e0-b77e-29ec586a23a6",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "_5ba97787-8a90-4002-8277-b0895e45cf1f",
+          "name": "Job \nvacancy",
+          "type": "startEvent"
+        },
+        {
+          "documentation": "<p>A very specific requirement to the job vacancy has to be written and forwarded to the recruitment department.</p>",
+          "id": "_392c86ba-38b5-4dc9-b98d-f97ad4c2add5",
+          "name": "Write \ndescription",
+          "type": "userTask"
+        },
+        {
+          "documentation": "<p>The job description edited to a job advertisement has to be checked and approved.</p>",
+          "id": "_15b00027-5049-4081-8952-fd398e8b722a",
+          "name": "Approve advertisement",
+          "type": "userTask"
+        },
+        {
+          "id": "_26c40c03-5d1f-46c5-81f1-ddd485868125",
+          "name": "Advertisement approved?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "dataObjectRef": "_8f2796af-2fbe-4f72-80c1-96933c38990f",
+          "id": "_bd7b6a15-4ef8-46a9-8be9-20a5abb32abd",
+          "name": "Description",
+          "type": "dataObjectReference"
+        },
+        {
+          "documentation": "<p>The job description received from the specialist department has to be completed (layout, additional information etc.) to a job advertisement in accordance to the guidelines and approved by the Hiring Manager.</p>",
+          "id": "_d3435084-f2c7-43cc-abcc-c679bc4232ac",
+          "name": "Complete advertisement",
+          "type": "userTask"
+        },
+        {
+          "id": "_b13d6fa3-fc78-40c7-ae77-609be07493e9",
+          "type": "parallelGateway"
+        },
+        {
+          "documentation": "<p>The approved job advertisement has to be published on the homepage.</p>",
+          "id": "_64eabfe9-6947-43eb-ac45-8d331745f86c",
+          "name": "Publish on \nhomepage",
+          "type": "serviceTask"
+        },
+        {
+          "documentation": "<p>3rd party career platforms have to be selected on which the job advertisement will be published.</p>",
+          "id": "_eae674ce-4d6e-48ac-819c-c79e0868e40d",
+          "name": "Select \nother platforms",
+          "type": "businessRuleTask"
+        },
+        {
+          "id": "_0783f019-f40c-43d6-ab40-0f1c81f8d9e7",
+          "type": "parallelGateway"
+        },
+        {
+          "id": "_c456dbcc-bbe3-4c75-b57d-9427525c0a94",
+          "name": "Vacancy \nadvertised",
+          "type": "endEvent"
+        },
+        {
+          "id": "_a36ddf2f-23c1-46c5-86d4-bd2a0eb42535",
+          "name": "Publish on \nother platforms",
+          "type": "serviceTask"
+        },
+        {
+          "dataObjectRef": "_f60fe1d9-58bd-462c-9d62-153e530dc79d",
+          "id": "_bac0224d-62f1-46aa-bb4c-5371c3983ffb",
+          "name": "Advertisement",
+          "type": "dataObjectReference"
+        },
+        {
+          "dataObjectRef": "_ef29e636-bdfe-4eb0-9633-7d0195a8ae3a",
+          "id": "_c68abea8-c5b4-4aef-b1a5-1e81caec0cba",
+          "name": "Selected\n platforms",
+          "type": "dataObjectReference"
+        },
+        {
+          "id": "_ef29e636-bdfe-4eb0-9633-7d0195a8ae3a",
+          "isCollection": true,
+          "name": "Selected\n platforms",
+          "type": "dataObject"
+        },
+        {
+          "id": "_8f2796af-2fbe-4f72-80c1-96933c38990f",
+          "name": "Description",
+          "type": "dataObject"
+        },
+        {
+          "id": "_f60fe1d9-58bd-462c-9d62-153e530dc79d",
+          "name": "Advertisement",
+          "type": "dataObject"
+        }
+      ],
+      "flows": [
+        {
+          "from": "_5ba97787-8a90-4002-8277-b0895e45cf1f",
+          "id": "_a4c93e8a-2b52-4367-8381-a3f78450a075",
+          "to": "_392c86ba-38b5-4dc9-b98d-f97ad4c2add5"
+        },
+        {
+          "from": "_392c86ba-38b5-4dc9-b98d-f97ad4c2add5",
+          "id": "_8a27a9ee-b8e5-49d8-8b7d-41a59d74b3f3",
+          "to": "_d3435084-f2c7-43cc-abcc-c679bc4232ac"
+        },
+        {
+          "from": "_d3435084-f2c7-43cc-abcc-c679bc4232ac",
+          "id": "_842553bd-02e1-45f7-aed0-c78e9dba9e2b",
+          "to": "_15b00027-5049-4081-8952-fd398e8b722a"
+        },
+        {
+          "from": "_15b00027-5049-4081-8952-fd398e8b722a",
+          "id": "_7b66938e-e5cb-4026-a863-1e6de6d11a79",
+          "to": "_26c40c03-5d1f-46c5-81f1-ddd485868125"
+        },
+        {
+          "from": "_26c40c03-5d1f-46c5-81f1-ddd485868125",
+          "id": "_d74707c7-6af3-4db7-9403-924bfdf6a7d8",
+          "name": "No",
+          "to": "_d3435084-f2c7-43cc-abcc-c679bc4232ac"
+        },
+        {
+          "from": "_26c40c03-5d1f-46c5-81f1-ddd485868125",
+          "id": "_1d201a22-d500-4412-a32a-2c7e24ad4d6b",
+          "name": "Yes",
+          "to": "_b13d6fa3-fc78-40c7-ae77-609be07493e9"
+        },
+        {
+          "from": "_b13d6fa3-fc78-40c7-ae77-609be07493e9",
+          "id": "_f476667f-44f5-4fec-9414-bf70d987853f",
+          "to": "_64eabfe9-6947-43eb-ac45-8d331745f86c"
+        },
+        {
+          "from": "_b13d6fa3-fc78-40c7-ae77-609be07493e9",
+          "id": "_f3187dce-c37e-4d5b-b49c-ed28965abb73",
+          "to": "_eae674ce-4d6e-48ac-819c-c79e0868e40d"
+        },
+        {
+          "from": "_64eabfe9-6947-43eb-ac45-8d331745f86c",
+          "id": "_720cb9a3-20df-4da1-a923-5336b269c104",
+          "to": "_0783f019-f40c-43d6-ab40-0f1c81f8d9e7"
+        },
+        {
+          "from": "_eae674ce-4d6e-48ac-819c-c79e0868e40d",
+          "id": "_64ac4473-a38f-4043-973a-69c497adc88a",
+          "to": "_a36ddf2f-23c1-46c5-86d4-bd2a0eb42535"
+        },
+        {
+          "from": "_0783f019-f40c-43d6-ab40-0f1c81f8d9e7",
+          "id": "_c43defc5-4470-4bfe-8a8f-4d59ca6abeeb",
+          "to": "_c456dbcc-bbe3-4c75-b57d-9427525c0a94"
+        },
+        {
+          "from": "_a36ddf2f-23c1-46c5-86d4-bd2a0eb42535",
+          "id": "_847352f2-ac0c-44be-9e24-f4c7f76bfe7e",
+          "to": "_0783f019-f40c-43d6-ab40-0f1c81f8d9e7"
+        }
+      ],
+      "id": "_4a690dd7-809a-4fa9-ad63-515ac6685375",
+      "name": "EU Bank - Process"
+    }
+  ]
+}

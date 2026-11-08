@@ -31,7 +31,7 @@ model Zeebe uses is kept, implemented in SQL.
 | Storage | RocksDB + Elasticsearch/OpenSearch or RDBMS | PostgreSQL, or embedded SQLite |
 | APIs | REST v2 + gRPC | REST v2 + gRPC gateway (port 26500) |
 | Clustering | Raft, multi-partition | Single node |
-| Licence | Camunda License 1.0 (production needs an Enterprise licence) | Apache-2.0 |
+| Licence | Camunda License 1.0 (production needs an Enterprise licence) | MIT OR Apache-2.0 |
 
 Reebe fits development machines, CI pipelines and demos — anywhere a full Camunda 8 stack is
 more than the job needs. For anything in production, use Camunda 8. `reebe-bench` measures throughput and latency on your own hardware;
@@ -679,5 +679,5 @@ whose condition can never hold still counts as reachable).
 
 ## License
 
-Apache 2.0 — see [LICENSE](./LICENSE). The rest of the BPMN Kit monorepo is MIT; Reebe keeps the
-Apache-2.0 licence it was first published under.
+Dual-licensed under [MIT](./LICENSE-MIT) or [Apache-2.0](./LICENSE-APACHE), at your option. The rest of
+the BPMN Kit monorepo is MIT.

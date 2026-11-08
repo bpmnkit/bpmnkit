@@ -1,0 +1,6 @@
+{
+  "report": {
+    "findings": []
+  },
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"d\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"p\" isExecutable=\"true\">\n    <bpmn:callActivity id=\"c\" calledElement=\"child\">\n      <bpmn:extensionElements>\n        <camunda:out variables=\"all\"/>\n      </bpmn:extensionElements>\n    </bpmn:callActivity>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+}

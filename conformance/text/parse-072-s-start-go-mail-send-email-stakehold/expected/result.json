@@ -1,0 +1,141 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "id": "mail",
+            "jobType": "mail",
+            "multiInstance": {
+              "collection": "=stakeholders",
+              "element": "stakeholder"
+            },
+            "name": "Email stakeholder",
+            "type": "sendTask"
+          },
+          {
+            "id": "poll",
+            "jobType": "poll",
+            "name": "Poll report",
+            "type": "serviceTask"
+          },
+          {
+            "id": "e",
+            "name": "Done",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "poll",
+            "eventType": "timer",
+            "id": "late",
+            "name": "No reply in 5 minutes",
+            "timerDuration": "PT5M",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "flag",
+            "name": "Flag for follow-up",
+            "type": "userTask"
+          },
+          {
+            "id": "f",
+            "name": "Flagged",
+            "type": "endEvent"
+          },
+          {
+            "eventType": "timer",
+            "id": "wait",
+            "name": "Cool down",
+            "timerDuration": "PT2H",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "mail_split",
+            "type": "parallelGateway"
+          },
+          {
+            "id": "e_join",
+            "type": "parallelGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "mail"
+          },
+          {
+            "from": "mail_split",
+            "id": "Flow_2",
+            "to": "poll"
+          },
+          {
+            "from": "poll",
+            "id": "Flow_3",
+            "to": "e_join"
+          },
+          {
+            "from": "late",
+            "id": "Flow_4",
+            "to": "flag"
+          },
+          {
+            "from": "flag",
+            "id": "Flow_5",
+            "to": "f"
+          },
+          {
+            "from": "mail_split",
+            "id": "Flow_6",
+            "to": "wait"
+          },
+          {
+            "from": "wait",
+            "id": "Flow_7",
+            "to": "e_join"
+          },
+          {
+            "from": "mail",
+            "id": "Flow_8",
+            "to": "mail_split"
+          },
+          {
+            "from": "e_join",
+            "id": "Flow_9",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "split the flows out of \"mail\" with and gateway \"mail_split\"",
+    "joined 2 flows into \"e\" with and gateway \"e_join\""
+  ],
+  "problems": [],
+  "questions": [
+    {
+      "draft": "After \"Email stakeholder\", ",
+      "elementId": "mail_split",
+      "options": [
+        {
+          "change": "After \"Email stakeholder\", only one of \"Poll report\" and \"Cool down\" happens: decide which with an xor gateway.",
+          "label": "Only one of them"
+        },
+        {
+          "change": "After \"Email stakeholder\", do \"Poll report\" and \"Cool down\" one after the other, not at the same time.",
+          "label": "One after the other"
+        }
+      ],
+      "text": "After \"Email stakeholder\", \"Poll report\" and \"Cool down\" run at the same time. Is that right?"
+    }
+  ]
+}

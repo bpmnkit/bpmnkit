@@ -66,6 +66,13 @@ export function markExplicitFlowId(flow: BpmnSequenceFlow): void {
 	explicitIds.add(flow)
 }
 
+/** Gives `to`, a copy of `flow`, the builder-side facts recorded for `flow`. */
+export function copyFlowTags(flow: BpmnSequenceFlow, to: BpmnSequenceFlow): void {
+	const branchId = branchIds.get(flow)
+	if (branchId !== undefined) branchIds.set(to, branchId)
+	if (explicitIds.has(flow)) explicitIds.add(to)
+}
+
 /** A scope's contents, as far as id checking needs: sub-processes carry both lists. */
 interface IdScope {
 	flowElements: BpmnFlowElement[]
@@ -220,4 +227,36 @@ export function rootDefinitionId(
 ): string {
 	const taken = new Set(existing.map((definition) => definition.id))
 	return uniqueId(capLength(`${prefix}_${ncName(slugify(source))}`), taken)
+}
+
+/**
+ * Id for an event definition that carries none. Zeebe rejects a definition
+ * without an `id` at deploy time, so one is derived from the owning event
+ * (`Start_TimerEventDefinition`), with a counter when an event holds several
+ * of one kind. Ids already present on sibling definitions are never reused.
+ */
+export function eventDefinitionId(
+	ownerId: string,
+	defs: readonly { id?: string; type: string }[],
+	index: number,
+): string {
+	const def = defs[index]
+	if (def === undefined) return `${ncName(ownerId)}_EventDefinition`
+	const kind = def.type.charAt(0).toUpperCase() + def.type.slice(1)
+	const base = `${ncName(ownerId)}_${kind}EventDefinition`
+	const taken = new Set(defs.map((d) => d.id).filter((id): id is string => id !== undefined))
+	const sameKind = defs.slice(0, index + 1).filter((d) => d.type === def.type).length
+	let candidate = sameKind > 1 ? `${base}_${sameKind}` : base
+	for (let n = sameKind + 1; taken.has(candidate); n++) candidate = `${base}_${n}`
+	return candidate
+}
+
+/** Gives every id-less definition of `defs` a derived id; see `eventDefinitionId`. */
+export function assignEventDefinitionIds(
+	ownerId: string,
+	defs: { id?: string; type: string }[],
+): void {
+	defs.forEach((d, i) => {
+		if (d.id === undefined) d.id = eventDefinitionId(ownerId, defs, i)
+	})
 }

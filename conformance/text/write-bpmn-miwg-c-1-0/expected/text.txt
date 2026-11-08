@@ -1,0 +1,4 @@
+# Team-Assistant
+invoice_received[start:message Invoice received] > scan_invoice[task Scan Invoice] > archive_original[task Archive original] > approver_to_be_assigned[catch:message Approver to be assigned] > assign_approver[task Assign approver] > eventgw[eventgw]
+eventgw > catch_7_days[catch:timer 7 days] > end[end]
+eventgw > invoice_review_needed[catch:message Invoice review needed] > review_and_document_result[task Review and document result] > end_2[end]

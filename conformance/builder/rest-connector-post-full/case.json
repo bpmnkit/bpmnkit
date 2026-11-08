@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["restConnector","call",{"name":"Create","method":"POST","url":"=baseUrl + \"/items\"","authentication":{"type":"bearer","token":"{{secrets.TOKEN}}"},"headers":{"Content-Type":"application/json","X-Id":"1"},"queryParameters":{"page":"1","q":"a b"},"body":"={name: name}","connectionTimeoutInSeconds":5,"readTimeoutInSeconds":30,"retries":"1","retryBackoff":"PT1S","resultVariable":"response","resultExpression":"={id: response.body.id}"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

@@ -1,0 +1,11 @@
+# EU Bank - Process
+job_vacancy[start Job vacancy] > write_description[user Write description] > complete_advertisement[user Complete advertisement] > approve_advertisement[user Approve advertisement] > advertisement_approved[xor Advertisement approved?]
+advertisement_approved >(No) complete_advertisement
+advertisement_approved >(Yes) and[and]
+and > publish_on_homepage[service Publish on homepage] > and_2[and] > vacancy_advertised[end Vacancy advertised]
+and > select_other_platforms[rule Select other platforms] > publish_on_other_platforms[service Publish on other platforms] > and_2
+doc write_description: <p>A very specific requirement to the job vacancy has to be written and forwarded to the recruitment department.</p>
+doc approve_advertisement: <p>The job description edited to a job advertisement has to be checked and approved.</p>
+doc complete_advertisement: <p>The job description received from the specialist department has to be completed (layout, additional information etc.) to a job advertisement in accordance to the guidelines and approved by the Hiring Manager.</p>
+doc publish_on_homepage: <p>The approved job advertisement has to be published on the homepage.</p>
+doc select_other_platforms: <p>3rd party career platforms have to be selected on which the job advertisement will be published.</p>

@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["exclusiveGateway","g"],
+		["branch","a",{"$ops":[["condition","=x"],["serviceTask","t",{"name":"t","taskType":"t"}],["boundaryEvent","b1",{"attachedTo":"t","timerDuration":"PT1H"}],["withBoundary","b2",{"timerDuration":"PT2H"},{"$ops":[["endEvent","x"]]}]]}],
+		["build"]
+	]
+}

@@ -1,0 +1,207 @@
+[
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "amount": {
+          "t": "number",
+          "v": "300"
+        },
+        "tier": {
+          "t": "string",
+          "v": "gold"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "tier",
+        "result": {
+          "t": "string",
+          "v": "gold"
+        }
+      },
+      {
+        "decision": "rate",
+        "result": {
+          "t": "number",
+          "v": "0.15"
+        }
+      },
+      {
+        "decision": "discount",
+        "result": {
+          "t": "context",
+          "v": {
+            "amount": {
+              "t": "number",
+              "v": "300"
+            },
+            "tier": {
+              "t": "string",
+              "v": "gold"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "amount": {
+          "t": "number",
+          "v": "0.5"
+        },
+        "tier": {
+          "t": "string",
+          "v": "basic"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "tier",
+        "result": {
+          "t": "string",
+          "v": "basic"
+        }
+      },
+      {
+        "decision": "rate",
+        "result": {
+          "t": "number",
+          "v": "0.05"
+        }
+      },
+      {
+        "decision": "discount",
+        "result": {
+          "t": "context",
+          "v": {
+            "amount": {
+              "t": "number",
+              "v": "0.5"
+            },
+            "tier": {
+              "t": "string",
+              "v": "basic"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "context",
+      "v": {
+        "amount": {
+          "t": "null"
+        },
+        "tier": {
+          "t": "string",
+          "v": "basic"
+        }
+      }
+    },
+    "evaluated": [
+      {
+        "decision": "tier",
+        "result": {
+          "t": "string",
+          "v": "basic"
+        }
+      },
+      {
+        "decision": "rate",
+        "result": {
+          "t": "number",
+          "v": "0.05"
+        }
+      },
+      {
+        "decision": "discount",
+        "result": {
+          "t": "context",
+          "v": {
+            "amount": {
+              "t": "null"
+            },
+            "tier": {
+              "t": "string",
+              "v": "basic"
+            }
+          }
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "number",
+      "v": "0.15"
+    },
+    "evaluated": [
+      {
+        "decision": "tier",
+        "result": {
+          "t": "string",
+          "v": "gold"
+        }
+      },
+      {
+        "decision": "rate",
+        "result": {
+          "t": "number",
+          "v": "0.15"
+        }
+      }
+    ]
+  },
+  {
+    "error": "Decision 'tier': input 'spend' is of type 'string' but its typeRef is 'number'"
+  },
+  {
+    "error": "Decision 'loop_a' requires itself"
+  },
+  {
+    "error": "Decision 'nowhere' not found"
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "no_body",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "number",
+      "v": "0.15"
+    },
+    "evaluated": [
+      {
+        "decision": "tier",
+        "result": {
+          "t": "string",
+          "v": "gold"
+        }
+      },
+      {
+        "decision": "rate",
+        "result": {
+          "t": "number",
+          "v": "0.15"
+        }
+      }
+    ]
+  }
+]

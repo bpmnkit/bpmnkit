@@ -1,12 +1,12 @@
-use std::sync::Arc;
-use async_trait::async_trait;
-use reebe_db::records::DbRecord;
-use reebe_db::state::incidents::Incident;
+#[allow(unused_imports)]
+use super::{CommandToWrite, EventToWrite, RecordProcessor, Writers};
 use crate::engine::EngineState;
 use crate::error::{EngineError, EngineResult};
 use crate::key_gen::KeyGenerator;
-#[allow(unused_imports)]
-use super::{CommandToWrite, EventToWrite, RecordProcessor, Writers};
+use async_trait::async_trait;
+use reebe_db::records::DbRecord;
+use reebe_db::state::incidents::Incident;
+use std::sync::Arc;
 
 pub struct IncidentProcessor;
 
@@ -53,7 +53,10 @@ impl RecordProcessor for IncidentProcessor {
             if let Ok(job) = state.backend.get_job_by_key(job_key).await {
                 if job.retries > 0 {
                     // update_retries already flips state FAILED→ACTIVATABLE when retries > 0
-                    state.backend.update_job_retries(job_key, job.retries).await?;
+                    state
+                        .backend
+                        .update_job_retries(job_key, job.retries)
+                        .await?;
 
                     writers.events.push(EventToWrite {
                         value_type: "JOB".to_string(),
@@ -69,11 +72,20 @@ impl RecordProcessor for IncidentProcessor {
             }
         } else {
             // Non-job incident (e.g. IO_MAPPING_ERROR): re-trigger element processing.
-            if let Ok(ei) = state.backend.get_element_instance_by_key(incident.element_instance_key).await {
+            if let Ok(ei) = state
+                .backend
+                .get_element_instance_by_key(incident.element_instance_key)
+                .await
+            {
                 // An ad-hoc inner instance completes without a command of its own: its
                 // completion condition is evaluated again.
                 if ei.element_type == super::ad_hoc::INNER && ei.state == "COMPLETING" {
-                    let process = super::throw_event::load_process(state, ei.process_definition_key, &ei.bpmn_process_id).await?;
+                    let process = super::throw_event::load_process(
+                        state,
+                        ei.process_definition_key,
+                        &ei.bpmn_process_id,
+                    )
+                    .await?;
                     super::ad_hoc::inner_completed(state, writers, &process, &ei).await?;
                     writers.response = Some(serde_json::json!({
                         "incidentKey": incident_key.to_string(),
@@ -88,9 +100,7 @@ impl RecordProcessor for IncidentProcessor {
                 };
 
                 if let Some(cmd_intent) = intent {
-                    let flow_scope_key = ei
-                        .flow_scope_key
-                        .unwrap_or(ei.process_instance_key);
+                    let flow_scope_key = ei.flow_scope_key.unwrap_or(ei.process_instance_key);
 
                     writers.commands.push(CommandToWrite {
                         value_type: "PROCESS_INSTANCE".to_string(),
@@ -117,7 +127,8 @@ impl RecordProcessor for IncidentProcessor {
         }));
 
         Ok(())
-    }}
+    }
+}
 
 impl IncidentProcessor {
     /// Raise an incident an element processor asked for (e.g. a failed I/O mapping).
@@ -134,27 +145,36 @@ impl IncidentProcessor {
             .and_then(|s| s.parse().ok())
             .or_else(|| payload["elementInstanceKey"].as_i64())
             .ok_or_else(|| EngineError::InvalidState("Missing elementInstanceKey".to_string()))?;
-        let ei = state.backend.get_element_instance_by_key(element_instance_key).await?;
-        let error_type = payload["errorType"].as_str().unwrap_or("UNKNOWN").to_string();
+        let ei = state
+            .backend
+            .get_element_instance_by_key(element_instance_key)
+            .await?;
+        let error_type = payload["errorType"]
+            .as_str()
+            .unwrap_or("UNKNOWN")
+            .to_string();
         let error_message = payload["errorMessage"].as_str().map(|s| s.to_string());
 
         let key_gen = KeyGenerator::new(Arc::clone(&state.backend), state.partition_id);
         let incident_key = key_gen.next_key().await?;
-        state.backend.insert_incident(&Incident {
-            key: incident_key,
-            partition_id: state.partition_id,
-            process_instance_key: ei.process_instance_key,
-            process_definition_key: ei.process_definition_key,
-            element_instance_key: ei.key,
-            element_id: ei.element_id.clone(),
-            error_type: error_type.clone(),
-            error_message: error_message.clone(),
-            state: "ACTIVE".to_string(),
-            job_key: None,
-            created_at: state.clock.now(),
-            resolved_at: None,
-            tenant_id: record.tenant_id.clone(),
-        }).await?;
+        state
+            .backend
+            .insert_incident(&Incident {
+                key: incident_key,
+                partition_id: state.partition_id,
+                process_instance_key: ei.process_instance_key,
+                process_definition_key: ei.process_definition_key,
+                element_instance_key: ei.key,
+                element_id: ei.element_id.clone(),
+                error_type: error_type.clone(),
+                error_message: error_message.clone(),
+                state: "ACTIVE".to_string(),
+                job_key: None,
+                created_at: state.clock.now(),
+                resolved_at: None,
+                tenant_id: record.tenant_id.clone(),
+            })
+            .await?;
 
         writers.events.push(EventToWrite {
             value_type: "INCIDENT".to_string(),

@@ -1,0 +1,107 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "a",
+            "name": "A",
+            "type": "task"
+          },
+          {
+            "id": "b",
+            "name": "B",
+            "type": "task"
+          },
+          {
+            "id": "c",
+            "name": "C",
+            "type": "task"
+          },
+          {
+            "id": "d",
+            "name": "D",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "task"
+          },
+          {
+            "id": "start",
+            "name": "Process started",
+            "type": "startEvent"
+          },
+          {
+            "id": "e_end",
+            "name": "Process completed",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "a"
+          },
+          {
+            "from": "a",
+            "id": "Flow_2",
+            "to": "b"
+          },
+          {
+            "from": "b",
+            "id": "Flow_3",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "id": "Flow_4",
+            "to": "d"
+          },
+          {
+            "from": "d",
+            "id": "Flow_5",
+            "to": "e"
+          },
+          {
+            "from": "e",
+            "id": "Flow_6",
+            "to": "e_end"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "added start event \"start\" before \"a\"",
+    "added end event \"e_end\" after \"e\""
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"a\" is never declared; added as a task"
+    },
+    {
+      "line": 1,
+      "message": "\"b\" is never declared; added as a task"
+    },
+    {
+      "line": 1,
+      "message": "\"c\" is never declared; added as a task"
+    },
+    {
+      "line": 1,
+      "message": "\"d\" is never declared; added as a task"
+    },
+    {
+      "line": 1,
+      "message": "\"e\" is never declared; added as a task"
+    }
+  ],
+  "questions": []
+}

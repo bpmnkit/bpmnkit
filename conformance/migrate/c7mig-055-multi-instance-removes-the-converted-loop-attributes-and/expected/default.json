@@ -1,0 +1,43 @@
+{
+  "report": {
+    "counts": {
+      "convertible": 2,
+      "manual": 1,
+      "unsupported": 0
+    },
+    "findings": [
+      {
+        "applied": true,
+        "construct": "bpmn:userTask",
+        "elementId": "u",
+        "elementType": "userTask",
+        "message": "Implemented as a Camunda user task (zeebe:userTask).",
+        "processId": "p",
+        "severity": "convertible",
+        "suggestion": "zeebe:userTask"
+      },
+      {
+        "applied": false,
+        "construct": "camunda:collection",
+        "elementId": "u",
+        "elementType": "userTask",
+        "message": "Multi-instance collection \"${items.filter()}\" was not translated: method or function call \"items.filter(…)\" has no FEEL equivalent.",
+        "processId": "p",
+        "severity": "manual",
+        "suggestion": "Set zeebe:loopCharacteristics inputCollection by hand."
+      },
+      {
+        "applied": true,
+        "construct": "modeler:executionPlatform",
+        "elementId": "Definitions_test",
+        "elementType": "definitions",
+        "message": "Execution platform set to Camunda Cloud 8.10.0 (was Camunda Platform).",
+        "processId": "",
+        "severity": "convertible",
+        "suggestion": "Camunda Modeler opens the file as a Camunda 8 diagram."
+      }
+    ],
+    "total": 3
+  },
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" id=\"Definitions_test\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.10.0\">\n  <bpmn:process id=\"p\" isExecutable=\"true\">\n    <bpmn:userTask id=\"u\">\n      <bpmn:extensionElements>\n        <zeebe:userTask/>\n      </bpmn:extensionElements>\n      <bpmn:multiInstanceLoopCharacteristics camunda:collection=\"${items.filter()}\" camunda:elementVariable=\"i\"/>\n    </bpmn:userTask>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+}

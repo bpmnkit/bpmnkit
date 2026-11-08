@@ -1,0 +1,1 @@
+s[start Order] > b[task Pack into box] > c[service Ship | job=c] > e[end Done]

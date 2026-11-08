@@ -1,9 +1,12 @@
+import { readFileSync } from "node:fs"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
 import { describe, expect, it } from "vitest"
 import {
 	WITHOUT_SDK_SYSTEM_PROMPT,
+	buildCompactJsonSystemPrompt,
 	buildCompactSystemPrompt,
+	buildPlanSystemPrompt,
 	buildSdkSystemPrompt,
 } from "./system-prompt.js"
 
@@ -29,6 +32,22 @@ describe("buildSdkSystemPrompt", () => {
 	it("includes the output instruction", () => {
 		const prompt = buildSdkSystemPrompt(REPO_ROOT)
 		expect(prompt).toContain("process.stdout.write")
+	})
+
+	it("embeds the generated builder reference, not the package README", () => {
+		const prompt = buildSdkSystemPrompt(REPO_ROOT)
+		expect(prompt).toContain("## Builder Reference")
+		expect(prompt).toContain("withBoundary(")
+		expect(prompt).toContain("timerDuration")
+		// A README-only heading: the README is what the reference replaces.
+		expect(prompt).not.toContain("## Related Packages")
+		expect(prompt).not.toContain("## SDK Overview")
+	})
+
+	it("is much smaller than the README-based prompt", () => {
+		const readme = readFileSync(join(REPO_ROOT, "packages/core/README.md"), "utf-8")
+		const reference = readFileSync(join(REPO_ROOT, "packages/core/builder-reference.md"), "utf-8")
+		expect(reference.length).toBeLessThan(readme.length * 0.7)
 	})
 })
 
@@ -59,5 +78,21 @@ describe("buildCompactSystemPrompt", () => {
 	it("includes the output instruction", () => {
 		const prompt = buildCompactSystemPrompt(REPO_ROOT)
 		expect(prompt).toContain("```compact")
+	})
+})
+
+describe("buildCompactJsonSystemPrompt", () => {
+	it("documents the CompactDiagram shape and the output block", () => {
+		const prompt = buildCompactJsonSystemPrompt(REPO_ROOT)
+		expect(prompt).toContain("interface CompactDiagram")
+		expect(prompt).toContain("```json")
+	})
+})
+
+describe("buildPlanSystemPrompt", () => {
+	it("documents ProcessPlan and the output block", () => {
+		const prompt = buildPlanSystemPrompt(REPO_ROOT)
+		expect(prompt).toContain("interface ProcessPlan")
+		expect(prompt).toContain("```json")
 	})
 })

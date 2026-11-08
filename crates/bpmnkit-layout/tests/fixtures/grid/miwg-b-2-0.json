@@ -1,0 +1,111 @@
+{
+	"nodes": [
+		{
+			"id": "_200f43e7-1385-46e2-a380-3ef16ebe7847",
+			"type": "startEvent",
+			"bounds": { "x": 57, "y": 52, "width": 36, "height": 36 },
+			"layer": 0,
+			"position": 0,
+			"label": "Start Event 3",
+			"labelBounds": { "x": 29.5, "y": 92, "width": 91, "height": 14 }
+		},
+		{
+			"id": "_c57a5344-213f-4834-a6c3-94ce878b413c",
+			"type": "userTask",
+			"bounds": { "x": 175, "y": 30, "width": 100, "height": 80 },
+			"layer": 1,
+			"position": 0,
+			"label": "User Task 12 Muti-Inst. Seq."
+		},
+		{
+			"id": "_7f4fe4ea-901f-4c74-bcd4-e933495712fd",
+			"type": "userTask",
+			"bounds": { "x": 325, "y": 30, "width": 100, "height": 80 },
+			"layer": 2,
+			"position": 0,
+			"label": "User Task 13"
+		},
+		{
+			"id": "_86b052b4-225c-424e-b900-bb94bdd77cec",
+			"type": "boundaryEvent",
+			"bounds": { "x": 357, "y": 92, "width": 36, "height": 36 },
+			"layer": 2,
+			"position": 0,
+			"label": "Boundary Intermediate Event Interrupting Message",
+			"labelBounds": { "x": 300, "y": 132, "width": 150, "height": 14 }
+		},
+		{
+			"id": "_3bfec246-ab94-4807-a79a-3df91ac13800",
+			"type": "serviceTask",
+			"bounds": { "x": 475, "y": 30, "width": 100, "height": 80 },
+			"layer": 3,
+			"position": 0,
+			"label": "Service Task 14"
+		},
+		{
+			"id": "_ed405919-9fd6-47d0-bb00-9be7d5467efb",
+			"type": "endEvent",
+			"bounds": { "x": 657, "y": 52, "width": 36, "height": 36 },
+			"layer": 4,
+			"position": 0,
+			"label": "End Event 4",
+			"labelBounds": { "x": 636.5, "y": 92, "width": 77, "height": 14 }
+		},
+		{
+			"id": "_cba8fbed-2bb6-40a9-8ac5-83e827ce9d9f",
+			"type": "startEvent",
+			"bounds": { "x": 57, "y": 192, "width": 36, "height": 36 },
+			"layer": 0,
+			"position": 1,
+			"label": "Start Event 4 Conditional",
+			"labelBounds": { "x": 0, "y": 232, "width": 150, "height": 14 }
+		},
+		{
+			"id": "_778ff738-a5af-4373-a8da-0fbbfae9e00a",
+			"type": "endEvent",
+			"bounds": { "x": 507, "y": 192, "width": 36, "height": 36 },
+			"layer": 3,
+			"position": 1,
+			"label": "End Event 5 Terminate",
+			"labelBounds": { "x": 451.5, "y": 232, "width": 147, "height": 14 }
+		}
+	],
+	"edges": [
+		{
+			"id": "_60ed96e6-5954-48de-861b-7d1e3c1fb23e",
+			"sourceRef": "_200f43e7-1385-46e2-a380-3ef16ebe7847",
+			"targetRef": "_c57a5344-213f-4834-a6c3-94ce878b413c",
+			"waypoints": [{ "x": 93, "y": 70 }, { "x": 175, "y": 70 }]
+		},
+		{
+			"id": "_6c6288e8-43f6-4085-87c7-1ff21c38fe17",
+			"sourceRef": "_c57a5344-213f-4834-a6c3-94ce878b413c",
+			"targetRef": "_7f4fe4ea-901f-4c74-bcd4-e933495712fd",
+			"waypoints": [{ "x": 275, "y": 70 }, { "x": 325, "y": 70 }]
+		},
+		{
+			"id": "_9ff30396-5ef2-42c0-ab4b-5343fbb0af21",
+			"sourceRef": "_3bfec246-ab94-4807-a79a-3df91ac13800",
+			"targetRef": "_ed405919-9fd6-47d0-bb00-9be7d5467efb",
+			"waypoints": [{ "x": 575, "y": 70 }, { "x": 657, "y": 70 }]
+		},
+		{
+			"id": "_99e68e88-586e-4f77-9506-f30903307209",
+			"sourceRef": "_86b052b4-225c-424e-b900-bb94bdd77cec",
+			"targetRef": "_778ff738-a5af-4373-a8da-0fbbfae9e00a",
+			"waypoints": [{ "x": 375, "y": 128 }, { "x": 375, "y": 210 }, { "x": 507, "y": 210 }]
+		},
+		{
+			"id": "_c72ddf62-21b8-4895-a7bf-7a765f5981eb",
+			"sourceRef": "_cba8fbed-2bb6-40a9-8ac5-83e827ce9d9f",
+			"targetRef": "_c57a5344-213f-4834-a6c3-94ce878b413c",
+			"waypoints": [{ "x": 93, "y": 210 }, { "x": 225, "y": 210 }, { "x": 225, "y": 110 }]
+		},
+		{
+			"id": "_088b81bd-2a43-43a7-86c9-34c1cdd5f11b",
+			"sourceRef": "_7f4fe4ea-901f-4c74-bcd4-e933495712fd",
+			"targetRef": "_3bfec246-ab94-4807-a79a-3df91ac13800",
+			"waypoints": [{ "x": 425, "y": 70 }, { "x": 475, "y": 70 }]
+		}
+	]
+}

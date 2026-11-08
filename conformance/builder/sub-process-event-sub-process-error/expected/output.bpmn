@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
+  <bpmn:error id="Error_BAD" name="BAD" errorCode="BAD"/>
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_main</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="main" name="main">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="main"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_s_main</bpmn:incoming>
+      <bpmn:outgoing>Flow_main_e</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:subProcess id="esp" triggeredByEvent="true">
+      <bpmn:startEvent id="es">
+        <bpmn:outgoing>Flow_es_ee</bpmn:outgoing>
+        <bpmn:conditionalEventDefinition id="es_ConditionalEventDefinition">
+          <bpmn:condition xsi:type="bpmn:tFormalExpression">=x</bpmn:condition>
+        </bpmn:conditionalEventDefinition>
+      </bpmn:startEvent>
+      <bpmn:endEvent id="ee">
+        <bpmn:incoming>Flow_es_ee</bpmn:incoming>
+        <bpmn:errorEventDefinition id="ee_ErrorEventDefinition" errorRef="Error_BAD"/>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_es_ee" sourceRef="es" targetRef="ee"/>
+    </bpmn:subProcess>
+    <bpmn:endEvent id="e">
+      <bpmn:incoming>Flow_main_e</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s_main" sourceRef="s" targetRef="main"/>
+    <bpmn:sequenceFlow id="Flow_main_e" sourceRef="main" targetRef="e"/>
+  </bpmn:process>
+</bpmn:definitions>
+

@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["escalation","Esc1",{"code":"ESC","name":"Needs help"}],
+		["startEvent","s"],
+		["endEvent","e",{"escalationCode":"ESC"}],
+		["build"]
+	]
+}

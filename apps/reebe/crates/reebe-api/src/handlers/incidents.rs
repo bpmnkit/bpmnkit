@@ -1,27 +1,30 @@
+use crate::app::ApiState;
+use crate::dto::incidents::{IncidentDto, SearchIncidentsRequest};
+use crate::error::{ApiError, ApiResult};
+use crate::pagination::PageResponse;
 use axum::extract::{Path, State};
 use axum::http::StatusCode;
 use axum::response::IntoResponse;
 use axum::Json;
 use reebe_db::state::incidents::IncidentRepository;
-use crate::app::ApiState;
-use crate::dto::incidents::{IncidentDto, SearchIncidentsRequest};
-use crate::error::{ApiError, ApiResult};
-use crate::pagination::PageResponse;
 
 pub async fn get_incident(
     State(state): State<ApiState>,
     Path(key): Path<String>,
 ) -> ApiResult<impl IntoResponse> {
-    let key_i64: i64 = key.parse().map_err(|_| {
-        ApiError::InvalidRequest(format!("Invalid key: {key}"))
-    })?;
+    let key_i64: i64 = key
+        .parse()
+        .map_err(|_| ApiError::InvalidRequest(format!("Invalid key: {key}")))?;
 
     let pool = state.replica_pool.as_ref().unwrap_or(&state.pool);
     let repo = IncidentRepository::new(pool);
-    let incident = repo.get_by_key(key_i64).await.map_err(|_| ApiError::NotFound {
-        resource: "incident".to_string(),
-        key: key.clone(),
-    })?;
+    let incident = repo
+        .get_by_key(key_i64)
+        .await
+        .map_err(|_| ApiError::NotFound {
+            resource: "incident".to_string(),
+            key: key.clone(),
+        })?;
 
     Ok(Json(IncidentDto::from(incident)))
 }

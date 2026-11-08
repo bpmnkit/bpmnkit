@@ -1,0 +1,99 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "a",
+            "name": "A",
+            "type": "task"
+          },
+          {
+            "id": "x",
+            "name": "frobnicate Odd",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "email Done",
+            "type": "endEvent"
+          },
+          {
+            "id": "ghost",
+            "name": "Ghost",
+            "type": "task"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "a"
+          },
+          {
+            "from": "a",
+            "id": "Flow_2",
+            "to": "ghost"
+          },
+          {
+            "from": "x",
+            "id": "Flow_3",
+            "to": "e"
+          },
+          {
+            "from": "ghost",
+            "id": "Flow_4",
+            "to": "x"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "connected \"ghost\" to \"x\", which nothing led to",
+    "named 1 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"ghost\" is never declared; added as a task"
+    },
+    {
+      "line": 2,
+      "message": "\"a\" is already declared on line 1; ignored \"user Again\""
+    },
+    {
+      "line": 3,
+      "message": "unknown kind \"frobnicate\" for \"x\"; used task"
+    },
+    {
+      "line": 3,
+      "message": "unknown trigger \"email\" for \"e\"; read as part of the name"
+    },
+    {
+      "line": 4,
+      "message": "boundary \"b\" has no on=<task id>; left out"
+    },
+    {
+      "line": 4,
+      "message": "\"b\" was left out; flow b > a left out"
+    },
+    {
+      "line": 5,
+      "message": "an end event has no outgoing flow; flow e > s left out"
+    },
+    {
+      "line": 6,
+      "message": "expected \">\" at \"is prose, not a path\""
+    }
+  ],
+  "questions": []
+}

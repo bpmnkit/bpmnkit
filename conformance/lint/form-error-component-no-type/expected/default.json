@@ -1,0 +1,11 @@
+{
+  "findings": [
+    {
+      "elementId": "a",
+      "fix": "Set \"type\" to one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview. (agent-cards/form.md#traps)",
+      "message": "Component \"a\" has no \"type\".",
+      "rule": "form/invalid-schema",
+      "severity": "error"
+    }
+  ]
+}

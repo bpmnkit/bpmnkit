@@ -1,0 +1,12 @@
+{
+	"kind": "dmn",
+	"script": [
+		["createDecisionTable","d"],
+		["hitPolicy","COLLECT"],
+		["input",{"expression":"x"}],
+		["output",{"name":"y"}],
+		["rule",{"inputs":["1"],"outputs":["\"a\""]}],
+		["rule",{"inputs":["2"],"outputs":["\"b\""]}],
+		["build"]
+	]
+}

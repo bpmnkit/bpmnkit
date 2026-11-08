@@ -1,0 +1,43 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Zahlung ✓",
+            "type": "startEvent"
+          },
+          {
+            "id": "t",
+            "name": "Überprüfen 日本語",
+            "type": "userTask"
+          },
+          {
+            "id": "e",
+            "name": "終了 🎉",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [],
+  "questions": []
+}

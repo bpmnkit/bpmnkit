@@ -1,0 +1,69 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "eventType": "message",
+            "id": "w",
+            "name": "Payment in",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "e",
+            "name": "Done",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "w"
+          },
+          {
+            "from": "w",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"w\" waits for nothing in particular; made it a message event"
+    }
+  ],
+  "questions": [
+    {
+      "draft": "\"Payment in\" waits for ",
+      "elementId": "w",
+      "options": [
+        {
+          "change": "\"Payment in\" waits for a timer, not a message.",
+          "label": "A timer"
+        },
+        {
+          "change": "\"Payment in\" waits for a signal, not a message.",
+          "label": "A signal"
+        },
+        {
+          "change": "\"Payment in\" waits for nothing: make it a plain event, or the end.",
+          "label": "Nothing"
+        }
+      ],
+      "text": "\"Payment in\" was written without a trigger, so it waits for a message. Is it something else?"
+    }
+  ]
+}

@@ -1,0 +1,105 @@
+{
+  "connectors": [],
+  "diagram": {
+    "executionPlatformVersion": "8.10.0",
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "id": "run",
+            "name": "Run agent",
+            "type": "exclusiveGateway"
+          },
+          {
+            "children": {
+              "elements": [
+                {
+                  "id": "users",
+                  "jobType": "users",
+                  "name": "Find sample users",
+                  "type": "serviceTask"
+                },
+                {
+                  "id": "joke",
+                  "jobType": "joke",
+                  "name": "Get a safe joke",
+                  "type": "serviceTask"
+                }
+              ],
+              "flows": []
+            },
+            "id": "agent",
+            "name": "AI Agent",
+            "type": "adHocSubProcess"
+          },
+          {
+            "id": "done",
+            "name": "Satisfied?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "fin",
+            "name": "Done",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "run"
+          },
+          {
+            "from": "run",
+            "id": "Flow_2",
+            "to": "agent"
+          },
+          {
+            "from": "agent",
+            "id": "Flow_3",
+            "to": "done"
+          },
+          {
+            "condition": "= ok",
+            "from": "done",
+            "id": "Flow_4",
+            "name": "Yes",
+            "to": "fin"
+          },
+          {
+            "from": "done",
+            "id": "Flow_5",
+            "isDefault": true,
+            "name": "No",
+            "to": "run"
+          }
+        ],
+        "id": "Agent",
+        "name": "Agent",
+        "notes": [
+          {
+            "elementId": "start",
+            "text": "Triggered by a user"
+          },
+          {
+            "elementId": "agent",
+            "text": "The agent picks a tool"
+          },
+          {
+            "elementId": "joke",
+            "text": "Each tool is a capability"
+          }
+        ]
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [],
+  "questions": []
+}

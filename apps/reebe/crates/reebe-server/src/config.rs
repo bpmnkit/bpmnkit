@@ -1,7 +1,7 @@
-use serde::{Deserialize, Serialize};
 use reebe_api::AuthConfig;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Clone, Deserialize, Serialize, Default)]
 pub struct Config {
     pub server: ServerConfig,
     pub database: DatabaseConfig,
@@ -57,17 +57,6 @@ impl Default for EngineConfig {
         Self {
             partition_count: 1,
             node_id: 0,
-        }
-    }
-}
-
-impl Default for Config {
-    fn default() -> Self {
-        Self {
-            server: ServerConfig::default(),
-            database: DatabaseConfig::default(),
-            engine: EngineConfig::default(),
-            auth: AuthConfig::default(),
         }
     }
 }

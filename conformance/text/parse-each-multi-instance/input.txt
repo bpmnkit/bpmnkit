@@ -1,0 +1,1 @@
+s[start] > m[service Mail each stakeholder | each=stakeholders job=send-mail] > r[script Count | in.l=sent result=n feel=count(l)] > e[end]

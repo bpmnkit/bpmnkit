@@ -1,0 +1,9 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["endEvent","e",{"errorCode":"BOOM","name":"Failed"}],
+		["build"]
+	]
+}

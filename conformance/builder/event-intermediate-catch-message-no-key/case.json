@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["intermediateCatchEvent","c",{"messageName":"reply"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

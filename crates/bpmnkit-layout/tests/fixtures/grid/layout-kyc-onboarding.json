@@ -1,0 +1,358 @@
+{
+	"nodes": [
+		{
+			"id": "start",
+			"type": "startEvent",
+			"bounds": { "x": 57, "y": 52, "width": 36, "height": 36 },
+			"layer": 0,
+			"position": 0,
+			"label": "Customer Onboarding Started",
+			"labelBounds": { "x": 0, "y": 92, "width": 150, "height": 14 }
+		},
+		{
+			"id": "uploadDocument",
+			"type": "userTask",
+			"bounds": { "x": 175, "y": 30, "width": 100, "height": 80 },
+			"layer": 1,
+			"position": 0,
+			"label": "Upload Identity Document"
+		},
+		{
+			"id": "verifyDocument",
+			"type": "serviceTask",
+			"bounds": { "x": 325, "y": 30, "width": 100, "height": 80 },
+			"layer": 2,
+			"position": 0,
+			"label": "Verify Document (OCR)"
+		},
+		{
+			"id": "qualityGateway",
+			"type": "exclusiveGateway",
+			"bounds": { "x": 500, "y": 45, "width": 50, "height": 50 },
+			"layer": 3,
+			"position": 0,
+			"label": "Document Verified?",
+			"labelBounds": { "x": 462, "y": 99, "width": 126, "height": 14 }
+		},
+		{
+			"id": "screening",
+			"type": "serviceTask",
+			"bounds": { "x": 625, "y": 30, "width": 100, "height": 80 },
+			"layer": 4,
+			"position": 0,
+			"label": "Sanctions & PEP Screening"
+		},
+		{
+			"id": "dueDiligenceGateway",
+			"type": "exclusiveGateway",
+			"bounds": { "x": 800, "y": 45, "width": 50, "height": 50 },
+			"layer": 5,
+			"position": 0,
+			"label": "Due Diligence Level?",
+			"labelBounds": { "x": 755, "y": 99, "width": 140, "height": 14 }
+		},
+		{
+			"id": "standardDueDiligence",
+			"type": "serviceTask",
+			"bounds": { "x": 925, "y": 30, "width": 100, "height": 80 },
+			"layer": 6,
+			"position": 0,
+			"label": "Standard Due Diligence"
+		},
+		{
+			"id": "dueDiligenceGateway_join",
+			"type": "exclusiveGateway",
+			"bounds": { "x": 1100, "y": 45, "width": 50, "height": 50 },
+			"layer": 7,
+			"position": 0
+		},
+		{
+			"id": "riskClassification",
+			"type": "businessRuleTask",
+			"bounds": { "x": 1225, "y": 30, "width": 100, "height": 80 },
+			"layer": 8,
+			"position": 0,
+			"label": "Final Risk Classification"
+		},
+		{
+			"id": "outcomeGateway",
+			"type": "exclusiveGateway",
+			"bounds": { "x": 1400, "y": 45, "width": 50, "height": 50 },
+			"layer": 9,
+			"position": 0,
+			"label": "Classification Outcome?",
+			"labelBounds": { "x": 1350, "y": 99, "width": 150, "height": 14 }
+		},
+		{
+			"id": "activateAccount",
+			"type": "serviceTask",
+			"bounds": { "x": 1525, "y": 30, "width": 100, "height": 80 },
+			"layer": 10,
+			"position": 0,
+			"label": "Activate Customer Account"
+		},
+		{
+			"id": "endApproved",
+			"type": "endEvent",
+			"bounds": { "x": 1707, "y": 52, "width": 36, "height": 36 },
+			"layer": 11,
+			"position": 0,
+			"label": "Customer Approved",
+			"labelBounds": { "x": 1665.5, "y": 92, "width": 119, "height": 14 }
+		},
+		{
+			"id": "incrementRetry",
+			"type": "scriptTask",
+			"bounds": { "x": 625, "y": 170, "width": 100, "height": 80 },
+			"layer": 4,
+			"position": 1,
+			"label": "Increment Retry Count"
+		},
+		{
+			"id": "retryGateway",
+			"type": "exclusiveGateway",
+			"bounds": { "x": 800, "y": 185, "width": 50, "height": 50 },
+			"layer": 5,
+			"position": 1,
+			"label": "Retries Remaining?",
+			"labelBounds": { "x": 762, "y": 239, "width": 126, "height": 14 }
+		},
+		{
+			"id": "sendVerificationRejection",
+			"type": "serviceTask",
+			"bounds": { "x": 925, "y": 170, "width": 100, "height": 80 },
+			"layer": 6,
+			"position": 1,
+			"label": "Send Rejection Notice"
+		},
+		{
+			"id": "endRejectedVerification",
+			"type": "endEvent",
+			"bounds": { "x": 1107, "y": 192, "width": 36, "height": 36 },
+			"layer": 7,
+			"position": 1,
+			"label": "Rejected — Verification Failed",
+			"labelBounds": { "x": 1050, "y": 232, "width": 150, "height": 14 }
+		},
+		{
+			"id": "complianceReview",
+			"type": "userTask",
+			"bounds": { "x": 1375, "y": 170, "width": 100, "height": 80 },
+			"layer": 9,
+			"position": 1,
+			"label": "Enhanced Due Diligence Review"
+		},
+		{
+			"id": "escalateToCompliance",
+			"type": "serviceTask",
+			"bounds": { "x": 1975, "y": 170, "width": 100, "height": 80 },
+			"layer": 13,
+			"position": 1,
+			"label": "Escalate to Compliance"
+		},
+		{
+			"id": "endEscalated",
+			"type": "endEvent",
+			"bounds": { "x": 2157, "y": 192, "width": 36, "height": 36 },
+			"layer": 14,
+			"position": 1,
+			"label": "Escalated to Compliance",
+			"labelBounds": { "x": 2100, "y": 232, "width": 150, "height": 14 }
+		},
+		{
+			"id": "sendFinalRejection",
+			"type": "serviceTask",
+			"bounds": { "x": 1525, "y": 310, "width": 100, "height": 80 },
+			"layer": 10,
+			"position": 2,
+			"label": "Send Rejection Notice"
+		},
+		{
+			"id": "endRejected",
+			"type": "endEvent",
+			"bounds": { "x": 1707, "y": 332, "width": 36, "height": 36 },
+			"layer": 11,
+			"position": 2,
+			"label": "Customer Rejected",
+			"labelBounds": { "x": 1665.5, "y": 372, "width": 119, "height": 14 }
+		}
+	],
+	"edges": [
+		{
+			"id": "Flow_xMEWWQ9P",
+			"sourceRef": "start",
+			"targetRef": "uploadDocument",
+			"waypoints": [{ "x": 93, "y": 70 }, { "x": 175, "y": 70 }]
+		},
+		{
+			"id": "Flow_aFggSXlz",
+			"sourceRef": "uploadDocument",
+			"targetRef": "verifyDocument",
+			"waypoints": [{ "x": 275, "y": 70 }, { "x": 325, "y": 70 }]
+		},
+		{
+			"id": "Flow_nrWGBeCZ",
+			"sourceRef": "verifyDocument",
+			"targetRef": "qualityGateway",
+			"waypoints": [{ "x": 425, "y": 70 }, { "x": 500, "y": 70 }]
+		},
+		{
+			"id": "Flow_Vp0HOfCz",
+			"sourceRef": "qualityGateway",
+			"targetRef": "screening",
+			"waypoints": [{ "x": 550, "y": 70 }, { "x": 625, "y": 70 }],
+			"label": "verification-passed"
+		},
+		{
+			"id": "Flow_RETXa3Vt",
+			"sourceRef": "qualityGateway",
+			"targetRef": "incrementRetry",
+			"waypoints": [{ "x": 525, "y": 95 }, { "x": 525, "y": 210 }, { "x": 625, "y": 210 }],
+			"label": "verification-failed",
+			"labelBounds": { "x": 501, "y": 145.5, "width": 133, "height": 14 }
+		},
+		{
+			"id": "Flow_i4OMbS2y",
+			"sourceRef": "incrementRetry",
+			"targetRef": "retryGateway",
+			"waypoints": [{ "x": 725, "y": 210 }, { "x": 800, "y": 210 }]
+		},
+		{
+			"id": "Flow_8reekDVI",
+			"sourceRef": "retryGateway",
+			"targetRef": "uploadDocument",
+			"waypoints": [
+				{ "x": 825, "y": 235 },
+				{ "x": 825, "y": 280 },
+				{ "x": 225, "y": 280 },
+				{ "x": 225, "y": 110 }
+			],
+			"label": "retry-upload",
+			"labelBounds": { "x": 483, "y": 256, "width": 84, "height": 14 }
+		},
+		{
+			"id": "Flow_Y4q86h1Q",
+			"sourceRef": "retryGateway",
+			"targetRef": "sendVerificationRejection",
+			"waypoints": [{ "x": 850, "y": 210 }, { "x": 925, "y": 210 }],
+			"label": "retries-exhausted"
+		},
+		{
+			"id": "Flow_VNppp5Gg",
+			"sourceRef": "sendVerificationRejection",
+			"targetRef": "endRejectedVerification",
+			"waypoints": [{ "x": 1025, "y": 210 }, { "x": 1107, "y": 210 }]
+		},
+		{
+			"id": "Flow_8ZqbzajU",
+			"sourceRef": "screening",
+			"targetRef": "dueDiligenceGateway",
+			"waypoints": [{ "x": 725, "y": 70 }, { "x": 800, "y": 70 }]
+		},
+		{
+			"id": "Flow_hyodCBEu",
+			"sourceRef": "dueDiligenceGateway",
+			"targetRef": "standardDueDiligence",
+			"waypoints": [{ "x": 850, "y": 70 }, { "x": 925, "y": 70 }],
+			"label": "standard-dd"
+		},
+		{
+			"id": "Flow_LXaUZMEX",
+			"sourceRef": "dueDiligenceGateway",
+			"targetRef": "complianceReview",
+			"waypoints": [
+				{ "x": 850, "y": 70 },
+				{ "x": 900, "y": 70 },
+				{ "x": 900, "y": 140 },
+				{ "x": 1350, "y": 140 },
+				{ "x": 1350, "y": 210 },
+				{ "x": 1375, "y": 210 }
+			],
+			"label": "enhanced-dd",
+			"labelBounds": { "x": 1086.5, "y": 116, "width": 77, "height": 14 }
+		},
+		{
+			"id": "Flow_Fj3alEoq",
+			"sourceRef": "standardDueDiligence",
+			"targetRef": "dueDiligenceGateway_join",
+			"waypoints": [{ "x": 1025, "y": 70 }, { "x": 1100, "y": 70 }]
+		},
+		{
+			"id": "Flow_1u29yKxb",
+			"sourceRef": "complianceReview",
+			"targetRef": "dueDiligenceGateway_join",
+			"waypoints": [
+				{ "x": 1425, "y": 250 },
+				{ "x": 1425, "y": 280 },
+				{ "x": 1125, "y": 280 },
+				{ "x": 1125, "y": 95 }
+			]
+		},
+		{
+			"id": "Flow_NFb6OA8f",
+			"sourceRef": "riskClassification",
+			"targetRef": "outcomeGateway",
+			"waypoints": [{ "x": 1325, "y": 70 }, { "x": 1400, "y": 70 }]
+		},
+		{
+			"id": "Flow_hHN1OOEM",
+			"sourceRef": "outcomeGateway",
+			"targetRef": "activateAccount",
+			"waypoints": [{ "x": 1450, "y": 70 }, { "x": 1525, "y": 70 }],
+			"label": "approved",
+			"labelBounds": { "x": 1459.5, "y": 46, "width": 56, "height": 14 }
+		},
+		{
+			"id": "Flow_VHWI1YqZ",
+			"sourceRef": "outcomeGateway",
+			"targetRef": "escalateToCompliance",
+			"waypoints": [
+				{ "x": 1450, "y": 70 },
+				{ "x": 1500, "y": 70 },
+				{ "x": 1500, "y": 140 },
+				{ "x": 1950, "y": 140 },
+				{ "x": 1950, "y": 210 },
+				{ "x": 1975, "y": 210 }
+			],
+			"label": "escalated",
+			"labelBounds": { "x": 1693.5, "y": 116, "width": 63, "height": 14 }
+		},
+		{
+			"id": "Flow_y162Zfc7",
+			"sourceRef": "outcomeGateway",
+			"targetRef": "sendFinalRejection",
+			"waypoints": [
+				{ "x": 1450, "y": 70 },
+				{ "x": 1500, "y": 70 },
+				{ "x": 1500, "y": 350 },
+				{ "x": 1525, "y": 350 }
+			],
+			"label": "rejected",
+			"labelBounds": { "x": 1510, "y": 203, "width": 56, "height": 14 }
+		},
+		{
+			"id": "Flow_1busQeAe",
+			"sourceRef": "activateAccount",
+			"targetRef": "endApproved",
+			"waypoints": [{ "x": 1625, "y": 70 }, { "x": 1707, "y": 70 }]
+		},
+		{
+			"id": "Flow_KmLNM32V",
+			"sourceRef": "escalateToCompliance",
+			"targetRef": "endEscalated",
+			"waypoints": [{ "x": 2075, "y": 210 }, { "x": 2157, "y": 210 }]
+		},
+		{
+			"id": "Flow_b0dqg7ck",
+			"sourceRef": "sendFinalRejection",
+			"targetRef": "endRejected",
+			"waypoints": [{ "x": 1625, "y": 350 }, { "x": 1707, "y": 350 }]
+		},
+		{
+			"id": "Flow_WuhSJujP",
+			"sourceRef": "dueDiligenceGateway_join",
+			"targetRef": "riskClassification",
+			"waypoints": [{ "x": 1150, "y": 70 }, { "x": 1225, "y": 70 }]
+		}
+	]
+}

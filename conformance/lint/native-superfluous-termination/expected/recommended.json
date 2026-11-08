@@ -1,0 +1,114 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 5,
+    "info": 0,
+    "warning": 2
+  },
+  "diagnostics": [
+    {
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"start\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "startEvent element \"start\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "label-required",
+      "category": "naming",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": false,
+      "id": "naming/missing-label",
+      "message": "endEvent element \"end\" has no label.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Name it, so the diagram says what it does or means."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "start"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"start\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"end\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "no-bpmndi",
+      "category": "pattern",
+      "elementIds": [
+        "f"
+      ],
+      "fixable": false,
+      "id": "pattern/missing-di",
+      "message": "Element \"f\" has no diagram information (BPMNDI).",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+    },
+    {
+      "bpmnlintRule": "superfluous-termination",
+      "category": "flow",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": false,
+      "id": "flow/superfluous-termination",
+      "message": "Terminate end event \"end\" is the only way this scope ends, so terminating is superfluous.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Use a plain end event."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 7
+}

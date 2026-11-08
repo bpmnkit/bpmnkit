@@ -1,0 +1,49 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "formId": "ai-agent-chat-initial-request",
+            "id": "start",
+            "name": "Task received",
+            "type": "startEvent"
+          },
+          {
+            "formId": "ai-agent-chat-user-feedback",
+            "id": "fb",
+            "inputs": {
+              "responseText": "=agent.responseText"
+            },
+            "name": "User Feedback",
+            "nativeUserTask": true,
+            "type": "userTask"
+          },
+          {
+            "id": "e",
+            "name": "Done",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "fb"
+          },
+          {
+            "from": "fb",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [],
+  "questions": []
+}

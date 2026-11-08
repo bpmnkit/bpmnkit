@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
+  <bpmn:error id="Error_FAIL" name="FAIL" errorCode="FAIL"/>
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_host</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="host" name="host">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="host"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_s_host</bpmn:incoming>
+      <bpmn:outgoing>Flow_host_e3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="tb" name="Timeout" attachedToRef="host">
+      <bpmn:outgoing>Flow_tb_escalate</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="tb_TimerEventDefinition">
+        <bpmn:timeDuration>PT1H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:serviceTask id="escalate" name="escalate">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="escalate"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_tb_escalate</bpmn:incoming>
+      <bpmn:outgoing>Flow_escalate_e1</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="e1">
+      <bpmn:incoming>Flow_escalate_e1</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="eb" attachedToRef="host" cancelActivity="true">
+      <bpmn:outgoing>Flow_eb_e2</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="eb_ErrorEventDefinition" errorRef="Error_FAIL"/>
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="e2">
+      <bpmn:incoming>Flow_eb_e2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="e3">
+      <bpmn:incoming>Flow_host_e3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s_host" sourceRef="s" targetRef="host"/>
+    <bpmn:sequenceFlow id="Flow_tb_escalate" sourceRef="tb" targetRef="escalate"/>
+    <bpmn:sequenceFlow id="Flow_escalate_e1" sourceRef="escalate" targetRef="e1"/>
+    <bpmn:sequenceFlow id="Flow_eb_e2" sourceRef="eb" targetRef="e2"/>
+    <bpmn:sequenceFlow id="Flow_host_e3" sourceRef="host" targetRef="e3"/>
+  </bpmn:process>
+</bpmn:definitions>
+

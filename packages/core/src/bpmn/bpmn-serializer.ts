@@ -148,7 +148,7 @@ function serializeEventDefinitions(defs: BpmnEventDefinition[], bp: string): Xml
 			case "conditional": {
 				const attrs: Record<string, string> = {}
 				if (d.id) attrs.id = d.id
-				const condChildren: XmlElement[] = []
+				const condChildren: XmlElement[] = serializeExtensionElements(d.extensionElements ?? [], bp)
 				if (d.condition !== undefined) {
 					condChildren.push(el(`${bp}condition`, d.conditionAttributes ?? {}, [], d.condition))
 				}
@@ -538,17 +538,18 @@ function serializeLane(lane: BpmnLane, bp: string): XmlElement {
 	const children: XmlElement[] = serializeBaseChildren(lane, bp)
 	children.push(...lane.flowNodeRefs.map((ref) => el(`${bp}flowNodeRef`, {}, [], ref)))
 	if (lane.childLaneSet) {
-		children.push(serializeLaneSet(lane.childLaneSet, bp))
+		children.push(serializeLaneSet(lane.childLaneSet, bp, "childLaneSet"))
 	}
 	return el(`${bp}lane`, attrs, children)
 }
 
-function serializeLaneSet(laneSet: BpmnLaneSet, bp: string): XmlElement {
+/** `tag` is `childLaneSet` inside a lane: BPMN names the nested set differently. */
+function serializeLaneSet(laneSet: BpmnLaneSet, bp: string, tag = "laneSet"): XmlElement {
 	const attrs: Record<string, string> = { ...laneSet.unknownAttributes }
 	if (laneSet.id) attrs.id = laneSet.id
 	if (laneSet.name !== undefined) attrs.name = laneSet.name
 	return el(
-		`${bp}laneSet`,
+		`${bp}${tag}`,
 		attrs,
 		laneSet.lanes.map((l) => serializeLane(l, bp)),
 	)
@@ -562,7 +563,7 @@ function serializeProcess(process: BpmnProcess, ns: Record<string, string>): Xml
 	const bp = bpmnPrefix(ns)
 	const attrs: Record<string, string> = { id: process.id, ...process.unknownAttributes }
 	if (process.name !== undefined) attrs.name = process.name
-	if (process.isExecutable) attrs.isExecutable = "true"
+	if (process.isExecutable !== undefined) attrs.isExecutable = String(process.isExecutable)
 
 	const children: XmlElement[] = serializeBaseChildren(
 		{

@@ -1,0 +1,10 @@
+{
+  "runs": {
+    "default": {},
+    "opts-2": {
+      "options": {
+        "executionPlatformVersion": "8.9.0"
+      }
+    }
+  }
+}

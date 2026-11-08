@@ -1,0 +1,391 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_testing" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="order-process" isExecutable="true">
+    <bpmn:startEvent id="start">
+      <bpmn:outgoing>f_start</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="payment" name="Charge card">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="payment"/>
+        <zeebe:taskHeaders>
+          <zeebe:header key="provider" value="stripe"/>
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>f_start</bpmn:incoming>
+      <bpmn:outgoing>f_paid</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="paid_gw" default="f_unpaid">
+      <bpmn:incoming>f_paid</bpmn:incoming>
+      <bpmn:outgoing>f_ship</bpmn:outgoing>
+      <bpmn:outgoing>f_unpaid</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="ship" name="Ship">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="ship"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>f_ship</bpmn:incoming>
+      <bpmn:outgoing>f_shipped</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="end_ok">
+      <bpmn:incoming>f_shipped</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="end_cancel">
+      <bpmn:incoming>f_unpaid</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f_start" sourceRef="start" targetRef="payment"/>
+    <bpmn:sequenceFlow id="f_paid" sourceRef="payment" targetRef="paid_gw"/>
+    <bpmn:sequenceFlow id="f_ship" sourceRef="paid_gw" targetRef="ship">
+      <bpmn:conditionExpression>=paid = true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_unpaid" sourceRef="paid_gw" targetRef="end_cancel"/>
+    <bpmn:sequenceFlow id="f_shipped" sourceRef="ship" targetRef="end_ok"/>
+  </bpmn:process>
+  <bpmn:process id="timer-process" isExecutable="true">
+    <bpmn:startEvent id="t_start">
+      <bpmn:outgoing>tf1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:intermediateCatchEvent id="wait_hour">
+      <bpmn:incoming>tf1</bpmn:incoming>
+      <bpmn:outgoing>tf2</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="wait_hour_TimerEventDefinition">
+        <bpmn:timeDuration>PT1H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="t_end">
+      <bpmn:incoming>tf2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="tf1" sourceRef="t_start" targetRef="wait_hour"/>
+    <bpmn:sequenceFlow id="tf2" sourceRef="wait_hour" targetRef="t_end"/>
+  </bpmn:process>
+  <bpmn:process id="date-process" isExecutable="true">
+    <bpmn:startEvent id="d_start">
+      <bpmn:outgoing>df1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:intermediateCatchEvent id="wait_new_year">
+      <bpmn:incoming>df1</bpmn:incoming>
+      <bpmn:outgoing>df2</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="wait_new_year_TimerEventDefinition"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="d_end">
+      <bpmn:incoming>df2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="df1" sourceRef="d_start" targetRef="wait_new_year"/>
+    <bpmn:sequenceFlow id="df2" sourceRef="wait_new_year" targetRef="d_end"/>
+  </bpmn:process>
+  <bpmn:process id="review-process" isExecutable="true">
+    <bpmn:startEvent id="r_start">
+      <bpmn:outgoing>rf1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="review" name="Review">
+      <bpmn:incoming>rf1</bpmn:incoming>
+      <bpmn:outgoing>rf2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:boundaryEvent id="review_timeout" attachedToRef="review" cancelActivity="true">
+      <bpmn:outgoing>rf3</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="review_timeout_TimerEventDefinition">
+        <bpmn:timeDuration>P1D</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="r_done">
+      <bpmn:incoming>rf2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="escalate">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="escalate"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>rf3</bpmn:incoming>
+      <bpmn:outgoing>rf4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="r_escalated">
+      <bpmn:incoming>rf4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="rf1" sourceRef="r_start" targetRef="review"/>
+    <bpmn:sequenceFlow id="rf2" sourceRef="review" targetRef="r_done"/>
+    <bpmn:sequenceFlow id="rf3" sourceRef="review_timeout" targetRef="escalate"/>
+    <bpmn:sequenceFlow id="rf4" sourceRef="escalate" targetRef="r_escalated"/>
+  </bpmn:process>
+  <bpmn:process id="message-process" isExecutable="true">
+    <bpmn:startEvent id="m_start">
+      <bpmn:outgoing>mf1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:intermediateCatchEvent id="await_confirmation">
+      <bpmn:incoming>mf1</bpmn:incoming>
+      <bpmn:outgoing>mf2</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="await_confirmation_MessageEventDefinition"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="m_end">
+      <bpmn:incoming>mf2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="mf1" sourceRef="m_start" targetRef="await_confirmation"/>
+    <bpmn:sequenceFlow id="mf2" sourceRef="await_confirmation" targetRef="m_end"/>
+  </bpmn:process>
+  <bpmn:process id="connector-process" isExecutable="true">
+    <bpmn:startEvent id="c_start">
+      <bpmn:outgoing>cf1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="fetch_weather">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda:http-json:1"/>
+        <zeebe:taskHeaders>
+          <zeebe:header key="resultExpression" value="={temperature: body.main.temp, ok: status = 200}"/>
+          <zeebe:header key="resultVariable" value="weatherResponse"/>
+        </zeebe:taskHeaders>
+      </bpmn:extensionElements>
+      <bpmn:incoming>cf1</bpmn:incoming>
+      <bpmn:outgoing>cf2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="c_end">
+      <bpmn:incoming>cf2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="cf1" sourceRef="c_start" targetRef="fetch_weather"/>
+    <bpmn:sequenceFlow id="cf2" sourceRef="fetch_weather" targetRef="c_end"/>
+  </bpmn:process>
+  <bpmn:process id="parallel-process" isExecutable="true">
+    <bpmn:startEvent id="p_start">
+      <bpmn:outgoing>pf1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:parallelGateway id="fork">
+      <bpmn:incoming>pf1</bpmn:incoming>
+      <bpmn:outgoing>pf2</bpmn:outgoing>
+      <bpmn:outgoing>pf3</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:task id="branch_a">
+      <bpmn:incoming>pf2</bpmn:incoming>
+      <bpmn:outgoing>pf4</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="branch_b">
+      <bpmn:incoming>pf3</bpmn:incoming>
+      <bpmn:outgoing>pf5</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:parallelGateway id="join">
+      <bpmn:incoming>pf4</bpmn:incoming>
+      <bpmn:incoming>pf5</bpmn:incoming>
+      <bpmn:outgoing>pf6</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:endEvent id="p_end">
+      <bpmn:incoming>pf6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="pf1" sourceRef="p_start" targetRef="fork"/>
+    <bpmn:sequenceFlow id="pf2" sourceRef="fork" targetRef="branch_a"/>
+    <bpmn:sequenceFlow id="pf3" sourceRef="fork" targetRef="branch_b"/>
+    <bpmn:sequenceFlow id="pf4" sourceRef="branch_a" targetRef="join"/>
+    <bpmn:sequenceFlow id="pf5" sourceRef="branch_b" targetRef="join"/>
+    <bpmn:sequenceFlow id="pf6" sourceRef="join" targetRef="p_end"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_order-process">
+    <bpmndi:BPMNPlane id="BPMNPlane_order-process" bpmnElement="order-process">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start">
+        <dc:Bounds x="0" y="22" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="payment_di" bpmnElement="payment">
+        <dc:Bounds x="96" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="paid_gw_di" bpmnElement="paid_gw" isMarkerVisible="true">
+        <dc:Bounds x="256" y="15" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ship_di" bpmnElement="ship">
+        <dc:Bounds x="366" y="118" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_ok_di" bpmnElement="end_ok">
+        <dc:Bounds x="526" y="140" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_cancel_di" bpmnElement="end_cancel">
+        <dc:Bounds x="398" y="22" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f_start_di" bpmnElement="f_start">
+        <di:waypoint x="36" y="40"/>
+        <di:waypoint x="96" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_paid_di" bpmnElement="f_paid">
+        <di:waypoint x="196" y="40"/>
+        <di:waypoint x="256" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_ship_di" bpmnElement="f_ship">
+        <di:waypoint x="281" y="65"/>
+        <di:waypoint x="281" y="158"/>
+        <di:waypoint x="366" y="158"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_unpaid_di" bpmnElement="f_unpaid">
+        <di:waypoint x="306" y="40"/>
+        <di:waypoint x="398" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f_shipped_di" bpmnElement="f_shipped">
+        <di:waypoint x="466" y="158"/>
+        <di:waypoint x="526" y="158"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_timer-process">
+    <bpmndi:BPMNPlane id="BPMNPlane_timer-process" bpmnElement="timer-process">
+      <bpmndi:BPMNShape id="t_start_di" bpmnElement="t_start">
+        <dc:Bounds x="0" y="0" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="wait_hour_di" bpmnElement="wait_hour">
+        <dc:Bounds x="96" y="0" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="t_end_di" bpmnElement="t_end">
+        <dc:Bounds x="192" y="0" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="tf1_di" bpmnElement="tf1">
+        <di:waypoint x="36" y="18"/>
+        <di:waypoint x="96" y="18"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="tf2_di" bpmnElement="tf2">
+        <di:waypoint x="132" y="18"/>
+        <di:waypoint x="192" y="18"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_date-process">
+    <bpmndi:BPMNPlane id="BPMNPlane_date-process" bpmnElement="date-process">
+      <bpmndi:BPMNShape id="d_start_di" bpmnElement="d_start">
+        <dc:Bounds x="0" y="0" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="wait_new_year_di" bpmnElement="wait_new_year">
+        <dc:Bounds x="96" y="0" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="d_end_di" bpmnElement="d_end">
+        <dc:Bounds x="192" y="0" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="df1_di" bpmnElement="df1">
+        <di:waypoint x="36" y="18"/>
+        <di:waypoint x="96" y="18"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="df2_di" bpmnElement="df2">
+        <di:waypoint x="132" y="18"/>
+        <di:waypoint x="192" y="18"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_review-process">
+    <bpmndi:BPMNPlane id="BPMNPlane_review-process" bpmnElement="review-process">
+      <bpmndi:BPMNShape id="r_start_di" bpmnElement="r_start">
+        <dc:Bounds x="0" y="22" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="review_di" bpmnElement="review">
+        <dc:Bounds x="96" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="review_timeout_di" bpmnElement="review_timeout">
+        <dc:Bounds x="128" y="62" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="r_done_di" bpmnElement="r_done">
+        <dc:Bounds x="288" y="22" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="escalate_di" bpmnElement="escalate">
+        <dc:Bounds x="256" y="118" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="r_escalated_di" bpmnElement="r_escalated">
+        <dc:Bounds x="416" y="140" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="rf1_di" bpmnElement="rf1">
+        <di:waypoint x="36" y="40"/>
+        <di:waypoint x="96" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="rf2_di" bpmnElement="rf2">
+        <di:waypoint x="196" y="40"/>
+        <di:waypoint x="288" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="rf3_di" bpmnElement="rf3">
+        <di:waypoint x="146" y="98"/>
+        <di:waypoint x="146" y="158"/>
+        <di:waypoint x="256" y="158"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="rf4_di" bpmnElement="rf4">
+        <di:waypoint x="356" y="158"/>
+        <di:waypoint x="416" y="158"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_message-process">
+    <bpmndi:BPMNPlane id="BPMNPlane_message-process" bpmnElement="message-process">
+      <bpmndi:BPMNShape id="m_start_di" bpmnElement="m_start">
+        <dc:Bounds x="0" y="0" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="await_confirmation_di" bpmnElement="await_confirmation">
+        <dc:Bounds x="96" y="0" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="m_end_di" bpmnElement="m_end">
+        <dc:Bounds x="192" y="0" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="mf1_di" bpmnElement="mf1">
+        <di:waypoint x="36" y="18"/>
+        <di:waypoint x="96" y="18"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="mf2_di" bpmnElement="mf2">
+        <di:waypoint x="132" y="18"/>
+        <di:waypoint x="192" y="18"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_connector-process">
+    <bpmndi:BPMNPlane id="BPMNPlane_connector-process" bpmnElement="connector-process">
+      <bpmndi:BPMNShape id="c_start_di" bpmnElement="c_start">
+        <dc:Bounds x="0" y="22" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="fetch_weather_di" bpmnElement="fetch_weather">
+        <dc:Bounds x="96" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="c_end_di" bpmnElement="c_end">
+        <dc:Bounds x="256" y="22" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="cf1_di" bpmnElement="cf1">
+        <di:waypoint x="36" y="40"/>
+        <di:waypoint x="96" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="cf2_di" bpmnElement="cf2">
+        <di:waypoint x="196" y="40"/>
+        <di:waypoint x="256" y="40"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_parallel-process">
+    <bpmndi:BPMNPlane id="BPMNPlane_parallel-process" bpmnElement="parallel-process">
+      <bpmndi:BPMNShape id="p_start_di" bpmnElement="p_start">
+        <dc:Bounds x="0" y="22" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="fork_di" bpmnElement="fork">
+        <dc:Bounds x="96" y="15" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="branch_a_di" bpmnElement="branch_a">
+        <dc:Bounds x="206" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="branch_b_di" bpmnElement="branch_b">
+        <dc:Bounds x="206" y="140" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="join_di" bpmnElement="join">
+        <dc:Bounds x="366" y="15" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="p_end_di" bpmnElement="p_end">
+        <dc:Bounds x="476" y="22" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="pf1_di" bpmnElement="pf1">
+        <di:waypoint x="36" y="40"/>
+        <di:waypoint x="96" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="pf2_di" bpmnElement="pf2">
+        <di:waypoint x="146" y="40"/>
+        <di:waypoint x="206" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="pf3_di" bpmnElement="pf3">
+        <di:waypoint x="121" y="65"/>
+        <di:waypoint x="121" y="180"/>
+        <di:waypoint x="206" y="180"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="pf4_di" bpmnElement="pf4">
+        <di:waypoint x="306" y="40"/>
+        <di:waypoint x="366" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="pf5_di" bpmnElement="pf5">
+        <di:waypoint x="256" y="140"/>
+        <di:waypoint x="256" y="110"/>
+        <di:waypoint x="391" y="110"/>
+        <di:waypoint x="391" y="65"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="pf6_di" bpmnElement="pf6">
+        <di:waypoint x="416" y="40"/>
+        <di:waypoint x="476" y="40"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

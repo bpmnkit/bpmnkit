@@ -1,0 +1,380 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_P",
+      "plane": {
+        "bpmnElement": "P",
+        "edges": [
+          {
+            "bpmnElement": "F1",
+            "id": "F1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 36,
+                "y": 90
+              },
+              {
+                "x": 96,
+                "y": 90
+              }
+            ]
+          },
+          {
+            "bpmnElement": "F2",
+            "id": "F2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 121,
+                "y": 115
+              },
+              {
+                "x": 121,
+                "y": 215
+              },
+              {
+                "x": 206,
+                "y": 215
+              }
+            ]
+          },
+          {
+            "bpmnElement": "F3",
+            "id": "F3_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 146,
+                "y": 90
+              },
+              {
+                "x": 231,
+                "y": 90
+              }
+            ]
+          },
+          {
+            "bpmnElement": "F4",
+            "id": "F4_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 281,
+                "y": 90
+              },
+              {
+                "x": 406,
+                "y": 90
+              }
+            ]
+          },
+          {
+            "bpmnElement": "SF1",
+            "id": "SF1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 481,
+                "y": 115
+              },
+              {
+                "x": 481,
+                "y": 230
+              },
+              {
+                "x": 566,
+                "y": 230
+              }
+            ]
+          },
+          {
+            "bpmnElement": "SF2",
+            "id": "SF2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 506,
+                "y": 90
+              },
+              {
+                "x": 566,
+                "y": 90
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_P",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 0,
+              "y": 72
+            },
+            "bpmnElement": "S",
+            "id": "S_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 96,
+              "y": 65
+            },
+            "bpmnElement": "G",
+            "id": "G_di",
+            "isMarkerVisible": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 206,
+              "y": 175
+            },
+            "bpmnElement": "A",
+            "id": "A_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 231,
+              "y": 65
+            },
+            "bpmnElement": "P1",
+            "id": "P1_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 320,
+              "width": 310,
+              "x": 406,
+              "y": 0
+            },
+            "bpmnElement": "Sub",
+            "id": "Sub_di",
+            "isExpanded": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 456,
+              "y": 65
+            },
+            "bpmnElement": "SubG",
+            "id": "SubG_di",
+            "isMarkerVisible": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 566,
+              "y": 190
+            },
+            "bpmnElement": "B",
+            "id": "B_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 566,
+              "y": 50
+            },
+            "bpmnElement": "C",
+            "id": "C_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "d",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "S",
+          "incoming": [],
+          "outgoing": [
+            "F1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "default": "F3",
+          "extensionElements": [],
+          "id": "G",
+          "incoming": [
+            "F1"
+          ],
+          "outgoing": [
+            "F2",
+            "F3"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "A",
+          "incoming": [
+            "F2"
+          ],
+          "outgoing": [],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "P1",
+          "incoming": [
+            "F3"
+          ],
+          "outgoing": [
+            "F4"
+          ],
+          "type": "parallelGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "default": "SF2",
+              "extensionElements": [],
+              "id": "SubG",
+              "incoming": [],
+              "outgoing": [
+                "SF1",
+                "SF2"
+              ],
+              "type": "exclusiveGateway",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "B",
+              "incoming": [
+                "SF1"
+              ],
+              "outgoing": [],
+              "type": "task",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "C",
+              "incoming": [
+                "SF2"
+              ],
+              "outgoing": [],
+              "type": "task",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "Sub",
+          "incoming": [
+            "F4"
+          ],
+          "outgoing": [],
+          "sequenceFlows": [
+            {
+              "conditionExpression": {
+                "attributes": {},
+                "text": "= ok"
+              },
+              "extensionElements": [],
+              "id": "SF1",
+              "sourceRef": "SubG",
+              "targetRef": "B",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "SF2",
+              "sourceRef": "SubG",
+              "targetRef": "C",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "type": "subProcess",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "P",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "F1",
+          "sourceRef": "S",
+          "targetRef": "G",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {},
+            "text": "= ok"
+          },
+          "extensionElements": [],
+          "id": "F2",
+          "sourceRef": "G",
+          "targetRef": "A",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "F3",
+          "sourceRef": "G",
+          "targetRef": "P1",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "F4",
+          "sourceRef": "P1",
+          "targetRef": "Sub",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

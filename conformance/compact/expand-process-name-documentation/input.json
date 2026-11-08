@@ -1,0 +1,18 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "s",
+          "type": "startEvent",
+          "documentation": "contract"
+        }
+      ],
+      "flows": [],
+      "name": "Named",
+      "documentation": "about"
+    }
+  ]
+}

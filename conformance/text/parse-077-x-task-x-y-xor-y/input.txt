@@ -1,0 +1,3 @@
+x[task X] > y[xor Y?]
+y >(Yes: prose here) z[end]
+y >(No: more prose) z

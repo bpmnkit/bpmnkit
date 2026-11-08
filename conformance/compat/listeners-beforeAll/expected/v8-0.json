@@ -1,0 +1,40 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "proc"
+      ],
+      "fixable": false,
+      "id": "compat/no-execution-listeners",
+      "message": "Process \"proc\" has execution listeners, which need Camunda 8.6 or newer; this model targets Camunda 8.0.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.6 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "compat/no-execution-listeners",
+      "message": "Service task \"T\" has execution listeners, which need Camunda 8.6 or newer; this model targets Camunda 8.0.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.6 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "compat/no-execution-listener-headers",
+      "message": "Service task \"T\" has an execution listener with headers, which need Camunda 8.10 or newer; this model targets Camunda 8.0.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.10 or newer (modeler:executionPlatformVersion), or remove it."
+    }
+  ]
+}

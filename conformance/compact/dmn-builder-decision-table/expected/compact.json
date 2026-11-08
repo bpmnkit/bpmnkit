@@ -1,0 +1,57 @@
+{
+  "decisions": [
+    {
+      "hitPolicy": "COLLECT",
+      "id": "Decision_credit",
+      "inputs": [
+        {
+          "expression": "score",
+          "id": "Input_0000002",
+          "label": "Score",
+          "typeRef": "number"
+        },
+        {
+          "expression": "country",
+          "id": "Input_0000004",
+          "label": "Country",
+          "typeRef": "string"
+        }
+      ],
+      "name": "Credit check",
+      "outputs": [
+        {
+          "id": "Output_0000006",
+          "label": "Flag",
+          "name": "flag",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "description": "low score",
+          "id": "DecisionRule_000000a",
+          "inputs": [
+            "< 500",
+            "\"DE\",\"AT\""
+          ],
+          "outputs": [
+            "\"review\""
+          ]
+        },
+        {
+          "id": "DecisionRule_000000e",
+          "inputs": [
+            "-",
+            "-"
+          ],
+          "outputs": [
+            "\"ok\""
+          ]
+        }
+      ]
+    }
+  ],
+  "id": "Definitions_000000f",
+  "inputData": [],
+  "name": "DRD"
+}

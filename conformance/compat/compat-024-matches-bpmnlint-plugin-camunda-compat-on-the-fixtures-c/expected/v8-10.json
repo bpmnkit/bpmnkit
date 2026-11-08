@@ -1,0 +1,280 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "pollingCatch"
+      ],
+      "fixable": false,
+      "id": "compat/subscription",
+      "message": "Message \"webhook\" used by Message intermediate catch event \"pollingCatch\" has no zeebe:subscription.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Add a zeebe:subscription with a correlationKey to the message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "contents"
+      ],
+      "fixable": false,
+      "id": "compat/duplicate-execution-listener-headers",
+      "message": "Properties of type <zeebe:Header> have property <key> with duplicate value of <channel>",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Remove the duplicate header from the execution listener."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badVars"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <1st> not allowed",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "The input target \"1st\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badVars"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <my variabl...> not allowed",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "The output target \"my variable name\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badVars"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <item-x> not allowed",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "The input element \"item-x\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badResult"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <a-b> not allowed",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "The result variable \"a-b\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badDecisionResult"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <2x> not allowed",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "The result variable \"2x\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badOutputCollection"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <all result...> not allowed",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "The output collection \"all results\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretsTask"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <source> uses deprecated secret expression format",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Reference the secret as =camunda.secrets.NAME."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretsTask"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <source> uses legacy secret expression format",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Reference the secret as =camunda.secrets.NAME."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretsTask"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <value> uses legacy secret expression format",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Reference the secret as =camunda.secrets.NAME."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretReceive"
+      ],
+      "fixable": false,
+      "id": "compat/secrets",
+      "message": "Property <correlationKey> uses deprecated secret expression format",
+      "processId": "contents",
+      "severity": "warning",
+      "suggestion": "Reference the secret as =camunda.secrets.NAME."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretLiteral"
+      ],
+      "fixable": false,
+      "id": "compat/unresolvable-secret-reference",
+      "message": "Property <source> must use a secret reference as an expression (e.g. =camunda.secrets.NAME), not as a string literal",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Write the reference as a FEEL expression, outside quotes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretQuoted"
+      ],
+      "fixable": false,
+      "id": "compat/unresolvable-secret-reference",
+      "message": "Property <source> must use a secret reference as an expression (e.g. =camunda.secrets.NAME), not as a string literal",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Write the reference as a FEEL expression, outside quotes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretProperty"
+      ],
+      "fixable": false,
+      "id": "compat/unresolvable-secret-reference",
+      "message": "Property <value> must use a secret reference as an expression (e.g. =camunda.secrets.NAME), not as a string literal",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Write the reference as a FEEL expression, outside quotes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretList"
+      ],
+      "fixable": false,
+      "id": "compat/unresolvable-secret-reference",
+      "message": "Property <source> must not assign a secret reference inside a list",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Map the secret to a variable of its own, and build the list from that variable."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretIfContext"
+      ],
+      "fixable": false,
+      "id": "compat/unresolvable-secret-reference",
+      "message": "Property <source> must not assign a secret reference inside a context returned by an if expression branch",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Map the secret to a variable of its own, and build the context from that variable."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "linkNoName"
+      ],
+      "fixable": false,
+      "id": "compat/link-event",
+      "message": "Element of type <bpmn:LinkEventDefinition> must have property <name>",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Name the link — a throw and its catch are paired by name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "linkCatchBlank"
+      ],
+      "fixable": false,
+      "id": "compat/link-event",
+      "message": "Element of type <bpmn:LinkEventDefinition> must have property <name>",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Name the link — a throw and its catch are paired by name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "linkCatch1"
+      ],
+      "fixable": false,
+      "id": "compat/link-event",
+      "message": "Property of type <bpmn:LinkEventDefinition> has property <name> with duplicate value of <L>",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Give each link catch event in the process its own name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "linkCatch2"
+      ],
+      "fixable": false,
+      "id": "compat/link-event",
+      "message": "Property of type <bpmn:LinkEventDefinition> has property <name> with duplicate value of <L>",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Give each link catch event in the process its own name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "contents"
+      ],
+      "fixable": false,
+      "id": "compat/no-loop",
+      "message": "Loop detected: loopA -> loopGateway -> loopB -> loopA",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Put a wait state in the loop — a service, user or receive task, or a catch event — or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "recursive"
+      ],
+      "fixable": false,
+      "id": "compat/no-loop",
+      "message": "Loop detected: recursiveCall -> recursiveStart -> recursiveSub -> recursiveSubStart -> recursiveCall",
+      "processId": "recursive",
+      "severity": "error",
+      "suggestion": "Put a wait state in the loop — a service, user or receive task, or a catch event — or remove it."
+    }
+  ]
+}

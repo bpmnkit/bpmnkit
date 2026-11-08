@@ -1,0 +1,412 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "contents"
+      ],
+      "fixable": false,
+      "id": "compat/no-execution-listeners",
+      "message": "Process \"contents\" has execution listeners, which need Camunda 8.6 or newer; this model targets Camunda 1.0.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.6 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "contents"
+      ],
+      "fixable": false,
+      "id": "compat/no-execution-listener-headers",
+      "message": "Process \"contents\" has an execution listener with headers, which need Camunda 8.10 or newer; this model targets Camunda 1.0.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.10 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "webhookStart"
+      ],
+      "fixable": false,
+      "id": "compat/no-zeebe-properties",
+      "message": "Message start event \"webhookStart\" has a zeebe:properties, which needs Camunda 8.1 or newer; this model targets Camunda 1.0.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.1 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "pollingCatch"
+      ],
+      "fixable": false,
+      "id": "compat/subscription",
+      "message": "Message \"webhook\" used by Message intermediate catch event \"pollingCatch\" has no zeebe:subscription.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Add a zeebe:subscription with a correlationKey to the message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "pollingCatch"
+      ],
+      "fixable": false,
+      "id": "compat/no-zeebe-properties",
+      "message": "Message intermediate catch event \"pollingCatch\" has a zeebe:properties, which needs Camunda 8.1 or newer; this model targets Camunda 1.0.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.1 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "loopA"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Manual task \"loopA\" needs Camunda 1.1 or newer; this model targets Camunda 1.0.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 1.1 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "loopB"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"loopB\" needs Camunda 8.2 or newer; this model targets Camunda 1.0.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "feelTimer"
+      ],
+      "fixable": false,
+      "id": "compat/timer",
+      "message": "Timer intermediate catch event \"feelTimer\" uses timeDate, which needs Camunda 8.3 or newer on this event; this model targets Camunda 1.0.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badResult"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Script task \"badResult\" needs Camunda 1.1 or newer; this model targets Camunda 1.0.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 1.1 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badDecisionResult"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Business rule task \"badDecisionResult\" needs Camunda 1.1 or newer; this model targets Camunda 1.0.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 1.1 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badOutputCollection"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Ad-hoc sub-process \"badOutputCollection\" needs Camunda 8.7 or newer; this model targets Camunda 1.0.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.7 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "adHocInner"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"adHocInner\" needs Camunda 8.2 or newer; this model targets Camunda 1.0.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretsTask"
+      ],
+      "fixable": false,
+      "id": "compat/no-zeebe-properties",
+      "message": "Service task \"secretsTask\" has a zeebe:properties, which needs Camunda 8.1 or newer; this model targets Camunda 1.0.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.1 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "secretProperty"
+      ],
+      "fixable": false,
+      "id": "compat/no-zeebe-properties",
+      "message": "Service task \"secretProperty\" has a zeebe:properties, which needs Camunda 8.1 or newer; this model targets Camunda 1.0.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.1 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "linkNoName"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Link intermediate throw event \"linkNoName\" needs Camunda 8.2 or newer; this model targets Camunda 1.0.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "linkCatch1"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Link intermediate catch event \"linkCatch1\" needs Camunda 8.2 or newer; this model targets Camunda 1.0.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "linkCatch2"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Link intermediate catch event \"linkCatch2\" needs Camunda 8.2 or newer; this model targets Camunda 1.0.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "linkCatchBlank"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Link intermediate catch event \"linkCatchBlank\" needs Camunda 8.2 or newer; this model targets Camunda 1.0.",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "feelNew"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <random number> requires Camunda >=8.2",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or do without random number()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "feelNew"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <uuid> requires Camunda >=8.6",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.6 or newer (modeler:executionPlatformVersion), or do without uuid()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "feelNew"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <from json> requires Camunda >=8.9",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.9 or newer (modeler:executionPlatformVersion), or do without from json()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "feelNew"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <to base64> requires Camunda >=8.6",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.6 or newer (modeler:executionPlatformVersion), or do without to base64()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "feelNew"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <partition> requires Camunda >=8.7",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.7 or newer (modeler:executionPlatformVersion), or do without partition()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "feelTimer"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <last day of month> requires Camunda >=8.2",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or do without last day of month()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badVars"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <1st> not allowed",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "The input target \"1st\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badVars"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <my variabl...> not allowed",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "The output target \"my variable name\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badVars"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <item-x> not allowed",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "The input element \"item-x\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badResult"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <a-b> not allowed",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "The result variable \"a-b\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badDecisionResult"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <2x> not allowed",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "The result variable \"2x\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "badOutputCollection"
+      ],
+      "fixable": false,
+      "id": "compat/variable-name",
+      "message": "Property value of <all result...> not allowed",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "The output collection \"all results\" is not a variable name: use letters, digits and underscores, not starting with a digit, with dots between nested names."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "toLoopB"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <is blank> requires Camunda >=8.8",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without is blank()."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "contents"
+      ],
+      "fixable": false,
+      "id": "compat/no-loop",
+      "message": "Loop detected: loopA -> loopGateway -> loopB -> loopA",
+      "processId": "contents",
+      "severity": "error",
+      "suggestion": "Put a wait state in the loop — a service, user or receive task, or a catch event — or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "waitsTask"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Task \"waitsTask\" needs Camunda 8.2 or newer; this model targets Camunda 1.0.",
+      "processId": "waits",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "recursive"
+      ],
+      "fixable": false,
+      "id": "compat/no-loop",
+      "message": "Loop detected: recursiveCall -> recursiveStart -> recursiveSub -> recursiveSubStart -> recursiveCall",
+      "processId": "recursive",
+      "severity": "error",
+      "suggestion": "Put a wait state in the loop — a service, user or receive task, or a catch event — or remove it."
+    }
+  ]
+}

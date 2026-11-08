@@ -1,0 +1,56 @@
+{
+  "decisions": [
+    {
+      "id": "d1",
+      "inputs": [
+        {
+          "expression": "a < b && c > \"d\"",
+          "id": "i1",
+          "label": "a < b",
+          "typeRef": "string"
+        }
+      ],
+      "name": "Tom & Jerry's AB é &unknown; 100%",
+      "outputs": [
+        {
+          "id": "o1",
+          "label": "single \"quoted\"",
+          "name": "result"
+        }
+      ],
+      "rules": [
+        {
+          "description": "Uses <, >, & and a CDATA <tag> & more end",
+          "id": "r1",
+          "inputs": [
+            "<= 10 and >= 2"
+          ],
+          "outputs": [
+            "\"x\" + \"<y>\""
+          ]
+        },
+        {
+          "id": "r2",
+          "inputs": [
+            "\n          multi\n          line   spaced\n        "
+          ],
+          "outputs": [
+            "\"tab\tnewline\ndone\""
+          ]
+        },
+        {
+          "id": "r3",
+          "inputs": [
+            "\"日本語 ünïcode 😀\""
+          ],
+          "outputs": [
+            ""
+          ]
+        }
+      ]
+    }
+  ],
+  "id": "Definitions_text",
+  "inputData": [],
+  "name": "Fish & \"Chips\" <ok>"
+}

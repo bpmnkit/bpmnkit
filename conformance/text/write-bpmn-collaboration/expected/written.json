@@ -1,0 +1,7 @@
+{
+  "aliases": {
+    "need_identified": "Start_buyer",
+    "ordered": "End_buyer",
+    "place_order": "Task_place_order"
+  }
+}

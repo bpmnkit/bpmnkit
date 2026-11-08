@@ -1,0 +1,1 @@
+s[start] > g[eventgw] > w[catch:timer 5 minutes] > e[end Done]

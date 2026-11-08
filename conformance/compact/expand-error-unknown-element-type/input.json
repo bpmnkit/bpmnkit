@@ -1,0 +1,15 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "a",
+          "type": "frobnicator"
+        }
+      ],
+      "flows": []
+    }
+  ]
+}

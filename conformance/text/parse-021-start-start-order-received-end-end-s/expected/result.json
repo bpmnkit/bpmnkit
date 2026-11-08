@@ -1,0 +1,42 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "order received",
+            "type": "startEvent"
+          },
+          {
+            "id": "end",
+            "name": "success Charge completed",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "end"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 1,
+      "message": "unknown trigger \"order\" for \"start\"; read as part of the name"
+    },
+    {
+      "line": 1,
+      "message": "unknown trigger \"success\" for \"end\"; read as part of the name"
+    }
+  ],
+  "questions": []
+}

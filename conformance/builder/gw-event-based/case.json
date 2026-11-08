@@ -1,0 +1,11 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["eventBasedGateway","eg",{"name":"Wait for"}],
+		["branch","msg",{"$ops":[["intermediateCatchEvent","m",{"messageName":"reply","correlationKey":"=id"}],["serviceTask","handle",{"name":"handle","taskType":"handle"}],["endEvent","e1"]]}],
+		["branch","timeout",{"$ops":[["intermediateCatchEvent","t",{"timerDuration":"PT1H"}],["endEvent","e2"]]}],
+		["build"]
+	]
+}

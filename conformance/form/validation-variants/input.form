@@ -1,0 +1,70 @@
+{
+  "id": "f",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "type": "textfield",
+      "id": "a",
+      "label": "A",
+      "key": "a",
+      "validate": {}
+    },
+    {
+      "type": "textfield",
+      "id": "b",
+      "label": "B",
+      "key": "b",
+      "validate": {
+        "required": "yes",
+        "minLength": "3",
+        "maxLength": 9
+      }
+    },
+    {
+      "type": "number",
+      "id": "c",
+      "label": "C",
+      "key": "c",
+      "validate": {
+        "required": true,
+        "min": 0,
+        "max": 10
+      }
+    },
+    {
+      "type": "textarea",
+      "id": "d",
+      "label": "D",
+      "key": "d",
+      "validate": {
+        "pattern": "^a",
+        "minLength": 1.5
+      }
+    },
+    {
+      "type": "select",
+      "id": "e",
+      "label": "E",
+      "key": "e",
+      "validate": null
+    },
+    {
+      "type": "datetime",
+      "id": "f",
+      "key": "f",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "type": "taglist",
+      "id": "g",
+      "label": "G",
+      "key": "g",
+      "validate": {
+        "required": true
+      }
+    }
+  ]
+}

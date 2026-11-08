@@ -1,0 +1,204 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "exporter": "@bpmnkit/core",
+  "exporterVersion": "0.0.23",
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "s",
+          "incoming": [],
+          "outgoing": [
+            "Flow_s_g"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "g",
+          "incoming": [
+            "Flow_s_g"
+          ],
+          "outgoing": [
+            "Flow_g_g2",
+            "Flow_g_end"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "g2",
+          "incoming": [
+            "Flow_g_g2"
+          ],
+          "outgoing": [
+            "Flow_g2_t1",
+            "Flow_g2_t2"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "t"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "t1",
+          "incoming": [
+            "Flow_g2_t1"
+          ],
+          "name": "t1",
+          "outgoing": [
+            "Flow_t1_g2_join"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "t"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "t2",
+          "incoming": [
+            "Flow_g2_t2"
+          ],
+          "name": "t2",
+          "outgoing": [
+            "Flow_t2_g2_join"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "end",
+          "incoming": [
+            "Flow_g_end",
+            "Flow_g2_join_end"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "g2_join",
+          "incoming": [
+            "Flow_t1_g2_join",
+            "Flow_t2_g2_join"
+          ],
+          "outgoing": [
+            "Flow_g2_join_end"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "p",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_s_g",
+          "sourceRef": "s",
+          "targetRef": "g",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_g_g2",
+          "name": "a",
+          "sourceRef": "g",
+          "targetRef": "g2",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_g2_t1",
+          "name": "x",
+          "sourceRef": "g2",
+          "targetRef": "t1",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_g2_t2",
+          "name": "y",
+          "sourceRef": "g2",
+          "targetRef": "t2",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_t1_g2_join",
+          "sourceRef": "t1",
+          "targetRef": "g2_join",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_t2_g2_join",
+          "sourceRef": "t2",
+          "targetRef": "g2_join",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_g_end",
+          "name": "b",
+          "sourceRef": "g",
+          "targetRef": "end",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_g2_join_end",
+          "sourceRef": "g2_join",
+          "targetRef": "end",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.10.0"
+  }
+}

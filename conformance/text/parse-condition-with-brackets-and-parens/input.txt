@@ -1,0 +1,3 @@
+s[start] > g[xor Check]
+g >(Has items: count(items[price > 10]) > 0) a[end]
+g >(None: default) b[end]

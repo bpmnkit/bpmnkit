@@ -1,0 +1,1 @@
+components[0]: radio must have a 'key' string

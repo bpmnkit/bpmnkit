@@ -1,0 +1,367 @@
+{
+  "report": {
+    "findings": [
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "outsideTool",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=fromAi(toolCall.x, \"x\")\" (to \"x\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "plainTool",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=fromAi(toolCall.x)\" (to \"x\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:properties",
+        "elementId": "tools",
+        "elementType": "adHocSubProcess",
+        "message": "zeebe:properties has no Camunda 7 equivalent and was dropped.",
+        "processId": "agents",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "toolGood",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=fromAi(toolCall.city, \"The city\", \"string\")\" (to \"city\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "toolGood",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=fromAi(value: toolCall.days, description: \"Days\")\" (to \"days\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:output",
+        "elementId": "toolGood",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=weather\" (to \"toolCallResult\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "toolUnmapped",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=fromAi(\"city\")\" (to \"a\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "toolUnmapped",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=fromAi(city, 1)\" (to \"b\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "toolUnmapped",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=fromAi()\" (to \"c\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:output",
+        "elementId": "toolUnmapped",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=r\" (to \"result\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "toolCasing",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=FromAI(toolCall.x)\" (to \"a\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "toolCasing",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=fromAi(toolCall.a.b) + fromAi(other.x)\" (to \"b\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "toolCasing",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=fromAi(if x then toolCall.x else toolCall.y)\" (to \"c\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "toolCasing",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=fromAi(toolCall[\"x\"], null)\" (to \"d\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "toolCasing",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=fromAi(null) + fromAi(1 + 2) + fromAi(-1)\" (to \"e\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "toolCasing",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=fromAi([1]) + fromAi((toolCall.p)) + fromAi(toolCall.q, (\"d\"))\" (to \"f\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:output",
+        "elementId": "toolCasing",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=r\" (to \"ToolCallResult\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "toolDuplicateKey",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=fromAi(toolCall.q)\" (to \"a\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "toolDuplicateKey",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=fromAi(toolCall.q, \"again\")\" (to \"b\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:output",
+        "elementId": "toolDuplicateKey",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=r\" (to \"toolCallResult\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:output",
+        "elementId": "toolDuplicateKey",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=r\" (to \"toolcallresult.extra\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:output",
+        "elementId": "toolOutputFromAi",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=fromAi(toolCall.o)\" (to \"toolCallResult\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:output",
+        "elementId": "chainA",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=r\" (to \"toolCallResult\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "chainB",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=fromAi(toolCall.y)\" (to \"y\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:output",
+        "elementId": "chainB",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=r\" (to \"toolCallResult\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:output",
+        "elementId": "chainB",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=context put(toolCallResult, \"b\", 1)\" (to \"toolCallResult\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:script",
+        "elementId": "chainC",
+        "elementType": "scriptTask",
+        "message": "zeebe:script has no Camunda 7 equivalent and was dropped.",
+        "processId": "agents",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:output",
+        "elementId": "branchA",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=a\" (to \"toolCallResult\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:taskHeaders",
+        "elementId": "branchB",
+        "elementType": "serviceTask",
+        "message": "zeebe:taskHeaders has no Camunda 7 equivalent and was dropped.",
+        "processId": "agents",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:input",
+        "elementId": "toolSubStep",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=fromAi(toolCall.k)\" (to \"k\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:taskHeaders",
+        "elementId": "toolSubStep",
+        "elementType": "serviceTask",
+        "message": "zeebe:taskHeaders has no Camunda 7 equivalent and was dropped.",
+        "processId": "agents",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:output",
+        "elementId": "toolBoundary",
+        "elementType": "serviceTask",
+        "message": "FEEL expression \"=a\" (to \"toolCallResult\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "zeebe:output",
+        "elementId": "toolBoundaryError",
+        "elementType": "boundaryEvent",
+        "message": "FEEL expression \"=e\" (to \"toolCallResult\") kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the parameter as a JUEL expression."
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "branchToA",
+        "elementType": "element",
+        "message": "FEEL condition \"=fromAi(toolCall.z) = 1\" kept as-is; Camunda 7 evaluates JUEL.",
+        "processId": "agents",
+        "severity": "manual",
+        "suggestion": "Rewrite the condition as a JUEL expression."
+      },
+      {
+        "applied": false,
+        "construct": "connector",
+        "elementId": "legacyAgent",
+        "elementType": "adHocSubProcess",
+        "message": "Connector \"agent\" has no Camunda 7 runtime; it becomes a plain external task.",
+        "processId": "agents",
+        "severity": "unsupported",
+        "suggestion": "Implement an external task worker for this topic."
+      },
+      {
+        "applied": false,
+        "construct": "zeebe:agentDefinition",
+        "elementId": "definedAgent",
+        "elementType": "adHocSubProcess",
+        "message": "zeebe:agentDefinition has no Camunda 7 equivalent and was dropped.",
+        "processId": "agents",
+        "severity": "unsupported",
+        "suggestion": "Reimplement the behavior in Camunda 7 or accept the difference."
+      }
+    ]
+  },
+  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_agents\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"agents\" isExecutable=\"true\">\n    <bpmn:serviceTask id=\"outsideTool\" camunda:type=\"external\" camunda:topic=\"t\">\n      <bpmn:extensionElements>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"x\">=fromAi(toolCall.x, \"x\")</camunda:inputParameter>\n        </camunda:inputOutput>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n    <bpmn:adHocSubProcess id=\"plainAdHoc\" name=\"Plain\">\n      <bpmn:serviceTask id=\"plainTool\" camunda:type=\"external\" camunda:topic=\"t\">\n        <bpmn:extensionElements>\n          <camunda:inputOutput>\n            <camunda:inputParameter name=\"x\">=fromAi(toolCall.x)</camunda:inputParameter>\n          </camunda:inputOutput>\n        </bpmn:extensionElements>\n      </bpmn:serviceTask>\n    </bpmn:adHocSubProcess>\n    <bpmn:adHocSubProcess id=\"tools\" name=\"Tools\">\n      <bpmn:serviceTask id=\"toolGood\" camunda:type=\"external\" camunda:topic=\"t\">\n        <bpmn:documentation>Looks up the weather.</bpmn:documentation>\n        <bpmn:extensionElements>\n          <camunda:inputOutput>\n            <camunda:inputParameter name=\"city\">=fromAi(toolCall.city, \"The city\", \"string\")</camunda:inputParameter>\n            <camunda:inputParameter name=\"days\">=fromAi(value: toolCall.days, description: \"Days\")</camunda:inputParameter>\n            <camunda:outputParameter name=\"toolCallResult\">=weather</camunda:outputParameter>\n          </camunda:inputOutput>\n        </bpmn:extensionElements>\n      </bpmn:serviceTask>\n      <bpmn:serviceTask id=\"toolNoResult\" camunda:type=\"external\" camunda:topic=\"t\"/>\n      <bpmn:serviceTask id=\"toolUnmapped\" camunda:type=\"external\" camunda:topic=\"t\">\n        <bpmn:extensionElements>\n          <camunda:inputOutput>\n            <camunda:inputParameter name=\"a\">=fromAi(\"city\")</camunda:inputParameter>\n            <camunda:inputParameter name=\"b\">=fromAi(city, 1)</camunda:inputParameter>\n            <camunda:inputParameter name=\"c\">=fromAi()</camunda:inputParameter>\n            <camunda:outputParameter name=\"result\">=r</camunda:outputParameter>\n          </camunda:inputOutput>\n        </bpmn:extensionElements>\n      </bpmn:serviceTask>\n      <bpmn:serviceTask id=\"toolCasing\" camunda:type=\"external\" camunda:topic=\"t\">\n        <bpmn:extensionElements>\n          <camunda:inputOutput>\n            <camunda:inputParameter name=\"a\">=FromAI(toolCall.x)</camunda:inputParameter>\n            <camunda:inputParameter name=\"b\">=fromAi(toolCall.a.b) + fromAi(other.x)</camunda:inputParameter>\n            <camunda:inputParameter name=\"c\">=fromAi(if x then toolCall.x else toolCall.y)</camunda:inputParameter>\n            <camunda:inputParameter name=\"d\">=fromAi(toolCall[\"x\"], null)</camunda:inputParameter>\n            <camunda:inputParameter name=\"e\">=fromAi(null) + fromAi(1 + 2) + fromAi(-1)</camunda:inputParameter>\n            <camunda:inputParameter name=\"f\">=fromAi([1]) + fromAi((toolCall.p)) + fromAi(toolCall.q, (\"d\"))</camunda:inputParameter>\n            <camunda:outputParameter name=\"ToolCallResult\">=r</camunda:outputParameter>\n          </camunda:inputOutput>\n        </bpmn:extensionElements>\n      </bpmn:serviceTask>\n      <bpmn:serviceTask id=\"toolDuplicateKey\" camunda:type=\"external\" camunda:topic=\"t\">\n        <bpmn:extensionElements>\n          <camunda:inputOutput>\n            <camunda:inputParameter name=\"a\">=fromAi(toolCall.q)</camunda:inputParameter>\n            <camunda:inputParameter name=\"b\">=fromAi(toolCall.q, \"again\")</camunda:inputParameter>\n            <camunda:outputParameter name=\"toolCallResult\">=r</camunda:outputParameter>\n            <camunda:outputParameter name=\"toolcallresult.extra\">=r</camunda:outputParameter>\n          </camunda:inputOutput>\n        </bpmn:extensionElements>\n      </bpmn:serviceTask>\n      <bpmn:serviceTask id=\"toolOutputFromAi\" camunda:type=\"external\" camunda:topic=\"t\">\n        <bpmn:extensionElements>\n          <camunda:inputOutput>\n            <camunda:outputParameter name=\"toolCallResult\">=fromAi(toolCall.o)</camunda:outputParameter>\n          </camunda:inputOutput>\n        </bpmn:extensionElements>\n      </bpmn:serviceTask>\n      <bpmn:serviceTask id=\"chainA\" camunda:type=\"external\" camunda:topic=\"t\" name=\"Fetch\">\n        <bpmn:extensionElements>\n          <camunda:inputOutput>\n            <camunda:outputParameter name=\"toolCallResult\">=r</camunda:outputParameter>\n          </camunda:inputOutput>\n        </bpmn:extensionElements>\n        <bpmn:outgoing>chainAtoB</bpmn:outgoing>\n      </bpmn:serviceTask>\n      <bpmn:serviceTask id=\"chainB\" camunda:type=\"external\" camunda:topic=\"t\">\n        <bpmn:extensionElements>\n          <camunda:inputOutput>\n            <camunda:inputParameter name=\"y\">=fromAi(toolCall.y)</camunda:inputParameter>\n            <camunda:outputParameter name=\"toolCallResult\">=r</camunda:outputParameter>\n            <camunda:outputParameter name=\"toolCallResult\">=context put(toolCallResult, \"b\", 1)</camunda:outputParameter>\n          </camunda:inputOutput>\n        </bpmn:extensionElements>\n        <bpmn:incoming>chainAtoB</bpmn:incoming>\n        <bpmn:outgoing>chainBtoC</bpmn:outgoing>\n      </bpmn:serviceTask>\n      <bpmn:scriptTask id=\"chainC\">\n        <bpmn:incoming>chainBtoC</bpmn:incoming>\n      </bpmn:scriptTask>\n      <bpmn:serviceTask id=\"branch\" camunda:type=\"external\" camunda:topic=\"t\">\n        <bpmn:outgoing>branchToA</bpmn:outgoing>\n        <bpmn:outgoing>branchToB</bpmn:outgoing>\n      </bpmn:serviceTask>\n      <bpmn:serviceTask id=\"branchA\" camunda:type=\"external\" camunda:topic=\"t\">\n        <bpmn:extensionElements>\n          <camunda:inputOutput>\n            <camunda:outputParameter name=\"toolCallResult\">=a</camunda:outputParameter>\n          </camunda:inputOutput>\n        </bpmn:extensionElements>\n        <bpmn:incoming>branchToA</bpmn:incoming>\n      </bpmn:serviceTask>\n      <bpmn:serviceTask id=\"branchB\" camunda:type=\"external\" camunda:topic=\"t\">\n        <bpmn:incoming>branchToB</bpmn:incoming>\n      </bpmn:serviceTask>\n      <bpmn:subProcess id=\"toolSub\">\n        <bpmn:startEvent id=\"toolSubStart\">\n          <bpmn:outgoing>toolSubToStep</bpmn:outgoing>\n        </bpmn:startEvent>\n        <bpmn:serviceTask id=\"toolSubStep\" camunda:type=\"external\" camunda:topic=\"t\">\n          <bpmn:extensionElements>\n            <camunda:inputOutput>\n              <camunda:inputParameter name=\"k\">=fromAi(toolCall.k)</camunda:inputParameter>\n            </camunda:inputOutput>\n          </bpmn:extensionElements>\n          <bpmn:incoming>toolSubToStep</bpmn:incoming>\n        </bpmn:serviceTask>\n        <bpmn:sequenceFlow id=\"toolSubToStep\" sourceRef=\"toolSubStart\" targetRef=\"toolSubStep\"/>\n      </bpmn:subProcess>\n      <bpmn:serviceTask id=\"toolBoundary\" camunda:type=\"external\" camunda:topic=\"t\">\n        <bpmn:extensionElements>\n          <camunda:inputOutput>\n            <camunda:outputParameter name=\"toolCallResult\">=a</camunda:outputParameter>\n          </camunda:inputOutput>\n        </bpmn:extensionElements>\n      </bpmn:serviceTask>\n      <bpmn:boundaryEvent id=\"toolBoundaryError\" attachedToRef=\"toolBoundary\">\n        <bpmn:extensionElements>\n          <camunda:inputOutput>\n            <camunda:outputParameter name=\"toolCallResult\">=e</camunda:outputParameter>\n          </camunda:inputOutput>\n        </bpmn:extensionElements>\n        <bpmn:errorEventDefinition id=\"toolBoundaryErrorDef\"/>\n      </bpmn:boundaryEvent>\n      <bpmn:sequenceFlow id=\"chainAtoB\" sourceRef=\"chainA\" targetRef=\"chainB\"/>\n      <bpmn:sequenceFlow id=\"chainBtoC\" sourceRef=\"chainB\" targetRef=\"chainC\"/>\n      <bpmn:sequenceFlow id=\"branchToA\" sourceRef=\"branch\" targetRef=\"branchA\">\n        <bpmn:conditionExpression xsi:type=\"bpmn:tFormalExpression\">=fromAi(toolCall.z) = 1</bpmn:conditionExpression>\n      </bpmn:sequenceFlow>\n      <bpmn:sequenceFlow id=\"branchToB\" sourceRef=\"branch\" targetRef=\"branchB\"/>\n    </bpmn:adHocSubProcess>\n    <bpmn:adHocSubProcess id=\"legacyAgent\" camunda:type=\"external\" camunda:topic=\"agent\">\n      <bpmn:serviceTask id=\"legacyTool\" camunda:type=\"external\" camunda:topic=\"t\"/>\n    </bpmn:adHocSubProcess>\n    <bpmn:adHocSubProcess id=\"forkedAgent\" camunda:type=\"external\" camunda:topic=\"io.camunda.agenticai:aiagent-job-worker:1\">\n      <bpmn:serviceTask id=\"forkedTool\" camunda:type=\"external\" camunda:topic=\"t\"/>\n    </bpmn:adHocSubProcess>\n    <bpmn:adHocSubProcess id=\"definedAgent\">\n      <bpmn:serviceTask id=\"definedTool\" camunda:type=\"external\" camunda:topic=\"t\"/>\n    </bpmn:adHocSubProcess>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+}

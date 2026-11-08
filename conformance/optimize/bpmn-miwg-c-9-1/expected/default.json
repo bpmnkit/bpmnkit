@@ -1,0 +1,62 @@
+{
+  "findings": [
+    {
+      "category": "pattern",
+      "elementIds": [
+        "UserTask_CallCustomer"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Call customer\" has no timer boundary event.",
+      "processId": "requestDocument_en",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "StartEvent_DocumentRequested"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Document requested\" has no documentation describing expected input variables.",
+      "processId": "requestDocument_en",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "UserTask_CallCustomer"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Call customer\" has no zeebe:formDefinition.",
+      "processId": "requestDocument_en",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 1,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 0,
+      "naming": 0,
+      "pattern": 2,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 0,
+      "info": 0,
+      "warning": 3
+    },
+    "total": 3
+  }
+}

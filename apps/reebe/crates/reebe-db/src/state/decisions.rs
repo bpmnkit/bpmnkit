@@ -3,8 +3,8 @@
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 use crate::pool::DbPool;
-use serde::{Deserialize, Serialize};
 use crate::Result;
+use serde::{Deserialize, Serialize};
 
 /// A deployed DMN resource: its `definitions` (the decision requirements graph).
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -43,7 +43,8 @@ pub struct DecisionRepository<'a> {
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
-const DECISION_COLUMNS: &str = "d.key, d.decision_id, d.name, d.version, d.decision_requirements_key, \
+const DECISION_COLUMNS: &str =
+    "d.key, d.decision_id, d.name, d.version, d.decision_requirements_key, \
      r.drg_id, d.tenant_id, d.deployment_key, d.resource_name, d.dmn_xml";
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
@@ -71,7 +72,11 @@ impl<'a> DecisionRepository<'a> {
         Ok(())
     }
 
-    pub async fn latest_requirements(&self, drg_id: &str, tenant_id: &str) -> Result<Option<DecisionRequirements>> {
+    pub async fn latest_requirements(
+        &self,
+        drg_id: &str,
+        tenant_id: &str,
+    ) -> Result<Option<DecisionRequirements>> {
         use sqlx::Row;
         let row = sqlx::query(
             r#"SELECT key, drg_id, name, version, tenant_id, deployment_key, resource_name, dmn_xml
@@ -114,7 +119,11 @@ impl<'a> DecisionRepository<'a> {
         Ok(())
     }
 
-    pub async fn latest_decision(&self, decision_id: &str, tenant_id: &str) -> Result<Option<DecisionDefinition>> {
+    pub async fn latest_decision(
+        &self,
+        decision_id: &str,
+        tenant_id: &str,
+    ) -> Result<Option<DecisionDefinition>> {
         let row = sqlx::query(&format!(
             "SELECT {DECISION_COLUMNS} FROM decision_definitions d \
              LEFT JOIN decision_requirements r ON r.key = d.decision_requirements_key \
@@ -148,7 +157,9 @@ fn row_to_decision(r: crate::DbRow) -> DecisionDefinition {
         decision_id: r.get("decision_id"),
         name: r.get("name"),
         version: r.get("version"),
-        decision_requirements_key: r.get::<Option<i64>, _>("decision_requirements_key").unwrap_or(-1),
+        decision_requirements_key: r
+            .get::<Option<i64>, _>("decision_requirements_key")
+            .unwrap_or(-1),
         decision_requirements_id: r.get::<Option<String>, _>("drg_id").unwrap_or_default(),
         tenant_id: r.get("tenant_id"),
         deployment_key: r.get("deployment_key"),

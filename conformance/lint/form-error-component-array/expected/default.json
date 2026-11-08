@@ -1,0 +1,10 @@
+{
+  "findings": [
+    {
+      "fix": "Write each component as { \"id\": \"…\", \"type\": \"…\", … }. (agent-cards/form.md#traps)",
+      "message": "components[0] is not an object.",
+      "rule": "form/invalid-schema",
+      "severity": "error"
+    }
+  ]
+}

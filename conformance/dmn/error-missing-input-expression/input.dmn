@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" id="D" name="n" namespace="urn:e">
+  <decision id="d1" name="No input expression">
+    <decisionTable id="t1">
+      <input id="i1" label="x"/>
+      <output id="o1" name="y"/>
+    </decisionTable>
+  </decision>
+</definitions>

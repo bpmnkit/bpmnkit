@@ -1,0 +1,25 @@
+{
+  "findings": [
+    {
+      "elementId": "n2",
+      "fix": "Give each field its own key; two fields on one key overwrite each other's value on submit. (agent-cards/form.md#traps)",
+      "message": "Component \"n2\" binds key \"n\", which another field already binds.",
+      "rule": "form/duplicate-key",
+      "severity": "error"
+    },
+    {
+      "elementId": "n3",
+      "fix": "Give each field its own key; two fields on one key overwrite each other's value on submit. (agent-cards/form.md#traps)",
+      "message": "Component \"n3\" binds key \"n\", which another field already binds.",
+      "rule": "form/duplicate-key",
+      "severity": "error"
+    },
+    {
+      "elementId": "n10",
+      "fix": "Use one of text, textfield, textarea, number, datetime, select, radio, checkbox, checklist, taglist, button, group, dynamiclist, iframe, image, table, html, separator, spacer, expression, filepicker, documentPreview — unless \"future\" is a custom component registered in your Tasklist. (agent-cards/form.md#traps)",
+      "message": "Component \"n10\" has type \"future\", which form-js does not provide.",
+      "rule": "form/unknown-type",
+      "severity": "warning"
+    }
+  ]
+}

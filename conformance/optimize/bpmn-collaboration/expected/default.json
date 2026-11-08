@@ -1,0 +1,96 @@
+{
+  "findings": [
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Task_place_order"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Place order\" has no output variable mapping.",
+      "processId": "Process_buyer",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Start_buyer"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Need identified\" has no documentation describing expected input variables.",
+      "processId": "Process_buyer",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "Start_seller"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"Start_seller\" has no name.",
+      "processId": "Process_seller",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "End_seller"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"End_seller\" has no name.",
+      "processId": "Process_seller",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Start_seller"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Start_seller\" has no documentation describing expected input variables.",
+      "processId": "Process_seller",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"Process_seller\" is not marked executable.",
+      "processId": "Process_seller",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 1,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 0,
+      "naming": 2,
+      "pattern": 3,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 1,
+      "info": 2,
+      "warning": 3
+    },
+    "total": 6
+  }
+}

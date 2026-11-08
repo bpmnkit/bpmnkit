@@ -1,0 +1,63 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "children": {
+              "elements": [
+                {
+                  "id": "t",
+                  "jobType": "t",
+                  "name": "T",
+                  "type": "serviceTask"
+                }
+              ],
+              "flows": []
+            },
+            "id": "agent",
+            "name": "A",
+            "type": "adHocSubProcess"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "agent"
+          },
+          {
+            "from": "agent",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "read inside=agnet on \"t\" as inside=\"agent\", the only ad-hoc sub-process"
+  ],
+  "problems": [],
+  "questions": [
+    {
+      "draft": "Move \"T\" to ",
+      "elementId": "t",
+      "options": [],
+      "text": "inside=agnet on \"T\" names no ad-hoc sub-process, so it was put in \"A\", the only one. Is that where it belongs?"
+    }
+  ]
+}

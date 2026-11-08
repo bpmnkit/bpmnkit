@@ -53,7 +53,7 @@ export interface Camunda7Report {
 }
 
 export interface Camunda7ConvertOptions {
-	/** Written as `modeler:executionPlatformVersion`. Default `"8.8.0"`. */
+	/** Written as `modeler:executionPlatformVersion`. Default `"8.10.0"`. */
 	executionPlatformVersion?: string
 	/**
 	 * Ignored. Kept for compatibility: earlier versions read `camunda:` attributes
@@ -68,10 +68,10 @@ export interface Camunda7Conversion {
 	report: Camunda7Report
 }
 
-const CAMUNDA7_NS = "http://camunda.org/schema/1.0/bpmn"
-const ZEEBE_NS = "http://camunda.org/schema/zeebe/1.0"
-const MODELER_NS = "http://camunda.org/schema/modeler/1.0"
-const DEFAULT_PLATFORM_VERSION = "8.8.0"
+export const CAMUNDA7_NS = "http://camunda.org/schema/1.0/bpmn"
+export const ZEEBE_NS = "http://camunda.org/schema/zeebe/1.0"
+export const MODELER_NS = "http://camunda.org/schema/modeler/1.0"
+const DEFAULT_PLATFORM_VERSION = "8.10.0"
 
 /** Something that can carry Camunda 7 attributes and extension elements. */
 interface Owner {
@@ -1185,7 +1185,10 @@ class Converter {
 		for (const listener of this.exts(owner, "taskListener")) {
 			this.keepExt(listener)
 			const event = listener.attributes.event ?? "create"
-			const c8Event = TASK_LISTENER_EVENTS[event]
+			// Own keys only: an event named `constructor` is not a listener event.
+			const c8Event = Object.hasOwn(TASK_LISTENER_EVENTS, event)
+				? TASK_LISTENER_EVENTS[event]
+				: undefined
 			if (c8Event === undefined) {
 				this.add(
 					owner,

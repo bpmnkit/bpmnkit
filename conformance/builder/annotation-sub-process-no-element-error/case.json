@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["subProcess","sp",{"$ops":[["textAnnotation","x"]]}],
+		["endEvent","e"],
+		["build"]
+	]
+}

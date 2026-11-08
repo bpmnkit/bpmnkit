@@ -1,0 +1,55 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Begin",
+            "type": "startEvent"
+          },
+          {
+            "documentation": "Does the work & more <b>",
+            "id": "t",
+            "name": "Work",
+            "type": "task"
+          },
+          {
+            "documentation": "Final",
+            "id": "e",
+            "name": "End",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1",
+        "notes": [
+          {
+            "elementId": "t",
+            "text": "Needs a manager's OK"
+          },
+          {
+            "elementId": "s",
+            "text": "Unicode ✓ 日本語"
+          }
+        ]
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [],
+  "questions": []
+}

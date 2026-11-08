@@ -1,0 +1,12 @@
+{
+  "aliases": {
+    "end": "end",
+    "merge": "gw-merge",
+    "notify": "notify",
+    "process": "process",
+    "reject": "reject",
+    "start": "start",
+    "valid": "gw-check",
+    "validate": "validate"
+  }
+}

@@ -1,0 +1,50 @@
+{"id":"ported/1","expr":"assert(x, x != null)","context":{},"expected":{"t":"null"}}
+{"id":"ported/2","expr":"assert(1, \"yes\")","context":{},"expected":{"t":"null"}}
+{"id":"ported/3","expr":"assert(condition: true, value: 5)","context":{},"expected":{"t":"number","v":"5"}}
+{"id":"ported/4","expr":"is blank(\"\")","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"ported/5","expr":"is blank(\" \t\n\")","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"ported/6","expr":"is blank(\" a \")","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"ported/7","expr":"is blank(1)","context":{},"expected":{"t":"null"}}
+{"id":"ported/8","expr":"trim(\"  hello   world  \")","context":{},"expected":{"t":"string","v":"hello   world"}}
+{"id":"ported/9","expr":"trim(null)","context":{},"expected":{"t":"null"}}
+{"id":"ported/10","expr":"extract(\"abc\", \"(\")","context":{},"expected":{"t":"null"}}
+{"id":"ported/11","expr":"to base64(\"FEEL\")","context":{},"expected":{"t":"string","v":"RkVFTA=="}}
+{"id":"ported/12","expr":"from base64(\"RkVFTA==\")","context":{},"expected":{"t":"string","v":"FEEL"}}
+{"id":"ported/13","expr":"to base64(\"Grüße €\")","context":{},"expected":{"t":"string","v":"R3LDvMOfZSDigqw="}}
+{"id":"ported/14","expr":"from base64(to base64(\"日本 🎉\"))","context":{},"expected":{"t":"string","v":"日本 🎉"}}
+{"id":"ported/15","expr":"from base64(\"not base64!\")","context":{},"expected":{"t":"null"}}
+{"id":"ported/16","expr":"from base64(\"abc\")","context":{},"expected":{"t":"null"}}
+{"id":"ported/17","expr":"from base64(\"/w==\")","context":{},"expected":{"t":"null"}}
+{"id":"ported/18","expr":"is empty([])","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"ported/19","expr":"is empty([null])","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"ported/20","expr":"is empty(\"\")","context":{},"expected":{"t":"null"}}
+{"id":"ported/21","expr":"partition([1,2], 0)","context":{},"expected":{"t":"null"}}
+{"id":"ported/22","expr":"partition([1,2], -1)","context":{},"expected":{"t":"null"}}
+{"id":"ported/23","expr":"partition([1,2], 1.5)","context":{},"expected":{"t":"null"}}
+{"id":"ported/24","expr":"to json({a: 1, b: [true, null, \"x\"]})","context":{},"expected":{"t":"string","v":"{\"a\":1,\"b\":[true,null,\"x\"]}"}}
+{"id":"ported/25","expr":"to json(@\"2023-06-14\")","context":{},"expected":{"t":"string","v":"\"2023-06-14\""}}
+{"id":"ported/26","expr":"to json(@\"P3Y\")","context":{},"expected":{"t":"string","v":"\"P3Y\""}}
+{"id":"ported/27","expr":"to json(@\"PT90M\")","context":{},"expected":{"t":"string","v":"\"PT1H30M\""}}
+{"id":"ported/28","expr":"to json(@\"2025-11-24T10:00:00@Europe/Berlin\")","context":{},"expected":{"t":"string","v":"\"2025-11-24T10:00:00+01:00[Europe/Berlin]\""}}
+{"id":"ported/29","expr":"to json(@\"2025-07-24T10:00:00@Europe/Berlin\")","context":{},"expected":{"t":"string","v":"\"2025-07-24T10:00:00+02:00[Europe/Berlin]\""}}
+{"id":"ported/30","expr":"to json(function(x) x)","context":{},"expected":{"t":"null"}}
+{"id":"ported/31","expr":"from json(\"\\\"2023-06-14\\\"\")","context":{},"expected":{"t":"string","v":"2023-06-14"}}
+{"id":"ported/32","expr":"from json(\"{oops\")","context":{},"expected":{"t":"null"}}
+{"id":"ported/33","expr":"from json(\"{\\\"__proto__\\\": {\\\"polluted\\\": true}}\")","context":{},"expected":{"t":"context","v":{"__proto__":{"t":"context","v":{"polluted":{"t":"boolean","v":true}}}}}}
+{"id":"ported/34","expr":"last day of month(\"2022-10-01\")","context":{},"expected":{"t":"null"}}
+{"id":"ported/35","expr":"time(\"08:00:00\") + duration(\"P1M\")","context":{},"expected":{"t":"null"}}
+{"id":"ported/36","expr":"time(\"08:00:00\") - time(\"06:00:00Z\")","context":{},"expected":{"t":"null"}}
+{"id":"ported/37","expr":"duration(\"P5D\") / duration(\"P1D\")","context":{},"expected":{"t":"number","v":"5"}}
+{"id":"ported/38","expr":"duration(\"P1Y\") / duration(\"P1M\")","context":{},"expected":{"t":"number","v":"12"}}
+{"id":"ported/39","expr":"duration(\"P1D\") / duration(\"PT0S\")","context":{},"expected":{"t":"null"}}
+{"id":"ported/40","expr":"duration(\"P1Y\") / duration(\"P1D\")","context":{},"expected":{"t":"null"}}
+{"id":"ported/41","expr":"date and time(\"2018-04-29T09:30:00+02:00[Not/AZone]\")","context":{},"expected":{"t":"null"}}
+{"id":"ported/42","expr":"date and time(@\"2020-07-31T14:27:30\", \"Z\")","context":{},"expected":{"t":"null"}}
+{"id":"ported/43","expr":"date and time(@\"2020-07-31T14:27:30Z\", \"Mars/Olympus\")","context":{},"expected":{"t":"null"}}
+{"id":"ported/44","expr":"overlaps before([1..3], (3..5])","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"ported/45","expr":"overlaps before([1..3], [3..5])","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"ported/46","expr":"overlaps after((5..8], [1..5))","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"ported/47","expr":"overlaps after([5..8], [1..5])","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"ported/48","expr":"overlaps before([1..5], [3..5])","context":{},"expected":{"t":"boolean","v":true}}
+{"id":"ported/49","expr":"overlaps before([1..5], [3..5))","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"ported/50","expr":"overlaps after([3..5], [1..5])","context":{},"expected":{"t":"boolean","v":true}}

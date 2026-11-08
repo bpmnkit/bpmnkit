@@ -1,0 +1,55 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [],
+  "diagram": {
+    "edges": [],
+    "shapes": [
+      {
+        "bounds": {
+          "height": 45,
+          "width": 125,
+          "x": 160,
+          "y": 100
+        },
+        "dmnElementRef": "a"
+      },
+      {
+        "bounds": {
+          "height": 45,
+          "width": 125,
+          "x": 160,
+          "y": 185
+        },
+        "dmnElementRef": "b"
+      }
+    ]
+  },
+  "exporter": "bpmn-sdk",
+  "exporterVersion": "0.0.1",
+  "id": "Definitions_0000001",
+  "inputData": [
+    {
+      "id": "a",
+      "name": "a"
+    },
+    {
+      "id": "b",
+      "name": "B name"
+    }
+  ],
+  "knowledgeSources": [],
+  "modelerAttributes": {
+    "executionPlatform": "Camunda Cloud",
+    "executionPlatformVersion": "8.10.0"
+  },
+  "name": "OnlyInputs",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "dc": "http://www.omg.org/spec/DMN/20180521/DC/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/",
+    "modeler": "http://camunda.org/schema/modeler/1.0"
+  },
+  "textAnnotations": []
+}

@@ -1,0 +1,67 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 0,
+    "info": 0,
+    "warning": 3
+  },
+  "diagnostics": [
+    {
+      "category": "pattern",
+      "elementIds": [
+        "UserTask_CallCustomer"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Call customer\" has no timer boundary event.",
+      "plane": "Collaboration_0liisio",
+      "processId": "requestDocument_en",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "StartEvent_DocumentRequested"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Document requested\" has no documentation describing expected input variables.",
+      "plane": "Collaboration_0liisio",
+      "processId": "requestDocument_en",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "UserTask_CallCustomer"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Call customer\" has no zeebe:formDefinition.",
+      "plane": "Collaboration_0liisio",
+      "processId": "requestDocument_en",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    }
+  ],
+  "platform": {
+    "id": "camunda-cloud",
+    "name": "Camunda Cloud",
+    "version": "8.1.0"
+  },
+  "total": 3
+}

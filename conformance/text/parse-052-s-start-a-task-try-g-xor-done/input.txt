@@ -1,0 +1,2 @@
+s[start] > a[task Try] > g[xor Done?]
+g >(No: default) a

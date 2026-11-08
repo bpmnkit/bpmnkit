@@ -1,0 +1,10 @@
+[
+  { "decision": "priority_single", "context": { "n": { "t": "number", "v": "1" } } },
+  { "decision": "priority_single", "context": { "n": { "t": "number", "v": "4" } } },
+  { "decision": "priority_single", "context": { "n": { "t": "number", "v": "9" } } },
+  { "decision": "priority_single", "context": { "n": { "t": "number", "v": "-1" } } },
+  { "decision": "order_single", "context": { "n": { "t": "number", "v": "1" } } },
+  { "decision": "order_single", "context": { "n": { "t": "number", "v": "9" } } },
+  { "decision": "order_multi", "context": { "n": { "t": "number", "v": "1" } } },
+  { "decision": "no_values", "context": { "n": { "t": "number", "v": "1" } } }
+]

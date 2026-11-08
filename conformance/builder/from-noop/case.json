@@ -1,0 +1,8 @@
+{
+	"kind": "bpmn",
+	"input": "input.bpmn",
+	"script": [
+		["from","proc"],
+		["build"]
+	]
+}

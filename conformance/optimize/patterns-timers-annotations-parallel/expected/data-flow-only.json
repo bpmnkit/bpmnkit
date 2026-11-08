@@ -1,0 +1,221 @@
+{
+  "findings": [
+    {
+      "category": "data-flow",
+      "consumes": [
+        "r"
+      ],
+      "elementIds": [
+        "w1",
+        "w2",
+        "w3"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:r",
+      "message": "Variable \"r\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"r\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "q"
+      ],
+      "elementIds": [
+        "w1"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:q",
+      "message": "Variable \"q\" is referenced but never set in this process.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "\"q\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "w1",
+        "w2"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:shared",
+      "message": "Variable \"shared\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "produces": [
+        "shared"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"shared\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "w1"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:only1",
+      "message": "Variable \"only1\" is set but never read by any downstream element.",
+      "processId": "proc",
+      "produces": [
+        "only1"
+      ],
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"only1\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "r",
+        "q"
+      ],
+      "elementIds": [
+        "w1"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:w1",
+      "message": "Element \"w1\" produces: shared, only1; consumes: r, q.",
+      "processId": "proc",
+      "produces": [
+        "shared",
+        "only1"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "r"
+      ],
+      "elementIds": [
+        "w2"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:w2",
+      "message": "Element \"w2\" produces: shared; consumes: r.",
+      "processId": "proc",
+      "produces": [
+        "shared"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "consumes": [
+        "r"
+      ],
+      "elementIds": [
+        "w3"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:w3",
+      "message": "Element \"w3\" consumes: r.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f6"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f6",
+      "message": "Variables in scope at flow \"f6\": only1, shared.",
+      "processId": "proc",
+      "produces": [
+        "only1",
+        "shared"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f7"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f7",
+      "message": "Variables in scope at flow \"f7\": shared.",
+      "processId": "proc",
+      "produces": [
+        "shared"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f9"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f9",
+      "message": "Variables in scope at flow \"f9\": only1, shared.",
+      "processId": "proc",
+      "produces": [
+        "only1",
+        "shared"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f10"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f10",
+      "message": "Variables in scope at flow \"f10\": only1, shared.",
+      "processId": "proc",
+      "produces": [
+        "only1",
+        "shared"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "f11"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:f11",
+      "message": "Variables in scope at flow \"f11\": only1, shared.",
+      "processId": "proc",
+      "produces": [
+        "only1",
+        "shared"
+      ],
+      "severity": "info",
+      "suggestion": ""
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 12,
+      "deploy": 0,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 0,
+      "naming": 0,
+      "pattern": 0,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 0,
+      "info": 10,
+      "warning": 2
+    },
+    "total": 12
+  }
+}

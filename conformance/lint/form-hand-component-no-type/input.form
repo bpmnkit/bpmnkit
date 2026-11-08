@@ -1,0 +1,13 @@
+{
+  "id": "F",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "id": "a"
+    },
+    {
+      "key": "k"
+    }
+  ]
+}

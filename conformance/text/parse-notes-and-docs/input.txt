@@ -1,0 +1,5 @@
+s[start Begin] > t[task Work] > e[end End]
+note t: Needs a manager's OK
+doc t: Does the work & more <b>
+note s: Unicode ✓ 日本語
+doc e: Final

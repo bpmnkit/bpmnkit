@@ -1,8 +1,8 @@
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 use crate::pool::DbPool;
+use crate::{DbError, Result};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
-use crate::{Result, DbError};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Incident {
@@ -58,13 +58,11 @@ impl<'a> IncidentRepository<'a> {
     }
 
     pub async fn resolve(&self, key: i64) -> Result<()> {
-        sqlx::query(
-            "UPDATE incidents SET state = 'RESOLVED', resolved_at = $2 WHERE key = $1",
-        )
-        .bind(key)
-        .bind(chrono::Utc::now())
-        .execute(self.pool)
-        .await?;
+        sqlx::query("UPDATE incidents SET state = 'RESOLVED', resolved_at = $2 WHERE key = $1")
+            .bind(key)
+            .bind(chrono::Utc::now())
+            .execute(self.pool)
+            .await?;
         Ok(())
     }
 
@@ -99,7 +97,7 @@ impl<'a> IncidentRepository<'a> {
         .fetch_all(self.pool)
         .await?;
 
-        Ok(rows.into_iter().map(|r| row_to_incident(r)).collect())
+        Ok(rows.into_iter().map(row_to_incident).collect())
     }
 
     pub async fn search(
@@ -133,16 +131,14 @@ impl<'a> IncidentRepository<'a> {
         .fetch_all(self.pool)
         .await?;
 
-        Ok(rows.into_iter().map(|r| row_to_incident(r)).collect())
+        Ok(rows.into_iter().map(row_to_incident).collect())
     }
 
     pub async fn count_active(&self) -> Result<i64> {
         use sqlx::Row;
-        let row = sqlx::query(
-            "SELECT COUNT(*) AS cnt FROM incidents WHERE state = 'ACTIVE'"
-        )
-        .fetch_one(self.pool)
-        .await?;
+        let row = sqlx::query("SELECT COUNT(*) AS cnt FROM incidents WHERE state = 'ACTIVE'")
+            .fetch_one(self.pool)
+            .await?;
         Ok(row.get::<i64, _>("cnt"))
     }
 }

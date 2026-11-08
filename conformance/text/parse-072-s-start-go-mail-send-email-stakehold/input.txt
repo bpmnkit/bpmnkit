@@ -1,0 +1,3 @@
+s[start Go] > mail[send Email stakeholder | each=stakeholders] > poll[service Poll report] > e[end Done]
+late[boundary:timer No reply in 5 minutes on=poll] > flag[user Flag for follow-up] > f[end Flagged]
+mail > wait[catch:timer Cool down | after=2h] > e

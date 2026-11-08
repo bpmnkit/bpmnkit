@@ -1,5 +1,5 @@
-use jsonwebtoken::{decode, decode_header, DecodingKey, Validation};
 use jsonwebtoken::jwk::JwkSet;
+use jsonwebtoken::{decode, decode_header, DecodingKey, Validation};
 use tokio::sync::RwLock;
 use tracing::{info, warn};
 
@@ -61,8 +61,7 @@ impl JwksClient {
     /// Validate a raw JWT string and return the authenticated user.
     /// On `KeyNotFound`, refreshes the JWKS once and retries (handles key rotation).
     pub async fn validate(&self, token: &str) -> Result<AuthenticatedUser, AuthError> {
-        let header =
-            decode_header(token).map_err(|e| AuthError::InvalidToken(e.to_string()))?;
+        let header = decode_header(token).map_err(|e| AuthError::InvalidToken(e.to_string()))?;
 
         let result = self.validate_with_cache(token, &header).await;
 

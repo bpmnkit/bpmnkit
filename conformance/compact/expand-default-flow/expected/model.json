@@ -1,0 +1,165 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_P",
+      "plane": {
+        "bpmnElement": "P",
+        "edges": [
+          {
+            "bpmnElement": "f1",
+            "id": "f1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 25,
+                "y": 65
+              },
+              {
+                "x": 25,
+                "y": 180
+              },
+              {
+                "x": 110,
+                "y": 180
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f2",
+            "id": "f2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 50,
+                "y": 40
+              },
+              {
+                "x": 110,
+                "y": 40
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_P",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 0,
+              "y": 15
+            },
+            "bpmnElement": "g",
+            "id": "g_di",
+            "isMarkerVisible": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 110,
+              "y": 140
+            },
+            "bpmnElement": "a",
+            "id": "a_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 110,
+              "y": 0
+            },
+            "bpmnElement": "b",
+            "id": "b_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "D",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "default": "f2",
+          "extensionElements": [],
+          "id": "g",
+          "incoming": [],
+          "outgoing": [
+            "f1",
+            "f2"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "a",
+          "incoming": [
+            "f1"
+          ],
+          "outgoing": [],
+          "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "b",
+          "incoming": [
+            "f2"
+          ],
+          "outgoing": [],
+          "type": "task",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "P",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "conditionExpression": {
+            "attributes": {},
+            "text": "= x"
+          },
+          "extensionElements": [],
+          "id": "f1",
+          "name": "Yes",
+          "sourceRef": "g",
+          "targetRef": "a",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f2",
+          "name": "No",
+          "sourceRef": "g",
+          "targetRef": "b",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

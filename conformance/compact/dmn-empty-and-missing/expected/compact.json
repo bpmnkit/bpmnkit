@@ -1,0 +1,60 @@
+{
+  "decisions": [
+    {
+      "aggregation": "",
+      "id": "d1",
+      "inputs": [
+        {
+          "id": "i1",
+          "label": ""
+        },
+        {
+          "id": "i2"
+        }
+      ],
+      "name": "",
+      "outputs": [
+        {
+          "id": "o1",
+          "label": "",
+          "name": ""
+        }
+      ],
+      "requires": [
+        "no-hash",
+        "d2"
+      ],
+      "rules": [
+        {
+          "id": "r1",
+          "inputs": [
+            "",
+            ""
+          ],
+          "outputs": [
+            ""
+          ]
+        },
+        {
+          "id": "r2",
+          "inputs": [],
+          "outputs": []
+        }
+      ]
+    },
+    {
+      "id": "d2",
+      "inputs": [],
+      "outputs": [],
+      "rules": []
+    }
+  ],
+  "id": "Definitions_quirks",
+  "inputData": [
+    {
+      "id": "in",
+      "name": ""
+    }
+  ],
+  "name": "Quirks"
+}

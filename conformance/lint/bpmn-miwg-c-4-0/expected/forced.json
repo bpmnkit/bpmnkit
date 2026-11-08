@@ -1,0 +1,651 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 20,
+    "info": 0,
+    "warning": 29
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "_237c8380-5449-446e-a323-aad80181176d"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_237c8380-5449-446e-a323-aad80181176d\" exits a decision gateway without a condition expression.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_7e9d8b8b-faa9-4264-858b-7454702c4ec2"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_7e9d8b8b-faa9-4264-858b-7454702c4ec2\" exits a decision gateway without a condition expression.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_f9e3cd76-809a-48b5-be1c-e84fc4324268"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"_f9e3cd76-809a-48b5-be1c-e84fc4324268\" has 2 outgoing flows but no default flow set.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_f8973a92-3d84-4672-a1a3-b0df154121e1"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"_f8973a92-3d84-4672-a1a3-b0df154121e1\" (userTask) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_f00a95f6-043e-4ec1-8731-153a707e950c"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_f00a95f6-043e-4ec1-8731-153a707e950c\" (dataStoreReference) is not reachable from any start event.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_f00a95f6-043e-4ec1-8731-153a707e950c"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_f00a95f6-043e-4ec1-8731-153a707e950c\" (dataStoreReference) has no outgoing sequence flows.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_f9e3cd76-809a-48b5-be1c-e84fc4324268"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"Contract terms accepted ?\" has no default sequence flow.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_f8973a92-3d84-4672-a1a3-b0df154121e1"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Send \ncandidate Contract\" has no timer boundary event.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_aa275782-c989-49ba-bf94-c58916ca7bb5"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Get signature on contract and notify responsible department\" has no timer boundary event.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_987b9b74-333a-4043-a72a-daadf667acc7"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Review terms of contract\" has no timer boundary event.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_0e71ed63-93f9-44b6-a89d-da9628652926"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Inform employee of company policies\" has no timer boundary event.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_eba690b9-34ef-49e4-b265-1411809d9302"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Introduce employee to company Mission, Vision and Values\" has no timer boundary event.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_67944b4c-4950-45a2-a131-1c4679c6b433"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Perform training for time reports sick leave and holidays\" has no timer boundary event.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_4c95f4a0-f4ec-45ed-9fdb-7b236155d6f5"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Register for medical insurance\" has no timer boundary event.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_986cf801-0780-49d3-91cd-2cc6d3c1aac3"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Request preparations for a new employee\" has no timer boundary event.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_72da5cee-0456-4c3c-ba8d-6dd085d6f52d"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Introduce new employee to the team\" has no timer boundary event.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_e3d3ac43-74a3-48ff-9a02-e64b1358cc34"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Perform training for position\" has no timer boundary event.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_351b058e-c37c-4fb7-9d32-24075f53ce02"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Compile welcome package\" has no timer boundary event.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_52401cbb-02b8-4eaf-84f1-1edbc0854a4a"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Give employee welcome package\" has no timer boundary event.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_a4220c17-364f-4a08-ae9c-757a6468b295"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Candidate accepted offer\" has no documentation describing expected input variables.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e\" is not marked executable.",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_fe77c2f2-278f-4752-9d03-aa0c8a12af1e"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"Input from Payroll ready\" (intermediateCatchEvent) has no zeebe:subscription correlationKey.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_db9147a9-7fbc-4657-a506-15e777f2cfd9"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"Input from Facilities ready\" (intermediateCatchEvent) has no zeebe:subscription correlationKey.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_74e2cc7b-99ca-426b-ad53-ad70a56506aa"
+      ],
+      "fixable": false,
+      "id": "deploy/message-catch-no-correlation",
+      "message": "Message catch \"Input from IT ready\" (intermediateCatchEvent) has no zeebe:subscription correlationKey.",
+      "plane": "_085241a5-fb5c-44d3-8844-5366f865e353",
+      "processId": "_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e",
+      "severity": "error",
+      "suggestion": "Set a correlation key — required for every message catch in Camunda 8."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_e355b511-e181-4e7b-a9b1-30cb48dd6cab"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_e355b511-e181-4e7b-a9b1-30cb48dd6cab\" (dataStoreReference) is not reachable from any start event.",
+      "plane": "_674b5898-d454-4114-a8eb-66c790366e94",
+      "processId": "_f0035388-f829-470c-b82b-0b15c3da3399",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_e355b511-e181-4e7b-a9b1-30cb48dd6cab"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_e355b511-e181-4e7b-a9b1-30cb48dd6cab\" (dataStoreReference) has no outgoing sequence flows.",
+      "plane": "_674b5898-d454-4114-a8eb-66c790366e94",
+      "processId": "_f0035388-f829-470c-b82b-0b15c3da3399",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_b60be020-1f04-46c2-b1a9-19bfc66ead82"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_b60be020-1f04-46c2-b1a9-19bfc66ead82\" (dataStoreReference) is not reachable from any start event.",
+      "plane": "_674b5898-d454-4114-a8eb-66c790366e94",
+      "processId": "_f0035388-f829-470c-b82b-0b15c3da3399",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_b60be020-1f04-46c2-b1a9-19bfc66ead82"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_b60be020-1f04-46c2-b1a9-19bfc66ead82\" (dataStoreReference) has no outgoing sequence flows.",
+      "plane": "_674b5898-d454-4114-a8eb-66c790366e94",
+      "processId": "_f0035388-f829-470c-b82b-0b15c3da3399",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_7e9d2e5a-21f7-493b-9ae4-03245aa33a5c"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Create domain account\" has no timer boundary event.",
+      "plane": "_674b5898-d454-4114-a8eb-66c790366e94",
+      "processId": "_f0035388-f829-470c-b82b-0b15c3da3399",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_912f731a-fb6b-499b-a3f4-4c1632d606bd"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Assign required applications and permissions\" has no timer boundary event.",
+      "plane": "_674b5898-d454-4114-a8eb-66c790366e94",
+      "processId": "_f0035388-f829-470c-b82b-0b15c3da3399",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_ad173aff-cfe3-4098-8c65-02f783ad9e1f"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Prepare IT part of welcome package\" has no timer boundary event.",
+      "plane": "_674b5898-d454-4114-a8eb-66c790366e94",
+      "processId": "_f0035388-f829-470c-b82b-0b15c3da3399",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"_f0035388-f829-470c-b82b-0b15c3da3399\" is not marked executable.",
+      "processId": "_f0035388-f829-470c-b82b-0b15c3da3399",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_9db2d136-aa33-4de2-be76-554e7843363d"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"Configure workstation\" (serviceTask) has no zeebe:taskDefinition type.",
+      "plane": "_674b5898-d454-4114-a8eb-66c790366e94",
+      "processId": "_f0035388-f829-470c-b82b-0b15c3da3399",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_ca6f904d-e30d-4777-a7dd-661650e1e3a2"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_ca6f904d-e30d-4777-a7dd-661650e1e3a2\" exits a decision gateway without a condition expression.",
+      "plane": "_bbdf487b-c3a3-4bfa-8ba3-79be59f08203",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_12e2f256-ec10-4a8d-934c-329143c588d8"
+      ],
+      "fixable": false,
+      "id": "feel/empty-condition",
+      "message": "Sequence flow \"_12e2f256-ec10-4a8d-934c-329143c588d8\" exits a decision gateway without a condition expression.",
+      "plane": "_bbdf487b-c3a3-4bfa-8ba3-79be59f08203",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "error",
+      "suggestion": "Add a FEEL condition expression or mark this flow as the default."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_fa14ca2d-ea97-49a2-b75e-72e7d27d6fd1"
+      ],
+      "fixable": true,
+      "id": "feel/missing-default-flow",
+      "message": "Gateway \"_fa14ca2d-ea97-49a2-b75e-72e7d27d6fd1\" has 2 outgoing flows but no default flow set.",
+      "plane": "_bbdf487b-c3a3-4bfa-8ba3-79be59f08203",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "warning",
+      "suggestion": "Set a default flow to handle unmatched conditions."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_9dbd92a5-5c0a-4039-b741-bf4ede54ccf0"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"_9dbd92a5-5c0a-4039-b741-bf4ede54ccf0\" (userTask) has 2 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "plane": "_bbdf487b-c3a3-4bfa-8ba3-79be59f08203",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_16498c9e-c33f-4f92-9033-714b89582a7c"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_16498c9e-c33f-4f92-9033-714b89582a7c\" (dataStoreReference) is not reachable from any start event.",
+      "plane": "_bbdf487b-c3a3-4bfa-8ba3-79be59f08203",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_16498c9e-c33f-4f92-9033-714b89582a7c"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_16498c9e-c33f-4f92-9033-714b89582a7c\" (dataStoreReference) has no outgoing sequence flows.",
+      "plane": "_bbdf487b-c3a3-4bfa-8ba3-79be59f08203",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_a9cffac5-6e03-41de-83bf-d34304f28b1a"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_a9cffac5-6e03-41de-83bf-d34304f28b1a\" (dataStoreReference) is not reachable from any start event.",
+      "plane": "_bbdf487b-c3a3-4bfa-8ba3-79be59f08203",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_a9cffac5-6e03-41de-83bf-d34304f28b1a"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_a9cffac5-6e03-41de-83bf-d34304f28b1a\" (dataStoreReference) has no outgoing sequence flows.",
+      "plane": "_bbdf487b-c3a3-4bfa-8ba3-79be59f08203",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_fa14ca2d-ea97-49a2-b75e-72e7d27d6fd1"
+      ],
+      "fixable": false,
+      "id": "pattern/gateway-no-default-flow",
+      "message": "Exclusive gateway \"All necessary data available?\" has no default sequence flow.",
+      "plane": "_bbdf487b-c3a3-4bfa-8ba3-79be59f08203",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "warning",
+      "suggestion": "Add a default flow to ensure the process does not get stuck when no condition matches."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_ae47ce79-bd91-452b-be68-47a2ea589e75"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Validate provided information\" has no timer boundary event.",
+      "plane": "_bbdf487b-c3a3-4bfa-8ba3-79be59f08203",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_9dbd92a5-5c0a-4039-b741-bf4ede54ccf0"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Update payroll system\" has no timer boundary event.",
+      "plane": "_bbdf487b-c3a3-4bfa-8ba3-79be59f08203",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4\" is not marked executable.",
+      "processId": "_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_9931ba94-ede8-4f53-8081-878c549ba1c8"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_9931ba94-ede8-4f53-8081-878c549ba1c8\" (dataStoreReference) is not reachable from any start event.",
+      "plane": "_8d4bb408-4175-4fbb-8131-18c32b7aa022",
+      "processId": "_3486bf55-0a7f-4ff1-be15-1555669f58ad",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_9931ba94-ede8-4f53-8081-878c549ba1c8"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_9931ba94-ede8-4f53-8081-878c549ba1c8\" (dataStoreReference) has no outgoing sequence flows.",
+      "plane": "_8d4bb408-4175-4fbb-8131-18c32b7aa022",
+      "processId": "_3486bf55-0a7f-4ff1-be15-1555669f58ad",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_737503c8-10bc-483f-8871-5461d822b469"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Configure access details\" has no timer boundary event.",
+      "plane": "_8d4bb408-4175-4fbb-8131-18c32b7aa022",
+      "processId": "_3486bf55-0a7f-4ff1-be15-1555669f58ad",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"_3486bf55-0a7f-4ff1-be15-1555669f58ad\" is not marked executable.",
+      "processId": "_3486bf55-0a7f-4ff1-be15-1555669f58ad",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 49
+}

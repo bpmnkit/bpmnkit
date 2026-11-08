@@ -1,0 +1,62 @@
+{
+  "runs": {
+    "default": {},
+    "all": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:all"
+      }
+    },
+    "recommended": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:recommended"
+      }
+    },
+    "standard-size-error": {
+      "bpmnlintrc": {
+        "rules": {
+          "standard-size": "error"
+        }
+      }
+    },
+    "standard-size-off": {
+      "bpmnlintrc": {
+        "rules": {
+          "standard-size": "off"
+        }
+      }
+    },
+    "standard-size-warn-delegated": {
+      "bpmnlintrc": {
+        "rules": {
+          "standard-size": "warn"
+        }
+      },
+      "bpmnlintDelegated": true
+    },
+    "standard-size-options": {
+      "bpmnlintrc": {
+        "rules": {
+          "standard-size": [
+            "error",
+            {
+              "bpmn:Task": {
+                "width": 120,
+                "height": 80
+              },
+              "bpmn:EndEvent": {
+                "width": 40,
+                "height": 40
+              }
+            }
+          ]
+        }
+      }
+    },
+    "only-delegated": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:all"
+      },
+      "bpmnlintDelegated": true
+    }
+  }
+}

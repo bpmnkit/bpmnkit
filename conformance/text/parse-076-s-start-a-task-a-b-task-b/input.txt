@@ -1,0 +1,6 @@
+s[start] > a[task A] > b[task B]
+a > c[task C]
+b > m[xor Merge?]
+c > m
+m >(ok) d[task D]
+m > a

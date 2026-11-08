@@ -1,0 +1,154 @@
+{
+  "id": "sid-bdb880ac-c464-4e5c-aa56-569d709436e0",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "approveInvoice",
+          "name": "Approve Invoice",
+          "type": "userTask"
+        },
+        {
+          "id": "invoice_approved",
+          "name": "Invoice\r\napproved?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "assignApprover",
+          "name": "Assign\r\nApprover",
+          "type": "userTask"
+        },
+        {
+          "id": "reviewInvoice",
+          "name": "Rechnung klären",
+          "type": "userTask"
+        },
+        {
+          "id": "reviewSuccessful_gw",
+          "name": "Review\nsuccessful?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "invoiceNotProcessed",
+          "name": "Invoice not\nprocessed",
+          "type": "endEvent"
+        },
+        {
+          "id": "StartEvent_1",
+          "name": "Invoice\r\nreceived",
+          "type": "startEvent"
+        },
+        {
+          "id": "prepareBankTransfer",
+          "name": "Prepare\r\nBank\r\nTransfer",
+          "type": "userTask"
+        },
+        {
+          "id": "invoiceProcessed",
+          "name": "Invoice\nprocessed",
+          "type": "endEvent"
+        },
+        {
+          "id": "archiveInvoice",
+          "name": "Archive\nInvoice",
+          "type": "serviceTask"
+        },
+        {
+          "id": "Bpmn_DataObject_approver",
+          "name": "approver",
+          "type": "dataObject"
+        },
+        {
+          "dataObjectRef": "Bpmn_DataObject_approver",
+          "id": "Bpmn_DataObjectReference_assignApprover",
+          "name": "approver",
+          "type": "dataObjectReference"
+        },
+        {
+          "id": "Bpmn_DataObject_WUfQYrH1EeSuDf0W70XLGw",
+          "name": "approved",
+          "type": "dataObject"
+        },
+        {
+          "dataObjectRef": "Bpmn_DataObject_WUfQYrH1EeSuDf0W70XLGw",
+          "id": "Bpmn_DataObjectReference_YGA4YLH1EeSuDf0W70XLGw",
+          "name": "approved",
+          "type": "dataObjectReference"
+        },
+        {
+          "id": "Bpmn_DataObject_aT_L0rH1EeSuDf0W70XLGw",
+          "name": "clarified",
+          "type": "dataObject"
+        },
+        {
+          "dataObjectRef": "Bpmn_DataObject_aT_L0rH1EeSuDf0W70XLGw",
+          "id": "Bpmn_DataObjectReference_cdsDQLH1EeSuDf0W70XLGw",
+          "name": "clarified",
+          "type": "dataObjectReference"
+        }
+      ],
+      "flows": [
+        {
+          "condition": "bpmn:getDataObject('approved')",
+          "from": "invoice_approved",
+          "id": "invoiceApproved",
+          "name": "yes",
+          "to": "prepareBankTransfer"
+        },
+        {
+          "condition": "not(bpmn:getDataObject('approved'))",
+          "from": "invoice_approved",
+          "id": "invoiceNotApproved",
+          "name": "no",
+          "to": "reviewInvoice"
+        },
+        {
+          "condition": "bpmn:getDataObject('clarified') = 'yes'",
+          "from": "reviewSuccessful_gw",
+          "id": "reviewSuccessful",
+          "name": "yes",
+          "to": "approveInvoice"
+        },
+        {
+          "condition": "bpmn:getDataObject('clarified') = 'no'",
+          "from": "reviewSuccessful_gw",
+          "id": "reviewNotSuccessful",
+          "name": "no",
+          "to": "invoiceNotProcessed"
+        },
+        {
+          "from": "approveInvoice",
+          "id": "sequenceFlow_180",
+          "to": "invoice_approved"
+        },
+        {
+          "from": "reviewInvoice",
+          "id": "sequenceFlow_183",
+          "to": "reviewSuccessful_gw"
+        },
+        {
+          "from": "assignApprover",
+          "id": "sequenceFlow_178",
+          "to": "approveInvoice"
+        },
+        {
+          "from": "prepareBankTransfer",
+          "id": "SequenceFlow_2",
+          "to": "archiveInvoice"
+        },
+        {
+          "from": "archiveInvoice",
+          "id": "SequenceFlow_3",
+          "to": "invoiceProcessed"
+        },
+        {
+          "from": "StartEvent_1",
+          "id": "SequenceFlow_1",
+          "to": "assignApprover"
+        }
+      ],
+      "id": "handle-invoice",
+      "name": "Invoice Handling (OMG BPMN MIWG Demo)"
+    }
+  ]
+}

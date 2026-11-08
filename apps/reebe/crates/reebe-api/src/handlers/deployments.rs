@@ -1,12 +1,12 @@
-use axum::extract::State;
+use crate::app::ApiState;
+use crate::error::{ApiError, ApiResult};
+use crate::tenant::tenant_from_headers;
 use axum::extract::Multipart;
+use axum::extract::State;
 use axum::http::{HeaderMap, StatusCode};
 use axum::response::IntoResponse;
 use axum::Json;
 use base64::Engine as Base64Engine;
-use crate::app::ApiState;
-use crate::error::{ApiError, ApiResult};
-use crate::tenant::tenant_from_headers;
 
 pub async fn create_deployment(
     State(state): State<ApiState>,
@@ -15,16 +15,16 @@ pub async fn create_deployment(
 ) -> ApiResult<impl IntoResponse> {
     let mut resources = Vec::new();
 
-    while let Some(field) = multipart.next_field().await.map_err(|e| {
-        ApiError::InvalidRequest(format!("Multipart error: {e}"))
-    })? {
-        let name = field
-            .file_name()
-            .unwrap_or("process.bpmn")
-            .to_string();
-        let data = field.bytes().await.map_err(|e| {
-            ApiError::InvalidRequest(format!("Field read error: {e}"))
-        })?;
+    while let Some(field) = multipart
+        .next_field()
+        .await
+        .map_err(|e| ApiError::InvalidRequest(format!("Multipart error: {e}")))?
+    {
+        let name = field.file_name().unwrap_or("process.bpmn").to_string();
+        let data = field
+            .bytes()
+            .await
+            .map_err(|e| ApiError::InvalidRequest(format!("Field read error: {e}")))?;
         resources.push((name, data));
     }
 

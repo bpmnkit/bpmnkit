@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/camunda-compat-agents/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}

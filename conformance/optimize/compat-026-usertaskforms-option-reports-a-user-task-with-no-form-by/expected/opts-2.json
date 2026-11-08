@@ -1,0 +1,101 @@
+{
+  "findings": [
+    {
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-start-event",
+      "message": "Process \"p\" has no start event.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Add a start event to define where the process begins."
+    },
+    {
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-end-event",
+      "message": "Process \"p\" has no end event.",
+      "processId": "p",
+      "severity": "warning",
+      "suggestion": "Add an end event to properly terminate the process."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "review"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"review\" (userTask) is not reachable from any start event.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "review"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"review\" (userTask) has no outgoing sequence flows.",
+      "processId": "p",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "review"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Review\" has no timer boundary event.",
+      "processId": "p",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "review"
+      ],
+      "fixable": false,
+      "id": "compat/zeebe-user-task",
+      "message": "User task \"Review\" is a job-worker user task; Camunda 8.6 deprecates those in favour of Camunda user tasks.",
+      "processId": "p",
+      "severity": "warning",
+      "suggestion": "Add zeebe:userTask to make it a Camunda user task."
+    }
+  ],
+  "fixes": [
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"review\"",
+      "id": "flow/dead-end",
+      "index": 3,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" id=\"D\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:process id=\"p\" isExecutable=\"true\">\n    <bpmn:userTask id=\"review\" name=\"Review\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:userTask>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"review\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    }
+  ],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 1,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 4,
+      "naming": 0,
+      "pattern": 1,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 2,
+      "info": 0,
+      "warning": 4
+    },
+    "total": 6
+  }
+}

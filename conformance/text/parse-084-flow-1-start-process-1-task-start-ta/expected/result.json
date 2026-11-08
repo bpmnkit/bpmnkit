@@ -1,0 +1,61 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "Flow_1",
+            "name": "Flow 1",
+            "type": "startEvent"
+          },
+          {
+            "id": "Process_1",
+            "name": "Process 1",
+            "type": "task"
+          },
+          {
+            "id": "start",
+            "name": "Start",
+            "type": "task"
+          },
+          {
+            "id": "start_end",
+            "name": "Start end",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "Flow_1",
+            "id": "Flow_2",
+            "to": "Process_1"
+          },
+          {
+            "from": "Process_1",
+            "id": "Flow_3",
+            "to": "start"
+          },
+          {
+            "from": "start",
+            "id": "Flow_4",
+            "to": "start_end"
+          }
+        ],
+        "id": "Process_123_title",
+        "name": "123 title"
+      }
+    ]
+  },
+  "fixes": [
+    "named 4 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 3,
+      "message": "a flow cannot lead back to where it starts; flow Process_1 > Process_1 left out"
+    }
+  ],
+  "questions": []
+}

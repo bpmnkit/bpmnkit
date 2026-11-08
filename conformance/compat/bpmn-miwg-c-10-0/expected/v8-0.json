@@ -1,0 +1,208 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_39"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Record meeting details\" has no zeebe:formDefinition.",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_22"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Prepare confirmation email\" has no zeebe:formDefinition.",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_29"
+      ],
+      "fixable": false,
+      "id": "compat/called-element",
+      "message": "Call activity \"Plan trip\" has no zeebe:calledElement processId.",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Set the id of the process to call."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_21"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Update employee's calendar\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_38"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message intermediate catch event \"Recieve meeting details\" references no message.",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_45"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Send task \"Send confirmation email\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_31"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Message intermediate throw event \"Notify client personel not available\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_18"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Message intermediate throw event \"Answer client directly\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_34"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Check client request\" has no zeebe:formDefinition.",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_33"
+      ],
+      "fixable": false,
+      "id": "compat/message-reference",
+      "message": "Message start event \"E-mail received\" references no message.",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Reference a bpmn:message with a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_24"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Check employee's availability\" has no zeebe:formDefinition.",
+      "processId": "_8",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_26"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"Yes\" leaves Exclusive gateway \"On-site Meeting?\" without a condition and is not its default flow.",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_30"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"No\" leaves Exclusive gateway \"Employee \navailable?\" without a condition and is not its default flow.",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_42"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"Yes\" leaves Exclusive gateway \"Employee \navailable?\" without a condition and is not its default flow.",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_43"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"No\" leaves Exclusive gateway \"On-site Meeting?\" without a condition and is not its default flow.",
+      "processId": "_8",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "ID-ee745c82-43de-11f1-744d-b02628b36240"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Request employee preferences\" has no zeebe:formDefinition.",
+      "processId": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_5e0cd331-db4a-4561-9f7f-141eecba6967"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Book trip\" has no zeebe:formDefinition.",
+      "processId": "Process_ID-73a31a41-43d5-11f1-744d-b02628b36240",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    }
+  ]
+}

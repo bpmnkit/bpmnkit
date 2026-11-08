@@ -1,0 +1,76 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "validate"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Validate Order\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "order-process",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "process"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Process Order\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "order-process",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "reject"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Reject Order\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "order-process",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "notify"
+      ],
+      "fixable": false,
+      "id": "compat/implementation",
+      "message": "Service task \"Send Notification\" has no implementation; Camunda needs a zeebe:taskDefinition.",
+      "processId": "order-process",
+      "severity": "error",
+      "suggestion": "Set a job type (zeebe:taskDefinition)."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "flow-yes"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"yes\" leaves Exclusive gateway \"Valid?\" without a condition and is not its default flow.",
+      "processId": "order-process",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "flow-no"
+      ],
+      "fixable": false,
+      "id": "compat/sequence-flow-condition",
+      "message": "Sequence flow \"no\" leaves Exclusive gateway \"Valid?\" without a condition and is not its default flow.",
+      "processId": "order-process",
+      "severity": "error",
+      "suggestion": "Add a condition expression, or make it the gateway's default flow."
+    }
+  ]
+}

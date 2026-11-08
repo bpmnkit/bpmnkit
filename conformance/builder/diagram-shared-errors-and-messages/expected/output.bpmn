@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="D" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
+  <bpmn:error id="Error_X" name="X" errorCode="X"/>
+  <bpmn:message id="Message_m" name="m"/>
+  <bpmn:process id="a" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_e</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="s_MessageEventDefinition" messageRef="Message_m"/>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="e">
+      <bpmn:incoming>Flow_s_e</bpmn:incoming>
+      <bpmn:errorEventDefinition id="e_ErrorEventDefinition" errorRef="Error_X"/>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s_e" sourceRef="s" targetRef="e"/>
+  </bpmn:process>
+  <bpmn:process id="b" isExecutable="true">
+    <bpmn:startEvent id="s2">
+      <bpmn:outgoing>Flow_s2_e2</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="s2_MessageEventDefinition" messageRef="Message_m"/>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="e2">
+      <bpmn:incoming>Flow_s2_e2</bpmn:incoming>
+      <bpmn:errorEventDefinition id="e2_ErrorEventDefinition" errorRef="Error_X"/>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s2_e2" sourceRef="s2" targetRef="e2"/>
+  </bpmn:process>
+</bpmn:definitions>
+

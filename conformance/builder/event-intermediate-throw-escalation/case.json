@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["intermediateThrowEvent","i",{"escalationCode":"E1"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

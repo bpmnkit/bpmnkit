@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 16,
+  "id": "f",
+  "components": [
+    {
+      "type": "iframe",
+      "id": "a",
+      "security": {}
+    },
+    {
+      "type": "iframe",
+      "id": "b",
+      "security": {},
+      "url": 5,
+      "height": "100"
+    },
+    {
+      "type": "iframe",
+      "id": "c",
+      "security": {}
+    },
+    {
+      "type": "iframe",
+      "id": "d",
+      "security": null
+    },
+    {
+      "type": "table",
+      "id": "e"
+    },
+    {
+      "type": "table",
+      "id": "f",
+      "columns": [],
+      "rowCount": "5"
+    },
+    {
+      "type": "table",
+      "id": "g",
+      "columns": [
+        {
+          "label": "L",
+          "key": "k"
+        },
+        {
+          "label": "",
+          "key": ""
+        },
+        {
+          "label": "",
+          "key": ""
+        },
+        {
+          "label": "",
+          "key": ""
+        },
+        {
+          "label": "",
+          "key": ""
+        },
+        {
+          "label": "3",
+          "key": "false"
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "id": "h",
+      "columns": "none",
+      "dataSource": 1
+    },
+    {
+      "type": "image",
+      "id": "i"
+    },
+    {
+      "type": "html",
+      "id": "j"
+    },
+    {
+      "type": "expression",
+      "id": "k"
+    },
+    {
+      "type": "filepicker",
+      "id": "l",
+      "multiple": "true"
+    },
+    {
+      "type": "documentPreview",
+      "id": "m",
+      "dataSource": "=doc"
+    },
+    {
+      "type": "spacer",
+      "id": "n"
+    },
+    {
+      "type": "separator",
+      "layout": {
+        "row": "r",
+        "columns": 2
+      },
+      "id": "o"
+    }
+  ],
+  "type": "default"
+}

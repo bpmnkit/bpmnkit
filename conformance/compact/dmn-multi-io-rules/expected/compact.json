@@ -1,0 +1,94 @@
+{
+  "decisions": [
+    {
+      "hitPolicy": "RULE ORDER",
+      "id": "shipping",
+      "inputs": [
+        {
+          "expression": "order.weight",
+          "id": "in_weight",
+          "label": "Weight (kg)",
+          "typeRef": "number"
+        },
+        {
+          "expression": "order.country",
+          "id": "in_country",
+          "label": "Country",
+          "typeRef": "string"
+        },
+        {
+          "expression": "express",
+          "id": "in_express",
+          "label": "Express",
+          "typeRef": "boolean"
+        },
+        {
+          "expression": "date(shipDate)",
+          "id": "in_date",
+          "label": "Ship date",
+          "typeRef": "date"
+        }
+      ],
+      "name": "Shipping",
+      "outputs": [
+        {
+          "id": "out_carrier",
+          "label": "Carrier",
+          "name": "carrier",
+          "typeRef": "string"
+        },
+        {
+          "id": "out_price",
+          "label": "Price",
+          "name": "price",
+          "typeRef": "number"
+        }
+      ],
+      "rules": [
+        {
+          "description": "Light parcels inside the EU",
+          "id": "r1",
+          "inputs": [
+            "[0..5]",
+            "\"DE\",\"AT\",\"FR\"",
+            "false",
+            ""
+          ],
+          "outputs": [
+            "\"Post\"",
+            "4.9"
+          ]
+        },
+        {
+          "id": "r2",
+          "inputs": [
+            "> 5",
+            "not(\"US\")",
+            "-",
+            "< date(\"2030-01-01\")"
+          ],
+          "outputs": [
+            "\"Freight\"",
+            "weight * 1.5"
+          ]
+        },
+        {
+          "id": "r3",
+          "inputs": [
+            "-",
+            "-",
+            "true",
+            "-"
+          ],
+          "outputs": [
+            "\"Express\"",
+            "19.9"
+          ]
+        }
+      ]
+    }
+  ],
+  "id": "Definitions_multi",
+  "inputData": [],
+  "name": "Multiple inputs and outputs"
+}

@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["adHocSubProcess","ah",{"$ops":[["serviceTask","t",{"name":"t","taskType":"t"}]]},{"loopCharacteristics":{"inputCollection":"=items","inputElement":"item","outputCollection":"outs","outputElement":"=out"}}],
+		["endEvent","e"],
+		["build"]
+	]
+}

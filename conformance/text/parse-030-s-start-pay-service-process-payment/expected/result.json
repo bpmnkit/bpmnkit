@@ -1,0 +1,69 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "pay",
+            "jobType": "pay",
+            "name": "Process payment",
+            "type": "serviceTask"
+          },
+          {
+            "id": "done",
+            "name": "Paid",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "pay",
+            "eventType": "error",
+            "id": "pay_2",
+            "name": "Payment failed",
+            "type": "boundaryEvent"
+          },
+          {
+            "eventType": "error",
+            "id": "failed",
+            "name": "Failure notified",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "pay"
+          },
+          {
+            "from": "pay",
+            "id": "Flow_2",
+            "to": "done"
+          },
+          {
+            "from": "pay_2",
+            "id": "Flow_3",
+            "to": "failed"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 1 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 2,
+      "message": "\"pay\" on line 1 is a different node; this one is \"pay_2\""
+    }
+  ],
+  "questions": []
+}

@@ -1,0 +1,19 @@
+# Customer Onboarding | camunda=8.1
+application_received[start Application received | out.documentReferenceId=string(now())] > get_credit_score[service Get credit score | job=calculateScore] > check_application_automatically[rule Check application automatically | out.riskLevels=if result != null then result.riskLevel else ["green"] out.risks=if result != null then result.risk else []] > risk[xor Risk?]
+risk >(Red severe risk: some risk in riskLevels satisfies risk = "red") reject_application[service Reject application | job=rejectPolicy] > send_rejection[service Send rejection | job=io.camunda:sendgrid:1 in.apiKey="secrets.SENDGRID_DEMO" in.from.email="demo@camunda.com" in.template.id="d-aa6a58aaded54a83884518433ac2dd56" in.template.data={ "name": applicant.name } in.to.email=applicant.email in.to.name=applicant.name in.from.name=corporation] > application_rejected[end Application rejected]
+risk >(Green no risk: default) deliver_confirmation[service Deliver confirmation | job=issuePolicy] > send_confirmation[service Send confirmation | job=io.camunda:sendgrid:1 in.from.email="demo@camunda.com" in.template.id="d-0d0120b0c7f148ef8a1c262f2cf07092" in.apiKey="secrets.SENDGRID_DEMO" in.from.name=corporation in.to.name=applicant.name in.to.email=applicant.email in.template.data={ "name": applicant.name, "applicationNumber": applicationNumber, "product": product }] > application_issued[end Application issued]
+risk >(Yellow moderate risk: every risk in riskLevels satisfies risk = "yellow") manual_check[call Manual Check] > decision[xor Decision?]
+decision >(Application accepted: approved) deliver_confirmation
+decision >(Application declined: not(approved)) reject_application
+sub[sub]
+sub_2[sub]
+fraud_detected[boundary:error Fraud detected | on=manual_check] > report_fraud[send Report fraud | job=reportFraud] > application_canceled_due_to[end:terminate Application canceled due to fraud]
+doc application_issued: Customer onboarding process end application issued
+doc deliver_confirmation: Deliver policy
+doc application_rejected: Customer onboarding process end application rejected
+doc reject_application: Reject policy
+doc fraud_detected: Captures error if fraud is detected
+doc application_canceled_due_to: Customer onboarding process terminated due to fraud
+doc risk: Route process based on risk, "green" automatic onboarding, "yellow" manual check, "red" automatic rejection
+doc check_application_automatically: Identify risk for prospect client
+doc get_credit_score: Gets credit score for prospect client

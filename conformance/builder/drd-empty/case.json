@@ -1,0 +1,7 @@
+{
+	"kind": "dmn",
+	"script": [
+		["drd","Empty"],
+		["build"]
+	]
+}

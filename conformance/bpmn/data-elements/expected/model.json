@@ -1,0 +1,132 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "id": "Definitions_data",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "extensionElements": [],
+          "id": "DataObject_invoice",
+          "incoming": [],
+          "name": "Invoice",
+          "outgoing": [],
+          "type": "dataObject",
+          "unknownAttributes": {}
+        },
+        {
+          "dataObjectRef": "DataObject_invoice",
+          "extensionElements": [],
+          "id": "DataObjectRef_invoice",
+          "incoming": [],
+          "name": "Invoice",
+          "outgoing": [],
+          "type": "dataObjectReference",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "DataStore_ledger",
+          "incoming": [],
+          "name": "Ledger",
+          "outgoing": [],
+          "type": "dataStoreReference",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "Start_data",
+          "incoming": [],
+          "outgoing": [
+            "Flow_d1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "dataInputAssociations": [
+            {
+              "id": "DataInputAssoc_1",
+              "sourceRefs": [
+                "DataObjectRef_invoice"
+              ],
+              "targetRef": "Property_target",
+              "unknownAttributes": {}
+            }
+          ],
+          "dataOutputAssociations": [
+            {
+              "id": "DataOutputAssoc_1",
+              "sourceRefs": [],
+              "targetRef": "DataStore_ledger",
+              "unknownAttributes": {}
+            }
+          ],
+          "extensionElements": [],
+          "id": "Task_post",
+          "incoming": [
+            "Flow_d1"
+          ],
+          "name": "Post to ledger",
+          "outgoing": [
+            "Flow_d2"
+          ],
+          "properties": [
+            {
+              "id": "Property_target",
+              "name": "__targetRef_placeholder",
+              "unknownAttributes": {}
+            }
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "End_data",
+          "incoming": [
+            "Flow_d2"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "Process_data",
+      "isExecutable": true,
+      "name": "Data wiring",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_d1",
+          "sourceRef": "Start_data",
+          "targetRef": "Task_post",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_d2",
+          "sourceRef": "Task_post",
+          "targetRef": "End_data",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

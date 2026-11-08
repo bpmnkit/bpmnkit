@@ -1,0 +1,3 @@
+s[start A] > a[task B]
+a[task B] > e[end]
+s[start A] > a

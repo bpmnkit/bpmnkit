@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/layout-kyc-risk-classification/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/"
+             namespace="http://camunda.org/schema/1.0/dmn"
+             name="DRD" id="Definitions_first">
+  <decision id="tierDecision" name="Tier Decision">
+    <decisionTable id="dt1" hitPolicy="FIRST">
+      <input id="i1" label="score">
+        <inputExpression id="ie1"><text>score</text></inputExpression>
+      </input>
+      <output id="o1" name="tier" typeRef="string"/>
+      <rule id="r1">
+        <inputEntry id="ie1r1"><text>&gt;= 800</text></inputEntry>
+        <outputEntry id="oe1r1"><text>"PLATINUM"</text></outputEntry>
+      </rule>
+      <rule id="r2">
+        <inputEntry id="ie1r2"><text>&gt;= 600</text></inputEntry>
+        <outputEntry id="oe1r2"><text>"GOLD"</text></outputEntry>
+      </rule>
+      <rule id="r3">
+        <inputEntry id="ie1r3"><text>&gt;= 400</text></inputEntry>
+        <outputEntry id="oe1r3"><text>"SILVER"</text></outputEntry>
+      </rule>
+      <rule id="r4">
+        <inputEntry id="ie1r4"><text>&gt;= 0</text></inputEntry>
+        <outputEntry id="oe1r4"><text>"BRONZE"</text></outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+</definitions>

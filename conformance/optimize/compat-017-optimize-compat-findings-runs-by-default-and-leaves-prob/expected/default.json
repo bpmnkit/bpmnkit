@@ -1,0 +1,143 @@
+{
+  "findings": [
+    {
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-start-event",
+      "message": "Process \"p\" has no start event.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Add a start event to define where the process begins."
+    },
+    {
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-end-event",
+      "message": "Process \"p\" has no end event.",
+      "processId": "p",
+      "severity": "warning",
+      "suggestion": "Add an end event to properly terminate the process."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"svc\" (serviceTask) is not reachable from any start event.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"svc\" (serviceTask) has no outgoing sequence flows.",
+      "processId": "p",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "g"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"g\" (complexGateway) is not reachable from any start event.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "g"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"g\" (complexGateway) has no outgoing sequence flows.",
+      "processId": "p",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"svc\" (serviceTask) has no name.",
+      "processId": "p",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "svc"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"svc\" (serviceTask) has no zeebe:taskDefinition type.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "g"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Complex gateway \"g\" is not supported by any Camunda 8 version.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Model it with an element Camunda 8 executes."
+    }
+  ],
+  "fixes": [
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"svc\"",
+      "id": "flow/dead-end",
+      "index": 3,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" id=\"D\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:process id=\"p\" isExecutable=\"true\">\n    <bpmn:serviceTask id=\"svc\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:serviceTask>\n    <bpmn:complexGateway id=\"g\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"svc\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"g\"",
+      "id": "flow/dead-end",
+      "index": 5,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" id=\"D\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.6.0\">\n  <bpmn:process id=\"p\" isExecutable=\"true\">\n    <bpmn:serviceTask id=\"svc\"/>\n    <bpmn:complexGateway id=\"g\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:complexGateway>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"g\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    }
+  ],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 2,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 6,
+      "naming": 1,
+      "pattern": 0,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 5,
+      "info": 0,
+      "warning": 4
+    },
+    "total": 9
+  }
+}

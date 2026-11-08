@@ -1,0 +1,3 @@
+start[start Start] > read[service Read issues]
+err[boundary:error API error | on=read] > calc[task Count issues] > done[end Done]
+err > alert[send Alert the team] > failed[end Failed]

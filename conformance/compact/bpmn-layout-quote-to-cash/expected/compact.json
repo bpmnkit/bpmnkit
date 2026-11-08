@@ -1,0 +1,483 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "start",
+          "name": "Opportunity Received",
+          "type": "startEvent"
+        },
+        {
+          "id": "generateQuote",
+          "inputs": {
+            "lineItems": "=opportunity.lineItems",
+            "pricingTier": "=customer.tier"
+          },
+          "jobType": "quote-generator",
+          "name": "Generate Quote from Catalog",
+          "outputs": {
+            "discountPercent": "=quote.discountPercent",
+            "quoteTotal": "=quote.total"
+          },
+          "taskHeaders": {
+            "pricingModel": "tiered"
+          },
+          "type": "serviceTask"
+        },
+        {
+          "id": "discountApproval",
+          "name": "Discount Level?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "formId": "discount-approval-form",
+          "id": "managerApproval",
+          "name": "Manager Discount Approval",
+          "type": "userTask"
+        },
+        {
+          "formId": "discount-approval-form",
+          "id": "vpApproval",
+          "name": "VP Discount Approval",
+          "type": "userTask"
+        },
+        {
+          "id": "approvalDecision",
+          "name": "Discount Approved?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "endContractRejected",
+          "name": "Contract Rejected",
+          "type": "endEvent"
+        },
+        {
+          "id": "generateContract",
+          "inputs": {
+            "customer": "=customer",
+            "quote": "=quote"
+          },
+          "jobType": "contract-generator",
+          "name": "Generate Contract",
+          "outputs": {
+            "contractId": "=contract.id"
+          },
+          "resultVariable": "contractId",
+          "type": "serviceTask"
+        },
+        {
+          "id": "sendForSignature",
+          "inputs": {
+            "authentication.token": "=secrets.ESIGN_TOKEN",
+            "authentication.type": "bearer",
+            "connectionTimeoutInSeconds": "20",
+            "method": "POST",
+            "readTimeoutInSeconds": "20",
+            "url": "=esignatureUrl + \"/envelopes\""
+          },
+          "jobType": "io.camunda:http-json:1",
+          "modelerTemplate": {
+            "id": "io.camunda.connectors.HttpJson.v2",
+            "version": 12
+          },
+          "name": "Send Contract for E-Signature",
+          "resultVariable": "signatureResponse",
+          "taskHeaders": {
+            "resultExpression": "=signatureResponse.body"
+          },
+          "type": "serviceTask"
+        },
+        {
+          "id": "signatureCheck",
+          "name": "Contract Signed?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "orderType",
+          "name": "Order Type?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "provisionStandard",
+          "inputs": {
+            "order": "=order"
+          },
+          "jobType": "provisioning-service",
+          "name": "Provision Standard Order",
+          "type": "serviceTask"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "provStart",
+                "name": "Line Item",
+                "type": "startEvent"
+              },
+              {
+                "id": "provisionLine",
+                "inputs": {
+                  "lineItem": "=lineItem"
+                },
+                "jobType": "provisioning-service",
+                "name": "Provision Line Item",
+                "outputs": {
+                  "provisionResult": "=provisionStatus"
+                },
+                "resultVariable": "provisionResult",
+                "type": "serviceTask"
+              },
+              {
+                "id": "provEnd",
+                "name": "Line Provisioned",
+                "type": "endEvent"
+              }
+            ],
+            "flows": [
+              {
+                "from": "provStart",
+                "id": "Flow_JiJIEANV",
+                "to": "provisionLine"
+              },
+              {
+                "from": "provisionLine",
+                "id": "Flow_opsPtJat",
+                "to": "provEnd"
+              }
+            ]
+          },
+          "id": "provisionBundle",
+          "name": "Provision Bundled Order",
+          "type": "subProcess"
+        },
+        {
+          "id": "generateInvoice",
+          "inputs": {
+            "amountDue": "=quote.total",
+            "order": "=order"
+          },
+          "jobType": "invoice-generator",
+          "name": "Generate Invoice",
+          "outputs": {
+            "invoiceId": "=invoice.id"
+          },
+          "resultVariable": "invoiceId",
+          "type": "serviceTask"
+        },
+        {
+          "id": "processPayment",
+          "inputs": {
+            "authentication.token": "=secrets.PAYMENT_GATEWAY_TOKEN",
+            "authentication.type": "bearer",
+            "connectionTimeoutInSeconds": "20",
+            "method": "POST",
+            "readTimeoutInSeconds": "20",
+            "url": "=paymentGatewayUrl + \"/charges\""
+          },
+          "jobType": "io.camunda:http-json:1",
+          "modelerTemplate": {
+            "id": "io.camunda.connectors.HttpJson.v2",
+            "version": 12
+          },
+          "name": "Charge Payment Gateway",
+          "resultVariable": "paymentResponse",
+          "taskHeaders": {
+            "resultExpression": "=paymentResponse.body"
+          },
+          "type": "serviceTask"
+        },
+        {
+          "id": "paymentOutcome",
+          "name": "Payment Outcome?",
+          "type": "eventBasedGateway"
+        },
+        {
+          "id": "paymentConfirmed",
+          "name": "Payment Confirmed",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "id": "endPaymentReceived",
+          "name": "Payment Received",
+          "type": "endEvent"
+        },
+        {
+          "id": "paymentWindowElapsed",
+          "name": "Payment Window Elapsed",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "dunStart",
+                "name": "Payment Overdue",
+                "type": "startEvent"
+              },
+              {
+                "id": "sendReminder1",
+                "jobType": "reminder-sender",
+                "name": "Send 1st Reminder",
+                "taskHeaders": {
+                  "template": "dunning-1"
+                },
+                "type": "serviceTask"
+              },
+              {
+                "id": "awaitPayment1",
+                "name": "Await Payment (1)",
+                "type": "receiveTask"
+              },
+              {
+                "attachedTo": "awaitPayment1",
+                "id": "timerReminder1",
+                "name": "7 Days",
+                "type": "boundaryEvent"
+              },
+              {
+                "id": "dunEndPaid",
+                "name": "Payment Collected",
+                "type": "endEvent"
+              }
+            ],
+            "flows": [
+              {
+                "from": "dunStart",
+                "id": "Flow_Y2WHbokq",
+                "to": "sendReminder1"
+              },
+              {
+                "from": "sendReminder1",
+                "id": "Flow_bxCEkomG",
+                "to": "awaitPayment1"
+              },
+              {
+                "from": "timerReminder1",
+                "id": "Flow_jRDLA0qv",
+                "to": "dunEndPaid"
+              }
+            ]
+          },
+          "id": "dunning",
+          "name": "Dunning & Cash Collection",
+          "type": "subProcess"
+        },
+        {
+          "id": "collectionCheck",
+          "name": "Payment Collected?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "collectionsAgency",
+          "inputs": {
+            "invoiceId": "=invoiceId"
+          },
+          "jobType": "collections-agency",
+          "name": "Escalate to Collections Agency",
+          "outputs": {
+            "recovered": "=collectionResult.recovered"
+          },
+          "resultVariable": "recovered",
+          "type": "serviceTask"
+        },
+        {
+          "id": "collectionsResult",
+          "name": "Debt Recovered?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "endWrittenOff",
+          "name": "Written Off — Collections Failed",
+          "type": "endEvent"
+        },
+        {
+          "id": "orderType_join",
+          "type": "exclusiveGateway"
+        }
+      ],
+      "flows": [
+        {
+          "from": "start",
+          "id": "Flow_XjhCYuOK",
+          "to": "generateQuote"
+        },
+        {
+          "from": "generateQuote",
+          "id": "Flow_bchUvOZ2",
+          "to": "discountApproval"
+        },
+        {
+          "condition": "=discountPercent <= 10",
+          "from": "discountApproval",
+          "id": "Flow_QZRbwxhU",
+          "name": "no-approval-needed",
+          "to": "generateContract"
+        },
+        {
+          "condition": "=discountPercent > 10 and discountPercent <= 25",
+          "from": "discountApproval",
+          "id": "Flow_7TjRkdGd",
+          "name": "manager-approval",
+          "to": "managerApproval"
+        },
+        {
+          "from": "managerApproval",
+          "id": "Flow_McQkxpe9",
+          "to": "approvalDecision"
+        },
+        {
+          "from": "discountApproval",
+          "id": "Flow_y9NbTDhR",
+          "isDefault": true,
+          "name": "vp-approval",
+          "to": "vpApproval"
+        },
+        {
+          "from": "vpApproval",
+          "id": "Flow_fpJ7UEWD",
+          "to": "approvalDecision"
+        },
+        {
+          "condition": "=discountApproved = true",
+          "from": "approvalDecision",
+          "id": "Flow_oExsK6c1",
+          "name": "discount-approved",
+          "to": "generateContract"
+        },
+        {
+          "from": "approvalDecision",
+          "id": "Flow_va69mGZx",
+          "isDefault": true,
+          "name": "discount-rejected",
+          "to": "endContractRejected"
+        },
+        {
+          "from": "generateContract",
+          "id": "Flow_2s0JeKjV",
+          "to": "sendForSignature"
+        },
+        {
+          "from": "sendForSignature",
+          "id": "Flow_GqAZEa9L",
+          "to": "signatureCheck"
+        },
+        {
+          "condition": "=signatureResponse.status = \"declined\"",
+          "from": "signatureCheck",
+          "id": "Flow_TtJzWXLn",
+          "name": "signature-declined",
+          "to": "endContractRejected"
+        },
+        {
+          "condition": "=signatureResponse.status = \"signed\"",
+          "from": "signatureCheck",
+          "id": "Flow_bm3sKMZA",
+          "name": "signature-signed",
+          "to": "orderType"
+        },
+        {
+          "condition": "=order.type = \"standard\"",
+          "from": "orderType",
+          "id": "Flow_K9wwadg1",
+          "name": "standard-order",
+          "to": "provisionStandard"
+        },
+        {
+          "from": "provisionStandard",
+          "id": "Flow_MJRLe9Ud",
+          "to": "orderType_join"
+        },
+        {
+          "from": "orderType",
+          "id": "Flow_U58MqVEA",
+          "isDefault": true,
+          "name": "bundled-order",
+          "to": "provisionBundle"
+        },
+        {
+          "from": "provisionBundle",
+          "id": "Flow_ppq2whx1",
+          "to": "orderType_join"
+        },
+        {
+          "from": "generateInvoice",
+          "id": "Flow_NNMRv3Pv",
+          "to": "processPayment"
+        },
+        {
+          "from": "processPayment",
+          "id": "Flow_rAke0SwX",
+          "to": "paymentOutcome"
+        },
+        {
+          "from": "paymentOutcome",
+          "id": "Flow_CGvPR8ea",
+          "name": "paid-immediately",
+          "to": "paymentConfirmed"
+        },
+        {
+          "from": "paymentConfirmed",
+          "id": "Flow_WvP1ZYV3",
+          "to": "endPaymentReceived"
+        },
+        {
+          "from": "paymentOutcome",
+          "id": "Flow_EpnDtwOl",
+          "name": "payment-overdue",
+          "to": "paymentWindowElapsed"
+        },
+        {
+          "from": "paymentWindowElapsed",
+          "id": "Flow_z74FHoCS",
+          "to": "dunning"
+        },
+        {
+          "from": "dunning",
+          "id": "Flow_FRNklBg3",
+          "to": "collectionCheck"
+        },
+        {
+          "condition": "=paymentReceived = true",
+          "from": "collectionCheck",
+          "id": "Flow_tTnmOKZY",
+          "name": "collected-during-dunning",
+          "to": "endPaymentReceived"
+        },
+        {
+          "from": "collectionCheck",
+          "id": "Flow_baF9j4Dg",
+          "isDefault": true,
+          "name": "still-unpaid",
+          "to": "collectionsAgency"
+        },
+        {
+          "from": "collectionsAgency",
+          "id": "Flow_ZTOMVwy0",
+          "to": "collectionsResult"
+        },
+        {
+          "condition": "=recovered = true",
+          "from": "collectionsResult",
+          "id": "Flow_V7DE8MG5",
+          "name": "debt-recovered",
+          "to": "endPaymentReceived"
+        },
+        {
+          "from": "collectionsResult",
+          "id": "Flow_fyHvSVmV",
+          "isDefault": true,
+          "name": "debt-written-off",
+          "to": "endWrittenOff"
+        },
+        {
+          "from": "orderType_join",
+          "id": "Flow_mGa16ca8",
+          "to": "generateInvoice"
+        }
+      ],
+      "id": "QuoteToCash",
+      "name": "Quote-to-Cash Process"
+    }
+  ]
+}

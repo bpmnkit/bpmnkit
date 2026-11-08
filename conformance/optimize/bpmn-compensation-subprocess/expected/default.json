@@ -1,0 +1,365 @@
+{
+  "findings": [
+    {
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-start-event",
+      "message": "Process \"Process_1\" has no start event.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Add a start event to define where the process begins."
+    },
+    {
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-end-event",
+      "message": "Process \"Process_1\" has no end event.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Add an end event to properly terminate the process."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Undo"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Undo\" (subProcess) is not reachable from any start event.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Undo"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Undo\" (subProcess) has no outgoing sequence flows.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Tx"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Tx\" (transaction) is not reachable from any start event.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Tx"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Tx\" (transaction) has no outgoing sequence flows.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Tx"
+      ],
+      "fixable": false,
+      "id": "flow/empty-subprocess",
+      "message": "Sub-process \"Tx\" (transaction) contains no flow elements.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Add flow elements inside the sub-process or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Adhoc"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Adhoc\" (adHocSubProcess) is not reachable from any start event.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Adhoc"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Adhoc\" (adHocSubProcess) has no outgoing sequence flows.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Adhoc"
+      ],
+      "fixable": false,
+      "id": "flow/empty-subprocess",
+      "message": "Sub-process \"Adhoc\" (adHocSubProcess) contains no flow elements.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Add flow elements inside the sub-process or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Evt"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Evt\" (subProcess) is not reachable from any start event.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Evt"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Evt\" (subProcess) has no outgoing sequence flows.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Evt"
+      ],
+      "fixable": false,
+      "id": "flow/empty-subprocess",
+      "message": "Sub-process \"Evt\" (subProcess) contains no flow elements.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Add flow elements inside the sub-process or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Plain"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Plain\" (subProcess) is not reachable from any start event.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Plain"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Plain\" (subProcess) has no outgoing sequence flows.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Plain"
+      ],
+      "fixable": false,
+      "id": "flow/empty-subprocess",
+      "message": "Sub-process \"Plain\" (subProcess) contains no flow elements.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Add flow elements inside the sub-process or remove it."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "Undo"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"Undo\" (subProcess) has no name.",
+      "processId": "Process_1",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "Tx"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"Tx\" (transaction) has no name.",
+      "processId": "Process_1",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "Adhoc"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"Adhoc\" (adHocSubProcess) has no name.",
+      "processId": "Process_1",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "Evt"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"Evt\" (subProcess) has no name.",
+      "processId": "Process_1",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "Plain"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"Plain\" (subProcess) has no name.",
+      "processId": "Process_1",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Undo"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Undo\" has no error boundary event.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Tx"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Tx\" has no error boundary event.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Adhoc"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Adhoc\" has no error boundary event.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Evt"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Evt\" has no error boundary event.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Plain"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Plain\" has no error boundary event.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    }
+  ],
+  "fixes": [
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"Undo\"",
+      "id": "flow/dead-end",
+      "index": 3,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"Process_1\" isExecutable=\"true\">\n    <bpmn:subProcess id=\"Undo\" isForCompensation=\"true\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n      <bpmn:startEvent id=\"UndoStart\"/>\n    </bpmn:subProcess>\n    <bpmn:transaction id=\"Tx\" isForCompensation=\"true\"/>\n    <bpmn:adHocSubProcess id=\"Adhoc\" isForCompensation=\"true\"/>\n    <bpmn:subProcess id=\"Evt\" triggeredByEvent=\"true\" isForCompensation=\"true\"/>\n    <bpmn:subProcess id=\"Plain\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"Undo\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"Tx\"",
+      "id": "flow/dead-end",
+      "index": 5,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"Process_1\" isExecutable=\"true\">\n    <bpmn:subProcess id=\"Undo\" isForCompensation=\"true\">\n      <bpmn:startEvent id=\"UndoStart\"/>\n    </bpmn:subProcess>\n    <bpmn:transaction id=\"Tx\" isForCompensation=\"true\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:transaction>\n    <bpmn:adHocSubProcess id=\"Adhoc\" isForCompensation=\"true\"/>\n    <bpmn:subProcess id=\"Evt\" triggeredByEvent=\"true\" isForCompensation=\"true\"/>\n    <bpmn:subProcess id=\"Plain\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"Tx\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"Adhoc\"",
+      "id": "flow/dead-end",
+      "index": 8,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"Process_1\" isExecutable=\"true\">\n    <bpmn:subProcess id=\"Undo\" isForCompensation=\"true\">\n      <bpmn:startEvent id=\"UndoStart\"/>\n    </bpmn:subProcess>\n    <bpmn:transaction id=\"Tx\" isForCompensation=\"true\"/>\n    <bpmn:adHocSubProcess id=\"Adhoc\" isForCompensation=\"true\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:adHocSubProcess>\n    <bpmn:subProcess id=\"Evt\" triggeredByEvent=\"true\" isForCompensation=\"true\"/>\n    <bpmn:subProcess id=\"Plain\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"Adhoc\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"Evt\"",
+      "id": "flow/dead-end",
+      "index": 11,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"Process_1\" isExecutable=\"true\">\n    <bpmn:subProcess id=\"Undo\" isForCompensation=\"true\">\n      <bpmn:startEvent id=\"UndoStart\"/>\n    </bpmn:subProcess>\n    <bpmn:transaction id=\"Tx\" isForCompensation=\"true\"/>\n    <bpmn:adHocSubProcess id=\"Adhoc\" isForCompensation=\"true\"/>\n    <bpmn:subProcess id=\"Evt\" triggeredByEvent=\"true\" isForCompensation=\"true\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:subProcess>\n    <bpmn:subProcess id=\"Plain\"/>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"Evt\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    },
+    {
+      "description": "Added end event \"EndEvent_0000001\" connected from \"Plain\"",
+      "id": "flow/dead-end",
+      "index": 14,
+      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"Process_1\" isExecutable=\"true\">\n    <bpmn:subProcess id=\"Undo\" isForCompensation=\"true\">\n      <bpmn:startEvent id=\"UndoStart\"/>\n    </bpmn:subProcess>\n    <bpmn:transaction id=\"Tx\" isForCompensation=\"true\"/>\n    <bpmn:adHocSubProcess id=\"Adhoc\" isForCompensation=\"true\"/>\n    <bpmn:subProcess id=\"Evt\" triggeredByEvent=\"true\" isForCompensation=\"true\"/>\n    <bpmn:subProcess id=\"Plain\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:subProcess>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"Plain\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+    }
+  ],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 0,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 16,
+      "naming": 5,
+      "pattern": 5,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 6,
+      "info": 5,
+      "warning": 15
+    },
+    "total": 26
+  }
+}

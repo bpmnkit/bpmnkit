@@ -1,0 +1,11 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s",{"executionListeners":[{"eventType":"end","type":"ls"}]}],
+		["exclusiveGateway","g",{"executionListeners":[{"eventType":"start","type":"lg"}]}],
+		["branch","a",{"$ops":[["condition","=x"],["task","ta",{"executionListeners":[{"eventType":"start","type":"l1"}]}],["endEvent","e1",{"executionListeners":[{"eventType":"start","type":"l2"}]}]]}],
+		["branch","b",{"$ops":[["defaultFlow"],["endEvent","e2"]]}],
+		["build"]
+	]
+}

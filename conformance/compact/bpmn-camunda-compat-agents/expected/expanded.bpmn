@@ -1,0 +1,315 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_agents" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="agents" isExecutable="true">
+    <bpmn:serviceTask id="outsideTool">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="t"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=fromAi(toolCall.x, &quot;x&quot;)" target="x"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:adHocSubProcess id="plainAdHoc" name="Plain">
+      <bpmn:serviceTask id="plainTool">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="t"/>
+          <zeebe:ioMapping>
+            <zeebe:input source="=fromAi(toolCall.x)" target="x"/>
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+    </bpmn:adHocSubProcess>
+    <bpmn:adHocSubProcess id="tools" name="Tools">
+      <bpmn:extensionElements>
+        <zeebe:properties>
+          <zeebe:property name="io.camunda.agenticai.toolContainer" value="true"/>
+        </zeebe:properties>
+      </bpmn:extensionElements>
+      <bpmn:serviceTask id="toolGood">
+        <bpmn:documentation>Looks up the weather.</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="t"/>
+          <zeebe:ioMapping>
+            <zeebe:input source="=fromAi(toolCall.city, &quot;The city&quot;, &quot;string&quot;)" target="city"/>
+            <zeebe:input source="=fromAi(value: toolCall.days, description: &quot;Days&quot;)" target="days"/>
+            <zeebe:output source="=weather" target="toolCallResult"/>
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="toolNoResult">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="t"/>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="toolUnmapped">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="t"/>
+          <zeebe:ioMapping>
+            <zeebe:input source="=fromAi(&quot;city&quot;)" target="a"/>
+            <zeebe:input source="=fromAi(city, 1)" target="b"/>
+            <zeebe:input source="=fromAi()" target="c"/>
+            <zeebe:output source="=r" target="result"/>
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="toolCasing">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="t"/>
+          <zeebe:ioMapping>
+            <zeebe:input source="=FromAI(toolCall.x)" target="a"/>
+            <zeebe:input source="=fromAi(toolCall.a.b) + fromAi(other.x)" target="b"/>
+            <zeebe:input source="=fromAi(if x then toolCall.x else toolCall.y)" target="c"/>
+            <zeebe:input source="=fromAi(toolCall[&quot;x&quot;], null)" target="d"/>
+            <zeebe:input source="=fromAi(null) + fromAi(1 + 2) + fromAi(-1)" target="e"/>
+            <zeebe:input source="=fromAi([1]) + fromAi((toolCall.p)) + fromAi(toolCall.q, (&quot;d&quot;))" target="f"/>
+            <zeebe:output source="=r" target="ToolCallResult"/>
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="toolDuplicateKey">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="t"/>
+          <zeebe:ioMapping>
+            <zeebe:input source="=fromAi(toolCall.q)" target="a"/>
+            <zeebe:input source="=fromAi(toolCall.q, &quot;again&quot;)" target="b"/>
+            <zeebe:output source="=r" target="toolCallResult"/>
+            <zeebe:output source="=r" target="toolcallresult.extra"/>
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="toolOutputFromAi">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="t"/>
+          <zeebe:ioMapping>
+            <zeebe:output source="=fromAi(toolCall.o)" target="toolCallResult"/>
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="chainA" name="Fetch">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="t"/>
+          <zeebe:ioMapping>
+            <zeebe:output source="=r" target="toolCallResult"/>
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+        <bpmn:outgoing>chainAtoB</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="chainB">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="t"/>
+          <zeebe:ioMapping>
+            <zeebe:input source="=fromAi(toolCall.y)" target="y"/>
+            <zeebe:output source="=context put(toolCallResult, &quot;b&quot;, 1)" target="toolCallResult"/>
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+        <bpmn:incoming>chainAtoB</bpmn:incoming>
+        <bpmn:outgoing>chainBtoC</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:scriptTask id="chainC">
+        <bpmn:extensionElements>
+          <zeebe:script expression="=1" resultVariable="toolCallResult"/>
+        </bpmn:extensionElements>
+        <bpmn:incoming>chainBtoC</bpmn:incoming>
+      </bpmn:scriptTask>
+      <bpmn:serviceTask id="branch">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="t"/>
+        </bpmn:extensionElements>
+        <bpmn:outgoing>branchToA</bpmn:outgoing>
+        <bpmn:outgoing>branchToB</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="branchA">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="t"/>
+          <zeebe:ioMapping>
+            <zeebe:output source="=a" target="toolCallResult"/>
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+        <bpmn:incoming>branchToA</bpmn:incoming>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="branchB">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="t"/>
+          <zeebe:taskHeaders>
+            <zeebe:header key="resultExpression" value="={toolCallResult: b, other: toolcallresult}"/>
+          </zeebe:taskHeaders>
+        </bpmn:extensionElements>
+        <bpmn:incoming>branchToB</bpmn:incoming>
+      </bpmn:serviceTask>
+      <bpmn:subProcess id="toolSub">
+        <bpmn:startEvent id="toolSubStart">
+          <bpmn:outgoing>toolSubToStep</bpmn:outgoing>
+        </bpmn:startEvent>
+        <bpmn:serviceTask id="toolSubStep">
+          <bpmn:extensionElements>
+            <zeebe:taskDefinition type="t"/>
+            <zeebe:taskHeaders>
+              <zeebe:header key="resultVariable" value="toolResult"/>
+            </zeebe:taskHeaders>
+            <zeebe:ioMapping>
+              <zeebe:input source="=fromAi(toolCall.k)" target="k"/>
+            </zeebe:ioMapping>
+          </bpmn:extensionElements>
+          <bpmn:incoming>toolSubToStep</bpmn:incoming>
+        </bpmn:serviceTask>
+        <bpmn:sequenceFlow id="toolSubToStep" sourceRef="toolSubStart" targetRef="toolSubStep"/>
+      </bpmn:subProcess>
+      <bpmn:serviceTask id="toolBoundary">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="t"/>
+          <zeebe:ioMapping>
+            <zeebe:output source="=a" target="toolCallResult"/>
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:boundaryEvent id="toolBoundaryError" attachedToRef="toolBoundary" cancelActivity="true">
+        <bpmn:extensionElements>
+          <zeebe:ioMapping>
+            <zeebe:output source="=e" target="toolCallResult"/>
+          </zeebe:ioMapping>
+        </bpmn:extensionElements>
+        <bpmn:errorEventDefinition id="toolBoundaryError_ErrorEventDefinition"/>
+      </bpmn:boundaryEvent>
+      <bpmn:sequenceFlow id="chainAtoB" sourceRef="chainA" targetRef="chainB"/>
+      <bpmn:sequenceFlow id="chainBtoC" sourceRef="chainB" targetRef="chainC"/>
+      <bpmn:sequenceFlow id="branchToA" sourceRef="branch" targetRef="branchA">
+        <bpmn:conditionExpression>=fromAi(toolCall.z) = 1</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="branchToB" sourceRef="branch" targetRef="branchB"/>
+    </bpmn:adHocSubProcess>
+    <bpmn:adHocSubProcess id="legacyAgent" zeebe:modelerTemplate="io.camunda.connectors.agenticai.aiagent.jobworker.v1">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="agent"/>
+      </bpmn:extensionElements>
+      <bpmn:serviceTask id="legacyTool">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="t"/>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+    </bpmn:adHocSubProcess>
+    <bpmn:adHocSubProcess id="forkedAgent">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="io.camunda.agenticai:aiagent-job-worker:1"/>
+      </bpmn:extensionElements>
+      <bpmn:serviceTask id="forkedTool">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="t"/>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+    </bpmn:adHocSubProcess>
+    <bpmn:adHocSubProcess id="definedAgent">
+      <bpmn:serviceTask id="definedTool">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="t"/>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+    </bpmn:adHocSubProcess>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_agents">
+    <bpmndi:BPMNPlane id="BPMNPlane_agents" bpmnElement="agents">
+      <bpmndi:BPMNShape id="outsideTool_di" bpmnElement="outsideTool">
+        <dc:Bounds x="435" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="plainAdHoc_di" bpmnElement="plainAdHoc" isExpanded="true">
+        <dc:Bounds x="385" y="160" width="200" height="208"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="tools_di" bpmnElement="tools" isExpanded="true">
+        <dc:Bounds x="0" y="448" width="970" height="1118"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="legacyAgent_di" bpmnElement="legacyAgent" isExpanded="true">
+        <dc:Bounds x="385" y="1646" width="200" height="180"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="forkedAgent_di" bpmnElement="forkedAgent" isExpanded="true">
+        <dc:Bounds x="385" y="1906" width="200" height="180"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="definedAgent_di" bpmnElement="definedAgent" isExpanded="true">
+        <dc:Bounds x="385" y="2166" width="200" height="180"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="plainTool_di" bpmnElement="plainTool">
+        <dc:Bounds x="435" y="238" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="toolGood_di" bpmnElement="toolGood">
+        <dc:Bounds x="148" y="526" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="toolNoResult_di" bpmnElement="toolNoResult">
+        <dc:Bounds x="484" y="526" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="toolUnmapped_di" bpmnElement="toolUnmapped">
+        <dc:Bounds x="820" y="526" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="toolCasing_di" bpmnElement="toolCasing">
+        <dc:Bounds x="148" y="726" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="toolDuplicateKey_di" bpmnElement="toolDuplicateKey">
+        <dc:Bounds x="484" y="726" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="toolOutputFromAi_di" bpmnElement="toolOutputFromAi">
+        <dc:Bounds x="820" y="726" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="chainA_di" bpmnElement="chainA">
+        <dc:Bounds x="148" y="1136" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="chainB_di" bpmnElement="chainB">
+        <dc:Bounds x="446" y="1136" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="chainC_di" bpmnElement="chainC">
+        <dc:Bounds x="606" y="1136" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="branch_di" bpmnElement="branch">
+        <dc:Bounds x="148" y="1296" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="branchA_di" bpmnElement="branchA">
+        <dc:Bounds x="446" y="1296" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="branchB_di" bpmnElement="branchB">
+        <dc:Bounds x="446" y="1436" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="toolSub_di" bpmnElement="toolSub" isExpanded="true">
+        <dc:Bounds x="50" y="876" width="296" height="180"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="toolBoundary_di" bpmnElement="toolBoundary">
+        <dc:Bounds x="484" y="926" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="toolBoundaryError_di" bpmnElement="toolBoundaryError">
+        <dc:Bounds x="516" y="988" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="toolSubStart_di" bpmnElement="toolSubStart">
+        <dc:Bounds x="100" y="948" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="toolSubStep_di" bpmnElement="toolSubStep">
+        <dc:Bounds x="196" y="926" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="legacyTool_di" bpmnElement="legacyTool">
+        <dc:Bounds x="435" y="1696" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="forkedTool_di" bpmnElement="forkedTool">
+        <dc:Bounds x="435" y="1956" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="definedTool_di" bpmnElement="definedTool">
+        <dc:Bounds x="435" y="2216" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="chainAtoB_di" bpmnElement="chainAtoB">
+        <di:waypoint x="248" y="1176"/>
+        <di:waypoint x="446" y="1176"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="chainBtoC_di" bpmnElement="chainBtoC">
+        <di:waypoint x="546" y="1176"/>
+        <di:waypoint x="606" y="1176"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="branchToA_di" bpmnElement="branchToA">
+        <di:waypoint x="248" y="1336"/>
+        <di:waypoint x="446" y="1336"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="branchToB_di" bpmnElement="branchToB">
+        <di:waypoint x="198" y="1376"/>
+        <di:waypoint x="198" y="1476"/>
+        <di:waypoint x="446" y="1476"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="toolSubToStep_di" bpmnElement="toolSubToStep">
+        <di:waypoint x="136" y="966"/>
+        <di:waypoint x="196" y="966"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

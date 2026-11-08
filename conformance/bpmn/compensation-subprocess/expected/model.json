@@ -1,0 +1,110 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "UndoStart",
+              "incoming": [],
+              "outgoing": [],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "Undo",
+          "incoming": [],
+          "isForCompensation": true,
+          "outgoing": [],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "type": "subProcess",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [],
+          "groups": [],
+          "id": "Tx",
+          "incoming": [],
+          "isForCompensation": true,
+          "outgoing": [],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "type": "transaction",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [],
+          "groups": [],
+          "id": "Adhoc",
+          "incoming": [],
+          "isForCompensation": true,
+          "outgoing": [],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "type": "adHocSubProcess",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [],
+          "groups": [],
+          "id": "Evt",
+          "incoming": [],
+          "isForCompensation": true,
+          "outgoing": [],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "triggeredByEvent": true,
+          "type": "subProcess",
+          "unknownAttributes": {
+            "triggeredByEvent": "true"
+          }
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [],
+          "groups": [],
+          "id": "Plain",
+          "incoming": [],
+          "outgoing": [],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "type": "subProcess",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "Process_1",
+      "isExecutable": true,
+      "sequenceFlows": [],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

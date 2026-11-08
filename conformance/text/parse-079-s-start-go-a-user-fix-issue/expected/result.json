@@ -1,0 +1,73 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "id": "a",
+            "name": "Fix issue",
+            "type": "userTask"
+          },
+          {
+            "id": "r",
+            "name": "Reproducible?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "e",
+            "name": "Done",
+            "type": "endEvent"
+          },
+          {
+            "id": "a_join",
+            "type": "exclusiveGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "a_join"
+          },
+          {
+            "from": "a",
+            "id": "Flow_2",
+            "to": "r"
+          },
+          {
+            "from": "r",
+            "id": "Flow_3",
+            "isDefault": true,
+            "name": "Yes",
+            "to": "e"
+          },
+          {
+            "condition": "= reproduced = false",
+            "from": "r",
+            "id": "Flow_4",
+            "name": "No",
+            "to": "a_join"
+          },
+          {
+            "from": "a_join",
+            "id": "Flow_5",
+            "to": "a"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "joined 2 flows into \"a\" with xor gateway \"a_join\""
+  ],
+  "problems": [],
+  "questions": []
+}

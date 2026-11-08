@@ -1,0 +1,20 @@
+[
+  {
+    "decision": "eligibility",
+    "context": {
+      "age": {
+        "t": "number",
+        "v": "10"
+      }
+    }
+  },
+  {
+    "decision": "eligibility",
+    "context": {
+      "age": {
+        "t": "number",
+        "v": "30"
+      }
+    }
+  }
+]

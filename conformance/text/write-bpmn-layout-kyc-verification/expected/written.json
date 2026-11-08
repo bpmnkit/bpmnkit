@@ -1,0 +1,19 @@
+{
+  "aliases": {
+    "classification_outcome": "classificationGateway",
+    "customer_approved": "endApproved",
+    "customer_rejected": "endRejected",
+    "document_verified": "documentQuality",
+    "enhanced_due_diligence_review": "enhancedDueDiligence",
+    "escalated_to_compliance": "endEscalated",
+    "final_risk_classification": "finalRiskClassification",
+    "notify_approval": "notifyApproval",
+    "notify_rejection": "notifyRejection",
+    "risk_level": "riskRouting",
+    "sanctions_pep_screening": "sanctionsScreening",
+    "standard_due_diligence": "standardDueDiligence",
+    "start": "start",
+    "upload_identity_document": "uploadDocument",
+    "verify_document_via_ocr": "verifyDocument"
+  }
+}

@@ -233,8 +233,9 @@ const ISO_CYCLE_RE = new RegExp(
 function isIsoDate(value: string): boolean {
 	const match = ISO_DATE_RE.exec(value)
 	if (match?.groups === undefined) return false
-	// Rejects dates like 2024-02-31, which `Date` rolls into the next month.
-	return new Date(match.groups.date as string).getMonth() + 1 === Number(match.groups.month)
+	// Rejects dates like 2024-02-31, which `Date` rolls into the next month. A date-only
+	// string is UTC midnight, so the month is read in UTC, not in the local time zone.
+	return new Date(match.groups.date as string).getUTCMonth() + 1 === Number(match.groups.month)
 }
 
 const cronAlt = (...patterns: string[]) => `(${patterns.join("|")})`

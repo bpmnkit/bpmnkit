@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:camunda="http://camunda.org/schema/1.0/dmn" xmlns:custom="urn:custom" id="Definitions_ext" name="Extensions" namespace="urn:ext">
+  <decision id="with_extension" name="Own extensionElements">
+    <extensionElements>
+      <custom:owner team="risk" level="2">Alice &amp; Bob</custom:owner>
+      <custom:tags>
+        <custom:tag>a</custom:tag>
+        <custom:tag>b</custom:tag>
+      </custom:tags>
+    </extensionElements>
+    <decisionTable id="t1">
+      <input id="i1">
+        <inputExpression id="ie1">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="o1" name="y"/>
+    </decisionTable>
+    <literalExpression id="ignored">
+      <text>1 + 1</text>
+    </literalExpression>
+  </decision>
+  <decision id="literal" name="Literal expression">
+    <extensionElements>
+      <description>Adds one</description>
+      <question>What is x + 1?</question>
+      <variable id="var1" name="plusOne" typeRef="number"/>
+    </extensionElements>
+    <informationRequirement id="ir1">
+      <requiredInput href="#x"/>
+    </informationRequirement>
+    <literalExpression id="le1" typeRef="number">
+      <text>x + 1</text>
+    </literalExpression>
+  </decision>
+  <decision id="empty_extension" name="Empty extensionElements">
+    <literalExpression id="le2">
+      <text>2</text>
+    </literalExpression>
+  </decision>
+  <decision id="plain" name="Nothing unknown">
+    <decisionTable id="t2">
+      <input id="i2">
+        <inputExpression id="ie2">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="o2" name="y"/>
+    </decisionTable>
+  </decision>
+  <inputData id="x" name="x"/>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="with_extension">
+        <dc:Bounds height="80" width="180" x="160" y="100"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="empty_extension">
+        <dc:Bounds height="80" width="180" x="160" y="220"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="plain">
+        <dc:Bounds height="80" width="180" x="160" y="340"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="x">
+        <dc:Bounds height="45" width="125" x="160" y="460"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="literal">
+        <dc:Bounds height="80" width="180" x="400" y="262.5"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNEdge dmnElementRef="ir1">
+        <di:waypoint x="285" y="482.5"/>
+        <di:waypoint x="400" y="302.5"/>
+      </dmndi:DMNEdge>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

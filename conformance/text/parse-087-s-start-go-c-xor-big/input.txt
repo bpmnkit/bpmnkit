@@ -1,0 +1,3 @@
+s[start Go] > c[xor Big?]
+c >(Yes: amount > 5) a[task A]
+c >(No) b[task B]

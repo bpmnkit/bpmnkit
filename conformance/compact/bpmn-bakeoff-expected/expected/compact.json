@@ -1,0 +1,229 @@
+{
+  "id": "Definitions_1",
+  "processes": [
+    {
+      "elements": [
+        {
+          "formId": "ai-agent-chat-initial-request",
+          "id": "StartEvent_TaskReceived",
+          "name": "Task to perform received",
+          "type": "startEvent"
+        },
+        {
+          "id": "Gateway_RunAgent",
+          "type": "exclusiveGateway"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "documentation": "Lists available users. Use this tool to look up names, usernames, or IDs. Do not use it for details not returned by the service. Input: none. Returns: an array of user objects containing id, name, and username.",
+                "id": "LookupSampleUsers",
+                "inputs": {
+                  "authentication.type": "noAuth",
+                  "connectionTimeoutInSeconds": "20",
+                  "documentReturnFormat.choice": "JSON",
+                  "followRedirects": "false",
+                  "method": "GET",
+                  "readTimeoutInSeconds": "20",
+                  "url": "https://jsonplaceholder.typicode.com/users"
+                },
+                "jobType": "io.camunda:http-json:1",
+                "modelerTemplate": {
+                  "id": "io.camunda.connectors.HttpJson.v2",
+                  "version": 18
+                },
+                "name": "Find sample users",
+                "taskHeaders": {
+                  "elementTemplateId": "io.camunda.connectors.HttpJson.v2",
+                  "elementTemplateVersion": "18",
+                  "resultExpression": "={toolCallResult: for user in response.body return {id: user.id, name: user.name, username: user.username}}",
+                  "retryBackoff": "PT0S"
+                },
+                "type": "serviceTask"
+              },
+              {
+                "documentation": "Searches the recipe catalog. Use this tool when a request asks for a recipe, dish, cuisine, or cooking instructions. Do not use it for unrelated food facts or guaranteed dietary safety. Input: searchQuery describing the desired dish or cuisine. Returns: matching recipe objects, or \"No result found.\"",
+                "id": "SearchRecipes",
+                "inputs": {
+                  "authentication.type": "noAuth",
+                  "connectionTimeoutInSeconds": "20",
+                  "documentReturnFormat.choice": "JSON",
+                  "followRedirects": "false",
+                  "method": "GET",
+                  "queryParameters": "={q: fromAi(toolCall.searchQuery, \"The query describing which recipe to search (e.g. a specific dish or the cuisine).\")}",
+                  "readTimeoutInSeconds": "20",
+                  "url": "https://dummyjson.com/recipes/search"
+                },
+                "jobType": "io.camunda:http-json:1",
+                "modelerTemplate": {
+                  "id": "io.camunda.connectors.HttpJson.v2",
+                  "version": 18
+                },
+                "name": "Search recipes",
+                "taskHeaders": {
+                  "elementTemplateId": "io.camunda.connectors.HttpJson.v2",
+                  "elementTemplateVersion": "18",
+                  "resultExpression": "={toolCallResult: if count(response.body.recipes) > 0 then response.body.recipes else \"No result found.\"}",
+                  "retryBackoff": "PT0S"
+                },
+                "type": "serviceTask"
+              },
+              {
+                "documentation": "Fetches one random safe-mode joke. Use this tool when the user asks for a joke or humorous response. Do not use it when the request requires a specific factual answer or a particular joke topic. Input: none. Returns: the joke as plain text.",
+                "id": "FetchSafeJoke",
+                "inputs": {
+                  "authentication.type": "noAuth",
+                  "connectionTimeoutInSeconds": "20",
+                  "documentReturnFormat.choice": "JSON",
+                  "followRedirects": "false",
+                  "method": "GET",
+                  "readTimeoutInSeconds": "20",
+                  "url": "https://v2.jokeapi.dev/joke/Any?format=txt&safe-mode"
+                },
+                "jobType": "io.camunda:http-json:1",
+                "modelerTemplate": {
+                  "id": "io.camunda.connectors.HttpJson.v2",
+                  "version": 18
+                },
+                "name": "Get a safe joke",
+                "taskHeaders": {
+                  "elementTemplateId": "io.camunda.connectors.HttpJson.v2",
+                  "elementTemplateVersion": "18",
+                  "resultExpression": "={toolCallResult: response.body}",
+                  "retryBackoff": "PT0S"
+                },
+                "type": "serviceTask"
+              },
+              {
+                "documentation": "Lists technology products. Use this tool when a request asks which devices or technology products are available or needs their attributes. Do not use it for live inventory, pricing, or purchasing. Input: none. Returns: an array of product objects with identifiers, names, and available attribute data.",
+                "id": "ListSampleTechnologyProducts",
+                "inputs": {
+                  "authentication.type": "noAuth",
+                  "connectionTimeoutInSeconds": "20",
+                  "documentReturnFormat.choice": "JSON",
+                  "followRedirects": "false",
+                  "method": "GET",
+                  "readTimeoutInSeconds": "20",
+                  "url": "https://api.restful-api.dev/objects"
+                },
+                "jobType": "io.camunda:http-json:1",
+                "modelerTemplate": {
+                  "id": "io.camunda.connectors.HttpJson.v2",
+                  "version": 18
+                },
+                "name": "List sample technology products",
+                "taskHeaders": {
+                  "elementTemplateId": "io.camunda.connectors.HttpJson.v2",
+                  "elementTemplateVersion": "18",
+                  "resultExpression": "={toolCallResult: response.body}",
+                  "retryBackoff": "PT0S"
+                },
+                "type": "serviceTask"
+              }
+            ],
+            "flows": []
+          },
+          "id": "AI_Agent",
+          "inputs": {
+            "agentContext": "=agent.context",
+            "data.events.behavior": "WAIT_FOR_TOOL_CALL_RESULTS",
+            "data.limits.maxModelCalls": "10",
+            "data.memory.contextWindowSize": "20",
+            "data.memory.storage.type": "in-process",
+            "data.response.format.parseJson": "false",
+            "data.response.format.type": "text",
+            "data.response.includeAgentContext": "true",
+            "data.response.includeAssistantMessage": "false",
+            "data.systemPrompt.prompt": "=\"You are **TaskAgent**, a helpful, generic chat agent that can handle a wide variety of customer requests using your own domain knowledge **and** any tools explicitly provided to you at runtime.\n\nIf tools are provided, you should prefer them instead of guessing an answer. You can call the same tool multiple times by providing different input values. Don't guess any tools which were not explicitly configured. If no tool matches the request, try to generate an answer. If you're not able to find a good answer, return with a message stating why you're not able to.\"",
+            "data.userPrompt.documents": "=if is defined(followUpInput) or is defined(followUpDocuments) then followUpDocuments else inputDocuments",
+            "data.userPrompt.prompt": "=if is defined(followUpInput) then followUpInput else inputText",
+            "provider.openai.api.responses.effort": "modelDefault",
+            "provider.openai.api.type": "responses",
+            "provider.openai.backend.custom.authentication.apiKey": "=camunda.secrets.CAMUNDA_PROVIDED_LLM_API_KEY",
+            "provider.openai.backend.custom.authentication.type": "apiKey",
+            "provider.openai.backend.custom.endpoint": "=camunda.secrets.CAMUNDA_PROVIDED_LLM_API_ENDPOINT",
+            "provider.openai.backend.type": "custom",
+            "provider.openai.model.model": "=camunda.secrets.CAMUNDA_PROVIDED_LLM_DEFAULT_MODEL",
+            "provider.type": "openai"
+          },
+          "jobType": "io.camunda.agenticai:aiagent:subprocess:2",
+          "modelerTemplate": {
+            "id": "io.camunda.connectors.agenticai.ai-agent-subprocess.v2",
+            "version": 1
+          },
+          "name": "AI Agent",
+          "outputs": {
+            "agent": "=agent"
+          },
+          "properties": {
+            "io.camunda.agenticai.toolContainer": "true"
+          },
+          "taskHeaders": {
+            "elementTemplateId": "io.camunda.connectors.agenticai.ai-agent-subprocess.v2",
+            "elementTemplateVersion": "1",
+            "retryBackoff": "PT0S"
+          },
+          "type": "adHocSubProcess"
+        },
+        {
+          "formId": "ai-agent-chat-user-feedback",
+          "id": "UserTask_ReviewAgentResponse",
+          "inputs": {
+            "responseText": "=agent.responseText"
+          },
+          "name": "User Feedback",
+          "type": "userTask"
+        },
+        {
+          "id": "Gateway_UserSatisfied",
+          "name": "User satisfied?",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "EndEvent_UserSatisfied",
+          "name": "User satisfied",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "StartEvent_TaskReceived",
+          "id": "Flow_StartEvent_TaskReceived_Gateway_RunAgent",
+          "to": "Gateway_RunAgent"
+        },
+        {
+          "from": "Gateway_RunAgent",
+          "id": "Flow_Gateway_RunAgent_AI_Agent",
+          "to": "AI_Agent"
+        },
+        {
+          "from": "AI_Agent",
+          "id": "Flow_AI_Agent_UserTask_ReviewAgentResponse",
+          "to": "UserTask_ReviewAgentResponse"
+        },
+        {
+          "from": "UserTask_ReviewAgentResponse",
+          "id": "Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied",
+          "to": "Gateway_UserSatisfied"
+        },
+        {
+          "condition": "=userSatisfied",
+          "from": "Gateway_UserSatisfied",
+          "id": "Flow_Yes",
+          "name": "Yes",
+          "to": "EndEvent_UserSatisfied"
+        },
+        {
+          "condition": "=userSatisfied = null or userSatisfied = false",
+          "from": "Gateway_UserSatisfied",
+          "id": "Flow_No",
+          "name": "No",
+          "to": "Gateway_RunAgent"
+        }
+      ],
+      "id": "ai-agent-chat-with-tools",
+      "name": "AI Agent Chat With Tools"
+    }
+  ]
+}

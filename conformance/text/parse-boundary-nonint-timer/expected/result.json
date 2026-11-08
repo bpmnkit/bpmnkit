@@ -1,0 +1,80 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "t",
+            "name": "Review",
+            "type": "userTask"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "t",
+            "eventType": "timer",
+            "id": "b",
+            "interrupting": false,
+            "name": "Reminder",
+            "timerDuration": "PT1H",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "r",
+            "jobType": "r",
+            "name": "Remind",
+            "type": "sendTask"
+          },
+          {
+            "id": "e_join",
+            "type": "exclusiveGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "e_join"
+          },
+          {
+            "from": "b",
+            "id": "Flow_3",
+            "to": "r"
+          },
+          {
+            "from": "r",
+            "id": "Flow_4",
+            "to": "e_join"
+          },
+          {
+            "from": "e_join",
+            "id": "Flow_5",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "joined 2 flows into \"e\" with xor gateway \"e_join\"",
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

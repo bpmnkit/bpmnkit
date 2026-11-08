@@ -1,0 +1,52 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "eventType": "timer",
+            "id": "w",
+            "name": "5 minutes",
+            "timerDuration": "PT5M",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "e",
+            "name": "Done",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "w"
+          },
+          {
+            "from": "w",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 1 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"g\" has only one branch; gateway removed"
+    }
+  ],
+  "questions": []
+}

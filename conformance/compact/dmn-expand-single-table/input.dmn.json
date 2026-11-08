@@ -1,0 +1,48 @@
+{
+  "id": "defs",
+  "name": "Defs",
+  "decisions": [
+    {
+      "inputs": [
+        {
+          "id": "i1",
+          "label": "Age",
+          "expression": "age",
+          "typeRef": "number"
+        }
+      ],
+      "outputs": [
+        {
+          "id": "o1",
+          "name": "risk",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "id": "r1",
+          "inputs": [
+            "< 18"
+          ],
+          "outputs": [
+            "\"low\""
+          ],
+          "description": "young"
+        },
+        {
+          "id": "r2",
+          "inputs": [
+            ">= 18"
+          ],
+          "outputs": [
+            "\"high\""
+          ]
+        }
+      ],
+      "id": "risk",
+      "name": "Risk",
+      "hitPolicy": "UNIQUE"
+    }
+  ],
+  "inputData": []
+}

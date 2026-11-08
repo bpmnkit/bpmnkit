@@ -1,0 +1,1535 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" id="hit-policies" name="hit-policies" namespace="http://bpmn.io/schema/dmn">
+  <decision id="single_unique" name="single_unique">
+    <decisionTable id="decisionTable_000000a" hitPolicy="UNIQUE">
+      <input id="single_unique_i0" label="in0">
+        <inputExpression id="inputExpression_0000001" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="single_unique_o0" name="grade" typeRef="string"/>
+      <rule id="single_unique_r0">
+        <inputEntry id="inputEntry_0_0000002">
+          <text>&lt; 10</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000003">
+          <text>"low"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_unique_r1">
+        <inputEntry id="inputEntry_0_0000004">
+          <text>[10..20]</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000005">
+          <text>"mid"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_unique_r2">
+        <inputEntry id="inputEntry_0_0000006">
+          <text>&gt;= 15</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000007">
+          <text>"high"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_unique_r3">
+        <inputEntry id="inputEntry_0_0000008">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000009">
+          <text>"any"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="multi_unique" name="multi_unique">
+    <decisionTable id="decisionTable_000000l" hitPolicy="UNIQUE">
+      <input id="multi_unique_i0" label="in0">
+        <inputExpression id="inputExpression_000000b" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="multi_unique_o0" name="label"/>
+      <output id="multi_unique_o1" name="score"/>
+      <rule id="multi_unique_r0">
+        <inputEntry id="inputEntry_0_000000c">
+          <text>&lt; 10</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000d">
+          <text>"low"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000000e">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="multi_unique_r1">
+        <inputEntry id="inputEntry_0_000000f">
+          <text>&gt;= 5</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000g">
+          <text>"five+"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000000h">
+          <text>x * 2</text>
+        </outputEntry>
+      </rule>
+      <rule id="multi_unique_r2">
+        <inputEntry id="inputEntry_0_000000i">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000j">
+          <text>"any"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000000k">
+          <text>null</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="single_first" name="single_first">
+    <decisionTable id="decisionTable_000000v" hitPolicy="FIRST">
+      <input id="single_first_i0" label="in0">
+        <inputExpression id="inputExpression_000000m" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="single_first_o0" name="grade" typeRef="string"/>
+      <rule id="single_first_r0">
+        <inputEntry id="inputEntry_0_000000n">
+          <text>&lt; 10</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000o">
+          <text>"low"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_first_r1">
+        <inputEntry id="inputEntry_0_000000p">
+          <text>[10..20]</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000q">
+          <text>"mid"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_first_r2">
+        <inputEntry id="inputEntry_0_000000r">
+          <text>&gt;= 15</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000s">
+          <text>"high"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_first_r3">
+        <inputEntry id="inputEntry_0_000000t">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000u">
+          <text>"any"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="multi_first" name="multi_first">
+    <decisionTable id="decisionTable_0000016" hitPolicy="FIRST">
+      <input id="multi_first_i0" label="in0">
+        <inputExpression id="inputExpression_000000w" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="multi_first_o0" name="label"/>
+      <output id="multi_first_o1" name="score"/>
+      <rule id="multi_first_r0">
+        <inputEntry id="inputEntry_0_000000x">
+          <text>&lt; 10</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000000y">
+          <text>"low"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000000z">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="multi_first_r1">
+        <inputEntry id="inputEntry_0_0000010">
+          <text>&gt;= 5</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000011">
+          <text>"five+"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_0000012">
+          <text>x * 2</text>
+        </outputEntry>
+      </rule>
+      <rule id="multi_first_r2">
+        <inputEntry id="inputEntry_0_0000013">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000014">
+          <text>"any"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_0000015">
+          <text>null</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="single_any" name="single_any">
+    <decisionTable id="decisionTable_000001g" hitPolicy="ANY">
+      <input id="single_any_i0" label="in0">
+        <inputExpression id="inputExpression_0000017" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="single_any_o0" name="grade" typeRef="string"/>
+      <rule id="single_any_r0">
+        <inputEntry id="inputEntry_0_0000018">
+          <text>&lt; 10</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000019">
+          <text>"low"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_any_r1">
+        <inputEntry id="inputEntry_0_000001a">
+          <text>[10..20]</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000001b">
+          <text>"mid"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_any_r2">
+        <inputEntry id="inputEntry_0_000001c">
+          <text>&gt;= 15</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000001d">
+          <text>"high"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_any_r3">
+        <inputEntry id="inputEntry_0_000001e">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000001f">
+          <text>"any"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="multi_any" name="multi_any">
+    <decisionTable id="decisionTable_000001r" hitPolicy="ANY">
+      <input id="multi_any_i0" label="in0">
+        <inputExpression id="inputExpression_000001h" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="multi_any_o0" name="label"/>
+      <output id="multi_any_o1" name="score"/>
+      <rule id="multi_any_r0">
+        <inputEntry id="inputEntry_0_000001i">
+          <text>&lt; 10</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000001j">
+          <text>"low"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000001k">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="multi_any_r1">
+        <inputEntry id="inputEntry_0_000001l">
+          <text>&gt;= 5</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000001m">
+          <text>"five+"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000001n">
+          <text>x * 2</text>
+        </outputEntry>
+      </rule>
+      <rule id="multi_any_r2">
+        <inputEntry id="inputEntry_0_000001o">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000001p">
+          <text>"any"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000001q">
+          <text>null</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="single_rule_order" name="single_rule_order">
+    <decisionTable id="decisionTable_0000021" hitPolicy="RULE ORDER">
+      <input id="single_rule_order_i0" label="in0">
+        <inputExpression id="inputExpression_000001s" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="single_rule_order_o0" name="grade" typeRef="string"/>
+      <rule id="single_rule_order_r0">
+        <inputEntry id="inputEntry_0_000001t">
+          <text>&lt; 10</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000001u">
+          <text>"low"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_rule_order_r1">
+        <inputEntry id="inputEntry_0_000001v">
+          <text>[10..20]</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000001w">
+          <text>"mid"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_rule_order_r2">
+        <inputEntry id="inputEntry_0_000001x">
+          <text>&gt;= 15</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000001y">
+          <text>"high"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_rule_order_r3">
+        <inputEntry id="inputEntry_0_000001z">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000020">
+          <text>"any"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="multi_rule_order" name="multi_rule_order">
+    <decisionTable id="decisionTable_000002c" hitPolicy="RULE ORDER">
+      <input id="multi_rule_order_i0" label="in0">
+        <inputExpression id="inputExpression_0000022" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="multi_rule_order_o0" name="label"/>
+      <output id="multi_rule_order_o1" name="score"/>
+      <rule id="multi_rule_order_r0">
+        <inputEntry id="inputEntry_0_0000023">
+          <text>&lt; 10</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000024">
+          <text>"low"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_0000025">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="multi_rule_order_r1">
+        <inputEntry id="inputEntry_0_0000026">
+          <text>&gt;= 5</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000027">
+          <text>"five+"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_0000028">
+          <text>x * 2</text>
+        </outputEntry>
+      </rule>
+      <rule id="multi_rule_order_r2">
+        <inputEntry id="inputEntry_0_0000029">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000002a">
+          <text>"any"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000002b">
+          <text>null</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="single_output_order" name="single_output_order">
+    <decisionTable id="decisionTable_000002m" hitPolicy="OUTPUT ORDER">
+      <input id="single_output_order_i0" label="in0">
+        <inputExpression id="inputExpression_000002d" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="single_output_order_o0" name="grade" typeRef="string"/>
+      <rule id="single_output_order_r0">
+        <inputEntry id="inputEntry_0_000002e">
+          <text>&lt; 10</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000002f">
+          <text>"low"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_output_order_r1">
+        <inputEntry id="inputEntry_0_000002g">
+          <text>[10..20]</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000002h">
+          <text>"mid"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_output_order_r2">
+        <inputEntry id="inputEntry_0_000002i">
+          <text>&gt;= 15</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000002j">
+          <text>"high"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_output_order_r3">
+        <inputEntry id="inputEntry_0_000002k">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000002l">
+          <text>"any"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="multi_output_order" name="multi_output_order">
+    <decisionTable id="decisionTable_000002x" hitPolicy="OUTPUT ORDER">
+      <input id="multi_output_order_i0" label="in0">
+        <inputExpression id="inputExpression_000002n" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="multi_output_order_o0" name="label"/>
+      <output id="multi_output_order_o1" name="score"/>
+      <rule id="multi_output_order_r0">
+        <inputEntry id="inputEntry_0_000002o">
+          <text>&lt; 10</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000002p">
+          <text>"low"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000002q">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="multi_output_order_r1">
+        <inputEntry id="inputEntry_0_000002r">
+          <text>&gt;= 5</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000002s">
+          <text>"five+"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000002t">
+          <text>x * 2</text>
+        </outputEntry>
+      </rule>
+      <rule id="multi_output_order_r2">
+        <inputEntry id="inputEntry_0_000002u">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000002v">
+          <text>"any"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000002w">
+          <text>null</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="single_priority" name="single_priority">
+    <decisionTable id="decisionTable_0000037" hitPolicy="PRIORITY">
+      <input id="single_priority_i0" label="in0">
+        <inputExpression id="inputExpression_000002y" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="single_priority_o0" name="grade" typeRef="string"/>
+      <rule id="single_priority_r0">
+        <inputEntry id="inputEntry_0_000002z">
+          <text>&lt; 10</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000030">
+          <text>"low"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_priority_r1">
+        <inputEntry id="inputEntry_0_0000031">
+          <text>[10..20]</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000032">
+          <text>"mid"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_priority_r2">
+        <inputEntry id="inputEntry_0_0000033">
+          <text>&gt;= 15</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000034">
+          <text>"high"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_priority_r3">
+        <inputEntry id="inputEntry_0_0000035">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000036">
+          <text>"any"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="multi_priority" name="multi_priority">
+    <decisionTable id="decisionTable_000003i" hitPolicy="PRIORITY">
+      <input id="multi_priority_i0" label="in0">
+        <inputExpression id="inputExpression_0000038" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="multi_priority_o0" name="label"/>
+      <output id="multi_priority_o1" name="score"/>
+      <rule id="multi_priority_r0">
+        <inputEntry id="inputEntry_0_0000039">
+          <text>&lt; 10</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000003a">
+          <text>"low"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000003b">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="multi_priority_r1">
+        <inputEntry id="inputEntry_0_000003c">
+          <text>&gt;= 5</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000003d">
+          <text>"five+"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000003e">
+          <text>x * 2</text>
+        </outputEntry>
+      </rule>
+      <rule id="multi_priority_r2">
+        <inputEntry id="inputEntry_0_000003f">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000003g">
+          <text>"any"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000003h">
+          <text>null</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="single_collect" name="single_collect">
+    <decisionTable id="decisionTable_000003s" hitPolicy="COLLECT">
+      <input id="single_collect_i0" label="in0">
+        <inputExpression id="inputExpression_000003j" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="single_collect_o0" name="grade" typeRef="string"/>
+      <rule id="single_collect_r0">
+        <inputEntry id="inputEntry_0_000003k">
+          <text>&lt; 10</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000003l">
+          <text>"low"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_collect_r1">
+        <inputEntry id="inputEntry_0_000003m">
+          <text>[10..20]</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000003n">
+          <text>"mid"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_collect_r2">
+        <inputEntry id="inputEntry_0_000003o">
+          <text>&gt;= 15</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000003p">
+          <text>"high"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_collect_r3">
+        <inputEntry id="inputEntry_0_000003q">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000003r">
+          <text>"any"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="multi_collect" name="multi_collect">
+    <decisionTable id="decisionTable_0000043" hitPolicy="COLLECT">
+      <input id="multi_collect_i0" label="in0">
+        <inputExpression id="inputExpression_000003t" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="multi_collect_o0" name="label"/>
+      <output id="multi_collect_o1" name="score"/>
+      <rule id="multi_collect_r0">
+        <inputEntry id="inputEntry_0_000003u">
+          <text>&lt; 10</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000003v">
+          <text>"low"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000003w">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="multi_collect_r1">
+        <inputEntry id="inputEntry_0_000003x">
+          <text>&gt;= 5</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000003y">
+          <text>"five+"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000003z">
+          <text>x * 2</text>
+        </outputEntry>
+      </rule>
+      <rule id="multi_collect_r2">
+        <inputEntry id="inputEntry_0_0000040">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000041">
+          <text>"any"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_0000042">
+          <text>null</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="single_bogus" name="single_bogus">
+    <decisionTable id="decisionTable_000004d" hitPolicy="BOGUS">
+      <input id="single_bogus_i0" label="in0">
+        <inputExpression id="inputExpression_0000044" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="single_bogus_o0" name="grade" typeRef="string"/>
+      <rule id="single_bogus_r0">
+        <inputEntry id="inputEntry_0_0000045">
+          <text>&lt; 10</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000046">
+          <text>"low"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_bogus_r1">
+        <inputEntry id="inputEntry_0_0000047">
+          <text>[10..20]</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000048">
+          <text>"mid"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_bogus_r2">
+        <inputEntry id="inputEntry_0_0000049">
+          <text>&gt;= 15</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000004a">
+          <text>"high"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_bogus_r3">
+        <inputEntry id="inputEntry_0_000004b">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000004c">
+          <text>"any"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="multi_bogus" name="multi_bogus">
+    <decisionTable id="decisionTable_000004o" hitPolicy="BOGUS">
+      <input id="multi_bogus_i0" label="in0">
+        <inputExpression id="inputExpression_000004e" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="multi_bogus_o0" name="label"/>
+      <output id="multi_bogus_o1" name="score"/>
+      <rule id="multi_bogus_r0">
+        <inputEntry id="inputEntry_0_000004f">
+          <text>&lt; 10</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000004g">
+          <text>"low"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000004h">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="multi_bogus_r1">
+        <inputEntry id="inputEntry_0_000004i">
+          <text>&gt;= 5</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000004j">
+          <text>"five+"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000004k">
+          <text>x * 2</text>
+        </outputEntry>
+      </rule>
+      <rule id="multi_bogus_r2">
+        <inputEntry id="inputEntry_0_000004l">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000004m">
+          <text>"any"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000004n">
+          <text>null</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="single_default" name="single_default">
+    <decisionTable id="decisionTable_000004y">
+      <input id="single_default_i0" label="in0">
+        <inputExpression id="inputExpression_000004p" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="single_default_o0" name="grade" typeRef="string"/>
+      <rule id="single_default_r0">
+        <inputEntry id="inputEntry_0_000004q">
+          <text>&lt; 10</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000004r">
+          <text>"low"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_default_r1">
+        <inputEntry id="inputEntry_0_000004s">
+          <text>[10..20]</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000004t">
+          <text>"mid"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_default_r2">
+        <inputEntry id="inputEntry_0_000004u">
+          <text>&gt;= 15</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000004v">
+          <text>"high"</text>
+        </outputEntry>
+      </rule>
+      <rule id="single_default_r3">
+        <inputEntry id="inputEntry_0_000004w">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000004x">
+          <text>"any"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="multi_default" name="multi_default">
+    <decisionTable id="decisionTable_0000059">
+      <input id="multi_default_i0" label="in0">
+        <inputExpression id="inputExpression_000004z" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="multi_default_o0" name="label"/>
+      <output id="multi_default_o1" name="score"/>
+      <rule id="multi_default_r0">
+        <inputEntry id="inputEntry_0_0000050">
+          <text>&lt; 10</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000051">
+          <text>"low"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_0000052">
+          <text>1</text>
+        </outputEntry>
+      </rule>
+      <rule id="multi_default_r1">
+        <inputEntry id="inputEntry_0_0000053">
+          <text>&gt;= 5</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000054">
+          <text>"five+"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_0000055">
+          <text>x * 2</text>
+        </outputEntry>
+      </rule>
+      <rule id="multi_default_r2">
+        <inputEntry id="inputEntry_0_0000056">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000057">
+          <text>"any"</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_0000058">
+          <text>null</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="collect_sum" name="collect_sum">
+    <decisionTable id="decisionTable_000005j" hitPolicy="COLLECT" aggregation="SUM">
+      <input id="collect_sum_i0" label="in0">
+        <inputExpression id="inputExpression_000005a" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="collect_sum_o0" name="v"/>
+      <rule id="collect_sum_r0">
+        <inputEntry id="inputEntry_0_000005b">
+          <text>&gt; 0</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000005c">
+          <text>x</text>
+        </outputEntry>
+      </rule>
+      <rule id="collect_sum_r1">
+        <inputEntry id="inputEntry_0_000005d">
+          <text>&gt; 5</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000005e">
+          <text>10</text>
+        </outputEntry>
+      </rule>
+      <rule id="collect_sum_r2">
+        <inputEntry id="inputEntry_0_000005f">
+          <text>&gt; 7</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000005g">
+          <text>"text"</text>
+        </outputEntry>
+      </rule>
+      <rule id="collect_sum_r3">
+        <inputEntry id="inputEntry_0_000005h">
+          <text>&gt; 8</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000005i">
+          <text>-3.5</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="collect_min" name="collect_min">
+    <decisionTable id="decisionTable_000005t" hitPolicy="COLLECT" aggregation="MIN">
+      <input id="collect_min_i0" label="in0">
+        <inputExpression id="inputExpression_000005k" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="collect_min_o0" name="v"/>
+      <rule id="collect_min_r0">
+        <inputEntry id="inputEntry_0_000005l">
+          <text>&gt; 0</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000005m">
+          <text>x</text>
+        </outputEntry>
+      </rule>
+      <rule id="collect_min_r1">
+        <inputEntry id="inputEntry_0_000005n">
+          <text>&gt; 5</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000005o">
+          <text>10</text>
+        </outputEntry>
+      </rule>
+      <rule id="collect_min_r2">
+        <inputEntry id="inputEntry_0_000005p">
+          <text>&gt; 7</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000005q">
+          <text>"text"</text>
+        </outputEntry>
+      </rule>
+      <rule id="collect_min_r3">
+        <inputEntry id="inputEntry_0_000005r">
+          <text>&gt; 8</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000005s">
+          <text>-3.5</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="collect_max" name="collect_max">
+    <decisionTable id="decisionTable_0000063" hitPolicy="COLLECT" aggregation="MAX">
+      <input id="collect_max_i0" label="in0">
+        <inputExpression id="inputExpression_000005u" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="collect_max_o0" name="v"/>
+      <rule id="collect_max_r0">
+        <inputEntry id="inputEntry_0_000005v">
+          <text>&gt; 0</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000005w">
+          <text>x</text>
+        </outputEntry>
+      </rule>
+      <rule id="collect_max_r1">
+        <inputEntry id="inputEntry_0_000005x">
+          <text>&gt; 5</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000005y">
+          <text>10</text>
+        </outputEntry>
+      </rule>
+      <rule id="collect_max_r2">
+        <inputEntry id="inputEntry_0_000005z">
+          <text>&gt; 7</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000060">
+          <text>"text"</text>
+        </outputEntry>
+      </rule>
+      <rule id="collect_max_r3">
+        <inputEntry id="inputEntry_0_0000061">
+          <text>&gt; 8</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000062">
+          <text>-3.5</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="collect_count" name="collect_count">
+    <decisionTable id="decisionTable_000006d" hitPolicy="COLLECT" aggregation="COUNT">
+      <input id="collect_count_i0" label="in0">
+        <inputExpression id="inputExpression_0000064" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="collect_count_o0" name="v"/>
+      <rule id="collect_count_r0">
+        <inputEntry id="inputEntry_0_0000065">
+          <text>&gt; 0</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000066">
+          <text>x</text>
+        </outputEntry>
+      </rule>
+      <rule id="collect_count_r1">
+        <inputEntry id="inputEntry_0_0000067">
+          <text>&gt; 5</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000068">
+          <text>10</text>
+        </outputEntry>
+      </rule>
+      <rule id="collect_count_r2">
+        <inputEntry id="inputEntry_0_0000069">
+          <text>&gt; 7</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000006a">
+          <text>"text"</text>
+        </outputEntry>
+      </rule>
+      <rule id="collect_count_r3">
+        <inputEntry id="inputEntry_0_000006b">
+          <text>&gt; 8</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000006c">
+          <text>-3.5</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="collect_avg" name="collect_avg">
+    <decisionTable id="decisionTable_000006n" hitPolicy="COLLECT" aggregation="AVG">
+      <input id="collect_avg_i0" label="in0">
+        <inputExpression id="inputExpression_000006e" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="collect_avg_o0" name="v"/>
+      <rule id="collect_avg_r0">
+        <inputEntry id="inputEntry_0_000006f">
+          <text>&gt; 0</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000006g">
+          <text>x</text>
+        </outputEntry>
+      </rule>
+      <rule id="collect_avg_r1">
+        <inputEntry id="inputEntry_0_000006h">
+          <text>&gt; 5</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000006i">
+          <text>10</text>
+        </outputEntry>
+      </rule>
+      <rule id="collect_avg_r2">
+        <inputEntry id="inputEntry_0_000006j">
+          <text>&gt; 7</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000006k">
+          <text>"text"</text>
+        </outputEntry>
+      </rule>
+      <rule id="collect_avg_r3">
+        <inputEntry id="inputEntry_0_000006l">
+          <text>&gt; 8</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000006m">
+          <text>-3.5</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="collect_sum_multi" name="collect_sum_multi">
+    <decisionTable id="decisionTable_000006v" hitPolicy="COLLECT" aggregation="SUM">
+      <input id="collect_sum_multi_i0" label="in0">
+        <inputExpression id="inputExpression_000006o" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="collect_sum_multi_o0" name="a"/>
+      <output id="collect_sum_multi_o1" name="b"/>
+      <rule id="collect_sum_multi_r0">
+        <inputEntry id="inputEntry_0_000006p">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000006q">
+          <text>1</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000006r">
+          <text>100</text>
+        </outputEntry>
+      </rule>
+      <rule id="collect_sum_multi_r1">
+        <inputEntry id="inputEntry_0_000006s">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000006t">
+          <text>2</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000006u">
+          <text>200</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="keys" name="keys">
+    <decisionTable id="decisionTable_0000071" hitPolicy="UNIQUE">
+      <input id="keys_i0" label="in0">
+        <inputExpression id="inputExpression_000006w" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="keys_o0" name="named"/>
+      <output id="keys_o1" label="Labelled"/>
+      <output id="keys_o2"/>
+      <rule id="keys_r0">
+        <inputEntry id="inputEntry_0_000006x">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000006y">
+          <text>1</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_1_000006z">
+          <text>2</text>
+        </outputEntry>
+        <outputEntry id="outputEntry_2_0000070">
+          <text>3</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="entries" name="entries">
+    <decisionTable id="decisionTable_000009p" hitPolicy="RULE ORDER">
+      <input id="entries_i0" label="in0">
+        <inputExpression id="inputExpression_0000072" typeRef="number">
+          <text>s</text>
+        </inputExpression>
+      </input>
+      <input id="entries_i1" label="in1">
+        <inputExpression id="inputExpression_0000073" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <input id="entries_i2" label="in2">
+        <inputExpression id="inputExpression_0000074" typeRef="number">
+          <text>flag</text>
+        </inputExpression>
+      </input>
+      <input id="entries_i3" label="in3">
+        <inputExpression id="inputExpression_0000075" typeRef="number">
+          <text>d</text>
+        </inputExpression>
+      </input>
+      <input id="entries_i4" label="in4">
+        <inputExpression id="inputExpression_0000076" typeRef="number">
+          <text>items</text>
+        </inputExpression>
+      </input>
+      <output id="entries_o0" name="rule"/>
+      <rule id="entries_r0">
+        <inputEntry id="inputEntry_0_0000077">
+          <text>"a", "b"</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_0000078">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_0000079">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_3_000007a">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_4_000007b">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000007c">
+          <text>"str-list"</text>
+        </outputEntry>
+      </rule>
+      <rule id="entries_r1">
+        <inputEntry id="inputEntry_0_000007d">
+          <text>not("a")</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_000007e">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_000007f">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_3_000007g">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_4_000007h">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000007i">
+          <text>"not-a"</text>
+        </outputEntry>
+      </rule>
+      <rule id="entries_r2">
+        <inputEntry id="inputEntry_0_000007j">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_000007k">
+          <text>not([1..5])</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_000007l">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_3_000007m">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_4_000007n">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000007o">
+          <text>"outside"</text>
+        </outputEntry>
+      </rule>
+      <rule id="entries_r3">
+        <inputEntry id="inputEntry_0_000007p">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_000007q">
+          <text>&gt; limit</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_000007r">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_3_000007s">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_4_000007t">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000007u">
+          <text>"over-limit"</text>
+        </outputEntry>
+      </rule>
+      <rule id="entries_r4">
+        <inputEntry id="inputEntry_0_000007v">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_000007w">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_000007x">
+          <text>true</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_3_000007y">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_4_000007z">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000080">
+          <text>"flag"</text>
+        </outputEntry>
+      </rule>
+      <rule id="entries_r5">
+        <inputEntry id="inputEntry_0_0000081">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_0000082">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_0000083">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_3_0000084">
+          <text>date("2024-01-01")</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_4_0000085">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000086">
+          <text>"new-year"</text>
+        </outputEntry>
+      </rule>
+      <rule id="entries_r6">
+        <inputEntry id="inputEntry_0_0000087">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_0000088">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_0000089">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_3_000008a">
+          <text>&gt; date("2024-06-30")</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_4_000008b">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000008c">
+          <text>"h2"</text>
+        </outputEntry>
+      </rule>
+      <rule id="entries_r7">
+        <inputEntry id="inputEntry_0_000008d">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_000008e">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_000008f">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_3_000008g">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_4_000008h">
+          <text>list contains(?, "x")</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000008i">
+          <text>"has-x"</text>
+        </outputEntry>
+      </rule>
+      <rule id="entries_r8">
+        <inputEntry id="inputEntry_0_000008j">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_000008k">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_000008l">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_3_000008m">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_4_000008n">
+          <text>count(?) &gt; 2</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000008o">
+          <text>"many"</text>
+        </outputEntry>
+      </rule>
+      <rule id="entries_r9">
+        <inputEntry id="inputEntry_0_000008p">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_000008q">
+          <text>1,2,3</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_000008r">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_3_000008s">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_4_000008t">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000008u">
+          <text>"small"</text>
+        </outputEntry>
+      </rule>
+      <rule id="entries_r10">
+        <inputEntry id="inputEntry_0_000008v">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_000008w">
+          <text>(1..3]</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_000008x">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_3_000008y">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_4_000008z">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000090">
+          <text>"half-open"</text>
+        </outputEntry>
+      </rule>
+      <rule id="entries_r11">
+        <inputEntry id="inputEntry_0_0000091">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_0000092">
+          <text>null</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_0000093">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_3_0000094">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_4_0000095">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_0000096">
+          <text>"null-x"</text>
+        </outputEntry>
+      </rule>
+      <rule id="entries_r12">
+        <inputEntry id="inputEntry_0_0000097">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_0000098">
+          <text>&gt;&gt;&gt; broken</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_0000099">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_3_000009a">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_4_000009b">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000009c">
+          <text>"bad-entry-matches"</text>
+        </outputEntry>
+      </rule>
+      <rule id="entries_r13">
+        <inputEntry id="inputEntry_0_000009d">
+          <text>"z"</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_000009e">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_000009f">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_3_000009g">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_4_000009h">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000009i">
+          <text>x +</text>
+        </outputEntry>
+      </rule>
+      <rule id="entries_r14">
+        <inputEntry id="inputEntry_0_000009j">
+          <text>"z"</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_000009k">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_000009l">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_3_000009m">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_4_000009n">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000009o">
+          <text>s + "!" + string(x)</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="computed_input" name="computed_input">
+    <decisionTable id="decisionTable_00000a5" hitPolicy="FIRST">
+      <input id="computed_input_i0" label="in0">
+        <inputExpression id="inputExpression_000009q" typeRef="number">
+          <text>a + b</text>
+        </inputExpression>
+      </input>
+      <input id="computed_input_i1" label="in1">
+        <inputExpression id="inputExpression_000009r" typeRef="number">
+          <text>upper case(name)</text>
+        </inputExpression>
+      </input>
+      <input id="computed_input_i2" label="in2">
+        <inputExpression id="inputExpression_000009s" typeRef="number"/>
+      </input>
+      <output id="computed_input_o0" name="out"/>
+      <rule id="computed_input_r0">
+        <inputEntry id="inputEntry_0_000009t">
+          <text>&gt; 10</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_000009u">
+          <text>"BOB"</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_000009v">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_000009w">
+          <text>"big bob"</text>
+        </outputEntry>
+      </rule>
+      <rule id="computed_input_r1">
+        <inputEntry id="inputEntry_0_000009x">
+          <text>&gt; 10</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_000009y">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_000009z">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_00000a0">
+          <text>"big"</text>
+        </outputEntry>
+      </rule>
+      <rule id="computed_input_r2">
+        <inputEntry id="inputEntry_0_00000a1">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_1_00000a2">
+          <text>-</text>
+        </inputEntry>
+        <inputEntry id="inputEntry_2_00000a3">
+          <text>-</text>
+        </inputEntry>
+        <outputEntry id="outputEntry_0_00000a4">
+          <text>a * b</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <decision id="empty_table" name="empty_table">
+    <decisionTable id="decisionTable_00000a7" hitPolicy="UNIQUE">
+      <input id="empty_table_i0" label="in0">
+        <inputExpression id="inputExpression_00000a6" typeRef="number">
+          <text>x</text>
+        </inputExpression>
+      </input>
+      <output id="empty_table_o0" name="o"/>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram>
+      <dmndi:DMNShape dmnElementRef="single_unique">
+        <dc:Bounds height="80" width="180" x="160" y="100"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="multi_unique">
+        <dc:Bounds height="80" width="180" x="160" y="220"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="single_first">
+        <dc:Bounds height="80" width="180" x="160" y="340"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="multi_first">
+        <dc:Bounds height="80" width="180" x="160" y="460"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="single_any">
+        <dc:Bounds height="80" width="180" x="160" y="580"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="multi_any">
+        <dc:Bounds height="80" width="180" x="160" y="700"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="single_rule_order">
+        <dc:Bounds height="80" width="180" x="160" y="820"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="multi_rule_order">
+        <dc:Bounds height="80" width="180" x="160" y="940"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="single_output_order">
+        <dc:Bounds height="80" width="180" x="160" y="1060"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="multi_output_order">
+        <dc:Bounds height="80" width="180" x="160" y="1180"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="single_priority">
+        <dc:Bounds height="80" width="180" x="160" y="1300"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="multi_priority">
+        <dc:Bounds height="80" width="180" x="160" y="1420"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="single_collect">
+        <dc:Bounds height="80" width="180" x="160" y="1540"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="multi_collect">
+        <dc:Bounds height="80" width="180" x="160" y="1660"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="single_bogus">
+        <dc:Bounds height="80" width="180" x="160" y="1780"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="multi_bogus">
+        <dc:Bounds height="80" width="180" x="160" y="1900"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="single_default">
+        <dc:Bounds height="80" width="180" x="160" y="2020"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="multi_default">
+        <dc:Bounds height="80" width="180" x="160" y="2140"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="collect_sum">
+        <dc:Bounds height="80" width="180" x="160" y="2260"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="collect_min">
+        <dc:Bounds height="80" width="180" x="160" y="2380"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="collect_max">
+        <dc:Bounds height="80" width="180" x="160" y="2500"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="collect_count">
+        <dc:Bounds height="80" width="180" x="160" y="2620"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="collect_avg">
+        <dc:Bounds height="80" width="180" x="160" y="2740"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="collect_sum_multi">
+        <dc:Bounds height="80" width="180" x="160" y="2860"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="keys">
+        <dc:Bounds height="80" width="180" x="160" y="2980"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="entries">
+        <dc:Bounds height="80" width="180" x="160" y="3100"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="computed_input">
+        <dc:Bounds height="80" width="180" x="160" y="3220"/>
+      </dmndi:DMNShape>
+      <dmndi:DMNShape dmnElementRef="empty_table">
+        <dc:Bounds height="80" width="180" x="160" y="3340"/>
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>
+

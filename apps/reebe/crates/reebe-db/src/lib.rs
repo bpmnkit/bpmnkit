@@ -17,11 +17,11 @@ pub use backend::StateBackend;
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub use compat::DbRow;
 pub use error::DbError;
-#[cfg(any(feature = "postgres", feature = "sqlite"))]
-pub use pool::{DbPool, DbConfig, create_pool};
-#[cfg(any(feature = "postgres", feature = "sqlite"))]
-pub use sqlx_backend::SqlxBackend;
 #[cfg(feature = "memory")]
 pub use memory_backend::InMemoryBackend;
+#[cfg(any(feature = "postgres", feature = "sqlite"))]
+pub use pool::{create_pool, DbConfig, DbPool};
+#[cfg(any(feature = "postgres", feature = "sqlite"))]
+pub use sqlx_backend::SqlxBackend;
 
 pub type Result<T> = std::result::Result<T, DbError>;

@@ -1,0 +1,102 @@
+{
+  "id": "f",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "type": "iframe",
+      "id": "a",
+      "security": {}
+    },
+    {
+      "type": "iframe",
+      "id": "b",
+      "security": {
+        "allowScripts": "yes"
+      },
+      "url": 5,
+      "height": "100"
+    },
+    {
+      "type": "iframe",
+      "id": "c",
+      "security": []
+    },
+    {
+      "type": "iframe",
+      "id": "d",
+      "security": null
+    },
+    {
+      "type": "table",
+      "id": "e"
+    },
+    {
+      "type": "table",
+      "id": "f",
+      "columns": [],
+      "rowCount": "5"
+    },
+    {
+      "type": "table",
+      "id": "g",
+      "columns": [
+        {
+          "label": "L",
+          "key": "k",
+          "width": 5
+        },
+        {},
+        7,
+        "s",
+        [
+          1
+        ],
+        {
+          "label": 3,
+          "key": false
+        }
+      ]
+    },
+    {
+      "type": "table",
+      "id": "h",
+      "columns": "none",
+      "dataSource": 1
+    },
+    {
+      "type": "image",
+      "id": "i"
+    },
+    {
+      "type": "html",
+      "id": "j"
+    },
+    {
+      "type": "expression",
+      "id": "k"
+    },
+    {
+      "type": "filepicker",
+      "id": "l",
+      "multiple": "true"
+    },
+    {
+      "type": "documentPreview",
+      "id": "m",
+      "dataSource": "=doc"
+    },
+    {
+      "type": "spacer",
+      "id": "n"
+    },
+    {
+      "type": "separator",
+      "id": "o",
+      "layout": {
+        "row": "r",
+        "columns": 2
+      }
+    }
+  ]
+}

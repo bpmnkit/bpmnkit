@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions id="defs" name="n" xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/">
+<decision id="a" name="A"><variable id="va" name="a" typeRef="String"/><literalExpression typeRef="integer"><text>1</text></literalExpression></decision>
+<decision id="b" name="B"><decisionTable id="tb"><input id="i1" label="Li1"><inputExpression id="i1e" typeRef="Number"><text>x</text></inputExpression></input><input id="i2" label="Li2"><inputExpression id="i2e" typeRef="date and time"><text>y</text></inputExpression></input><output id="o1" name="r" typeRef="banana"/><rule id="r1"><inputEntry id="r1i0"><text>1</text></inputEntry><inputEntry id="r1i1"><text>-</text></inputEntry><outputEntry id="r1o0"><text>"a"</text></outputEntry></rule></decisionTable></decision>
+</definitions>

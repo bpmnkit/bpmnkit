@@ -1,0 +1,331 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow"
+  ],
+  "counts": {
+    "error": 6,
+    "info": 5,
+    "warning": 15
+  },
+  "diagnostics": [
+    {
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-start-event",
+      "message": "Process \"Process_1\" has no start event.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Add a start event to define where the process begins."
+    },
+    {
+      "category": "flow",
+      "elementIds": [],
+      "fixable": false,
+      "id": "flow/no-end-event",
+      "message": "Process \"Process_1\" has no end event.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Add an end event to properly terminate the process."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Undo"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Undo\" (subProcess) is not reachable from any start event.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Undo"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Undo\" (subProcess) has no outgoing sequence flows.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Tx"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Tx\" (transaction) is not reachable from any start event.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Tx"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Tx\" (transaction) has no outgoing sequence flows.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Tx"
+      ],
+      "fixable": false,
+      "id": "flow/empty-subprocess",
+      "message": "Sub-process \"Tx\" (transaction) contains no flow elements.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Add flow elements inside the sub-process or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Adhoc"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Adhoc\" (adHocSubProcess) is not reachable from any start event.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Adhoc"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Adhoc\" (adHocSubProcess) has no outgoing sequence flows.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Adhoc"
+      ],
+      "fixable": false,
+      "id": "flow/empty-subprocess",
+      "message": "Sub-process \"Adhoc\" (adHocSubProcess) contains no flow elements.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Add flow elements inside the sub-process or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Evt"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Evt\" (subProcess) is not reachable from any start event.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Evt"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Evt\" (subProcess) has no outgoing sequence flows.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Evt"
+      ],
+      "fixable": false,
+      "id": "flow/empty-subprocess",
+      "message": "Sub-process \"Evt\" (subProcess) contains no flow elements.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Add flow elements inside the sub-process or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Plain"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"Plain\" (subProcess) is not reachable from any start event.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Plain"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"Plain\" (subProcess) has no outgoing sequence flows.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "Plain"
+      ],
+      "fixable": false,
+      "id": "flow/empty-subprocess",
+      "message": "Sub-process \"Plain\" (subProcess) contains no flow elements.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Add flow elements inside the sub-process or remove it."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "Undo"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"Undo\" (subProcess) has no name.",
+      "processId": "Process_1",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "Tx"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"Tx\" (transaction) has no name.",
+      "processId": "Process_1",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "Adhoc"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"Adhoc\" (adHocSubProcess) has no name.",
+      "processId": "Process_1",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "Evt"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"Evt\" (subProcess) has no name.",
+      "processId": "Process_1",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "Plain"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-subprocess",
+      "message": "Sub-process \"Plain\" (subProcess) has no name.",
+      "processId": "Process_1",
+      "severity": "info",
+      "suggestion": "Name sub-processes using \"Object + nominalized verb\" form, e.g. \"Invoice Processing\", \"Order Fulfillment\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Undo"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Undo\" has no error boundary event.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Tx"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Tx\" has no error boundary event.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Adhoc"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Adhoc\" has no error boundary event.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Evt"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Evt\" has no error boundary event.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "Plain"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Plain\" has no error boundary event.",
+      "processId": "Process_1",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 26
+}

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="P" isExecutable="true">
+    <bpmn:startEvent id="S" name="Start">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:subProcess id="L1" name="Level one">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+      <bpmn:startEvent id="aS" name="Begin">
+        <bpmn:outgoing>af1</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:subProcess id="L2" name="Level two">
+        <bpmn:incoming>af1</bpmn:incoming>
+        <bpmn:outgoing>af2</bpmn:outgoing>
+        <bpmn:startEvent id="bS" name="In">
+          <bpmn:outgoing>bf1</bpmn:outgoing>
+        </bpmn:startEvent>
+        <bpmn:subProcess id="L3" name="Level three">
+          <bpmn:incoming>bf1</bpmn:incoming>
+          <bpmn:outgoing>bf2</bpmn:outgoing>
+          <bpmn:startEvent id="cS" name="Begin">
+            <bpmn:outgoing>cf1</bpmn:outgoing>
+          </bpmn:startEvent>
+          <bpmn:task id="cA" name="Step A">
+            <bpmn:incoming>cf1</bpmn:incoming>
+            <bpmn:outgoing>cf2</bpmn:outgoing>
+          </bpmn:task>
+          <bpmn:task id="cB" name="Step B">
+            <bpmn:incoming>cf2</bpmn:incoming>
+            <bpmn:outgoing>cf3</bpmn:outgoing>
+          </bpmn:task>
+          <bpmn:endEvent id="cE" name="Finish">
+            <bpmn:incoming>cf3</bpmn:incoming>
+          </bpmn:endEvent>
+          <bpmn:sequenceFlow id="cf1" sourceRef="cS" targetRef="cA"/>
+          <bpmn:sequenceFlow id="cf2" sourceRef="cA" targetRef="cB"/>
+          <bpmn:sequenceFlow id="cf3" sourceRef="cB" targetRef="cE"/>
+        </bpmn:subProcess>
+        <bpmn:endEvent id="bE" name="Out">
+          <bpmn:incoming>bf2</bpmn:incoming>
+        </bpmn:endEvent>
+        <bpmn:sequenceFlow id="bf1" sourceRef="bS" targetRef="L3"/>
+        <bpmn:sequenceFlow id="bf2" sourceRef="L3" targetRef="bE"/>
+      </bpmn:subProcess>
+      <bpmn:task id="aT" name="Side">
+        <bpmn:incoming>af2</bpmn:incoming>
+        <bpmn:outgoing>af3</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:endEvent id="aE" name="End">
+        <bpmn:incoming>af3</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="af1" sourceRef="aS" targetRef="L2"/>
+      <bpmn:sequenceFlow id="af2" sourceRef="L2" targetRef="aT"/>
+      <bpmn:sequenceFlow id="af3" sourceRef="aT" targetRef="aE"/>
+    </bpmn:subProcess>
+    <bpmn:endEvent id="E" name="End">
+      <bpmn:incoming>f2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="L1"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="L1" targetRef="E"/>
+  </bpmn:process>
+</bpmn:definitions>
+

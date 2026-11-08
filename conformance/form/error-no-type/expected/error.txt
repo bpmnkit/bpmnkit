@@ -1,0 +1,1 @@
+Form must have a 'type' string

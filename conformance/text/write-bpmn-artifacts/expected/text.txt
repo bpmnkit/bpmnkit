@@ -1,0 +1,4 @@
+# Annotated process
+start[start] > review[user Review] > end[end]
+doc review: Reviewer checks the submission against policy.
+note review: Must complete within one business day.

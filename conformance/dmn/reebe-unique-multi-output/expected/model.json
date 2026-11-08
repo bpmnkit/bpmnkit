@@ -1,0 +1,108 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "UNIQUE",
+        "id": "dt1",
+        "inputs": [
+          {
+            "id": "i1",
+            "inputExpression": {
+              "id": "ie1",
+              "text": "amount"
+            },
+            "label": "amount"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o1",
+            "name": "riskLevel",
+            "typeRef": "string"
+          },
+          {
+            "id": "o2",
+            "name": "scoreValue",
+            "typeRef": "integer"
+          }
+        ],
+        "rules": [
+          {
+            "id": "r1",
+            "inputEntries": [
+              {
+                "id": "ie1r1",
+                "text": ">= 10000"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "oe1r1",
+                "text": "\"HIGH\""
+              },
+              {
+                "id": "oe2r1",
+                "text": "90"
+              }
+            ]
+          },
+          {
+            "id": "r2",
+            "inputEntries": [
+              {
+                "id": "ie1r2",
+                "text": ">= 1000"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "oe1r2",
+                "text": "\"MEDIUM\""
+              },
+              {
+                "id": "oe2r2",
+                "text": "50"
+              }
+            ]
+          },
+          {
+            "id": "r3",
+            "inputEntries": [
+              {
+                "id": "ie1r3",
+                "text": "< 1000"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "oe1r3",
+                "text": "\"LOW\""
+              },
+              {
+                "id": "oe2r3",
+                "text": "10"
+              }
+            ]
+          }
+        ]
+      },
+      "id": "riskScore",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Risk Score"
+    }
+  ],
+  "id": "Definitions_risk",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "DRD",
+  "namespace": "http://camunda.org/schema/1.0/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/"
+  },
+  "textAnnotations": []
+}

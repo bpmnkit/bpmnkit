@@ -1,0 +1,22 @@
+{
+  "aliases": {
+    "boundary": "_f8fcb377-3d7d-4138-9a7e-6ab58b97e29d",
+    "employee_not_found": "_b4d636eb-b501-4462-93c8-04652db10307",
+    "fetch_vacation_information": "_2b960d84-feb1-46a9-a1a1-c300dd996b99",
+    "manually_approve_vacation": "_79523269-7444-4b01-90e9-e23957a9d020",
+    "notify_employee_of_approval": "_a97c1a48-faba-447b-bfa6-7aa81a6fe0a0",
+    "notify_employee_of_approval_2": "_93ec9873-edf1-4549-b052-961994ec8234",
+    "notify_employee_of_refusal": "_02232e32-c3d2-473c-a15d-9c5dca00eadc",
+    "notify_employee_of_refusal_2": "_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9",
+    "update_remaining_vacation": "_5e16a4e0-0f23-482a-be47-d3edbc5741ba",
+    "update_remaining_vacation_2": "_4b72053b-8ebb-4ae6-99c6-7c93cf1c1d1b",
+    "vacation_approval": "_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32",
+    "vacation_approved_automatically": "_6677ef80-82df-4951-919d-1f36123b681b",
+    "vacation_approved_by_manager": "_1cd5fe29-b3ec-4f21-a1aa-57773f0729ca",
+    "vacation_refused_automatically": "_1688f604-5edf-4187-ad9e-18f74bfede53",
+    "vacation_refused_by_manager": "_3ae826ca-5f38-43c4-be3a-35d1157aa27f",
+    "vacation_request_received": "_b1625a52-aaf0-4694-86cb-7af891212ac6",
+    "xor": "_42367c5f-d084-44ee-90c7-960d1ab02a3b",
+    "xor_2": "_64bb8b55-d348-41d6-9ea8-f333b1d8cb69"
+  }
+}

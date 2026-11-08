@@ -1,5 +1,31 @@
 # @bpmnkit/docspack
 
+## 1.3.0
+
+### Minor Changes
+
+- 1ab40d0: Agent cards: `casen agent-card bpmn|dmn|form` prints a ~1–1.5k-token cheat sheet per file type (runnable create/export/edit/validate script, top options, traps). The cards are also docs pages, ranked first in `@bpmnkit/docspack`, whose `llms.txt` now opens with a "Start here" entry (new `docspack.startHere` build option). `casen skills install` adds `/dmn` and `/form`.
+
+### Patch Changes
+
+- f6cc4ac: Camunda 8.10 is now the default target: the BPMN builder stamps `executionPlatformVersion` `8.10.0` (was `8.9.0`), the form builder `8.10.0` (was `8.7.0`), the DMN builders `8.10.0` (was `8.5.0`) and the Camunda 7 migration `8.10.0` (was `8.8.0`). `.executionPlatformVersion("8.8.0")` and the migration's `executionPlatformVersion` option still override it. The agent cards no longer warn that 8.10 is not the default.
+
+## 1.2.2
+
+### Patch Changes
+
+- 1ecde83: Zeebe coverage and agent edits.
+  - `@bpmnkit/core`:
+    - The builder now covers call-activity I/O mappings and variable propagation, multi-instance on every task type, execution and task listeners, user-task form keys, external references and embedded forms, and conditional events.
+    - `applyBpmnOperations` update patches set user-task assignment, schedule, priority, properties and message correlation keys; an empty string clears a value.
+    - `getZeebeExtensions` now reads everything the writer emits.
+    - `applyTemplates` takes `omitDefaults`.
+    - Annotations inside sub-processes get diagram shapes.
+    - Multi-instance `completionCondition` is no longer dropped.
+  - `@bpmnkit/proxy`: the MCP `update_element` tool applies these patches and reports unknown or misplaced keys.
+  - `@bpmnkit/docspack`: `bpmnkit-docs` works in a fresh source checkout, and recipe pages are added.
+  - `@bpmnkit/plugins`: the BPMN config panel handles user tasks that use a form key or an external reference.
+
 ## 1.2.1
 
 ### Patch Changes

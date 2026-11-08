@@ -1,0 +1,62 @@
+{
+  "runs": {
+    "default": {},
+    "all": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:all"
+      }
+    },
+    "recommended": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:recommended"
+      }
+    },
+    "no-overlapping-elements-error": {
+      "bpmnlintrc": {
+        "rules": {
+          "no-overlapping-elements": "error"
+        }
+      }
+    },
+    "no-overlapping-elements-off": {
+      "bpmnlintrc": {
+        "rules": {
+          "no-overlapping-elements": "off"
+        }
+      }
+    },
+    "no-overlapping-elements-warn-delegated": {
+      "bpmnlintrc": {
+        "rules": {
+          "no-overlapping-elements": "warn"
+        }
+      },
+      "bpmnlintDelegated": true
+    },
+    "standard-size-options": {
+      "bpmnlintrc": {
+        "rules": {
+          "standard-size": [
+            "error",
+            {
+              "bpmn:Task": {
+                "width": 120,
+                "height": 80
+              },
+              "bpmn:EndEvent": {
+                "width": 40,
+                "height": 40
+              }
+            }
+          ]
+        }
+      }
+    },
+    "only-delegated": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:all"
+      },
+      "bpmnlintDelegated": true
+    }
+  }
+}

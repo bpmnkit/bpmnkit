@@ -1,0 +1,142 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "check",
+            "name": "Eligible?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "review",
+            "name": "Review application",
+            "type": "userTask"
+          },
+          {
+            "id": "a",
+            "name": "A",
+            "type": "endEvent"
+          },
+          {
+            "id": "reject",
+            "name": "Reject application",
+            "type": "userTask"
+          },
+          {
+            "id": "b",
+            "name": "B",
+            "type": "endEvent"
+          },
+          {
+            "eventType": "message",
+            "id": "s2",
+            "name": "S2",
+            "type": "startEvent"
+          },
+          {
+            "id": "g",
+            "name": "Big?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "big",
+            "name": "Big",
+            "type": "endEvent"
+          },
+          {
+            "id": "small",
+            "name": "Small",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "check"
+          },
+          {
+            "condition": "= eligible = true",
+            "from": "check",
+            "id": "Flow_2",
+            "name": "Yes: applicant is eligible",
+            "to": "review"
+          },
+          {
+            "from": "review",
+            "id": "Flow_3",
+            "to": "a"
+          },
+          {
+            "from": "check",
+            "id": "Flow_4",
+            "isDefault": true,
+            "name": "No: applicant not eligible",
+            "to": "reject"
+          },
+          {
+            "from": "reject",
+            "id": "Flow_5",
+            "to": "b"
+          },
+          {
+            "from": "s2",
+            "id": "Flow_6",
+            "to": "g"
+          },
+          {
+            "condition": "= amount > 1000",
+            "from": "g",
+            "id": "Flow_7",
+            "name": "Yes",
+            "to": "big"
+          },
+          {
+            "from": "g",
+            "id": "Flow_8",
+            "isDefault": true,
+            "name": "No: amount is small",
+            "to": "small"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "made check > reject the default branch of \"check\"",
+    "gave check > review the condition \"= eligible = true\"",
+    "made g > small the default branch of \"g\"",
+    "named 6 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 2,
+      "message": "condition \"applicant is eligible\" is not FEEL; kept as the branch label"
+    },
+    {
+      "line": 3,
+      "message": "condition \"applicant not eligible\" is not FEEL; kept as the branch label"
+    },
+    {
+      "line": 6,
+      "message": "condition \"amount is small\" is not FEEL; kept as the branch label"
+    }
+  ],
+  "questions": [
+    {
+      "draft": "At \"Eligible?\", decide on ",
+      "elementId": "check",
+      "options": [],
+      "text": "\"Eligible?\" decides on \"eligible\", a variable the diagram made up. What data decides it?"
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "id": "poll",
+            "jobType": "poll",
+            "name": "Poll system",
+            "type": "serviceTask"
+          },
+          {
+            "attachedTo": "poll",
+            "eventType": "timer",
+            "id": "late",
+            "name": "Late",
+            "timerDuration": "PT5M",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "flag",
+            "name": "Flag for follow-up",
+            "type": "userTask"
+          },
+          {
+            "id": "e",
+            "name": "Done",
+            "type": "endEvent"
+          },
+          {
+            "id": "every",
+            "multiInstance": {
+              "collection": "=recipients",
+              "element": "recipient"
+            },
+            "name": "Process every recipient",
+            "type": "task"
+          },
+          {
+            "id": "poll_end",
+            "name": "Process completed",
+            "type": "endEvent"
+          },
+          {
+            "id": "s_split",
+            "type": "parallelGateway"
+          },
+          {
+            "id": "poll_join",
+            "type": "parallelGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s_split",
+            "id": "Flow_1",
+            "to": "poll_join"
+          },
+          {
+            "from": "late",
+            "id": "Flow_2",
+            "to": "flag"
+          },
+          {
+            "from": "flag",
+            "id": "Flow_3",
+            "to": "e"
+          },
+          {
+            "from": "s_split",
+            "id": "Flow_4",
+            "to": "every"
+          },
+          {
+            "from": "every",
+            "id": "Flow_5",
+            "to": "poll_join"
+          },
+          {
+            "from": "poll",
+            "id": "Flow_6",
+            "to": "poll_end"
+          },
+          {
+            "from": "s",
+            "id": "Flow_7",
+            "to": "s_split"
+          },
+          {
+            "from": "poll_join",
+            "id": "Flow_8",
+            "to": "poll"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "added end event \"poll_end\" after \"poll\"",
+    "split the flows out of \"s\" with and gateway \"s_split\"",
+    "joined 2 flows into \"poll\" with and gateway \"poll_join\"",
+    "named 1 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"late\" is a catch event on \"poll\"; made it a boundary event"
+    },
+    {
+      "line": 2,
+      "message": "\"every\" is a gateway with each=, named like a step; made it a task run per item"
+    }
+  ],
+  "questions": [
+    {
+      "draft": "After \"Go\", ",
+      "elementId": "s_split",
+      "options": [
+        {
+          "change": "After \"Go\", only one of \"Poll system\" and \"Process every recipient\" happens: decide which with an xor gateway.",
+          "label": "Only one of them"
+        },
+        {
+          "change": "After \"Go\", do \"Poll system\" and \"Process every recipient\" one after the other, not at the same time.",
+          "label": "One after the other"
+        }
+      ],
+      "text": "After \"Go\", \"Poll system\" and \"Process every recipient\" run at the same time. Is that right?"
+    }
+  ]
+}

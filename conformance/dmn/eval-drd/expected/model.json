@@ -1,0 +1,178 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "FIRST",
+        "id": "tier_table",
+        "inputs": [
+          {
+            "id": "tier_in",
+            "inputExpression": {
+              "id": "tier_in_expr",
+              "text": "spend",
+              "typeRef": "number"
+            },
+            "label": "Spend"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "tier_out",
+            "name": "tier",
+            "typeRef": "string"
+          }
+        ],
+        "rules": [
+          {
+            "id": "tier_r1",
+            "inputEntries": [
+              {
+                "id": "tier_r1_i",
+                "text": ">= 1000"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "tier_r1_o",
+                "text": "\"gold\""
+              }
+            ]
+          },
+          {
+            "id": "tier_r2",
+            "inputEntries": [
+              {
+                "id": "tier_r2_i",
+                "text": "-"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "tier_r2_o",
+                "text": "\"basic\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "tier",
+      "informationRequirements": [
+        {
+          "id": "ir_tier",
+          "requiredInput": "customer"
+        }
+      ],
+      "knowledgeRequirements": [],
+      "name": "Customer Tier"
+    },
+    {
+      "authorityRequirements": [],
+      "id": "rate",
+      "informationRequirements": [
+        {
+          "id": "ir_rate",
+          "requiredDecision": "tier"
+        }
+      ],
+      "knowledgeRequirements": [],
+      "literalExpression": {
+        "id": "rate_expr",
+        "text": "if Customer Tier = \"gold\" then 0.15 else 0.05"
+      },
+      "name": "Rate"
+    },
+    {
+      "authorityRequirements": [],
+      "id": "discount",
+      "informationRequirements": [
+        {
+          "id": "ir_d1",
+          "requiredDecision": "rate"
+        },
+        {
+          "id": "ir_d2",
+          "requiredDecision": "tier"
+        }
+      ],
+      "knowledgeRequirements": [],
+      "literalExpression": {
+        "id": "discount_expr",
+        "text": "{ amount: spend * Rate, tier: Customer Tier }"
+      },
+      "name": "Discount"
+    },
+    {
+      "authorityRequirements": [],
+      "id": "loop_a",
+      "informationRequirements": [
+        {
+          "id": "ir_la",
+          "requiredDecision": "loop_b"
+        }
+      ],
+      "knowledgeRequirements": [],
+      "literalExpression": {
+        "id": "la_expr",
+        "text": "B"
+      },
+      "name": "A"
+    },
+    {
+      "authorityRequirements": [],
+      "id": "loop_b",
+      "informationRequirements": [
+        {
+          "id": "ir_lb",
+          "requiredDecision": "loop_a"
+        }
+      ],
+      "knowledgeRequirements": [],
+      "literalExpression": {
+        "id": "lb_expr",
+        "text": "A"
+      },
+      "name": "B"
+    },
+    {
+      "authorityRequirements": [],
+      "id": "missing_req",
+      "informationRequirements": [
+        {
+          "id": "ir_m",
+          "requiredDecision": "nowhere"
+        }
+      ],
+      "knowledgeRequirements": [],
+      "literalExpression": {
+        "id": "m_expr",
+        "text": "1"
+      },
+      "name": "Missing"
+    },
+    {
+      "authorityRequirements": [],
+      "id": "no_body",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Empty"
+    }
+  ],
+  "id": "drd",
+  "inputData": [
+    {
+      "id": "customer",
+      "name": "customer"
+    }
+  ],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "Discount DRD",
+  "namespace": "http://bpmnkit.com/conformance",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/"
+  },
+  "textAnnotations": []
+}

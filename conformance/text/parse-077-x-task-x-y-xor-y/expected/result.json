@@ -1,0 +1,66 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "x",
+            "name": "X",
+            "type": "task"
+          },
+          {
+            "id": "z",
+            "name": "Z",
+            "type": "endEvent"
+          },
+          {
+            "id": "start",
+            "name": "Process started",
+            "type": "startEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "x"
+          },
+          {
+            "from": "x",
+            "id": "Flow_2",
+            "to": "z"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "added start event \"start\" before \"x\"",
+    "named 1 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "\"y\" has only one branch; gateway removed"
+    },
+    {
+      "line": 2,
+      "message": "condition \"prose here\" is not FEEL; kept as the branch label"
+    },
+    {
+      "line": 3,
+      "message": "condition \"more prose\" is not FEEL; kept as the branch label"
+    }
+  ],
+  "questions": [
+    {
+      "draft": "At \"Y?\", otherwise ",
+      "elementId": "y",
+      "options": [],
+      "text": "\"Y?\" had only one way to go, so it was removed. What happens otherwise?"
+    }
+  ]
+}

@@ -1,0 +1,238 @@
+{
+  "id": "Definitions_events",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "start",
+          "type": "startEvent"
+        },
+        {
+          "id": "start2",
+          "type": "startEvent"
+        },
+        {
+          "eventType": "timer",
+          "id": "startTimerDuration",
+          "timerDuration": "PT5M",
+          "type": "startEvent"
+        },
+        {
+          "eventType": "timer",
+          "id": "startCron",
+          "type": "startEvent"
+        },
+        {
+          "eventType": "signal",
+          "id": "startSignal",
+          "type": "startEvent"
+        },
+        {
+          "eventType": "timer",
+          "id": "catchNoTimer",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "eventType": "timer",
+          "id": "catchBadDuration",
+          "timerDuration": "5 minutes",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "eventType": "timer",
+          "id": "catchDate",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "eventType": "timer",
+          "id": "catchCycle",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "eventType": "message",
+          "id": "catchMsgNoRef",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "eventType": "message",
+          "id": "catchMsgNoName",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "eventType": "message",
+          "id": "catchMsgNoKey",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "eventType": "message",
+          "id": "catchMsgOk",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "eventType": "link",
+          "id": "catchLink",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "eventType": "signal",
+          "id": "catchSignalNoName",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "condition": "=x > 1",
+          "eventType": "conditional",
+          "id": "catchConditional",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "id": "work",
+          "jobType": "work",
+          "name": "Work",
+          "type": "serviceTask"
+        },
+        {
+          "attachedTo": "work",
+          "eventType": "timer",
+          "id": "boundaryCycle",
+          "type": "boundaryEvent"
+        },
+        {
+          "attachedTo": "work",
+          "eventType": "error",
+          "id": "boundaryErrorNoRef",
+          "type": "boundaryEvent"
+        },
+        {
+          "attachedTo": "work",
+          "eventType": "error",
+          "id": "boundaryErrorExpr",
+          "type": "boundaryEvent"
+        },
+        {
+          "attachedTo": "work",
+          "eventType": "escalation",
+          "id": "boundaryEscalation",
+          "interrupting": false,
+          "type": "boundaryEvent"
+        },
+        {
+          "attachedTo": "work",
+          "eventType": "compensate",
+          "id": "boundaryCompensation",
+          "type": "boundaryEvent"
+        },
+        {
+          "id": "throwNone",
+          "type": "intermediateThrowEvent"
+        },
+        {
+          "eventType": "escalation",
+          "id": "throwEscalationNoRef",
+          "type": "intermediateThrowEvent"
+        },
+        {
+          "eventType": "escalation",
+          "id": "throwEscalationNoCode",
+          "type": "intermediateThrowEvent"
+        },
+        {
+          "eventType": "message",
+          "id": "throwMessage",
+          "type": "intermediateThrowEvent"
+        },
+        {
+          "eventType": "message",
+          "id": "throwMessageTyped",
+          "jobType": "send",
+          "type": "intermediateThrowEvent"
+        },
+        {
+          "eventType": "compensate",
+          "id": "throwCompensation",
+          "type": "intermediateThrowEvent"
+        },
+        {
+          "eventType": "error",
+          "id": "endErrorNoRef",
+          "type": "endEvent"
+        },
+        {
+          "eventType": "error",
+          "id": "endErrorNoCode",
+          "type": "endEvent"
+        },
+        {
+          "eventType": "error",
+          "id": "endErrorExpr",
+          "type": "endEvent"
+        },
+        {
+          "eventType": "terminate",
+          "id": "endTerminate",
+          "type": "endEvent"
+        },
+        {
+          "eventType": "signal",
+          "id": "endSignalNoRef",
+          "type": "endEvent"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "eventType": "timer",
+                "id": "subTimerCycle",
+                "type": "startEvent"
+              },
+              {
+                "id": "subEnd",
+                "type": "endEvent"
+              }
+            ],
+            "flows": []
+          },
+          "id": "eventSub",
+          "type": "subProcess"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "eventType": "signal",
+                "id": "subSignal",
+                "type": "startEvent"
+              },
+              {
+                "id": "subEnd2",
+                "type": "endEvent"
+              }
+            ],
+            "flows": []
+          },
+          "id": "signalSub",
+          "type": "subProcess"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "eventType": "message",
+                "id": "subMessage",
+                "type": "startEvent"
+              },
+              {
+                "id": "subEnd3",
+                "type": "endEvent"
+              }
+            ],
+            "flows": []
+          },
+          "id": "messageSub",
+          "type": "subProcess"
+        }
+      ],
+      "flows": [],
+      "id": "events"
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "runs": {
+    "opts-1": {
+      "bpmnlintrc": {
+        "extends": [
+          "plugin:camunda-compat/camunda-cloud-8-6"
+        ],
+        "rules": {}
+      }
+    },
+    "opts-2": {
+      "bpmnlintrc": {
+        "extends": [
+          "plugin:camunda-compat/camunda-cloud-8-6"
+        ],
+        "rules": {
+          "link-event": "error"
+        }
+      }
+    }
+  }
+}

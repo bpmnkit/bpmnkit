@@ -1,0 +1,11 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["sendTask","s1",{"messageName":"ping"}],
+		["receiveTask","r1",{"messageName":"ping","correlationKey":"=k"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

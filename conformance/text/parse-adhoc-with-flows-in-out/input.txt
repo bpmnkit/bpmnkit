@@ -1,0 +1,4 @@
+s[start] > a[adhoc Agent] > g[xor Again?]
+g >(Yes: again) a
+g >(No: default) e[end]
+t[service Tool | inside=a]

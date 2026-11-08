@@ -1,0 +1,29 @@
+{
+  "id": "F",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "id": "a",
+      "type": "expression"
+    },
+    {
+      "id": "b",
+      "type": "expression",
+      "key": "b",
+      "expression": "  "
+    },
+    {
+      "id": "c",
+      "type": "expression",
+      "key": "c",
+      "expression": 5
+    },
+    {
+      "id": "d",
+      "type": "expression",
+      "key": "d",
+      "expression": "=a + 1"
+    }
+  ]
+}

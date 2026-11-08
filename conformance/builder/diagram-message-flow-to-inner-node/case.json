@@ -1,0 +1,13 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createDiagram","D"],
+		["process","a",{"$ops":[["startEvent","s"],["subProcess","sp",{"$ops":[["startEvent","is"],["sendTask","inner",{"messageName":"m"}],["endEvent","ie"]]}],["endEvent","e"]]}],
+		["process","b",{"$ops":[["startEvent","s2",{"messageName":"m"}],["endEvent","e2"]]}],
+		["participant","A",{"processId":"a"}],
+		["participant","B",{"processId":"b"}],
+		["message","M",{"name":"m"}],
+		["messageFlow","MF",{"source":"inner","target":"s2","messageRef":"M"}],
+		["build"]
+	]
+}

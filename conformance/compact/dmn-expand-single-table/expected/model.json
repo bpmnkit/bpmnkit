@@ -1,0 +1,94 @@
+{
+  "associations": [],
+  "businessKnowledgeModels": [],
+  "decisions": [
+    {
+      "authorityRequirements": [],
+      "decisionTable": {
+        "hitPolicy": "UNIQUE",
+        "id": "decisionTable_0000006",
+        "inputs": [
+          {
+            "id": "i1",
+            "inputExpression": {
+              "id": "inputExpression_0000001",
+              "text": "age",
+              "typeRef": "number"
+            },
+            "label": "Age"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "o1",
+            "name": "risk",
+            "typeRef": "string"
+          }
+        ],
+        "rules": [
+          {
+            "description": "young",
+            "id": "r1",
+            "inputEntries": [
+              {
+                "id": "inputEntry_0_0000002",
+                "text": "< 18"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "outputEntry_0_0000003",
+                "text": "\"low\""
+              }
+            ]
+          },
+          {
+            "id": "r2",
+            "inputEntries": [
+              {
+                "id": "inputEntry_0_0000004",
+                "text": ">= 18"
+              }
+            ],
+            "outputEntries": [
+              {
+                "id": "outputEntry_0_0000005",
+                "text": "\"high\""
+              }
+            ]
+          }
+        ]
+      },
+      "id": "risk",
+      "informationRequirements": [],
+      "knowledgeRequirements": [],
+      "name": "Risk"
+    }
+  ],
+  "diagram": {
+    "edges": [],
+    "shapes": [
+      {
+        "bounds": {
+          "height": 80,
+          "width": 180,
+          "x": 160,
+          "y": 100
+        },
+        "dmnElementRef": "risk"
+      }
+    ]
+  },
+  "id": "defs",
+  "inputData": [],
+  "knowledgeSources": [],
+  "modelerAttributes": {},
+  "name": "Defs",
+  "namespace": "http://bpmn.io/schema/dmn",
+  "namespaces": {
+    "": "https://www.omg.org/spec/DMN/20191111/MODEL/",
+    "dc": "http://www.omg.org/spec/DMN/20180521/DC/",
+    "dmndi": "https://www.omg.org/spec/DMN/20191111/DMNDI/"
+  },
+  "textAnnotations": []
+}

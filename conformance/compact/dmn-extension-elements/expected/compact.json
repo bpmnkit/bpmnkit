@@ -1,0 +1,63 @@
+{
+  "decisions": [
+    {
+      "id": "with_extension",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "i1"
+        }
+      ],
+      "name": "Own extensionElements",
+      "outputs": [
+        {
+          "id": "o1",
+          "name": "y"
+        }
+      ],
+      "rules": []
+    },
+    {
+      "id": "literal",
+      "inputs": [],
+      "name": "Literal expression",
+      "outputs": [],
+      "requires": [
+        "x"
+      ],
+      "rules": []
+    },
+    {
+      "id": "empty_extension",
+      "inputs": [],
+      "name": "Empty extensionElements",
+      "outputs": [],
+      "rules": []
+    },
+    {
+      "id": "plain",
+      "inputs": [
+        {
+          "expression": "x",
+          "id": "i2"
+        }
+      ],
+      "name": "Nothing unknown",
+      "outputs": [
+        {
+          "id": "o2",
+          "name": "y"
+        }
+      ],
+      "rules": []
+    }
+  ],
+  "id": "Definitions_ext",
+  "inputData": [
+    {
+      "id": "x",
+      "name": "x"
+    }
+  ],
+  "name": "Extensions"
+}

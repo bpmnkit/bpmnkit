@@ -1,3 +1,4 @@
+import { PARAM_SIGNATURES, VARIADIC } from "./generated/builtin-signatures.js"
 import type {
 	FeelContext,
 	FeelDate,
@@ -266,7 +267,15 @@ function toScale(v: FeelValue | undefined): number | null {
 
 /** Rounds `n` at `scale` with the given rounding of a value exactly halfway. */
 function roundAt(n: number, scale: number, round: (x: number) => number): number {
-	if (Math.abs(scale) > SCALE_LIMIT) return n
+	// No double has a digit past 10^-300 that rounding would change, so a finer scale
+	// keeps n. A coarser one rounds to a multiple of 10^-scale, which is 0 for most n:
+	// decimal(1, -301) is 0, as in the Rust twin.
+	if (scale > SCALE_LIMIT) return n
+	if (scale < -SCALE_LIMIT) {
+		const step = 10 ** -scale
+		const units = round(n / step)
+		return units === 0 ? 0 : units * step
+	}
 	const factor = 10 ** scale
 	// Re-reading the scaled value through its decimal form keeps a product like
 	// 1.005 * 100 from landing just under the halfway point it should sit on.
@@ -310,11 +319,6 @@ function at(arr: FeelValue[], i: number): FeelValue {
 }
 
 // Unwrap single-list argument or return the flat array
-function unwrapList(flat: FeelValue[]): FeelValue[] {
-	const first = flat[0]
-	return flat.length === 1 && first !== undefined && isFeelList(first) ? first : flat
-}
-
 function inRange(v: FeelValue, r: import("./types.js").FeelRange): boolean {
 	const cmpStart = compareValues(v, r.start)
 	const cmpEnd = compareValues(v, r.end)
@@ -876,7 +880,9 @@ reg("log", (n) => {
 
 reg("exp", (n) => {
 	const num = toNum(n)
-	return num === null ? null : Math.exp(num)
+	// Past float64's range exp is Infinity, which FEEL has no number for.
+	const e = num === null ? null : Math.exp(num)
+	return e !== null && Number.isFinite(e) ? e : null
 })
 
 reg("odd", (n) => {
@@ -898,10 +904,8 @@ reg("random number", () => Math.random())
 reg("count", (...args) => {
 	// count() takes a list; a null argument is a type error, not a one-item list.
 	if (args.length === 1 && args[0] === null) return null
-	const list = flattenToList(args)
-	const first = list[0]
-	if (list.length === 1 && first !== undefined && isFeelList(first)) return first.length
-	return list.length
+	// One list argument is the list; its items are not unwrapped again (count([[1, 2]]) is 1).
+	return flattenToList(args).length
 })
 
 reg("list contains", (list, item) => {
@@ -910,10 +914,7 @@ reg("list contains", (list, item) => {
 })
 
 reg("min", (...args) => {
-	const list = flattenToList(args)
-	const listFirst = list[0]
-	const flat =
-		listFirst !== undefined && isFeelList(listFirst) && list.length === 1 ? listFirst : list
+	const flat = flattenToList(args)
 	if (flat.length === 0) return null
 	let m: FeelValue = flat[0] ?? null
 	for (let i = 1; i < flat.length; i++) {
@@ -925,10 +926,7 @@ reg("min", (...args) => {
 })
 
 reg("max", (...args) => {
-	const list = flattenToList(args)
-	const listFirst = list[0]
-	const flat =
-		listFirst !== undefined && isFeelList(listFirst) && list.length === 1 ? listFirst : list
+	const flat = flattenToList(args)
 	if (flat.length === 0) return null
 	let m: FeelValue = flat[0] ?? null
 	for (let i = 1; i < flat.length; i++) {
@@ -940,7 +938,7 @@ reg("max", (...args) => {
 })
 
 reg("sum", (...args) => {
-	const list = unwrapList(flattenToList(args))
+	const list = flattenToList(args)
 	let s = 0
 	for (const v of list) {
 		const n = toNum(v)
@@ -952,7 +950,7 @@ reg("sum", (...args) => {
 
 reg("product", (...args) => {
 	if (args.length === 0) return null
-	const list = unwrapList(flattenToList(args))
+	const list = flattenToList(args)
 	if (list.length === 0) return null
 	let p = 1
 	for (const v of list) {
@@ -964,7 +962,7 @@ reg("product", (...args) => {
 })
 
 reg("mean", (...args) => {
-	const list = unwrapList(flattenToList(args))
+	const list = flattenToList(args)
 	if (list.length === 0) return null
 	let s = 0
 	for (const v of list) {
@@ -976,7 +974,7 @@ reg("mean", (...args) => {
 })
 
 reg("median", (...args) => {
-	const list = unwrapList(flattenToList(args))
+	const list = flattenToList(args)
 	const nums: number[] = []
 	for (const v of list) {
 		const n = toNum(v)
@@ -990,7 +988,7 @@ reg("median", (...args) => {
 })
 
 reg("stddev", (...args) => {
-	const list = unwrapList(flattenToList(args))
+	const list = flattenToList(args)
 	const nums: number[] = []
 	for (const v of list) {
 		const n = toNum(v)
@@ -1005,7 +1003,7 @@ reg("stddev", (...args) => {
 
 reg("mode", (...args) => {
 	if (args.length === 0) return null
-	const list = unwrapList(flattenToList(args))
+	const list = flattenToList(args)
 	const counts = new Map<number, number>()
 	for (const v of list) {
 		const n = toNum(v)
@@ -1023,7 +1021,7 @@ reg("mode", (...args) => {
 
 reg("all", (...args) => {
 	if (args.length === 0) return null
-	const list = unwrapList(flattenToList(args))
+	const list = flattenToList(args)
 	let hasNull = false
 	for (const v of list) {
 		if (v === false) return false
@@ -1035,7 +1033,7 @@ reg("all", (...args) => {
 
 reg("any", (...args) => {
 	if (args.length === 0) return null
-	const list = unwrapList(flattenToList(args))
+	const list = flattenToList(args)
 	let hasNull = false
 	for (const v of list) {
 		if (v === true) return true
@@ -1111,22 +1109,29 @@ reg("index of", (list, match) => {
 
 // Set membership is SameValueZero, exactly what Array#includes used here, so
 // de-duplication keeps its semantics while dropping from O(n²) to O(n).
-reg("union", (...args) => {
-	const seen = new Set<FeelValue>()
-	for (const v of args) {
-		if (isFeelList(v)) {
-			for (const item of v) seen.add(item)
-		} else {
-			seen.add(v)
+/**
+ * The items without repeats, in first-seen order. Equal dates, lists and contexts are
+ * distinct objects, so they are compared by value (as `duplicate values` does), not by
+ * identity: `distinct values([@"2024-02-29", @"2024-02-29"])` has one item.
+ */
+function distinct(items: FeelValue[]): FeelValue[] {
+	const out: FeelValue[] = []
+	const keyed = new Set<FeelValue>()
+	for (const item of items) {
+		if (item === null || typeof item !== "object") {
+			if (keyed.has(item)) continue
+			keyed.add(item)
+		} else if (out.some((o) => sameItem(o, item))) {
+			continue
 		}
+		out.push(item)
 	}
-	return [...seen]
-})
+	return out
+}
 
-reg("distinct values", (list) => {
-	if (!isFeelList(list)) return null
-	return [...new Set(list)]
-})
+reg("union", (...args) => distinct(args.flatMap((v) => (isFeelList(v) ? v : [v]))))
+
+reg("distinct values", (list) => (isFeelList(list) ? distinct(list) : null))
 
 // Camunda extensions (feel-scala) --------------------------------------------
 
@@ -1852,211 +1857,10 @@ reg("coincides", (a, b) => {
 // Parameter names
 // -------------------------------------------------------------------------
 
-/** One signature per subset of the optional parameters, each in declaration order. */
-function withOptionalParams(required: string[], optional: string[]): string[][] {
-	const signatures = [required]
-	for (const param of optional) {
-		const count = signatures.length
-		for (let i = 0; i < count; i++) signatures.push([...(signatures[i] as string[]), param])
-	}
-	return signatures
-}
-
-// Parameter names of every built-in, in declaration order, so that a named
-// invocation such as `substring(start position: 2, string: "hello")` binds by
-// name rather than by the order the arguments happen to appear in. Built-ins
-// with several signatures list one entry per signature.
-const PARAM_SIGNATURES: Record<string, string[][]> = {
-	// Conversion
-	string: [["from"]],
-	number: [
-		["from"],
-		["from", "grouping separator"],
-		["from", "grouping separator", "decimal separator"],
-	],
-	context: [["entries"]],
-	date: [["from"], ["year", "month", "day"]],
-	time: [["from"], ["hour", "minute", "second"], ["hour", "minute", "second", "offset"]],
-	"date and time": [["from"], ["date", "time"], ["date", "timezone"]],
-	duration: [["from"]],
-	"years and months duration": [["from", "to"]],
-	// Boolean
-	not: [["negand"]],
-	is: [["value1"], ["value2"], ["value1", "value2"]],
-	"is defined": [["value"]],
-	"get or else": [["value", "default"]],
-	assert: [
-		["value", "condition"],
-		["value", "condition", "cause"],
-	],
-	// Every parameter after the value is optional, and is passed by name in any
-	// combination: fromAi(value: toolCall.id, type: "number").
-	fromAi: withOptionalParams(["value"], ["description", "type", "schema", "options"]),
-	// String
-	substring: [
-		["string", "start position"],
-		["string", "start position", "length"],
-	],
-	"string length": [["string"]],
-	"upper case": [["string"]],
-	"lower case": [["string"]],
-	"substring before": [["string", "match"]],
-	"substring after": [["string", "match"]],
-	contains: [["string", "match"]],
-	"starts with": [["string", "match"]],
-	"ends with": [["string", "match"]],
-	matches: [
-		["input", "pattern"],
-		["input", "pattern", "flags"],
-	],
-	replace: [
-		["input", "pattern", "replacement"],
-		["input", "pattern", "replacement", "flags"],
-	],
-	split: [["string", "delimiter"]],
-	"string join": [["list"], ["list", "delimiter"], ["list", "delimiter", "prefix", "suffix"]],
-	"is blank": [["string"]],
-	trim: [["string"]],
-	extract: [["string", "pattern"]],
-	uuid: [[]],
-	"to base64": [["value"]],
-	"from base64": [["value"]],
-	"to json": [["value"]],
-	"from json": [["value"]],
-	// List
-	"list contains": [["list", "element"]],
-	count: [["list"]],
-	min: [["list"]],
-	max: [["list"]],
-	sum: [["list"]],
-	product: [["list"]],
-	mean: [["list"]],
-	median: [["list"]],
-	stddev: [["list"]],
-	mode: [["list"]],
-	all: [["list"]],
-	any: [["list"]],
-	sublist: [
-		["list", "start position"],
-		["list", "start position", "length"],
-	],
-	append: [["list", "items"]],
-	concatenate: [["lists"]],
-	"insert before": [["list", "position", "newItem"]],
-	remove: [["list", "position"]],
-	reverse: [["list"]],
-	"index of": [["list", "match"]],
-	union: [["list"]],
-	"distinct values": [["list"]],
-	flatten: [["list"]],
-	sort: [["list", "precedes"]],
-	"duplicate values": [["list"]],
-	"is empty": [["list"]],
-	partition: [["list", "size"]],
-	// Numeric
-	decimal: [["n", "scale"]],
-	floor: [["n"], ["n", "scale"]],
-	ceiling: [["n"], ["n", "scale"]],
-	"round up": [["n", "scale"]],
-	"round down": [["n", "scale"]],
-	"round half up": [["n", "scale"]],
-	"round half down": [["n", "scale"]],
-	abs: [["number"], ["n"]],
-	modulo: [["dividend", "divisor"]],
-	sqrt: [["number"]],
-	log: [["number"]],
-	exp: [["number"]],
-	odd: [["number"]],
-	even: [["number"]],
-	"random number": [[]],
-	// Context
-	"get value": [
-		["context", "key"],
-		["context", "keys"],
-		["m", "key"],
-		["m", "keys"],
-	],
-	"get entries": [["context"], ["m"]],
-	"context put": [
-		["context", "key", "value"],
-		["context", "keys", "value"],
-	],
-	"context merge": [["contexts"]],
-	// Temporal
-	now: [[]],
-	today: [[]],
-	"day of week": [["date"]],
-	"day of year": [["date"]],
-	"week of year": [["date"]],
-	"month of year": [["date"]],
-	"last day of month": [["date"]],
-	// Range
-	before: [
-		["point1", "point2"],
-		["range", "point"],
-		["point", "range"],
-		["range1", "range2"],
-	],
-	after: [
-		["point1", "point2"],
-		["range", "point"],
-		["point", "range"],
-		["range1", "range2"],
-	],
-	meets: [["range1", "range2"]],
-	"met by": [["range1", "range2"]],
-	overlaps: [["range1", "range2"]],
-	"overlaps before": [["range1", "range2"]],
-	"overlaps after": [["range1", "range2"]],
-	finishes: [
-		["point", "range"],
-		["range1", "range2"],
-	],
-	"finished by": [
-		["range", "point"],
-		["range1", "range2"],
-	],
-	includes: [
-		["range", "point"],
-		["range1", "range2"],
-	],
-	during: [
-		["point", "range"],
-		["range1", "range2"],
-	],
-	starts: [
-		["point", "range"],
-		["range1", "range2"],
-	],
-	"started by": [
-		["range", "point"],
-		["range1", "range2"],
-	],
-	coincides: [
-		["point1", "point2"],
-		["range1", "range2"],
-	],
-}
-
-// Built-ins DMN also defines over a bare argument list, so that max(1,2,3)
-// means max([1,2,3]). Their arity is not checked; everything else's is.
-const VARIADIC = new Set([
-	"min",
-	"max",
-	"sum",
-	"product",
-	"mean",
-	"median",
-	"stddev",
-	"mode",
-	"all",
-	"any",
-	"count",
-	"append",
-	"concatenate",
-	"union",
-	"context merge",
-])
+// Parameter names of every built-in come from spec/feel-builtins.json, so that a
+// named invocation such as `substring(start position: 2, string: "hello")` binds
+// by name rather than by the order the arguments happen to appear in, and the
+// Rust twin binds the same way.
 
 /** The argument counts a built-in accepts, or undefined when it takes any. */
 function aritiesOf(name: string): Set<number> | undefined {

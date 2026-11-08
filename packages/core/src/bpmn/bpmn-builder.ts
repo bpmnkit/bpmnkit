@@ -7,6 +7,7 @@ import type {
 	BpmnAssociation,
 	BpmnCollaboration,
 	BpmnConditionExpression,
+	BpmnDataAssociation,
 	BpmnDefinitions,
 	BpmnElementType,
 	BpmnError,
@@ -24,7 +25,7 @@ import type {
 	BpmnSignal,
 	BpmnTextAnnotation,
 } from "./bpmn-model.js"
-import { createFlowElement } from "./element-shape.js"
+import { createFlowElement, isLoopCapableType } from "./element-shape.js"
 import type { RestConnectorConfig } from "./rest-connector.js"
 import {
 	REST_CONNECTOR_TEMPLATE_VERSION,
@@ -35,14 +36,23 @@ import {
 } from "./rest-connector.js"
 import {
 	assertExplicitFlowIdsUnique,
+	assignEventDefinitionIds,
 	assignStableFlowIds,
+	copyFlowTags,
 	markExplicitFlowId,
 	rootDefinitionId,
 	setFlowDiscriminatorSource,
 } from "./stable-ids.js"
+import { assertRetriesOption, assertXsdValues } from "./xsd-guards.js"
 import {
 	type ZeebeExtensions,
+	type ZeebeFormDefinition,
+	type ZeebeLinkedResource,
+	type ZeebeListener,
+	assertZeebePlacement,
+	bpmnElementName,
 	ensureZeebeExtension,
+	makeConditionalDefinition,
 	zeebeExtensionsToXmlElements,
 } from "./zeebe-extensions.js"
 
@@ -59,18 +69,30 @@ export interface ElementOptions {
 	isForCompensation?: boolean
 	/** Free-text documentation (`<bpmn:documentation>`). Used by the AI Agent connector as a tool description. */
 	documentation?: string
+	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
+	executionListeners?: ZeebeListener[]
 }
 
 /** Options for send/receive task elements. */
 export interface MessageTaskOptions extends ElementOptions {
+	/** Runs the activity once per item of a list. */
+	multiInstance?: MultiInstanceOptions
 	/** Message name — generates or reuses a root <bpmn:message> and sets messageRef. */
 	messageName?: string
 	/** FEEL expression correlating this message to a specific process instance (`zeebe:subscription`). */
 	correlationKey?: string
 }
 
+/** Variable change that re-evaluates a conditional event's condition. */
+export type ConditionVariableEvent = "create" | "update"
+
 /** Options for creating a start event. */
 export interface StartEventOptions extends ElementOptions {
+	/** FEEL condition — creates a conditional start event (Camunda 8.9+). */
+	condition?: string
+	/** Variable events that re-evaluate `condition` (`zeebe:conditionalFilter`); default is both. */
+	conditionVariableEvents?: ConditionVariableEvent[]
+
 	/** Timer duration (ISO 8601) — creates a timer start event. */
 	timerDuration?: string
 	/** Timer date (ISO 8601) — creates a timer start event. */
@@ -102,6 +124,10 @@ export interface StartEventOptions extends ElementOptions {
 
 /** Options for creating a service task. */
 export interface ServiceTaskOptions {
+	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
+	executionListeners?: ZeebeListener[]
+	/** Runs the activity once per item of a list. */
+	multiInstance?: MultiInstanceOptions
 	/** Display name (required for BPMN canvas visibility). */
 	name: string
 	/** Zeebe job type for this task. */
@@ -119,6 +145,8 @@ export interface ServiceTaskOptions {
 	zeebeProperties?: Array<{ name: string; value: string }>
 	/** Marks the task as an AI agent the engine runs (`zeebe:agentDefinition`, Camunda 8.10+). */
 	agentDefinition?: { agentType: string }
+	/** Resources the task runs, e.g. an RPA script (`zeebe:linkedResources`). */
+	linkedResources?: ZeebeLinkedResource[]
 	/** Zeebe modeler template ID. */
 	modelerTemplate?: string
 	/** Zeebe modeler template version. */
@@ -133,6 +161,10 @@ export interface ServiceTaskOptions {
 
 /** Options for creating a script task. */
 export interface ScriptTaskOptions {
+	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
+	executionListeners?: ZeebeListener[]
+	/** Runs the activity once per item of a list. */
+	multiInstance?: MultiInstanceOptions
 	/** Display name. */
 	name?: string
 	/** FEEL expression for the script. */
@@ -147,10 +179,29 @@ export interface ScriptTaskOptions {
 
 /** Options for creating a user task. */
 export interface UserTaskOptions {
+	/** Listeners on the user task's own lifecycle (`zeebe:taskListeners`); needs `zeebeUserTask`. */
+	taskListeners?: ZeebeListener[]
+	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
+	executionListeners?: ZeebeListener[]
+	/** Runs the activity once per item of a list. */
+	multiInstance?: MultiInstanceOptions
 	/** Display name. */
 	name?: string
 	/** Form key or form reference. */
 	formId?: string
+	/** Legacy form key (`zeebe:formDefinition formKey`), e.g. `camunda-forms:bpmn:<id>`. */
+	formKey?: string
+	/** External form URL (`zeebe:formDefinition externalReference`); for a `zeebeUserTask`. */
+	externalReference?: string
+	/** What `formId` resolves against; anything but `latest` needs Camunda 8.6+. */
+	formBindingType?: "latest" | "deployment" | "versionTag"
+	/** Version tag of the form; use with `formBindingType: "versionTag"`. */
+	formVersionTag?: string
+	/**
+	 * Embeds a Camunda Form: writes a process-level `zeebe:userTaskForm` holding `schema`
+	 * (the form's JSON) and links it with `formKey="camunda-forms:bpmn:<id>"`.
+	 */
+	embeddedForm?: { id: string; schema: string }
 	/** Emit <zeebe:userTask /> to mark as a Camunda 8 native user task. */
 	zeebeUserTask?: boolean
 	/** Input/output variable mappings. */
@@ -188,12 +239,36 @@ export interface UserTaskOptions {
 
 /** Options for creating a call activity. */
 export interface CallActivityOptions {
+	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
+	executionListeners?: ZeebeListener[]
+	/** Runs the activity once per item of a list. */
+	multiInstance?: MultiInstanceOptions
 	/** Display name. */
 	name?: string
 	/** Process ID to call. */
 	processId: string
-	/** Whether to propagate all child variables. */
+	/** Whether to propagate all child variables back to the parent on completion. */
 	propagateAllChildVariables?: boolean
+	/**
+	 * Whether the child process receives all parent variables (default true in the engine).
+	 * Set `false` to pass only `ioMapping` inputs; `false` needs Camunda 8.2+.
+	 */
+	propagateAllParentVariables?: boolean
+	/**
+	 * How the called process version is resolved: the `latest` deployed version, the version
+	 * deployed together with this process (`deployment`), or by `versionTag`. Needs Camunda 8.6+.
+	 */
+	bindingType?: "latest" | "deployment" | "versionTag"
+	/** Version tag of the called process; only meaningful with `bindingType: "versionTag"`. */
+	versionTag?: string
+	/** Input/output variable mappings between parent and child scope. */
+	ioMapping?: {
+		inputs?: Array<{ source: string; target: string }>
+		outputs?: Array<{ source: string; target: string }>
+	}
+	// No taskHeaders: the Zeebe schema does not allow zeebe:taskHeaders on bpmn:callActivity.
+	/** Zeebe property key-value pairs (`zeebe:properties`/`zeebe:property`). */
+	zeebeProperties?: Array<{ name: string; value: string }>
 	/** Mark this activity as a compensation handler. */
 	isForCompensation?: boolean
 	/** Free-text documentation (`<bpmn:documentation>`). */
@@ -202,6 +277,10 @@ export interface CallActivityOptions {
 
 /** Options for creating a business rule task. */
 export interface BusinessRuleTaskOptions {
+	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
+	executionListeners?: ZeebeListener[]
+	/** Runs the activity once per item of a list. */
+	multiInstance?: MultiInstanceOptions
 	/** Display name. */
 	name?: string
 	/** Zeebe job type. */
@@ -282,6 +361,10 @@ export interface IntermediateCatchEventOptions extends ElementOptions {
 	 * connected from the current position.
 	 */
 	linkName?: string
+	/** FEEL condition — creates a conditional catch event (Camunda 8.9+). */
+	condition?: string
+	/** Variable events that re-evaluate `condition` (`zeebe:conditionalFilter`); default is both. */
+	conditionVariableEvents?: ConditionVariableEvent[]
 }
 
 /** Options for an intermediate throw event. */
@@ -342,6 +425,10 @@ export interface BoundaryEventOptions extends ElementOptions {
 	signalName?: string
 	/** Creates a compensation boundary event. */
 	compensation?: boolean
+	/** FEEL condition — creates a conditional boundary event (Camunda 8.9+). */
+	condition?: string
+	/** Variable events that re-evaluate `condition` (`zeebe:conditionalFilter`); default is both. */
+	conditionVariableEvents?: ConditionVariableEvent[]
 }
 
 /** Multi-instance loop configuration. */
@@ -349,6 +436,10 @@ export interface MultiInstanceOptions {
 	isSequential?: boolean
 	collection?: string
 	elementVariable?: string
+	/** Variable that collects each instance's output element (`zeebe:loopCharacteristics`). */
+	outputCollection?: string
+	/** FEEL expression evaluated per instance and appended to `outputCollection`. */
+	outputElement?: string
 	completionCondition?: string
 }
 
@@ -407,13 +498,69 @@ export interface AdHocSubProcessOptions extends ElementOptions {
 	toolGrid?: GridHint
 }
 
+/** Options for `dataObject()` / `dataObjectReference()`. */
+export interface DataElementOptions {
+	name?: string
+	/** Draws the collection (parallel-bars) marker. */
+	isCollection?: boolean
+}
+
+/**
+ * Data elements sit beside the chain: no sequence flow in or out, and the flow
+ * cursor does not move. They are linked to activities by data associations.
+ */
+function addDataElement(
+	elements: BpmnFlowElement[],
+	ids: Set<string>,
+	element: BpmnFlowElement,
+): void {
+	if (ids.has(element.id)) throw new Error(`Duplicate element ID "${element.id}"`)
+	elements.push(element)
+	ids.add(element.id)
+}
+
+function makeDataElement(
+	id: string,
+	type: "dataObject" | "dataObjectReference" | "dataStoreReference",
+	ref: string | undefined,
+	options?: DataElementOptions,
+): BpmnFlowElement {
+	const el = createFlowElement(id, type, { name: options?.name })
+	if (el.type === "dataObjectReference") el.dataObjectRef = ref
+	if (el.type === "dataStoreReference") el.dataStoreRef = ref
+	if (options?.isCollection && (el.type === "dataObject" || el.type === "dataObjectReference"))
+		el.isCollection = true
+	return el
+}
+
+/**
+ * Input: the data reference is the association's source. Output: it is the
+ * target. Either way the activity owns the association element.
+ */
+function addDataAssociation(
+	elements: readonly BpmnFlowElement[],
+	activityId: string,
+	dataRefId: string,
+	direction: "input" | "output",
+): void {
+	const activity = elements.find((e) => e.id === activityId)
+	if (!activity) throw new Error(`dataAssociation(): no element "${activityId}" in this scope`)
+	const association: BpmnDataAssociation =
+		direction === "input"
+			? { sourceRefs: [dataRefId], unknownAttributes: {} }
+			: { sourceRefs: [], targetRef: dataRefId, unknownAttributes: {} }
+	const key = direction === "input" ? "dataInputAssociations" : "dataOutputAssociations"
+	activity[key] = [...(activity[key] ?? []), association]
+}
+
 /** Options for `annotate()`. */
 export interface AnnotateOptions {
 	/**
 	 * Which side of the element `withAutoLayout()` puts the annotation on,
-	 * instead of the side it would choose. Layout only; not written to the XML.
+	 * instead of the side it would choose. `"left"` / `"right"` put it beside
+	 * the element, preferably level with its centre. Layout only; not written to the XML.
 	 */
-	side?: "above" | "below"
+	side?: "above" | "below" | "left" | "right"
 }
 
 // ---------------------------------------------------------------------------
@@ -529,6 +676,8 @@ function buildEventDefinitions(
 		compensation?: boolean
 		activityRef?: string
 		linkName?: string
+		condition?: string
+		conditionVariableEvents?: ConditionVariableEvent[]
 	},
 	rootErrors?: BpmnError[],
 	rootMessages?: BpmnMessage[],
@@ -606,6 +755,9 @@ function buildEventDefinitions(
 	if (opts.linkName !== undefined) {
 		defs.push({ type: "link", name: opts.linkName })
 	}
+	if (opts.condition !== undefined) {
+		defs.push(makeConditionalDefinition(opts.condition, opts.conditionVariableEvents))
+	}
 	return defs
 }
 
@@ -632,27 +784,68 @@ function isLinkEvent(
 function makeFlowElement(
 	id: string,
 	type: BpmnElementType,
-	options?: { name?: string; extensionElements?: XmlElement[]; documentation?: string },
+	options?: {
+		name?: string
+		extensionElements?: XmlElement[]
+		documentation?: string
+		executionListeners?: ZeebeListener[]
+		taskListeners?: ZeebeListener[]
+	},
 ): BpmnFlowElement {
-	return createFlowElement(id, type, options)
+	const el = createFlowElement(id, type, options)
+	el.extensionElements = [...el.extensionElements]
+	// Placement is checked here, so a listener on an element the schema forbids it on
+	// fails at build time, not at deploy time.
+	const listeners = zeebeExtensionsToXmlElements({
+		...(options?.executionListeners ? { executionListeners: options.executionListeners } : {}),
+		...(options?.taskListeners ? { taskListeners: options.taskListeners } : {}),
+	})
+	for (const listener of listeners) {
+		assertZeebePlacement(bpmnElementName(el), listener.name)
+		el.extensionElements.push(listener)
+	}
+	return el
 }
 
 function buildMultiInstance(options: MultiInstanceOptions): BpmnMultiInstanceLoopCharacteristics {
 	const extChildren: XmlElement[] = []
+	// Zeebe needs inputCollection, so output-only options emit nothing (as before).
 	if (options.collection) {
-		const attrs: Record<string, string> = {
-			inputCollection: options.collection,
-		}
-		if (options.elementVariable) {
-			attrs.inputElement = options.elementVariable
-		}
-		extChildren.push({
-			name: "zeebe:loopCharacteristics",
-			attributes: attrs,
-			children: [],
-		})
+		const attrs: Record<string, string> = { inputCollection: options.collection }
+		if (options.elementVariable) attrs.inputElement = options.elementVariable
+		if (options.outputCollection) attrs.outputCollection = options.outputCollection
+		if (options.outputElement) attrs.outputElement = options.outputElement
+		extChildren.push({ name: "zeebe:loopCharacteristics", attributes: attrs, children: [] })
 	}
-	return { isSequential: options.isSequential || undefined, extensionElements: extChildren }
+	return {
+		isSequential: options.isSequential || undefined,
+		completionCondition: options.completionCondition
+			? {
+					text: options.completionCondition,
+					attributes: { "xsi:type": "bpmn:tFormalExpression" },
+				}
+			: undefined,
+		extensionElements: extChildren,
+	}
+}
+
+/** Sets `multiInstance` on an activity; the one place every task type shares. */
+function withMultiInstance(
+	el: BpmnFlowElement,
+	mi: MultiInstanceOptions | undefined,
+): BpmnFlowElement {
+	if (!mi) return el
+	switch (el.type) {
+		case "serviceTask":
+		case "userTask":
+		case "scriptTask":
+		case "sendTask":
+		case "receiveTask":
+		case "businessRuleTask":
+		case "callActivity":
+			el.loopCharacteristics = buildMultiInstance(mi)
+	}
+	return el
 }
 
 function buildAdHocLoopCharacteristics(lc: {
@@ -692,6 +885,67 @@ function isGatewayType(type: BpmnElementType): boolean {
 	return GATEWAY_ELEMENT_TYPES.has(type)
 }
 
+/**
+ * Why `withBoundary()` may not attach to `host`, or undefined when it may.
+ * BPMN attaches boundary events to activities only, which are exactly the
+ * loop-capable types. An unknown host (a cursor that `connectTo()` moved
+ * outside this scope) is left alone.
+ */
+function boundaryHostProblem(host: BpmnFlowElement | undefined): string | undefined {
+	if (host === undefined || isLoopCapableType(host.type)) return undefined
+	if (host.type === "boundaryEvent") {
+		return "withBoundary() cannot attach to a boundary event. It must follow a task or activity element."
+	}
+	return `withBoundary() cannot attach to ${host.type} "${host.id}". It must follow a task or activity element.`
+}
+
+/**
+ * Throws on an id used twice anywhere in the process. Each builder scope only
+ * checks its own ids, but BPMN ids are unique per document.
+ */
+function assertElementIdsUnique(elements: BpmnFlowElement[], processId: string): void {
+	const seen = new Set<string>()
+	const walk = (scope: BpmnFlowElement[]) => {
+		for (const element of scope) {
+			if (seen.has(element.id)) {
+				throw new Error(`Duplicate element ID "${element.id}" in process "${processId}"`)
+			}
+			seen.add(element.id)
+			if ("flowElements" in element) walk(element.flowElements)
+		}
+	}
+	walk(elements)
+}
+
+/**
+ * Deep-copies a scope for `build()`, carrying the builder's side tables (keyed
+ * by object) over to the copies, so building leaves the builder untouched.
+ */
+function cloneScope(
+	elements: BpmnFlowElement[],
+	flows: BpmnSequenceFlow[],
+): { elements: BpmnFlowElement[]; flows: BpmnSequenceFlow[] } {
+	const [elementsCopy, flowsCopy] = structuredClone([elements, flows])
+	const carry = (
+		from: BpmnFlowElement[],
+		fromFlows: BpmnSequenceFlow[],
+		to: BpmnFlowElement[],
+		toFlows: BpmnSequenceFlow[],
+	) => {
+		from.forEach((element, i) => {
+			const copy = to[i] as BpmnFlowElement
+			const form = embeddedForms.get(element)
+			if (form !== undefined) embeddedForms.set(copy, form)
+			if ("flowElements" in element && "flowElements" in copy) {
+				carry(element.flowElements, element.sequenceFlows, copy.flowElements, copy.sequenceFlows)
+			}
+		})
+		fromFlows.forEach((flow, i) => copyFlowTags(flow, toFlows[i] as BpmnSequenceFlow))
+	}
+	carry(elements, flows, elementsCopy, flowsCopy)
+	return { elements: elementsCopy, flows: flowsCopy }
+}
+
 function recomputeIncomingOutgoing(elements: BpmnFlowElement[], flows: BpmnSequenceFlow[]): void {
 	for (const el of elements) {
 		el.incoming = []
@@ -704,7 +958,7 @@ function recomputeIncomingOutgoing(elements: BpmnFlowElement[], flows: BpmnSeque
 	}
 }
 
-/** The ioMapping / taskHeaders / properties extensions shared by service and user tasks. */
+/** The ioMapping / taskHeaders / properties extensions shared by service tasks, user tasks and call activities. */
 function buildMappingExtensions(
 	options: Pick<ServiceTaskOptions, "ioMapping" | "taskHeaders" | "zeebeProperties">,
 ): ZeebeExtensions {
@@ -734,6 +988,7 @@ function buildMappingExtensions(
 }
 
 function buildServiceTaskExtensions(options: ServiceTaskOptions): XmlElement[] {
+	assertRetriesOption(options.retries, options.taskType)
 	const extensions: ZeebeExtensions = {
 		taskDefinition: {
 			type: options.taskType,
@@ -743,6 +998,7 @@ function buildServiceTaskExtensions(options: ServiceTaskOptions): XmlElement[] {
 	}
 
 	if (options.agentDefinition) extensions.agentDefinition = options.agentDefinition
+	if (options.linkedResources) extensions.linkedResources = options.linkedResources
 
 	return zeebeExtensionsToXmlElements(extensions)
 }
@@ -844,16 +1100,20 @@ function makeServiceTaskEl(id: string, options: ServiceTaskOptions): BpmnFlowEle
 		name: options.name,
 		documentation: options.documentation,
 		extensionElements: buildServiceTaskExtensions(options),
+		executionListeners: options.executionListeners,
+		// Not in ServiceTaskOptions; forwarded so an untyped caller gets the placement error, not a silent drop.
+		taskListeners: (options as { taskListeners?: ZeebeListener[] }).taskListeners,
 	})
 	el.unknownAttributes = unknownAttributes
 	if (options.isForCompensation) el.isForCompensation = true
-	return el
+	return withMultiInstance(el, options.multiInstance)
 }
 
 function makeScriptTaskEl(id: string, options: ScriptTaskOptions): BpmnFlowElement {
 	const el = makeFlowElement(id, "scriptTask", {
 		name: options.name,
 		documentation: options.documentation,
+		executionListeners: options.executionListeners,
 		extensionElements: zeebeExtensionsToXmlElements({
 			unknownElements: [
 				{
@@ -865,7 +1125,7 @@ function makeScriptTaskEl(id: string, options: ScriptTaskOptions): BpmnFlowEleme
 		}),
 	})
 	if (options.isForCompensation) el.isForCompensation = true
-	return el
+	return withMultiInstance(el, options.multiInstance)
 }
 
 function applyModelerTemplate(
@@ -890,6 +1150,7 @@ function makeStartEventEl(id: string, options?: StartEventOptions): BpmnFlowElem
 	const el = makeFlowElement(id, "startEvent", {
 		name: options?.name,
 		documentation: options?.documentation,
+		executionListeners: options?.executionListeners,
 		extensionElements: zeebeExtensionsToXmlElements({
 			...(options?.formId ? { formDefinition: { formId: options.formId } } : {}),
 			...(options?.zeebeProperties ? { properties: { properties: options.zeebeProperties } } : {}),
@@ -899,10 +1160,32 @@ function makeStartEventEl(id: string, options?: StartEventOptions): BpmnFlowElem
 	return el
 }
 
+/** Embedded forms by the user task that declared them; `build()` hoists them to the process. */
+const embeddedForms = new WeakMap<BpmnFlowElement, { id: string; schema: string }>()
+
+function userTaskFormDefinition(options?: UserTaskOptions): ZeebeFormDefinition | undefined {
+	if (!options) return undefined
+	const { formId, formKey, externalReference, embeddedForm } = options
+	const set = [formId, formKey, externalReference, embeddedForm].filter((v) => v !== undefined)
+	if (set.length > 1) {
+		throw new Error("userTask: set only one of formId, formKey, externalReference or embeddedForm")
+	}
+	if (embeddedForm) return { formKey: `camunda-forms:bpmn:${embeddedForm.id}` }
+	if (formKey) return { formKey }
+	if (externalReference) return { externalReference }
+	if (!formId) return undefined
+	return {
+		formId,
+		...(options.formBindingType !== undefined && { bindingType: options.formBindingType }),
+		...(options.formVersionTag !== undefined && { versionTag: options.formVersionTag }),
+	}
+}
+
 function makeUserTaskEl(id: string, options?: UserTaskOptions): BpmnFlowElement {
+	const formDefinition = userTaskFormDefinition(options)
 	const ext = zeebeExtensionsToXmlElements({
 		...(options?.zeebeUserTask ? { userTask: true } : {}),
-		...(options?.formId ? { formDefinition: { formId: options.formId } } : {}),
+		...(formDefinition ? { formDefinition } : {}),
 		...(options?.assignee || options?.candidateGroups || options?.candidateUsers
 			? {
 					assignmentDefinition: {
@@ -923,11 +1206,40 @@ function makeUserTaskEl(id: string, options?: UserTaskOptions): BpmnFlowElement 
 	const el = makeFlowElement(id, "userTask", {
 		name: options?.name,
 		documentation: options?.documentation,
+		executionListeners: options?.executionListeners,
+		taskListeners: options?.taskListeners,
 		extensionElements: ext,
 	})
 	if (options) applyModelerTemplate(el, options)
+	if (options?.embeddedForm) embeddedForms.set(el, options.embeddedForm)
 	if (options?.isForCompensation) el.isForCompensation = true
-	return el
+	return withMultiInstance(el, options?.multiInstance)
+}
+
+/** `zeebe:userTaskForm` elements for every embedded form under `elements`, nested scopes included. */
+function embeddedFormElements(elements: BpmnFlowElement[]): XmlElement[] {
+	const byId = new Map<string, XmlElement>()
+	const visit = (list: BpmnFlowElement[]): void => {
+		for (const el of list) {
+			const form = embeddedForms.get(el)
+			if (form) {
+				const seen = byId.get(form.id)
+				// Two tasks may share a form, but one id can't hold two schemas.
+				if (seen !== undefined && seen.text !== form.schema) {
+					throw new Error(`embedded form "${form.id}" is declared with two different schemas`)
+				}
+				byId.set(form.id, {
+					name: "zeebe:userTaskForm",
+					attributes: { id: form.id },
+					children: [],
+					text: form.schema,
+				})
+			}
+			if ("flowElements" in el) visit(el.flowElements)
+		}
+	}
+	visit(elements)
+	return [...byId.values()]
 }
 
 function makeBusinessRuleTaskEl(id: string, options?: BusinessRuleTaskOptions): BpmnFlowElement {
@@ -948,26 +1260,38 @@ function makeBusinessRuleTaskEl(id: string, options?: BusinessRuleTaskOptions): 
 	const el = makeFlowElement(id, "businessRuleTask", {
 		name: options?.name,
 		documentation: options?.documentation,
+		executionListeners: options?.executionListeners,
 		extensionElements: ext,
 	})
 	if (options?.isForCompensation) el.isForCompensation = true
-	return el
+	return withMultiInstance(el, options?.multiInstance)
 }
 
 function makeCallActivityEl(id: string, options: CallActivityOptions): BpmnFlowElement {
-	const attrs: Record<string, string> = { processId: options.processId }
-	if (options.propagateAllChildVariables !== undefined) {
-		attrs.propagateAllChildVariables = String(options.propagateAllChildVariables)
+	// Pick explicitly so a stray taskHeaders from an untyped caller is dropped, not emitted.
+	const extensions = buildMappingExtensions({
+		ioMapping: options.ioMapping,
+		zeebeProperties: options.zeebeProperties,
+	})
+	extensions.calledElement = {
+		processId: options.processId,
+		...(options.propagateAllChildVariables !== undefined && {
+			propagateAllChildVariables: options.propagateAllChildVariables,
+		}),
+		...(options.propagateAllParentVariables !== undefined && {
+			propagateAllParentVariables: options.propagateAllParentVariables,
+		}),
+		...(options.bindingType !== undefined && { bindingType: options.bindingType }),
+		...(options.versionTag !== undefined && { versionTag: options.versionTag }),
 	}
 	const el = makeFlowElement(id, "callActivity", {
 		name: options.name,
 		documentation: options.documentation,
-		extensionElements: zeebeExtensionsToXmlElements({
-			unknownElements: [{ name: "zeebe:calledElement", attributes: attrs, children: [] }],
-		}),
+		executionListeners: options.executionListeners,
+		extensionElements: zeebeExtensionsToXmlElements(extensions),
 	})
 	if (options.isForCompensation) el.isForCompensation = true
-	return el
+	return withMultiInstance(el, options.multiInstance)
 }
 
 function makeExclusiveGatewayEl(id: string, options?: GatewayOptions): BpmnFlowElement {
@@ -1046,7 +1370,7 @@ function resolveBoundaryEventArgs(
 
 	if (typeof options?.attachedTo !== "string" || options.attachedTo === "") {
 		throw new ValidationError(
-			`boundaryEvent("${id}") requires the id of the activity it attaches to. Pass it as options.attachedTo, as boundaryEvent("${id}", hostId, options), or use withBoundary() to attach to the preceding activity.`,
+			`boundaryEvent("${id}") requires the id of the activity it attaches to. Pass it as options.attachedTo, as boundaryEvent("${id}", hostId, options), or use withBoundary() to attach to the preceding activity. See agent-cards/bpmn.md#traps.`,
 		)
 	}
 	return options
@@ -1199,6 +1523,9 @@ function insertJoinGateways(elements: BpmnFlowElement[], flows: BpmnSequenceFlow
  * final until join inference has run, and its id is not final until this pass.
  */
 function finalizeScope(elements: BpmnFlowElement[], flows: BpmnSequenceFlow[]): void {
+	for (const el of elements) {
+		if ("eventDefinitions" in el) assignEventDefinitionIds(el.id, el.eventDefinitions)
+	}
 	insertJoinGateways(elements, flows)
 	assignStableFlowIds(elements, flows)
 	recomputeIncomingOutgoing(elements, flows)
@@ -1385,13 +1712,28 @@ export class BranchBuilder {
 	 * Supports forward references (element created later) and backward references (loops).
 	 */
 	connectTo(targetId: string): this {
+		// After a nested branch() the position is that branch's open ends, not one node.
+		if (this.lastNodeId === undefined) {
+			for (const branchEnd of this.openBranchEnds) {
+				this._flows.push({
+					id: generateId("Flow"),
+					sourceRef: branchEnd,
+					targetRef: targetId,
+					extensionElements: [],
+					unknownAttributes: {},
+				})
+			}
+			this.openBranchEnds = []
+			this.lastNodeId = targetId
+			this._connected = true
+			return this
+		}
 		const flowId = this.isFirstElement
 			? (this.pendingFlowId ?? generateId("Flow"))
 			: generateId("Flow")
 		const flow: BpmnSequenceFlow = {
 			id: flowId,
-			// biome-ignore lint/style/noNonNullAssertion: lastNodeId starts as gatewayId and is always defined in pre-branch context
-			sourceRef: this.lastNodeId!,
+			sourceRef: this.lastNodeId,
 			targetRef: targetId,
 			name: this.isFirstElement ? (this.pendingLabel ?? this.branchName) : undefined,
 			conditionExpression:
@@ -1424,12 +1766,52 @@ export class BranchBuilder {
 		return this.openBranchEnds
 	}
 
+	// ---- Data elements (beside the chain; no sequence flows) ----
+
+	/** Declares a data object. Link it to an activity via a `dataObjectReference()`. */
+	dataObject(id: string, options?: DataElementOptions): this {
+		addDataElement(this._elements, this._ids, makeDataElement(id, "dataObject", undefined, options))
+		return this
+	}
+
+	/** Draws a reference to the data object `dataObjectRef`. */
+	dataObjectReference(id: string, dataObjectRef: string, options?: DataElementOptions): this {
+		addDataElement(
+			this._elements,
+			this._ids,
+			makeDataElement(id, "dataObjectReference", dataObjectRef, options),
+		)
+		return this
+	}
+
+	/** Draws a reference to the data store `dataStoreRef`. */
+	dataStoreReference(
+		id: string,
+		dataStoreRef: string,
+		options?: Pick<DataElementOptions, "name">,
+	): this {
+		addDataElement(
+			this._elements,
+			this._ids,
+			makeDataElement(id, "dataStoreReference", dataStoreRef, options),
+		)
+		return this
+	}
+
+	/** Links an activity to a data reference: `input` reads it, `output` writes it. */
+	dataAssociation(activityId: string, dataRefId: string, direction: "input" | "output"): this {
+		addDataAssociation(this._elements, activityId, dataRefId, direction)
+		return this
+	}
+
 	// ---- Annotations ----
 
 	/** Attach a text annotation to the element at the current cursor position. */
 	textAnnotation(text: string): this {
-		// biome-ignore lint/style/noNonNullAssertion: lastNodeId starts as gatewayId and is always defined in pre-branch context
-		return this.annotate(this.lastNodeId!, text)
+		if (!this.lastNodeId) {
+			throw new Error("textAnnotation() must follow a flow element")
+		}
+		return this.annotate(this.lastNodeId, text)
 	}
 
 	/** Attach a text annotation to an element by explicit ID. */
@@ -1467,7 +1849,7 @@ export class BranchBuilder {
 		const el = makeFlowElement(id, "sendTask", options) as BpmnSendTask
 		if (options?.isForCompensation) el.isForCompensation = true
 		if (options?.messageName) el.messageRef = resolveMessage(options.messageName, this.rootMessages)
-		return this.addElement(el)
+		return this.addElement(withMultiInstance(el, options?.multiInstance))
 	}
 
 	receiveTask(id: string, options?: MessageTaskOptions): this {
@@ -1477,7 +1859,7 @@ export class BranchBuilder {
 		}) as BpmnReceiveTask
 		if (options?.isForCompensation) el.isForCompensation = true
 		if (options?.messageName) el.messageRef = resolveMessage(options.messageName, this.rootMessages)
-		return this.addElement(el)
+		return this.addElement(withMultiInstance(el, options?.multiInstance))
 	}
 
 	businessRuleTask(id: string, options?: BusinessRuleTaskOptions): this {
@@ -1512,6 +1894,7 @@ export class BranchBuilder {
 				this.rootSignals,
 				this.rootEscalations,
 			)
+			if (options.isInterrupting === false) el.isInterrupting = false
 		}
 		return this.addElement(el)
 	}
@@ -1651,12 +2034,8 @@ export class BranchBuilder {
 			)
 		}
 
-		const attachedEl = this._elements.find((n) => n.id === attachedTo)
-		if (attachedEl?.type === "boundaryEvent") {
-			throw new Error(
-				"withBoundary() cannot attach to a boundary event. It must follow a task or activity element.",
-			)
-		}
+		const hostProblem = boundaryHostProblem(this._elements.find((n) => n.id === attachedTo))
+		if (hostProblem !== undefined) throw new Error(hostProblem)
 
 		const savedLast = this.lastNodeId
 		const savedGateway = this.currentGatewayId
@@ -1739,6 +2118,7 @@ export class BranchBuilder {
 		const element = makeFlowElement(id, "adHocSubProcess", {
 			name: resolved.options?.name,
 			documentation: resolved.options?.documentation,
+			executionListeners: resolved.options?.executionListeners,
 			extensionElements,
 		})
 		finalizeAdHocSubProcessEl(element, resolved.options, sub, completionCondition)
@@ -2043,7 +2423,7 @@ export class SubProcessContentBuilder {
 		const el = makeFlowElement(id, "sendTask", options) as BpmnSendTask
 		if (options?.isForCompensation) el.isForCompensation = true
 		if (options?.messageName) el.messageRef = resolveMessage(options.messageName, this.rootMessages)
-		return this.addElement(el)
+		return this.addElement(withMultiInstance(el, options?.multiInstance))
 	}
 
 	receiveTask(id: string, options?: MessageTaskOptions): this {
@@ -2053,7 +2433,7 @@ export class SubProcessContentBuilder {
 		}) as BpmnReceiveTask
 		if (options?.isForCompensation) el.isForCompensation = true
 		if (options?.messageName) el.messageRef = resolveMessage(options.messageName, this.rootMessages)
-		return this.addElement(el)
+		return this.addElement(withMultiInstance(el, options?.multiInstance))
 	}
 
 	/** Add a manual task — work performed outside the engine, with no job worker. */
@@ -2095,6 +2475,44 @@ export class SubProcessContentBuilder {
 	complexGateway(id: string, options?: GatewayOptions): this {
 		this.currentGatewayId = id
 		return this.addElement(makeComplexGatewayEl(id, options))
+	}
+
+	// ---- Data elements (beside the chain; no sequence flows) ----
+
+	/** Declares a data object. Link it to an activity via a `dataObjectReference()`. */
+	dataObject(id: string, options?: DataElementOptions): this {
+		addDataElement(this._elements, this._ids, makeDataElement(id, "dataObject", undefined, options))
+		return this
+	}
+
+	/** Draws a reference to the data object `dataObjectRef`. */
+	dataObjectReference(id: string, dataObjectRef: string, options?: DataElementOptions): this {
+		addDataElement(
+			this._elements,
+			this._ids,
+			makeDataElement(id, "dataObjectReference", dataObjectRef, options),
+		)
+		return this
+	}
+
+	/** Draws a reference to the data store `dataStoreRef`. */
+	dataStoreReference(
+		id: string,
+		dataStoreRef: string,
+		options?: Pick<DataElementOptions, "name">,
+	): this {
+		addDataElement(
+			this._elements,
+			this._ids,
+			makeDataElement(id, "dataStoreReference", dataStoreRef, options),
+		)
+		return this
+	}
+
+	/** Links an activity to a data reference: `input` reads it, `output` writes it. */
+	dataAssociation(activityId: string, dataRefId: string, direction: "input" | "output"): this {
+		addDataAssociation(this._elements, activityId, dataRefId, direction)
+		return this
 	}
 
 	// ---- Annotations ----
@@ -2257,12 +2675,8 @@ export class SubProcessContentBuilder {
 			)
 		}
 
-		const attachedEl = this._elements.find((n) => n.id === attachedTo)
-		if (attachedEl?.type === "boundaryEvent") {
-			throw new Error(
-				"withBoundary() cannot attach to a boundary event. It must follow a task or activity element.",
-			)
-		}
+		const hostProblem = boundaryHostProblem(this._elements.find((n) => n.id === attachedTo))
+		if (hostProblem !== undefined) throw new Error(hostProblem)
 
 		const savedLast = this.lastNodeId
 		const savedGateway = this.currentGatewayId
@@ -2343,6 +2757,7 @@ export class SubProcessContentBuilder {
 		const element = makeFlowElement(id, "adHocSubProcess", {
 			name: resolved.options?.name,
 			documentation: resolved.options?.documentation,
+			executionListeners: resolved.options?.executionListeners,
 			extensionElements,
 		})
 		finalizeAdHocSubProcessEl(element, resolved.options, sub, completionCondition)
@@ -2408,13 +2823,13 @@ export class ProcessBuilder {
 	private currentGatewayId: string | undefined
 	private openBranchEnds: string[] = []
 	private _autoLayout = false
-	private _executionPlatformVersion = "8.9.0"
+	private _executionPlatformVersion = "8.10.0"
 	private _serviceTaskDefaults: { retries?: string } = {}
 	private _savedMainFlowId: string | undefined = undefined
 	/** Set by {@link ProcessBuilder.from}; makes `build()` update rather than generate. */
 	private _source?: { definitions: BpmnDefinitions; process: BpmnProcess }
 	/** Pre-existing flow endpoints, so `build()` can prove it did not rewire them. */
-	private _sourceFlowTargets = new Map<string, string>()
+	private _sourceFlowTargets = new Map<string, { sourceRef: string; targetRef: string }>()
 	/** An `insertAfter` flow waiting to be reattached to what gets built next. */
 	private _pendingSpliceFlowId: string | undefined
 	/** Flows the caller deliberately spliced, exempt from the rewiring guard. */
@@ -2483,7 +2898,10 @@ export class ProcessBuilder {
 		builder.rootSignals.push(...copy.signals)
 		builder.rootEscalations.push(...copy.escalations)
 		builder._sourceFlowTargets = new Map(
-			process.sequenceFlows.map((flow) => [flow.id, `${flow.sourceRef}→${flow.targetRef}`]),
+			process.sequenceFlows.map((flow) => [
+				flow.id,
+				{ sourceRef: flow.sourceRef, targetRef: flow.targetRef },
+			]),
 		)
 		return builder
 	}
@@ -2515,6 +2933,7 @@ export class ProcessBuilder {
 			)
 		}
 
+		this.resolvePendingSplice()
 		this.moveCursor(node)
 		return this
 	}
@@ -2586,7 +3005,7 @@ export class ProcessBuilder {
 		return this
 	}
 
-	/** Set the Camunda execution platform version stamped into the BPMN definitions. Defaults to `"8.9.0"`. */
+	/** Set the Camunda execution platform version stamped into the BPMN definitions. Defaults to `"8.10.0"`. */
 	executionPlatformVersion(version: string): this {
 		this._executionPlatformVersion = version
 		return this
@@ -2703,7 +3122,11 @@ export class ProcessBuilder {
 
 	// ---- Events ----
 
-	/** Add a start event. Start events never auto-connect from the previous element. */
+	/**
+	 * Add a start event. Like every element it chains from the current position;
+	 * at the beginning of a process there is none. Use `addStartEvent()` for a
+	 * start event that begins a new, disconnected path.
+	 */
 	startEvent(id?: string, options?: StartEventOptions): this {
 		const element = makeStartEventEl(id ?? generateId("StartEvent"), options)
 		if (element.type === "startEvent" && options) {
@@ -2856,6 +3279,8 @@ export class ProcessBuilder {
 				"withBoundary() must follow a task element. Current builder position has no active element.",
 			)
 		}
+		const hostProblem = boundaryHostProblem(this.flowElements.find((n) => n.id === attachedTo))
+		if (hostProblem !== undefined) throw new Error(hostProblem)
 
 		const savedLast = this.lastNodeId
 		const savedGateway = this.currentGatewayId
@@ -2936,7 +3361,7 @@ export class ProcessBuilder {
 		const el = makeFlowElement(id, "sendTask", options) as BpmnSendTask
 		if (options?.isForCompensation) el.isForCompensation = true
 		if (options?.messageName) el.messageRef = resolveMessage(options.messageName, this.rootMessages)
-		this.addFlowElement(el)
+		this.addFlowElement(withMultiInstance(el, options?.multiInstance))
 		return this
 	}
 
@@ -2948,7 +3373,7 @@ export class ProcessBuilder {
 		}) as BpmnReceiveTask
 		if (options?.isForCompensation) el.isForCompensation = true
 		if (options?.messageName) el.messageRef = resolveMessage(options.messageName, this.rootMessages)
-		this.addFlowElement(el)
+		this.addFlowElement(withMultiInstance(el, options?.multiInstance))
 		return this
 	}
 
@@ -3118,6 +3543,7 @@ export class ProcessBuilder {
 		if (!found) {
 			throw new Error(`Element "${elementId}" not found in process "${this.processId}"`)
 		}
+		this.resolvePendingSplice()
 		this.lastNodeId = elementId
 		this.currentGatewayId = undefined
 		return this
@@ -3151,6 +3577,7 @@ export class ProcessBuilder {
 		const element = makeFlowElement(id, "adHocSubProcess", {
 			name: resolved.options?.name,
 			documentation: resolved.options?.documentation,
+			executionListeners: resolved.options?.executionListeners,
 			extensionElements,
 		})
 		finalizeAdHocSubProcessEl(element, resolved.options, sub, completionCondition)
@@ -3226,6 +3653,48 @@ export class ProcessBuilder {
 		return this
 	}
 
+	// ---- Data elements (beside the chain; no sequence flows) ----
+
+	/** Declares a data object. Link it to an activity via a `dataObjectReference()`. */
+	dataObject(id: string, options?: DataElementOptions): this {
+		addDataElement(
+			this.flowElements,
+			this.elementIds,
+			makeDataElement(id, "dataObject", undefined, options),
+		)
+		return this
+	}
+
+	/** Draws a reference to the data object `dataObjectRef`. */
+	dataObjectReference(id: string, dataObjectRef: string, options?: DataElementOptions): this {
+		addDataElement(
+			this.flowElements,
+			this.elementIds,
+			makeDataElement(id, "dataObjectReference", dataObjectRef, options),
+		)
+		return this
+	}
+
+	/** Draws a reference to the data store `dataStoreRef`. */
+	dataStoreReference(
+		id: string,
+		dataStoreRef: string,
+		options?: Pick<DataElementOptions, "name">,
+	): this {
+		addDataElement(
+			this.flowElements,
+			this.elementIds,
+			makeDataElement(id, "dataStoreReference", dataStoreRef, options),
+		)
+		return this
+	}
+
+	/** Links an activity to a data reference: `input` reads it, `output` writes it. */
+	dataAssociation(activityId: string, dataRefId: string, direction: "input" | "output"): this {
+		addDataAssociation(this.flowElements, activityId, dataRefId, direction)
+		return this
+	}
+
 	// ---- Annotations ----
 
 	/** Attach a text annotation to the element at the current cursor position. */
@@ -3282,17 +3751,20 @@ export class ProcessBuilder {
 	 */
 	build(options?: BuildOptions): BpmnDefinitions {
 		this.resolvePendingSplice()
-		const beforeCount = this.flowElements.length
+		// Built from a copy: the result shares nothing with the builder, and a
+		// second build() (or one after a throwing build) starts from the same state.
+		const { elements, flows } = cloneScope(this.flowElements, this.sequenceFlows)
+		const beforeCount = elements.length
 		// Continuing a document never infers joins. `insertJoinGateways` reads the
 		// whole topology, so on a parsed model it retargets edges the caller never
 		// touched — the corpus has a document where a no-op continue would have
 		// invented a join gateway and rerouted two flows into it. Building a branch
 		// that needs a join here means saying so with `.connectTo(joinId)`.
-		if (this._source === undefined) insertJoinGateways(this.flowElements, this.sequenceFlows)
+		if (this._source === undefined) insertJoinGateways(elements, flows)
 
 		const explicitJoins = options?.explicitJoins ?? false
-		if (explicitJoins && this.flowElements.length > beforeCount) {
-			const inserted = this.flowElements
+		if (explicitJoins && elements.length > beforeCount) {
+			const inserted = elements
 				.slice(beforeCount)
 				.map((e) => e.id)
 				.join(", ")
@@ -3301,21 +3773,28 @@ export class ProcessBuilder {
 			)
 		}
 
-		this.validate()
-		this.assertSourceTopologyIntact()
+		assertElementIdsUnique(elements, this.processId)
+		this.validate(elements, flows)
+		this.assertSourceTopologyIntact(flows)
 		// Flows the document already had keep their ids: continuing a model must
 		// not renumber the part the caller did not touch.
 		assignStableFlowIds(
-			this.flowElements,
-			this.sequenceFlows,
+			elements,
+			flows,
 			this._source === undefined ? undefined : new Set(this._sourceFlowTargets.keys()),
 		)
-		assertExplicitFlowIdsUnique(this.flowElements, this.sequenceFlows)
-		recomputeIncomingOutgoing(this.flowElements, this.sequenceFlows)
+		assertExplicitFlowIdsUnique(elements, flows)
+		// A continued document keeps its untouched part byte-for-byte, ids included.
+		if (this._source === undefined) {
+			for (const el of elements) {
+				if ("eventDefinitions" in el) assignEventDefinitionIds(el.id, el.eventDefinitions)
+			}
+		}
+		recomputeIncomingOutgoing(elements, flows)
 
-		if (this._source !== undefined) return this.buildOntoSource(this._source)
+		if (this._source !== undefined) return this.buildOntoSource(this._source, elements, flows)
 
-		const extensionElements: XmlElement[] = []
+		const extensionElements: XmlElement[] = embeddedFormElements(elements)
 		if (this._versionTag) {
 			extensionElements.push({
 				name: "zeebe:versionTag",
@@ -3329,10 +3808,10 @@ export class ProcessBuilder {
 			name: this.processName,
 			isExecutable: this._isExecutable,
 			extensionElements,
-			flowElements: this.flowElements,
-			sequenceFlows: this.sequenceFlows,
-			textAnnotations: this._textAnnotations,
-			associations: this._associations,
+			flowElements: elements,
+			sequenceFlows: flows,
+			textAnnotations: structuredClone(this._textAnnotations),
+			associations: structuredClone(this._associations),
 			groups: [],
 			unknownAttributes: {},
 		}
@@ -3355,10 +3834,10 @@ export class ProcessBuilder {
 				"modeler:executionPlatform": "Camunda Cloud",
 				"modeler:executionPlatformVersion": this._executionPlatformVersion,
 			},
-			errors: this.rootErrors,
-			escalations: this.rootEscalations,
-			messages: this.rootMessages,
-			signals: this.rootSignals,
+			errors: structuredClone(this.rootErrors),
+			escalations: structuredClone(this.rootEscalations),
+			messages: structuredClone(this.rootMessages),
+			signals: structuredClone(this.rootSignals),
 			collaborations: [],
 			processes: [process],
 			// Seed diagram stub so applyAutoLayout preserves process-specific IDs.
@@ -3394,16 +3873,20 @@ export class ProcessBuilder {
 	 * positions, and elements added here have none until `withAutoLayout()` or a
 	 * later `applyAutoLayout()` gives them one.
 	 */
-	private buildOntoSource(source: {
-		definitions: BpmnDefinitions
-		process: BpmnProcess
-	}): BpmnDefinitions {
-		const { definitions, process } = source
+	private buildOntoSource(
+		source: { definitions: BpmnDefinitions; process: BpmnProcess },
+		elements: BpmnFlowElement[],
+		flows: BpmnSequenceFlow[],
+	): BpmnDefinitions {
+		const definitions = structuredClone(source.definitions)
+		const process = definitions.processes[
+			source.definitions.processes.indexOf(source.process)
+		] as BpmnProcess
 
-		process.flowElements = this.flowElements
-		process.sequenceFlows = this.sequenceFlows
-		process.textAnnotations = this._textAnnotations
-		process.associations = this._associations
+		process.flowElements = elements
+		process.sequenceFlows = flows
+		process.textAnnotations = structuredClone(this._textAnnotations)
+		process.associations = structuredClone(this._associations)
 		if (this.processName !== undefined) process.name = this.processName
 		// Only when asked. BPMN reads an absent `isExecutable` as false, so writing
 		// the builder's `true` default onto a process that never carried it makes a
@@ -3418,10 +3901,18 @@ export class ProcessBuilder {
 			).attributes.value = this._versionTag
 		}
 
-		definitions.errors = this.rootErrors
-		definitions.messages = this.rootMessages
-		definitions.signals = this.rootSignals
-		definitions.escalations = this.rootEscalations
+		for (const form of embeddedFormElements(elements)) {
+			const at = process.extensionElements.findIndex(
+				(e) => e.name === form.name && e.attributes.id === form.attributes.id,
+			)
+			if (at >= 0) process.extensionElements[at] = form
+			else process.extensionElements.push(form)
+		}
+
+		definitions.errors = structuredClone(this.rootErrors)
+		definitions.messages = structuredClone(this.rootMessages)
+		definitions.signals = structuredClone(this.rootSignals)
+		definitions.escalations = structuredClone(this.rootEscalations)
 
 		return hoistMessageSubscriptions(
 			this._autoLayout
@@ -3438,11 +3929,11 @@ export class ProcessBuilder {
 	 * document would come back with edges the caller never touched pointing
 	 * somewhere else. Continuing a model has to leave the model alone.
 	 */
-	private assertSourceTopologyIntact(): void {
+	private assertSourceTopologyIntact(flows: BpmnSequenceFlow[]): void {
 		if (this._source === undefined) return
 		const rewired: string[] = []
-		const byId = new Map(this.sequenceFlows.map((flow) => [flow.id, flow]))
-		for (const [id, endpoints] of this._sourceFlowTargets) {
+		const byId = new Map(flows.map((flow) => [flow.id, flow]))
+		for (const [id, { sourceRef, targetRef: target }] of this._sourceFlowTargets) {
 			const flow = byId.get(id)
 			if (flow === undefined) {
 				rewired.push(`${id} (removed)`)
@@ -3450,15 +3941,15 @@ export class ProcessBuilder {
 			}
 			// A spliced flow was moved on purpose, but only its source may move:
 			// `insertAfter` inserts into a path, it does not redirect one.
-			const [, target] = endpoints.split("→")
 			if (this._splicedFlowIds.has(id)) {
 				if (flow.targetRef !== target) {
 					rewired.push(`${id} (spliced flow now targets ${flow.targetRef}, not ${target})`)
 				}
 				continue
 			}
-			const now = `${flow.sourceRef}→${flow.targetRef}`
-			if (now !== endpoints) rewired.push(`${id} (${endpoints} became ${now})`)
+			if (flow.sourceRef !== sourceRef || flow.targetRef !== target) {
+				rewired.push(`${id} (${sourceRef}→${target} became ${flow.sourceRef}→${flow.targetRef})`)
+			}
 		}
 		if (rewired.length > 0) {
 			throw new Error(
@@ -3467,9 +3958,17 @@ export class ProcessBuilder {
 		}
 	}
 
-	private validate(): void {
-		const elementIds = new Set(this.flowElements.map((el) => el.id))
-		for (const flow of this.sequenceFlows) {
+	private validate(elements: BpmnFlowElement[], flows: BpmnSequenceFlow[]): void {
+		// A parsed document keeps whatever ids it came with; only new builds are held to the XSD.
+		if (this._source === undefined) {
+			assertXsdValues({
+				id: this.processId,
+				flowElements: elements,
+				sequenceFlows: flows,
+			} as BpmnProcess)
+		}
+		const elementIds = new Set(elements.map((el) => el.id))
+		for (const flow of flows) {
 			if (!elementIds.has(flow.targetRef)) {
 				throw new Error(
 					`Sequence flow "${flow.id}" in process "${this.processId}" references unknown ` +
@@ -3576,13 +4075,13 @@ export class DiagramBuilder {
 	private readonly _participants: BpmnParticipant[] = []
 	private readonly _messageFlows: BpmnMessageFlow[] = []
 	private _collaborationId = "Collaboration_1"
-	private _executionPlatformVersion = "8.9.0"
+	private _executionPlatformVersion = "8.10.0"
 
 	constructor(id: string) {
 		this._id = id
 	}
 
-	/** Set the Camunda execution platform version stamped into the BPMN definitions. Defaults to `"8.9.0"`. */
+	/** Set the Camunda execution platform version stamped into the BPMN definitions. Defaults to `"8.10.0"`. */
 	executionPlatformVersion(version: string): this {
 		this._executionPlatformVersion = version
 		return this

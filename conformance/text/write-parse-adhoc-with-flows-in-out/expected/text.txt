@@ -1,0 +1,4 @@
+s[start S] > a_join[xor] > a[adhoc Agent] > g[xor Again?]
+g >(Yes: again) a_join
+g >(No: default) e[end E]
+t[service Tool | inside=a job=t]

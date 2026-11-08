@@ -1,0 +1,11 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["serviceTask","host",{"name":"host","taskType":"host"}],
+		["boundaryEvent","b",{"attachedTo":"host","condition":"=x>1","conditionVariableEvents":["update"]}],
+		["endEvent","e1"],
+		["build"]
+	]
+}

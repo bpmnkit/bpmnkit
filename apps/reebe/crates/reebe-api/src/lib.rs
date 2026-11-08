@@ -6,11 +6,12 @@
 pub mod app;
 pub mod auth;
 pub mod authorization;
+pub mod dto;
 pub mod error;
 pub mod handlers;
-pub mod dto;
 pub mod pagination;
 pub mod tenant;
+#[allow(clippy::module_inception)]
 pub mod tests;
 
 pub use app::{create_app, ApiState};

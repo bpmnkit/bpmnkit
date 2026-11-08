@@ -1,0 +1,9 @@
+{
+  "aliases": {
+    "collect": "collect",
+    "done": "done",
+    "enrich": "enrich",
+    "start": "start",
+    "verify": "verify"
+  }
+}

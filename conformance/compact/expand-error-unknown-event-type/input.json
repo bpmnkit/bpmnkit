@@ -1,0 +1,16 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "s",
+          "type": "startEvent",
+          "eventType": "email"
+        }
+      ],
+      "flows": []
+    }
+  ]
+}

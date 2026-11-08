@@ -1,0 +1,33 @@
+{
+  "id": "F",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "id": "a",
+      "type": "textfield",
+      "label": "A"
+    },
+    {
+      "id": "b",
+      "type": "number",
+      "key": "",
+      "label": "B"
+    },
+    {
+      "id": "e",
+      "type": "expression",
+      "expression": "=1"
+    },
+    {
+      "id": "t",
+      "type": "text",
+      "text": "no key needed"
+    },
+    {
+      "id": "c",
+      "type": "checkbox",
+      "label": "C"
+    }
+  ]
+}

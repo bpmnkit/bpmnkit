@@ -84,9 +84,14 @@ function stubOf(port: Port): Waypoint {
 	return { x: port.point.x + dx * STUB, y: port.point.y + dy * STUB }
 }
 
+/** Grid lines sit on half units, so coordinates are compared after this rounding. */
+function half(v: number): number {
+	return Math.round(v * 2) / 2
+}
+
 /** Sorted, de-duplicated coordinates. */
 function axis(values: number[]): number[] {
-	const sorted = values.map((v) => Math.round(v * 2) / 2).sort((a, b) => a - b)
+	const sorted = values.map(half).sort((a, b) => a - b)
 	const out: number[] = []
 	for (const v of sorted) if (out[out.length - 1] !== v) out.push(v)
 	return out
@@ -107,7 +112,7 @@ function segmentBlocked(a: Waypoint, b: Waypoint, obstacles: Bounds[]): boolean 
 
 /** Index of `v` in a sorted array (exact match expected). */
 function indexOf(sorted: number[], v: number): number {
-	const target = Math.round(v * 2) / 2
+	const target = half(v)
 	let lo = 0
 	let hi = sorted.length - 1
 	while (lo <= hi) {
@@ -295,7 +300,11 @@ function search(
 	points.reverse()
 	if (!startPort) return null
 	const last = points[points.length - 1]
-	const endPort = ends.find(({ stub }) => last && stub.x === last.x && stub.y === last.y)
+	// The path ends on a grid point, which is the stub rounded like the axes; an
+	// exact comparison would miss every stub at a fractional coordinate.
+	const endPort = ends.find(
+		({ stub }) => last && half(stub.x) === last.x && half(stub.y) === last.y,
+	)
 	if (!endPort) return null
 	return simplify([startPort.point, ...points, endPort.port.point])
 }

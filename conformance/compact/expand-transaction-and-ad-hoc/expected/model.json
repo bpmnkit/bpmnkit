@@ -1,0 +1,255 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_P",
+      "plane": {
+        "bpmnElement": "P",
+        "edges": [
+          {
+            "bpmnElement": "f",
+            "id": "f_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 232,
+                "y": 68
+              },
+              {
+                "x": 332,
+                "y": 68
+              }
+            ]
+          },
+          {
+            "bpmnElement": "g",
+            "id": "g_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 86,
+                "y": 68
+              },
+              {
+                "x": 146,
+                "y": 68
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_P",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 136,
+              "width": 232,
+              "x": 0,
+              "y": 0
+            },
+            "bpmnElement": "tx",
+            "id": "tx_di",
+            "isExpanded": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 208,
+              "width": 340,
+              "x": 332,
+              "y": 28
+            },
+            "bpmnElement": "ah",
+            "id": "ah_di",
+            "isExpanded": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 50,
+              "y": 50
+            },
+            "bpmnElement": "ts",
+            "id": "ts_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 146,
+              "y": 50
+            },
+            "bpmnElement": "te",
+            "id": "te_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 382,
+              "y": 106
+            },
+            "bpmnElement": "tool1",
+            "id": "tool1_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 522,
+              "y": 106
+            },
+            "bpmnElement": "tool2",
+            "id": "tool2_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "D",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "ts",
+              "incoming": [],
+              "outgoing": [
+                "g"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "te",
+              "incoming": [
+                "g"
+              ],
+              "outgoing": [],
+              "type": "endEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "tx",
+          "incoming": [],
+          "outgoing": [
+            "f"
+          ],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "g",
+              "sourceRef": "ts",
+              "targetRef": "te",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "type": "transaction",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "agent"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "flowElements": [
+            {
+              "documentation": "tool a",
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "a"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                }
+              ],
+              "id": "tool1",
+              "incoming": [],
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            },
+            {
+              "documentation": "tool b",
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "b"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                }
+              ],
+              "id": "tool2",
+              "incoming": [],
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "ah",
+          "incoming": [
+            "f"
+          ],
+          "name": "Agent",
+          "outgoing": [],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "type": "adHocSubProcess",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "P",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "f",
+          "sourceRef": "tx",
+          "targetRef": "ah",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

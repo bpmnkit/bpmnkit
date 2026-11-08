@@ -449,6 +449,18 @@ describe("user tasks", () => {
 		expect(listeners.map((f) => f.severity)).toEqual(["manual", "unsupported"])
 		expect(listeners[0]?.suggestion).toMatch(/eventType="creating"/)
 	})
+
+	it("treats a listener event named like an Object member as unknown", () => {
+		const c = task(
+			"",
+			`<bpmn:extensionElements>
+			  <camunda:taskListener class="com.acme.Notify" event="constructor"/>
+			</bpmn:extensionElements>`,
+		)
+		const [listener] = c.of("u").filter((f) => f.construct === "camunda:taskListener")
+		expect(listener).toMatchObject({ severity: "unsupported" })
+		expect(listener?.message).toMatch(/no task listener event like "constructor"/)
+	})
 })
 
 describe("start events", () => {
@@ -748,13 +760,13 @@ describe("process and document", () => {
 		const c = convert(c7(""))
 		expect(c.definitions.unknownAttributes).toMatchObject({
 			"modeler:executionPlatform": "Camunda Cloud",
-			"modeler:executionPlatformVersion": "8.8.0",
+			"modeler:executionPlatformVersion": "8.10.0",
 		})
 		expect(c.definitions.namespaces.zeebe).toBe("http://camunda.org/schema/zeebe/1.0")
 		expect(
-			convertCamunda7(Bpmn.parse(c7("")), { executionPlatformVersion: "8.9.0" }).definitions
+			convertCamunda7(Bpmn.parse(c7("")), { executionPlatformVersion: "8.8.0" }).definitions
 				.unknownAttributes["modeler:executionPlatformVersion"],
-		).toBe("8.9.0")
+		).toBe("8.8.0")
 	})
 
 	it("reads a Camunda 7 namespace bound to another prefix", () => {

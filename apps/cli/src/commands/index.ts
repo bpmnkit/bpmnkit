@@ -8,6 +8,7 @@ import {
 	userTaskGroup,
 } from "../generated/commands.js"
 import type { CommandGroup } from "../types.js"
+import { agentCardGroup } from "./agent-card.js"
 import { agentGroup } from "./agent.js"
 import { askGroup } from "./ask.js"
 import {
@@ -18,6 +19,7 @@ import {
 	getXmlCmd,
 	renderBpmnCmd,
 } from "./bpmn.js"
+import { checkGroup } from "./check.js"
 import { completionGroup } from "./completion.js"
 import { connectorGroup } from "./connector.js"
 import { deployGroup } from "./deploy.js"
@@ -87,7 +89,9 @@ const workerGroup: CommandGroup = {
 /** Pinned groups shown above the separator in the main TUI menu. */
 export const pinnedGroups: CommandGroup[] = [
 	agentGroup,
+	agentCardGroup,
 	askGroup,
+	checkGroup,
 	deployGroup,
 	devGroup,
 	diffGroup,

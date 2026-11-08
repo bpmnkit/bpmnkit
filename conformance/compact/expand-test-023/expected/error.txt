@@ -1,0 +1,1 @@
+expand: invalid CompactDiagram — element "s" has unknown eventType "email" (expected one of timer, error, message, signal, escalation, cancel, terminate, conditional, link, compensate)

@@ -1,0 +1,27 @@
+{
+  "aliases": {
+    "booking": "_6a5cdbbf-2618-496e-b728-955dc215ef9d",
+    "booking_confirmed": "_42e03d0f-6c6b-4493-971f-c6928eb563b0",
+    "boundary": "_6db9a77f-189f-4c07-b33b-e0c88f09e0db",
+    "boundary_2": "_54d6e34f-4613-48d4-9143-b90927448adb",
+    "boundary_24_hours": "_32c4138c-74ae-484a-a7e5-0609370d7080",
+    "cancel_request": "_e5c69e92-6f98-47c8-bc22-b75d38620f95",
+    "catch_24_hours": "_87baeef0-f32e-4a93-b802-fdd588aaf729",
+    "charge_credit_card": "_614d6469-2bb8-4ad6-a20a-db5db6321c6b",
+    "confirm_booking": "_22612d45-65ca-4a74-a6eb-53af7ebcb5ff",
+    "eventgw": "_7ab6dbdf-f55b-4be6-bb41-d99793135c1d",
+    "failed_booking": "_a68b0941-b7e3-4791-8e13-fd9622e4448c",
+    "failed_credit_transaction": "_babdfa54-b55f-463f-9341-424b42db9760",
+    "make_booking": "_c38139c7-a2d1-47c7-b75a-19e14c7212c8",
+    "make_flights_and_hotel": "_9cc2ac34-f12c-49e0-b37c-144e5a84fd92",
+    "notify_customer_offer_expired": "_de7e721e-a073-4857-b8c3-c6ae886dbb46",
+    "notify_failed_booking": "_c8fa5253-dde9-471e-b933-58b00e8f374c",
+    "notify_failed_credit_transaction": "_2d6586cf-81fc-4e2a-83ec-6cfff5b34bb0",
+    "offer_approved": "_15fef309-6718-4352-9b71-f757bcd8c023",
+    "offer_expired": "_88247168-b457-4663-aad0-753a0236c8df",
+    "receive_travel_request": "_44e3f1fa-42cd-40b7-9980-a51ac49d5fa3",
+    "request_cancelled": "_7eb87eb8-0d7a-445b-b768-90d754a938ed",
+    "request_credit_card_information": "_e839800f-ad4f-4bcc-aaf2-d38fe4a32bcd",
+    "update_customer_record": "_8afc49f0-42c2-4da9-8e79-e08dbe349776"
+  }
+}

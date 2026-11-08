@@ -1,0 +1,131 @@
+{
+  "components": [
+    {
+      "extraProps": {
+        "appearance": {
+          "prefixAdorner": "EUR"
+        },
+        "description": "help",
+        "readonly": true
+      },
+      "id": "a",
+      "key": "a",
+      "label": "A",
+      "type": "textfield"
+    },
+    {
+      "extraProps": {
+        "label": 5,
+        "properties": {
+          "x": 1
+        }
+      },
+      "id": "b",
+      "text": "t",
+      "type": "text"
+    },
+    {
+      "extraProps": {
+        "conditional": {
+          "extra": "y",
+          "hide": "=x"
+        },
+        "defaultValue": 5
+      },
+      "id": "c",
+      "key": "c",
+      "label": "C",
+      "type": "textfield"
+    },
+    {
+      "extraProps": {
+        "decimalDigits": 2,
+        "defaultValue": "7",
+        "increment": 0.5
+      },
+      "id": "d",
+      "key": "d",
+      "label": "D",
+      "type": "number"
+    },
+    {
+      "extraProps": {
+        "conditional": "nope",
+        "defaultValue": "true"
+      },
+      "id": "e",
+      "key": "e",
+      "label": "E",
+      "type": "checkbox"
+    },
+    {
+      "extraProps": {
+        "conditional": null,
+        "layout": null
+      },
+      "id": "f",
+      "key": "f",
+      "label": "F",
+      "type": "textfield"
+    },
+    {
+      "action": "reset",
+      "extraProps": {
+        "extraProps": {
+          "a": 1
+        },
+        "type_extra": 1
+      },
+      "id": "g",
+      "label": "G",
+      "type": "button"
+    },
+    {
+      "conditional": {
+        "hide": "=true"
+      },
+      "extraProps": {
+        "note": "kept"
+      },
+      "id": "h",
+      "type": "separator"
+    },
+    {
+      "extraProps": {
+        "searchable": true,
+        "valuesKey": "ignored"
+      },
+      "id": "i",
+      "key": "i",
+      "label": "I",
+      "type": "radio",
+      "values": []
+    },
+    {
+      "extraProps": {
+        "valuesExpression": "=x"
+      },
+      "id": "j",
+      "key": "j",
+      "label": "J",
+      "type": "taglist",
+      "validate": {
+        "required": true
+      }
+    },
+    {
+      "extraProps": {
+        "disallowPassedDates": true
+      },
+      "id": "k",
+      "key": "k",
+      "type": "datetime",
+      "validate": {
+        "required": true
+      }
+    }
+  ],
+  "id": "f",
+  "schemaVersion": 16,
+  "type": "default"
+}

@@ -1,0 +1,35 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "u",
+          "type": "userTask",
+          "name": "U",
+          "formId": "f",
+          "nativeUserTask": true,
+          "assignee": "= boss",
+          "candidateGroups": "a,b",
+          "candidateUsers": "= users",
+          "dueDate": "2030-01-01T00:00:00Z",
+          "followUpDate": "= now()",
+          "priority": 90
+        },
+        {
+          "id": "u2",
+          "type": "userTask",
+          "priority": "= p"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f",
+          "from": "u",
+          "to": "u2"
+        }
+      ]
+    }
+  ]
+}

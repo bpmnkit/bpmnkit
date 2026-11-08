@@ -1,0 +1,29 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "s",
+          "type": "startEvent",
+          "name": "Größe ✓ <&>"
+        },
+        {
+          "id": "t",
+          "type": "task",
+          "name": "日本語 \"q\""
+        }
+      ],
+      "flows": [
+        {
+          "id": "f",
+          "from": "s",
+          "to": "t",
+          "name": "a & b",
+          "condition": "= x < 1"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s",{"name":"Start ✓"}],
+		["userTask","u",{"name":"Überprüfen 日本語"}],
+		["endEvent","e",{"name":"終了"}],
+		["build"]
+	]
+}

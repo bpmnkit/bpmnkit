@@ -1,0 +1,9 @@
+{
+  "input": "bpmn/c7-claim-handling/input.bpmn",
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}

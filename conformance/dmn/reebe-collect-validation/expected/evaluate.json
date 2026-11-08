@@ -1,0 +1,65 @@
+[
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "name must not be empty"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "inputValidation",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "name must not be empty"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "name is required"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "inputValidation",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "name is required"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "inputValidation",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  }
+]

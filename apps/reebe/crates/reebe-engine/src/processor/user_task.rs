@@ -1,20 +1,19 @@
-use std::sync::Arc;
-use async_trait::async_trait;
-use reebe_db::records::DbRecord;
-use reebe_db::state::user_tasks::UserTask;
+use super::throw_event::element_was_terminated;
+use super::{CommandToWrite, EventToWrite, RecordProcessor, Writers};
 use crate::engine::EngineState;
 use crate::error::{EngineError, EngineResult};
 use crate::key_gen::KeyGenerator;
-use super::{CommandToWrite, EventToWrite, RecordProcessor, Writers};
-use super::throw_event::element_was_terminated;
+use async_trait::async_trait;
+use reebe_db::records::DbRecord;
+use reebe_db::state::user_tasks::UserTask;
+use std::sync::Arc;
 
 pub struct UserTaskProcessor;
 
 #[async_trait]
 impl RecordProcessor for UserTaskProcessor {
     fn accepts(&self, value_type: &str, intent: &str) -> bool {
-        value_type == "USER_TASK"
-            && matches!(intent, "CREATE" | "COMPLETE" | "ASSIGN" | "UNASSIGN")
+        value_type == "USER_TASK" && matches!(intent, "CREATE" | "COMPLETE" | "ASSIGN" | "UNASSIGN")
     }
 
     async fn process(
@@ -130,7 +129,10 @@ impl UserTaskProcessor {
         let variables = payload.get("variables").cloned();
 
         let task = state.backend.get_user_task_by_key(task_key).await?;
-        state.backend.complete_user_task(task_key, variables).await?;
+        state
+            .backend
+            .complete_user_task(task_key, variables)
+            .await?;
 
         writers.events.push(EventToWrite {
             value_type: "USER_TASK".to_string(),
@@ -145,8 +147,14 @@ impl UserTaskProcessor {
 
         // Complete the element instance — pass submitted variables so that
         // output mappings defined on the user task can reference them.
-        let completion_vars = payload.get("variables").cloned().unwrap_or(serde_json::json!({}));
-        let ei = state.backend.get_element_instance_by_key(task.element_instance_key).await?;
+        let completion_vars = payload
+            .get("variables")
+            .cloned()
+            .unwrap_or(serde_json::json!({}));
+        let ei = state
+            .backend
+            .get_element_instance_by_key(task.element_instance_key)
+            .await?;
         let flow_scope_key = ei.flow_scope_key.unwrap_or(task.process_instance_key);
         writers.commands.push(CommandToWrite {
             value_type: "PROCESS_INSTANCE".to_string(),
@@ -185,7 +193,10 @@ impl UserTaskProcessor {
 
         let assignee = payload["assignee"].as_str().map(|s| s.to_string());
 
-        state.backend.assign_user_task(task_key, assignee.as_deref()).await?;
+        state
+            .backend
+            .assign_user_task(task_key, assignee.as_deref())
+            .await?;
 
         writers.events.push(EventToWrite {
             value_type: "USER_TASK".to_string(),

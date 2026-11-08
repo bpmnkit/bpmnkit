@@ -1,0 +1,10 @@
+{
+  "runs": {
+    "default": {},
+    "agentic-only": {
+      "categories": [
+        "agentic"
+      ]
+    }
+  }
+}

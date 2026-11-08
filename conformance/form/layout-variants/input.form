@@ -1,0 +1,69 @@
+{
+  "id": "f",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "type": "textfield",
+      "id": "a",
+      "label": "A",
+      "key": "a",
+      "layout": {}
+    },
+    {
+      "type": "textfield",
+      "id": "b",
+      "label": "B",
+      "key": "b",
+      "layout": {
+        "row": "r1"
+      }
+    },
+    {
+      "type": "textfield",
+      "id": "c",
+      "label": "C",
+      "key": "c",
+      "layout": {
+        "columns": 4
+      }
+    },
+    {
+      "type": "textfield",
+      "id": "d",
+      "label": "D",
+      "key": "d",
+      "layout": {
+        "row": "r2",
+        "columns": null
+      }
+    },
+    {
+      "type": "textfield",
+      "id": "e",
+      "label": "E",
+      "key": "e",
+      "layout": {
+        "row": 7,
+        "columns": "wide",
+        "extra": true
+      }
+    },
+    {
+      "type": "textfield",
+      "id": "f",
+      "label": "F",
+      "key": "f",
+      "layout": null
+    },
+    {
+      "type": "button",
+      "id": "g",
+      "label": "G",
+      "layout": {
+        "row": "r3",
+        "columns": 0
+      }
+    }
+  ]
+}

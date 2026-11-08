@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="requestDocument_en" name="Document Request" isExecutable="true">
+    <bpmn:sendTask id="SendTask_RequestDocument" name="Request document">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="email"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_0d7dzn0</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_18a0pzl</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:endEvent id="EndEvent_TalkedToCustomer" name="Answer received">
+      <bpmn:incoming>SequenceFlow_3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sendTask id="SendTask_SendReminderEmail" name="Send reminder email">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="email"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>SequenceFlow_1bqpxlf</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_2</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:userTask id="UserTask_CallCustomer" name="Call customer">
+      <bpmn:incoming>SequenceFlow_0i97ejj</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:receiveTask id="ReceiveTask_WaitForDocument" name="Wait for answer">
+      <bpmn:incoming>SequenceFlow_18a0pzl</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_6</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:endEvent id="EndEvent_GotDocument" name="Document received">
+      <bpmn:incoming>SequenceFlow_6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:startEvent id="StartEvent_DocumentRequested" name="Document requested">
+      <bpmn:outgoing>SequenceFlow_0d7dzn0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_1" name="daily" attachedToRef="ReceiveTask_WaitForDocument" cancelActivity="false">
+      <bpmn:outgoing>SequenceFlow_1bqpxlf</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="BoundaryEvent_1_TimerEventDefinition"/>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_2" name="1 week" attachedToRef="ReceiveTask_WaitForDocument" cancelActivity="true">
+      <bpmn:outgoing>SequenceFlow_0i97ejj</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="BoundaryEvent_2_TimerEventDefinition">
+        <bpmn:timeDuration>P7D</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="EndEvent_ReminderSent" name="Email sent">
+      <bpmn:incoming>SequenceFlow_2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_6" sourceRef="ReceiveTask_WaitForDocument" targetRef="EndEvent_GotDocument"/>
+    <bpmn:sequenceFlow id="SequenceFlow_0i97ejj" sourceRef="BoundaryEvent_2" targetRef="UserTask_CallCustomer"/>
+    <bpmn:sequenceFlow id="SequenceFlow_1bqpxlf" sourceRef="BoundaryEvent_1" targetRef="SendTask_SendReminderEmail"/>
+    <bpmn:sequenceFlow id="SequenceFlow_2" sourceRef="SendTask_SendReminderEmail" targetRef="EndEvent_ReminderSent"/>
+    <bpmn:sequenceFlow id="SequenceFlow_3" sourceRef="UserTask_CallCustomer" targetRef="EndEvent_TalkedToCustomer"/>
+    <bpmn:sequenceFlow id="SequenceFlow_18a0pzl" sourceRef="SendTask_RequestDocument" targetRef="ReceiveTask_WaitForDocument"/>
+    <bpmn:sequenceFlow id="SequenceFlow_0d7dzn0" sourceRef="StartEvent_DocumentRequested" targetRef="SendTask_RequestDocument"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_requestDocument_en">
+    <bpmndi:BPMNPlane id="BPMNPlane_requestDocument_en" bpmnElement="requestDocument_en">
+      <bpmndi:BPMNShape id="SendTask_RequestDocument_di" bpmnElement="SendTask_RequestDocument">
+        <dc:Bounds x="99" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_TalkedToCustomer_di" bpmnElement="EndEvent_TalkedToCustomer">
+        <dc:Bounds x="581" y="158" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="546.5" y="198" width="105" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SendTask_SendReminderEmail_di" bpmnElement="SendTask_SendReminderEmail">
+        <dc:Bounds x="419" y="276" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_CallCustomer_di" bpmnElement="UserTask_CallCustomer">
+        <dc:Bounds x="419" y="136" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ReceiveTask_WaitForDocument_di" bpmnElement="ReceiveTask_WaitForDocument">
+        <dc:Bounds x="259" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_GotDocument_di" bpmnElement="EndEvent_GotDocument">
+        <dc:Bounds x="451" y="22" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="409.5" y="62" width="119" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_DocumentRequested_di" bpmnElement="StartEvent_DocumentRequested">
+        <dc:Bounds x="0" y="22" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-45" y="62" width="126" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BoundaryEvent_1_di" bpmnElement="BoundaryEvent_1">
+        <dc:Bounds x="274.3333333333333" y="62" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="248.33333333333331" y="102" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="BoundaryEvent_2_di" bpmnElement="BoundaryEvent_2">
+        <dc:Bounds x="307.6666666666667" y="62" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="329.6666666666667" y="102" width="42" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_ReminderSent_di" bpmnElement="EndEvent_ReminderSent">
+        <dc:Bounds x="581" y="298" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="564" y="338" width="70" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_6_di" bpmnElement="SequenceFlow_6">
+        <di:waypoint x="359" y="40"/>
+        <di:waypoint x="451" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0i97ejj_di" bpmnElement="SequenceFlow_0i97ejj">
+        <di:waypoint x="325.6666666666667" y="98"/>
+        <di:waypoint x="325.6666666666667" y="176"/>
+        <di:waypoint x="419" y="176"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1bqpxlf_di" bpmnElement="SequenceFlow_1bqpxlf">
+        <di:waypoint x="292.3333333333333" y="98"/>
+        <di:waypoint x="292.3333333333333" y="316"/>
+        <di:waypoint x="419" y="316"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_2_di" bpmnElement="SequenceFlow_2">
+        <di:waypoint x="519" y="316"/>
+        <di:waypoint x="581" y="316"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_3_di" bpmnElement="SequenceFlow_3">
+        <di:waypoint x="519" y="176"/>
+        <di:waypoint x="581" y="176"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_18a0pzl_di" bpmnElement="SequenceFlow_18a0pzl">
+        <di:waypoint x="199" y="40"/>
+        <di:waypoint x="259" y="40"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0d7dzn0_di" bpmnElement="SequenceFlow_0d7dzn0">
+        <di:waypoint x="36" y="40"/>
+        <di:waypoint x="99" y="40"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

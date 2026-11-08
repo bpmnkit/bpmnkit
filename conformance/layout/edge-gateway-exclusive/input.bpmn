@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="P" isExecutable="true">
+    <bpmn:startEvent id="S" name="Start">
+      <bpmn:outgoing>f0</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="G" name="Route?" default="fd">
+      <bpmn:incoming>f0</bpmn:incoming>
+      <bpmn:outgoing>fa</bpmn:outgoing>
+      <bpmn:outgoing>fb</bpmn:outgoing>
+      <bpmn:outgoing>fd</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="A" name="Fast">
+      <bpmn:incoming>fa</bpmn:incoming>
+      <bpmn:outgoing>j1</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="B" name="Normal">
+      <bpmn:incoming>fb</bpmn:incoming>
+      <bpmn:outgoing>j2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="C" name="Slow">
+      <bpmn:incoming>fd</bpmn:incoming>
+      <bpmn:outgoing>j3</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="J">
+      <bpmn:incoming>j1</bpmn:incoming>
+      <bpmn:incoming>j2</bpmn:incoming>
+      <bpmn:incoming>j3</bpmn:incoming>
+      <bpmn:outgoing>fe</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="E" name="End">
+      <bpmn:incoming>fe</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f0" sourceRef="S" targetRef="G"/>
+    <bpmn:sequenceFlow id="fa" sourceRef="G" targetRef="A" name="express">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">=type = "express"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="fb" sourceRef="G" targetRef="B" name="standard">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">=type = "standard"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="fd" sourceRef="G" targetRef="C" name="other"/>
+    <bpmn:sequenceFlow id="j1" sourceRef="A" targetRef="J"/>
+    <bpmn:sequenceFlow id="j2" sourceRef="B" targetRef="J"/>
+    <bpmn:sequenceFlow id="j3" sourceRef="C" targetRef="J"/>
+    <bpmn:sequenceFlow id="fe" sourceRef="J" targetRef="E"/>
+  </bpmn:process>
+</bpmn:definitions>
+

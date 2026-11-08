@@ -1,0 +1,120 @@
+{
+  "findings": [
+    {
+      "category": "naming",
+      "elementIds": [
+        "s"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-start-event",
+      "message": "Start event \"s\" has no name.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Name start events using \"Object + past participle\", e.g. \"Order Received\", \"Payment Initiated\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "task_a"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"task_a\" (serviceTask) has no name.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "task_c"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-task",
+      "message": "Task \"task_c\" (serviceTask) has no name.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Name tasks using \"Verb Object\" form, e.g. \"Verify Invoice\", \"Send Notification\", \"Approve Request\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "e"
+      ],
+      "fixable": false,
+      "id": "naming/unlabeled-end-event",
+      "message": "End event \"e\" has no name.",
+      "processId": "proc",
+      "severity": "info",
+      "suggestion": "Name end events using \"Object + state\", e.g. \"Order Fulfilled\", \"Payment Failed\", \"Request Rejected\"."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "s"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"s\" has no documentation describing expected input variables.",
+      "processId": "proc",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"proc\" is not marked executable.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "task_a"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"task_a\" (serviceTask) has no zeebe:taskDefinition type.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "task_c"
+      ],
+      "fixable": false,
+      "id": "deploy/service-task-no-type",
+      "message": "\"task_c\" (serviceTask) has no zeebe:taskDefinition type.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    }
+  ],
+  "fixes": [],
+  "summary": {
+    "byCategory": {
+      "agentic": 0,
+      "connector": 0,
+      "data-flow": 0,
+      "deploy": 3,
+      "extract": 0,
+      "feel": 0,
+      "feel-syntax": 0,
+      "flow": 0,
+      "naming": 4,
+      "pattern": 1,
+      "task-reuse": 0
+    },
+    "bySeverity": {
+      "error": 3,
+      "info": 2,
+      "warning": 3
+    },
+    "total": 8
+  }
+}

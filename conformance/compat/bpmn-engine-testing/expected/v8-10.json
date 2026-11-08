@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "review"
+      ],
+      "fixable": false,
+      "id": "compat/user-task-definition",
+      "message": "User task \"Review\" has no zeebe:formDefinition.",
+      "processId": "review-process",
+      "severity": "warning",
+      "suggestion": "Link a form (formId), an external form, or an embedded form."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "await_confirmation"
+      ],
+      "fixable": false,
+      "id": "compat/subscription",
+      "message": "Message \"payment-confirmed\" used by Message intermediate catch event \"await_confirmation\" has no zeebe:subscription.",
+      "processId": "message-process",
+      "severity": "error",
+      "suggestion": "Add a zeebe:subscription with a correlationKey to the message."
+    }
+  ]
+}

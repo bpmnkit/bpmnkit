@@ -1,0 +1,9 @@
+{
+	"kind": "dmn",
+	"script": [
+		["drd","OnlyInputs"],
+		["$let","h10","inputData","a"],
+		["$let","h11","inputData","b","B name"],
+		["build"]
+	]
+}

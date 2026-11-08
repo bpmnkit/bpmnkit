@@ -1,0 +1,9 @@
+{
+	"base": {"id":"Definitions_1","processes":[{"id":"Process_1","name":"Order","elements":[{"id":"start","type":"startEvent","name":"Order Received"}],"flows":[]}]},
+	"chunks": [
+		"{\"processId\":\"Process_1\",\"elements\":[{\"i",
+		"d\":\"ship\",\"type\":\"serviceTask\",\"name\":\"S",
+		"hip Order\"}],\"flows\":[{\"id\":\"f1\",\"from\":",
+		"\"start\",\"to\":\"ship\"}]}"
+	]
+}

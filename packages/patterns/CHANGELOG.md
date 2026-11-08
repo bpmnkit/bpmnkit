@@ -1,5 +1,19 @@
 # @bpmnkit/patterns
 
+## 0.1.2
+
+### Patch Changes
+
+- f6cc4ac: AI templates reference the API key as `=camunda.secrets.ANTHROPIC_API_KEY`, the Camunda 8.10 secret form, now that 8.10 is the default target.
+- Updated dependencies [f6cc4ac]
+- Updated dependencies [1ab40d0]
+- Updated dependencies [1ab40d0]
+- Updated dependencies [f6cc4ac]
+- Updated dependencies [1ab40d0]
+- Updated dependencies [1ab40d0]
+- Updated dependencies [1ab40d0]
+  - @bpmnkit/core@1.8.0
+
 ## 0.1.1
 
 ### Patch Changes

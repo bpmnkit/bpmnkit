@@ -1,3 +1,5 @@
+> **Agents:** run `casen agent-card <bpmn|dmn|form>` (~1k tokens) instead of reading this README.
+
 <div align="center">
   <a href="https://bpmnkit.com"><img src="https://bpmnkit.com/favicon.svg" width="72" height="72" alt="BPMN Kit logo"></a>
   <h1>@bpmnkit/cli</h1>

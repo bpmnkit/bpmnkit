@@ -1,0 +1,9 @@
+# A.2.1
+start_event[start Start Event] > task_1[task Task 1] > gateway_split_flow[xor Gateway (Split Flow)]
+gateway_split_flow >(Default: default) task_2[task Task 2]
+gateway_split_flow > task_3[task Task 3] > gateway_merge_flows[xor Gateway (Merge Flows)] > end_event[end End Event]
+gateway_split_flow > task_4[task Task 4]
+task_2 >(Condition: true) end_event
+task_2 > task_3
+task_4 >(condition) gateway_merge_flows
+task_4 > task_3

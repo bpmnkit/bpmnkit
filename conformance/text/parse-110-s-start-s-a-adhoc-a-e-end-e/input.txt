@@ -1,0 +1,2 @@
+s[start S] > a[adhoc A] > e[end E]
+m[catch:timer Wait | inside=a]

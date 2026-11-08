@@ -1,0 +1,2 @@
+s[start S] > e[end E]
+note ghost: Nobody is here

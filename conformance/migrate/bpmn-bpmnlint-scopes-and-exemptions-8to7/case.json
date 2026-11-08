@@ -1,0 +1,8 @@
+{
+  "input": "bpmn/bpmnlint-scopes-and-exemptions/input.bpmn",
+  "runs": {
+    "default": {
+      "direction": "8to7"
+    }
+  }
+}

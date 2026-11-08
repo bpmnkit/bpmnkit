@@ -1,0 +1,356 @@
+{
+  "bpmnlintUnsupported": [],
+  "categories": [
+    "flow",
+    "deploy"
+  ],
+  "counts": {
+    "error": 26,
+    "info": 0,
+    "warning": 0
+  },
+  "diagnostics": [
+    {
+      "bpmnlintRule": "fake-join",
+      "category": "flow",
+      "elementIds": [
+        "end"
+      ],
+      "fixable": true,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"end\" (endEvent) has 3 incoming flows. Non-gateway elements must have at most one incoming flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
+    },
+    {
+      "bpmnlintRule": "end-event-required",
+      "category": "flow",
+      "elementIds": [
+        "tx"
+      ],
+      "fixable": false,
+      "id": "flow/sub-process-no-end-event",
+      "message": "Sub-process \"tx\" has no end event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add an end event so the sub-process completes explicitly."
+    },
+    {
+      "bpmnlintRule": "end-event-required",
+      "category": "flow",
+      "elementIds": [
+        "evt_sub"
+      ],
+      "fixable": false,
+      "id": "flow/sub-process-no-end-event",
+      "message": "Sub-process \"evt_sub\" has no end event.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add an end event so the sub-process completes explicitly."
+    },
+    {
+      "bpmnlintRule": "fake-join",
+      "category": "flow",
+      "elementIds": [
+        "start_joined"
+      ],
+      "fixable": false,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"start_joined\" (startEvent) has 2 incoming flows, which do not join.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Join the flows with a gateway before this element."
+    },
+    {
+      "bpmnlintRule": "fake-join",
+      "category": "flow",
+      "elementIds": [
+        "sub_join_task"
+      ],
+      "fixable": false,
+      "id": "flow/multi-incoming-task",
+      "message": "Element \"sub_join_task\" (task) has 2 incoming flows, which do not join.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Join the flows with a gateway before this element."
+    },
+    {
+      "bpmnlintRule": "no-disconnected",
+      "category": "flow",
+      "elementIds": [
+        "boundary_timer"
+      ],
+      "fixable": false,
+      "id": "flow/disconnected",
+      "message": "Element \"boundary_timer\" (boundaryEvent) is not connected to any sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to the process flow or remove it."
+    },
+    {
+      "bpmnlintRule": "no-disconnected",
+      "category": "flow",
+      "elementIds": [
+        "tx"
+      ],
+      "fixable": false,
+      "id": "flow/disconnected",
+      "message": "Element \"tx\" (transaction) is not connected to any sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to the process flow or remove it."
+    },
+    {
+      "bpmnlintRule": "no-disconnected",
+      "category": "flow",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": false,
+      "id": "flow/disconnected",
+      "message": "Element \"adhoc\" (adHocSubProcess) is not connected to any sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to the process flow or remove it."
+    },
+    {
+      "bpmnlintRule": "no-disconnected",
+      "category": "flow",
+      "elementIds": [
+        "sub_catch"
+      ],
+      "fixable": false,
+      "id": "flow/disconnected",
+      "message": "Element \"sub_catch\" (intermediateCatchEvent) is not connected to any sequence flow.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to the process flow or remove it."
+    },
+    {
+      "bpmnlintRule": "no-gateway-join-fork",
+      "category": "flow",
+      "elementIds": [
+        "sub_mixed"
+      ],
+      "fixable": false,
+      "id": "flow/mixed-gateway",
+      "message": "Gateway \"sub_mixed\" (exclusiveGateway) has 2 incoming and 2 outgoing flows — it both joins and forks.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Split it into a joining gateway followed by a forking one."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "boundary_timer"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"boundary_timer\" (boundaryEvent) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "tx"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"tx\" (transaction) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"adhoc\" (adHocSubProcess) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "sub_dead"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"sub_dead\" (task) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "sub_catch"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"sub_catch\" (intermediateCatchEvent) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "sub_comp"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"sub_comp\" (boundaryEvent) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "tx_task"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"tx_task\" (task) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-end",
+      "category": "flow",
+      "elementIds": [
+        "evt_task"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-end",
+      "message": "Element \"evt_task\" (task) has no outgoing sequence flow, so it ends the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it to an end event."
+    },
+    {
+      "bpmnlintRule": "no-implicit-start",
+      "category": "flow",
+      "elementIds": [
+        "task_r1"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-start",
+      "message": "Element \"task_r1\" (task) has no incoming sequence flow, so it starts the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it from a start event or an upstream element."
+    },
+    {
+      "bpmnlintRule": "no-implicit-start",
+      "category": "flow",
+      "elementIds": [
+        "task_r2"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-start",
+      "message": "Element \"task_r2\" (task) has no incoming sequence flow, so it starts the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it from a start event or an upstream element."
+    },
+    {
+      "bpmnlintRule": "no-implicit-start",
+      "category": "flow",
+      "elementIds": [
+        "tx"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-start",
+      "message": "Element \"tx\" (transaction) has no incoming sequence flow, so it starts the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it from a start event or an upstream element."
+    },
+    {
+      "bpmnlintRule": "no-implicit-start",
+      "category": "flow",
+      "elementIds": [
+        "adhoc"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-start",
+      "message": "Element \"adhoc\" (adHocSubProcess) has no incoming sequence flow, so it starts the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it from a start event or an upstream element."
+    },
+    {
+      "bpmnlintRule": "no-implicit-start",
+      "category": "flow",
+      "elementIds": [
+        "sub_orphan"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-start",
+      "message": "Element \"sub_orphan\" (task) has no incoming sequence flow, so it starts the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it from a start event or an upstream element."
+    },
+    {
+      "bpmnlintRule": "no-implicit-start",
+      "category": "flow",
+      "elementIds": [
+        "sub_catch"
+      ],
+      "fixable": false,
+      "id": "flow/implicit-start",
+      "message": "Element \"sub_catch\" (intermediateCatchEvent) has no incoming sequence flow, so it starts the flow implicitly.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Connect it from a start event or an upstream element."
+    },
+    {
+      "bpmnlintRule": "single-blank-start-event",
+      "category": "flow",
+      "elementIds": [
+        "proc"
+      ],
+      "fixable": false,
+      "id": "flow/multiple-blank-start-events",
+      "message": "Process \"proc\" has 2 blank start events.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Keep one blank start event per scope; give the others a trigger or remove them."
+    },
+    {
+      "bpmnlintRule": "superfluous-gateway",
+      "category": "flow",
+      "elementIds": [
+        "sub_redundant"
+      ],
+      "fixable": false,
+      "id": "flow/redundant-gateway",
+      "message": "Gateway \"sub_redundant\" (exclusiveGateway) has only 1 incoming and 1 outgoing flow — it is redundant.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Remove this gateway and connect its source directly to its target."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 26
+}

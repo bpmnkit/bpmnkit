@@ -1,0 +1,88 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "and",
+            "type": "parallelGateway"
+          },
+          {
+            "id": "t",
+            "name": "T",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "id": "u",
+            "name": "U",
+            "type": "task"
+          },
+          {
+            "id": "e_join",
+            "type": "parallelGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "and"
+          },
+          {
+            "from": "and",
+            "id": "Flow_2",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_3",
+            "to": "e_join"
+          },
+          {
+            "from": "and",
+            "id": "Flow_4",
+            "to": "u"
+          },
+          {
+            "from": "u",
+            "id": "Flow_5",
+            "to": "e_join"
+          },
+          {
+            "from": "e_join",
+            "id": "Flow_6",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "joined 2 flows into \"e\" with and gateway \"e_join\"",
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 3,
+      "message": "\"and\" is already declared on line 1; ignored \"kind and\""
+    },
+    {
+      "line": 4,
+      "message": "\"s\" is already declared on line 1; ignored \"id=s kind=start\""
+    }
+  ],
+  "questions": []
+}

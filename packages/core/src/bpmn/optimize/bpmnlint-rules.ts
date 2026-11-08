@@ -14,6 +14,7 @@
  * hand-written and generated XML routinely omits.
  */
 
+import { NATIVE_RULE_CATEGORIES, STANDARD_SIZE_DEFAULTS } from "../../generated/lint-rules.js"
 import type {
 	BpmnAdHocSubProcess,
 	BpmnBounds,
@@ -205,7 +206,6 @@ interface RuleContext {
 }
 
 interface NativeRule {
-	category: OptimizationCategory
 	check: (ctx: RuleContext, report: Reporter) => void
 }
 
@@ -225,7 +225,6 @@ const SUB_SCOPE_KINDS = new Set<Scope["kind"]>(["subProcess", "eventSubProcess",
 
 const RULES: Record<string, NativeRule> = {
 	"ad-hoc-sub-process": {
-		category: "flow",
 		check({ scopes }, report) {
 			for (const scope of scopes) {
 				if (scope.kind !== "adHocSubProcess") continue
@@ -244,7 +243,6 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"conditional-event": {
-		category: "flow",
 		check({ scopes }, report) {
 			for (const scope of scopes) {
 				if (!scope.executable) continue
@@ -266,7 +264,6 @@ const RULES: Record<string, NativeRule> = {
 	// Stands in for `feel/empty-condition` while configured (see `replaces` in
 	// `../bpmnlint.ts`), so it shares that finding's category.
 	"conditional-flows": {
-		category: "feel",
 		check({ scopes }, report) {
 			for (const scope of scopes) {
 				for (const el of scope.container.flowElements) {
@@ -289,7 +286,6 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"end-event-required": {
-		category: "flow",
 		check({ scopes }, report) {
 			// Top-level processes are covered by `flow/no-end-event`.
 			for (const scope of scopes) {
@@ -307,7 +303,6 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"event-based-gateway": {
-		category: "flow",
 		check({ scopes }, report) {
 			for (const scope of scopes) {
 				for (const el of scope.container.flowElements) {
@@ -337,7 +332,6 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"event-sub-process-typed-start-event": {
-		category: "flow",
 		check({ scopes }, report) {
 			for (const scope of scopes) {
 				if (!scope.eventSubProcess) continue
@@ -356,7 +350,6 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"fake-join": {
-		category: "flow",
 		check({ scopes }, report) {
 			for (const scope of scopes) {
 				for (const el of scope.container.flowElements) {
@@ -378,7 +371,6 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	global: {
-		category: "pattern",
 		check({ defs, scopes }, report) {
 			const referenced = new Set<string>()
 			for (const scope of scopes) {
@@ -445,7 +437,6 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"label-required": {
-		category: "naming",
 		check({ defs, scopes }, report) {
 			const missing = (id: string, what: string, processId: string) =>
 				report(
@@ -485,7 +476,6 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"link-event": {
-		category: "flow",
 		check({ scopes }, report) {
 			for (const scope of scopes) {
 				const links = scope.container.flowElements.flatMap((el) => {
@@ -549,7 +539,6 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"no-bpmndi": {
-		category: "pattern",
 		check({ defs }, report) {
 			const drawn = new Set<string>()
 			for (const diagram of defs.diagrams) {
@@ -601,14 +590,12 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"no-complex-gateway": {
-		category: "pattern",
 		check({ scopes }, report) {
 			discouraged(scopes, report, "complexGateway", "pattern/complex-gateway", "complex gateway")
 		},
 	},
 
 	"no-disconnected": {
-		category: "flow",
 		check({ scopes }, report) {
 			for (const scope of scopes) {
 				if (scope.kind === "adHocSubProcess") continue
@@ -634,7 +621,6 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"no-duplicate-sequence-flows": {
-		category: "flow",
 		check({ scopes }, report) {
 			for (const scope of scopes) {
 				const seen = new Set<string>()
@@ -657,7 +643,6 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"no-gateway-join-fork": {
-		category: "flow",
 		check({ scopes }, report) {
 			// `flow/mixed-gateway` from `optimize()` covers the top level.
 			for (const scope of scopes) {
@@ -680,7 +665,6 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"no-implicit-end": {
-		category: "flow",
 		check({ defs, scopes }, report) {
 			const processes = new Map(defs.processes.map((p) => [p.id, p]))
 			for (const scope of scopes) {
@@ -713,7 +697,6 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"no-implicit-start": {
-		category: "flow",
 		check({ scopes }, report) {
 			for (const scope of scopes) {
 				if (scope.kind === "adHocSubProcess") continue
@@ -736,7 +719,6 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"no-implicit-split": {
-		category: "flow",
 		check({ scopes }, report) {
 			for (const scope of scopes) {
 				for (const el of scope.container.flowElements) {
@@ -759,7 +741,6 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"no-inclusive-gateway": {
-		category: "pattern",
 		check({ scopes }, report) {
 			discouraged(
 				scopes,
@@ -772,14 +753,12 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"no-overlapping-elements": {
-		category: "pattern",
 		check({ defs }, report) {
 			checkOverlaps(defs, report)
 		},
 	},
 
 	"single-blank-start-event": {
-		category: "flow",
 		check({ scopes }, report) {
 			for (const scope of scopes) {
 				const blank = scope.container.flowElements.filter(
@@ -799,7 +778,6 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"single-event-definition": {
-		category: "flow",
 		check({ scopes }, report) {
 			for (const scope of scopes) {
 				for (const el of scope.container.flowElements) {
@@ -818,14 +796,12 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"standard-size": {
-		category: "pattern",
 		check({ defs, options }, report) {
 			checkStandardSizes(defs, options, report)
 		},
 	},
 
 	"start-event-required": {
-		category: "flow",
 		check({ scopes }, report) {
 			// Top-level processes are covered by `flow/no-start-event`.
 			for (const scope of scopes) {
@@ -843,7 +819,6 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"sub-process-blank-start-event": {
-		category: "flow",
 		check({ scopes }, report) {
 			for (const scope of scopes) {
 				if (scope.kind === "process" || scope.eventSubProcess) continue
@@ -862,7 +837,6 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"superfluous-gateway": {
-		category: "flow",
 		check({ scopes }, report) {
 			// `flow/redundant-gateway` from `optimize()` covers the top level.
 			for (const scope of scopes) {
@@ -885,7 +859,6 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"superfluous-label": {
-		category: "naming",
 		check({ scopes }, report) {
 			for (const scope of scopes) {
 				const byId = new Map(scope.container.flowElements.map((el) => [el.id, el]))
@@ -910,7 +883,6 @@ const RULES: Record<string, NativeRule> = {
 	},
 
 	"superfluous-termination": {
-		category: "flow",
 		check({ scopes }, report) {
 			for (const scope of scopes) {
 				if (scope.kind === "adHocSubProcess") continue
@@ -1077,16 +1049,7 @@ function checkOverlaps(defs: BpmnDefinitions, report: Reporter): void {
 type Size = { width?: number; height?: number }
 
 /** bpmn-js's default sizes, as bpmnlint copies them. Overridable per type. */
-const DEFAULT_SIZES: Record<string, Size> = {
-	"bpmn:Task": { width: 100, height: 80 },
-	"bpmn:CallActivity": { width: 100, height: 80 },
-	"bpmn:SubProcess": { width: 100, height: 80 },
-	"bpmn:Gateway": { width: 50, height: 50 },
-	"bpmn:Event": { width: 36, height: 36 },
-	"bpmn:DataObjectReference": { width: 36, height: 50 },
-	"bpmn:DataStoreReference": { width: 50, height: 50 },
-	"bpmn:Participant": { width: 60, height: 60 },
-}
+const DEFAULT_SIZES: Record<string, Size> = STANDARD_SIZE_DEFAULTS
 
 function sizeType(el: BpmnFlowElement): string | undefined {
 	if (isSubContainer(el)) return "bpmn:SubProcess"
@@ -1187,11 +1150,13 @@ export function analyzeBpmnlintRules(
 	for (const [name, options] of rules) {
 		const rule = RULES[name]
 		if (rule === undefined) continue
-		if (categories !== undefined && !categories.includes(rule.category)) continue
+		const category = NATIVE_RULE_CATEGORIES[name]
+		if (category === undefined) continue
+		if (categories !== undefined && !categories.includes(category)) continue
 		rule.check({ defs, scopes, options }, (id, message, suggestion, processId, elementIds) => {
 			findings.push({
 				id,
-				category: rule.category,
+				category,
 				severity: "warning",
 				message,
 				suggestion,

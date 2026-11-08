@@ -1,0 +1,181 @@
+{
+  "id": "_1373649948794",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "_ab851300-b5de-4ad3-bbec-215553757fc8",
+          "name": "Task 1",
+          "type": "task"
+        },
+        {
+          "id": "_80d1f02b-f39c-45c2-b731-43df75d81779",
+          "name": "Task 2",
+          "type": "task"
+        },
+        {
+          "id": "_6e79c19f-749d-48c4-8271-d9ca028354fa",
+          "name": "End Event 1",
+          "type": "endEvent"
+        },
+        {
+          "id": "_c03f2b1f-32dc-41ef-b325-c9811a814fbe",
+          "name": "Start Event 1",
+          "type": "startEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "_c03f2b1f-32dc-41ef-b325-c9811a814fbe",
+          "id": "_44b1d373-57a1-4b8e-ba2e-3204c32519e5",
+          "to": "_ab851300-b5de-4ad3-bbec-215553757fc8"
+        },
+        {
+          "from": "_80d1f02b-f39c-45c2-b731-43df75d81779",
+          "id": "_f35e3b07-7b1f-433d-9595-7fdea8996954",
+          "to": "_6e79c19f-749d-48c4-8271-d9ca028354fa"
+        },
+        {
+          "from": "_ab851300-b5de-4ad3-bbec-215553757fc8",
+          "id": "_6b7f2411-77f7-4152-be39-d8dbeb8bc460",
+          "to": "_80d1f02b-f39c-45c2-b731-43df75d81779"
+        }
+      ],
+      "id": "WFP-6-1"
+    },
+    {
+      "elements": [
+        {
+          "id": "_1c347d0d-750b-4c09-980d-6877caae409b",
+          "name": "Task 5",
+          "type": "task"
+        },
+        {
+          "id": "_65d1bebf-e613-4317-acb2-b12b69fc67ff",
+          "name": "Start Event 2",
+          "type": "startEvent"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "_1ffaa550-3225-4c6a-a391-3aaf224723af",
+                "name": "Start Event 3",
+                "type": "startEvent"
+              },
+              {
+                "id": "_09532ad3-e571-4214-b580-7bebf4bb68b1",
+                "name": "Task 4",
+                "type": "task"
+              },
+              {
+                "id": "_3e5ac6ed-88d6-4f82-a647-6b253b80b004",
+                "name": "End Event 3",
+                "type": "endEvent"
+              }
+            ],
+            "flows": [
+              {
+                "from": "_1ffaa550-3225-4c6a-a391-3aaf224723af",
+                "id": "_3580d9ba-4f79-48c1-96da-090bd5e5172d",
+                "to": "_09532ad3-e571-4214-b580-7bebf4bb68b1"
+              },
+              {
+                "from": "_09532ad3-e571-4214-b580-7bebf4bb68b1",
+                "id": "_f5e6dc98-8c79-4e6b-aef9-c3f3bdc09136",
+                "to": "_3e5ac6ed-88d6-4f82-a647-6b253b80b004"
+              }
+            ]
+          },
+          "id": "_ee35fa2c-dfea-40cf-a469-845b765a7b50",
+          "name": "Expanded Sub-Process 1",
+          "type": "subProcess"
+        },
+        {
+          "id": "_7c434d45-d319-457b-9fd6-853c218bc3f1",
+          "name": "End Event 2",
+          "type": "endEvent"
+        },
+        {
+          "id": "_6fed62c8-8241-4a1d-ae67-266fda7dcead",
+          "name": "Task 3",
+          "type": "task"
+        },
+        {
+          "id": "_8e6cecb7-b247-4c43-a6b6-532fb6a89753",
+          "name": "End Event 5",
+          "type": "endEvent"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "_47bef337-7915-459d-a9cd-e9c87c98f8fa",
+                "name": "Start Event 4",
+                "type": "startEvent"
+              },
+              {
+                "id": "_15f8f2a4-5e55-4159-b349-403ac4cbdefb",
+                "name": "Task 6",
+                "type": "task"
+              },
+              {
+                "id": "_bb8b7952-0991-4b7c-a851-97327832d7b8",
+                "name": "End Event 4",
+                "type": "endEvent"
+              }
+            ],
+            "flows": [
+              {
+                "from": "_47bef337-7915-459d-a9cd-e9c87c98f8fa",
+                "id": "_807d5f9c-e4e5-49fc-b44a-da9743a94556",
+                "to": "_15f8f2a4-5e55-4159-b349-403ac4cbdefb"
+              },
+              {
+                "from": "_15f8f2a4-5e55-4159-b349-403ac4cbdefb",
+                "id": "_237d3b22-6012-49f7-90a3-cd259426caf9",
+                "to": "_bb8b7952-0991-4b7c-a851-97327832d7b8"
+              }
+            ]
+          },
+          "id": "_f52b6ad0-4dcc-4053-b696-b924dda01db5",
+          "name": "Expanded Sub-Process 2",
+          "type": "subProcess"
+        }
+      ],
+      "flows": [
+        {
+          "from": "_6fed62c8-8241-4a1d-ae67-266fda7dcead",
+          "id": "_1873ed55-ba18-433f-8d1a-eb84d18da049",
+          "to": "_ee35fa2c-dfea-40cf-a469-845b765a7b50"
+        },
+        {
+          "from": "_ee35fa2c-dfea-40cf-a469-845b765a7b50",
+          "id": "_ebbaed22-6fcb-4af7-8b7a-7ebc9cc7f150",
+          "to": "_1c347d0d-750b-4c09-980d-6877caae409b"
+        },
+        {
+          "from": "_1c347d0d-750b-4c09-980d-6877caae409b",
+          "id": "_0020ed6a-6dde-499f-9fda-36c8bde20ec6",
+          "to": "_7c434d45-d319-457b-9fd6-853c218bc3f1"
+        },
+        {
+          "from": "_6fed62c8-8241-4a1d-ae67-266fda7dcead",
+          "id": "_08d345a0-2bc3-4988-bfb2-7c2576839505",
+          "to": "_f52b6ad0-4dcc-4053-b696-b924dda01db5"
+        },
+        {
+          "from": "_f52b6ad0-4dcc-4053-b696-b924dda01db5",
+          "id": "_1f3792a7-da0f-4621-8c10-a04b67e33f5b",
+          "to": "_8e6cecb7-b247-4c43-a6b6-532fb6a89753"
+        },
+        {
+          "from": "_65d1bebf-e613-4317-acb2-b12b69fc67ff",
+          "id": "_486d13e4-86ef-49b2-bba9-f03435494f0e",
+          "to": "_6fed62c8-8241-4a1d-ae67-266fda7dcead"
+        }
+      ],
+      "id": "WFP-6-2"
+    }
+  ]
+}

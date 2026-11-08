@@ -1,0 +1,109 @@
+{
+  "id": "f",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "type": "textfield",
+      "id": "a",
+      "label": "A",
+      "key": "a",
+      "description": "help",
+      "appearance": {
+        "prefixAdorner": "EUR"
+      },
+      "readonly": true
+    },
+    {
+      "type": "text",
+      "id": "b",
+      "text": "t",
+      "label": 5,
+      "properties": {
+        "x": 1
+      }
+    },
+    {
+      "type": "textfield",
+      "id": "c",
+      "label": "C",
+      "key": "c",
+      "defaultValue": 5,
+      "conditional": {
+        "hide": "=x",
+        "extra": "y"
+      }
+    },
+    {
+      "type": "number",
+      "id": "d",
+      "label": "D",
+      "key": "d",
+      "defaultValue": "7",
+      "increment": 0.5,
+      "decimalDigits": 2
+    },
+    {
+      "type": "checkbox",
+      "id": "e",
+      "label": "E",
+      "key": "e",
+      "defaultValue": "true",
+      "conditional": "nope"
+    },
+    {
+      "type": "textfield",
+      "id": "f",
+      "label": "F",
+      "key": "f",
+      "layout": null,
+      "conditional": null
+    },
+    {
+      "type": "button",
+      "id": "g",
+      "label": "G",
+      "action": "reset",
+      "type_extra": 1,
+      "extraProps": {
+        "a": 1
+      }
+    },
+    {
+      "type": "separator",
+      "id": "h",
+      "note": "kept",
+      "conditional": {
+        "hide": "=true"
+      }
+    },
+    {
+      "type": "radio",
+      "id": "i",
+      "label": "I",
+      "key": "i",
+      "values": [],
+      "valuesKey": "ignored",
+      "searchable": true
+    },
+    {
+      "type": "taglist",
+      "id": "j",
+      "label": "J",
+      "key": "j",
+      "validate": {
+        "required": true
+      },
+      "valuesExpression": "=x"
+    },
+    {
+      "type": "datetime",
+      "id": "k",
+      "key": "k",
+      "validate": {
+        "required": true
+      },
+      "disallowPassedDates": true
+    }
+  ]
+}

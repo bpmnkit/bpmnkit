@@ -1,0 +1,2 @@
+start[start Order created] > validate[user Validate order]
+validate[xor Failed validation?] > notify[service Notify ops] > done[end Done]

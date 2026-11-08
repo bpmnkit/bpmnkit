@@ -1,7 +1,7 @@
 {
 	"name": "@bpmnkit/examples",
 	"private": true,
-	"version": "0.0.51",
+	"version": "0.0.54",
 	"type": "module",
 	"scripts": {
 		"01": "tsx src/01-employee-onboarding.ts",
@@ -15,6 +15,7 @@
 		"ai:index": "tsx src/ai/index-your-own-corpus.ts",
 		"ai:bpmn": "tsx src/ai/corpus-to-bpmn.ts",
 		"all": "tsx src/run-all.ts",
+		"typecheck": "tsc --noEmit",
 		"test": "vitest run"
 	},
 	"dependencies": {

@@ -1,0 +1,4 @@
+s[start] > and[and] > t[task T] > e[end]
+and > u[task U] > e
+and[kind and]
+s[id=s kind=start]

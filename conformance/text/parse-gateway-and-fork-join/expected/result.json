@@ -1,0 +1,80 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "f",
+            "name": "Fork",
+            "type": "parallelGateway"
+          },
+          {
+            "id": "a",
+            "name": "A",
+            "type": "task"
+          },
+          {
+            "id": "j",
+            "name": "Join",
+            "type": "parallelGateway"
+          },
+          {
+            "id": "b",
+            "name": "B",
+            "type": "task"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "f"
+          },
+          {
+            "from": "f",
+            "id": "Flow_2",
+            "to": "a"
+          },
+          {
+            "from": "a",
+            "id": "Flow_3",
+            "to": "j"
+          },
+          {
+            "from": "f",
+            "id": "Flow_4",
+            "to": "b"
+          },
+          {
+            "from": "b",
+            "id": "Flow_5",
+            "to": "j"
+          },
+          {
+            "from": "j",
+            "id": "Flow_6",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

@@ -1,0 +1,55 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Order placed",
+            "type": "startEvent"
+          },
+          {
+            "eventType": "message",
+            "id": "w",
+            "name": "Paid",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "ship",
+            "jobType": "ship",
+            "name": "Ship",
+            "type": "serviceTask"
+          },
+          {
+            "id": "e",
+            "name": "Done",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "w"
+          },
+          {
+            "from": "w",
+            "id": "Flow_2",
+            "to": "ship"
+          },
+          {
+            "from": "ship",
+            "id": "Flow_3",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [],
+  "questions": []
+}

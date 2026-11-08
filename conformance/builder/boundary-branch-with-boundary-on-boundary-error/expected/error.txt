@@ -1,0 +1,1 @@
+withBoundary() cannot attach to a boundary event. It must follow a task or activity element.

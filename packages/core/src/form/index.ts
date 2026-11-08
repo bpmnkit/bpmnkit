@@ -14,6 +14,7 @@ export type {
 	FormHtmlComponent,
 	FormIframeComponent,
 	FormImageComponent,
+	FormConditional,
 	FormLayout,
 	FormLayoutInput,
 	FormNumberComponent,
@@ -53,7 +54,16 @@ import type { FormDefinition } from "./form-model.js"
 import { parseForm } from "./form-parser.js"
 import { exportForm } from "./form-serializer.js"
 
-/** Top-level Form namespace providing create, parse, and export entry points. */
+/**
+ * Top-level Form namespace providing create, parse, and export entry points.
+ *
+ * @example
+ * ```typescript
+ * const form = Form.create("review-order").textfield("Note", "note").build()
+ * ```
+ *
+ * @see node_modules/@bpmnkit/core/agent-cards/form.md — runnable script and traps (~1k tokens)
+ */
 export const Form = {
 	/** Creates a new form using a fluent builder. */
 	create(id?: string): FormBuilder {

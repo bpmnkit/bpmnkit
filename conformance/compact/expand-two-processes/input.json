@@ -1,0 +1,37 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "A",
+      "name": "First",
+      "documentation": "doc A",
+      "elements": [
+        {
+          "id": "s1",
+          "type": "startEvent"
+        }
+      ],
+      "flows": []
+    },
+    {
+      "id": "B",
+      "elements": [
+        {
+          "id": "s2",
+          "type": "startEvent"
+        },
+        {
+          "id": "t2",
+          "type": "task"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f",
+          "from": "s2",
+          "to": "t2"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "runs": {
+    "default": {},
+    "forced": {
+      "forceEngineRules": true
+    },
+    "only-naming": {
+      "categories": [
+        "naming"
+      ]
+    },
+    "naming-deploy": {
+      "categories": [
+        "naming",
+        "deploy"
+      ]
+    },
+    "forced-naming-deploy": {
+      "forceEngineRules": true,
+      "categories": [
+        "naming",
+        "deploy"
+      ]
+    },
+    "forms-off": {
+      "userTaskForms": "off"
+    },
+    "version-8-2": {
+      "camundaVersion": "8.2"
+    },
+    "version-8-8": {
+      "camundaVersion": "8.8"
+    },
+    "version-8-0-forced": {
+      "camundaVersion": "8.0",
+      "forceEngineRules": true
+    },
+    "thresholds": {
+      "feelLengthThreshold": 5,
+      "feelNestingThreshold": 1,
+      "feelOperatorThreshold": 1,
+      "feelVariableThreshold": 1,
+      "reuseThreshold": 1
+    }
+  }
+}

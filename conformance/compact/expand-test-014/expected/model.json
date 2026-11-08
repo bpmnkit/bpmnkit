@@ -1,0 +1,210 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_P",
+      "plane": {
+        "bpmnElement": "P",
+        "edges": [
+          {
+            "bpmnElement": "F1",
+            "id": "F1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 43,
+                "y": 40
+              },
+              {
+                "x": 110,
+                "y": 40
+              }
+            ]
+          },
+          {
+            "bpmnElement": "F2",
+            "id": "F2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 210,
+                "y": 40
+              },
+              {
+                "x": 310,
+                "y": 40
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_P",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 7,
+              "y": 22
+            },
+            "bpmnElement": "S",
+            "id": "S_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 110,
+              "y": 0
+            },
+            "bpmnElement": "Task_X",
+            "id": "Task_X_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 0,
+              "y": 260
+            },
+            "bpmnElement": "G",
+            "id": "G_di",
+            "isMarkerVisible": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 180,
+              "width": 200,
+              "x": 310,
+              "y": 0
+            },
+            "bpmnElement": "Agent",
+            "id": "Agent_di",
+            "isExpanded": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 360,
+              "y": 50
+            },
+            "bpmnElement": "Tool_ListUsers",
+            "id": "Tool_ListUsers_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "d",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "documentation": "Handles one support request.",
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "documentation": "Expects: userId, amount.",
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "S",
+          "incoming": [],
+          "outgoing": [
+            "F1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "documentation": "Call this to look up a user by ID.",
+          "extensionElements": [],
+          "id": "Task_X",
+          "incoming": [
+            "F1"
+          ],
+          "name": "Renamed",
+          "outgoing": [
+            "F2"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {}
+        },
+        {
+          "documentation": "Branches on the amount.",
+          "extensionElements": [],
+          "id": "G",
+          "incoming": [],
+          "outgoing": [],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "documentation": "Resolves the request autonomously.",
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "documentation": "Call this to retrieve all users.",
+              "extensionElements": [],
+              "id": "Tool_ListUsers",
+              "incoming": [],
+              "name": "List users",
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "Agent",
+          "incoming": [
+            "F2"
+          ],
+          "outgoing": [],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "type": "adHocSubProcess",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "P",
+      "isExecutable": true,
+      "name": "Proc",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "F1",
+          "sourceRef": "S",
+          "targetRef": "Task_X",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "F2",
+          "sourceRef": "Task_X",
+          "targetRef": "Agent",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

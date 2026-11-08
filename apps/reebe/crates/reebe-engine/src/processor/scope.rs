@@ -7,19 +7,25 @@
 //! that already has it and otherwise lands on the process instance, as Zeebe
 //! propagates variables.
 
-use std::sync::Arc;
-use reebe_db::state::variables::Variable;
 use crate::engine::EngineState;
 use crate::error::EngineResult;
 use crate::key_gen::KeyGenerator;
+use reebe_db::state::variables::Variable;
+use std::sync::Arc;
 
 /// Scope keys from `scope_key` outwards: the element instances that enclose it
 /// (itself included), then the process instance.
-pub(crate) async fn scope_chain(state: &EngineState, process_instance_key: i64, scope_key: i64) -> Vec<i64> {
+pub(crate) async fn scope_chain(
+    state: &EngineState,
+    process_instance_key: i64,
+    scope_key: i64,
+) -> Vec<i64> {
     let mut chain = Vec::new();
     let mut key = scope_key;
     while key != process_instance_key {
-        let Ok(ei) = state.backend.get_element_instance_by_key(key).await else { break };
+        let Ok(ei) = state.backend.get_element_instance_by_key(key).await else {
+            break;
+        };
         if ei.element_type == "PROCESS" {
             break;
         }
@@ -42,7 +48,12 @@ pub(crate) async fn visible_variables(
     let chain = scope_chain(state, process_instance_key, scope_key).await;
     let mut map = serde_json::Map::new();
     for key in chain.iter().rev() {
-        for v in state.backend.get_variables_by_scope(*key).await.unwrap_or_default() {
+        for v in state
+            .backend
+            .get_variables_by_scope(*key)
+            .await
+            .unwrap_or_default()
+        {
             map.insert(v.name, v.value);
         }
     }
@@ -69,16 +80,19 @@ pub(crate) async fn set_local(
     tenant_id: &str,
 ) -> EngineResult<()> {
     let key_gen = KeyGenerator::new(Arc::clone(&state.backend), state.partition_id);
-    state.backend.upsert_variable(&Variable {
-        key: key_gen.next_key().await?,
-        partition_id: state.partition_id,
-        name: name.to_string(),
-        value,
-        scope_key,
-        process_instance_key,
-        tenant_id: tenant_id.to_string(),
-        is_preview: false,
-    }).await?;
+    state
+        .backend
+        .upsert_variable(&Variable {
+            key: key_gen.next_key().await?,
+            partition_id: state.partition_id,
+            name: name.to_string(),
+            value,
+            scope_key,
+            process_instance_key,
+            tenant_id: tenant_id.to_string(),
+            is_preview: false,
+        })
+        .await?;
     Ok(())
 }
 
@@ -98,7 +112,8 @@ pub(crate) async fn propagate(
     // What the elements of an ad-hoc sub-process write stays in their activation.
     let mut fallback = process_instance_key;
     for (i, key) in chain.iter().enumerate() {
-        let is_activation = state.backend
+        let is_activation = state
+            .backend
             .get_element_instance_by_key(*key)
             .await
             .is_ok_and(|ei| ei.element_type == super::ad_hoc::INNER);
@@ -110,7 +125,8 @@ pub(crate) async fn propagate(
     }
     let mut names_by_scope = Vec::with_capacity(chain.len());
     for key in &chain {
-        let names: std::collections::HashSet<String> = state.backend
+        let names: std::collections::HashSet<String> = state
+            .backend
             .get_variables_by_scope(*key)
             .await
             .unwrap_or_default()
@@ -125,7 +141,15 @@ pub(crate) async fn propagate(
             .find(|(_, names)| names.contains(name))
             .map(|(key, _)| *key)
             .unwrap_or(fallback);
-        set_local(state, process_instance_key, target, name, value.clone(), tenant_id).await?;
+        set_local(
+            state,
+            process_instance_key,
+            target,
+            name,
+            value.clone(),
+            tenant_id,
+        )
+        .await?;
     }
     Ok(())
 }

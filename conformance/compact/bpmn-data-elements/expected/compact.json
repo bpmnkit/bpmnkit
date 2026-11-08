@@ -1,0 +1,52 @@
+{
+  "id": "Definitions_data",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "DataObject_invoice",
+          "name": "Invoice",
+          "type": "dataObject"
+        },
+        {
+          "dataObjectRef": "DataObject_invoice",
+          "id": "DataObjectRef_invoice",
+          "name": "Invoice",
+          "type": "dataObjectReference"
+        },
+        {
+          "id": "DataStore_ledger",
+          "name": "Ledger",
+          "type": "dataStoreReference"
+        },
+        {
+          "id": "Start_data",
+          "type": "startEvent"
+        },
+        {
+          "id": "Task_post",
+          "name": "Post to ledger",
+          "type": "serviceTask"
+        },
+        {
+          "id": "End_data",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "Start_data",
+          "id": "Flow_d1",
+          "to": "Task_post"
+        },
+        {
+          "from": "Task_post",
+          "id": "Flow_d2",
+          "to": "End_data"
+        }
+      ],
+      "id": "Process_data",
+      "name": "Data wiring"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+[package]
+name = "bpmnkit-layout"
+description = "BPMN and DMN auto-layout for BPMN Kit (Rust twin of @bpmnkit/core's applyAutoLayout and layoutDmn)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["bpmn", "dmn", "layout", "diagram", "camunda"]
+categories = ["visualization", "algorithms"]
+# Tests and benches read the shared corpus under ../../conformance, outside the package.
+exclude = ["tests/", "benches/"]
+
+[dependencies]
+bpmnkit-bpmn = { workspace = true }
+bpmnkit-dmn = { workspace = true }
+indexmap = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true, features = ["float_roundtrip"] }
+
+[[bench]]
+name = "layout"
+harness = false

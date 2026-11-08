@@ -1,0 +1,11 @@
+# AI Agent Chat With Tools | camunda=8.10
+start[start Task to perform received] > run[xor Run agent] > agent[adhoc AI Agent] > fb[user User Feedback] > done[xor User satisfied?]
+done >(Yes: userSatisfied) fin[end User satisfied]
+done >(No: default) run
+users[service Find sample users | inside=agent job=users]
+recipes[service Search recipes | inside=agent job=recipes]
+joke[service Get a safe joke | inside=agent job=joke]
+products[service List sample technology products | inside=agent job=products]
+note start: Triggered when a user submits a task for the AI agent.
+note agent: This is your agent running certain tasks to reach the goal it was given
+note joke: Each task you add represents a capability your agent will have.

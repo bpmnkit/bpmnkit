@@ -1,0 +1,3 @@
+s[start] > check_order[task] > g[xor]
+g >(Yes: ok) e[end]
+g >(No: default) e2[end]

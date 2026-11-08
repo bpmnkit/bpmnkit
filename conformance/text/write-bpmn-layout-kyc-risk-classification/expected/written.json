@@ -1,0 +1,25 @@
+{
+  "aliases": {
+    "activate_customer_account": "activateAccount",
+    "approved": "endApproved",
+    "document_verified": "qualityGateway",
+    "due_diligence_level": "dueDiligenceGateway",
+    "enhanced_due_diligence_review": "enhancedDueDiligence",
+    "escalate_to_compliance": "escalateToCompliance",
+    "escalated_to_compliance": "endEscalated",
+    "final_decision": "outcomeGateway",
+    "final_risk_classification": "finalRiskClassification",
+    "increment_retry_count": "incrementRetry",
+    "rejected": "endRejected",
+    "rejected_document": "endRejectedDocument",
+    "retries_remaining": "retryGateway",
+    "sanctions_pep_screening": "sanctionsScreening",
+    "send_kyc_rejection": "sendKycRejection",
+    "send_verification_rejection": "sendVerificationRejection",
+    "standard_due_diligence": "standardDueDiligence",
+    "start": "start",
+    "upload_identity_document": "uploadDocument",
+    "verify_document_ocr": "verifyDocument",
+    "xor": "dueDiligenceGateway_join"
+  }
+}

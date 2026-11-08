@@ -17,7 +17,7 @@ tokio-stream = "0.1"
 serde_json = { workspace = true }
 tracing = { workspace = true }
 chrono = { workspace = true }
-reebe-engine = { workspace = true, default-features = false }
+reebe-engine = { workspace = true, default-features = false, features = ["full-feel"] }
 reebe-db = { workspace = true, default-features = false }
 base64 = { workspace = true }
 

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="parallel-approval" name="Parallel Approval" isExecutable="true">
+    <bpmn:startEvent id="start" name="Request Submitted">
+      <bpmn:outgoing>flow1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="prepare" name="Prepare Documents">
+      <bpmn:incoming>flow1</bpmn:incoming>
+      <bpmn:outgoing>flow2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="split" name="Split">
+      <bpmn:incoming>flow2</bpmn:incoming>
+      <bpmn:outgoing>flow-mgr</bpmn:outgoing>
+      <bpmn:outgoing>flow-legal</bpmn:outgoing>
+      <bpmn:outgoing>flow-finance</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="mgr-approve" name="Manager Approval">
+      <bpmn:incoming>flow-mgr</bpmn:incoming>
+      <bpmn:outgoing>flow-mgr-done</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="legal-review" name="Legal Review">
+      <bpmn:incoming>flow-legal</bpmn:incoming>
+      <bpmn:outgoing>flow-legal-done</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="finance-check" name="Finance Check">
+      <bpmn:incoming>flow-finance</bpmn:incoming>
+      <bpmn:outgoing>flow-finance-done</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:parallelGateway id="join" name="Join">
+      <bpmn:incoming>flow-mgr-done</bpmn:incoming>
+      <bpmn:incoming>flow-legal-done</bpmn:incoming>
+      <bpmn:incoming>flow-finance-done</bpmn:incoming>
+      <bpmn:outgoing>flow3</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:serviceTask id="finalize" name="Finalize Request">
+      <bpmn:incoming>flow3</bpmn:incoming>
+      <bpmn:outgoing>flow4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="end" name="Request Approved">
+      <bpmn:incoming>flow4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="flow1" sourceRef="start" targetRef="prepare"/>
+    <bpmn:sequenceFlow id="flow2" sourceRef="prepare" targetRef="split"/>
+    <bpmn:sequenceFlow id="flow-mgr" sourceRef="split" targetRef="mgr-approve"/>
+    <bpmn:sequenceFlow id="flow-legal" sourceRef="split" targetRef="legal-review"/>
+    <bpmn:sequenceFlow id="flow-finance" sourceRef="split" targetRef="finance-check"/>
+    <bpmn:sequenceFlow id="flow-mgr-done" sourceRef="mgr-approve" targetRef="join"/>
+    <bpmn:sequenceFlow id="flow-legal-done" sourceRef="legal-review" targetRef="join"/>
+    <bpmn:sequenceFlow id="flow-finance-done" sourceRef="finance-check" targetRef="join"/>
+    <bpmn:sequenceFlow id="flow3" sourceRef="join" targetRef="finalize"/>
+    <bpmn:sequenceFlow id="flow4" sourceRef="finalize" targetRef="end"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="diagram1">
+    <bpmndi:BPMNPlane id="plane1" bpmnElement="parallel-approval">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start">
+        <dc:Bounds x="62" y="42" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="20" y="82" width="119" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="prepare_di" bpmnElement="prepare">
+        <dc:Bounds x="180" y="20" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="split_di" bpmnElement="split">
+        <dc:Bounds x="355" y="35" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="360" y="89" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="mgr-approve_di" bpmnElement="mgr-approve">
+        <dc:Bounds x="480" y="20" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="join_di" bpmnElement="join">
+        <dc:Bounds x="655" y="35" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="660" y="89" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="finalize_di" bpmnElement="finalize">
+        <dc:Bounds x="780" y="20" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="end_di" bpmnElement="end">
+        <dc:Bounds x="962" y="42" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="924" y="82" width="112" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="legal-review_di" bpmnElement="legal-review">
+        <dc:Bounds x="480" y="160" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="finance-check_di" bpmnElement="finance-check">
+        <dc:Bounds x="480" y="300" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="flow1_di" bpmnElement="flow1">
+        <di:waypoint x="98" y="60"/>
+        <di:waypoint x="180" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow2_di" bpmnElement="flow2">
+        <di:waypoint x="280" y="60"/>
+        <di:waypoint x="355" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow-mgr_di" bpmnElement="flow-mgr">
+        <di:waypoint x="405" y="60"/>
+        <di:waypoint x="480" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow-legal_di" bpmnElement="flow-legal">
+        <di:waypoint x="380" y="85"/>
+        <di:waypoint x="380" y="200"/>
+        <di:waypoint x="480" y="200"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow-finance_di" bpmnElement="flow-finance">
+        <di:waypoint x="380" y="85"/>
+        <di:waypoint x="380" y="340"/>
+        <di:waypoint x="480" y="340"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow-mgr-done_di" bpmnElement="flow-mgr-done">
+        <di:waypoint x="580" y="60"/>
+        <di:waypoint x="655" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow-legal-done_di" bpmnElement="flow-legal-done">
+        <di:waypoint x="580" y="200"/>
+        <di:waypoint x="680" y="200"/>
+        <di:waypoint x="680" y="85"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow-finance-done_di" bpmnElement="flow-finance-done">
+        <di:waypoint x="580" y="340"/>
+        <di:waypoint x="680" y="340"/>
+        <di:waypoint x="680" y="85"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow3_di" bpmnElement="flow3">
+        <di:waypoint x="705" y="60"/>
+        <di:waypoint x="780" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="flow4_di" bpmnElement="flow4">
+        <di:waypoint x="880" y="60"/>
+        <di:waypoint x="962" y="60"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

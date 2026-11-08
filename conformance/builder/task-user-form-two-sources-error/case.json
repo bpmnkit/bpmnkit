@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["userTask","u",{"formId":"a","formKey":"b"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

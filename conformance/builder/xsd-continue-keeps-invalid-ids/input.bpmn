@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Defs 1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="proc" isExecutable="true">
+    <bpmn:startEvent id="1start">
+      <bpmn:outgoing>flow one</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="a→b">
+      <bpmn:incoming>flow one</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="flow one" sourceRef="1start" targetRef="a→b" />
+  </bpmn:process>
+</bpmn:definitions>

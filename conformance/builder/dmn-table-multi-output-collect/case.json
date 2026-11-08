@@ -1,0 +1,15 @@
+{
+	"kind": "dmn",
+	"script": [
+		["createDecisionTable","d"],
+		["name","Discount"],
+		["hitPolicy","COLLECT"],
+		["input",{"expression":"tier"}],
+		["output",{"name":"discount","typeRef":"number"}],
+		["output",{"name":"reason"}],
+		["rule",{"inputs":["\"gold\""],"outputs":["20","\"loyal\""]}],
+		["rule",{"inputs":["\"silver\""],"outputs":["10","\"ok\""]}],
+		["rule",{"inputs":["-"],"outputs":["0","\"none\""]}],
+		["build"]
+	]
+}

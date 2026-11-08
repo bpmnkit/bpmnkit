@@ -1,0 +1,98 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 2,
+    "info": 0,
+    "warning": 4
+  },
+  "diagnostics": [
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_c03f2b1f-32dc-41ef-b325-c9811a814fbe"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Start Event 1\" has no documentation describing expected input variables.",
+      "plane": "C1373649949206",
+      "processId": "WFP-6-1",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"WFP-6-1\" is not marked executable.",
+      "processId": "WFP-6-1",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_ee35fa2c-dfea-40cf-a469-845b765a7b50"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Expanded Sub-Process 1\" has no error boundary event.",
+      "plane": "C1373649949206",
+      "processId": "WFP-6-2",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_f52b6ad0-4dcc-4053-b696-b924dda01db5"
+      ],
+      "fixable": false,
+      "id": "pattern/subprocess-no-error-boundary",
+      "message": "Sub-process \"Expanded Sub-Process 2\" has no error boundary event.",
+      "plane": "C1373649949206",
+      "processId": "WFP-6-2",
+      "severity": "warning",
+      "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_65d1bebf-e613-4317-acb2-b12b69fc67ff"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Start Event 2\" has no documentation describing expected input variables.",
+      "plane": "C1373649949206",
+      "processId": "WFP-6-2",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [],
+      "fixable": false,
+      "id": "deploy/process-not-executable",
+      "message": "Process \"WFP-6-2\" is not marked executable.",
+      "processId": "WFP-6-2",
+      "severity": "error",
+      "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 6
+}

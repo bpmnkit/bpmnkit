@@ -1,0 +1,23 @@
+{"id":"fuzz/1","expr":"\"\" = -2 ** -0.1","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"fuzz/2","expr":"10 ** 400","context":{},"expected":{"t":"null"}}
+{"id":"fuzz/3","expr":"is defined((-8) ** 0.5)","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"fuzz/4","expr":"[] in [{}]","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"fuzz/5","expr":"[1] in [{\"0\": 1}]","context":{},"expected":{"t":"boolean","v":false}}
+{"id":"fuzz/6","expr":"y in [{}]","context":{"y":{"t":"list","v":[]}},"expected":{"t":"boolean","v":false}}
+{"id":"fuzz/7","expr":"10 ** -29","context":{},"expected":{"t":"number","v":"0"}}
+{"id":"fuzz/8","expr":"exp(-67)","context":{},"expected":{"t":"number","v":"0"}}
+{"id":"fuzz/9","expr":"l[item > exp(-67)]","context":{"l":{"t":"list","v":[{"t":"number","v":"5"}]}},"expected":{"t":"list","v":[{"t":"number","v":"5"}]}}
+{"id":"fuzz/10","expr":"decimal(1, -301)","context":{},"expected":{"t":"number","v":"0"}}
+{"id":"fuzz/11","expr":"(-0.5) ** 0.3","context":{},"expected":{"t":"null"}}
+{"id":"fuzz/12","expr":"@\"P1Y2M\" * 0.1","context":{},"expected":{"t":"years-months-duration","v":"P1M"}}
+{"id":"fuzz/13","expr":"@\"P1Y2M\" / -3","context":{},"expected":{"t":"years-months-duration","v":"-P5M"}}
+{"id":"fuzz/14","expr":"@\"P1Y5M\" * 0.5","context":{},"expected":{"t":"years-months-duration","v":"P9M"}}
+{"id":"fuzz/15","expr":"@\"P1D\" / -0","context":{},"expected":{"t":"null"}}
+{"id":"fuzz/16","expr":"exp(7097.9)","context":{},"expected":{"t":"null"}}
+{"id":"fuzz/17","expr":"union(@\"2024-02-29\", c)","context":{"c":{"t":"list","v":[{"t":"date","v":"2024-02-29"}]}},"expected":{"t":"list","v":[{"t":"date","v":"2024-02-29"}]}}
+{"id":"fuzz/18","expr":"distinct values([[1], [1], {a: 1}, {a: 1}])","context":{},"expected":{"t":"list","v":[{"t":"list","v":[{"t":"number","v":"1"}]},{"t":"context","v":{"a":{"t":"number","v":"1"}}}]}}
+{"id":"fuzz/19","expr":"count(for x in [67..100000) return for x in [x] return x)","context":{},"expected":{"t":"number","v":"99934"}}
+{"id":"fuzz/20","expr":"[-0 ** 0.5, (-0) ** 1.5]","context":{},"expected":{"t":"list","v":[{"t":"number","v":"0"},{"t":"number","v":"0"}]}}
+{"id":"fuzz/21","expr":"(sqrt(-0))[true]","context":{},"expected":{"t":"list","v":[{"t":"number","v":"0"}]}}
+{"id":"fuzz/22","expr":"0 + min(b)","context":{"b":{"t":"list","v":[{"t":"list","v":[{"t":"number","v":"0"}]}]}},"expected":{"t":"null"}}
+{"id":"fuzz/23","expr":"[min([[0]]), count([[1, 2]]), sum([[1, 2]]), mean([[1, 2]]), product([[2, 3]]), all([[true]])]","context":{},"expected":{"t":"list","v":[{"t":"list","v":[{"t":"number","v":"0"}]},{"t":"number","v":"1"},{"t":"null"},{"t":"null"},{"t":"null"},{"t":"null"}]}}

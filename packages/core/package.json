@@ -1,6 +1,6 @@
 {
 	"name": "@bpmnkit/core",
-	"version": "1.6.1",
+	"version": "1.9.0",
 	"type": "module",
 	"main": "./dist/index.js",
 	"types": "./dist/index.d.ts",
@@ -18,7 +18,17 @@
 			"import": "./dist/connectors/index.js"
 		}
 	},
-	"files": ["LICENSE", "README.md", "dist/**/*.js", "dist/**/*.d.ts"],
+	"files": [
+		"LICENSE",
+		"README.md",
+		"AGENTS.md",
+		"llms.txt",
+		"agent-cards",
+		"builder-reference.md",
+		"dist/**/*.js",
+		"dist/**/*.d.ts"
+	],
+	"agents": "./AGENTS.md",
 	"engines": {
 		"node": ">=20"
 	},

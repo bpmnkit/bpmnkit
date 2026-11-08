@@ -1,0 +1,13 @@
+{
+  "aliases": {
+    "end": "end",
+    "finalize": "finalize",
+    "finance_check": "finance-check",
+    "join": "join",
+    "legal_review": "legal-review",
+    "manager_approval": "mgr-approve",
+    "prepare": "prepare",
+    "split": "split",
+    "start": "start"
+  }
+}

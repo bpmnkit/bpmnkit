@@ -1,0 +1,5 @@
+s[start] > g[xor Ok?]
+g >(Yes: ok) a[task A] > again[xor Retry?]
+g >(No: default) b[task B] > again
+again >(Yes: retry) a
+again >(No: default) e[end Done]

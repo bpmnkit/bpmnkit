@@ -1,0 +1,4 @@
+s[start Go] > pick[user Pick] > and
+and > pack[user Pack] > dispatch[user Dispatch]
+and > label[service Label] > dispatch
+dispatch > e[end Done]

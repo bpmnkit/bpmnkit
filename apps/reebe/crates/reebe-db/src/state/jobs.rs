@@ -1,9 +1,9 @@
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 use crate::pool::DbPool;
+use crate::{DbError, Result};
 use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
-use crate::{Result, DbError};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Job {
@@ -73,13 +73,11 @@ impl<'a> JobRepository<'a> {
 
     pub async fn complete(&self, key: i64, variables: Option<Value>) -> Result<()> {
         let vars = variables.unwrap_or_else(|| Value::Object(Default::default()));
-        sqlx::query(
-            "UPDATE jobs SET state = 'COMPLETED', variables = $1 WHERE key = $2",
-        )
-        .bind(&vars)
-        .bind(key)
-        .execute(self.pool)
-        .await?;
+        sqlx::query("UPDATE jobs SET state = 'COMPLETED', variables = $1 WHERE key = $2")
+            .bind(&vars)
+            .bind(key)
+            .execute(self.pool)
+            .await?;
         Ok(())
     }
 
@@ -91,7 +89,11 @@ impl<'a> JobRepository<'a> {
         error_code: Option<&str>,
         retry_back_off_ms: Option<i64>,
     ) -> Result<()> {
-        let new_state = if retries <= 0 { "FAILED" } else { "ACTIVATABLE" };
+        let new_state = if retries <= 0 {
+            "FAILED"
+        } else {
+            "ACTIVATABLE"
+        };
         let retry_back_off_at = retry_back_off_ms
             .filter(|&ms| ms > 0)
             .map(|ms| chrono::Utc::now() + chrono::Duration::milliseconds(ms));
@@ -121,7 +123,11 @@ impl<'a> JobRepository<'a> {
         Ok(())
     }
 
-    pub async fn update_deadline(&self, key: i64, deadline: chrono::DateTime<chrono::Utc>) -> Result<()> {
+    pub async fn update_deadline(
+        &self,
+        key: i64,
+        deadline: chrono::DateTime<chrono::Utc>,
+    ) -> Result<()> {
         sqlx::query("UPDATE jobs SET deadline = $1 WHERE key = $2")
             .bind(deadline)
             .bind(key)
@@ -183,11 +189,7 @@ impl<'a> JobRepository<'a> {
         Ok(rows.into_iter().map(row_to_job).collect())
     }
 
-    pub async fn get_activatable_by_type(
-        &self,
-        job_type: &str,
-        limit: i64,
-    ) -> Result<Vec<Job>> {
+    pub async fn get_activatable_by_type(&self, job_type: &str, limit: i64) -> Result<Vec<Job>> {
         let now = chrono::Utc::now();
         let rows = sqlx::query(
             r#"SELECT key, partition_id, job_type, state, process_instance_key,
@@ -228,7 +230,10 @@ impl<'a> JobRepository<'a> {
         )
         .fetch_all(self.pool)
         .await?;
-        Ok(rows.into_iter().map(|r| (r.get::<String, _>("job_type"), r.get::<i64, _>("cnt"))).collect())
+        Ok(rows
+            .into_iter()
+            .map(|r| (r.get::<String, _>("job_type"), r.get::<i64, _>("cnt")))
+            .collect())
     }
 }
 
@@ -241,13 +246,13 @@ pub async fn activate_jobs(
     timeout_ms: i64,
 ) -> Result<Vec<Job>> {
     let mut txn = pool.begin().await?;
-    let deadline = chrono::Utc::now()
-        + chrono::Duration::milliseconds(timeout_ms);
+    let deadline = chrono::Utc::now() + chrono::Duration::milliseconds(timeout_ms);
 
     let rows = {
         #[cfg(feature = "postgres")]
         {
-            sqlx::query(r#"
+            sqlx::query(
+                r#"
                 WITH to_activate AS (
                     SELECT key FROM jobs
                     WHERE job_type = $1 AND state = 'ACTIVATABLE'
@@ -266,7 +271,8 @@ pub async fn activate_jobs(
                           element_instance_key, process_definition_key, bpmn_process_id, element_id,
                           retries, worker, deadline, retry_back_off_at, error_code, error_message,
                           custom_headers, variables, created_at, tenant_id
-            "#)
+            "#,
+            )
             .bind(job_type)
             .bind(max_jobs)
             .bind(worker)
@@ -278,7 +284,8 @@ pub async fn activate_jobs(
         {
             // SQLite does not support FOR UPDATE SKIP LOCKED; single-process so no contention
             let now = chrono::Utc::now();
-            sqlx::query(r#"
+            sqlx::query(
+                r#"
                 UPDATE jobs SET
                     state = 'ACTIVATED',
                     worker = $3,
@@ -295,7 +302,8 @@ pub async fn activate_jobs(
                           element_instance_key, process_definition_key, bpmn_process_id, element_id,
                           retries, worker, deadline, retry_back_off_at, error_code, error_message,
                           custom_headers, variables, created_at, tenant_id
-            "#)
+            "#,
+            )
             .bind(job_type)
             .bind(max_jobs)
             .bind(worker)
@@ -311,7 +319,10 @@ pub async fn activate_jobs(
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
-pub async fn cancel_jobs_by_process_instance(pool: &DbPool, process_instance_key: i64) -> Result<u64> {
+pub async fn cancel_jobs_by_process_instance(
+    pool: &DbPool,
+    process_instance_key: i64,
+) -> Result<u64> {
     let result = sqlx::query(
         r#"UPDATE jobs SET state = 'CANCELED', worker = NULL, deadline = NULL
            WHERE process_instance_key = $1 AND state IN ('ACTIVATABLE', 'ACTIVATED')"#,
@@ -323,7 +334,10 @@ pub async fn cancel_jobs_by_process_instance(pool: &DbPool, process_instance_key
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
-pub async fn cancel_jobs_by_element_instance(pool: &DbPool, element_instance_key: i64) -> Result<u64> {
+pub async fn cancel_jobs_by_element_instance(
+    pool: &DbPool,
+    element_instance_key: i64,
+) -> Result<u64> {
     let result = sqlx::query(
         r#"UPDATE jobs SET state = 'CANCELED', worker = NULL, deadline = NULL
            WHERE element_instance_key = $1 AND state IN ('ACTIVATABLE', 'ACTIVATED')"#,

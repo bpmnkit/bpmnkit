@@ -1,0 +1,1 @@
+s[start Go] > ok[xor In stock?] > ship[task Ship] > e[end Done]

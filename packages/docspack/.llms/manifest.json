@@ -1,7 +1,7 @@
 {
 	"$schema": "https://docspack.dev/schema/v1.json",
 	"name": "@bpmnkit/docspack",
-	"version": "1.2.1",
+	"version": "1.3.0",
 	"documents": [
 		"@bpmnkit/core",
 		"@bpmnkit/canvas",
@@ -19,9 +19,245 @@
 	],
 	"chunks": [
 		{
+			"id": "agent-cards.bpmn",
+			"file": "chunks/agent-cards.bpmn.md",
+			"tokens": 461,
+			"tags": [
+				"agent-card",
+				"cheat-sheet",
+				"build-script",
+				"bpmn",
+				"process",
+				"create",
+				"write",
+				"script",
+				"builder",
+				"agent-cards",
+				"minimal",
+				"build"
+			],
+			"entities": [
+				"@bpmnkit/core",
+				"order.bpmn"
+			]
+		},
+		{
+			"id": "agent-cards.bpmn.top-builder-options",
+			"file": "chunks/agent-cards.bpmn.top-builder-options.md",
+			"tokens": 299,
+			"tags": [
+				"agent-cards",
+				"bpmn",
+				"top",
+				"builder",
+				"options"
+			],
+			"entities": [
+				"b.defaultFlow()",
+				"messageName",
+				"correlationKey",
+				"errorCode",
+				"signalName",
+				"packages/core/builder-reference.md",
+				"@bpmnkit/core"
+			]
+		},
+		{
+			"id": "agent-cards.bpmn.traps",
+			"file": "chunks/agent-cards.bpmn.traps.md",
+			"tokens": 368,
+			"tags": [
+				"agent-cards",
+				"bpmn",
+				"traps"
+			],
+			"entities": [
+				"formId",
+				"decisionId",
+				"Bpmn.parse",
+				"withAutoLayout()",
+				"Bpmn.export",
+				"timerDuration",
+				"build()",
+				"cancelActivity",
+				"isInterrupting",
+				"isSequential"
+			]
+		},
+		{
+			"id": "agent-cards.bpmn.lint-before-you-deploy-or-test",
+			"file": "chunks/agent-cards.bpmn.lint-before-you-deploy-or-test.md",
+			"tokens": 183,
+			"tags": [
+				"agent-cards",
+				"bpmn",
+				"lint",
+				"before",
+				"deploy",
+				"test",
+				"writing",
+				"process",
+				"text",
+				"instead"
+			],
+			"entities": [
+				"@bpmnkit/core"
+			]
+		},
+		{
+			"id": "agent-cards.dmn",
+			"file": "chunks/agent-cards.dmn.md",
+			"tokens": 433,
+			"tags": [
+				"agent-card",
+				"cheat-sheet",
+				"build-script",
+				"dmn",
+				"decision",
+				"decision-table",
+				"rules",
+				"create",
+				"write",
+				"script",
+				"agent-cards",
+				"minimal"
+			],
+			"entities": [
+				"@bpmnkit/core",
+				"risk.dmn"
+			]
+		},
+		{
+			"id": "agent-cards.dmn.several-decisions-in-one-file-dmn.drd",
+			"file": "chunks/agent-cards.dmn.several-decisions-in-one-file-dmn.drd.md",
+			"tokens": 299,
+			"tags": [
+				"agent-cards",
+				"dmn",
+				"several",
+				"decisions",
+				"one",
+				"file",
+				"dmn.drd"
+			],
+			"entities": [
+				"build()",
+				"toXml()"
+			]
+		},
+		{
+			"id": "agent-cards.dmn.top-builder-options",
+			"file": "chunks/agent-cards.dmn.top-builder-options.md",
+			"tokens": 188,
+			"tags": [
+				"agent-cards",
+				"dmn",
+				"top",
+				"builder",
+				"options"
+			],
+			"entities": [
+				"DmnDefinitions",
+				"order.total",
+				"typeRef"
+			]
+		},
+		{
+			"id": "agent-cards.dmn.traps",
+			"file": "chunks/agent-cards.dmn.traps.md",
+			"tokens": 295,
+			"tags": [
+				"agent-cards",
+				"dmn",
+				"traps"
+			],
+			"entities": [
+				"Dmn.export"
+			]
+		},
+		{
+			"id": "agent-cards.dmn.validate",
+			"file": "chunks/agent-cards.dmn.validate.md",
+			"tokens": 116,
+			"tags": [
+				"agent-cards",
+				"dmn",
+				"validate"
+			],
+			"entities": []
+		},
+		{
+			"id": "agent-cards.form",
+			"file": "chunks/agent-cards.form.md",
+			"tokens": 396,
+			"tags": [
+				"agent-card",
+				"cheat-sheet",
+				"build-script",
+				"form",
+				"camunda-form",
+				"user-task-form",
+				"start-form",
+				"create",
+				"write",
+				"script",
+				"agent-cards",
+				"minimal"
+			],
+			"entities": [
+				"@bpmnkit/core",
+				"review-order.form"
+			]
+		},
+		{
+			"id": "agent-cards.form.top-builder-options",
+			"file": "chunks/agent-cards.form.top-builder-options.md",
+			"tokens": 146,
+			"tags": [
+				"agent-cards",
+				"form",
+				"top",
+				"builder",
+				"options"
+			],
+			"entities": [
+				"FormDefinition",
+				"valuesKey",
+				"options.validate",
+				"defaultValue",
+				"form.components"
+			]
+		},
+		{
+			"id": "agent-cards.form.traps",
+			"file": "chunks/agent-cards.form.traps.md",
+			"tokens": 227,
+			"tags": [
+				"agent-cards",
+				"form",
+				"traps"
+			],
+			"entities": [
+				"formId"
+			]
+		},
+		{
+			"id": "agent-cards.form.validate",
+			"file": "chunks/agent-cards.form.validate.md",
+			"tokens": 107,
+			"tags": [
+				"agent-cards",
+				"form",
+				"validate"
+			],
+			"entities": [
+				"formId"
+			]
+		},
+		{
 			"id": "cli.casen",
 			"file": "chunks/cli.casen.md",
-			"tokens": 732,
+			"tokens": 756,
 			"tags": [
 				"cli",
 				"casen",
@@ -104,7 +340,7 @@
 		{
 			"id": "cli.casen.bpmn-generation-pipeline",
 			"file": "chunks/cli.casen.bpmn-generation-pipeline.md",
-			"tokens": 736,
+			"tokens": 333,
 			"tags": [
 				"cli",
 				"casen",
@@ -117,16 +353,34 @@
 			]
 		},
 		{
+			"id": "cli.casen.bpmn-generation-pipeline-run-process-tests",
+			"file": "chunks/cli.casen.bpmn-generation-pipeline-run-process-tests.md",
+			"tokens": 507,
+			"tags": [
+				"cli",
+				"casen",
+				"bpmn",
+				"generation",
+				"pipeline",
+				"run",
+				"process",
+				"tests"
+			],
+			"entities": []
+		},
+		{
 			"id": "cli.casen.aikit-skills",
 			"file": "chunks/cli.casen.aikit-skills.md",
-			"tokens": 196,
+			"tokens": 293,
 			"tags": [
 				"cli",
 				"casen",
 				"aikit",
 				"skills"
 			],
-			"entities": []
+			"entities": [
+				"parseProcessText"
+			]
 		},
 		{
 			"id": "cli.casen.worker-commands",
@@ -196,6 +450,83 @@
 			],
 			"entities": [
 				"claude_desktop_config.json"
+			]
+		},
+		{
+			"id": "cli.check",
+			"file": "chunks/cli.check.md",
+			"tokens": 224,
+			"tags": [
+				"cli",
+				"check"
+			],
+			"entities": []
+		},
+		{
+			"id": "cli.check.options",
+			"file": "chunks/cli.check.options.md",
+			"tokens": 241,
+			"tags": [
+				"cli",
+				"check",
+				"options"
+			],
+			"entities": []
+		},
+		{
+			"id": "cli.check.profiles",
+			"file": "chunks/cli.check.profiles.md",
+			"tokens": 301,
+			"tags": [
+				"cli",
+				"check",
+				"profiles"
+			],
+			"entities": [
+				"deploy/",
+				"compat/",
+				"connector/",
+				"agentic/",
+				"compat/user-task-definition",
+				"formId",
+				"decisionId"
+			]
+		},
+		{
+			"id": "cli.check.what-is-checked",
+			"file": "chunks/cli.check.what-is-checked.md",
+			"tokens": 891,
+			"tags": [
+				"cli",
+				"check",
+				"checked"
+			],
+			"entities": [
+				"dmn/malformed-xml",
+				"dmn/not-dmn",
+				"dmn/duplicate-id",
+				"dmn/missing-id",
+				"dmn/no-decision",
+				"dmn/unresolved-requirement",
+				"requiredDecision",
+				"requiredInput",
+				"requiredKnowledge",
+				"requiredAuthority",
+				"dmn/requirement-cycle",
+				"dmn/decision-no-logic"
+			]
+		},
+		{
+			"id": "cli.check.what-is-checked-2",
+			"file": "chunks/cli.check.what-is-checked-2.md",
+			"tokens": 36,
+			"tags": [
+				"cli",
+				"check",
+				"checked"
+			],
+			"entities": [
+				"@bpmnkit/core"
 			]
 		},
 		{
@@ -746,7 +1077,7 @@
 		{
 			"id": "cli.skills",
 			"file": "chunks/cli.skills.md",
-			"tokens": 166,
+			"tokens": 173,
 			"tags": [
 				"cli",
 				"skills",
@@ -801,12 +1132,14 @@
 			"entities": []
 		},
 		{
-			"id": "cli.skills.no-mcp-server-required",
-			"file": "chunks/cli.skills.no-mcp-server-required.md",
-			"tokens": 83,
+			"id": "cli.skills.dmn-and-form",
+			"file": "chunks/cli.skills.dmn-and-form.md",
+			"tokens": 189,
 			"tags": [
 				"cli",
 				"skills",
+				"dmn",
+				"form",
 				"mcp",
 				"server",
 				"required"
@@ -2256,7 +2589,7 @@
 		{
 			"id": "guides.building-processes.sub-processes",
 			"file": "chunks/guides.building-processes.sub-processes.md",
-			"tokens": 181,
+			"tokens": 180,
 			"tags": [
 				"guides",
 				"building-processes",
@@ -2337,7 +2670,7 @@
 		{
 			"id": "guides.claude-code-plugin.configuration",
 			"file": "chunks/guides.claude-code-plugin.configuration.md",
-			"tokens": 592,
+			"tokens": 679,
 			"tags": [
 				"guides",
 				"claude-code-plugin",
@@ -2985,6 +3318,19 @@
 			"entities": []
 		},
 		{
+			"id": "guides.migrate-from-camunda-7.going-back-camunda-8-to-camunda-7",
+			"file": "chunks/guides.migrate-from-camunda-7.going-back-camunda-8-to-camunda-7.md",
+			"tokens": 183,
+			"tags": [
+				"guides",
+				"migrate-from-camunda-7",
+				"going",
+				"back",
+				"camunda"
+			],
+			"entities": []
+		},
+		{
 			"id": "guides.migrate-from-camunda-7.camunda-s-own-tools",
 			"file": "chunks/guides.migrate-from-camunda-7.camunda-s-own-tools.md",
 			"tokens": 233,
@@ -3160,6 +3506,127 @@
 			]
 		},
 		{
+			"id": "guides.recipes-element-templates",
+			"file": "chunks/guides.recipes-element-templates.md",
+			"tokens": 360,
+			"tags": [
+				"guides",
+				"recipes-element-templates",
+				"apply",
+				"element",
+				"template",
+				"service",
+				"task"
+			],
+			"entities": [
+				"applyTemplateToElement",
+				"@bpmnkit/core/connectors",
+				"retryCount",
+				"appliesTo",
+				"io.camunda.connectors.HttpJson.v2"
+			]
+		},
+		{
+			"id": "guides.recipes-element-templates.how-do-i-find-a-connector-template-s-property-ids",
+			"file": "chunks/guides.recipes-element-templates.how-do-i-find-a-connector-template-s-property-ids.md",
+			"tokens": 181,
+			"tags": [
+				"guides",
+				"recipes-element-templates",
+				"find",
+				"connector",
+				"template",
+				"property",
+				"ids"
+			],
+			"entities": [
+				"@bpmnkit/core/connectors"
+			]
+		},
+		{
+			"id": "guides.recipes-forms-and-user-tasks",
+			"file": "chunks/guides.recipes-forms-and-user-tasks.md",
+			"tokens": 138,
+			"tags": [
+				"guides",
+				"recipes-forms-and-user-tasks",
+				"set",
+				"start",
+				"event",
+				"form"
+			],
+			"entities": [
+				"formId",
+				"startEvent"
+			]
+		},
+		{
+			"id": "guides.recipes-forms-and-user-tasks.how-do-i-set-the-assignee-of-a-user-task",
+			"file": "chunks/guides.recipes-forms-and-user-tasks.how-do-i-set-the-assignee-of-a-user-task.md",
+			"tokens": 368,
+			"tags": [
+				"guides",
+				"recipes-forms-and-user-tasks",
+				"set",
+				"assignee",
+				"user",
+				"task",
+				"change",
+				"due",
+				"date",
+				"priority",
+				"existing"
+			],
+			"entities": [
+				"candidateGroups",
+				"candidateUsers",
+				"dueDate",
+				"followUpDate",
+				"userTask",
+				"applyBpmnOperations",
+				"processId",
+				"elementId"
+			]
+		},
+		{
+			"id": "guides.recipes-message-correlation.how-do-i-set-a-message-correlation-key",
+			"file": "chunks/guides.recipes-message-correlation.how-do-i-set-a-message-correlation-key.md",
+			"tokens": 146,
+			"tags": [
+				"guides",
+				"recipes-message-correlation",
+				"set",
+				"message",
+				"correlation",
+				"key"
+			],
+			"entities": [
+				"messageName",
+				"correlationKey",
+				"intermediateCatchEvent",
+				"receiveTask"
+			]
+		},
+		{
+			"id": "guides.recipes-message-correlation.how-do-i-change-the-correlation-key-of-an-existing-message-event",
+			"file": "chunks/guides.recipes-message-correlation.how-do-i-change-the-correlation-key-of-an-existing-message-event.md",
+			"tokens": 171,
+			"tags": [
+				"guides",
+				"recipes-message-correlation",
+				"change",
+				"correlation",
+				"key",
+				"existing",
+				"message",
+				"event"
+			],
+			"entities": [
+				"correlationKey",
+				"applyBpmnOperations"
+			]
+		},
+		{
 			"id": "guides.simulation",
 			"file": "chunks/guides.simulation.md",
 			"tokens": 261,
@@ -3303,7 +3770,7 @@
 		{
 			"id": "guides.templates.ai-templates-model-and-secrets",
 			"file": "chunks/guides.templates.ai-templates-model-and-secrets.md",
-			"tokens": 143,
+			"tokens": 160,
 			"tags": [
 				"guides",
 				"templates",
@@ -4750,9 +5217,39 @@
 			]
 		},
 		{
+			"id": "packages.connectors.applying-to-an-element-inbound-connectors-and-linked-resources-task-level-bindings",
+			"file": "chunks/packages.connectors.applying-to-an-element-inbound-connectors-and-linked-resources-task-level-bindings.md",
+			"tokens": 266,
+			"tags": [
+				"packages",
+				"connectors",
+				"applying",
+				"element",
+				"inbound",
+				"linked",
+				"resources",
+				"task-level",
+				"bindings"
+			],
+			"entities": [
+				"applyTemplateToElement",
+				"applyElementTemplate",
+				"processId",
+				"bindingType",
+				"versionTag",
+				"propagateAllParentVariables",
+				"propagateAllChildVariables",
+				"decisionId",
+				"resultVariable",
+				"formId",
+				"externalReference",
+				"candidateGroups"
+			]
+		},
+		{
 			"id": "packages.connectors.applying-several-templates-by-name-applytemplates",
 			"file": "chunks/packages.connectors.applying-several-templates-by-name-applytemplates.md",
-			"tokens": 488,
+			"tokens": 632,
 			"tags": [
 				"packages",
 				"connectors",
@@ -4765,6 +5262,11 @@
 			"entities": [
 				"applyTemplates",
 				"applyTemplateToElement",
+				"constraints.notEmpty",
+				"followRedirects",
+				"documentReturnFormat.choice",
+				"provider.openai.api.responses.effort",
+				"applyElementTemplate",
 				"retryCount",
 				"retryBackoff",
 				"ignoreNullValues"
@@ -4813,7 +5315,7 @@
 		{
 			"id": "packages.connectors.api-reference",
 			"file": "chunks/packages.connectors.api-reference.md",
-			"tokens": 667,
+			"tokens": 672,
 			"tags": [
 				"packages",
 				"connectors",
@@ -5057,7 +5559,7 @@
 		{
 			"id": "packages.core.installation-applybpmnoperations-definitions-operations-options",
 			"file": "chunks/packages.core.installation-applybpmnoperations-definitions-operations-options.md",
-			"tokens": 235,
+			"tokens": 642,
 			"tags": [
 				"packages",
 				"core",
@@ -5069,7 +5571,17 @@
 			],
 			"entities": [
 				"CompactDiagram",
-				"OperationError"
+				"jobType",
+				"formId",
+				"taskHeaders",
+				"candidateGroups",
+				"candidateUsers",
+				"dueDate",
+				"followUpDate",
+				"correlationKey",
+				"messageName",
+				"errorCode",
+				"escalationCode"
 			]
 		},
 		{
@@ -5311,7 +5823,7 @@
 		{
 			"id": "packages.core.installation-processbuilder-methods",
 			"file": "chunks/packages.core.installation-processbuilder-methods.md",
-			"tokens": 717,
+			"tokens": 788,
 			"tags": [
 				"packages",
 				"core",
@@ -5320,17 +5832,24 @@
 				"methods"
 			],
 			"entities": [
+				"adHocSubProcess",
+				"eventSubProcess",
+				"processId",
+				"propagateAllChildVariables",
+				"propagateAllParentVariables",
+				"bindingType",
+				"versionTag",
+				"ioMapping",
+				"zeebeProperties",
+				"taskHeaders",
 				"addStartEvent",
-				"BpmnDefinitions",
-				"dataObject",
-				"dataObjectReference",
-				"dataStoreReference"
+				"BpmnDefinitions"
 			]
 		},
 		{
 			"id": "packages.core.installation-forms-mappings-and-branch-flows",
 			"file": "chunks/packages.core.installation-forms-mappings-and-branch-flows.md",
-			"tokens": 224,
+			"tokens": 466,
 			"tags": [
 				"packages",
 				"core",
@@ -5341,14 +5860,18 @@
 				"flows"
 			],
 			"entities": [
-				"label()",
-				"flowId()",
-				"flowId",
-				"buildAiAgentSubProcess",
-				"io.camunda.connectors.agenticai.ai-agent-subprocess.v2",
-				"build()",
-				"applyTemplates",
-				"@bpmnkit/core/connectors"
+				"serviceTask",
+				"userTask",
+				"scriptTask",
+				"sendTask",
+				"receiveTask",
+				"businessRuleTask",
+				"callActivity",
+				"taskListeners",
+				"ZeebePlacementError",
+				"bindingType",
+				"startEvent",
+				"intermediateCatchEvent"
 			]
 		},
 		{
@@ -5370,6 +5893,21 @@
 				"toolGrid",
 				"annotate()"
 			]
+		},
+		{
+			"id": "packages.core.installation-data-elements-and-linked-resources",
+			"file": "chunks/packages.core.installation-data-elements-and-linked-resources.md",
+			"tokens": 159,
+			"tags": [
+				"packages",
+				"core",
+				"installation",
+				"data",
+				"elements",
+				"linked",
+				"resources"
+			],
+			"entities": []
 		},
 		{
 			"id": "packages.core.installation-joins-inferred-by-default-or-declared",
@@ -5477,12 +6015,29 @@
 		{
 			"id": "packages.core.dmn-support",
 			"file": "chunks/packages.core.dmn-support.md",
-			"tokens": 113,
+			"tokens": 342,
 			"tags": [
 				"packages",
 				"core",
 				"dmn",
-				"support",
+				"support"
+			],
+			"entities": [
+				"Dmn.drd()",
+				"decision()",
+				"ValidationError",
+				"build()",
+				"informationRequirement",
+				"Dmn.expand()"
+			]
+		},
+		{
+			"id": "packages.core.typescript-types",
+			"file": "chunks/packages.core.typescript-types.md",
+			"tokens": 52,
+			"tags": [
+				"packages",
+				"core",
 				"typescript",
 				"types"
 			],
@@ -6165,6 +6720,87 @@
 				"injectFormViewerStyles",
 				"@bpmnkit/ui",
 				"@bpmnkit/plugins"
+			]
+		},
+		{
+			"id": "packages.rust-crates.overview",
+			"file": "chunks/packages.rust-crates.overview.md",
+			"tokens": 176,
+			"tags": [
+				"packages",
+				"rust-crates",
+				"overview"
+			],
+			"entities": [
+				"conformance/"
+			]
+		},
+		{
+			"id": "packages.rust-crates.crates",
+			"file": "chunks/packages.rust-crates.crates.md",
+			"tokens": 348,
+			"tags": [
+				"packages",
+				"rust-crates",
+				"crates"
+			],
+			"entities": [
+				"@bpmnkit/feel",
+				"@bpmnkit/core",
+				"@bpmnkit/engine",
+				"Bpmn.createProcess",
+				"spec/"
+			]
+		},
+		{
+			"id": "packages.rust-crates.installation",
+			"file": "chunks/packages.rust-crates.installation.md",
+			"tokens": 206,
+			"tags": [
+				"packages",
+				"rust-crates",
+				"installation",
+				"quick",
+				"start"
+			],
+			"entities": [
+				"Bpmn.createProcess"
+			]
+		},
+		{
+			"id": "packages.rust-crates.how-the-rust-api-maps-to-typescript",
+			"file": "chunks/packages.rust-crates.how-the-rust-api-maps-to-typescript.md",
+			"tokens": 201,
+			"tags": [
+				"packages",
+				"rust-crates",
+				"rust",
+				"api",
+				"maps",
+				"typescript",
+				"numbers"
+			],
+			"entities": [
+				"parseBpmn",
+				"applyAutoLayout",
+				"build()"
+			]
+		},
+		{
+			"id": "packages.rust-crates.differential-fuzzing",
+			"file": "chunks/packages.rust-crates.differential-fuzzing.md",
+			"tokens": 174,
+			"tags": [
+				"packages",
+				"rust-crates",
+				"differential",
+				"fuzzing",
+				"versioning"
+			],
+			"entities": [
+				"crates/bpmnkit-fuzz",
+				"@bpmnkit/core",
+				"@bpmnkit/feel"
 			]
 		},
 		{

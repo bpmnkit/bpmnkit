@@ -5,7 +5,13 @@
  * @see https://docspack.dev/spec for the package format.
  */
 
-export { type BuildOptions, type BuildResult, SCHEMA_URL, buildPack } from "./build.js"
+export {
+	type BuildOptions,
+	type BuildResult,
+	SCHEMA_URL,
+	type StartHere,
+	buildPack,
+} from "./build.js"
 export {
 	type BuiltChunk,
 	type ChunkOptions,

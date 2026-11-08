@@ -304,7 +304,8 @@ export function analyzeTasks(p: BpmnProcess, opts: ResolvedOptions): Optimizatio
 				const proc = findProcess(defs, processId)
 				if (!proc) return { description: "Process not found" }
 
-				const newProcessId = `Reusable_${taskType}_${generateId("proc")}`
+				// Job types often hold ":" (connectors), which a BPMN id (an NCName) cannot.
+				const newProcessId = `Reusable_${taskType.replace(/[^\w.-]/g, "_")}_${generateId("proc")}`
 				const generated = buildExtractedDefs(representative, newProcessId)
 
 				// Replace each task in the group with a call activity

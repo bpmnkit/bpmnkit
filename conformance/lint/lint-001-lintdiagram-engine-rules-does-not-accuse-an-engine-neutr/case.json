@@ -1,0 +1,14 @@
+{
+  "runs": {
+    "default": {},
+    "opts-2": {
+      "forceEngineRules": true
+    },
+    "opts-3": {
+      "categories": [
+        "naming",
+        "deploy"
+      ]
+    }
+  }
+}

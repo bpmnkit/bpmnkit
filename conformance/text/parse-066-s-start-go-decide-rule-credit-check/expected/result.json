@@ -1,0 +1,109 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "decisionId": "decide",
+            "id": "decide",
+            "name": "Credit check",
+            "type": "businessRuleTask"
+          },
+          {
+            "id": "ok",
+            "name": "Approve loan",
+            "type": "userTask"
+          },
+          {
+            "id": "e",
+            "name": "Approved",
+            "type": "endEvent"
+          },
+          {
+            "id": "no",
+            "name": "Reject loan",
+            "type": "userTask"
+          },
+          {
+            "id": "f",
+            "name": "Rejected",
+            "type": "endEvent"
+          },
+          {
+            "id": "decide_split",
+            "name": "Credit check outcome?",
+            "type": "exclusiveGateway"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "decide"
+          },
+          {
+            "condition": "= creditCheckOutcome = \"Approve loan\"",
+            "from": "decide_split",
+            "id": "Flow_2",
+            "name": "creditCheckOutcome = \"Approve loan\"",
+            "to": "ok"
+          },
+          {
+            "from": "ok",
+            "id": "Flow_3",
+            "to": "e"
+          },
+          {
+            "from": "decide_split",
+            "id": "Flow_4",
+            "isDefault": true,
+            "to": "no"
+          },
+          {
+            "from": "no",
+            "id": "Flow_5",
+            "to": "f"
+          },
+          {
+            "from": "decide",
+            "id": "Flow_6",
+            "to": "decide_split"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "split the flows out of \"decide\" with xor gateway \"decide_split\"",
+    "made decide_split > no the default branch of \"decide_split\"",
+    "gave decide_split > ok the condition \"= creditCheckOutcome = \"Approve loan\"\""
+  ],
+  "problems": [],
+  "questions": [
+    {
+      "draft": "At \"Credit check outcome?\", when nothing else holds, ",
+      "elementId": "decide_split",
+      "options": [
+        {
+          "change": "At \"Credit check outcome?\", make \"Approve loan\" the default branch.",
+          "label": "Approve loan"
+        }
+      ],
+      "text": "When no condition at \"Credit check outcome?\" holds, it takes \"Reject loan\". Is that the right fallback?"
+    },
+    {
+      "draft": "At \"Credit check outcome?\", decide on ",
+      "elementId": "decide_split",
+      "options": [],
+      "text": "\"Credit check outcome?\" decides on \"creditCheckOutcome\", a variable the diagram made up. What data decides it?"
+    }
+  ]
+}

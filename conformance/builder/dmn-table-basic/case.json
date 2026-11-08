@@ -1,0 +1,12 @@
+{
+	"kind": "dmn",
+	"script": [
+		["createDecisionTable","d"],
+		["name","Risk"],
+		["input",{"expression":"age","typeRef":"number"}],
+		["output",{"name":"risk","typeRef":"string"}],
+		["rule",{"inputs":["< 18"],"outputs":["\"low\""]}],
+		["rule",{"inputs":[">= 18"],"outputs":["\"high\""]}],
+		["build"]
+	]
+}

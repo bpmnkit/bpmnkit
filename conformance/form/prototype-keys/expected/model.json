@@ -1,0 +1,22 @@
+{
+  "components": [
+    {
+      "extraProps": {
+        "kept": 2
+      },
+      "id": "a",
+      "key": "a",
+      "label": "A",
+      "type": "textfield"
+    },
+    {
+      "constructor": "x",
+      "id": "b",
+      "toString": "y",
+      "type": "future"
+    }
+  ],
+  "id": "f",
+  "schemaVersion": 16,
+  "type": "default"
+}

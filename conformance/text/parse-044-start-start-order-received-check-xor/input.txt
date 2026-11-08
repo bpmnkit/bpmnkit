@@ -1,0 +1,3 @@
+start[start Order received] > check[xor Order valid?]
+check >(Yes: default) ship[service Ship order] > done[end Order shipped]
+check >(No: order invalid) fail[boundary:error Validation failed | on=ship] > notify[send Notify #ops on Slack] > sent[end Notification sent]

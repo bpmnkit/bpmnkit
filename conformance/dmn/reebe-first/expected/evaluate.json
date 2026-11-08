@@ -1,0 +1,62 @@
+[
+  {
+    "result": {
+      "t": "string",
+      "v": "BRONZE"
+    },
+    "evaluated": [
+      {
+        "decision": "tierDecision",
+        "result": {
+          "t": "string",
+          "v": "BRONZE"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "SILVER"
+    },
+    "evaluated": [
+      {
+        "decision": "tierDecision",
+        "result": {
+          "t": "string",
+          "v": "SILVER"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "GOLD"
+    },
+    "evaluated": [
+      {
+        "decision": "tierDecision",
+        "result": {
+          "t": "string",
+          "v": "GOLD"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "string",
+      "v": "PLATINUM"
+    },
+    "evaluated": [
+      {
+        "decision": "tierDecision",
+        "result": {
+          "t": "string",
+          "v": "PLATINUM"
+        }
+      }
+    ]
+  }
+]

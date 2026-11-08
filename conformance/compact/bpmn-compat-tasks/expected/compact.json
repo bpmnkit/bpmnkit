@@ -1,0 +1,243 @@
+{
+  "id": "Definitions_tasks",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "start",
+          "type": "startEvent"
+        },
+        {
+          "id": "plainTask",
+          "type": "task"
+        },
+        {
+          "id": "manual",
+          "type": "manualTask"
+        },
+        {
+          "id": "noType",
+          "type": "serviceTask"
+        },
+        {
+          "id": "emptyType",
+          "type": "serviceTask"
+        },
+        {
+          "id": "headers",
+          "jobType": "h",
+          "modelerTemplate": {
+            "id": "io.camunda.connectors.HttpJson.v2"
+          },
+          "properties": {
+            "p": "v"
+          },
+          "taskHeaders": {
+            "a": "2"
+          },
+          "type": "serviceTask"
+        },
+        {
+          "id": "scriptFeel",
+          "script": "=1 + 1",
+          "type": "scriptTask"
+        },
+        {
+          "id": "scriptNone",
+          "type": "scriptTask"
+        },
+        {
+          "decisionId": "d",
+          "id": "brtNoResult",
+          "type": "businessRuleTask"
+        },
+        {
+          "decisionId": "d",
+          "id": "brtBinding",
+          "resultVariable": "r",
+          "type": "businessRuleTask"
+        },
+        {
+          "decisionId": "d",
+          "id": "brtTagExpr",
+          "resultVariable": "r",
+          "type": "businessRuleTask"
+        },
+        {
+          "id": "callNoProcess",
+          "type": "callActivity"
+        },
+        {
+          "calledProcess": "child",
+          "id": "callOptions",
+          "type": "callActivity"
+        },
+        {
+          "id": "sendNoType",
+          "type": "sendTask"
+        },
+        {
+          "id": "receiveNoRef",
+          "type": "receiveTask"
+        },
+        {
+          "id": "receiveOk",
+          "type": "receiveTask"
+        },
+        {
+          "candidateUsers": "alice",
+          "dueDate": "tomorrow",
+          "formId": "f",
+          "id": "jobWorkerTask",
+          "type": "userTask"
+        },
+        {
+          "id": "zeebeTask",
+          "priority": 150,
+          "type": "userTask"
+        },
+        {
+          "id": "noForm",
+          "type": "userTask"
+        },
+        {
+          "formId": "f",
+          "id": "zeebeTaskOk",
+          "type": "userTask"
+        },
+        {
+          "id": "multi",
+          "jobType": "m",
+          "type": "serviceTask"
+        },
+        {
+          "id": "multiNoZeebe",
+          "jobType": "m",
+          "type": "serviceTask"
+        },
+        {
+          "id": "complex",
+          "type": "complexGateway"
+        },
+        {
+          "id": "joinInclusive",
+          "type": "inclusiveGateway"
+        },
+        {
+          "id": "split",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "eventGateway",
+          "type": "eventBasedGateway"
+        },
+        {
+          "id": "afterEventGateway",
+          "type": "receiveTask"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "collapsedStart",
+                "type": "startEvent"
+              }
+            ],
+            "flows": []
+          },
+          "id": "collapsed",
+          "type": "subProcess"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "txStart",
+                "type": "startEvent"
+              }
+            ],
+            "flows": []
+          },
+          "id": "tx",
+          "type": "transaction"
+        },
+        {
+          "children": {
+            "elements": [
+              {
+                "id": "adHocThrow",
+                "type": "intermediateThrowEvent"
+              },
+              {
+                "children": {
+                  "elements": [
+                    {
+                      "eventType": "message",
+                      "id": "adHocEventStart",
+                      "type": "startEvent"
+                    }
+                  ],
+                  "flows": []
+                },
+                "id": "adHocEventSub",
+                "type": "subProcess"
+              }
+            ],
+            "flows": []
+          },
+          "id": "adHocEmpty",
+          "type": "adHocSubProcess"
+        },
+        {
+          "id": "data",
+          "type": "dataObject"
+        }
+      ],
+      "flows": [
+        {
+          "from": "plainTask",
+          "id": "flowA",
+          "to": "joinInclusive"
+        },
+        {
+          "from": "manual",
+          "id": "flowB",
+          "to": "joinInclusive"
+        },
+        {
+          "from": "split",
+          "id": "flowNoCondition",
+          "to": "plainTask"
+        },
+        {
+          "from": "split",
+          "id": "flowDefault",
+          "isDefault": true,
+          "to": "manual"
+        },
+        {
+          "condition": "=true",
+          "from": "noType",
+          "id": "flowConditionFromTask",
+          "to": "emptyType"
+        },
+        {
+          "from": "eventGateway",
+          "id": "flowEventGateway",
+          "to": "afterEventGateway"
+        }
+      ],
+      "id": "tasks"
+    },
+    {
+      "elements": [
+        {
+          "id": "complexInNonExecutable",
+          "type": "complexGateway"
+        }
+      ],
+      "flows": [],
+      "id": "notExecutable"
+    }
+  ]
+}

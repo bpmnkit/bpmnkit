@@ -1,0 +1,2 @@
+Invalid collaboration:
+  Participant "P" references process "ghost", which this diagram does not contain

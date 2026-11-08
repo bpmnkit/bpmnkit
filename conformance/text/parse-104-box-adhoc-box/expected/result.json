@@ -1,0 +1,54 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "children": {
+              "elements": [
+                {
+                  "id": "t",
+                  "jobType": "t",
+                  "name": "T",
+                  "type": "serviceTask"
+                }
+              ],
+              "flows": []
+            },
+            "id": "box",
+            "name": "Box",
+            "type": "adHocSubProcess"
+          },
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "box"
+          },
+          {
+            "from": "box",
+            "id": "Flow_2",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [],
+  "questions": []
+}

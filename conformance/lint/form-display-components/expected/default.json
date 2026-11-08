@@ -1,0 +1,25 @@
+{
+  "findings": [
+    {
+      "elementId": "f",
+      "fix": "Give each component its own id. (agent-cards/form.md#traps)",
+      "message": "The id \"f\" is used by the form and by components[5].",
+      "rule": "form/duplicate-id",
+      "severity": "error"
+    },
+    {
+      "elementId": "k",
+      "fix": "Set \"expression\" to a FEEL expression starting with \"=\", e.g. \"=amount * 1.2\". (agent-cards/form.md#traps)",
+      "message": "Component \"k\" is an expression field with no \"expression\".",
+      "rule": "form/missing-expression",
+      "severity": "error"
+    },
+    {
+      "elementId": "l",
+      "fix": "Set \"key\" to the process variable the field reads and writes, e.g. \"amount\". (agent-cards/form.md#traps)",
+      "message": "Component \"l\" (filepicker) is not bound to a variable — it has no \"key\".",
+      "rule": "form/missing-key",
+      "severity": "error"
+    }
+  ]
+}

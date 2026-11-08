@@ -1,0 +1,9 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createDiagram","D"],
+		["executionPlatformVersion","8.5.0"],
+		["process","p",{"$ops":[["startEvent","s"],["endEvent","e"]]}],
+		["build"]
+	]
+}

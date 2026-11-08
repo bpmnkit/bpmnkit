@@ -1,0 +1,70 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "decisionId": "r",
+            "id": "r",
+            "name": "Check credit",
+            "type": "businessRuleTask"
+          },
+          {
+            "id": "g",
+            "name": "Approved?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "a",
+            "name": "Approved",
+            "type": "endEvent"
+          },
+          {
+            "id": "b",
+            "name": "Declined",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "r"
+          },
+          {
+            "from": "r",
+            "id": "Flow_2",
+            "to": "g"
+          },
+          {
+            "condition": "= approved",
+            "from": "g",
+            "id": "Flow_3",
+            "name": "Yes",
+            "to": "a"
+          },
+          {
+            "from": "g",
+            "id": "Flow_4",
+            "isDefault": true,
+            "name": "No",
+            "to": "b"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 1 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

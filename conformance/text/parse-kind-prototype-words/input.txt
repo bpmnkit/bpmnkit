@@ -1,0 +1,2 @@
+s[start] > a[constructor X] > b[__proto__ Y] > c[toString Z] > d[hasOwnProperty W] > e[end]
+c > constructor Do it > e

@@ -1,0 +1,14 @@
+{
+  "aliases": {
+    "ai_agent": "AI_Agent",
+    "find_sample_users": "LookupSampleUsers",
+    "get_a_safe_joke": "FetchSafeJoke",
+    "list_sample_technology_products": "ListSampleTechnologyProducts",
+    "search_recipes": "SearchRecipes",
+    "task_to_perform_received": "StartEvent_TaskReceived",
+    "user_feedback": "UserTask_ReviewAgentResponse",
+    "user_satisfied": "Gateway_UserSatisfied",
+    "user_satisfied_2": "EndEvent_UserSatisfied",
+    "xor": "Gateway_RunAgent"
+  }
+}

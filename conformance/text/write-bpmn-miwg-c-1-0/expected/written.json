@@ -1,0 +1,15 @@
+{
+  "aliases": {
+    "approver_to_be_assigned": "sid-40EC6574-E644-425C-8CE7-EE384F0C3520",
+    "archive_original": "sid-CFAC8502-0E69-4F08-BE36-8499B8C0FA44",
+    "assign_approver": "sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD",
+    "catch_7_days": "sid-0E349B8B-14A7-4565-988A-38F3A9B624D2",
+    "end": "sid-BC9AC0B6-1785-4E35-A974-7FEF1A586B9D",
+    "end_2": "sid-282524E6-660F-431D-8F19-1C3E9E9DE817",
+    "eventgw": "sid-F0D29912-929D-491C-8D23-73BD80CF980A",
+    "invoice_received": "sid-36EA43D1-0FE6-4197-AC57-7A43785B784B",
+    "invoice_review_needed": "sid-B548B980-12E3-408E-9AC4-7031B85A8F2D",
+    "review_and_document_result": "sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D",
+    "scan_invoice": "sid-05039C4F-59F7-4CBD-8C84-D35E27C7B5EF"
+  }
+}

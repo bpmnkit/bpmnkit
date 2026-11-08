@@ -1,0 +1,67 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "id": "pay",
+            "jobType": "pay",
+            "name": "Process payment",
+            "type": "serviceTask"
+          },
+          {
+            "id": "e",
+            "name": "Done",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "pay",
+            "eventType": "timer",
+            "id": "delay",
+            "name": "Timeout",
+            "timerDuration": "P1D",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "t",
+            "name": "Payment timed out",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "pay"
+          },
+          {
+            "from": "pay",
+            "id": "Flow_2",
+            "to": "e"
+          },
+          {
+            "from": "delay",
+            "id": "Flow_3",
+            "to": "t"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [
+    {
+      "line": 2,
+      "message": "\"delay\" waits p1d, which only a timer does; made it a timer event"
+    }
+  ],
+  "questions": []
+}

@@ -1,0 +1,144 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "exporter": "@bpmnkit/core",
+  "exporterVersion": "0.0.23",
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "StartEvent_0000001",
+          "incoming": [],
+          "outgoing": [
+            "Flow_StartEvent_0000001_t"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "y"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "t",
+          "incoming": [
+            "Flow_StartEvent_0000001_t"
+          ],
+          "name": "x",
+          "outgoing": [
+            "Flow_t_g"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "default": "Flow_g_EndEvent_0000006",
+          "extensionElements": [],
+          "id": "g",
+          "incoming": [
+            "Flow_t_g"
+          ],
+          "outgoing": [
+            "Flow_g_EndEvent_0000004",
+            "Flow_g_EndEvent_0000006"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "EndEvent_0000004",
+          "incoming": [
+            "Flow_g_EndEvent_0000004"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "EndEvent_0000006",
+          "incoming": [
+            "Flow_g_EndEvent_0000006"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "p",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_StartEvent_0000001_t",
+          "sourceRef": "StartEvent_0000001",
+          "targetRef": "t",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_t_g",
+          "sourceRef": "t",
+          "targetRef": "g",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=1"
+          },
+          "extensionElements": [],
+          "id": "Flow_g_EndEvent_0000004",
+          "name": "a",
+          "sourceRef": "g",
+          "targetRef": "EndEvent_0000004",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_g_EndEvent_0000006",
+          "name": "b",
+          "sourceRef": "g",
+          "targetRef": "EndEvent_0000006",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud",
+    "modeler:executionPlatformVersion": "8.10.0"
+  }
+}

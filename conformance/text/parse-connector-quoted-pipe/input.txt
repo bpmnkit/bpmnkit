@@ -1,0 +1,2 @@
+s[start] > t[service T] > e[end]
+with t: http POST https://x | body=="a | b" | headers.k=v

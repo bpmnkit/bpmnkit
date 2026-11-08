@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="D" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
+  <bpmn:message id="Message_q" name="q"/>
+  <bpmn:collaboration id="Collaboration_1">
+    <bpmn:participant id="Me" name="Me" processRef="mine"/>
+    <bpmn:participant id="Partner" name="External partner"/>
+    <bpmn:messageFlow id="MF" sourceRef="Me" targetRef="Partner"/>
+  </bpmn:collaboration>
+  <bpmn:process id="mine" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_ask</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sendTask id="ask" messageRef="Message_q">
+      <bpmn:incoming>Flow_s_ask</bpmn:incoming>
+      <bpmn:outgoing>Flow_ask_e</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:endEvent id="e">
+      <bpmn:incoming>Flow_ask_e</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s_ask" sourceRef="s" targetRef="ask"/>
+    <bpmn:sequenceFlow id="Flow_ask_e" sourceRef="ask" targetRef="e"/>
+  </bpmn:process>
+</bpmn:definitions>
+

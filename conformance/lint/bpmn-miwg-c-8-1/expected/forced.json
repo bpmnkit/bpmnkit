@@ -1,0 +1,841 @@
+{
+  "categories": [
+    "feel",
+    "feel-syntax",
+    "flow",
+    "naming",
+    "task-reuse",
+    "extract",
+    "pattern",
+    "data-flow",
+    "deploy",
+    "agentic",
+    "connector"
+  ],
+  "counts": {
+    "error": 15,
+    "info": 30,
+    "warning": 17
+  },
+  "diagnostics": [
+    {
+      "category": "feel",
+      "elementIds": [
+        "_0a1c4f20-509f-4aeb-baf9-acc762f4fdf9"
+      ],
+      "fixable": false,
+      "id": "feel/complex-condition",
+      "message": "Condition on flow \"_0a1c4f20-509f-4aeb-baf9-acc762f4fdf9\" is complex (length=48, nesting=0, operators=1, variables=5).",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "warning",
+      "suggestion": "Consider extracting complex FEEL expressions into named variables or decision tables."
+    },
+    {
+      "category": "feel",
+      "elementIds": [
+        "_325973e7-0bc8-4136-b6df-be1e681d8608",
+        "_f2b0da63-d841-4457-ad85-7d86c8b5c1d2"
+      ],
+      "fixable": false,
+      "id": "feel/duplicate-expression",
+      "message": "FEEL expression \"Vacation Approval = \"Approved\"\" appears on 2 sequence flows.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": "Consider extracting repeated FEEL expressions into a shared variable or decision table."
+    },
+    {
+      "category": "feel-syntax",
+      "elementIds": [
+        "_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32"
+      ],
+      "fixable": false,
+      "id": "feel-syntax/parse-error",
+      "message": "Invalid FEEL expression on output \"Vacation Approval\" of \"_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32\": Unexpected token 'Approval'",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "Fix the FEEL syntax — see the error position for the offending token."
+    },
+    {
+      "category": "feel-syntax",
+      "elementIds": [
+        "_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32"
+      ],
+      "fixable": false,
+      "id": "feel-syntax/parse-error",
+      "message": "Invalid FEEL expression on output \"Reason\" of \"_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32\": Unexpected token 'Approval'",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "Fix the FEEL syntax — see the error position for the offending token."
+    },
+    {
+      "category": "feel-syntax",
+      "elementIds": [
+        "_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9"
+      ],
+      "fixable": false,
+      "id": "feel-syntax/parse-error",
+      "message": "Invalid FEEL expression on input \"mailBody\" of \"_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9\": Unexpected token 'Vacation'",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "Fix the FEEL syntax — see the error position for the offending token."
+    },
+    {
+      "category": "feel-syntax",
+      "elementIds": [
+        "_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9"
+      ],
+      "fixable": false,
+      "id": "feel-syntax/parse-error",
+      "message": "Invalid FEEL expression on input \"mailAddress\" of \"_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9\": Unexpected token 'Vacation'",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "Fix the FEEL syntax — see the error position for the offending token."
+    },
+    {
+      "category": "feel-syntax",
+      "elementIds": [
+        "_93ec9873-edf1-4549-b052-961994ec8234"
+      ],
+      "fixable": false,
+      "id": "feel-syntax/parse-error",
+      "message": "Invalid FEEL expression on input \"mailBody\" of \"_93ec9873-edf1-4549-b052-961994ec8234\": Unexpected token 'Vacation'",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "Fix the FEEL syntax — see the error position for the offending token."
+    },
+    {
+      "category": "feel-syntax",
+      "elementIds": [
+        "_93ec9873-edf1-4549-b052-961994ec8234"
+      ],
+      "fixable": false,
+      "id": "feel-syntax/parse-error",
+      "message": "Invalid FEEL expression on input \"mailAddress\" of \"_93ec9873-edf1-4549-b052-961994ec8234\": Unexpected token 'Vacation'",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "Fix the FEEL syntax — see the error position for the offending token."
+    },
+    {
+      "category": "feel-syntax",
+      "elementIds": [
+        "_a97c1a48-faba-447b-bfa6-7aa81a6fe0a0"
+      ],
+      "fixable": false,
+      "id": "feel-syntax/parse-error",
+      "message": "Invalid FEEL expression on input \"mailBody\" of \"_a97c1a48-faba-447b-bfa6-7aa81a6fe0a0\": Unexpected token 'Vacation'",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "Fix the FEEL syntax — see the error position for the offending token."
+    },
+    {
+      "category": "feel-syntax",
+      "elementIds": [
+        "_a97c1a48-faba-447b-bfa6-7aa81a6fe0a0"
+      ],
+      "fixable": false,
+      "id": "feel-syntax/parse-error",
+      "message": "Invalid FEEL expression on input \"mailAddress\" of \"_a97c1a48-faba-447b-bfa6-7aa81a6fe0a0\": Unexpected token 'Vacation'",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "Fix the FEEL syntax — see the error position for the offending token."
+    },
+    {
+      "category": "feel-syntax",
+      "elementIds": [
+        "_02232e32-c3d2-473c-a15d-9c5dca00eadc"
+      ],
+      "fixable": false,
+      "id": "feel-syntax/parse-error",
+      "message": "Invalid FEEL expression on input \"mailBody\" of \"_02232e32-c3d2-473c-a15d-9c5dca00eadc\": Unexpected token 'Vacation'",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "Fix the FEEL syntax — see the error position for the offending token."
+    },
+    {
+      "category": "feel-syntax",
+      "elementIds": [
+        "_02232e32-c3d2-473c-a15d-9c5dca00eadc"
+      ],
+      "fixable": false,
+      "id": "feel-syntax/parse-error",
+      "message": "Invalid FEEL expression on input \"mailAddress\" of \"_02232e32-c3d2-473c-a15d-9c5dca00eadc\": Unexpected token 'Vacation'",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "Fix the FEEL syntax — see the error position for the offending token."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_775c93ab-82e5-4a62-97f0-d305eda76c92"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_775c93ab-82e5-4a62-97f0-d305eda76c92\" (dataObject) is not reachable from any start event.",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_775c93ab-82e5-4a62-97f0-d305eda76c92"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_775c93ab-82e5-4a62-97f0-d305eda76c92\" (dataObject) has no outgoing sequence flows.",
+      "processId": "VacationRequestProcess",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_4234afd4-3ab0-4e09-8a7c-b475458db18a"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_4234afd4-3ab0-4e09-8a7c-b475458db18a\" (dataObject) is not reachable from any start event.",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_4234afd4-3ab0-4e09-8a7c-b475458db18a"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_4234afd4-3ab0-4e09-8a7c-b475458db18a\" (dataObject) has no outgoing sequence flows.",
+      "processId": "VacationRequestProcess",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "vacationApproved"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"vacationApproved\" (dataObject) is not reachable from any start event.",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "vacationApproved"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"vacationApproved\" (dataObject) has no outgoing sequence flows.",
+      "processId": "VacationRequestProcess",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "vacationRefused"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"vacationRefused\" (dataObject) is not reachable from any start event.",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "vacationRefused"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"vacationRefused\" (dataObject) has no outgoing sequence flows.",
+      "processId": "VacationRequestProcess",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_831726fb-e5ba-40aa-b484-1fc65de4980a"
+      ],
+      "fixable": false,
+      "id": "flow/unreachable",
+      "message": "Element \"_831726fb-e5ba-40aa-b484-1fc65de4980a\" (dataObjectReference) is not reachable from any start event.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "error",
+      "suggestion": "Connect this element to the process flow or remove it."
+    },
+    {
+      "category": "flow",
+      "elementIds": [
+        "_831726fb-e5ba-40aa-b484-1fc65de4980a"
+      ],
+      "fixable": true,
+      "id": "flow/dead-end",
+      "message": "Element \"_831726fb-e5ba-40aa-b484-1fc65de4980a\" (dataObjectReference) has no outgoing sequence flows.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "warning",
+      "suggestion": "Connect this element to a downstream element or an end event."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_42367c5f-d084-44ee-90c7-960d1ab02a3b"
+      ],
+      "fixable": false,
+      "id": "naming/split-gateway-no-label",
+      "message": "Gateway \"_42367c5f-d084-44ee-90c7-960d1ab02a3b\" (exclusiveGateway, split) has no name.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "warning",
+      "suggestion": "Label split gateways as a yes/no question, e.g. \"Invoice valid?\", \"Order approved?\"."
+    },
+    {
+      "category": "naming",
+      "elementIds": [
+        "_64bb8b55-d348-41d6-9ea8-f333b1d8cb69"
+      ],
+      "fixable": false,
+      "id": "naming/split-gateway-no-label",
+      "message": "Gateway \"_64bb8b55-d348-41d6-9ea8-f333b1d8cb69\" (exclusiveGateway, split) has no name.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "warning",
+      "suggestion": "Label split gateways as a yes/no question, e.g. \"Invoice valid?\", \"Order approved?\"."
+    },
+    {
+      "category": "task-reuse",
+      "elementIds": [
+        "_4b72053b-8ebb-4ae6-99c6-7c93cf1c1d1b",
+        "_5e16a4e0-0f23-482a-be47-d3edbc5741ba"
+      ],
+      "fixable": true,
+      "id": "task/reusable-group",
+      "message": "2 service tasks share a similar configuration (taskType=\"update\") and could be reused via a call activity.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "warning",
+      "suggestion": "Extract the repeated service task into a reusable sub-process and replace occurrences with call activities."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_79523269-7444-4b01-90e9-e23957a9d020"
+      ],
+      "fixable": false,
+      "id": "pattern/user-task-no-timer",
+      "message": "User task \"Manually Approve Vacation\" has no timer boundary event.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "warning",
+      "suggestion": "Add a timer boundary to enforce an SLA and prevent tasks from waiting indefinitely."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_4b72053b-8ebb-4ae6-99c6-7c93cf1c1d1b"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Update Remaining Vacation\" has no output variable mapping.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_5e16a4e0-0f23-482a-be47-d3edbc5741ba"
+      ],
+      "fixable": false,
+      "id": "pattern/service-task-no-output",
+      "message": "Service task \"Update Remaining Vacation\" has no output variable mapping.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "warning",
+      "suggestion": "Map the job result to process variables so downstream tasks can consume it."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_f8fcb377-3d7d-4138-9a7e-6ab58b97e29d"
+      ],
+      "fixable": false,
+      "id": "pattern/catch-and-swallow",
+      "message": "Error boundary on \"_2b960d84-feb1-46a9-a1a1-c300dd996b99\" leads directly to an end event — error is silently consumed.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "warning",
+      "suggestion": "Add error logging, compensation, or re-throw the error rather than swallowing it silently."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_b1625a52-aaf0-4694-86cb-7af891212ac6"
+      ],
+      "fixable": false,
+      "id": "pattern/start-no-documentation",
+      "message": "Start event \"Vacation Request Received\" has no documentation describing expected input variables.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "warning",
+      "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "pattern",
+      "elementIds": [
+        "_4b72053b-8ebb-4ae6-99c6-7c93cf1c1d1b",
+        "_5e16a4e0-0f23-482a-be47-d3edbc5741ba"
+      ],
+      "fixable": false,
+      "id": "pattern/duplicate-job-type",
+      "message": "Job type \"update\" is used by 2 service tasks.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": "Verify this is intentional — the same worker will handle all these tasks. Consider distinct job types if behaviors differ."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_2b960d84-feb1-46a9-a1a1-c300dd996b99"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:body",
+      "message": "Variable \"body\" is referenced but never set in this process.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "warning",
+      "suggestion": "\"body\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32",
+        "_42367c5f-d084-44ee-90c7-960d1ab02a3b",
+        "_64bb8b55-d348-41d6-9ea8-f333b1d8cb69"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:Vacation",
+      "message": "Variable \"Vacation\" is referenced but never set in this process.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "warning",
+      "suggestion": "\"Vacation\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9",
+        "_93ec9873-edf1-4549-b052-961994ec8234",
+        "_a97c1a48-faba-447b-bfa6-7aa81a6fe0a0",
+        "_02232e32-c3d2-473c-a15d-9c5dca00eadc"
+      ],
+      "fixable": false,
+      "id": "data-flow/undefined-variable:Current",
+      "message": "Variable \"Current\" is referenced but never set in this process.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "warning",
+      "suggestion": "\"Current\" is never set on any path through this process."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_2b960d84-feb1-46a9-a1a1-c300dd996b99"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:Current Vacation Status",
+      "message": "Variable \"Current Vacation Status\" is set but never read by any downstream element.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"Current Vacation Status\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:Vacation Approval",
+      "message": "Variable \"Vacation Approval\" is set but never read by any downstream element.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"Vacation Approval\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:Reason",
+      "message": "Variable \"Reason\" is set but never read by any downstream element.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"Reason\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9",
+        "_93ec9873-edf1-4549-b052-961994ec8234",
+        "_a97c1a48-faba-447b-bfa6-7aa81a6fe0a0",
+        "_02232e32-c3d2-473c-a15d-9c5dca00eadc"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:mailBody",
+      "message": "Variable \"mailBody\" is set but never read by any downstream element.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"mailBody\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9",
+        "_93ec9873-edf1-4549-b052-961994ec8234",
+        "_a97c1a48-faba-447b-bfa6-7aa81a6fe0a0",
+        "_02232e32-c3d2-473c-a15d-9c5dca00eadc"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:mailSubject",
+      "message": "Variable \"mailSubject\" is set but never read by any downstream element.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"mailSubject\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9",
+        "_93ec9873-edf1-4549-b052-961994ec8234",
+        "_a97c1a48-faba-447b-bfa6-7aa81a6fe0a0",
+        "_02232e32-c3d2-473c-a15d-9c5dca00eadc"
+      ],
+      "fixable": false,
+      "id": "data-flow/dead-output:mailAddress",
+      "message": "Variable \"mailAddress\" is set but never read by any downstream element.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": "Remove the output mapping for \"mailAddress\" or add a task that consumes it."
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_2b960d84-feb1-46a9-a1a1-c300dd996b99"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:_2b960d84-feb1-46a9-a1a1-c300dd996b99",
+      "message": "Element \"_2b960d84-feb1-46a9-a1a1-c300dd996b99\" produces: Current Vacation Status; consumes: body.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32",
+      "message": "Element \"_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32\" produces: Vacation Approval, Reason; consumes: Vacation.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9",
+      "message": "Element \"_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9\" produces: mailBody, mailSubject, mailAddress; consumes: Current.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_93ec9873-edf1-4549-b052-961994ec8234"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:_93ec9873-edf1-4549-b052-961994ec8234",
+      "message": "Element \"_93ec9873-edf1-4549-b052-961994ec8234\" produces: mailBody, mailSubject, mailAddress; consumes: Current.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_a97c1a48-faba-447b-bfa6-7aa81a6fe0a0"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:_a97c1a48-faba-447b-bfa6-7aa81a6fe0a0",
+      "message": "Element \"_a97c1a48-faba-447b-bfa6-7aa81a6fe0a0\" produces: mailBody, mailSubject, mailAddress; consumes: Current.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_02232e32-c3d2-473c-a15d-9c5dca00eadc"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:_02232e32-c3d2-473c-a15d-9c5dca00eadc",
+      "message": "Element \"_02232e32-c3d2-473c-a15d-9c5dca00eadc\" produces: mailBody, mailSubject, mailAddress; consumes: Current.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_42367c5f-d084-44ee-90c7-960d1ab02a3b"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:_42367c5f-d084-44ee-90c7-960d1ab02a3b",
+      "message": "Element \"_42367c5f-d084-44ee-90c7-960d1ab02a3b\" consumes: Vacation.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_64bb8b55-d348-41d6-9ea8-f333b1d8cb69"
+      ],
+      "fixable": false,
+      "id": "data-flow/role:_64bb8b55-d348-41d6-9ea8-f333b1d8cb69",
+      "message": "Element \"_64bb8b55-d348-41d6-9ea8-f333b1d8cb69\" consumes: Vacation.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_ac1d82df-9bf6-404b-be70-b052e311f8b7"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:_ac1d82df-9bf6-404b-be70-b052e311f8b7",
+      "message": "Variables in scope at flow \"_ac1d82df-9bf6-404b-be70-b052e311f8b7\": Current Vacation Status, Reason, Vacation Approval.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_2a5ee73c-c495-48a0-945b-3dabab28ca91"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:_2a5ee73c-c495-48a0-945b-3dabab28ca91",
+      "message": "Variables in scope at flow \"_2a5ee73c-c495-48a0-945b-3dabab28ca91\": Current Vacation Status, Reason, Vacation Approval.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_130d903a-f211-4b3e-9711-9061f5978d94"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:_130d903a-f211-4b3e-9711-9061f5978d94",
+      "message": "Variables in scope at flow \"_130d903a-f211-4b3e-9711-9061f5978d94\": Current Vacation Status, Reason, Vacation Approval, mailAddress, mailBody, mailSubject.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_0a1c4f20-509f-4aeb-baf9-acc762f4fdf9"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:_0a1c4f20-509f-4aeb-baf9-acc762f4fdf9",
+      "message": "Variables in scope at flow \"_0a1c4f20-509f-4aeb-baf9-acc762f4fdf9\": Current Vacation Status, Reason, Vacation Approval.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_325973e7-0bc8-4136-b6df-be1e681d8608"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:_325973e7-0bc8-4136-b6df-be1e681d8608",
+      "message": "Variables in scope at flow \"_325973e7-0bc8-4136-b6df-be1e681d8608\": Current Vacation Status, Reason, Vacation Approval.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_188d38f6-b73d-4c62-964b-affc6fe040c1"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:_188d38f6-b73d-4c62-964b-affc6fe040c1",
+      "message": "Variables in scope at flow \"_188d38f6-b73d-4c62-964b-affc6fe040c1\": Current Vacation Status, Reason, Vacation Approval, mailAddress, mailBody, mailSubject.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_3c50d7bb-5ecc-4d34-82a9-a5fa41d9c018"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:_3c50d7bb-5ecc-4d34-82a9-a5fa41d9c018",
+      "message": "Variables in scope at flow \"_3c50d7bb-5ecc-4d34-82a9-a5fa41d9c018\": Current Vacation Status, Reason, Vacation Approval.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_f2b0da63-d841-4457-ad85-7d86c8b5c1d2"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:_f2b0da63-d841-4457-ad85-7d86c8b5c1d2",
+      "message": "Variables in scope at flow \"_f2b0da63-d841-4457-ad85-7d86c8b5c1d2\": Current Vacation Status, Reason, Vacation Approval.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_d3a575d8-cd41-4246-ad7a-7a068de6679f"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:_d3a575d8-cd41-4246-ad7a-7a068de6679f",
+      "message": "Variables in scope at flow \"_d3a575d8-cd41-4246-ad7a-7a068de6679f\": Current Vacation Status, Reason, Vacation Approval.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_93ac178c-3efc-48ae-8a99-8d29a0c4aaf6"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:_93ac178c-3efc-48ae-8a99-8d29a0c4aaf6",
+      "message": "Variables in scope at flow \"_93ac178c-3efc-48ae-8a99-8d29a0c4aaf6\": Current Vacation Status, Reason, Vacation Approval, mailAddress, mailBody, mailSubject.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_68ef27a7-011e-4ec0-ad45-41f52093de68"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:_68ef27a7-011e-4ec0-ad45-41f52093de68",
+      "message": "Variables in scope at flow \"_68ef27a7-011e-4ec0-ad45-41f52093de68\": Current Vacation Status, Reason, Vacation Approval, mailAddress, mailBody, mailSubject.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_a5441c65-06f8-4972-8158-e6f61f904841"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:_a5441c65-06f8-4972-8158-e6f61f904841",
+      "message": "Variables in scope at flow \"_a5441c65-06f8-4972-8158-e6f61f904841\": Current Vacation Status, Reason, Vacation Approval, mailAddress, mailBody, mailSubject.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_81ed1b89-5a4d-4028-a245-4fd38b866b6d"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:_81ed1b89-5a4d-4028-a245-4fd38b866b6d",
+      "message": "Variables in scope at flow \"_81ed1b89-5a4d-4028-a245-4fd38b866b6d\": Current Vacation Status, Reason, Vacation Approval, mailAddress, mailBody, mailSubject.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    },
+    {
+      "category": "data-flow",
+      "elementIds": [
+        "_d79c991e-446c-47d1-ac9d-9d0113e35b93"
+      ],
+      "fixable": false,
+      "id": "data-flow/edge-scope:_d79c991e-446c-47d1-ac9d-9d0113e35b93",
+      "message": "Variables in scope at flow \"_d79c991e-446c-47d1-ac9d-9d0113e35b93\": Current Vacation Status.",
+      "plane": "Collaboration_1rz14um",
+      "processId": "VacationRequestProcess",
+      "severity": "info",
+      "suggestion": ""
+    }
+  ],
+  "platform": {
+    "id": "none"
+  },
+  "total": 62
+}

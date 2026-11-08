@@ -1,0 +1,3 @@
+start[start Start] > validate[service Validate] > gw[xor OK?]
+gw > end[end]
+gw > open[task Open end]

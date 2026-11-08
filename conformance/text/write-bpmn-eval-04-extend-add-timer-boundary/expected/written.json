@@ -1,0 +1,9 @@
+{
+  "aliases": {
+    "order_received": "Order_received",
+    "order_shipped": "Order_shipped",
+    "process_payment": "process_payment",
+    "ship_order": "ship_order",
+    "validate_order": "validate_order"
+  }
+}

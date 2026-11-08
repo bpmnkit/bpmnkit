@@ -1,0 +1,20 @@
+[
+  {
+    "decision": "d1",
+    "context": {
+      "amount": {
+        "t": "number",
+        "v": "5"
+      }
+    }
+  },
+  {
+    "decision": "d1",
+    "context": {
+      "amount": {
+        "t": "number",
+        "v": "-5"
+      }
+    }
+  }
+]

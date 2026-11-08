@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["adHocSubProcess","ah",{"$ops":[["serviceTask","first",{"name":"first","taskType":"first"}],["serviceTask","second",{"name":"second","taskType":"second"}],["element","first"],["connectTo","second"],["serviceTask","third",{"name":"third","taskType":"third"}]]},{"name":"ordered"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

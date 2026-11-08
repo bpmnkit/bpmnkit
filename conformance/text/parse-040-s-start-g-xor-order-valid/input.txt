@@ -1,0 +1,8 @@
+s[start] > g[xor Order valid?]
+g >(Yes: order is valid) a[end Accepted]
+g >(No: order is not valid) b[end Refused]
+s2[start:message] > h[xor Size?]
+h >(Big: size > 10) c[end Big]
+h >(Small: size <= 10) d[end Small]
+s3[start:timer] > p[and] > x[task X] > e[end Done]
+p >(Yes: ok) y[task Y] > e

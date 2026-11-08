@@ -1,0 +1,30 @@
+[
+  {
+    "result": {
+      "t": "number",
+      "v": "2.5"
+    },
+    "evaluated": [
+      {
+        "decision": "d1",
+        "result": {
+          "t": "number",
+          "v": "2.5"
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "d1",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  }
+]

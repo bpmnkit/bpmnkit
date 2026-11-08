@@ -1,0 +1,9 @@
+{
+	"kind": "dmn",
+	"script": [
+		["drd","Types"],
+		["$let","h29","decision","a",{"$ops":[["name","A"],["hitPolicy","COLLECT"],["input",{"label":"L","expression":"x","typeRef":"number"}],["output",{"label":"O","name":"y","typeRef":"string"}],["rule",{"inputs":["> 1"],"outputs":["\"big\""]}],["rule",{"inputs":["<= 1"],"outputs":["\"small\""]}]]}],
+		["$let","h30","decision","b",{"$ops":[["hitPolicy","FIRST"],["input",{"expression":"y"}],["output",{"name":"z","typeRef":"boolean"}],["rule",{"inputs":["\"big\""],"outputs":["true"]}]]},{"requires":["a"]}],
+		["build"]
+	]
+}

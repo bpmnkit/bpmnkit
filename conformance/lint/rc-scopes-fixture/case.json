@@ -1,0 +1,216 @@
+{
+  "input": "bpmn/bpmnlint-scopes-and-exemptions/input.bpmn",
+  "runs": {
+    "default": {},
+    "recommended": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:recommended",
+        "rules": {}
+      }
+    },
+    "recommended-delegated": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:recommended",
+        "rules": {}
+      },
+      "bpmnlintDelegated": true
+    },
+    "all": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:all",
+        "rules": {}
+      }
+    },
+    "all-delegated": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:all",
+        "rules": {}
+      },
+      "bpmnlintDelegated": true
+    },
+    "correctness": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:correctness",
+        "rules": {}
+      }
+    },
+    "recommended-prefixed": {
+      "bpmnlintrc": {
+        "extends": [
+          "bpmnlint:recommended"
+        ],
+        "rules": {
+          "bpmnlint/label-required": "warn",
+          "bpmnlint/no-implicit-split": "off"
+        }
+      }
+    },
+    "numeric": {
+      "bpmnlintrc": {
+        "rules": {
+          "label-required": 2,
+          "fake-join": 1,
+          "no-implicit-end": 3,
+          "no-implicit-start": 0,
+          "superfluous-gateway": [
+            "warn",
+            {}
+          ],
+          "conditional-flows": [
+            2
+          ]
+        }
+      }
+    },
+    "severities": {
+      "bpmnlintrc": {
+        "rules": {
+          "label-required": "warn",
+          "fake-join": "info",
+          "no-implicit-end": "error",
+          "no-implicit-start": "off",
+          "superfluous-gateway": "ERROR",
+          "no-gateway-join-fork": "Warn",
+          "conditional-flows": "info"
+        }
+      }
+    },
+    "off-all": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:recommended",
+        "rules": {
+          "label-required": "off",
+          "fake-join": "off",
+          "no-implicit-end": "off",
+          "no-implicit-start": "off",
+          "superfluous-gateway": "off",
+          "no-gateway-join-fork": "off",
+          "conditional-flows": "off"
+        }
+      }
+    },
+    "unsupported": {
+      "bpmnlintrc": {
+        "extends": [
+          "bpmnlint:recommended",
+          "plugin:foo/recommended",
+          "plugin:camunda-compat/camunda-cloud-8-99"
+        ],
+        "rules": {
+          "foo/rule": "error",
+          "bpmnlint-plugin-bar/rule": "warn",
+          "@scope/bpmnlint-plugin-baz/rule": "info",
+          "made-up-rule": "warn",
+          "off-plugin/rule": "off",
+          "label-required": "warn"
+        }
+      }
+    },
+    "unresolved-only": {
+      "bpmnlintrc": {
+        "extends": "plugin:foo/recommended"
+      }
+    },
+    "empty-rc": {
+      "bpmnlintrc": {}
+    },
+    "compat-8-6": {
+      "bpmnlintrc": {
+        "extends": "plugin:camunda-compat/camunda-cloud-8-6"
+      }
+    },
+    "compat-8-6-delegated": {
+      "bpmnlintrc": {
+        "extends": "plugin:camunda-compat/camunda-cloud-8-6"
+      },
+      "bpmnlintDelegated": true
+    },
+    "compat-8-2": {
+      "bpmnlintrc": {
+        "extends": "plugin:camunda-compat/camunda-cloud-8-2"
+      }
+    },
+    "compat-8-8-prefixed": {
+      "bpmnlintrc": {
+        "extends": "plugin:bpmnlint-plugin-camunda-compat/camunda-cloud-8-8"
+      }
+    },
+    "compat-8-6-plus-recommended": {
+      "bpmnlintrc": {
+        "extends": [
+          "bpmnlint:recommended",
+          "plugin:camunda-compat/camunda-cloud-8-6"
+        ]
+      }
+    },
+    "compat-last-wins": {
+      "bpmnlintrc": {
+        "extends": [
+          "plugin:camunda-compat/camunda-cloud-8-2",
+          "plugin:camunda-compat/camunda-cloud-8-8"
+        ]
+      }
+    },
+    "compat-rule-override": {
+      "bpmnlintrc": {
+        "extends": "plugin:camunda-compat/camunda-cloud-8-6",
+        "rules": {
+          "camunda-compat/timer": "warn",
+          "camunda-compat/element-type": "off",
+          "camunda-compat/no-expression": "info",
+          "camunda-compat/implementation": "warn"
+        }
+      }
+    },
+    "compat-rules-no-version": {
+      "bpmnlintrc": {
+        "rules": {
+          "camunda-compat/implementation": "warn",
+          "camunda-compat/user-task-definition": "error",
+          "camunda-compat/not-a-rule": "warn"
+        }
+      }
+    },
+    "compat-start-event-required-kept": {
+      "bpmnlintrc": {
+        "extends": "plugin:camunda-compat/camunda-cloud-8-6",
+        "rules": {
+          "start-event-required": "off"
+        }
+      }
+    },
+    "categories-naming": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:recommended"
+      },
+      "categories": [
+        "naming"
+      ]
+    },
+    "categories-flow-forced": {
+      "bpmnlintrc": {
+        "extends": "bpmnlint:all"
+      },
+      "categories": [
+        "flow",
+        "deploy"
+      ],
+      "forceEngineRules": true
+    },
+    "forms-off": {
+      "bpmnlintrc": {
+        "extends": "plugin:camunda-compat/camunda-cloud-8-6"
+      },
+      "userTaskForms": "off"
+    },
+    "camunda-version-and-rc": {
+      "bpmnlintrc": {
+        "extends": "plugin:camunda-compat/camunda-cloud-8-2"
+      },
+      "camundaVersion": "8.8"
+    },
+    "forced": {
+      "forceEngineRules": true
+    }
+  }
+}

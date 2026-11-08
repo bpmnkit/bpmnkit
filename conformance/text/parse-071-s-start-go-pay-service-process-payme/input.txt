@@ -1,0 +1,2 @@
+s[start Go] > pay[service Process payment] > e[end Done]
+delay[boundary:error Timeout | on=pay after=p1d] > t[end Payment timed out]

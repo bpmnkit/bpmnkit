@@ -1,0 +1,147 @@
+{
+  "decisions": [
+    {
+      "hitPolicy": "FIRST",
+      "id": "number_in",
+      "inputs": [
+        {
+          "expression": "v",
+          "id": "number_in_i0",
+          "typeRef": "number"
+        }
+      ],
+      "name": "number_in",
+      "outputs": [
+        {
+          "id": "number_in_o0",
+          "name": "r",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "id": "ni_r0",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"ok\""
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "FIRST",
+      "id": "legacy_and_any",
+      "inputs": [
+        {
+          "expression": "v",
+          "id": "legacy_i0",
+          "typeRef": "double"
+        },
+        {
+          "expression": "w",
+          "id": "legacy_i1",
+          "typeRef": "Any"
+        },
+        {
+          "expression": "w",
+          "id": "legacy_i2",
+          "typeRef": "frobnicate"
+        }
+      ],
+      "name": "legacy_and_any",
+      "outputs": [
+        {
+          "id": "legacy_o0",
+          "name": "r",
+          "typeRef": "integer"
+        }
+      ],
+      "rules": [
+        {
+          "id": "la_r0",
+          "inputs": [
+            "-",
+            "-",
+            "-"
+          ],
+          "outputs": [
+            "1"
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "FIRST",
+      "id": "bad_output",
+      "inputs": [
+        {
+          "expression": "v",
+          "id": "bad_output_i0"
+        }
+      ],
+      "name": "bad_output",
+      "outputs": [
+        {
+          "id": "bad_output_o0",
+          "name": "r",
+          "typeRef": "boolean"
+        }
+      ],
+      "rules": [
+        {
+          "id": "bo_r0",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"yes\""
+          ]
+        }
+      ]
+    },
+    {
+      "hitPolicy": "FIRST",
+      "id": "date_in",
+      "inputs": [
+        {
+          "expression": "d",
+          "id": "date_in_i0",
+          "typeRef": "date"
+        }
+      ],
+      "name": "date_in",
+      "outputs": [
+        {
+          "id": "date_in_o0",
+          "name": "r",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "id": "di_r0",
+          "inputs": [
+            "< date(\"2025-01-01\")"
+          ],
+          "outputs": [
+            "\"old\""
+          ]
+        },
+        {
+          "id": "di_r1",
+          "inputs": [
+            "-"
+          ],
+          "outputs": [
+            "\"new\""
+          ]
+        }
+      ]
+    }
+  ],
+  "id": "type-ref",
+  "inputData": [],
+  "name": "type-ref"
+}

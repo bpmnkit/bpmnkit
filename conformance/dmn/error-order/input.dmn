@@ -1,0 +1,17 @@
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" namespace="urn:order">
+  <inputData name="reported after the decisions"/>
+  <decision id="d1">
+    <decisionTable id="t1">
+      <input id="i1"><inputExpression id="ie1"><text>x</text></inputExpression></input>
+      <output id="o1"/>
+      <rule id="r1">
+        <inputEntry><text>1</text></inputEntry>
+        <outputEntry><text>2</text></outputEntry>
+      </rule>
+      <rule/>
+    </decisionTable>
+  </decision>
+  <decision>
+    <decisionTable/>
+  </decision>
+</definitions>

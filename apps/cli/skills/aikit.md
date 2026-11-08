@@ -26,6 +26,7 @@ Every process is authored as a `ProcessPlan` JSON file, never hand-written BPMN 
 | Command | Does |
 |---|---|
 | `casen plan schema` | Print the `ProcessPlan` JSON format reference |
+| `casen agent-card bpmn\|dmn\|form` | Print a ~2k-token cheat sheet: runnable build script, top options, traps, lint |
 | `casen plan extract <file>.bpmn` | Lift an existing process into `<file>.plan.json` |
 | `casen synth <plan>.json --output <file>.bpmn` | Compile a plan to laid-out, deployable BPMN |
 | `casen synth <plan>.json --merge <file>.bpmn --output <file>.bpmn` | Compile a delta plan and merge it into an existing process |
@@ -33,6 +34,7 @@ Every process is authored as a `ProcessPlan` JSON file, never hand-written BPMN 
 | `casen connector show <template-id>` | Required/optional input keys, task type, direction |
 | `casen lint lint <file>.bpmn` | Full static analysis (all categories) |
 | `casen lint lint <file>.bpmn --profile deploy` | Deploy-readiness gate — errors only |
+| `casen check <file>.bpmn <name>.dmn <name>.form [--deploy] --json` | Check BPMN, DMN and forms in one call, with a fix hint per finding |
 | `casen lint lint <file>.bpmn --fix` | Apply auto-fixable findings, write back |
 | `casen test <file>.bpmn` | Run scenarios from `<file>.bpmn.tests.json` |
 | `casen deploy deploy <file>.bpmn [--target camunda8]` | Deploy to local Reebe (default) or Camunda 8 |

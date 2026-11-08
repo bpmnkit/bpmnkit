@@ -1,0 +1,250 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_Process_1",
+      "plane": {
+        "bpmnElement": "Process_1",
+        "edges": [
+          {
+            "bpmnElement": "Flow_1",
+            "id": "Flow_1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 36,
+                "y": 100
+              },
+              {
+                "x": 136,
+                "y": 100
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_2",
+            "id": "Flow_2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 336,
+                "y": 100
+              },
+              {
+                "x": 436,
+                "y": 100
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Association_t_1",
+            "id": "Association_t_1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 236,
+                "y": 138
+              },
+              {
+                "x": 236,
+                "y": 30
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_Process_1",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 0,
+              "y": 82
+            },
+            "bpmnElement": "s",
+            "id": "s_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 40,
+                "x": -2,
+                "y": 122
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 208,
+              "width": 200,
+              "x": 136,
+              "y": 60
+            },
+            "bpmnElement": "box",
+            "id": "box_di",
+            "isExpanded": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 436,
+              "y": 82
+            },
+            "bpmnElement": "e",
+            "id": "e_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 40,
+                "x": 434,
+                "y": 122
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 186,
+              "y": 138
+            },
+            "bpmnElement": "t",
+            "id": "t_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 30,
+              "width": 200,
+              "x": 136,
+              "y": 0
+            },
+            "bpmnElement": "TextAnnotation_t_1",
+            "id": "TextAnnotation_t_1_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [
+        {
+          "associationDirection": "None",
+          "id": "Association_t_1",
+          "sourceRef": "t",
+          "targetRef": "TextAnnotation_t_1",
+          "unknownAttributes": {}
+        }
+      ],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "s",
+          "incoming": [],
+          "name": "S",
+          "outgoing": [
+            "Flow_1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "t"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                }
+              ],
+              "id": "t",
+              "incoming": [],
+              "name": "T",
+              "outgoing": [],
+              "type": "serviceTask",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "box",
+          "incoming": [
+            "Flow_1"
+          ],
+          "name": "Box",
+          "outgoing": [
+            "Flow_2"
+          ],
+          "sequenceFlows": [],
+          "textAnnotations": [],
+          "type": "adHocSubProcess",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e",
+          "incoming": [
+            "Flow_2"
+          ],
+          "name": "E",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "Process_1",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_1",
+          "sourceRef": "s",
+          "targetRef": "box",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_2",
+          "sourceRef": "box",
+          "targetRef": "e",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [
+        {
+          "id": "TextAnnotation_t_1",
+          "text": "Tool",
+          "unknownAttributes": {}
+        }
+      ],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

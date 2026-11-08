@@ -1,29 +1,32 @@
-use axum::extract::{Path, State};
-use axum::http::StatusCode;
-use axum::response::IntoResponse;
-use axum::Json;
-use reebe_db::state::element_instances::ElementInstanceRepository;
 use crate::app::ApiState;
 use crate::dto::element_instances::{
     ActivateAdHocActivitiesRequest, ElementInstanceDto, SearchElementInstancesRequest,
 };
 use crate::error::{ApiError, ApiResult};
 use crate::pagination::PageResponse;
+use axum::extract::{Path, State};
+use axum::http::StatusCode;
+use axum::response::IntoResponse;
+use axum::Json;
+use reebe_db::state::element_instances::ElementInstanceRepository;
 
 pub async fn get(
     State(state): State<ApiState>,
     Path(key): Path<String>,
 ) -> ApiResult<impl IntoResponse> {
-    let key_i64: i64 = key.parse().map_err(|_| {
-        ApiError::InvalidRequest(format!("Invalid key: {key}"))
-    })?;
+    let key_i64: i64 = key
+        .parse()
+        .map_err(|_| ApiError::InvalidRequest(format!("Invalid key: {key}")))?;
 
     let pool = state.replica_pool.as_ref().unwrap_or(&state.pool);
     let repo = ElementInstanceRepository::new(pool);
-    let ei = repo.get_by_key(key_i64).await.map_err(|_| ApiError::NotFound {
-        resource: "element instance".to_string(),
-        key: key.clone(),
-    })?;
+    let ei = repo
+        .get_by_key(key_i64)
+        .await
+        .map_err(|_| ApiError::NotFound {
+            resource: "element instance".to_string(),
+            key: key.clone(),
+        })?;
 
     Ok(Json(ElementInstanceDto::from(ei)))
 }
@@ -65,9 +68,9 @@ pub fn ad_hoc_activation_payload(
     key: &str,
     req: ActivateAdHocActivitiesRequest,
 ) -> Result<serde_json::Value, ApiError> {
-    let elements = req
-        .elements
-        .ok_or_else(|| ApiError::InvalidRequest("No elements provided: 'elements' is required".to_string()))?;
+    let elements = req.elements.ok_or_else(|| {
+        ApiError::InvalidRequest("No elements provided: 'elements' is required".to_string())
+    })?;
     let elements = elements
         .into_iter()
         .map(|element| match element.element_id {
@@ -75,7 +78,9 @@ pub fn ad_hoc_activation_payload(
                 "elementId": id,
                 "variables": element.variables.unwrap_or_default(),
             })),
-            _ => Err(ApiError::InvalidRequest("No elementId provided for an element to activate".to_string())),
+            _ => Err(ApiError::InvalidRequest(
+                "No elementId provided for an element to activate".to_string(),
+            )),
         })
         .collect::<Result<Vec<_>, _>>()?;
     Ok(serde_json::json!({

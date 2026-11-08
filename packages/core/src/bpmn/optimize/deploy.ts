@@ -61,6 +61,21 @@ export function analyzeDeploy(
 	}
 
 	for (const el of p.flowElements) {
+		if ("eventDefinitions" in el) {
+			const missingId = el.eventDefinitions.filter((d) => !d.id)
+			if (missingId.length > 0) {
+				findings.push({
+					id: "deploy/event-definition-no-id",
+					category: "deploy",
+					severity: "error",
+					message: `"${el.name ?? el.id}" has ${missingId.length} event definition(s) without an id.`,
+					suggestion:
+						"Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one.",
+					processId,
+					elementIds: [el.id],
+				})
+			}
+		}
 		if (el.type === "serviceTask" || el.type === "sendTask") {
 			const type = readZeebeTaskType(el.extensionElements)
 			if (!type) {

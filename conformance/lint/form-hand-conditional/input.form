@@ -1,0 +1,50 @@
+{
+  "id": "F",
+  "type": "default",
+  "schemaVersion": 16,
+  "components": [
+    {
+      "id": "a",
+      "type": "textfield",
+      "key": "a",
+      "label": "a",
+      "conditional": {
+        "hide": "=x > 1"
+      }
+    },
+    {
+      "id": "b",
+      "type": "textfield",
+      "key": "b",
+      "label": "b",
+      "conditional": {
+        "hide": "x > 1"
+      }
+    },
+    {
+      "id": "c",
+      "type": "textfield",
+      "key": "c",
+      "label": "c",
+      "conditional": {
+        "hide": "  "
+      }
+    },
+    {
+      "id": "d",
+      "type": "textfield",
+      "key": "d",
+      "label": "d",
+      "conditional": "x"
+    },
+    {
+      "id": "e",
+      "type": "textfield",
+      "key": "e",
+      "label": "e",
+      "conditional": {
+        "hide": "=x >"
+      }
+    }
+  ]
+}

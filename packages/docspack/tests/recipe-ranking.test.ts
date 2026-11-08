@@ -17,16 +17,18 @@ import type { DocsIndex } from "../src/search.js"
 const RECIPE = "guides.executable-camunda-process"
 const AGENT = `${RECIPE}.how-do-i-build-an-ai-agent-sub-process-with-tools-in-a-bpmn-kit-build-script-8.10-v2`
 const CASES: [question: string, chunkId: string][] = [
-	["set a form on a start event", `${RECIPE}.how-do-i-put-a-form-on-a-start-event`],
-	[
-		"apply an element template to a service task",
-		`${RECIPE}.how-do-i-apply-an-element-template-connector-to-a-task`,
-	],
+	// The dedicated recipe pages supersede the sections of the build-script guide for these two.
+	["set a form on a start event", "guides.recipes-forms-and-user-tasks"],
+	["apply an element template to a service task", "guides.recipes-element-templates"],
 	["user task input mapping", `${RECIPE}.how-do-i-map-a-user-task-s-input`],
 	["AI agent sub-process with tools", AGENT],
 	["flow label different from branch", `${RECIPE}.how-do-i-label-a-gateway-s-yes-and-no-flows`],
 	["lint before running tests", `${RECIPE}.how-do-i-check-the-file-is-executable-before-tests`],
 	["run camunda process test json without java", `${RECIPE}.does-it-run-test-it-with-casen-test`],
+	// The agent cards: the one page an agent needs to write each file type.
+	["write a bpmn build script", "agent-cards.bpmn"],
+	["create a DMN decision table", "agent-cards.dmn"],
+	["create a camunda form", "agent-cards.form"],
 ]
 
 let root: string
@@ -72,5 +74,18 @@ describe("recipe ranking", () => {
 		// `ask` shows the top 3 only; the recipe must lead them with both packs installed.
 		const top = search(bothPacks, "AI agent sub-process with tools", { limit: 3 })
 		expect(top[0]?.chunkId.split("/").pop()).toBe(AGENT)
+	})
+
+	// The bake-off agent lost minutes on these two: the first returned an unrelated CLI table, the
+	// second had no page at all. Both packs are installed together, as in the repo root.
+	it.each([
+		["apply an element template", "guides.recipes-element-templates"],
+		[
+			"set the assignee of a user task",
+			"guides.recipes-forms-and-user-tasks.how-do-i-set-the-assignee-of-a-user-task",
+		],
+	])("%s -> the task recipe first", (question, chunkId) => {
+		const [top] = search(bothPacks, question, { limit: 1 })
+		expect(top?.chunkId.split("/").pop()).toBe(chunkId)
 	})
 })

@@ -1,0 +1,95 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "Offer signed",
+            "type": "startEvent"
+          },
+          {
+            "id": "account",
+            "name": "Create account",
+            "type": "task"
+          },
+          {
+            "id": "and",
+            "name": "Parallel tasks",
+            "type": "parallelGateway"
+          },
+          {
+            "id": "it",
+            "name": "Set up IT",
+            "type": "task"
+          },
+          {
+            "id": "facilities",
+            "name": "Set up facilities",
+            "type": "task"
+          },
+          {
+            "id": "it_end",
+            "name": "Process completed",
+            "type": "endEvent"
+          },
+          {
+            "id": "facilities_end",
+            "name": "Process completed",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "account"
+          },
+          {
+            "from": "account",
+            "id": "Flow_2",
+            "to": "and"
+          },
+          {
+            "from": "and",
+            "id": "Flow_3",
+            "to": "it"
+          },
+          {
+            "from": "and",
+            "id": "Flow_4",
+            "to": "facilities"
+          },
+          {
+            "from": "it",
+            "id": "Flow_5",
+            "to": "it_end"
+          },
+          {
+            "from": "facilities",
+            "id": "Flow_6",
+            "to": "facilities_end"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "added end event \"it_end\" after \"it\"",
+    "added end event \"facilities_end\" after \"facilities\""
+  ],
+  "problems": [
+    {
+      "line": 2,
+      "message": "flow it > and loops with no way out; left out"
+    },
+    {
+      "line": 3,
+      "message": "flow facilities > and loops with no way out; left out"
+    }
+  ],
+  "questions": []
+}

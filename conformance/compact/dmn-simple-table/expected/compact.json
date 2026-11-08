@@ -1,0 +1,39 @@
+{
+  "decisions": [
+    {
+      "id": "Dec_1",
+      "inputs": [
+        {
+          "expression": "myVar",
+          "id": "In_1",
+          "label": "input",
+          "typeRef": "string"
+        }
+      ],
+      "name": "Test",
+      "outputs": [
+        {
+          "id": "Out_1",
+          "label": "output",
+          "name": "result",
+          "typeRef": "string"
+        }
+      ],
+      "rules": [
+        {
+          "description": "test rule",
+          "id": "Rule_1",
+          "inputs": [
+            "\"hello\""
+          ],
+          "outputs": [
+            "\"world\""
+          ]
+        }
+      ]
+    }
+  ],
+  "id": "Def_1",
+  "inputData": [],
+  "name": "DRD"
+}

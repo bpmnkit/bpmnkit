@@ -1,0 +1,94 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "id": "ok",
+            "name": "Status approved?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "a",
+            "name": "Ship",
+            "type": "task"
+          },
+          {
+            "id": "b",
+            "name": "Cancel",
+            "type": "task"
+          },
+          {
+            "id": "a_end",
+            "name": "Process completed",
+            "type": "endEvent"
+          },
+          {
+            "id": "b_end",
+            "name": "Process completed",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "ok"
+          },
+          {
+            "condition": "= statusApproved = true",
+            "from": "ok",
+            "id": "Flow_2",
+            "name": "Yes: it is fine",
+            "to": "a"
+          },
+          {
+            "from": "ok",
+            "id": "Flow_3",
+            "isDefault": true,
+            "name": "No",
+            "to": "b"
+          },
+          {
+            "from": "a",
+            "id": "Flow_4",
+            "to": "a_end"
+          },
+          {
+            "from": "b",
+            "id": "Flow_5",
+            "to": "b_end"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "added end event \"a_end\" after \"a\"",
+    "added end event \"b_end\" after \"b\"",
+    "made ok > b the default branch of \"ok\"",
+    "gave ok > a the condition \"= statusApproved = true\""
+  ],
+  "problems": [
+    {
+      "line": 2,
+      "message": "condition \"it is fine\" is not FEEL; kept as the branch label"
+    }
+  ],
+  "questions": [
+    {
+      "draft": "At \"Status approved?\", decide on ",
+      "elementId": "ok",
+      "options": [],
+      "text": "\"Status approved?\" decides on \"statusApproved\", a variable the diagram made up. What data decides it?"
+    }
+  ]
+}

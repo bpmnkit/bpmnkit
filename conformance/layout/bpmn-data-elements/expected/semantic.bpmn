@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Definitions_data" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_data" name="Data wiring" isExecutable="true">
+    <bpmn:dataObject id="DataObject_invoice" name="Invoice"/>
+    <bpmn:dataObjectReference id="DataObjectRef_invoice" name="Invoice" dataObjectRef="DataObject_invoice"/>
+    <bpmn:dataStoreReference id="DataStore_ledger" name="Ledger"/>
+    <bpmn:startEvent id="Start_data">
+      <bpmn:outgoing>Flow_d1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Task_post" name="Post to ledger">
+      <bpmn:incoming>Flow_d1</bpmn:incoming>
+      <bpmn:outgoing>Flow_d2</bpmn:outgoing>
+      <bpmn:property id="Property_target" name="__targetRef_placeholder"/>
+      <bpmn:dataInputAssociation id="DataInputAssoc_1">
+        <bpmn:sourceRef>DataObjectRef_invoice</bpmn:sourceRef>
+        <bpmn:targetRef>Property_target</bpmn:targetRef>
+      </bpmn:dataInputAssociation>
+      <bpmn:dataOutputAssociation id="DataOutputAssoc_1">
+        <bpmn:targetRef>DataStore_ledger</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="End_data">
+      <bpmn:incoming>Flow_d2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_d1" sourceRef="Start_data" targetRef="Task_post"/>
+    <bpmn:sequenceFlow id="Flow_d2" sourceRef="Task_post" targetRef="End_data"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_data">
+      <bpmndi:BPMNShape id="DataObject_invoice_di" bpmnElement="DataObject_invoice">
+        <dc:Bounds x="27" y="20" width="36" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataObjectRef_invoice_di" bpmnElement="DataObjectRef_invoice">
+        <dc:Bounds x="27" y="150" width="36" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStore_ledger_di" bpmnElement="DataStore_ledger">
+        <dc:Bounds x="20" y="280" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_data_di" bpmnElement="Start_data">
+        <dc:Bounds x="27" y="432" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_post_di" bpmnElement="Task_post">
+        <dc:Bounds x="130" y="410" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_data_di" bpmnElement="End_data">
+        <dc:Bounds x="290" y="432" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_d1_di" bpmnElement="Flow_d1">
+        <di:waypoint x="63" y="450"/>
+        <di:waypoint x="130" y="450"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_d2_di" bpmnElement="Flow_d2">
+        <di:waypoint x="230" y="450"/>
+        <di:waypoint x="290" y="450"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

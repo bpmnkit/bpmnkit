@@ -17,7 +17,7 @@ members = [
 [workspace.package]
 version = "0.1.0"
 edition = "2021"
-license = "Apache-2.0"
+license = "MIT OR Apache-2.0"
 authors = ["Reebe Contributors"]
 
 [workspace.dependencies]
@@ -48,6 +48,12 @@ metrics-exporter-prometheus = "0.15"
 
 # UUID
 uuid = { version = "1", features = ["v4", "serde"] }
+
+# Ordered maps (FEEL contexts keep insertion order)
+indexmap = "2"
+
+# Time zones (FEEL date-times with a zone id)
+chrono-tz = "0.10"
 
 # Regex
 regex = "1"
@@ -87,9 +93,13 @@ async-trait = "0.1"
 
 # Workspace crates
 reebe-protocol = { path = "crates/reebe-protocol" }
-reebe-feel = { path = "crates/reebe-feel" }
+bpmnkit-feel = { path = "../../crates/bpmnkit-feel", default-features = false }
+bpmnkit-bpmn = { path = "../../crates/bpmnkit-bpmn" }
+bpmnkit-dmn = { path = "../../crates/bpmnkit-dmn", default-features = false }
+bpmnkit-xml = { path = "../../crates/bpmnkit-xml" }
+reebe-feel = { path = "crates/reebe-feel", default-features = false }
 reebe-bpmn = { path = "crates/reebe-bpmn" }
-reebe-dmn = { path = "crates/reebe-dmn" }
+reebe-dmn = { path = "crates/reebe-dmn", default-features = false }
 reebe-db = { path = "crates/reebe-db", default-features = false }
 reebe-engine = { path = "crates/reebe-engine", default-features = false }
 reebe-api = { path = "crates/reebe-api", default-features = false }

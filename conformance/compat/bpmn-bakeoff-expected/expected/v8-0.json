@@ -1,0 +1,64 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "StartEvent_TaskReceived"
+      ],
+      "fixable": false,
+      "id": "compat/start-event-form",
+      "message": "Start event \"Task to perform received\" has a form, which needs Camunda 8.3 or newer on a start event; this model targets Camunda 8.0.",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.3 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Ad-hoc sub-process \"AI Agent\" needs Camunda 8.7 or newer; this model targets Camunda 8.0.",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.7 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "AI_Agent"
+      ],
+      "fixable": false,
+      "id": "compat/no-zeebe-properties",
+      "message": "Ad-hoc sub-process \"AI Agent\" has a zeebe:properties, which needs Camunda 8.1 or newer; this model targets Camunda 8.0.",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.1 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "UserTask_ReviewAgentResponse"
+      ],
+      "fixable": false,
+      "id": "compat/no-zeebe-user-task",
+      "message": "User task \"User Feedback\" has a zeebe:userTask, which needs Camunda 8.5 or newer; this model targets Camunda 8.0.",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.5 or newer (modeler:executionPlatformVersion), or remove it."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "SearchRecipes"
+      ],
+      "fixable": false,
+      "id": "compat/feel-compatibility",
+      "message": "FEEL function <fromAi> requires Camunda >=8.8",
+      "processId": "ai-agent-chat-with-tools",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.8 or newer (modeler:executionPlatformVersion), or do without fromAi()."
+    }
+  ]
+}

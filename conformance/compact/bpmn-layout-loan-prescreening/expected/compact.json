@@ -1,0 +1,115 @@
+{
+  "id": "Definitions_LoanApproval",
+  "processes": [
+    {
+      "elements": [
+        {
+          "id": "StartEvent_LoanRequest",
+          "name": "Loan Application Received",
+          "type": "startEvent"
+        },
+        {
+          "id": "Task_CreditScoreCheck",
+          "inputs": {
+            "authentication.type": "noAuth",
+            "method": "=\"GET\"",
+            "url": "=\"https://api.creditbureau.example.com/v1/score/\" + applicantId"
+          },
+          "jobType": "io.camunda:http-json:1",
+          "name": "Credit Score Check",
+          "outputs": {
+            "creditScore": "=response.body.creditScore"
+          },
+          "resultVariable": "creditResponse",
+          "type": "serviceTask"
+        },
+        {
+          "id": "Gateway_PreScreen",
+          "name": "Pre-Screening",
+          "type": "exclusiveGateway"
+        },
+        {
+          "decisionId": "risk-scoring",
+          "id": "Task_RiskScoring",
+          "name": "Risk Scoring",
+          "resultVariable": "riskResult",
+          "type": "businessRuleTask"
+        },
+        {
+          "candidateGroups": "underwriters",
+          "formId": "underwriter-review-form",
+          "id": "Task_UnderwriterReview",
+          "name": "Manual Underwriter Review",
+          "type": "userTask"
+        },
+        {
+          "id": "Gateway_FinalDecision",
+          "name": "Underwriter Decision",
+          "type": "exclusiveGateway"
+        },
+        {
+          "id": "EndEvent_Approved",
+          "name": "Loan Approved",
+          "type": "endEvent"
+        },
+        {
+          "id": "EndEvent_Rejected",
+          "name": "Loan Rejected",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "StartEvent_LoanRequest",
+          "id": "Flow_ToCreditCheck",
+          "to": "Task_CreditScoreCheck"
+        },
+        {
+          "from": "Task_CreditScoreCheck",
+          "id": "Flow_ToPreScreen",
+          "to": "Gateway_PreScreen"
+        },
+        {
+          "condition": "=creditScore < 580",
+          "from": "Gateway_PreScreen",
+          "id": "Flow_RejectLowScore",
+          "name": "Score < 580",
+          "to": "EndEvent_Rejected"
+        },
+        {
+          "condition": "=creditScore >= 580",
+          "from": "Gateway_PreScreen",
+          "id": "Flow_PassPreScreen",
+          "name": "Score >= 580",
+          "to": "Task_RiskScoring"
+        },
+        {
+          "from": "Task_RiskScoring",
+          "id": "Flow_ToUnderwriter",
+          "to": "Task_UnderwriterReview"
+        },
+        {
+          "from": "Task_UnderwriterReview",
+          "id": "Flow_ToDecisionGateway",
+          "to": "Gateway_FinalDecision"
+        },
+        {
+          "condition": "=approved = true",
+          "from": "Gateway_FinalDecision",
+          "id": "Flow_Approved",
+          "name": "Approved",
+          "to": "EndEvent_Approved"
+        },
+        {
+          "condition": "=approved = false",
+          "from": "Gateway_FinalDecision",
+          "id": "Flow_Rejected",
+          "name": "Rejected",
+          "to": "EndEvent_Rejected"
+        }
+      ],
+      "id": "loan-approval-process",
+      "name": "Loan Approval Process"
+    }
+  ]
+}

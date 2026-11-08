@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Tx"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Transaction \"Tx\" is not supported by any Camunda 8 version.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Model it with an element Camunda 8 executes."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Adhoc"
+      ],
+      "fixable": false,
+      "id": "compat/element-type",
+      "message": "Ad-hoc sub-process \"Adhoc\" needs Camunda 8.7 or newer; this model targets Camunda 8.6.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Target Camunda 8.7 or newer (modeler:executionPlatformVersion), or remove it."
+    }
+  ]
+}

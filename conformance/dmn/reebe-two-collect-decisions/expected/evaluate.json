@@ -1,0 +1,65 @@
+[
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "name is required"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "multiValidation",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "name is required"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "list",
+      "v": [
+        {
+          "t": "string",
+          "v": "age cannot be negative"
+        }
+      ]
+    },
+    "evaluated": [
+      {
+        "decision": "ageValidation",
+        "result": {
+          "t": "list",
+          "v": [
+            {
+              "t": "string",
+              "v": "age cannot be negative"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  {
+    "result": {
+      "t": "null"
+    },
+    "evaluated": [
+      {
+        "decision": "ageValidation",
+        "result": {
+          "t": "null"
+        }
+      }
+    ]
+  }
+]
