@@ -21,6 +21,8 @@ reebe-dmn = { workspace = true }
 reebe-db = { workspace = true }
 base64 = { workspace = true }
 metrics = { workspace = true }
+bpmnkit-bpmn = { workspace = true, optional = true }
+bpmnkit-compat = { workspace = true, optional = true }
 
 # Native (non-WASM): full tokio + sqlx for replay
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
@@ -32,7 +34,10 @@ sqlx = { version = "0.8", features = ["runtime-tokio", "chrono", "json"] }
 tokio = { version = "1", default-features = false, features = ["sync"] }
 
 [features]
-default = ["postgres", "full-feel"]
+default = ["postgres", "full-feel", "zeebe-validate"]
+# Zeebe's deploy-time validation (bpmnkit-compat). Off: only reebe's own checks run.
+# Off in reebe-wasm: it adds ~480 KB gzip, far over that build's size budget.
+zeebe-validate = ["dep:bpmnkit-compat", "dep:bpmnkit-bpmn"]
 full-feel = ["reebe-feel/full-feel", "reebe-dmn/full-feel"]
 postgres = ["reebe-db/postgres"]
 sqlite = ["reebe-db/sqlite"]

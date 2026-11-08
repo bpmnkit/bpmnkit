@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="defs" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
+  <bpmn:process id="z183-dup" isExecutable="true">
+    <bpmn:startEvent id="start" />
+    <bpmn:endEvent id="end" />
+    <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="end" />
+  </bpmn:process>
+</bpmn:definitions>

@@ -369,6 +369,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "bpmnkit-compat"
+version = "0.1.0"
+dependencies = [
+ "bpmnkit-bpmn",
+ "bpmnkit-feel",
+ "bpmnkit-spec",
+ "bpmnkit-xml",
+ "indexmap 2.13.0",
+ "serde",
+]
+
+[[package]]
 name = "bpmnkit-dmn"
 version = "0.1.0"
 dependencies = [
@@ -2719,6 +2731,8 @@ version = "0.1.0"
 dependencies = [
  "async-trait",
  "base64 0.22.1",
+ "bpmnkit-bpmn",
+ "bpmnkit-compat",
  "chrono",
  "criterion",
  "dashmap",

@@ -21,7 +21,7 @@ clap = { workspace = true }
 config = { workspace = true }
 toml = "0.8"
 reebe-protocol = { workspace = true }
-reebe-engine = { workspace = true, default-features = false, features = ["full-feel"] }
+reebe-engine = { workspace = true, default-features = false, features = ["full-feel", "zeebe-validate"] }
 reebe-api = { workspace = true, default-features = false }
 reebe-db = { workspace = true, default-features = false }
 reebe-grpc = { path = "../reebe-grpc", default-features = false }

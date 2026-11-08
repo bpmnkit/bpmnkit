@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="defs" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
+  <bpmn:process id="z35-loop" isExecutable="true">
+    <bpmn:startEvent id="start">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="merge">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:incoming>back</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="work">
+      <bpmn:incoming>f2</bpmn:incoming>
+      <bpmn:outgoing>f3</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="again" default="toEnd">
+      <bpmn:incoming>f3</bpmn:incoming>
+      <bpmn:outgoing>back</bpmn:outgoing>
+      <bpmn:outgoing>toEnd</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="end">
+      <bpmn:incoming>toEnd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="merge" />
+    <bpmn:sequenceFlow id="f2" sourceRef="merge" targetRef="work" />
+    <bpmn:sequenceFlow id="f3" sourceRef="work" targetRef="again" />
+    <bpmn:sequenceFlow id="back" sourceRef="again" targetRef="merge">
+      <bpmn:conditionExpression>=true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="toEnd" sourceRef="again" targetRef="end" />
+  </bpmn:process>
+</bpmn:definitions>
