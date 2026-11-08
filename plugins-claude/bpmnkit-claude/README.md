@@ -97,7 +97,7 @@ Steps: fetch → group by type → investigate root cause → **propose fix (app
 ## Hooks
 
 - **SessionStart** — checks `casen` is installed
-- **PostToolUse** — silently lints any `.bpmn` file written during the session
+- **PostToolUse** — runs the deploy gate (`casen check <file> --deploy`) on any `.bpmn` file written during the session; when the file would not deploy on Camunda 8, its errors go back to Claude to fix
 
 ## Structure
 

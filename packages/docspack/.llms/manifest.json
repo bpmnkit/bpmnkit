@@ -65,7 +65,7 @@
 		{
 			"id": "agent-cards.bpmn.traps",
 			"file": "chunks/agent-cards.bpmn.traps.md",
-			"tokens": 387,
+			"tokens": 424,
 			"tags": [
 				"agent-cards",
 				"bpmn",
@@ -79,15 +79,17 @@
 				"Bpmn.export",
 				"timerDuration",
 				"build()",
+				"expand()",
 				"defaultFlow",
 				"taskType",
+				"correlationKey",
 				"DeployabilityError"
 			]
 		},
 		{
 			"id": "agent-cards.bpmn.lint-before-you-deploy-or-test",
 			"file": "chunks/agent-cards.bpmn.lint-before-you-deploy-or-test.md",
-			"tokens": 183,
+			"tokens": 209,
 			"tags": [
 				"agent-cards",
 				"bpmn",
@@ -340,7 +342,7 @@
 		{
 			"id": "cli.casen.bpmn-generation-pipeline",
 			"file": "chunks/cli.casen.bpmn-generation-pipeline.md",
-			"tokens": 444,
+			"tokens": 487,
 			"tags": [
 				"cli",
 				"casen",
@@ -469,7 +471,7 @@
 		{
 			"id": "cli.check.options",
 			"file": "chunks/cli.check.options.md",
-			"tokens": 241,
+			"tokens": 279,
 			"tags": [
 				"cli",
 				"check",
@@ -777,9 +779,23 @@
 			"entities": []
 		},
 		{
+			"id": "cli.generate.deploy-gate",
+			"file": "chunks/cli.generate.deploy-gate.md",
+			"tokens": 295,
+			"tags": [
+				"cli",
+				"generate",
+				"deploy",
+				"gate"
+			],
+			"entities": [
+				"Bpmn.export"
+			]
+		},
+		{
 			"id": "cli.generate.definition-mode-ai-scripting-path",
 			"file": "chunks/cli.generate.definition-mode-ai-scripting-path.md",
-			"tokens": 791,
+			"tokens": 795,
 			"tags": [
 				"cli",
 				"generate",
@@ -1213,7 +1229,7 @@
 		{
 			"id": "getting-started.concepts.the-fluent-builder",
 			"file": "chunks/getting-started.concepts.the-fluent-builder.md",
-			"tokens": 251,
+			"tokens": 308,
 			"tags": [
 				"getting-started",
 				"concepts",
@@ -1221,13 +1237,16 @@
 				"builder"
 			],
 			"entities": [
-				"ProcessBuilder"
+				"ProcessBuilder",
+				"build()",
+				"taskType",
+				"DeployabilityError"
 			]
 		},
 		{
 			"id": "getting-started.concepts.auto-layout",
 			"file": "chunks/getting-started.concepts.auto-layout.md",
-			"tokens": 150,
+			"tokens": 157,
 			"tags": [
 				"getting-started",
 				"concepts",
@@ -2088,7 +2107,7 @@
 		{
 			"id": "guides.ai-on-device",
 			"file": "chunks/guides.ai-on-device.md",
-			"tokens": 328,
+			"tokens": 389,
 			"tags": [
 				"guides",
 				"ai-on-device"
@@ -2184,7 +2203,7 @@
 		{
 			"id": "guides.ai.claude-api-example",
 			"file": "chunks/guides.ai.claude-api-example.md",
-			"tokens": 226,
+			"tokens": 391,
 			"tags": [
 				"guides",
 				"ai",
@@ -2262,7 +2281,7 @@
 		{
 			"id": "guides.ai.previewing-while-the-model-writes-what-the-model-can-do",
 			"file": "chunks/guides.ai.previewing-while-the-model-writes-what-the-model-can-do.md",
-			"tokens": 290,
+			"tokens": 459,
 			"tags": [
 				"guides",
 				"ai",
@@ -2276,7 +2295,7 @@
 		{
 			"id": "guides.ai.mcp-server",
 			"file": "chunks/guides.ai.mcp-server.md",
-			"tokens": 322,
+			"tokens": 383,
 			"tags": [
 				"guides",
 				"ai",
@@ -2285,6 +2304,7 @@
 			],
 			"entities": [
 				"io.github.bpmnkit/bpmnkit",
+				"summary.deployable",
 				"@bpmnkit/patterns"
 			]
 		},
@@ -2658,7 +2678,7 @@
 		{
 			"id": "guides.building-processes.multi-instance",
 			"file": "chunks/guides.building-processes.multi-instance.md",
-			"tokens": 590,
+			"tokens": 589,
 			"tags": [
 				"guides",
 				"building-processes",
@@ -2746,18 +2766,101 @@
 		{
 			"id": "guides.claude-code-plugin.ambient-hooks",
 			"file": "chunks/guides.claude-code-plugin.ambient-hooks.md",
-			"tokens": 191,
+			"tokens": 171,
 			"tags": [
 				"guides",
 				"claude-code-plugin",
 				"ambient",
-				"hooks",
+				"hooks"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.claude-code-plugin.no-mcp-server-required",
+			"file": "chunks/guides.claude-code-plugin.no-mcp-server-required.md",
+			"tokens": 83,
+			"tags": [
+				"guides",
+				"claude-code-plugin",
 				"mcp",
 				"server",
 				"required"
 			],
 			"entities": [
 				"@bpmnkit/proxy"
+			]
+		},
+		{
+			"id": "guides.deploy-gate",
+			"file": "chunks/guides.deploy-gate.md",
+			"tokens": 416,
+			"tags": [
+				"guides",
+				"deploy-gate",
+				"api"
+			],
+			"entities": [
+				"DeployabilityError",
+				"camundaVersion",
+				"assertDeployable"
+			]
+		},
+		{
+			"id": "guides.deploy-gate.the-error",
+			"file": "chunks/guides.deploy-gate.the-error.md",
+			"tokens": 451,
+			"tags": [
+				"guides",
+				"deploy-gate",
+				"error",
+				"placeholders"
+			],
+			"entities": [
+				"jobType",
+				"messageName",
+				"messageRef",
+				"correlationKey",
+				"signalName",
+				"errorCode",
+				"escalationCode",
+				"calledElement",
+				"decisionId"
+			]
+		},
+		{
+			"id": "guides.deploy-gate.where-the-gate-runs",
+			"file": "chunks/guides.deploy-gate.where-the-gate-runs.md",
+			"tokens": 630,
+			"tags": [
+				"guides",
+				"deploy-gate",
+				"gate",
+				"runs"
+			],
+			"entities": [
+				"ProcessBuilder.build()",
+				"DiagramBuilder.build()",
+				"build()",
+				"compilePlan",
+				"mergePlan",
+				"camundaVersion",
+				"applyTemplates",
+				"applyConnectorLines",
+				"sdk.exportXml"
+			]
+		},
+		{
+			"id": "guides.deploy-gate.behaviour-change",
+			"file": "chunks/guides.deploy-gate.behaviour-change.md",
+			"tokens": 173,
+			"tags": [
+				"guides",
+				"deploy-gate",
+				"behaviour",
+				"change"
+			],
+			"entities": [
+				"@bpmnkit/core"
 			]
 		},
 		{
@@ -2895,7 +2998,7 @@
 		{
 			"id": "guides.drop.reviewing-it-together",
 			"file": "chunks/guides.drop.reviewing-it-together.md",
-			"tokens": 907,
+			"tokens": 856,
 			"tags": [
 				"guides",
 				"drop",
@@ -2909,7 +3012,7 @@
 		{
 			"id": "guides.drop.reviewing-it-together-2",
 			"file": "chunks/guides.drop.reviewing-it-together-2.md",
-			"tokens": 654,
+			"tokens": 787,
 			"tags": [
 				"guides",
 				"drop",
@@ -3170,7 +3273,7 @@
 		{
 			"id": "guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests",
 			"file": "chunks/guides.executable-camunda-process.how-do-i-check-the-file-is-executable-before-tests.md",
-			"tokens": 166,
+			"tokens": 221,
 			"tags": [
 				"guides",
 				"executable-camunda-process",
@@ -3184,7 +3287,8 @@
 				"lintDiagram",
 				"renderBpmnAscii",
 				"@bpmnkit/ascii",
-				"expected.bpmn"
+				"expected.bpmn",
+				"build()"
 			]
 		},
 		{
@@ -5727,7 +5831,7 @@
 		{
 			"id": "packages.core.installation-expand-compact-options",
 			"file": "chunks/packages.core.installation-expand-compact-options.md",
-			"tokens": 832,
+			"tokens": 830,
 			"tags": [
 				"packages",
 				"core",
@@ -5754,7 +5858,7 @@
 		{
 			"id": "packages.core.installation-expand-compact-options-2",
 			"file": "chunks/packages.core.installation-expand-compact-options-2.md",
-			"tokens": 72,
+			"tokens": 141,
 			"tags": [
 				"packages",
 				"core",
@@ -5763,7 +5867,9 @@
 				"compact",
 				"options"
 			],
-			"entities": []
+			"entities": [
+				"eventType"
+			]
 		},
 		{
 			"id": "packages.core.installation-createcompactstream-options",

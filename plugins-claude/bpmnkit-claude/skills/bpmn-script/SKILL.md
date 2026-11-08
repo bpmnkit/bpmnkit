@@ -82,18 +82,18 @@ if (report.counts.error > 0) process.exit(1)
 - FEEL in the builder starts with `=` (`"=amount > 1000"`); a value without `=` is a literal string.
 - Unknown option names are silently dropped: `timer: { duration }` does nothing; use `timerDuration`.
 
-- **`build()` refuses what Camunda 8 cannot deploy**: a gateway branch without `condition`/`defaultFlow`, a send task or message throw/end event without `taskType`, a static correlation key, anything after an end event; then Zeebe's rules (`DeployabilityError`). `build({ validate: false })` for a draft; `Bpmn.export` gates Camunda 8 models the same way.
+- **`build()`, `expand()` and `Bpmn.export` refuse what Camunda 8 cannot deploy**: a gateway branch without `condition`/`defaultFlow`, a task or message throw/end event without `taskType`, a message without name or `correlationKey`, a timer without a time, anything after an end event. The `DeployabilityError` message has one line per problem, `- <id>: <message> (zeebe/<rule>)`: fix each. `{ placeholders: true }` fills documented values to replace before deploying; `{ validate: false }` only for a draft.
 
 ## Lint before you deploy or test
 
 ```sh
 casen check order.bpmn risk.dmn review-order.form --deploy   # one gate: BPMN + DMN + forms, and the ids that link them
 casen lint lint order.bpmn --profile deploy   # BPMN only, errors only
-casen deploy deploy order.bpmn                # local Reebe; --target camunda8 for a cluster
+casen deploy deploy order.bpmn                # gated first; local Reebe, --target camunda8 for a cluster
 ```
 
 In code, `lintDiagram(definitions)` returns `{ diagnostics, counts }`; fail on `counts.error > 0`. Warnings (no timer boundary, no output mapping) are advice.
 
 ## Writing a process as text instead
 
-A model writing the diagram itself can use the line format: `parseProcessText(text)` then `expand(result.diagram)` from `@bpmnkit/core`. `casen agent-card bpmn --text` prints its guide. Related cards: `casen agent-card dmn`, `casen agent-card form`.
+A model writing the diagram itself can use the line format: `parseProcessText(text)` then `expand(result.diagram)` from `@bpmnkit/core`; `expand` throws the same gate message, naming what to add (`msg=`, `key=`, `every=`, …). `casen agent-card bpmn --text` prints its guide. Related cards: `casen agent-card dmn`, `casen agent-card form`.

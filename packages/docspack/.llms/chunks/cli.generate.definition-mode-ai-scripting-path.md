@@ -36,7 +36,7 @@ casen generate bpmn --help-schema
       { "id": "task1",  "type": "serviceTask",      "name": "Do Work", "jobType": "my-worker" },
       { "id": "gw",     "type": "exclusiveGateway", "name": "OK?" },
       { "id": "end-ok", "type": "endEvent",         "name": "Done" },
-      { "id": "end-err","type": "endEvent",         "name": "Failed", "eventType": "error" }
+      { "id": "end-err","type": "endEvent",         "name": "Failed", "eventType": "error", "errorCode": "WORK_FAILED" }
     ],
     "flows": [
       { "id": "f1", "from": "start",  "to": "task1" },

@@ -21,6 +21,11 @@ Not deployable on Camunda 8.10: 1 error(s)
 - Message_payment-received: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)
 ```
 
+The same check is exported on its own: `assertDeployable(defs, { placeholders?, camundaVersion? })`
+for a model, `assertDeployableXml(xml)` for XML you did not serialize yourself (a file, an AI
+model's answer). The [deploy gate guide](/docs/guides/deploy-gate) has the error format, the
+placeholder table and every entry point.
+
 The options are those of the builder's gate:
 
 | Option | Default | Effect |
@@ -60,13 +65,6 @@ exhaustive, so a new `BpmnElementType` fails the build here rather than silently
 `task` — which is how `dataObject`, `dataObjectReference` and `dataStoreReference` were lost.
 
 `expand` throws when the diagram cannot be valid BPMN. The cases are:
-
-- a flow that names an element outside its own scope (a sub-process's flows see only that
-  sub-process's children)
-- a boundary event without a host in the same scope
-- a duplicate id, across elements, flows and processes
-- a missing element or flow id
-- an unknown `eventType`
 
 ---
 Source: https://bpmnkit.com/docs/packages/core

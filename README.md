@@ -39,6 +39,7 @@ It follows the [docspack](https://docspack.dev) package format, so the upstream 
 ## Highlights
 
 - **Full-stack BPMN tooling** — parse, build, validate, auto-layout, and export BPMN 2.0 / DMN 1.3 / Camunda Forms with a fluent TypeScript API
+- **Deployable by default** — every BPMN that BPMN Kit generates (builder, compact JSON, process text, migration, plans, the CLI, the AI tools) passes Zeebe's own deploy checks or is refused with one line per problem; placeholder values are an explicit opt-in ([the deploy gate](https://bpmnkit.com/docs/guides/deploy-gate))
 - **Interactive browser editor** — drag-and-drop BPMN editor with 40+ element types, undo/redo, multi-file tabs, AI chat, and in-browser process simulation
 - **34 composable plugins** — minimap, command palette, AI bridge, token highlight, storage, history, connector catalog, optimizer, and more
 - **100+ OpenAPI connectors** — generate Camunda REST connector templates from 100 built-in API specs (18,000+ endpoints: GitHub, Stripe, Slack, Jira, and more)
@@ -114,10 +115,6 @@ Camunda. "Zeebe" and "Camunda" are trademarks of Camunda Services GmbH.
 | [`@bpmnkit/ui`](packages/ui) | Shared design tokens and CSS theme system (`--bpmnkit-*` variables) |
 | [`@bpmnkit/astro-shared`](packages/astro-shared) | Shared CSS tokens and metadata for Astro apps |
 
-### Rust crates
-
-A native Rust twin of the core (`crates/`, `MIT OR Apache-2.0`), one `cargo add bpmnkit` away (a facade crate with a feature per crate): `bpmnkit-feel`, `bpmnkit-xml`, `bpmnkit-bpmn`, `bpmnkit-dmn`, `bpmnkit-form`, `bpmnkit-lint`, `bpmnkit-compat`, `bpmnkit-layout`, `bpmnkit-builder`, `bpmnkit-text` and `bpmnkit-spec`. A shared conformance suite (`conformance/`, recorded from the TS packages) and nightly differential fuzzing (`crates/bpmnkit-fuzz`) keep both implementations identical. See [Rust crates](https://bpmnkit.com/docs/packages/rust-crates) and [`doc/rust-crates-release.md`](doc/rust-crates-release.md).
-
 ## Quick Start
 
 ### SDK — parse and build BPMN in TypeScript
@@ -133,9 +130,9 @@ import { Bpmn } from "@bpmnkit/core"
 const xml = Bpmn.export(
   Bpmn.createProcess("order-flow")
     .startEvent("start")
-    .serviceTask("validate", { name: "Validate Order", type: "order-validator" })
+    .serviceTask("validate", { name: "Validate Order", taskType: "order-validator" })
     .exclusiveGateway("check", { name: "Valid?" })
-      .branch("yes", (b) => b.condition("= valid").serviceTask("fulfill", { type: "fulfillment-service" }).endEvent("done"))
+      .branch("yes", (b) => b.condition("= valid").serviceTask("fulfill", { taskType: "fulfillment-service" }).endEvent("done"))
       .branch("no",  (b) => b.defaultFlow().endEvent("rejected"))
     .build()
 )

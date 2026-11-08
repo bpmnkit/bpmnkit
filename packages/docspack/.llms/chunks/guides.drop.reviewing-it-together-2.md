@@ -1,5 +1,13 @@
 # Drop — Share & Co-edit — Reviewing it together (2)
 
+**Comments.** Press **Comments** to open the review panel. With it open, click an element
+on the diagram to comment on that element, or just write to comment on the file as a
+whole. DMN, form and FEEL files take whole-file comments only. Each element with open
+threads gets a small numbered marker on the canvas; click it to jump to its threads.
+Threads take replies, and anyone who has commented on the drop can **Resolve** a thread or
+**Reopen** it. New comments, edits and resolutions reach everyone who has the drop open
+as they happen.
+
 A comment is anchored by the element's id, not by its position. It stays with the element
 when the element moves, and survives any number of edits. If a later edit deletes the
 element, the comment is still listed, marked **on a removed element** with the name the

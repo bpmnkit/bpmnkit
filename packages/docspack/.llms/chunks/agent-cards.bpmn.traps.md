@@ -8,7 +8,7 @@
 - FEEL in the builder starts with `=` (`"=amount > 1000"`); a value without `=` is a literal string.
 - Unknown option names are silently dropped: `timer: { duration }` does nothing; use `timerDuration`.
 
-- **`build()` refuses what Camunda 8 cannot deploy**: a gateway branch without `condition`/`defaultFlow`, a send task or message throw/end event without `taskType`, a static correlation key, anything after an end event; then Zeebe's rules (`DeployabilityError`). `build({ validate: false })` for a draft; `Bpmn.export` gates Camunda 8 models the same way.
+- **`build()`, `expand()` and `Bpmn.export` refuse what Camunda 8 cannot deploy**: a gateway branch without `condition`/`defaultFlow`, a task or message throw/end event without `taskType`, a message without name or `correlationKey`, a timer without a time, anything after an end event. The `DeployabilityError` message has one line per problem, `- <id>: <message> (zeebe/<rule>)`: fix each. `{ placeholders: true }` fills documented values to replace before deploying; `{ validate: false }` only for a draft.
 
 ---
 Source: https://bpmnkit.com/docs/agent-cards/bpmn

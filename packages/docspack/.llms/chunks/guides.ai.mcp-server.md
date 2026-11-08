@@ -24,11 +24,15 @@ as `io.github.bpmnkit/bpmnkit`.
 Tools:
 
 - `bpmn_create`, `bpmn_read`, `bpmn_update` — write and read `.bpmn` files through the compact
-  format, with auto-layout applied on write
-- `bpmn_validate` — run the optimizer's findings over a file
+  format, with auto-layout applied on write. A diagram Camunda 8 would not deploy is not written:
+  the tool error is the [deploy gate](/docs/guides/deploy-gate)'s message; `placeholders: true`
+  fills documented placeholder values instead
+- `bpmn_validate` — run the optimizer's findings over a file, plus the deploy gate's verdict
+  (`summary.deployable`, `deployability`)
 - `bpmn_simulate`, `bpmn_run_history` — run a process on the local engine and read past runs
   (needs the proxy running: `casen proxy start`)
-- `bpmn_deploy` — deploy to the active `casen` profile (Camunda 8 or a local Reebe)
+- `bpmn_deploy` — deploy to the active `casen` profile (Camunda 8 or a local Reebe), after the
+  deploy gate (`validate: false` skips it)
 - `form_create`, `dmn_create` — Camunda Forms and DMN decision tables
 - `worker_list`, `worker_scaffold` — list and generate job workers
 - `pattern_list`, `pattern_get` — the domain patterns in `@bpmnkit/patterns`

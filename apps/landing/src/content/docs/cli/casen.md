@@ -280,6 +280,8 @@ casen lint lint order-process.bpmn --profile deploy
 casen check order-process.bpmn review.form discount.dmn --deploy   # BPMN, DMN and forms together
 casen deploy deploy order-process.bpmn                   # local Reebe
 casen deploy deploy order-process.bpmn --target camunda8 # active Camunda 8 profile
+# `casen deploy` runs the deploy gate before it sends a .bpmn file and exits 1 with its
+# lines when Camunda 8 would refuse it; --no-validate sends the file anyway.
 ```
 
 `casen synth` reports any problems keyed by JSON path in the plan (e.g. `steps[2].connector.values.token`) — fix the plan, never the XML, and re-run. A model Camunda 8 would refuse on deploy is not written: each reason is a problem keyed `element:<id>`, worded `Not deployable on Camunda <version>: <message> (zeebe/<rule>)`. `--placeholders` fills the values the plan leaves out (a job type, a correlation key) with documented placeholders and lists each one to replace. From code, `compilePlan` and `mergePlan` take `validate` (default `true`), `placeholders` and `camundaVersion`; a refused model returns no `xml`, and the fills are in `result.placeholders`. If the plan has a `tests` array, `casen synth` also writes a `<file>.bpmn.tests.json` sidecar, runnable with `casen test test <file>.bpmn`.

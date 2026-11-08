@@ -272,7 +272,7 @@ Run a task or sub-process once per item in a collection:
 A model that targets Camunda 8 (every new one does: the builder writes
 `modeler:executionPlatform="Camunda Cloud"`) must deploy. `build()` first applies the builder's
 own rules, which name the call or option that fixes the model, and then runs
-[`assertDeployable`](/docs/guides/executable-camunda-process), which throws a
+[`assertDeployable`](/docs/guides/deploy-gate), which throws a
 `DeployabilityError` listing everything Zeebe would still reject.
 
 | Rule | Error (example) |

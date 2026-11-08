@@ -368,6 +368,11 @@ Not deployable on Camunda 8.10: 1 error(s)
 - Message_payment-received: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)
 ```
 
+The same check is exported on its own: `assertDeployable(defs, { placeholders?, camundaVersion? })`
+for a model, `assertDeployableXml(xml)` for XML you did not serialize yourself (a file, an AI
+model's answer). The [deploy gate guide](/docs/guides/deploy-gate) has the error format, the
+placeholder table and every entry point.
+
 The options are those of the builder's gate:
 
 | Option | Default | Effect |
