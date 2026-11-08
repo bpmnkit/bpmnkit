@@ -78,3 +78,15 @@ Some rejected cases are deliberately incomplete. Most are gaps.
 - **Lint**: `zeebe/*` findings are left out of lint on elements another `deploy` error (a `deploy/*` or `compat/*` finding) already flags; `validateDeployable` reports them all.
 - **reebe** (session 4): deploys run `validate_deployable_xml` with a resolver over the deployment's other resources, so reebe decides Z111/Z118/Z130/Z136 for processes and decisions and Z183 (naming both resources, as Zeebe does). It adds Z35 from `compat/no-loop`, which follows `bpmn:incoming`/`bpmn:outgoing`, and accepts a `definitions` without `id`. Forms and other resource types stay undecided, because reebe cannot deploy them. Not in reebe-wasm (size budget).
 - **Broker-only checks**: `zeebe-broker-nightly.yml` deploys the corpus and `doc/deployability/broker-repro/` (Z35, Z130, Z183) to real 8.6/8.7/8.8/8.10 engines, which covers what zeebe-check cannot run. The Z35 repro assumes the broker's straight-through-loop detector is on by default.
+
+## Result of session 3 (2026-11-08): one gate on every generator
+
+- One gate: `assertDeployable(defs, { camundaVersion?, placeholders? })` / `assertDeployableXml` (TS) and `bpmnkit_compat::zeebe::assert_deployable` (Rust) throw `DeployabilityError` with one line per Zeebe error; `placeholders: true` fills the documented values and reports them. Docs: `apps/landing/src/content/docs/guides/deploy-gate.md`; decisions per phase: `gate-plan.md`.
+- Every generator goes through it by default: builder `build()`, `expand`, process text (at `expand`), C7→C8 migration, connector templates (`not-deployable` problems), patterns, optimize fixes, `compilePlan`/`mergePlan`, `Bpmn.export` ("auto" when the model targets Camunda 8), and the CLI, proxy, MCP, studio, Drop, demo and examples callers. `validate: false` is the opt-out, used only for work in progress and render-only output, each with a reason.
+- Zeebe 8.9.28 rejections (`pnpm zeebe:check`), before session 3 → after:
+  - builder 43/183 → 30/185;
+  - process text 36/236 → 0/223;
+  - compact 72/113 → 40/119;
+  - bpmn round trips 38/51 → 37/51;
+  - migrate (newly checked) 83/100 → 63/89.
+- Every rejection left is an intentional case (`deployable: false` + `deployableReason` in its `case.json`): models with elements Camunda 8 does not support (complex gateway, transaction, compensation pairs), fragments built with `validate: false` to pin a generator's shape, and round trips of sources Zeebe itself rejects. `known-undeployable.json` is empty (107 → 0) and stays shrink-only.
