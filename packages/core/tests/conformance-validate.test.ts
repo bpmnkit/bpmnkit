@@ -79,7 +79,8 @@ const cases = fs
 	.map((d) => d.name)
 	.sort()
 
-describe("conformance/validate", () => {
+// Registered only when there are cases: vitest fails on a suite with no tests.
+describe.runIf(cases.length > 0)("conformance/validate", () => {
 	for (const name of cases) {
 		const dir = path.join(root, name)
 		const caseFile = path.join(dir, "case.json")
