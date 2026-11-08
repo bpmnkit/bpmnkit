@@ -105,7 +105,8 @@ export function renderBpmnBlock(
 
 	let html = `<figure class="bpmnkit-diagram" style="margin:1.5em 0">${svg}`
 	if (options.link) {
-		const href = options.link({ xml: Bpmn.export(defs), title })
+		// The user's own file, shown or written back as it is, not refused for deploy errors.
+		const href = options.link({ xml: Bpmn.export(defs, { validate: false }), title })
 		html += `<figcaption style="font-size:0.875em;margin-top:0.5em"><a href="${escapeHtml(href)}">Open in BPMN Kit</a></figcaption>`
 	}
 	html += "</figure>"

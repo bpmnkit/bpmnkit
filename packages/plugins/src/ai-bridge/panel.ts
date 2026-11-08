@@ -870,7 +870,12 @@ export function createAiPanel(options: PanelOptions): {
 					if (currentDefs) {
 						const ctx = options.getCurrentContext?.()
 						if (ctx) {
-							await saveCheckpoint(ctx.projectId, ctx.fileId, Bpmn.export(currentDefs))
+							// A work-in-progress diagram: saving it must not depend on whether Zeebe would deploy it.
+							await saveCheckpoint(
+								ctx.projectId,
+								ctx.fileId,
+								Bpmn.export(currentDefs, { validate: false }),
+							)
 						}
 					}
 					options.loadXml(directXml)
@@ -1002,7 +1007,12 @@ export function createAiPanel(options: PanelOptions): {
 					if (currentDefs) {
 						const ctx = options.getCurrentContext?.()
 						if (ctx) {
-							await saveCheckpoint(ctx.projectId, ctx.fileId, Bpmn.export(currentDefs))
+							// A work-in-progress diagram: saving it must not depend on whether Zeebe would deploy it.
+							await saveCheckpoint(
+								ctx.projectId,
+								ctx.fileId,
+								Bpmn.export(currentDefs, { validate: false }),
+							)
 						}
 					}
 					options.loadXml(resultXml)
@@ -1200,7 +1210,8 @@ export function createAiPanel(options: PanelOptions): {
 		try {
 			for await (const token of streamImprove(
 				options.serverUrl,
-				Bpmn.export(defs),
+				// The work-in-progress diagram to improve: not refused for deploy errors.
+				Bpmn.export(defs, { validate: false }),
 				backendSelect.value,
 				signal,
 				(ops, autoFixCount) => {

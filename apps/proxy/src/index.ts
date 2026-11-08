@@ -563,8 +563,10 @@ const handleRequest: http.RequestListener = async (req, res) => {
 
 			// Write input as BPMN XML (mcp-server reads XML, not CompactDiagram JSON)
 			// Use fixedDefs if available (auto-fixes already applied); fall back to raw expand
-			if (fixedDefs) writeFileSync(inputFile, Bpmn.export(fixedDefs))
-			else if (currentCompact) writeFileSync(inputFile, Bpmn.export(expand(currentCompact)))
+			// A work-in-progress diagram for the MCP editor: not gated for deploy errors here.
+			if (fixedDefs) writeFileSync(inputFile, Bpmn.export(fixedDefs, { validate: false }))
+			else if (currentCompact)
+				writeFileSync(inputFile, Bpmn.export(expand(currentCompact), { validate: false }))
 
 			const mcpConfig = {
 				mcpServers: {
@@ -623,7 +625,8 @@ const handleRequest: http.RequestListener = async (req, res) => {
 			if (now - lastFrameAt < PREVIEW_FRAME_MS) return
 			lastFrameAt = now
 			try {
-				sendPreview(Bpmn.export(defs))
+				// A streamed preview frame is a partial diagram.
+				sendPreview(Bpmn.export(defs, { validate: false }))
 			} catch (err) {
 				console.error(`[server] preview frame dropped: ${String(err)}`)
 			}
@@ -1403,7 +1406,8 @@ const handleRequest: http.RequestListener = async (req, res) => {
 					)
 					res.write(`data: ${JSON.stringify({ type: "problems", problems: edited.problems })}\n\n`)
 				}
-				const xml = Bpmn.export(edited.definitions)
+				// A work-in-progress diagram: saving it must not depend on whether Zeebe would deploy it.
+				const xml = Bpmn.export(edited.definitions, { validate: false })
 				res.write(`data: ${JSON.stringify({ type: "xml", xml })}\n\n`)
 				console.log(`[server] /improve → ${edited.applied} ops applied, XML emitted`)
 			} catch (err) {

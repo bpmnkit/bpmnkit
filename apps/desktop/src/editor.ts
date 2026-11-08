@@ -222,7 +222,8 @@ const deployPlugin = createDeployPlugin({
 	getDefinitions: () => editorRef?.getDefinitions() ?? null,
 	getXml: () => {
 		const defs = editorRef?.getDefinitions()
-		return defs ? Bpmn.export(defs) : null
+		// A work-in-progress diagram: saving it must not depend on whether Zeebe would deploy it.
+		return defs ? Bpmn.export(defs, { validate: false }) : null
 	},
 	getFileName: () => currentFileName,
 })

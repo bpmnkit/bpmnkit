@@ -163,7 +163,8 @@ function saveState(): void {
 	if (!outputFile) return
 	if (state.kind === "bpmn") {
 		state.data.diagrams = state.data.processes.map((proc) => buildBpmnDiagram(proc))
-		const xml = Bpmn.export(state.data)
+		// A work-in-progress diagram: saving it must not depend on whether Zeebe would deploy it.
+		const xml = Bpmn.export(state.data, { validate: false })
 		const expected = semanticHash(state.data)
 		if (semanticHash(Bpmn.parse(xml)) !== expected) {
 			throw new Error(
@@ -981,7 +982,8 @@ function buildBridge(): Record<string, unknown> {
 				return Form.export(state.data)
 			}
 			state.data.diagrams = state.data.processes.map((proc) => buildBpmnDiagram(proc))
-			return Bpmn.export(state.data)
+			// A work-in-progress diagram: saving it must not depend on whether Zeebe would deploy it.
+			return Bpmn.export(state.data, { validate: false })
 		},
 	}
 

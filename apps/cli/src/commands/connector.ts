@@ -339,7 +339,8 @@ const applyCmd: Command = {
 		// Write beside the target and rename, so an interrupted write cannot leave a half-written .bpmn.
 		const temp = join(dirname(path), `.${process.pid}.casen-apply.tmp`)
 		try {
-			await writeFile(temp, Bpmn.export(result.definitions), "utf-8")
+			// The user's own file, shown or written back as it is, not refused for deploy errors.
+			await writeFile(temp, Bpmn.export(result.definitions, { validate: false }), "utf-8")
 			await rename(temp, path)
 		} catch (err) {
 			await rm(temp, { force: true })

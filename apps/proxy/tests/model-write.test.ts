@@ -16,7 +16,11 @@ describe("writeModelXml", () => {
 
 	const xml = (name: string): string =>
 		Bpmn.export(
-			Bpmn.createProcess("p").startEvent("s").serviceTask("t", { name }).endEvent("e").build(),
+			Bpmn.createProcess("p")
+				.startEvent("s")
+				.serviceTask("t", { name, taskType: "ship" })
+				.endEvent("e")
+				.build(),
 		)
 
 	it("writes BPMN that reads back as the same model", async () => {

@@ -132,7 +132,8 @@ function ensureProcess(processId: string): BpmnProcess {
 	mcpExportXml(): string {
 		if (!__state) throw new Error("mcpInit not called")
 		__state.diagrams = __state.processes.map(buildDiagram)
-		return Bpmn.export(__state)
+		// A work-in-progress diagram: saving it must not depend on whether Zeebe would deploy it.
+		return Bpmn.export(__state, { validate: false })
 	},
 
 	/** Add elements and flows to a process. Returns result message. */

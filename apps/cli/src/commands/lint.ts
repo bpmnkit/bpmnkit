@@ -339,7 +339,8 @@ const lintCmd: Command = {
 			if (fixable.length === 0) {
 				ctx.output.ok("No auto-fixable issues found.")
 			} else {
-				await writeFile(filePath, Bpmn.export(defs), "utf-8")
+				// The user's own file, shown or written back as it is, not refused for deploy errors.
+				await writeFile(filePath, Bpmn.export(defs, { validate: false }), "utf-8")
 				ctx.output.ok(
 					`Fixed ${fixable.length} issue${fixable.length === 1 ? "" : "s"} and wrote ${filePath}`,
 				)

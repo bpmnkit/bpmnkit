@@ -255,7 +255,8 @@ export function createStoragePlugin(
 				if (!currentId) return
 				// Export lazily: only the last change before the debounced save is serialized.
 				const defs = rawDefs as BpmnDefinitions
-				storageApi.scheduleSave(currentId, () => Bpmn.export(defs))
+				// A work-in-progress diagram: saving it must not depend on whether Zeebe would deploy it.
+				storageApi.scheduleSave(currentId, () => Bpmn.export(defs, { validate: false }))
 			}
 			offDiagramChange = anyOn("diagram:change", onDiagramUpdate)
 			anyOn("diagram:load", onDiagramUpdate)

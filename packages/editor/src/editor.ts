@@ -700,7 +700,8 @@ export class BpmnEditor {
 	}
 
 	exportXml(): string {
-		return Bpmn.export(this._defs ?? createEmptyDefinitions())
+		// A work-in-progress diagram: saving it must not depend on whether Zeebe would deploy it.
+		return Bpmn.export(this._defs ?? createEmptyDefinitions(), { validate: false })
 	}
 
 	/**

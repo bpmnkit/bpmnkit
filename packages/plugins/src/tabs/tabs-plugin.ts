@@ -1494,7 +1494,8 @@ export function createTabsPlugin(options: TabsPluginOptions = {}): CanvasPlugin 
 				const activeTab = tabs.find((t) => t.id === activeId)
 				if (!activeTab || activeTab.config.type !== "bpmn") return
 				const defs = rawDefs as BpmnDefinitions
-				const xml = Bpmn.export(defs)
+				// A work-in-progress diagram: saving it must not depend on whether Zeebe would deploy it.
+				const xml = Bpmn.export(defs, { validate: false })
 				// Update stored XML so onTabActivate always receives the latest content
 				activeTab.config = { ...activeTab.config, xml }
 				// Refresh process map for this tab from the model we already have,
