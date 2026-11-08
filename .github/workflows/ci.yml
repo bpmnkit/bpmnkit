@@ -50,6 +50,7 @@ jobs:
           WASM_VERSION=$(node -p "require('./apps/reebe-wasm/package.json').version")
           wasm-pack build apps/reebe/crates/reebe-wasm --target web --scope bpmnkit --out-dir "$GITHUB_WORKSPACE/apps/reebe-wasm"
           node scripts/patch-wasm-pkg.mjs "$WASM_VERSION"
+          node scripts/check-wasm-size.mjs
 
       - name: Build
         run: pnpm build

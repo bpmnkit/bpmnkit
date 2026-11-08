@@ -23,3 +23,10 @@ uuid = { workspace = true, features = ["js"] }
 
 [features]
 default = []
+
+# No wasm-opt: after the size rustflags in apps/reebe/.cargo/config.toml, binaryen
+# shrinks the raw file but grows the gzip (-O: 621 → 648 KB, binaryen 116), and
+# skipping it leaves wasm-pack nothing to download. scripts/check-wasm-size.mjs
+# holds the size budget.
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false

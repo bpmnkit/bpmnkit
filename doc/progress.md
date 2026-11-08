@@ -1,5 +1,24 @@
 # Progress
 
+## 2026-11-08 — reebe-wasm size gate; FEEL regex cache shares compiled patterns
+
+- reebe-wasm (`reebe_wasm_bg.wasm` after wasm-bindgen 0.2.114, gzip -9 / brotli 11), each step on top of the previous:
+
+  | Step | gzip | brotli |
+  |---|---|---|
+  | Before: size rustflags (`opt-level=z`, 1 codegen unit, `panic=abort`), no wasm-opt | 786 KB | 562 KB |
+  | + `lto = "fat"` | 786 KB | 562 KB |
+  | + `wasm-opt -O` (wasm-pack's default; binaryen 116) | 648 KB | 490 KB |
+  | + `wasm-opt -Oz` instead | 649 KB | 492 KB |
+  | `-C strip=symbols`, no wasm-opt (kept) | **621 KB** | **470 KB** |
+  | strip + `wasm-opt -O1` | 614 KB | 468 KB |
+  | strip, regex without Unicode tables (not kept: `\p{…}` stops working) | 568 KB | 441 KB |
+
+- Kept: `-C strip=symbols` in `apps/reebe/.cargo/config.toml` (drops the 1.6 MB `name` section) and `wasm-opt = false` in reebe-wasm's wasm-pack metadata. After the size flags, binaryen shrinks the raw file but grows the gzip; skipping it also removes wasm-pack's binaryen download from every CI build. Not kept: `lto = "fat"` (no gain), `-Oz` (worse than `-O`). FEEL's `tz` and `full-regex` were already off for the browser build. chrono needs `wasmbind` (`Utc::now`), and serde, serde-wasm-bindgen and chrono trims are each under 1%; `panic_immediate_abort` needs nightly `build-std`.
+- Gate: `scripts/check-wasm-size.mjs`, run in ci.yml right after the reebe-wasm build, fails above 640,000 B gzip (621 KB + 3%).
+- Open: the 500 KB goal is ~120 KB away. twiggy: reebe-engine is ~25% of code (`activate_element` alone 72 KB), regex ~10% plus ~53 KB gzip of Unicode tables in `.rodata`, hashbrown 4%, rust_decimal 3%. Options: split `activate_element`/`complete_element` into non-generic helpers, `regex-lite` for the browser build (no Unicode classes), dropping `Debug`/`Display` derives on wasm, nightly `build-std` with `panic_immediate_abort`, and `wasm-opt -O1` (−7 KB here; check it with the binaryen version wasm-pack downloads, 130, which this session could not run).
+- FEEL regex cache: the thread-local cache (Rust) held `Regex` and returned a clone per call; a clone starts with an empty search cache, so a cached `matches()` still cost 7.25 µs. It now holds `Rc<Regex>`: 0.45 µs per cached call; a new pattern each call costs ~45 µs (bench rows in `cargo bench -p bpmnkit-feel`). The TS twin already caches `RegExp` objects (and resets `lastIndex`). Tests for both: flag keying, failed patterns, correctness past the size bound.
+
 ## 2026-11-08 — Rust crates: crates.io trusted publishing (OIDC)
 
 - `release-crates.yml` publish job: `id-token: write`; publishes with `rust-lang/crates-io-auth-action@v1`'s short-lived token. When any crate has no version on crates.io yet (`crates-publish.mjs --print-new`, sparse index), the run falls back to the `CARGO_REGISTRY_TOKEN` secret and then registers the workflow as every crate's trusted publisher (`--trust`, crates.io API, idempotent).
