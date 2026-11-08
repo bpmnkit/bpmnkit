@@ -1,5 +1,23 @@
 # Progress
 
+## 2026-11-08 — Zeebe deployability gap analysis
+
+- New `doc/deployability/`:
+  - 189 Zeebe deploy rejection rules with file:line (`zeebe-rules.md`);
+  - a gap matrix showing which rules BPMN Kit prevents, detects or misses (`gap-matrix.md`);
+  - the TS and Rust generation paths and guards;
+  - 26 repro BPMN files;
+  - a 4-session fix plan (`REPORT.md`).
+- New `tools/zeebe-check/`: a Java CLI that runs Zeebe 8.9.28's own `BpmnValidator` on BPMN files (jars not committed).
+- Zeebe rejects 51/182 builder, 37/236 process-text and 74/111 compact conformance outputs.
+- Counts: P 10, P~ 19, D 1, D~ 90, M 69. No generation path runs a deploy guard automatically.
+- Serializer bugs found:
+  - unbound `xsi:` prefix;
+  - `dataInputAssociation` without `targetRef`;
+  - `isCollection` on `dataObjectReference`;
+  - compact link events without a name.
+- Decision: incomplete input is refused by default, with placeholders as an opt-in.
+
 ## 2026-11-08 — Rust repo health: benches, CI, generated files
 
 - Benches: the builder bench replays `["$let", name, "build"]` as the conformance runner does (it panicked with `unknown op $let`). The FEEL bench gives `fuzz/19` (`count(for x in [67..100000) ...)`) its own rows: it was ~99 % of the old 84 µs/expr average; the other 380 expressions take 1.4 µs parse+eval, 0.3 µs eval.

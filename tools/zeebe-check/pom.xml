@@ -1,0 +1,5 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"><modelVersion>4.0.0</modelVersion>
+<groupId>x</groupId><artifactId>zcheck</artifactId><version>1</version>
+<properties><maven.compiler.release>21</maven.compiler.release><project.build.sourceEncoding>UTF-8</project.build.sourceEncoding></properties>
+<dependencies><dependency><groupId>io.camunda</groupId><artifactId>zeebe-workflow-engine</artifactId><version>8.9.28</version></dependency></dependencies>
+</project>
