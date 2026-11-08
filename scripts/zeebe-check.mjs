@@ -11,7 +11,6 @@ import {
 	mkdirSync,
 	mkdtempSync,
 	readFileSync,
-	readdirSync,
 	rmSync,
 	statSync,
 	writeFileSync,
@@ -19,16 +18,15 @@ import {
 import { tmpdir } from "node:os"
 import { dirname, join, relative } from "node:path"
 import { fileURLToPath } from "node:url"
+import { OUTPUTS, collectCases, listRepros } from "./lib/zeebe-corpus.mjs"
 import {
 	diffExpectations,
 	diffVerdicts,
-	expectationOf,
 	shrinkViolations,
 	sortedObject,
 } from "./zeebe-check-lib.mjs"
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..")
-const conformance = join(root, "conformance")
 const tool = join(root, "tools/zeebe-check")
 const allowPath = join(root, "doc/deployability/known-undeployable.json")
 const allowRel = "doc/deployability/known-undeployable.json"
@@ -106,45 +104,8 @@ function validate(paths) {
 	}
 }
 
-const subdirs = (d) =>
-	existsSync(d)
-		? readdirSync(d, { withFileTypes: true })
-				.filter((e) => e.isDirectory())
-				.map((e) => e.name)
-				.sort()
-		: []
-
-const OUTPUTS = {
-	builder: ["expected/output.bpmn"],
-	text: ["expected/output.bpmn"],
-	compact: ["expected/expanded.bpmn", "expected/output.bpmn"],
-	bpmn: ["expected/roundtrip.bpmn"],
-}
-
-function collect() {
-	const cases = []
-	for (const [gen, files] of Object.entries(OUTPUTS)) {
-		for (const name of subdirs(join(conformance, gen))) {
-			const dir = join(conformance, gen, name)
-			const cj = join(dir, "case.json")
-			const where = relative(root, cj)
-			const exp = expectationOf(existsSync(cj) ? readJson(cj) : undefined, where)
-			for (const f of files) {
-				const abs = join(dir, f)
-				if (existsSync(abs)) cases.push({ key: relative(conformance, abs), gen, abs, ...exp })
-			}
-		}
-	}
-	return cases
-}
-
-function repros() {
-	return existsSync(reproDir)
-		? readdirSync(reproDir)
-				.filter((f) => f.endsWith(".bpmn"))
-				.sort()
-		: []
-}
+const collect = () => collectCases(root)
+const repros = () => listRepros(root)
 
 function pomVersion() {
 	const m = readFileSync(join(tool, "pom.xml"), "utf8").match(

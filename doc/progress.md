@@ -1,5 +1,26 @@
 # Progress
 
+## 2026-11-08 — Zeebe deployability, session 4: nightly real-broker check; reebe adopts the Zeebe validator
+
+- Nightly `.github/workflows/zeebe-broker-nightly.yml` (schedule + `workflow_dispatch`) starts a real engine per version and deploys the corpus through `POST /v2/deployments`. The four versions, pinned by tag and digest:
+  - `camunda/zeebe` 8.6.42 and 8.7.45
+  - `camunda/camunda` 8.8.46 and 8.10.9 (broker only, no secondary storage, no auth)
+
+  `scripts/zeebe-broker-check.mjs` (pure logic in `scripts/zeebe-broker-lib.mjs`, tested against a mock engine) waits for a healthy topology and retries transient answers. Then it checks:
+  - every conformance output must deploy, unless it is allowlisted or marked `deployable: false`;
+  - each repro must be rejected with its recorded errors (skipped when the rule's `since` is newer than the engine);
+  - the new `doc/deployability/broker-repro/` deployments: Z35 straight-through loop, Z130 deployment binding missing or deployed together, Z183 duplicate process id across resources.
+
+  A rejection on an engine older than the file's `executionPlatformVersion` is reported, not failed. Mismatches are uploaded as an artifact. Local runs use `tools/zeebe-broker/docker-compose.yml` (see its README). Corpus collection moved to `scripts/lib/zeebe-corpus.mjs`, shared with `zeebe-check.mjs`.
+- reebe: the deployment processor runs `bpmnkit_compat::zeebe::validate_deployable_xml` on every BPMN resource before anything is stored (cargo feature `zeebe-validate`, on for reebe-engine/api/grpc/server, off for reebe-wasm). Behaviour:
+  - Errors use Zeebe's format.
+  - A resolver over the other resources of the deployment decides `bindingType="deployment"` targets and duplicate process ids. Z183 uses Zeebe's text and names both resources.
+  - Z35 comes from `compat/no-loop`.
+  - A `definitions` without `id` is accepted, as Zeebe does.
+  - reebe's own checks stay.
+- 34 reebe tests used BPMN Zeebe rejects. Most fixtures were fixed: XSD order, `xmlns:xsi`, gateway conditions, message subscriptions. Four tests now assert the deploy rejection. Two keep their intent another way: a parseable FEEL call, and termination through modification.
+- reebe-wasm size: the validator adds ~480 KB gzip (raw cargo wasm 1,199,013 → 1,679,528 B), far over the 640,000 B budget, so it stays off there.
+
 ## 2026-11-08 — Zeebe validator accepts partial models
 
 - `validateDeployable` threw `defs.messages is not iterable` when the lint plugin passed a model without its root-element lists (plugins CI). It now treats missing `processes`, `messages`, `errors`, `signals`, `escalations`, `collaborations` and `diagrams` as empty. Regression test: `packages/core/tests/zeebe-validate-partial-model.test.ts`.
