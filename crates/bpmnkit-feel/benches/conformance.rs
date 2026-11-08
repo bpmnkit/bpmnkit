@@ -47,4 +47,30 @@ fn main() {
         "evaluate only:    {:.2} us/expr",
         eval * 1e6 / (iters * parsed.len()) as f64
     );
+    regex_rows(&opts);
+}
+
+/// `matches()` with one pattern (served by the regex cache) against a new
+/// pattern every call (a compile each time, as before the cache).
+fn regex_rows(opts: &ParseOptions) {
+    let expr = parse("matches(s, p)", opts).expect("matches");
+    let pattern = r"^[A-Z]{2}\d{4}-[a-z]+(\.[a-z]+)*@example\.(com|org)$";
+    let calls = 20_000;
+    let time = |fresh: bool| {
+        let start = Instant::now();
+        for i in 0..calls {
+            let p = if fresh {
+                format!("{pattern}|n{i}")
+            } else {
+                pattern.to_owned()
+            };
+            let mut ctx = Context::new();
+            ctx.insert("s", "AB1234-jo.doe@example.com");
+            ctx.insert("p", p.as_str());
+            black_box(expr.evaluate(&ctx));
+        }
+        start.elapsed().as_secs_f64() * 1e6 / f64::from(calls)
+    };
+    println!("matches() cached pattern: {:.2} us/call", time(false));
+    println!("matches() new pattern:    {:.2} us/call", time(true));
 }
