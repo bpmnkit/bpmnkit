@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 3,
+    "error": 2,
     "info": 0,
     "warning": 1
   },
@@ -51,18 +51,6 @@
       "processId": "proc",
       "severity": "error",
       "suggestion": "Target Camunda 8.2 or newer (modeler:executionPlatformVersion), or remove it."
-    },
-    {
-      "category": "deploy",
-      "elementIds": [
-        "Definitions_1"
-      ],
-      "fixable": false,
-      "id": "zeebe/executable-process",
-      "message": "Must contain at least one executable process",
-      "processId": "proc",
-      "severity": "error",
-      "suggestion": "Mark the process isExecutable=\"true\"."
     }
   ],
   "platform": {
@@ -70,5 +58,5 @@
     "name": "Camunda Cloud",
     "version": "8.6.0"
   },
-  "total": 4
+  "total": 3
 }

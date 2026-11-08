@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 46,
+    "error": 45,
     "info": 38,
     "warning": 68
   },
@@ -1836,18 +1836,6 @@
     {
       "category": "deploy",
       "elementIds": [
-        "feelShadowed"
-      ],
-      "fixable": false,
-      "id": "zeebe/input-mapping",
-      "message": "failed to parse expression 'uuid('",
-      "processId": "contents",
-      "severity": "error",
-      "suggestion": "Use a valid FEEL source and a variable name or dotted path as target."
-    },
-    {
-      "category": "deploy",
-      "elementIds": [
         "secretFine"
       ],
       "fixable": false,
@@ -1875,5 +1863,5 @@
     "name": "Camunda Cloud",
     "version": "8.10.0"
   },
-  "total": 152
+  "total": 151
 }

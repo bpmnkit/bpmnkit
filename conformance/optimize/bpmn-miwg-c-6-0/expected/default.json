@@ -237,18 +237,6 @@
       "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
       "severity": "error",
       "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
-    },
-    {
-      "category": "deploy",
-      "elementIds": [
-        "_af3cbf6a-9c69-460b-9a1d-276711d30213"
-      ],
-      "fixable": false,
-      "id": "zeebe/executable-process",
-      "message": "Must contain at least one executable process",
-      "processId": "_898aa942-9a96-4405-ae71-22b5e2e3d235",
-      "severity": "error",
-      "suggestion": "Mark the process isExecutable=\"true\"."
     }
   ],
   "fixes": [
@@ -264,7 +252,7 @@
       "agentic": 0,
       "connector": 0,
       "data-flow": 0,
-      "deploy": 20,
+      "deploy": 19,
       "extract": 0,
       "feel": 0,
       "feel-syntax": 0,
@@ -274,10 +262,10 @@
       "task-reuse": 0
     },
     "bySeverity": {
-      "error": 21,
+      "error": 20,
       "info": 0,
       "warning": 0
     },
-    "total": 21
+    "total": 20
   }
 }

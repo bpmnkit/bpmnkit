@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 7,
+    "error": 6,
     "info": 0,
     "warning": 3
   },
@@ -122,18 +122,6 @@
     {
       "category": "deploy",
       "elementIds": [
-        "_1373649919111"
-      ],
-      "fixable": false,
-      "id": "zeebe/executable-process",
-      "message": "Must contain at least one executable process",
-      "processId": "WFP-6-",
-      "severity": "error",
-      "suggestion": "Mark the process isExecutable=\"true\"."
-    },
-    {
-      "category": "deploy",
-      "elementIds": [
         "_1ae31d1b-2559-4f78-a3ec-47986a49db48"
       ],
       "fixable": false,
@@ -148,5 +136,5 @@
   "platform": {
     "id": "none"
   },
-  "total": 10
+  "total": 9
 }

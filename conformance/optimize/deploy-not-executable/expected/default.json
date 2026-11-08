@@ -21,18 +21,6 @@
       "processId": "proc",
       "severity": "error",
       "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
-    },
-    {
-      "category": "deploy",
-      "elementIds": [
-        "Definitions_1"
-      ],
-      "fixable": false,
-      "id": "zeebe/executable-process",
-      "message": "Must contain at least one executable process",
-      "processId": "proc",
-      "severity": "error",
-      "suggestion": "Mark the process isExecutable=\"true\"."
     }
   ],
   "fixes": [],
@@ -41,7 +29,7 @@
       "agentic": 0,
       "connector": 0,
       "data-flow": 0,
-      "deploy": 2,
+      "deploy": 1,
       "extract": 0,
       "feel": 0,
       "feel-syntax": 0,
@@ -51,10 +39,10 @@
       "task-reuse": 0
     },
     "bySeverity": {
-      "error": 2,
+      "error": 1,
       "info": 0,
       "warning": 1
     },
-    "total": 3
+    "total": 2
   }
 }

@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 16,
+    "error": 15,
     "info": 0,
     "warning": 12
   },
@@ -337,18 +337,6 @@
     {
       "category": "deploy",
       "elementIds": [
-        "_7e80c232-2bf0-46e0-b77e-29ec586a23a6"
-      ],
-      "fixable": false,
-      "id": "zeebe/executable-process",
-      "message": "Must contain at least one executable process",
-      "processId": "_4a690dd7-809a-4fa9-ad63-515ac6685375",
-      "severity": "error",
-      "suggestion": "Mark the process isExecutable=\"true\"."
-    },
-    {
-      "category": "deploy",
-      "elementIds": [
         "_d74707c7-6af3-4db7-9403-924bfdf6a7d8"
       ],
       "fixable": false,
@@ -376,5 +364,5 @@
   "platform": {
     "id": "none"
   },
-  "total": 28
+  "total": 27
 }

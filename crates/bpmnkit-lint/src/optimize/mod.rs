@@ -145,13 +145,24 @@ pub fn optimize(defs: &BpmnDefinitions, options: &OptimizeOptions) -> Optimizati
     }
 
     // Zeebe's own deploy rules (`zeebe/…`); an element another deploy finding already
-    // marks as an error keeps that finding, which carries the fix (as in TS).
+    // or FEEL syntax finding already marks as an error keeps that finding (as in TS).
     if r.has(Category::Deploy) {
-        let flagged: std::collections::HashSet<String> = findings
+        let errors: Vec<&Finding> = findings
             .iter()
-            .filter(|f| f.data.category == Category::Deploy && f.data.severity == Severity::Error)
+            .filter(|f| {
+                matches!(f.data.category, Category::Deploy | Category::FeelSyntax)
+                    && f.data.severity == Severity::Error
+            })
+            .collect();
+        let flagged: std::collections::HashSet<String> = errors
+            .iter()
             .flat_map(|f| f.data.element_ids.iter().cloned())
             .collect();
+        // Rules that say the same as an existing finding on another element.
+        let not_executable = errors
+            .iter()
+            .any(|f| f.data.id == "deploy/process-not-executable");
+        let covered = |id: &str| id == "zeebe/executable-process" && not_executable;
         let camunda_version = options
             .camunda_version
             .clone()
@@ -163,11 +174,9 @@ pub fn optimize(defs: &BpmnDefinitions, options: &OptimizeOptions) -> Optimizati
                 ..ValidateOptions::default()
             },
         );
-        findings.extend(
-            zeebe
-                .into_iter()
-                .filter(|f| !f.data.element_ids.iter().any(|id| flagged.contains(id))),
-        );
+        findings.extend(zeebe.into_iter().filter(|f| {
+            !covered(&f.data.id) && !f.data.element_ids.iter().any(|id| flagged.contains(id))
+        }));
     }
 
     let count = |pred: &dyn Fn(&Finding) -> bool| findings.iter().filter(|f| pred(f)).count();

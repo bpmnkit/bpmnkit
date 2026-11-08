@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 17,
+    "error": 16,
     "info": 27,
     "warning": 15
   },
@@ -749,18 +749,6 @@
     {
       "category": "deploy",
       "elementIds": [
-        "Definitions__a9e3a63e-db87-4fa1-9091-328acae4f490"
-      ],
-      "fixable": false,
-      "id": "zeebe/executable-process",
-      "message": "Must contain at least one executable process",
-      "processId": "VacationRequestProcess",
-      "severity": "error",
-      "suggestion": "Mark the process isExecutable=\"true\"."
-    },
-    {
-      "category": "deploy",
-      "elementIds": [
         "_f2b0da63-d841-4457-ad85-7d86c8b5c1d2"
       ],
       "fixable": false,
@@ -801,5 +789,5 @@
   "platform": {
     "id": "none"
   },
-  "total": 59
+  "total": 58
 }

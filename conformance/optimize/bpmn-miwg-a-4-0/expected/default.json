@@ -67,18 +67,6 @@
       "processId": "WFP-6-2",
       "severity": "error",
       "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
-    },
-    {
-      "category": "deploy",
-      "elementIds": [
-        "_1373649948794"
-      ],
-      "fixable": false,
-      "id": "zeebe/executable-process",
-      "message": "Must contain at least one executable process",
-      "processId": "WFP-6-1",
-      "severity": "error",
-      "suggestion": "Mark the process isExecutable=\"true\"."
     }
   ],
   "fixes": [],
@@ -87,7 +75,7 @@
       "agentic": 0,
       "connector": 0,
       "data-flow": 0,
-      "deploy": 3,
+      "deploy": 2,
       "extract": 0,
       "feel": 0,
       "feel-syntax": 0,
@@ -97,10 +85,10 @@
       "task-reuse": 0
     },
     "bySeverity": {
-      "error": 3,
+      "error": 2,
       "info": 0,
       "warning": 4
     },
-    "total": 7
+    "total": 6
   }
 }

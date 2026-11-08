@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 2,
+    "error": 1,
     "info": 0,
     "warning": 1
   },
@@ -39,18 +39,6 @@
       "processId": "proc",
       "severity": "error",
       "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
-    },
-    {
-      "category": "deploy",
-      "elementIds": [
-        "Definitions_1"
-      ],
-      "fixable": false,
-      "id": "zeebe/executable-process",
-      "message": "Must contain at least one executable process",
-      "processId": "proc",
-      "severity": "error",
-      "suggestion": "Mark the process isExecutable=\"true\"."
     }
   ],
   "platform": {
@@ -58,5 +46,5 @@
     "name": "Camunda Cloud",
     "version": "8.6.0"
   },
-  "total": 3
+  "total": 2
 }

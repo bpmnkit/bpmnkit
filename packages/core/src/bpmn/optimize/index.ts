@@ -111,18 +111,22 @@ export function optimize(defs: BpmnDefinitions, options?: OptimizeOptions): Opti
 	}
 
 	// Zeebe's own deploy rules (`zeebe/…`), recursive and version-aware. An element
-	// another deploy finding already marks as an error keeps that finding, which
-	// carries the fix; `validateDeployable` still reports everything.
+	// another deploy or FEEL syntax finding already marks as an error keeps that
+	// finding, which says more and may carry a fix; `validateDeployable` still
+	// reports everything.
 	if (resolved.categories.includes("deploy")) {
-		const flagged = new Set(
-			findings
-				.filter((f) => f.category === "deploy" && f.severity === "error")
-				.flatMap((f) => f.elementIds),
+		const errors = findings.filter(
+			(f) => (f.category === "deploy" || f.category === "feel-syntax") && f.severity === "error",
 		)
+		const flagged = new Set(errors.flatMap((f) => f.elementIds))
+		// Rules that say the same as an existing finding on another element.
+		const said = new Set(errors.map((f) => f.id))
+		const covered = (id: string) =>
+			id === "zeebe/executable-process" && said.has("deploy/process-not-executable")
 		const camundaVersion = resolved.camundaVersion ?? targetCamundaVersion(defs)
 		findings.push(
 			...validateDeployable(defs, camundaVersion === undefined ? {} : { camundaVersion }).filter(
-				(f) => !f.elementIds.some((id) => flagged.has(id)),
+				(f) => !covered(f.id) && !f.elementIds.some((id) => flagged.has(id)),
 			),
 		)
 	}

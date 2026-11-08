@@ -79,18 +79,6 @@
       "processId": "proc",
       "severity": "error",
       "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
-    },
-    {
-      "category": "deploy",
-      "elementIds": [
-        "Definitions_1"
-      ],
-      "fixable": false,
-      "id": "zeebe/executable-process",
-      "message": "Must contain at least one executable process",
-      "processId": "proc",
-      "severity": "error",
-      "suggestion": "Mark the process isExecutable=\"true\"."
     }
   ],
   "fixes": [
@@ -106,7 +94,7 @@
       "agentic": 0,
       "connector": 0,
       "data-flow": 0,
-      "deploy": 3,
+      "deploy": 2,
       "extract": 0,
       "feel": 0,
       "feel-syntax": 0,
@@ -116,10 +104,10 @@
       "task-reuse": 0
     },
     "bySeverity": {
-      "error": 3,
+      "error": 2,
       "info": 1,
       "warning": 4
     },
-    "total": 8
+    "total": 7
   }
 }
