@@ -319,17 +319,14 @@ async fn test_job_worker_timeout_retry() {
     // Briefly sleep to let the deadline expire (at least 10 ms).
     tokio::time::sleep(Duration::from_millis(50)).await;
 
-    // Mark timed-out jobs as ACTIVATABLE again.
+    // Mark timed-out jobs as ACTIVATABLE again. The engine's own timeout checker runs every
+    // second and may release the job first, so this call can report 0; what counts is that
+    // the job can be activated again below.
     use reebe_db::state::jobs::JobRepository;
-    let reactivated = JobRepository::new(&pool)
+    JobRepository::new(&pool)
         .mark_timed_out()
         .await
         .expect("mark_timed_out should succeed");
-
-    assert!(
-        reactivated >= 1,
-        "At least one job should have been reactivated after timeout expiry"
-    );
 
     // Verify the job is available for re-activation.
     let re_activated =

@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-08 — reebe: job-timeout test no longer races the engine's checker
+
+- `reebe-engine/tests/compatibility.rs` `test_job_worker_timeout_retry` asserted that its own `mark_timed_out` call released the timed-out job. The engine's background timeout checker (every second) can release it first, which made the count 0 and failed CI once. The test now checks only that the job can be activated again.
+
 ## 2026-11-08 — CI: retry the wasm-pack download
 
 - `ci.yml` fetches wasm-pack from GitHub releases with `curl`; two runs failed on a 504 from that download. It retries, and if GitHub still fails it builds wasm-pack 0.15.0 from crates.io (`cargo install --locked`).
