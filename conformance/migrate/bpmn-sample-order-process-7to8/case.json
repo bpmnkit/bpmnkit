@@ -6,6 +6,11 @@
       "options": {
         "executionPlatformVersion": "8.2.0"
       }
+    },
+    "placeholders": {
+      "options": {
+        "placeholders": true
+      }
     }
   }
 }

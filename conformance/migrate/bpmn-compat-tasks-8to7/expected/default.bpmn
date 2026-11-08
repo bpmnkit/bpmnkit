@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_tasks" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0">
+  <bpmn:message id="Msg_ok" name="ok"/>
+  <bpmn:process id="tasks" camunda:versionTag="" isExecutable="true">
+    <bpmn:startEvent id="start" camunda:formKey="camunda-forms:bpmn:emptyForm"/>
+    <bpmn:task id="plainTask">
+      <bpmn:incoming>flowNoCondition</bpmn:incoming>
+      <bpmn:outgoing>flowA</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:manualTask id="manual">
+      <bpmn:incoming>flowDefault</bpmn:incoming>
+      <bpmn:outgoing>flowB</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:serviceTask id="noType">
+      <bpmn:outgoing>flowConditionFromTask</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="emptyType" camunda:type="external" camunda:topic="">
+      <bpmn:incoming>flowConditionFromTask</bpmn:incoming>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="headers" camunda:type="external" camunda:topic="h"/>
+    <bpmn:scriptTask id="scriptFeel"/>
+    <bpmn:scriptTask id="scriptNone"/>
+    <bpmn:businessRuleTask id="brtNoResult"/>
+    <bpmn:businessRuleTask id="brtBinding"/>
+    <bpmn:businessRuleTask id="brtTagExpr"/>
+    <bpmn:callActivity id="callNoProcess"/>
+    <bpmn:callActivity id="callOptions" calledElement="child" camunda:calledElementBinding="deployment">
+      <bpmn:extensionElements>
+        <camunda:out variables="all"/>
+      </bpmn:extensionElements>
+    </bpmn:callActivity>
+    <bpmn:sendTask id="sendNoType"/>
+    <bpmn:receiveTask id="receiveNoRef"/>
+    <bpmn:receiveTask id="receiveOk" messageRef="Msg_ok"/>
+    <bpmn:userTask id="jobWorkerTask" camunda:candidateUsers="alice"/>
+    <bpmn:userTask id="zeebeTask" camunda:formKey="camunda-forms:bpmn:emptyForm"/>
+    <bpmn:userTask id="noForm"/>
+    <bpmn:userTask id="zeebeTaskOk"/>
+    <bpmn:serviceTask id="multi" camunda:type="external" camunda:topic="m">
+      <bpmn:multiInstanceLoopCharacteristics>
+        <bpmn:extensionElements>
+          <zeebe:loopCharacteristics outputCollection="results"/>
+        </bpmn:extensionElements>
+      </bpmn:multiInstanceLoopCharacteristics>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="multiNoZeebe" camunda:type="external" camunda:topic="m">
+      <bpmn:multiInstanceLoopCharacteristics/>
+    </bpmn:serviceTask>
+    <bpmn:complexGateway id="complex"/>
+    <bpmn:inclusiveGateway id="joinInclusive">
+      <bpmn:incoming>flowA</bpmn:incoming>
+      <bpmn:incoming>flowB</bpmn:incoming>
+    </bpmn:inclusiveGateway>
+    <bpmn:exclusiveGateway id="split" default="flowDefault">
+      <bpmn:outgoing>flowNoCondition</bpmn:outgoing>
+      <bpmn:outgoing>flowDefault</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:eventBasedGateway id="eventGateway">
+      <bpmn:outgoing>flowEventGateway</bpmn:outgoing>
+    </bpmn:eventBasedGateway>
+    <bpmn:receiveTask id="afterEventGateway" messageRef="Msg_ok">
+      <bpmn:incoming>flowEventGateway</bpmn:incoming>
+    </bpmn:receiveTask>
+    <bpmn:subProcess id="collapsed">
+      <bpmn:startEvent id="collapsedStart"/>
+    </bpmn:subProcess>
+    <bpmn:transaction id="tx">
+      <bpmn:startEvent id="txStart"/>
+    </bpmn:transaction>
+    <bpmn:adHocSubProcess id="adHocEmpty" cancelRemainingInstances="false">
+      <bpmn:intermediateThrowEvent id="adHocThrow"/>
+      <bpmn:subProcess id="adHocEventSub" triggeredByEvent="true">
+        <bpmn:startEvent id="adHocEventStart">
+          <bpmn:messageEventDefinition id="M1" messageRef="Msg_ok"/>
+        </bpmn:startEvent>
+      </bpmn:subProcess>
+      <bpmn:completionCondition>=done</bpmn:completionCondition>
+    </bpmn:adHocSubProcess>
+    <bpmn:dataObject id="data"/>
+    <bpmn:sequenceFlow id="flowA" sourceRef="plainTask" targetRef="joinInclusive"/>
+    <bpmn:sequenceFlow id="flowB" sourceRef="manual" targetRef="joinInclusive"/>
+    <bpmn:sequenceFlow id="flowNoCondition" sourceRef="split" targetRef="plainTask"/>
+    <bpmn:sequenceFlow id="flowDefault" sourceRef="split" targetRef="manual"/>
+    <bpmn:sequenceFlow id="flowConditionFromTask" sourceRef="noType" targetRef="emptyType">
+      <bpmn:conditionExpression>=true</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="flowEventGateway" sourceRef="eventGateway" targetRef="afterEventGateway"/>
+  </bpmn:process>
+  <bpmn:process id="notExecutable" isExecutable="false">
+    <bpmn:complexGateway id="complexInNonExecutable"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram">
+    <bpmndi:BPMNPlane id="Plane" bpmnElement="tasks">
+      <bpmndi:BPMNShape id="collapsed_di" bpmnElement="collapsed" isExpanded="false">
+        <dc:Bounds x="0" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

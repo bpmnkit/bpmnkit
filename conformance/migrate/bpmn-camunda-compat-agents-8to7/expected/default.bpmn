@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_agents" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="agents" isExecutable="true">
+    <bpmn:serviceTask id="outsideTool" camunda:type="external" camunda:topic="t">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="x">=fromAi(toolCall.x, "x")</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:adHocSubProcess id="plainAdHoc" name="Plain">
+      <bpmn:serviceTask id="plainTool" camunda:type="external" camunda:topic="t">
+        <bpmn:extensionElements>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="x">=fromAi(toolCall.x)</camunda:inputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+    </bpmn:adHocSubProcess>
+    <bpmn:adHocSubProcess id="tools" name="Tools">
+      <bpmn:serviceTask id="toolGood" camunda:type="external" camunda:topic="t">
+        <bpmn:documentation>Looks up the weather.</bpmn:documentation>
+        <bpmn:extensionElements>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="city">=fromAi(toolCall.city, "The city", "string")</camunda:inputParameter>
+            <camunda:inputParameter name="days">=fromAi(value: toolCall.days, description: "Days")</camunda:inputParameter>
+            <camunda:outputParameter name="toolCallResult">=weather</camunda:outputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="toolNoResult" camunda:type="external" camunda:topic="t"/>
+      <bpmn:serviceTask id="toolUnmapped" camunda:type="external" camunda:topic="t">
+        <bpmn:extensionElements>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="a">=fromAi("city")</camunda:inputParameter>
+            <camunda:inputParameter name="b">=fromAi(city, 1)</camunda:inputParameter>
+            <camunda:inputParameter name="c">=fromAi()</camunda:inputParameter>
+            <camunda:outputParameter name="result">=r</camunda:outputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="toolCasing" camunda:type="external" camunda:topic="t">
+        <bpmn:extensionElements>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="a">=FromAI(toolCall.x)</camunda:inputParameter>
+            <camunda:inputParameter name="b">=fromAi(toolCall.a.b) + fromAi(other.x)</camunda:inputParameter>
+            <camunda:inputParameter name="c">=fromAi(if x then toolCall.x else toolCall.y)</camunda:inputParameter>
+            <camunda:inputParameter name="d">=fromAi(toolCall["x"], null)</camunda:inputParameter>
+            <camunda:inputParameter name="e">=fromAi(null) + fromAi(1 + 2) + fromAi(-1)</camunda:inputParameter>
+            <camunda:inputParameter name="f">=fromAi([1]) + fromAi((toolCall.p)) + fromAi(toolCall.q, ("d"))</camunda:inputParameter>
+            <camunda:outputParameter name="ToolCallResult">=r</camunda:outputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="toolDuplicateKey" camunda:type="external" camunda:topic="t">
+        <bpmn:extensionElements>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="a">=fromAi(toolCall.q)</camunda:inputParameter>
+            <camunda:inputParameter name="b">=fromAi(toolCall.q, "again")</camunda:inputParameter>
+            <camunda:outputParameter name="toolCallResult">=r</camunda:outputParameter>
+            <camunda:outputParameter name="toolcallresult.extra">=r</camunda:outputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="toolOutputFromAi" camunda:type="external" camunda:topic="t">
+        <bpmn:extensionElements>
+          <camunda:inputOutput>
+            <camunda:outputParameter name="toolCallResult">=fromAi(toolCall.o)</camunda:outputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="chainA" camunda:type="external" camunda:topic="t" name="Fetch">
+        <bpmn:extensionElements>
+          <camunda:inputOutput>
+            <camunda:outputParameter name="toolCallResult">=r</camunda:outputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+        <bpmn:outgoing>chainAtoB</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="chainB" camunda:type="external" camunda:topic="t">
+        <bpmn:extensionElements>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="y">=fromAi(toolCall.y)</camunda:inputParameter>
+            <camunda:outputParameter name="toolCallResult">=r</camunda:outputParameter>
+            <camunda:outputParameter name="toolCallResult">=context put(toolCallResult, "b", 1)</camunda:outputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+        <bpmn:incoming>chainAtoB</bpmn:incoming>
+        <bpmn:outgoing>chainBtoC</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:scriptTask id="chainC">
+        <bpmn:incoming>chainBtoC</bpmn:incoming>
+      </bpmn:scriptTask>
+      <bpmn:serviceTask id="branch" camunda:type="external" camunda:topic="t">
+        <bpmn:outgoing>branchToA</bpmn:outgoing>
+        <bpmn:outgoing>branchToB</bpmn:outgoing>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="branchA" camunda:type="external" camunda:topic="t">
+        <bpmn:extensionElements>
+          <camunda:inputOutput>
+            <camunda:outputParameter name="toolCallResult">=a</camunda:outputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+        <bpmn:incoming>branchToA</bpmn:incoming>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="branchB" camunda:type="external" camunda:topic="t">
+        <bpmn:incoming>branchToB</bpmn:incoming>
+      </bpmn:serviceTask>
+      <bpmn:subProcess id="toolSub">
+        <bpmn:startEvent id="toolSubStart">
+          <bpmn:outgoing>toolSubToStep</bpmn:outgoing>
+        </bpmn:startEvent>
+        <bpmn:serviceTask id="toolSubStep" camunda:type="external" camunda:topic="t">
+          <bpmn:extensionElements>
+            <camunda:inputOutput>
+              <camunda:inputParameter name="k">=fromAi(toolCall.k)</camunda:inputParameter>
+            </camunda:inputOutput>
+          </bpmn:extensionElements>
+          <bpmn:incoming>toolSubToStep</bpmn:incoming>
+        </bpmn:serviceTask>
+        <bpmn:sequenceFlow id="toolSubToStep" sourceRef="toolSubStart" targetRef="toolSubStep"/>
+      </bpmn:subProcess>
+      <bpmn:serviceTask id="toolBoundary" camunda:type="external" camunda:topic="t">
+        <bpmn:extensionElements>
+          <camunda:inputOutput>
+            <camunda:outputParameter name="toolCallResult">=a</camunda:outputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:boundaryEvent id="toolBoundaryError" attachedToRef="toolBoundary">
+        <bpmn:extensionElements>
+          <camunda:inputOutput>
+            <camunda:outputParameter name="toolCallResult">=e</camunda:outputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+        <bpmn:errorEventDefinition id="toolBoundaryErrorDef"/>
+      </bpmn:boundaryEvent>
+      <bpmn:sequenceFlow id="chainAtoB" sourceRef="chainA" targetRef="chainB"/>
+      <bpmn:sequenceFlow id="chainBtoC" sourceRef="chainB" targetRef="chainC"/>
+      <bpmn:sequenceFlow id="branchToA" sourceRef="branch" targetRef="branchA">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=fromAi(toolCall.z) = 1</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="branchToB" sourceRef="branch" targetRef="branchB"/>
+    </bpmn:adHocSubProcess>
+    <bpmn:adHocSubProcess id="legacyAgent" camunda:type="external" camunda:topic="agent">
+      <bpmn:serviceTask id="legacyTool" camunda:type="external" camunda:topic="t"/>
+    </bpmn:adHocSubProcess>
+    <bpmn:adHocSubProcess id="forkedAgent" camunda:type="external" camunda:topic="io.camunda.agenticai:aiagent-job-worker:1">
+      <bpmn:serviceTask id="forkedTool" camunda:type="external" camunda:topic="t"/>
+    </bpmn:adHocSubProcess>
+    <bpmn:adHocSubProcess id="definedAgent">
+      <bpmn:serviceTask id="definedTool" camunda:type="external" camunda:topic="t"/>
+    </bpmn:adHocSubProcess>
+  </bpmn:process>
+</bpmn:definitions>
+

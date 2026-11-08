@@ -1,23 +1,3 @@
 {
-  "report": {
-    "counts": {
-      "convertible": 1,
-      "manual": 0,
-      "unsupported": 0
-    },
-    "findings": [
-      {
-        "applied": true,
-        "construct": "modeler:executionPlatform",
-        "elementId": "Definitions_1",
-        "elementType": "definitions",
-        "message": "Execution platform set to Camunda Cloud 8.2.0.",
-        "processId": "",
-        "severity": "convertible",
-        "suggestion": "Camunda Modeler opens the file as a Camunda 8 diagram."
-      }
-    ],
-    "total": 1
-  },
-  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.2.0\">\n  <bpmn:process id=\"Process_1\" isExecutable=\"true\">\n    <bpmn:subProcess id=\"Undo\" isForCompensation=\"true\">\n      <bpmn:startEvent id=\"UndoStart\"/>\n    </bpmn:subProcess>\n    <bpmn:transaction id=\"Tx\" isForCompensation=\"true\"/>\n    <bpmn:adHocSubProcess id=\"Adhoc\" isForCompensation=\"true\"/>\n    <bpmn:subProcess id=\"Evt\" triggeredByEvent=\"true\" isForCompensation=\"true\"/>\n    <bpmn:subProcess id=\"Plain\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+  "error": "Not deployable on Camunda 8.2: 5 error(s)\n- Tx: Elements of type 'Transaction' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/ (zeebe/element-type)\n- Process_1: Must have at least one start event (zeebe/process-start-event)\n- Tx: Must have exactly one start event (zeebe/sub-process-start-event)\n- Evt: Must have exactly one start event (zeebe/sub-process-start-event)\n- Plain: Must have exactly one start event (zeebe/sub-process-start-event)"
 }

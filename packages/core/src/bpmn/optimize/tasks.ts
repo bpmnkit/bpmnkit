@@ -179,7 +179,8 @@ function buildExtractedDefs(
 
 	const extractedProcess: BpmnProcess = {
 		id: newProcessId,
-		isExecutable: false,
+		// The call activity that replaces the group calls this process, so it has to deploy.
+		isExecutable: true,
 		extensionElements: [],
 		flowElements: [startEvent, serviceTask, endEvent],
 		sequenceFlows: [
@@ -256,7 +257,14 @@ function buildExtractedDefs(
 	return {
 		id: generateId("Definitions"),
 		targetNamespace: "http://bpmn.io/schema/bpmn",
-		namespaces: {},
+		// Without them the serialized file is not well-formed XML (an unbound `bpmn:` prefix).
+		namespaces: {
+			bpmn: "http://www.omg.org/spec/BPMN/20100524/MODEL",
+			bpmndi: "http://www.omg.org/spec/BPMN/20100524/DI",
+			dc: "http://www.omg.org/spec/DD/20100524/DC",
+			di: "http://www.omg.org/spec/DD/20100524/DI",
+			zeebe: "http://camunda.org/schema/zeebe/1.0",
+		},
 		unknownAttributes: {},
 		errors: [],
 		escalations: [],

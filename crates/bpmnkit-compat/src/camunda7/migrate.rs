@@ -13,6 +13,7 @@ use bpmnkit_bpmn::{
     Attrs, BpmnConditionExpression, BpmnDefinitions, BpmnEventDefinition, BpmnFlowElement,
     BpmnMultiInstanceLoopCharacteristics, BpmnProcess, BpmnProcessContents, XmlElement,
 };
+use crate::zeebe::gate::{assert_deployable, AssertOptions, DeployabilityError, PlaceholderFill};
 use bpmnkit_feel::{parse_partial, ParseOptions};
 use serde::Serialize;
 use std::collections::HashSet;
@@ -88,29 +89,89 @@ impl Camunda7Report {
     }
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub struct Camunda7ConvertOptions {
     /// Written as `modeler:executionPlatformVersion`. Default `"8.10.0"`.
     pub execution_platform_version: Option<String>,
+    /// Refuse a result Zeebe would reject on deploy (default `true`); `false` returns the
+    /// conversion as it is.
+    pub validate: bool,
+    /// Fill the gate's documented placeholders instead of refusing; each fill is a
+    /// `manual` finding in the report.
+    pub placeholders: bool,
+    /// The Camunda 8 version the gate checks. Default: `execution_platform_version`.
+    pub camunda_version: Option<String>,
+}
+
+impl Default for Camunda7ConvertOptions {
+    fn default() -> Self {
+        Self {
+            execution_platform_version: None,
+            validate: true,
+            placeholders: false,
+            camunda_version: None,
+        }
+    }
+}
+
+impl Camunda7ConvertOptions {
+    /// The conversion as it is, deployable or not (TS's `validate: false`).
+    pub fn ungated() -> Self {
+        Self {
+            validate: false,
+            ..Self::default()
+        }
+    }
 }
 
 #[derive(Debug, Clone)]
 pub struct Camunda7Conversion {
     pub definitions: BpmnDefinitions,
     pub report: Camunda7Report,
+    /// The placeholder values written; empty unless `placeholders` filled something.
+    pub placeholders: Vec<PlaceholderFill>,
 }
 
-/// TS's `ValidationError`.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub struct Camunda7Error(pub String);
+/// What `convert_camunda7` fails with: TS's `ValidationError` (the model already targets
+/// Camunda 8), or the `DeployabilityError` the gate threw.
+#[derive(Debug, Clone, PartialEq)]
+pub struct Camunda7Error {
+    pub message: String,
+    /// Set when the deploy gate refused the result; `message` is its message.
+    pub deployability: Option<Box<DeployabilityError>>,
+}
 
-impl fmt::Display for Camunda7Error {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.write_str(&self.0)
+impl Camunda7Error {
+    pub fn new(message: impl Into<String>) -> Self {
+        Self {
+            message: message.into(),
+            deployability: None,
+        }
     }
 }
 
-impl std::error::Error for Camunda7Error {}
+impl From<DeployabilityError> for Camunda7Error {
+    fn from(error: DeployabilityError) -> Self {
+        Self {
+            message: error.to_string(),
+            deployability: Some(Box::new(error)),
+        }
+    }
+}
+
+impl fmt::Display for Camunda7Error {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(&self.message)
+    }
+}
+
+impl std::error::Error for Camunda7Error {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        self.deployability
+            .as_deref()
+            .map(|e| e as &(dyn std::error::Error + 'static))
+    }
+}
 
 /// Whether `modeler:executionPlatform` names Camunda Cloud (TS's `detectExecutionPlatform`).
 pub(crate) fn targets_camunda_cloud(d: &BpmnDefinitions) -> bool {
@@ -127,23 +188,88 @@ pub fn convert_camunda7(
 ) -> Result<Camunda7Conversion, Camunda7Error> {
     // A Camunda 8 model's job-worker user tasks would silently become Camunda user tasks.
     if targets_camunda_cloud(definitions) {
-        return Err(Camunda7Error(
-            "The model already targets Camunda 8 (modeler:executionPlatform names Camunda Cloud); there is nothing to migrate.".into(),
+        return Err(Camunda7Error::new(
+            "The model already targets Camunda 8 (modeler:executionPlatform names Camunda Cloud); there is nothing to migrate.",
         ));
     }
     let mut draft = definitions.clone();
     let mut converter = Converter::new(&draft, options);
     converter.run(&mut draft);
-    let report = Camunda7Report::new(converter.findings);
+    if !options.validate {
+        return Ok(Camunda7Conversion {
+            definitions: draft,
+            report: Camunda7Report::new(converter.findings),
+            placeholders: vec![],
+        });
+    }
+    // A refusal is the gate's error; `analyze_camunda7` still gives the report.
+    let gated = assert_deployable(
+        &draft,
+        &AssertOptions {
+            camunda_version: Some(
+                options
+                    .camunda_version
+                    .clone()
+                    .or_else(|| options.execution_platform_version.clone())
+                    .unwrap_or_else(|| DEFAULT_PLATFORM_VERSION.to_string()),
+            ),
+            placeholders: options.placeholders,
+            ..AssertOptions::default()
+        },
+    )?;
+    let placeholders = gated.placeholders;
+    let definitions = gated.definitions.into_owned();
+    for fill in &placeholders {
+        converter.add_placeholder(fill, &definitions);
+    }
     Ok(Camunda7Conversion {
-        definitions: draft,
-        report,
+        definitions,
+        report: Camunda7Report::new(converter.findings),
+        placeholders,
     })
 }
 
 /// Reports what migrating a Camunda 7 model to Camunda 8 takes, without changing it.
 pub fn analyze_camunda7(definitions: &BpmnDefinitions) -> Result<Camunda7Report, Camunda7Error> {
-    convert_camunda7(definitions, &Camunda7ConvertOptions::default()).map(|c| c.report)
+    // Analysis never gates: the report is what a refused conversion leaves to do.
+    convert_camunda7(definitions, &Camunda7ConvertOptions::ungated()).map(|c| c.report)
+}
+
+/// The type and process of the element a placeholder went to (TS's `locateForReport`);
+/// root elements belong to no process.
+fn locate_for_report(definitions: &BpmnDefinitions, id: &str) -> (String, String) {
+    fn visit(contents: &BpmnProcessContents, id: &str) -> Option<&'static str> {
+        for el in &contents.flow_elements {
+            if el.base().id == id {
+                return Some(el.type_name());
+            }
+            if let Some(nested) = el.contents().and_then(|c| visit(c, id)) {
+                return Some(nested);
+            }
+        }
+        contents
+            .sequence_flows
+            .iter()
+            .any(|f| f.id == id)
+            .then_some("sequenceFlow")
+    }
+    for process in &definitions.processes {
+        if let Some(ty) = visit(&process.contents, id) {
+            return (ty.to_string(), process.id.clone());
+        }
+    }
+    let root = if definitions.messages.iter().any(|m| m.id == id) {
+        "message"
+    } else if definitions.signals.iter().any(|m| m.id == id) {
+        "signal"
+    } else if definitions.errors.iter().any(|m| m.id == id) {
+        "error"
+    } else if definitions.escalations.iter().any(|m| m.id == id) {
+        "escalation"
+    } else {
+        ""
+    };
+    (root.to_string(), String::new())
 }
 
 // ---------------------------------------------------------------------------
@@ -474,6 +600,26 @@ impl Converter {
 
     fn keep_ext(&mut self, key: u32) {
         self.handled_elements.insert(key);
+    }
+
+    /// Lists a gate placeholder as work left: the value has to be replaced before going live.
+    fn add_placeholder(&mut self, fill: &PlaceholderFill, filled: &BpmnDefinitions) {
+        // The filled copy: a placeholder can be a message the fill created.
+        let (element_type, process_id) = locate_for_report(filled, &fill.element_id);
+        let field = fill.field.as_str();
+        self.findings.push(Camunda7Finding {
+            element_id: fill.element_id.clone(),
+            element_type,
+            process_id,
+            construct: format!("placeholder {field}"),
+            severity: Manual,
+            message: format!(
+                "Placeholder {field} \"{}\" written so the model deploys ({}).",
+                fill.value, fill.rule
+            ),
+            suggestion: "Replace it with the real value; the placeholder does nothing useful at runtime.".into(),
+            applied: true,
+        });
     }
 
     fn add(

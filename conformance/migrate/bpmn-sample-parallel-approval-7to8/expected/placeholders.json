@@ -1,0 +1,72 @@
+{
+  "report": {
+    "counts": {
+      "convertible": 5,
+      "manual": 1,
+      "unsupported": 0
+    },
+    "findings": [
+      {
+        "applied": true,
+        "construct": "bpmn:userTask",
+        "elementId": "prepare",
+        "elementType": "userTask",
+        "message": "Implemented as a Camunda user task (zeebe:userTask).",
+        "processId": "parallel-approval",
+        "severity": "convertible",
+        "suggestion": "zeebe:userTask"
+      },
+      {
+        "applied": true,
+        "construct": "bpmn:userTask",
+        "elementId": "mgr-approve",
+        "elementType": "userTask",
+        "message": "Implemented as a Camunda user task (zeebe:userTask).",
+        "processId": "parallel-approval",
+        "severity": "convertible",
+        "suggestion": "zeebe:userTask"
+      },
+      {
+        "applied": true,
+        "construct": "bpmn:userTask",
+        "elementId": "legal-review",
+        "elementType": "userTask",
+        "message": "Implemented as a Camunda user task (zeebe:userTask).",
+        "processId": "parallel-approval",
+        "severity": "convertible",
+        "suggestion": "zeebe:userTask"
+      },
+      {
+        "applied": true,
+        "construct": "bpmn:userTask",
+        "elementId": "finance-check",
+        "elementType": "userTask",
+        "message": "Implemented as a Camunda user task (zeebe:userTask).",
+        "processId": "parallel-approval",
+        "severity": "convertible",
+        "suggestion": "zeebe:userTask"
+      },
+      {
+        "applied": true,
+        "construct": "modeler:executionPlatform",
+        "elementId": "Definitions_1",
+        "elementType": "definitions",
+        "message": "Execution platform set to Camunda Cloud 8.10.0.",
+        "processId": "",
+        "severity": "convertible",
+        "suggestion": "Camunda Modeler opens the file as a Camunda 8 diagram."
+      },
+      {
+        "applied": true,
+        "construct": "placeholder jobType",
+        "elementId": "finalize",
+        "elementType": "serviceTask",
+        "message": "Placeholder jobType \"placeholder-finalize\" written so the model deploys (zeebe/service-task-definition).",
+        "processId": "parallel-approval",
+        "severity": "manual",
+        "suggestion": "Replace it with the real value; the placeholder does nothing useful at runtime."
+      }
+    ],
+    "total": 6
+  }
+}

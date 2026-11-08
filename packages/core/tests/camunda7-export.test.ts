@@ -126,7 +126,10 @@ describe("convertCamunda8To7", () => {
 			),
 		)
 		const back = Bpmn.export(
-			convertCamunda7(Bpmn.parse(Bpmn.export(definitions, { validate: false }))).definitions,
+			convertCamunda7(Bpmn.parse(Bpmn.export(definitions, { validate: false })), {
+				// A one-task fragment: it pins the round trip, not deployability.
+				validate: false,
+			}).definitions,
 			{ validate: false },
 		)
 		expect(back).toContain('type="charge"')

@@ -1,5 +1,12 @@
 {
   "runs": {
-    "default": {}
-  }
+    "default": {
+      "options": {
+        "validate": false
+      }
+    },
+    "gated": {}
+  },
+  "deployable": false,
+  "deployableReason": "Pins the report for a message catch with no correlation key, converted with validate: false; run gated records the refusal."
 }

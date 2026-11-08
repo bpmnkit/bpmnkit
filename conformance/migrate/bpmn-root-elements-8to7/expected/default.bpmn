@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_roots" targetNamespace="http://bpmn.io/schema/bpmn" exporter="BPMN Kit" exporterVersion="0.1.0">
+  <bpmn:documentation>Definitions-level documentation.</bpmn:documentation>
+  <bpmn:escalation id="Escalation_manual" name="NeedsManualReview" escalationCode="MANUAL_REVIEW"/>
+  <bpmn:error id="Error_payment" name="PaymentFailed" errorCode="PAYMENT_FAILED"/>
+  <bpmn:message id="Message_order_placed" name="OrderPlaced"/>
+  <bpmn:message id="Message_cancelled" name="OrderCancelled"/>
+  <bpmn:signal id="Signal_halt" name="HaltProcessing"/>
+  <bpmn:process id="Process_roots" camunda:versionTag="v3" name="Root element carrier" isExecutable="true">
+    <bpmn:documentation>Process-level documentation.</bpmn:documentation>
+    <bpmn:startEvent id="Start_order">
+      <bpmn:outgoing>Flow_start_end</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MED_start" messageRef="Message_order_placed"/>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="End_done">
+      <bpmn:incoming>Flow_start_end</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_start_end" sourceRef="Start_order" targetRef="End_done"/>
+  </bpmn:process>
+</bpmn:definitions>
+

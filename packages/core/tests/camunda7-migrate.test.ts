@@ -6,9 +6,11 @@ import {
 	type BpmnDefinitions,
 	type BpmnFlowElement,
 	type Camunda7Finding,
+	DeployabilityError,
 	ValidationError,
 	type XmlElement,
 	analyzeCamunda7,
+	assertDeployable,
 	convertCamunda7,
 	lintDiagram,
 	semanticHash,
@@ -43,7 +45,8 @@ interface Converted {
 }
 
 function convert(xml: string): Converted {
-	const { definitions, report } = convertCamunda7(Bpmn.parse(xml))
+	// Each case is a fragment that pins one rule (no start event); the gate has its own tests.
+	const { definitions, report } = convertCamunda7(Bpmn.parse(xml), { validate: false })
 	const all = (elements: BpmnFlowElement[]): BpmnFlowElement[] =>
 		elements.flatMap((element) =>
 			"flowElements" in element ? [element, ...all(element.flowElements)] : [element],
@@ -767,8 +770,8 @@ describe("process and document", () => {
 		})
 		expect(c.definitions.namespaces.zeebe).toBe("http://camunda.org/schema/zeebe/1.0")
 		expect(
-			convertCamunda7(Bpmn.parse(c7("")), { executionPlatformVersion: "8.8.0" }).definitions
-				.unknownAttributes["modeler:executionPlatformVersion"],
+			convertCamunda7(Bpmn.parse(c7("")), { executionPlatformVersion: "8.8.0", validate: false })
+				.definitions.unknownAttributes["modeler:executionPlatformVersion"],
 		).toBe("8.8.0")
 	})
 
@@ -785,7 +788,7 @@ describe("process and document", () => {
 			c7('<bpmn:serviceTask id="t" camunda:type="external" camunda:topic="x"/>'),
 		)
 		const before = semanticHash(input)
-		convertCamunda7(input)
+		convertCamunda7(input, { validate: false })
 		expect(semanticHash(input)).toBe(before)
 	})
 
@@ -799,7 +802,9 @@ describe("process and document", () => {
 
 	it("analyzes with the same findings it converts with", () => {
 		const xml = c7('<bpmn:serviceTask id="t" camunda:class="com.acme.A"/>')
-		expect(analyzeCamunda7(Bpmn.parse(xml))).toEqual(convertCamunda7(Bpmn.parse(xml)).report)
+		expect(analyzeCamunda7(Bpmn.parse(xml))).toEqual(
+			convertCamunda7(Bpmn.parse(xml), { validate: false }).report,
+		)
 	})
 })
 
@@ -814,7 +819,8 @@ describe("fixture conversions", () => {
 	for (const name of FIXTURES) {
 		describe(name, () => {
 			const source = readFileSync(join(fixtureDirectory, name), "utf-8")
-			const { definitions, report } = convertCamunda7(Bpmn.parse(source))
+			// Two of the three need values only a person knows; the gate's tests cover that.
+			const { definitions, report } = convertCamunda7(Bpmn.parse(source), { validate: false })
 			const exported = Bpmn.export(definitions, { validate: false })
 
 			it("deploy-lints clean everywhere it reported nothing to do by hand", () => {
@@ -870,7 +876,10 @@ describe("fixture conversions", () => {
 			})
 
 			it("converts the same without the source XML, which is no longer needed", () => {
-				const withSource = convertCamunda7(Bpmn.parse(source), { sourceXml: source })
+				const withSource = convertCamunda7(Bpmn.parse(source), {
+					sourceXml: source,
+					validate: false,
+				})
 				expect(withSource.report).toEqual(report)
 				expect(Bpmn.export(withSource.definitions, { validate: false })).toBe(exported)
 			})
@@ -879,9 +888,12 @@ describe("fixture conversions", () => {
 
 	it("removes the loop and event-definition attributes it converted from the claim model", () => {
 		const source = readFileSync(join(fixtureDirectory, "claim-handling.bpmn"), "utf-8")
-		const exported = Bpmn.export(convertCamunda7(Bpmn.parse(source)).definitions, {
-			validate: false,
-		})
+		const exported = Bpmn.export(
+			convertCamunda7(Bpmn.parse(source), { validate: false }).definitions,
+			{
+				validate: false,
+			},
+		)
 		expect(exported).toContain('inputCollection="=claim.items"')
 		expect(exported).toContain('type="notify-claimant"')
 		for (const attribute of ["collection", "elementVariable", "type", "topic"]) {
@@ -917,5 +929,100 @@ describe("fixture conversions", () => {
 			"Task_notify camunda:delegateExpression",
 			"Task_escalate camunda:expression",
 		])
+	})
+})
+
+// ---------------------------------------------------------------------------
+// Deploy gate
+// ---------------------------------------------------------------------------
+
+describe("deploy gate", () => {
+	const fixture = (name: string): BpmnDefinitions =>
+		Bpmn.parse(readFileSync(join(fixtureDirectory, name), "utf-8"))
+
+	it("returns a model Zeebe accepts", () => {
+		const { definitions, placeholders } = convertCamunda7(fixture("invoice-approval.bpmn"))
+		expect(placeholders).toEqual([])
+		expect(() => assertDeployable(definitions)).not.toThrow()
+	})
+
+	it("refuses a result Zeebe would reject, naming every reason", () => {
+		let error: unknown
+		try {
+			convertCamunda7(fixture("order-fulfillment.bpmn"))
+		} catch (e) {
+			error = e
+		}
+		expect(error).toBeInstanceOf(DeployabilityError)
+		expect((error as DeployabilityError).message).toBe(
+			[
+				"Not deployable on Camunda 8.10: 2 error(s)",
+				"- Message_PaymentConfirmed: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)",
+				"- Task_summary: Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element (zeebe/script-task-implementation)",
+			].join("\n"),
+		)
+		// The report of the refused model is still there.
+		expect(analyzeCamunda7(fixture("order-fulfillment.bpmn")).counts.manual).toBe(8)
+	})
+
+	it("checks the version it targets, or camundaVersion", () => {
+		const head = (options: Parameters<typeof convertCamunda7>[1]) => {
+			try {
+				convertCamunda7(fixture("claim-handling.bpmn"), options)
+				return "accepted"
+			} catch (e) {
+				return (e as Error).message.split("\n")[0]
+			}
+		}
+		expect(head({ executionPlatformVersion: "8.6.0" })).toBe(
+			"Not deployable on Camunda 8.6: 1 error(s)",
+		)
+		expect(head({ camundaVersion: "8.8" })).toBe("Not deployable on Camunda 8.8: 1 error(s)")
+	})
+
+	it("fills placeholders on request and lists each fill in the report", () => {
+		const { definitions, report, placeholders } = convertCamunda7(fixture("claim-handling.bpmn"), {
+			placeholders: true,
+		})
+		expect(placeholders).toEqual([
+			{
+				elementId: "Task_payout",
+				field: "jobType",
+				value: "placeholder-Task_payout",
+				rule: "zeebe/service-task-definition",
+			},
+		])
+		expect(report.findings.at(-1)).toEqual({
+			elementId: "Task_payout",
+			elementType: "serviceTask",
+			processId: "claim-handling",
+			construct: "placeholder jobType",
+			severity: "manual",
+			message:
+				'Placeholder jobType "placeholder-Task_payout" written so the model deploys (zeebe/service-task-definition).',
+			suggestion: "Replace it with the real value; the placeholder does nothing useful at runtime.",
+			applied: true,
+		})
+		expect(() => assertDeployable(definitions)).not.toThrow()
+	})
+
+	it("lists a message the fill created as a root element", () => {
+		const { report } = convertCamunda7(fixture("order-fulfillment.bpmn"), { placeholders: true })
+		expect(
+			report.findings
+				.filter((f) => f.construct.startsWith("placeholder"))
+				.map((f) => `${f.elementId} ${f.elementType} ${f.processId} ${f.construct}`),
+		).toEqual([
+			"Message_PaymentConfirmed message  placeholder correlationKey",
+			"Task_summary scriptTask order-fulfillment placeholder jobType",
+		])
+	})
+
+	it("still refuses what no placeholder can fix", () => {
+		expect(() =>
+			convertCamunda7(Bpmn.parse(c7('<bpmn:startEvent id="s"/><bpmn:transaction id="tx"/>')), {
+				placeholders: true,
+			}),
+		).toThrow(DeployabilityError)
 	})
 })

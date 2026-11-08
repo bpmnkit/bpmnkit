@@ -186,8 +186,20 @@ for (const kind of ["lint", "optimize", "compat", "migrate"] as const) {
 			describe(name, () => {
 				for (const [runName, opts] of Object.entries(runs)) {
 					it(runName, () => {
-						const out = run(kind, ext, fs.readFileSync(file, "utf8"), opts)
+						let out = run(kind, ext, fs.readFileSync(file, "utf8"), opts)
 						const target = path.join(dir, "expected", `${runName}.json`)
+						if (kind === "migrate") {
+							// The converted model is a file of its own, so zeebe-check can deploy it.
+							const { xml, ...rest } = JSON.parse(out) as { xml?: string }
+							out = json(rest)
+							const bpmn = path.join(dir, "expected", `${runName}.bpmn`)
+							if (xml !== undefined) {
+								if (RECORD) fs.writeFileSync(bpmn, xml)
+								expect(xml).toBe(fs.readFileSync(bpmn, "utf8"))
+							} else {
+								expect(fs.existsSync(bpmn)).toBe(false)
+							}
+						}
 						if (RECORD) fs.writeFileSync(target, out)
 						expect(out).toBe(fs.readFileSync(target, "utf8"))
 					})

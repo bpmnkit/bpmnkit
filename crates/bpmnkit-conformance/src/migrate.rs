@@ -51,10 +51,12 @@ pub fn check_case(dir: &Path, id: &str) -> Result<(), String> {
         let r = convert_camunda8_to_7(&defs);
         (json!({ "findings": r.findings }), r.definitions)
     } else {
+        let o = &run.options["options"];
         let options = Camunda7ConvertOptions {
-            execution_platform_version: run.options["options"]["executionPlatformVersion"]
-                .as_str()
-                .map(str::to_string),
+            execution_platform_version: o["executionPlatformVersion"].as_str().map(str::to_string),
+            validate: o["validate"].as_bool().unwrap_or(true),
+            placeholders: o["placeholders"].as_bool().unwrap_or(false),
+            camunda_version: o["camundaVersion"].as_str().map(str::to_string),
         };
         match convert_camunda7(&defs, &options) {
             Ok(r) => (
@@ -69,7 +71,9 @@ pub fn check_case(dir: &Path, id: &str) -> Result<(), String> {
     };
     tooling::json_diff(&report, &expected["report"]).map_err(|d| format!("report {d}"))?;
     let xml = serialize_bpmn(&defs);
-    let want = expected["xml"].as_str().unwrap_or_default();
+    // The recorder writes the converted model beside the report, as `<run>.bpmn`.
+    let want = tooling::read(&run.expected.with_extension("bpmn"))?;
+    let want = want.as_str();
     if xml != want {
         return Err(format!("xml {}", first_diff(&xml, want)));
     }

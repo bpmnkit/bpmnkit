@@ -22,6 +22,7 @@ export {
 export type { ConnectorSummary, ConnectorInputSpec, ConnectorDirection } from "./catalog.js"
 export { applyConnectorTemplate, applyElementTemplate } from "./apply.js"
 export type { ApplyOptions, ApplyResult, ApplyProblem } from "./apply.js"
+export type { ApplyToModelOptions } from "./deployability.js"
 export { applyTemplateToElement } from "./apply-element.js"
 export type { ApplyToElementResult } from "./apply-element.js"
 export { applyTemplates } from "./apply-many.js"

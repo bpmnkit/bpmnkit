@@ -213,7 +213,7 @@ fixable}` plus `produces` / `consumes` / `bpmnlintRule` when TS sets them. Ids c
 | `lint/` (`.dmn` / `.form`) | none | `{"findings": lintDmn(xml)}` / `{"findings": lintForm(json)}` |
 | `optimize/` | `OptimizeOptions` without functions | `{"findings", "summary", "fixes"}`: `optimize(...)`, and for each fixable finding (by index) a fresh parse, `optimize`, then that finding's `applyFix`: `{"index", "id", "description", "xml": serializeBpmn(defs), "generated"?: serializeBpmn(generated)}` |
 | `compat/` | `{"version"?: "8.6"}` (absent: the model's own) | `{"findings": analyzeCamundaCompat(defs, version)}` |
-| `migrate/` | `{"direction": "7to8" \| "8to7", "options"?: Camunda7ConvertOptions}` (default `7to8`) | `{"report", "xml": serializeBpmn(result.definitions)}` from `convertCamunda7` / `convertCamunda8To7` |
+| `migrate/` | `{"direction": "7to8" \| "8to7", "options"?: Camunda7ConvertOptions}` (default `7to8`; `validate`, `placeholders`, `camundaVersion` reach the deploy gate) | `{"report"}` from `convertCamunda7` / `convertCamunda8To7`, and `expected/<run>.bpmn`: `serializeBpmn(result.definitions)` (none when the run throws). `pnpm zeebe:check` deploys every `7to8` `.bpmn` |
 
 `migrate/juel.jsonl`: one `{"id": "juel/<n>", "juel": "...", "options"?: {...}, "expected":
 <translateJuelToFeel result>}` per line; the recorder rewrites `expected`.
@@ -221,7 +221,10 @@ fixable}` plus `produces` / `consumes` / `bpmnlintRule` when TS sets them. Ids c
 Details the table leaves open, as implemented:
 
 - A run that throws records `{"error": "<message>"}` (the `convertCamunda7` refusal of a Camunda 8
-  model, a bad `.bpmnlintrc`). Rust compares the message.
+  model or the deploy gate's `DeployabilityError`, a bad `.bpmnlintrc`). Rust compares the message.
+- `migrate/` fragments (`c7mig-*`, `c7exp-009`, `ts-bug-*`: one rule, no start event) convert with
+  `"validate": false` and are `deployable: false`; whole models keep the gated `default` run (which
+  records the refusal) and add a `placeholders` run whose output must deploy.
 - `connectorRequirements` (an option of `lint/` and `optimize/` runs) stands in for
   `resolveConnectorRequirements`: `{"<templateId>": ["key", ...]}`; the resolver returns the listed
   keys not among the bound ones, and a template id not in the table requires nothing. Without the

@@ -11,6 +11,11 @@ export const OUTPUTS = {
 	bpmn: ["expected/roundtrip.bpmn"],
 	// What assertDeployable filled with placeholders must deploy.
 	gate: ["expected/fill.bpmn"],
+	// convertCamunda7 output, one file per Camunda 7 -> 8 run (`8to7` runs write Camunda 7 BPMN).
+	migrate: (caseJson) =>
+		Object.entries(caseJson?.runs ?? { default: {} })
+			.filter(([, run]) => run.direction !== "8to7")
+			.map(([name]) => `expected/${name}.bpmn`),
 }
 
 const subdirs = (d) =>
@@ -30,11 +35,9 @@ export function collectCases(root) {
 			const dir = join(conformance, gen, name)
 			const cj = join(dir, "case.json")
 			const where = relative(root, cj)
-			const exp = expectationOf(
-				existsSync(cj) ? JSON.parse(readFileSync(cj, "utf8")) : undefined,
-				where,
-			)
-			for (const f of files) {
+			const caseJson = existsSync(cj) ? JSON.parse(readFileSync(cj, "utf8")) : undefined
+			const exp = expectationOf(caseJson, where)
+			for (const f of typeof files === "function" ? files(caseJson) : files) {
 				const abs = join(dir, f)
 				if (existsSync(abs)) cases.push({ key: relative(conformance, abs), gen, abs, ...exp })
 			}

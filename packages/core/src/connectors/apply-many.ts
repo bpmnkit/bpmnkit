@@ -10,9 +10,10 @@
 import { levenshtein } from "../bpmn/optimize/variable-flow.js"
 import type { BpmnDefinitions } from "../index.js"
 import { applyTemplateToElement } from "./apply-element.js"
-import { type ApplyOptions, resolveValues } from "./apply.js"
+import { resolveValues } from "./apply.js"
 import { templateIdForAlias } from "./cards.js"
 import { getTemplate, propertyKey } from "./catalog.js"
+import { type ApplyToModelOptions, appliedDeployProblems } from "./deployability.js"
 import type { ElementTemplate, TemplateCondition } from "./template-types.js"
 
 export interface TemplateApplication {
@@ -138,17 +139,27 @@ function unwrittenValues(
  *
  * @param definitions - The model; not mutated.
  * @param entries - Elements anywhere in the model, nested ones included.
+ * - **Deployability.** Unless `validate: false`, the applied elements are checked
+ *   with Zeebe's deploy rules once all entries are applied, and each error is a
+ *   problem naming its element (`Not deployable on Camunda <version>: ...`). The
+ *   rest of the model is not checked, so an unfinished diagram reports only what
+ *   the templates left undeployable.
+ *
  * @param options - `omitDefaults: true` leaves out properties whose value would only be the
  *   template's default (a key the entry does not give, on a property that is neither Hidden nor
  *   required), so the element carries what the caller chose. Default `false`.
+ *   `validate` (default `true`) and `camundaVersion` as above.
  */
 export function applyTemplates(
 	definitions: BpmnDefinitions,
 	entries: TemplateApplication[],
-	options: ApplyOptions = {},
+	options: ApplyToModelOptions = {},
 ): { definitions: BpmnDefinitions; problems: TemplateApplicationProblem[] } {
 	const problems: TemplateApplicationProblem[] = []
 	let current = definitions
+	const applied: string[] = []
+	// One check at the end, not one per entry: a later entry can finish what an earlier one began.
+	const each = { ...options, validate: false }
 
 	for (const entry of entries) {
 		const { elementId } = entry
@@ -167,7 +178,7 @@ export function applyTemplates(
 		const values = Object.fromEntries(
 			Object.entries(entry.values).map(([key, value]) => [key, String(value)]),
 		)
-		const result = applyTemplateToElement(current, elementId, template, values, options)
+		const result = applyTemplateToElement(current, elementId, template, values, each)
 		// A refusal returns the model it was given; its one problem says all there is.
 		const refused = result.definitions === current
 		current = result.definitions
@@ -183,7 +194,11 @@ export function applyTemplates(
 			}
 			problems.push(reported)
 		}
-		if (!refused) problems.push(...unwrittenValues(template, elementId, values))
+		if (!refused) {
+			problems.push(...unwrittenValues(template, elementId, values))
+			if (!applied.includes(elementId)) applied.push(elementId)
+		}
 	}
+	problems.push(...appliedDeployProblems(current, applied, options))
 	return { definitions: current, problems }
 }

@@ -9,6 +9,11 @@
     },
     "to-c7-roundtrip": {
       "direction": "8to7"
+    },
+    "placeholders": {
+      "options": {
+        "placeholders": true
+      }
     }
   }
 }

@@ -762,7 +762,8 @@ mod tests {
         let c7_xml = serialize_bpmn(&convert_camunda8_to_7(&defs).definitions);
         let back = convert_camunda7(
             &parse_bpmn(&c7_xml).expect("parses"),
-            &Camunda7ConvertOptions::default(),
+            // A one-task fragment: it pins the round trip, not deployability.
+            &Camunda7ConvertOptions::ungated(),
         )
         .expect("converts");
         let out = serialize_bpmn(&back.definitions);

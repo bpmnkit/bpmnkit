@@ -117,6 +117,12 @@ const synthCmd: Command = {
 				"Dry-run each process with every connector mocked, and list the secrets it needs; a run that cannot reach its end fails",
 			type: "boolean",
 		},
+		{
+			name: "placeholders",
+			description:
+				"Fill documented placeholder values (job types, correlation keys, ...) where the plan leaves one out, instead of refusing a model Camunda 8 would not deploy",
+			type: "boolean",
+		},
 	],
 	examples: [
 		{ description: "Compile a plan to BPMN", command: "casen synth order-process.plan.json" },
@@ -136,11 +142,14 @@ const synthCmd: Command = {
 		const plan = await readPlan(planPath)
 		const mergeTarget = typeof ctx.flags.merge === "string" ? ctx.flags.merge : undefined
 
+		// A model Camunda 8 would refuse compiles to no XML, with the reasons as problems.
+		const options = {
+			resolveConnector: applyConnectorTemplate,
+			placeholders: ctx.flags.placeholders === true,
+		}
 		const result = mergeTarget
-			? mergePlan(Bpmn.parse(await readFile(resolve(mergeTarget), "utf-8")), plan, {
-					resolveConnector: applyConnectorTemplate,
-				})
-			: compilePlan(plan, { resolveConnector: applyConnectorTemplate })
+			? mergePlan(Bpmn.parse(await readFile(resolve(mergeTarget), "utf-8")), plan, options)
+			: compilePlan(plan, options)
 
 		const check =
 			ctx.flags.check === true && result.xml ? await checkDiagram(result.xml) : undefined
@@ -156,7 +165,15 @@ const synthCmd: Command = {
 			for (const p of result.problems) ctx.output.info(`✖ [${p.path}] ${p.message}`)
 		}
 		if (!result.xml) {
-			throw new Error(`Compilation failed with ${result.problems.length} problem(s) — see above`)
+			const refused = result.problems.some((p) => p.message.startsWith("Not deployable on Camunda"))
+			throw new Error(
+				`Compilation failed with ${result.problems.length} problem(s) — see above${refused ? "; pass --placeholders to fill placeholder values for what the plan leaves out" : ""}`,
+			)
+		}
+		for (const fill of result.placeholders ?? []) {
+			ctx.output.info(
+				`• placeholder ${fill.field} "${fill.value}" on ${fill.elementId} — replace it`,
+			)
 		}
 
 		const outputPath = resolve(
