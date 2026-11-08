@@ -1,5 +1,28 @@
 # Progress
 
+## 2026-11-08 — Zeebe deployability, session 1: serializer fixes and the Zeebe CI oracle
+
+- Fixed in TS and Rust, each with a regression test on both sides and a conformance case:
+  - (a) `xmlns:xsi` is declared whenever `xsi:type` is used (it was added to the serializer's namespace repair list);
+  - (b) input data associations target a `__targetRef_placeholder` property;
+  - (c) `isCollection` moved from `dataObjectReference` to its `dataObject`;
+  - (d) the compact `linkName` field;
+  - (e) message catches without a `correlationKey` are refused (Zeebe needs `zeebe:subscription` on every caught message except a process start), and `startEvent` takes `correlationKey` for event sub-process starts;
+  - (f) conditions are normalised to `=` FEEL, with C7 `${…}` going through the JUEL converter.
+- New conformance cases:
+  - `builder/condition-without-equals`, `data-object-reference-collection` and `event-sub-process-message-no-key`;
+  - `compact/expand-link-names` and `expand-condition-to-feel`.
+  - `event-intermediate-catch-message-no-key` now records the error. Three event-sub-process cases gained a `correlationKey`.
+- `pnpm zeebe:check` (`scripts/zeebe-check.mjs`) and a `zeebe-check` CI job run Zeebe 8.9.28's validator over every recorded BPMN and the repros:
+  - case metadata (`deployable: false` + `deployableReason`, 83 cases) marks the intentionally undeployable ones;
+  - `doc/deployability/known-undeployable.json` (107 entries) holds the generator gaps left for session 3, and may only shrink (`--base`);
+  - repro verdicts are pinned in `doc/deployability/repro/expected-verdicts.json`.
+- Zeebe rejections, before → after:
+  - builder 51 → 43 of 183;
+  - process-text 37 → 36 of 236;
+  - compact 74 → 72 of 113;
+  - bpmn round trips 38 → 38 of 51.
+- Two more serializer XSD bugs were found and are allowlisted for later: `ioSpecification` is written after the data associations (9 MIWG round trips), and compact `expand` writes an `eventSubProcess` element.
 ## 2026-11-08 — bpmnlint parity skips deployability repro z07
 
 - `packages/core/tests/node/bpmnlint-parity.test.ts` checks every `.bpmn` in the repo. The repro `doc/deployability/repro/z07_ncname_nested.bpmn` has a nested id that is not an XML name on purpose, and bpmn-moddle skips such ids, so the test now lists it with the other intentionally malformed files.

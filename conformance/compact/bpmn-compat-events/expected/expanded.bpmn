@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_events" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_events" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:process id="events" isExecutable="true">
     <bpmn:startEvent id="start"/>
     <bpmn:startEvent id="start2"/>
@@ -41,7 +41,7 @@
       <bpmn:messageEventDefinition id="catchMsgOk_MessageEventDefinition"/>
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="catchLink">
-      <bpmn:linkEventDefinition id="catchLink_LinkEventDefinition"/>
+      <bpmn:linkEventDefinition id="catchLink_LinkEventDefinition" name="a"/>
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="catchSignalNoName">
       <bpmn:signalEventDefinition id="catchSignalNoName_SignalEventDefinition"/>

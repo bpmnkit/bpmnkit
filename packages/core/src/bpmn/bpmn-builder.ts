@@ -26,6 +26,7 @@ import type {
 	BpmnTextAnnotation,
 } from "./bpmn-model.js"
 import { createFlowElement, isLoopCapableType } from "./element-shape.js"
+import { toFeelCondition } from "./feel-condition.js"
 import type { RestConnectorConfig } from "./rest-connector.js"
 import {
 	REST_CONNECTOR_TEMPLATE_VERSION,
@@ -101,6 +102,12 @@ export interface StartEventOptions extends ElementOptions {
 	timerCycle?: string
 	/** Message name — creates a message start event. */
 	messageName?: string
+	/**
+	 * FEEL expression correlating the message (`zeebe:subscription`). Required for
+	 * the message start event of an event sub-process; a process's own message
+	 * start does not need one.
+	 */
+	correlationKey?: string
 	/**
 	 * Form to show when the process is started (`zeebe:formDefinition formId`).
 	 * Camunda uses start forms only on the process's none start event, so set it
@@ -528,9 +535,41 @@ function makeDataElement(
 	const el = createFlowElement(id, type, { name: options?.name })
 	if (el.type === "dataObjectReference") el.dataObjectRef = ref
 	if (el.type === "dataStoreReference") el.dataStoreRef = ref
-	if (options?.isCollection && (el.type === "dataObject" || el.type === "dataObjectReference"))
-		el.isCollection = true
+	if (options?.isCollection && el.type === "dataObject") el.isCollection = true
 	return el
+}
+
+/**
+ * BPMN20.xsd puts `isCollection` on the data object only, so a reference asking
+ * for the marker sets it on the object it points at (when that object is in
+ * this scope) rather than on itself.
+ */
+function addDataObjectReference(
+	elements: BpmnFlowElement[],
+	ids: Set<string>,
+	id: string,
+	dataObjectRef: string,
+	options?: DataElementOptions,
+): void {
+	addDataElement(elements, ids, makeDataElement(id, "dataObjectReference", dataObjectRef, options))
+	if (!options?.isCollection) return
+	const target = elements.find((e) => e.id === dataObjectRef)
+	if (target?.type === "dataObject") target.isCollection = true
+}
+
+/**
+ * BPMN20.xsd requires a dataInputAssociation's targetRef. Without an
+ * ioSpecification there is no data input to point at, so (like Camunda
+ * Modeler) the activity gets one `__targetRef_placeholder` property that every
+ * input association targets.
+ */
+function targetRefPlaceholder(activity: BpmnFlowElement): string {
+	const name = "__targetRef_placeholder"
+	const existing = activity.properties?.find((p) => p.name === name && p.id !== undefined)
+	if (existing?.id !== undefined) return existing.id
+	const id = `Property_${activity.id}`
+	activity.properties = [...(activity.properties ?? []), { id, name, unknownAttributes: {} }]
+	return id
 }
 
 /**
@@ -547,7 +586,11 @@ function addDataAssociation(
 	if (!activity) throw new Error(`dataAssociation(): no element "${activityId}" in this scope`)
 	const association: BpmnDataAssociation =
 		direction === "input"
-			? { sourceRefs: [dataRefId], unknownAttributes: {} }
+			? {
+					sourceRefs: [dataRefId],
+					targetRef: targetRefPlaceholder(activity),
+					unknownAttributes: {},
+				}
 			: { sourceRefs: [], targetRef: dataRefId, unknownAttributes: {} }
 	const key = direction === "input" ? "dataInputAssociations" : "dataOutputAssociations"
 	activity[key] = [...(activity[key] ?? []), association]
@@ -658,9 +701,35 @@ function hoistMessageSubscriptions(defs: BpmnDefinitions): BpmnDefinitions {
 	return defs
 }
 
-function buildMessageSubscriptionExt(correlationKey?: string): XmlElement[] {
-	if (!correlationKey) return []
+function buildMessageSubscriptionExt(
+	method: string,
+	options?: { messageName?: string; correlationKey?: string },
+): XmlElement[] {
+	const correlationKey = options?.correlationKey
+	if (!correlationKey) {
+		// Zeebe rejects a caught message without a subscription key, and there is no
+		// key we could infer, so refuse rather than emit a model that cannot deploy.
+		if (options?.messageName) {
+			throw new Error(missingCorrelationKey(`${method}()`, options.messageName))
+		}
+		return []
+	}
 	return zeebeExtensionsToXmlElements({ subscription: { correlationKey } })
+}
+
+function missingCorrelationKey(subject: string, messageName: string): string {
+	return `${subject}: message "${messageName}" needs a correlationKey; Camunda 8 requires a zeebe:subscription correlationKey on a message caught outside a process start event`
+}
+
+/** An event sub-process's message start is a catch too: Zeebe needs its correlation key. */
+function assertEventSubProcessSubscriptions(elements: readonly BpmnFlowElement[]): void {
+	for (const el of elements) {
+		if (el.type !== "startEvent") continue
+		if (!el.eventDefinitions.some((d) => d.type === "message")) continue
+		if (el.extensionElements.some((x) => x.name === "zeebe:subscription")) continue
+		const ref = el.eventDefinitions.find((d) => d.type === "message")?.messageRef ?? el.id
+		throw new Error(missingCorrelationKey(`eventSubProcess(): start event "${el.id}"`, ref))
+	}
 }
 
 function buildEventDefinitions(
@@ -821,7 +890,7 @@ function buildMultiInstance(options: MultiInstanceOptions): BpmnMultiInstanceLoo
 		isSequential: options.isSequential || undefined,
 		completionCondition: options.completionCondition
 			? {
-					text: options.completionCondition,
+					text: toFeelCondition(options.completionCondition),
 					attributes: { "xsi:type": "bpmn:tFormalExpression" },
 				}
 			: undefined,
@@ -1005,7 +1074,7 @@ function buildServiceTaskExtensions(options: ServiceTaskOptions): XmlElement[] {
 
 function makeConditionExpression(expression: string): BpmnConditionExpression {
 	return {
-		text: expression,
+		text: toFeelCondition(expression),
 		attributes: { "xsi:type": "bpmn:tFormalExpression" },
 	}
 }
@@ -1153,6 +1222,9 @@ function makeStartEventEl(id: string, options?: StartEventOptions): BpmnFlowElem
 		executionListeners: options?.executionListeners,
 		extensionElements: zeebeExtensionsToXmlElements({
 			...(options?.formId ? { formDefinition: { formId: options.formId } } : {}),
+			...(options?.correlationKey
+				? { subscription: { correlationKey: options.correlationKey } }
+				: {}),
 			...(options?.zeebeProperties ? { properties: { properties: options.zeebeProperties } } : {}),
 		}),
 	})
@@ -1776,11 +1848,7 @@ export class BranchBuilder {
 
 	/** Draws a reference to the data object `dataObjectRef`. */
 	dataObjectReference(id: string, dataObjectRef: string, options?: DataElementOptions): this {
-		addDataElement(
-			this._elements,
-			this._ids,
-			makeDataElement(id, "dataObjectReference", dataObjectRef, options),
-		)
+		addDataObjectReference(this._elements, this._ids, id, dataObjectRef, options)
 		return this
 	}
 
@@ -1855,7 +1923,7 @@ export class BranchBuilder {
 	receiveTask(id: string, options?: MessageTaskOptions): this {
 		const el = makeFlowElement(id, "receiveTask", {
 			...options,
-			extensionElements: buildMessageSubscriptionExt(options?.correlationKey),
+			extensionElements: buildMessageSubscriptionExt("receiveTask", options),
 		}) as BpmnReceiveTask
 		if (options?.isForCompensation) el.isForCompensation = true
 		if (options?.messageName) el.messageRef = resolveMessage(options.messageName, this.rootMessages)
@@ -1937,7 +2005,7 @@ export class BranchBuilder {
 			"intermediateCatchEvent",
 			{
 				...options,
-				extensionElements: buildMessageSubscriptionExt(options?.correlationKey),
+				extensionElements: buildMessageSubscriptionExt("intermediateCatchEvent", options),
 			},
 		)
 		if (el.type === "intermediateCatchEvent" && options) {
@@ -1993,7 +2061,7 @@ export class BranchBuilder {
 		const options = resolveBoundaryEventArgs(id, attachedToOrOptions, maybeOptions)
 		const element = makeFlowElement(id, "boundaryEvent", {
 			...options,
-			extensionElements: buildMessageSubscriptionExt(options.correlationKey),
+			extensionElements: buildMessageSubscriptionExt("boundaryEvent", options),
 		})
 		if (element.type === "boundaryEvent") {
 			element.attachedToRef = options.attachedTo
@@ -2135,6 +2203,7 @@ export class BranchBuilder {
 		const sub = new SubProcessContentBuilder(this.roots())
 		resolved.content(sub)
 		finalizeScope(sub._elements, sub._flows)
+		assertEventSubProcessSubscriptions(sub._elements)
 
 		const element = makeFlowElement(id, "subProcess", resolved.options)
 		if (element.type === "subProcess") {
@@ -2383,7 +2452,7 @@ export class SubProcessContentBuilder {
 			"intermediateCatchEvent",
 			{
 				...options,
-				extensionElements: buildMessageSubscriptionExt(options?.correlationKey),
+				extensionElements: buildMessageSubscriptionExt("intermediateCatchEvent", options),
 			},
 		)
 		if (el.type === "intermediateCatchEvent" && options)
@@ -2429,7 +2498,7 @@ export class SubProcessContentBuilder {
 	receiveTask(id: string, options?: MessageTaskOptions): this {
 		const el = makeFlowElement(id, "receiveTask", {
 			...options,
-			extensionElements: buildMessageSubscriptionExt(options?.correlationKey),
+			extensionElements: buildMessageSubscriptionExt("receiveTask", options),
 		}) as BpmnReceiveTask
 		if (options?.isForCompensation) el.isForCompensation = true
 		if (options?.messageName) el.messageRef = resolveMessage(options.messageName, this.rootMessages)
@@ -2487,11 +2556,7 @@ export class SubProcessContentBuilder {
 
 	/** Draws a reference to the data object `dataObjectRef`. */
 	dataObjectReference(id: string, dataObjectRef: string, options?: DataElementOptions): this {
-		addDataElement(
-			this._elements,
-			this._ids,
-			makeDataElement(id, "dataObjectReference", dataObjectRef, options),
-		)
+		addDataObjectReference(this._elements, this._ids, id, dataObjectRef, options)
 		return this
 	}
 
@@ -2635,7 +2700,7 @@ export class SubProcessContentBuilder {
 		const options = resolveBoundaryEventArgs(id, attachedToOrOptions, maybeOptions)
 		const element = makeFlowElement(id, "boundaryEvent", {
 			...options,
-			extensionElements: buildMessageSubscriptionExt(options.correlationKey),
+			extensionElements: buildMessageSubscriptionExt("boundaryEvent", options),
 		})
 		if (element.type === "boundaryEvent") {
 			element.attachedToRef = options.attachedTo
@@ -2774,6 +2839,7 @@ export class SubProcessContentBuilder {
 		const sub = new SubProcessContentBuilder(this.roots())
 		resolved.content(sub)
 		finalizeScope(sub._elements, sub._flows)
+		assertEventSubProcessSubscriptions(sub._elements)
 
 		const element = makeFlowElement(id, "subProcess", resolved.options)
 		if (element.type === "subProcess") {
@@ -3204,7 +3270,7 @@ export class ProcessBuilder {
 		const nodeId = id ?? generateId("IntermediateCatchEvent")
 		const element = makeFlowElement(nodeId, "intermediateCatchEvent", {
 			...options,
-			extensionElements: buildMessageSubscriptionExt(options?.correlationKey),
+			extensionElements: buildMessageSubscriptionExt("intermediateCatchEvent", options),
 		})
 		if (element.type === "intermediateCatchEvent" && options) {
 			element.eventDefinitions = buildEventDefinitions(
@@ -3233,7 +3299,7 @@ export class ProcessBuilder {
 		const options = resolveBoundaryEventArgs(id, attachedToOrOptions, maybeOptions)
 		const element = makeFlowElement(id, "boundaryEvent", {
 			...options,
-			extensionElements: buildMessageSubscriptionExt(options.correlationKey),
+			extensionElements: buildMessageSubscriptionExt("boundaryEvent", options),
 		})
 		if (element.type === "boundaryEvent") {
 			element.attachedToRef = options.attachedTo
@@ -3369,7 +3435,7 @@ export class ProcessBuilder {
 	receiveTask(id: string, options?: MessageTaskOptions): this {
 		const el = makeFlowElement(id, "receiveTask", {
 			...options,
-			extensionElements: buildMessageSubscriptionExt(options?.correlationKey),
+			extensionElements: buildMessageSubscriptionExt("receiveTask", options),
 		}) as BpmnReceiveTask
 		if (options?.isForCompensation) el.isForCompensation = true
 		if (options?.messageName) el.messageRef = resolveMessage(options.messageName, this.rootMessages)
@@ -3630,6 +3696,7 @@ export class ProcessBuilder {
 		const sub = new SubProcessContentBuilder(this.roots())
 		resolved.content(sub)
 		finalizeScope(sub._elements, sub._flows)
+		assertEventSubProcessSubscriptions(sub._elements)
 
 		const element = makeFlowElement(id, "subProcess", resolved.options)
 		if (element.type === "subProcess") {
@@ -3667,11 +3734,7 @@ export class ProcessBuilder {
 
 	/** Draws a reference to the data object `dataObjectRef`. */
 	dataObjectReference(id: string, dataObjectRef: string, options?: DataElementOptions): this {
-		addDataElement(
-			this.flowElements,
-			this.elementIds,
-			makeDataElement(id, "dataObjectReference", dataObjectRef, options),
-		)
+		addDataObjectReference(this.flowElements, this.elementIds, id, dataObjectRef, options)
 		return this
 	}
 

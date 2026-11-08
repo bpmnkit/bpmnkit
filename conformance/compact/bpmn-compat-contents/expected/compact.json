@@ -195,6 +195,7 @@
         {
           "eventType": "link",
           "id": "linkCatch1",
+          "linkName": "L",
           "type": "intermediateCatchEvent"
         },
         {
@@ -203,11 +204,13 @@
               {
                 "eventType": "link",
                 "id": "linkCatch2",
+                "linkName": "L",
                 "type": "intermediateCatchEvent"
               },
               {
                 "eventType": "link",
                 "id": "linkCatchBlank",
+                "linkName": " ",
                 "type": "intermediateCatchEvent"
               }
             ],

@@ -10,8 +10,10 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_s_t</bpmn:incoming>
       <bpmn:outgoing>Flow_t_e</bpmn:outgoing>
+      <bpmn:property id="Property_t" name="__targetRef_placeholder"/>
       <bpmn:dataInputAssociation>
         <bpmn:sourceRef>DOR1</bpmn:sourceRef>
+        <bpmn:targetRef>Property_t</bpmn:targetRef>
       </bpmn:dataInputAssociation>
       <bpmn:dataOutputAssociation>
         <bpmn:targetRef>DOR1</bpmn:targetRef>

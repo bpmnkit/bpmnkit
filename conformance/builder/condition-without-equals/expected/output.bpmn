@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>Flow_s_g</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="g" default="Flow_g_e3">
+      <bpmn:incoming>Flow_s_g</bpmn:incoming>
+      <bpmn:outgoing>Flow_g_e1</bpmn:outgoing>
+      <bpmn:outgoing>Flow_g_e2</bpmn:outgoing>
+      <bpmn:outgoing>Flow_g_e3</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="e1">
+      <bpmn:incoming>Flow_g_e1</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="e2">
+      <bpmn:incoming>Flow_g_e2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="e3">
+      <bpmn:incoming>Flow_g_e3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_s_g" sourceRef="s" targetRef="g"/>
+    <bpmn:sequenceFlow id="Flow_g_e1" sourceRef="g" targetRef="e1" name="a">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=x &gt; 1</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_g_e2" sourceRef="g" targetRef="e2" name="b">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=y = 2</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_g_e3" sourceRef="g" targetRef="e3" name="c"/>
+  </bpmn:process>
+</bpmn:definitions>
+

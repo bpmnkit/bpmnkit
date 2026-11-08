@@ -1,3 +1,5 @@
 {
-	"input": "bpmn/bpmnlint-scopes-and-exemptions/input.bpmn"
+	"input": "bpmn/bpmnlint-scopes-and-exemptions/input.bpmn",
+	"deployable": false,
+	"deployableReason": "Source bpmn/bpmnlint-scopes-and-exemptions/input.bpmn is itself rejected by Zeebe (evt_msg_def: Must reference a message); the case pins how it is round-tripped, not a deployable model."
 }

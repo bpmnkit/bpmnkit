@@ -7,5 +7,7 @@
 		["serviceTask","a",{"name":"a","taskType":"a"}],
 		["serviceTask","b",{"name":"b","taskType":"b"}],
 		["build"]
-	]
+	],
+	"deployable": false,
+	"deployableReason": "Source builder/from-noop/input.bpmn is itself rejected by Zeebe (f3: Must have a condition or be default flow); the case pins how it is round-tripped, not a deployable model."
 }

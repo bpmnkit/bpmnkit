@@ -77,7 +77,9 @@ describe("SubProcessContentBuilder root definitions (#220)", () => {
 						b.defaultFlow().subProcess("bSub", referencingContent("br")).endEvent("by"),
 					)
 				c.eventSubProcess("evt", (ev) => {
-					ev.startEvent("evs", { messageName: "M1" }).endEvent("eve", { signalName: "S1" })
+					ev.startEvent("evs", { messageName: "M1", correlationKey: "=k" }).endEvent("eve", {
+						signalName: "S1",
+					})
 				})
 			})
 			.endEvent("e")
@@ -137,7 +139,7 @@ describe("SubProcessContentBuilder root definitions (#220)", () => {
 						c.startEvent("hs").endEvent("he")
 					})
 					.eventSubProcess("bEvt", (ev) => {
-						ev.startEvent("evs", { messageName: "EV_MSG" }).endEvent("eve", {
+						ev.startEvent("evs", { messageName: "EV_MSG", correlationKey: "=k" }).endEvent("eve", {
 							escalationCode: "EV_ESC",
 						})
 					})

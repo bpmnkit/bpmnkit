@@ -4,7 +4,7 @@
 		["createProcess","p"],
 		["startEvent","s"],
 		["serviceTask","main",{"name":"main","taskType":"main"}],
-		["eventSubProcess","esp",{"$ops":[["startEvent","es",{"messageName":"cancel","isInterrupting":false}],["serviceTask","compensate",{"name":"compensate","taskType":"compensate"}],["endEvent","ee"]]},{"name":"On cancel"}],
+		["eventSubProcess","esp",{"$ops":[["startEvent","es",{"messageName":"cancel","correlationKey":"=orderId","isInterrupting":false}],["serviceTask","compensate",{"name":"compensate","taskType":"compensate"}],["endEvent","ee"]]},{"name":"On cancel"}],
 		["endEvent","e"],
 		["build"]
 	]

@@ -17,6 +17,7 @@ import type {
 	BpmnSequenceFlow,
 	BpmnTextAnnotation,
 } from "./bpmn-model.js"
+import { toFeelCondition } from "./feel-condition.js"
 import { restConnectorTaskType } from "./rest-connector.js"
 import { assignEventDefinitionIds } from "./stable-ids.js"
 import { makeConditionalDefinition } from "./zeebe-extensions.js"
@@ -121,6 +122,11 @@ export interface CompactElement {
 	timerDuration?: string
 	/** A conditional event's FEEL condition (Camunda 8.9+). */
 	condition?: string
+	/**
+	 * A link event's name: a throw jumps to the catch of the same name. BPMN
+	 * requires it on every link event definition.
+	 */
+	linkName?: string
 }
 
 /** A sequence flow in compact form. */
@@ -351,6 +357,7 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 		result.eventType = def?.type
 		if (def?.type === "timer" && def.timeDuration) result.timerDuration = def.timeDuration
 		if (def?.type === "conditional" && def.condition !== undefined) result.condition = def.condition
+		if (def?.type === "link" && def.name !== undefined) result.linkName = def.name
 	}
 
 	const loop = "loopCharacteristics" in el ? el.loopCharacteristics : undefined
@@ -773,7 +780,9 @@ function buildSubContent(
 			name: f.name,
 			sourceRef: f.from,
 			targetRef: f.to,
-			conditionExpression: f.condition ? { text: f.condition, attributes: {} } : undefined,
+			conditionExpression: f.condition
+				? { text: toFeelCondition(f.condition), attributes: {} }
+				: undefined,
 			extensionElements: [],
 			unknownAttributes: {},
 		})),
@@ -813,7 +822,9 @@ export function buildFlowElement(
 			? { ...made, timeDuration: el.timerDuration }
 			: made?.type === "conditional" && el.condition !== undefined
 				? makeConditionalDefinition(el.condition)
-				: made
+				: made?.type === "link" && el.linkName !== undefined
+					? { ...made, name: el.linkName }
+					: made
 	const eventDefs: BpmnEventDefinition[] = eventDef ? [eventDef] : []
 	// Zeebe rejects an id-less definition at deploy time; the builder derives the same ids.
 	assignEventDefinitionIds(el.id, eventDefs)
@@ -823,7 +834,7 @@ export function buildFlowElement(
 			isSequential: el.multiInstance.sequential || undefined,
 			completionCondition: el.multiInstance.completionCondition
 				? {
-						text: el.multiInstance.completionCondition,
+						text: toFeelCondition(el.multiInstance.completionCondition),
 						attributes: { "xsi:type": "bpmn:tFormalExpression" },
 					}
 				: undefined,
@@ -1001,7 +1012,9 @@ function expandProcess(compact: CompactProcess): { process: BpmnProcess; diagram
 		name: f.name,
 		sourceRef: f.from,
 		targetRef: f.to,
-		conditionExpression: f.condition ? { text: f.condition, attributes: {} } : undefined,
+		conditionExpression: f.condition
+			? { text: toFeelCondition(f.condition), attributes: {} }
+			: undefined,
 		extensionElements: [],
 		unknownAttributes: {},
 	}))

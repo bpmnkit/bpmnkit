@@ -29,12 +29,21 @@ describe("optimize() — deploy profile", () => {
 	})
 
 	it("flags a message intermediate catch with no correlation key", () => {
-		const defs = Bpmn.createProcess("proc")
-			.startEvent("s")
-			.intermediateCatchEvent("wait", { messageName: "payment-confirmed" })
-			.endEvent("e")
-			.build()
-		const report = optimize(defs, { categories: ["deploy"] })
+		// The builder refuses to build this, so it is parsed from XML (the lint covers imported models).
+		const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="d" targetNamespace="urn:t">
+  <bpmn:process id="proc" isExecutable="true">
+    <bpmn:startEvent id="s" />
+    <bpmn:intermediateCatchEvent id="wait">
+      <bpmn:messageEventDefinition messageRef="m1" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="e" />
+    <bpmn:sequenceFlow id="f1" sourceRef="s" targetRef="wait" />
+    <bpmn:sequenceFlow id="f2" sourceRef="wait" targetRef="e" />
+  </bpmn:process>
+  <bpmn:message id="m1" name="payment-confirmed" />
+</bpmn:definitions>`
+		const report = optimize(Bpmn.parse(xml), { categories: ["deploy"] })
 		expect(report.findings.some((f) => f.id === "deploy/message-catch-no-correlation")).toBe(true)
 	})
 

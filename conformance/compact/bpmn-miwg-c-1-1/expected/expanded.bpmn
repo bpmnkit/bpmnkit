@@ -48,16 +48,16 @@
     <bpmn:dataObject id="Bpmn_DataObject_aT_L0rH1EeSuDf0W70XLGw" name="clarified"/>
     <bpmn:dataObjectReference id="Bpmn_DataObjectReference_cdsDQLH1EeSuDf0W70XLGw" name="clarified" dataObjectRef="Bpmn_DataObject_aT_L0rH1EeSuDf0W70XLGw"/>
     <bpmn:sequenceFlow id="invoiceApproved" sourceRef="invoice_approved" targetRef="prepareBankTransfer" name="yes">
-      <bpmn:conditionExpression>bpmn:getDataObject('approved')</bpmn:conditionExpression>
+      <bpmn:conditionExpression>=bpmn:getDataObject('approved')</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="invoiceNotApproved" sourceRef="invoice_approved" targetRef="reviewInvoice" name="no">
-      <bpmn:conditionExpression>not(bpmn:getDataObject('approved'))</bpmn:conditionExpression>
+      <bpmn:conditionExpression>=not(bpmn:getDataObject('approved'))</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="reviewSuccessful" sourceRef="reviewSuccessful_gw" targetRef="approveInvoice" name="yes">
-      <bpmn:conditionExpression>bpmn:getDataObject('clarified') = 'yes'</bpmn:conditionExpression>
+      <bpmn:conditionExpression>=bpmn:getDataObject('clarified') = 'yes'</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="reviewNotSuccessful" sourceRef="reviewSuccessful_gw" targetRef="invoiceNotProcessed" name="no">
-      <bpmn:conditionExpression>bpmn:getDataObject('clarified') = 'no'</bpmn:conditionExpression>
+      <bpmn:conditionExpression>=bpmn:getDataObject('clarified') = 'no'</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="sequenceFlow_180" sourceRef="approveInvoice" targetRef="invoice_approved"/>
     <bpmn:sequenceFlow id="sequenceFlow_183" sourceRef="reviewInvoice" targetRef="reviewSuccessful_gw"/>

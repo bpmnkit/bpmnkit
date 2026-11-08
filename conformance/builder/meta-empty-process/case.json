@@ -3,5 +3,7 @@
 	"script": [
 		["createProcess","p"],
 		["build"]
-	]
+	],
+	"deployable": false,
+	"deployableReason": "Deliberately empty process: pins the builder's output for a process with no elements."
 }

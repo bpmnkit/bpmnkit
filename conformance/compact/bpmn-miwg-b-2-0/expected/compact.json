@@ -520,6 +520,7 @@
         {
           "eventType": "link",
           "id": "_f27040d5-765c-493c-bbe7-9fb6ad04cbdc",
+          "linkName": "Intermediate Event Link",
           "name": "Intermediate Event Link",
           "type": "intermediateThrowEvent"
         },
@@ -622,6 +623,7 @@
         {
           "eventType": "link",
           "id": "_4f5e6e50-d9d0-4f97-959a-d1b8e1e32788",
+          "linkName": "Intermediate Event Link",
           "name": "Intermediate Event Link",
           "type": "intermediateCatchEvent"
         },

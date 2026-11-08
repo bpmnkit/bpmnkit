@@ -282,7 +282,7 @@ describe("BpmnProcessBuilder", () => {
 		it("receiveTask with messageName emits root bpmn:message and sets messageRef on task", () => {
 			const defs = Bpmn.createProcess("proc")
 				.startEvent("s")
-				.receiveTask("rt", { name: "Await ping", messageName: "PingMsg" })
+				.receiveTask("rt", { name: "Await ping", messageName: "PingMsg", correlationKey: "=k" })
 				.endEvent("e")
 				.build()
 
@@ -350,7 +350,7 @@ describe("BpmnProcessBuilder", () => {
 		it("messageName is de-duplicated across receiveTask and message start event", () => {
 			const defs = Bpmn.createProcess("proc")
 				.startEvent("s", { messageName: "SharedMsg" })
-				.receiveTask("rt", { name: "Await", messageName: "SharedMsg" })
+				.receiveTask("rt", { name: "Await", messageName: "SharedMsg", correlationKey: "=k" })
 				.endEvent("e")
 				.build()
 
@@ -377,7 +377,9 @@ describe("BpmnProcessBuilder", () => {
 				.startEvent("s")
 				.exclusiveGateway("gw")
 				.branch("A", (b) =>
-					b.receiveTask("rt", { name: "Wait", messageName: "BranchMsg" }).connectTo("e"),
+					b
+						.receiveTask("rt", { name: "Wait", messageName: "BranchMsg", correlationKey: "=k" })
+						.connectTo("e"),
 				)
 				.branch("B", (b) => b.endEvent("e2"))
 				.endEvent("e")
@@ -397,7 +399,7 @@ describe("BpmnProcessBuilder", () => {
 				.startEvent("s")
 				.subProcess("sub", (b) => {
 					b.startEvent("sub-s")
-						.receiveTask("rt", { name: "Await ping", messageName: "SubMsg" })
+						.receiveTask("rt", { name: "Await ping", messageName: "SubMsg", correlationKey: "=k" })
 						.endEvent("sub-e")
 				})
 				.endEvent("e")
@@ -417,7 +419,7 @@ describe("BpmnProcessBuilder", () => {
 		it("receiveTask round-trips messageRef through export → parse", () => {
 			const defs = Bpmn.createProcess("proc")
 				.startEvent("s")
-				.receiveTask("rt", { name: "Await ping", messageName: "PingMsg" })
+				.receiveTask("rt", { name: "Await ping", messageName: "PingMsg", correlationKey: "=k" })
 				.endEvent("e")
 				.build()
 
@@ -2176,7 +2178,7 @@ describe("BpmnProcessBuilder", () => {
 		it("intermediateCatchEvent messageName emits root message and sets messageRef to its ID", () => {
 			const defs = Bpmn.createProcess("proc")
 				.startEvent("s")
-				.intermediateCatchEvent("catch", { messageName: "PaymentConfirmed" })
+				.intermediateCatchEvent("catch", { messageName: "PaymentConfirmed", correlationKey: "=k" })
 				.endEvent("e")
 				.build()
 
@@ -2216,7 +2218,7 @@ describe("BpmnProcessBuilder", () => {
 			const defs = Bpmn.createProcess("proc")
 				.startEvent("s")
 				.serviceTask("task", { name: "T", taskType: "t" })
-				.boundaryEvent("bnd", { attachedTo: "task", messageName: "Retry" })
+				.boundaryEvent("bnd", { attachedTo: "task", messageName: "Retry", correlationKey: "=k" })
 				.endEvent("e")
 				.build()
 
@@ -2280,8 +2282,8 @@ describe("BpmnProcessBuilder", () => {
 		it("de-duplicates messages: two events with same messageName share one root", () => {
 			const defs = Bpmn.createProcess("proc")
 				.startEvent("s")
-				.intermediateCatchEvent("c1", { messageName: "Shared" })
-				.intermediateCatchEvent("c2", { messageName: "Shared" })
+				.intermediateCatchEvent("c1", { messageName: "Shared", correlationKey: "=k" })
+				.intermediateCatchEvent("c2", { messageName: "Shared", correlationKey: "=k" })
 				.endEvent("e")
 				.build()
 
@@ -2331,7 +2333,7 @@ describe("BpmnProcessBuilder", () => {
 			const defs = Bpmn.createProcess("proc")
 				.startEvent("s")
 				.intermediateThrowEvent("sig-throw", { signalName: "Sig1" })
-				.intermediateCatchEvent("msg-catch", { messageName: "Msg1" })
+				.intermediateCatchEvent("msg-catch", { messageName: "Msg1", correlationKey: "=k" })
 				.intermediateThrowEvent("esc-throw", { escalationCode: "ESC_1" })
 				.endEvent("e")
 				.build()
@@ -3230,6 +3232,7 @@ describe("BpmnProcessBuilder", () => {
 							.intermediateCatchEvent("onMessage", {
 								name: "Message received",
 								messageName: "ResponseMessage",
+								correlationKey: "=k",
 							})
 							.connectTo("converge"),
 					)

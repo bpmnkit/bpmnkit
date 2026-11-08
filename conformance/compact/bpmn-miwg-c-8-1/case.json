@@ -1,3 +1,5 @@
 {
-	"input": "bpmn/miwg-c-8-1/input.bpmn"
+	"input": "bpmn/miwg-c-8-1/input.bpmn",
+	"deployable": false,
+	"deployableReason": "Source bpmn/miwg-c-8-1/input.bpmn is itself rejected by Zeebe (_02232e32-c3d2-473c-a15d-9c5dca00eadc > extensionElements > ioMapping > input: failed to parse expression ' \"<html><p>Hi ?\" + Current Vacati); the case pins how it is round-tripped, not a deployable model."
 }

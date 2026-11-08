@@ -7,5 +7,7 @@
 		["serviceTask","t",{"name":"t","taskType":""}],
 		["endEvent","e"],
 		["build"]
-	]
+	],
+	"deployable": false,
+	"deployableReason": "Deliberately broken model: pins that Bpmn.export with validate warn returns the XML and warns."
 }

@@ -1,3 +1,5 @@
 {
-	"input": "bpmn/camunda7-order-fulfillment/input.bpmn"
+	"input": "bpmn/camunda7-order-fulfillment/input.bpmn",
+	"deployable": false,
+	"deployableReason": "Source bpmn/camunda7-order-fulfillment/input.bpmn is itself rejected by Zeebe (Flow_approved > conditionExpression: Expected expression but found static value '${approved && order.total <= 1000}'. An expression must sta); the case pins how it is round-tripped, not a deployable model."
 }

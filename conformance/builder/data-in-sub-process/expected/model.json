@@ -53,6 +53,7 @@
                   "sourceRefs": [
                     "R1"
                   ],
+                  "targetRef": "Property_t",
                   "unknownAttributes": {}
                 }
               ],
@@ -79,6 +80,13 @@
               "name": "t",
               "outgoing": [
                 "Flow_t_ie"
+              ],
+              "properties": [
+                {
+                  "id": "Property_t",
+                  "name": "__targetRef_placeholder",
+                  "unknownAttributes": {}
+                }
               ],
               "type": "serviceTask",
               "unknownAttributes": {}

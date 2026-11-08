@@ -166,14 +166,14 @@
       <bpmn:linkEventDefinition id="linkNoName_LinkEventDefinition"/>
     </bpmn:intermediateThrowEvent>
     <bpmn:intermediateCatchEvent id="linkCatch1">
-      <bpmn:linkEventDefinition id="linkCatch1_LinkEventDefinition"/>
+      <bpmn:linkEventDefinition id="linkCatch1_LinkEventDefinition" name="L"/>
     </bpmn:intermediateCatchEvent>
     <bpmn:subProcess id="linkScope">
       <bpmn:intermediateCatchEvent id="linkCatch2">
-        <bpmn:linkEventDefinition id="linkCatch2_LinkEventDefinition"/>
+        <bpmn:linkEventDefinition id="linkCatch2_LinkEventDefinition" name="L"/>
       </bpmn:intermediateCatchEvent>
       <bpmn:intermediateCatchEvent id="linkCatchBlank">
-        <bpmn:linkEventDefinition id="linkCatchBlank_LinkEventDefinition"/>
+        <bpmn:linkEventDefinition id="linkCatchBlank_LinkEventDefinition" name=" "/>
       </bpmn:intermediateCatchEvent>
     </bpmn:subProcess>
     <bpmn:sequenceFlow id="toLoopA" sourceRef="start" targetRef="loopA"/>

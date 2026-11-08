@@ -6,13 +6,7 @@
   "exporter": "@bpmnkit/core",
   "exporterVersion": "0.0.23",
   "id": "Definitions_1",
-  "messages": [
-    {
-      "id": "Message_reply",
-      "name": "reply",
-      "unknownAttributes": {}
-    }
-  ],
+  "messages": [],
   "namespaces": {
     "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
     "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
@@ -33,28 +27,72 @@
           "id": "s",
           "incoming": [],
           "outgoing": [
-            "Flow_s_c"
+            "Flow_s_t"
           ],
           "type": "startEvent",
           "unknownAttributes": {}
         },
         {
-          "eventDefinitions": [
+          "dataInputAssociations": [
             {
-              "id": "c_MessageEventDefinition",
-              "messageRef": "Message_reply",
-              "type": "message"
+              "sourceRefs": [
+                "DOR1"
+              ],
+              "targetRef": "Property_t",
+              "unknownAttributes": {}
+            },
+            {
+              "sourceRefs": [
+                "DOR1"
+              ],
+              "targetRef": "Property_t",
+              "unknownAttributes": {}
             }
           ],
-          "extensionElements": [],
-          "id": "c",
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "t"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "t",
           "incoming": [
-            "Flow_s_c"
+            "Flow_s_t"
           ],
+          "name": "t",
           "outgoing": [
-            "Flow_c_e"
+            "Flow_t_e"
           ],
-          "type": "intermediateCatchEvent",
+          "properties": [
+            {
+              "id": "Property_t",
+              "name": "__targetRef_placeholder",
+              "unknownAttributes": {}
+            }
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "DO1",
+          "incoming": [],
+          "isCollection": true,
+          "name": "Items",
+          "outgoing": [],
+          "type": "dataObject",
+          "unknownAttributes": {}
+        },
+        {
+          "dataObjectRef": "DO1",
+          "extensionElements": [],
+          "id": "DOR1",
+          "incoming": [],
+          "outgoing": [],
+          "type": "dataObjectReference",
           "unknownAttributes": {}
         },
         {
@@ -62,7 +100,7 @@
           "extensionElements": [],
           "id": "e",
           "incoming": [
-            "Flow_c_e"
+            "Flow_t_e"
           ],
           "outgoing": [],
           "type": "endEvent",
@@ -75,15 +113,15 @@
       "sequenceFlows": [
         {
           "extensionElements": [],
-          "id": "Flow_s_c",
+          "id": "Flow_s_t",
           "sourceRef": "s",
-          "targetRef": "c",
+          "targetRef": "t",
           "unknownAttributes": {}
         },
         {
           "extensionElements": [],
-          "id": "Flow_c_e",
-          "sourceRef": "c",
+          "id": "Flow_t_e",
+          "sourceRef": "t",
           "targetRef": "e",
           "unknownAttributes": {}
         }

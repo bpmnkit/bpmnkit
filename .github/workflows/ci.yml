@@ -43,6 +43,51 @@ jobs:
           pnpm conformance:record
           git diff --exit-code conformance/
 
+  # Zeebe's own deploy-time validator (tools/zeebe-check) over every BPMN the conformance corpus
+  # records. The allowlist of known rejections may only shrink, which --base enforces.
+  zeebe-check:
+    name: Zeebe deployability
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # The shrink check reads the allowlist at the base branch via git show.
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+          cache-dependency-path: tools/zeebe-check/pom.xml
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Test the check's logic
+        run: node --test scripts/zeebe-check-lib.test.mjs
+
+      # ~110 MB of Zeebe jars; the stamp file inside makes the script skip the Maven step on a hit.
+      - name: Cache Zeebe dependencies
+        uses: actions/cache@v4
+        with:
+          path: tools/zeebe-check/lib
+          key: zeebe-check-lib-${{ hashFiles('tools/zeebe-check/pom.xml') }}
+
+      - name: Make sure the base ref exists
+        run: git fetch --no-tags origin "${BASE_REF}:refs/remotes/origin/${BASE_REF}"
+        env:
+          BASE_REF: ${{ github.base_ref || 'main' }}
+
+      - name: Zeebe validation
+        run: node scripts/zeebe-check.mjs --base "origin/${BASE_REF}"
+        env:
+          BASE_REF: ${{ github.base_ref || 'main' }}
+
   ci:
     name: CI
     runs-on: ubuntu-latest

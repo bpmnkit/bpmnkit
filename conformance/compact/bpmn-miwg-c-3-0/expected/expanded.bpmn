@@ -78,7 +78,7 @@ This service level guarantees less than two days to solve the issue.</bpmn:docum
     <bpmn:sequenceFlow id="_ada039b6-94dd-4a15-a6b1-c7fe662c64ee" sourceRef="_604be023-654c-44df-a64c-365254a100cd" targetRef="_2b6bc88e-d3be-4704-87d1-c264bf704589" name="Regular repair service"/>
     <bpmn:sequenceFlow id="_cddf9325-a85b-4347-8c57-8b909fa77ae9" sourceRef="_2b6bc88e-d3be-4704-87d1-c264bf704589" targetRef="_d034722f-751d-4f37-a3d7-47993822e979" name="Standard"/>
     <bpmn:sequenceFlow id="_be893987-caec-4605-b078-bd96b7cd6c12" sourceRef="_2b6bc88e-d3be-4704-87d1-c264bf704589" targetRef="_6a34496f-8cf7-42e5-88a9-d1af98cc3cba" name="Premium">
-      <bpmn:conditionExpression>Service Level == 'Premium'</bpmn:conditionExpression>
+      <bpmn:conditionExpression>=Service Level == 'Premium'</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="_435d9320-bbf4-48ad-aa56-16cb5483e95b" sourceRef="_d034722f-751d-4f37-a3d7-47993822e979" targetRef="_dcee5c64-3010-4ee5-b480-bce856e6f29c"/>
     <bpmn:sequenceFlow id="_d54c5707-af7a-4b36-a059-46681bbf0004" sourceRef="_6a34496f-8cf7-42e5-88a9-d1af98cc3cba" targetRef="_dcee5c64-3010-4ee5-b480-bce856e6f29c"/>

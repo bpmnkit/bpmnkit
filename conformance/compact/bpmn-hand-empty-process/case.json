@@ -1,0 +1,4 @@
+{
+  "deployable": false,
+  "deployableReason": "Source compact/bpmn-hand-empty-process/input.bpmn is itself rejected by Zeebe (p: Must have at least one start event); the case pins how it is round-tripped, not a deployable model."
+}

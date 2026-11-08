@@ -8,11 +8,11 @@
     </bpmn:startEvent>
     <bpmn:intermediateThrowEvent id="out" name="Jump">
       <bpmn:incoming>f1</bpmn:incoming>
-      <bpmn:linkEventDefinition id="out_LinkEventDefinition"/>
+      <bpmn:linkEventDefinition id="out_LinkEventDefinition" name="L"/>
     </bpmn:intermediateThrowEvent>
     <bpmn:intermediateCatchEvent id="in" name="Land">
       <bpmn:outgoing>f2</bpmn:outgoing>
-      <bpmn:linkEventDefinition id="in_LinkEventDefinition"/>
+      <bpmn:linkEventDefinition id="in_LinkEventDefinition" name="L"/>
     </bpmn:intermediateCatchEvent>
     <bpmn:endEvent id="e">
       <bpmn:incoming>f2</bpmn:incoming>

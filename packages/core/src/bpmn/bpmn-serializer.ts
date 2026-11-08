@@ -408,8 +408,8 @@ function serializeFlowElement(fe: BpmnFlowElement, ns: Record<string, string>): 
 			break
 
 		case "dataObjectReference":
+			// BPMN20.xsd allows isCollection only on dataObject; Zeebe rejects it here.
 			if (fe.dataObjectRef !== undefined) attrs.dataObjectRef = fe.dataObjectRef
-			if (fe.isCollection) attrs.isCollection = "true"
 			break
 
 		case "dataStoreReference":
@@ -885,6 +885,10 @@ const KNOWN_NAMESPACE_URIS: Readonly<Record<string, string>> = {
 	modeler: "http://camunda.org/schema/modeler/1.0",
 	bioc: "http://bpmn.io/schema/bpmn/biocolor/1.0",
 	color: "http://www.omg.org/spec/BPMN/non-normative/color/1.0",
+	// Not an extension, but `xsi:type` rides on content the serializer copies
+	// (condition expressions, timer values) and the builder can add it to a
+	// parsed document that never declared xsi.
+	xsi: "http://www.w3.org/2001/XMLSchema-instance",
 }
 
 /** Prefixes an element tree uses, and prefixes it declares — at any depth. */

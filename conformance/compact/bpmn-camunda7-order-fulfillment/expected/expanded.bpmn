@@ -72,10 +72,10 @@
     <bpmn:sequenceFlow id="Flow_toReview" sourceRef="StartEvent_order" targetRef="Task_review"/>
     <bpmn:sequenceFlow id="Flow_toApproved" sourceRef="Task_review" targetRef="Gateway_approved"/>
     <bpmn:sequenceFlow id="Flow_approved" sourceRef="Gateway_approved" targetRef="Task_charge" name="yes">
-      <bpmn:conditionExpression>${approved &amp;&amp; order.total &lt;= 1000}</bpmn:conditionExpression>
+      <bpmn:conditionExpression>=approved and order.total &lt;= 1000</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_vip" sourceRef="Gateway_approved" targetRef="Task_charge" name="vip">
-      <bpmn:conditionExpression>${approved and order.customer.vip eq true}</bpmn:conditionExpression>
+      <bpmn:conditionExpression>=approved and order.customer.vip = true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_rejected" sourceRef="Gateway_approved" targetRef="Task_notify" name="no"/>
     <bpmn:sequenceFlow id="Flow_toConfirm" sourceRef="Task_charge" targetRef="Task_awaitPayment"/>

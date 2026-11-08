@@ -71,6 +71,7 @@
         {
           "eventType": "link",
           "id": "catchLink",
+          "linkName": "a",
           "type": "intermediateCatchEvent"
         },
         {

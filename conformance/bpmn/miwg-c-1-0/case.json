@@ -1,0 +1,4 @@
+{
+  "deployable": false,
+  "deployableReason": "Source bpmn/miwg-c-1-0/input.bpmn is itself rejected by Zeebe (archiveInvoice: Must have exactly one 'zeebe:taskDefinition' extension element); the case pins how it is round-tripped, not a deployable model."
+}

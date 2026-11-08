@@ -7,5 +7,7 @@
 		["serviceTask","notify",{"name":"notify","taskType":"notify"}],
 		["endEvent","done"],
 		["build"]
-	]
+	],
+	"deployable": false,
+	"deployableReason": "Source builder/from-noop/input.bpmn is itself rejected by Zeebe (f3: Must have a condition or be default flow); the case pins how it is round-tripped, not a deployable model."
 }

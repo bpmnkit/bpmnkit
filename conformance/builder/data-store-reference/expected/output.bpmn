@@ -10,8 +10,10 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_s_t</bpmn:incoming>
       <bpmn:outgoing>Flow_t_e</bpmn:outgoing>
+      <bpmn:property id="Property_t" name="__targetRef_placeholder"/>
       <bpmn:dataInputAssociation>
         <bpmn:sourceRef>DS1</bpmn:sourceRef>
+        <bpmn:targetRef>Property_t</bpmn:targetRef>
       </bpmn:dataInputAssociation>
     </bpmn:serviceTask>
     <bpmn:dataStoreReference id="DS1" name="Orders DB" dataStoreRef="Store_1"/>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="_1373638079286" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="_1373638079286" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:process id="Process_ba16239e-181e-4b9f-bc5b-0bb2ee973450" isExecutable="true">
     <bpmn:startEvent id="_200f43e7-1385-46e2-a380-3ef16ebe7847" name="Start Event 3">
       <bpmn:outgoing>_60ed96e6-5954-48de-861b-7d1e3c1fb23e</bpmn:outgoing>
@@ -283,7 +283,7 @@
     </bpmn:endEvent>
     <bpmn:intermediateThrowEvent id="_f27040d5-765c-493c-bbe7-9fb6ad04cbdc" name="Intermediate Event Link">
       <bpmn:incoming>_78361e03-8ab9-4317-b8f6-2daa90f20f54</bpmn:incoming>
-      <bpmn:linkEventDefinition id="_f27040d5-765c-493c-bbe7-9fb6ad04cbdc_LinkEventDefinition"/>
+      <bpmn:linkEventDefinition id="_f27040d5-765c-493c-bbe7-9fb6ad04cbdc_LinkEventDefinition" name="Intermediate Event Link"/>
     </bpmn:intermediateThrowEvent>
     <bpmn:subProcess id="_0263ca9e-2ca0-4f4e-b7dd-86e15dcf2447" name="Collapsed Sub-Process 2">
       <bpmn:incoming>_e062c113-2da3-40f1-845e-6fd48ccc880f</bpmn:incoming>
@@ -363,7 +363,7 @@
     </bpmn:inclusiveGateway>
     <bpmn:intermediateCatchEvent id="_4f5e6e50-d9d0-4f97-959a-d1b8e1e32788" name="Intermediate Event Link">
       <bpmn:outgoing>_c9768243-8e1a-4b09-907b-3f27fa831a6e</bpmn:outgoing>
-      <bpmn:linkEventDefinition id="_4f5e6e50-d9d0-4f97-959a-d1b8e1e32788_LinkEventDefinition"/>
+      <bpmn:linkEventDefinition id="_4f5e6e50-d9d0-4f97-959a-d1b8e1e32788_LinkEventDefinition" name="Intermediate Event Link"/>
     </bpmn:intermediateCatchEvent>
     <bpmn:task id="_cbebc7f2-9fb5-4fbf-a6dc-13140c784da7" name="Task 26">
       <bpmn:incoming>_022aa2b9-f472-49be-b00b-2eec7f075acf</bpmn:incoming>

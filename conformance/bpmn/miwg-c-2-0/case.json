@@ -1,0 +1,4 @@
+{
+  "deployable": false,
+  "deployableReason": "Source bpmn/miwg-c-2-0/input.bpmn is itself rejected by Zeebe (Message_1404332496319: Name must be present and not empty); the case pins how it is round-tripped, not a deployable model."
+}

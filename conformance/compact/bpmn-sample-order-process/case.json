@@ -1,3 +1,5 @@
 {
-	"input": "bpmn/sample-order-process/input.bpmn"
+	"input": "bpmn/sample-order-process/input.bpmn",
+	"deployable": false,
+	"deployableReason": "Source bpmn/sample-order-process/input.bpmn is itself rejected by Zeebe (flow-no: Must have a condition or be default flow); the case pins how it is round-tripped, not a deployable model."
 }

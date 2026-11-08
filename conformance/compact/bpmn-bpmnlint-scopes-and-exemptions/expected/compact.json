@@ -55,12 +55,14 @@
         {
           "eventType": "link",
           "id": "link_throw",
+          "linkName": "B",
           "name": "To B",
           "type": "intermediateThrowEvent"
         },
         {
           "eventType": "link",
           "id": "link_catch",
+          "linkName": "B",
           "name": "From B",
           "type": "intermediateCatchEvent"
         },
