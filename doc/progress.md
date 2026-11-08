@@ -30,6 +30,7 @@
   - process-text 37 → 36 of 236;
   - compact 74 → 72 of 113;
   - bpmn round trips 38 → 38 of 51.
+- `apps/examples` 05-content-publishing gives its message catch a `correlationKey` (`=content.id`), which the builder now requires; its line budget goes 139 → 140.
 - Two more serializer XSD bugs were found and are allowlisted for later: `ioSpecification` is written after the data associations (9 MIWG round trips), and compact `expand` writes an `eventSubProcess` element.
 ## 2026-11-08 — bpmnlint parity skips deployability repro z07
 

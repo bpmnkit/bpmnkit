@@ -42,7 +42,8 @@ const BUDGETS: Record<string, Budget> = {
 	"02-incident-response": { lines: 97, elements: 34 },
 	"03-loan-approval": { lines: 112, elements: 34 },
 	"04-invoice-processing": { lines: 117, elements: 35 },
-	"05-content-publishing": { lines: 139, elements: 46 },
+	// +1 line: the message catch needs a correlationKey to deploy on Camunda 8.
+	"05-content-publishing": { lines: 140, elements: 46 },
 	"06-ai-code-review-agent": { lines: 192, elements: 20 },
 	"07-ai-ticket-triage-clef": { lines: 71, elements: 21 },
 }
