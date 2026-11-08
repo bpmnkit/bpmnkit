@@ -5665,25 +5665,45 @@
 			]
 		},
 		{
-			"id": "packages.core.installation-expand-compact",
-			"file": "chunks/packages.core.installation-expand-compact.md",
-			"tokens": 301,
+			"id": "packages.core.installation-expand-compact-options",
+			"file": "chunks/packages.core.installation-expand-compact-options.md",
+			"tokens": 832,
 			"tags": [
 				"packages",
 				"core",
 				"installation",
 				"expand",
-				"compact"
+				"compact",
+				"options"
 			],
 			"entities": [
 				"BpmnDefinitions",
 				"CompactDiagram",
-				"BpmnElementType",
-				"dataObject",
-				"dataObjectReference",
-				"dataStoreReference",
-				"eventType"
+				"executionPlatformVersion",
+				"assertDeployable",
+				"DeployabilityError",
+				"Bpmn.export",
+				"camundaVersion",
+				"createCompactStream",
+				"createProcessTextStream",
+				"CompactElement",
+				"messageName",
+				"correlationKey"
 			]
+		},
+		{
+			"id": "packages.core.installation-expand-compact-options-2",
+			"file": "chunks/packages.core.installation-expand-compact-options-2.md",
+			"tokens": 72,
+			"tags": [
+				"packages",
+				"core",
+				"installation",
+				"expand",
+				"compact",
+				"options"
+			],
+			"entities": []
 		},
 		{
 			"id": "packages.core.installation-createcompactstream-options",
@@ -5706,7 +5726,7 @@
 		{
 			"id": "packages.core.installation-parseprocesstext-text-and-createprocesstextstream",
 			"file": "chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream.md",
-			"tokens": 1923,
+			"tokens": 920,
 			"tags": [
 				"packages",
 				"core",
@@ -5717,13 +5737,30 @@
 			],
 			"entities": [
 				"glm-4.7-flash",
-				"parseProcessText",
-				"lintDiagram"
+				"R/PT1H"
 			]
 		},
 		{
 			"id": "packages.core.installation-parseprocesstext-text-and-createprocesstextstream-2",
 			"file": "chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream-2.md",
+			"tokens": 1490,
+			"tags": [
+				"packages",
+				"core",
+				"installation",
+				"parseprocesstext",
+				"text",
+				"createprocesstextstream"
+			],
+			"entities": [
+				"parseProcessText",
+				"DeployabilityError",
+				"lintDiagram"
+			]
+		},
+		{
+			"id": "packages.core.installation-parseprocesstext-text-and-createprocesstextstream-3",
+			"file": "chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream-3.md",
 			"tokens": 397,
 			"tags": [
 				"packages",

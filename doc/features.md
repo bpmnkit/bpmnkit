@@ -1,5 +1,9 @@
 # Features
 
+## Compact and process text for Camunda 8: names, codes, timers and the `expand` gate (2026-11-08)
+
+`expand(compact)` refuses a diagram Zeebe would reject (`DeployabilityError`, every reason listed) and marks its output as Camunda 8; `validate: false` for previews, `placeholders: true` to fill, `camundaVersion` to choose the version. Compact elements carry `messageName` + `correlationKey`, `signalName`, `errorCode`, `escalationCode`, `timerDate` and `timerCycle`, written as root messages (with their `zeebe:subscription`), signals, errors and escalations and read back by `compactify`. The line format gains `msg=`, `key=`, `signal=`, `error=`, `escalation=`, `at=`, `every=` and `called=`, written back by `writeProcessText` and read by change scripts; the id stands in for a missing name or code, as it does for `job=`. Rust: `expand(compact, &ExpandOptions)`, same fields, syntax and messages.
+
 ## Builder deploy gate: `build({ validate, placeholders, camundaVersion })` (2026-11-08)
 
 `ProcessBuilder.build()` and `DiagramBuilder.build()` refuse a Camunda 8 model Zeebe would reject. The builder's own rules come first and name the fix: a gateway branch without `.condition()`/`.defaultFlow()`, a send task or message throw/end event without `taskType` (new option, written as `zeebe:taskDefinition`), forbidden AI-agent ad-hoc combinations, static correlation keys and collections; then `assertDeployable`. `validate: false` skips both for a model that is not meant for Camunda 8; `placeholders: true` returns the filled model; `camundaVersion` overrides the model's version. Chaining after an end event throws at the call. Rust: `BuildOptions`/`BuildGateOptions`, `BuildError.deployability`, same messages.

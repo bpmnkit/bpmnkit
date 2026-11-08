@@ -98,3 +98,11 @@ sources Zeebe rejects), each with a reason. Everything else must pass `pnpm zeeb
 - A message created for a missing `messageRef` on a catching element gets its `zeebe:subscription` at once, keyed `="placeholder-<elementId>"` on the catching element, so the key does not repeat the generated message id. Process-level message starts get no subscription.
 - Rust's `Deployable.definitions` is a `Cow`: borrowed when nothing was filled.
 - `compilePlan` / `mergePlan` export with `validate: false` until phase 4 gates them (they already report deploy errors as `problems`).
+
+## Phase 3 decisions (2026-11-08)
+
+- `expand` writes `modeler:executionPlatform="Camunda Cloud"` on gated output, so a later `Bpmn.export` "auto" agrees, but no `executionPlatformVersion` unless the diagram names one: the version checked is then the newest, the same one export picks. `validate: false` writes no platform (unless the diagram names a version), so an ungated preview is not gated on export either.
+- A deployability refusal surfaces at `expand`, not in `parseProcessText`: the parser's result already reports what it changed, and the gate belongs where the model is built. Callers that report `problems` report the `DeployabilityError` alongside.
+- Process-text repairs stay deterministic and identical in Rust: the id stands in for a missing message name, message throw/end job type, signal name, thrown error/escalation code and called process, as it does for `job=`. A correlation key and a timer's time have no stand-in; the gate names them. Caught errors and escalations without a code stay catch-alls.
+- Compact cases that pin how a non-Camunda-8 model expands (round trips of rejected sources, cancel/compensate boundaries, complex gateways, transactions, an empty process) use `case.json` `"expand": {"validate": false}`; text cases written by a model without a key or timer time record the gate's error, with the parser's repairs still pinned in `result.json`.
+

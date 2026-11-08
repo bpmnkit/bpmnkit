@@ -345,7 +345,7 @@ import { compactify } from "@bpmnkit/core";
 const compact = compactify(Bpmn.parse(xml));
 ```
 
-### `expand(compact)`
+### `expand(compact, options?)`
 
 Builds a `BpmnDefinitions` object from a `CompactDiagram`. It restores only what the compact
 form carries, so `expand(compactify(definitions))` is not `definitions` — use this to build a
@@ -356,6 +356,50 @@ import { expand } from "@bpmnkit/core";
 
 const definitions = expand(compactDiagram);
 const xml = Bpmn.export(definitions);
+```
+
+**Deployable by default.** A compact diagram is written for Camunda 8, so `expand` marks the
+result `modeler:executionPlatform="Camunda Cloud"` (plus the diagram's `executionPlatformVersion`,
+when it names one) and runs `assertDeployable` on it. What Zeebe would reject is refused with a
+`DeployabilityError` that lists every reason:
+
+```text
+Not deployable on Camunda 8.10: 1 error(s)
+- Message_payment-received: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)
+```
+
+The options are those of the builder's gate:
+
+| Option | Default | Effect |
+|---|---|---|
+| `validate` | `true` | `false` skips the gate. The result is then not marked as Camunda 8 (unless the diagram names a version), so `Bpmn.export`'s `"auto"` check leaves it alone too. For previews and work in progress. |
+| `placeholders` | `false` | Fill the documented `PLACEHOLDERS` (job types, message names, keys, `PT1H` timers, ...) instead of refusing. |
+| `camundaVersion` | the diagram's `executionPlatformVersion`, else the newest | The Camunda 8 version to check for. |
+
+`createCompactStream` and `createProcessTextStream` frames are previews of unfinished text, so
+they expand with `validate: false`.
+
+**Names, codes and times.** These `CompactElement` fields become the root elements Camunda 8
+needs:
+
+| Field | On | Written as |
+|---|---|---|
+| `messageName` | message events, receive tasks | a `bpmn:message` per name and key (`Message_<name>`), referenced by the element |
+| `correlationKey` | a message waited for | the message's `zeebe:subscription` (`"=orderId"`); needed everywhere but a process start |
+| `signalName` | signal events | a `bpmn:signal` per name |
+| `errorCode` | error events | a `bpmn:error` per code; an error boundary or start without one catches every error |
+| `escalationCode` | escalation events | a `bpmn:escalation` per code |
+| `timerDuration`, `timerDate`, `timerCycle` | timer events | `timeDuration` (`PT5M`), `timeDate` (ISO date-time or FEEL), `timeCycle` (`R/PT1H`, `R3/PT10M`) |
+| `calledProcess` | call activities | `zeebe:calledElement processId` |
+| `linkName` | link events | the link's `name` |
+| `interrupting: false` | boundary events, an event sub-process's start event | `cancelActivity="false"` / `isInterrupting="false"` |
+
+`compactify` reads them back, and a parsed event sub-process (`subProcess triggeredByEvent`) comes
+back as `eventSubProcess`, so `expand(compactify(defs))` keeps the trigger.
+
+```json
+{ "id": "wait", "type": "intermediateCatchEvent", "eventType": "message",
+  "messageName": "payment-received", "correlationKey": "=orderId" }
 ```
 
 Every element type the model knows expands to itself, data elements included. The switch is
@@ -440,6 +484,15 @@ Attributes after `|`:
   getting its item in the singular (`each=approvers` → `approver`);
 - `after=<duration>` sets a timer's duration, ISO 8601 or `5m`, `2 hours`, `1 day`. Without
   it, a duration in the timer's name is read ("Wait 5 minutes" → `PT5M`).
+- `at=<date-time>` sets a timer's date (`at=2026-12-01T09:00:00Z`), and `every=<cycle>` its cycle:
+  an ISO 8601 repeating interval (`every=R3/PT10M`) or a duration repeated forever
+  (`every=1h` → `R/PT1H`);
+- `msg=<name>` names the message a message event or receive task waits for or sends, and
+  `key=<FEEL>` the correlation key it is caught on (`key=orderId` → `=orderId`). Camunda 8 needs a
+  key wherever a message is waited for, except at a process start;
+- `signal=<name>`, `error=<code>` and `escalation=<code>` name the signal, error or escalation;
+- `called=<process id>` sets the process a call activity runs. `job=` on a call activity means
+  the same;
 - `result=<variable>` names the variable a task's result goes to;
 - `feel=<expression>` makes the step a script task that evaluates the FEEL expression into
   `result=` (its id when there is none), written as `zeebe:script`. It comes last: the
@@ -458,7 +511,17 @@ ways out onto the task — all but the ones named for handling (failure, error, 
 An attribute written before the `|` (`late[boundary:timer on=pay]`) is read all the same.
 `after=` on an event that is not a timer makes it one, and a boundary without `on=` that one
 task is drawn into (`send > wait[boundary:timer …]`) goes on that task.
-Change scripts read `result=` and `feel=`, but not `each=` and `after=` yet.
+`msg=`, `signal=`, `error=`, `escalation=`, `at=` and `every=` on an event written without a
+trigger make it that kind of event (`paid[catch Paid | msg=paid key=orderId]`); on an event of
+another kind they are reported and ignored.
+Change scripts read `result=`, `feel=`, `at=`, `every=`, `called=`, `msg=`, `key=`, `signal=`,
+`error=` and `escalation=`, but not `each=` yet.
+
+```text
+s[start:timer Every hour | every=1h] > h[call Handle order | called=handle-order]
+h > w[catch Paid | msg=payment-received key=orderId] > n[throw:message Notify | msg=order-done job=notify] > e[end]
+failed[boundary:error Failed | on=h error=PAYMENT_FAILED] > f[end:error Give up | error=GIVEN_UP]
+```
 
 ```typescript
 import { expand, Bpmn, parseProcessText, PROCESS_TEXT_GUIDE } from "@bpmnkit/core";
@@ -467,7 +530,11 @@ const { diagram, problems, fixes } = parseProcessText(modelOutput);
 const xml = Bpmn.export(expand(diagram));
 ```
 
-`parseProcessText` never throws, and its diagram always expands. It also keeps the structural
+`parseProcessText` never throws, and its diagram is always valid BPMN: `expand(diagram, {
+validate: false })` never throws. Whether it deploys is `expand`'s question: the gate runs there,
+and a caller that reports `problems` reports a `DeployabilityError` the same way. The parser
+cannot invent what only the writer knows, a correlation key or a timer's time, so text without
+them is refused at `expand` with the reason. It also keeps the structural
 rules `lintDiagram` checks — including bpmnlint's recommended set — whatever the model wrote.
 Text it cannot use, and anything it has to leave out, is returned in `problems` with its line
 number. What it adds or changes is listed in `fixes`:
@@ -506,8 +573,9 @@ number. What it adds or changes is listed in `fixes`:
 - an end event is added after every path that stops elsewhere, and a loop with no way out gets
   an exit branch from its decision; a loop with no decision loses the flows that close it
 - a link event in a path becomes a plain event, since the format cannot name its partner
-- a catch or boundary event written without a trigger becomes a message event, so it deploys.
-  A catch event named for a call it makes ("Send to SQS") becomes a service task instead
+- a catch or boundary event written without a trigger becomes a message event (it still needs
+  `key=` to deploy). A catch event named for a call it makes ("Send to SQS") becomes a service
+  task instead
 - an id written with spaces before its bracket (`call back[service …]`) is read as one id,
   `call_back`
 - a gateway with one way in and one way out — a question answered only one way — is removed;
@@ -526,7 +594,10 @@ number. What it adds or changes is listed in `fixes`:
 - flows out of anything but a decision carry no condition or label
 - an unnamed event, task or decision is named from its id
 - a service or send task without `job=` takes its id as job type, and a rule task its id as
-  decision id
+  decision id. Likewise, the id stands in for a missing `msg=` on a message event or receive task,
+  `job=` on a message throw or end event, `signal=` on a signal event, `error=` or `escalation=`
+  on an error or escalation throw or end event, and `called=` on a call activity. A correlation key
+  and a timer's time have no stand-in
 
 Some of those fixes are guesses only the reader can confirm, and `questions` puts them as
 questions, in the order of the text. Each has the element it is about, the question, ready
