@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-08 — bpmnlint parity skips deployability repro z07
+
+- `packages/core/tests/node/bpmnlint-parity.test.ts` checks every `.bpmn` in the repo. The repro `doc/deployability/repro/z07_ncname_nested.bpmn` has a nested id that is not an XML name on purpose, and bpmn-moddle skips such ids, so the test now lists it with the other intentionally malformed files.
+
 ## 2026-11-08 — Zeebe deployability gap analysis
 
 - New `doc/deployability/`:
