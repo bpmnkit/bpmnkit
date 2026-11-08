@@ -3,11 +3,13 @@
 The script outputs the following data from your namespace and creates a zip file containing the following:
 
 - **Pod Information**: Current and previous logs and full pod descriptions.
+- **Java thread dumps**: One `*.jstack` file per Java process, collected from pods that have `java`, `jattach`, and `pgrep` installed.
 - **Cluster Events**: Sorted by time to help identify recent issues.
 - **Storage Details**: PV and PVC descriptions.
 - **Cluster Nodes**: Node descriptions.
 - **Network Resources**: Services, endpoints, and ingresses.
 - **Configuration**: Config map information.
+- **Helm release data**: The Helm version (`helm-version.txt`), the release history (`helm-history.txt`), and the user-supplied values of the release (`helm-values.yaml`). The script collects this data only if the `helm` command is available in the `PATH` and it detects the release name.
 - **Actuator endpoints**: Read-only Zeebe and Spring Boot actuator outputs from Camunda pods (partition status, cluster topology, exporters, flow control, job streams, backup state, Prometheus metrics, and configuration properties).
 - **Elasticsearch/OpenSearch Data** (when an Elasticsearch or OpenSearch pod is deployed in the same namespace):
   - Cluster health, node stats, and allocation details.

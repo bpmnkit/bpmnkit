@@ -64,7 +64,6 @@ kubectl --context cluster-paris -n kube-system edit configmap coredns
 ```
 
   Full configmap example
-  
 
 **Caution**
 
@@ -106,8 +105,6 @@ data:
         }
     }
 ```
-
-  
 
 5. Check that CoreDNS has reloaded for the changes to take effect before continuing. Make sure it contains `Reloading complete`:
 

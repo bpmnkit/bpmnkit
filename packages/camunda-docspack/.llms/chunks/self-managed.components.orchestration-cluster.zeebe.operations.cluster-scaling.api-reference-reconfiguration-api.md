@@ -59,7 +59,7 @@ This is a dangerous operation and must be used with caution. Incorrect use may r
 
 Usually, changes can only be made when all brokers are up. If some brokers are unreachable, you can remove them from the cluster by setting the `force` request parameter to `true`.
 
-This operation is mainly useful for [dual-region setups](https://docs.camunda.io/docs/next/self-managed//concepts/multi-region/dual-region). For details, see the [dual-region operational procedure](https://docs.camunda.io/docs/next/self-managed/deployment/helm/operational-tasks/dual-region-ops). Deviations from the process may make the cluster unusable.
+This operation is mainly useful for [dual-region setups](https://docs.camunda.io/docs/next/self-managed/concepts/multi-region/dual-region). For details, see the [dual-region operational procedure](https://docs.camunda.io/docs/next/self-managed/deployment/helm/operational-tasks/dual-region-ops). Deviations from the process may make the cluster unusable.
 
 **Note**
 Don’t send more than one `force` request at a time.

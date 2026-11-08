@@ -12,7 +12,8 @@ level of the compiled code must be the same as Zeebe's (i.e. currently JDK 21) o
 
 ```sh
 # to compile LoggingFilter.java, we'll need to provide the api libraries
-javac -classpath .:lib/jakarta.servlet-api.jar:lib/slf4j-api.jar ./LoggingFilter.java
+# the -d option places the class file in a directory that matches its package
+javac -d . -classpath .:lib/jakarta.servlet-api.jar:lib/slf4j-api.jar ./LoggingFilter.java
 ```
 
 ---

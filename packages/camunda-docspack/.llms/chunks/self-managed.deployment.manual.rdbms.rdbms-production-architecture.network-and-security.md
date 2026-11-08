@@ -1,7 +1,7 @@
 # Production architecture for Camunda 8 with RDBMS — Network and security
 
 - **Orchestration Cluster ↔ RDBMS**: Private network connectivity with TLS in production
-- **Network isolation**: Restrict RDBMS access to Orchestration Cluster pods only (use NetworkPolicies)
+- **Network isolation**: Restrict RDBMS access to the Orchestration Cluster hosts only (use host firewall rules or security groups)
 
 
 ## Supported scenarios

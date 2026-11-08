@@ -25,14 +25,14 @@ Installing Submariner in OpenShift **requires** [Advanced Cluster Management](#a
    Verify that each cluster's context name matches its corresponding cluster name. If the context name does not match, rename it to align with this guide.
 
    ```bash reference
-    https://github.com/camunda/camunda-deployment-references/blob/main//generic/openshift/dual-region/procedure/set-cluster-names.sh
+    https://github.com/camunda/camunda-deployment-references/blob/main/generic/openshift/dual-region/procedure/set-cluster-names.sh
    ```
 
 2. Verify dedicated broker nodes:
    Confirm that each cluster has nodes labeled for Submariner gateway functionality:
 
    ```bash reference
-    https://github.com/camunda/camunda-deployment-references/blob/main//generic/openshift/dual-region/procedure/submariner/list-nodes-brokers.sh
+    https://github.com/camunda/camunda-deployment-references/blob/main/generic/openshift/dual-region/procedure/submariner/list-nodes-brokers.sh
    ```
 
    If no nodes are labeled, you need to label at least one node in each cluster. For better reliability, consider dedicating a node as the broker.
@@ -41,7 +41,7 @@ Installing Submariner in OpenShift **requires** [Advanced Cluster Management](#a
    Select the first node and apply the required label:
 
    ```bash reference
-    https://github.com/camunda/camunda-deployment-references/blob/main//generic/openshift/dual-region/procedure/submariner/label-nodes-brokers.sh
+    https://github.com/camunda/camunda-deployment-references/blob/main/generic/openshift/dual-region/procedure/submariner/label-nodes-brokers.sh
    ```
 
 3. Deployment of Submariner on the clusters:
@@ -60,13 +60,13 @@ Installing Submariner in OpenShift **requires** [Advanced Cluster Management](#a
    - Then apply it on the management cluster:
 
      ```bash reference
-       https://github.com/camunda/camunda-deployment-references/blob/main//generic/openshift/dual-region/procedure/submariner/install-submariner.sh
+       https://github.com/camunda/camunda-deployment-references/blob/main/generic/openshift/dual-region/procedure/submariner/install-submariner.sh
      ```
 
    - Wait for the brokers to become ready. This may take up to 10 minutes. You can check the broker status using the following command:
 
      ```bash reference
-       https://github.com/camunda/camunda-deployment-references/blob/main//generic/openshift/dual-region/procedure/submariner/verify-submariner.sh
+       https://github.com/camunda/camunda-deployment-references/blob/main/generic/openshift/dual-region/procedure/submariner/verify-submariner.sh
      ```
 
 4. After deploying Submariner, check that the clusters can communicate with each other by using the `subctl` utility. Keep in mind that it might take several minutes before all status indicators turn green.
@@ -74,13 +74,13 @@ Installing Submariner in OpenShift **requires** [Advanced Cluster Management](#a
    If you don’t have the `subctl` CLI installed, you can follow the [installation instructions here](https://submariner.io/operations/deployment/) or execute the following commands:
 
    ```bash reference
-     https://github.com/camunda/camunda-deployment-references/blob/main//generic/openshift/dual-region/procedure/submariner/install-subctl.sh
+     https://github.com/camunda/camunda-deployment-references/blob/main/generic/openshift/dual-region/procedure/submariner/install-subctl.sh
    ```
 
    Now, verify communication between the clusters with the following script:
 
    ```bash reference
-     https://github.com/camunda/camunda-deployment-references/blob/main//generic/openshift/dual-region/procedure/submariner/verify-subctl.sh
+     https://github.com/camunda/camunda-deployment-references/blob/main/generic/openshift/dual-region/procedure/submariner/verify-subctl.sh
    ```
 
 ---

@@ -2,7 +2,7 @@
 
 Regular backups of your secondary storage are critical for disaster recovery and business continuity.
 
-- Follow the official Camunda backup procedure step by step.
+- Follow the official Camunda [backup procedure](https://docs.camunda.io/docs/next/self-managed/operational-guides/backup-restore/backup-and-restore) step by step. For backend-specific steps, see [Elasticsearch/OpenSearch](https://docs.camunda.io/docs/next/self-managed/operational-guides/backup-restore/elasticsearch/backup) or [RDBMS](https://docs.camunda.io/docs/next/self-managed/operational-guides/backup-restore/rdbms/backup).
 - Schedule backups regularly based on data volume and business requirements.
 - Periodically test restore operations to confirm that your backups are valid and usable.
 

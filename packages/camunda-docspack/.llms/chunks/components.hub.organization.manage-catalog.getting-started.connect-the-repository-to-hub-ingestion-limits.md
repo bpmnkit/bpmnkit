@@ -6,12 +6,11 @@ The ingestion endpoint enforces the following limits per request:
 | -------------------- | ----- |
 | Maximum files        | 5,000 |
 | Maximum payload size | 20 MB |
+| Maximum file size    | 4 MB  |
 
 Each asset consists of two files (a `README.md` and an element template), so a 5,000-file limit supports up to 2,500 assets.
 
-<!--- TODO: add link for configuration properties when it exists --->
-
-In Self-Managed, you can raise these limits using standard Spring configuration properties.
+In Self-Managed, you can raise these limits using standard [Spring configuration properties](https://docs.camunda.io/docs/next/self-managed/components/hub/configuration/properties#catalog).
 
 ---
 Source: https://docs.camunda.io/docs/next/components/hub/organization/manage-catalog/getting-started

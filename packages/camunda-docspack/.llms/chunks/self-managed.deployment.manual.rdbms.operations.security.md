@@ -6,17 +6,17 @@ All RDBMS connections must use TLS in production:
 
 ```bash
 # PostgreSQL
-export CAMUNDA_DATA_SECONDARY_STORAGE_RDBMS_URL="jdbc:postgresql://localhost:5432/camunda?sslmode=require"
-
-# See [RDBMS Helm configuration](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/database/rdbms) for other databases
+export CAMUNDA_DATA_SECONDARYSTORAGE_RDBMS_URL="jdbc:postgresql://localhost:5432/camunda?sslmode=require"
 ```
+
+For other databases, see [RDBMS Helm configuration](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/database/rdbms).
 
 ### Secrets
 
 Never hardcode passwords. Use environment variable injection:
 
 ```bash
-export CAMUNDA_DATA_SECONDARY_STORAGE_RDBMS_PASSWORD=$(cat /run/secrets/db_password)
+export CAMUNDA_DATA_SECONDARYSTORAGE_RDBMS_PASSWORD=$(cat /run/secrets/db_password)
 ```
 
 ### Database permissions

@@ -6,7 +6,7 @@ Check that every partition is active and healthy again using [the topology](http
 curl "${ORCHESTRATION_CLUSTER_API}/topology"
 ```
 
-The cluster leaves recovery mode as part of the restore, so no further action is required.
+The cluster leaves recovery mode as part of the restore, so the Orchestration Cluster needs no further action.
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/operational-guides/backup-restore/elasticsearch/restore-api

@@ -7,9 +7,10 @@ See [application configurations](https://docs.camunda.io/docs/next/self-managed/
 
 ## Configuration parameters
 
-| Configuration key                     | Description                      | Default value |
-| ------------------------------------- | -------------------------------- | ------------- |
-| `camunda.data.backup.repository-name` | ES / OS snapshot repository name | -             |
+| Configuration key                                                     | Description                            | Default value |
+| --------------------------------------------------------------------- | -------------------------------------- | ------------- |
+| `camunda.data.secondary-storage.elasticsearch.backup.repository-name` | Elasticsearch snapshot repository name | -             |
+| `camunda.data.secondary-storage.opensearch.backup.repository-name`    | OpenSearch snapshot repository name    | -             |
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/core-settings/concepts/backups

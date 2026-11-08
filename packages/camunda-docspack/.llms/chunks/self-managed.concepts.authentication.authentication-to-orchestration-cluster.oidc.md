@@ -22,9 +22,9 @@ For more information, see [connect Orchestration Cluster Admin to an external Id
   
 ### env
 
-```yaml
+```shell
 CAMUNDA_SECURITY_AUTHENTICATION_METHOD=oidc
-``` 
+```
   
   
 ### yaml
@@ -37,11 +37,14 @@ camunda.security.authentication.method: oidc
 ### helm
 
 ```yaml
-orchestration.security.authentication.method=oidc
+orchestration:
+  security:
+    authentication:
+      method: oidc
 ```
   
 
-If OIDC authentication is enabled, additional configuration values must be set. See [supported OIDC configuration properties](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/core-settings/configuration/properties#oidc-configuration).
+If OIDC authentication is enabled, additional configuration values must be set. See [supported OIDC configuration properties](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/core-settings/configuration/properties#camundasecurityauthenticationoidc).
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/concepts/authentication/authentication-to-orchestration-cluster

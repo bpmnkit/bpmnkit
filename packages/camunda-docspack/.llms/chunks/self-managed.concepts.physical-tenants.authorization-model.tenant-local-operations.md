@@ -32,7 +32,7 @@ The following examples show the URL structure for tenant-scoped operations. Repl
 | Get variables            | `GET /physical-tenants/{physicalTenantId}/v2/variables/{variableKey}`              |
 | Publish message          | `POST /physical-tenants/{physicalTenantId}/v2/messages`                            |
 
-For the full API reference, see the [Camunda API reference](https://docs.camunda.io/docs/next/apis-tools/hub-api-sm/overview).
+For the full API reference, see the [Orchestration Cluster REST API](https://docs.camunda.io/docs/next/apis-tools/orchestration-cluster-api-rest/orchestration-cluster-api-rest-overview).
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/concepts/physical-tenants/authorization-model

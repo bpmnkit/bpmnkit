@@ -6,7 +6,6 @@ If you are running the default configuration, you can access the Management Iden
 
 - [Docker Compose full or standalone configuration](https://docs.camunda.io/docs/next/self-managed/quickstart/developer-quickstart/docker-compose/configuration#choose-a-docker-compose-configuration): `http://localhost:8084/`
 - [Helm](https://docs.camunda.io/docs/next/self-managed/deployment/helm/install/quick-install): Follow your [`port-forward` or Ingress configuration](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/ingress/accessing-components-without-ingress)
-- [Manual](https://docs.camunda.io/docs/next/self-managed/deployment/manual/install): `http://localhost:8080/`
 
 
 ## Default user

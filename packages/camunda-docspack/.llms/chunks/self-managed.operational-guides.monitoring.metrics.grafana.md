@@ -29,7 +29,7 @@ Other Grafana dashboards (API panels, gateway panels) are being updated to inclu
 
 A pre-built Grafana dashboard is available for the data layer in the repository:
 
-[monitor/grafana/data_layer.json](https://github.com/camunda/camunda/blob/main/monitor/grafana/dashboards/data_layer.json)
+[monitor/grafana/dashboards/data_layer.json](https://github.com/camunda/camunda/blob/main/monitor/grafana/dashboards/data_layer.json)
 
 To use it:
 

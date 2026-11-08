@@ -25,7 +25,7 @@ Clients can be upgraded according to your requirements and environment, for exam
 For disaster recovery, you may want to take [backups](https://docs.camunda.io/docs/next/self-managed/operational-guides/backup-restore/backup-and-restore) before the upgrade.
 
 If you plan to immediately upgrade again, wait to give all brokers a chance to take new snapshots.
-The snapshot period is five minutes by default but is [configurable via `snapshotPeriod`](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/configuration/broker#zeebebrokerdata).
+The snapshot period is five minutes by default but is [configurable via `camunda.data.snapshot-period`](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/configuration/broker#camundadata).
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/operations/update-zeebe

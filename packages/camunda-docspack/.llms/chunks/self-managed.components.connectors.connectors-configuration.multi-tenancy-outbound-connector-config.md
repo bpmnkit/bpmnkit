@@ -30,7 +30,7 @@ To run the connector Runtime in a setup where a single runtime
 serves multiple tenants, add each tenant ID to the list of the default job workers:
 
 ```bash
-CAMUNDA_CLIENT_ZEEBE_DEFAULTS_TENANTIDS=`myTenant, otherTenant`
+CAMUNDA_CLIENT_WORKER_DEFAULTS_TENANTIDS=myTenant,otherTenant
 ```
 
 In this case, the `CAMUNDA_CLIENT_TENANTID` will **not** be used for the

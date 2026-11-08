@@ -82,7 +82,7 @@ DOCUMENT_DEFAULT_STORE_ID=inmemory
 
 **Local storage** can be configured for a cluster to store documents in a local folder. It can be used only for local development with [Camunda 8 Run](https://docs.camunda.io/docs/next/self-managed/quickstart/developer-quickstart/c8run).
 
-Local storage is not suitable for production use, as pods and file paths are not shared across components. This prevents components like Tasklist and Zeebe from accessing the same data. Files are stored locally, and their retention must be managed manually.
+Local storage is not suitable for production use, as file paths are not shared across components or machines. This prevents components like Tasklist and Zeebe from accessing the same data. Files are stored locally, and their retention must be managed manually.
 
 ```yaml
 camunda:
@@ -90,13 +90,13 @@ camunda:
     default-store-id: local1 # the instance ID defined below
     local:
       local1: # store instance ID — must match default-store-id
-        path: /usr/local/camunda/documents
+        path: /path/to/documents
 ```
 
-| Property                            | Required | Description                                                                                                                                                    |
-| ----------------------------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `camunda.document.local.<id>.path`  | Yes      | Path to the directory where uploaded files are stored. Use `/usr/local/camunda/documents` — it is pre-created with the right permissions for the process user. |
-| `camunda.document.default-store-id` | Yes      | Instance ID of the store to use as the default.                                                                                                                |
+| Property                            | Required | Description                                                                                                                                                                   |
+| ----------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `camunda.document.local.<id>.path`  | Yes      | Path to the directory where uploaded files are stored. The directory must already exist and be writable by the user that runs Camunda 8 Run. Camunda 8 Run doesn't create it. |
+| `camunda.document.default-store-id` | Yes      | Instance ID of the store to use as the default.                                                                                                                               |
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/concepts/document-handling/configuration/camunda-8-run

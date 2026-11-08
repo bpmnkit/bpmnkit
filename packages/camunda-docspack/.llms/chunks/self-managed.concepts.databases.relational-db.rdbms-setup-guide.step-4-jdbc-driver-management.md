@@ -11,7 +11,7 @@ For detailed driver provisioning strategies (init containers, custom images, vol
 
 ## Step 5: Schema management
 
-**Orchestration Cluster uses Liquibase** → automatically creates and updates schema on startup (configurable via `autoDDL: true/false`).
+**Orchestration Cluster uses Liquibase** → automatically creates and updates schema on startup (configurable via `camunda.data.secondary-storage.rdbms.auto-ddl`).
 
 **Camunda Hub uses Flyway** → migrations applied automatically on startup; **manual DBA execution not supported**.
 

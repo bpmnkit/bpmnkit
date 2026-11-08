@@ -12,7 +12,7 @@ orchestration:
         url: jdbc:postgresql://my-aurora-cluster.xxxxxxx.us-east-1.rds.amazonaws.com:5432/camunda
 ```
 
-Aurora supports automatic failover. For advanced failover features, consider the [AWS JDBC wrapper driver](https://docs.camunda.io/docs/next/self-managed/concepts/databases/relational-db/configuration#usage-with-aws-aurora-postgresql).
+Aurora supports automatic failover. For advanced failover features, consider the [AWS JDBC wrapper driver](https://docs.camunda.io/docs/next/self-managed/concepts/databases/relational-db/configuration#usage-with-aws-aurora-postgresql--mysql).
 
 ### Oracle with Kubernetes init container
 

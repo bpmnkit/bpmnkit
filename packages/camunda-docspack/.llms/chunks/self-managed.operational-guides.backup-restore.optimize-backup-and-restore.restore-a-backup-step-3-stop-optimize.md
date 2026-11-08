@@ -1,8 +1,8 @@
 # Back up and restore Optimize independently — Restore a backup — Step 3: Stop Optimize
 
-If you are using an external Elasticsearch/OpenSearch and Kubernetes, you could temporarily [uninstall](https://helm.sh/docs/helm/helm_uninstall/) the Camunda Helm chart or [scale](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_scale/) all components to 0, so that nothing is running and potentially interacting with the datastore.
+Stop Optimize now, before you continue with Step 4. Only Steps 1 and 2 need Optimize running.
 
-In a manual setup, you can simply stop Optimize component.
+If you are using an external Elasticsearch/OpenSearch and Kubernetes, temporarily [uninstall](https://helm.sh/docs/helm/helm_uninstall/) the Camunda Helm chart or [scale](https://kubernetes.io/docs/reference/kubectl/generated/kubectl_scale/) all components to 0, so that nothing is running and potentially interacting with the datastore.
 
 With Helm, disable Optimize in `values.yml`:
 

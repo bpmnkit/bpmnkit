@@ -1,13 +1,13 @@
 # Client authorization — Client — Custom Credentials provider
 
-As previously mentioned, the `CredentialProvider`'s purpose is to modify the HTTP headers with an authorization method.
+As previously mentioned, the `CredentialsProvider`'s purpose is to modify the HTTP headers with an authorization method.
 
 The interface consists of an `applyCredentials(CredentialsApplier)` method and a `shouldRetryRequest(StatusCode)` method.
 
 - `applyCredentials(CredentialsApplier)`: Called on every request (both REST and gRPC). The applier lets you add any headers to the request before it's sent.
 - `shouldRetryRequest(StatusCode)`: Called every time a request completed with a non-successful status code. The `StatusCode` argument lets you inspect the raw HTTP or gRPC code, and provides a convenient method to check the request had wrong credentials (`StatusCode#isUnauthorized`).
 
-The following sections implement custom provider in Java:
+The following sections implement a custom provider in Java:
 
 #### Java
 

@@ -14,7 +14,7 @@ If you deploy infrastructure (PostgreSQL, Elasticsearch, Keycloak) with Kubernet
 Install the Helm chart by either making it available in a [private repository](https://helm.sh/docs/topics/chart_repository/) that can be accessed from the air-gapped environment or providing the downloaded chart archive locally, for example:
 
 ```shell
-helm install camunda --version $HELM_CHART_VERSION ./camunda-platform-11.1.0.tgz
+helm install camunda ./camunda-platform-<CHART_VERSION>.tgz
 ```
 
 For supported versions, see [supported environments](https://docs.camunda.io/docs/next/reference/supported-environments#camunda-8-self-managed) and the [RDBMS support policy](https://docs.camunda.io/docs/next/self-managed/concepts/databases/relational-db/rdbms-support-policy).

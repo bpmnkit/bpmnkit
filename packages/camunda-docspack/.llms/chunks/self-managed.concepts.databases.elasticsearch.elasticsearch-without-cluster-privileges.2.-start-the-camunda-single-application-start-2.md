@@ -8,7 +8,7 @@ If the application configurations are managed directly and do not rely on the He
 # Helm chart values file.
 
 orchestration:
-  configuration |
+  configuration: |
     [...] # Any other custom config.
     camunda.database:
       schema-manager:

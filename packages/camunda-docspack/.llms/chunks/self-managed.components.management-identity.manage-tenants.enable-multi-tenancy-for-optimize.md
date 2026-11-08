@@ -4,7 +4,7 @@ By default, multi-tenancy is disabled in Management Identity.
 
 To enable multi-tenancy:
 
-1. Enable the [`MULTITENANCY_ENABLED` feature flag](https://docs.camunda.io/docs/next/self-managed/components/management-identity/miscellaneous/configuration-variables#feature-flags).
+1. Enable the [`MULTITENANCY_ENABLED` feature flag](https://docs.camunda.io/docs/next/self-managed/components/management-identity/miscellaneous/configuration-variables#feature-flags). If you use the Camunda Helm chart, also set `global.multitenancy.enabled: true` in your Helm values. Without it, the **Tenants** tab doesn't appear in Management Identity.
 2. [Configure a database](https://docs.camunda.io/docs/next/self-managed/components/management-identity/miscellaneous/configuration-variables#database-configuration).
 
 

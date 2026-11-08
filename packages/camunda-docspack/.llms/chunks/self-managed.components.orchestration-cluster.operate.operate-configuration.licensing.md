@@ -10,7 +10,7 @@ See the [core settings documentation](https://docs.camunda.io/docs/next/self-man
 
 ## Secondary storage
 
-Review the [secondary storage documentation](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/core-settings/configuration/properties#secondary-storage) and [secondary storage configuration](https://docs.camunda.io/docs/next/self-managed/concepts/secondary-storage/configuring-secondary-storage).
+Review the [secondary storage documentation](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/core-settings/configuration/properties#data---secondary-storage) and [secondary storage configuration](https://docs.camunda.io/docs/next/self-managed/concepts/secondary-storage/configuring-secondary-storage).
 
 
 ## Operation executor

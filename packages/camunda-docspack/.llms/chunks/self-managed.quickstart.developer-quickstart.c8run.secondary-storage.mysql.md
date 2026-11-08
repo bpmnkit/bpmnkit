@@ -21,7 +21,7 @@ docker run -d --name camunda-mysql \
   -e MYSQL_USER=camunda \
   -e MYSQL_PASSWORD=camunda \
   -e MYSQL_DATABASE=camunda_secondary \
-  -p 3306:3306 mysql:9.7
+  -p 3307:3306 mysql:9.7
 ```
 
 **Note**

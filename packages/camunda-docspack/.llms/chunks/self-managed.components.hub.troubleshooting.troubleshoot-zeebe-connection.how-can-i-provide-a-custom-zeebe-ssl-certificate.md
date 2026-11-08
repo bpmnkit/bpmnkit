@@ -7,11 +7,11 @@ server certificate itself.
 
 ### Provide the certificate via an environment variable
 
-`modeler-restapi` reads a trusted certificate from the environment variable `ZEEBE_CA_CERTIFICATE_PATH`.
+`modeler-restapi` reads a trusted certificate from the environment variable `CAMUNDA_CA_CERTIFICATE_PATH`.
 This solution is recommended for most users:
 
 ```shell
-ZEEBE_CA_CERTIFICATE_PATH=/path/to/certificate
+CAMUNDA_CA_CERTIFICATE_PATH=/path/to/certificate
 ```
 
 The provided path has to be accessible from the `modeler-restapi` container (e.g. via a mounted volume).

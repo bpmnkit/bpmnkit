@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-08 — Rebuild camunda-docspack against camunda-docs@fa2c9cd
+
+- Regenerated `@bpmnkit/camunda-docspack` chunks, manifest and `llms.txt` (7161 chunks, camunda@8.10) from camunda-docs `fa2c9cd`. Merged `origin/main`; the only conflict was the pack version line in `llms.txt`, kept at 0.3.0.
+
 ## 2026-11-07 — Studio scenario-runner tests on the shared reebe crates
 
 - `apps/studio/tests/scenario-runner.test.ts` failed in CI after reebe switched to the shared `bpmnkit-xml`/`bpmnkit-bpmn` parser. The fixture's `resultExpression` header was invalid XML (`value="={\"mytest\": true}"`; XML has no backslash escape) and used `zeebe:` without declaring it. The old hand-written reebe parser accepted both; the shared one rejects them, as Zeebe does. The fixture now uses `&quot;` and declares `xmlns:zeebe`.

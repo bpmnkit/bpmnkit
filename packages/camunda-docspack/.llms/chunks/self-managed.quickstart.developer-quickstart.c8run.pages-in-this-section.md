@@ -13,8 +13,7 @@ Step through the Camunda 8 Run guide via the following topics:
 
 If you are looking for a specific task from the previous single-page guide, use the links below.
 
-
-## Install and start Camunda 8 Run {#install-and-start-camunda-8-run}
+### Install and start Camunda 8 Run {#install-and-start-camunda-8-run}
 
 For prerequisites, local startup, and shutdown steps, see [install and start Camunda 8 Run](https://docs.camunda.io/docs/next/self-managed/quickstart/developer-quickstart/c8run/install-start).
 For container-based local deployment, see the [developer quickstart with Docker Compose](https://docs.camunda.io/docs/next/self-managed/quickstart/developer-quickstart/docker-compose).
@@ -50,6 +49,10 @@ For the default H2 configuration and limitations, see [default H2 in Camunda 8 R
 #### External relational database options {#external-relational-database-options}
 
 For PostgreSQL, MariaDB, MySQL, Oracle, and Microsoft SQL Server examples, see [external relational database options](https://docs.camunda.io/docs/next/self-managed/quickstart/developer-quickstart/c8run/secondary-storage#external-relational-database-options).
+
+### Shut down Camunda 8 Run {#shut-down-camunda-8-run}
+
+For local shutdown commands, see [shut down Camunda 8 Run](https://docs.camunda.io/docs/next/self-managed/quickstart/developer-quickstart/c8run/install-start#shut-down-camunda-8-run).
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/quickstart/developer-quickstart/c8run

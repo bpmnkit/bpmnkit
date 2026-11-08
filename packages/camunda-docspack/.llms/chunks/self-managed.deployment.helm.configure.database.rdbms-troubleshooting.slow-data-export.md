@@ -25,13 +25,13 @@ orchestration:
           data:
             secondary-storage:
               rdbms:
-                flush-interval: PT1S # More frequent flushes
+                flush-interval: PT0.25S # More frequent flushes (default: PT0.5S)
                 queue-size: 5000 # Larger queue for buffering
                 queue-memory-limit: 50 # Increase if needed
 ```
 
-- Smaller `flushInterval` → more frequent writes (increases DB load).
-- Larger `queueSize` → more events buffered before flush (increases memory).
+- Smaller `flush-interval` → more frequent writes (increases DB load).
+- Larger `queue-size` → more events buffered before flush (increases memory).
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/database/rdbms-troubleshooting

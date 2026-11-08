@@ -27,7 +27,7 @@ Allows you to configure the SSL security for the REST server.
 
 ```yaml
 server:
-  host: 0.0.0.0
+  address: 0.0.0.0
   port: 8080
   compression:
     enabled: true
