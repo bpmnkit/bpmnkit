@@ -24,10 +24,11 @@ import { homedir } from "node:os"
 import { basename, dirname, join } from "node:path"
 import { createInterface } from "node:readline"
 import { CamundaClient } from "@bpmnkit/api"
-import { Bpmn, compactify, optimize } from "@bpmnkit/core"
+import { Bpmn, DeployabilityError, assertDeployableXml, compactify, optimize } from "@bpmnkit/core"
 import { ALL_PATTERNS, findPattern } from "@bpmnkit/patterns"
 import { clusterApiUrl, getActiveProfile, getAuthHeader } from "@bpmnkit/profiles"
 import { CAMUNDA_SPEC } from "./camunda-spec.js"
+import { refuseUndeployable } from "./final-diagram.js"
 import { writeModelXml } from "./model-write.js"
 import { runSandboxed } from "./sandbox.js"
 import type { HostFunction } from "./sandbox.js"
@@ -415,7 +416,11 @@ CMD ["node", "dist/index.js"]
 
 // ── Tool implementations ──────────────────────────────────────────────────────
 
-async function toolBpmnCreate(description: string, outputDir?: string): Promise<string> {
+async function toolBpmnCreate(
+	description: string,
+	outputDir?: string,
+	placeholders = false,
+): Promise<string> {
 	const dir = outputDir ? expandHome(outputDir) : process.cwd()
 	const slug = slugify(description)
 
@@ -432,6 +437,9 @@ async function toolBpmnCreate(description: string, outputDir?: string): Promise<
 				content: `Create a BPMN process: ${description}${context}`,
 			},
 		],
+		// The proxy refuses a diagram Camunda 8 would not deploy, with the gate's lines,
+		// unless placeholders were asked for.
+		placeholders,
 	})
 
 	if (!xml) throw new Error("AI did not produce a BPMN diagram. Try a more specific description.")
@@ -450,7 +458,11 @@ function toolBpmnRead(path: string): string {
 	return JSON.stringify(compact, null, 2)
 }
 
-async function toolBpmnUpdate(path: string, instruction: string): Promise<string> {
+async function toolBpmnUpdate(
+	path: string,
+	instruction: string,
+	placeholders = false,
+): Promise<string> {
 	const absPath = expandHome(path)
 	if (!existsSync(absPath)) throw new Error(`File not found: ${path}`)
 
@@ -462,6 +474,7 @@ async function toolBpmnUpdate(path: string, instruction: string): Promise<string
 		messages: [{ role: "user", content: instruction }],
 		context: compact,
 		action: "improve",
+		placeholders,
 	})
 
 	if (!updatedXml) throw new Error("AI did not produce an updated diagram.")
@@ -477,6 +490,13 @@ function toolBpmnValidate(path: string): string {
 	const xml = readFileSync(absPath, "utf8")
 	const defs = Bpmn.parse(xml)
 	const report = optimize(defs)
+	let deployability: string | null = null
+	try {
+		assertDeployableXml(xml)
+	} catch (err) {
+		if (!(err instanceof DeployabilityError)) throw err
+		deployability = err.message
+	}
 
 	const findings = report.findings.map((f) => ({
 		severity: f.severity,
@@ -493,16 +513,31 @@ function toolBpmnValidate(path: string): string {
 		warnings: findings.filter((f) => f.severity === "warning").length,
 		info: findings.filter((f) => f.severity === "info").length,
 		autoFixable: findings.filter((f) => f.autoFixable).length,
+		// The deploy gate's verdict on the file as it is: what bpmn_deploy would refuse.
+		deployable: deployability === null,
 	}
 
-	return JSON.stringify({ summary, findings }, null, 2)
+	return JSON.stringify(
+		{ summary, ...(deployability !== null ? { deployability } : {}), findings },
+		null,
+		2,
+	)
 }
 
-async function toolBpmnDeploy(path: string, target: "local" | "camunda8"): Promise<string> {
+/** What `bpmn_deploy` adds to the gate's lines when it refuses a file. */
+export const BPMN_DEPLOY_REFUSAL =
+	"Not deployed. Fix the model (bpmn_update), or pass validate: false to send it anyway."
+
+async function toolBpmnDeploy(
+	path: string,
+	target: "local" | "camunda8",
+	validate = true,
+): Promise<string> {
 	const absPath = expandHome(path)
 	if (!existsSync(absPath)) throw new Error(`File not found: ${path}`)
 
 	const xml = readFileSync(absPath, "utf8")
+	if (validate) refuseUndeployable(xml, BPMN_DEPLOY_REFUSAL)
 	const fileName = basename(absPath)
 	const blob = new Blob([xml], { type: "application/octet-stream" })
 	const formData = new FormData()
@@ -778,7 +813,9 @@ const TOOLS = [
 		description:
 			"Generate a new BPMN process from a natural language description. " +
 			"Automatically loads a domain pattern if one matches, then calls the AI to generate the diagram. " +
-			"Writes the result to disk and returns the file path.",
+			"Writes the result to disk and returns the file path. The diagram must deploy on Camunda 8: " +
+			"otherwise nothing is written and the error lists each problem (element, message, zeebe/<rule>); " +
+			"describe the missing values, or pass placeholders: true.",
 		inputSchema: {
 			type: "object",
 			properties: {
@@ -789,6 +826,11 @@ const TOOLS = [
 				outputDir: {
 					type: "string",
 					description: "Directory to write the BPMN file (default: current working directory)",
+				},
+				placeholders: {
+					type: "boolean",
+					description:
+						"Fill documented placeholder values (job types, message names, correlation keys, ...) the description leaves out, instead of refusing a diagram Camunda 8 would not deploy. Default false.",
 				},
 			},
 			required: ["description"],
@@ -817,6 +859,11 @@ const TOOLS = [
 				instruction: {
 					type: "string",
 					description: "Natural language instruction for the change to make",
+				},
+				placeholders: {
+					type: "boolean",
+					description:
+						"Fill documented placeholder values instead of refusing a result Camunda 8 would not deploy. Default false.",
 				},
 			},
 			required: ["path", "instruction"],
@@ -849,6 +896,11 @@ const TOOLS = [
 					type: "string",
 					enum: ["local", "camunda8"],
 					description: "Deployment target",
+				},
+				validate: {
+					type: "boolean",
+					description:
+						"Refuse a file Camunda 8 would reject before sending it, with one line per error (default true).",
 				},
 			},
 			required: ["path", "target"],
@@ -1117,19 +1169,31 @@ async function callTool(name: string, args: Record<string, unknown>): Promise<st
 
 	switch (name) {
 		case "bpmn_create":
-			return toolBpmnCreate(args.description as string, args.outputDir as string | undefined)
+			return toolBpmnCreate(
+				args.description as string,
+				args.outputDir as string | undefined,
+				args.placeholders === true,
+			)
 
 		case "bpmn_read":
 			return toolBpmnRead(args.path as string)
 
 		case "bpmn_update":
-			return toolBpmnUpdate(args.path as string, args.instruction as string)
+			return toolBpmnUpdate(
+				args.path as string,
+				args.instruction as string,
+				args.placeholders === true,
+			)
 
 		case "bpmn_validate":
 			return toolBpmnValidate(args.path as string)
 
 		case "bpmn_deploy":
-			return toolBpmnDeploy(args.path as string, args.target as "local" | "camunda8")
+			return toolBpmnDeploy(
+				args.path as string,
+				args.target as "local" | "camunda8",
+				args.validate !== false,
+			)
 
 		case "bpmn_simulate":
 			return toolBpmnSimulate(args.path as string, (args.scenarios as unknown[]) ?? [])

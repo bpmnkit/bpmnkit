@@ -105,7 +105,8 @@ export function renderBpmnBlock(
 
 	let html = `<figure class="bpmnkit-diagram" style="margin:1.5em 0">${svg}`
 	if (options.link) {
-		// The user's own file, shown or written back as it is, not refused for deploy errors.
+		// Opens the drawn diagram in an editor, where it is work in progress; deploying it there
+		// goes through the deploy gate. Not refused here for deploy errors.
 		const href = options.link({ xml: Bpmn.export(defs, { validate: false }), title })
 		html += `<figcaption style="font-size:0.875em;margin-top:0.5em"><a href="${escapeHtml(href)}">Open in BPMN Kit</a></figcaption>`
 	}
@@ -137,7 +138,9 @@ function parseBlock(code: string, lang: BpmnLang): BpmnDefinitions {
 	} catch (err) {
 		throw new Error(`invalid JSON: ${err instanceof Error ? err.message : String(err)}`)
 	}
-	return expand(toCompactDiagram(json))
+	// A drawing of the author's sketch, not a generated artifact: a block that would not
+	// deploy (no job type, no message key) still renders. Deploying goes through the gate.
+	return expand(toCompactDiagram(json), { validate: false })
 }
 
 /**

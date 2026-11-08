@@ -108,6 +108,14 @@ function parseElementLine(tag: string, tokens: string[], lineNo: number): Compac
 		else if (key === "result") element.resultVariable = value
 		else if (key === "event") element.eventType = value
 		else if (key === "at") element.attachedTo = value
+		else if (key === "msg") element.messageName = value
+		else if (key === "key") element.correlationKey = value
+		else if (key === "signal") element.signalName = value
+		else if (key === "error") element.errorCode = value
+		else if (key === "escalation") element.escalationCode = value
+		else if (key === "duration") element.timerDuration = value
+		else if (key === "date") element.timerDate = value
+		else if (key === "cycle") element.timerCycle = value
 		else throw new Error(`line ${lineNo}: unknown field "${key}"`)
 	}
 
@@ -130,6 +138,10 @@ function parseFlowLine(tokens: string[], lineNo: number, nextFlowId: () => strin
 	}
 	for (; i < tokens.length; i++) {
 		const token = tokens[i]
+		if (token === "default") {
+			flow.isDefault = true
+			continue
+		}
 		const eq = token.indexOf("=")
 		if (eq === -1) throw new Error(`line ${lineNo}: unrecognized token "${token}"`)
 		const key = token.slice(0, eq)

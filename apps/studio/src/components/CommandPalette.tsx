@@ -11,6 +11,11 @@ import { useThemeStore } from "../stores/theme.js"
 import type { AiBackend, AiMessage, ContextCommand } from "../stores/ui.js"
 import { useUiStore } from "../stores/ui.js"
 
+/** The deploy gate's message on a draft the AI returned (the proxy's `deployability` event). */
+function draftNote(message: string): string {
+	return `\n\nA draft: it does not deploy on Camunda 8 yet.\n${message}`
+}
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 interface CommandItem {
@@ -218,6 +223,8 @@ function InlineAiChat({ initialQuery, onOpenInSidebar, onBack }: InlineAiChatPro
 					})),
 					context,
 					backend: backendParam,
+					// Applied to the editor as work in progress; the deploy pane gates it.
+					validate: false,
 				}
 			} else {
 				url = `${getProxyUrl()}/operate/chat`
@@ -255,7 +262,12 @@ function InlineAiChat({ initialQuery, onOpenInSidebar, onBack }: InlineAiChatPro
 							| { type: "xml"; xml: string }
 							| { type: "done" }
 							| { type: "error"; message: string }
+							| { type: "deployability"; message: string }
 						if (parsed.type === "done") break
+						if (parsed.type === "deployability") {
+							accumulated += draftNote(parsed.message)
+							updateAiMessage(assistantId, { content: accumulated })
+						}
 						if (parsed.type === "error") throw new Error(parsed.message)
 						if (parsed.type === "xml") xmlReceived = parsed.xml
 						if (parsed.type === "token") {
@@ -441,7 +453,13 @@ function InlineImproveMode({ onBack, onOpenInSidebar }: InlineImproveModeProps) 
 				const res = await fetch(`${getProxyUrl()}/improve`, {
 					method: "POST",
 					headers: { "Content-Type": "application/json" },
-					body: JSON.stringify({ context: compact, instruction: null, backend: null }),
+					// Applied to the editor as work in progress, as for /chat.
+					body: JSON.stringify({
+						context: compact,
+						instruction: null,
+						backend: null,
+						validate: false,
+					}),
 					signal: ctrl.signal,
 				})
 				if (!res.ok || !res.body) throw new Error(`Server returned ${res.status}`)
@@ -474,6 +492,10 @@ function InlineImproveMode({ onBack, onOpenInSidebar }: InlineImproveModeProps) 
 								setAutoFixCount(event.autoFixCount ?? 0)
 							}
 							if (event.type === "xml" && event.xml) setXml(event.xml)
+							if (event.type === "deployability" && event.message) {
+								const note = draftNote(event.message)
+								setText((t) => t + note)
+							}
 							if (event.type === "error") throw new Error(event.message ?? "AI error")
 						} catch (e) {
 							if (e instanceof SyntaxError) continue

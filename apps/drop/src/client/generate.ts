@@ -27,6 +27,8 @@ import { BpmnCanvas } from "@bpmnkit/canvas"
 import {
 	Bpmn,
 	type BpmnDefinitions,
+	type CompactDiagram,
+	DeployabilityError,
 	type ProcessTextQuestion,
 	createProcessTextStream,
 	expand,
@@ -47,7 +49,7 @@ import {
 	createSseReader,
 	maxDescriptionChars,
 } from "../lib/generate.js"
-import { badgeText, readiness } from "../lib/readiness.js"
+import { badgeText, fillPlaceholders, readiness, shareRefusal } from "../lib/readiness.js"
 import { AI_CODE_STORAGE_KEY, AI_PASS_HEADER } from "../shared/constants.js"
 // Types only: the dry run is its own bundle, fetched once a draft has connectors.
 import type * as DryRunModule from "./dry-run.js"
@@ -62,6 +64,20 @@ import {
 	onDeviceRequested,
 	onDeviceText,
 } from "./on-device.js"
+
+/**
+ * The draft as drawn: gated, so a draft that deploys is marked as Camunda 8 output,
+ * else ungated: rendering a draft must never fail, and the check below says why it
+ * would not deploy.
+ */
+function draftDefinitions(diagram: CompactDiagram): BpmnDefinitions {
+	try {
+		return expand(diagram)
+	} catch (err) {
+		if (!(err instanceof DeployabilityError)) throw err
+		return expand(diagram, { validate: false })
+	}
+}
 
 // Short on purpose: a starting point for describing your own process.
 const EXAMPLES: readonly { label: string; text: string }[] = [
@@ -327,11 +343,12 @@ export function mountGenerator(): void {
 	function show(text: string): { ids: Set<string>; problems: number } {
 		if (!name || !share || !refine || !undo) return { ids: new Set(), problems: 0 }
 		const parsed = parseProcessText(text)
-		const plain = expand(parsed.diagram)
+		const plain = draftDefinitions(parsed.diagram)
 		const withConnectors = connected.get(text)
 		const defs = withConnectors === undefined ? plain : Bpmn.parse(withConnectors)
 		draw(defs)
-		result = { xml: withConnectors ?? Bpmn.export(defs), file: fileName(defs) }
+		// The draft as it is: the check below shows the gate's verdict, and sharing is gated.
+		result = { xml: withConnectors ?? Bpmn.export(defs, { validate: false }), file: fileName(defs) }
 		name.textContent = result.file
 		parserQuestions = parsed.questions
 		showQuestions(parsed.questions)
@@ -345,6 +362,19 @@ export function mountGenerator(): void {
 			ids: new Set(parsed.diagram.processes[0]?.elements.map((e) => e.id)),
 			problems: parsed.problems.length,
 		}
+	}
+
+	/** "Fill placeholders": the draft on screen with every value the deploy gate asks for filled. */
+	function fillDraft(defs: BpmnDefinitions): void {
+		const filled = fillPlaceholders(defs)
+		if (!filled || !draft) return
+		const xml = Bpmn.export(filled.definitions, { validate: false })
+		connected.set(draft.text, xml)
+		draw(filled.definitions)
+		result = { xml, file: fileName(filled.definitions) }
+		void showCheck(filled.definitions, xml)
+		const n = filled.filled.length
+		setStatus(`filled ${n} placeholder${n === 1 ? "" : "s"} — replace before deploying`)
 	}
 
 	/** Shows or clears the "Connectors not configured" note on the diagram on screen. */
@@ -391,6 +421,7 @@ export function mountGenerator(): void {
 		}
 		const verdict = readiness(defs)
 		const badge = row("Deploy", badgeText(verdict))
+		const gate = verdict.state === "ready" ? undefined : verdict.gate
 		badge.span.className =
 			verdict.state === "ready" ? "ok" : verdict.state === "invalid" ? "bad" : "warn"
 		const details =
@@ -401,6 +432,23 @@ export function mountGenerator(): void {
 					: []
 		badge.span.title = details.join("\n")
 		const rows = [badge.div]
+		if (gate !== undefined) {
+			// The deploy gate's own lines, and the explicit way to make the draft deploy now.
+			const lines = document.createElement("pre")
+			lines.className = "gate-lines"
+			lines.textContent = gate.message
+			const check = row("Deploy check", lines)
+			if (gate.fillable) {
+				const fill = document.createElement("button")
+				fill.type = "button"
+				fill.textContent = "Fill placeholders"
+				fill.title =
+					"Write placeholder values (job types, message names, keys, …) to replace before deploying"
+				fill.addEventListener("click", () => fillDraft(defs))
+				check.span.append(fill)
+			}
+			rows.push(check.div)
+		}
 		if (connectorsOff) {
 			rows.push(
 				row(
@@ -939,8 +987,14 @@ export function mountGenerator(): void {
 	 *
 	 * @returns Its link, or `null` when it failed — the error is shown.
 	 */
-	async function upload(): Promise<string | null> {
+	async function upload(gate: boolean): Promise<string | null> {
 		if (!result || !share) return null
+		// A shared link is the finished artifact; "Edit" opens the draft to finish it.
+		const refusal = gate ? shareRefusal(result.xml) : null
+		if (refusal !== null) {
+			showError(refusal)
+			return null
+		}
 		const body = new FormData()
 		body.append(
 			"files",
@@ -968,7 +1022,7 @@ export function mountGenerator(): void {
 
 	async function shareIt(): Promise<void> {
 		if (!url || !open || !out) return
-		const link = await upload()
+		const link = await upload(true)
 		if (link === null) return
 		url.value = new URL(link, location.origin).href
 		open.href = link
@@ -977,7 +1031,7 @@ export function mountGenerator(): void {
 
 	/** Stores the draft and opens it in the editor, with the AI chat beside it. */
 	async function openInEditor(): Promise<void> {
-		const link = await upload()
+		const link = await upload(false)
 		if (link !== null) location.href = `${link}#edit`
 	}
 

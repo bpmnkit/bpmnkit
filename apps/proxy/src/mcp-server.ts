@@ -51,6 +51,7 @@ import type { BpmnElementType, BpmnOperation, CompactDmn, CompactForm } from "@b
 
 type ElementPatch = Extract<BpmnOperation, { op: "update" }>["patch"]
 import { elementTypeDescription } from "./element-vocabulary.js"
+import { declareDiNamespaces, deployCheckLine } from "./final-diagram.js"
 import { addConnector, findConnectors } from "./mcp-connectors.js"
 import { runSandboxedSync } from "./sandbox.js"
 import { handleSdkExecute, handleSdkSearch } from "./sdk-code-mode.js"
@@ -159,12 +160,19 @@ function writeFileAtomic(path: string, text: string): void {
 	}
 }
 
+/** The BPMN state as XML, with its diagrams laid out again. */
+function bpmnXml(data: BpmnDefinitions): string {
+	data.diagrams = data.processes.map((proc) => buildBpmnDiagram(proc))
+	declareDiNamespaces(data)
+	// The model is still being built: the deploy check is reported to it, not enforced here
+	// (see `MUTATING_TOOLS`); the proxy gates the diagram it finally returns.
+	return Bpmn.export(data, { validate: false })
+}
+
 function saveState(): void {
 	if (!outputFile) return
 	if (state.kind === "bpmn") {
-		state.data.diagrams = state.data.processes.map((proc) => buildBpmnDiagram(proc))
-		// A work-in-progress diagram: saving it must not depend on whether Zeebe would deploy it.
-		const xml = Bpmn.export(state.data, { validate: false })
+		const xml = bpmnXml(state.data)
 		const expected = semanticHash(state.data)
 		if (semanticHash(Bpmn.parse(xml)) !== expected) {
 			throw new Error(
@@ -704,6 +712,22 @@ function getTools(): typeof BPMN_TOOLS {
 
 // ── Tool execution ────────────────────────────────────────────────────────────
 
+/**
+ * Tools that change a BPMN diagram. Their result ends with the deploy gate's verdict, so
+ * the model fixes what Zeebe would refuse while it is still building; the proxy refuses
+ * the final diagram if it does not deploy.
+ */
+const MUTATING_TOOLS = new Set([
+	"compose_diagram",
+	"add_elements",
+	"remove_elements",
+	"update_element",
+	"set_condition",
+	"add_http_call",
+	"add_connector",
+	"replace_diagram",
+])
+
 /** The tools that read the API index, which loads lazily; every other tool runs in {@link callTool}. */
 async function callToolAsync(name: string, args: Record<string, unknown>): Promise<string> {
 	if (name === "find_connectors") {
@@ -889,9 +913,11 @@ function callTool(name: string, args: Record<string, unknown>): string {
 			if (args.body) config.body = args.body as string
 			if (args.resultVariable) config.resultVariable = args.resultVariable as string
 
+			// One task to graft into the open diagram, not a model of its own (no start event):
+			// the deploy check after the call judges the diagram it lands in.
 			const tempDefs = Bpmn.createProcess("__temp__")
 				.restConnector(args.id as string, config)
-				.build()
+				.build({ validate: false })
 			const tempProc = tempDefs.processes[0]
 			const el = tempProc?.flowElements.find((e) => e.id === (args.id as string))
 			if (!el) return "Failed to create REST connector element."
@@ -988,9 +1014,7 @@ function buildBridge(): Record<string, unknown> {
 			if (state.kind === "form") {
 				return Form.export(state.data)
 			}
-			state.data.diagrams = state.data.processes.map((proc) => buildBpmnDiagram(proc))
-			// A work-in-progress diagram: saving it must not depend on whether Zeebe would deploy it.
-			return Bpmn.export(state.data, { validate: false })
+			return bpmnXml(state.data)
 		},
 	}
 
@@ -1082,7 +1106,12 @@ rl.on("line", async (line) => {
 			case "tools/call": {
 				const params = req.params as { name: string; arguments?: Record<string, unknown> }
 				const text = await callToolAsync(params.name, params.arguments ?? {})
-				result = { content: [{ type: "text", text }], isError: false }
+				// A content item of its own, so a tool's own result (JSON, for compose_diagram) stays parseable.
+				const content = [{ type: "text", text }]
+				if (state.kind === "bpmn" && MUTATING_TOOLS.has(params.name)) {
+					content.push({ type: "text", text: deployCheckLine(bpmnXml(state.data)) })
+				}
+				result = { content, isError: false }
 				break
 			}
 

@@ -10,8 +10,9 @@ export const SDK_SPEC = {
 			example: "const compact = sdk.parse(xml)",
 		},
 		"sdk.exportXml": {
-			description: "Convert a CompactDiagram JSON string to BPMN XML with auto-layout applied.",
-			params: "compactJson: string",
+			description:
+				"Convert a CompactDiagram JSON string to BPMN XML with auto-layout applied. The result must deploy on Camunda 8: otherwise it throws the deploy gate's message (one line per error: element, problem, zeebe/<rule>). Pass '{\"placeholders\":true}' as the second argument to fill documented placeholder values instead.",
+			params: "compactJson: string, optionsJson?: string ('{\"placeholders\":true}')",
 			returns: "string (BPMN XML)",
 			example: "const xml = sdk.exportXml(compact)",
 		},

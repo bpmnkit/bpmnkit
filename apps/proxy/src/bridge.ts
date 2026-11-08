@@ -21,6 +21,17 @@ import {
 	layoutProcess,
 	optimize,
 } from "@bpmnkit/core"
+import {
+	declareDiNamespaces,
+	deployCheckLine,
+	finalDiagramEvents,
+	finalGateOf,
+} from "./final-diagram.js"
+
+// QuickJS has no structuredClone; core's placeholder fill copies the model with it.
+// BPMN models are plain JSON data, so a JSON round trip is the same copy.
+const scope = globalThis as { structuredClone?: <T>(value: T) => T }
+scope.structuredClone ??= <T>(value: T): T => JSON.parse(JSON.stringify(value)) as T
 
 // ── MCP state (persists across calls within a single QuickJS runtime) ─────────
 
@@ -96,14 +107,29 @@ function ensureProcess(processId: string): BpmnProcess {
 ;(globalThis as Record<string, unknown>).Bridge = {
 	// ── HTTP server (stateless) ────────────────────────────────────────────────
 
-	/** Expand a CompactDiagram JSON string and export as BPMN XML. */
+	/**
+	 * Expand a CompactDiagram JSON string and export as BPMN XML, ungated: the input
+	 * diagram may be the user's unfinished one, and a model's answer goes through
+	 * {@link finalDiagram} next.
+	 */
 	expandAndExport(compactJson: string): string {
-		return Bpmn.export(expand(JSON.parse(compactJson) as CompactDiagram))
+		return Bpmn.export(expand(JSON.parse(compactJson) as CompactDiagram, { validate: false }), {
+			validate: false,
+		})
+	},
+
+	/**
+	 * The deploy gate on the diagram `/chat` returns: the SSE events, as a JSON array
+	 * (see `finalDiagramEvents`). `gateJson` carries the request's `validate` / `placeholders`.
+	 */
+	finalDiagram(xml: string, gateJson: string): string {
+		return JSON.stringify(finalDiagramEvents(xml, finalGateOf(JSON.parse(gateJson))))
 	},
 
 	/** Run optimize() on expanded compact, return findings as JSON string. */
 	optimizeFindings(compactJson: string): string {
-		const report = optimize(expand(JSON.parse(compactJson) as CompactDiagram))
+		// Analysis of the user's diagram, which may be unfinished.
+		const report = optimize(expand(JSON.parse(compactJson) as CompactDiagram, { validate: false }))
 		return JSON.stringify(
 			report.findings.map((f) => ({
 				category: f.category,
@@ -132,8 +158,17 @@ function ensureProcess(processId: string): BpmnProcess {
 	mcpExportXml(): string {
 		if (!__state) throw new Error("mcpInit not called")
 		__state.diagrams = __state.processes.map(buildDiagram)
-		// A work-in-progress diagram: saving it must not depend on whether Zeebe would deploy it.
+		declareDiNamespaces(__state)
+		// The model is still being built: the deploy check is reported to it after each
+		// change (mcpDeployCheck), and the server gates the diagram it finally returns.
 		return Bpmn.export(__state, { validate: false })
+	},
+
+	/** The deploy check appended to every tool result that changed the diagram. */
+	mcpDeployCheck(): string {
+		return deployCheckLine(
+			(globalThis as unknown as { Bridge: { mcpExportXml(): string } }).Bridge.mcpExportXml(),
+		)
 	},
 
 	/** Add elements and flows to a process. Returns result message. */
@@ -216,7 +251,8 @@ function ensureProcess(processId: string): BpmnProcess {
 
 	/** Replace the entire diagram from CompactDiagram JSON. */
 	mcpReplaceDiagram(compactJson: string): string {
-		__state = expand(JSON.parse(compactJson) as CompactDiagram)
+		// Work in progress, like every other tool: the deploy check reports what is missing.
+		__state = expand(JSON.parse(compactJson) as CompactDiagram, { validate: false })
 		return "Diagram replaced."
 	},
 
@@ -253,7 +289,10 @@ function ensureProcess(processId: string): BpmnProcess {
 		if (args.body) config.body = args.body
 		if (args.resultVariable) config.resultVariable = args.resultVariable
 
-		const tempDefs = Bpmn.createProcess("__temp__").restConnector(args.id, config).build()
+		// One task to graft into the open diagram, not a model of its own (no start event).
+		const tempDefs = Bpmn.createProcess("__temp__")
+			.restConnector(args.id, config)
+			.build({ validate: false })
 		const tempProc = tempDefs.processes[0]
 		const el = tempProc?.flowElements.find((e) => e.id === args.id)
 		if (!el) return "Failed to create REST connector element."

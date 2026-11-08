@@ -112,6 +112,8 @@ export function createAiLocalPanel(o: PanelOptions): {
 			for (const text of [
 				...result.problems.map((p) => `Line ${p.line}: ${p.message}`),
 				...result.fixes,
+				// The gate's own lines: what to fill in before the draft deploys.
+				...(result.deployability?.split("\n") ?? []),
 			]) {
 				const li = document.createElement("li")
 				li.textContent = text

@@ -165,3 +165,21 @@ function size(svg: string): [number, number] {
 	const m = /^<svg [^>]*width="([\d.]+)" height="([\d.]+)"/.exec(svg)
 	return [Number(m?.[1]), Number(m?.[2])]
 }
+
+describe("renderBpmnBlock: sketches that would not deploy", () => {
+	it("draws a compact block with no job type, since a rendering is not a deployment", () => {
+		const sketch = JSON.stringify({
+			id: "sketch",
+			elements: [
+				{ id: "start", type: "startEvent", name: "Order placed" },
+				{ id: "charge", type: "serviceTask", name: "Charge card" },
+				{ id: "end", type: "endEvent", name: "Done" },
+			],
+			flows: [
+				{ id: "f1", from: "start", to: "charge" },
+				{ id: "f2", from: "charge", to: "end" },
+			],
+		})
+		expect(svgOf(sketch, "bpmn-compact", { onError: "throw" }).svg).toContain("Charge card")
+	})
+})

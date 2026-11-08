@@ -49,6 +49,10 @@ beforeAll(async () => {
 		"discount.dmn": DMN,
 		"bad.dmn": DMN.replace("<text>10</text>", "<text>1 +</text>"),
 		"notes.txt": "hi",
+		// Deployable to the lint, refused by the XSD stage of the gate.
+		"definitions-doc.bpmn": bpmn(
+			'<bpmn:serviceTask id="task"><bpmn:extensionElements><zeebe:taskDefinition type="t" /></bpmn:extensionElements><bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing></bpmn:serviceTask>',
+		).replace("<bpmn:process ", "<bpmn:documentation>About</bpmn:documentation>\n  <bpmn:process "),
 	}
 	for (const [name, text] of Object.entries(files)) await writeFile(path(name), text)
 })
@@ -129,6 +133,24 @@ describe("checkFiles", () => {
 		expect(
 			sketch.filter((r) => r.rule.startsWith("deploy/") || r.rule.startsWith("compat/")),
 		).toEqual([])
+	})
+})
+
+describe("checkFiles --deploy runs the deploy gate", () => {
+	it("reports what the gate refuses in the file's bytes, with the gate's rule", async () => {
+		const rows = await checkFiles([path("definitions-doc.bpmn")], { ...opts, deploy: true })
+		expect(rows.map((r) => r.rule)).toEqual(["zeebe/xml-schema"])
+		expect(rows[0]?.message).toContain("documentation")
+		expect(rows[0]?.severity).toBe("error")
+		// Without the gate nothing reports the schema error.
+		const lint = await checkFiles([path("definitions-doc.bpmn")], opts)
+		expect(lint.map((r) => r.rule)).not.toContain("zeebe/xml-schema")
+	})
+
+	it("does not repeat an element the lint already reports", async () => {
+		const rows = await checkFiles([path("rule.bpmn")], { ...opts, deploy: true })
+		const ids = rows.map((r) => `${r.rule} ${r.elementId ?? ""}`)
+		expect(new Set(ids).size).toBe(ids.length)
 	})
 })
 

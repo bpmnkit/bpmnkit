@@ -78,6 +78,10 @@ struct ChatRequest {
     context: Option<Value>,
     backend: Option<String>,
     action: Option<String>,
+    /// `false`: return the diagram as a draft, with the gate's message as advice.
+    validate: Option<bool>,
+    /// Fill documented placeholder values instead of refusing.
+    placeholders: Option<bool>,
 }
 
 #[derive(Deserialize)]
@@ -223,6 +227,8 @@ async fn handle_chat(
         prompt::with_diagram_context(&mut messages, req.context.as_ref());
     }
     let bridge = state.bridge.clone();
+    let gate_json =
+        json!({ "validate": req.validate, "placeholders": req.placeholders }).to_string();
 
     tokio::spawn(async move {
         let send = |v: Value| { let _ = sse_tx.send(v); };
@@ -278,25 +284,44 @@ async fn handle_chat(
             send(json!({ "type": "error", "message": msg }));
         }
 
-        // ── Post-process: emit XML ─────────────────────────────────────────────
-        if let Some(ref out_path) = output_file {
+        // ── Post-process: the deploy gate, then the XML ────────────────────────
+        let final_xml = if let Some(ref out_path) = output_file {
             match fs::read_to_string(out_path) {
-                Ok(xml) => {
-                    send(json!({ "type": "xml", "xml": xml }));
-                    eprintln!("[server] MCP XML output read successfully");
+                Ok(xml) => Some(xml),
+                Err(_) => {
+                    eprintln!("[server] MCP output file not written (no diagram changes)");
+                    None
                 }
-                Err(_) => eprintln!("[server] MCP output file not written (no diagram changes)"),
             }
         } else {
             let acc_str = accumulated.lock().unwrap().clone();
-            if let Some(compact_json) = extract_compact_diagram(&acc_str) {
-                match bridge.expand_and_export(compact_json).await {
-                    Ok(xml) => {
-                        send(json!({ "type": "xml", "xml": xml }));
-                        eprintln!("[server] XML emitted via core expand + export");
+            match extract_compact_diagram(&acc_str) {
+                Some(compact_json) => match bridge.expand_and_export(compact_json).await {
+                    Ok(xml) => Some(xml),
+                    Err(e) => {
+                        eprintln!("[server] failed to expand result: {e}");
+                        send(json!({
+                            "type": "error",
+                            "message": format!("The diagram could not be built: {e}")
+                        }));
+                        None
                     }
-                    Err(e) => eprintln!("[server] failed to expand result: {e}"),
+                },
+                None => None,
+            }
+        };
+        if let Some(xml) = final_xml {
+            match bridge.final_diagram(xml, gate_json.clone()).await {
+                Ok(events) => {
+                    let events: Vec<Value> = serde_json::from_str(&events).unwrap_or_default();
+                    for event in events {
+                        if event["type"] == "error" {
+                            eprintln!("[server] diagram refused: {}", event["message"]);
+                        }
+                        send(event);
+                    }
                 }
+                Err(e) => send(json!({ "type": "error", "message": e.to_string() })),
             }
         }
 

@@ -34,6 +34,19 @@ Tasks: serviceTask, userTask (add formId), businessRuleTask (add decisionId+resu
 Gateways: exclusiveGateway, parallelGateway, inclusiveGateway, eventBasedGateway  |  Containers: subProcess, adHocSubProcess
 HTTP REST calls: always use jobType: "io.camunda:http-json:1" with inputs {url, method, headers?, body?} and resultVariable."#;
 
+/// What Camunda 8 needs before it deploys a diagram; the TS proxy's `DEPLOYABLE_RULES`.
+/// The server runs the deploy gate on every diagram it returns.
+pub const DEPLOYABLE_RULES: &str = r#"DEPLOYABLE ON CAMUNDA 8 — a diagram that breaks one of these is refused, not returned:
+  • serviceTask, sendTask, message intermediateThrowEvent / message endEvent: jobType
+  • message start/catch events and receiveTask: messageName; a caught message (not a process start) also a correlationKey FEEL expression, e.g. "=orderId"
+  • timer events: timerDuration ("PT15M"), timerDate ("2026-12-01T09:00:00Z") or timerCycle ("R/PT1H")
+  • signal events: signalName · error endEvent: errorCode · escalation throw/end: escalationCode
+  • callActivity: calledProcess · businessRuleTask: decisionId + resultVariable
+  • every flow leaving an exclusive/inclusive split: a FEEL condition ("=amount > 100"), or isDefault: true on exactly one
+  • conditions, correlation keys and collections are FEEL expressions: they start with ="#;
+
+const DEPLOY_CHECK_RULE: &str = "Every tool that changes the diagram ends its result with a deploy check. When it lists errors,\nfix each one (the line names the element and the rule) before you finish.";
+
 pub fn build_mcp_system_prompt() -> String {
     vec![
         "You are a BPMN expert assistant. Help users create and modify BPMN 2.0 process diagrams.",
@@ -44,6 +57,9 @@ pub fn build_mcp_system_prompt() -> String {
         "integration — you MUST call add_http_call. Never use add_elements for this.",
         "add_http_call sets jobType: io.camunda:http-json:1 and the correct input mappings automatically.",
         "Use your knowledge of the target API to supply the real endpoint URL.",
+        "",
+        DEPLOYABLE_RULES,
+        DEPLOY_CHECK_RULE,
     ]
     .join("\n")
 }
@@ -78,6 +94,9 @@ pub fn build_mcp_improve_prompt(findings: &[FindingInfo]) -> String {
 
     lines.push(String::new());
     lines.push("Also normalize element names to verb-noun title case (e.g. \"Validate Order\").".to_string());
+    lines.push(String::new());
+    lines.push(DEPLOYABLE_RULES.to_string());
+    lines.push(DEPLOY_CHECK_RULE.to_string());
     lines.join("\n")
 }
 
@@ -86,6 +105,8 @@ pub fn build_system_prompt() -> String {
         "You are a BPMN expert assistant. Help users create and modify BPMN 2.0 process diagrams.",
         "",
         COMPACT_FORMAT,
+        "",
+        DEPLOYABLE_RULES,
         "",
         "Return exactly one JSON code block containing the complete updated CompactDiagram. Explain your changes briefly.",
     ]

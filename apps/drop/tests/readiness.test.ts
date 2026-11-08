@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs"
 import { Bpmn, expand, parseProcessText } from "@bpmnkit/core"
 import { describe, expect, it } from "vitest"
-import { badgeText, readiness } from "../src/lib/readiness.js"
+import { badgeText, fillPlaceholders, readiness, shareRefusal } from "../src/lib/readiness.js"
 
 // A draft is unfinished by definition: readiness, not expand's gate, judges it
 const draft = (text: string) => expand(parseProcessText(text).diagram, { validate: false })
@@ -170,5 +170,53 @@ describe("badgeText", () => {
 				],
 			}),
 		).toBe("2 deploy errors")
+	})
+})
+
+describe("deploy gate in the readiness check", () => {
+	// A message wait with no correlation key: a placeholder fills it.
+	const waiting = () =>
+		draft("# P\nstart[start Go] > w[catch:message Reply received | msg=reply] > f[end Done]")
+
+	it("adds the gate's lines and offers placeholders when a fill makes it deploy", () => {
+		const result = readiness(waiting(), "8.10")
+		expect(result.state).toBe("shape-only")
+		if (result.state !== "shape-only") return
+		expect(result.gate?.fillable).toBe(true)
+		expect(result.gate?.message).toMatch(
+			/^Not deployable on Camunda 8\.10: 1 error\(s\)\n- Message_reply: .*\(zeebe\/message-subscription\)$/,
+		)
+		expect(result.missing.map((m) => m.elementId)).toContain("Message_reply")
+	})
+
+	it("fills the placeholders on request, after which the draft is ready", () => {
+		const filled = fillPlaceholders(waiting(), "8.10")
+		expect(filled?.filled).toEqual(['Message_reply: correlationKey = ="placeholder-Message_reply"'])
+		if (!filled) return
+		expect(readiness(filled.definitions, "8.10").state).toBe("ready")
+	})
+
+	it("calls what no placeholder can fix invalid, with the gate's rule", () => {
+		const defs = draft("# P\nstart[start Go] > a[service Do it] > f[end Done]")
+		const flow = defs.processes[0]?.sequenceFlows[0]
+		if (!flow) throw new Error("no flow")
+		// A condition on a flow leaving a start event: no placeholder removes it.
+		flow.conditionExpression = { text: "=x", attributes: {} }
+		const result = readiness(defs, "8.10")
+		expect(result.state).toBe("invalid")
+		if (result.state !== "invalid") return
+		expect(result.gate?.fillable).toBe(false)
+		expect(result.gate?.message).toContain("(zeebe/conditional-flow-source)")
+		expect(fillPlaceholders(defs, "8.10")).toBeNull()
+	})
+
+	it("refuses to share XML that would not deploy, with the gate's lines first", () => {
+		const xml = Bpmn.export(waiting(), { validate: false })
+		const refusal = shareRefusal(xml)
+		expect(refusal).toMatch(/^Not deployable on Camunda \d+\.\d+: 1 error\(s\)\n- Message_reply: /)
+		expect(refusal).toContain("Fill placeholders")
+		const filled = fillPlaceholders(waiting())
+		if (!filled) throw new Error("not fillable")
+		expect(shareRefusal(Bpmn.export(filled.definitions, { validate: false }))).toBeNull()
 	})
 })

@@ -40,7 +40,15 @@ interface ContextRef {
 
 // ── SSE streaming ─────────────────────────────────────────────────────────────
 
-async function* streamChat(
+/**
+ * The deploy gate's message on a draft the AI returned, shown in the chat. The panel
+ * inserts the draft into the editor (work in progress); deploy refuses it until fixed.
+ */
+export function deployabilityNote(message: string): string {
+	return `\n\nInserted as a draft: it does not deploy on Camunda 8 yet.\n${message}`
+}
+
+export async function* streamChat(
 	serverUrl: string,
 	messages: ChatMessage[],
 	context: unknown,
@@ -60,6 +68,9 @@ async function* streamChat(
 				context,
 				backend: backend === "auto" ? null : backend,
 				action: action ?? null,
+				// The answer goes into the editor as work in progress; the deploy pane gates
+				// it. The gate's message still comes back, as a `deployability` event.
+				validate: false,
 			}),
 			signal,
 		})
@@ -93,6 +104,8 @@ async function* streamChat(
 					if (event.type === "token" && event.text) yield event.text
 					if (event.type === "preview" && event.xml) onPreview?.(event.xml)
 					if (event.type === "xml" && event.xml) onXml?.(event.xml)
+					if (event.type === "deployability" && event.message)
+						yield deployabilityNote(event.message)
 					if (event.type === "done") return
 					if (event.type === "error") throw new Error(event.message ?? event.text ?? "AI error")
 				} catch (e) {
@@ -106,7 +119,7 @@ async function* streamChat(
 	}
 }
 
-async function* streamImprove(
+export async function* streamImprove(
 	serverUrl: string,
 	xml: string,
 	backend: string,
@@ -126,6 +139,8 @@ async function* streamImprove(
 				xml,
 				instruction: null,
 				backend: backend === "auto" ? null : backend,
+				// Work in progress in the editor, as for /chat.
+				validate: false,
 			}),
 			signal,
 		})
@@ -161,6 +176,8 @@ async function* streamImprove(
 					if (event.type === "token" && event.text) yield event.text
 					if (event.type === "ops") onOps?.(event.ops ?? [], event.autoFixCount ?? 0)
 					if (event.type === "xml" && event.xml) onXml?.(event.xml)
+					if (event.type === "deployability" && event.message)
+						yield deployabilityNote(event.message)
 					if (event.type === "done") return
 					if (event.type === "error") throw new Error(event.message ?? event.text ?? "AI error")
 				} catch (e) {

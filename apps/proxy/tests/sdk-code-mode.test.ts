@@ -84,3 +84,45 @@ describe("sdk_execute", () => {
 		expect(JSON.parse(result)).toBe(42)
 	})
 })
+
+describe("sdk.exportXml: deploy gate", () => {
+	const SKETCH = JSON.stringify({
+		id: "D",
+		processes: [
+			{
+				id: "p",
+				elements: [
+					{ id: "start", type: "startEvent" },
+					{ id: "charge", type: "serviceTask" },
+					{ id: "end", type: "endEvent" },
+				],
+				flows: [
+					{ id: "f1", from: "start", to: "charge" },
+					{ id: "f2", from: "charge", to: "end" },
+				],
+			},
+		],
+	})
+
+	it("throws the gate's lines to the model for an incomplete diagram", () => {
+		expect(() => handleSdkExecute(`return sdk.exportXml(${JSON.stringify(SKETCH)})`)).toThrow(
+			/Not deployable on Camunda \d+\.\d+: 1 error\(s\)\n- charge: .*\(zeebe\/service-task-definition\)/,
+		)
+	})
+
+	it("fills placeholders when asked", () => {
+		const xml = JSON.parse(
+			handleSdkExecute(`return sdk.exportXml(${JSON.stringify(SKETCH)}, '{"placeholders":true}')`),
+		) as string
+		expect(xml).toContain('type="placeholder-charge"')
+	})
+
+	it("still analyses an unfinished diagram", () => {
+		const result = JSON.parse(
+			handleSdkExecute(
+				`return JSON.parse(sdk.optimize(${JSON.stringify(SKETCH)})).findings.length`,
+			),
+		)
+		expect(result).toBeGreaterThan(0)
+	})
+})
