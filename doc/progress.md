@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-08 — reebe: test_timer_accuracy no longer measures the CI disk
+
+- `test_timer_accuracy` failed twice on CI (2.118 s and 2.380 s against a 2 s bound). Cause: between "timer due" and "job visible", the engine makes about 23 separate commits, each waiting for its WAL fsync. Each record (timer trigger, catch-event completion, task activation, job creation) writes several autocommitted rows plus its processed position. Reproduced locally by injecting an fsync delay into Postgres with strace: 80 ms per flush gives 1.79 s, against 0.16 s without.
+- Fix: `tests/common::setup_db` sets `synchronous_commit = off` on each throwaway test database, so the test measures the scheduler's poll and not the disk. The bound is unchanged. Under a 150 ms injected fsync delay the suite now passes.
+- Follow-up (engine): writing each record's state changes, follow-up records and processed position in one transaction would cut a command's flushes from ~5 to 1. That is a real throughput and latency gain on slow disks, but a larger change.
+
 ## 2026-11-08 — Zeebe deployability, session 3 phase 1: the assertDeployable gate
 
 - `assertDeployable` (`packages/core/src/bpmn/zeebe-validate/gate.ts`), `DeployabilityError` (code `deployability-error`, `findings`, `camundaVersion`), `AssertDeployableOptions`, `PlaceholderFill`, `PlaceholderField`, `DeployableResult` and `PLACEHOLDERS`, exported from `@bpmnkit/core`. The check is `validateDeployableXml(serializeBpmn(defs))`. Message: `Not deployable on Camunda <version>: <n> error(s)` plus `- <elementId>: <message> (zeebe/<rule>)` per error.
