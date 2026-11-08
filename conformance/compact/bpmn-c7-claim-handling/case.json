@@ -1,5 +1,8 @@
 {
 	"input": "bpmn/c7-claim-handling/input.bpmn",
 	"deployable": false,
-	"deployableReason": "Source bpmn/c7-claim-handling/input.bpmn is itself rejected by Zeebe (EndEvent_paid: Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element); the case pins how it is round-tripped, not a deployable model."
+	"deployableReason": "Source bpmn/c7-claim-handling/input.bpmn is itself rejected by Zeebe (EndEvent_paid: Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element); the case pins how it is round-tripped, not a deployable model; expanded with validate:false to keep pinning the expansion.",
+	"expand": {
+		"validate": false
+	}
 }

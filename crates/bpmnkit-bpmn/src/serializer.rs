@@ -195,7 +195,8 @@ fn event_definition(d: &BpmnEventDefinition, bp: &str) -> XmlElement {
         }
         BpmnEventDefinition::Link(l) => {
             set_truthy(&mut attrs, "id", &l.id);
-            set_truthy(&mut attrs, "name", &l.name);
+            // BPMN20.xsd requires `name`; an empty one is left for the validator to name.
+            attrs.insert("name".into(), l.name.clone().unwrap_or_default());
             ("linkEventDefinition", &l.unknown_attributes, Vec::new())
         }
         BpmnEventDefinition::Cancel(c) => {
@@ -336,6 +337,24 @@ fn flow_refs(refs: &[String], tag: &str, bp: &str) -> Vec<XmlElement> {
         .collect()
 }
 
+/// An element name without its namespace prefix.
+fn local_name(name: &str) -> &str {
+    name.split_once(':').map_or(name, |(_, local)| local)
+}
+
+/// Event children (tCatchEvent / tThrowEvent) that precede the data associations.
+const EVENT_DATA: [&str; 2] = ["dataInput", "dataOutput"];
+
+/// Process children of tCallableElement and tProcess that precede the lane set and flow elements.
+const PROCESS_HEAD: [&str; 6] = [
+    "supportedInterfaceRef",
+    "ioSpecification",
+    "ioBinding",
+    "auditing",
+    "monitoring",
+    "property",
+];
+
 fn flow_element(fe: &BpmnFlowElement, p: &Prefixes) -> XmlElement {
     let bp = p.bp.as_str();
     let base = fe.base();
@@ -356,16 +375,40 @@ fn flow_element(fe: &BpmnFlowElement, p: &Prefixes) -> XmlElement {
     children.extend(extension_elements(&base.extension_elements, bp));
     children.extend(flow_refs(&base.incoming, "incoming", bp));
     children.extend(flow_refs(&base.outgoing, "outgoing", bp));
+    // Unmodelled children the schema places between the modelled ones go there: an
+    // activity's `ioSpecification` precedes its properties, and an event's data inputs and
+    // outputs precede its data associations; Zeebe's XSD stage rejects any other order.
+    let unknown = &base.unknown_children;
+    children.extend(
+        unknown
+            .iter()
+            .filter(|c| local_name(&c.name) == "ioSpecification")
+            .cloned(),
+    );
     for property_ in &base.properties {
         children.push(property(property_, bp));
     }
+    children.extend(
+        unknown
+            .iter()
+            .filter(|c| EVENT_DATA.contains(&local_name(&c.name)))
+            .cloned(),
+    );
     for a in &base.data_input_associations {
         children.push(data_association(a, "dataInputAssociation", bp));
     }
     for a in &base.data_output_associations {
         children.push(data_association(a, "dataOutputAssociation", bp));
     }
-    children.extend(base.unknown_children.iter().cloned());
+    children.extend(
+        unknown
+            .iter()
+            .filter(|c| {
+                let name = local_name(&c.name);
+                name != "ioSpecification" && !EVENT_DATA.contains(&name)
+            })
+            .cloned(),
+    );
 
     use BpmnFlowElement::*;
     match fe {
@@ -410,7 +453,11 @@ fn flow_element(fe: &BpmnFlowElement, p: &Prefixes) -> XmlElement {
             children.extend(loop_characteristics(&s.loop_characteristics, bp));
             children.extend(process_contents(&s.contents, p));
         }
-        EventSubProcess(s) => children.extend(process_contents(&s.contents, p)),
+        EventSubProcess(s) => {
+            // BPMN has no eventSubProcess element: it is a subProcess triggered by an event.
+            attrs.insert("triggeredByEvent".into(), "true".into());
+            children.extend(process_contents(&s.contents, p));
+        }
         Transaction(s) => {
             children.extend(loop_characteristics(&s.loop_characteristics, bp));
             children.extend(process_contents(&s.contents, p));
@@ -431,7 +478,11 @@ fn flow_element(fe: &BpmnFlowElement, p: &Prefixes) -> XmlElement {
         DataStoreReference(d) => set(&mut attrs, "dataStoreRef", &d.data_store_ref),
     }
 
-    el(format!("{bp}{}", fe.type_name()), attrs, children, None)
+    let tag = match fe {
+        EventSubProcess(_) => "subProcess",
+        _ => fe.type_name(),
+    };
+    el(format!("{bp}{tag}"), attrs, children, None)
 }
 
 fn sequence_flow(sf: &BpmnSequenceFlow, bp: &str) -> XmlElement {
@@ -574,11 +625,13 @@ fn process(pr: &BpmnProcess, p: &Prefixes) -> XmlElement {
         &pr.extension_elements,
         bp,
     );
+    let head = |c: &&XmlElement| PROCESS_HEAD.contains(&local_name(&c.name));
+    children.extend(pr.unknown_children.iter().filter(head).cloned());
     if let Some(ls) = &pr.lane_set {
         children.push(lane_set(ls, bp, "laneSet"));
     }
     children.extend(process_contents(&pr.contents, p));
-    children.extend(pr.unknown_children.iter().cloned());
+    children.extend(pr.unknown_children.iter().filter(|c| !head(c)).cloned());
     el(format!("{bp}process"), attrs, children, None)
 }
 
@@ -893,8 +946,15 @@ pub fn serialize_bpmn(definitions: &BpmnDefinitions) -> String {
     children.extend(definitions.categories.iter().map(|c| category(c, bp)));
     // Unmodelled children first: `import` and `extension` precede the root elements in the
     // schema, and the rest are root elements themselves, so they sit legally alongside the
-    // modelled ones.
-    children.extend(definitions.unknown_children.iter().cloned());
+    // modelled ones. `relationship` is the exception: the schema puts it after the diagrams.
+    let is_relationship = |c: &&XmlElement| local_name(&c.name) == "relationship";
+    children.extend(
+        definitions
+            .unknown_children
+            .iter()
+            .filter(|c| !is_relationship(c))
+            .cloned(),
+    );
     children.extend(definitions.escalations.iter().map(|e| escalation(e, bp)));
     children.extend(definitions.errors.iter().map(|e| error(e, bp)));
     children.extend(definitions.messages.iter().map(|m| message(m, bp)));
@@ -907,6 +967,13 @@ pub fn serialize_bpmn(definitions: &BpmnDefinitions) -> String {
     );
     children.extend(definitions.processes.iter().map(|pr| process(pr, &p)));
     children.extend(definitions.diagrams.iter().map(|d| diagram(d, &p)));
+    children.extend(
+        definitions
+            .unknown_children
+            .iter()
+            .filter(is_relationship)
+            .cloned(),
+    );
 
     let mut root = el(format!("{bp}definitions"), attrs, children, None);
     declare_used_namespaces(&mut root);

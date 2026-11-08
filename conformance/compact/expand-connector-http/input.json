@@ -5,6 +5,10 @@
       "id": "P",
       "elements": [
         {
+          "id": "Start_P",
+          "type": "startEvent"
+        },
+        {
           "id": "c",
           "type": "serviceTask",
           "name": "Call",
@@ -19,7 +23,13 @@
           "resultVariable": "out"
         }
       ],
-      "flows": []
+      "flows": [
+        {
+          "id": "Flow_Start_P",
+          "from": "Start_P",
+          "to": "c"
+        }
+      ]
     }
   ]
 }

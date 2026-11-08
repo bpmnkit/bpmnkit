@@ -15,6 +15,7 @@
             "type": "parallelGateway"
           },
           {
+            "errorCode": "a",
             "eventType": "error",
             "id": "a",
             "name": "Failed",
@@ -23,10 +24,13 @@
           {
             "eventType": "message",
             "id": "b",
+            "jobType": "b",
+            "messageName": "b",
             "name": "Notified",
             "type": "endEvent"
           },
           {
+            "escalationCode": "c",
             "eventType": "escalation",
             "id": "c",
             "name": "Escalated",
@@ -36,6 +40,7 @@
             "eventType": "signal",
             "id": "d",
             "name": "Broadcast",
+            "signalName": "d",
             "type": "endEvent"
           }
         ],

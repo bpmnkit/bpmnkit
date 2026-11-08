@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_contents" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:message id="Message_webhook" name="webhook"/>
+  <bpmn:message id="Message_secret" name="secret">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="secrets.KEY"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
   <bpmn:process id="contents" isExecutable="true">
     <bpmn:startEvent id="start">
       <bpmn:outgoing>toLoopA</bpmn:outgoing>
@@ -13,7 +19,7 @@
           <zeebe:property name="deduplicationModeManualFlag" value="true"/>
         </zeebe:properties>
       </bpmn:extensionElements>
-      <bpmn:messageEventDefinition id="webhookStart_MessageEventDefinition"/>
+      <bpmn:messageEventDefinition id="webhookStart_MessageEventDefinition" messageRef="Message_webhook"/>
     </bpmn:startEvent>
     <bpmn:intermediateCatchEvent id="pollingCatch">
       <bpmn:extensionElements>
@@ -22,7 +28,7 @@
           <zeebe:property name="deduplicationModeManualFlag" value="true"/>
         </zeebe:properties>
       </bpmn:extensionElements>
-      <bpmn:messageEventDefinition id="pollingCatch_MessageEventDefinition"/>
+      <bpmn:messageEventDefinition id="pollingCatch_MessageEventDefinition" messageRef="Message_webhook"/>
     </bpmn:intermediateCatchEvent>
     <bpmn:manualTask id="loopA">
       <bpmn:incoming>toLoopA</bpmn:incoming>
@@ -67,7 +73,9 @@
       </bpmn:extensionElements>
     </bpmn:serviceTask>
     <bpmn:intermediateCatchEvent id="feelTimer">
-      <bpmn:timerEventDefinition id="feelTimer_TimerEventDefinition"/>
+      <bpmn:timerEventDefinition id="feelTimer_TimerEventDefinition">
+        <bpmn:timeDate>=last day of month(today())</bpmn:timeDate>
+      </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:serviceTask id="badVars">
       <bpmn:extensionElements>
@@ -110,7 +118,7 @@
         </zeebe:ioMapping>
       </bpmn:extensionElements>
     </bpmn:serviceTask>
-    <bpmn:receiveTask id="secretReceive"/>
+    <bpmn:receiveTask id="secretReceive" messageRef="Message_secret"/>
     <bpmn:serviceTask id="secretLiteral">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="t"/>
@@ -163,7 +171,7 @@
       </bpmn:extensionElements>
     </bpmn:serviceTask>
     <bpmn:intermediateThrowEvent id="linkNoName">
-      <bpmn:linkEventDefinition id="linkNoName_LinkEventDefinition"/>
+      <bpmn:linkEventDefinition id="linkNoName_LinkEventDefinition" name=""/>
     </bpmn:intermediateThrowEvent>
     <bpmn:intermediateCatchEvent id="linkCatch1">
       <bpmn:linkEventDefinition id="linkCatch1_LinkEventDefinition" name="L"/>

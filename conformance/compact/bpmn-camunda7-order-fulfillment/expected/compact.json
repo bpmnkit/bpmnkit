@@ -25,6 +25,7 @@
         },
         {
           "id": "Task_awaitPayment",
+          "messageName": "PaymentConfirmed",
           "name": "Await payment confirmation",
           "type": "receiveTask"
         },

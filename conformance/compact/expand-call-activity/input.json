@@ -1,0 +1,36 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "s",
+          "type": "startEvent"
+        },
+        {
+          "id": "child",
+          "type": "callActivity",
+          "name": "Run child",
+          "calledProcess": "child-process"
+        },
+        {
+          "id": "e",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f1",
+          "from": "s",
+          "to": "child"
+        },
+        {
+          "id": "f2",
+          "from": "child",
+          "to": "e"
+        }
+      ]
+    }
+  ]
+}

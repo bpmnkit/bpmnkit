@@ -12,7 +12,10 @@ import { readiness } from "../src/lib/readiness.js"
 
 describe("readiness platform", () => {
 	it("lints against the default version when the diagram names none, as the badge claims", () => {
-		const defs = expand(parseProcessText("# P\nstart[start Go] > f[end Done]").diagram)
+		// Ungated, so the diagram names no platform, as a draft the badge judges does
+		const defs = expand(parseProcessText("# P\nstart[start Go] > f[end Done]").diagram, {
+			validate: false,
+		})
 		const result = readiness(defs)
 		expect(lint).toHaveBeenCalledWith(
 			expect.anything(),

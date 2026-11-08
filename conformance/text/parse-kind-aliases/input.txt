@@ -1,1 +1,1 @@
-s[start] > a[human Review] > b[decision Check] > c[dmn Check more] > d[event Wait] > e[end]
+s[start] > a[human Review] > b[decision Check] > c[dmn Check more] > d[event Wait | key=waitId] > e[end]

@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest"
 import { parseBpmn } from "../src/bpmn/bpmn-parser.js"
 import { serializeBpmn } from "../src/bpmn/bpmn-serializer.js"
 import { createCompactStream } from "../src/bpmn/compact-stream.js"
-import { type CompactDiagram, compactify, expand } from "../src/bpmn/compact.js"
+import { type CompactDiagram, type ExpandOptions, compactify, expand } from "../src/bpmn/compact.js"
 import { type CompactDmn, compactifyDmn, expandDmn } from "../src/dmn/compact.js"
 import { parseDmn } from "../src/dmn/dmn-parser.js"
 import { serializeDmn } from "../src/dmn/dmn-serializer.js"
@@ -21,6 +21,9 @@ import { resetIdCounter } from "../src/types/id-generator.js"
  * - `input.dmn.json` (a CompactDmn): expandDmn -> `model.json`, `output.dmn`, or `error.txt`
  * - `case.json` with `chunks`: createCompactStream -> `frames.json`, `frame-<i>.bpmn`
  *
+ * `case.json` `expand` holds the options a BPMN diagram is expanded with
+ * (`validate`, `placeholders`, `camundaVersion`).
+ *
  * Any `input.*` may instead be named by `case.json` `input`, a path relative to
  * the case folder or to conformance/. `pnpm conformance:record` rewrites the
  * expected files from this implementation, which is the oracle.
@@ -34,6 +37,7 @@ interface CaseFile {
 	input?: string
 	chunks?: string[]
 	base?: CompactDiagram | null
+	expand?: ExpandOptions
 }
 
 function sortKeys(v: unknown): unknown {
@@ -53,7 +57,7 @@ const errorFile = (err: unknown): Record<string, string> => ({
 	"error.txt": `${(err as Error).message}\n`,
 })
 
-function bpmnCompact(xml: string): Record<string, string> {
+function bpmnCompact(xml: string, options: ExpandOptions | undefined): Record<string, string> {
 	let compact: CompactDiagram
 	try {
 		resetIdCounter()
@@ -64,17 +68,20 @@ function bpmnCompact(xml: string): Record<string, string> {
 	const files: Record<string, string> = { "compact.json": json(compact) }
 	try {
 		resetIdCounter()
-		files["expanded.bpmn"] = serializeBpmn(expand(compact))
+		files["expanded.bpmn"] = serializeBpmn(expand(compact, options))
 	} catch (err) {
 		files["expanded.error.txt"] = `${(err as Error).message}\n`
 	}
 	return files
 }
 
-function bpmnExpand(compact: CompactDiagram): Record<string, string> {
+function bpmnExpand(
+	compact: CompactDiagram,
+	options: ExpandOptions | undefined,
+): Record<string, string> {
 	try {
 		resetIdCounter()
-		const defs = expand(compact)
+		const defs = expand(compact, options)
 		return { "model.json": json(defs), "output.bpmn": serializeBpmn(defs) }
 	} catch (err) {
 		return errorFile(err)
@@ -143,9 +150,9 @@ function run(dir: string): Record<string, string> {
 	}
 	const text = fs.readFileSync(file, "utf8")
 	if (file.endsWith(".dmn.json")) return dmnExpand(JSON.parse(text) as CompactDmn)
-	if (file.endsWith(".json")) return bpmnExpand(JSON.parse(text) as CompactDiagram)
+	if (file.endsWith(".json")) return bpmnExpand(JSON.parse(text) as CompactDiagram, spec.expand)
 	if (file.endsWith(".dmn")) return dmnCompact(text)
-	return bpmnCompact(text)
+	return bpmnCompact(text, spec.expand)
 }
 
 const cases = fs.existsSync(compactRoot)

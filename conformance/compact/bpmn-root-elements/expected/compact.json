@@ -5,8 +5,10 @@
       "documentation": "Process-level documentation.",
       "elements": [
         {
+          "correlationKey": "=orderId",
           "eventType": "message",
           "id": "Start_order",
+          "messageName": "OrderPlaced",
           "type": "startEvent"
         },
         {

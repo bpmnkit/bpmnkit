@@ -1,2 +1,2 @@
 # Zeebe surface
-start[start] > call_api[service Call API | job=io.camunda:http-json:1 in.customerId=customer.id in.amount=order.total out.apiResult=response.body] > approve[user Approve | form=approval-form] > decide[rule Decide] > fulfil[call Fulfil] > summarise[script Summarise | result=highRisk feel=risk > 5] > end[end]
+start[start] > call_api[service Call API | job=io.camunda:http-json:1 in.customerId=customer.id in.amount=order.total out.apiResult=response.body] > approve[user Approve | form=approval-form] > decide[rule Decide] > fulfil[call Fulfil | called=fulfilment] > summarise[script Summarise | result=highRisk feel=risk > 5] > end[end]

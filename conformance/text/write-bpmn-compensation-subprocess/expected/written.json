@@ -2,8 +2,7 @@
   "aliases": {
     "adhoc": "Adhoc",
     "sub": "Undo",
-    "sub_2": "Evt",
-    "sub_3": "Plain",
+    "sub_2": "Plain",
     "transaction": "Tx"
   }
 }

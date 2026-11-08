@@ -870,6 +870,39 @@ pub(crate) fn assemble(reader: &Reader, final_: bool) -> ProcessTextResult {
         if ty.is_some_and(is_job_task) && element.job_type.is_none() {
             element.job_type = Some(element.id.clone());
         }
+        // What an element sends, throws, waits for or calls needs a name to deploy; the id
+        // stands in, as it does for a job type. A correlation key has no such stand-in.
+        let id = element.id.clone();
+        let throws = matches!(
+            ty,
+            Some(BpmnElementType::IntermediateThrowEvent | BpmnElementType::EndEvent)
+        );
+        let event = element.event_type.as_deref();
+        let (message, signal, error, escalation) = (
+            event == Some("message"),
+            event == Some("signal"),
+            event == Some("error"),
+            event == Some("escalation"),
+        );
+        if ty == Some(BpmnElementType::CallActivity) {
+            element.called_process.get_or_insert_with(|| id.clone());
+        }
+        if message || ty == Some(BpmnElementType::ReceiveTask) {
+            element.message_name.get_or_insert_with(|| id.clone());
+        }
+        if message && throws {
+            element.job_type.get_or_insert_with(|| id.clone());
+        }
+        if signal {
+            element.signal_name.get_or_insert_with(|| id.clone());
+        }
+        // A caught error or escalation without a code catches every one
+        if error && throws {
+            element.error_code.get_or_insert_with(|| id.clone());
+        }
+        if escalation && throws {
+            element.escalation_code.get_or_insert_with(|| id.clone());
+        }
         // A DMN task needs a decision to deploy; the id stands in, as it does for a job type.
         if ty == Some(BpmnElementType::BusinessRuleTask)
             && element.job_type.is_none()

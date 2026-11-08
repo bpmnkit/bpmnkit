@@ -17,6 +17,7 @@
           {
             "eventType": "message",
             "id": "w",
+            "messageName": "w",
             "name": "Report received",
             "type": "intermediateCatchEvent"
           },

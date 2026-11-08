@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="d" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="d" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
   <bpmn:process id="P" name="Proc" isExecutable="true">
     <bpmn:documentation>Handles one support request.</bpmn:documentation>
     <bpmn:startEvent id="S">
@@ -19,6 +19,9 @@
       <bpmn:documentation>Resolves the request autonomously.</bpmn:documentation>
       <bpmn:serviceTask id="Tool_ListUsers" name="List users">
         <bpmn:documentation>Call this to retrieve all users.</bpmn:documentation>
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="Tool_ListUsers"/>
+        </bpmn:extensionElements>
       </bpmn:serviceTask>
     </bpmn:adHocSubProcess>
     <bpmn:sequenceFlow id="F1" sourceRef="S" targetRef="Task_X"/>

@@ -276,7 +276,7 @@
           },
           "id": "evt_sub",
           "name": "On message",
-          "type": "subProcess"
+          "type": "eventSubProcess"
         },
         {
           "children": {

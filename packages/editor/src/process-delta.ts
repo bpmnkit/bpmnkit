@@ -35,6 +35,7 @@ import {
 	type ProcessTextProblem,
 	type ProcessTextQuestion,
 	applyBpmnOperations,
+	compactify,
 	conditionOrLabel,
 	writableCondition,
 	writableLabel,
@@ -320,6 +321,16 @@ export function applyProcessDelta(
 	const plane = () => (defs.diagrams[0] as NonNullable<BpmnDefinitions["diagrams"][0]>).plane
 	// At any depth: the tools of an ad-hoc sub-process are written, so a script may restate them
 	const element = (id: string) => findDeep(proc().flowElements, id)?.element
+	// The names, codes and timer values each node has now, as the writer wrote them: a
+	// restatement repeats them, and repeating one is no change
+	const written = new Map<string, CompactElement>()
+	const remember = (elements: readonly CompactElement[]): void => {
+		for (const el of elements) {
+			written.set(el.id, el)
+			remember(el.children?.elements ?? [])
+		}
+	}
+	remember(compactify(defs).processes[0]?.elements ?? [])
 	const containerOf = (id: string) => findDeep(proc().flowElements, id)?.container
 	const shape = (id: string) => plane().shapes.find((s) => s.bpmnElement === id)
 	const flowsOut = (id: string) => proc().sequenceFlows.filter((f) => f.sourceRef === id)
@@ -409,6 +420,18 @@ export function applyProcessDelta(
 			const current = now?.extensionElements.find((e) => e.name === "zeebe:taskDefinition")
 				?.attributes.type
 			if (current !== node.jobType) patch.jobType = node.jobType
+		}
+		const before = written.get(id)
+		for (const [key, value] of Object.entries(namedFields(node)) as [
+			keyof CompactElement,
+			string,
+		][]) {
+			// `key=` is written without its `=` and spaces, so `= id` restated reads `=id`
+			const same =
+				key === "correlationKey"
+					? before?.correlationKey?.replace(/^\s*=\s*/, "") === value.replace(/^=/, "")
+					: before?.[key] === value
+			if (!same) Object.assign(patch, { [key]: value })
 		}
 		if (node.script !== undefined) {
 			const current = now?.extensionElements.find((e) => e.name === "zeebe:script")
@@ -925,6 +948,30 @@ export function applyProcessDelta(
 			const timerDuration = node.timerDuration
 			patches.push({ line: node.line, op: { op: "update", id, patch: { timerDuration } } })
 		}
+		// Likewise the names and codes, which need the event definition they belong to
+		const names = namedFields(node)
+		if (Object.keys(names).length > 0) {
+			patches.push({ line: node.line, op: { op: "update", id, patch: names } })
+		}
+	}
+
+	/** The names, codes, timer values and called process a declaration writes (`msg=`, `at=`, …). */
+	function namedFields(node: DeltaNode): Partial<CompactElement> {
+		const patch: Partial<CompactElement> = {}
+		for (const key of [
+			"messageName",
+			"correlationKey",
+			"signalName",
+			"errorCode",
+			"escalationCode",
+			"timerDate",
+			"timerCycle",
+			"calledProcess",
+		] as const) {
+			const value = node[key]
+			if (value !== undefined) patch[key] = value
+		}
+		return patch
 	}
 
 	/**

@@ -1,5 +1,8 @@
 {
 	"input": "bpmn/camunda-compat-agents/input.bpmn",
 	"deployable": false,
-	"deployableReason": "Source bpmn/camunda-compat-agents/input.bpmn is itself rejected by Zeebe (agents: Must have at least one start event); the case pins how it is round-tripped, not a deployable model."
+	"deployableReason": "Source bpmn/camunda-compat-agents/input.bpmn is itself rejected by Zeebe (agents: Must have at least one start event); the case pins how it is round-tripped, not a deployable model; expanded with validate:false to keep pinning the expansion.",
+	"expand": {
+		"validate": false
+	}
 }

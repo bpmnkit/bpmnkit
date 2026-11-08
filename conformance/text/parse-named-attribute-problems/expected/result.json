@@ -1,0 +1,85 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "S",
+            "type": "startEvent"
+          },
+          {
+            "eventType": "timer",
+            "id": "t",
+            "name": "Wait",
+            "timerDuration": "PT1M",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "u",
+            "name": "U",
+            "type": "task"
+          },
+          {
+            "eventType": "timer",
+            "id": "c",
+            "name": "Cycle",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_2",
+            "to": "u"
+          },
+          {
+            "from": "u",
+            "id": "Flow_3",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "id": "Flow_4",
+            "to": "e"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [
+    {
+      "line": 1,
+      "message": "msg= takes a message event; ignored on \"t\""
+    },
+    {
+      "line": 1,
+      "message": "unknown attribute \"signal=y\" on \"u\"; ignored"
+    },
+    {
+      "line": 1,
+      "message": "unknown attribute \"key=z\" on \"u\"; ignored"
+    },
+    {
+      "line": 1,
+      "message": "every=soon on \"c\" is not a repeating interval (R/PT1H); ignored"
+    }
+  ],
+  "questions": []
+}

@@ -5,14 +5,56 @@
       "id": "BPMNDiagram_Process_1",
       "plane": {
         "bpmnElement": "Process_1",
-        "edges": [],
+        "edges": [
+          {
+            "bpmnElement": "Flow_Start_Process_1",
+            "id": "Flow_Start_Process_1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 36,
+                "y": 118
+              },
+              {
+                "x": 136,
+                "y": 118
+              }
+            ]
+          },
+          {
+            "bpmnElement": "Flow_Start_sub",
+            "id": "Flow_Start_sub_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 222,
+                "y": 118
+              },
+              {
+                "x": 282,
+                "y": 118
+              }
+            ]
+          }
+        ],
         "id": "BPMNPlane_Process_1",
         "shapes": [
           {
             "bounds": {
-              "height": 208,
-              "width": 200,
+              "height": 36,
+              "width": 36,
               "x": 0,
+              "y": 100
+            },
+            "bpmnElement": "Start_Process_1",
+            "id": "Start_Process_1_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 208,
+              "width": 296,
+              "x": 136,
               "y": 0
             },
             "bpmnElement": "sub",
@@ -22,9 +64,20 @@
           },
           {
             "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 186,
+              "y": 100
+            },
+            "bpmnElement": "Start_sub",
+            "id": "Start_sub_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
               "height": 80,
               "width": 100,
-              "x": 50,
+              "x": 282,
               "y": 78
             },
             "bpmnElement": "inner",
@@ -44,6 +97,7 @@
     "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
     "dc": "http://www.omg.org/spec/DD/20100524/DC",
     "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
     "zeebe": "http://camunda.org/schema/zeebe/1.0"
   },
   "processes": [
@@ -52,13 +106,45 @@
       "extensionElements": [],
       "flowElements": [
         {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "Start_Process_1",
+          "incoming": [],
+          "outgoing": [
+            "Flow_Start_Process_1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
           "associations": [],
           "extensionElements": [],
           "flowElements": [
             {
+              "eventDefinitions": [],
               "extensionElements": [],
-              "id": "inner",
+              "id": "Start_sub",
               "incoming": [],
+              "outgoing": [
+                "Flow_Start_sub"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "inner"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                }
+              ],
+              "id": "inner",
+              "incoming": [
+                "Flow_Start_sub"
+              ],
               "name": "Charge Card",
               "outgoing": [],
               "type": "serviceTask",
@@ -67,10 +153,20 @@
           ],
           "groups": [],
           "id": "sub",
-          "incoming": [],
+          "incoming": [
+            "Flow_Start_Process_1"
+          ],
           "name": "Handle Payment",
           "outgoing": [],
-          "sequenceFlows": [],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "Flow_Start_sub",
+              "sourceRef": "Start_sub",
+              "targetRef": "inner",
+              "unknownAttributes": {}
+            }
+          ],
           "textAnnotations": [],
           "type": "subProcess",
           "unknownAttributes": {}
@@ -79,12 +175,22 @@
       "groups": [],
       "id": "Process_1",
       "isExecutable": true,
-      "sequenceFlows": [],
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_Start_Process_1",
+          "sourceRef": "Start_Process_1",
+          "targetRef": "sub",
+          "unknownAttributes": {}
+        }
+      ],
       "textAnnotations": [],
       "unknownAttributes": {}
     }
   ],
   "signals": [],
   "targetNamespace": "http://bpmn.io/schema/bpmn",
-  "unknownAttributes": {}
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud"
+  }
 }

@@ -1,5 +1,8 @@
 {
 	"input": "bpmn/miwg-c-10-0/input.bpmn",
 	"deployable": false,
-	"deployableReason": "Source bpmn/miwg-c-10-0/input.bpmn is itself rejected by Zeebe (definitions: Must contain at least one executable process); the case pins how it is round-tripped, not a deployable model."
+	"deployableReason": "Source bpmn/miwg-c-10-0/input.bpmn is itself rejected by Zeebe (definitions: Must contain at least one executable process); the case pins how it is round-tripped, not a deployable model; expanded with validate:false to keep pinning the expansion.",
+	"expand": {
+		"validate": false
+	}
 }

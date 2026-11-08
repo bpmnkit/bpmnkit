@@ -1,5 +1,8 @@
 {
 	"input": "builder/from-noop/input.bpmn",
 	"deployable": false,
-	"deployableReason": "Source builder/from-noop/input.bpmn is itself rejected by Zeebe (f3: Must have a condition or be default flow); the case pins how it is round-tripped, not a deployable model."
+	"deployableReason": "Source builder/from-noop/input.bpmn is itself rejected by Zeebe (f3: Must have a condition or be default flow); the case pins how it is round-tripped, not a deployable model; expanded with validate:false to keep pinning the expansion.",
+	"expand": {
+		"validate": false
+	}
 }

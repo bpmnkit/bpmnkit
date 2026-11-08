@@ -26,6 +26,10 @@
           "children": {
             "elements": [
               {
+                "id": "Start_Sub",
+                "type": "startEvent"
+              },
+              {
                 "id": "SubG",
                 "type": "exclusiveGateway"
               },
@@ -39,6 +43,11 @@
               }
             ],
             "flows": [
+              {
+                "id": "Flow_Start_Sub",
+                "from": "Start_Sub",
+                "to": "SubG"
+              },
               {
                 "id": "SF1",
                 "from": "SubG",

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+  <bpmn:message id="Message_reply" name="reply">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=requestId"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
   <bpmn:process id="Process_1" isExecutable="true">
     <bpmn:startEvent id="s" name="S">
       <bpmn:outgoing>Flow_1</bpmn:outgoing>
@@ -33,11 +38,14 @@
       <bpmn:incoming>Flow_5</bpmn:incoming>
       <bpmn:outgoing>Flow_6</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:receiveTask id="f" name="F">
+    <bpmn:receiveTask id="f" name="F" messageRef="Message_reply">
       <bpmn:incoming>Flow_6</bpmn:incoming>
       <bpmn:outgoing>Flow_7</bpmn:outgoing>
     </bpmn:receiveTask>
     <bpmn:scriptTask id="g" name="G">
+      <bpmn:extensionElements>
+        <zeebe:script expression="= 1 + 1" resultVariable="two"/>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_7</bpmn:incoming>
       <bpmn:outgoing>Flow_8</bpmn:outgoing>
     </bpmn:scriptTask>
@@ -46,6 +54,9 @@
       <bpmn:outgoing>Flow_9</bpmn:outgoing>
     </bpmn:manualTask>
     <bpmn:callActivity id="i" name="I">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="i"/>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_9</bpmn:incoming>
       <bpmn:outgoing>Flow_10</bpmn:outgoing>
     </bpmn:callActivity>

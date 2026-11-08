@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+  <bpmn:escalation id="Escalation_LATE" name="LATE" escalationCode="LATE"/>
+  <bpmn:escalation id="Escalation_ESCALATED" name="ESCALATED" escalationCode="ESCALATED"/>
+  <bpmn:error id="Error_PAYMENT_FAILED" name="PAYMENT_FAILED" errorCode="PAYMENT_FAILED"/>
+  <bpmn:error id="Error_GIVEN_UP" name="GIVEN_UP" errorCode="GIVEN_UP"/>
+  <bpmn:message id="Message_order_placed" name="order-placed"/>
+  <bpmn:message id="Message_payment_received" name="payment-received">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=orderId"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_receipt" name="receipt">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=orderId"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_order_done" name="order-done"/>
+  <bpmn:signal id="Signal_shutdown" name="shutdown"/>
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="s" name="Order placed">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="s_MessageEventDefinition" messageRef="Message_order_placed"/>
+    </bpmn:startEvent>
+    <bpmn:callActivity id="h" name="Handle order">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="handle-order"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:intermediateCatchEvent id="w" name="Paid">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="w_MessageEventDefinition" messageRef="Message_payment_received"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:receiveTask id="r" name="Receipt" messageRef="Message_receipt">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:intermediateThrowEvent id="n" name="Notify">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="notify"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="n_MessageEventDefinition" messageRef="Message_order_done"/>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:endEvent id="b" name="Broadcast">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:signalEventDefinition id="b_SignalEventDefinition" signalRef="Signal_shutdown"/>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="failed" name="Failed" attachedToRef="h" cancelActivity="true">
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="failed_ErrorEventDefinition" errorRef="Error_PAYMENT_FAILED"/>
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="f" name="Give up">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:errorEventDefinition id="f_ErrorEventDefinition" errorRef="Error_GIVEN_UP"/>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="late" name="Late" attachedToRef="h" cancelActivity="false">
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+      <bpmn:escalationEventDefinition id="late_EscalationEventDefinition" escalationRef="Escalation_LATE"/>
+    </bpmn:boundaryEvent>
+    <bpmn:intermediateThrowEvent id="l" name="Escalate">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+      <bpmn:escalationEventDefinition id="l_EscalationEventDefinition" escalationRef="Escalation_ESCALATED"/>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:endEvent id="le" name="Le">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="stop" name="Stop" attachedToRef="h" cancelActivity="true">
+      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+      <bpmn:signalEventDefinition id="stop_SignalEventDefinition" signalRef="Signal_shutdown"/>
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="se" name="Se">
+      <bpmn:incoming>Flow_9</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="s" targetRef="h"/>
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="h" targetRef="w"/>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="w" targetRef="r"/>
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="r" targetRef="n"/>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="n" targetRef="b"/>
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="failed" targetRef="f"/>
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="late" targetRef="l"/>
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="l" targetRef="le"/>
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="stop" targetRef="se"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_Process_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="s_di" bpmnElement="s">
+        <dc:Bounds x="0" y="136" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-24" y="176" width="84" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="h_di" bpmnElement="h">
+        <dc:Bounds x="96" y="114" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="w_di" bpmnElement="w">
+        <dc:Bounds x="256" y="136" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="254" y="176" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="r_di" bpmnElement="r">
+        <dc:Bounds x="352" y="114" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="n_di" bpmnElement="n">
+        <dc:Bounds x="512" y="136" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="509" y="176" width="42" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="b_di" bpmnElement="b">
+        <dc:Bounds x="608" y="136" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="594.5" y="176" width="63" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="failed_di" bpmnElement="failed">
+        <dc:Bounds x="144.66666666666669" y="176" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="166.66666666666669" y="216" width="42" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="f_di" bpmnElement="f">
+        <dc:Bounds x="256" y="272" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="249.5" y="312" width="49" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="late_di" bpmnElement="late">
+        <dc:Bounds x="128" y="96" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="102" y="78" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="l_di" bpmnElement="l">
+        <dc:Bounds x="256" y="0" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="246" y="40" width="56" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="le_di" bpmnElement="le">
+        <dc:Bounds x="384" y="0" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="382" y="40" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="stop_di" bpmnElement="stop">
+        <dc:Bounds x="111.33333333333334" y="176" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="85.33333333333334" y="216" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="se_di" bpmnElement="se">
+        <dc:Bounds x="256" y="386" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="254" y="426" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="36" y="154"/>
+        <di:waypoint x="96" y="154"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="196" y="154"/>
+        <di:waypoint x="256" y="154"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="292" y="154"/>
+        <di:waypoint x="352" y="154"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="452" y="154"/>
+        <di:waypoint x="512" y="154"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="548" y="154"/>
+        <di:waypoint x="608" y="154"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="162.66666666666669" y="212"/>
+        <di:waypoint x="162.66666666666669" y="290"/>
+        <di:waypoint x="256" y="290"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_7_di" bpmnElement="Flow_7">
+        <di:waypoint x="146" y="96"/>
+        <di:waypoint x="146" y="18"/>
+        <di:waypoint x="256" y="18"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_8_di" bpmnElement="Flow_8">
+        <di:waypoint x="292" y="18"/>
+        <di:waypoint x="384" y="18"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_9_di" bpmnElement="Flow_9">
+        <di:waypoint x="129.33333333333334" y="212"/>
+        <di:waypoint x="129.33333333333334" y="404"/>
+        <di:waypoint x="256" y="404"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

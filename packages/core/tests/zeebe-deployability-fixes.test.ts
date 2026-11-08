@@ -243,13 +243,14 @@ describe("toFeelCondition", () => {
 						{
 							id: "t",
 							type: "serviceTask",
+							jobType: "work",
 							multiInstance: { collection: "=xs", completionCondition: "done > 1" },
 						},
 					],
 					flows: [
 						{ id: "f1", from: "s", to: "g" },
 						{ id: "f2", from: "g", to: "e", condition: "${a && b}" },
-						{ id: "f3", from: "g", to: "t" },
+						{ id: "f3", from: "g", to: "t", isDefault: true },
 						{ id: "f4", from: "t", to: "e" },
 					],
 				},

@@ -493,8 +493,11 @@ before every `expand`.
   `definitions` field in the result; the model is derived from `diagram`). `problems` are
   `{line, message}`, `questions` carry `elementId`, `text`, `options` (`{label, change}`) and `draft`,
   `connectors` are the `with` lines (`{id, alias, args, values, line, elementId}`).
-- `expected/output.bpmn`: `serializeBpmn(expand(result.diagram))`, or `expected/error.txt` (message
-  plus newline) when `expand` throws (the parser promises it never does; no case records one).
+- `expected/output.bpmn`: `serializeBpmn(expand(result.diagram, options))`, or `expected/error.txt`
+  (message plus newline) when `expand` throws. The diagram is always valid BPMN; since `expand`
+  gates by default, an `error.txt` is a `DeployabilityError` for text that leaves out what Camunda 8
+  needs (a correlation key, a timer's time). `options` is `case.json` `"expand"` (`{"validate"?,
+  "placeholders"?, "camundaVersion"?}`), read for parse and stream cases; absent, the defaults.
 
 **Stream**: `case.json` `{"chunks": ["...", ...]}`. Replay with `createProcessTextStream()`: `push`
 every chunk in order, then `end()`. The id counter is reset **once** before the stream is created
@@ -539,6 +542,12 @@ the parse / `compactify` and again before the `expand`.
 | `input.dmn` | `compact = compactifyDmn(parseDmn(input))`, then `expandDmn(compact)` | `compact.json`; `expanded.dmn`: `serializeDmn(expandDmn(compact))` (or `expanded.error.txt`) |
 | `input.dmn.json` (a `CompactDmn`) | `expandDmn(input)` | `model.json`, `output.dmn`, or `error.txt` |
 | `case.json` `{"chunks": [...], "base"?: <CompactDiagram or null>}` | `createCompactStream({base})` (no options when `base` is absent), `push` each chunk | `frames.json` and `frame-<i>.bpmn`, encoded exactly like a text stream (`null` or `"frame-<i>.bpmn"` per chunk) |
+
+`case.json` `"expand": {"validate"?, "placeholders"?, "camundaVersion"?}` are the options of every
+BPMN `expand` (`input.json` and `input.bpmn` cases; streams preview with `validate: false`). Absent,
+`expand` gates: an `error.txt` / `expanded.error.txt` then records the `DeployabilityError`. Cases
+that pin how a model Zeebe rejects expands (round trips of non-Camunda sources, element types
+Camunda 8 does not run) pass `"validate": false` and say why in `deployableReason`.
 
 `compactify` / `parseBpmn` / `parseDmn` failing records `error.txt` instead (none of the inputs does).
 `expand` and `expandDmn` expand with auto-layout, so `output.bpmn` / `expanded.*` also pin the layout

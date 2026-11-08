@@ -1,5 +1,8 @@
 {
 	"input": "bpmn/layout-quote-to-cash/input.bpmn",
 	"deployable": false,
-	"deployableReason": "Source bpmn/layout-quote-to-cash/input.bpmn is itself rejected by Zeebe (Message_VgqDdPrJ: Must have exactly one zeebe:subscription extension element); the case pins how it is round-tripped, not a deployable model."
+	"deployableReason": "Source bpmn/layout-quote-to-cash/input.bpmn is itself rejected by Zeebe (Message_VgqDdPrJ: Must have exactly one zeebe:subscription extension element); the case pins how it is round-tripped, not a deployable model; expanded with validate:false to keep pinning the expansion.",
+	"expand": {
+		"validate": false
+	}
 }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1k3v0qa" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:message id="Message_PaymentConfirmed" name="PaymentConfirmed"/>
   <bpmn:process id="order-fulfillment" name="Order fulfillment" isExecutable="true">
     <bpmn:startEvent id="StartEvent_order" name="Order received">
       <bpmn:outgoing>Flow_toReview</bpmn:outgoing>
@@ -19,7 +20,7 @@
       <bpmn:incoming>Flow_vip</bpmn:incoming>
       <bpmn:outgoing>Flow_toConfirm</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:receiveTask id="Task_awaitPayment" name="Await payment confirmation">
+    <bpmn:receiveTask id="Task_awaitPayment" name="Await payment confirmation" messageRef="Message_PaymentConfirmed">
       <bpmn:incoming>Flow_toConfirm</bpmn:incoming>
       <bpmn:outgoing>Flow_toShippingCost</bpmn:outgoing>
     </bpmn:receiveTask>

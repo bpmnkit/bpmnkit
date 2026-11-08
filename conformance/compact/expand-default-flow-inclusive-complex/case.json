@@ -1,0 +1,7 @@
+{
+  "expand": {
+    "validate": false
+  },
+  "deployable": false,
+  "deployableReason": "Pins the default flow on a complex gateway, which Camunda 8 does not support; expanded with validate:false."
+}

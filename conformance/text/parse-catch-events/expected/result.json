@@ -14,6 +14,7 @@
             "eventType": "signal",
             "id": "a",
             "name": "Wake",
+            "signalName": "a",
             "type": "intermediateCatchEvent"
           },
           {
@@ -31,8 +32,10 @@
             "type": "intermediateCatchEvent"
           },
           {
+            "correlationKey": "=requestId",
             "eventType": "message",
             "id": "d",
+            "messageName": "d",
             "name": "Reply",
             "type": "intermediateCatchEvent"
           },

@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+  <bpmn:message id="Message_MESSAGE_documentReceived" name="MESSAGE_documentReceived">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="= documentReferenceId"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
   <bpmn:process id="requestDocument_en" name="Document Request" isExecutable="true">
     <bpmn:sendTask id="SendTask_RequestDocument" name="Request document">
       <bpmn:extensionElements>
@@ -22,7 +27,7 @@
       <bpmn:incoming>SequenceFlow_0i97ejj</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_3</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:receiveTask id="ReceiveTask_WaitForDocument" name="Wait for answer">
+    <bpmn:receiveTask id="ReceiveTask_WaitForDocument" name="Wait for answer" messageRef="Message_MESSAGE_documentReceived">
       <bpmn:incoming>SequenceFlow_18a0pzl</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_6</bpmn:outgoing>
     </bpmn:receiveTask>
@@ -34,7 +39,9 @@
     </bpmn:startEvent>
     <bpmn:boundaryEvent id="BoundaryEvent_1" name="daily" attachedToRef="ReceiveTask_WaitForDocument" cancelActivity="false">
       <bpmn:outgoing>SequenceFlow_1bqpxlf</bpmn:outgoing>
-      <bpmn:timerEventDefinition id="BoundaryEvent_1_TimerEventDefinition"/>
+      <bpmn:timerEventDefinition id="BoundaryEvent_1_TimerEventDefinition">
+        <bpmn:timeCycle>R6/P1D</bpmn:timeCycle>
+      </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="BoundaryEvent_2" name="1 week" attachedToRef="ReceiveTask_WaitForDocument" cancelActivity="true">
       <bpmn:outgoing>SequenceFlow_0i97ejj</bpmn:outgoing>

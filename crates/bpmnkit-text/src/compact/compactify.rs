@@ -60,13 +60,79 @@ fn parse_int(s: &str) -> Option<f64> {
     Some(if neg { -n } else { n })
 }
 
+/// TS's `compactifyReferences`: the names and codes an element's event definition or
+/// `messageRef` resolves to.
+fn compactify_references(
+    el: &BpmnFlowElement,
+    result: &mut CompactElement,
+    roots: &BpmnDefinitions,
+) {
+    let non_empty = |v: &Option<String>| v.clone().filter(|v| !v.is_empty());
+    let message = |result: &mut CompactElement, r: Option<&String>| {
+        let Some(found) = r.and_then(|r| roots.messages.iter().find(|m| &m.id == r)) else {
+            return;
+        };
+        if let Some(name) = non_empty(&found.name) {
+            result.message_name = Some(name);
+        }
+        let key = found
+            .extension_elements
+            .iter()
+            .flatten()
+            .find(|x| x.name == "zeebe:subscription")
+            .and_then(|x| x.attributes.get("correlationKey"))
+            .filter(|k| !k.is_empty());
+        if let Some(key) = key {
+            result.correlation_key = Some(key.clone());
+        }
+    };
+    if let BpmnFlowElement::ReceiveTask(t) = el {
+        message(result, t.message_ref.as_ref());
+    }
+    match el.event_definitions().and_then(<[_]>::first) {
+        Some(BpmnEventDefinition::Timer(t)) => {
+            result.timer_date = non_empty(&t.time_date);
+            result.timer_cycle = non_empty(&t.time_cycle);
+        }
+        Some(BpmnEventDefinition::Message(m)) => message(result, m.message_ref.as_ref()),
+        Some(BpmnEventDefinition::Signal(d)) => {
+            let found = roots
+                .signals
+                .iter()
+                .find(|x| Some(&x.id) == d.signal_ref.as_ref());
+            result.signal_name = found.and_then(|x| non_empty(&x.name));
+        }
+        Some(BpmnEventDefinition::Error(d)) => {
+            let found = roots
+                .errors
+                .iter()
+                .find(|x| Some(&x.id) == d.error_ref.as_ref());
+            result.error_code = found.and_then(|x| non_empty(&x.error_code));
+        }
+        Some(BpmnEventDefinition::Escalation(d)) => {
+            let found = roots
+                .escalations
+                .iter()
+                .find(|x| Some(&x.id) == d.escalation_ref.as_ref());
+            result.escalation_code = found.and_then(|x| non_empty(&x.escalation_code));
+        }
+        _ => {}
+    }
+}
+
 /// TS's `compactifyElement`.
-fn compactify_element(el: &BpmnFlowElement) -> CompactElement {
+fn compactify_element(el: &BpmnFlowElement, roots: &BpmnDefinitions) -> CompactElement {
     let base = el.base();
     let ext = &base.extension_elements;
+    // A parsed event sub-process is a subProcess triggered by an event; expanded as a plain
+    // sub-process it would lose its trigger, and Zeebe refuses its typed start event there.
+    let type_ = match el {
+        BpmnFlowElement::SubProcess(s) if s.triggered_by_event == Some(true) => "eventSubProcess",
+        _ => el.type_name(),
+    };
     let mut result = CompactElement {
         id: base.id.clone(),
-        type_: el.type_name().to_owned(),
+        type_: type_.to_owned(),
         ..CompactElement::default()
     };
     result.name = base.name.clone().filter(|n| !n.is_empty());
@@ -221,6 +287,7 @@ fn compactify_element(el: &BpmnFlowElement) -> CompactElement {
             _ => {}
         }
     }
+    compactify_references(el, &mut result, roots);
 
     if let Some(loop_) = el.loop_characteristics() {
         let zeebe_loop = loop_
@@ -255,6 +322,11 @@ fn compactify_element(el: &BpmnFlowElement) -> CompactElement {
             result.interrupting = Some(false);
         }
     }
+    if let BpmnFlowElement::StartEvent(s) = el {
+        if s.is_interrupting == Some(false) {
+            result.interrupting = Some(false);
+        }
+    }
 
     match el {
         BpmnFlowElement::DataObjectReference(d) => {
@@ -277,7 +349,7 @@ fn compactify_element(el: &BpmnFlowElement) -> CompactElement {
                 elements: contents
                     .flow_elements
                     .iter()
-                    .map(compactify_element)
+                    .map(|child| compactify_element(child, roots))
                     .collect(),
                 flows: compactify_flows(&contents.flow_elements, &contents.sequence_flows),
             });
@@ -326,7 +398,7 @@ pub fn compactify(defs: &BpmnDefinitions) -> CompactDiagram {
                     .contents
                     .flow_elements
                     .iter()
-                    .map(compactify_element)
+                    .map(|el| compactify_element(el, defs))
                     .collect(),
                 flows: compactify_flows(
                     &process.contents.flow_elements,

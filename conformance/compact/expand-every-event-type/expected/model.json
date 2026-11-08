@@ -81,6 +81,17 @@
               "x": 0,
               "y": 696
             },
+            "bpmnElement": "c6",
+            "id": "c6_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 0,
+              "y": 812
+            },
             "bpmnElement": "c2",
             "id": "c2_di",
             "unknownAttributes": {}
@@ -90,7 +101,7 @@
               "height": 36,
               "width": 36,
               "x": 0,
-              "y": 812
+              "y": 928
             },
             "bpmnElement": "c3",
             "id": "c3_di",
@@ -101,7 +112,7 @@
               "height": 36,
               "width": 36,
               "x": 0,
-              "y": 928
+              "y": 1044
             },
             "bpmnElement": "c4",
             "id": "c4_di",
@@ -112,7 +123,7 @@
               "height": 36,
               "width": 36,
               "x": 0,
-              "y": 1044
+              "y": 1160
             },
             "bpmnElement": "c5",
             "id": "c5_di",
@@ -123,7 +134,7 @@
               "height": 36,
               "width": 36,
               "x": 0,
-              "y": 1160
+              "y": 1276
             },
             "bpmnElement": "t1",
             "id": "t1_di",
@@ -134,7 +145,7 @@
               "height": 36,
               "width": 36,
               "x": 0,
-              "y": 1276
+              "y": 1392
             },
             "bpmnElement": "t2",
             "id": "t2_di",
@@ -145,7 +156,7 @@
               "height": 36,
               "width": 36,
               "x": 0,
-              "y": 1392
+              "y": 1508
             },
             "bpmnElement": "t3",
             "id": "t3_di",
@@ -156,7 +167,7 @@
               "height": 36,
               "width": 36,
               "x": 0,
-              "y": 1508
+              "y": 1624
             },
             "bpmnElement": "t4",
             "id": "t4_di",
@@ -167,7 +178,7 @@
               "height": 36,
               "width": 36,
               "x": 0,
-              "y": 1624
+              "y": 1740
             },
             "bpmnElement": "t5",
             "id": "t5_di",
@@ -178,7 +189,7 @@
               "height": 36,
               "width": 36,
               "x": 0,
-              "y": 1740
+              "y": 1856
             },
             "bpmnElement": "t6",
             "id": "t6_di",
@@ -189,7 +200,7 @@
               "height": 36,
               "width": 36,
               "x": 0,
-              "y": 1856
+              "y": 1972
             },
             "bpmnElement": "e1",
             "id": "e1_di",
@@ -200,7 +211,7 @@
               "height": 36,
               "width": 36,
               "x": 0,
-              "y": 1972
+              "y": 2088
             },
             "bpmnElement": "e2",
             "id": "e2_di",
@@ -211,7 +222,7 @@
               "height": 36,
               "width": 36,
               "x": 0,
-              "y": 2088
+              "y": 2204
             },
             "bpmnElement": "e3",
             "id": "e3_di",
@@ -222,7 +233,7 @@
               "height": 36,
               "width": 36,
               "x": 0,
-              "y": 2204
+              "y": 2320
             },
             "bpmnElement": "e4",
             "id": "e4_di",
@@ -233,7 +244,7 @@
               "height": 36,
               "width": 36,
               "x": 0,
-              "y": 2320
+              "y": 2436
             },
             "bpmnElement": "e5",
             "id": "e5_di",
@@ -244,7 +255,7 @@
               "height": 36,
               "width": 36,
               "x": 0,
-              "y": 2436
+              "y": 2552
             },
             "bpmnElement": "e6",
             "id": "e6_di",
@@ -254,15 +265,66 @@
       }
     }
   ],
-  "errors": [],
-  "escalations": [],
+  "errors": [
+    {
+      "errorCode": "PAYMENT_FAILED",
+      "id": "Error_PAYMENT_FAILED",
+      "name": "PAYMENT_FAILED",
+      "unknownAttributes": {}
+    }
+  ],
+  "escalations": [
+    {
+      "escalationCode": "LATE",
+      "id": "Escalation_LATE",
+      "name": "LATE",
+      "unknownAttributes": {}
+    },
+    {
+      "escalationCode": "GIVE_UP",
+      "id": "Escalation_GIVE_UP",
+      "name": "GIVE_UP",
+      "unknownAttributes": {}
+    }
+  ],
   "id": "D",
-  "messages": [],
+  "messages": [
+    {
+      "id": "Message_order_placed",
+      "name": "order-placed",
+      "unknownAttributes": {}
+    },
+    {
+      "extensionElements": [
+        {
+          "attributes": {
+            "correlationKey": "=orderId"
+          },
+          "children": [],
+          "name": "zeebe:subscription"
+        }
+      ],
+      "id": "Message_payment_received",
+      "name": "payment-received",
+      "unknownAttributes": {}
+    },
+    {
+      "id": "Message_invoice_sent",
+      "name": "invoice-sent",
+      "unknownAttributes": {}
+    },
+    {
+      "id": "Message_order_closed",
+      "name": "order-closed",
+      "unknownAttributes": {}
+    }
+  ],
   "namespaces": {
     "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
     "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
     "dc": "http://www.omg.org/spec/DD/20100524/DC",
     "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
     "zeebe": "http://camunda.org/schema/zeebe/1.0"
   },
   "processes": [
@@ -289,6 +351,7 @@
           "eventDefinitions": [
             {
               "id": "s2_MessageEventDefinition",
+              "messageRef": "Message_order_placed",
               "type": "message"
             }
           ],
@@ -303,6 +366,7 @@
           "eventDefinitions": [
             {
               "id": "s3_SignalEventDefinition",
+              "signalRef": "Signal_go",
               "type": "signal"
             }
           ],
@@ -335,6 +399,7 @@
           "eventDefinitions": [
             {
               "id": "s5_TimerEventDefinition",
+              "timeCycle": "R3/PT10M",
               "type": "timer"
             }
           ],
@@ -363,7 +428,23 @@
         {
           "eventDefinitions": [
             {
+              "id": "c6_TimerEventDefinition",
+              "timeDate": "2026-12-01T09:00:00Z",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "c6",
+          "incoming": [],
+          "outgoing": [],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
               "id": "c2_MessageEventDefinition",
+              "messageRef": "Message_payment_received",
               "type": "message"
             }
           ],
@@ -378,6 +459,7 @@
           "eventDefinitions": [
             {
               "id": "c3_SignalEventDefinition",
+              "signalRef": "Signal_resume",
               "type": "signal"
             }
           ],
@@ -410,6 +492,7 @@
           "eventDefinitions": [
             {
               "id": "c5_LinkEventDefinition",
+              "name": "jump",
               "type": "link"
             }
           ],
@@ -424,10 +507,19 @@
           "eventDefinitions": [
             {
               "id": "t1_MessageEventDefinition",
+              "messageRef": "Message_invoice_sent",
               "type": "message"
             }
           ],
-          "extensionElements": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "send-invoice"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
           "id": "t1",
           "incoming": [],
           "outgoing": [],
@@ -438,6 +530,7 @@
           "eventDefinitions": [
             {
               "id": "t2_SignalEventDefinition",
+              "signalRef": "Signal_alert",
               "type": "signal"
             }
           ],
@@ -451,6 +544,7 @@
         {
           "eventDefinitions": [
             {
+              "escalationRef": "Escalation_LATE",
               "id": "t3_EscalationEventDefinition",
               "type": "escalation"
             }
@@ -480,6 +574,7 @@
           "eventDefinitions": [
             {
               "id": "t5_LinkEventDefinition",
+              "name": "jump",
               "type": "link"
             }
           ],
@@ -502,6 +597,7 @@
         {
           "eventDefinitions": [
             {
+              "errorRef": "Error_PAYMENT_FAILED",
               "id": "e1_ErrorEventDefinition",
               "type": "error"
             }
@@ -517,10 +613,19 @@
           "eventDefinitions": [
             {
               "id": "e2_MessageEventDefinition",
+              "messageRef": "Message_order_closed",
               "type": "message"
             }
           ],
-          "extensionElements": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "close-order"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
           "id": "e2",
           "incoming": [],
           "outgoing": [],
@@ -531,6 +636,7 @@
           "eventDefinitions": [
             {
               "id": "e3_SignalEventDefinition",
+              "signalRef": "Signal_finished",
               "type": "signal"
             }
           ],
@@ -544,6 +650,7 @@
         {
           "eventDefinitions": [
             {
+              "escalationRef": "Escalation_GIVE_UP",
               "id": "e4_EscalationEventDefinition",
               "type": "escalation"
             }
@@ -592,7 +699,30 @@
       "unknownAttributes": {}
     }
   ],
-  "signals": [],
+  "signals": [
+    {
+      "id": "Signal_go",
+      "name": "go",
+      "unknownAttributes": {}
+    },
+    {
+      "id": "Signal_resume",
+      "name": "resume",
+      "unknownAttributes": {}
+    },
+    {
+      "id": "Signal_alert",
+      "name": "alert",
+      "unknownAttributes": {}
+    },
+    {
+      "id": "Signal_finished",
+      "name": "finished",
+      "unknownAttributes": {}
+    }
+  ],
   "targetNamespace": "http://bpmn.io/schema/bpmn",
-  "unknownAttributes": {}
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud"
+  }
 }

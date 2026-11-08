@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="D" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+  <bpmn:process id="P" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:subProcess id="sub">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+      <bpmn:startEvent id="sub_s">
+        <bpmn:outgoing>i1</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:task id="inner">
+        <bpmn:incoming>i1</bpmn:incoming>
+        <bpmn:outgoing>i2</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:endEvent id="sub_e">
+        <bpmn:incoming>i2</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="i1" sourceRef="sub_s" targetRef="inner"/>
+      <bpmn:sequenceFlow id="i2" sourceRef="inner" targetRef="sub_e"/>
+    </bpmn:subProcess>
+    <bpmn:subProcess id="esp" triggeredByEvent="true">
+      <bpmn:startEvent id="esp_s" isInterrupting="false">
+        <bpmn:outgoing>e1</bpmn:outgoing>
+        <bpmn:timerEventDefinition id="esp_s_TimerEventDefinition">
+          <bpmn:timeCycle>R/PT1M</bpmn:timeCycle>
+        </bpmn:timerEventDefinition>
+      </bpmn:startEvent>
+      <bpmn:endEvent id="esp_e">
+        <bpmn:incoming>e1</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="e1" sourceRef="esp_s" targetRef="esp_e"/>
+    </bpmn:subProcess>
+    <bpmn:endEvent id="e">
+      <bpmn:incoming>f2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="s" targetRef="sub"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="sub" targetRef="e"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_P">
+    <bpmndi:BPMNPlane id="BPMNPlane_P" bpmnElement="P">
+      <bpmndi:BPMNShape id="s_di" bpmnElement="s">
+        <dc:Bounds x="98" y="72" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_di" bpmnElement="sub" isExpanded="true">
+        <dc:Bounds x="332" y="0" width="392" height="180"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="esp_di" bpmnElement="esp" isExpanded="true">
+        <dc:Bounds x="0" y="260" width="232" height="136"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="e_di" bpmnElement="e">
+        <dc:Bounds x="824" y="72" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_s_di" bpmnElement="sub_s">
+        <dc:Bounds x="382" y="72" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="inner_di" bpmnElement="inner">
+        <dc:Bounds x="478" y="50" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_e_di" bpmnElement="sub_e">
+        <dc:Bounds x="638" y="72" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="esp_s_di" bpmnElement="esp_s">
+        <dc:Bounds x="50" y="310" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="esp_e_di" bpmnElement="esp_e">
+        <dc:Bounds x="146" y="310" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1">
+        <di:waypoint x="134" y="90"/>
+        <di:waypoint x="332" y="90"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2">
+        <di:waypoint x="724" y="90"/>
+        <di:waypoint x="824" y="90"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="i1_di" bpmnElement="i1">
+        <di:waypoint x="418" y="90"/>
+        <di:waypoint x="478" y="90"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="i2_di" bpmnElement="i2">
+        <di:waypoint x="578" y="90"/>
+        <di:waypoint x="638" y="90"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="e1_di" bpmnElement="e1">
+        <di:waypoint x="86" y="328"/>
+        <di:waypoint x="146" y="328"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

@@ -225,6 +225,7 @@ name = "bpmnkit-text"
 version = "0.1.0"
 dependencies = [
  "bpmnkit-bpmn",
+ "bpmnkit-compat",
  "bpmnkit-dmn",
  "bpmnkit-feel",
  "bpmnkit-layout",

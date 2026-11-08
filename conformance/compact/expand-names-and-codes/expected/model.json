@@ -1,0 +1,900 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_P",
+      "plane": {
+        "bpmnElement": "P",
+        "edges": [
+          {
+            "bpmnElement": "f1",
+            "id": "f1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 36,
+                "y": 118
+              },
+              {
+                "x": 136,
+                "y": 118
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f2",
+            "id": "f2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 624,
+                "y": 118
+              },
+              {
+                "x": 724,
+                "y": 118
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f3",
+            "id": "f3_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 760,
+                "y": 118
+              },
+              {
+                "x": 820,
+                "y": 118
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f4",
+            "id": "f4_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 856,
+                "y": 118
+              },
+              {
+                "x": 916,
+                "y": 118
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f5",
+            "id": "f5_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 952,
+                "y": 118
+              },
+              {
+                "x": 1012,
+                "y": 118
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f6",
+            "id": "f6_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 526.4,
+                "y": 226
+              },
+              {
+                "x": 526.4,
+                "y": 286
+              },
+              {
+                "x": 724,
+                "y": 286
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f7",
+            "id": "f7_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 428.8,
+                "y": 226
+              },
+              {
+                "x": 428.8,
+                "y": 382
+              },
+              {
+                "x": 724,
+                "y": 382
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f8",
+            "id": "f8_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 331.2,
+                "y": 226
+              },
+              {
+                "x": 331.2,
+                "y": 478
+              },
+              {
+                "x": 724,
+                "y": 478
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f9",
+            "id": "f9_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 233.6,
+                "y": 226
+              },
+              {
+                "x": 233.6,
+                "y": 574
+              },
+              {
+                "x": 724,
+                "y": 574
+              }
+            ]
+          },
+          {
+            "bpmnElement": "s1",
+            "id": "s1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 222,
+                "y": 118
+              },
+              {
+                "x": 282,
+                "y": 118
+              }
+            ]
+          },
+          {
+            "bpmnElement": "s2",
+            "id": "s2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 382,
+                "y": 118
+              },
+              {
+                "x": 442,
+                "y": 118
+              }
+            ]
+          },
+          {
+            "bpmnElement": "s3",
+            "id": "s3_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 478,
+                "y": 118
+              },
+              {
+                "x": 538,
+                "y": 118
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_P",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 0,
+              "y": 100
+            },
+            "bpmnElement": "start",
+            "id": "start_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 208,
+              "width": 488,
+              "x": 136,
+              "y": 0
+            },
+            "bpmnElement": "sub",
+            "id": "sub_di",
+            "isExpanded": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 508.4,
+              "y": 190
+            },
+            "bpmnElement": "failed",
+            "id": "failed_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 410.8,
+              "y": 190
+            },
+            "bpmnElement": "escalated",
+            "id": "escalated_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 313.2,
+              "y": 190
+            },
+            "bpmnElement": "cancel",
+            "id": "cancel_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 215.6,
+              "y": 190
+            },
+            "bpmnElement": "stop",
+            "id": "stop_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 724,
+              "y": 100
+            },
+            "bpmnElement": "again",
+            "id": "again_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 820,
+              "y": 100
+            },
+            "bpmnElement": "other",
+            "id": "other_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 916,
+              "y": 100
+            },
+            "bpmnElement": "notify",
+            "id": "notify_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 1012,
+              "y": 100
+            },
+            "bpmnElement": "broadcast",
+            "id": "broadcast_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 724,
+              "y": 268
+            },
+            "bpmnElement": "e_failed",
+            "id": "e_failed_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 724,
+              "y": 364
+            },
+            "bpmnElement": "e_escalated",
+            "id": "e_escalated_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 724,
+              "y": 460
+            },
+            "bpmnElement": "e_cancel",
+            "id": "e_cancel_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 724,
+              "y": 556
+            },
+            "bpmnElement": "e_stop",
+            "id": "e_stop_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 186,
+              "y": 100
+            },
+            "bpmnElement": "sub_start",
+            "id": "sub_start_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 282,
+              "y": 78
+            },
+            "bpmnElement": "pay",
+            "id": "pay_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 442,
+              "y": 100
+            },
+            "bpmnElement": "late",
+            "id": "late_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 538,
+              "y": 100
+            },
+            "bpmnElement": "sub_end",
+            "id": "sub_end_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [
+    {
+      "errorCode": "PAYMENT_FAILED",
+      "id": "Error_PAYMENT_FAILED",
+      "name": "PAYMENT_FAILED",
+      "unknownAttributes": {}
+    }
+  ],
+  "escalations": [
+    {
+      "escalationCode": "LATE",
+      "id": "Escalation_LATE",
+      "name": "LATE",
+      "unknownAttributes": {}
+    }
+  ],
+  "id": "D",
+  "messages": [
+    {
+      "id": "Message_order_placed",
+      "name": "order-placed",
+      "unknownAttributes": {}
+    },
+    {
+      "extensionElements": [
+        {
+          "attributes": {
+            "correlationKey": "=orderId"
+          },
+          "children": [],
+          "name": "zeebe:subscription"
+        }
+      ],
+      "id": "Message_payment_received",
+      "name": "payment-received",
+      "unknownAttributes": {}
+    },
+    {
+      "extensionElements": [
+        {
+          "attributes": {
+            "correlationKey": "=orderId"
+          },
+          "children": [],
+          "name": "zeebe:subscription"
+        }
+      ],
+      "id": "Message_order_cancelled",
+      "name": "order-cancelled",
+      "unknownAttributes": {}
+    },
+    {
+      "extensionElements": [
+        {
+          "attributes": {
+            "correlationKey": "=invoiceId"
+          },
+          "children": [],
+          "name": "zeebe:subscription"
+        }
+      ],
+      "id": "Message_payment_received_2",
+      "name": "payment-received",
+      "unknownAttributes": {}
+    },
+    {
+      "id": "Message_order_done",
+      "name": "order-done",
+      "unknownAttributes": {}
+    }
+  ],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [
+            {
+              "id": "start_MessageEventDefinition",
+              "messageRef": "Message_order_placed",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [],
+          "id": "start",
+          "incoming": [],
+          "outgoing": [
+            "f1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "sub_start",
+              "incoming": [],
+              "outgoing": [
+                "s1"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "pay",
+              "incoming": [
+                "s1"
+              ],
+              "messageRef": "Message_payment_received",
+              "name": "Payment",
+              "outgoing": [
+                "s2"
+              ],
+              "type": "receiveTask",
+              "unknownAttributes": {}
+            },
+            {
+              "eventDefinitions": [
+                {
+                  "escalationRef": "Escalation_LATE",
+                  "id": "late_EscalationEventDefinition",
+                  "type": "escalation"
+                }
+              ],
+              "extensionElements": [],
+              "id": "late",
+              "incoming": [
+                "s2"
+              ],
+              "outgoing": [
+                "s3"
+              ],
+              "type": "intermediateThrowEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "eventDefinitions": [
+                {
+                  "errorRef": "Error_PAYMENT_FAILED",
+                  "id": "sub_end_ErrorEventDefinition",
+                  "type": "error"
+                }
+              ],
+              "extensionElements": [],
+              "id": "sub_end",
+              "incoming": [
+                "s3"
+              ],
+              "outgoing": [],
+              "type": "endEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "sub",
+          "incoming": [
+            "f1"
+          ],
+          "name": "Handle order",
+          "outgoing": [
+            "f2"
+          ],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "s1",
+              "sourceRef": "sub_start",
+              "targetRef": "pay",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "s2",
+              "sourceRef": "pay",
+              "targetRef": "late",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "s3",
+              "sourceRef": "late",
+              "targetRef": "sub_end",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "type": "subProcess",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "sub",
+          "cancelActivity": true,
+          "eventDefinitions": [
+            {
+              "errorRef": "Error_PAYMENT_FAILED",
+              "id": "failed_ErrorEventDefinition",
+              "type": "error"
+            }
+          ],
+          "extensionElements": [],
+          "id": "failed",
+          "incoming": [],
+          "outgoing": [
+            "f6"
+          ],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "sub",
+          "cancelActivity": false,
+          "eventDefinitions": [
+            {
+              "escalationRef": "Escalation_LATE",
+              "id": "escalated_EscalationEventDefinition",
+              "type": "escalation"
+            }
+          ],
+          "extensionElements": [],
+          "id": "escalated",
+          "incoming": [],
+          "outgoing": [
+            "f7"
+          ],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "sub",
+          "cancelActivity": true,
+          "eventDefinitions": [
+            {
+              "id": "cancel_MessageEventDefinition",
+              "messageRef": "Message_order_cancelled",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [],
+          "id": "cancel",
+          "incoming": [],
+          "outgoing": [
+            "f8"
+          ],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "sub",
+          "cancelActivity": true,
+          "eventDefinitions": [
+            {
+              "id": "stop_SignalEventDefinition",
+              "signalRef": "Signal_shutdown",
+              "type": "signal"
+            }
+          ],
+          "extensionElements": [],
+          "id": "stop",
+          "incoming": [],
+          "outgoing": [
+            "f9"
+          ],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "again_MessageEventDefinition",
+              "messageRef": "Message_payment_received",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [],
+          "id": "again",
+          "incoming": [
+            "f2"
+          ],
+          "outgoing": [
+            "f3"
+          ],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "other_MessageEventDefinition",
+              "messageRef": "Message_payment_received_2",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [],
+          "id": "other",
+          "incoming": [
+            "f3"
+          ],
+          "outgoing": [
+            "f4"
+          ],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "notify_MessageEventDefinition",
+              "messageRef": "Message_order_done",
+              "type": "message"
+            }
+          ],
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "notify"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "notify",
+          "incoming": [
+            "f4"
+          ],
+          "outgoing": [
+            "f5"
+          ],
+          "type": "intermediateThrowEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "broadcast_SignalEventDefinition",
+              "signalRef": "Signal_shutdown",
+              "type": "signal"
+            }
+          ],
+          "extensionElements": [],
+          "id": "broadcast",
+          "incoming": [
+            "f5"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e_failed",
+          "incoming": [
+            "f6"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e_escalated",
+          "incoming": [
+            "f7"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e_cancel",
+          "incoming": [
+            "f8"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e_stop",
+          "incoming": [
+            "f9"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "P",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "f1",
+          "sourceRef": "start",
+          "targetRef": "sub",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f2",
+          "sourceRef": "sub",
+          "targetRef": "again",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f3",
+          "sourceRef": "again",
+          "targetRef": "other",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f4",
+          "sourceRef": "other",
+          "targetRef": "notify",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f5",
+          "sourceRef": "notify",
+          "targetRef": "broadcast",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f6",
+          "sourceRef": "failed",
+          "targetRef": "e_failed",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f7",
+          "sourceRef": "escalated",
+          "targetRef": "e_escalated",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f8",
+          "sourceRef": "cancel",
+          "targetRef": "e_cancel",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f9",
+          "sourceRef": "stop",
+          "targetRef": "e_stop",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [
+    {
+      "id": "Signal_shutdown",
+      "name": "shutdown",
+      "unknownAttributes": {}
+    }
+  ],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud"
+  }
+}

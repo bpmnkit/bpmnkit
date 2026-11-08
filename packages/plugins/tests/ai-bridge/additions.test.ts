@@ -19,7 +19,11 @@ function diagram(
 	elements: CompactDiagram["processes"][number]["elements"],
 	flows: CompactDiagram["processes"][number]["flows"] = [],
 ): BpmnDefinitions {
-	return expand({ id: "Definitions_1", processes: [{ id: "Process_1", elements, flows }] })
+	// Highlight fixtures (tasks without job types, loose nodes), not deployable models
+	return expand(
+		{ id: "Definitions_1", processes: [{ id: "Process_1", elements, flows }] },
+		{ validate: false },
+	)
 }
 
 const ORDER_RECEIVED = { id: "start", type: "startEvent", name: "Order Received" } as const

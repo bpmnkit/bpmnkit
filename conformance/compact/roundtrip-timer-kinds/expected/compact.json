@@ -1,0 +1,87 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "elements": [
+        {
+          "eventType": "timer",
+          "id": "every_hour",
+          "timerCycle": "R/PT1H",
+          "type": "startEvent"
+        },
+        {
+          "eventType": "timer",
+          "id": "on_date",
+          "timerDate": "2026-12-01T09:00:00Z",
+          "type": "startEvent"
+        },
+        {
+          "eventType": "timer",
+          "id": "wait",
+          "timerDuration": "PT5M",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "eventType": "timer",
+          "id": "until",
+          "timerDate": "=deadline",
+          "type": "intermediateCatchEvent"
+        },
+        {
+          "id": "work",
+          "jobType": "work",
+          "type": "serviceTask"
+        },
+        {
+          "attachedTo": "work",
+          "eventType": "timer",
+          "id": "remind",
+          "interrupting": false,
+          "timerCycle": "R3/PT10M",
+          "type": "boundaryEvent"
+        },
+        {
+          "id": "remind_end",
+          "type": "endEvent"
+        },
+        {
+          "id": "done",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "from": "every_hour",
+          "id": "f1",
+          "to": "wait"
+        },
+        {
+          "from": "on_date",
+          "id": "f2",
+          "to": "wait"
+        },
+        {
+          "from": "wait",
+          "id": "f3",
+          "to": "until"
+        },
+        {
+          "from": "until",
+          "id": "f4",
+          "to": "work"
+        },
+        {
+          "from": "work",
+          "id": "f5",
+          "to": "done"
+        },
+        {
+          "from": "remind",
+          "id": "f6",
+          "to": "remind_end"
+        }
+      ],
+      "id": "P"
+    }
+  ]
+}

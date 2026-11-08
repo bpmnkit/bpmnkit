@@ -5,22 +5,43 @@
       "id": "Process_1",
       "elements": [
         {
+          "id": "Start_Process_1",
+          "type": "startEvent"
+        },
+        {
           "id": "sub",
           "type": "subProcess",
           "name": "Handle Payment",
           "children": {
             "elements": [
               {
+                "id": "Start_sub",
+                "type": "startEvent"
+              },
+              {
                 "id": "inner",
                 "type": "serviceTask",
-                "name": "Charge Card"
+                "name": "Charge Card",
+                "jobType": "inner"
               }
             ],
-            "flows": []
+            "flows": [
+              {
+                "id": "Flow_Start_sub",
+                "from": "Start_sub",
+                "to": "inner"
+              }
+            ]
           }
         }
       ],
-      "flows": []
+      "flows": [
+        {
+          "id": "Flow_Start_Process_1",
+          "from": "Start_Process_1",
+          "to": "sub"
+        }
+      ]
     }
   ]
 }

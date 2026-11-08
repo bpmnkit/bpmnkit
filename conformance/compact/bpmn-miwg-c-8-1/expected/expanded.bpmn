@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="_d4aecb6e-8641-4d7a-af45-dcfae1d639ea" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:error id="Error_x" name="404" errorCode="404"/>
   <bpmn:process id="VacationRequestProcess" name="Vacation Request" isExecutable="true">
     <bpmn:documentation>Vacation Request - BPMN MIWG demo for 2022</bpmn:documentation>
     <bpmn:startEvent id="_b1625a52-aaf0-4694-86cb-7af891212ac6" name="Vacation Request Received">
@@ -130,7 +131,7 @@
     <bpmn:dataObject id="vacationRefused" name="vacationRefused"/>
     <bpmn:boundaryEvent id="_f8fcb377-3d7d-4138-9a7e-6ab58b97e29d" attachedToRef="_2b960d84-feb1-46a9-a1a1-c300dd996b99" cancelActivity="true">
       <bpmn:outgoing>_f250e125-23eb-45cd-9c61-191d172df093</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="_f8fcb377-3d7d-4138-9a7e-6ab58b97e29d_ErrorEventDefinition"/>
+      <bpmn:errorEventDefinition id="_f8fcb377-3d7d-4138-9a7e-6ab58b97e29d_ErrorEventDefinition" errorRef="Error_x"/>
     </bpmn:boundaryEvent>
     <bpmn:dataObjectReference id="_831726fb-e5ba-40aa-b484-1fc65de4980a" name="Current Vacation Status" dataObjectRef="_775c93ab-82e5-4a62-97f0-d305eda76c92"/>
     <bpmn:sequenceFlow id="_b02b5bfa-5629-4af5-b1bc-ac2a86d88adb" sourceRef="_b1625a52-aaf0-4694-86cb-7af891212ac6" targetRef="_2b960d84-feb1-46a9-a1a1-c300dd996b99"/>

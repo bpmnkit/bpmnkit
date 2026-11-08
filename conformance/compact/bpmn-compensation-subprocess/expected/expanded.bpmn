@@ -6,7 +6,7 @@
     </bpmn:subProcess>
     <bpmn:transaction id="Tx"/>
     <bpmn:adHocSubProcess id="Adhoc"/>
-    <bpmn:subProcess id="Evt"/>
+    <bpmn:subProcess id="Evt" triggeredByEvent="true"/>
     <bpmn:subProcess id="Plain"/>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_Process_1">

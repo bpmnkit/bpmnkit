@@ -5,6 +5,10 @@
       "id": "P",
       "elements": [
         {
+          "id": "Start_P",
+          "type": "startEvent"
+        },
+        {
           "id": "a",
           "type": "serviceTask",
           "jobType": "w",
@@ -26,6 +30,11 @@
         }
       ],
       "flows": [
+        {
+          "id": "Flow_Start_P",
+          "from": "Start_P",
+          "to": "a"
+        },
         {
           "id": "f",
           "from": "a",

@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_0d9c2xk" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:message id="Message_ClaimSubmitted" name="ClaimSubmitted"/>
+  <bpmn:signal id="Signal_FraudAlert" name="FraudAlert"/>
   <bpmn:process id="claim-handling" name="Claim handling" isExecutable="true">
     <bpmn:startEvent id="StartEvent_claim" name="Claim submitted">
       <bpmn:outgoing>Flow_toAssess</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="StartEvent_claim_MessageEventDefinition"/>
+      <bpmn:messageEventDefinition id="StartEvent_claim_MessageEventDefinition" messageRef="Message_ClaimSubmitted"/>
     </bpmn:startEvent>
     <bpmn:userTask id="Task_assess" name="Assess claim">
       <bpmn:incoming>Flow_toAssess</bpmn:incoming>
@@ -39,7 +41,7 @@
     </bpmn:endEvent>
     <bpmn:boundaryEvent id="Signal_fraud" name="Fraud alert" attachedToRef="Task_assess" cancelActivity="true">
       <bpmn:outgoing>Flow_toFraudEnd</bpmn:outgoing>
-      <bpmn:signalEventDefinition id="Signal_fraud_SignalEventDefinition"/>
+      <bpmn:signalEventDefinition id="Signal_fraud_SignalEventDefinition" signalRef="Signal_FraudAlert"/>
     </bpmn:boundaryEvent>
     <bpmn:endEvent id="EndEvent_fraud" name="Claim blocked">
       <bpmn:incoming>Flow_toFraudEnd</bpmn:incoming>

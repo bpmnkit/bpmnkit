@@ -1,30 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="D" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="D" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
   <bpmn:process id="P" isExecutable="true">
     <bpmn:startEvent id="s" name="Größe ✓ &lt;&amp;>">
-      <bpmn:outgoing>f</bpmn:outgoing>
+      <bpmn:outgoing>f0</bpmn:outgoing>
     </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="g" name="Größe &lt; 1?" default="f2">
+      <bpmn:incoming>f0</bpmn:incoming>
+      <bpmn:outgoing>f</bpmn:outgoing>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
     <bpmn:task id="t" name="日本語 &quot;q&quot;">
       <bpmn:incoming>f</bpmn:incoming>
+      <bpmn:outgoing>f3</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="f" sourceRef="s" targetRef="t" name="a &amp; b">
+    <bpmn:endEvent id="e" name="Ende">
+      <bpmn:incoming>f2</bpmn:incoming>
+      <bpmn:incoming>f3</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f0" sourceRef="s" targetRef="g"/>
+    <bpmn:sequenceFlow id="f" sourceRef="g" targetRef="t" name="a &amp; b">
       <bpmn:conditionExpression>= x &lt; 1</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f2" sourceRef="g" targetRef="e" name="sonst"/>
+    <bpmn:sequenceFlow id="f3" sourceRef="t" targetRef="e"/>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_P">
     <bpmndi:BPMNPlane id="BPMNPlane_P" bpmnElement="P">
       <bpmndi:BPMNShape id="s_di" bpmnElement="s">
-        <dc:Bounds x="0" y="22" width="36" height="36"/>
+        <dc:Bounds x="0" y="7" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="-20.5" y="62" width="77" height="14"/>
+          <dc:Bounds x="-20.5" y="47" width="77" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="g_di" bpmnElement="g" isMarkerVisible="true">
+        <dc:Bounds x="96" y="0" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="86" y="-18" width="70" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="t_di" bpmnElement="t">
-        <dc:Bounds x="96" y="0" width="100" height="80"/>
+        <dc:Bounds x="206" y="88" width="100" height="80"/>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="e_di" bpmnElement="e">
+        <dc:Bounds x="366" y="7" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="364" y="-11" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f0_di" bpmnElement="f0">
+        <di:waypoint x="36" y="25"/>
+        <di:waypoint x="96" y="25"/>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f_di" bpmnElement="f">
-        <di:waypoint x="36" y="40"/>
-        <di:waypoint x="96" y="40"/>
+        <di:waypoint x="121" y="50"/>
+        <di:waypoint x="121" y="128"/>
+        <di:waypoint x="206" y="128"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2">
+        <di:waypoint x="146" y="25"/>
+        <di:waypoint x="366" y="25"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3">
+        <di:waypoint x="256" y="88"/>
+        <di:waypoint x="256" y="65.5"/>
+        <di:waypoint x="384" y="65.5"/>
+        <di:waypoint x="384" y="43"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

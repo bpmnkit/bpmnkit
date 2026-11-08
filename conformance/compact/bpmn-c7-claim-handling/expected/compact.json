@@ -6,6 +6,7 @@
         {
           "eventType": "message",
           "id": "StartEvent_claim",
+          "messageName": "ClaimSubmitted",
           "name": "Claim submitted",
           "type": "startEvent"
         },
@@ -69,6 +70,7 @@
           "eventType": "signal",
           "id": "Signal_fraud",
           "name": "Fraud alert",
+          "signalName": "FraudAlert",
           "type": "boundaryEvent"
         },
         {

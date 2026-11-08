@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="D" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="D" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+  <bpmn:message id="Message_payment_received" name="payment-received">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=orderId"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
   <bpmn:process id="P" isExecutable="true">
+    <bpmn:startEvent id="Start_P">
+      <bpmn:outgoing>Flow_Start_P</bpmn:outgoing>
+    </bpmn:startEvent>
     <bpmn:task id="a" name="A">
+      <bpmn:incoming>Flow_Start_P</bpmn:incoming>
       <bpmn:outgoing>f1</bpmn:outgoing>
     </bpmn:task>
     <bpmn:userTask id="b" name="B">
@@ -29,7 +38,7 @@
       <bpmn:incoming>f4</bpmn:incoming>
       <bpmn:outgoing>f5</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:receiveTask id="f">
+    <bpmn:receiveTask id="f" messageRef="Message_payment_received">
       <bpmn:incoming>f5</bpmn:incoming>
       <bpmn:outgoing>f6</bpmn:outgoing>
     </bpmn:receiveTask>
@@ -50,6 +59,7 @@
       </bpmn:extensionElements>
       <bpmn:incoming>f8</bpmn:incoming>
     </bpmn:callActivity>
+    <bpmn:sequenceFlow id="Flow_Start_P" sourceRef="Start_P" targetRef="a"/>
     <bpmn:sequenceFlow id="f1" sourceRef="a" targetRef="b"/>
     <bpmn:sequenceFlow id="f2" sourceRef="b" targetRef="c"/>
     <bpmn:sequenceFlow id="f3" sourceRef="c" targetRef="d"/>
@@ -61,64 +71,71 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_P">
     <bpmndi:BPMNPlane id="BPMNPlane_P" bpmnElement="P">
+      <bpmndi:BPMNShape id="Start_P_di" bpmnElement="Start_P">
+        <dc:Bounds x="0" y="22" width="36" height="36"/>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="a_di" bpmnElement="a">
-        <dc:Bounds x="0" y="0" width="100" height="80"/>
+        <dc:Bounds x="96" y="0" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="b_di" bpmnElement="b">
-        <dc:Bounds x="160" y="0" width="100" height="80"/>
+        <dc:Bounds x="256" y="0" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="c_di" bpmnElement="c">
-        <dc:Bounds x="320" y="0" width="100" height="80"/>
+        <dc:Bounds x="416" y="0" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="d_di" bpmnElement="d">
-        <dc:Bounds x="480" y="0" width="100" height="80"/>
+        <dc:Bounds x="576" y="0" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="e_di" bpmnElement="e">
-        <dc:Bounds x="640" y="0" width="100" height="80"/>
+        <dc:Bounds x="736" y="0" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="f_di" bpmnElement="f">
-        <dc:Bounds x="800" y="0" width="100" height="80"/>
+        <dc:Bounds x="896" y="0" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="g_di" bpmnElement="g">
-        <dc:Bounds x="960" y="0" width="100" height="80"/>
+        <dc:Bounds x="1056" y="0" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="h_di" bpmnElement="h">
-        <dc:Bounds x="1120" y="0" width="100" height="80"/>
+        <dc:Bounds x="1216" y="0" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="i_di" bpmnElement="i">
-        <dc:Bounds x="1280" y="0" width="100" height="80"/>
+        <dc:Bounds x="1376" y="0" width="100" height="80"/>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_Start_P_di" bpmnElement="Flow_Start_P">
+        <di:waypoint x="36" y="40"/>
+        <di:waypoint x="96" y="40"/>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1">
-        <di:waypoint x="100" y="40"/>
-        <di:waypoint x="160" y="40"/>
+        <di:waypoint x="196" y="40"/>
+        <di:waypoint x="256" y="40"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2">
-        <di:waypoint x="260" y="40"/>
-        <di:waypoint x="320" y="40"/>
+        <di:waypoint x="356" y="40"/>
+        <di:waypoint x="416" y="40"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3">
-        <di:waypoint x="420" y="40"/>
-        <di:waypoint x="480" y="40"/>
+        <di:waypoint x="516" y="40"/>
+        <di:waypoint x="576" y="40"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f4_di" bpmnElement="f4">
-        <di:waypoint x="580" y="40"/>
-        <di:waypoint x="640" y="40"/>
+        <di:waypoint x="676" y="40"/>
+        <di:waypoint x="736" y="40"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f5_di" bpmnElement="f5">
-        <di:waypoint x="740" y="40"/>
-        <di:waypoint x="800" y="40"/>
+        <di:waypoint x="836" y="40"/>
+        <di:waypoint x="896" y="40"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f6_di" bpmnElement="f6">
-        <di:waypoint x="900" y="40"/>
-        <di:waypoint x="960" y="40"/>
+        <di:waypoint x="996" y="40"/>
+        <di:waypoint x="1056" y="40"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f7_di" bpmnElement="f7">
-        <di:waypoint x="1060" y="40"/>
-        <di:waypoint x="1120" y="40"/>
+        <di:waypoint x="1156" y="40"/>
+        <di:waypoint x="1216" y="40"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f8_di" bpmnElement="f8">
-        <di:waypoint x="1220" y="40"/>
-        <di:waypoint x="1280" y="40"/>
+        <di:waypoint x="1316" y="40"/>
+        <di:waypoint x="1376" y="40"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

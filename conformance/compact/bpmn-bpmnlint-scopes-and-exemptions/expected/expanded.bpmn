@@ -140,7 +140,7 @@
       </bpmn:task>
       <bpmn:sequenceFlow id="tf1" sourceRef="tx_start" targetRef="tx_task"/>
     </bpmn:transaction>
-    <bpmn:subProcess id="evt_sub" name="On message">
+    <bpmn:subProcess id="evt_sub" name="On message" triggeredByEvent="true">
       <bpmn:startEvent id="evt_start">
         <bpmn:outgoing>ef1</bpmn:outgoing>
         <bpmn:messageEventDefinition id="evt_start_MessageEventDefinition"/>

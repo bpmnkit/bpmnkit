@@ -555,6 +555,7 @@ export type {
 	CompactFlow,
 	CompactNote,
 	CompactProcess,
+	ExpandOptions,
 } from "./bpmn/compact.js"
 export {
 	compilePlan,

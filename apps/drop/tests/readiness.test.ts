@@ -3,7 +3,8 @@ import { Bpmn, expand, parseProcessText } from "@bpmnkit/core"
 import { describe, expect, it } from "vitest"
 import { badgeText, readiness } from "../src/lib/readiness.js"
 
-const draft = (text: string) => expand(parseProcessText(text).diagram)
+// A draft is unfinished by definition: readiness, not expand's gate, judges it
+const draft = (text: string) => expand(parseProcessText(text).diagram, { validate: false })
 
 describe("readiness", () => {
 	it("calls the bake-off model ready, with its platform version", () => {

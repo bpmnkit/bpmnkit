@@ -1,0 +1,4 @@
+s[start:message Order placed | msg=order-placed] > h[call Handle order | called=handle-order] > w[catch Paid | msg=payment-received key=orderId] > r[receive Receipt | msg=receipt key=orderId] > n[throw:message Notify | msg=order-done job=notify] > b[end:signal Broadcast | signal=shutdown]
+failed[boundary:error Failed | on=h error=PAYMENT_FAILED] > f[end:error Give up | error=GIVEN_UP]
+late[boundary:escalation Late | on=h nonint escalation=LATE] > l[throw:escalation Escalate | escalation=ESCALATED] > le[end]
+stop[boundary:signal Stop | on=h signal=shutdown] > se[end]

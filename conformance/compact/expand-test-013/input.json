@@ -32,7 +32,8 @@
                 "id": "Tool_ListUsers",
                 "type": "serviceTask",
                 "name": "List users",
-                "documentation": "Call this to retrieve all users."
+                "documentation": "Call this to retrieve all users.",
+                "jobType": "Tool_ListUsers"
               }
             ],
             "flows": []

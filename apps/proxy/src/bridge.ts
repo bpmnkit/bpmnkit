@@ -146,7 +146,9 @@ function ensureProcess(processId: string): BpmnProcess {
 			id: "__temp__",
 			processes: [{ id: proc.id, elements, flows }],
 		}
-		const tempDefs = expand(miniCompact)
+		// Elements to graft into the open diagram, not a model of its own: the diagram is
+		// checked when it is exported, so the fragment is expanded ungated.
+		const tempDefs = expand(miniCompact, { validate: false })
 		const tempProc = tempDefs.processes[0]
 		if (!tempProc) return "Failed to expand elements."
 

@@ -1,0 +1,7 @@
+{
+  "expand": {
+    "validate": false
+  },
+  "deployable": false,
+  "deployableReason": "Pins how a transaction expands; Camunda 8 does not support transactions; expanded with validate:false."
+}

@@ -5,14 +5,41 @@
       "id": "BPMNDiagram_Process_1",
       "plane": {
         "bpmnElement": "Process_1",
-        "edges": [],
+        "edges": [
+          {
+            "bpmnElement": "Flow_Start_Process_1",
+            "id": "Flow_Start_Process_1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 36,
+                "y": 25
+              },
+              {
+                "x": 96,
+                "y": 25
+              }
+            ]
+          }
+        ],
         "id": "BPMNPlane_Process_1",
         "shapes": [
           {
             "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 0,
+              "y": 7
+            },
+            "bpmnElement": "Start_Process_1",
+            "id": "Start_Process_1_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
               "height": 50,
               "width": 50,
-              "x": 0,
+              "x": 96,
               "y": 0
             },
             "bpmnElement": "gw",
@@ -22,7 +49,7 @@
               "bounds": {
                 "height": 14,
                 "width": 42,
-                "x": 4,
+                "x": 100,
                 "y": 54
               }
             },
@@ -41,6 +68,7 @@
     "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
     "dc": "http://www.omg.org/spec/DD/20100524/DC",
     "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
     "zeebe": "http://camunda.org/schema/zeebe/1.0"
   },
   "processes": [
@@ -49,9 +77,22 @@
       "extensionElements": [],
       "flowElements": [
         {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "Start_Process_1",
+          "incoming": [],
+          "outgoing": [
+            "Flow_Start_Process_1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
           "extensionElements": [],
           "id": "gw",
-          "incoming": [],
+          "incoming": [
+            "Flow_Start_Process_1"
+          ],
           "name": "Valid?",
           "outgoing": [],
           "type": "exclusiveGateway",
@@ -61,12 +102,22 @@
       "groups": [],
       "id": "Process_1",
       "isExecutable": true,
-      "sequenceFlows": [],
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_Start_Process_1",
+          "sourceRef": "Start_Process_1",
+          "targetRef": "gw",
+          "unknownAttributes": {}
+        }
+      ],
       "textAnnotations": [],
       "unknownAttributes": {}
     }
   ],
   "signals": [],
   "targetNamespace": "http://bpmn.io/schema/bpmn",
-  "unknownAttributes": {}
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud"
+  }
 }

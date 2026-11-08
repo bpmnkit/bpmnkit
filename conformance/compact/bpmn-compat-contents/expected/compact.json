@@ -10,6 +10,7 @@
         {
           "eventType": "message",
           "id": "webhookStart",
+          "messageName": "webhook",
           "properties": {
             "consumeUnmatchedEvents": "true",
             "deduplicationModeManualFlag": "true",
@@ -21,6 +22,7 @@
         {
           "eventType": "message",
           "id": "pollingCatch",
+          "messageName": "webhook",
           "properties": {
             "deduplicationModeManualFlag": "true",
             "inbound.type": "io.camunda:http-polling:1"
@@ -74,6 +76,7 @@
         {
           "eventType": "timer",
           "id": "feelTimer",
+          "timerDate": "=last day of month(today())",
           "type": "intermediateCatchEvent"
         },
         {
@@ -133,7 +136,9 @@
           "type": "serviceTask"
         },
         {
+          "correlationKey": "secrets.KEY",
           "id": "secretReceive",
+          "messageName": "secret",
           "type": "receiveTask"
         },
         {

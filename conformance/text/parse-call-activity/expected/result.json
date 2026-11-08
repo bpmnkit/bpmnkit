@@ -11,8 +11,8 @@
             "type": "startEvent"
           },
           {
+            "calledProcess": "child-process",
             "id": "c",
-            "jobType": "child-process",
             "name": "Run child",
             "type": "callActivity"
           },

@@ -3,9 +3,6 @@
     "decide_manually": "StartEvent_DecideManually",
     "decide_on_application": "UserTask_DecideOnApplication",
     "manually_decided": "EndEvent_ManuallyDecided",
-    "sub": "Activity_0uvp3cb",
-    "sub_2": "Activity_1esx1s7",
-    "sub_3": "Activity_02a6b2h",
     "timeout": "ErrorEndEvent_Timeout",
     "timeout_7_days": "TimerEvent_Timeout"
   }

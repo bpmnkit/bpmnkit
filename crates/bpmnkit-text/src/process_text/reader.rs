@@ -22,10 +22,11 @@ use indexmap::{IndexMap, IndexSet};
 use regex::Regex;
 
 use super::tokens::{
-    alias as alias_word, condition_or_label, dangles, duration, edge_label, is_event, is_feel,
-    is_header_segment, item_of, kind as kind_word, match_doc_line, match_note_line, split_feel,
-    split_mappings, strip_dangling, tokenize_path, type_from_id, Edge, EdgeLabel, Mapping,
-    MappingDirection, Node, SplitMappings, ACTIVITIES, EVENTS, GATEWAYS, TIME_WORDS, TRIGGERS,
+    alias as alias_word, condition_or_label, cycle, dangles, duration, edge_label, is_event,
+    is_feel, is_header_segment, item_of, kind as kind_word, match_doc_line, match_note_line,
+    named_trigger, split_feel, split_mappings, strip_dangling, tokenize_path, type_from_id, Edge,
+    EdgeLabel, Mapping, MappingDirection, Node, SplitMappings, ACTIVITIES, EVENTS, GATEWAYS,
+    TIME_WORDS, TRIGGERS,
 };
 use super::{ConnectorRef, ProcessTextProblem};
 use crate::compact::{CompactElement, CompactMultiInstance};
@@ -104,11 +105,26 @@ fn version_parts(s: &str) -> Option<(&str, &str, Option<&str>)> {
     Some((major, minor, patch))
 }
 
-/// The matches of `/\s+((?:on|job|each|after|result)=\S+|nonint)(?=\s|$)/g` as
-/// `(start, end, group start)`.
+/// The matches of
+/// `/\s+((?:on|job|each|after|at|every|result|msg|key|signal|error|escalation|called)=\S+|nonint)(?=\s|$)/g`
+/// as `(start, end, group start)`.
 fn loose_spans(s: &str) -> Vec<(usize, usize, usize)> {
     let alt = |s: &str| -> Option<usize> {
-        for key in ["on=", "job=", "each=", "after=", "result="] {
+        for key in [
+            "on=",
+            "job=",
+            "each=",
+            "after=",
+            "at=",
+            "every=",
+            "result=",
+            "msg=",
+            "key=",
+            "signal=",
+            "error=",
+            "escalation=",
+            "called=",
+        ] {
             if let Some(rest) = s.strip_prefix(key) {
                 let n = rest.find(is_js_space).unwrap_or(rest.len());
                 return (n > 0).then_some(key.len() + n);
@@ -131,6 +147,27 @@ fn loose_spans(s: &str) -> Vec<(usize, usize, usize)> {
         p += c.len_utf8();
     }
     out
+}
+
+/// The trigger the first of `msg=`, `signal=`, `error=`, `escalation=`, `at=` or `every=` in
+/// `attrs` names: `/(?:^|[\s,|])(msg|signal|error|escalation|at|every)=\S/.exec(attrs)`.
+fn named_in(attrs: &str) -> Option<&'static str> {
+    let mut prev: Option<char> = None;
+    for (i, c) in attrs.char_indices() {
+        if prev.is_none_or(|p| is_js_space(p) || p == ',' || p == '|') {
+            for key in ["msg", "signal", "error", "escalation", "at", "every"] {
+                let follows = attrs[i..]
+                    .strip_prefix(key)
+                    .and_then(|rest| rest.strip_prefix('='))
+                    .and_then(|rest| rest.chars().next());
+                if follows.is_some_and(|c| !is_js_space(c)) {
+                    return named_trigger(key);
+                }
+            }
+        }
+        prev = Some(c);
+    }
+    None
 }
 
 /// `label.toLowerCase().split(/\W+/).includes(trigger)`.
@@ -575,6 +612,15 @@ impl Reader {
                 element.event_type = Some(trigger.to_owned());
             }
         }
+        // `paid[catch Paid | msg=payment-received]`: an attribute naming what the event
+        // waits for or throws is its trigger, when the kind word did not say one
+        if is_event(ty) && element.event_type.is_none() {
+            if let Some(trigger) = named_in(&attrs) {
+                if !(trigger == "timer" && is_type(&element, BpmnElementType::EndEvent)) {
+                    element.event_type = Some(trigger.to_owned());
+                }
+            }
+        }
         if let Some(label) = label.as_deref().filter(|l| !l.is_empty()) {
             element.name = Some(label.to_owned());
         }
@@ -669,7 +715,49 @@ impl Reader {
             match (key, value) {
                 ("on", Some(v)) => node.on = Some(host_id(v)),
                 ("inside", Some(v)) => node.inside = Some(host_id(v)),
+                // `c[call Run child | job=child]`: what a call activity runs is a process
+                ("job", Some(v)) if is_type(element, BpmnElementType::CallActivity) => {
+                    element.called_process = Some(v.to_owned());
+                }
                 ("job", Some(v)) => element.job_type = Some(v.to_owned()),
+                ("called", Some(v)) if is_type(element, BpmnElementType::CallActivity) => {
+                    element.called_process = Some(v.to_owned());
+                }
+                ("key", Some(v))
+                    if in_types(element, &EVENTS)
+                        || is_type(element, BpmnElementType::ReceiveTask) =>
+                {
+                    element.correlation_key = Some(with_equals(v));
+                }
+                ("msg", Some(v)) if is_type(element, BpmnElementType::ReceiveTask) => {
+                    element.message_name = Some(v.to_owned());
+                }
+                (key, Some(v)) if named_trigger(key).is_some() && in_types(element, &EVENTS) => {
+                    let trigger = named_trigger(key).unwrap_or_default();
+                    if element.event_type.as_deref() != Some(trigger) {
+                        self.problems.push(ProcessTextProblem {
+                            line: n,
+                            message: format!("{key}= takes a {trigger} event; ignored on \"{id}\""),
+                        });
+                    } else {
+                        match key {
+                            "msg" => element.message_name = Some(v.to_owned()),
+                            "signal" => element.signal_name = Some(v.to_owned()),
+                            "error" => element.error_code = Some(v.to_owned()),
+                            "escalation" => element.escalation_code = Some(v.to_owned()),
+                            "at" => element.timer_date = Some(v.to_owned()),
+                            _ => match cycle(v) {
+                                Some(c) => element.timer_cycle = Some(c),
+                                None => self.problems.push(ProcessTextProblem {
+                                    line: n,
+                                    message: format!(
+                                        "every={v} on \"{id}\" is not a repeating interval (R/PT1H); ignored"
+                                    ),
+                                }),
+                            },
+                        }
+                    }
+                }
                 ("nonint", _) if raw.is_none() => element.interrupting = Some(false),
                 ("form", Some(v))
                     if in_types(

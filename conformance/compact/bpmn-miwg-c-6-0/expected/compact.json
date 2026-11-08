@@ -148,7 +148,7 @@
                 },
                 "id": "_e880bf53-84ca-4776-aa75-d1bf53172240",
                 "name": "Handle Compensation",
-                "type": "subProcess"
+                "type": "eventSubProcess"
               },
               {
                 "id": "_749dd603-40f5-40fb-89b4-0e305b29892c",

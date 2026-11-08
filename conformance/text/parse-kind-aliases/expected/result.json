@@ -28,8 +28,10 @@
             "type": "businessRuleTask"
           },
           {
+            "correlationKey": "=waitId",
             "eventType": "message",
             "id": "d",
+            "messageName": "d",
             "name": "Wait",
             "type": "intermediateCatchEvent"
           },

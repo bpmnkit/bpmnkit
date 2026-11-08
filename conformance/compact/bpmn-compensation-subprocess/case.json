@@ -1,5 +1,8 @@
 {
 	"input": "bpmn/compensation-subprocess/input.bpmn",
 	"deployable": false,
-	"deployableReason": "Source bpmn/compensation-subprocess/input.bpmn is itself rejected by Zeebe (Adhoc: Must have at least one activity.); the case pins how it is round-tripped, not a deployable model."
+	"deployableReason": "Source bpmn/compensation-subprocess/input.bpmn is itself rejected by Zeebe (Adhoc: Must have at least one activity.); the case pins how it is round-tripped, not a deployable model; expanded with validate:false to keep pinning the expansion.",
+	"expand": {
+		"validate": false
+	}
 }

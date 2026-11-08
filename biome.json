@@ -48,6 +48,7 @@
 			"doc/deployability/repro/expected-verdicts.json",
 			"spec/templates/**",
 			"crates/bpmnkit-spec/data/**",
+			"crates/bpmnkit-text/tests/oracle/*.json",
 			"descriptors/**"
 		]
 	}

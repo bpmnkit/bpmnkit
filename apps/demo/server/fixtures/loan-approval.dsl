@@ -6,7 +6,7 @@ service sendRejectionLetter "Send Rejection Letter" job=email-sender h.template=
 end endRejectedAutomatic "Rejected - Credit Score"
 rule riskScoring "Calculate Risk Score" decision=loan-risk-scoring result=riskAssessment
 xgw riskGateway "Risk Tier?"
-script calculateRate "Calculate Interest Rate" result=interestRate
+service calculateRate "Calculate Interest Rate" job=rate-calculator result=interestRate
 service generateOffer "Generate Loan Offer" job=offer-generator result=loanOfferId
 user underwriterReview "Underwriter Review" form=underwriter-review-form
 service sendHighRiskRejection "Send Rejection Letter" job=email-sender h.template=loan-rejected-risk
@@ -27,9 +27,9 @@ calculateRate -> generateOffer
 generateOffer -> notifyApplicant
 riskGateway -> underwriterReview "medium-risk" if="=riskAssessment.tier = \"medium\""
 underwriterReview -> underwriterDecision
-riskGateway -> sendHighRiskRejection "high-risk"
+riskGateway -> sendHighRiskRejection "high-risk" if="=riskAssessment.tier = \"high\""
 sendHighRiskRejection -> endRejectedRisk
 underwriterDecision -> notifyApplicant "uw-approved" if="=underwriterApproved = true"
-underwriterDecision -> sendManualRejection "uw-rejected"
+underwriterDecision -> sendManualRejection "uw-rejected" if="=underwriterApproved = false"
 sendManualRejection -> endRejectedManual
 notifyApplicant -> endApproved

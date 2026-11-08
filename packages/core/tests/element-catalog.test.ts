@@ -185,7 +185,8 @@ describe("the compact path keeps data elements", () => {
 </bpmn:definitions>`
 
 	it("round-trips their types through compactify → expand", () => {
-		const restored = expand(compactify(Bpmn.parse(XML))).processes[0]
+		// A data fixture without a start event: the test is about element types, not deploying.
+		const restored = expand(compactify(Bpmn.parse(XML)), { validate: false }).processes[0]
 		const byId = new Map(restored?.flowElements.map((el) => [el.id, el]) ?? [])
 
 		// Each of these used to come back as "task".
@@ -195,7 +196,8 @@ describe("the compact path keeps data elements", () => {
 	})
 
 	it("round-trips the references they carry", () => {
-		const restored = expand(compactify(Bpmn.parse(XML))).processes[0]
+		// A data fixture without a start event: the test is about element types, not deploying.
+		const restored = expand(compactify(Bpmn.parse(XML)), { validate: false }).processes[0]
 		const dor = restored?.flowElements.find((el) => el.id === "dor")
 		const dsr = restored?.flowElements.find((el) => el.id === "dsr")
 
@@ -217,7 +219,11 @@ describe("the compact path keeps data elements", () => {
 							{ id: "host", type: "task" },
 						]
 					: [{ id: "x", type }]
-			const restored = expand({ id: "d", processes: [{ id: "p", elements, flows: [] }] })
+			// One element alone, which no process can deploy as: types only.
+			const restored = expand(
+				{ id: "d", processes: [{ id: "p", elements, flows: [] }] },
+				{ validate: false },
+			)
 			expect(restored.processes[0]?.flowElements[0]?.type, `${type} expanded wrongly`).toBe(type)
 		}
 	})

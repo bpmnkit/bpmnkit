@@ -1,5 +1,8 @@
 {
 	"input": "bpmn/data-elements/input.bpmn",
 	"deployable": false,
-	"deployableReason": "Source bpmn/data-elements/input.bpmn is itself rejected by Zeebe (Task_post: Must have exactly one 'zeebe:taskDefinition' extension element); the case pins how it is round-tripped, not a deployable model."
+	"deployableReason": "Source bpmn/data-elements/input.bpmn is itself rejected by Zeebe (Task_post: Must have exactly one 'zeebe:taskDefinition' extension element); the case pins how it is round-tripped, not a deployable model; expanded with validate:false to keep pinning the expansion.",
+	"expand": {
+		"validate": false
+	}
 }

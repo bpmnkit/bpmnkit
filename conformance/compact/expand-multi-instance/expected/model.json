@@ -7,16 +7,31 @@
         "bpmnElement": "P",
         "edges": [
           {
+            "bpmnElement": "Flow_Start_P",
+            "id": "Flow_Start_P_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 36,
+                "y": 40
+              },
+              {
+                "x": 96,
+                "y": 40
+              }
+            ]
+          },
+          {
             "bpmnElement": "f",
             "id": "f_di",
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 100,
+                "x": 196,
                 "y": 40
               },
               {
-                "x": 160,
+                "x": 256,
                 "y": 40
               }
             ]
@@ -26,9 +41,20 @@
         "shapes": [
           {
             "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 0,
+              "y": 22
+            },
+            "bpmnElement": "Start_P",
+            "id": "Start_P_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
               "height": 80,
               "width": 100,
-              "x": 0,
+              "x": 96,
               "y": 0
             },
             "bpmnElement": "a",
@@ -39,7 +65,7 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 160,
+              "x": 256,
               "y": 0
             },
             "bpmnElement": "b",
@@ -59,6 +85,7 @@
     "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
     "dc": "http://www.omg.org/spec/DD/20100524/DC",
     "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
     "zeebe": "http://camunda.org/schema/zeebe/1.0"
   },
   "processes": [
@@ -66,6 +93,17 @@
       "associations": [],
       "extensionElements": [],
       "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "Start_P",
+          "incoming": [],
+          "outgoing": [
+            "Flow_Start_P"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
         {
           "extensionElements": [
             {
@@ -77,7 +115,9 @@
             }
           ],
           "id": "a",
-          "incoming": [],
+          "incoming": [
+            "Flow_Start_P"
+          ],
           "loopCharacteristics": {
             "extensionElements": [
               {
@@ -133,6 +173,13 @@
       "sequenceFlows": [
         {
           "extensionElements": [],
+          "id": "Flow_Start_P",
+          "sourceRef": "Start_P",
+          "targetRef": "a",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
           "id": "f",
           "sourceRef": "a",
           "targetRef": "b",
@@ -145,5 +192,7 @@
   ],
   "signals": [],
   "targetNamespace": "http://bpmn.io/schema/bpmn",
-  "unknownAttributes": {}
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud"
+  }
 }

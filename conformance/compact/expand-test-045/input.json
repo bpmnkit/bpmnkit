@@ -5,12 +5,23 @@
       "id": "Process_1",
       "elements": [
         {
+          "id": "Start_Process_1",
+          "type": "startEvent"
+        },
+        {
           "id": "inner",
           "type": "serviceTask",
-          "name": "Charge Card"
+          "name": "Charge Card",
+          "jobType": "inner"
         }
       ],
-      "flows": []
+      "flows": [
+        {
+          "id": "Flow_Start_Process_1",
+          "from": "Start_Process_1",
+          "to": "inner"
+        }
+      ]
     }
   ]
 }

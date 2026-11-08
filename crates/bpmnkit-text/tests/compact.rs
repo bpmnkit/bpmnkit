@@ -7,7 +7,7 @@ use std::path::{Path, PathBuf};
 use bpmnkit_bpmn::ids::reset_id_counter;
 use bpmnkit_bpmn::{parse_bpmn, serialize_bpmn};
 use bpmnkit_text::compact::{
-    compactify, expand, CompactDiagram, CompactStream, CompactStreamOptions,
+    compactify, expand, CompactDiagram, CompactStream, CompactStreamOptions, ExpandOptions,
 };
 use serde_json::Value;
 
@@ -17,6 +17,20 @@ fn corpus() -> PathBuf {
 
 fn read(path: &Path) -> Option<String> {
     fs::read_to_string(path).ok()
+}
+
+/// `case.json` `expand`: the options the case's diagram is expanded with.
+fn case_options(case_dir: &Path) -> ExpandOptions {
+    let spec: Value = fs::read_to_string(case_dir.join("case.json"))
+        .ok()
+        .and_then(|s| serde_json::from_str(&s).ok())
+        .unwrap_or(Value::Null);
+    let options = &spec["expand"];
+    ExpandOptions {
+        validate: options["validate"].as_bool().unwrap_or(true),
+        placeholders: options["placeholders"].as_bool().unwrap_or(false),
+        camunda_version: options["camundaVersion"].as_str().map(str::to_owned),
+    }
 }
 
 /// Numbers as f64 so `18` and `18.0` agree; keys are sorted by `Value` already.
@@ -59,7 +73,7 @@ fn check_expand(
 ) {
     let expected = dir.join("expected");
     reset_id_counter();
-    match expand(diagram) {
+    match expand(diagram, &case_options(dir)) {
         Ok(defs) => {
             if let Some(err) = read(&expected.join(err_file)) {
                 failures.push(format!("{name}: expected error {err:?}, got a model"));
@@ -183,7 +197,12 @@ fn compact_corpus() {
 
 fn expand_json_str(json: &str) -> bpmnkit_bpmn::BpmnDefinitions {
     reset_id_counter();
-    expand(&serde_json::from_str::<CompactDiagram>(json).unwrap()).unwrap()
+    // Fragments: the tests below are about single fields, not deploying.
+    expand(
+        &serde_json::from_str::<CompactDiagram>(json).unwrap(),
+        &ExpandOptions::ungated(),
+    )
+    .unwrap()
 }
 
 #[test]

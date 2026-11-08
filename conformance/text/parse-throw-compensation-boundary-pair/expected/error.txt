@@ -1,0 +1,2 @@
+Not deployable on Camunda 8.10: 1 error(s)
+- b: Compensation boundary events must have a compensation association and no outgoing sequence flows (zeebe/compensation-boundary-shape)

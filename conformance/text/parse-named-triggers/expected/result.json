@@ -1,0 +1,60 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "s",
+            "name": "Go",
+            "type": "startEvent"
+          },
+          {
+            "correlationKey": "=orderId",
+            "eventType": "message",
+            "id": "w",
+            "messageName": "paid",
+            "name": "Payment",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "eventType": "timer",
+            "id": "d",
+            "name": "Deadline",
+            "timerDate": "2026-12-01T09:00:00Z",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "errorCode": "FAILED",
+            "eventType": "error",
+            "id": "x",
+            "name": "Failed",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "w"
+          },
+          {
+            "from": "w",
+            "id": "Flow_2",
+            "to": "d"
+          },
+          {
+            "from": "d",
+            "id": "Flow_3",
+            "to": "x"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [],
+  "questions": []
+}

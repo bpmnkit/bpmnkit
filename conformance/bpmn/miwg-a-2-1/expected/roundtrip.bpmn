@@ -11,6 +11,10 @@
         </w4graph:root>
       </w4graph:graphStyle>
     </model:extensionElements>
+    <model:ioSpecification id="_cVGqYDOCEeSknpIVFCxNIQ">
+      <model:inputSet id="_cVHRcDOCEeSknpIVFCxNIQ"/>
+      <model:outputSet id="_cVH4gDOCEeSknpIVFCxNIQ"/>
+    </model:ioSpecification>
     <model:startEvent id="_To9ZojOCEeSknpIVFCxNIQ" isInterrupting="true" name="Start Event">
       <model:extensionElements>
         <w4graph:graphStyle>
@@ -182,10 +186,6 @@
         </w4graph:graphStyle>
       </model:extensionElements>
     </model:sequenceFlow>
-    <model:ioSpecification id="_cVGqYDOCEeSknpIVFCxNIQ">
-      <model:inputSet id="_cVHRcDOCEeSknpIVFCxNIQ"/>
-      <model:outputSet id="_cVH4gDOCEeSknpIVFCxNIQ"/>
-    </model:ioSpecification>
   </model:process>
   <di:BPMNDiagram id="Bpmndi_BPMNDiagram_--TXwH2BEeWQ6qGdY3x14w" name="A.2.1">
     <di:BPMNPlane id="plane__To9ZoDOCEeSknpIVFCxNIQ" bpmnElement="_To9ZoTOCEeSknpIVFCxNIQ">

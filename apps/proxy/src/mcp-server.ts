@@ -715,16 +715,21 @@ async function callToolAsync(name: string, args: Record<string, unknown>): Promi
 		const proc = ensureProcess(args.processId as string)
 		const id = args.id as string
 		if (!proc.flowElements.some((e) => e.id === id)) {
-			const temp = expand({
-				id: "__temp__",
-				processes: [
-					{
-						id: proc.id,
-						elements: [{ id, type: "task", name: (args.name as string) ?? id }],
-						flows: [],
-					},
-				],
-			})
+			// One element to graft into the open diagram, not a model of its own: the diagram
+			// is checked when it is exported, so the fragment is expanded ungated.
+			const temp = expand(
+				{
+					id: "__temp__",
+					processes: [
+						{
+							id: proc.id,
+							elements: [{ id, type: "task", name: (args.name as string) ?? id }],
+							flows: [],
+						},
+					],
+				},
+				{ validate: false },
+			)
 			const el = temp.processes[0]?.flowElements.find((e) => e.id === id)
 			if (el) proc.flowElements.push({ ...el, incoming: [], outgoing: [] })
 		}
@@ -760,7 +765,9 @@ function callTool(name: string, args: Record<string, unknown>): string {
 				id: "__temp__",
 				processes: [{ id: proc.id, elements, flows }],
 			}
-			const tempDefs = expand(miniCompact)
+			// Elements to graft into the open diagram, not a model of its own: the diagram is
+			// checked when it is exported, so the fragment is expanded ungated.
+			const tempDefs = expand(miniCompact, { validate: false })
 			const tempProc = tempDefs.processes[0]
 			if (!tempProc) return "Failed to expand elements."
 

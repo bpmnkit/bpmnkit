@@ -403,7 +403,7 @@ class Filler {
 						if (ref !== undefined && this.defs.signals.some((s) => s.id === localRef(ref))) continue
 						const sid = placeholder(node.id)
 						if (!this.defs.signals.some((s) => s.id === sid)) {
-							this.defs.signals.push({ id: sid, name: sid })
+							this.defs.signals.push({ id: sid, name: sid, unknownAttributes: {} })
 							this.record(node.id, "signalName", sid)
 						}
 						def.signalRef = sid
@@ -428,7 +428,12 @@ class Filler {
 						const code = placeholder(node.id)
 						if (error === undefined) {
 							if (!this.defs.errors.some((e) => e.id === code)) {
-								this.defs.errors.push({ id: code, name: code, errorCode: code })
+								this.defs.errors.push({
+									id: code,
+									name: code,
+									errorCode: code,
+									unknownAttributes: {},
+								})
 								this.record(node.id, "errorCode", code)
 							}
 							def.errorRef = code
@@ -447,7 +452,12 @@ class Filler {
 							continue
 						const code = placeholder(node.id)
 						if (!this.defs.escalations.some((e) => e.id === code)) {
-							this.defs.escalations.push({ id: code, name: code, escalationCode: code })
+							this.defs.escalations.push({
+								id: code,
+								name: code,
+								escalationCode: code,
+								unknownAttributes: {},
+							})
 							this.record(node.id, "escalationCode", code)
 						}
 						def.escalationRef = code

@@ -1,0 +1,25 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "t",
+          "type": "task"
+        },
+        {
+          "id": "e",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f1",
+          "from": "t",
+          "to": "e"
+        }
+      ]
+    }
+  ]
+}

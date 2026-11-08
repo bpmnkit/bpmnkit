@@ -161,6 +161,172 @@
       <i18n:translation xml:lang="es">Solicitud de vacaciones - (i18n)</i18n:translation>
       <i18n:translation xml:lang="fr">Demande de vacances - (i18n)</i18n:translation>
     </semantic:extensionElements>
+    <semantic:ioSpecification>
+      <semantic:dataInput name="Employee Badge Number" triso:readOnly="false" id="dataInputdataInput_8b9aa28f-5974-4087-9895-0467c25635dc">
+        <semantic:extensionElements>
+          <adonis:instance>
+            <adonis:attribute lang-independent="v0" name="IDENTIFICATION_OF_CHANGES" notebook="1" novalue="0" sourcelang="en" type="ENUM">
+              <adonis:value>No change</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:attribute name="MONITORING" notebook="1" novalue="0" sourcelang="en" type="BOOL">
+              <adonis:value>false</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:attribute name="A_NEED_FOR_ACTION_CS" notebook="1" novalue="0" sourcelang="en" type="BOOL">
+              <adonis:value>false</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:attribute name="CAPACITY" notebook="1" novalue="0" sourcelang="en" type="INTEGER">
+              <adonis:value>0</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:attribute name="AUDITING" notebook="1" novalue="0" sourcelang="en" type="BOOL">
+              <adonis:value>false</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:record name="A_ATTACHMENT_LIST_CS"/>
+            <adonis:record name="OPEN_QUESTIONS"/>
+          </adonis:instance>
+          <i18n:translation xml:lang="de">Ausweisnummer des Mitarbeiters</i18n:translation>
+          <i18n:translation xml:lang="es">Número de credencial de empleado</i18n:translation>
+          <i18n:translation xml:lang="fr">Numéro de badge de l'employé</i18n:translation>
+        </semantic:extensionElements>
+      </semantic:dataInput>
+      <semantic:dataInput name="From" triso:readOnly="false" id="dataInputdataInput_2bed4da9-f468-4fe0-a37c-ae5d4c17e323">
+        <semantic:extensionElements>
+          <adonis:instance>
+            <adonis:attribute lang-independent="v0" name="IDENTIFICATION_OF_CHANGES" notebook="1" novalue="0" sourcelang="en" type="ENUM">
+              <adonis:value>No change</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:attribute name="MONITORING" notebook="1" novalue="0" sourcelang="en" type="BOOL">
+              <adonis:value>false</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:attribute name="A_NEED_FOR_ACTION_CS" notebook="1" novalue="0" sourcelang="en" type="BOOL">
+              <adonis:value>false</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:attribute name="CAPACITY" notebook="1" novalue="0" sourcelang="en" type="INTEGER">
+              <adonis:value>0</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:attribute name="AUDITING" notebook="1" novalue="0" sourcelang="en" type="BOOL">
+              <adonis:value>false</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:record name="A_ATTACHMENT_LIST_CS"/>
+            <adonis:record name="OPEN_QUESTIONS"/>
+          </adonis:instance>
+          <i18n:translation xml:lang="de">Von</i18n:translation>
+          <i18n:translation xml:lang="es">Desde</i18n:translation>
+          <i18n:translation xml:lang="fr">À partir de</i18n:translation>
+        </semantic:extensionElements>
+      </semantic:dataInput>
+      <semantic:dataInput name="To" triso:readOnly="false" id="dataInputdataInput_103fd816-b422-420d-aec9-c28b54f620db">
+        <semantic:extensionElements>
+          <adonis:instance>
+            <adonis:attribute lang-independent="v0" name="IDENTIFICATION_OF_CHANGES" notebook="1" novalue="0" sourcelang="en" type="ENUM">
+              <adonis:value>No change</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:attribute name="MONITORING" notebook="1" novalue="0" sourcelang="en" type="BOOL">
+              <adonis:value>false</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:attribute name="A_NEED_FOR_ACTION_CS" notebook="1" novalue="0" sourcelang="en" type="BOOL">
+              <adonis:value>false</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:attribute name="CAPACITY" notebook="1" novalue="0" sourcelang="en" type="INTEGER">
+              <adonis:value>0</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:attribute name="AUDITING" notebook="1" novalue="0" sourcelang="en" type="BOOL">
+              <adonis:value>false</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:record name="A_ATTACHMENT_LIST_CS"/>
+            <adonis:record name="OPEN_QUESTIONS"/>
+          </adonis:instance>
+          <i18n:translation xml:lang="de">Zu</i18n:translation>
+          <i18n:translation xml:lang="es">Para</i18n:translation>
+          <i18n:translation xml:lang="fr">Pour</i18n:translation>
+        </semantic:extensionElements>
+      </semantic:dataInput>
+      <semantic:dataOutput name="Reason" triso:readOnly="false" id="dataOutputdataOutput_dac8ee76-f637-4fd9-8357-6a87fd11ef41">
+        <semantic:extensionElements>
+          <adonis:instance>
+            <adonis:attribute lang-independent="v0" name="IDENTIFICATION_OF_CHANGES" notebook="1" novalue="0" sourcelang="en" type="ENUM">
+              <adonis:value>No change</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:attribute name="MONITORING" notebook="1" novalue="0" sourcelang="en" type="BOOL">
+              <adonis:value>false</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:attribute name="A_NEED_FOR_ACTION_CS" notebook="1" novalue="0" sourcelang="en" type="BOOL">
+              <adonis:value>false</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:attribute name="CAPACITY" notebook="1" novalue="0" sourcelang="en" type="INTEGER">
+              <adonis:value>0</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:attribute name="AUDITING" notebook="1" novalue="0" sourcelang="en" type="BOOL">
+              <adonis:value>false</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:record name="A_ATTACHMENT_LIST_CS"/>
+            <adonis:record name="OPEN_QUESTIONS"/>
+          </adonis:instance>
+          <i18n:translation xml:lang="de">Grund</i18n:translation>
+          <i18n:translation xml:lang="es">Razón</i18n:translation>
+          <i18n:translation xml:lang="fr">Raison</i18n:translation>
+        </semantic:extensionElements>
+      </semantic:dataOutput>
+      <semantic:dataOutput name="Vacation Approval" triso:readOnly="false" id="dataOutputdataOutput_c2d108b2-e6c0-47e6-a3cb-aa5321bcaeaf">
+        <semantic:extensionElements>
+          <adonis:instance>
+            <adonis:attribute lang-independent="v0" name="IDENTIFICATION_OF_CHANGES" notebook="1" novalue="0" sourcelang="en" type="ENUM">
+              <adonis:value>No change</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:attribute name="MONITORING" notebook="1" novalue="0" sourcelang="en" type="BOOL">
+              <adonis:value>false</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:attribute name="A_NEED_FOR_ACTION_CS" notebook="1" novalue="0" sourcelang="en" type="BOOL">
+              <adonis:value>false</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:attribute name="CAPACITY" notebook="1" novalue="0" sourcelang="en" type="INTEGER">
+              <adonis:value>0</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:attribute name="AUDITING" notebook="1" novalue="0" sourcelang="en" type="BOOL">
+              <adonis:value>false</adonis:value>
+              <adonis:metavalue/>
+            </adonis:attribute>
+            <adonis:record name="A_ATTACHMENT_LIST_CS"/>
+            <adonis:record name="OPEN_QUESTIONS"/>
+          </adonis:instance>
+          <i18n:translation xml:lang="de">Urlaubsgenehmigung</i18n:translation>
+          <i18n:translation xml:lang="es">Aprobación de vacaciones</i18n:translation>
+          <i18n:translation xml:lang="fr">Approbation de vacances</i18n:translation>
+        </semantic:extensionElements>
+      </semantic:dataOutput>
+      <semantic:inputSet id="_4d1f4479-b14c-4dd0-9675-607384e9dd81">
+        <semantic:dataInputRefs>dataInputdataInput_8b9aa28f-5974-4087-9895-0467c25635dc</semantic:dataInputRefs>
+        <semantic:dataInputRefs>dataInputdataInput_2bed4da9-f468-4fe0-a37c-ae5d4c17e323</semantic:dataInputRefs>
+        <semantic:dataInputRefs>dataInputdataInput_103fd816-b422-420d-aec9-c28b54f620db</semantic:dataInputRefs>
+      </semantic:inputSet>
+      <semantic:outputSet id="_10b372b4-3cdd-4ddd-aa58-129b5df7b2f8">
+        <semantic:dataOutputRefs>dataOutputdataOutput_dac8ee76-f637-4fd9-8357-6a87fd11ef41</semantic:dataOutputRefs>
+        <semantic:dataOutputRefs>dataOutputdataOutput_c2d108b2-e6c0-47e6-a3cb-aa5321bcaeaf</semantic:dataOutputRefs>
+      </semantic:outputSet>
+    </semantic:ioSpecification>
     <semantic:dataObject id="_775c93ab-82e5-4a62-97f0-d305eda76c92" triso:readOnly="false" name="Current Vacation Status">
       <semantic:extensionElements>
         <i18n:translation xml:lang="de">Aktueller Urlaubsstatus</i18n:translation>
@@ -1215,6 +1381,20 @@ Your BOC Adonis Process Automation</adonis:MailBody>
       </semantic:extensionElements>
       <semantic:incoming>_d79c991e-446c-47d1-ac9d-9d0113e35b93</semantic:incoming>
       <semantic:outgoing>_ac1d82df-9bf6-404b-be70-b052e311f8b7</semantic:outgoing>
+      <semantic:ioSpecification>
+        <semantic:dataInput triso:readOnly="false" id="DataInput__1a818a94-ba6f-413b-a7e8-6f8fd2a11e32_1"/>
+        <semantic:dataInput triso:readOnly="false" id="DataInput__1a818a94-ba6f-413b-a7e8-6f8fd2a11e32"/>
+        <semantic:dataOutput triso:readOnly="false" triso:hidden="false" id="DataOutput__1a818a94-ba6f-413b-a7e8-6f8fd2a11e32_1"/>
+        <semantic:dataOutput triso:readOnly="false" triso:hidden="false" id="DataOutput__1a818a94-ba6f-413b-a7e8-6f8fd2a11e32"/>
+        <semantic:inputSet id="_7522b1b6-fa6b-4e86-8bd7-d77f8d0db55a">
+          <semantic:dataInputRefs>DataInput__1a818a94-ba6f-413b-a7e8-6f8fd2a11e32_1</semantic:dataInputRefs>
+          <semantic:dataInputRefs>DataInput__1a818a94-ba6f-413b-a7e8-6f8fd2a11e32</semantic:dataInputRefs>
+        </semantic:inputSet>
+        <semantic:outputSet id="_7821d757-2e54-4340-8286-6b138f27ca51">
+          <semantic:dataOutputRefs>DataOutput__1a818a94-ba6f-413b-a7e8-6f8fd2a11e32_1</semantic:dataOutputRefs>
+          <semantic:dataOutputRefs>DataOutput__1a818a94-ba6f-413b-a7e8-6f8fd2a11e32</semantic:dataOutputRefs>
+        </semantic:outputSet>
+      </semantic:ioSpecification>
       <semantic:dataInputAssociation id="_d7aa7a34-bb93-49ae-87d7-f3ccd25add3f">
         <semantic:extensionElements>
           <adonis:connector>
@@ -1319,20 +1499,6 @@ Your BOC Adonis Process Automation</adonis:MailBody>
         <semantic:sourceRef>DataOutput__1a818a94-ba6f-413b-a7e8-6f8fd2a11e32</semantic:sourceRef>
         <semantic:targetRef>dataOutputdataOutput_dac8ee76-f637-4fd9-8357-6a87fd11ef41</semantic:targetRef>
       </semantic:dataOutputAssociation>
-      <semantic:ioSpecification>
-        <semantic:dataInput triso:readOnly="false" id="DataInput__1a818a94-ba6f-413b-a7e8-6f8fd2a11e32_1"/>
-        <semantic:dataInput triso:readOnly="false" id="DataInput__1a818a94-ba6f-413b-a7e8-6f8fd2a11e32"/>
-        <semantic:dataOutput triso:readOnly="false" triso:hidden="false" id="DataOutput__1a818a94-ba6f-413b-a7e8-6f8fd2a11e32_1"/>
-        <semantic:dataOutput triso:readOnly="false" triso:hidden="false" id="DataOutput__1a818a94-ba6f-413b-a7e8-6f8fd2a11e32"/>
-        <semantic:inputSet id="_7522b1b6-fa6b-4e86-8bd7-d77f8d0db55a">
-          <semantic:dataInputRefs>DataInput__1a818a94-ba6f-413b-a7e8-6f8fd2a11e32_1</semantic:dataInputRefs>
-          <semantic:dataInputRefs>DataInput__1a818a94-ba6f-413b-a7e8-6f8fd2a11e32</semantic:dataInputRefs>
-        </semantic:inputSet>
-        <semantic:outputSet id="_7821d757-2e54-4340-8286-6b138f27ca51">
-          <semantic:dataOutputRefs>DataOutput__1a818a94-ba6f-413b-a7e8-6f8fd2a11e32_1</semantic:dataOutputRefs>
-          <semantic:dataOutputRefs>DataOutput__1a818a94-ba6f-413b-a7e8-6f8fd2a11e32</semantic:dataOutputRefs>
-        </semantic:outputSet>
-      </semantic:ioSpecification>
     </semantic:businessRuleTask>
     <semantic:startEvent id="_b1625a52-aaf0-4694-86cb-7af891212ac6" triso:readOnly="false" kp:formKey="VacationRequest" kp:initiator="initiator" name="Vacation Request Received">
       <semantic:extensionElements>
@@ -1731,6 +1897,16 @@ Your BOC Adonis Process Automation</adonis:MailBody>
       </semantic:extensionElements>
       <semantic:incoming>_b02b5bfa-5629-4af5-b1bc-ac2a86d88adb</semantic:incoming>
       <semantic:outgoing>_d79c991e-446c-47d1-ac9d-9d0113e35b93</semantic:outgoing>
+      <semantic:ioSpecification>
+        <semantic:dataInput triso:readOnly="false" id="DataInput__2b960d84-feb1-46a9-a1a1-c300dd996b99"/>
+        <semantic:dataOutput triso:readOnly="false" triso:hidden="false" id="DataOutput__2b960d84-feb1-46a9-a1a1-c300dd996b99"/>
+        <semantic:inputSet id="_74206bda-6edc-4a98-a433-af5446be8809">
+          <semantic:dataInputRefs>DataInput__2b960d84-feb1-46a9-a1a1-c300dd996b99</semantic:dataInputRefs>
+        </semantic:inputSet>
+        <semantic:outputSet id="_cd959c80-ff41-401a-9282-b76dcf95aaf2">
+          <semantic:dataOutputRefs>DataOutput__2b960d84-feb1-46a9-a1a1-c300dd996b99</semantic:dataOutputRefs>
+        </semantic:outputSet>
+      </semantic:ioSpecification>
       <semantic:dataInputAssociation id="_f4f41761-cdd8-4b90-a956-9182345df488">
         <semantic:extensionElements>
           <adonis:connector>
@@ -1783,16 +1959,6 @@ Your BOC Adonis Process Automation</adonis:MailBody>
         <semantic:sourceRef>DataOutput__2b960d84-feb1-46a9-a1a1-c300dd996b99</semantic:sourceRef>
         <semantic:targetRef>Reference__775c93ab-82e5-4a62-97f0-d305eda76c92</semantic:targetRef>
       </semantic:dataOutputAssociation>
-      <semantic:ioSpecification>
-        <semantic:dataInput triso:readOnly="false" id="DataInput__2b960d84-feb1-46a9-a1a1-c300dd996b99"/>
-        <semantic:dataOutput triso:readOnly="false" triso:hidden="false" id="DataOutput__2b960d84-feb1-46a9-a1a1-c300dd996b99"/>
-        <semantic:inputSet id="_74206bda-6edc-4a98-a433-af5446be8809">
-          <semantic:dataInputRefs>DataInput__2b960d84-feb1-46a9-a1a1-c300dd996b99</semantic:dataInputRefs>
-        </semantic:inputSet>
-        <semantic:outputSet id="_cd959c80-ff41-401a-9282-b76dcf95aaf2">
-          <semantic:dataOutputRefs>DataOutput__2b960d84-feb1-46a9-a1a1-c300dd996b99</semantic:dataOutputRefs>
-        </semantic:outputSet>
-      </semantic:ioSpecification>
     </semantic:serviceTask>
     <semantic:endEvent id="_b4d636eb-b501-4462-93c8-04652db10307" triso:readOnly="false" name="Employee not found">
       <semantic:extensionElements>
@@ -2880,172 +3046,6 @@ Your BOC Adonis Process Automation</adonis:MailBody>
         </adonis:connector>
       </semantic:extensionElements>
     </semantic:sequenceFlow>
-    <semantic:ioSpecification>
-      <semantic:dataInput name="Employee Badge Number" triso:readOnly="false" id="dataInputdataInput_8b9aa28f-5974-4087-9895-0467c25635dc">
-        <semantic:extensionElements>
-          <adonis:instance>
-            <adonis:attribute lang-independent="v0" name="IDENTIFICATION_OF_CHANGES" notebook="1" novalue="0" sourcelang="en" type="ENUM">
-              <adonis:value>No change</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:attribute name="MONITORING" notebook="1" novalue="0" sourcelang="en" type="BOOL">
-              <adonis:value>false</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:attribute name="A_NEED_FOR_ACTION_CS" notebook="1" novalue="0" sourcelang="en" type="BOOL">
-              <adonis:value>false</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:attribute name="CAPACITY" notebook="1" novalue="0" sourcelang="en" type="INTEGER">
-              <adonis:value>0</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:attribute name="AUDITING" notebook="1" novalue="0" sourcelang="en" type="BOOL">
-              <adonis:value>false</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:record name="A_ATTACHMENT_LIST_CS"/>
-            <adonis:record name="OPEN_QUESTIONS"/>
-          </adonis:instance>
-          <i18n:translation xml:lang="de">Ausweisnummer des Mitarbeiters</i18n:translation>
-          <i18n:translation xml:lang="es">Número de credencial de empleado</i18n:translation>
-          <i18n:translation xml:lang="fr">Numéro de badge de l'employé</i18n:translation>
-        </semantic:extensionElements>
-      </semantic:dataInput>
-      <semantic:dataInput name="From" triso:readOnly="false" id="dataInputdataInput_2bed4da9-f468-4fe0-a37c-ae5d4c17e323">
-        <semantic:extensionElements>
-          <adonis:instance>
-            <adonis:attribute lang-independent="v0" name="IDENTIFICATION_OF_CHANGES" notebook="1" novalue="0" sourcelang="en" type="ENUM">
-              <adonis:value>No change</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:attribute name="MONITORING" notebook="1" novalue="0" sourcelang="en" type="BOOL">
-              <adonis:value>false</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:attribute name="A_NEED_FOR_ACTION_CS" notebook="1" novalue="0" sourcelang="en" type="BOOL">
-              <adonis:value>false</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:attribute name="CAPACITY" notebook="1" novalue="0" sourcelang="en" type="INTEGER">
-              <adonis:value>0</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:attribute name="AUDITING" notebook="1" novalue="0" sourcelang="en" type="BOOL">
-              <adonis:value>false</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:record name="A_ATTACHMENT_LIST_CS"/>
-            <adonis:record name="OPEN_QUESTIONS"/>
-          </adonis:instance>
-          <i18n:translation xml:lang="de">Von</i18n:translation>
-          <i18n:translation xml:lang="es">Desde</i18n:translation>
-          <i18n:translation xml:lang="fr">À partir de</i18n:translation>
-        </semantic:extensionElements>
-      </semantic:dataInput>
-      <semantic:dataInput name="To" triso:readOnly="false" id="dataInputdataInput_103fd816-b422-420d-aec9-c28b54f620db">
-        <semantic:extensionElements>
-          <adonis:instance>
-            <adonis:attribute lang-independent="v0" name="IDENTIFICATION_OF_CHANGES" notebook="1" novalue="0" sourcelang="en" type="ENUM">
-              <adonis:value>No change</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:attribute name="MONITORING" notebook="1" novalue="0" sourcelang="en" type="BOOL">
-              <adonis:value>false</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:attribute name="A_NEED_FOR_ACTION_CS" notebook="1" novalue="0" sourcelang="en" type="BOOL">
-              <adonis:value>false</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:attribute name="CAPACITY" notebook="1" novalue="0" sourcelang="en" type="INTEGER">
-              <adonis:value>0</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:attribute name="AUDITING" notebook="1" novalue="0" sourcelang="en" type="BOOL">
-              <adonis:value>false</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:record name="A_ATTACHMENT_LIST_CS"/>
-            <adonis:record name="OPEN_QUESTIONS"/>
-          </adonis:instance>
-          <i18n:translation xml:lang="de">Zu</i18n:translation>
-          <i18n:translation xml:lang="es">Para</i18n:translation>
-          <i18n:translation xml:lang="fr">Pour</i18n:translation>
-        </semantic:extensionElements>
-      </semantic:dataInput>
-      <semantic:dataOutput name="Reason" triso:readOnly="false" id="dataOutputdataOutput_dac8ee76-f637-4fd9-8357-6a87fd11ef41">
-        <semantic:extensionElements>
-          <adonis:instance>
-            <adonis:attribute lang-independent="v0" name="IDENTIFICATION_OF_CHANGES" notebook="1" novalue="0" sourcelang="en" type="ENUM">
-              <adonis:value>No change</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:attribute name="MONITORING" notebook="1" novalue="0" sourcelang="en" type="BOOL">
-              <adonis:value>false</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:attribute name="A_NEED_FOR_ACTION_CS" notebook="1" novalue="0" sourcelang="en" type="BOOL">
-              <adonis:value>false</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:attribute name="CAPACITY" notebook="1" novalue="0" sourcelang="en" type="INTEGER">
-              <adonis:value>0</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:attribute name="AUDITING" notebook="1" novalue="0" sourcelang="en" type="BOOL">
-              <adonis:value>false</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:record name="A_ATTACHMENT_LIST_CS"/>
-            <adonis:record name="OPEN_QUESTIONS"/>
-          </adonis:instance>
-          <i18n:translation xml:lang="de">Grund</i18n:translation>
-          <i18n:translation xml:lang="es">Razón</i18n:translation>
-          <i18n:translation xml:lang="fr">Raison</i18n:translation>
-        </semantic:extensionElements>
-      </semantic:dataOutput>
-      <semantic:dataOutput name="Vacation Approval" triso:readOnly="false" id="dataOutputdataOutput_c2d108b2-e6c0-47e6-a3cb-aa5321bcaeaf">
-        <semantic:extensionElements>
-          <adonis:instance>
-            <adonis:attribute lang-independent="v0" name="IDENTIFICATION_OF_CHANGES" notebook="1" novalue="0" sourcelang="en" type="ENUM">
-              <adonis:value>No change</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:attribute name="MONITORING" notebook="1" novalue="0" sourcelang="en" type="BOOL">
-              <adonis:value>false</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:attribute name="A_NEED_FOR_ACTION_CS" notebook="1" novalue="0" sourcelang="en" type="BOOL">
-              <adonis:value>false</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:attribute name="CAPACITY" notebook="1" novalue="0" sourcelang="en" type="INTEGER">
-              <adonis:value>0</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:attribute name="AUDITING" notebook="1" novalue="0" sourcelang="en" type="BOOL">
-              <adonis:value>false</adonis:value>
-              <adonis:metavalue/>
-            </adonis:attribute>
-            <adonis:record name="A_ATTACHMENT_LIST_CS"/>
-            <adonis:record name="OPEN_QUESTIONS"/>
-          </adonis:instance>
-          <i18n:translation xml:lang="de">Urlaubsgenehmigung</i18n:translation>
-          <i18n:translation xml:lang="es">Aprobación de vacaciones</i18n:translation>
-          <i18n:translation xml:lang="fr">Approbation de vacances</i18n:translation>
-        </semantic:extensionElements>
-      </semantic:dataOutput>
-      <semantic:inputSet id="_4d1f4479-b14c-4dd0-9675-607384e9dd81">
-        <semantic:dataInputRefs>dataInputdataInput_8b9aa28f-5974-4087-9895-0467c25635dc</semantic:dataInputRefs>
-        <semantic:dataInputRefs>dataInputdataInput_2bed4da9-f468-4fe0-a37c-ae5d4c17e323</semantic:dataInputRefs>
-        <semantic:dataInputRefs>dataInputdataInput_103fd816-b422-420d-aec9-c28b54f620db</semantic:dataInputRefs>
-      </semantic:inputSet>
-      <semantic:outputSet id="_10b372b4-3cdd-4ddd-aa58-129b5df7b2f8">
-        <semantic:dataOutputRefs>dataOutputdataOutput_dac8ee76-f637-4fd9-8357-6a87fd11ef41</semantic:dataOutputRefs>
-        <semantic:dataOutputRefs>dataOutputdataOutput_c2d108b2-e6c0-47e6-a3cb-aa5321bcaeaf</semantic:dataOutputRefs>
-      </semantic:outputSet>
-    </semantic:ioSpecification>
   </semantic:process>
   <bpmndi:BPMNDiagram id="_a9e3a63e-db87-4fa1-9091-328acae4f490" name="Vacation Request - (i18n)" documentation="Vacation Request - BPMN MIWG demo for 2022">
     <bpmndi:BPMNPlane id="Plane__a9e3a63e-db87-4fa1-9091-328acae4f490" bpmnElement="VacationRequestProcess" trisobpmn:diagramWidth="2276" trisobpmn:diagramHeight="1050">

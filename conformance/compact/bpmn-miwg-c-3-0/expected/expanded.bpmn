@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="_5033f8b0-0396-494b-a52c-787034420443" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:message id="Message_Service_Level" name="Service Level"/>
   <bpmn:process id="_8170787a-3207-434d-9bea-4787059f444f" name="Fridge Repair Process" isExecutable="true">
     <bpmn:startEvent id="_cc9778bd-edd8-4df2-ba15-56c310f90e62" name="Receive customer request">
       <bpmn:outgoing>_a5af06ae-bd69-464d-bbaf-3d7418702d77</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="_cc9778bd-edd8-4df2-ba15-56c310f90e62_MessageEventDefinition"/>
+      <bpmn:messageEventDefinition id="_cc9778bd-edd8-4df2-ba15-56c310f90e62_MessageEventDefinition" messageRef="Message_Service_Level"/>
     </bpmn:startEvent>
     <bpmn:userTask id="_c73a5f4a-72f1-4e11-bb40-2f98da75fb9a" name="Analyse customer request">
       <bpmn:documentation>First contact with customer</bpmn:documentation>
@@ -70,7 +71,7 @@ This service level guarantees less than two days to solve the issue.</bpmn:docum
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="Bpmn_BoundaryEvent_LwKtwhqHEeWDuOtG0oS24A" attachedToRef="_d034722f-751d-4f37-a3d7-47993822e979" cancelActivity="true">
       <bpmn:outgoing>Bpmn_SequenceFlow_-dQQwBqHEeWDuOtG0oS24A</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="Bpmn_BoundaryEvent_LwKtwhqHEeWDuOtG0oS24A_MessageEventDefinition"/>
+      <bpmn:messageEventDefinition id="Bpmn_BoundaryEvent_LwKtwhqHEeWDuOtG0oS24A_MessageEventDefinition" messageRef="Message_Service_Level"/>
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="_acb2aca3-8851-48f0-b127-7b3c9db5e18d" sourceRef="_c73a5f4a-72f1-4e11-bb40-2f98da75fb9a" targetRef="_604be023-654c-44df-a64c-365254a100cd"/>
     <bpmn:sequenceFlow id="_b99800c3-c340-460c-a43e-098014a365d0" sourceRef="_604be023-654c-44df-a64c-365254a100cd" targetRef="_a92069f7-377b-4dbd-a1fd-1da071aabf6d" name="Warranty"/>

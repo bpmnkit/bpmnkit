@@ -1,0 +1,414 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_P",
+      "plane": {
+        "bpmnElement": "P",
+        "edges": [
+          {
+            "bpmnElement": "f1",
+            "id": "f1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 36,
+                "y": 114
+              },
+              {
+                "x": 96,
+                "y": 114
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f2",
+            "id": "f2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 18,
+                "y": 36
+              },
+              {
+                "x": 18,
+                "y": 66
+              },
+              {
+                "x": 114,
+                "y": 66
+              },
+              {
+                "x": 114,
+                "y": 96
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f3",
+            "id": "f3_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 132,
+                "y": 114
+              },
+              {
+                "x": 192,
+                "y": 114
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f4",
+            "id": "f4_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 228,
+                "y": 114
+              },
+              {
+                "x": 288,
+                "y": 114
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f5",
+            "id": "f5_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 388,
+                "y": 114
+              },
+              {
+                "x": 448,
+                "y": 114
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f6",
+            "id": "f6_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 338,
+                "y": 172
+              },
+              {
+                "x": 338,
+                "y": 232
+              },
+              {
+                "x": 448,
+                "y": 232
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_P",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 0,
+              "y": 96
+            },
+            "bpmnElement": "every_hour",
+            "id": "every_hour_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 0,
+              "y": 0
+            },
+            "bpmnElement": "on_date",
+            "id": "on_date_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 96,
+              "y": 96
+            },
+            "bpmnElement": "wait",
+            "id": "wait_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 192,
+              "y": 96
+            },
+            "bpmnElement": "until",
+            "id": "until_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 288,
+              "y": 74
+            },
+            "bpmnElement": "work",
+            "id": "work_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 320,
+              "y": 136
+            },
+            "bpmnElement": "remind",
+            "id": "remind_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 448,
+              "y": 214
+            },
+            "bpmnElement": "remind_end",
+            "id": "remind_end_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 448,
+              "y": 96
+            },
+            "bpmnElement": "done",
+            "id": "done_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "D",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [
+            {
+              "id": "every_hour_TimerEventDefinition",
+              "timeCycle": "R/PT1H",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "every_hour",
+          "incoming": [],
+          "outgoing": [
+            "f1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "on_date_TimerEventDefinition",
+              "timeDate": "2026-12-01T09:00:00Z",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "on_date",
+          "incoming": [],
+          "outgoing": [
+            "f2"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "wait_TimerEventDefinition",
+              "timeDuration": "PT5M",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "wait",
+          "incoming": [
+            "f1",
+            "f2"
+          ],
+          "outgoing": [
+            "f3"
+          ],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [
+            {
+              "id": "until_TimerEventDefinition",
+              "timeDate": "=deadline",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "until",
+          "incoming": [
+            "f3"
+          ],
+          "outgoing": [
+            "f4"
+          ],
+          "type": "intermediateCatchEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "work"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
+          "id": "work",
+          "incoming": [
+            "f4"
+          ],
+          "outgoing": [
+            "f5"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "attachedToRef": "work",
+          "cancelActivity": false,
+          "eventDefinitions": [
+            {
+              "id": "remind_TimerEventDefinition",
+              "timeCycle": "R3/PT10M",
+              "type": "timer"
+            }
+          ],
+          "extensionElements": [],
+          "id": "remind",
+          "incoming": [],
+          "outgoing": [
+            "f6"
+          ],
+          "type": "boundaryEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "remind_end",
+          "incoming": [
+            "f6"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "done",
+          "incoming": [
+            "f5"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "P",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "f1",
+          "sourceRef": "every_hour",
+          "targetRef": "wait",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f2",
+          "sourceRef": "on_date",
+          "targetRef": "wait",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f3",
+          "sourceRef": "wait",
+          "targetRef": "until",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f4",
+          "sourceRef": "until",
+          "targetRef": "work",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f5",
+          "sourceRef": "work",
+          "targetRef": "done",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f6",
+          "sourceRef": "remind",
+          "targetRef": "remind_end",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud"
+  }
+}

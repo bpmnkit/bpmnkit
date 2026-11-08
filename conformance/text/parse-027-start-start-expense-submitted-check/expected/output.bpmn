@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+  <bpmn:error id="Error_notice" name="notice" errorCode="notice"/>
   <bpmn:process id="Process_1" isExecutable="true">
     <bpmn:startEvent id="start" name="Expense submitted">
       <bpmn:outgoing>Flow_1</bpmn:outgoing>
@@ -23,7 +24,7 @@
     </bpmn:boundaryEvent>
     <bpmn:endEvent id="notice" name="Failure notified">
       <bpmn:incoming>Flow_6</bpmn:incoming>
-      <bpmn:errorEventDefinition id="notice_ErrorEventDefinition"/>
+      <bpmn:errorEventDefinition id="notice_ErrorEventDefinition" errorRef="Error_notice"/>
     </bpmn:endEvent>
     <bpmn:endEvent id="done" name="Expense paid">
       <bpmn:incoming>Flow_7</bpmn:incoming>

@@ -16,8 +16,10 @@
             "type": "eventBasedGateway"
           },
           {
+            "correlationKey": "=requestId",
             "eventType": "message",
             "id": "m",
+            "messageName": "m",
             "name": "Reply",
             "type": "intermediateCatchEvent"
           },

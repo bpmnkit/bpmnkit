@@ -31,8 +31,11 @@
           "children": {
             "elements": [
               {
+                "correlationKey": "= documentReferenceId",
                 "eventType": "message",
                 "id": "StartMessageEvent_DocumentRequested",
+                "interrupting": false,
+                "messageName": "Message_DocumentRequested",
                 "name": "Document requested",
                 "type": "startEvent"
               },
@@ -66,7 +69,7 @@
             ]
           },
           "id": "Activity_0uvp3cb",
-          "type": "subProcess"
+          "type": "eventSubProcess"
         },
         {
           "children": {
@@ -74,7 +77,9 @@
               {
                 "eventType": "timer",
                 "id": "StartTimerEvent_AcceleratedDecision",
+                "interrupting": false,
                 "name": "Accelerated decision",
+                "timerCycle": "R1/P5D",
                 "type": "startEvent"
               },
               {
@@ -114,7 +119,7 @@
             ]
           },
           "id": "Activity_1esx1s7",
-          "type": "subProcess"
+          "type": "eventSubProcess"
         },
         {
           "children": {
@@ -126,12 +131,16 @@
                 "type": "userTask"
               },
               {
+                "correlationKey": "=fraudSuspectedId",
                 "eventType": "message",
                 "id": "StartMessageEvent_FraudSuspected",
+                "interrupting": false,
+                "messageName": "Message_FraudSuspected",
                 "name": "Fraud suspected",
                 "type": "startEvent"
               },
               {
+                "errorCode": "02",
                 "eventType": "error",
                 "id": "ErrorEndEvent_FraudDetected",
                 "name": "Fraud Detected",
@@ -176,9 +185,10 @@
             ]
           },
           "id": "Activity_02a6b2h",
-          "type": "subProcess"
+          "type": "eventSubProcess"
         },
         {
+          "errorCode": "02",
           "eventType": "error",
           "id": "ErrorEndEvent_Timeout",
           "name": "Timeout",

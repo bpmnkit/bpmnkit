@@ -19,6 +19,7 @@
           {
             "eventType": "message",
             "id": "wait",
+            "messageName": "wait",
             "name": "Reply received",
             "type": "intermediateCatchEvent"
           },

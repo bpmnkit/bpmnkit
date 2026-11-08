@@ -1,22 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="D" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="D" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+  <bpmn:message id="Message_cancel_order" name="cancel-order">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=orderId"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
   <bpmn:process id="P" isExecutable="true">
-    <bpmn:task id="main"/>
-    <bpmn:eventSubProcess id="esp">
-      <bpmn:startEvent id="es" name="Cancelled">
+    <bpmn:startEvent id="Start_P">
+      <bpmn:outgoing>Flow_Start_P</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="main">
+      <bpmn:incoming>Flow_Start_P</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:subProcess id="esp" triggeredByEvent="true">
+      <bpmn:startEvent id="es" name="Cancelled" isInterrupting="false">
         <bpmn:outgoing>g</bpmn:outgoing>
-        <bpmn:messageEventDefinition id="es_MessageEventDefinition"/>
+        <bpmn:messageEventDefinition id="es_MessageEventDefinition" messageRef="Message_cancel_order"/>
       </bpmn:startEvent>
       <bpmn:endEvent id="ee" name="Handled">
         <bpmn:incoming>g</bpmn:incoming>
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="g" sourceRef="es" targetRef="ee"/>
-    </bpmn:eventSubProcess>
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_Start_P" sourceRef="Start_P" targetRef="main"/>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_P">
     <bpmndi:BPMNPlane id="BPMNPlane_P" bpmnElement="P">
+      <bpmndi:BPMNShape id="Start_P_di" bpmnElement="Start_P">
+        <dc:Bounds x="108" y="22" width="36" height="36"/>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="main_di" bpmnElement="main">
-        <dc:Bounds x="76" y="0" width="100" height="80"/>
+        <dc:Bounds x="352" y="0" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="esp_di" bpmnElement="esp" isExpanded="true">
         <dc:Bounds x="0" y="160" width="252" height="154"/>
@@ -33,6 +47,10 @@
           <dc:Bounds x="153" y="250" width="49" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_Start_P_di" bpmnElement="Flow_Start_P">
+        <di:waypoint x="144" y="40"/>
+        <di:waypoint x="352" y="40"/>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="g_di" bpmnElement="g">
         <di:waypoint x="99.5" y="228"/>
         <di:waypoint x="159.5" y="228"/>

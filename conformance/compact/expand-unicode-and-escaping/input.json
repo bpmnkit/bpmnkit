@@ -10,18 +10,45 @@
           "name": "Größe ✓ <&>"
         },
         {
+          "id": "g",
+          "type": "exclusiveGateway",
+          "name": "Größe < 1?"
+        },
+        {
           "id": "t",
           "type": "task",
           "name": "日本語 \"q\""
+        },
+        {
+          "id": "e",
+          "type": "endEvent",
+          "name": "Ende"
         }
       ],
       "flows": [
         {
-          "id": "f",
+          "id": "f0",
           "from": "s",
+          "to": "g"
+        },
+        {
+          "id": "f",
+          "from": "g",
           "to": "t",
           "name": "a & b",
           "condition": "= x < 1"
+        },
+        {
+          "id": "f2",
+          "from": "g",
+          "to": "e",
+          "name": "sonst",
+          "isDefault": true
+        },
+        {
+          "id": "f3",
+          "from": "t",
+          "to": "e"
         }
       ]
     }

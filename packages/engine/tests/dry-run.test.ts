@@ -44,10 +44,10 @@ with post: slack chat.postMessage | token={{secrets.SLACK_TOKEN}} | data.channel
 	it("completes user and plain service tasks, delivers messages and fires timers", async () => {
 		const defs =
 			diagram(`start[start Order placed] > review[user Review order] > pay[service Charge card]
-pay > wait[catch:message Payment confirmed] > done[end Done]`)
+pay > wait[catch:message Payment confirmed | key=orderId] > done[end Done]`)
 		const result = await dryRun(defs)
 		expect(result.reachedEnd).toBe(true)
-		expect(result.steps).toEqual([{ kind: "message", elementId: "wait", message: "wait" }])
+		expect(result.steps).toEqual([{ kind: "message", elementId: "wait", message: "Message_wait" }])
 		expect(result.path).toEqual(expect.arrayContaining(["review", "pay", "wait", "done"]))
 	})
 

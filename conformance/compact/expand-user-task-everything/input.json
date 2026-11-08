@@ -5,6 +5,10 @@
       "id": "P",
       "elements": [
         {
+          "id": "Start_P",
+          "type": "startEvent"
+        },
+        {
           "id": "u",
           "type": "userTask",
           "name": "U",
@@ -24,6 +28,11 @@
         }
       ],
       "flows": [
+        {
+          "id": "Flow_Start_P",
+          "from": "Start_P",
+          "to": "u"
+        },
         {
           "id": "f",
           "from": "u",

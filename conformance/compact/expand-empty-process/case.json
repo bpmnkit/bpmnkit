@@ -1,4 +1,7 @@
 {
   "deployable": false,
-  "deployableReason": "Deliberately empty process: pins expand() on a process with no elements."
+  "deployableReason": "Deliberately empty process: pins expand() on a process with no elements, which no engine deploys; expanded with validate:false.",
+  "expand": {
+    "validate": false
+  }
 }

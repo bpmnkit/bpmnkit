@@ -4,7 +4,7 @@
 
 use serde_json::Value;
 
-use super::expand::expand;
+use super::expand::{expand, ExpandOptions};
 use super::types::CompactDiagram;
 use crate::error::TextError;
 use bpmnkit_bpmn::BpmnDefinitions;
@@ -63,13 +63,13 @@ pub fn assert_compact_diagram(value: &Value, function: &str) -> Result<(), TextE
 /// TS's `expand` called with JSON text that may not be a `CompactDiagram`: the shape
 /// check, then [`expand`]. Typed from the text itself, not a `Value`, so object key order
 /// (connector inputs, headers) survives.
-pub fn expand_json(json: &str) -> Result<BpmnDefinitions, TextError> {
+pub fn expand_json(json: &str, options: &ExpandOptions) -> Result<BpmnDefinitions, TextError> {
     let value: Value =
         serde_json::from_str(json).map_err(|e| TextError::new(format!("expand: {e}")))?;
     assert_compact_diagram(&value, "expand")?;
     let compact: CompactDiagram =
         serde_json::from_str(json).map_err(|e| TextError::new(format!("expand: {e}")))?;
-    expand(&compact)
+    expand(&compact, options)
 }
 
 #[cfg(test)]

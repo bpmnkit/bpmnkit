@@ -15,6 +15,7 @@ exclude = ["tests/", "benches/"]
 
 [dependencies]
 bpmnkit-bpmn = { workspace = true }
+bpmnkit-compat = { workspace = true }
 bpmnkit-dmn = { workspace = true }
 bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.1.0" }
 bpmnkit-layout = { workspace = true }
