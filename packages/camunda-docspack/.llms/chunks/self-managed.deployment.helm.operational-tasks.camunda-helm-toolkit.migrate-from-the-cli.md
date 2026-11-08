@@ -1,4 +1,4 @@
-# Use the Camunda Helm Toolkit — Migrate from the CLI
+# Prepare Helm upgrades with the Camunda Helm Toolkit — Migrate from the CLI
 
 Run `migrate` to create an updated override file without modifying your source file.
 

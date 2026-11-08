@@ -28,8 +28,8 @@ camunda:
           retention:
             enabled: true
             minimumAge: 30d
-            policyName: zeebe-records-retention-policy
-            policyDescription: Zeebe records retention policy
+            policyName: zeebe-record-retention-policy
+            policyDescription: Zeebe record retention policy
 
           authentication:
             username: opensearch
@@ -43,6 +43,9 @@ camunda:
           index:
             prefix: zeebe-record
             createTemplate: true
+
+            # Optimize mode (default: true) overrides the per-value-type flags below, such as job.
+            optimizeModeEnabled: false
 
             command: false
             event: true

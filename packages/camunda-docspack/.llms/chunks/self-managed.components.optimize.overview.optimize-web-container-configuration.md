@@ -5,7 +5,7 @@ Refer to the [configuration section on container settings](https://docs.camunda.
 
 ## Elasticsearch/OpenSearch configuration
 
-You can customize the [Elasticsearch/OpenSearch connection settings](https://docs.camunda.io/docs/next/self-managed/components/optimize/configuration/system-configuration#connection-settings) as well as the [index settings](https://docs.camunda.io/docs/next/self-managed/components/optimize/configuration/system-configuration#index-settings).
+You can customize the connection settings for [Elasticsearch](https://docs.camunda.io/docs/next/self-managed/components/optimize/configuration/system-configuration#elasticsearch-connection-settings) or [OpenSearch](https://docs.camunda.io/docs/next/self-managed/components/optimize/configuration/system-configuration#opensearch-connection-settings), as well as the index settings for [Elasticsearch](https://docs.camunda.io/docs/next/self-managed/components/optimize/configuration/system-configuration#elasticsearch-index-settings) or [OpenSearch](https://docs.camunda.io/docs/next/self-managed/components/optimize/configuration/system-configuration#opensearch-index-settings).
 
 
 ## Camunda 8 specific configuration

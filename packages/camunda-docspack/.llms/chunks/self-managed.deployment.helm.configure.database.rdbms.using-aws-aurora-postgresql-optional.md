@@ -4,7 +4,7 @@ If you are using AWS Aurora PostgreSQL as your relational database, you can conf
 
 Optionally, Camunda also supports the AWS JDBC wrapper driver, which provides additional features such as improved failover handling and IAM-based authentication.
 
-For details and examples, see [using AWS Aurora PostgreSQL with Camunda](https://docs.camunda.io/docs/next/self-managed/concepts/databases/relational-db/configuration#usage-with-aws-aurora-postgresql).
+For details and examples, see [using AWS Aurora PostgreSQL with Camunda](https://docs.camunda.io/docs/next/self-managed/concepts/databases/relational-db/configuration#usage-with-aws-aurora-postgresql--mysql).
 
 
 ## Limitations and unsupported scenarios
@@ -20,7 +20,7 @@ If you deploy Optimize, you must still provision Elasticsearch or OpenSearch.
 
 ### Multi-region deployments
 
-Cross-region RDBMS deployments are **not yet tested or supported** in Camunda 8.9. Deploy RDBMS in the same region as your Kubernetes cluster.
+Deploy the RDBMS in the same region as your Kubernetes cluster. To run one Orchestration Cluster across several regions, follow the [Multi-Region RDBMS](https://docs.camunda.io/docs/next/self-managed/concepts/multi-region/multi-region-rdbms) architecture, which delegates replication of the secondary storage to the database. Review its requirements and limitations first.
 
 ### Self-managed database HA
 

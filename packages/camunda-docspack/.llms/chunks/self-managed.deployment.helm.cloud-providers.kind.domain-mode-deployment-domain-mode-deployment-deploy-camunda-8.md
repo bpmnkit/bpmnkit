@@ -14,9 +14,6 @@ Deploy script source
 https://github.com/camunda/camunda-deployment-references/blob/main/local/kubernetes/kind-single-region/procedure/camunda-deploy-domain.sh
 ```
 
-**Note: Using RDBMS instead of Elasticsearch**
-If you chose RDBMS as your secondary storage backend, skip the Elasticsearch overlay merge below and follow the [configure RDBMS in Helm](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/database/rdbms) guide to configure the Orchestration Cluster components.
-
 This uses the following Helm values:
 
 Domain mode Helm values (kind-specific)

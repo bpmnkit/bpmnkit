@@ -9,7 +9,7 @@ camunda.data.secondary-storage.rdbms.*
 | Property                | Description                                                      | Default |
 | ----------------------- | ---------------------------------------------------------------- | ------- |
 | `url`                   | JDBC connection URL                                              | _empty_ |
-| `user`                  | Username for the connection                                      | _empty_ |
+| `username`              | Username for the connection                                      | _empty_ |
 | `password`              | Password for the connection                                      | _empty_ |
 | `auto-ddl`              | Enables Liquibase schema management                              | `true`  |
 | `prefix`                | Optional table name prefix                                       | `""`    |

@@ -24,7 +24,7 @@ statefulset rolling update complete 3 pods at revision camunda-platform-zeebe-d6
 $ kubectl get services -l app.kubernetes.io/component=zeebe-gateway
 NAME                             TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)                       AGE
 camunda-platform-zeebe-gateway   ClusterIP   10.96.227.153   <none>        9600/TCP,26500/TCP,8080/TCP   21m
-$ kubectl port-forward services/camunda-platform-zeebe-gateway -p 8080:8080 &
+$ kubectl port-forward services/camunda-platform-zeebe-gateway 8080:8080 &
 $ curl localhost:8080/v2/topology | jq .brokers[].version && kill %1
 8.5.0
 8.5.0
@@ -37,7 +37,7 @@ Remember to read the [upgrade guide](https://docs.camunda.io/docs/next/self-mana
 Then, start the rolling update with `helm upgrade`.
 
 ```
-$ export $NEW_ZEEBE_VERSION=8.5.2
+$ export NEW_ZEEBE_VERSION=8.5.2
 $ helm upgrade camunda-platform camunda/camunda-platform --reuse-values --set zeebe.image.tag=$NEW_ZEEBE_VERSION
 ```
 
@@ -55,7 +55,7 @@ When the command finishes, all Zeebe brokers are upgraded to the new version and
 We can verify this by running the command to check versions again:
 
 ```shell
-$ kubectl port-forward services/camunda-platform-zeebe-gateway -p 8080:8080 &
+$ kubectl port-forward services/camunda-platform-zeebe-gateway 8080:8080 &
 $ curl localhost:8080/v2/topology | jq .brokers[].version && kill %1
 8.5.2
 8.5.2
@@ -72,7 +72,7 @@ Ensure the deployment of gateways is ready to do a rolling update by checking th
 You can use the following command to verify this:
 
 ```
-$ kubectl rollout status statefulset -l app.kubernetes.io/component=zeebe-gateway
+$ kubectl get deployment -l app.kubernetes.io/component=zeebe-gateway
 NAME                             READY   UP-TO-DATE   AVAILABLE   AGE
 camunda-platform-zeebe-gateway   2/2     2            2           4h25m
 ```
@@ -86,7 +86,7 @@ $ helm upgrade camunda-platform camunda/camunda-platform --reuse-values --set ze
 Wait for the upgrade to complete:
 
 ```
-$ kubectl rollout status -l app.kubernetes.io/component=zeebe-gateway
+$ kubectl rollout status deployment -l app.kubernetes.io/component=zeebe-gateway
 ```
 
 At this point, both brokers and gateways are upgraded.

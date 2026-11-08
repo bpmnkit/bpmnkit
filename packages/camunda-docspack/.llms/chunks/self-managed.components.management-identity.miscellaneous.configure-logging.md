@@ -2,7 +2,7 @@
 
 Learn how to configure logging in Identity.
 
-Configure and use logging to access detailed operational information for Identity .
+Configure and use logging to access detailed operational information for Identity.
 
 
 ## Identity logging configuration

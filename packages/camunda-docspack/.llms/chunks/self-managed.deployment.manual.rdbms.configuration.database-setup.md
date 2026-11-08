@@ -9,6 +9,7 @@ CREATE DATABASE camunda ENCODING 'UTF8';
 CREATE USER camunda WITH PASSWORD 'your-secure-password';
 GRANT CONNECT ON DATABASE camunda TO camunda;
 GRANT USAGE ON SCHEMA public TO camunda;
+GRANT CREATE ON SCHEMA public TO camunda;
 GRANT CREATE ON DATABASE camunda TO camunda;
 ```
 

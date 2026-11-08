@@ -1,9 +1,9 @@
 # Configure component configuration — Practical example: migrating from environment variables to a configuration file — Step 2: Generate the default configuration file
 
-Run the following command to render the default configuration file and fill in Helm values:
+Replace `<your-release-name>` with your release name, then run the following command to render the default configuration file and fill in Helm values:
 
 ```bash
-helm template \
+helm template <your-release-name> \
     -f values.yaml \
     camunda/camunda-platform \
     --show-only templates/zeebe/configmap.yaml

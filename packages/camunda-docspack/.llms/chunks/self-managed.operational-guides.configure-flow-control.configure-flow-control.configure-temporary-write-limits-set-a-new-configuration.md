@@ -28,15 +28,14 @@ POST actuator/flowControl
 
 | Code             | Description                                                                                                                                                                                            |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 200 Accepted     | The flow configuration request was processed correctly.                                                                                                                                                |
+| 200 OK           | The flow configuration request was processed correctly.                                                                                                                                                |
 | 400 Bad Request  | Indicates issues with the request, for example, one of the fields contains an invalid type.                                                                                                            |
 | 500 Server Error | All other errors. For example, when the values set do not conform to the imposed restriction (such as `minimumLimit` being higher than `limit`). Refer to the returned error message for more details. |
 
 #### Example request
 
 ```bash
-curl -X POST 'localhost:9600/actuator/flowControl' -H "Content-Type: application/json" --data
-'{
+curl -X POST 'localhost:9600/actuator/flowControl' -H "Content-Type: application/json" --data '{
   "write": {
     "rampUp": 0,
     "enabled": true,

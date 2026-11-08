@@ -19,5 +19,7 @@ curl -X POST 'https://your-provider.example.com/oauth/token' \
 
 The response includes an `access_token` field containing the JWT.
 
+A token from the client credentials grant identifies the client, not a user, so it can't show you the user identification claim. To find that claim, decode a token that was issued by an interactive login (authorization code flow) instead.
+
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/authentication-and-authorization/jwt-token-claims

@@ -11,7 +11,7 @@ Zeebe is fault-tolerant and replicates state internally. Backups are only necess
 
 State of other components, such as Operate and Tasklist, is not managed by Zeebe and must be backed up separately.
 
-Taking backups is a manual process that is highly dependent on your infrastructure and deployment. Camunda does not provide an automated backup mechanism or tool. However, we do offer the following guidance to create and execute a successful backup.
+Taking cold backups is a manual process that is highly dependent on your infrastructure and deployment. Camunda does not provide an automated mechanism or tool for cold backups. However, we do offer the following guidance to create and execute a successful backup.
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/operations/backups

@@ -66,7 +66,7 @@ kind: Secret
 metadata:
   name: camunda-connector-secrets
 stringData:
-  MY_SECRET: foo
+  SECRET_MY_SECRET: foo
 ```
 
 Review the documentation on [managing secrets in Helm charts](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/secret-management) for additional details.
@@ -77,14 +77,14 @@ For example, you can inject secrets when running a container:
 
 ```bash
 docker run --rm --name=connectors -d \
-  -v $PWD/connector.jar:/opt/app/ \  # Add a connector jar to the classpath
-  -e MY_SECRET=secret \              # Set a secret with value
-  -e SECRET_FROM_SHELL \             # Set a secret from the environment
-  --env-file secrets.txt \           # Set secrets from a file
+  -v $PWD/connector.jar:/opt/app/ \
+  -e SECRET_MY_SECRET=secret \
+  -e SECRET_FROM_SHELL \
+  --env-file secrets.txt \
   camunda/connectors-bundle:latest
 ```
 
-The secret `MY_SECRET` value is specified directly in the `docker run` call,
+The `-v` option adds a connector JAR to the classpath. The `SECRET_MY_SECRET` value is specified directly in the `docker run` call,
 whereas the `SECRET_FROM_SHELL` is injected based on the value in the
 current shell environment when `docker run` is executed. The `--env-file`
 option allows using a single file with the format `NAME=VALUE` per line

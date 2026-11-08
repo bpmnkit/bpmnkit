@@ -4,10 +4,11 @@
    CAMUNDA_IDENTITY_TYPE=GENERIC
    CAMUNDA_IDENTITY_BASE_URL=<IDENTITY_URL>
    CAMUNDA_IDENTITY_ISSUER=<URL_OF_ISSUER>
-   CAMUNDA_IDENTITY_ISSUER_BACKEND_URL=<URL_OF_ISSUER> // this is used for container to container communication
-   CAMUNDA_IDENTITY_CLIENT_ID=<Client ID from Step 3>
-   CAMUNDA_IDENTITY_CLIENT_SECRET=<Client secret from Step 3>
-   CAMUNDA_IDENTITY_AUDIENCE=<Audience from Step 3>
+   # Used for container to container communication
+   CAMUNDA_IDENTITY_ISSUER_BACKEND_URL=<URL_OF_ISSUER>
+   CAMUNDA_IDENTITY_CLIENT_ID=<Client ID from Step 4>
+   CAMUNDA_IDENTITY_CLIENT_SECRET=<Client secret from Step 4>
+   CAMUNDA_IDENTITY_AUDIENCE=<Audience from Step 4>
    IDENTITY_INITIAL_CLAIM_NAME=<Initial claim name  if not using the default "oid">
    IDENTITY_INITIAL_CLAIM_VALUE=<Initial claim value>
    SPRING_PROFILES_ACTIVE=oidc

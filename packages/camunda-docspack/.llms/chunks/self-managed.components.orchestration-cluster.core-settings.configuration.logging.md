@@ -20,7 +20,7 @@ The default `log4j2.xml` (Zeebe, Operate, Tasklist, Admin) representation:
                    https://logging.apache.org/xml/ns/log4j-config-2.xsd" status="WARN" shutdownHook="disable">
   <Properties>
     <Property name="log.path" value="${sys:app.home}/logs" />
-    <Property name="log.pattern" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%t] %notEmpty{[%X] }%-5level%n\t%logger{36} - %msg%n" />
+    <Property name="log.pattern" value="[%d{yyyy-MM-dd HH:mm:ss.SSS}] [%t] %notEmpty{[%X] }%-5level \t%logger{36} - %msg%n" />
     <Property name="log.stackdriver.serviceName" value="${env:ZEEBE_LOG_STACKDRIVER_SERVICENAME:-${env:OPERATE_LOG_STACKDRIVER_SERVICENAME:-${env:OPTIMIZE_LOG_STACKDRIVER_SERVICENAME:-${env:TASKLIST_LOG_STACKDRIVER_SERVICENAME:-}}}}"/>
     <Property name="log.stackdriver.serviceVersion" value="${env:ZEEBE_LOG_STACKDRIVER_SERVICEVERSION:-${env:OPERATE_LOG_STACKDRIVER_SERVICEVERSION:-${env:OPTIMIZE_LOG_STACKDRIVER_SERVICEVERSION:-${env:TASKLIST_LOG_STACKDRIVER_SERVICEVERSION:-}}}}"/>
   </Properties>
@@ -75,7 +75,7 @@ The default `log4j2.xml` (Zeebe, Operate, Tasklist, Admin) representation:
 
 **Note**
 This is a simplified example. The actual `log4j2.xml` may include additional appenders, different file paths, or slightly different patterns.  
-See the full [logging documentation](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/core-settings/configuration/logging#default-logging-configuration) for the official default file and additional settings.
+See the full [logging documentation](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/core-settings/configuration/logging#default-log4j2-configuration) for the official default file and additional settings.
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/core-settings/configuration/logging

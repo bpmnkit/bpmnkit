@@ -85,7 +85,7 @@ this guide uses a dedicated [aws terraform provider](https://registry.terraform.
    https://github.com/camunda/camunda-deployment-references/blob/main/aws/openshift/rosa-hcp-dual-region/terraform/clusters/cluster_region_1.tf
    ```
 
-7. After setting up the terraform files and ensuring your AWS authentication is configured, initialize your Terraform project, then, initialize Terraform to configure the backend and download necessary provider plugins:
+7. After setting up the terraform files and ensuring your AWS authentication is configured, initialize Terraform to configure the backend and download necessary provider plugins:
 
    ```bash
    export S3_TF_BUCKET_KEY_CLUSTERS="camunda-terraform/clusters.tfstate"
@@ -104,6 +104,11 @@ this guide uses a dedicated [aws terraform provider](https://registry.terraform.
   We strongly recommend managing sensitive information using a secure secrets management solution like HashiCorp Vault. For details on how to inject secrets directly into Terraform via Vault, see the [Terraform Vault Secrets Injection Guide](https://developer.hashicorp.com/terraform/tutorials/secrets/secrets-vault).
 
 - By default, a cluster is accessible from the internet. If you prefer to restrict access, please refer to the [official documentation of the module](https://registry.terraform.io/modules/terraform-redhat/rosa-hcp/rhcs/latest#input_private).
+
+1. Configure each cluster by editing the beginning of their respective files in the `locals` section:
+   - Each cluster should have a unique, non-overlapping CIDR block to ensure proper functioning of the Submariner overlay network (as referenced in the [Submariner documentation](https://submariner.io/0.8/getting-started/architecture/globalnet)).
+     This is essential for successful inter-cluster communication using the Submariner underlay network.
+     If you can't fullfill this requirement, you may need to implement a [Submariner Global Private Network](https://submariner.io/0.8/getting-started/architecture/globalnet/).
 
 ---
 Source: https://docs.camunda.io/docs/next/self-managed/deployment/helm/cloud-providers/amazon/openshift/terraform-setup-dual-region

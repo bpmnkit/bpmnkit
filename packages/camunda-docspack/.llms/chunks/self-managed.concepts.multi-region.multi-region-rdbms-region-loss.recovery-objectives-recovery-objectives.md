@@ -13,7 +13,9 @@ That is the difference from [Dual-Region](https://docs.camunda.io/docs/next/self
 
 Recovery has a window, because reconfiguration takes time. Most of that window depends on settings outside the engine: client timeouts and retries, traffic routing, database failover, and Camunda's own SQL connection timeouts. This section therefore gives the order of magnitude of each part instead of one RTO figure.
 
-Data loss depends on which store you mean. The engine's own state loses nothing. Raft commits a record only once a majority of its replicas hold it. Under the default `2-2-1` layout, a commit needs three replicas of five. Losing one zone removes at most two, so at least one surviving replica has the record.
+Data loss depends on which store you mean. Primary storage contains Zeebe's replicated log and runtime state. With the quorum-preserving layout described above, losing one region causes no loss of committed primary-storage data. Retention of log records for secondary-storage recovery depends on the configured replication-monitoring strategy, as described below.
+
+Raft commits a record only once a majority of its replicas hold it. With a `2-2-1` replica layout across three regions, a commit needs three replicas of five. Losing one zone removes at most two, so at least one surviving replica has the record.
 
 Secondary storage is different, because the database replicates asynchronously. In the table, `min-sync-replicas` stands for `camunda.data.secondary-storage.rdbms.async-replication.min-sync-replicas`, the number of standbys that must confirm a record. An unplanned promotion can omit records that had not reached the promoted standby.
 

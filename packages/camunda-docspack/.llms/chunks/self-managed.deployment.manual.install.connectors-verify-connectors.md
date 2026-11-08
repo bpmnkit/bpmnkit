@@ -15,7 +15,6 @@ curl localhost:9090/actuator/health
 ```
 
   Example output
-  
 
 ```json
 {

@@ -6,6 +6,8 @@
 
 ## Configure via `orchestration.configuration`
 
+`orchestration.configuration` replaces the chart's default application configuration, so include every property your deployment needs. To keep the chart defaults, use [`orchestration.extraConfiguration`](#configure-via-orchestrationextraconfiguration) instead. For details, see [Configure component configuration](https://docs.camunda.io/docs/next/self-managed/deployment/helm/configure/application-configs#componentnameconfiguration).
+
 Set `orchestration.configuration` to the full `application.yaml` content, including the root-level and per-tenant `camunda.physical-tenants.*` blocks:
 
 ```yaml

@@ -19,6 +19,7 @@ CREATE DATABASE camunda ENCODING 'UTF8';
 CREATE USER camunda WITH PASSWORD 'your-secure-password';
 GRANT CONNECT ON DATABASE camunda TO camunda;
 GRANT USAGE ON SCHEMA public TO camunda;
+GRANT CREATE ON SCHEMA public TO camunda;
 GRANT CREATE ON DATABASE camunda TO camunda;
 
 -- Separate topology: independent instances
@@ -26,6 +27,7 @@ GRANT CREATE ON DATABASE camunda TO camunda;
 -- CREATE USER camunda_oc WITH PASSWORD 'oc-password';
 -- GRANT CONNECT ON DATABASE camunda_oc TO camunda_oc;
 -- GRANT USAGE ON SCHEMA public TO camunda_oc;
+-- GRANT CREATE ON SCHEMA public TO camunda_oc;
 -- GRANT CREATE ON DATABASE camunda_oc TO camunda_oc;
 ```
 

@@ -9,10 +9,14 @@ AWS_REQUEST_CHECKSUM_CALCULATION=WHEN_REQUIRED
 AWS_RESPONSE_CHECKSUM_VALIDATION=WHEN_REQUIRED
 ```
 
-If you're still encountering issues with MD5 checksums required by your provider, enable legacy MD5 support by setting:
+If you're still encountering issues with MD5 checksums required by your provider, enable legacy MD5 support on the store instance:
 
-```
-DOCUMENT_STORE_AWS_SUPPORT_LEGACY_MD5=true
+```yaml
+camunda:
+  document:
+    aws:
+      aws1:
+        support-legacy-md5: true
 ```
 
 AWS SDK credentials (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_REGION`) are resolved by the AWS SDK directly and are not part of `camunda.document.*`. Set them as environment variables as before.

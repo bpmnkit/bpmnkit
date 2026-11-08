@@ -1,6 +1,6 @@
 # Upgrade Camunda components from 8.9 to 8.10 — Dynamic cluster management
 
-In Camunda 8.8 and 8.9, you could use `CAMUNDA_CONSOLE_EXPERIMENTAL_DISCOVERY_MODE` to expose the discovery API, which allowed clusters to send license information and register themselves with Console. This experimental feature is now replaced by a new [feature flag](https://docs.camunda.io/docs/next/self-managed/components/hub/configuration/properties#feature-flags) in the Camunda Hub configuration: `DYNAMIC_CLUSTER_MANAGEMENT_ENABLED`.
+In Camunda 8.8 and 8.9, you could use `CAMUNDA_CONSOLE_EXPERIMENTAL_DISCOVERY_MODE` to expose the discovery API, which allowed clusters to send license information and register themselves with Console. This experimental feature is now replaced by a new [feature flag](https://docs.camunda.io/docs/next/self-managed/components/hub/configuration/properties#feature-flags) in the Camunda Hub configuration: `camunda.hub.feature.dynamic-cluster-management-enabled` / `CAMUNDA_HUB_FEATURE_DYNAMICCLUSTERMANAGEMENTENABLED`.
 
 With dynamic cluster management, clusters can regularly [send license information](https://docs.camunda.io/docs/next/self-managed/components/orchestration-cluster/zeebe/configuration/broker#camunda-hub-ping-configuration) to a [discovery endpoint](https://docs.camunda.io/docs/next/apis-tools/hub-api-saas/specifications/create-cluster-registration.api):
 

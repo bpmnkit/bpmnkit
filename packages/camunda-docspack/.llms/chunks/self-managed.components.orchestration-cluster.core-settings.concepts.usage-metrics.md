@@ -1,10 +1,10 @@
 # Usage metrics
 
-The orchestration cluster exposes usage metrics under the Actuator `usage-metrics` endpoint, accessible on the management port.
+The Orchestration Cluster exposes usage metrics through the usage metrics endpoint of the Orchestration Cluster REST API.
 
-**Warning: Deprecated endpoints**
-As of the 8.8 release, the actuator usage metrics endpoints are **deprecated** and will be removed in the 8.10 release.  
-Use the [new usage metrics endpoint](#usage-metrics-endpoint-recommended) instead.
+**Warning: Removed endpoints**
+The actuator usage metrics endpoints (`/actuator/usage-metrics/*`) were deprecated in 8.8 and removed in 8.10.  
+Use the [usage metrics endpoint](#usage-metrics-endpoint-recommended) instead.
 
 
 ## Usage metrics endpoint (recommended)

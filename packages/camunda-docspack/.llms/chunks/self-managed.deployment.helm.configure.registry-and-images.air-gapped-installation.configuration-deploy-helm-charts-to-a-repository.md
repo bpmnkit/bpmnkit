@@ -24,7 +24,7 @@ global:
 orchestration:
   image:
     repository: camunda/camunda
-    tag: latest
+    tag: <DOCKER_TAG>
 identity:
   image:
     repository: camunda/identity
@@ -37,7 +37,7 @@ connectors:
 camundaHub:
   image:
     # registry and tag will be used for both Camunda Hub images
-    tag: latest
+    tag: <DOCKER_TAG>
   restapi:
     image:
       repository: camunda/hub
