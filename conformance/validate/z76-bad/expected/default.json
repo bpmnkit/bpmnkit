@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Start"
+      ],
+      "fixable": false,
+      "id": "zeebe/signal-name-expression",
+      "message": "Expected constant expression but found '=sigName', which could not be evaluated without context: failed to evaluate expression 'sigName' : java.lang.NullPointerException: Cannot invoke \"io.camunda.zeebe.util.Either.fold(java.util.function.Function, java.util.function.Function)\" because the return value of \"io.camunda.zeebe.el.EvaluationContext.getVariable(String)\" is null",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Use a static signal name, or a FEEL expression that needs no variables."
+    }
+  ]
+}

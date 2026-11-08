@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Boundary"
+      ],
+      "fixable": false,
+      "id": "zeebe/compensation-boundary-shape",
+      "message": "Compensation boundary events must have a compensation association and no outgoing sequence flows",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Connect the compensation boundary event to its handler with an association, not a sequence flow."
+    }
+  ]
+}

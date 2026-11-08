@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Catch"
+      ],
+      "fixable": false,
+      "id": "zeebe/timer-expression",
+      "message": "Invalid timer date expression (Invalid date-time format '2030-02-30T09:00:00Z' for expression '2030-02-30T09:00:00Z'.)",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Use an ISO-8601 date-time with offset such as 2030-01-01T09:00:00Z, or a FEEL expression."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Catch"
+      ],
+      "fixable": false,
+      "id": "zeebe/intermediate-catch-definitions",
+      "message": "Must have exactly one event definition",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Give the intermediate catch event exactly one event definition."
+    }
+  ]
+}

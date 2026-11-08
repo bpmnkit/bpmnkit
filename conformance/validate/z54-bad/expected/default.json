@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "End"
+      ],
+      "fixable": false,
+      "id": "zeebe/end-event-definitions",
+      "message": "Must have at most one event definition",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Keep at most one event definition on the end event."
+    }
+  ]
+}

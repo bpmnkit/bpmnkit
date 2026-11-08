@@ -137,7 +137,11 @@ function serializeEventDefinitions(defs: BpmnEventDefinition[], bp: string): Xml
 				const attrs: Record<string, string> = {}
 				if (d.id) attrs.id = d.id
 				if (d.messageRef) attrs.messageRef = d.messageRef
-				return el(`${bp}messageEventDefinition`, withUnknown(attrs, d), [])
+				return el(
+					`${bp}messageEventDefinition`,
+					withUnknown(attrs, d),
+					serializeExtensionElements(d.extensionElements ?? [], bp),
+				)
 			}
 			case "signal": {
 				const attrs: Record<string, string> = {}

@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Throw"
+      ],
+      "fixable": false,
+      "id": "zeebe/compensation-wait-for-completion",
+      "message": "A compensation intermediate throwing event waitForCompletion attribute must be true or not present",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Remove waitForCompletion or set it to true."
+    }
+  ]
+}

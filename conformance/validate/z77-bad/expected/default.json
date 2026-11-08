@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Node"
+      ],
+      "fixable": false,
+      "id": "zeebe/error-end-reference",
+      "message": "Must reference an error",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Reference an error with errorRef on the error event definition."
+    }
+  ]
+}

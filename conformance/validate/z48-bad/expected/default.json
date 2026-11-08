@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Boundary"
+      ],
+      "fixable": false,
+      "id": "zeebe/boundary-attached",
+      "message": "Must be attached to an activity",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Attach the boundary event to an activity."
+    }
+  ]
+}

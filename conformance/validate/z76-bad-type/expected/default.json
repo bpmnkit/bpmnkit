@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Start"
+      ],
+      "fixable": false,
+      "id": "zeebe/signal-name-expression",
+      "message": "Expected constant expression of type String for signal name '=1', but was NUMBER",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Use a static signal name, or a FEEL expression that needs no variables."
+    }
+  ]
+}

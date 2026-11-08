@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Middle"
+      ],
+      "fixable": false,
+      "id": "zeebe/end-event-outgoing",
+      "message": "End events must not have outgoing sequence flows to other elements.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Remove the outgoing sequence flows of the end event."
+    }
+  ]
+}

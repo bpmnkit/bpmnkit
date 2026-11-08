@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "End"
+      ],
+      "fixable": false,
+      "id": "zeebe/compensation-activity-handler",
+      "message": "The referenced compensation activity 'A' must have either a compensation boundary event or be a subprocess",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Attach a compensation boundary event to the activity, or reference an embedded sub-process."
+    }
+  ]
+}

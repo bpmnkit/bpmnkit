@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://example.com" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="Start"><bpmn:outgoing>F1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:eventBasedGateway id="Gateway"><bpmn:incoming>F1</bpmn:incoming><bpmn:outgoing>F2</bpmn:outgoing><bpmn:outgoing>F3</bpmn:outgoing></bpmn:eventBasedGateway>
+    <bpmn:intermediateCatchEvent id="CatchA"><bpmn:incoming>F2</bpmn:incoming><bpmn:outgoing>F4</bpmn:outgoing><bpmn:conditionalEventDefinition id="CondA"><bpmn:condition xsi:type="bpmn:tFormalExpression">=x &gt; 1</bpmn:condition></bpmn:conditionalEventDefinition></bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="CatchB"><bpmn:incoming>F3</bpmn:incoming><bpmn:outgoing>F5</bpmn:outgoing><bpmn:conditionalEventDefinition id="CondB"><bpmn:condition xsi:type="bpmn:tFormalExpression">=x &gt; 2</bpmn:condition></bpmn:conditionalEventDefinition></bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="EndA"><bpmn:incoming>F4</bpmn:incoming></bpmn:endEvent>
+    <bpmn:endEvent id="EndB"><bpmn:incoming>F5</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="F1" sourceRef="Start" targetRef="Gateway" />
+    <bpmn:sequenceFlow id="F2" sourceRef="Gateway" targetRef="CatchA" />
+    <bpmn:sequenceFlow id="F3" sourceRef="Gateway" targetRef="CatchB" />
+    <bpmn:sequenceFlow id="F4" sourceRef="CatchA" targetRef="EndA" />
+    <bpmn:sequenceFlow id="F5" sourceRef="CatchB" targetRef="EndB" />
+  </bpmn:process>
+</bpmn:definitions>

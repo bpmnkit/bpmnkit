@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "S"
+      ],
+      "fixable": false,
+      "id": "zeebe/signal-name-expression",
+      "message": "failed to parse expression '1+'",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Fix the FEEL syntax of the signal name."
+    }
+  ]
+}

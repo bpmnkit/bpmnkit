@@ -99,6 +99,8 @@ export interface BpmnMessageEventDefinition {
 	type: "message"
 	id?: string
 	messageRef?: string
+	/** `<extensionElements>` of the definition, e.g. `zeebe:publishMessage` of a message throw event. */
+	extensionElements?: XmlElement[]
 	/** Attributes the SDK does not model (e.g. `camunda:type`), kept for round-trip. */
 	unknownAttributes?: Record<string, string>
 }

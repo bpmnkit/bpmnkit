@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "S"
+      ],
+      "fixable": false,
+      "id": "zeebe/signal-name",
+      "message": "Name must be present and not empty",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Give the signal a non-empty name."
+    }
+  ]
+}

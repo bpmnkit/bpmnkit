@@ -174,7 +174,6 @@ function eventBasedGateway(ctx: ZeebeContext): void {
 		)
 		const messageNames: string[] = []
 		const signalNames: string[] = []
-		const conditions: string[] = []
 		for (const def of defs) {
 			if (def.type === "message") {
 				const name = ctx.message(def.messageRef)?.name
@@ -182,9 +181,6 @@ function eventBasedGateway(ctx: ZeebeContext): void {
 			} else if (def.type === "signal") {
 				const name = ctx.signal(def.signalRef)?.name
 				if (name !== undefined && name !== "") signalNames.push(name)
-			} else if (def.type === "conditional") {
-				const text = def.condition?.trim()
-				if (text !== undefined && text !== "") conditions.push(text)
 			}
 		}
 		for (const name of duplicates(messageNames)) {
@@ -203,14 +199,7 @@ function eventBasedGateway(ctx: ZeebeContext): void {
 				"Give each branch of the event-based gateway a different signal.",
 			)
 		}
-		for (const text of duplicates(conditions)) {
-			ctx.report(
-				"event-based-gateway-duplicate-trigger",
-				node.id,
-				`Multiple conditional event definitions with the same condition expression '${text}' are not allowed.`,
-				"Give each branch of the event-based gateway a different condition.",
-			)
-		}
+		// Duplicate conditions are Z60 (event-based-gateway-duplicate-condition, events.ts).
 		const shared = outgoing.some((f) =>
 			ctx.incoming(f.flow.targetRef).some((i) => i.flow.sourceRef !== node.id),
 		)

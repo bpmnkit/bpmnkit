@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Catch"
+      ],
+      "fixable": false,
+      "id": "zeebe/conditional-filter-events",
+      "message": "Variable event 'delete' is not valid. Must be one of: create, update or a comma-separated list of both.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Use 'create', 'update' or 'create,update' as variable events."
+    }
+  ]
+}

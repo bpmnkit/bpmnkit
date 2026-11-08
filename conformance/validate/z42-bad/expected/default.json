@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "EventSub"
+      ],
+      "fixable": false,
+      "id": "zeebe/interrupting-event-sub-process-in-ad-hoc",
+      "message": "An interrupting event subprocess is not allowed inside an ad-hoc subprocess",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Make the event sub-process non-interrupting."
+    }
+  ]
+}

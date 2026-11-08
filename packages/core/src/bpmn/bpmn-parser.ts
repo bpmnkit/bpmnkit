@@ -917,13 +917,7 @@ function eventDefinitionFrame(
 			})
 			return null
 		case "messageEventDefinition":
-			target.push({
-				type: "message",
-				id: attr(attrs, "id"),
-				messageRef: attr(attrs, "messageRef"),
-				...definitionExtras(attrs, MESSAGE_DEF_ATTRS),
-			})
-			return null
+			return new MessageDefinitionFrame(attrs, target)
 		case "signalEventDefinition":
 			target.push({
 				type: "signal",
@@ -960,6 +954,34 @@ function eventDefinitionFrame(
 			return null
 		default:
 			return null
+	}
+}
+
+/** Keeps `zeebe:publishMessage`, which Zeebe reads from the message event definition. */
+class MessageDefinitionFrame extends Frame {
+	private extensionElements: XmlElement[] | null = null
+
+	constructor(
+		private readonly attrs: Attrs,
+		private readonly target: BpmnEventDefinition[],
+	) {
+		super()
+	}
+
+	override child(local: string): Frame | null {
+		if (local !== "extensionElements" || this.extensionElements !== null) return null
+		this.extensionElements = []
+		return new TreeFrame(this.extensionElements)
+	}
+
+	finish(): void {
+		this.target.push({
+			type: "message",
+			id: attr(this.attrs, "id"),
+			messageRef: attr(this.attrs, "messageRef"),
+			...(this.extensionElements ? { extensionElements: this.extensionElements } : {}),
+			...definitionExtras(this.attrs, MESSAGE_DEF_ATTRS),
+		})
 	}
 }
 
