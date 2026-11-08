@@ -23,7 +23,7 @@ use std::rc::Rc;
 use bpmnkit_bpmn::stable_ids::FlowTags;
 use bpmnkit_bpmn::{
     BpmnAssociation, BpmnDataAssociation, BpmnError, BpmnEscalation, BpmnFlowElement, BpmnMessage,
-    BpmnSequenceFlow, BpmnSignal, BpmnTextAnnotation,
+    BpmnProperty, BpmnSequenceFlow, BpmnSignal, BpmnTextAnnotation,
 };
 use bpmnkit_layout::{AnnotationSide, GridHint, LayoutHints};
 use indexmap::{IndexMap, IndexSet};
@@ -107,6 +107,30 @@ pub(crate) fn check<T>(shared: &SharedRef, result: Result<T, String>) -> Result<
     result.map_err(|message| fail(shared, message))
 }
 
+/// TS's `targetRefPlaceholder`: BPMN20.xsd requires a `dataInputAssociation`'s `targetRef`, and
+/// without an ioSpecification there is no data input to point at, so (like Camunda Modeler)
+/// the activity gets one `__targetRef_placeholder` property that every input association
+/// targets.
+fn target_ref_placeholder(activity: &mut BpmnFlowElement) -> String {
+    const NAME: &str = "__targetRef_placeholder";
+    let base = activity.base_mut();
+    let existing = base
+        .properties
+        .iter()
+        .find(|p| p.name.as_deref() == Some(NAME) && p.id.is_some())
+        .and_then(|p| p.id.clone());
+    if let Some(id) = existing {
+        return id;
+    }
+    let id = format!("Property_{}", base.id);
+    base.properties.push(BpmnProperty {
+        id: Some(id.clone()),
+        name: Some(NAME.to_owned()),
+        ..BpmnProperty::default()
+    });
+    id
+}
+
 /// The fields `ProcessBuilder`, `BranchBuilder` and `SubProcessContentBuilder` all have,
 /// under TS's names: `flowElements`/`_elements`, `elementIds`/`_ids`,
 /// `sequenceFlows`/`_flows`, `_textAnnotations`, `_associations`, `_annCounters`,
@@ -187,6 +211,23 @@ impl Scope {
         Ok(())
     }
 
+    /// TS's `addDataObjectReference`: adds the reference, then (for `isCollection`) marks the
+    /// data object it points at, when that object is in this scope.
+    pub fn add_data_object_reference(
+        &mut self,
+        element: BpmnFlowElement,
+        data_object_ref: &str,
+        is_collection: bool,
+    ) -> Result<(), String> {
+        self.add_data_element(element)?;
+        if is_collection {
+            if let Some(BpmnFlowElement::DataObject(d)) = self.find_mut(data_object_ref) {
+                d.is_collection = Some(true);
+            }
+        }
+        Ok(())
+    }
+
     /// TS's `addDataAssociation`: the activity owns the association; for `Input` the data
     /// reference is its source, for `Output` its target.
     pub fn add_data_association(
@@ -200,17 +241,28 @@ impl Scope {
                 "dataAssociation(): no element \"{activity_id}\" in this scope"
             ));
         };
-        let base = activity.base_mut();
         match direction {
-            DataDirection::Input => base.data_input_associations.push(BpmnDataAssociation {
-                source_refs: vec![data_ref_id.to_owned()],
-                ..BpmnDataAssociation::default()
-            }),
-            DataDirection::Output => base.data_output_associations.push(BpmnDataAssociation {
-                source_refs: vec![],
-                target_ref: Some(data_ref_id.to_owned()),
-                ..BpmnDataAssociation::default()
-            }),
+            DataDirection::Input => {
+                let target = target_ref_placeholder(activity);
+                activity
+                    .base_mut()
+                    .data_input_associations
+                    .push(BpmnDataAssociation {
+                        source_refs: vec![data_ref_id.to_owned()],
+                        target_ref: Some(target),
+                        ..BpmnDataAssociation::default()
+                    });
+            }
+            DataDirection::Output => {
+                activity
+                    .base_mut()
+                    .data_output_associations
+                    .push(BpmnDataAssociation {
+                        source_refs: vec![],
+                        target_ref: Some(data_ref_id.to_owned()),
+                        ..BpmnDataAssociation::default()
+                    });
+            }
         }
         Ok(())
     }

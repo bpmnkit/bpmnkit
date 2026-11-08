@@ -2,5 +2,6 @@
 //! C8 to C7 export (`export.ts`).
 
 pub mod export;
-pub mod juel;
+// The translator lives in bpmnkit-bpmn so the serializer-side helpers can use it too.
+pub use bpmnkit_bpmn::juel;
 pub mod migrate;

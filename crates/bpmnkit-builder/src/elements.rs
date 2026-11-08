@@ -273,17 +273,61 @@ pub(crate) fn hoist_message_subscriptions(mut defs: BpmnDefinitions) -> BpmnDefi
     defs
 }
 
-/// TS's `buildMessageSubscriptionExt`: `[]` for an absent or empty key.
-pub(crate) fn build_message_subscription_ext(correlation_key: Option<&str>) -> Vec<XmlElement> {
+/// TS's `buildMessageSubscriptionExt`: `[]` for an absent or empty key, unless a message
+/// name is set. Zeebe rejects a caught message without a subscription key and none can be
+/// inferred, so that case is an error rather than a model that cannot deploy.
+pub(crate) fn build_message_subscription_ext(
+    method: &str,
+    message_name: Option<&str>,
+    correlation_key: Option<&str>,
+) -> Result<Vec<XmlElement>, String> {
     let Some(key) = correlation_key.filter(|k| !k.is_empty()) else {
-        return vec![];
+        return match message_name.filter(|n| !n.is_empty()) {
+            Some(name) => Err(missing_correlation_key(&format!("{method}()"), name)),
+            None => Ok(vec![]),
+        };
     };
-    zeebe_extensions_to_xml_elements(&ZeebeExtensions {
+    Ok(zeebe_extensions_to_xml_elements(&ZeebeExtensions {
         subscription: Some(ZeebeSubscription {
             correlation_key: key.to_owned(),
         }),
         ..ZeebeExtensions::default()
-    })
+    }))
+}
+
+fn missing_correlation_key(subject: &str, message_name: &str) -> String {
+    format!("{subject}: message \"{message_name}\" needs a correlationKey; Camunda 8 requires a zeebe:subscription correlationKey on a message caught outside a process start event")
+}
+
+/// An event sub-process's message start is a catch too: Zeebe needs its correlation key.
+pub(crate) fn assert_event_sub_process_subscriptions(
+    elements: &[BpmnFlowElement],
+) -> Result<(), String> {
+    for el in elements {
+        let BpmnFlowElement::StartEvent(start) = el else {
+            continue;
+        };
+        let Some(message) = start.event_definitions.iter().find_map(|d| match d {
+            BpmnEventDefinition::Message(m) => Some(m),
+            _ => None,
+        }) else {
+            continue;
+        };
+        if start
+            .base
+            .extension_elements
+            .iter()
+            .any(|x| x.name == "zeebe:subscription")
+        {
+            continue;
+        }
+        let message_ref = message.message_ref.as_deref().unwrap_or(&start.base.id);
+        return Err(missing_correlation_key(
+            &format!("eventSubProcess(): start event \"{}\"", start.base.id),
+            message_ref,
+        ));
+    }
+    Ok(())
 }
 
 /// TS's `buildEventDefinitions`, always with the shared root lists (every TS call site
@@ -693,7 +737,7 @@ pub(crate) fn make_condition_expression(expression: &str) -> BpmnConditionExpres
     let mut attributes = Attrs::new();
     attributes.insert("xsi:type".to_owned(), "bpmn:tFormalExpression".to_owned());
     BpmnConditionExpression {
-        text: expression.to_owned(),
+        text: bpmnkit_bpmn::feel_condition::to_feel_condition(expression),
         attributes,
     }
 }
@@ -878,6 +922,14 @@ pub(crate) fn make_start_event_el(
             form_id: form_id.to_owned(),
             binding_type: None,
             version_tag: None,
+        });
+    }
+    if let Some(key) = options
+        .and_then(|o| o.correlation_key.as_deref())
+        .filter(|k| !k.is_empty())
+    {
+        ext.subscription = Some(ZeebeSubscription {
+            correlation_key: key.to_owned(),
         });
     }
     if let Some(properties) = options.and_then(|o| o.zeebe_properties.as_ref()) {
@@ -1219,7 +1271,11 @@ pub(crate) fn make_receive_task_el(
     options: Option<&MessageTaskOptions>,
     shared: &mut Shared,
 ) -> Result<BpmnFlowElement, String> {
-    let ext = build_message_subscription_ext(options.and_then(|o| o.correlation_key.as_deref()));
+    let ext = build_message_subscription_ext(
+        "receiveTask",
+        options.and_then(|o| o.message_name.as_deref()),
+        options.and_then(|o| o.correlation_key.as_deref()),
+    )?;
     message_task_el(id, BpmnElementType::ReceiveTask, options, Some(ext), shared)
 }
 
@@ -1288,8 +1344,10 @@ pub(crate) fn make_intermediate_catch_event_el(
         .map(|o| FlowElementOptions::from(&o.element))
         .unwrap_or_default();
     flow_options.extension_elements = Some(build_message_subscription_ext(
+        "intermediateCatchEvent",
+        options.and_then(|o| o.message_name.as_deref()),
         options.and_then(|o| o.correlation_key.as_deref()),
-    ));
+    )?);
     let mut el = make_flow_element(id, BpmnElementType::IntermediateCatchEvent, flow_options)?;
     if let (Some(o), Some(defs)) = (options, el.event_definitions_mut()) {
         *defs = build_event_definitions(&EventDefinitionOptions::from(o), shared);
@@ -1321,8 +1379,10 @@ pub(crate) fn make_boundary_event_el(
     resolve_boundary_event_args(id, options)?;
     let mut flow_options = FlowElementOptions::from(&options.element);
     flow_options.extension_elements = Some(build_message_subscription_ext(
+        "boundaryEvent",
+        options.message_name.as_deref(),
         options.correlation_key.as_deref(),
-    ));
+    )?);
     let mut el = make_flow_element(id, BpmnElementType::BoundaryEvent, flow_options)?;
     if let BpmnFlowElement::BoundaryEvent(boundary) = &mut el {
         boundary.attached_to_ref = options.attached_to.clone();
@@ -1351,11 +1411,10 @@ pub(crate) fn make_data_element(
     );
     let collection = options.and_then(|o| o.is_collection) == Some(true);
     match &mut el {
+        // BPMN20.xsd allows isCollection on the data object only; a reference asking for it
+        // marks its target instead (`Scope::add_data_object_reference`).
         BpmnFlowElement::DataObjectReference(d) => {
             d.data_object_ref = data_ref.map(str::to_owned);
-            if collection {
-                d.is_collection = Some(true);
-            }
         }
         BpmnFlowElement::DataStoreReference(d) => d.data_store_ref = data_ref.map(str::to_owned),
         BpmnFlowElement::DataObject(d) if collection => d.is_collection = Some(true),

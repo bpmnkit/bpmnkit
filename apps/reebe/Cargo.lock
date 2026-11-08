@@ -361,6 +361,7 @@ dependencies = [
 name = "bpmnkit-bpmn"
 version = "0.1.0"
 dependencies = [
+ "bpmnkit-feel",
  "bpmnkit-spec",
  "bpmnkit-xml",
  "indexmap 2.13.0",

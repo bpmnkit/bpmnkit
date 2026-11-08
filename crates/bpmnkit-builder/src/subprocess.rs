@@ -78,12 +78,21 @@ macro_rules! scope_methods {
             data_object_ref: &str,
             options: Option<DataElementOptions>,
         ) -> &mut Self {
-            self.add_data(
-                ::bpmnkit_bpmn::BpmnElementType::DataObjectReference,
+            if self.failed() {
+                return self;
+            }
+            let collection = options.as_ref().and_then(|o| o.is_collection) == Some(true);
+            let el = $crate::elements::make_data_element(
                 id,
+                ::bpmnkit_bpmn::BpmnElementType::DataObjectReference,
                 Some(data_object_ref),
-                options,
-            )
+                options.as_ref(),
+            );
+            let added = self
+                .scope
+                .add_data_object_reference(el, data_object_ref, collection);
+            let _ = $crate::shared::check(&self.shared, added);
+            self
         }
 
         /// TS's `dataStoreReference()` (only `name` is read).
@@ -572,6 +581,10 @@ pub(crate) fn make_event_sub_process_el(
     options: Option<&ElementOptions>,
 ) -> Result<BpmnFlowElement, Failed> {
     let sub = run_content(shared, true, content)?;
+    check(
+        shared,
+        crate::elements::assert_event_sub_process_subscriptions(&sub.elements),
+    )?;
     let made = make_flow_element(id, BpmnElementType::SubProcess, flow_options(options));
     let mut el = check(shared, made)?;
     if let BpmnFlowElement::SubProcess(sp) = &mut el {

@@ -180,3 +180,42 @@ fn compact_corpus() {
         failures.join("\n")
     );
 }
+
+fn expand_json_str(json: &str) -> bpmnkit_bpmn::BpmnDefinitions {
+    reset_id_counter();
+    expand(&serde_json::from_str::<CompactDiagram>(json).unwrap()).unwrap()
+}
+
+#[test]
+fn link_name_round_trips_through_expand_and_compactify() {
+    let defs = expand_json_str(
+        r#"{"id":"d","processes":[{"id":"p","elements":[
+            {"id":"t","type":"intermediateThrowEvent","eventType":"link","linkName":"jump"},
+            {"id":"c","type":"intermediateCatchEvent","eventType":"link","linkName":"jump"}
+        ],"flows":[]}]}"#,
+    );
+    let xml = serialize_bpmn(&defs);
+    assert_eq!(xml.matches("name=\"jump\"").count(), 2, "{xml}");
+    let compact = to_value(&compactify(&defs));
+    let elements = &compact["processes"][0]["elements"];
+    assert_eq!(elements[0]["linkName"], "jump");
+    assert_eq!(elements[1]["linkName"], "jump");
+}
+
+#[test]
+fn expand_turns_flow_and_multi_instance_conditions_into_feel() {
+    let defs = expand_json_str(
+        r#"{"id":"d","processes":[{"id":"p","elements":[
+            {"id":"a","type":"serviceTask","multiInstance":{"collection":"=items","completionCondition":"${done}"}},
+            {"id":"b","type":"task"},{"id":"c","type":"task"}
+        ],"flows":[
+            {"id":"f1","from":"a","to":"b","condition":"amount > 5"},
+            {"id":"f2","from":"a","to":"c","condition":"=already"}
+        ]}]}"#,
+    );
+    let xml = serialize_bpmn(&defs);
+    assert!(xml.contains(">=amount &gt; 5<"), "{xml}");
+    assert!(xml.contains(">=already<"), "{xml}");
+    assert!(xml.contains("<bpmn:completionCondition"), "{xml}");
+    assert!(xml.contains(">=done<"), "{xml}");
+}

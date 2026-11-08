@@ -608,13 +608,8 @@
 			}
 		},
 		{
-			"name": "receive task without key and with empty key",
+			"name": "receive task with key and with orphan key",
 			"steps": [
-				{
-					"method": "receiveTask",
-					"id": "r",
-					"args": ["{\"messageName\":\"M1\",\"correlationKey\":\"\"}"]
-				},
 				{
 					"method": "receiveTask",
 					"id": "r2",
@@ -627,14 +622,36 @@
 				}
 			],
 			"ok": {
-				"flowElements": "[{\"id\":\"r\",\"incoming\":[],\"outgoing\":[\"Flow_r_r2\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"receiveTask\",\"messageRef\":\"Message_M1\"},{\"id\":\"r2\",\"incoming\":[\"Flow_r_r2\"],\"outgoing\":[\"Flow_r2_r3\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"receiveTask\",\"messageRef\":\"Message_M1\"},{\"id\":\"r3\",\"incoming\":[\"Flow_r2_r3\"],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:subscription\",\"attributes\":{\"correlationKey\":\"=orphan\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"receiveTask\"}]",
-				"sequenceFlows": "[{\"id\":\"Flow_r_r2\",\"sourceRef\":\"r\",\"targetRef\":\"r2\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_r2_r3\",\"sourceRef\":\"r2\",\"targetRef\":\"r3\",\"extensionElements\":[],\"unknownAttributes\":{}}]",
+				"flowElements": "[{\"id\":\"r2\",\"incoming\":[],\"outgoing\":[\"Flow_r2_r3\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"receiveTask\",\"messageRef\":\"Message_M1\"},{\"id\":\"r3\",\"incoming\":[\"Flow_r2_r3\"],\"outgoing\":[],\"extensionElements\":[{\"name\":\"zeebe:subscription\",\"attributes\":{\"correlationKey\":\"=orphan\"},\"children\":[]}],\"unknownAttributes\":{},\"type\":\"receiveTask\"}]",
+				"sequenceFlows": "[{\"id\":\"Flow_r2_r3\",\"sourceRef\":\"r2\",\"targetRef\":\"r3\",\"extensionElements\":[],\"unknownAttributes\":{}}]",
 				"extensionElements": "[]",
 				"messages": "[{\"id\":\"Message_M1\",\"name\":\"M1\",\"unknownAttributes\":{},\"extensionElements\":[{\"name\":\"zeebe:subscription\",\"attributes\":{\"correlationKey\":\"=k\"},\"children\":[]}]}]",
 				"errors": "[]",
 				"signals": "[]",
 				"escalations": "[]"
 			}
+		},
+		{
+			"name": "receive task with empty key is refused",
+			"steps": [
+				{
+					"method": "receiveTask",
+					"id": "r",
+					"args": ["{\"messageName\":\"M1\",\"correlationKey\":\"\"}"]
+				}
+			],
+			"error": "receiveTask(): message \"M1\" needs a correlationKey; Camunda 8 requires a zeebe:subscription correlationKey on a message caught outside a process start event"
+		},
+		{
+			"name": "receive task without key is refused",
+			"steps": [
+				{
+					"method": "receiveTask",
+					"id": "r",
+					"args": ["{\"messageName\":\"M1\"}"]
+				}
+			],
+			"error": "receiveTask(): message \"M1\" needs a correlationKey; Camunda 8 requires a zeebe:subscription correlationKey on a message caught outside a process start event"
 		},
 		{
 			"name": "gateways",
@@ -1005,7 +1022,7 @@
 				}
 			],
 			"ok": {
-				"flowElements": "[{\"id\":\"do1\",\"name\":\"D\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"dataObject\",\"isCollection\":true},{\"id\":\"do2\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"dataObject\"},{\"id\":\"dr1\",\"name\":\"R\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"dataObjectReference\",\"dataObjectRef\":\"do1\",\"isCollection\":true},{\"id\":\"dr2\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"dataObjectReference\",\"dataObjectRef\":\"do2\"},{\"id\":\"ds\",\"name\":\"S\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"dataStoreReference\",\"dataStoreRef\":\"store\"}]",
+				"flowElements": "[{\"id\":\"do1\",\"name\":\"D\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"dataObject\",\"isCollection\":true},{\"id\":\"do2\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"dataObject\"},{\"id\":\"dr1\",\"name\":\"R\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"dataObjectReference\",\"dataObjectRef\":\"do1\"},{\"id\":\"dr2\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"dataObjectReference\",\"dataObjectRef\":\"do2\"},{\"id\":\"ds\",\"name\":\"S\",\"incoming\":[],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"dataStoreReference\",\"dataStoreRef\":\"store\"}]",
 				"sequenceFlows": "[]",
 				"extensionElements": "[]",
 				"messages": "[]",
@@ -1067,7 +1084,7 @@
 		}
 	],
 	"nested": {
-		"joins": "{\"id\":\"j\",\"isExecutable\":true,\"extensionElements\":[],\"flowElements\":[{\"id\":\"gw\",\"incoming\":[],\"outgoing\":[\"Flow_gw_A\",\"Flow_gw_B\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"exclusiveGateway\"},{\"id\":\"A\",\"incoming\":[\"Flow_gw_A\"],\"outgoing\":[\"Flow_A_gw_join\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"B\",\"incoming\":[\"Flow_gw_B\"],\"outgoing\":[\"Flow_B_gw_join\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"E\",\"incoming\":[\"Flow_gw_join_E\"],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"gw_join\",\"incoming\":[\"Flow_A_gw_join\",\"Flow_B_gw_join\"],\"outgoing\":[\"Flow_gw_join_E\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"exclusiveGateway\"}],\"sequenceFlows\":[{\"id\":\"Flow_gw_A\",\"sourceRef\":\"gw\",\"targetRef\":\"A\",\"name\":\"a\",\"conditionExpression\":{\"text\":\"x\",\"attributes\":{\"xsi:type\":\"bpmn:tFormalExpression\"}},\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_gw_B\",\"sourceRef\":\"gw\",\"targetRef\":\"B\",\"name\":\"b\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_A_gw_join\",\"sourceRef\":\"A\",\"targetRef\":\"gw_join\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_B_gw_join\",\"sourceRef\":\"B\",\"targetRef\":\"gw_join\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_gw_join_E\",\"sourceRef\":\"gw_join\",\"targetRef\":\"E\",\"extensionElements\":[],\"unknownAttributes\":{}}],\"textAnnotations\":[],\"associations\":[],\"groups\":[],\"unknownAttributes\":{}}",
+		"joins": "{\"id\":\"j\",\"isExecutable\":true,\"extensionElements\":[],\"flowElements\":[{\"id\":\"gw\",\"incoming\":[],\"outgoing\":[\"Flow_gw_A\",\"Flow_gw_B\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"exclusiveGateway\"},{\"id\":\"A\",\"incoming\":[\"Flow_gw_A\"],\"outgoing\":[\"Flow_A_gw_join\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"B\",\"incoming\":[\"Flow_gw_B\"],\"outgoing\":[\"Flow_B_gw_join\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"E\",\"incoming\":[\"Flow_gw_join_E\"],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"gw_join\",\"incoming\":[\"Flow_A_gw_join\",\"Flow_B_gw_join\"],\"outgoing\":[\"Flow_gw_join_E\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"exclusiveGateway\"}],\"sequenceFlows\":[{\"id\":\"Flow_gw_A\",\"sourceRef\":\"gw\",\"targetRef\":\"A\",\"name\":\"a\",\"conditionExpression\":{\"text\":\"=x\",\"attributes\":{\"xsi:type\":\"bpmn:tFormalExpression\"}},\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_gw_B\",\"sourceRef\":\"gw\",\"targetRef\":\"B\",\"name\":\"b\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_A_gw_join\",\"sourceRef\":\"A\",\"targetRef\":\"gw_join\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_B_gw_join\",\"sourceRef\":\"B\",\"targetRef\":\"gw_join\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_gw_join_E\",\"sourceRef\":\"gw_join\",\"targetRef\":\"E\",\"extensionElements\":[],\"unknownAttributes\":{}}],\"textAnnotations\":[],\"associations\":[],\"groups\":[],\"unknownAttributes\":{}}",
 		"parallel": "{\"id\":\"j2\",\"isExecutable\":true,\"extensionElements\":[],\"flowElements\":[{\"id\":\"fork\",\"incoming\":[],\"outgoing\":[\"Flow_fork_A\",\"Flow_fork_B\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"parallelGateway\"},{\"id\":\"A\",\"incoming\":[\"Flow_fork_A\"],\"outgoing\":[\"Flow_A_join\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"B\",\"incoming\":[\"Flow_fork_B\"],\"outgoing\":[\"Flow_B_join\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"join\",\"incoming\":[\"Flow_A_join\",\"Flow_B_join\"],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"parallelGateway\"}],\"sequenceFlows\":[{\"id\":\"Flow_fork_A\",\"sourceRef\":\"fork\",\"targetRef\":\"A\",\"name\":\"a\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_fork_B\",\"sourceRef\":\"fork\",\"targetRef\":\"B\",\"name\":\"b\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_A_join\",\"sourceRef\":\"A\",\"targetRef\":\"join\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_B_join\",\"sourceRef\":\"B\",\"targetRef\":\"join\",\"extensionElements\":[],\"unknownAttributes\":{}}],\"textAnnotations\":[],\"associations\":[],\"groups\":[],\"unknownAttributes\":{}}",
 		"eventBased": "{\"id\":\"j3\",\"isExecutable\":true,\"extensionElements\":[],\"flowElements\":[{\"id\":\"eb\",\"incoming\":[],\"outgoing\":[\"Flow_eb_C1\",\"Flow_eb_C2\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"eventBasedGateway\"},{\"id\":\"C1\",\"incoming\":[\"Flow_eb_C1\"],\"outgoing\":[\"Flow_C1_A\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"intermediateCatchEvent\",\"eventDefinitions\":[{\"type\":\"timer\",\"timeDuration\":\"PT1M\",\"id\":\"C1_TimerEventDefinition\"}]},{\"id\":\"A\",\"incoming\":[\"Flow_C1_A\"],\"outgoing\":[\"Flow_A_eb_join\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"C2\",\"incoming\":[\"Flow_eb_C2\"],\"outgoing\":[\"Flow_C2_B\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"intermediateCatchEvent\",\"eventDefinitions\":[{\"type\":\"message\",\"messageRef\":\"Message_m\",\"id\":\"C2_MessageEventDefinition\"}]},{\"id\":\"B\",\"incoming\":[\"Flow_C2_B\"],\"outgoing\":[\"Flow_B_eb_join\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"Z\",\"incoming\":[\"Flow_eb_join_Z\"],\"outgoing\":[],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"task\"},{\"id\":\"eb_join\",\"incoming\":[\"Flow_A_eb_join\",\"Flow_B_eb_join\"],\"outgoing\":[\"Flow_eb_join_Z\"],\"extensionElements\":[],\"unknownAttributes\":{},\"type\":\"exclusiveGateway\"}],\"sequenceFlows\":[{\"id\":\"Flow_eb_C1\",\"sourceRef\":\"eb\",\"targetRef\":\"C1\",\"name\":\"a\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_C1_A\",\"sourceRef\":\"C1\",\"targetRef\":\"A\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_eb_C2\",\"sourceRef\":\"eb\",\"targetRef\":\"C2\",\"name\":\"b\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_C2_B\",\"sourceRef\":\"C2\",\"targetRef\":\"B\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_A_eb_join\",\"sourceRef\":\"A\",\"targetRef\":\"eb_join\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_B_eb_join\",\"sourceRef\":\"B\",\"targetRef\":\"eb_join\",\"extensionElements\":[],\"unknownAttributes\":{}},{\"id\":\"Flow_eb_join_Z\",\"sourceRef\":\"eb_join\",\"targetRef\":\"Z\",\"extensionElements\":[],\"unknownAttributes\":{}}],\"textAnnotations\":[],\"associations\":[],\"groups\":[],\"unknownAttributes\":{}}",
 		"sub": {

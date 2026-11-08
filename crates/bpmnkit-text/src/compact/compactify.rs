@@ -215,6 +215,9 @@ fn compactify_element(el: &BpmnFlowElement) -> CompactElement {
             BpmnEventDefinition::Conditional(c) => {
                 result.condition = c.condition.clone();
             }
+            BpmnEventDefinition::Link(l) => {
+                result.link_name = l.name.clone();
+            }
             _ => {}
         }
     }

@@ -119,7 +119,7 @@ pub fn is_feel_name(name: &str) -> bool {
 }
 
 /// JavaScript's `\s` and `String.prototype.trim` whitespace.
-pub(crate) fn is_js_space(c: char) -> bool {
+pub fn is_js_space(c: char) -> bool {
     matches!(
         c,
         '\t' | '\n' | '\u{b}' | '\u{c}' | '\r' | ' ' | '\u{a0}' | '\u{1680}' | '\u{2000}'
@@ -134,7 +134,7 @@ pub(crate) fn is_js_space(c: char) -> bool {
 }
 
 /// `String.prototype.trim`.
-pub(crate) fn js_trim(s: &str) -> &str {
+pub fn js_trim(s: &str) -> &str {
     s.trim_matches(is_js_space)
 }
 
@@ -532,7 +532,7 @@ impl<'a> Parser<'a> {
 /// `#{…}`) into FEEL.
 ///
 /// ```
-/// use bpmnkit_compat::camunda7::juel::{translate_juel_to_feel, JuelToFeelOptions, JuelToFeelResult};
+/// use bpmnkit_bpmn::juel::{translate_juel_to_feel, JuelToFeelOptions, JuelToFeelResult};
 /// assert_eq!(
 ///     translate_juel_to_feel("${order.total > 100 && approved}", JuelToFeelOptions::default()),
 ///     JuelToFeelResult::Ok { feel: "order.total > 100 and approved".into() },

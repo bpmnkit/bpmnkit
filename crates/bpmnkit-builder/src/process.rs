@@ -1054,7 +1054,12 @@ impl ProcessBuilder {
             Some(data_object_ref),
             options.as_ref(),
         );
-        self.add_data(el)
+        let collection = options.as_ref().and_then(|o| o.is_collection) == Some(true);
+        let added = self
+            .scope
+            .add_data_object_reference(el, data_object_ref, collection);
+        let _ = check(&self.shared, added);
+        self
     }
 
     /// TS's `dataStoreReference()` (only `name` is read).

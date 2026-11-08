@@ -143,9 +143,17 @@
 									"id": "lc_LinkEventDefinition"
 								}
 							],
+							"properties": [
+								{
+									"id": "Property_lc",
+									"name": "__targetRef_placeholder",
+									"unknownAttributes": {}
+								}
+							],
 							"dataInputAssociations": [
 								{
 									"sourceRefs": ["dr"],
+									"targetRef": "Property_lc",
 									"unknownAttributes": {}
 								}
 							]

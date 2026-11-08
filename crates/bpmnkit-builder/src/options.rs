@@ -86,6 +86,10 @@ pub struct StartEventOptions {
     pub timer_date: Option<String>,
     pub timer_cycle: Option<String>,
     pub message_name: Option<String>,
+    /// FEEL expression correlating the message (`zeebe:subscription`). Required for the
+    /// message start event of an event sub-process; a process's own message start does not
+    /// need one.
+    pub correlation_key: Option<String>,
     pub form_id: Option<String>,
     pub zeebe_properties: Option<Vec<ZeebePropertyEntry>>,
     pub modeler_template: Option<String>,

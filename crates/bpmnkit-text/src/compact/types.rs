@@ -134,6 +134,9 @@ pub struct CompactElement {
     pub timer_duration: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub condition: Option<String>,
+    /// A link event's name: a throw jumps to the catch of the same name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub link_name: Option<String>,
 }
 
 impl CompactElement {

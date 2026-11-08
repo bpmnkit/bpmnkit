@@ -22,6 +22,7 @@
 //! - `expand` namespaces: `modeler` only with a platform version; `unknownAttributes`
 //!   likewise. No `exporter`.
 
+use bpmnkit_bpmn::feel_condition::to_feel_condition;
 use bpmnkit_bpmn::js::js_number_to_string;
 use bpmnkit_bpmn::rest_connector::rest_connector_task_type;
 use bpmnkit_bpmn::stable_ids::assign_event_definition_ids;
@@ -427,7 +428,7 @@ fn sequence_flow(f: &CompactFlow) -> BpmnSequenceFlow {
         target_ref: f.to.clone(),
         condition_expression: f.condition.as_ref().filter(|c| !c.is_empty()).map(|c| {
             BpmnConditionExpression {
-                text: c.clone(),
+                text: to_feel_condition(c),
                 attributes: Attrs::new(),
             }
         }),
@@ -509,7 +510,7 @@ fn multi_instance_loop(el: &CompactElement) -> Option<BpmnMultiInstanceLoopChara
             .as_ref()
             .filter(|c| !c.is_empty())
             .map(|c| BpmnConditionExpression {
-                text: c.clone(),
+                text: to_feel_condition(c),
                 attributes: Attrs::from_iter([(
                     "xsi:type".to_owned(),
                     "bpmn:tFormalExpression".to_owned(),
@@ -557,6 +558,10 @@ pub fn build_flow_element(
         Some(BpmnEventDefinition::Conditional(_)) if el.condition.is_some() => Some(
             make_conditional_definition(el.condition.as_deref().unwrap_or_default(), None),
         ),
+        Some(BpmnEventDefinition::Link(mut l)) if el.link_name.is_some() => {
+            l.name = el.link_name.clone();
+            Some(BpmnEventDefinition::Link(l))
+        }
         other => other,
     };
     let mut event_defs: Vec<BpmnEventDefinition> = event_def.into_iter().collect();

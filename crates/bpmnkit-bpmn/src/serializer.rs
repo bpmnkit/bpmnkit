@@ -27,6 +27,10 @@ const KNOWN_NAMESPACE_URIS: &[(&str, &str)] = &[
         "color",
         "http://www.omg.org/spec/BPMN/non-normative/color/1.0",
     ),
+    // Not an extension, but `xsi:type` rides on content the serializer copies (condition
+    // expressions, timer values) and the builder can add it to a parsed document that never
+    // declared xsi.
+    ("xsi", "http://www.w3.org/2001/XMLSchema-instance"),
 ];
 
 /// The prefix a document binds `uri` to: `""` when it is the default namespace, otherwise the
@@ -417,10 +421,8 @@ fn flow_element(fe: &BpmnFlowElement, p: &Prefixes) -> XmlElement {
             }
         }
         DataObjectReference(d) => {
+            // BPMN20.xsd allows isCollection only on dataObject; Zeebe rejects it here.
             set(&mut attrs, "dataObjectRef", &d.data_object_ref);
-            if d.is_collection == Some(true) {
-                attrs.insert("isCollection".into(), "true".into());
-            }
         }
         DataStoreReference(d) => set(&mut attrs, "dataStoreRef", &d.data_store_ref),
     }
