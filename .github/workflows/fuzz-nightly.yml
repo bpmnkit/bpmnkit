@@ -43,11 +43,12 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build the TS oracle's packages
-        # @bpmnkit/engine's wasm runner imports @bpmnkit/reebe-wasm, which this job does not
-        # build; tsc still emits dist/dmn.js, the only module the oracle loads.
+        # The oracle only loads dist/dmn.js, which needs feel and core. A full engine tsc would
+        # fail on the wasm runner's @bpmnkit/reebe-wasm import (not built in this job), so
+        # compile just dmn.ts via tsconfig.dmn.json instead of masking tsc's exit code.
         run: |
           pnpm --filter @bpmnkit/feel --filter @bpmnkit/core build
-          pnpm --filter @bpmnkit/engine exec tsc || true
+          pnpm --filter @bpmnkit/engine exec tsc -p tsconfig.dmn.json
           test -f packages/engine/dist/dmn.js
 
       - name: Cache Rust build
