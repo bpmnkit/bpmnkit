@@ -185,7 +185,8 @@ describe("validator agrees with Zeebe on the corpus", () => {
 		if (process.env.ZEEBE_AGREEMENT_REPORT !== undefined)
 			fs.writeFileSync(process.env.ZEEBE_AGREEMENT_REPORT, disagree.join("\n"))
 		expect(disagree).toEqual([])
-	})
+		// About 1,600 files: ~1 s locally, but past vitest's 5 s default on a loaded CI runner.
+	}, 60_000)
 })
 
 describe("every decidable rule has a negative and a positive case", () => {
