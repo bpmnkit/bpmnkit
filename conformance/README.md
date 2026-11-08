@@ -303,6 +303,35 @@ to object` (`stripForeignAttrs`) on a `bpmn:multiInstanceLoopCharacteristics` th
 `bpmn/miwg-c-7-0`; the parser gives the loop no `unknownAttributes`. There is no `migrate/` case for
 it until that is fixed.
 
+## Validate: `validate/`
+
+Recorded by `packages/core/tests/conformance-validate.test.ts`; the Rust runner is
+`crates/bpmnkit-conformance/src/validate.rs`. Each case is a folder with `input.bpmn` (or `case.json`
+`"input"`, a path from `conformance/`) and optional `case.json` `"runs"`; `expected/<run>.json` is
+`{"findings": validateDeployableXml(input, options)}` (findings as in the tooling cases).
+
+| Option of a run | Meaning |
+|---|---|
+| `camundaVersion` | Camunda version validated for; absent: the newest supported (`spec/zeebe-rules.json` `latestVersion`) |
+| `limits` | `{maxIdLength, maxNameLength, maxWorkerTypeLength}` |
+| `deployment` | `{processes, decisions, forms, resources}`: ids of the other resources of the deployment; stands in for the resolver |
+
+- `z<NN>-bad*` / `z<NN>-ok*`: one negative and one positive case per rule of `spec/zeebe-rules.json`
+  (`z140-bad` breaks Z140). A test fails when a rule with `check` other than `none` and no
+  `coveredBy` lacks either, or no `-bad` case reports `zeebe/<name>`. Hand-written; each verified with
+  `tools/zeebe-check` (rules newer than the Zeebe it pins were checked against Zeebe's source instead).
+- `repro-*`: the 26 files of `doc/deployability/repro`, by reference.
+
+### Agreement with Zeebe: `validate/zeebe-verdicts.json`
+
+Real Zeebe's verdict (`tools/zeebe-check`, the version in its `pom.xml`) on every `.bpmn` under
+`conformance/` and `doc/deployability/repro`, keyed by path, with the file's sha256 and Zeebe's errors.
+`node scripts/zeebe-verdicts.mjs` rewrites it (needs Java 21 and the built tool);
+`node scripts/zeebe-verdicts.mjs --check` fails when a file changed since (no Java needed). Both test
+suites run `validateDeployableXml` with Zeebe's version and zeebe-check's 255-character limits on every
+fresh entry and fail on a verdict they disagree with, except for the files `validate/undecidable.json`
+lists with the reason. Stale entries are skipped and counted.
+
 ## Layout: `layout/`
 
 Recorded by `packages/core/tests/conformance-layout.test.ts`; the Rust runner is
