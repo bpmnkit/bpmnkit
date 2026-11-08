@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/worker-type-length",
+      "message": "Worker types must not be longer than the configured max-worker-type-length of 255 characters.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Shorten the job type to at most 255 characters."
+    }
+  ]
+}

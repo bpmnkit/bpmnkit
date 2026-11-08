@@ -1092,8 +1092,8 @@ fn check_references(ctx: &mut Ctx, el: &El, parent: Option<&El>) {
                 let code = error.error_code.as_deref().unwrap_or("");
                 if code.starts_with('=') {
                     let before82 = !ctx.at_least(v("8.2"));
-                    let before84 = !ctx.at_least(v("8.4"));
-                    if before82 || (before84 && is_catch) {
+                    // Zeebe rejects catch expressions on every version (see the TS twin).
+                    if before82 || is_catch {
                         let expr_since = since("errorCodeExpression");
                         let (m, s) = if is_catch {
                             (
@@ -1141,11 +1141,7 @@ fn check_references(ctx: &mut Ctx, el: &El, parent: Option<&El>) {
             ),
             Some(e) => {
                 let code = e.escalation_code.as_deref().unwrap_or("");
-                if is_catch
-                    && code.starts_with('=')
-                    && ctx.at_least(v("8.2"))
-                    && !ctx.at_least(v("8.4"))
-                {
+                if is_catch && code.starts_with('=') && ctx.at_least(v("8.2")) {
                     ctx.report(
                         "no-expression",
                         id,

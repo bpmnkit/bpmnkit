@@ -915,9 +915,10 @@ function checkReferences(
 				"Set the error code.",
 			)
 		} else if (error?.errorCode?.startsWith("=")) {
+			// The camunda-compat plugin allows catch expressions from 8.4, but Zeebe
+			// (ErrorEventDefinitionValidator, still in 8.9) rejects them on every version.
 			const before82 = !atLeast(ctx.version, "8.2")
-			const before84 = !atLeast(ctx.version, "8.4")
-			if (before82 || (before84 && isCatch)) {
+			if (before82 || isCatch) {
 				report(
 					ctx,
 					"no-expression",
@@ -955,8 +956,7 @@ function checkReferences(
 		} else if (
 			isCatch &&
 			escalation?.escalationCode?.startsWith("=") &&
-			atLeast(ctx.version, "8.2") &&
-			!atLeast(ctx.version, "8.4")
+			atLeast(ctx.version, "8.2")
 		) {
 			report(
 				ctx,

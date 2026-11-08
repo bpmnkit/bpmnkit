@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "esp"
+      ],
+      "fixable": false,
+      "id": "zeebe/event-sub-process-start-type",
+      "message": "Start events in event subprocesses must be one of: message, timer, error, signal, escalation or conditional",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Give the event sub-process start event a message, timer, error, signal, escalation or conditional definition."
+    }
+  ]
+}

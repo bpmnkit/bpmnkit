@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 60,
+    "error": 61,
     "info": 13,
     "warning": 37
   },
@@ -1221,6 +1221,18 @@
     {
       "category": "deploy",
       "elementIds": [
+        "boundaryErrorExpr"
+      ],
+      "fixable": false,
+      "id": "compat/no-expression",
+      "message": "Error boundary event \"boundaryErrorExpr\" catches error code \"=code\", an expression, which Camunda 8.6 does not support in a catch event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Use a static error code."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
         "boundaryEscalation"
       ],
       "fixable": false,
@@ -1344,5 +1356,5 @@
     "name": "Camunda Cloud",
     "version": "8.6.0"
   },
-  "total": 110
+  "total": 111
 }

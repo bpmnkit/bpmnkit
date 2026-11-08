@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "p"
+      ],
+      "fixable": false,
+      "id": "zeebe/process-start-event",
+      "message": "Must have at least one start event",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Add a start event to the process."
+    }
+  ]
+}

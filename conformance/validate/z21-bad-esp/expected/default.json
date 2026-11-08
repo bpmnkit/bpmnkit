@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "esp"
+      ],
+      "fixable": false,
+      "id": "zeebe/non-interrupting-type",
+      "message": "Non-Interrupting event of this type is not allowed",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Make the start event interrupting, or use a message, timer, signal, escalation or conditional trigger."
+    }
+  ]
+}

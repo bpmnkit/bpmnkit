@@ -372,12 +372,15 @@
 			"section": "C",
 			"rule": "Duplicate message start events (same message name)",
 			"elements": ["process"],
-			"messages": ["Multiple message event definitions with the same name '%s' are not allowed."],
+			"messages": [
+				"Multiple message event definitions with the same name '%s' are not allowed.",
+				"A message cannot be referred by more than one start event"
+			],
 			"since": "8.0",
 			"kind": "static",
 			"severity": "error",
 			"check": "model",
-			"source": "U:200 -> V/ProcessValidator.java:~46"
+			"source": "U:200 -> V/ProcessValidator.java:~46; V/MessageValidator.java:100"
 		},
 		{
 			"id": "Z27",

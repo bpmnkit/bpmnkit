@@ -12127,6 +12127,268 @@
 			"ok": true,
 			"errors": []
 		},
+		"conformance/validate/z01-bad-data-input-target/input.bpmn": {
+			"sha256": "4557cfc3623fd2e93f3357c0cb2fee68655ba322dec705dfe7b4b304761d53f3",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=5: cvc-complex-type.2.4.b: The content of element 'bpmn:dataInputAssociation' is not complete. One of '{\"http://www.omg.org/spec/BPMN/20100524/MODEL\":sourceRef, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":targetRef}' is expected."
+				}
+			]
+		},
+		"conformance/validate/z01-bad-end-tag/input.bpmn": {
+			"sha256": "a3ae15bb5b4ca3d26ad5cb2ba1d09a6c5e022ff657b47da173a6092ef558fe29",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: SAXException while parsing input stream / Fatal Error: URI=null Line=5: The end-tag for element type \"bpmn:task\" must end with a '>' delimiter."
+				}
+			]
+		},
+		"conformance/validate/z01-bad-entity/input.bpmn": {
+			"sha256": "87312634e8605bfdd0a8cb2c28a10a154d1f424e2f3233a5710a0b31bb61e9c9",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: SAXException while parsing input stream / Fatal Error: URI=null Line=5: The entity \"nbsp\" was referenced, but not declared."
+				}
+			]
+		},
+		"conformance/validate/z01-bad-unbound-xsi/input.bpmn": {
+			"sha256": "27eac3ffdc1cc2ac9a337cd986cb12890749c29e292315cc8294b0281d637f8e",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: SAXException while parsing input stream / Fatal Error: URI=null Line=9: The prefix \"xsi\" for attribute \"xsi:type\" associated with an element type \"bpmn:conditionExpression\" is not bound."
+				}
+			]
+		},
+		"conformance/validate/z01-bad-waypoints/input.bpmn": {
+			"sha256": "12910808e55af008211ca51498f502ad5e65c1ba2c90a028a295fe333adb54e8",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=10: cvc-complex-type.2.4.i: The content of element 'bpmndi:BPMNEdge' is not complete. '\"http://www.omg.org/spec/DD/20100524/DI\":waypoint' is expected to occur a minimum of '2' times. One more instance is required to satisfy this constraint."
+				}
+			]
+		},
+		"conformance/validate/z01-bad-xsi-type/input.bpmn": {
+			"sha256": "e0347a7f8b42ef359481bdc3956efe5e4ff1557de7dbebc28ef1d64d2c2f61c5",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=5: cvc-elt.4.3: Type 'bpmn:tFormalExpression' is not validly derived from the type definition, 'tTask', of element 'bpmn:task'."
+				}
+			]
+		},
+		"conformance/validate/z01-bad/input.bpmn": {
+			"sha256": "03e885db5a5aaf796fa3a8fee01ba09af7a83e35fc8e5f68f81027f9c4342f9e",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=5: cvc-complex-type.2.4.a: Invalid content was found starting with element '{\"http://www.omg.org/spec/BPMN/20100524/MODEL\":extensionElements}'. One of '{\"http://www.omg.org/spec/BPMN/20100524/MODEL\":outgoing, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":ioSpecification, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":property, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":dataInputAssociation, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":dataOutputAssociation, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":resourceRole, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":loopCharacteristics}' is expected."
+				}
+			]
+		},
+		"conformance/validate/z01-ok/input.bpmn": {
+			"sha256": "d87df59addb445b37cc0eddd894a8a8411da0f3fda245c786116ba02f9f94917",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z02-bad/input.bpmn": {
+			"sha256": "2b6352fdcb0e9e9b44e1f6d8acba44fd979e28d547990a93b437aa4b80b066ac",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=2: cvc-complex-type.4: Attribute 'targetNamespace' must appear on element 'bpmn:definitions'."
+				}
+			]
+		},
+		"conformance/validate/z02-ok/input.bpmn": {
+			"sha256": "35bfa85dfe5b3c1c08674cd24a58fc6c9ad9c0b8f88d37780c1d2d9930dbe4fc",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z03-bad/input.bpmn": {
+			"sha256": "0ced6bf0261ae80b90293bc8642e3e2a2fc0473a565bf7a20f3aa6a141835ee7",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=7: cvc-complex-type.4: Attribute 'targetRef' must appear on element 'bpmn:sequenceFlow'."
+				}
+			]
+		},
+		"conformance/validate/z03-ok/input.bpmn": {
+			"sha256": "35bfa85dfe5b3c1c08674cd24a58fc6c9ad9c0b8f88d37780c1d2d9930dbe4fc",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z04-bad/input.bpmn": {
+			"sha256": "c7ebc7ab635eb412f32438e27a1d5a8ed279b7b17c32e0fafd9bb615ad7049be",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=9: cvc-complex-type.4: Attribute 'attachedToRef' must appear on element 'bpmn:boundaryEvent'."
+				}
+			]
+		},
+		"conformance/validate/z04-ok/input.bpmn": {
+			"sha256": "449bdac7d7c2708fc61076ad8750c96b56a155ea43aec3ca3187c0e2bb117044",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z05-bad/input.bpmn": {
+			"sha256": "2d4d560233931b2d17ed508fae43611187a94d361a1eb0c18b8b327c8c13dd8c",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=10: cvc-complex-type.4: Attribute 'targetRef' must appear on element 'bpmn:association'."
+				}
+			]
+		},
+		"conformance/validate/z05-ok/input.bpmn": {
+			"sha256": "c85ecbca2f144e35517e3d1a00c2474a3be58e4533a60a20aa9a4e389becbc0f",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z06-bad/input.bpmn": {
+			"sha256": "0aa8a76046121f6cef44d11a976f5301d04fc0bf7b596de84aecbb25d84e3a68",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=5: cvc-complex-type.4: Attribute 'name' must appear on element 'bpmn:linkEventDefinition'."
+				}
+			]
+		},
+		"conformance/validate/z06-ok/input.bpmn": {
+			"sha256": "3c803d4cba2722cdb8d4f5dce9a5bc147694e6115399a185e794ffe5ede8689b",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z07-bad-ncname/input.bpmn": {
+			"sha256": "429552bb29cf40ff90b718efdbcbe2c57668d40e5caa285c722a64c6e2aebe43",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=3: cvc-datatype-valid.1.2.1: 'order process' is not a valid value for 'NCName'."
+				}
+			]
+		},
+		"conformance/validate/z07-bad/input.bpmn": {
+			"sha256": "fbc3d976805df0247687f7844c59d7f9c96e55a91eb6bbef58d7ac47f4f2e788",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=5: cvc-id.2: There are multiple occurrences of ID value 's'."
+				}
+			]
+		},
+		"conformance/validate/z07-ok/input.bpmn": {
+			"sha256": "8d145d0718e8dddc287aaefde27260d8d8442406441c62859bf979e875f752bb",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z08-bad-outgoing/input.bpmn": {
+			"sha256": "70033bd328ebac97abad5e6ca05bdaaa2a584dbe910b834a1bfa079b51f3116f",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: Unable to find a model element instance for id f9"
+				}
+			]
+		},
+		"conformance/validate/z08-bad-qname/input.bpmn": {
+			"sha256": "aa18657d4edf1f41cca06e5613bbfd93545b99d29affbc66976aef397ab45de1",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=9: cvc-datatype-valid.1.2.1: 'service task' is not a valid value for 'QName'."
+				}
+			]
+		},
+		"conformance/validate/z08-bad/input.bpmn": {
+			"sha256": "3b80d9f0272370c4495bcc9fb184368092e543d522a86c7fbe7900dc937c58bf",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=10: cvc-id.1: There is no ID/IDREF binding for IDREF 'missing'."
+				}
+			]
+		},
+		"conformance/validate/z08-ok/input.bpmn": {
+			"sha256": "35bfa85dfe5b3c1c08674cd24a58fc6c9ad9c0b8f88d37780c1d2d9930dbe4fc",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z09-bad-enum/input.bpmn": {
+			"sha256": "828c5e8e6f944c23c233c39f25d4ee9e7e153a46c1467eb75ddbe0586fce58e6",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=5: cvc-datatype-valid.1.2.1: 'one' is not a valid value for 'integer'."
+				}
+			]
+		},
+		"conformance/validate/z09-bad/input.bpmn": {
+			"sha256": "9dc8d85b195a7ff4eacf4763abb9784ca28c2869dd179540704989688801bb0b",
+			"ok": false,
+			"errors": [
+				{
+					"element": "",
+					"message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=10: cvc-complex-type.3.2.2: Attribute 'isCollection' is not allowed to appear in element 'bpmn:dataObjectReference'."
+				}
+			]
+		},
+		"conformance/validate/z09-ok/input.bpmn": {
+			"sha256": "aedd3cfdf7116c7122a45b5edc4cb75c2a2fb6c1bd494843b080f0cedfad1d79",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z10-bad/input.bpmn": {
+			"sha256": "f6e5a8ec93e9bba1bbc9aa42349dfd4b4c4fe56ea88ed918153768f810eb5da5",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p > manualTask",
+					"message": "Element id must be present and not empty."
+				},
+				{
+					"element": "p > manualTask",
+					"message": "Element id must be present and not empty."
+				},
+				{
+					"element": "p > manualTask",
+					"message": "Element id must be present and not empty."
+				},
+				{
+					"element": "p > manualTask",
+					"message": "Element id must be present and not empty."
+				}
+			]
+		},
+		"conformance/validate/z10-ok/input.bpmn": {
+			"sha256": "35bfa85dfe5b3c1c08674cd24a58fc6c9ad9c0b8f88d37780c1d2d9930dbe4fc",
+			"ok": true,
+			"errors": []
+		},
 		"conformance/validate/z100-bad-feel/input.bpmn": {
 			"sha256": "5a18b24165be87563aa09e5c21718c9395c2327404a0316edf5d3a630b724d3f",
 			"ok": false,
@@ -12312,6 +12574,21 @@
 			"ok": true,
 			"errors": []
 		},
+		"conformance/validate/z11-bad/input.bpmn": {
+			"sha256": "dc0f1acd97e2a2f31b5902bdb03cbafb2fde36315f8ba1bdb64ed5614085e95d",
+			"ok": false,
+			"errors": [
+				{
+					"element": "definitions",
+					"message": "Must contain at least one executable process"
+				}
+			]
+		},
+		"conformance/validate/z11-ok/input.bpmn": {
+			"sha256": "35bfa85dfe5b3c1c08674cd24a58fc6c9ad9c0b8f88d37780c1d2d9930dbe4fc",
+			"ok": true,
+			"errors": []
+		},
 		"conformance/validate/z110-bad-binding/input.bpmn": {
 			"sha256": "193f08fe310b0bfa1424f5a4c01c24cef39b0041ab0aa2ff60a429d52b57f80a",
 			"ok": false,
@@ -12481,6 +12758,21 @@
 			"ok": true,
 			"errors": []
 		},
+		"conformance/validate/z12-bad/input.bpmn": {
+			"sha256": "b6e00cfbeeaf8b3e4df6e12ba45b95001f20fc7f921d5a46bc8f536983bc7240",
+			"ok": false,
+			"errors": [
+				{
+					"element": "txxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+					"message": "IDs must not be longer than the configured max-id-length of 255 characters."
+				}
+			]
+		},
+		"conformance/validate/z12-ok/input.bpmn": {
+			"sha256": "7d995442a593e078eb4dfbf354e6fdbc8b5ac162a6e847067f99b3750c3cfab3",
+			"ok": true,
+			"errors": []
+		},
 		"conformance/validate/z120-bad/input.bpmn": {
 			"sha256": "372aac84f12dded65124adcd76e152f93342beb35799ad23980d730fee40aa68",
 			"ok": false,
@@ -12646,6 +12938,21 @@
 			"ok": true,
 			"errors": []
 		},
+		"conformance/validate/z13-bad/input.bpmn": {
+			"sha256": "cd93536d6b2e3b842f14bd66774f7b46304002fe36008061b08dceea7f9f3f83",
+			"ok": false,
+			"errors": [
+				{
+					"element": "t",
+					"message": "Names must not be longer than the configured max-name-length of 255 characters."
+				}
+			]
+		},
+		"conformance/validate/z13-ok/input.bpmn": {
+			"sha256": "9e1e3738eb8900a1ce58a26d64ad79197a10f7c6392beb054874c80c6a7b545e",
+			"ok": true,
+			"errors": []
+		},
 		"conformance/validate/z130-bad/input.bpmn": {
 			"sha256": "5e6a1655c3a899d877fb44b92b457068dec8dd31f1bdd9e2ef448615999e8b33",
 			"ok": true,
@@ -12777,6 +13084,21 @@
 		},
 		"conformance/validate/z139-ok/input.bpmn": {
 			"sha256": "5f36f9ddfb1be82ad0cb5580b32e26381f002288592f8c28002cabcc09778920",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z14-bad/input.bpmn": {
+			"sha256": "6615d57060aeab05a96a13b4ba24dcf9dcc09cf7be91a614146d4674c174ced3",
+			"ok": false,
+			"errors": [
+				{
+					"element": "t > extensionElements > taskDefinition",
+					"message": "Worker types must not be longer than the configured max-worker-type-length of 255 characters."
+				}
+			]
+		},
+		"conformance/validate/z14-ok/input.bpmn": {
+			"sha256": "49f6232fd203af36fc9be2bf7bcad6c0a6b7b50ac504e1caf5b5678c604fe559",
 			"ok": true,
 			"errors": []
 		},
@@ -12950,6 +13272,21 @@
 			"ok": true,
 			"errors": []
 		},
+		"conformance/validate/z15-bad/input.bpmn": {
+			"sha256": "f46e3932216d25ea9e7d193681d668f752cf5977f13934f883b937a097ac86a8",
+			"ok": false,
+			"errors": [
+				{
+					"element": "t",
+					"message": "Elements of type 'ComplexGateway' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
+				}
+			]
+		},
+		"conformance/validate/z15-ok/input.bpmn": {
+			"sha256": "e3a0da28eccf4cce2c4d6d068a7d98b964d97a417d2852a70e4cde861577befe",
+			"ok": true,
+			"errors": []
+		},
 		"conformance/validate/z150-bad/input.bpmn": {
 			"sha256": "71379b826c404a7d67ae913b144e410103685a6582f119a075155ff12f818aeb",
 			"ok": false,
@@ -13120,6 +13457,21 @@
 			"ok": true,
 			"errors": []
 		},
+		"conformance/validate/z16-bad/input.bpmn": {
+			"sha256": "0742291b8240148639f2d8d3d7850a41d1277b89576c0fd6f96e2d919ef61f24",
+			"ok": false,
+			"errors": [
+				{
+					"element": "cd",
+					"message": "Event definition of this type is not supported"
+				}
+			]
+		},
+		"conformance/validate/z16-ok/input.bpmn": {
+			"sha256": "9ab2bfb81d8af40e2c8f77f750d32e945375cd275409e1042e9a1ebdf1b40159",
+			"ok": true,
+			"errors": []
+		},
 		"conformance/validate/z160-bad/input.bpmn": {
 			"sha256": "e17c3fcfed7543198e95d4d31c8c679464bd7c5638dd370446f032b59a7201a5",
 			"ok": false,
@@ -13255,6 +13607,21 @@
 			"ok": true,
 			"errors": []
 		},
+		"conformance/validate/z17-bad/input.bpmn": {
+			"sha256": "05e98995674d3a4d4883f1b5e12f516d50fdd05a86e66777e73aac0cb0d03f7f",
+			"ok": false,
+			"errors": [
+				{
+					"element": "esp",
+					"message": "Start events in event subprocesses must be one of: message, timer, error, signal, escalation or conditional"
+				}
+			]
+		},
+		"conformance/validate/z17-ok/input.bpmn": {
+			"sha256": "7c4745c534eb98a6a019246535d515ab2feb6bdc5fe09a490babf3a8a6c34501",
+			"ok": true,
+			"errors": []
+		},
 		"conformance/validate/z175-bad-event/input.bpmn": {
 			"sha256": "b836f3408961669796a19d34d7b1dd6445a31e61bb9db54e7a884388da4fa991",
 			"ok": false,
@@ -13330,6 +13697,21 @@
 			"ok": true,
 			"errors": []
 		},
+		"conformance/validate/z18-bad/input.bpmn": {
+			"sha256": "b56a4559d9a5e06ffe039206ece67245b991d861d650b3e1efb28432d16b9d27",
+			"ok": false,
+			"errors": [
+				{
+					"element": "t",
+					"message": "Event definition must be one of: message, timer, signal, link or conditional"
+				}
+			]
+		},
+		"conformance/validate/z18-ok/input.bpmn": {
+			"sha256": "936dbc123ddf8758feaf48d9ae8372ffc755d5bda2d49f1136673a7af5530255",
+			"ok": true,
+			"errors": []
+		},
 		"conformance/validate/z183-bad/input.bpmn": {
 			"sha256": "bed4c047828f5e2f0c1b5abcc344fac2eb5ed0073f2b96080ba4a83d54bfc461",
 			"ok": true,
@@ -13337,6 +13719,1313 @@
 		},
 		"conformance/validate/z183-ok/input.bpmn": {
 			"sha256": "bed4c047828f5e2f0c1b5abcc344fac2eb5ed0073f2b96080ba4a83d54bfc461",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z19-bad/input.bpmn": {
+			"sha256": "c3334c5e5ff43bc53b8cf6dd4b53c24550cc5ab92d2553dd5197d4d456c08d62",
+			"ok": false,
+			"errors": [
+				{
+					"element": "b",
+					"message": "Boundary events must be one of: timer, message, error, signal, escalation, conditional"
+				}
+			]
+		},
+		"conformance/validate/z19-ok/input.bpmn": {
+			"sha256": "0146a55c9c7b8300fe4376df0e7f55d5794c6dba7161c74f1fbd81d438e8a069",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z20-bad/input.bpmn": {
+			"sha256": "a0a437d6deb22dc17ec499c3b6dc249ec0f3c2bc2f31904c8994a05cccf79d7c",
+			"ok": false,
+			"errors": [
+				{
+					"element": "e",
+					"message": "End events must be one of: none, error, message, terminate, signal, escalation or compensation"
+				}
+			]
+		},
+		"conformance/validate/z20-ok/input.bpmn": {
+			"sha256": "edb8cbc704accb9a1742994a3a9f762ee7a158c34bc584a4150f89698f61ca81",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z21-bad-esp/input.bpmn": {
+			"sha256": "6097b6dbfa301795b627ebad3216d81cdbc645ee4d933d7866c4ae74785d646c",
+			"ok": false,
+			"errors": [
+				{
+					"element": "esp",
+					"message": "Non-Interrupting event of this type is not allowed"
+				}
+			]
+		},
+		"conformance/validate/z21-bad/input.bpmn": {
+			"sha256": "08dcff4d124b6fcf30da0cb84ef7369a7cdeb202527dfd0643cd5ceb5987acd1",
+			"ok": false,
+			"errors": [
+				{
+					"element": "b",
+					"message": "Non-Interrupting event of this type is not allowed"
+				}
+			]
+		},
+		"conformance/validate/z21-ok/input.bpmn": {
+			"sha256": "5880f4c06261b4676b950a5e7aa39a46523e10e31f1986a1c5ebc9ffcaa9b8f4",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z22-bad/input.bpmn": {
+			"sha256": "ce9313448686b49108c8fd8ca33eea519ec5b95658b9c2934824e80590760eb5",
+			"ok": false,
+			"errors": [
+				{
+					"element": "b",
+					"message": "An escalation boundary event should only be attached to a subprocess, or a call activity."
+				}
+			]
+		},
+		"conformance/validate/z22-ok/input.bpmn": {
+			"sha256": "df9b3c67b836513c64b5a86ffcd787a08702176aa880c5126be8e21a3b2089d4",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z23-bad/input.bpmn": {
+			"sha256": "68735a9ab74109d5f80352ba210ef5757381cfdb4f22a5ada473c03edd354603",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				}
+			]
+		},
+		"conformance/validate/z23-ok/input.bpmn": {
+			"sha256": "35bfa85dfe5b3c1c08674cd24a58fc6c9ad9c0b8f88d37780c1d2d9930dbe4fc",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z24-bad/input.bpmn": {
+			"sha256": "c3724edc722f20715602a2da500aa45a8300a1e0305db2aee95c7dc1a7c4df30",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Multiple none start events are not allowed"
+				}
+			]
+		},
+		"conformance/validate/z24-ok/input.bpmn": {
+			"sha256": "7291198d9d1cf1a4a0a17a7b0b996610df2e368105ea969632b3bf89fa9a4dd7",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z25-bad-nested/input.bpmn": {
+			"sha256": "54b1bea7217575cdf7f0bff278785d85c69f4d4ad93a7239b2724a9a151eaab2",
+			"ok": false,
+			"errors": [
+				{
+					"element": "t",
+					"message": "Multiple message event definitions with the same name 'order' are not allowed."
+				}
+			]
+		},
+		"conformance/validate/z25-bad/input.bpmn": {
+			"sha256": "9376f32749539fd4c935ff52bb5ff3d8bfb87cdf3042f746cf2a8556da8c6f28",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Multiple message event definitions with the same name 'order' are not allowed."
+				}
+			]
+		},
+		"conformance/validate/z25-ok/input.bpmn": {
+			"sha256": "4dc0d2213719fade79a5bc56c35dc1ab69f0280110139455d5c94bf40a994d40",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z26-bad-shared-message/input.bpmn": {
+			"sha256": "b30154b955e801a9b834654e1a1622c4254efbff039aa33ee36f2c29251f045f",
+			"ok": false,
+			"errors": [
+				{
+					"element": "M",
+					"message": "A message cannot be referred by more than one start event"
+				}
+			]
+		},
+		"conformance/validate/z26-bad/input.bpmn": {
+			"sha256": "d4a893bd43e2dfc7488d90daec1759a3e4d47b29c9c95b803a1c902a6dc26448",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Multiple message event definitions with the same name 'order' are not allowed."
+				}
+			]
+		},
+		"conformance/validate/z26-ok/input.bpmn": {
+			"sha256": "b2a198f2c7ad817d0022a6a3c4fc9964baefccf72caf5240bd527cfdea4e6591",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z27-bad/input.bpmn": {
+			"sha256": "fdc3b59c0fe4891119e6d053f6c4c45ed9afcd9ecc8a3f3a987a7f70277c7011",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Multiple signal event definitions with the same name 'go' are not allowed."
+				}
+			]
+		},
+		"conformance/validate/z27-ok/input.bpmn": {
+			"sha256": "6f9897b03ef26d94698fa17af4430f0d53b0ca2763ee815a7460302e9217b1c5",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z28-bad-catch-all/input.bpmn": {
+			"sha256": "4c37d86cf5cc1882cb8aae0875bc56a387a704fcd6a59db77e0b8adcdbd65312",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "The same scope can not contain more than one error catch event without error code. An error catch event without error code catches all errors."
+				}
+			]
+		},
+		"conformance/validate/z28-bad/input.bpmn": {
+			"sha256": "d45f7aa0e3ad4513069da440d85de5641b795a459be93c373ea391bbc3caf12a",
+			"ok": false,
+			"errors": [
+				{
+					"element": "t",
+					"message": "Multiple error catch events with the same error code 'c' are not supported on the same scope."
+				}
+			]
+		},
+		"conformance/validate/z28-ok/input.bpmn": {
+			"sha256": "abaa4b03bd2511eb5b62ebd27c33ee34c9451f49a99c60d1fd61c4964854cb2f",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z29-bad/input.bpmn": {
+			"sha256": "4e4551dea55382d23559c3cf564d9ae0b406b527fb9602217134dcaeb0f2eb4d",
+			"ok": false,
+			"errors": [
+				{
+					"element": "t",
+					"message": "Multiple escalation catch events with the same escalation code 'x' are not supported on the same scope."
+				}
+			]
+		},
+		"conformance/validate/z29-ok/input.bpmn": {
+			"sha256": "2719c046bae36edac61c11d8997dd7e8b96354169a1f2c19afc7ae113b865034",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z30-bad/input.bpmn": {
+			"sha256": "7b5eeefe4bc58f8c34b1cf400b4e129c1a2920b4b4e6f69b5fbf513fa4058844",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Duplicate condition expression '=x > 1' found in conditional start events of process 'p'. Condition expressions for conditional start events must be unique within a process."
+				}
+			]
+		},
+		"conformance/validate/z30-ok/input.bpmn": {
+			"sha256": "d0e6944699ca550aa6f79ef558254bcdeec10aaabc701665709899f012b46c03",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z31-bad/input.bpmn": {
+			"sha256": "f74d171365c3b575a40fc1693dbfabe8e666bcc600eafec817fe55780e8c0c42",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Duplicate condition expression '=x > 1' found in conditional start events of event subprocesses in process 'p'. Condition expressions for conditional start events in event subprocesses must be unique within a process."
+				}
+			]
+		},
+		"conformance/validate/z31-ok/input.bpmn": {
+			"sha256": "053df2fb1029207e2863400f16a93307c5529e1589370a9603ce57d8a67f6371",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z32-bad-signal/input.bpmn": {
+			"sha256": "5ca93103cae7e2729d65ff45e95234e2b5f0df35bf4866d0c3e22dba61b3a484",
+			"ok": false,
+			"errors": [
+				{
+					"element": "t",
+					"message": "Multiple signal event definitions with the same name 'go' are not allowed."
+				}
+			]
+		},
+		"conformance/validate/z32-bad/input.bpmn": {
+			"sha256": "902ade51928980c20db9bfbe9c77d11aa8a6cb085996aad5adf79dc0cc1e4366",
+			"ok": false,
+			"errors": [
+				{
+					"element": "t",
+					"message": "Multiple message event definitions with the same name 'order' are not allowed."
+				}
+			]
+		},
+		"conformance/validate/z32-ok/input.bpmn": {
+			"sha256": "95e2c43f4df45e37d1a76a428b362f52a9ce0b810b85ca7567dc8c37404094f3",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z33-bad-job-priority/input.bpmn": {
+			"sha256": "13f1a6860743b68c73a5477430292a814ed7de4e2059db454a84a3ee4586e1ea",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z33-bad/input.bpmn": {
+			"sha256": "3be02664eb323936440e6946bf2f71982241efd2b185c55f518dbeead914520c",
+			"ok": false,
+			"errors": [
+				{
+					"element": "p",
+					"message": "Must have exactly one 'zeebe:versionTag' extension element when exists. Please check process definition XML and retain only one extension element."
+				}
+			]
+		},
+		"conformance/validate/z33-ok/input.bpmn": {
+			"sha256": "37a28d88267256ca553aac57d8502df9cfe49cac81d1139814d0d2c7daede4dc",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z34-bad-title/input.bpmn": {
+			"sha256": "2c24b2b58ecf5e46794bac37d11b26ea9ebecc61e8d426ff03e2eecc8aa46c4e",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z34-bad/input.bpmn": {
+			"sha256": "ef99f74a48fdd9c419b35d55d8160b25f43268148bf1d45da7b1b7432c1067c2",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z34-ok/input.bpmn": {
+			"sha256": "dcd368416c3f15be8bd9f595b0949d63af4fa4fd0df35962391dc9116ef204f7",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z37-bad/input.bpmn": {
+			"sha256": "bd29f9736cefe762879023e2ece95657222ca10f3064e0081dca29d88bac4c14",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Start",
+					"message": "Start event can't have more than one type"
+				}
+			]
+		},
+		"conformance/validate/z37-ok/input.bpmn": {
+			"sha256": "4943fe607e2198e3539a0a3a414bf0376d1bd324ae8a40384a737b0be0914511",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z38-bad/input.bpmn": {
+			"sha256": "0b4dd2bd4baeae63ddeb4a41648aa661a6c3ffe5b7b5eb3eb17e8a5e5be9eb3d",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z38-ok/input.bpmn": {
+			"sha256": "3640e1720411e59fd7092360200046a12fc9a75c2952d295619b7fb973465ff8",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z39-bad/input.bpmn": {
+			"sha256": "b4105725feb7b03509ba6fa3aa942effd863b1a7a990386a6b3eba55897f16e4",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Start",
+					"message": "Execution listeners of type 'start' are not supported by start events"
+				}
+			]
+		},
+		"conformance/validate/z39-ok/input.bpmn": {
+			"sha256": "20b39ebd5362e3df9a0b99964f66c8d8acf498068bab4795e96a72a9634544d1",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z40-bad/input.bpmn": {
+			"sha256": "ff5f0060bf7ece3948f848237c5da87bdfacf8fbba71f46168cf958f5b42aa08",
+			"ok": false,
+			"errors": [
+				{
+					"element": "EventSub",
+					"message": "Start events in event subprocesses must be one of: message, timer, error, signal, escalation or conditional"
+				}
+			]
+		},
+		"conformance/validate/z40-ok/input.bpmn": {
+			"sha256": "ca3b4f4591df2b67f756a4b50e041d8f2e4ab72f0eb1cd5fd459752d0843de2e",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z41-bad/input.bpmn": {
+			"sha256": "bc6ba5dfe51f5e7c980d6b38a6f75e7ef940286bf93818874e8cc35334c0768d",
+			"ok": false,
+			"errors": [
+				{
+					"element": "EventSub",
+					"message": "A compensation event subprocess is not allowed on the process level"
+				},
+				{
+					"element": "EventSub",
+					"message": "Start events in event subprocesses must be one of: message, timer, error, signal, escalation or conditional"
+				}
+			]
+		},
+		"conformance/validate/z41-ok/input.bpmn": {
+			"sha256": "ca3b4f4591df2b67f756a4b50e041d8f2e4ab72f0eb1cd5fd459752d0843de2e",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z42-bad/input.bpmn": {
+			"sha256": "c1719c3c31ba487b81a2278538bfca15fcd21df49cc45ad08e1b31d0a269a4ee",
+			"ok": false,
+			"errors": [
+				{
+					"element": "EventSub",
+					"message": "An interrupting event subprocess is not allowed inside an ad-hoc subprocess"
+				}
+			]
+		},
+		"conformance/validate/z42-ok/input.bpmn": {
+			"sha256": "ffbb31616d14884c221becd68f96a0caf98caa88be45508102754d442749f709",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z43-bad-event-sub-process/input.bpmn": {
+			"sha256": "183ebea5e5fe446186ffd8e93000ccc09babab23ca9dcc04b76dbf6669248cf7",
+			"ok": false,
+			"errors": [
+				{
+					"element": "EventSub",
+					"message": "Interrupting timer event with time cycle is not allowed."
+				}
+			]
+		},
+		"conformance/validate/z43-bad/input.bpmn": {
+			"sha256": "2d6eea7b11435b3fb962c6ecbe0904c4a4811bcd0aeb5ff9beb7d82db56385a4",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Boundary",
+					"message": "Interrupting timer event with time cycle is not allowed."
+				}
+			]
+		},
+		"conformance/validate/z43-ok/input.bpmn": {
+			"sha256": "4b51c58970bf925c81d0acbfd886ee5f13d0b89ca6a9988e2c9a8678d05e0e7f",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z44-bad/input.bpmn": {
+			"sha256": "e925357018e3206bc6bdf8854f0bead971da893d4ab6590772e88c8edf2b54df",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Timer_empty",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				}
+			]
+		},
+		"conformance/validate/z44-ok/input.bpmn": {
+			"sha256": "cdc03d4754a35bee6edd8c6a03fca851f636958898b9ac91c1190978b9011706",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z45-bad/input.bpmn": {
+			"sha256": "cf8e455a50d7e09ba9830830d4ce216f22511097a589c6a02ef6505045460493",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Catch",
+					"message": "Intermediate timer catch event must have either a time duration or a time date."
+				}
+			]
+		},
+		"conformance/validate/z45-ok/input.bpmn": {
+			"sha256": "eded12e962d998a870570c4015a32ba06e91cdee99e30a780b0a49b03e032f3d",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z46-bad-cron/input.bpmn": {
+			"sha256": "6c450a987a4049f27efc4751fc13f8afca73584c154a2e1906042f55b7e6b1fa",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Start",
+					"message": "Invalid timer cycle expression (Cron expression contains 5 parts but we expect one of [6])"
+				}
+			]
+		},
+		"conformance/validate/z46-bad-cycle/input.bpmn": {
+			"sha256": "5df21f3fa89ef3466f2deea043594bc51e69cc6611931e02d65225a957ab0f51",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Boundary",
+					"message": "Invalid timer cycle expression (Text cannot be parsed to a Period)"
+				}
+			]
+		},
+		"conformance/validate/z46-bad-date/input.bpmn": {
+			"sha256": "29ef1f6de017404232c6649f557b7ce33770a0f346afc3b65ee2450fce8f3b26",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Catch",
+					"message": "Invalid timer date expression (Invalid date-time format '2030-02-30T09:00:00Z' for expression '2030-02-30T09:00:00Z'.)"
+				}
+			]
+		},
+		"conformance/validate/z46-bad-feel/input.bpmn": {
+			"sha256": "947f9cd098d6c5fa4e71a236250927e18be66cc1f75657cbc16bfc0fd8e3768f",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Timer_timeDuration",
+					"message": "failed to parse expression '1 +': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:3, found \"+\""
+				}
+			]
+		},
+		"conformance/validate/z46-bad/input.bpmn": {
+			"sha256": "4b0fac17c3ba573124520fd22593f14abe8241c5ecb3293bb0197c6fe1160dcf",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Catch",
+					"message": "Invalid timer duration expression (Invalid duration format '5 minutes' for expression '5 minutes'.)"
+				}
+			]
+		},
+		"conformance/validate/z46-ok-cron/input.bpmn": {
+			"sha256": "935833c76b0c6ed34942de3a8143ab2d997fe39a418702b3e7e619fc92f24198",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z46-ok-date/input.bpmn": {
+			"sha256": "a455e55679daf24175e9e2cef8d56de14fd8c9486b3df1ca7f7747930724b62d",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z46-ok-feel/input.bpmn": {
+			"sha256": "35b80c1e6d7c55e257db4981e7df7d70df5f2885cd2a5aeacc07390c11e2b328",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z46-ok/input.bpmn": {
+			"sha256": "89bad96a91d9cad8ca2890723ad990ebb223cd60444f72ff1ce8e40aadaff553",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z48-bad/input.bpmn": {
+			"sha256": "593a93ad9df0db63a4e79bb7bc7d3aef6a9d6c895588a5e4ba64d6dd50062973",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Boundary",
+					"message": "Must be attached to an activity"
+				}
+			]
+		},
+		"conformance/validate/z48-ok/input.bpmn": {
+			"sha256": "cdc03d4754a35bee6edd8c6a03fca851f636958898b9ac91c1190978b9011706",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z49-bad/input.bpmn": {
+			"sha256": "bb6b1f8d744ee4ead5d5759097c856128274d42d0c2f094747ef99c4a9bf8fe8",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Boundary",
+					"message": "Cannot have incoming sequence flows"
+				}
+			]
+		},
+		"conformance/validate/z49-ok/input.bpmn": {
+			"sha256": "cdc03d4754a35bee6edd8c6a03fca851f636958898b9ac91c1190978b9011706",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z50-bad/input.bpmn": {
+			"sha256": "57a65e69d6c78836fb3d8c69fba1ec2d88127dd5d98af202a4b8ae3d2b7644fd",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Boundary",
+					"message": "Must have exactly one event definition"
+				}
+			]
+		},
+		"conformance/validate/z50-ok/input.bpmn": {
+			"sha256": "cdc03d4754a35bee6edd8c6a03fca851f636958898b9ac91c1190978b9011706",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z51-bad-outgoing/input.bpmn": {
+			"sha256": "8cbe6b57a41978d7ac993d9eef915186f816be70c937103882acb1ba1355580f",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Boundary",
+					"message": "Compensation boundary events must have a compensation association and no outgoing sequence flows"
+				}
+			]
+		},
+		"conformance/validate/z51-bad/input.bpmn": {
+			"sha256": "cb1765b8e7b7a045022a3f506fc5aea5000342cb7a1fbc1f5250d9157d391d69",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Boundary",
+					"message": "Compensation boundary events must have a compensation association and no outgoing sequence flows"
+				}
+			]
+		},
+		"conformance/validate/z51-ok/input.bpmn": {
+			"sha256": "2d93035aced72a9ca0e7dcefa944dcb1c346381733d169b8a3187150d910a03b",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z52-bad-compensation/input.bpmn": {
+			"sha256": "4214910968deccc508dd8ca479d66d03bf2fa1cbe96c136a9cf30294d37f4497",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Boundary",
+					"message": "Execution listeners of type 'start' and 'end' are not supported by [compensation] boundary events"
+				}
+			]
+		},
+		"conformance/validate/z52-bad/input.bpmn": {
+			"sha256": "76a7f4723d42b03945b9eb865be5aa7bcff6434e366982d47c4caafb23db3e5f",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Boundary",
+					"message": "Execution listeners of type 'start' are not supported by boundary events"
+				}
+			]
+		},
+		"conformance/validate/z52-ok/input.bpmn": {
+			"sha256": "10b4c6b21258684beb3fb9b3f26570120d14cbf6d758fa38aa0205d0568da80c",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z53-bad/input.bpmn": {
+			"sha256": "47d56e76f8f1f8b058d08456d449268f6c0090e154473bd4537f84fad57936be",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Middle",
+					"message": "End events must not have outgoing sequence flows to other elements."
+				}
+			]
+		},
+		"conformance/validate/z53-ok/input.bpmn": {
+			"sha256": "86a5f3c280ee2b10048a91f48cf409c5a12e5006e02be59309c90c58afc137eb",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z54-bad/input.bpmn": {
+			"sha256": "12424a1d91102859ff62c0b19e75d77cd6fcf06849c0cdf4cec25e9ff8813368",
+			"ok": false,
+			"errors": [
+				{
+					"element": "End",
+					"message": "Must have at most one event definition"
+				}
+			]
+		},
+		"conformance/validate/z54-ok/input.bpmn": {
+			"sha256": "7fe20564ae04ad9f1c62fe88fec967e222ff6443a38deab60e83232c706f27fc",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z55-bad-throw/input.bpmn": {
+			"sha256": "878578fb1185e9a712ca5aa36c2c48a71ffc3992650f0c6723bc9587bff0c935",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Throw",
+					"message": "A compensation intermediate throwing event waitForCompletion attribute must be true or not present"
+				}
+			]
+		},
+		"conformance/validate/z55-bad/input.bpmn": {
+			"sha256": "feccdac6bdbbf19644ed55eae6f6c8d62249ca07b034cb30434f5b46f7c4786f",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Throw",
+					"message": "A compensation end event waitForCompletion attribute must be true or not present"
+				}
+			]
+		},
+		"conformance/validate/z55-ok-throw/input.bpmn": {
+			"sha256": "16234eaa8f39ebb01767cc122a984627a8a1abda7951a6dc41c4122e90b0c91d",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z55-ok/input.bpmn": {
+			"sha256": "aa3ae1e3c2b5d117d6cc995f3a00d49467c0387848ec12a5704ed6d6dd8cdd08",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z56-bad/input.bpmn": {
+			"sha256": "5e94266ef3e023ec26159779e35da3b99442b4019efd4992fb9fd0921a98387d",
+			"ok": false,
+			"errors": [
+				{
+					"element": "ErrEnd",
+					"message": "Execution listeners of type 'end' are not supported by [error] end events"
+				}
+			]
+		},
+		"conformance/validate/z56-ok/input.bpmn": {
+			"sha256": "41bddc50ce6d0060d6c4c2606929b8884c9b263d3f185296282b0847da793662",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z57-bad/input.bpmn": {
+			"sha256": "caf495cca93967653aa85ffa83f50dbb5fb6046b2bb11341ffabcf474146cc92",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Catch",
+					"message": "Must have exactly one event definition"
+				}
+			]
+		},
+		"conformance/validate/z57-ok/input.bpmn": {
+			"sha256": "eded12e962d998a870570c4015a32ba06e91cdee99e30a780b0a49b03e032f3d",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z58-bad-empty/input.bpmn": {
+			"sha256": "9363d2ad1e7352aef823a57c8230ca91a2c8d28a8ba01a91a1bf219ab9ba15ab",
+			"ok": false,
+			"errors": [
+				{
+					"element": "CondDef > condition",
+					"message": "Expected expression but found static value ''. An expression must start with '=' (e.g. '=')."
+				}
+			]
+		},
+		"conformance/validate/z58-bad-feel/input.bpmn": {
+			"sha256": "6f3a166b28172f2968e5f991e9f4cc78a9896af4bdc6c29c984931098e5072e7",
+			"ok": false,
+			"errors": [
+				{
+					"element": "CondDef > condition",
+					"message": "failed to parse expression '(x': Expected (start-of-input | ifOp | forOp | quantifiedOp | disjunction):1:1, found \"(x\""
+				}
+			]
+		},
+		"conformance/validate/z58-bad/input.bpmn": {
+			"sha256": "e07526635c2100781b7579db7a30b1195784aadb733bd3a920bb41cda070aa58",
+			"ok": false,
+			"errors": [
+				{
+					"element": "CondDef > condition",
+					"message": "Expected expression but found static value 'ready'. An expression must start with '=' (e.g. '=ready')."
+				}
+			]
+		},
+		"conformance/validate/z58-ok/input.bpmn": {
+			"sha256": "a335e052b0809f167fc0b2ae6619b62f159310eb98bd1547a1862b6bfe8f3a64",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z59-bad/input.bpmn": {
+			"sha256": "5004b714c158868c2a12fbf6e5b4d4d3c9b205ecc4c4c8c2d379d92dadae86c7",
+			"ok": false,
+			"errors": [
+				{
+					"element": "CondDef > extensionElements > conditionalFilter",
+					"message": "Variable event 'delete' is not valid. Must be one of: create, update or a comma-separated list of both."
+				}
+			]
+		},
+		"conformance/validate/z59-ok/input.bpmn": {
+			"sha256": "110c6921ccf22405fa6d633aa8661906655c04927278b2dad46b211459624d61",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z60-bad/input.bpmn": {
+			"sha256": "5fed428f800cb095ed76e299ae11ce57817d44b9e630db644c3d8b28d5dfc1d7",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Gateway",
+					"message": "Multiple conditional event definitions with the same condition expression '=x > 1' are not allowed."
+				}
+			]
+		},
+		"conformance/validate/z60-ok/input.bpmn": {
+			"sha256": "ec83cbca4c1abda239ced572fa31e9c1a252353fc82b92d97d41f97e717b0527",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z61-bad/input.bpmn": {
+			"sha256": "ce76ea22f6d32525fd605e5998fb55e3a893a5ba71a01b5f4b943e20f1d36126",
+			"ok": false,
+			"errors": [
+				{
+					"element": "ED",
+					"message": "Must reference a message"
+				}
+			]
+		},
+		"conformance/validate/z61-ok/input.bpmn": {
+			"sha256": "c4ec7ff617b08e74341d8a2b92ca1a87441397bc20fe61cb438e66e2cc7577d3",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z62-bad/input.bpmn": {
+			"sha256": "1c40ae22c8bbb657639a6d576c767c182ccc5981800e72b42f5c29c139c657b0",
+			"ok": false,
+			"errors": [
+				{
+					"element": "M",
+					"message": "Name must be present and not empty"
+				}
+			]
+		},
+		"conformance/validate/z62-ok/input.bpmn": {
+			"sha256": "c4ec7ff617b08e74341d8a2b92ca1a87441397bc20fe61cb438e66e2cc7577d3",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z63-bad/input.bpmn": {
+			"sha256": "2f539e72fed0a896ba315807e14b114cadddfb356cfd2b8b5bfad7fc67bd42a6",
+			"ok": false,
+			"errors": [
+				{
+					"element": "M",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				}
+			]
+		},
+		"conformance/validate/z63-ok/input.bpmn": {
+			"sha256": "c4ec7ff617b08e74341d8a2b92ca1a87441397bc20fe61cb438e66e2cc7577d3",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z64-bad/input.bpmn": {
+			"sha256": "e495cc53eab9ec7c509f38a57545e18e308affec5a679634adb33edc05bbc8d9",
+			"ok": false,
+			"errors": [
+				{
+					"element": "M > extensionElements > subscription",
+					"message": "Expected expression but not found."
+				}
+			]
+		},
+		"conformance/validate/z64-ok/input.bpmn": {
+			"sha256": "c4ec7ff617b08e74341d8a2b92ca1a87441397bc20fe61cb438e66e2cc7577d3",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z65-bad-feel/input.bpmn": {
+			"sha256": "92277b3552ca8c0d175f7d98c8b1625f4e1e0f4e0f67e3f6f8d4b7d75fd62c3b",
+			"ok": false,
+			"errors": [
+				{
+					"element": "M > extensionElements > subscription",
+					"message": "failed to parse expression '1+': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:2, found \"+\""
+				}
+			]
+		},
+		"conformance/validate/z65-bad/input.bpmn": {
+			"sha256": "f0932c6da07612f9ab7ea4680158d6917b45ab893cb1618f3d75a093298ec056",
+			"ok": false,
+			"errors": [
+				{
+					"element": "M > extensionElements > subscription",
+					"message": "Expected expression but found static value 'orderId'. An expression must start with '=' (e.g. '=orderId')."
+				}
+			]
+		},
+		"conformance/validate/z65-ok/input.bpmn": {
+			"sha256": "06c338d06e9d8e0ef7a42398e780f4903b15e63dfc8145221ccc072c9b368424",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z66-bad/input.bpmn": {
+			"sha256": "68d457d431bd81f0731c9d526fa6b27bff9230869bf8c2fbdad4b1450f367607",
+			"ok": false,
+			"errors": [
+				{
+					"element": "M",
+					"message": "failed to parse expression '1+': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:2, found \"+\""
+				}
+			]
+		},
+		"conformance/validate/z66-ok/input.bpmn": {
+			"sha256": "2f7c08530fa1880fffaddd378e76b07343a91f930387c382775f2ceb18a2173a",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z67-bad-feel/input.bpmn": {
+			"sha256": "71bf5004a8b1b072e1734fa46e80490c617bf1d51077c97a9b636da7ea4c662e",
+			"ok": false,
+			"errors": [
+				{
+					"element": "M",
+					"message": "failed to parse expression '1+': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:2, found \"+\""
+				},
+				{
+					"element": "Start",
+					"message": "Expected constant expression but found '=1+', which could not be evaluated without context: failed to parse expression '1+': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:2, found \"+\""
+				}
+			]
+		},
+		"conformance/validate/z67-bad-type/input.bpmn": {
+			"sha256": "aea8fdba794f4ab33b616b174634d15c67e31970081b18e19bc487d16a0a5891",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Start",
+					"message": "Expected constant expression of type String for message name '=1', but was NUMBER"
+				}
+			]
+		},
+		"conformance/validate/z67-bad/input.bpmn": {
+			"sha256": "438797349c144b0b38242a3728e3e0a7583d8958af959092ea75eabf370e9840",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Start",
+					"message": "Expected constant expression of type String for message name '=orderName', but was NULL"
+				}
+			]
+		},
+		"conformance/validate/z67-ok-static/input.bpmn": {
+			"sha256": "345db358afc91d8f4a2724541da035a15b6c1774ff3a197bbf7def06a7402fac",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z67-ok/input.bpmn": {
+			"sha256": "e68300027d5cb6da55430c809f275683c0e9dc0d147d093c8a61bc3a49a2696c",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z68-bad/input.bpmn": {
+			"sha256": "7afa7448e3e75615c17d32b2fd65f9a1e06e03e75f4446eaea32413754162b92",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z68-ok/input.bpmn": {
+			"sha256": "20e433619dbf31e8cfde11fa0241ce470f60b8958def9fc4a424f6e5d4ccb4db",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z69-bad-both/input.bpmn": {
+			"sha256": "fdad14d36005c29369731e8bd709f85e9c62e99db44a71f749ed85afdfb2ed01",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Node",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/validate/z69-bad-misplaced/input.bpmn": {
+			"sha256": "3b9858a29e052add79fe2e0c01f3058502c117af7caa9cf4c89ce7e0637efa12",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Node",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/validate/z69-bad/input.bpmn": {
+			"sha256": "9f873f424859b2fd51dfd359574b0bec100574a07209c6737620983fd21f9043",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Node",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				}
+			]
+		},
+		"conformance/validate/z69-ok-job/input.bpmn": {
+			"sha256": "ab4d99f49da9edb38c46e6886ab7146e42c4d4df24ec87d481e39b826803b67b",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z69-ok/input.bpmn": {
+			"sha256": "f68acd811fa59cbd0d229227f9575e6edc7508afd66187f8c8be7ecd094c4705",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z70-bad/input.bpmn": {
+			"sha256": "c6a8946e69eebcd6a0c7961b8b02d6c1024e40f055cb1edbff2366ac7f8f1b19",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Node",
+					"message": "Must reference a message"
+				}
+			]
+		},
+		"conformance/validate/z70-ok/input.bpmn": {
+			"sha256": "f68acd811fa59cbd0d229227f9575e6edc7508afd66187f8c8be7ecd094c4705",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z71-bad/input.bpmn": {
+			"sha256": "53a8cec1682bd4ba4aba13b6c1f6af131423e06e8109cb47010bf1b697f7772c",
+			"ok": false,
+			"errors": [
+				{
+					"element": "ED > extensionElements > publishMessage",
+					"message": "Attribute 'correlationKey' must be present and not empty"
+				}
+			]
+		},
+		"conformance/validate/z71-ok/input.bpmn": {
+			"sha256": "f68acd811fa59cbd0d229227f9575e6edc7508afd66187f8c8be7ecd094c4705",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z72-bad/input.bpmn": {
+			"sha256": "717eeb4a504c9f90ab775e039b5a0fbe4819471e80c2cf57e9992f3a38d41346",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Task",
+					"message": "Must reference a message"
+				}
+			]
+		},
+		"conformance/validate/z72-ok/input.bpmn": {
+			"sha256": "5378bdc740e885b43396eacf28c17532d7ca00195834ec8f1d1e34a9eba52456",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z73-bad/input.bpmn": {
+			"sha256": "4b218ddb7b31d7de20cc284a3d5b1bbdb4d212601f9c485c95048500dd39dec5",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Task",
+					"message": "Cannot reference the same message name as a boundary event"
+				}
+			]
+		},
+		"conformance/validate/z73-ok/input.bpmn": {
+			"sha256": "1133733332718dc937b45af2554eda3417292be4a3cce0faca745895f490fdb1",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z74-bad/input.bpmn": {
+			"sha256": "d2345d5286300fe25c818211f1d3596ea7a51104638b43f2ad8c23d4169b7495",
+			"ok": false,
+			"errors": [
+				{
+					"element": "ED",
+					"message": "Must reference a signal"
+				}
+			]
+		},
+		"conformance/validate/z74-ok/input.bpmn": {
+			"sha256": "c63f20a40bdc4a2727fc871ca343c72e01cda9e8b9de5bbfead2e7ff4f6f65ba",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z75-bad/input.bpmn": {
+			"sha256": "eff1e67e04c1bfb691a7ac6d8940e935be7f1291eb2505daf23a5e8d50b184b3",
+			"ok": false,
+			"errors": [
+				{
+					"element": "S",
+					"message": "Name must be present and not empty"
+				}
+			]
+		},
+		"conformance/validate/z75-ok/input.bpmn": {
+			"sha256": "c63f20a40bdc4a2727fc871ca343c72e01cda9e8b9de5bbfead2e7ff4f6f65ba",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z76-bad-feel/input.bpmn": {
+			"sha256": "6574af6261b12042db14bb8cc819adb833f58a98a5157b605727cfcfbd823da5",
+			"ok": false,
+			"errors": [
+				{
+					"element": "S",
+					"message": "failed to parse expression '1+': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:2, found \"+\""
+				}
+			]
+		},
+		"conformance/validate/z76-bad-type/input.bpmn": {
+			"sha256": "46ee5992640452161a1e08c38589f430370d820bdf5f942cfdde554c3f0bdc3c",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Start",
+					"message": "Expected constant expression of type String for signal name '=1', but was NUMBER"
+				}
+			]
+		},
+		"conformance/validate/z76-bad/input.bpmn": {
+			"sha256": "652685c3d482387fd01b20a9cd73e413d74589a94845ad0229f71aebc3b97f00",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Start",
+					"message": "Expected constant expression but found '=sigName', which could not be evaluated without context: failed to evaluate expression 'sigName' : java.lang.NullPointerException: Cannot invoke \"io.camunda.zeebe.util.Either.fold(java.util.function.Function, java.util.function.Function)\" because the return value of \"io.camunda.zeebe.el.EvaluationContext.getVariable(String)\" is null"
+				}
+			]
+		},
+		"conformance/validate/z76-ok-feel/input.bpmn": {
+			"sha256": "7ebe844aadab9cab7d0e1472e1e289acced2f6772c3bba580786cec385ba9d49",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z76-ok/input.bpmn": {
+			"sha256": "71a16056b2a59fa5397d616712563664c510c6ad4886e5cbdbf35e3716fd8788",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z77-bad/input.bpmn": {
+			"sha256": "9c7fd2c89cb55f4c1ff4108a1090347e2ee90d6c26e756300d27c7af9ce795c1",
+			"ok": false,
+			"errors": [
+				{
+					"element": "ED",
+					"message": "Must reference an error"
+				}
+			]
+		},
+		"conformance/validate/z77-ok/input.bpmn": {
+			"sha256": "c17c310fab9a02c0bf71f424797ee843018d2129e2968c4a397798df589b8c86",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z78-bad/input.bpmn": {
+			"sha256": "7383a01fa78ff346af793c4dbf8396873b1a0bb5712d25905d236d43bb853733",
+			"ok": false,
+			"errors": [
+				{
+					"element": "ED",
+					"message": "ErrorCode must be present and not empty"
+				}
+			]
+		},
+		"conformance/validate/z78-ok/input.bpmn": {
+			"sha256": "c17c310fab9a02c0bf71f424797ee843018d2129e2968c4a397798df589b8c86",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z79-bad/input.bpmn": {
+			"sha256": "1c2366a3bb1c59a0e2cc2a2a5d9aa478d623015862045b787297bb17058d4f56",
+			"ok": false,
+			"errors": [
+				{
+					"element": "ED",
+					"message": "The errorCode of the error catch event is not allowed to be an expression"
+				}
+			]
+		},
+		"conformance/validate/z79-ok/input.bpmn": {
+			"sha256": "7f5fa1b81b746782c9286c0225e3ace875b8e82fdddb3cdb2231d73430f2075d",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z80-bad/input.bpmn": {
+			"sha256": "3bbca68aecf3830213172c1087a6778677d4d0bf910c661c2e134d98308b282c",
+			"ok": false,
+			"errors": [
+				{
+					"element": "ED",
+					"message": "Must reference an escalation"
+				}
+			]
+		},
+		"conformance/validate/z80-ok/input.bpmn": {
+			"sha256": "25406925d4457d4566ecf327e1d40983dcfd0e49ef3555c5d0407bb7ba8d192e",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z81-bad/input.bpmn": {
+			"sha256": "454e5e1f523bbcd402217def94ca945e801afd1a802f457574ccaa186a06d9a1",
+			"ok": false,
+			"errors": [
+				{
+					"element": "X",
+					"message": "EscalationCode must be present and not empty"
+				}
+			]
+		},
+		"conformance/validate/z81-ok/input.bpmn": {
+			"sha256": "25406925d4457d4566ecf327e1d40983dcfd0e49ef3555c5d0407bb7ba8d192e",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z82-bad/input.bpmn": {
+			"sha256": "a9e00b5d36a6149d31a66221f9eb641cffbc9f962a66f12f9244645baea958ff",
+			"ok": false,
+			"errors": [
+				{
+					"element": "ED",
+					"message": "The escalationCode of the escalation catch event is not allowed to be an expression"
+				}
+			]
+		},
+		"conformance/validate/z82-ok/input.bpmn": {
+			"sha256": "f62c5a9bd9d1f8edf5cb4e916696b1d780f7681efa8e6a5f9c911fc971adf096",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z83-bad/input.bpmn": {
+			"sha256": "a478cda40fe6740d6cc2bb9e51c8768a211b02175914373c63ddb40b3994da1f",
+			"ok": false,
+			"errors": [
+				{
+					"element": "C0_d",
+					"message": "Link name must be present and not empty."
+				},
+				{
+					"element": "T_d",
+					"message": "Link name must be present and not empty."
+				}
+			]
+		},
+		"conformance/validate/z83-ok/input.bpmn": {
+			"sha256": "b00278c9870eccf60035dca8af347ccce6cd0d109e7fd931bb9b7bb5b29d7457",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z84-bad/input.bpmn": {
+			"sha256": "cc4bf2f1cb6e908f05a8c7bf0c9414497dbca7e23b38a8e8da9930cfe5889d6e",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Process_1",
+					"message": "Can't find an catch link event for the throw link event with the name 'L'."
+				}
+			]
+		},
+		"conformance/validate/z84-ok/input.bpmn": {
+			"sha256": "b00278c9870eccf60035dca8af347ccce6cd0d109e7fd931bb9b7bb5b29d7457",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z85-bad-nested/input.bpmn": {
+			"sha256": "19f188c7e68020b5c77e279d410ed031cea2f649e35083f926e17e5d3942a9be",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Process_1",
+					"message": "Multiple intermediate catch link event definitions with the same name 'L' are not allowed."
+				}
+			]
+		},
+		"conformance/validate/z85-bad/input.bpmn": {
+			"sha256": "c8c1a2b33affa494ebf4ee4005418009aafa085490db7779844e4037f0d44407",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Process_1",
+					"message": "Multiple intermediate catch link event definitions with the same name 'L' are not allowed."
+				}
+			]
+		},
+		"conformance/validate/z85-ok-nested/input.bpmn": {
+			"sha256": "a05cfa0f87a269df023e0be89346a875a7ec70bb079c4a1f25df383d0d4aece9",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z85-ok/input.bpmn": {
+			"sha256": "38a66e86ea259e4e9114a3e08e51170290ea4e20ceed9bd2d29b1bcf69a2ee3b",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z86-bad/input.bpmn": {
+			"sha256": "bbe469c05046fb959d69146419b163e6dbf449366c8d109b3ed0f5d2e43f54e3",
+			"ok": false,
+			"errors": [
+				{
+					"element": "End_d",
+					"message": "The referenced compensation activity 'Missing' doesn't exist"
+				}
+			]
+		},
+		"conformance/validate/z86-ok/input.bpmn": {
+			"sha256": "9e615278a1c464c5183bcb5ccc6aa0e9257c7a0b17c5d7b389fe3a568476ca71",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z87-bad/input.bpmn": {
+			"sha256": "7908a3d0e8a10db63eedede397de2ac3868837cb50c1979a9055e4c349d91db4",
+			"ok": false,
+			"errors": [
+				{
+					"element": "End_d",
+					"message": "The referenced compensation activity 'A' must have either a compensation boundary event or be a subprocess"
+				}
+			]
+		},
+		"conformance/validate/z87-ok/input.bpmn": {
+			"sha256": "9e615278a1c464c5183bcb5ccc6aa0e9257c7a0b17c5d7b389fe3a568476ca71",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z88-bad/input.bpmn": {
+			"sha256": "113e7c50466eff396aae5fe76326c1595d3d70c0bf6bba53b11a330ec9811128",
+			"ok": false,
+			"errors": [
+				{
+					"element": "SEnd_d",
+					"message": "The referenced compensation activity 'A' must be in the same scope as the compensation throw event"
+				}
+			]
+		},
+		"conformance/validate/z88-ok/input.bpmn": {
+			"sha256": "7000dc662c34b2a30f5b7012473ece7b20fe311a2aacc156664fa37ee417714c",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/validate/z89-bad-incoming/input.bpmn": {
+			"sha256": "2f1d7bb3b2869ec6f1026a871cb942da559676accffd25be5429ec7b65c25610",
+			"ok": false,
+			"errors": [
+				{
+					"element": "H",
+					"message": "A compensation handler should have no incoming sequence flows"
+				}
+			]
+		},
+		"conformance/validate/z89-bad/input.bpmn": {
+			"sha256": "f18c05295bed959a202470e8adcb0a5b3a7cccaed681410abfb8fdce159f94ac",
+			"ok": false,
+			"errors": [
+				{
+					"element": "H",
+					"message": "A compensation handler should have no outgoing sequence flows"
+				}
+			]
+		},
+		"conformance/validate/z89-ok/input.bpmn": {
+			"sha256": "0fd01beb5aaa470aab867dd5fe158f0b3a439b88e4d96878c484c1f72302a505",
 			"ok": true,
 			"errors": []
 		},
@@ -13578,11 +15267,11 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "f4",
+					"element": "f1",
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "f1",
+					"element": "f4",
 					"message": "Must have a condition or be default flow"
 				},
 				{

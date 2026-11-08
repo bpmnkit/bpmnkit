@@ -216,19 +216,19 @@ export class ZeebeContext {
 	}
 
 	message(id: string | undefined): BpmnMessage | undefined {
-		return id === undefined ? undefined : this.defs.messages.find((m) => m.id === id)
+		return id === undefined ? undefined : this.defs.messages.find((m) => m.id === localRef(id))
 	}
 
 	error(id: string | undefined): BpmnError | undefined {
-		return id === undefined ? undefined : this.defs.errors.find((m) => m.id === id)
+		return id === undefined ? undefined : this.defs.errors.find((m) => m.id === localRef(id))
 	}
 
 	signal(id: string | undefined): BpmnSignal | undefined {
-		return id === undefined ? undefined : this.defs.signals.find((m) => m.id === id)
+		return id === undefined ? undefined : this.defs.signals.find((m) => m.id === localRef(id))
 	}
 
 	escalation(id: string | undefined): BpmnEscalation | undefined {
-		return id === undefined ? undefined : this.defs.escalations.find((m) => m.id === id)
+		return id === undefined ? undefined : this.defs.escalations.find((m) => m.id === localRef(id))
 	}
 
 	/** Whether an element name such as `zeebe:taskDefinition` is in the Zeebe namespace. */
@@ -304,9 +304,22 @@ export class ZeebeContext {
 	}
 }
 
-/** Whether a Zeebe expression attribute is an expression (`=…`) rather than a static value. */
+/**
+ * A reference with its QName prefix removed: Zeebe resolves `messageRef="bpmn:m"`
+ * to `m`. Ids are NCNames, so they never contain a colon themselves.
+ */
+export function localRef(ref: string): string {
+	const colon = ref.lastIndexOf(":")
+	return colon < 0 ? ref : ref.slice(colon + 1)
+}
+
+/**
+ * Whether a Zeebe expression attribute is an expression rather than a static value:
+ * Zeebe's `FeelExpressionLanguage` matches the whole text against `=(.+)`, so a
+ * leading space or a lone `=` makes it static.
+ */
 export function isExpression(text: string): boolean {
-	return text.trimStart().startsWith("=")
+	return text.length > 1 && text.startsWith("=")
 }
 
 /**
@@ -315,14 +328,17 @@ export function isExpression(text: string): boolean {
  */
 export function feelError(text: string): string | undefined {
 	if (!isExpression(text)) return undefined
-	const body = text.trimStart().slice(1)
+	const body = text.slice(1)
 	const { errors } = parseExpression(body)
 	return errors.length === 0 ? undefined : (errors[0]?.message ?? "invalid FEEL")
 }
 
-/** Zeebe's message for a FEEL parse failure; the parser text differs from feel-scala's. */
+/**
+ * Zeebe's message for a FEEL parse failure, up to the parser's own detail, which
+ * differs between feel-scala and @bpmnkit/feel.
+ */
 export function feelFailure(text: string): string {
-	return `failed to parse expression '${text.trimStart().slice(1)}'`
+	return `failed to parse expression '${text.slice(1)}'`
 }
 
 /** Zeebe's message for a static value where an expression is required. */

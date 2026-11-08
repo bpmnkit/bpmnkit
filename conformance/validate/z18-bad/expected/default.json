@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/intermediate-catch-type",
+      "message": "Event definition must be one of: message, timer, signal, link or conditional",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Use a message, timer, signal, link or conditional catch event."
+    }
+  ]
+}

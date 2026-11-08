@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        ""
+      ],
+      "fixable": false,
+      "id": "zeebe/xsd-content",
+      "message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=5: cvc-datatype-valid.1.2.1: 'one' is not a valid value for 'integer'.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Remove the attribute or value the BPMN schema does not allow."
+    }
+  ]
+}

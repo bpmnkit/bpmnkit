@@ -43,6 +43,16 @@ const MALFORMED = new Set([
 	"conformance/builder/from-insert-after-arrow-in-id/expected/output.bpmn",
 	"conformance/builder/xsd-continue-keeps-invalid-ids/input.bpmn",
 	"conformance/builder/xsd-continue-keeps-invalid-ids/expected/output.bpmn",
+	// zeebe-rules.md section A: XSD-invalid on purpose (Zeebe's parse stage).
+	"conformance/validate/z01-bad-end-tag/input.bpmn",
+	"conformance/validate/z02-bad/input.bpmn",
+	"conformance/validate/z03-bad/input.bpmn",
+	"conformance/validate/z04-bad/input.bpmn",
+	"conformance/validate/z05-bad/input.bpmn",
+	"conformance/validate/z07-bad/input.bpmn",
+	"conformance/validate/z07-bad-ncname/input.bpmn",
+	"conformance/validate/z08-bad/input.bpmn",
+	"conformance/validate/z10-bad/input.bpmn",
 	"doc/deployability/repro/z07_ncname_nested.bpmn",
 ])
 

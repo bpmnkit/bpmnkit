@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "b"
+      ],
+      "fixable": false,
+      "id": "zeebe/boundary-type",
+      "message": "Boundary events must be one of: timer, message, error, signal, escalation, conditional",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Use a timer, message, error, signal, escalation, compensation or conditional boundary event."
+    }
+  ]
+}

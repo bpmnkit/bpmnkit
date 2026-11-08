@@ -403,6 +403,20 @@ function keyed(findings: readonly OptimizationFinding[]): string[] {
 	return [...new Set(keys)].sort()
 }
 
+/**
+ * Where BPMN Kit is deliberately stricter than the plugin: the plugin allows an
+ * expression as a catch event's error or escalation code from 8.4, but Zeebe
+ * (ErrorEventDefinitionValidator, EscalationEventDefinitionValidator, still in
+ * 8.9) rejects it on every version. Those findings are left out of the comparison.
+ */
+function pluginComparable(
+	findings: readonly OptimizationFinding[],
+	version: string,
+): OptimizationFinding[] {
+	const stricter = Number(version.split(".")[1]) >= 4 && version.startsWith("8.")
+	return findings.filter((f) => !(stricter && f.id === "compat/no-expression"))
+}
+
 describe("matches bpmnlint-plugin-camunda-compat on the fixtures", () => {
 	// Recorded by running the real plugin outside this repo: in a scratch directory,
 	// `npm install bpmnlint@11.14.0 bpmnlint-plugin-camunda-compat@2.61.0 bpmn-moddle
@@ -422,7 +436,7 @@ describe("matches bpmnlint-plugin-camunda-compat on the fixtures", () => {
 			for (const file of FIXTURE_FILES) {
 				const defs = Bpmn.parse(readFileSync(join(FIXTURES, file), "utf8"))
 				const want = (files[file] ?? []).filter((k) => IMPLEMENTED.has(k.split(" ")[0] as string))
-				const found = analyzeCamundaCompat(defs, version)
+				const found = pluginComparable(analyzeCamundaCompat(defs, version), version)
 				expect({ file, reports: keyed(found) }).toEqual({ file, reports: [...want].sort() })
 				expect({ file, messages: messages(found) }).toEqual({
 					file,
@@ -499,7 +513,7 @@ describe.skipIf(MODULES === undefined)("matches the installed plugin", () => {
 				expect({
 					file,
 					version,
-					reports: keyed(analyzeCamundaCompat(Bpmn.parse(xml), version)),
+					reports: keyed(pluginComparable(analyzeCamundaCompat(Bpmn.parse(xml), version), version)),
 				}).toEqual({
 					file,
 					version,
@@ -523,5 +537,25 @@ describe("userTaskForms option", () => {
 		const off = optimize(Bpmn.parse(xml), { userTaskForms: "off" }).findings.map((f) => f.id)
 		expect(off).not.toContain(USER_TASK_FORM_RULE)
 		expect(off).toEqual(on.filter((id) => id !== USER_TASK_FORM_RULE))
+	})
+})
+
+describe("compat/no-expression on catch events", () => {
+	const xml = (code: string) => `<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="d" targetNamespace="t">
+  <bpmn:error id="E" errorCode="${code}" />
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:subProcess id="sub" />
+    <bpmn:boundaryEvent id="b" attachedToRef="sub"><bpmn:errorEventDefinition errorRef="E" /></bpmn:boundaryEvent>
+  </bpmn:process>
+</bpmn:definitions>`
+	// Zeebe 8.9.28 rejects it: "The errorCode of the error catch event is not allowed to be an expression".
+	it.each(["8.3", "8.4", "8.9", "8.10"])("flags an expression error code at %s", (version) => {
+		const ids = analyzeCamundaCompat(Bpmn.parse(xml("=code")), version).map((f) => f.id)
+		expect(ids).toContain("compat/no-expression")
+	})
+	it("leaves a static code alone", () => {
+		const ids = analyzeCamundaCompat(Bpmn.parse(xml("code")), "8.9").map((f) => f.id)
+		expect(ids).not.toContain("compat/no-expression")
 	})
 })

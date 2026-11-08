@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        ""
+      ],
+      "fixable": false,
+      "id": "zeebe/xml-schema",
+      "message": "PARSE: SAXException while parsing input stream / Fatal Error: URI=null Line=5: The end-tag for element type \"bpmn:task\" must end with a '>' delimiter.",
+      "processId": "",
+      "severity": "error",
+      "suggestion": "Fix the XML so it is well-formed and the BPMN elements follow the schema order."
+    }
+  ]
+}

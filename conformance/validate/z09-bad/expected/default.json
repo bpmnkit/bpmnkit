@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        ""
+      ],
+      "fixable": false,
+      "id": "zeebe/xsd-content",
+      "message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=10: cvc-complex-type.3.2.2: Attribute 'isCollection' is not allowed to appear in element 'bpmn:dataObjectReference'.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Remove the attribute or value the BPMN schema does not allow."
+    }
+  ]
+}

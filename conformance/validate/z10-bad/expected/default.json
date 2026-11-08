@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "p"
+      ],
+      "fixable": false,
+      "id": "zeebe/id-present",
+      "message": "Element id must be present and not empty.",
+      "processId": "",
+      "severity": "error",
+      "suggestion": "Give the element a non-empty id."
+    }
+  ]
+}

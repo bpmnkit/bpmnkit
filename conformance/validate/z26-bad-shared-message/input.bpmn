@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="d" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+  <bpmn:message id="M" name="m"/>
+  <bpmn:process id="a" isExecutable="true">
+    <bpmn:startEvent id="a_s"><bpmn:outgoing>a_f</bpmn:outgoing><bpmn:messageEventDefinition id="a_md" messageRef="M"/></bpmn:startEvent>
+    <bpmn:endEvent id="a_e"><bpmn:incoming>a_f</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="a_f" sourceRef="a_s" targetRef="a_e"/>
+  </bpmn:process>
+  <bpmn:process id="b" isExecutable="true">
+    <bpmn:startEvent id="b_s"><bpmn:outgoing>b_f</bpmn:outgoing><bpmn:messageEventDefinition id="b_md" messageRef="M"/></bpmn:startEvent>
+    <bpmn:endEvent id="b_e"><bpmn:incoming>b_f</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="b_f" sourceRef="b_s" targetRef="b_e"/>
+  </bpmn:process>
+</bpmn:definitions>

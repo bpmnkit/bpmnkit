@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "c"
+      ],
+      "fixable": false,
+      "id": "zeebe/timer-expression",
+      "message": "failed to parse expression '1 +'",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Fix the FEEL syntax of the timer expression."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "d"
+      ],
+      "fixable": false,
+      "id": "zeebe/executable-process",
+      "message": "Must contain at least one executable process",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Mark the process isExecutable=\"true\"."
+    }
+  ]
+}

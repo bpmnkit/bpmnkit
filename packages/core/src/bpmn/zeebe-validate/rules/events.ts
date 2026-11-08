@@ -321,15 +321,6 @@ function staticTimerFailure(kind: TimerKind, text: string): string | undefined {
 // Checks
 // ---------------------------------------------------------------------------
 
-const ESP_START_TYPES: readonly BpmnEventDefinition["type"][] = [
-	"timer",
-	"message",
-	"error",
-	"signal",
-	"escalation",
-	"conditional",
-]
-
 function interruptingTimerCycle(
 	ctx: ZeebeContext,
 	elementId: string,
@@ -406,8 +397,7 @@ const eventSubProcessStarts: ZeebeCheck = (ctx) => {
 				"A compensation event subprocess is not allowed on the process level",
 				"Move the compensation event sub-process into a sub-process.",
 			)
-		if (defs.some((d) => !ESP_START_TYPES.includes(d.type)))
-			ctx.report("event-sub-process-start-typed", node.id, typed, suggestion)
+		// A typed but unsupported trigger is Z17 (event-sub-process-start-type, structure.ts).
 		const interrupting = start.isInterrupting !== false
 		if (interrupting) interruptingTimerCycle(ctx, node.id, defs)
 		if (interrupting && scope.kind === "adHocSubProcess")

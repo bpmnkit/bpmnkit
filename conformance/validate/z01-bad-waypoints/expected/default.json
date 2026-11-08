@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        ""
+      ],
+      "fixable": false,
+      "id": "zeebe/xml-schema",
+      "message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=10: cvc-complex-type.2.4.i: The content of element 'bpmndi:BPMNEdge' is not complete. '\"http://www.omg.org/spec/DD/20100524/DI\":waypoint' is expected to occur a minimum of '2' times. One more instance is required to satisfy this constraint.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Fix the XML so it is well-formed and the BPMN elements follow the schema order."
+    }
+  ]
+}

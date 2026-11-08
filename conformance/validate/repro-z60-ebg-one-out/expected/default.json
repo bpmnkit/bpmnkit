@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "g"
+      ],
+      "fixable": false,
+      "id": "zeebe/event-based-gateway-outgoing",
+      "message": "Event-based gateway must have at least 2 outgoing sequence flows.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Add a second outgoing flow to a catch event."
+    }
+  ]
+}

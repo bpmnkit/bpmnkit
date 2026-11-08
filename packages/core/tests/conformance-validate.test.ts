@@ -79,9 +79,16 @@ const cases = fs
 	.map((d) => d.name)
 	.sort()
 
+/** `CONFORMANCE_VALIDATE_ONLY=<regex>` limits the cases run (and recorded) to matching names. */
+const only =
+	process.env.CONFORMANCE_VALIDATE_ONLY === undefined
+		? undefined
+		: new RegExp(process.env.CONFORMANCE_VALIDATE_ONLY)
+
 // Registered only when there are cases: vitest fails on a suite with no tests.
 describe.runIf(cases.length > 0)("conformance/validate", () => {
 	for (const name of cases) {
+		if (only !== undefined && !only.test(name)) continue
 		const dir = path.join(root, name)
 		const caseFile = path.join(dir, "case.json")
 		const spec = fs.existsSync(caseFile)
@@ -91,7 +98,7 @@ describe.runIf(cases.length > 0)("conformance/validate", () => {
 				})
 			: {}
 		const input =
-			spec.input === undefined ? path.join(dir, "input.bpmn") : path.join(repo, spec.input)
+			spec.input === undefined ? path.join(dir, "input.bpmn") : path.join(repo, "conformance", spec.input)
 		const runs = spec.runs ?? { default: {} }
 		if (RECORD) {
 			fs.rmSync(path.join(dir, "expected"), { recursive: true, force: true })
@@ -117,13 +124,6 @@ interface Verdict {
 }
 
 /** What zeebe-check runs with (tools/zeebe-check/src/ZCheck.java): Zeebe 8.9, 255-character limits. */
-/**
- * While the rules are being written: the most disagreements and uncovered rules
- * allowed. Like conformance/pending.json, these may only go down, to 0.
- */
-const MAX_DISAGREE = 197
-const MAX_UNCOVERED = 68
-
 const ORACLE: RunOptions = {
 	camundaVersion: "8.9",
 	limits: { maxIdLength: 255, maxNameLength: 255, maxWorkerTypeLength: 255 },
@@ -182,7 +182,7 @@ describe("validator agrees with Zeebe on the corpus", () => {
 		)
 		if (process.env.ZEEBE_AGREEMENT_REPORT !== undefined)
 			fs.writeFileSync(process.env.ZEEBE_AGREEMENT_REPORT, disagree.join("\n"))
-		expect(disagree.length).toBeLessThanOrEqual(MAX_DISAGREE)
+		expect(disagree).toEqual([])
 	})
 })
 
@@ -210,6 +210,6 @@ describe("every decidable rule has a negative and a positive case", () => {
 			if (!reported) missing.push(`${rule.id} ${rule.name}: no ${prefix}-bad* case reporting it`)
 			if (ok.length === 0) missing.push(`${rule.id} ${rule.name}: no ${prefix}-ok* case`)
 		}
-		expect(missing.length).toBeLessThanOrEqual(MAX_UNCOVERED)
+		expect(missing).toEqual([])
 	})
 })
