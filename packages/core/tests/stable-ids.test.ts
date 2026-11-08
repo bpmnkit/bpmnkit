@@ -84,7 +84,8 @@ describe("stable sequence flow ids", () => {
 				.branch(first, (b) => b.connectTo("done"))
 				.branch(first === "approved" ? "rejected" : "approved", (b) => b.connectTo("done"))
 				.endEvent("done")
-				.build()
+				// A fragment that pins flow-id derivation, not a deployable model.
+				.build({ validate: false })
 
 		expect(flowIds(build("approved")).sort()).toEqual(flowIds(build("rejected")).sort())
 	})
@@ -98,7 +99,8 @@ describe("stable sequence flow ids", () => {
 			.branch("approved", (b) => b.connectTo("done"))
 			.branch("rejected", (b) => b.connectTo("done"))
 			.endEvent("done")
-			.build()
+			// A fragment that pins flow-id derivation, not a deployable model.
+			.build({ validate: false })
 
 		expect(flowIds(defs)).toContain("Flow_gw_gw_join_approved")
 		expect(flowIds(defs)).toContain("Flow_gw_gw_join_rejected")
@@ -131,7 +133,8 @@ describe("stable sequence flow ids", () => {
 			.endEvent("done")
 			.element("gw")
 			.connectTo("done")
-			.build()
+			// A fragment that pins flow-id derivation, not a deployable model.
+			.build({ validate: false })
 
 		const ids = flowIds(defs)
 		expect(new Set(ids).size).toBe(ids.length)
@@ -166,7 +169,8 @@ describe("stable sequence flow ids", () => {
 			.exclusiveGateway("gw")
 			.branch("retry", (b) => b.connectTo("work"))
 			.branch("done", (b) => b.endEvent("finished"))
-			.build()
+			// A fragment that pins flow-id derivation, not a deployable model.
+			.build({ validate: false })
 
 		expect(flowIds(defs)).toContain("Flow_gw_work")
 	})
@@ -206,7 +210,8 @@ describe("stable sequence flow ids", () => {
 			.branch("≥ 1 000 € / überfällig!", (b) => b.connectTo("done"))
 			.branch("< 1 000 €", (b) => b.connectTo("done"))
 			.endEvent("done")
-			.build()
+			// A fragment that pins flow-id derivation, not a deployable model.
+			.build({ validate: false })
 
 		for (const id of flowIds(defs)) expect(id).toMatch(NC_NAME)
 		expect(new Set(flowIds(defs)).size).toBe(flowIds(defs).length)
@@ -308,7 +313,8 @@ describe("stable root definition ids", () => {
 			.process("seller", (p) => p.startEvent("sellerStart", { messageName: "Order" }).endEvent("s"))
 			.participant("buyerPool", { processId: "buyer" })
 			.participant("sellerPool", { processId: "seller" })
-			.build()
+			// A fragment that pins flow-id derivation, not a deployable model.
+			.build({ validate: false })
 
 		expect(defs.messages.map((message) => message.id)).toEqual(["Message_Order"])
 	})

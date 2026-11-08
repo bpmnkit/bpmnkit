@@ -113,6 +113,15 @@ export const PLACEHOLDERS: Readonly<
 	},
 }
 
+/**
+ * `modeler:executionPlatform` names Camunda 8 ("Camunda Cloud", any case), as
+ * `targetCamundaVersion` reads it: the models `Bpmn.export` and `build()` gate.
+ */
+export function targetsCamunda8(definitions: BpmnDefinitions): boolean {
+	const platform = definitions.unknownAttributes["modeler:executionPlatform"]
+	return platform?.toLowerCase().includes("cloud") === true
+}
+
 /** Filling one kind of value can reveal the next (a new message then needs a subscription). */
 const MAX_FILL_ROUNDS = 4
 

@@ -162,6 +162,8 @@ export { DiagramBuilder, ProcessBuilder } from "./bpmn/bpmn-builder.js"
 export type {
 	BranchBuilder,
 	BuildOptions,
+	BuildGateOptions,
+	SendTaskOptions,
 	MessageFlowOptions,
 	ParticipantOptions,
 	DiagramMessageOptions,

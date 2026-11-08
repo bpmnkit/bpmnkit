@@ -5,7 +5,7 @@
 		["startEvent","s"],
 		["intermediateCatchEvent","c"],
 		["endEvent","e"],
-		["build"]
+		["build",{"validate":false}]
 	],
 	"deployable": false,
 	"deployableReason": "Deliberately has no event definition: pins the bare intermediate catch event."

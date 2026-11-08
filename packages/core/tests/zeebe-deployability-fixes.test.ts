@@ -220,7 +220,7 @@ describe("toFeelCondition", () => {
 			.startEvent("s")
 			.serviceTask("t", {
 				taskType: "x",
-				multiInstance: { inputCollection: "=xs", completionCondition: "done > 1" },
+				multiInstance: { collection: "=xs", completionCondition: "done > 1" },
 			})
 			.endEvent("e")
 			.build()

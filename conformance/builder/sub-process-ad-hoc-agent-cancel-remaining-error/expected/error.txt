@@ -1,0 +1,1 @@
+Ad-hoc sub-process "agent" has a taskDefinition (an AI agent) and cancelRemainingInstances: false; Camunda 8 refuses that combination: remove cancelRemainingInstances: false, the agent job decides which tools run and when it is done

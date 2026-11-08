@@ -99,7 +99,12 @@ describe("optimize() — deploy profile", () => {
 	})
 
 	it("flags a non-executable process", () => {
-		const defs = Bpmn.createProcess("proc").executable(false).startEvent("s").endEvent("e").build()
+		// Deliberately not executable, for the optimize check.
+		const defs = Bpmn.createProcess("proc")
+			.executable(false)
+			.startEvent("s")
+			.endEvent("e")
+			.build({ validate: false })
 		const report = optimize(defs, { categories: ["deploy"] })
 		expect(report.findings.some((f) => f.id === "deploy/process-not-executable")).toBe(true)
 	})
@@ -144,7 +149,8 @@ describe("optimize() — feel-syntax", () => {
 					.endEvent("end2")
 			})
 			.endEvent("e")
-			.build()
+			// Deliberately undeployable, for the optimize checks.
+			.build({ validate: false })
 		const report = optimize(defs, { categories: ["feel-syntax"] })
 		expect(report.findings.some((f) => f.id === "feel-syntax/parse-error")).toBe(true)
 	})

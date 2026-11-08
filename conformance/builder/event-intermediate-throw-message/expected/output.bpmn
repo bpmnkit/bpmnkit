@@ -6,6 +6,9 @@
       <bpmn:outgoing>Flow_s_i</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:intermediateThrowEvent id="i">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="publish-notify"/>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_s_i</bpmn:incoming>
       <bpmn:outgoing>Flow_i_e</bpmn:outgoing>
       <bpmn:messageEventDefinition id="i_MessageEventDefinition" messageRef="Message_notify"/>

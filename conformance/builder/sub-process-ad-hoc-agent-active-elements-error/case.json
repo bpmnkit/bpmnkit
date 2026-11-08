@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["adHocSubProcess","agent",{"$ops":[["serviceTask","tool",{"name":"tool","taskType":"tool"}]]},{"taskDefinition":{"type":"io.camunda.agenticai:aiagent-job-worker:1"},"outputCollection":"results","outputElement":"=x","activeElementsCollection":"=toolCalls"}],
+		["endEvent","e"],
+		["build"]
+	]
+}

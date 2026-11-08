@@ -25,6 +25,8 @@ import type {
 	BpmnSignal,
 	BpmnTextAnnotation,
 } from "./bpmn-model.js"
+import { camunda8BuilderProblem } from "./builder-rules.js"
+import { normalizeCamundaVersion } from "./camunda-compat.js"
 import { createFlowElement, isLoopCapableType } from "./element-shape.js"
 import { toFeelCondition } from "./feel-condition.js"
 import type { RestConnectorConfig } from "./rest-connector.js"
@@ -56,6 +58,7 @@ import {
 	makeConditionalDefinition,
 	zeebeExtensionsToXmlElements,
 } from "./zeebe-extensions.js"
+import { assertDeployable, targetsCamunda8 } from "./zeebe-validate/gate.js"
 
 // Keep in sync with packages/core/package.json version
 const EXPORTER_VERSION = "0.0.23"
@@ -82,6 +85,15 @@ export interface MessageTaskOptions extends ElementOptions {
 	messageName?: string
 	/** FEEL expression correlating this message to a specific process instance (`zeebe:subscription`). */
 	correlationKey?: string
+}
+
+/** Options for a send task. */
+export interface SendTaskOptions extends MessageTaskOptions {
+	/**
+	 * Job type of the worker that sends the message (`zeebe:taskDefinition`).
+	 * Camunda 8 runs a send task as a job, so `build()` requires it.
+	 */
+	taskType?: string
 }
 
 /** Variable change that re-evaluates a conditional event's condition. */
@@ -309,7 +321,7 @@ export interface GatewayOptions extends ElementOptions {
 }
 
 /** Options for {@link ProcessBuilder.build}. */
-export interface BuildOptions {
+export interface BuildOptions extends BuildGateOptions {
 	/**
 	 * Refuse to infer join gateways, so converging branches must be declared.
 	 *
@@ -318,6 +330,39 @@ export interface BuildOptions {
 	 * that cannot see what it did not emit.
 	 */
 	explicitJoins?: boolean
+}
+
+/**
+ * The deployability options shared by {@link ProcessBuilder.build} and
+ * {@link DiagramBuilder.build}.
+ *
+ * With `validate` on (the default) and a model that targets Camunda 8 (the
+ * builder writes `modeler:executionPlatform="Camunda Cloud"`; a document
+ * continued with {@link ProcessBuilder.from} keeps its own platform), `build()`
+ * first applies the builder's Camunda 8 rules, which name the option or call
+ * that fixes the model, then runs {@link assertDeployable} on the result.
+ *
+ * To see what `placeholders: true` filled, build with `validate: false` and call
+ * `assertDeployable(defs, { placeholders: true })` yourself: its `placeholders`
+ * lists every value written.
+ */
+export interface BuildGateOptions {
+	/**
+	 * Refuse a Camunda 8 model Zeebe would reject (default `true`). `false` skips the
+	 * Camunda 8 rules and the deploy check, for a model that is not meant for
+	 * Camunda 8 or is not finished; structural rules (nothing after an end event)
+	 * still apply.
+	 */
+	validate?: boolean
+	/**
+	 * Fill the documented {@link PLACEHOLDERS} (job types, conditions, message
+	 * names, ...) instead of refusing, and return the filled model. The rules a
+	 * placeholder satisfies (a missing `taskType` or branch condition) are then not
+	 * applied. Default `false`.
+	 */
+	placeholders?: boolean
+	/** The Camunda 8 version to check for; defaults to the model's `executionPlatformVersion`. */
+	camundaVersion?: string
 }
 
 /** Options for a collaboration participant (a pool). */
@@ -392,6 +437,11 @@ export interface IntermediateThrowEventOptions extends ElementOptions {
 	 * last element of a branch it leaves no open end to join.
 	 */
 	linkName?: string
+	/**
+	 * Job type of the worker that publishes the message (`zeebe:taskDefinition`).
+	 * Camunda 8 runs a message throw event as a job, so `build()` requires it with `messageName`.
+	 */
+	taskType?: string
 }
 
 /** Options for an end event. */
@@ -406,6 +456,11 @@ export interface EndEventOptions extends ElementOptions {
 	signalName?: string
 	/** Escalation code — creates an escalation end event. */
 	escalationCode?: string
+	/**
+	 * Job type of the worker that publishes the message (`zeebe:taskDefinition`).
+	 * Camunda 8 runs a message end event as a job, so `build()` requires it with `messageName`.
+	 */
+	taskType?: string
 }
 
 /** Options for a boundary event. */
@@ -850,6 +905,13 @@ function isLinkEvent(
  * switch; this wrapper exists so the builder's many call sites keep their
  * shorter local name.
  */
+/** Elements whose message Camunda 8 hands to a job worker (`taskType`). */
+const MESSAGE_JOB_TYPES = new Set<BpmnElementType>([
+	"sendTask",
+	"intermediateThrowEvent",
+	"endEvent",
+])
+
 function makeFlowElement(
 	id: string,
 	type: BpmnElementType,
@@ -859,10 +921,17 @@ function makeFlowElement(
 		documentation?: string
 		executionListeners?: ZeebeListener[]
 		taskListeners?: ZeebeListener[]
+		/** Send task and message throw/end event: the job Camunda 8 runs for the message. */
+		taskType?: string
 	},
 ): BpmnFlowElement {
 	const el = createFlowElement(id, type, options)
 	el.extensionElements = [...el.extensionElements]
+	if (options?.taskType !== undefined && MESSAGE_JOB_TYPES.has(type)) {
+		el.extensionElements.push(
+			...zeebeExtensionsToXmlElements({ taskDefinition: { type: options.taskType } }),
+		)
+	}
 	// Placement is checked here, so a listener on an element the schema forbids it on
 	// fails at build time, not at deploy time.
 	const listeners = zeebeExtensionsToXmlElements({
@@ -972,6 +1041,41 @@ function boundaryHostProblem(host: BpmnFlowElement | undefined): string | undefi
  * Throws on an id used twice anywhere in the process. Each builder scope only
  * checks its own ids, but BPMN ids are unique per document.
  */
+/**
+ * Zeebe refuses an end event with an outgoing flow, so nothing may be chained
+ * after one. Structural, so it holds with `validate: false` too.
+ */
+function assertNotAfterEnd(
+	elements: readonly BpmnFlowElement[],
+	sourceId: string,
+	nextId: string,
+): void {
+	// From the back: the source is almost always one of the last elements added.
+	let source: BpmnFlowElement | undefined
+	for (let i = elements.length - 1; i >= 0 && source === undefined; i--) {
+		if (elements[i]?.id === sourceId) source = elements[i]
+	}
+	if (source?.type !== "endEvent") return
+	throw new Error(
+		`Cannot chain "${nextId}" after end event "${sourceId}": an end event has no outgoing sequence flow. Remove the end event, or continue from another element.`,
+	)
+}
+
+/**
+ * The end of every `build()`: the Camunda 8 builder rules, then the deploy gate,
+ * for a model that targets Camunda 8 unless `validate: false`.
+ */
+function gateBuild(defs: BpmnDefinitions, options: BuildGateOptions | undefined): BpmnDefinitions {
+	if (options?.validate === false || !targetsCamunda8(defs)) return defs
+	const placeholders = options?.placeholders ?? false
+	const problem = camunda8BuilderProblem(defs, { placeholders })
+	if (problem !== undefined) throw new Error(problem)
+	const camundaVersion = normalizeCamundaVersion(
+		options?.camundaVersion ?? defs.unknownAttributes["modeler:executionPlatformVersion"],
+	)
+	return assertDeployable(defs, { camundaVersion, placeholders }).definitions
+}
+
 function assertElementIdsUnique(elements: BpmnFlowElement[], processId: string): void {
 	const seen = new Set<string>()
 	const walk = (scope: BpmnFlowElement[]) => {
@@ -1741,6 +1845,7 @@ export class BranchBuilder {
 		}
 
 		if (this.lastNodeId) {
+			assertNotAfterEnd(this._elements, this.lastNodeId, element.id)
 			const flowId = this.isFirstElement
 				? (this.pendingFlowId ?? generateId("Flow"))
 				: generateId("Flow")
@@ -1800,6 +1905,7 @@ export class BranchBuilder {
 			this._connected = true
 			return this
 		}
+		assertNotAfterEnd(this._elements, this.lastNodeId, targetId)
 		const flowId = this.isFirstElement
 			? (this.pendingFlowId ?? generateId("Flow"))
 			: generateId("Flow")
@@ -1913,7 +2019,7 @@ export class BranchBuilder {
 		return this.addElement(makeScriptTaskEl(id, options))
 	}
 
-	sendTask(id: string, options?: MessageTaskOptions): this {
+	sendTask(id: string, options?: SendTaskOptions): this {
 		const el = makeFlowElement(id, "sendTask", options) as BpmnSendTask
 		if (options?.isForCompensation) el.isForCompensation = true
 		if (options?.messageName) el.messageRef = resolveMessage(options.messageName, this.rootMessages)
@@ -2357,6 +2463,7 @@ export class SubProcessContentBuilder {
 		this._ids.add(element.id)
 		if (this.autoConnect && !isLinkEvent(element, "intermediateCatchEvent")) {
 			if (this.lastNodeId) {
+				assertNotAfterEnd(this._elements, this.lastNodeId, element.id)
 				this._flows.push({
 					id: generateId("Flow"),
 					sourceRef: this.lastNodeId,
@@ -2488,7 +2595,7 @@ export class SubProcessContentBuilder {
 		return this.addElement(makeCallActivityEl(id, options))
 	}
 
-	sendTask(id: string, options?: MessageTaskOptions): this {
+	sendTask(id: string, options?: SendTaskOptions): this {
 		const el = makeFlowElement(id, "sendTask", options) as BpmnSendTask
 		if (options?.isForCompensation) el.isForCompensation = true
 		if (options?.messageName) el.messageRef = resolveMessage(options.messageName, this.rootMessages)
@@ -2661,6 +2768,7 @@ export class SubProcessContentBuilder {
 
 	connectTo(targetId: string): this {
 		if (this.lastNodeId) {
+			assertNotAfterEnd(this._elements, this.lastNodeId, targetId)
 			this._flows.push({
 				id: generateId("Flow"),
 				sourceRef: this.lastNodeId,
@@ -3423,7 +3531,7 @@ export class ProcessBuilder {
 	}
 
 	/** Add a send task (aspirational). */
-	sendTask(id: string, options?: MessageTaskOptions): this {
+	sendTask(id: string, options?: SendTaskOptions): this {
 		const el = makeFlowElement(id, "sendTask", options) as BpmnSendTask
 		if (options?.isForCompensation) el.isForCompensation = true
 		if (options?.messageName) el.messageRef = resolveMessage(options.messageName, this.rootMessages)
@@ -3585,6 +3693,7 @@ export class ProcessBuilder {
 	/** Connect the current position to an existing or future element by ID. */
 	connectTo(targetId: string): this {
 		if (this.lastNodeId) {
+			assertNotAfterEnd(this.flowElements, this.lastNodeId, targetId)
 			const flowId = generateId("Flow")
 			this.sequenceFlows.push({
 				id: flowId,
@@ -3810,9 +3919,22 @@ export class ProcessBuilder {
 	 * says: inference reads the whole topology, and on a document you were handed
 	 * that means rewriting edges you never touched.
 	 *
-	 * @param options - `explicitJoins` refuses inferred join gateways.
+	 * **The deploy gate.** A model that targets Camunda 8 (every new one does) must
+	 * deploy: `build()` refuses with a clear error what the builder can name (a
+	 * branch without a condition, a send task without a `taskType`, ...) and then
+	 * runs {@link assertDeployable}, which throws a `DeployabilityError` listing
+	 * whatever Zeebe would still reject. See {@link BuildGateOptions} for
+	 * `validate`, `placeholders` and `camundaVersion`.
+	 *
+	 * @param options - `explicitJoins` refuses inferred join gateways; `validate`,
+	 *   `placeholders` and `camundaVersion` control the deploy gate.
+	 * @throws {DeployabilityError} When the gate runs and Zeebe would reject the model.
 	 */
 	build(options?: BuildOptions): BpmnDefinitions {
+		return gateBuild(this.buildModel(options), options)
+	}
+
+	private buildModel(options: BuildOptions | undefined): BpmnDefinitions {
 		this.resolvePendingSplice()
 		// Built from a copy: the result shares nothing with the builder, and a
 		// second build() (or one after a throwing build) starts from the same state.
@@ -4082,6 +4204,7 @@ export class ProcessBuilder {
 		}
 
 		if (this.lastNodeId) {
+			assertNotAfterEnd(this.flowElements, this.lastNodeId, element.id)
 			const flowId = generateId("Flow")
 			this.sequenceFlows.push({
 				id: flowId,
@@ -4127,6 +4250,22 @@ function mergeRootDefinitions<T extends { id: string }>(into: T[], incoming: rea
 }
 
 /**
+ * A message two pools share keeps the correlation key a later pool hoisted onto
+ * its copy when the first copy has none; dropping it would leave that pool's
+ * catch without the `zeebe:subscription` Zeebe requires.
+ */
+function adoptMessageSubscriptions(into: BpmnMessage[], incoming: readonly BpmnMessage[]): void {
+	const isSubscription = (x: XmlElement) => x.name === "zeebe:subscription"
+	for (const message of incoming) {
+		const sub = message.extensionElements?.find(isSubscription)
+		const target = into.find((m) => m.id === message.id)
+		if (sub === undefined || target === undefined || target === message) continue
+		if (target.extensionElements?.some(isSubscription)) continue
+		target.extensionElements = [...(target.extensionElements ?? []), sub]
+	}
+}
+
+/**
  * Builder for a complete BPMN definitions document containing one or more processes.
  * Use `Bpmn.createDiagram(id?)` to obtain an instance.
  */
@@ -4153,13 +4292,15 @@ export class DiagramBuilder {
 	process(id: string, callback: (b: ProcessBuilder) => void): this {
 		const builder = new ProcessBuilder(id)
 		callback(builder)
-		const defs = builder.build()
+		// The document is gated as a whole in build(): a pool may only deploy next to the others.
+		const defs = builder.build({ validate: false })
 		this._processes.push(...defs.processes)
 		// Root definitions are named after the message or error code they carry, so
 		// two pools declaring the same one produce the same definition twice. The
 		// document needs it once.
 		mergeRootDefinitions(this._errors, defs.errors)
 		mergeRootDefinitions(this._messages, defs.messages)
+		adoptMessageSubscriptions(this._messages, defs.messages)
 		return this
 	}
 
@@ -4326,7 +4467,17 @@ export class DiagramBuilder {
 		return index
 	}
 
-	build(): BpmnDefinitions {
+	/**
+	 * Build the document. Gated like {@link ProcessBuilder.build}: see
+	 * {@link BuildGateOptions}.
+	 *
+	 * @throws {DeployabilityError} When the gate runs and Zeebe would reject the document.
+	 */
+	build(options?: BuildGateOptions): BpmnDefinitions {
+		return gateBuild(this.buildModel(), options)
+	}
+
+	private buildModel(): BpmnDefinitions {
 		return hoistMessageSubscriptions({
 			id: this._id,
 			targetNamespace: "http://bpmn.io/schema/bpmn",

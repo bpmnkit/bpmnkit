@@ -24,7 +24,9 @@
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=a</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_g_e2" sourceRef="g" targetRef="e2" name="b"/>
-    <bpmn:sequenceFlow id="Flow_g_e3" sourceRef="g" targetRef="e3" name="c"/>
+    <bpmn:sequenceFlow id="Flow_g_e3" sourceRef="g" targetRef="e3" name="c">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=c</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
   </bpmn:process>
 </bpmn:definitions>
 

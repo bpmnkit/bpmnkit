@@ -2,8 +2,10 @@ import { beforeEach, describe, expect, it } from "vitest"
 import { Bpmn, resetIdCounter } from "../src/index.js"
 import type { BpmnDefinitions, SubProcessContentBuilder } from "../src/index.js"
 
-// Exports here check what the serializer writes, not whether Zeebe would deploy the
-// model (a fragment, a round trip), so they pass `validate: false` to skip the gate.
+// Builds and exports here check what the builder and serializer write, not whether Zeebe
+// would deploy the model (a fragment, an element Zeebe lacks, a round trip), so they pass
+// `validate: false` to skip the gate. The gate has its own tests: builder-gate.test.ts and
+// the conformance/builder cases.
 
 /** Every `*Ref` attribute an event definition carries in the exported XML. */
 function eventRefs(xml: string): string[] {
@@ -86,7 +88,8 @@ describe("SubProcessContentBuilder root definitions (#220)", () => {
 				})
 			})
 			.endEvent("e")
-			.build()
+			// Includes a transaction, which Zeebe does not support.
+			.build({ validate: false })
 		const xml = Bpmn.export(defs, { validate: false })
 
 		const ids = rootIds(defs)
@@ -148,7 +151,8 @@ describe("SubProcessContentBuilder root definitions (#220)", () => {
 					})
 					.endEvent("evte"),
 			)
-			.build()
+			// Includes a transaction, which Zeebe does not support.
+			.build({ validate: false })
 		const xml = Bpmn.export(defs, { validate: false })
 
 		const ids = rootIds(defs)
@@ -170,9 +174,11 @@ describe("SubProcessContentBuilder root definitions (#220)", () => {
 			})
 			.boundaryEvent("b", { attachedTo: "sub", errorCode: "X1" })
 			.endEvent("be")
+			.element("sub")
 			.subProcess("sub2", (c) => {
 				c.startEvent("ss2").endEvent("se2", { errorCode: "X1" })
 			})
+			.endEvent("e2")
 			.build()
 
 		expect(defs.escalations).toHaveLength(1)

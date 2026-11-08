@@ -6,6 +6,8 @@
 		["exclusiveGateway","g"],
 		["branch","a",{"$ops":[["startEvent","s2",{"isInterrupting":false}],["endEvent","e2"]]}],
 		["branch","b",{"$ops":[["endEvent","e3"]]}],
-		["build"]
-	]
+		["build",{"validate":false}]
+	],
+	"deployable": false,
+	"deployableReason": "A start event inside a branch is a second none start event, which Zeebe rejects; the case pins how the builder writes isInterrupting on it."
 }

@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createDiagram","D"],
+		["process","a",{"$ops":[["startEvent","s"],["sendTask","send",{"messageName":"m"}],["endEvent","e"]]}],
+		["build",{"validate":false}]
+	],
+	"deployable": false,
+	"deployableReason": "Built with validate false: pins that DiagramBuilder.build skips the Camunda 8 rules (a send task without a taskType)."
+}

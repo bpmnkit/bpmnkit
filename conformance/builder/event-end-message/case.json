@@ -3,7 +3,7 @@
 	"script": [
 		["createProcess","p"],
 		["startEvent","s"],
-		["endEvent","e",{"messageName":"done"}],
+		["endEvent","e",{"messageName":"done","taskType":"publish-done"}],
 		["build"]
 	]
 }

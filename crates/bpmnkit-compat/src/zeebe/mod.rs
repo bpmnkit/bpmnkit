@@ -21,8 +21,8 @@ pub use context::{
 };
 
 pub use gate::{
-    assert_deployable, deployability_message, AssertOptions, DeployabilityError, Deployable,
-    Placeholder, PlaceholderField, PlaceholderFill, PLACEHOLDERS,
+    assert_deployable, deployability_message, targets_camunda8, AssertOptions, DeployabilityError,
+    Deployable, Placeholder, PlaceholderField, PlaceholderFill, PLACEHOLDERS,
 };
 
 use crate::finding::{Finding, Severity};

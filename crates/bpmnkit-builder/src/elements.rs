@@ -65,6 +65,8 @@ pub(crate) struct FlowElementOptions {
     pub documentation: Option<String>,
     pub execution_listeners: Option<Vec<ZeebeListener>>,
     pub task_listeners: Option<Vec<ZeebeListener>>,
+    /// Send task and message throw/end event: the job Camunda 8 runs for the message.
+    pub task_type: Option<String>,
 }
 
 impl From<&ElementOptions> for FlowElementOptions {
@@ -506,6 +508,23 @@ pub(crate) fn make_flow_element(
             extension_elements: options.extension_elements,
         },
     );
+    if let Some(task_type) = options.task_type {
+        if matches!(
+            ty,
+            BpmnElementType::SendTask
+                | BpmnElementType::IntermediateThrowEvent
+                | BpmnElementType::EndEvent
+        ) {
+            let ext = zeebe_extensions_to_xml_elements(&ZeebeExtensions {
+                task_definition: Some(ZeebeTaskDefinition {
+                    type_: task_type,
+                    retries: None,
+                }),
+                ..ZeebeExtensions::default()
+            });
+            el.base_mut().extension_elements.extend(ext);
+        }
+    }
     // Placement is checked here, so a listener on an element the schema forbids it on
     // fails at build time, not at deploy time.
     let listeners = zeebe_extensions_to_xml_elements(&ZeebeExtensions {
@@ -519,6 +538,23 @@ pub(crate) fn make_flow_element(
         el.base_mut().extension_elements.push(listener);
     }
     Ok(el)
+}
+
+/// TS's `assertNotAfterEnd`: Zeebe refuses an end event with an outgoing flow, so
+/// nothing may be chained after one. Structural, so it holds with `validate: false` too.
+pub(crate) fn assert_not_after_end(
+    elements: &[BpmnFlowElement],
+    source_id: &str,
+    next_id: &str,
+) -> Result<(), String> {
+    // From the back: the source is almost always one of the last elements added.
+    let source = elements.iter().rev().find(|e| e.base().id == source_id);
+    if !matches!(source, Some(BpmnFlowElement::EndEvent(_))) {
+        return Ok(());
+    }
+    Err(format!(
+        "Cannot chain \"{next_id}\" after end event \"{source_id}\": an end event has no outgoing sequence flow. Remove the end event, or continue from another element."
+    ))
 }
 
 /// TS's `buildMultiInstance`.
@@ -856,6 +892,7 @@ pub(crate) fn make_service_task_el(
             execution_listeners: options.execution_listeners.clone(),
             // Not in ServiceTaskOptions; forwarded so an untyped caller gets the placement error, not a silent drop.
             task_listeners: options.task_listeners.clone(),
+            task_type: None,
         },
     )?;
     el.base_mut().unknown_attributes = unknown_attributes;
@@ -883,6 +920,7 @@ pub(crate) fn make_script_task_el(
                 ..ZeebeExtensions::default()
             })),
             task_listeners: None,
+            task_type: None,
         },
     )?;
     flag_compensation(&mut el, options.is_for_compensation);
@@ -946,6 +984,7 @@ pub(crate) fn make_start_event_el(
             execution_listeners: options.and_then(|o| o.element.execution_listeners.clone()),
             extension_elements: Some(zeebe_extensions_to_xml_elements(&ext)),
             task_listeners: None,
+            task_type: None,
         },
     )?;
     if let Some(o) = options {
@@ -1047,6 +1086,7 @@ pub(crate) fn make_user_task_el(
             execution_listeners: options.and_then(|o| o.execution_listeners.clone()),
             task_listeners: options.and_then(|o| o.task_listeners.clone()),
             extension_elements: Some(ext),
+            task_type: None,
         },
     )?;
     if let Some(o) = options {
@@ -1158,6 +1198,7 @@ pub(crate) fn make_business_rule_task_el(
             execution_listeners: options.and_then(|o| o.execution_listeners.clone()),
             extension_elements: Some(ext),
             task_listeners: None,
+            task_type: None,
         },
     )?;
     flag_compensation(&mut el, options.and_then(|o| o.is_for_compensation));
@@ -1194,6 +1235,7 @@ pub(crate) fn make_call_activity_el(
             execution_listeners: options.execution_listeners.clone(),
             extension_elements: Some(zeebe_extensions_to_xml_elements(&extensions)),
             task_listeners: None,
+            task_type: None,
         },
     )?;
     flag_compensation(&mut el, options.is_for_compensation);
@@ -1230,12 +1272,14 @@ fn message_task_el(
     ty: BpmnElementType,
     options: Option<&MessageTaskOptions>,
     extension_elements: Option<Vec<XmlElement>>,
+    task_type: Option<String>,
     shared: &mut Shared,
 ) -> Result<BpmnFlowElement, String> {
     let mut flow_options = options
         .map(|o| FlowElementOptions::from(&o.element))
         .unwrap_or_default();
     flow_options.extension_elements = extension_elements;
+    flow_options.task_type = task_type;
     let mut el = make_flow_element(id, ty, flow_options)?;
     flag_compensation(&mut el, options.and_then(|o| o.element.is_for_compensation));
     if let Some(name) = options
@@ -1259,10 +1303,17 @@ fn message_task_el(
 /// `sendTask()` of all three builders: element, compensation flag, message, multi-instance.
 pub(crate) fn make_send_task_el(
     id: &str,
-    options: Option<&MessageTaskOptions>,
+    options: Option<&SendTaskOptions>,
     shared: &mut Shared,
 ) -> Result<BpmnFlowElement, String> {
-    message_task_el(id, BpmnElementType::SendTask, options, None, shared)
+    message_task_el(
+        id,
+        BpmnElementType::SendTask,
+        options.map(|o| &o.message),
+        None,
+        options.and_then(|o| o.task_type.clone()),
+        shared,
+    )
 }
 
 /// `receiveTask()` of all three builders: as [`make_send_task_el`] plus the subscription.
@@ -1276,7 +1327,14 @@ pub(crate) fn make_receive_task_el(
         options.and_then(|o| o.message_name.as_deref()),
         options.and_then(|o| o.correlation_key.as_deref()),
     )?;
-    message_task_el(id, BpmnElementType::ReceiveTask, options, Some(ext), shared)
+    message_task_el(
+        id,
+        BpmnElementType::ReceiveTask,
+        options,
+        Some(ext),
+        None,
+        shared,
+    )
 }
 
 /// `manualTask()` / `task()` of all three builders (`ty` is `ManualTask` or `Task`).
@@ -1305,7 +1363,10 @@ pub(crate) fn make_end_event_el(
         id,
         BpmnElementType::EndEvent,
         options
-            .map(|o| FlowElementOptions::from(&o.element))
+            .map(|o| FlowElementOptions {
+                task_type: o.task_type.clone(),
+                ..FlowElementOptions::from(&o.element)
+            })
             .unwrap_or_default(),
     )?;
     if let (Some(o), Some(defs)) = (options, el.event_definitions_mut()) {
@@ -1324,7 +1385,10 @@ pub(crate) fn make_intermediate_throw_event_el(
         id,
         BpmnElementType::IntermediateThrowEvent,
         options
-            .map(|o| FlowElementOptions::from(&o.element))
+            .map(|o| FlowElementOptions {
+                task_type: o.task_type.clone(),
+                ..FlowElementOptions::from(&o.element)
+            })
             .unwrap_or_default(),
     )?;
     if let (Some(o), Some(defs)) = (options, el.event_definitions_mut()) {

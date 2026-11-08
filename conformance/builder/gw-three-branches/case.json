@@ -6,7 +6,7 @@
 		["exclusiveGateway","g"],
 		["branch","a",{"$ops":[["condition","=a"],["endEvent","e1"]]}],
 		["branch","b",{"$ops":[["defaultFlow"],["endEvent","e2"]]}],
-		["branch","c",{"$ops":[["endEvent","e3"]]}],
+		["branch","c",{"$ops":[["condition","=c"],["endEvent","e3"]]}],
 		["build"]
 	]
 }

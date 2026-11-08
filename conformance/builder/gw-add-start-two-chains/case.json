@@ -5,7 +5,7 @@
 		["startEvent","s1"],
 		["serviceTask","a",{"name":"a","taskType":"a"}],
 		["endEvent","e1"],
-		["addStartEvent","s2"],
+		["addStartEvent","s2",{"timerCycle":"R/PT1H"}],
 		["serviceTask","b",{"name":"b","taskType":"b"}],
 		["endEvent","e2"],
 		["build"]

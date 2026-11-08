@@ -361,7 +361,7 @@ fn replay_diagram(
 ) -> Option<Result<BpmnDefinitions, BuildError>> {
     for op in ops {
         match split(op) {
-            ("build", _) => return Some(b.build()),
+            ("build", a) => return Some(b.build(opt(a.first()))),
             ("executionPlatformVersion", a) => done(b.execution_platform_version(a[0].str())),
             ("process", a) => {
                 let ops = a[1].ops().expect("process callback");
@@ -547,11 +547,7 @@ fn exported(
         None => ExportValidate::Auto,
     };
     let warning = match export_bpmn(&defs, ExportOptions { validate }) {
-        Err(e) => {
-            return Ok(Err(BuildError {
-                message: e.to_string(),
-            }))
-        }
+        Err(e) => return Ok(Err(BuildError::from(e))),
         Ok(out) => out.warning,
     };
     let warning_path = expected.join("warning.txt");

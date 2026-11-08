@@ -114,23 +114,19 @@ impl DecisionTableBuilder {
             return self;
         }
         if options.inputs.len() != self.input_columns.len() {
-            self.error = Some(BuildError {
-                message: format!(
-                    "Rule has {} inputs but table has {} input columns. See agent-cards/dmn.md#traps.",
-                    options.inputs.len(),
-                    self.input_columns.len()
-                ),
-            });
+            self.error = Some(BuildError::new(format!(
+                "Rule has {} inputs but table has {} input columns. See agent-cards/dmn.md#traps.",
+                options.inputs.len(),
+                self.input_columns.len()
+            )));
             return self;
         }
         if options.outputs.len() != self.output_columns.len() {
-            self.error = Some(BuildError {
-                message: format!(
+            self.error = Some(BuildError::new(format!(
                     "Rule has {} outputs but table has {} output columns. See agent-cards/dmn.md#traps.",
                     options.outputs.len(),
                     self.output_columns.len()
-                ),
-            });
+                )));
             return self;
         }
 

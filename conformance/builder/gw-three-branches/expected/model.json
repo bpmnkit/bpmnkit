@@ -115,6 +115,12 @@
           "unknownAttributes": {}
         },
         {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=c"
+          },
           "extensionElements": [],
           "id": "Flow_g_e3",
           "name": "c",

@@ -27,9 +27,22 @@
           "id": "s",
           "incoming": [],
           "outgoing": [
-            "Flow_s_e1"
+            "Flow_s_g"
           ],
           "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "g",
+          "incoming": [
+            "Flow_s_g"
+          ],
+          "outgoing": [
+            "Flow_g_e1",
+            "Flow_g_e2"
+          ],
+          "type": "exclusiveGateway",
           "unknownAttributes": {}
         },
         {
@@ -37,33 +50,10 @@
           "extensionElements": [],
           "id": "e1",
           "incoming": [
-            "Flow_s_e1"
+            "Flow_g_e1"
           ],
-          "outgoing": [
-            "Flow_e1_orphan"
-          ],
+          "outgoing": [],
           "type": "endEvent",
-          "unknownAttributes": {}
-        },
-        {
-          "extensionElements": [
-            {
-              "attributes": {
-                "type": "orphan"
-              },
-              "children": [],
-              "name": "zeebe:taskDefinition"
-            }
-          ],
-          "id": "orphan",
-          "incoming": [
-            "Flow_e1_orphan"
-          ],
-          "name": "orphan",
-          "outgoing": [
-            "Flow_orphan_e2"
-          ],
-          "type": "serviceTask",
           "unknownAttributes": {}
         },
         {
@@ -71,7 +61,7 @@
           "extensionElements": [],
           "id": "e2",
           "incoming": [
-            "Flow_orphan_e2"
+            "Flow_g_e2"
           ],
           "outgoing": [],
           "type": "endEvent",
@@ -84,22 +74,30 @@
       "sequenceFlows": [
         {
           "extensionElements": [],
-          "id": "Flow_s_e1",
+          "id": "Flow_s_g",
           "sourceRef": "s",
+          "targetRef": "g",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=a"
+          },
+          "extensionElements": [],
+          "id": "Flow_g_e1",
+          "name": "a",
+          "sourceRef": "g",
           "targetRef": "e1",
           "unknownAttributes": {}
         },
         {
           "extensionElements": [],
-          "id": "Flow_e1_orphan",
-          "sourceRef": "e1",
-          "targetRef": "orphan",
-          "unknownAttributes": {}
-        },
-        {
-          "extensionElements": [],
-          "id": "Flow_orphan_e2",
-          "sourceRef": "orphan",
+          "id": "Flow_g_e2",
+          "name": "b",
+          "sourceRef": "g",
           "targetRef": "e2",
           "unknownAttributes": {}
         }

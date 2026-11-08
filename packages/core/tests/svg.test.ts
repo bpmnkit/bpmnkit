@@ -109,7 +109,8 @@ describe("exportSvg", () => {
 				.branch("a", (b) => b.endEvent("e1"))
 				.branch("b", (b) => b.endEvent("e2"))
 				.withAutoLayout()
-				.build()
+				// Rendering fixture, not a deployable model.
+				.build({ validate: false })
 			expect(() => exportSvg(defs)).not.toThrow()
 		}
 	})
@@ -123,7 +124,8 @@ describe("exportSvg", () => {
 			.businessRuleTask("br", { name: "Rule", decisionId: "d" })
 			.endEvent("e")
 			.withAutoLayout()
-			.build()
+			// Rendering fixture, not a deployable model.
+			.build({ validate: false })
 		expect(() => exportSvg(defs)).not.toThrow()
 		const svg = exportSvg(defs)
 		expect(svg).toContain("User")

@@ -1743,14 +1743,9 @@
 			"errors": []
 		},
 		"conformance/builder/diagram-collaboration-black-box/expected/output.bpmn": {
-			"sha256": "d2d182bff845048a9543e744cce7f8e8989465b9e7f73e15eaa84e84f3b88e4f",
-			"ok": false,
-			"errors": [
-				{
-					"element": "ask",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				}
-			]
+			"sha256": "f4872b6d7e48e3b36cbfd9a44e81ba2545624b8c6510205fcbac230f25f4487a",
+			"ok": true,
+			"errors": []
 		},
 		"conformance/builder/diagram-collaboration-custom-id/expected/output.bpmn": {
 			"sha256": "91fcc060e4ae505efdba0f5661cee360f5b975a9e3780dedbcaa1a3eae52e4a6",
@@ -1763,18 +1758,9 @@
 			"errors": []
 		},
 		"conformance/builder/diagram-collaboration/expected/output.bpmn": {
-			"sha256": "a067167c4ac1a8344443dbf824074b335c51b7bc10d253039089072c277b5466",
-			"ok": false,
-			"errors": [
-				{
-					"element": "bill",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "order",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				}
-			]
+			"sha256": "ee4d8b98ea4bc3e53a463b023d891d75354b6155177841334fde90e9f81be3f0",
+			"ok": true,
+			"errors": []
 		},
 		"conformance/builder/diagram-default-id/expected/output.bpmn": {
 			"sha256": "b4fd9178d38519a52cac3ce4e0569354355070459876931fc4e5eca7032bf17a",
@@ -1782,29 +1768,29 @@
 			"errors": []
 		},
 		"conformance/builder/diagram-message-flow-to-inner-node/expected/output.bpmn": {
-			"sha256": "b0ed857e78e5104eda8a0803d40bf2075d0061c3a1a7b05b2680296bfbfd2d33",
-			"ok": false,
-			"errors": [
-				{
-					"element": "inner",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				}
-			]
+			"sha256": "19452be3aa85f4b77a529a8674202002d01ecb6fb4bf6bc1c72be29e3f9123f8",
+			"ok": true,
+			"errors": []
 		},
 		"conformance/builder/diagram-platform-version/expected/output.bpmn": {
 			"sha256": "e5eabdda5b0e55489ed85c488e225aafa5ef32e7a9f7f68e1a133d1f82bd37fb",
 			"ok": true,
 			"errors": []
 		},
-		"conformance/builder/diagram-shared-errors-and-messages/expected/output.bpmn": {
-			"sha256": "4313edf2e043d1242d340f96c0bf21a659aa7d91a70d1e0ec039c87e1854cc7f",
+		"conformance/builder/diagram-send-task-validate-off/expected/output.bpmn": {
+			"sha256": "824d80be58b53027f0c0c791b2784a50c45f85feb021ad30b6b7015eb4333a51",
 			"ok": false,
 			"errors": [
 				{
-					"element": "Message_m",
-					"message": "A message cannot be referred by more than one start event"
+					"element": "send",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				}
 			]
+		},
+		"conformance/builder/diagram-shared-errors-and-messages/expected/output.bpmn": {
+			"sha256": "05ac25221628eb40916c5e00f5ed823136ed4394513511bf09b15a6c98a5145d",
+			"ok": true,
+			"errors": []
 		},
 		"conformance/builder/diagram-two-processes/expected/output.bpmn": {
 			"sha256": "512d51860740687d2bede3695e4db15dcd36efbe5662bd23f1eb06ddd8d01edd",
@@ -1832,14 +1818,9 @@
 			"errors": []
 		},
 		"conformance/builder/event-end-message/expected/output.bpmn": {
-			"sha256": "fcf6be2224dbce00a6b822bd6caa9118208aa5948792be6ecfa75743c408d2b1",
-			"ok": false,
-			"errors": [
-				{
-					"element": "e",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				}
-			]
+			"sha256": "ce062da492c600b0d5a3a77d1bed14e2147f2082493481e7a9f7472dd12babe2",
+			"ok": true,
+			"errors": []
 		},
 		"conformance/builder/event-end-no-id/expected/output.bpmn": {
 			"sha256": "a365f0081101f16bab3803cc19fb931cb4c5cb9f00ec514eb40bbd8636e0c23b",
@@ -1917,14 +1898,9 @@
 			"errors": []
 		},
 		"conformance/builder/event-intermediate-throw-message/expected/output.bpmn": {
-			"sha256": "24bb61c43388c4d5dd8c99e895249d53ff528e38637de0ec5a0a6c9ec2a90a31",
-			"ok": false,
-			"errors": [
-				{
-					"element": "i",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				}
-			]
+			"sha256": "f7e7ad96cd6e25700acd772cd52e7b0420b2c9320787df5854a18acc8e79a3ba",
+			"ok": true,
+			"errors": []
 		},
 		"conformance/builder/event-intermediate-throw-none/expected/output.bpmn": {
 			"sha256": "fc757ccad3d34ba4961bb8f87f2d4f68a4cced654624dd664434da4eae815c51",
@@ -2031,16 +2007,16 @@
 			"ok": false,
 			"errors": [
 				{
+					"element": "validate",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
 					"element": "f3",
 					"message": "Must have a condition or be default flow"
 				},
 				{
 					"element": "f4",
 					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "validate",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -2049,16 +2025,16 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "f3",
-					"message": "Must have a condition or be default flow"
-				},
-				{
 					"element": "f4",
 					"message": "Must have a condition or be default flow"
 				},
 				{
 					"element": "validate",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "f3",
+					"message": "Must have a condition or be default flow"
 				}
 			]
 		},
@@ -2067,11 +2043,11 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "f4",
+					"element": "f3",
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "f3",
+					"element": "f4",
 					"message": "Must have a condition or be default flow"
 				},
 				{
@@ -2085,7 +2061,7 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "notify",
+					"element": "reject",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
@@ -2093,20 +2069,20 @@
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "flow-no",
-					"message": "Must have a condition or be default flow"
+					"element": "validate",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "flow-yes",
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "reject",
+					"element": "notify",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "validate",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+					"element": "flow-no",
+					"message": "Must have a condition or be default flow"
 				}
 			]
 		},
@@ -2135,16 +2111,16 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "validate",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "f3",
 					"message": "Must have a condition or be default flow"
 				},
 				{
 					"element": "f4",
 					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "validate",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -2153,19 +2129,19 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Flow_gw_m",
-					"message": "Must have a condition or be default flow"
-				},
-				{
 					"element": "validate",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "f3",
+					"element": "f4",
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "f4",
+					"element": "Flow_gw_m",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "f3",
 					"message": "Must have a condition or be default flow"
 				}
 			]
@@ -2175,12 +2151,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "validate",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "f4",
 					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "validate",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "f3",
@@ -2193,16 +2169,16 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "f3",
-					"message": "Must have a condition or be default flow"
+					"element": "validate",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "f4",
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "validate",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+					"element": "f3",
+					"message": "Must have a condition or be default flow"
 				}
 			]
 		},
@@ -2215,12 +2191,12 @@
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "validate",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "f3",
 					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "validate",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -2247,16 +2223,16 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "f4",
-					"message": "Must have a condition or be default flow"
-				},
-				{
 					"element": "f3",
 					"message": "Must have a condition or be default flow"
 				},
 				{
 					"element": "validate",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "f4",
+					"message": "Must have a condition or be default flow"
 				}
 			]
 		},
@@ -2265,16 +2241,16 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "f4",
-					"message": "Must have a condition or be default flow"
+					"element": "validate",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "f3",
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "validate",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+					"element": "f4",
+					"message": "Must have a condition or be default flow"
 				}
 			]
 		},
@@ -2283,15 +2259,15 @@
 			"ok": false,
 			"errors": [
 				{
+					"element": "f4",
+					"message": "Must have a condition or be default flow"
+				},
+				{
 					"element": "validate",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "f3",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "f4",
 					"message": "Must have a condition or be default flow"
 				}
 			]
@@ -2301,11 +2277,11 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "f3",
+					"element": "f4",
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "f4",
+					"element": "f3",
 					"message": "Must have a condition or be default flow"
 				},
 				{
@@ -2315,24 +2291,38 @@
 			]
 		},
 		"conformance/builder/gw-add-start-two-chains/expected/output.bpmn": {
-			"sha256": "a8657d64c0041d360393bba8b2c3b15ae0643d821f92443cbfe49093174f09e1",
-			"ok": false,
-			"errors": [
-				{
-					"element": "p",
-					"message": "Multiple none start events are not allowed"
-				}
-			]
+			"sha256": "25558734613ab6ff9578a1b50e2068ed1314be4b42abb42562d5b297c376305b",
+			"ok": true,
+			"errors": []
 		},
 		"conformance/builder/gw-branch-flow-id-label/expected/output.bpmn": {
 			"sha256": "1b772e470b6a7b585637d042c226165c7d999716a2d37dcab56424d5bde7a29e",
 			"ok": true,
 			"errors": []
 		},
+		"conformance/builder/gw-branch-no-condition-placeholders/expected/output.bpmn": {
+			"sha256": "00acbff11baa357c47f2cc3327762ddabc3640c0d833fc09496147d2555239cd",
+			"ok": true,
+			"errors": []
+		},
+		"conformance/builder/gw-branch-no-condition-validate-off/expected/output.bpmn": {
+			"sha256": "d07154f97f4e0c47cda5896b699ed2ce80b1cf51aebbb7d003cd4c6f0c5c69e8",
+			"ok": false,
+			"errors": [
+				{
+					"element": "Flow_g_e2",
+					"message": "Must have a condition or be default flow"
+				}
+			]
+		},
 		"conformance/builder/gw-branch-start-event-non-interrupting/expected/output.bpmn": {
 			"sha256": "ed50872408818259c54324432129b3887de52329bf25b4e1b303499f37ce44c3",
 			"ok": false,
 			"errors": [
+				{
+					"element": "p",
+					"message": "Multiple none start events are not allowed"
+				},
 				{
 					"element": "Flow_g_e3",
 					"message": "Must have a condition or be default flow"
@@ -2340,10 +2330,6 @@
 				{
 					"element": "Flow_g_s2",
 					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "p",
-					"message": "Multiple none start events are not allowed"
 				}
 			]
 		},
@@ -2352,11 +2338,11 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "cg",
+					"element": "cj",
 					"message": "Elements of type 'ComplexGateway' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
 				},
 				{
-					"element": "cj",
+					"element": "cg",
 					"message": "Elements of type 'ComplexGateway' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
 				}
 			]
@@ -2417,48 +2403,14 @@
 			"errors": []
 		},
 		"conformance/builder/gw-nested-branch-connect-to-open-ends/expected/output.bpmn": {
-			"sha256": "6f0d8968237577679d884c434cb841253df8cd01344583b2e39e414ae1ec8101",
-			"ok": false,
-			"errors": [
-				{
-					"element": "Flow_g2_t2",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "Flow_g_g2",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "Flow_g2_t1",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "Flow_g_end",
-					"message": "Must have a condition or be default flow"
-				}
-			]
+			"sha256": "62f520a766baf85b305e0bb77c1a566ab3b4ec55ce84ec6d6740853839f4643b",
+			"ok": true,
+			"errors": []
 		},
 		"conformance/builder/gw-nested-branch-link-catch/expected/output.bpmn": {
-			"sha256": "2e518e26fa93c01ad48b9f2cc49fadba21245e56563f651bde6c36cc6349b842",
-			"ok": false,
-			"errors": [
-				{
-					"element": "Flow_g2_t2",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "Flow_g2_t1",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "Flow_g_lt",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "Flow_g_g2",
-					"message": "Must have a condition or be default flow"
-				}
-			]
+			"sha256": "b4b4edc08ea06b07f7e2a5bd85d26dc3ce0d1f93042876425d7d8a0df646e505",
+			"ok": true,
+			"errors": []
 		},
 		"conformance/builder/gw-nested-branches/expected/output.bpmn": {
 			"sha256": "1d0619ec20c58a46219daad7b00a11a57760ed47bd65038e81768226ee98cc64",
@@ -2485,25 +2437,10 @@
 			"ok": true,
 			"errors": []
 		},
-		"conformance/builder/gw-sequence-after-end/expected/output.bpmn": {
-			"sha256": "ab790fbb75790f1ee57e740f8beeb29f0ee0b360c94b1fabab5ae812ac410fcd",
-			"ok": false,
-			"errors": [
-				{
-					"element": "e1",
-					"message": "End events must not have outgoing sequence flows to other elements."
-				}
-			]
-		},
 		"conformance/builder/gw-three-branches/expected/output.bpmn": {
-			"sha256": "fe01b80dfb43898ec4476ba3b07b90660a584a288ec357216d5137cabd6885e7",
-			"ok": false,
-			"errors": [
-				{
-					"element": "Flow_g_e3",
-					"message": "Must have a condition or be default flow"
-				}
-			]
+			"sha256": "702e7aceee54cc25fe1d066b10329c2f271c94cf3b9017f0d31d8114df3f7e15",
+			"ok": true,
+			"errors": []
 		},
 		"conformance/builder/meta-all/expected/output.bpmn": {
 			"sha256": "5f67250a4b11ea31e0afcb8bf54a60133e0e6c4aa07c8db52ae9378b252e28c9",
@@ -2636,22 +2573,9 @@
 			"errors": []
 		},
 		"conformance/builder/sub-process-ad-hoc-agent/expected/output.bpmn": {
-			"sha256": "b06829c26d5069d310bd8f3dff4fbe7a7618fa45371d3ed3ed7f498d502a8bba",
-			"ok": false,
-			"errors": [
-				{
-					"element": "agent",
-					"message": "Must not define cancelRemainingInstances in combination with zeebe:taskDefinition."
-				},
-				{
-					"element": "agent",
-					"message": "Must not define completionCondition in combination with zeebe:taskDefinition."
-				},
-				{
-					"element": "agent",
-					"message": "Must not define activeElementsCollection in combination with zeebe:taskDefinition."
-				}
-			]
+			"sha256": "f630eca93bde2f600cd75cfc8bcb13595acbfec367ddf3ff59eb4f6ee784ca82",
+			"ok": true,
+			"errors": []
 		},
 		"conformance/builder/sub-process-ad-hoc-basic/expected/output.bpmn": {
 			"sha256": "d2c056957a366858f80fd100aae3c78d66b1cd56f8c18249b81f2693929c138b",
@@ -2768,16 +2692,16 @@
 			"ok": false,
 			"errors": [
 				{
+					"element": "unbook",
+					"message": "A compensation handler should have no incoming sequence flows"
+				},
+				{
 					"element": "cancel",
 					"message": "Compensation boundary events must have a compensation association and no outgoing sequence flows"
 				},
 				{
 					"element": "tx",
 					"message": "Elements of type 'Transaction' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
-				},
-				{
-					"element": "unbook",
-					"message": "A compensation handler should have no incoming sequence flows"
 				}
 			]
 		},
@@ -2822,14 +2746,9 @@
 			"errors": []
 		},
 		"conformance/builder/task-multi-instance-sequential/expected/output.bpmn": {
-			"sha256": "f78031853fd47d643d008a5be380b47194e25e4629c2cff35342cdaf68048fc9",
-			"ok": false,
-			"errors": [
-				{
-					"element": "msend",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				}
-			]
+			"sha256": "3d0aba59583b60f571640d6bf46774041a750e928f27abd92e5322b680292deb",
+			"ok": true,
+			"errors": []
 		},
 		"conformance/builder/task-plain/expected/output.bpmn": {
 			"sha256": "e9c57c62ee6d78baf768cda6fe8de244f0fc62d31c2ea44803f2d14484dfed6a",
@@ -2847,14 +2766,9 @@
 			"errors": []
 		},
 		"conformance/builder/task-send-message/expected/output.bpmn": {
-			"sha256": "f62eb2cb633ce14636352f696fd11ccdd299d37426d2dfe6cbae402ab6d1c61b",
-			"ok": false,
-			"errors": [
-				{
-					"element": "send",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				}
-			]
+			"sha256": "27b265c7dfcd099352d5fbea217f7b6ad1c5c0649de80611faa90c2ce1855514",
+			"ok": true,
+			"errors": []
 		},
 		"conformance/builder/task-send-plain/expected/output.bpmn": {
 			"sha256": "f01668a66735793da260c68c24e46b58f73f4063ba84453b9f3cf6b810a422cb",
@@ -2871,17 +2785,12 @@
 			]
 		},
 		"conformance/builder/task-send-receive-same-message/expected/output.bpmn": {
-			"sha256": "8a8764349631ab3507c62da2c5895fa1ed097e97b45ff26995ddd378d51a20c7",
-			"ok": false,
-			"errors": [
-				{
-					"element": "s1",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				}
-			]
+			"sha256": "9946a512d7bc426968101a61ce1826849f935d8d820d8432f9cfee2b6a9f3b13",
+			"ok": true,
+			"errors": []
 		},
 		"conformance/builder/task-service-agent-linked/expected/output.bpmn": {
-			"sha256": "54362a4f212595b47241bb310737f283dd7ed419efc9fc2c32d63d2a29ee430b",
+			"sha256": "b27dedffc4e8b96c015b271beb5054345f56ddbdb3a2f61e9ee65b7a302a3072",
 			"ok": true,
 			"errors": []
 		},
@@ -2990,28 +2899,20 @@
 			"ok": false,
 			"errors": [
 				{
+					"element": "f_plain",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "sub_comp",
+					"message": "Compensation boundary events must have a compensation association and no outgoing sequence flows"
+				},
+				{
 					"element": "sub_catch",
 					"message": "Intermediate timer catch event must have either a time duration or a time date."
 				},
 				{
-					"element": "proc",
-					"message": "Multiple none start events are not allowed"
-				},
-				{
-					"element": "evt_sub",
-					"message": "Start events in subprocesses must be of type none"
-				},
-				{
 					"element": "f_x2",
 					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "tx",
-					"message": "Elements of type 'Transaction' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
-				},
-				{
-					"element": "boundary_timer_TimerEventDefinition",
-					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
 				},
 				{
 					"element": "boundary_comp",
@@ -3022,8 +2923,20 @@
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "f_plain",
-					"message": "Must have a condition or be default flow"
+					"element": "boundary_timer_TimerEventDefinition",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				},
+				{
+					"element": "tx",
+					"message": "Elements of type 'Transaction' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
+				},
+				{
+					"element": "proc",
+					"message": "Multiple none start events are not allowed"
+				},
+				{
+					"element": "evt_sub",
+					"message": "Start events in subprocesses must be of type none"
 				},
 				{
 					"element": "evt_start_MessageEventDefinition",
@@ -3036,10 +2949,6 @@
 				{
 					"element": "sub_catch_TimerEventDefinition",
 					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
-				},
-				{
-					"element": "sub_comp",
-					"message": "Compensation boundary events must have a compensation association and no outgoing sequence flows"
 				}
 			]
 		},
@@ -3070,15 +2979,15 @@
 					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
+					"element": "Task_payout",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
 					"element": "Task_price",
 					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "Task_fraudCheck",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "Task_payout",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
@@ -3096,12 +3005,16 @@
 			"ok": false,
 			"errors": [
 				{
+					"element": "Task_classify",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
 					"element": "Task_total",
 					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "Task_classify",
-					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+					"element": "Task_book",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
 				},
 				{
 					"element": "Task_archive",
@@ -3110,10 +3023,6 @@
 				{
 					"element": "StartEvent_invoice_MessageEventDefinition",
 					"message": "Must reference a message"
-				},
-				{
-					"element": "Task_book",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
 				}
 			]
 		},
@@ -3122,12 +3031,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "agents",
-					"message": "Must have at least one start event"
-				},
-				{
 					"element": "branch",
 					"message": "Conditional sequence flows are only supported at exclusive or inclusive gateway"
+				},
+				{
+					"element": "agents",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -3136,7 +3045,7 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Task_escalate",
+					"element": "Task_ship",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
@@ -3144,20 +3053,12 @@
 					"message": "Invalid timer duration expression (Invalid duration format '${deliveryWindow}' for expression '${deliveryWindow}'.)"
 				},
 				{
-					"element": "Task_ship",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "Task_invoice",
 					"message": "Must have exactly one 'zeebe:calledElement' extension element"
 				},
 				{
-					"element": "Task_charge",
+					"element": "Task_escalate",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "Task_shippingCost",
-					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "Task_awaitPayment",
@@ -3168,7 +3069,15 @@
 					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
+					"element": "Task_shippingCost",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
 					"element": "Task_notify",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_charge",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
@@ -3193,112 +3102,56 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "endErrorExpr_ErrorEventDefinition",
-					"message": "Must reference an error"
+					"element": "work",
+					"message": "The same scope can not contain more than one error catch event without error code. An error catch event without error code catches all errors."
 				},
 				{
-					"element": "endSignalNoRef_SignalEventDefinition",
-					"message": "Must reference a signal"
-				},
-				{
-					"element": "catchMsgOk_MessageEventDefinition",
+					"element": "catchMsgNoRef_MessageEventDefinition",
 					"message": "Must reference a message"
-				},
-				{
-					"element": "messageSub",
-					"message": "Start events in subprocesses must be of type none"
-				},
-				{
-					"element": "subSignal_SignalEventDefinition",
-					"message": "Must reference a signal"
 				},
 				{
 					"element": "subTimerCycle_TimerEventDefinition",
 					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
 				},
 				{
-					"element": "endErrorNoRef_ErrorEventDefinition",
-					"message": "Must reference an error"
-				},
-				{
 					"element": "catchNoTimer",
 					"message": "Intermediate timer catch event must have either a time duration or a time date."
 				},
 				{
-					"element": "throwMessage",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+					"element": "catchMsgNoKey_MessageEventDefinition",
+					"message": "Must reference a message"
 				},
 				{
 					"element": "signalSub",
 					"message": "Start events in subprocesses must be of type none"
 				},
 				{
-					"element": "catchCycle_TimerEventDefinition",
+					"element": "boundaryEscalation",
+					"message": "An escalation boundary event should only be attached to a subprocess, or a call activity."
+				},
+				{
+					"element": "catchNoTimer_TimerEventDefinition",
 					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
 				},
 				{
-					"element": "catchDate_TimerEventDefinition",
-					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
-				},
-				{
-					"element": "catchCycle",
-					"message": "Intermediate timer catch event must have either a time duration or a time date."
-				},
-				{
-					"element": "catchDate",
-					"message": "Intermediate timer catch event must have either a time duration or a time date."
-				},
-				{
-					"element": "throwEscalationNoCode_EscalationEventDefinition",
-					"message": "Must reference an escalation"
-				},
-				{
-					"element": "work",
-					"message": "The same scope can not contain more than one error catch event without error code. An error catch event without error code catches all errors."
-				},
-				{
-					"element": "startSignal_SignalEventDefinition",
-					"message": "Must reference a signal"
+					"element": "events",
+					"message": "Multiple none start events are not allowed"
 				},
 				{
 					"element": "eventSub",
 					"message": "Start events in subprocesses must be of type none"
 				},
 				{
-					"element": "subMessage_MessageEventDefinition",
-					"message": "Must reference a message"
-				},
-				{
-					"element": "throwEscalationNoRef_EscalationEventDefinition",
+					"element": "throwEscalationNoCode_EscalationEventDefinition",
 					"message": "Must reference an escalation"
 				},
 				{
-					"element": "boundaryCycle_TimerEventDefinition",
-					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
-				},
-				{
-					"element": "boundaryCompensation",
-					"message": "Compensation boundary events must have a compensation association and no outgoing sequence flows"
-				},
-				{
-					"element": "catchSignalNoName_SignalEventDefinition",
+					"element": "endSignalNoRef_SignalEventDefinition",
 					"message": "Must reference a signal"
 				},
 				{
-					"element": "catchMsgNoName_MessageEventDefinition",
+					"element": "subMessage_MessageEventDefinition",
 					"message": "Must reference a message"
-				},
-				{
-					"element": "boundaryEscalation",
-					"message": "An escalation boundary event should only be attached to a subprocess, or a call activity."
-				},
-				{
-					"element": "catchBadDuration",
-					"message": "Invalid timer duration expression (Invalid duration format '5 minutes' for expression '5 minutes'.)"
-				},
-				{
-					"element": "catchNoTimer_TimerEventDefinition",
-					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
 				},
 				{
 					"element": "endErrorNoCode_ErrorEventDefinition",
@@ -3309,16 +3162,72 @@
 					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
 				},
 				{
-					"element": "events",
-					"message": "Multiple none start events are not allowed"
-				},
-				{
-					"element": "catchMsgNoRef_MessageEventDefinition",
+					"element": "catchMsgOk_MessageEventDefinition",
 					"message": "Must reference a message"
 				},
 				{
-					"element": "catchMsgNoKey_MessageEventDefinition",
+					"element": "subSignal_SignalEventDefinition",
+					"message": "Must reference a signal"
+				},
+				{
+					"element": "catchDate_TimerEventDefinition",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				},
+				{
+					"element": "boundaryCycle_TimerEventDefinition",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				},
+				{
+					"element": "catchBadDuration",
+					"message": "Invalid timer duration expression (Invalid duration format '5 minutes' for expression '5 minutes'.)"
+				},
+				{
+					"element": "throwMessage",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "catchCycle_TimerEventDefinition",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				},
+				{
+					"element": "endErrorNoRef_ErrorEventDefinition",
+					"message": "Must reference an error"
+				},
+				{
+					"element": "boundaryCompensation",
+					"message": "Compensation boundary events must have a compensation association and no outgoing sequence flows"
+				},
+				{
+					"element": "catchMsgNoName_MessageEventDefinition",
 					"message": "Must reference a message"
+				},
+				{
+					"element": "catchSignalNoName_SignalEventDefinition",
+					"message": "Must reference a signal"
+				},
+				{
+					"element": "catchCycle",
+					"message": "Intermediate timer catch event must have either a time duration or a time date."
+				},
+				{
+					"element": "messageSub",
+					"message": "Start events in subprocesses must be of type none"
+				},
+				{
+					"element": "catchDate",
+					"message": "Intermediate timer catch event must have either a time duration or a time date."
+				},
+				{
+					"element": "startSignal_SignalEventDefinition",
+					"message": "Must reference a signal"
+				},
+				{
+					"element": "endErrorExpr_ErrorEventDefinition",
+					"message": "Must reference an error"
+				},
+				{
+					"element": "throwEscalationNoRef_EscalationEventDefinition",
+					"message": "Must reference an escalation"
 				}
 			]
 		},
@@ -3327,32 +3236,52 @@
 			"ok": false,
 			"errors": [
 				{
+					"element": "flowNoCondition",
+					"message": "Must have a condition or be default flow"
+				},
+				{
 					"element": "notExecutable",
 					"message": "Must have at least one start event"
-				},
-				{
-					"element": "scriptNone",
-					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "complexInNonExecutable",
-					"message": "Elements of type 'ComplexGateway' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
-				},
-				{
-					"element": "adHocEventStart_MessageEventDefinition",
-					"message": "Must reference a message"
-				},
-				{
-					"element": "afterEventGateway",
-					"message": "Must reference a message"
 				},
 				{
 					"element": "adHocEventSub",
 					"message": "Start events in subprocesses must be of type none"
 				},
 				{
-					"element": "receiveNoRef",
+					"element": "complex",
+					"message": "Elements of type 'ComplexGateway' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
+				},
+				{
+					"element": "jobWorkerTask > extensionElements > taskSchedule",
+					"message": "Expected static value to be a valid DateTime String, e.g. '2023-03-02T15:35+02:00', but found 'tomorrow'."
+				},
+				{
+					"element": "adHocEventStart_MessageEventDefinition",
 					"message": "Must reference a message"
+				},
+				{
+					"element": "noType",
+					"message": "Conditional sequence flows are only supported at exclusive or inclusive gateway"
+				},
+				{
+					"element": "noType",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "callNoProcess",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				},
+				{
+					"element": "sendNoType",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "receiveOk",
+					"message": "Must reference a message"
+				},
+				{
+					"element": "scriptNone",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "tx",
@@ -3363,28 +3292,12 @@
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "sendNoType",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "complex",
-					"message": "Elements of type 'ComplexGateway' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
-				},
-				{
-					"element": "flowNoCondition",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "receiveOk",
-					"message": "Must reference a message"
-				},
-				{
-					"element": "callNoProcess",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
-				},
-				{
 					"element": "zeebeTask > extensionElements > priorityDefinition",
 					"message": "Priority must be a number between 0 and 100, but was '150'."
+				},
+				{
+					"element": "afterEventGateway",
+					"message": "Must reference a message"
 				},
 				{
 					"element": "eventGateway",
@@ -3395,16 +3308,12 @@
 					"message": "Event-based gateway must not have an outgoing sequence flow to other elements than message/timer/signal/conditional intermediate catch events."
 				},
 				{
-					"element": "jobWorkerTask > extensionElements > taskSchedule",
-					"message": "Expected static value to be a valid DateTime String, e.g. '2023-03-02T15:35+02:00', but found 'tomorrow'."
+					"element": "receiveNoRef",
+					"message": "Must reference a message"
 				},
 				{
-					"element": "noType",
-					"message": "Conditional sequence flows are only supported at exclusive or inclusive gateway"
-				},
-				{
-					"element": "noType",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+					"element": "complexInNonExecutable",
+					"message": "Elements of type 'ComplexGateway' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
 				}
 			]
 		},
@@ -3413,15 +3322,11 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Plain",
-					"message": "Must have exactly one start event"
-				},
-				{
 					"element": "Adhoc",
 					"message": "Must have at least one activity."
 				},
 				{
-					"element": "Evt",
+					"element": "Plain",
 					"message": "Must have exactly one start event"
 				},
 				{
@@ -3435,6 +3340,10 @@
 				{
 					"element": "Process_1",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "Evt",
+					"message": "Must have exactly one start event"
 				}
 			]
 		},
@@ -3458,16 +3367,16 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "await_confirmation_MessageEventDefinition",
-					"message": "Must reference a message"
+					"element": "wait_new_year_TimerEventDefinition",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
 				},
 				{
 					"element": "wait_new_year",
 					"message": "Intermediate timer catch event must have either a time duration or a time date."
 				},
 				{
-					"element": "wait_new_year_TimerEventDefinition",
-					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+					"element": "await_confirmation_MessageEventDefinition",
+					"message": "Must reference a message"
 				}
 			]
 		},
@@ -3481,20 +3390,20 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Throw_escalate_EscalationEventDefinition",
-					"message": "Must reference an escalation"
-				},
-				{
-					"element": "Start_signal_SignalEventDefinition",
-					"message": "Must reference a signal"
-				},
-				{
 					"element": "Boundary_timer_TimerEventDefinition",
 					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
 				},
 				{
+					"element": "Throw_escalate_EscalationEventDefinition",
+					"message": "Must reference an escalation"
+				},
+				{
 					"element": "Sub_event",
 					"message": "Start events in subprocesses must be of type none"
+				},
+				{
+					"element": "Start_signal_SignalEventDefinition",
+					"message": "Must reference a signal"
 				}
 			]
 		},
@@ -3613,7 +3522,11 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "paymentConfirmed",
+					"element": "paymentOutcome",
+					"message": "Event-based gateway must not have an outgoing sequence flow to other elements than message/timer/signal/conditional intermediate catch events."
+				},
+				{
+					"element": "timerReminder1",
 					"message": "Must have exactly one event definition"
 				},
 				{
@@ -3621,16 +3534,12 @@
 					"message": "Must have exactly one event definition"
 				},
 				{
-					"element": "timerReminder1",
+					"element": "paymentConfirmed",
 					"message": "Must have exactly one event definition"
 				},
 				{
 					"element": "awaitPayment1",
 					"message": "Must reference a message"
-				},
-				{
-					"element": "paymentOutcome",
-					"message": "Event-based gateway must not have an outgoing sequence flow to other elements than message/timer/signal/conditional intermediate catch events."
 				}
 			]
 		},
@@ -3648,11 +3557,11 @@
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "_f1478fb7-98c4-4c01-8c15-68bd04c91535",
+					"element": "_a1570a53-28d2-41b1-a3a2-3e50c00d747e",
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "_a1570a53-28d2-41b1-a3a2-3e50c00d747e",
+					"element": "_f1478fb7-98c4-4c01-8c15-68bd04c91535",
 					"message": "Must have a condition or be default flow"
 				}
 			]
@@ -3662,7 +3571,7 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "_To9Z-TOCEeSknpIVFCxNIQ",
+					"element": "_To9Z_DOCEeSknpIVFCxNIQ",
 					"message": "Must have a condition or be default flow"
 				},
 				{
@@ -3670,7 +3579,7 @@
 					"message": "Conditional sequence flows are only supported at exclusive or inclusive gateway"
 				},
 				{
-					"element": "_To9Z_DOCEeSknpIVFCxNIQ",
+					"element": "_To9Z-TOCEeSknpIVFCxNIQ",
 					"message": "Must have a condition or be default flow"
 				}
 			]
@@ -3704,56 +3613,56 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
-				},
-				{
 					"element": "_eeb6812d-d182-489f-aea2-493ab8732cfd",
 					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "_6ee42e88-3d90-4259-83c0-9abd4574a15a",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "_fea1c5af-6c76-403f-809e-26d476d92741",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "_2ee553a1-cb03-41e3-b285-345c826fc88d",
 					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "_ec919941-53ec-403d-97e1-6a163a063f21",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "_1237e756-d53c-4591-a731-dafffbf0b3f9",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
-				},
-				{
-					"element": "_e314751e-5c3a-41f2-a1ae-4cb99efa0916_TimerEventDefinition",
-					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
-				},
-				{
-					"element": "_6a248585-952e-40ff-82ec-b6d8f410b73a",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "_fa3a8e53-5be0-4f0b-8680-d2498e255209",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+					"element": "_a38484e2-7bdb-48b1-b62e-139d51d6a147_MessageEventDefinition",
+					"message": "Must reference a message"
 				},
 				{
 					"element": "_9d489bd9-9435-4692-bc98-4cdda4a61569",
 					"message": "Must have a condition or be default flow"
 				},
 				{
+					"element": "_1237e756-d53c-4591-a731-dafffbf0b3f9",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				},
+				{
+					"element": "_fa3a8e53-5be0-4f0b-8680-d2498e255209",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				},
+				{
+					"element": "_fea1c5af-6c76-403f-809e-26d476d92741",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
 					"element": "_1eb62392-1f21-4a63-bbcb-c78880c3165e",
 					"message": "Must have exactly one start event"
 				},
 				{
-					"element": "_a38484e2-7bdb-48b1-b62e-139d51d6a147_MessageEventDefinition",
-					"message": "Must reference a message"
+					"element": "_6ee42e88-3d90-4259-83c0-9abd4574a15a",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_ec919941-53ec-403d-97e1-6a163a063f21",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_e314751e-5c3a-41f2-a1ae-4cb99efa0916_TimerEventDefinition",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				},
+				{
+					"element": "_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				},
+				{
+					"element": "_6a248585-952e-40ff-82ec-b6d8f410b73a",
+					"message": "Must have a condition or be default flow"
 				}
 			]
 		},
@@ -3762,48 +3671,24 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "_796ccbc5-ad88-465c-849a-87447a0283d3",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "_b67ba682-c8d6-465b-b538-c287db18d1be",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "_732c0641-b12f-448b-b9f8-a68b355782e3_ConditionalEventDefinition > condition",
+					"element": "_c9cb2415-6a2e-49d6-84b9-27babcde4088_ConditionalEventDefinition > condition",
 					"message": "Expected expression but found static value ''. An expression must start with '=' (e.g. '=')."
 				},
 				{
-					"element": "_ac1fde31-c0cd-4a8a-9728-a5fb49602de7",
+					"element": "_f07e4bd2-768d-42c6-a8d5-24d1c3bfa3cb",
+					"message": "Must reference a message"
+				},
+				{
+					"element": "_708d55c8-684a-4e3b-a69d-69c620cd0ac0",
+					"message": "An escalation boundary event should only be attached to a subprocess, or a call activity."
+				},
+				{
+					"element": "_034907bf-d3d7-4629-818c-14c3e69d5bc6",
+					"message": "Intermediate timer catch event must have either a time duration or a time date."
+				},
+				{
+					"element": "_3bfec246-ab94-4807-a79a-3df91ac13800",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "_dfb273c6-0ad3-4030-9e72-638adf7ca75f_EscalationEventDefinition",
-					"message": "Must reference an escalation"
-				},
-				{
-					"element": "_8021571a-7a77-426b-b824-545cc61f7334",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "_0326fdf5-7c71-41d9-838c-ab141a1b1ed0_SignalEventDefinition",
-					"message": "Must reference a signal"
-				},
-				{
-					"element": "_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
-				},
-				{
-					"element": "_209105e0-96fc-4278-8451-3b2a1dd18ec9_SignalEventDefinition",
-					"message": "Must reference a signal"
-				},
-				{
-					"element": "_76ee26df-2c95-495b-9d9a-cb806aea6baf",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "_1237e756-d53c-4591-a731-dafffbf0b3f9",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
 				},
 				{
 					"element": "_79341f54-50d4-4c60-85f3-fe8839a7554b_TimerEventDefinition",
@@ -3814,39 +3699,11 @@
 					"message": "Must have a condition"
 				},
 				{
-					"element": "_8476a0f7-36b7-4666-a3b2-c18efcc68a94_SignalEventDefinition",
+					"element": "_209105e0-96fc-4278-8451-3b2a1dd18ec9_SignalEventDefinition",
 					"message": "Must reference a signal"
 				},
 				{
-					"element": "_a38484e2-7bdb-48b1-b62e-139d51d6a147_MessageEventDefinition",
-					"message": "Must reference a message"
-				},
-				{
-					"element": "_e454657a-0173-41a4-a4c7-d16ec224f2e1_SignalEventDefinition",
-					"message": "Must reference a signal"
-				},
-				{
-					"element": "_0263ca9e-2ca0-4f4e-b7dd-86e15dcf2447",
-					"message": "Must have exactly one start event"
-				},
-				{
-					"element": "_fa90f891-fc07-463a-97c9-2ee0812351e1",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "_5cc02d0f-c090-4e48-8da3-f32cbbca9565_SignalEventDefinition",
-					"message": "Must reference a signal"
-				},
-				{
-					"element": "_149a6e1d-0385-4d0f-a90c-c2150a291a67",
-					"message": "Must have exactly one start event"
-				},
-				{
-					"element": "_4e71bf73-1719-401e-a9a2-85dc89fc1150_TimerEventDefinition",
-					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
-				},
-				{
-					"element": "_f07e4bd2-768d-42c6-a8d5-24d1c3bfa3cb",
+					"element": "_05c6bc89-5265-435c-8a9e-533c44a6888b_MessageEventDefinition",
 					"message": "Must reference a message"
 				},
 				{
@@ -3854,15 +3711,11 @@
 					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "_3bfec246-ab94-4807-a79a-3df91ac13800",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+					"element": "_86b052b4-225c-424e-b900-bb94bdd77cec_MessageEventDefinition",
+					"message": "Must reference a message"
 				},
 				{
-					"element": "_034907bf-d3d7-4629-818c-14c3e69d5bc6",
-					"message": "Intermediate timer catch event must have either a time duration or a time date."
-				},
-				{
-					"element": "_c9cb2415-6a2e-49d6-84b9-27babcde4088_ConditionalEventDefinition > condition",
+					"element": "_732c0641-b12f-448b-b9f8-a68b355782e3_ConditionalEventDefinition > condition",
 					"message": "Expected expression but found static value ''. An expression must start with '=' (e.g. '=')."
 				},
 				{
@@ -3870,68 +3723,124 @@
 					"message": "Must reference a signal"
 				},
 				{
-					"element": "_e369fd30-1a71-4d0e-b4d7-2174dd5ba388_MessageEventDefinition",
-					"message": "Must reference a message"
-				},
-				{
-					"element": "_25beeb17-acc3-4cca-9590-f1cd2f353434_SignalEventDefinition",
-					"message": "Must reference a signal"
-				},
-				{
-					"element": "_3a19ce2d-e30d-461c-aeaa-b2acb118f9a4_EscalationEventDefinition",
-					"message": "Must reference an escalation"
-				},
-				{
-					"element": "_cba8fbed-2bb6-40a9-8ac5-83e827ce9d9f_ConditionalEventDefinition > condition",
-					"message": "Expected expression but found static value ''. An expression must start with '=' (e.g. '=')."
-				},
-				{
 					"element": "_68ca1f8b-5028-4079-9e35-619b529f4d71_ConditionalEventDefinition > condition",
 					"message": "Expected expression but found static value ''. An expression must start with '=' (e.g. '=')."
 				},
 				{
-					"element": "_8b98cde1-aec2-46e8-8be2-d9aa244fcda6",
+					"element": "_dfb273c6-0ad3-4030-9e72-638adf7ca75f_EscalationEventDefinition",
+					"message": "Must reference an escalation"
+				},
+				{
+					"element": "_8021571a-7a77-426b-b824-545cc61f7334",
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "_5d70a293-03ea-4a73-bed0-65ad145796d6",
-					"message": "Must have a condition or be default flow"
+					"element": "_76ee26df-2c95-495b-9d9a-cb806aea6baf",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "_708d55c8-684a-4e3b-a69d-69c620cd0ac0",
-					"message": "An escalation boundary event should only be attached to a subprocess, or a call activity."
+					"element": "_ac1fde31-c0cd-4a8a-9728-a5fb49602de7",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "_a74c1d4d-db90-43ff-8920-139a300b39a5",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
-				},
-				{
-					"element": "_86b052b4-225c-424e-b900-bb94bdd77cec_MessageEventDefinition",
+					"element": "_e369fd30-1a71-4d0e-b4d7-2174dd5ba388_MessageEventDefinition",
 					"message": "Must reference a message"
 				},
 				{
-					"element": "_05c6bc89-5265-435c-8a9e-533c44a6888b_MessageEventDefinition",
-					"message": "Must reference a message"
+					"element": "_e454657a-0173-41a4-a4c7-d16ec224f2e1_SignalEventDefinition",
+					"message": "Must reference a signal"
 				},
 				{
 					"element": "_034907bf-d3d7-4629-818c-14c3e69d5bc6_TimerEventDefinition",
 					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
 				},
 				{
-					"element": "_d60db966-c03d-4f0e-a5bd-945525fa0aaf_ErrorEventDefinition",
-					"message": "Must reference an error"
+					"element": "_a38484e2-7bdb-48b1-b62e-139d51d6a147_MessageEventDefinition",
+					"message": "Must reference a message"
 				},
 				{
-					"element": "_5a6baa94-303a-4750-bde2-e1cd6edace37_TimerEventDefinition",
-					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+					"element": "_cba8fbed-2bb6-40a9-8ac5-83e827ce9d9f_ConditionalEventDefinition > condition",
+					"message": "Expected expression but found static value ''. An expression must start with '=' (e.g. '=')."
 				},
 				{
 					"element": "_6936f794-7bbb-4aa1-ae48-3a35bab4e2f4",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
+					"element": "_149a6e1d-0385-4d0f-a90c-c2150a291a67",
+					"message": "Must have exactly one start event"
+				},
+				{
+					"element": "_5cc02d0f-c090-4e48-8da3-f32cbbca9565_SignalEventDefinition",
+					"message": "Must reference a signal"
+				},
+				{
 					"element": "_f2081fdb-3b8a-480b-9f61-fbf683e2018c_MessageEventDefinition",
 					"message": "Must reference a message"
+				},
+				{
+					"element": "_d60db966-c03d-4f0e-a5bd-945525fa0aaf_ErrorEventDefinition",
+					"message": "Must reference an error"
+				},
+				{
+					"element": "_3a19ce2d-e30d-461c-aeaa-b2acb118f9a4_EscalationEventDefinition",
+					"message": "Must reference an escalation"
+				},
+				{
+					"element": "_b67ba682-c8d6-465b-b538-c287db18d1be",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_5d70a293-03ea-4a73-bed0-65ad145796d6",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_0326fdf5-7c71-41d9-838c-ab141a1b1ed0_SignalEventDefinition",
+					"message": "Must reference a signal"
+				},
+				{
+					"element": "_8476a0f7-36b7-4666-a3b2-c18efcc68a94_SignalEventDefinition",
+					"message": "Must reference a signal"
+				},
+				{
+					"element": "_5a6baa94-303a-4750-bde2-e1cd6edace37_TimerEventDefinition",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				},
+				{
+					"element": "_796ccbc5-ad88-465c-849a-87447a0283d3",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_a74c1d4d-db90-43ff-8920-139a300b39a5",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				},
+				{
+					"element": "_4e71bf73-1719-401e-a9a2-85dc89fc1150_TimerEventDefinition",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				},
+				{
+					"element": "_8b98cde1-aec2-46e8-8be2-d9aa244fcda6",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_fa90f891-fc07-463a-97c9-2ee0812351e1",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_1237e756-d53c-4591-a731-dafffbf0b3f9",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				},
+				{
+					"element": "_25beeb17-acc3-4cca-9590-f1cd2f353434_SignalEventDefinition",
+					"message": "Must reference a signal"
+				},
+				{
+					"element": "_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				},
+				{
+					"element": "_0263ca9e-2ca0-4f4e-b7dd-86e15dcf2447",
+					"message": "Must have exactly one start event"
 				}
 			]
 		},
@@ -3940,16 +3849,16 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "sid-0E349B8B-14A7-4565-988A-38F3A9B624D2",
-					"message": "Intermediate timer catch event must have either a time duration or a time date."
-				},
-				{
 					"element": "sid-0E349B8B-14A7-4565-988A-38F3A9B624D2_TimerEventDefinition",
 					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
 				},
 				{
 					"element": "archiveInvoice",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "StartEvent_1_MessageEventDefinition",
+					"message": "Must reference a message"
 				},
 				{
 					"element": "sid-40EC6574-E644-425C-8CE7-EE384F0C3520_MessageEventDefinition",
@@ -3964,8 +3873,8 @@
 					"message": "Must reference a message"
 				},
 				{
-					"element": "StartEvent_1_MessageEventDefinition",
-					"message": "Must reference a message"
+					"element": "sid-0E349B8B-14A7-4565-988A-38F3A9B624D2",
+					"message": "Intermediate timer catch event must have either a time duration or a time date."
 				}
 			]
 		},
@@ -3974,24 +3883,24 @@
 			"ok": false,
 			"errors": [
 				{
+					"element": "invoiceApproved > conditionExpression",
+					"message": "failed to parse expression 'bpmn:getDataObject('approved')': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:5, found \":getDataOb\""
+				},
+				{
 					"element": "reviewNotSuccessful > conditionExpression",
 					"message": "failed to parse expression 'bpmn:getDataObject('clarified') = 'no'': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:5, found \":getDataOb\""
-				},
-				{
-					"element": "reviewSuccessful > conditionExpression",
-					"message": "failed to parse expression 'bpmn:getDataObject('clarified') = 'yes'': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:5, found \":getDataOb\""
-				},
-				{
-					"element": "archiveInvoice",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "invoiceNotApproved > conditionExpression",
 					"message": "failed to parse expression 'not(bpmn:getDataObject('approved'))': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:4, found \"(bpmn:getD\""
 				},
 				{
-					"element": "invoiceApproved > conditionExpression",
-					"message": "failed to parse expression 'bpmn:getDataObject('approved')': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:5, found \":getDataOb\""
+					"element": "archiveInvoice",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "reviewSuccessful > conditionExpression",
+					"message": "failed to parse expression 'bpmn:getDataObject('clarified') = 'yes'': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:5, found \":getDataOb\""
 				}
 			]
 		},
@@ -4000,7 +3909,7 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "_42",
+					"element": "_43",
 					"message": "Must have a condition or be default flow"
 				},
 				{
@@ -4008,24 +3917,8 @@
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "_29",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
-				},
-				{
-					"element": "_43",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "_18",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "_31",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "_45",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+					"element": "_33_MessageEventDefinition",
+					"message": "Must reference a message"
 				},
 				{
 					"element": "_30",
@@ -4036,12 +3929,28 @@
 					"message": "Must reference a message"
 				},
 				{
+					"element": "_29",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				},
+				{
+					"element": "_45",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
 					"element": "_21",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "_33_MessageEventDefinition",
-					"message": "Must reference a message"
+					"element": "_18",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_31",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_42",
+					"message": "Must have a condition or be default flow"
 				}
 			]
 		},
@@ -4050,35 +3959,27 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "_50edb87c-9e46-48b1-a311-ef00e6e431e8",
-					"message": "Must have a condition or be default flow"
-				},
-				{
 					"element": "_7ea6639e-e773-4236-94bf-78f149188c30_ErrorEventDefinition",
 					"message": "Must reference an error"
 				},
 				{
-					"element": "_bfa5c7b2-f5d2-4487-a307-b2ea662bd059",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "__a12a7547-373d-47ec-890d-af5c177203ee",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "__0ef615c7-5456-45c8-9cfb-f1fe30c44436_MessageEventDefinition",
+					"element": "__fd16081c-ecf9-4e0f-857f-f3404a7ee784_MessageEventDefinition",
 					"message": "Must reference a message"
-				},
-				{
-					"element": "_ad0872cc-e2a9-4c44-98c6-c64e0638f37e",
-					"message": "Must have a condition or be default flow"
 				},
 				{
 					"element": "__4011aa2d-a7a9-4e1a-9f16-8a662d138bd4",
 					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "__e6a9dd54-6cb0-4713-8b77-e659f2658e40_MessageEventDefinition",
+					"element": "__a12a7547-373d-47ec-890d-af5c177203ee",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_63cf98c9-d0b1-4595-a4f2-9589439b311c",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "__0ef615c7-5456-45c8-9cfb-f1fe30c44436_MessageEventDefinition",
 					"message": "Must reference a message"
 				},
 				{
@@ -4090,11 +3991,19 @@
 					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "__fd16081c-ecf9-4e0f-857f-f3404a7ee784_MessageEventDefinition",
+					"element": "__e6a9dd54-6cb0-4713-8b77-e659f2658e40_MessageEventDefinition",
 					"message": "Must reference a message"
 				},
 				{
-					"element": "_63cf98c9-d0b1-4595-a4f2-9589439b311c",
+					"element": "_50edb87c-9e46-48b1-a311-ef00e6e431e8",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_ad0872cc-e2a9-4c44-98c6-c64e0638f37e",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_bfa5c7b2-f5d2-4487-a307-b2ea662bd059",
 					"message": "Must have a condition or be default flow"
 				}
 			]
@@ -4104,16 +4013,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "_cd6f230f-13c3-4027-aa3e-57de601a1ab2",
-					"message": "Must have exactly one start event"
-				},
-				{
-					"element": "_b99800c3-c340-460c-a43e-098014a365d0",
+					"element": "_cddf9325-a85b-4347-8c57-8b909fa77ae9",
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "Bpmn_BoundaryEvent_LwKtwhqHEeWDuOtG0oS24A_MessageEventDefinition",
-					"message": "Must reference a message"
+					"element": "_cd6f230f-13c3-4027-aa3e-57de601a1ab2",
+					"message": "Must have exactly one start event"
 				},
 				{
 					"element": "_cc9778bd-edd8-4df2-ba15-56c310f90e62_MessageEventDefinition",
@@ -4124,24 +4029,28 @@
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "_cddf9325-a85b-4347-8c57-8b909fa77ae9",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "_ada039b6-94dd-4a15-a6b1-c7fe662c64ee",
-					"message": "Must have a condition or be default flow"
+					"element": "Bpmn_BoundaryEvent_LwKtwhqHEeWDuOtG0oS24A_MessageEventDefinition",
+					"message": "Must reference a message"
 				},
 				{
 					"element": "_3fb323d5-2c59-487a-af63-804208f6c5cb",
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "_437e5969-1e61-4cb9-aa76-4f8854f32eeb",
+					"element": "_be893987-caec-4605-b078-bd96b7cd6c12 > conditionExpression",
+					"message": "failed to parse expression 'Service Level == 'Premium'': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:9, found \"Level == '\""
+				},
+				{
+					"element": "_ada039b6-94dd-4a15-a6b1-c7fe662c64ee",
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "_be893987-caec-4605-b078-bd96b7cd6c12 > conditionExpression",
-					"message": "failed to parse expression 'Service Level == 'Premium'': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:9, found \"Level == '\""
+					"element": "_b99800c3-c340-460c-a43e-098014a365d0",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_437e5969-1e61-4cb9-aa76-4f8854f32eeb",
+					"message": "Must have a condition or be default flow"
 				}
 			]
 		},
@@ -4150,27 +4059,11 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "_237c8380-5449-446e-a323-aad80181176d",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "_7e9d8b8b-faa9-4264-858b-7454702c4ec2",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "_12e2f256-ec10-4a8d-934c-329143c588d8",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "_db9147a9-7fbc-4657-a506-15e777f2cfd9_MessageEventDefinition",
-					"message": "Must reference a message"
-				},
-				{
-					"element": "_3d4130c6-48c9-47fe-8e95-2eeb56060e2b_SignalEventDefinition",
+					"element": "_94a62738-dc7a-49f6-81d8-f5642f7ae850_SignalEventDefinition",
 					"message": "Must reference a signal"
 				},
 				{
-					"element": "_ca6f904d-e30d-4777-a7dd-661650e1e3a2",
+					"element": "_7e9d8b8b-faa9-4264-858b-7454702c4ec2",
 					"message": "Must have a condition or be default flow"
 				},
 				{
@@ -4178,28 +4071,8 @@
 					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "_94a62738-dc7a-49f6-81d8-f5642f7ae850_SignalEventDefinition",
-					"message": "Must reference a signal"
-				},
-				{
-					"element": "_c82dd8eb-ce54-4aa7-b8c4-b8d3e8fd654e",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "_74e2cc7b-99ca-426b-ad53-ad70a56506aa_MessageEventDefinition",
+					"element": "_db9147a9-7fbc-4657-a506-15e777f2cfd9_MessageEventDefinition",
 					"message": "Must reference a message"
-				},
-				{
-					"element": "_855451b0-5298-48b2-a81d-84ecbcca0a85_SignalEventDefinition",
-					"message": "Must reference a signal"
-				},
-				{
-					"element": "_9db2d136-aa33-4de2-be76-554e7843363d",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "_efbd0983-76cd-4a4c-acf3-6dde71d7c760",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "_fe77c2f2-278f-4752-9d03-aa0c8a12af1e_MessageEventDefinition",
@@ -4208,6 +4081,42 @@
 				{
 					"element": "_e9306b3f-3a77-42e1-b53e-2ed8ee45486d_SignalEventDefinition",
 					"message": "Must reference a signal"
+				},
+				{
+					"element": "_3d4130c6-48c9-47fe-8e95-2eeb56060e2b_SignalEventDefinition",
+					"message": "Must reference a signal"
+				},
+				{
+					"element": "_74e2cc7b-99ca-426b-ad53-ad70a56506aa_MessageEventDefinition",
+					"message": "Must reference a message"
+				},
+				{
+					"element": "_237c8380-5449-446e-a323-aad80181176d",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_12e2f256-ec10-4a8d-934c-329143c588d8",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_c82dd8eb-ce54-4aa7-b8c4-b8d3e8fd654e",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_9db2d136-aa33-4de2-be76-554e7843363d",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_855451b0-5298-48b2-a81d-84ecbcca0a85_SignalEventDefinition",
+					"message": "Must reference a signal"
+				},
+				{
+					"element": "_ca6f904d-e30d-4777-a7dd-661650e1e3a2",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_efbd0983-76cd-4a4c-acf3-6dde71d7c760",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -4220,11 +4129,11 @@
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "_6912e5ed-5cae-4798-b6e6-8d367ddb3f60",
-					"message": "Must have a condition or be default flow"
+					"element": "_1cf552d4-5152-4595-9218-84f31533bc70_SignalEventDefinition",
+					"message": "Must reference a signal"
 				},
 				{
-					"element": "_470d1a12-e1fa-4471-b753-cfd7dbe20d80",
+					"element": "_eec53048-291a-4802-8fec-012857f845eb",
 					"message": "Must have a condition or be default flow"
 				},
 				{
@@ -4232,27 +4141,7 @@
 					"message": "Must reference a signal"
 				},
 				{
-					"element": "_b9338c62-a257-47dd-8c2e-88b80b73c330",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
-				},
-				{
-					"element": "_8a77d7f6-320a-47ff-a155-57ee200df478",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "_e25b9c2d-690e-470b-8993-112002994fc2",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "_afc35597-a482-432a-8ace-17adaf609572",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "_c329c58d-4a71-471f-acb9-b7f7113d8547",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "_ae94e0c1-aa12-433f-bd44-a4d8a70a089e",
+					"element": "_470d1a12-e1fa-4471-b753-cfd7dbe20d80",
 					"message": "Must have a condition or be default flow"
 				},
 				{
@@ -4260,11 +4149,7 @@
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "_eec53048-291a-4802-8fec-012857f845eb",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "_fcb09e30-bfe6-46b9-af01-6777c60026f2",
+					"element": "_c329c58d-4a71-471f-acb9-b7f7113d8547",
 					"message": "Must have a condition or be default flow"
 				},
 				{
@@ -4272,8 +4157,32 @@
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "_1cf552d4-5152-4595-9218-84f31533bc70_SignalEventDefinition",
-					"message": "Must reference a signal"
+					"element": "_6912e5ed-5cae-4798-b6e6-8d367ddb3f60",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_e25b9c2d-690e-470b-8993-112002994fc2",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_b9338c62-a257-47dd-8c2e-88b80b73c330",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				},
+				{
+					"element": "_ae94e0c1-aa12-433f-bd44-a4d8a70a089e",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_8a77d7f6-320a-47ff-a155-57ee200df478",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_fcb09e30-bfe6-46b9-af01-6777c60026f2",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_afc35597-a482-432a-8ace-17adaf609572",
+					"message": "Must have a condition or be default flow"
 				}
 			]
 		},
@@ -4282,59 +4191,7 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "_87baeef0-f32e-4a93-b802-fdd588aaf729",
-					"message": "Intermediate timer catch event must have either a time duration or a time date."
-				},
-				{
-					"element": "_fe3f9094-097b-416d-adeb-4b7e7e753f3c",
-					"message": "Compensation boundary events must have a compensation association and no outgoing sequence flows"
-				},
-				{
-					"element": "_b595ec43-0769-4864-8f2e-403c405c8217",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "_87baeef0-f32e-4a93-b802-fdd588aaf729_TimerEventDefinition",
-					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
-				},
-				{
-					"element": "_b25ecc7c-4eff-4a70-96f2-6b2f94cf19b1",
-					"message": "Compensation boundary events must have a compensation association and no outgoing sequence flows"
-				},
-				{
-					"element": "_de7e721e-a073-4857-b8c3-c6ae886dbb46",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "_c8fa5253-dde9-471e-b933-58b00e8f374c",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "_e880bf53-84ca-4776-aa75-d1bf53172240",
-					"message": "Start events in subprocesses must be of type none"
-				},
-				{
-					"element": "_3a2f133c-3ae1-4e21-94b5-6e8cf51acd74",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "_15fef309-6718-4352-9b71-f757bcd8c023_MessageEventDefinition",
-					"message": "Must reference a message"
-				},
-				{
-					"element": "_0198160d-b56c-4919-9920-db5f32d16b3f",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "_e839800f-ad4f-4bcc-aaf2-d38fe4a32bcd",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "_32c4138c-74ae-484a-a7e5-0609370d7080_TimerEventDefinition",
-					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
-				},
-				{
-					"element": "_22612d45-65ca-4a74-a6eb-53af7ebcb5ff",
+					"element": "_9cc2ac34-f12c-49e0-b37c-144e5a84fd92",
 					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
@@ -4342,15 +4199,23 @@
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
+					"element": "_32c4138c-74ae-484a-a7e5-0609370d7080_TimerEventDefinition",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				},
+				{
+					"element": "_0198160d-b56c-4919-9920-db5f32d16b3f",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
 					"element": "_44e3f1fa-42cd-40b7-9980-a51ac49d5fa3_MessageEventDefinition",
 					"message": "Must reference a message"
 				},
 				{
-					"element": "_9cc2ac34-f12c-49e0-b37c-144e5a84fd92",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+					"element": "_87baeef0-f32e-4a93-b802-fdd588aaf729_TimerEventDefinition",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
 				},
 				{
-					"element": "_ea5cc55d-bfce-49c6-8a1a-a8a41a85da12",
+					"element": "_8afc49f0-42c2-4da9-8e79-e08dbe349776",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
@@ -4358,12 +4223,56 @@
 					"message": "Must reference a message"
 				},
 				{
+					"element": "_b25ecc7c-4eff-4a70-96f2-6b2f94cf19b1",
+					"message": "Compensation boundary events must have a compensation association and no outgoing sequence flows"
+				},
+				{
+					"element": "_c8fa5253-dde9-471e-b933-58b00e8f374c",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_fe3f9094-097b-416d-adeb-4b7e7e753f3c",
+					"message": "Compensation boundary events must have a compensation association and no outgoing sequence flows"
+				},
+				{
+					"element": "_3a2f133c-3ae1-4e21-94b5-6e8cf51acd74",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_87baeef0-f32e-4a93-b802-fdd588aaf729",
+					"message": "Intermediate timer catch event must have either a time duration or a time date."
+				},
+				{
+					"element": "_e839800f-ad4f-4bcc-aaf2-d38fe4a32bcd",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_ea5cc55d-bfce-49c6-8a1a-a8a41a85da12",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_de7e721e-a073-4857-b8c3-c6ae886dbb46",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
 					"element": "_2d6586cf-81fc-4e2a-83ec-6cfff5b34bb0",
 					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "_8afc49f0-42c2-4da9-8e79-e08dbe349776",
+					"element": "_b595ec43-0769-4864-8f2e-403c405c8217",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_15fef309-6718-4352-9b71-f757bcd8c023_MessageEventDefinition",
+					"message": "Must reference a message"
+				},
+				{
+					"element": "_22612d45-65ca-4a74-a6eb-53af7ebcb5ff",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_e880bf53-84ca-4776-aa75-d1bf53172240",
+					"message": "Start events in subprocesses must be of type none"
 				}
 			]
 		},
@@ -4372,23 +4281,23 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "_d74707c7-6af3-4db7-9403-924bfdf6a7d8",
-					"message": "Must have a condition or be default flow"
+					"element": "_eae674ce-4d6e-48ac-819c-c79e0868e40d",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "_1d201a22-d500-4412-a32a-2c7e24ad4d6b",
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "_eae674ce-4d6e-48ac-819c-c79e0868e40d",
-					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "_64eabfe9-6947-43eb-ac45-8d331745f86c",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+					"element": "_d74707c7-6af3-4db7-9403-924bfdf6a7d8",
+					"message": "Must have a condition or be default flow"
 				},
 				{
 					"element": "_a36ddf2f-23c1-46c5-86d4-bd2a0eb42535",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "_64eabfe9-6947-43eb-ac45-8d331745f86c",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
@@ -4398,6 +4307,42 @@
 			"ok": false,
 			"errors": [
 				{
+					"element": "_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9 > extensionElements > ioMapping > input",
+					"message": "failed to parse expression ' \"<html><p>Hi  \" + Current Vacation Status.name + \",</p> <p> </p> <p>Your vacation request from \" + From + \" to \" + To + \" was declined for the following reason: \" + Reason + \"</p> <p> </p> <p>Best regards</p> <p> </p> <p>This is an automated message generated by the vacation system.</p></html>\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:28, found \"Vacation S\""
+				},
+				{
+					"element": "_f2b0da63-d841-4457-ad85-7d86c8b5c1d2 > conditionExpression",
+					"message": "failed to parse expression 'Vacation Approval = \"Approved\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Approval =\""
+				},
+				{
+					"element": "_02232e32-c3d2-473c-a15d-9c5dca00eadc > extensionElements > ioMapping > input",
+					"message": "failed to parse expression ' Current Vacation Status.email': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Vacation S\""
+				},
+				{
+					"element": "_93ec9873-edf1-4549-b052-961994ec8234 > extensionElements > ioMapping > input",
+					"message": "failed to parse expression ' Current Vacation Status.email': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Vacation S\""
+				},
+				{
+					"element": "_93ec9873-edf1-4549-b052-961994ec8234 > extensionElements > ioMapping > input",
+					"message": "failed to parse expression ' \"<html><p>Hi  \" + Current Vacation Status.name + \",</p> <p> </p> <p>Your vacation request from \" + From + \" to \" + To + \" was approved.</p> <p> </p> <p>Best regards</p> <p> </p> <p>This is an automated message generated by the vacation system.</p></html>\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:28, found \"Vacation S\""
+				},
+				{
+					"element": "_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32 > extensionElements > ioMapping > output",
+					"message": "failed to parse expression ' Vacation Approval Status.Reason': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:11, found \"Approval S\""
+				},
+				{
+					"element": "_a97c1a48-faba-447b-bfa6-7aa81a6fe0a0 > extensionElements > ioMapping > input",
+					"message": "failed to parse expression ' Current Vacation Status.email': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Vacation S\""
+				},
+				{
+					"element": "_325973e7-0bc8-4136-b6df-be1e681d8608 > conditionExpression",
+					"message": "failed to parse expression 'Vacation Approval = \"Approved\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Approval =\""
+				},
+				{
+					"element": "_0a1c4f20-509f-4aeb-baf9-acc762f4fdf9 > conditionExpression",
+					"message": "failed to parse expression 'Vacation Approval = \"Manual Validation Required\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Approval =\""
+				},
+				{
 					"element": "_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32 > extensionElements > ioMapping > output",
 					"message": "failed to parse expression ' Vacation Approval Status.Approval': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:11, found \"Approval S\""
 				},
@@ -4406,52 +4351,16 @@
 					"message": "Expected path expression 'Vacation Approval' but doesn't match the pattern '[a-zA-Z_][a-zA-Z0-9_]*(\\.[a-zA-Z_][a-zA-Z0-9_]*)*'."
 				},
 				{
-					"element": "_325973e7-0bc8-4136-b6df-be1e681d8608 > conditionExpression",
-					"message": "failed to parse expression 'Vacation Approval = \"Approved\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Approval =\""
-				},
-				{
-					"element": "_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32 > extensionElements > ioMapping > output",
-					"message": "failed to parse expression ' Vacation Approval Status.Reason': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:11, found \"Approval S\""
-				},
-				{
-					"element": "_93ec9873-edf1-4549-b052-961994ec8234 > extensionElements > ioMapping > input",
-					"message": "failed to parse expression ' \"<html><p>Hi  \" + Current Vacation Status.name + \",</p> <p> </p> <p>Your vacation request from \" + From + \" to \" + To + \" was approved.</p> <p> </p> <p>Best regards</p> <p> </p> <p>This is an automated message generated by the vacation system.</p></html>\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:28, found \"Vacation S\""
-				},
-				{
-					"element": "_a97c1a48-faba-447b-bfa6-7aa81a6fe0a0 > extensionElements > ioMapping > input",
-					"message": "failed to parse expression ' Current Vacation Status.email': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Vacation S\""
-				},
-				{
-					"element": "_93ec9873-edf1-4549-b052-961994ec8234 > extensionElements > ioMapping > input",
-					"message": "failed to parse expression ' Current Vacation Status.email': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Vacation S\""
-				},
-				{
-					"element": "_a97c1a48-faba-447b-bfa6-7aa81a6fe0a0 > extensionElements > ioMapping > input",
-					"message": "failed to parse expression ' \"<html><p>Hi  \" + Current Vacation Status.name + \",</p> <p> </p> <p>Your vacation request from \" + From + \" to \" + To + \" was approved.</p> <p> </p> <p>Best regards</p> <p> </p> <p>This is an automated message generated by the vacation system.</p></html>\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:28, found \"Vacation S\""
+					"element": "_02232e32-c3d2-473c-a15d-9c5dca00eadc > extensionElements > ioMapping > input",
+					"message": "failed to parse expression ' \"<html><p>Hi  \" + Current Vacation Status.name + \",</p> <p> </p> <p>Your vacation request from \" + From + \" to \" + To + \" was declined for the following reason: \" + Reason + \"</p> <p> </p> <p>Best regards</p> <p> </p> <p>This is an automated message generated by the vacation system.</p></html>\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:28, found \"Vacation S\""
 				},
 				{
 					"element": "_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9 > extensionElements > ioMapping > input",
 					"message": "failed to parse expression ' Current Vacation Status.email': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Vacation S\""
 				},
 				{
-					"element": "_f2b0da63-d841-4457-ad85-7d86c8b5c1d2 > conditionExpression",
-					"message": "failed to parse expression 'Vacation Approval = \"Approved\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Approval =\""
-				},
-				{
-					"element": "_02232e32-c3d2-473c-a15d-9c5dca00eadc > extensionElements > ioMapping > input",
-					"message": "failed to parse expression ' \"<html><p>Hi  \" + Current Vacation Status.name + \",</p> <p> </p> <p>Your vacation request from \" + From + \" to \" + To + \" was declined for the following reason: \" + Reason + \"</p> <p> </p> <p>Best regards</p> <p> </p> <p>This is an automated message generated by the vacation system.</p></html>\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:28, found \"Vacation S\""
-				},
-				{
-					"element": "_02232e32-c3d2-473c-a15d-9c5dca00eadc > extensionElements > ioMapping > input",
-					"message": "failed to parse expression ' Current Vacation Status.email': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Vacation S\""
-				},
-				{
-					"element": "_0a1c4f20-509f-4aeb-baf9-acc762f4fdf9 > conditionExpression",
-					"message": "failed to parse expression 'Vacation Approval = \"Manual Validation Required\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Approval =\""
-				},
-				{
-					"element": "_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9 > extensionElements > ioMapping > input",
-					"message": "failed to parse expression ' \"<html><p>Hi  \" + Current Vacation Status.name + \",</p> <p> </p> <p>Your vacation request from \" + From + \" to \" + To + \" was declined for the following reason: \" + Reason + \"</p> <p> </p> <p>Best regards</p> <p> </p> <p>This is an automated message generated by the vacation system.</p></html>\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:28, found \"Vacation S\""
+					"element": "_a97c1a48-faba-447b-bfa6-7aa81a6fe0a0 > extensionElements > ioMapping > input",
+					"message": "failed to parse expression ' \"<html><p>Hi  \" + Current Vacation Status.name + \",</p> <p> </p> <p>Your vacation request from \" + From + \" to \" + To + \" was approved.</p> <p> </p> <p>Best regards</p> <p> </p> <p>This is an automated message generated by the vacation system.</p></html>\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:28, found \"Vacation S\""
 				}
 			]
 		},
@@ -4460,52 +4369,8 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "_a97c1a48-faba-447b-bfa6-7aa81a6fe0a0 > extensionElements > ioMapping > input",
-					"message": "failed to parse expression ' \"<html><p>Hi ?\" + Current Vacation Status.name + \",</p> <p>?</p> <p>Your vacation request from?\" + From + \"?to \" + To + \"?was approved.</p> <p>?</p> <p>Best regards</p> <p>?</p> <p>This is an automated message generated by the vacation system.</p></html>\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:28, found \"Vacation S\""
-				},
-				{
-					"element": "_2b960d84-feb1-46a9-a1a1-c300dd996b99 > extensionElements > ioMapping > output",
-					"message": "Expected path expression 'Current Vacation Status' but doesn't match the pattern '[a-zA-Z_][a-zA-Z0-9_]*(\\.[a-zA-Z_][a-zA-Z0-9_]*)*'."
-				},
-				{
-					"element": "_02232e32-c3d2-473c-a15d-9c5dca00eadc > extensionElements > ioMapping > input",
-					"message": "failed to parse expression ' Current Vacation Status.email': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Vacation S\""
-				},
-				{
-					"element": "_0a1c4f20-509f-4aeb-baf9-acc762f4fdf9 > conditionExpression",
-					"message": "failed to parse expression 'Vacation Approval = \"Manual Validation Required\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Approval =\""
-				},
-				{
-					"element": "_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32 > extensionElements > ioMapping > output",
-					"message": "failed to parse expression ' Vacation Approval Status.Approval': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:11, found \"Approval S\""
-				},
-				{
-					"element": "_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32 > extensionElements > ioMapping > output",
-					"message": "Expected path expression 'Vacation Approval' but doesn't match the pattern '[a-zA-Z_][a-zA-Z0-9_]*(\\.[a-zA-Z_][a-zA-Z0-9_]*)*'."
-				},
-				{
-					"element": "_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9 > extensionElements > ioMapping > input",
-					"message": "failed to parse expression ' Current Vacation Status.email': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Vacation S\""
-				},
-				{
-					"element": "_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9 > extensionElements > ioMapping > input",
-					"message": "failed to parse expression ' \"<html><p>Hi ?\" + Current Vacation Status.name + \",</p> <p>?</p> <p>Your vacation request from?\" + From + \"?to \" + To + \"?was declined for the following reason: \" + Reason + \"</p> <p>?</p> <p>Best regards</p> <p>?</p> <p>This is an automated message generated by the vacation system.</p></html>\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:28, found \"Vacation S\""
-				},
-				{
-					"element": "_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32 > extensionElements > ioMapping > output",
-					"message": "failed to parse expression ' Vacation Approval Status.Reason': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:11, found \"Approval S\""
-				},
-				{
 					"element": "_02232e32-c3d2-473c-a15d-9c5dca00eadc > extensionElements > ioMapping > input",
 					"message": "failed to parse expression ' \"<html><p>Hi ?\" + Current Vacation Status.name + \",</p> <p>?</p> <p>Your vacation request from?\" + From + \"?to \" + To + \"?was declined for the following reason: \" + Reason + \"</p> <p>?</p> <p>Best regards</p> <p>?</p> <p>This is an automated message generated by the vacation system.</p></html>\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:28, found \"Vacation S\""
-				},
-				{
-					"element": "_f2b0da63-d841-4457-ad85-7d86c8b5c1d2 > conditionExpression",
-					"message": "failed to parse expression 'Vacation Approval = \"Approved\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Approval =\""
-				},
-				{
-					"element": "_93ec9873-edf1-4549-b052-961994ec8234 > extensionElements > ioMapping > input",
-					"message": "failed to parse expression ' Current Vacation Status.email': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Vacation S\""
 				},
 				{
 					"element": "_325973e7-0bc8-4136-b6df-be1e681d8608 > conditionExpression",
@@ -4516,8 +4381,52 @@
 					"message": "failed to parse expression ' Current Vacation Status.email': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Vacation S\""
 				},
 				{
+					"element": "_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9 > extensionElements > ioMapping > input",
+					"message": "failed to parse expression ' \"<html><p>Hi ?\" + Current Vacation Status.name + \",</p> <p>?</p> <p>Your vacation request from?\" + From + \"?to \" + To + \"?was declined for the following reason: \" + Reason + \"</p> <p>?</p> <p>Best regards</p> <p>?</p> <p>This is an automated message generated by the vacation system.</p></html>\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:28, found \"Vacation S\""
+				},
+				{
+					"element": "_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32 > extensionElements > ioMapping > output",
+					"message": "failed to parse expression ' Vacation Approval Status.Approval': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:11, found \"Approval S\""
+				},
+				{
+					"element": "_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32 > extensionElements > ioMapping > output",
+					"message": "Expected path expression 'Vacation Approval' but doesn't match the pattern '[a-zA-Z_][a-zA-Z0-9_]*(\\.[a-zA-Z_][a-zA-Z0-9_]*)*'."
+				},
+				{
+					"element": "_1a818a94-ba6f-413b-a7e8-6f8fd2a11e32 > extensionElements > ioMapping > output",
+					"message": "failed to parse expression ' Vacation Approval Status.Reason': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:11, found \"Approval S\""
+				},
+				{
+					"element": "_2b960d84-feb1-46a9-a1a1-c300dd996b99 > extensionElements > ioMapping > output",
+					"message": "Expected path expression 'Current Vacation Status' but doesn't match the pattern '[a-zA-Z_][a-zA-Z0-9_]*(\\.[a-zA-Z_][a-zA-Z0-9_]*)*'."
+				},
+				{
+					"element": "_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9 > extensionElements > ioMapping > input",
+					"message": "failed to parse expression ' Current Vacation Status.email': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Vacation S\""
+				},
+				{
+					"element": "_02232e32-c3d2-473c-a15d-9c5dca00eadc > extensionElements > ioMapping > input",
+					"message": "failed to parse expression ' Current Vacation Status.email': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Vacation S\""
+				},
+				{
+					"element": "_0a1c4f20-509f-4aeb-baf9-acc762f4fdf9 > conditionExpression",
+					"message": "failed to parse expression 'Vacation Approval = \"Manual Validation Required\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Approval =\""
+				},
+				{
+					"element": "_a97c1a48-faba-447b-bfa6-7aa81a6fe0a0 > extensionElements > ioMapping > input",
+					"message": "failed to parse expression ' \"<html><p>Hi ?\" + Current Vacation Status.name + \",</p> <p>?</p> <p>Your vacation request from?\" + From + \"?to \" + To + \"?was approved.</p> <p>?</p> <p>Best regards</p> <p>?</p> <p>This is an automated message generated by the vacation system.</p></html>\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:28, found \"Vacation S\""
+				},
+				{
 					"element": "_93ec9873-edf1-4549-b052-961994ec8234 > extensionElements > ioMapping > input",
 					"message": "failed to parse expression ' \"<html><p>Hi ?\" + Current Vacation Status.name + \",</p> <p>?</p> <p>Your vacation request from?\" + From + \"?to \" + To + \"?was approved.</p> <p>?</p> <p>Best regards</p> <p>?</p> <p>This is an automated message generated by the vacation system.</p></html>\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:28, found \"Vacation S\""
+				},
+				{
+					"element": "_f2b0da63-d841-4457-ad85-7d86c8b5c1d2 > conditionExpression",
+					"message": "failed to parse expression 'Vacation Approval = \"Approved\"': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Approval =\""
+				},
+				{
+					"element": "_93ec9873-edf1-4549-b052-961994ec8234 > extensionElements > ioMapping > input",
+					"message": "failed to parse expression ' Current Vacation Status.email': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:10, found \"Vacation S\""
 				}
 			]
 		},
@@ -4526,15 +4435,15 @@
 			"ok": false,
 			"errors": [
 				{
+					"element": "Activity_0vp33kx",
+					"message": "Start events in subprocesses must be of type none"
+				},
+				{
 					"element": "StartMessageEvent_CancellationRequested_MessageEventDefinition",
 					"message": "Must reference a message"
 				},
 				{
 					"element": "Activity_1ke2ixr",
-					"message": "Start events in subprocesses must be of type none"
-				},
-				{
-					"element": "Activity_0vp33kx",
 					"message": "Start events in subprocesses must be of type none"
 				}
 			]
@@ -4558,11 +4467,7 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Activity_1esx1s7",
-					"message": "Start events in subprocesses must be of type none"
-				},
-				{
-					"element": "ErrorEndEvent_FraudDetected_ErrorEventDefinition",
+					"element": "ErrorEndEvent_Timeout_ErrorEventDefinition",
 					"message": "Must reference an error"
 				},
 				{
@@ -4570,12 +4475,12 @@
 					"message": "Must reference a message"
 				},
 				{
-					"element": "ErrorEndEvent_Timeout_ErrorEventDefinition",
-					"message": "Must reference an error"
-				},
-				{
 					"element": "StartTimerEvent_AcceleratedDecision_TimerEventDefinition",
 					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				},
+				{
+					"element": "ErrorEndEvent_FraudDetected_ErrorEventDefinition",
+					"message": "Must reference an error"
 				},
 				{
 					"element": "StartMessageEvent_DocumentRequested_MessageEventDefinition",
@@ -4583,6 +4488,10 @@
 				},
 				{
 					"element": "Activity_02a6b2h",
+					"message": "Start events in subprocesses must be of type none"
+				},
+				{
+					"element": "Activity_1esx1s7",
 					"message": "Start events in subprocesses must be of type none"
 				},
 				{
@@ -4606,19 +4515,11 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "flow-no",
-					"message": "Must have a condition or be default flow"
+					"element": "notify",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "reject",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "process",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "validate",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
@@ -4626,7 +4527,15 @@
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "notify",
+					"element": "flow-no",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "process",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "validate",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
@@ -4656,12 +4565,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "f",
-					"message": "Must reference a message"
-				},
-				{
 					"element": "P",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "f",
+					"message": "Must reference a message"
 				}
 			]
 		},
@@ -4674,24 +4583,24 @@
 					"message": "Compensation boundary events must have a compensation association and no outgoing sequence flows"
 				},
 				{
-					"element": "b5",
-					"message": "An escalation boundary event should only be attached to a subprocess, or a call activity."
-				},
-				{
-					"element": "b3_MessageEventDefinition",
-					"message": "Must reference a message"
-				},
-				{
-					"element": "b4_SignalEventDefinition",
-					"message": "Must reference a signal"
-				},
-				{
 					"element": "P",
 					"message": "Must have at least one start event"
 				},
 				{
 					"element": "b8_CancelEventDefinition",
 					"message": "Event definition of this type is not supported"
+				},
+				{
+					"element": "b3_MessageEventDefinition",
+					"message": "Must reference a message"
+				},
+				{
+					"element": "b5",
+					"message": "An escalation boundary event should only be attached to a subprocess, or a call activity."
+				},
+				{
+					"element": "b4_SignalEventDefinition",
+					"message": "Must reference a signal"
 				},
 				{
 					"element": "b8",
@@ -4729,12 +4638,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "P",
-					"message": "Must have at least one start event"
-				},
-				{
 					"element": "h",
 					"message": "Elements of type 'ComplexGateway' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
+				},
+				{
+					"element": "P",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -4955,12 +4864,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Sub",
-					"message": "Must have exactly one start event"
-				},
-				{
 					"element": "P",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "Sub",
+					"message": "Must have exactly one start event"
 				}
 			]
 		},
@@ -5063,16 +4972,16 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "inner",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "Process_1",
 					"message": "Must have at least one start event"
 				},
 				{
 					"element": "sub",
 					"message": "Must have exactly one start event"
+				},
+				{
+					"element": "inner",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -5121,12 +5030,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "tx",
-					"message": "Elements of type 'Transaction' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
-				},
-				{
 					"element": "P",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "tx",
+					"message": "Elements of type 'Transaction' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
 				}
 			]
 		},
@@ -5160,12 +5069,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Process_1",
-					"message": "Must have at least one start event"
-				},
-				{
 					"element": "t",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Process_1",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -5174,12 +5083,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Process_1",
-					"message": "Must have at least one start event"
-				},
-				{
 					"element": "t",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Process_1",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -5188,12 +5097,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "t",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "Process_1",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "t",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -5202,16 +5111,16 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "sub",
-					"message": "Must have exactly one start event"
-				},
-				{
 					"element": "inner",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "Process_1",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "sub",
+					"message": "Must have exactly one start event"
 				}
 			]
 		},
@@ -5555,12 +5464,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "p",
-					"message": "Must have at least one start event"
-				},
-				{
 					"element": "g",
 					"message": "Elements of type 'ComplexGateway' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -5594,6 +5503,10 @@
 			"ok": false,
 			"errors": [
 				{
+					"element": "p",
+					"message": "Must have at least one start event"
+				},
+				{
 					"element": "b",
 					"message": "Invalid timer duration expression (Invalid duration format '5 minutes' for expression '5 minutes'.)"
 				},
@@ -5604,10 +5517,6 @@
 				{
 					"element": "t1",
 					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
-				},
-				{
-					"element": "p",
-					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -5616,8 +5525,8 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "e",
-					"message": "ErrorCode must be present and not empty"
+					"element": "sig",
+					"message": "Name must be present and not empty"
 				},
 				{
 					"element": "p",
@@ -5632,8 +5541,8 @@
 					"message": "Must have exactly one zeebe:subscription extension element"
 				},
 				{
-					"element": "sig",
-					"message": "Name must be present and not empty"
+					"element": "e",
+					"message": "ErrorCode must be present and not empty"
 				}
 			]
 		},
@@ -5646,12 +5555,12 @@
 					"message": "Attribute 'resultVariable' must be present and not empty"
 				},
 				{
-					"element": "none",
-					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "p",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "none",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -5660,12 +5569,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "p",
-					"message": "Must have at least one start event"
-				},
-				{
 					"element": "g",
 					"message": "Elements of type 'ComplexGateway' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -5704,10 +5613,6 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "eventSub",
-					"message": "Interrupting timer event with time cycle is not allowed."
-				},
-				{
 					"element": "boundaryCycle",
 					"message": "Interrupting timer event with time cycle is not allowed."
 				},
@@ -5716,72 +5621,76 @@
 					"message": "Intermediate timer catch event must have either a time duration or a time date."
 				},
 				{
-					"element": "E4",
-					"message": "ErrorCode must be present and not empty"
+					"element": "S3",
+					"message": "Must reference a signal"
 				},
 				{
-					"element": "T3",
-					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+					"element": "X2",
+					"message": "Must reference an escalation"
 				},
 				{
 					"element": "Sig_noname",
 					"message": "Name must be present and not empty"
 				},
 				{
-					"element": "boundaryCompensation",
-					"message": "Compensation boundary events must have a compensation association and no outgoing sequence flows"
-				},
-				{
-					"element": "catchBadDuration",
-					"message": "Invalid timer duration expression (Invalid duration format '5 minutes' for expression '5 minutes'.)"
-				},
-				{
-					"element": "throwCompensation",
-					"message": "A compensation intermediate throwing event waitForCompletion attribute must be true or not present"
-				},
-				{
-					"element": "Msg_nokey",
-					"message": "Must have exactly one zeebe:subscription extension element"
-				},
-				{
-					"element": "E3",
-					"message": "Must reference an error"
-				},
-				{
-					"element": "throwMessage",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+					"element": "Esc_nocode",
+					"message": "EscalationCode must be present and not empty"
 				},
 				{
 					"element": "boundaryEscalation",
 					"message": "An escalation boundary event should only be attached to a subprocess, or a call activity."
 				},
 				{
-					"element": "M1",
-					"message": "Must reference a message"
+					"element": "throwMessage",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "events",
-					"message": "Multiple none start events are not allowed"
-				},
-				{
-					"element": "S3",
-					"message": "Must reference a signal"
-				},
-				{
-					"element": "Esc_nocode",
-					"message": "EscalationCode must be present and not empty"
+					"element": "T3",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
 				},
 				{
 					"element": "E2",
 					"message": "The errorCode of the error catch event is not allowed to be an expression"
 				},
 				{
+					"element": "Msg_nokey",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "catchBadDuration",
+					"message": "Invalid timer duration expression (Invalid duration format '5 minutes' for expression '5 minutes'.)"
+				},
+				{
+					"element": "boundaryCompensation",
+					"message": "Compensation boundary events must have a compensation association and no outgoing sequence flows"
+				},
+				{
+					"element": "M1",
+					"message": "Must reference a message"
+				},
+				{
+					"element": "E3",
+					"message": "Must reference an error"
+				},
+				{
+					"element": "eventSub",
+					"message": "Interrupting timer event with time cycle is not allowed."
+				},
+				{
 					"element": "catchCycle",
 					"message": "Intermediate timer catch event must have either a time duration or a time date."
 				},
 				{
-					"element": "X2",
-					"message": "Must reference an escalation"
+					"element": "throwCompensation",
+					"message": "A compensation intermediate throwing event waitForCompletion attribute must be true or not present"
+				},
+				{
+					"element": "events",
+					"message": "Multiple none start events are not allowed"
+				},
+				{
+					"element": "E4",
+					"message": "ErrorCode must be present and not empty"
 				},
 				{
 					"element": "Msg_noname",
@@ -5862,16 +5771,8 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "sub > extensionElements > calledElement",
-					"message": "Expected expression but not found."
-				},
-				{
-					"element": "f_a",
-					"message": "Must have a condition"
-				},
-				{
-					"element": "fail_def",
-					"message": "ErrorCode must be present and not empty"
+					"element": "sig",
+					"message": "Name must be present and not empty"
 				},
 				{
 					"element": "publish_def > extensionElements > publishMessage",
@@ -5882,6 +5783,10 @@
 					"message": "EscalationCode must be present and not empty"
 				},
 				{
+					"element": "fail_def",
+					"message": "ErrorCode must be present and not empty"
+				},
+				{
 					"element": "reply_msg > extensionElements > subscription",
 					"message": "Expected expression but not found."
 				},
@@ -5890,8 +5795,12 @@
 					"message": "Must have a condition"
 				},
 				{
-					"element": "sig",
-					"message": "Name must be present and not empty"
+					"element": "f_a",
+					"message": "Must have a condition"
+				},
+				{
+					"element": "sub > extensionElements > calledElement",
+					"message": "Expected expression but not found."
 				}
 			]
 		},
@@ -5909,10 +5818,6 @@
 					"message": "Expected expression but not found."
 				},
 				{
-					"element": "rules",
-					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "notify > extensionElements > taskDefinition",
 					"message": "Expected expression but not found."
 				},
@@ -5925,48 +5830,52 @@
 					"message": "Must have exactly one zeebe:subscription extension element"
 				},
 				{
-					"element": "compute",
-					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "wait",
 					"message": "Intermediate timer catch event must have either a time duration or a time date."
-				},
-				{
-					"element": "done",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "sub",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
-				},
-				{
-					"element": "fail_def",
-					"message": "Must reference an error"
-				},
-				{
-					"element": "charge",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "broadcast_def",
 					"message": "Must reference a signal"
 				},
 				{
-					"element": "wait_def",
-					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+					"element": "reply_def",
+					"message": "Must reference a message"
+				},
+				{
+					"element": "charge",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "sub",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				},
+				{
+					"element": "compute",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "f_no",
 					"message": "Must have a condition or be default flow"
 				},
 				{
+					"element": "fail_def",
+					"message": "Must reference an error"
+				},
+				{
 					"element": "escalate_def",
 					"message": "Must reference an escalation"
 				},
 				{
-					"element": "reply_def",
-					"message": "Must reference a message"
+					"element": "wait_def",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				},
+				{
+					"element": "rules",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "done",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -6058,6 +5967,14 @@
 			"ok": false,
 			"errors": [
 				{
+					"element": "Task_price",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_fraudCheck",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
 					"element": "Task_payout",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
@@ -6066,16 +5983,8 @@
 					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "Task_price",
-					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "SubProcess_items > multiInstanceLoopCharacteristics",
 					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
-				},
-				{
-					"element": "Task_fraudCheck",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -6084,24 +5993,24 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Task_fraudCheck",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "Task_price",
 					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "SubProcess_items > multiInstanceLoopCharacteristics",
+					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
 				},
 				{
 					"element": "Task_payout",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "EndEvent_paid",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+					"element": "Task_fraudCheck",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "SubProcess_items > multiInstanceLoopCharacteristics",
-					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
+					"element": "EndEvent_paid",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -6110,28 +6019,28 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Flow_yes > conditionExpression",
-					"message": "Expected expression but found static value '${approved == true}'. An expression must start with '=' (e.g. '=${approved == true}')."
-				},
-				{
-					"element": "Task_book",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
-				},
-				{
 					"element": "Task_total",
 					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_classify",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "Task_archive",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "Flow_no > conditionExpression",
-					"message": "Expected expression but found static value '${approved == false}'. An expression must start with '=' (e.g. '=${approved == false}')."
+					"element": "Task_book",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
 				},
 				{
-					"element": "Task_classify",
-					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+					"element": "Flow_yes > conditionExpression",
+					"message": "Expected expression but found static value '${approved == true}'. An expression must start with '=' (e.g. '=${approved == true}')."
+				},
+				{
+					"element": "Flow_no > conditionExpression",
+					"message": "Expected expression but found static value '${approved == false}'. An expression must start with '=' (e.g. '=${approved == false}')."
 				}
 			]
 		},
@@ -6140,12 +6049,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Task_archive",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+					"element": "Flow_no > conditionExpression",
+					"message": "Expected expression but found static value '${approved == false}'. An expression must start with '=' (e.g. '=${approved == false}')."
 				},
 				{
-					"element": "Task_classify",
-					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+					"element": "Task_book",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
 				},
 				{
 					"element": "Flow_yes > conditionExpression",
@@ -6156,12 +6065,12 @@
 					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "Task_book",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+					"element": "Task_archive",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "Flow_no > conditionExpression",
-					"message": "Expected expression but found static value '${approved == false}'. An expression must start with '=' (e.g. '=${approved == false}')."
+					"element": "Task_classify",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -6190,47 +6099,47 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Task_summary",
-					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "Flow_vip > conditionExpression",
-					"message": "Expected expression but found static value '${approved and order.customer.vip eq true}'. An expression must start with '=' (e.g. '=${approved and order.customer.vip eq true}')."
-				},
-				{
-					"element": "Task_escalate",
+					"element": "Task_charge",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "Task_invoice",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
-				},
-				{
-					"element": "Task_shippingCost",
-					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "Timer_wait",
 					"message": "Invalid timer duration expression (Invalid duration format '${deliveryWindow}' for expression '${deliveryWindow}'.)"
 				},
 				{
-					"element": "Task_notify",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+					"element": "Flow_approved > conditionExpression",
+					"message": "Expected expression but found static value '${approved && order.total <= 1000}'. An expression must start with '=' (e.g. '=${approved && order.total <= 1000}')."
 				},
 				{
-					"element": "Task_ship",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+					"element": "Flow_vip > conditionExpression",
+					"message": "Expected expression but found static value '${approved and order.customer.vip eq true}'. An expression must start with '=' (e.g. '=${approved and order.customer.vip eq true}')."
+				},
+				{
+					"element": "Task_invoice",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
 				},
 				{
 					"element": "Message_PaymentConfirmed",
 					"message": "Must have exactly one zeebe:subscription extension element"
 				},
 				{
-					"element": "Flow_approved > conditionExpression",
-					"message": "Expected expression but found static value '${approved && order.total <= 1000}'. An expression must start with '=' (e.g. '=${approved && order.total <= 1000}')."
+					"element": "Task_summary",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "Task_charge",
+					"element": "Task_ship",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_shippingCost",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_escalate",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_notify",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
@@ -6240,40 +6149,24 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Flow_vip > conditionExpression",
-					"message": "Expected expression but found static value '${approved and order.customer.vip eq true}'. An expression must start with '=' (e.g. '=${approved and order.customer.vip eq true}')."
+					"element": "Message_PaymentConfirmed",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "Task_invoice",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
 				},
 				{
 					"element": "Task_shippingCost",
 					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "Task_ship",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "Task_escalate",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "Task_summary",
-					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "Task_notify",
+					"element": "Task_ship",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "Message_PaymentConfirmed",
-					"message": "Must have exactly one zeebe:subscription extension element"
-				},
-				{
-					"element": "Timer_wait",
-					"message": "Invalid timer duration expression (Invalid duration format '${deliveryWindow}' for expression '${deliveryWindow}'.)"
-				},
-				{
-					"element": "Task_invoice",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
 				},
 				{
 					"element": "Task_charge",
@@ -6282,6 +6175,22 @@
 				{
 					"element": "Flow_approved > conditionExpression",
 					"message": "Expected expression but found static value '${approved && order.total <= 1000}'. An expression must start with '=' (e.g. '=${approved && order.total <= 1000}')."
+				},
+				{
+					"element": "Task_notify",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Timer_wait",
+					"message": "Invalid timer duration expression (Invalid duration format '${deliveryWindow}' for expression '${deliveryWindow}'.)"
+				},
+				{
+					"element": "Flow_vip > conditionExpression",
+					"message": "Expected expression but found static value '${approved and order.customer.vip eq true}'. An expression must start with '=' (e.g. '=${approved and order.customer.vip eq true}')."
+				},
+				{
+					"element": "Task_summary",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -6570,16 +6479,16 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "paymentOutcome",
-					"message": "Event-based gateway must not have an outgoing sequence flow to other elements than message/timer/signal/conditional intermediate catch events."
-				},
-				{
-					"element": "provisionBundle > multiInstanceLoopCharacteristics",
-					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
+					"element": "paymentWindowElapsed",
+					"message": "Must have exactly one event definition"
 				},
 				{
 					"element": "timerReminder1",
 					"message": "Must have exactly one event definition"
+				},
+				{
+					"element": "provisionBundle > multiInstanceLoopCharacteristics",
+					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
 				},
 				{
 					"element": "Message_VgqDdPrJ",
@@ -6590,8 +6499,8 @@
 					"message": "Must have exactly one event definition"
 				},
 				{
-					"element": "paymentWindowElapsed",
-					"message": "Must have exactly one event definition"
+					"element": "paymentOutcome",
+					"message": "Event-based gateway must not have an outgoing sequence flow to other elements than message/timer/signal/conditional intermediate catch events."
 				}
 			]
 		},
@@ -6600,19 +6509,11 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "paymentConfirmed",
+					"element": "timerReminder1",
 					"message": "Must have exactly one event definition"
-				},
-				{
-					"element": "provisionBundle > multiInstanceLoopCharacteristics",
-					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
 				},
 				{
 					"element": "paymentWindowElapsed",
-					"message": "Must have exactly one event definition"
-				},
-				{
-					"element": "timerReminder1",
 					"message": "Must have exactly one event definition"
 				},
 				{
@@ -6622,6 +6523,14 @@
 				{
 					"element": "paymentOutcome",
 					"message": "Event-based gateway must not have an outgoing sequence flow to other elements than message/timer/signal/conditional intermediate catch events."
+				},
+				{
+					"element": "paymentConfirmed",
+					"message": "Must have exactly one event definition"
+				},
+				{
+					"element": "provisionBundle > multiInstanceLoopCharacteristics",
+					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
 				}
 			]
 		},
@@ -6790,10 +6699,6 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "sid-628a2fdc-7654-4273-930d-8e3127b9e8b2",
-					"message": "Expected expression but found static value '${clarified == 'no'}'. An expression must start with '=' (e.g. '=${clarified == 'no'}')."
-				},
-				{
 					"element": "sid-e669aead-8bad-4dbb-b282-e9f811e02f77",
 					"message": "Expected expression but found static value '${clarified == 'yes'}'. An expression must start with '=' (e.g. '=${clarified == 'yes'}')."
 				},
@@ -6802,12 +6707,16 @@
 					"message": "Expected expression but found static value '${approved}'. An expression must start with '=' (e.g. '=${approved}')."
 				},
 				{
-					"element": "archiveInvoice",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+					"element": "sid-628a2fdc-7654-4273-930d-8e3127b9e8b2",
+					"message": "Expected expression but found static value '${clarified == 'no'}'. An expression must start with '=' (e.g. '=${clarified == 'no'}')."
 				},
 				{
 					"element": "sid-d4f3f0f7-79c3-4b1c-817e-13d9bdd96666",
 					"message": "Expected expression but found static value '${!approved}'. An expression must start with '=' (e.g. '=${!approved}')."
+				},
+				{
+					"element": "archiveInvoice",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -6882,6 +6791,14 @@
 			"ok": false,
 			"errors": [
 				{
+					"element": "Message_1404332496320",
+					"message": "Name must be present and not empty"
+				},
+				{
+					"element": "Message_1404332496323",
+					"message": "Name must be present and not empty"
+				},
+				{
 					"element": "Message_1404332496321",
 					"message": "Name must be present and not empty"
 				},
@@ -6892,14 +6809,6 @@
 				{
 					"element": "Message_1404332496319",
 					"message": "Name must be present and not empty"
-				},
-				{
-					"element": "Message_1404332496323",
-					"message": "Name must be present and not empty"
-				},
-				{
-					"element": "Message_1404332496320",
-					"message": "Name must be present and not empty"
 				}
 			]
 		},
@@ -6908,15 +6817,15 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Message_1404332496319",
-					"message": "Name must be present and not empty"
-				},
-				{
 					"element": "definitions",
 					"message": "Must contain at least one executable process"
 				},
 				{
 					"element": "Message_1404332496320",
+					"message": "Name must be present and not empty"
+				},
+				{
+					"element": "Message_1404332496319",
 					"message": "Name must be present and not empty"
 				},
 				{
@@ -6934,11 +6843,19 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "_cf380e47-1401-4e7e-b710-193b626e49eb",
+					"element": "_b99800c3-c340-460c-a43e-098014a365d0",
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "_3fb323d5-2c59-487a-af63-804208f6c5cb",
+					"element": "_437e5969-1e61-4cb9-aa76-4f8854f32eeb",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "_6840c92f-f02c-46b3-9565-f5e5b1792ba0",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "_cf380e47-1401-4e7e-b710-193b626e49eb",
 					"message": "Must have a condition or be default flow"
 				},
 				{
@@ -6946,16 +6863,8 @@
 					"message": "Must have exactly one start event"
 				},
 				{
-					"element": "_437e5969-1e61-4cb9-aa76-4f8854f32eeb",
+					"element": "_3fb323d5-2c59-487a-af63-804208f6c5cb",
 					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "Bpmn_FormalExpression_ipW2kBqIEeWDuOtG0oS24A",
-					"message": "Expected expression but found static value 'Service Level == 'Premium''. An expression must start with '=' (e.g. '=Service Level == 'Premium'')."
-				},
-				{
-					"element": "_6840c92f-f02c-46b3-9565-f5e5b1792ba0",
-					"message": "Must have exactly one zeebe:subscription extension element"
 				},
 				{
 					"element": "_cddf9325-a85b-4347-8c57-8b909fa77ae9",
@@ -6966,8 +6875,8 @@
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "_b99800c3-c340-460c-a43e-098014a365d0",
-					"message": "Must have a condition or be default flow"
+					"element": "Bpmn_FormalExpression_ipW2kBqIEeWDuOtG0oS24A",
+					"message": "Expected expression but found static value 'Service Level == 'Premium''. An expression must start with '=' (e.g. '=Service Level == 'Premium'')."
 				}
 			]
 		},
@@ -6976,7 +6885,7 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "_cf380e47-1401-4e7e-b710-193b626e49eb",
+					"element": "_cddf9325-a85b-4347-8c57-8b909fa77ae9",
 					"message": "Must have a condition or be default flow"
 				},
 				{
@@ -6984,23 +6893,23 @@
 					"message": "Must have exactly one start event"
 				},
 				{
+					"element": "_ada039b6-94dd-4a15-a6b1-c7fe662c64ee",
+					"message": "Must have a condition or be default flow"
+				},
+				{
 					"element": "_437e5969-1e61-4cb9-aa76-4f8854f32eeb",
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "_cddf9325-a85b-4347-8c57-8b909fa77ae9",
-					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "_3fb323d5-2c59-487a-af63-804208f6c5cb",
-					"message": "Must have a condition or be default flow"
+					"element": "Bpmn_FormalExpression_ipW2kBqIEeWDuOtG0oS24A",
+					"message": "Expected expression but found static value 'Service Level == 'Premium''. An expression must start with '=' (e.g. '=Service Level == 'Premium'')."
 				},
 				{
 					"element": "_6840c92f-f02c-46b3-9565-f5e5b1792ba0",
 					"message": "Must have exactly one zeebe:subscription extension element"
 				},
 				{
-					"element": "_ada039b6-94dd-4a15-a6b1-c7fe662c64ee",
+					"element": "_3fb323d5-2c59-487a-af63-804208f6c5cb",
 					"message": "Must have a condition or be default flow"
 				},
 				{
@@ -7008,8 +6917,8 @@
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "Bpmn_FormalExpression_ipW2kBqIEeWDuOtG0oS24A",
-					"message": "Expected expression but found static value 'Service Level == 'Premium''. An expression must start with '=' (e.g. '=Service Level == 'Premium'')."
+					"element": "_cf380e47-1401-4e7e-b710-193b626e49eb",
+					"message": "Must have a condition or be default flow"
 				}
 			]
 		},
@@ -7188,7 +7097,7 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "notify",
+					"element": "reject",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
@@ -7200,15 +7109,15 @@
 					"message": "Must have a condition or be default flow"
 				},
 				{
+					"element": "notify",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
 					"element": "flow-no",
 					"message": "Must have a condition or be default flow"
 				},
 				{
 					"element": "validate",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "reject",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
@@ -7218,6 +7127,14 @@
 			"ok": false,
 			"errors": [
 				{
+					"element": "flow-no",
+					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "validate",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
 					"element": "reject",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
@@ -7226,20 +7143,12 @@
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "validate",
+					"element": "notify",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "flow-no",
-					"message": "Must have a condition or be default flow"
 				},
 				{
 					"element": "flow-yes",
 					"message": "Must have a condition or be default flow"
-				},
-				{
-					"element": "notify",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -7308,11 +7217,11 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Linked1",
+					"element": "Linked2",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "Linked2",
+					"element": "Linked1",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
@@ -7322,11 +7231,11 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Linked2",
+					"element": "Linked1",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "Linked1",
+					"element": "Linked2",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
@@ -7336,11 +7245,11 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Linked1",
+					"element": "Linked2",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "Linked2",
+					"element": "Linked1",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
@@ -7364,11 +7273,11 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Linked1",
+					"element": "Linked2",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "Linked2",
+					"element": "Linked1",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
@@ -7392,11 +7301,11 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Linked1",
+					"element": "Linked2",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "Linked2",
+					"element": "Linked1",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
@@ -7486,12 +7395,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "B4",
-					"message": "An escalation boundary event should only be attached to a subprocess, or a call activity."
-				},
-				{
 					"element": "T1",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "B4",
+					"message": "An escalation boundary event should only be attached to a subprocess, or a call activity."
 				}
 			]
 		},
@@ -7678,24 +7587,24 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "CA",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+					"element": "e3",
+					"message": "Must reference a signal"
 				},
 				{
 					"element": "SC",
 					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "BR",
-					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "e3",
-					"message": "Must reference a signal"
+					"element": "CA",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
 				},
 				{
 					"element": "e1",
 					"message": "Must reference a message"
+				},
+				{
+					"element": "BR",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -7704,14 +7613,6 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "CA",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
-				},
-				{
-					"element": "e3",
-					"message": "Must reference a signal"
-				},
-				{
 					"element": "BR",
 					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
 				},
@@ -7722,6 +7623,14 @@
 				{
 					"element": "SC",
 					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "CA",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				},
+				{
+					"element": "e3",
+					"message": "Must reference a signal"
 				}
 			]
 		},
@@ -7729,10 +7638,6 @@
 			"sha256": "2d078fcda04e25b2273579fe551a831dcc2978fa24efe2813eef0e62ec4b60e5",
 			"ok": false,
 			"errors": [
-				{
-					"element": "e3",
-					"message": "Must reference a signal"
-				},
 				{
 					"element": "BR",
 					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
@@ -7744,6 +7649,10 @@
 				{
 					"element": "SC",
 					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "e3",
+					"message": "Must reference a signal"
 				},
 				{
 					"element": "e1",
@@ -7770,12 +7679,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Sub",
-					"message": "Must have exactly one start event"
-				},
-				{
 					"element": "P2",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "Sub",
+					"message": "Must have exactly one start event"
 				}
 			]
 		},
@@ -7887,12 +7796,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "CX",
-					"message": "Elements of type 'ComplexGateway' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
-				},
-				{
 					"element": "m1_def",
 					"message": "Must reference a message"
+				},
+				{
+					"element": "CX",
+					"message": "Elements of type 'ComplexGateway' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
 				}
 			]
 		},
@@ -7960,12 +7869,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "B",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "f4",
 					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "B",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -7974,12 +7883,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "f4",
-					"message": "Must have a condition or be default flow"
-				},
-				{
 					"element": "B",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "f4",
+					"message": "Must have a condition or be default flow"
 				}
 			]
 		},
@@ -7988,12 +7897,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "B",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "f4",
 					"message": "Must have a condition or be default flow"
+				},
+				{
+					"element": "B",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -8032,11 +7941,11 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "f6",
+					"element": "f4",
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "f4",
+					"element": "f6",
 					"message": "Must have a condition or be default flow"
 				}
 			]
@@ -8046,11 +7955,11 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "f4",
+					"element": "f6",
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "f6",
+					"element": "f4",
 					"message": "Must have a condition or be default flow"
 				}
 			]
@@ -8060,11 +7969,11 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "f4",
+					"element": "f6",
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "f6",
+					"element": "f4",
 					"message": "Must have a condition or be default flow"
 				}
 			]
@@ -8174,12 +8083,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Pr_wait",
-					"message": "Must reference a message"
-				},
-				{
 					"element": "Pr_call",
 					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Pr_wait",
+					"message": "Must reference a message"
 				}
 			]
 		},
@@ -8188,12 +8097,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Pr_call",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "Pr_wait",
 					"message": "Must reference a message"
+				},
+				{
+					"element": "Pr_call",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -8202,12 +8111,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Pr_call",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "Pr_wait",
 					"message": "Must reference a message"
+				},
+				{
+					"element": "Pr_call",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -8300,12 +8209,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "ed2",
-					"message": "Must reference a message"
-				},
-				{
 					"element": "Ev",
 					"message": "Non-Interrupting event of this type is not allowed"
+				},
+				{
+					"element": "ed2",
+					"message": "Must reference a message"
 				}
 			]
 		},
@@ -8314,12 +8223,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "ed2",
-					"message": "Must reference a message"
-				},
-				{
 					"element": "Ev",
 					"message": "Non-Interrupting event of this type is not allowed"
+				},
+				{
+					"element": "ed2",
+					"message": "Must reference a message"
 				}
 			]
 		},
@@ -8358,12 +8267,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "ed1",
-					"message": "Event definition of this type is not supported"
-				},
-				{
 					"element": "Tx",
 					"message": "Elements of type 'Transaction' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
+				},
+				{
+					"element": "ed1",
+					"message": "Event definition of this type is not supported"
 				},
 				{
 					"element": "BC",
@@ -8376,12 +8285,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "BC",
-					"message": "Boundary events must be one of: timer, message, error, signal, escalation, conditional"
-				},
-				{
 					"element": "Tx",
 					"message": "Elements of type 'Transaction' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
+				},
+				{
+					"element": "BC",
+					"message": "Boundary events must be one of: timer, message, error, signal, escalation, conditional"
 				},
 				{
 					"element": "ed1",
@@ -8394,16 +8303,16 @@
 			"ok": false,
 			"errors": [
 				{
+					"element": "Tx",
+					"message": "Elements of type 'Transaction' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
+				},
+				{
 					"element": "BC",
 					"message": "Boundary events must be one of: timer, message, error, signal, escalation, conditional"
 				},
 				{
 					"element": "ed1",
 					"message": "Event definition of this type is not supported"
-				},
-				{
-					"element": "Tx",
-					"message": "Elements of type 'Transaction' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
 				}
 			]
 		},
@@ -8536,40 +8445,40 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "snd",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "rt3",
-					"message": "Must reference a message"
-				},
-				{
-					"element": "m1",
-					"message": "Must have exactly one zeebe:subscription extension element"
-				},
-				{
-					"element": "s3 > timerEventDefinition",
-					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+					"element": "br",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "s1d",
 					"message": "Must reference a message"
 				},
 				{
-					"element": "m3",
-					"message": "Must have exactly one zeebe:subscription extension element"
-				},
-				{
 					"element": "ca",
 					"message": "Must have exactly one 'zeebe:calledElement' extension element"
 				},
 				{
-					"element": "br",
-					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "svc",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "m3",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "m1",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "rt3",
+					"message": "Must reference a message"
+				},
+				{
+					"element": "snd",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "s3 > timerEventDefinition",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
 				}
 			]
 		},
@@ -8647,7 +8556,11 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "m1",
+					"element": "m1 > timerEventDefinition",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				},
+				{
+					"element": "m3",
 					"message": "Intermediate timer catch event must have either a time duration or a time date."
 				},
 				{
@@ -8655,24 +8568,20 @@
 					"message": "Event-based gateway must have at least 2 outgoing sequence flows."
 				},
 				{
-					"element": "m2 > timerEventDefinition",
-					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+					"element": "m1",
+					"message": "Intermediate timer catch event must have either a time duration or a time date."
 				},
 				{
 					"element": "g2",
 					"message": "Conditional sequence flows are only supported at exclusive or inclusive gateway"
 				},
 				{
+					"element": "m2 > timerEventDefinition",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				},
+				{
 					"element": "m2",
 					"message": "Intermediate timer catch event must have either a time duration or a time date."
-				},
-				{
-					"element": "m3",
-					"message": "Intermediate timer catch event must have either a time duration or a time date."
-				},
-				{
-					"element": "m1 > timerEventDefinition",
-					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
 				},
 				{
 					"element": "m3 > timerEventDefinition",
@@ -8689,11 +8598,11 @@
 					"message": "Elements of type 'ComplexGateway' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
 				},
 				{
-					"element": "g3",
+					"element": "g2",
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "g2",
+					"element": "g3",
 					"message": "Must have a condition or be default flow"
 				}
 			]
@@ -8731,16 +8640,16 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "multi",
-					"message": "Must have exactly one event definition"
+					"element": "multi > timerEventDefinition",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
 				},
 				{
 					"element": "multi > messageEventDefinition",
 					"message": "Must reference a message"
 				},
 				{
-					"element": "multi > timerEventDefinition",
-					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+					"element": "multi",
+					"message": "Must have exactly one event definition"
 				},
 				{
 					"element": "proc",
@@ -8788,12 +8697,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "b > timerEventDefinition",
-					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
-				},
-				{
 					"element": "sub",
 					"message": "Must have exactly one start event"
+				},
+				{
+					"element": "b > timerEventDefinition",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
 				}
 			]
 		},
@@ -8821,12 +8730,12 @@
 					"message": "Start events in subprocesses must be of type none"
 				},
 				{
-					"element": "evt",
-					"message": "Start events in event subprocesses must be one of: message, timer, error, signal, escalation or conditional"
-				},
-				{
 					"element": "typed > timerEventDefinition",
 					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				},
+				{
+					"element": "evt",
+					"message": "Start events in event subprocesses must be one of: message, timer, error, signal, escalation or conditional"
 				}
 			]
 		},
@@ -9084,28 +8993,28 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Task_classify",
-					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+					"element": "Flow_no > conditionExpression",
+					"message": "Expected expression but found static value '${approved == false}'. An expression must start with '=' (e.g. '=${approved == false}')."
 				},
 				{
 					"element": "Flow_yes > conditionExpression",
 					"message": "Expected expression but found static value '${approved == true}'. An expression must start with '=' (e.g. '=${approved == true}')."
 				},
 				{
-					"element": "Task_book",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+					"element": "Task_total",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_classify",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "Task_archive",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "Flow_no > conditionExpression",
-					"message": "Expected expression but found static value '${approved == false}'. An expression must start with '=' (e.g. '=${approved == false}')."
-				},
-				{
-					"element": "Task_total",
-					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+					"element": "Task_book",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
 				}
 			]
 		},
@@ -9114,31 +9023,11 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "Task_notify",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "Task_escalate",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "Task_ship",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "Flow_approved > conditionExpression",
-					"message": "Expected expression but found static value '${approved && order.total <= 1000}'. An expression must start with '=' (e.g. '=${approved && order.total <= 1000}')."
-				},
-				{
-					"element": "Task_summary",
-					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "Task_invoice",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
-				},
-				{
-					"element": "Task_charge",
+					"element": "Task_notify",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
@@ -9150,12 +9039,32 @@
 					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
+					"element": "Task_charge",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
 					"element": "Flow_vip > conditionExpression",
 					"message": "Expected expression but found static value '${approved and order.customer.vip eq true}'. An expression must start with '=' (e.g. '=${approved and order.customer.vip eq true}')."
 				},
 				{
+					"element": "Task_ship",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_summary",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
 					"element": "Message_PaymentConfirmed",
 					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "Task_invoice",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
+				},
+				{
+					"element": "Flow_approved > conditionExpression",
+					"message": "Expected expression but found static value '${approved && order.total <= 1000}'. An expression must start with '=' (e.g. '=${approved && order.total <= 1000}')."
 				}
 			]
 		},
@@ -9168,20 +9077,20 @@
 					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
 				},
 				{
-					"element": "EndEvent_paid",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "Task_payout",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "Task_fraudCheck",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "Task_price",
 					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "Task_payout",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "EndEvent_paid",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -9190,12 +9099,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "t",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "p",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "t",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -9204,12 +9113,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "p",
-					"message": "Must have at least one start event"
-				},
-				{
 					"element": "t",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -9218,12 +9127,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "t",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "p",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "t",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -9264,12 +9173,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "t",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "p",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "t",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -9278,12 +9187,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "t",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "p",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "t",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -9292,12 +9201,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "p",
-					"message": "Must have at least one start event"
-				},
-				{
 					"element": "e",
 					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -9306,12 +9215,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "e",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "p",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "e",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -9334,12 +9243,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "t",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "p",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "t",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -9348,12 +9257,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "p",
-					"message": "Must have at least one start event"
-				},
-				{
 					"element": "t",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -9372,12 +9281,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "f > conditionExpression",
-					"message": "Expected expression but found static value '${amount > 1000 && !approved}'. An expression must start with '=' (e.g. '=${amount > 1000 && !approved}')."
-				},
-				{
 					"element": "p",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "f > conditionExpression",
+					"message": "Expected expression but found static value '${amount > 1000 && !approved}'. An expression must start with '=' (e.g. '=${amount > 1000 && !approved}')."
 				}
 			]
 		},
@@ -9386,12 +9295,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "f > conditionExpression",
-					"message": "Expected expression but found static value 'amount > 1'. An expression must start with '=' (e.g. '=amount > 1')."
-				},
-				{
 					"element": "p",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "f > conditionExpression",
+					"message": "Expected expression but found static value 'amount > 1'. An expression must start with '=' (e.g. '=amount > 1')."
 				}
 			]
 		},
@@ -9400,12 +9309,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "f > conditionExpression",
-					"message": "Expected expression but found static value '${empty items}'. An expression must start with '=' (e.g. '=${empty items}')."
-				},
-				{
 					"element": "p",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "f > conditionExpression",
+					"message": "Expected expression but found static value '${empty items}'. An expression must start with '=' (e.g. '=${empty items}')."
 				}
 			]
 		},
@@ -9452,12 +9361,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "p",
-					"message": "Must have at least one start event"
-				},
-				{
 					"element": "t",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -9466,12 +9375,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "p",
-					"message": "Must have at least one start event"
-				},
-				{
 					"element": "t",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -9619,12 +9528,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "p",
-					"message": "Must have at least one start event"
-				},
-				{
 					"element": "b",
 					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -9633,12 +9542,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "b",
-					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "p",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "b",
+					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -9661,12 +9570,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "c",
-					"message": "Must have exactly one 'zeebe:calledElement' extension element"
-				},
-				{
 					"element": "p",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "c",
+					"message": "Must have exactly one 'zeebe:calledElement' extension element"
 				}
 			]
 		},
@@ -9769,12 +9678,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "t1",
-					"message": "Invalid timer duration expression (Invalid duration format '${wait}' for expression '${wait}'.)"
-				},
-				{
 					"element": "t2",
 					"message": "Invalid timer date expression (Invalid date-time format '${dateTime().plusDays(1).toDate()}' for expression '${dateTime().plusDays(1).toDate()}'.)"
+				},
+				{
+					"element": "t1",
+					"message": "Invalid timer duration expression (Invalid duration format '${wait}' for expression '${wait}'.)"
 				}
 			]
 		},
@@ -9793,12 +9702,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "u > multiInstanceLoopCharacteristics",
-					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
-				},
-				{
 					"element": "p",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "u > multiInstanceLoopCharacteristics",
+					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
 				}
 			]
 		},
@@ -9821,12 +9730,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "u > multiInstanceLoopCharacteristics",
-					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
-				},
-				{
 					"element": "p",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "u > multiInstanceLoopCharacteristics",
+					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
 				}
 			]
 		},
@@ -9835,12 +9744,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "p",
-					"message": "Must have at least one start event"
-				},
-				{
 					"element": "u > multiInstanceLoopCharacteristics",
 					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -9863,12 +9772,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "u > multiInstanceLoopCharacteristics",
-					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
-				},
-				{
 					"element": "p",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "u > multiInstanceLoopCharacteristics",
+					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
 				}
 			]
 		},
@@ -9917,12 +9826,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "p",
-					"message": "Must have at least one start event"
-				},
-				{
 					"element": "t",
 					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
+				},
+				{
+					"element": "p",
+					"message": "Must have at least one start event"
 				}
 			]
 		},
@@ -9969,12 +9878,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "m",
-					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
-				},
-				{
 					"element": "p",
 					"message": "Must have at least one start event"
+				},
+				{
+					"element": "m",
+					"message": "Must have exactly one 'zeebe:loopCharacteristics' extension element"
 				}
 			]
 		},
@@ -10047,12 +9956,12 @@
 					"message": "Must have at least one start event"
 				},
 				{
-					"element": "svc",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "g",
 					"message": "Elements of type 'ComplexGateway' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/"
+				},
+				{
+					"element": "svc",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				}
 			]
 		},
@@ -10091,32 +10000,20 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "rt3",
-					"message": "Must reference a message"
-				},
-				{
-					"element": "svc",
-					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
-				},
-				{
-					"element": "m3",
-					"message": "Must have exactly one zeebe:subscription extension element"
-				},
-				{
-					"element": "s3 > timerEventDefinition",
-					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+					"element": "snd",
+					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "br",
 					"message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "snd",
-					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
+					"element": "svc",
+					"message": "Must have exactly one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "m1",
-					"message": "Must have exactly one zeebe:subscription extension element"
+					"element": "rt3",
+					"message": "Must reference a message"
 				},
 				{
 					"element": "ca",
@@ -10125,6 +10022,18 @@
 				{
 					"element": "s1d",
 					"message": "Must reference a message"
+				},
+				{
+					"element": "s3 > timerEventDefinition",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				},
+				{
+					"element": "m3",
+					"message": "Must have exactly one zeebe:subscription extension element"
+				},
+				{
+					"element": "m1",
+					"message": "Must have exactly one zeebe:subscription extension element"
 				}
 			]
 		},
@@ -10833,12 +10742,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "s2_MessageEventDefinition",
-					"message": "Must reference a message"
-				},
-				{
 					"element": "s3_TimerEventDefinition",
 					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
+				},
+				{
+					"element": "s2_MessageEventDefinition",
+					"message": "Must reference a message"
 				}
 			]
 		},
@@ -11061,12 +10970,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "t_TimerEventDefinition",
-					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
-				},
-				{
 					"element": "t",
 					"message": "Intermediate timer catch event must have either a time duration or a time date."
+				},
+				{
+					"element": "t_TimerEventDefinition",
+					"message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle"
 				}
 			]
 		},
@@ -11365,12 +11274,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "g",
-					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
-				},
-				{
 					"element": "f",
 					"message": "Must reference a message"
+				},
+				{
+					"element": "g",
+					"message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
 					"element": "i",
@@ -11398,20 +11307,20 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "b3",
-					"message": "An escalation boundary event should only be attached to a subprocess, or a call activity."
+					"element": "b2_SignalEventDefinition",
+					"message": "Must reference a signal"
 				},
 				{
 					"element": "b4",
 					"message": "Compensation boundary events must have a compensation association and no outgoing sequence flows"
 				},
 				{
-					"element": "b1_MessageEventDefinition",
-					"message": "Must reference a message"
+					"element": "b3",
+					"message": "An escalation boundary event should only be attached to a subprocess, or a call activity."
 				},
 				{
-					"element": "b2_SignalEventDefinition",
-					"message": "Must reference a signal"
+					"element": "b1_MessageEventDefinition",
+					"message": "Must reference a message"
 				}
 			]
 		},
@@ -11533,16 +11442,16 @@
 					"message": "Must reference a signal"
 				},
 				{
-					"element": "c_EscalationEventDefinition",
-					"message": "Must reference an escalation"
+					"element": "a_ErrorEventDefinition",
+					"message": "Must reference an error"
 				},
 				{
 					"element": "b",
 					"message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element"
 				},
 				{
-					"element": "a_ErrorEventDefinition",
-					"message": "Must reference an error"
+					"element": "c_EscalationEventDefinition",
+					"message": "Must reference an escalation"
 				}
 			]
 		},
@@ -11661,12 +11570,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "t > extensionElements > ioMapping > input",
-					"message": "failed to parse expression ')(': Expected (start-of-input | ifOp | forOp | quantifiedOp | disjunction):1:1, found \")(\""
-				},
-				{
 					"element": "t > extensionElements > ioMapping > output",
 					"message": "failed to parse expression '1 +': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:3, found \"+\""
+				},
+				{
+					"element": "t > extensionElements > ioMapping > input",
+					"message": "failed to parse expression ')(': Expected (start-of-input | ifOp | forOp | quantifiedOp | disjunction):1:1, found \")(\""
 				}
 			]
 		},
@@ -11820,12 +11729,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "c_EscalationEventDefinition",
-					"message": "Must reference an escalation"
-				},
-				{
 					"element": "b_SignalEventDefinition",
 					"message": "Must reference a signal"
+				},
+				{
+					"element": "c_EscalationEventDefinition",
+					"message": "Must reference an escalation"
 				},
 				{
 					"element": "a",
@@ -14742,12 +14651,12 @@
 			"ok": false,
 			"errors": [
 				{
-					"element": "M",
-					"message": "failed to parse expression '1+': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:2, found \"+\""
-				},
-				{
 					"element": "Start",
 					"message": "Expected constant expression but found '=1+', which could not be evaluated without context: failed to parse expression '1+': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:2, found \"+\""
+				},
+				{
+					"element": "M",
+					"message": "failed to parse expression '1+': Expected (binaryComparison | between | instanceOf | in | \"and\" | \"or\" | end-of-input):1:2, found \"+\""
 				}
 			]
 		},
@@ -15427,12 +15336,12 @@
 					"message": "Must have a condition or be default flow"
 				},
 				{
-					"element": "f4",
-					"message": "Must have a condition or be default flow"
-				},
-				{
 					"element": "g",
 					"message": "Target elements of an event gateway must not have any additional incoming sequence flows other than that from the event gateway."
+				},
+				{
+					"element": "f4",
+					"message": "Must have a condition or be default flow"
 				}
 			]
 		},

@@ -5,7 +5,7 @@ import type { BpmnDefinitions } from "./bpmn-model.js"
 import { parseBpmn } from "./bpmn-parser.js"
 import { serializeBpmn } from "./bpmn-serializer.js"
 import { normalizeCamundaVersion } from "./camunda-compat.js"
-import { assertDeployable } from "./zeebe-validate/gate.js"
+import { assertDeployable, targetsCamunda8 } from "./zeebe-validate/gate.js"
 
 /** A minimal 3-element BPMN diagram useful for first-launch or "New Diagram" defaults. */
 export const SAMPLE_BPMN_XML = `<?xml version="1.0" encoding="UTF-8"?>
@@ -87,12 +87,6 @@ export interface ExportOptions {
 	 * - `false`: no check, e.g. for a work-in-progress diagram an editor saves.
 	 */
 	validate?: "auto" | "error" | "warn" | false
-}
-
-/** `modeler:executionPlatform` names Camunda 8 ("Camunda Cloud"), as `targetCamundaVersion` reads it. */
-function targetsCamunda8(definitions: BpmnDefinitions): boolean {
-	const platform = definitions.unknownAttributes["modeler:executionPlatform"]
-	return platform?.toLowerCase().includes("cloud") === true
 }
 
 export const Bpmn = {

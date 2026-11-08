@@ -165,7 +165,7 @@ impl DrdBuilder {
             return handle;
         }
         if let Err(message) = self.assert_free_id(id) {
-            self.error = Some(BuildError { message });
+            self.error = Some(BuildError::new(message));
             return handle;
         }
         self.inputs.push(DmnInputData {
@@ -190,7 +190,7 @@ impl DrdBuilder {
             return handle;
         }
         if let Err(message) = self.assert_free_id(id) {
-            self.error = Some(BuildError { message });
+            self.error = Some(BuildError::new(message));
             return handle;
         }
         let mut builder = DecisionTableBuilder::new(id);
@@ -204,9 +204,9 @@ impl DrdBuilder {
             }
         };
         let Some(decision) = built.decisions.into_iter().next() else {
-            self.error = Some(BuildError {
-                message: format!("Decision \"{id}\" produced no decision"),
-            });
+            self.error = Some(BuildError::new(format!(
+                "Decision \"{id}\" produced no decision"
+            )));
             return handle;
         };
         if let Some(name) = &decision.name {
@@ -267,7 +267,7 @@ impl DrdBuilder {
             for reference in requires {
                 let target = self
                     .resolve(&decision.id, reference)
-                    .map_err(|message| BuildError { message })?;
+                    .map_err(BuildError::new)?;
                 let is_decision = self.decisions.iter().any(|(d, _)| d.id == target);
                 let id = generate_id("InformationRequirement");
                 information_requirements.push(if is_decision {

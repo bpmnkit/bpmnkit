@@ -85,8 +85,8 @@ describe("Builder → auto-layout integration", () => {
 			.withAutoLayout()
 			.startEvent("s")
 			.exclusiveGateway("gw")
-			.branch("a", (b) => b.serviceTask("t1", { name: "A", taskType: "a" }))
-			.branch("b", (b) => b.serviceTask("t2", { name: "B", taskType: "b" }))
+			.branch("a", (b) => b.condition("=a").serviceTask("t1", { name: "A", taskType: "a" }))
+			.branch("b", (b) => b.defaultFlow().serviceTask("t2", { name: "B", taskType: "b" }))
 			.exclusiveGateway("merge")
 			.endEvent("e")
 			.build()
@@ -326,11 +326,12 @@ describe("Builder → auto-layout integration", () => {
 			.exclusiveGateway("check")
 			.branch("valid", (b) =>
 				b
+					.condition("=valid")
 					.serviceTask("process", { name: "Process", taskType: "process-order" })
 					.serviceTask("ship", { name: "Ship", taskType: "ship-order" }),
 			)
 			.branch("invalid", (b) =>
-				b.serviceTask("reject", { name: "Reject", taskType: "reject-order" }),
+				b.defaultFlow().serviceTask("reject", { name: "Reject", taskType: "reject-order" }),
 			)
 			.exclusiveGateway("merge")
 			.endEvent("end", { name: "Done" })
@@ -440,8 +441,10 @@ describe("Builder → auto-layout integration", () => {
 			.withAutoLayout()
 			.startEvent("s")
 			.exclusiveGateway("gw")
-			.branch("upper", (b) => b.serviceTask("t1", { name: "Upper", taskType: "a" }))
-			.branch("lower", (b) => b.serviceTask("t2", { name: "Lower", taskType: "b" }))
+			.branch("upper", (b) =>
+				b.condition("=upper").serviceTask("t1", { name: "Upper", taskType: "a" }),
+			)
+			.branch("lower", (b) => b.defaultFlow().serviceTask("t2", { name: "Lower", taskType: "b" }))
 			.exclusiveGateway("merge")
 			.endEvent("e")
 			.build()
@@ -511,7 +514,11 @@ describe("Builder → auto-layout integration", () => {
 			Bpmn.createProcess("P")
 				.withAutoLayout()
 				.startEvent("S", { name: "documents requested" })
-				.receiveTask("Wait", { name: "wait for documents" })
+				.receiveTask("Wait", {
+					name: "wait for documents",
+					messageName: "documents",
+					correlationKey: "=caseId",
+				})
 				.endEvent("E_OK", { name: "documents received" })
 				.element("Wait")
 				.boundaryEvent("B7", {
@@ -728,21 +735,33 @@ describe("Builder → auto-layout integration", () => {
 				.subProcess("dunning", { name: "Dunning" }, (d) =>
 					d
 						.startEvent("dunStart", { name: "Invoice Overdue" })
-						.receiveTask("reminder1", { name: "Reminder 1", message: { name: "P1" } })
-						.connectTo("dunPaid")
+						.receiveTask("reminder1", {
+							name: "Reminder 1",
+							messageName: "P1",
+							correlationKey: "=invoiceId",
+						})
+						.endEvent("dunPaid", { name: "Payment Collected" })
 						.boundaryEvent("timer1", {
 							attachedTo: "reminder1",
 							timerDuration: "P7D",
 							cancelActivity: true,
 						})
-						.receiveTask("reminder2", { name: "Reminder 2", message: { name: "P2" } })
+						.receiveTask("reminder2", {
+							name: "Reminder 2",
+							messageName: "P2",
+							correlationKey: "=invoiceId",
+						})
 						.connectTo("dunPaid")
 						.boundaryEvent("timer2", {
 							attachedTo: "reminder2",
 							timerDuration: "P7D",
 							cancelActivity: true,
 						})
-						.receiveTask("reminder3", { name: "Reminder 3", message: { name: "P3" } })
+						.receiveTask("reminder3", {
+							name: "Reminder 3",
+							messageName: "P3",
+							correlationKey: "=invoiceId",
+						})
 						.connectTo("dunPaid")
 						.boundaryEvent("timer3", {
 							attachedTo: "reminder3",
@@ -750,8 +769,7 @@ describe("Builder → auto-layout integration", () => {
 							cancelActivity: true,
 						})
 						.serviceTask("collectionsAgency", { name: "Escalate", taskType: "collections" })
-						.endEvent("dunWrittenOff", { name: "Uncollectible" })
-						.endEvent("dunPaid", { name: "Payment Collected" }),
+						.endEvent("dunWrittenOff", { name: "Uncollectible" }),
 				)
 				.endEvent("e")
 				.build(),

@@ -22,7 +22,7 @@ use indexmap::{IndexMap, IndexSet};
 
 use crate::elements::{hoist_message_subscriptions, merge_root_definitions, EXPORTER_VERSION};
 use crate::options::*;
-use crate::process::ProcessBuilder;
+use crate::process::{gate_build, ProcessBuilder};
 use crate::shared::BuildError;
 
 /// Builder for a document of several processes (TS's `DiagramBuilder`).
@@ -37,6 +37,28 @@ pub struct DiagramBuilder {
     pub(crate) collaboration_id: String,
     pub(crate) execution_platform_version: String,
     pub(crate) error: Option<BuildError>,
+}
+
+/// TS's `adoptMessageSubscriptions`: a message two pools share keeps the correlation key a
+/// later pool hoisted onto its copy when the first copy has none.
+fn adopt_message_subscriptions(into: &mut [BpmnMessage], incoming: &[BpmnMessage]) {
+    let is_subscription = |x: &XmlElement| x.name == "zeebe:subscription";
+    for message in incoming {
+        let Some(sub) = message
+            .extension_elements
+            .as_deref()
+            .and_then(|x| x.iter().find(|x| is_subscription(x)))
+        else {
+            continue;
+        };
+        let Some(target) = into.iter_mut().find(|m| m.id == message.id) else {
+            continue;
+        };
+        let ext = target.extension_elements.get_or_insert_with(Vec::new);
+        if !ext.iter().any(is_subscription) {
+            ext.push(sub.clone());
+        }
+    }
 }
 
 impl DiagramBuilder {
@@ -75,7 +97,15 @@ impl DiagramBuilder {
         }
         let mut builder = ProcessBuilder::new(id);
         callback(&mut builder);
-        let defs = match builder.build(None) {
+        // The document is gated as a whole in build(): a pool may only deploy next to the others.
+        let no_gate = BuildOptions {
+            gate: BuildGateOptions {
+                validate: Some(false),
+                ..BuildGateOptions::default()
+            },
+            ..BuildOptions::default()
+        };
+        let defs = match builder.build(Some(no_gate)) {
             Ok(defs) => defs,
             Err(e) => {
                 self.error = Some(e);
@@ -86,6 +116,7 @@ impl DiagramBuilder {
         // Two pools declaring the same message or error code produce one definition.
         merge_root_definitions(&mut self.errors, &defs.errors, |d| d.id.as_str());
         merge_root_definitions(&mut self.messages, &defs.messages, |d| d.id.as_str());
+        adopt_message_subscriptions(&mut self.messages, &defs.messages);
         self
     }
 
@@ -253,8 +284,17 @@ impl DiagramBuilder {
         index
     }
 
-    /// TS's `build()`.
-    pub fn build(&mut self) -> Result<BpmnDefinitions, BuildError> {
+    /// TS's `build()`, gated like `ProcessBuilder::build` (see [`BuildGateOptions`]).
+    pub fn build(
+        &mut self,
+        options: Option<BuildGateOptions>,
+    ) -> Result<BpmnDefinitions, BuildError> {
+        let defs = self.build_model()?;
+        gate_build(defs, &options.unwrap_or_default())
+    }
+
+    /// TS's `buildModel()`: the document before the gate.
+    fn build_model(&mut self) -> Result<BpmnDefinitions, BuildError> {
         if let Some(e) = &self.error {
             return Err(e.clone());
         }
@@ -306,9 +346,10 @@ impl DiagramBuilder {
         }
         let problems = self.collaboration_problems();
         if !problems.is_empty() {
-            return Err(BuildError {
-                message: format!("Invalid collaboration:\n  {}", problems.join("\n  ")),
-            });
+            return Err(BuildError::new(format!(
+                "Invalid collaboration:\n  {}",
+                problems.join("\n  ")
+            )));
         }
         Ok(vec![BpmnCollaboration {
             id: self.collaboration_id.clone(),

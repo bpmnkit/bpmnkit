@@ -186,6 +186,16 @@ impl fmt::Display for DeployabilityError {
 
 impl std::error::Error for DeployabilityError {}
 
+/// `modeler:executionPlatform` names Camunda 8 ("Camunda Cloud", any case), as
+/// `target_camunda_version` reads it: TS's `targetsCamunda8`, the models `export_bpmn`
+/// and the builders gate.
+pub fn targets_camunda8(definitions: &BpmnDefinitions) -> bool {
+    definitions
+        .unknown_attributes
+        .get("modeler:executionPlatform")
+        .is_some_and(|p| p.to_lowercase().contains("cloud"))
+}
+
 /// The message of a [`DeployabilityError`]; TS's `deployabilityMessage`.
 pub fn deployability_message(camunda_version: &str, errors: &[FindingData]) -> String {
     let mut out = format!(

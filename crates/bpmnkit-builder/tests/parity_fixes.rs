@@ -34,6 +34,17 @@ fn timer(duration: &str) -> BoundaryEventOptions {
     }
 }
 
+/// `build({ validate: false })`.
+fn no_gate() -> Option<BuildOptions> {
+    Some(BuildOptions {
+        gate: BuildGateOptions {
+            validate: Some(false),
+            ..BuildGateOptions::default()
+        },
+        ..BuildOptions::default()
+    })
+}
+
 fn svc(name: &str) -> ServiceTaskOptions {
     ServiceTaskOptions {
         name: name.to_owned(),
@@ -146,7 +157,9 @@ fn e_branch_start_event_honours_non_interrupting() {
                 }),
             );
         })
-        .build(None)
+        // A start event after a gateway is a second none start, which Zeebe refuses;
+        // this pins the attribute, not a deployable model.
+        .build(no_gate())
         .expect("build");
     let s2 = built.processes[0]
         .contents
@@ -166,17 +179,18 @@ fn f_branch_connect_to_after_nested_branch_joins_the_open_ends() {
         .start_event(Some("s"), None)
         .exclusive_gateway("g", None)
         .branch("a", |b| {
-            b.exclusive_gateway("g2", None)
+            b.condition("=a")
+                .exclusive_gateway("g2", None)
                 .branch("x", |c| {
-                    c.service_task("t1", svc("t1"));
+                    c.condition("=x").service_task("t1", svc("t1"));
                 })
                 .branch("y", |c| {
-                    c.service_task("t2", svc("t2"));
+                    c.default_flow().service_task("t2", svc("t2"));
                 })
                 .connect_to("end");
         })
         .branch("b", |b| {
-            b.connect_to("end");
+            b.default_flow().connect_to("end");
         })
         .end_event(Some("end"), None)
         .build(None)
@@ -211,12 +225,13 @@ fn g_link_catch_in_a_branch_leaves_open_ends_for_the_next_element() {
         .start_event(Some("s"), None)
         .exclusive_gateway("g", None)
         .branch("a", |b| {
-            b.exclusive_gateway("g2", None)
+            b.condition("=a")
+                .exclusive_gateway("g2", None)
                 .branch("x", |c| {
-                    c.service_task("t1", svc("t1"));
+                    c.condition("=x").service_task("t1", svc("t1"));
                 })
                 .branch("y", |c| {
-                    c.service_task("t2", svc("t2"));
+                    c.default_flow().service_task("t2", svc("t2"));
                 })
                 .intermediate_catch_event(
                     Some("lc"),
@@ -255,10 +270,12 @@ fn splice_source() -> BpmnDefinitions {
         .task("a", None)
         .exclusive_gateway("g", None)
         .branch("x", |b| {
-            b.task("b", None).end_event(Some("e1"), None);
+            b.condition("=x")
+                .task("b", None)
+                .end_event(Some("e1"), None);
         })
         .branch("y", |b| {
-            b.end_event(Some("e2"), None);
+            b.default_flow().end_event(Some("e2"), None);
         })
         .build(None)
         .expect("source")
@@ -273,7 +290,9 @@ fn m_at_after_insert_after_keeps_the_splice() {
         .at("g")
         .task("m", None)
         .end_event(Some("e3"), None)
-        .build(None)
+        // A node chained straight after a gateway gets a flow with no condition (only
+        // branch() takes one), which Zeebe refuses; this pins the splice.
+        .build(no_gate())
         .expect("build");
     let pairs = flow_pairs(&built);
     assert!(pairs.contains(&"a->n".to_owned()), "{pairs:?}");
@@ -289,7 +308,9 @@ fn m_element_after_insert_after_keeps_the_splice() {
         .element("g")
         .task("m", None)
         .end_event(Some("e3"), None)
-        .build(None)
+        // A node chained straight after a gateway gets a flow with no condition (only
+        // branch() takes one), which Zeebe refuses; this pins the splice.
+        .build(no_gate())
         .expect("build");
     let pairs = flow_pairs(&built);
     assert!(pairs.contains(&"a->n".to_owned()), "{pairs:?}");
@@ -348,6 +369,7 @@ fn n_refused_explicit_joins_build_leaves_no_join_behind() {
         .end_event(Some("e"), None);
     let explicit = Some(BuildOptions {
         explicit_joins: Some(true),
+        ..BuildOptions::default()
     });
     for _ in 0..2 {
         assert!(error(b.build(explicit.clone())).starts_with("Inferred join gateways: g_join."));
@@ -368,10 +390,11 @@ fn o_ids_with_an_arrow_are_read_whole() {
         .replace("\"a_b\"", "\"a→b\"")
         .replace(">a_b<", ">a→b<");
     let source = parse_bpmn(&xml).expect("parse");
+    // "→" is not an NCName, so Zeebe refuses the document; this pins the id handling.
     let built = Bpmn::continue_process(&source, "p")
         .insert_after("a→b")
         .task("n", None)
-        .build(None)
+        .build(no_gate())
         .expect("build");
     assert_eq!(flow_pairs(&built), ["s->a→b", "n->e", "a→b->n"]);
 }

@@ -53,6 +53,7 @@ describe("builder data elements", () => {
 				sub
 					.startEvent("ss")
 					.serviceTask("st", { name: "ST", taskType: "w" })
+					.dataObject("sdo")
 					.dataObjectReference("sdor", "sdo")
 					.dataAssociation("st", "sdor", "input")
 					.endEvent("se"),

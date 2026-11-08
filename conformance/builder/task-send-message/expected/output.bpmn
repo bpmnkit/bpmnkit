@@ -6,6 +6,9 @@
       <bpmn:outgoing>Flow_s_send</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sendTask id="send" name="Send" messageRef="Message_order_shipped">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="send-order-shipped"/>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_s_send</bpmn:incoming>
       <bpmn:outgoing>Flow_send_e</bpmn:outgoing>
     </bpmn:sendTask>

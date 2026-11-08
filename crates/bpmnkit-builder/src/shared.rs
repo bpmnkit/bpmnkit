@@ -25,6 +25,7 @@ use bpmnkit_bpmn::{
     BpmnAssociation, BpmnDataAssociation, BpmnError, BpmnEscalation, BpmnFlowElement, BpmnMessage,
     BpmnProperty, BpmnSequenceFlow, BpmnSignal, BpmnTextAnnotation,
 };
+use bpmnkit_compat::zeebe::DeployabilityError;
 use bpmnkit_layout::{AnnotationSide, GridHint, LayoutHints};
 use indexmap::{IndexMap, IndexSet};
 
@@ -32,9 +33,31 @@ use crate::branch::BranchBuilder;
 use crate::options::{AnnotateOptions, DataDirection, EmbeddedForm};
 
 /// What `build()` fails with: the message TS would have thrown, first one only.
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct BuildError {
     pub message: String,
+    /// Set when the deploy gate refused the model (TS throws the `DeployabilityError`
+    /// itself); `message` is its message.
+    pub deployability: Option<Box<DeployabilityError>>,
+}
+
+impl BuildError {
+    /// An error with only a message, as every builder rule raises.
+    pub fn new(message: impl Into<String>) -> Self {
+        Self {
+            message: message.into(),
+            deployability: None,
+        }
+    }
+}
+
+impl From<DeployabilityError> for BuildError {
+    fn from(error: DeployabilityError) -> Self {
+        Self {
+            message: error.to_string(),
+            deployability: Some(Box::new(error)),
+        }
+    }
 }
 
 impl fmt::Display for BuildError {
@@ -43,7 +66,13 @@ impl fmt::Display for BuildError {
     }
 }
 
-impl std::error::Error for BuildError {}
+impl std::error::Error for BuildError {
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        self.deployability
+            .as_deref()
+            .map(|e| e as &(dyn std::error::Error + 'static))
+    }
+}
 
 /// The first error is already in [`Shared::error`]; stop and return to the public method.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -72,9 +101,7 @@ impl Shared {
     /// Records `message` unless an earlier error is already recorded.
     pub fn fail(&mut self, message: impl Into<String>) -> Failed {
         if self.error.is_none() {
-            self.error = Some(BuildError {
-                message: message.into(),
-            });
+            self.error = Some(BuildError::new(message));
         }
         Failed
     }

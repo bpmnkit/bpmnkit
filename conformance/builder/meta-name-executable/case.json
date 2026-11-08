@@ -6,6 +6,8 @@
 		["executable",false],
 		["startEvent","s"],
 		["endEvent","e"],
-		["build"]
-	]
+		["build",{"validate":false}]
+	],
+	"deployable": false,
+	"deployableReason": "A non-executable process (executable(false)) is not a Camunda 8 deployment; the case pins the isExecutable and name output."
 }

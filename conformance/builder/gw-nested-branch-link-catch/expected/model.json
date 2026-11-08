@@ -33,6 +33,7 @@
           "unknownAttributes": {}
         },
         {
+          "default": "Flow_g_lt",
           "extensionElements": [],
           "id": "g",
           "incoming": [
@@ -46,6 +47,7 @@
           "unknownAttributes": {}
         },
         {
+          "default": "Flow_g2_t2",
           "extensionElements": [],
           "id": "g2",
           "incoming": [
@@ -193,6 +195,12 @@
           "unknownAttributes": {}
         },
         {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=a"
+          },
           "extensionElements": [],
           "id": "Flow_g_g2",
           "name": "a",
@@ -201,6 +209,12 @@
           "unknownAttributes": {}
         },
         {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
+            "text": "=x"
+          },
           "extensionElements": [],
           "id": "Flow_g2_t1",
           "name": "x",

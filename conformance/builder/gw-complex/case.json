@@ -8,6 +8,8 @@
 		["branch","b",{"$ops":[["serviceTask","tb",{"name":"tb","taskType":"tb"}]]}],
 		["complexGateway","cj"],
 		["endEvent","e"],
-		["build"]
-	]
+		["build",{"validate":false}]
+	],
+	"deployable": false,
+	"deployableReason": "Zeebe does not support the complex gateway; the case pins the builder's complex gateway output."
 }

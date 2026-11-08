@@ -13,8 +13,10 @@ import {
 } from "../src/bpmn/builder-coverage.js"
 import { Bpmn } from "../src/bpmn/index.js"
 
-// Exports here check what the serializer writes, not whether Zeebe would deploy the
-// model (a fragment, a round trip), so they pass `validate: false` to skip the gate.
+// Builds and exports here check what the builder and serializer write, not whether Zeebe
+// would deploy the model (a fragment, an element Zeebe lacks, a round trip), so they pass
+// `validate: false` to skip the gate. The gate has its own tests: builder-gate.test.ts and
+// the conformance/builder cases.
 
 /**
  * The check that stops the fluent builder drifting from the element model.
@@ -124,7 +126,11 @@ describe("the newly covered types round-trip", () => {
 
 	it("builds a complex gateway", () => {
 		const xml = Bpmn.export(
-			Bpmn.createProcess("P").startEvent("s").complexGateway("g").endEvent("e").build(),
+			Bpmn.createProcess("P")
+				.startEvent("s")
+				.complexGateway("g")
+				.endEvent("e")
+				.build({ validate: false }),
 			{ validate: false },
 		)
 
@@ -142,7 +148,8 @@ describe("the newly covered types round-trip", () => {
 					b.startEvent("ts").serviceTask("book", { taskType: "booking" }).endEvent("te")
 				})
 				.endEvent("e")
-				.build(),
+				// Pins elements Zeebe does not support (complex gateway, transaction, untyped event sub-process start).
+				.build({ validate: false }),
 			{ validate: false },
 		)
 
@@ -180,7 +187,8 @@ describe("the newly covered types round-trip", () => {
 					.endEvent("se")
 			})
 			.endEvent("e")
-			.build()
+			// Pins elements Zeebe does not support (complex gateway, transaction, untyped event sub-process start).
+			.build({ validate: false })
 
 		const xml = Bpmn.export(definitions, { validate: false })
 		for (const fragment of [
@@ -214,7 +222,8 @@ describe("the newly covered types round-trip", () => {
 				.eventSubProcess("esp", (b) => {
 					b.startEvent("es").endEvent("ee")
 				})
-				.build(),
+				// Pins elements Zeebe does not support (complex gateway, transaction, untyped event sub-process start).
+				.build({ validate: false }),
 			{ validate: false },
 		)
 

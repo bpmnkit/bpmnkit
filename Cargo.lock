@@ -96,6 +96,7 @@ name = "bpmnkit-builder"
 version = "0.1.0"
 dependencies = [
  "bpmnkit-bpmn",
+ "bpmnkit-compat",
  "bpmnkit-dmn",
  "bpmnkit-layout",
  "bpmnkit-xml",

@@ -89,7 +89,15 @@
               "unknownAttributes": {}
             },
             {
-              "extensionElements": [],
+              "extensionElements": [
+                {
+                  "attributes": {
+                    "type": "send-m"
+                  },
+                  "children": [],
+                  "name": "zeebe:taskDefinition"
+                }
+              ],
               "id": "inner",
               "incoming": [
                 "Flow_is_inner"

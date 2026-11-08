@@ -1,0 +1,1 @@
+Flow "Flow_g_e2" leaves inclusive gateway "g" without a condition: give its branch .condition("=<FEEL>") or .defaultFlow(); Camunda 8 needs one when a gateway has several outgoing flows

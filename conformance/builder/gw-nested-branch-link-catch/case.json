@@ -5,13 +5,14 @@
 		["startEvent","s"],
 		["exclusiveGateway","g"],
 		["branch","a",{"$ops":[
+			["condition","=a"],
 			["exclusiveGateway","g2"],
-			["branch","x",{"$ops":[["serviceTask","t1",{"name":"t1","taskType":"t"}]]}],
-			["branch","y",{"$ops":[["serviceTask","t2",{"name":"t2","taskType":"t"}]]}],
+			["branch","x",{"$ops":[["condition","=x"],["serviceTask","t1",{"name":"t1","taskType":"t"}]]}],
+			["branch","y",{"$ops":[["defaultFlow"],["serviceTask","t2",{"name":"t2","taskType":"t"}]]}],
 			["intermediateCatchEvent","lc",{"linkName":"L"}],
 			["serviceTask","t3",{"name":"t3","taskType":"t"}]
 		]}],
-		["branch","b",{"$ops":[["intermediateThrowEvent","lt",{"linkName":"L"}]]}],
+		["branch","b",{"$ops":[["defaultFlow"],["intermediateThrowEvent","lt",{"linkName":"L"}]]}],
 		["endEvent","end"],
 		["build"]
 	]

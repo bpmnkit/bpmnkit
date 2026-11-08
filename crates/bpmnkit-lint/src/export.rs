@@ -3,7 +3,9 @@
 
 use bpmnkit_bpmn::{serialize_bpmn, BpmnDefinitions};
 use bpmnkit_compat::compat::normalize_camunda_version;
-use bpmnkit_compat::zeebe::{assert_deployable, AssertOptions, DeployabilityError};
+use bpmnkit_compat::zeebe::{
+    assert_deployable, targets_camunda8, AssertOptions, DeployabilityError,
+};
 
 /// TS's `ExportOptions.validate`.
 #[derive(Debug, Clone, Copy, Default, PartialEq, Eq)]
@@ -31,14 +33,6 @@ pub struct ExportOptions {
 pub struct Exported {
     pub xml: String,
     pub warning: Option<String>,
-}
-
-/// `modeler:executionPlatform` names Camunda 8 ("Camunda Cloud"), as `target_camunda_version` reads it.
-fn targets_camunda8(definitions: &BpmnDefinitions) -> bool {
-    definitions
-        .unknown_attributes
-        .get("modeler:executionPlatform")
-        .is_some_and(|p| p.to_lowercase().contains("cloud"))
 }
 
 /// TS's `Bpmn.export`. `Err` is the `DeployabilityError` TS would throw.

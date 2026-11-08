@@ -2,9 +2,6 @@ import { describe, expect, it } from "vitest"
 import { compactify, expand } from "../src/bpmn/compact.js"
 import { Bpmn } from "../src/index.js"
 
-// Exports here check what the serializer writes, not whether Zeebe would deploy the
-// model (a fragment, a round trip), so they pass `validate: false` to skip the gate.
-
 const MI = {
 	collection: "=items",
 	elementVariable: "item",
@@ -23,17 +20,24 @@ const CASES: Array<[string, Add]> = [
 		"scriptTask",
 		(b) => b.scriptTask("t", { expression: "=1", resultVariable: "r", multiInstance: MI }),
 	],
-	["sendTask", (b) => b.sendTask("t", { name: "T", multiInstance: MI })],
-	["receiveTask", (b) => b.receiveTask("t", { name: "T", multiInstance: MI })],
+	["sendTask", (b) => b.sendTask("t", { name: "T", taskType: "send", multiInstance: MI })],
+	[
+		"receiveTask",
+		(b) =>
+			b.receiveTask("t", {
+				name: "T",
+				messageName: "m",
+				correlationKey: "=key",
+				multiInstance: MI,
+			}),
+	],
 	["businessRuleTask", (b) => b.businessRuleTask("t", { decisionId: "d", multiInstance: MI })],
 	["callActivity", (b) => b.callActivity("t", { processId: "child", multiInstance: MI })],
 ]
 
 describe("multi-instance on every activity", () => {
 	it.each(CASES)("%s survives builder, export and parse", (type, add) => {
-		const xml = Bpmn.export(add(Bpmn.createProcess("p").startEvent("s")).endEvent("e").build(), {
-			validate: false,
-		})
+		const xml = Bpmn.export(add(Bpmn.createProcess("p").startEvent("s")).endEvent("e").build())
 		expect(xml).toContain('outputCollection="results"')
 		expect(xml).toContain('outputElement="=result"')
 		const el = Bpmn.parse(xml).processes[0]?.flowElements.find((e) => e.id === "t")
@@ -55,16 +59,21 @@ describe("multi-instance on every activity", () => {
 			Bpmn.createProcess("p")
 				.startEvent("s")
 				.exclusiveGateway("g")
-				.branch("a", (b) => b.sendTask("snd", { multiInstance: MI }).endEvent("e1"))
+				.branch("a", (b) =>
+					b.condition("=a").sendTask("snd", { taskType: "send", multiInstance: MI }).endEvent("e1"),
+				)
 				.branch("b", (b) =>
 					b
+						.defaultFlow()
 						.subProcess("sub", (i) =>
-							i.startEvent("is").receiveTask("rcv", { multiInstance: MI }).endEvent("ie"),
+							i
+								.startEvent("is")
+								.receiveTask("rcv", { messageName: "m", correlationKey: "=key", multiInstance: MI })
+								.endEvent("ie"),
 						)
 						.endEvent("e2"),
 				)
 				.build(),
-			{ validate: false },
 		)
 		expect(xml.match(/outputCollection="results"/g)?.length).toBe(2)
 	})

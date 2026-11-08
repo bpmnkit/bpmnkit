@@ -3,7 +3,7 @@
 	"script": [
 		["createProcess","p"],
 		["startEvent","s"],
-		["adHocSubProcess","agent",{"$ops":[["serviceTask","toolA",{"name":"A","taskType":"a","documentation":"tool a"}],["serviceTask","toolB",{"name":"B","taskType":"b","documentation":"tool b"}]]},{"name":"AI Agent","activeElementsCollection":"=toolCalls","outputCollection":"toolCallResults","outputElement":"={id: id}","taskDefinition":{"type":"io.camunda.agenticai:aiagent-job-worker:1","retries":"4"},"ioMapping":{"inputs":[{"source":"=x","target":"y"}],"outputs":[{"source":"=a","target":"b"}]},"taskHeaders":{"k":"v"},"zeebeProperties":[{"name":"p","value":"q"}],"agentDefinition":{"agentType":"default"},"modelerTemplate":"io.camunda.connectors.agenticai.aiagent.jobworker.v1","modelerTemplateVersion":"6","completionCondition":"=done","cancelRemainingInstances":false,"documentation":"agent"}],
+		["adHocSubProcess","agent",{"$ops":[["serviceTask","toolA",{"name":"A","taskType":"a","documentation":"tool a"}],["serviceTask","toolB",{"name":"B","taskType":"b","documentation":"tool b"}]]},{"name":"AI Agent","outputCollection":"toolCallResults","outputElement":"={id: id}","taskDefinition":{"type":"io.camunda.agenticai:aiagent-job-worker:1","retries":"4"},"ioMapping":{"inputs":[{"source":"=x","target":"y"}],"outputs":[{"source":"=a","target":"b"}]},"taskHeaders":{"k":"v"},"zeebeProperties":[{"name":"p","value":"q"}],"agentDefinition":{"agentType":"aiAgentSubProcess"},"modelerTemplate":"io.camunda.connectors.agenticai.aiagent.jobworker.v1","modelerTemplateVersion":"6","documentation":"agent"}],
 		["endEvent","e"],
 		["build"]
 	]

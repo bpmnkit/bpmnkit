@@ -92,7 +92,9 @@ describe("BranchBuilder.startEvent (E)", () => {
 			.startEvent("s")
 			.exclusiveGateway("g")
 			.branch("a", (b) => b.startEvent("s2", { isInterrupting: false }))
-			.build()
+			// A start event after a gateway is a second none start, which Zeebe refuses;
+			// this pins the attribute, not a deployable model.
+			.build({ validate: false })
 		const el = proc(defs).flowElements.find((e) => e.id === "s2")
 		expect(el?.type === "startEvent" && el.isInterrupting).toBe(false)
 	})
@@ -105,12 +107,13 @@ describe("BranchBuilder after a nested branch() (F)", () => {
 			.exclusiveGateway("g")
 			.branch("a", (b) =>
 				b
+					.condition("=a")
 					.exclusiveGateway("g2")
-					.branch("x", (c) => c.serviceTask("t1", { taskType: "t" }))
-					.branch("y", (c) => c.serviceTask("t2", { taskType: "t" }))
+					.branch("x", (c) => c.condition("=x").serviceTask("t1", { taskType: "t" }))
+					.branch("y", (c) => c.defaultFlow().serviceTask("t2", { taskType: "t" }))
 					.connectTo("end"),
 			)
-			.branch("b", (b) => b.connectTo("end"))
+			.branch("b", (b) => b.defaultFlow().connectTo("end"))
 			.endEvent("end")
 			.build()
 		const pairs = flowPairs(defs)
@@ -142,8 +145,8 @@ describe("link catch inside a branch (G: not a defect)", () => {
 			.branch("a", (b) =>
 				b
 					.exclusiveGateway("g2")
-					.branch("x", (c) => c.serviceTask("t1", { taskType: "t" }))
-					.branch("y", (c) => c.serviceTask("t2", { taskType: "t" }))
+					.branch("x", (c) => c.condition("=x").serviceTask("t1", { taskType: "t" }))
+					.branch("y", (c) => c.defaultFlow().serviceTask("t2", { taskType: "t" }))
 					.intermediateCatchEvent("lc", { linkName: "L" })
 					.serviceTask("t3", { taskType: "t" }),
 			)
@@ -170,8 +173,8 @@ describe("insertAfter() then a cursor jump (M)", () => {
 			.startEvent("s")
 			.task("a")
 			.exclusiveGateway("g")
-			.branch("x", (b) => b.task("b").endEvent("e1"))
-			.branch("y", (b) => b.endEvent("e2"))
+			.branch("x", (b) => b.condition("=x").task("b").endEvent("e1"))
+			.branch("y", (b) => b.defaultFlow().endEvent("e2"))
 			.build()
 	}
 
@@ -182,7 +185,9 @@ describe("insertAfter() then a cursor jump (M)", () => {
 			.at("g")
 			.task("m")
 			.endEvent("e3")
-			.build()
+			// A node chained straight after a gateway gets a flow with no condition (only
+			// branch() takes one), which Zeebe refuses; this pins the splice.
+			.build({ validate: false })
 		const pairs = flowPairs(defs)
 		expect(pairs).toContain("a->n")
 		expect(pairs).toContain("n->g")
@@ -196,7 +201,9 @@ describe("insertAfter() then a cursor jump (M)", () => {
 			.element("g")
 			.task("m")
 			.endEvent("e3")
-			.build()
+			// A node chained straight after a gateway gets a flow with no condition (only
+			// branch() takes one), which Zeebe refuses; this pins the splice.
+			.build({ validate: false })
 		const pairs = flowPairs(defs)
 		expect(pairs).toContain("a->n")
 		expect(pairs).toContain("n->g")
@@ -283,7 +290,11 @@ describe("continuing a document whose ids contain → (O)", () => {
 			"x_y",
 			"x→y",
 		)
-		const defs = Bpmn.continueProcess(source, "p").insertAfter("a").task("n").build()
+		// "→" is not an NCName, so Zeebe refuses the document; this pins the id handling.
+		const defs = Bpmn.continueProcess(source, "p")
+			.insertAfter("a")
+			.task("n")
+			.build({ validate: false })
 		expect(flowPairs(defs)).toContain("n->x→y")
 	})
 
@@ -293,7 +304,11 @@ describe("continuing a document whose ids contain → (O)", () => {
 			"a_b",
 			"a→b",
 		)
-		const built = Bpmn.continueProcess(source, "p").insertAfter("a→b").task("n").build()
+		// "→" is not an NCName, so Zeebe refuses the document; this pins the id handling.
+		const built = Bpmn.continueProcess(source, "p")
+			.insertAfter("a→b")
+			.task("n")
+			.build({ validate: false })
 		expect(flowPairs(built)).toEqual(["s->a→b", "n->e", "a→b->n"])
 	})
 })

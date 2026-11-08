@@ -28,9 +28,9 @@ use bpmnkit_bpmn::ids::generate_id;
 use bpmnkit_bpmn::{BpmnElementType, BpmnFlowElement, BpmnSequenceFlow};
 
 use crate::elements::{
-    boundary_host_problem, build_ad_hoc_sub_process_extensions, build_event_definitions,
-    build_multi_instance, finalize_ad_hoc_sub_process_el, finalize_scope, is_link_event,
-    make_flow_element, record_tool_grid, FlowElementOptions, ScopeContents,
+    assert_not_after_end, boundary_host_problem, build_ad_hoc_sub_process_extensions,
+    build_event_definitions, build_multi_instance, finalize_ad_hoc_sub_process_el, finalize_scope,
+    is_link_event, make_flow_element, record_tool_grid, FlowElementOptions, ScopeContents,
 };
 use crate::options::*;
 use crate::shared::{check, fail, is_failed, Failed, Scope, SharedRef};
@@ -174,7 +174,7 @@ macro_rules! scope_methods {
         }
 
         /// TS's `sendTask()`.
-        pub fn send_task(&mut self, id: &str, options: Option<MessageTaskOptions>) -> &mut Self {
+        pub fn send_task(&mut self, id: &str, options: Option<SendTaskOptions>) -> &mut Self {
             self.build_el(|s| $crate::elements::make_send_task_el(id, options.as_ref(), s))
         }
 
@@ -566,6 +566,7 @@ pub(crate) fn make_ad_hoc_sub_process_el(
             execution_listeners: options.and_then(|o| o.element.execution_listeners.clone()),
             extension_elements: Some(ext.extension_elements),
             task_listeners: None,
+            task_type: None,
         },
     );
     let mut el = check(shared, made)?;
@@ -635,6 +636,10 @@ impl SubProcessContentBuilder {
         self.scope.ids.insert(id.clone());
         if self.auto_connect && !is_catch {
             if let Some(last) = self.cursor() {
+                if let Err(message) = assert_not_after_end(&self.scope.elements, &last, &id) {
+                    fail(&self.shared, message);
+                    return self;
+                }
                 self.scope.flows.push(Self::flow(&last, &id));
             }
             for end in std::mem::take(&mut self.scope.open_branch_ends) {
@@ -671,6 +676,10 @@ impl SubProcessContentBuilder {
             return self;
         }
         if let Some(last) = self.cursor() {
+            if let Err(message) = assert_not_after_end(&self.scope.elements, &last, target_id) {
+                fail(&self.shared, message);
+                return self;
+            }
             self.scope.flows.push(Self::flow(&last, target_id));
         }
         self.scope.last_node_id = None;

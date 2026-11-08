@@ -1,0 +1,13 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["exclusiveGateway","g"],
+		["branch","a",{"$ops":[["condition","=a"],["endEvent","e1"]]}],
+		["branch","b",{"$ops":[["endEvent","e2"]]}],
+		["build",{"validate":false}]
+	],
+	"deployable": false,
+	"deployableReason": "Built with validate false: pins that the Camunda 8 rules are skipped and the branch is written without a condition."
+}

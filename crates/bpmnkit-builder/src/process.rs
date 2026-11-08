@@ -55,17 +55,24 @@ use bpmnkit_layout::{apply_auto_layout_owned, LayoutEngine};
 use indexmap::{IndexMap, IndexSet};
 
 use crate::branch::BranchBuilder;
+use std::borrow::Cow;
+
+use bpmnkit_compat::compat::normalize_camunda_version;
+use bpmnkit_compat::zeebe::{assert_deployable, targets_camunda8, AssertOptions};
+
 use crate::elements::{
-    assert_element_ids_unique, boundary_host_problem, build_event_definitions, can_declare_root,
-    embedded_form_elements, hoist_message_subscriptions, insert_join_gateways, is_gateway_type,
-    is_link_event, make_boundary_event_el, make_business_rule_task_el, make_call_activity_el,
-    make_data_element, make_defaultable_gateway_el, make_end_event_el, make_flow_element,
+    assert_element_ids_unique, assert_not_after_end, boundary_host_problem,
+    build_event_definitions, can_declare_root, embedded_form_elements, hoist_message_subscriptions,
+    insert_join_gateways, is_gateway_type, is_link_event, make_boundary_event_el,
+    make_business_rule_task_el, make_call_activity_el, make_data_element,
+    make_defaultable_gateway_el, make_end_event_el, make_flow_element,
     make_intermediate_catch_event_el, make_intermediate_throw_event_el, make_plain_task_el,
     make_receive_task_el, make_script_task_el, make_send_task_el, make_service_task_el,
     make_start_event_el, make_user_task_el, recompute_incoming_outgoing, FlowElementOptions,
     EXPORTER_VERSION,
 };
 use crate::options::*;
+use crate::rules::camunda8_builder_problem;
 use crate::shared::{
     check, fail, is_failed, new_shared, run_branch, BuildError, Failed, Scope, Shared, SharedRef,
 };
@@ -116,6 +123,38 @@ fn new_flow(id: String, source_ref: &str, target_ref: &str) -> BpmnSequenceFlow 
         unknown_attributes: Attrs::new(),
         ..BpmnSequenceFlow::default()
     }
+}
+
+/// TS's `gateBuild`: the end of every `build()`. The Camunda 8 builder rules, then the
+/// deploy gate, for a model that targets Camunda 8 unless `validate` is `Some(false)`.
+pub(crate) fn gate_build(
+    defs: BpmnDefinitions,
+    options: &BuildGateOptions,
+) -> Result<BpmnDefinitions, BuildError> {
+    if options.validate == Some(false) || !targets_camunda8(&defs) {
+        return Ok(defs);
+    }
+    let placeholders = options.placeholders.unwrap_or(false);
+    if let Some(problem) = camunda8_builder_problem(&defs, placeholders) {
+        return Err(BuildError::new(problem));
+    }
+    let camunda_version =
+        normalize_camunda_version(options.camunda_version.as_deref().or_else(|| {
+            defs.unknown_attributes
+                .get("modeler:executionPlatformVersion")
+                .map(String::as_str)
+        }))
+        .map(|v| v.as_str().to_string());
+    let assert_options = AssertOptions {
+        camunda_version,
+        placeholders,
+        ..AssertOptions::default()
+    };
+    let filled = match assert_deployable(&defs, &assert_options)?.definitions {
+        Cow::Owned(filled) => Some(filled),
+        Cow::Borrowed(_) => None,
+    };
+    Ok(filled.unwrap_or(defs))
 }
 
 impl ProcessBuilder {
@@ -627,6 +666,10 @@ impl ProcessBuilder {
             return self;
         }
         if let Some(last) = truthy(&self.scope.last_node_id) {
+            if let Err(message) = assert_not_after_end(&self.scope.elements, last, target_id) {
+                fail(&self.shared, message);
+                return self;
+            }
             let flow = new_flow(generate_id("Flow"), last, target_id);
             self.scope.flows.push(flow);
         }
@@ -657,22 +700,26 @@ impl ProcessBuilder {
 
     // ── Build ──
 
-    /// TS's `build()`. A failure is recorded like any other, so a second call returns it too.
+    /// TS's `build()`. A failure is recorded like any other, so a second call returns it too;
+    /// a refusal of the deploy gate (see [`BuildGateOptions`]) is not, since a build with
+    /// other options may pass it, as in TS.
     pub fn build(&mut self, options: Option<BuildOptions>) -> Result<BpmnDefinitions, BuildError> {
         if let Some(error) = self.shared.borrow().error.clone() {
             return Err(error);
         }
-        self.build_model(options).map_err(|message| {
+        let gate = options.as_ref().map(|o| o.gate.clone()).unwrap_or_default();
+        let defs = self.build_model(options).map_err(|message| {
             fail(&self.shared, message);
             self.shared
                 .borrow()
                 .error
                 .clone()
                 .unwrap_or_else(|| unreachable!("error just recorded"))
-        })
+        })?;
+        gate_build(defs, &gate)
     }
 
-    /// The body of TS's `build()`, with `throw` as `Err`.
+    /// TS's `buildModel()`: the body of `build()` before the gate, with `throw` as `Err`.
     fn build_model(&mut self, options: Option<BuildOptions>) -> Result<BpmnDefinitions, String> {
         self.resolve_pending_splice();
         // Built from a copy: the result shares nothing with the builder, and a second
@@ -1006,6 +1053,7 @@ impl ProcessBuilder {
         }
 
         if let Some(last) = truthy(&self.scope.last_node_id) {
+            assert_not_after_end(&self.scope.elements, last, &id)?;
             let flow = new_flow(generate_id("Flow"), last, &id);
             self.scope.flows.push(flow);
         }
@@ -1164,7 +1212,7 @@ impl ProcessBuilder {
     }
 
     /// TS's `sendTask()`.
-    pub fn send_task(&mut self, id: &str, options: Option<MessageTaskOptions>) -> &mut Self {
+    pub fn send_task(&mut self, id: &str, options: Option<SendTaskOptions>) -> &mut Self {
         if self.failed() {
             return self;
         }

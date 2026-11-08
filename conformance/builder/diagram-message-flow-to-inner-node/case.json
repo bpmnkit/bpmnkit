@@ -2,7 +2,7 @@
 	"kind": "bpmn",
 	"script": [
 		["createDiagram","D"],
-		["process","a",{"$ops":[["startEvent","s"],["subProcess","sp",{"$ops":[["startEvent","is"],["sendTask","inner",{"messageName":"m"}],["endEvent","ie"]]}],["endEvent","e"]]}],
+		["process","a",{"$ops":[["startEvent","s"],["subProcess","sp",{"$ops":[["startEvent","is"],["sendTask","inner",{"messageName":"m","taskType":"send-m"}],["endEvent","ie"]]}],["endEvent","e"]]}],
 		["process","b",{"$ops":[["startEvent","s2",{"messageName":"m"}],["endEvent","e2"]]}],
 		["participant","A",{"processId":"a"}],
 		["participant","B",{"processId":"b"}],

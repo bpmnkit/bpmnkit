@@ -525,7 +525,9 @@ export function compilePlan(plan: ProcessPlan, opts: CompilePlanOptions = {}): S
 
 	let defs: BpmnDefinitions
 	try {
-		defs = builder.build()
+		// Not gated yet: the optimize pass below fixes and reports deploy errors as
+		// `problems`, and gating plans is phase 4 of the deployability work.
+		defs = builder.build({ validate: false })
 	} catch (err) {
 		problems.push({
 			path: "steps",
