@@ -1,5 +1,18 @@
 # Progress
 
+## 2026-11-08 — Rust repo health: benches, CI, generated files
+
+- Benches: the builder bench replays `["$let", name, "build"]` as the conformance runner does (it panicked with `unknown op $let`). The FEEL bench gives `fuzz/19` (`count(for x in [67..100000) ...)`) its own rows: it was ~99 % of the old 84 µs/expr average; the other 380 expressions take 1.4 µs parse+eval, 0.3 µs eval.
+- `scripts/bench-rs.mjs` (`pnpm bench:rs`) runs every `crates/*/benches/*.rs` N times, keeps the fastest and compares with `benches/rust-baseline.json` (µs, 3 significant digits); a row > 20 % slower fails, but only when the baseline was recorded on the same CPU model (else it warns). `--update` rewrites the baseline. New nightly `bench-nightly.yml` (5 runs; `update` input uploads a runner-recorded baseline). The committed baseline is from the dev sandbox, so the nightly warns until one from the runner is committed. Tests: `scripts/bench-rs.test.mjs`.
+- `[profile.release]`: `lto = "fat"`, `codegen-units = 1`. Benches, min of 3 before → after: builder 7–30 % faster, BPMN/DMN I/O 2–13 %, lint 7–11 %, layout 4–7 %, FEEL 7–18 %; text was a wash (±30 % run-to-run noise either way). Release build of all benches: 1m33 → 2m17. `panic` stays `unwind`: `bpmnkit-fuzz` catches panics in its release build.
+- CI (`ci.yml`): new early job `generated` runs `spec-gen --check` and the TS conformance re-record + diff (only feel and core built). The reebe-wasm build is cached by the hash of everything it reads (`apps/reebe/**`, `crates/**`, lockfile, version patch) and skipped on a hit, so engine tests still run on a wasm of this commit's sources. `--locked` on cargo clippy/test and the wasm-pack build; new step `cargo bench --no-run --workspace` (LTO off for the compile check). CI also runs on pushes to main, and every `rust-cache` has `save-if` main.
+- `conformance/pending.json` is capped (`MAX_PENDING = 1` in `crates/bpmnkit-conformance/tests/conformance.rs`), and the runner fails when a pending case passes.
+- `fuzz-nightly.yml`: no more `tsc || true`; it compiles only `src/dmn.ts` (`packages/engine/tsconfig.dmn.json`), the oracle's one engine module, which needs no reebe-wasm.
+- `pnpm verify` ends with the new `pnpm verify:rust` (fmt, clippy, cargo test, spec-gen check, conformance re-record + diff); listed in CLAUDE.md.
+- `.gitattributes` marks conformance cases, spec data, oracle fixtures, `src/generated/`, the other generated TS and `api-surface.json` as `linguist-generated`.
+- The FEEL built-in names test asked for already exists (`packages/feel/tests/spec-data.test.ts`, against `spec/feel-builtins.json`).
+- Stale lines fixed below: the DMN hit-policy semantics are done, and pending is 1, not 2, after the 11-08 merge.
+
 ## 2026-11-08 — reebe-wasm size gate; FEEL regex cache shares compiled patterns
 
 - reebe-wasm (`reebe_wasm_bg.wasm` after wasm-bindgen 0.2.114, gzip -9 / brotli 11), each step on top of the previous:
@@ -65,7 +78,7 @@
 - Merged `origin/main` (#266, #267 and their version commits). Conflicts: `bpmn-builder.ts` `validate()` keeps the branch's copy-based signature (`elements`, `flows`) and adds main's XSD check on that copy; `dmn/lint.ts` and `form/lint.ts` keep the generated spec imports and add `withCardHint`; this file keeps both sides' entries. Main's version commit released its own changesets; the branch's pending ones are kept.
 - `builder-parity-fixes.test.ts` / `parity_fixes.rs`: the `→`-id regression tests now take their source from parsed XML, as a new build rejects non-NCName ids since #267. Both fixes hold.
 - Rust port: default `executionPlatformVersion` `8.10.0` in `ProcessBuilder`, `DiagramBuilder`, DMN table and DRD builders and C7 migration; the `See agent-cards/<type>.md#traps.` hints on builder and DMN compact errors; `lint_dmn` / `lint_form` fixes end with `(agent-cards/<type>.md#traps)`; new `bpmnkit-builder` `xsd_guards` (NCName ids for process, elements incl. sub-process content and flows on new builds; `retries` whole number or FEEL); new `bpmnkit_lint::export_bpmn(defs, ExportOptions { validate })` (`Off` / `Warn` / `Error`; the warning is returned instead of logged). TS's boolean XSD checks have no twin: those fields are `Option<bool>`.
-- Conformance: re-recorded 572 expected files (version stamps, card hints only). New `export` key on builder cases and 21 cases (`xsd-*`, `export-*`). Builder 284 cases, all exact; whole runner 3294 passed, 2 pending (unchanged), 0 failed. The builder oracle fixtures (`tests/oracle/*.json`) were regenerated for the same two changes.
+- Conformance: re-recorded 572 expected files (version stamps, card hints only). New `export` key on builder cases and 21 cases (`xsd-*`, `export-*`). Builder 284 cases, all exact; whole runner 3294 passed, 1 pending (`builder/sub-process-no-callback-error`; `arithmetic/25` left in phase 9), 0 failed. The builder oracle fixtures (`tests/oracle/*.json`) were regenerated for the same two changes.
 
 ## 2026-11-07 — Rust twin phase 8: builder, process text and compact
 
@@ -152,7 +165,7 @@
   - Rust DMN parse is slower than TS. It builds the generic XML tree first; a streaming parse like bpmn's would fix that.
   - TS bugs replicated in Rust, not fixed: a requirement that parsed to nothing is written as `href="#undefined"`; kept unknown content (any literal-expression decision) gains a whitespace line on every export; `exportForm` drops `valuesExpression` on radio and checklist; validation, layout and values entries drop unmodelled keys. The stability tests list the affected cases, so they will flag when TS is fixed.
   - The TS parser puts a decision's `literalExpression` into `extensionElements` and drops it when the decision has its own `<extensionElements>`.
-  - Zeebe semantics TS does not have: `UNIQUE` with several matches fails in Zeebe (TS takes the first); `PRIORITY`/`OUTPUT ORDER` don't sort by output values; there is no `typeRef` coercion.
+  - ~~Zeebe semantics TS does not have: `UNIQUE` with several matches, `PRIORITY`/`OUTPUT ORDER` sorting, `typeRef` coercion.~~ Done since: both evaluators fail `UNIQUE` on a second match, sort `PRIORITY`/`OUTPUT ORDER` by the output values and conform values to their `typeRef`.
   - Pre-existing: `cargo clippy -D warnings` fails in `reebe-feel`'s own parser (reebe CI does not run it).
 
 ## 2026-11-06 — Rust twin phase 4: BPMN I/O
