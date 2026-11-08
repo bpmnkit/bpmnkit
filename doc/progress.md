@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-11-08 — Landing: Rust crates presented
+
+- Home: hero eyebrow names Rust; the packages section gets an "Also in Rust" row (`cargo add bpmnkit`, link to the docs page), styled as one hairline box with a mono label on the existing ink-band tokens.
+- `docs/packages/rust-crates` reworked around the `bpmnkit` facade: install lines with feature examples, the features table, the 11 crates with their TS twins, facade-path examples, the guarantee (TS oracle, ~3,300 conformance cases, nightly differential fuzzing), approximate speedups vs TS from the bench entries below, MSRV 1.85, reebe on the crates, crates.io/docs.rs as the release targets.
+- Docs index lede, `llms.txt` features and `llms-full.txt` intro mention the crates. Docspack rebuilt.
+- `apps/landing/.astro/` (2.4 MB build cache) untracked and gitignored; the landing `typecheck` script now runs `astro sync` first, since `src/env.d.ts` references `.astro/types.d.ts`.
+
 ## 2026-11-08 — Rust crates: MSRV job, `bpmnkit` facade, package sizes
 
 - MSRV 1.85: `cargo +1.85 check --workspace --all-targets` failed on `proptest` 1.12 (needs 1.88), a dev-dependency of the unpublished `bpmnkit-fuzz`. The lockfile now pins `proptest` 1.11 and `.cargo/config.toml` sets `resolver.incompatible-rust-versions = "fallback"`, so `cargo update` keeps MSRV-compatible versions. Check and test pass on 1.85; the MSRV stays 1.85. New CI job `msrv-rs` (check + test on the toolchain named by `rust-version`).

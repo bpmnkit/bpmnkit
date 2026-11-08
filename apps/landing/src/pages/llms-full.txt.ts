@@ -45,6 +45,10 @@ definitions without ever seeing raw XML.
 Every package is strict-TypeScript, ESM-only, tree-shakeable, and runs in
 browsers, Node.js, Deno, Bun, and edge runtimes.
 
+The core (FEEL, BPMN, DMN, forms, lint, layout, builder, text formats) also exists
+as native Rust crates, \`cargo add bpmnkit\`, held to the TypeScript packages by a
+shared conformance suite. See ${SITE.url}/docs/packages/rust-crates.
+
 ---
 
 ## Packages

@@ -6725,11 +6725,25 @@
 		{
 			"id": "packages.rust-crates.overview",
 			"file": "chunks/packages.rust-crates.overview.md",
-			"tokens": 176,
+			"tokens": 144,
 			"tags": [
 				"packages",
 				"rust-crates",
 				"overview"
+			],
+			"entities": [
+				"apps/reebe"
+			]
+		},
+		{
+			"id": "packages.rust-crates.the-guarantee",
+			"file": "chunks/packages.rust-crates.the-guarantee.md",
+			"tokens": 653,
+			"tags": [
+				"packages",
+				"rust-crates",
+				"guarantee",
+				"installation"
 			],
 			"entities": [
 				"conformance/"
@@ -6738,7 +6752,7 @@
 		{
 			"id": "packages.rust-crates.crates",
 			"file": "chunks/packages.rust-crates.crates.md",
-			"tokens": 348,
+			"tokens": 341,
 			"tags": [
 				"packages",
 				"rust-crates",
@@ -6753,13 +6767,12 @@
 			]
 		},
 		{
-			"id": "packages.rust-crates.installation",
-			"file": "chunks/packages.rust-crates.installation.md",
-			"tokens": 300,
+			"id": "packages.rust-crates.quick-start",
+			"file": "chunks/packages.rust-crates.quick-start.md",
+			"tokens": 199,
 			"tags": [
 				"packages",
 				"rust-crates",
-				"installation",
 				"quick",
 				"start"
 			],
@@ -6768,37 +6781,66 @@
 			]
 		},
 		{
-			"id": "packages.rust-crates.how-the-rust-api-maps-to-typescript",
-			"file": "chunks/packages.rust-crates.how-the-rust-api-maps-to-typescript.md",
-			"tokens": 201,
+			"id": "packages.rust-crates.performance-vs-typescript",
+			"file": "chunks/packages.rust-crates.performance-vs-typescript.md",
+			"tokens": 292,
 			"tags": [
 				"packages",
 				"rust-crates",
+				"performance",
+				"typescript"
+			],
+			"entities": [
+				"doc/progress.md"
+			]
+		},
+		{
+			"id": "packages.rust-crates.requirements",
+			"file": "chunks/packages.rust-crates.requirements.md",
+			"tokens": 191,
+			"tags": [
+				"packages",
+				"rust-crates",
+				"requirements",
+				"they",
+				"published",
 				"rust",
 				"api",
 				"maps",
-				"typescript",
-				"numbers"
+				"typescript"
 			],
 			"entities": [
+				"crates/",
 				"parseBpmn",
 				"applyAutoLayout",
 				"build()"
 			]
 		},
 		{
-			"id": "packages.rust-crates.differential-fuzzing",
-			"file": "chunks/packages.rust-crates.differential-fuzzing.md",
-			"tokens": 174,
+			"id": "packages.rust-crates.numbers",
+			"file": "chunks/packages.rust-crates.numbers.md",
+			"tokens": 226,
 			"tags": [
 				"packages",
 				"rust-crates",
+				"numbers",
 				"differential",
-				"fuzzing",
+				"fuzzing"
+			],
+			"entities": [
+				"crates/bpmnkit-fuzz"
+			]
+		},
+		{
+			"id": "packages.rust-crates.versioning",
+			"file": "chunks/packages.rust-crates.versioning.md",
+			"tokens": 60,
+			"tags": [
+				"packages",
+				"rust-crates",
 				"versioning"
 			],
 			"entities": [
-				"crates/bpmnkit-fuzz",
 				"@bpmnkit/core",
 				"@bpmnkit/feel"
 			]

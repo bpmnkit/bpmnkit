@@ -130,7 +130,7 @@ const CAPABILITIES = [
   <section class="hero">
     <div class="hero-body">
       <div class="hero-text">
-        <div class="hero-eyebrow">TypeScript · BPMN 2.0 · Camunda 8 · MIT</div>
+        <div class="hero-eyebrow">TypeScript · Rust · BPMN 2.0 · Camunda 8 · MIT</div>
         <h1 class="hero-h1"><span class="hero-h1-before">41 lines of BPMN&nbsp;XML.</span><br>Or 13 lines of TypeScript.</h1>
         <p class="hero-p">
           Write the process as code — BPMN&nbsp;Kit lays it out, validates it, and hands you a
@@ -367,6 +367,15 @@ const CAPABILITIES = [
         data-more={`Show all ${ECOSYSTEM.length} packages`}
         data-less="Show the six to start with"
       >Show all {ECOSYSTEM.length} packages</button>
+      <a class="pkg-rust" href="/docs/packages/rust-crates">
+        <span class="pkg-rust-label">Also in Rust</span>
+        <span class="pkg-rust-body">
+          FEEL, BPMN, DMN, forms, lint, layout, builder and text formats as native
+          <code>bpmnkit-*</code> crates. TypeScript is the oracle: about 3,300 shared conformance
+          cases keep both identical.
+        </span>
+        <code class="pkg-rust-cmd">cargo add bpmnkit</code>
+      </a>
       <div class="pkg-links">
         <a href={`${SITE.github}/releases`} target="_blank" rel="noopener">Changelog &amp; releases</a>
         <a href={`${SITE.github}/issues`} target="_blank" rel="noopener">Report an issue</a>
