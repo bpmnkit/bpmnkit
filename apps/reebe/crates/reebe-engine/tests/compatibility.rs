@@ -123,13 +123,13 @@ const MULTI_INSTANCE_BPMN: &str = r#"<?xml version="1.0" encoding="UTF-8"?>
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="compat-mi-work" retries="1"/>
       </bpmn:extensionElements>
+      <bpmn:incoming>flow1</bpmn:incoming>
+      <bpmn:outgoing>flow2</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics isSequential="false">
         <bpmn:extensionElements>
           <zeebe:loopCharacteristics inputCollection="=items" inputElement="item"/>
         </bpmn:extensionElements>
       </bpmn:multiInstanceLoopCharacteristics>
-      <bpmn:incoming>flow1</bpmn:incoming>
-      <bpmn:outgoing>flow2</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="end">
       <bpmn:incoming>flow2</bpmn:incoming>
@@ -1018,7 +1018,6 @@ const LINK_AND_COMPENSATION_BPMN: &str = r#"<?xml version="1.0" encoding="UTF-8"
     <bpmn:serviceTask id="refund" isForCompensation="true">
       <bpmn:extensionElements><zeebe:taskDefinition type="compat-refund"/></bpmn:extensionElements>
     </bpmn:serviceTask>
-    <bpmn:association id="assoc" associationDirection="One" sourceRef="charge-comp" targetRef="refund"/>
     <bpmn:intermediateThrowEvent id="to-check"><bpmn:incoming>f2</bpmn:incoming>
       <bpmn:linkEventDefinition name="check"/></bpmn:intermediateThrowEvent>
     <bpmn:intermediateCatchEvent id="at-check"><bpmn:outgoing>f3</bpmn:outgoing>
@@ -1045,6 +1044,7 @@ const LINK_AND_COMPENSATION_BPMN: &str = r#"<?xml version="1.0" encoding="UTF-8"
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="f-ship" sourceRef="retry" targetRef="ship"/>
     <bpmn:sequenceFlow id="f-end" sourceRef="ship" targetRef="end"/>
+    <bpmn:association id="assoc" associationDirection="One" sourceRef="charge-comp" targetRef="refund"/>
   </bpmn:process>
 </bpmn:definitions>"#;
 
