@@ -1,5 +1,14 @@
 # @bpmnkit/landing
 
+## 0.0.59
+
+### Patch Changes
+
+- Updated dependencies [293b8bb]
+  - @bpmnkit/core@1.10.1
+  - @bpmnkit/connectors@1.4.1
+  - @bpmnkit/connector-gen@1.1.3
+
 ## 0.0.58
 
 ### Patch Changes

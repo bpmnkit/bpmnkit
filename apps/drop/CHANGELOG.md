@@ -1,5 +1,13 @@
 # @bpmnkit/drop
 
+## 0.4.10
+
+### Patch Changes
+
+- Updated dependencies [293b8bb]
+  - @bpmnkit/core@1.10.1
+  - @bpmnkit/connector-gen@1.1.3
+
 ## 0.4.9
 
 ### Patch Changes
