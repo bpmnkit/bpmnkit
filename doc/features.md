@@ -1,5 +1,9 @@
 # Features
 
+## Rust facade ergonomics and lint reports (2026-11-09)
+
+`bpmnkit::load(&str)` detects BPMN, DMN, a form, process text or compact JSON (`bpmnkit::detect`) and returns a `Document`; failures are one `bpmnkit::Error` with `From` for every crate error. `bpmnkit::prelude` gathers the common names. `bpmnkit_lint::report::{to_text, to_markdown, to_slack_mrkdwn}` (and `check_findings_*` for DMN and forms) print findings for terminals, PR comments and Slack. Examples: `text_to_bpmn`, `eval_dmn`, `lint_report`. Docs: [embedding the Rust crates](apps/landing/src/content/docs/rust/embedding.md).
+
 ## `placeNewShapes`: draw only new elements (2026-11-09)
 
 `placeNewShapes(definitions)` gives shapes and edges to elements that have none, leaves existing shapes where they are, and widens pools, lanes and sub-processes when needed. Use it before `exportPreserving` when editing a file. `casen generate bpmn --input --patch` keeps the existing layout this way.

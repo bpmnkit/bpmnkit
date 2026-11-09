@@ -7189,6 +7189,70 @@
 				"also"
 			],
 			"entities": []
+		},
+		{
+			"id": "rust.embedding.overview",
+			"file": "chunks/rust.embedding.overview.md",
+			"tokens": 308,
+			"tags": [
+				"rust",
+				"embedding",
+				"overview",
+				"load",
+				"anything",
+				"detect"
+			],
+			"entities": [
+				"DocKind",
+				"ProcessText",
+				"CompactJson"
+			]
+		},
+		{
+			"id": "rust.embedding.one-error-type",
+			"file": "chunks/rust.embedding.one-error-type.md",
+			"tokens": 200,
+			"tags": [
+				"rust",
+				"embedding",
+				"one",
+				"error",
+				"type",
+				"lint",
+				"reports",
+				"people"
+			],
+			"entities": [
+				"source()",
+				"FeatureDisabled",
+				"LintReport",
+				"CheckFinding"
+			]
+		},
+		{
+			"id": "rust.embedding.cargo-features",
+			"file": "chunks/rust.embedding.cargo-features.md",
+			"tokens": 161,
+			"tags": [
+				"rust",
+				"embedding",
+				"cargo",
+				"features"
+			],
+			"entities": [
+				"files.uploadV2"
+			]
+		},
+		{
+			"id": "rust.embedding.examples",
+			"file": "chunks/rust.embedding.examples.md",
+			"tokens": 35,
+			"tags": [
+				"rust",
+				"embedding",
+				"examples"
+			],
+			"entities": []
 		}
 	]
 }

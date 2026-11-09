@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-09 — Rust facade: `Error`, `detect`/`load`, prelude, lint report renderers (T5)
+
+- `bpmnkit::Error` (`#[non_exhaustive]`, `From` for every crate error), `bpmnkit::detect` → `DocKind`, `bpmnkit::load` → `Document` (process text and compact JSON expand without the deploy gate), `bpmnkit::prelude`. `text` feature now implies `bpmn` and `dmn`; the facade depends on `serde_json` for JSON sniffing.
+- `bpmnkit_lint::report`: `to_text` (`TextStyle{color,max}`), `to_markdown`, `to_slack_mrkdwn` (escapes `&<>`), plus `check_findings_*` for DMN/form findings. Snapshot tests; `detect`/`load` tested over the conformance corpus.
+- Examples `text_to_bpmn`, `eval_dmn`, `lint_report`; docs page `rust/embedding`. `render`/`diff` features wait for `bpmnkit-render` (T1) and `bpmnkit-diff` (T3).
+
 ## 2026-11-09 — Plan: embedding the Rust crates (render, diff, CLI/Slack)
 
 - New `doc/plans/rust-embedding.md` (analysis + spec only, no code): `bpmnkit-render` crate (BPMN/DRD/decision-table SVG byte-identical to TS `exportSvg`, PNG via resvg with an embedded font), `bpmnkit-diff` crate (port of `diffSemantics` + `diffDiagram` with field-level changes) and a self-contained HTML diff viewer from one shared template, facade error/detect/lint-report helpers, and a five-task parallel work split.
