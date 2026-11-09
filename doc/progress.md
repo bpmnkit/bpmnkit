@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-09 — Fix `rewire-flow` diff fixture; CI runs bpmnkit-render feature sets
+
+- `conformance/diff/rewire-flow/after.bpmn`: `incoming` lists now match the rewired `Flow_2` (it was still on the gateway), which broke bpmnlint parity (`fake-join`). Re-recorded TS; Rust matches.
+- CI and `pnpm verify:rust` run `crates/bpmnkit-render/scripts/check-features.sh` (png, system-fonts, dmn, no-default).
+
 ## 2026-11-09 — HTML diff viewer, `diff_to_html`, `casen diff --html/--png`, facade `render`/`diff` (T4)
 
 - One template, `spec/templates/diff-viewer.{html,css,js}`, inlined by `scripts/spec-gen/diff-viewer.mjs` into `packages/core/src/generated/diff-viewer.ts` and `crates/bpmnkit-spec/src/generated/diff_viewer.rs` (`bpmnkit_spec::diff_viewer`). TS `renderDiffHtml` / `diffToSvg` (`packages/core/src/bpmn/diff-html.ts`) and Rust `diff_to_html` / `diff_to_svg` / `DiffHtmlOptions` (`bpmnkit-diff`, feature `html`) only fill it in; `conformance/diff/*/expected/{diff.html,diff.svg}` (recorded by TS) are byte-equal in Rust.

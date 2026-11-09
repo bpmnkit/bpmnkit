@@ -3,8 +3,8 @@
   <bpmn:process id="Process_1" isExecutable="true">
     <bpmn:startEvent id="Start_1" name="Order received"><bpmn:outgoing>Flow_1</bpmn:outgoing></bpmn:startEvent>
     <bpmn:serviceTask id="Task_review" name="Review order"><bpmn:extensionElements><zeebe:taskDefinition type="review-order" retries="3" /><zeebe:taskHeaders><zeebe:header key="owner" value="ops" /></zeebe:taskHeaders></bpmn:extensionElements><bpmn:incoming>Flow_1</bpmn:incoming><bpmn:outgoing>Flow_2</bpmn:outgoing></bpmn:serviceTask>
-    <bpmn:exclusiveGateway id="Gateway_ok" name="Approved?" default="Flow_no"><bpmn:incoming>Flow_2</bpmn:incoming><bpmn:outgoing>Flow_yes</bpmn:outgoing><bpmn:outgoing>Flow_no</bpmn:outgoing></bpmn:exclusiveGateway>
-    <bpmn:endEvent id="End_done" name="Done"><bpmn:incoming>Flow_yes</bpmn:incoming></bpmn:endEvent>
+    <bpmn:exclusiveGateway id="Gateway_ok" name="Approved?" default="Flow_no"><bpmn:outgoing>Flow_yes</bpmn:outgoing><bpmn:outgoing>Flow_no</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:endEvent id="End_done" name="Done"><bpmn:incoming>Flow_2</bpmn:incoming><bpmn:incoming>Flow_yes</bpmn:incoming></bpmn:endEvent>
     <bpmn:endEvent id="End_rejected" name="Rejected"><bpmn:incoming>Flow_no</bpmn:incoming></bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1" sourceRef="Start_1" targetRef="Task_review" />
     <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_review" targetRef="End_done" />

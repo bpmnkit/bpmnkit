@@ -19,7 +19,7 @@
 		"spec:gen": "node scripts/spec-gen.mjs",
 		"check": "pnpm turbo check",
 		"verify": "pnpm turbo build typecheck check test && pnpm verify:rust",
-		"verify:rust": "cargo fmt --check && cargo clippy --workspace --all-targets --locked -- -D warnings && cargo test --workspace --locked && node scripts/spec-gen.mjs --check && pnpm conformance:record && git diff --exit-code conformance/",
+		"verify:rust": "cargo fmt --check && cargo clippy --workspace --all-targets --locked -- -D warnings && cargo test --workspace --locked && bash crates/bpmnkit-render/scripts/check-features.sh && node scripts/spec-gen.mjs --check && pnpm conformance:record && git diff --exit-code conformance/",
 		"bench:rs": "node scripts/bench-rs.mjs",
 		"changeset": "changeset",
 		"version-packages": "changeset version && pnpm format",
