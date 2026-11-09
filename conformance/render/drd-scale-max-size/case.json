@@ -1,0 +1,10 @@
+{
+  "options": {
+    "scale": 2,
+    "maxSize": [
+      300,
+      200
+    ],
+    "background": false
+  }
+}

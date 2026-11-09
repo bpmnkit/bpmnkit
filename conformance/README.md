@@ -567,6 +567,27 @@ errors, validation messages in one list); `dmn-expand-*`; `stream-*` replay the 
 stream (`tests/recordings/streamed-replace-diagram.json`) and hand-written fragments in chunks, with
 and without `base`.
 
+## Render: `render/<case>/`
+
+SVG output of `exportSvg` / `exportDrdSvg` / `exportDecisionTableSvg` (`packages/core/src/bpmn/svg.ts`,
+`packages/core/src/dmn/svg.ts`). Recorded by `packages/core/tests/render-conformance.test.ts`.
+
+- `input.bpmn` or `input.dmn`: the model (copied from the other families; `markers-and-data` is hand-written).
+- `case.json`: `{"options": {...}}` with the TS option names (`SvgExportOptions`: `theme` as `"light"|"dark"` or a
+  full `ThemeColors` object with camelCase keys, `padding`, `scale`, `maxSize` as `[w, h]`, `colors` as
+  `"ignore"|"di"`, `plane` as `{"id": …}` or `{"process": …}`, `autoLayout`, `font` as
+  `{family, size, lineHeight}`, `elementIds`, `background`). A `.dmn` input renders as a DRD; with a top-level
+  `"decision": "<id>"` it renders that decision's table instead, and `options.name` is the title bar text.
+  DMN cases honour `theme`, `padding`, `scale`, `maxSize`, `font`, `elementIds`, `background` only.
+- `expected/out.svg`: the SVG string plus one trailing newline.
+
+Case families: `bpmn-<name>` (default options over every `bpmn/` input), `opt-*` (one option each, plus
+`opt-combined`), `markers-and-data` (data objects/stores, group, multi-instance, compensation, ad-hoc and
+call-activity markers), `drd-*` and `table-*`.
+
+`data-element-id="<id>"` (option `elementIds`) goes right after the first attribute of an element's `<g>`
+(`transform`) or main `<path>` (`d`), XML-escaped like labels.
+
 ## `pending.json`
 
 `{"<case id or bpmn/<case>>": "<reason or issue link>"}`: cases a non-TS runner knows it does

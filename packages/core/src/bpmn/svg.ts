@@ -1,12 +1,17 @@
+import { applyAutoLayout } from "./auto-layout.js"
 import type {
+	BpmnBounds,
 	BpmnDefinitions,
 	BpmnDiLabel,
+	BpmnDiagram,
 	BpmnFlowElement,
+	BpmnGroup,
 	BpmnLane,
 	BpmnParticipant,
 	BpmnSequenceFlow,
 	BpmnTextAnnotation,
 } from "./bpmn-model.js"
+import { readDiColor } from "./di-color.js"
 import {
 	type LabelFontCss,
 	collectLabelStyles,
@@ -16,7 +21,8 @@ import {
 
 // ── Theme ─────────────────────────────────────────────────────────────────────
 
-interface Theme {
+/** The colours a theme is made of. Pass one as `theme` for a custom palette. */
+export interface SvgThemeColors {
 	bg: string
 	shapeFill: string
 	shapeStroke: string
@@ -24,6 +30,15 @@ interface Theme {
 	text: string
 	poolHeader: string
 	textHalo: string
+}
+
+type Theme = SvgThemeColors
+
+/** Theme colours plus the resolved font settings every text helper needs. */
+export interface SvgCtx extends Theme {
+	fontFamily: string
+	fontSize: number
+	lineH: number
 }
 
 const LIGHT: Theme = {
@@ -49,10 +64,69 @@ const DARK: Theme = {
 // ── Public API ─────────────────────────────────────────────────────────────────
 
 export interface SvgExportOptions {
-	/** Visual theme. Default: "light". */
-	theme?: "light" | "dark"
+	/** Visual theme: a preset name or a full custom palette. Default: "light". */
+	theme?: "light" | "dark" | SvgThemeColors
 	/** Padding around the diagram content in pixels. Default: 20. */
 	padding?: number
+	/** Multiplies `width`/`height` only; the viewBox is unchanged. Default: 1. */
+	scale?: number
+	/**
+	 * Fit-inside box `[width, height]` (e.g. a chat thumbnail). Applied after
+	 * `scale`; never upscales. Only `width`/`height` change.
+	 */
+	maxSize?: [number, number]
+	/**
+	 * `"di"` honours `bioc:`/`color:` fill and stroke from the diagram interchange.
+	 * Default: `"ignore"`.
+	 */
+	colors?: "ignore" | "di"
+	/**
+	 * Which plane to draw. `{ id }` matches a `BPMNDiagram` or plane id,
+	 * `{ process }` the element a plane points at (e.g. a collapsed sub-process).
+	 * Default: the first diagram. Throws when nothing matches.
+	 */
+	plane?: { id: string } | { process: string }
+	/** Lay out the model first when the chosen plane has no shapes. Default: false. */
+	autoLayout?: boolean
+	/** Label font. Defaults: `system-ui,-apple-system,sans-serif`, 11px, 14px line height. */
+	font?: { family?: string; size?: number; lineHeight?: number }
+	/** Add `data-element-id="…"` to each element's `<g>`/`<path>`. Default: false. */
+	elementIds?: boolean
+	/** `false` omits the background `<rect>` (transparent). Default: true. */
+	background?: boolean
+}
+
+export type SvgElementKind =
+	| BpmnFlowElement["type"]
+	| "sequenceFlow"
+	| "messageFlow"
+	| "association"
+	| "participant"
+	| "lane"
+	| "textAnnotation"
+	| "group"
+
+export type SvgGeometry =
+	| { kind: "shape"; bounds: BpmnBounds }
+	| { kind: "edge"; waypoints: Array<[number, number]> }
+
+/** An element that was actually drawn. */
+export interface SvgRenderedElement {
+	id: string
+	kind: SvgElementKind
+	geometry: SvgGeometry
+}
+
+export type SvgWarning = { type: "autoLayoutApplied" } | { type: "elementWithoutDi"; id: string }
+
+export interface SvgExportResult {
+	svg: string
+	viewBox: { x: number; y: number; w: number; h: number }
+	/** CSS px after `scale` and `maxSize`. */
+	width: number
+	height: number
+	elements: SvgRenderedElement[]
+	warnings: SvgWarning[]
 }
 
 /**
@@ -60,7 +134,7 @@ export interface SvgExportOptions {
  *
  * The definitions must already contain diagram interchange (DI) position data —
  * i.e. they were produced by `.withAutoLayout().build()` or parsed from BPMN
- * XML that includes `<bpmndi:BPMNDiagram>` elements.
+ * XML that includes `<bpmndi:BPMNDiagram>` elements (or pass `autoLayout: true`).
  *
  * Works in every environment (Node.js, browsers, Deno, Bun, edge runtimes) with
  * zero external dependencies. Returns a standalone SVG string that can be written
@@ -82,18 +156,38 @@ export interface SvgExportOptions {
  * ```
  */
 export function exportSvg(defs: BpmnDefinitions, options?: SvgExportOptions): string {
-	const t = options?.theme === "dark" ? DARK : LIGHT
-	const padding = options?.padding ?? 20
+	return exportSvgDetailed(defs, options).svg
+}
 
-	const plane = defs.diagrams[0]?.plane
-	if (!plane) return emptySvg(t)
+/** Like {@link exportSvg}, plus the drawn size, viewBox, element geometry and warnings. */
+export function exportSvgDetailed(
+	input: BpmnDefinitions,
+	options?: SvgExportOptions,
+): SvgExportResult {
+	const t = resolveCtx(options)
+	const padding = options?.padding ?? 20
+	const useDiColors = options?.colors === "di"
+	const withIds = options?.elementIds === true
+	const withBg = options?.background !== false
+	const warnings: SvgWarning[] = []
+	const elements: SvgRenderedElement[] = []
+	const idAttr = (id: string): string => (withIds ? ` data-element-id="${esc(id)}"` : "")
+
+	let defs = input
+	let plane = selectPlane(defs, options?.plane)
+	if (options?.autoLayout === true && options.plane === undefined && !plane?.shapes.length) {
+		defs = applyAutoLayout(defs, "semantic")
+		warnings.push({ type: "autoLayoutApplied" })
+		plane = selectPlane(defs, undefined)
+	}
+	if (!plane) return emptyResult(t, withBg, warnings)
 
 	// Build model index for name/type lookups
 	const idx = buildIndex(defs)
 	const labelStyles = collectLabelStyles(defs)
 	const fontOf = (label: BpmnDiLabel | undefined): LabelFontCss | undefined => {
 		const font = resolveLabelFont(label, labelStyles)
-		return font ? labelFontCss(font, DEFAULT_FAMILY, DEFAULT_SIZE) : undefined
+		return font ? labelFontCss(font, t.fontFamily, t.fontSize) : undefined
 	}
 
 	// ── Bounding box ──────────────────────────────────────────────────────────
@@ -118,12 +212,13 @@ export function exportSvg(defs: BpmnDefinitions, options?: SvgExportOptions): st
 		}
 	}
 
-	if (!Number.isFinite(minX)) return emptySvg(t)
+	if (!Number.isFinite(minX)) return emptyResult(t, withBg, warnings)
 
 	const ox = minX - padding
 	const oy = minY - padding
 	const vw = maxX - minX + padding * 2
 	const vh = maxY - minY + padding * 2
+	const { width, height } = fitSize(vw, vh, options)
 
 	// ── Edges ─────────────────────────────────────────────────────────────────
 	const edgeParts: string[] = []
@@ -134,19 +229,26 @@ export function exportSvg(defs: BpmnDefinitions, options?: SvgExportOptions): st
 		const isAssoc = !flow && !isMsg
 
 		const d = waypointsToPath(edge.waypoints)
-		const strokeColor = t.flowStroke
+		const strokeColor = useDiColors
+			? (readDiColor(edge.unknownAttributes).stroke ?? t.flowStroke)
+			: t.flowStroke
 		const sw = 1.5
+		elements.push({
+			id: edge.bpmnElement,
+			kind: isMsg ? "messageFlow" : isAssoc ? "association" : "sequenceFlow",
+			geometry: { kind: "edge", waypoints: edge.waypoints.map((w) => [w.x, w.y]) },
+		})
 
 		if (isAssoc) {
 			edgeParts.push(
-				`<path d="${d}" fill="none" stroke="${strokeColor}" stroke-width="${sw}" stroke-dasharray="5 3"/>`,
+				`<path d="${d}"${idAttr(edge.bpmnElement)} fill="none" stroke="${strokeColor}" stroke-width="${sw}" stroke-dasharray="5 3"/>`,
 			)
 			continue
 		}
 
 		const dashArray = isMsg ? ' stroke-dasharray="6 3"' : ""
 		edgeParts.push(
-			`<path d="${d}" fill="none" stroke="${strokeColor}" stroke-width="${sw}"${dashArray} marker-end="url(#arr)"/>`,
+			`<path d="${d}"${idAttr(edge.bpmnElement)} fill="none" stroke="${strokeColor}" stroke-width="${sw}"${dashArray} marker-end="url(#arr)"/>`,
 		)
 
 		// Default-flow slash
@@ -186,30 +288,49 @@ export function exportSvg(defs: BpmnDefinitions, options?: SvgExportOptions): st
 	const containerParts: string[] = []
 	const shapeParts: string[] = []
 	const labelParts: string[] = []
+	const drawn = new Set<string>()
 
 	for (const shape of plane.shapes) {
 		const { x, y, width, height } = shape.bounds
 		const el = idx.elements.get(shape.bpmnElement)
 		const type = el?.type ?? ""
 		const font = fontOf(shape.label)
+		// Per-shape palette: DI colours replace fill/stroke for body and markers.
+		const c = useDiColors ? readDiColor(shape.unknownAttributes) : undefined
+		const ts: SvgCtx = c
+			? { ...t, shapeFill: c.fill ?? t.shapeFill, shapeStroke: c.stroke ?? t.shapeStroke }
+			: t
 
 		let inner: string
 		let isContainer = false
+		let kind: SvgElementKind | undefined = el?.type
 
 		if (isEvent(type)) {
-			inner = renderEvent(el, width, height, t)
+			inner = renderEvent(el, width, height, ts)
 		} else if (isGateway(type)) {
-			inner = renderGateway(el, width, height, t)
+			inner = renderGateway(el, width, height, ts)
+		} else if (type === "dataObjectReference") {
+			inner = renderDataObject(el, width, height, ts)
+		} else if (type === "dataStoreReference") {
+			inner = renderDataStore(width, height, ts)
 		} else if (type === "" && !el) {
-			// Pool, lane, or annotation
+			// Pool, lane, annotation or group
 			const annotation = idx.annotations.get(shape.bpmnElement)
+			const group = idx.groups.get(shape.bpmnElement)
 			if (annotation !== undefined) {
-				inner = renderAnnotation(annotation.text, width, height, t, font)
+				inner = renderAnnotation(annotation.text, width, height, ts, font)
+				kind = "textAnnotation"
+			} else if (group !== undefined) {
+				inner = renderGroup(idx.groupLabel(group), width, height, ts, font)
+				kind = "group"
+				isContainer = true
 			} else if (idx.participants.has(shape.bpmnElement)) {
-				inner = renderPool(idx.participants.get(shape.bpmnElement), width, height, t, font)
+				inner = renderPool(idx.participants.get(shape.bpmnElement), width, height, ts, font)
+				kind = "participant"
 				isContainer = true
 			} else if (idx.lanes.has(shape.bpmnElement)) {
-				inner = renderLane(idx.lanes.get(shape.bpmnElement), width, height, t, font)
+				inner = renderLane(idx.lanes.get(shape.bpmnElement), width, height, ts, font)
+				kind = "lane"
 				isContainer = true
 			} else {
 				inner = ""
@@ -225,21 +346,33 @@ export function exportSvg(defs: BpmnDefinitions, options?: SvgExportOptions): st
 					type === "eventSubProcess" ||
 					type === "transaction") &&
 				shape.isExpanded === true
-			inner = renderTask(el, width, height, t, { expanded: isExpandedContainer, font })
+			inner = renderTask(el, width, height, ts, { expanded: isExpandedContainer, font })
 			if (isExpandedContainer) isContainer = true
 		}
 
 		if (inner) {
-			const g = `<g transform="translate(${x} ${y})">${inner}</g>`
+			const g = `<g transform="translate(${x} ${y})"${idAttr(shape.bpmnElement)}>${inner}</g>`
 			if (isContainer) {
 				containerParts.push(g)
 			} else {
 				shapeParts.push(g)
 			}
+			if (kind) {
+				elements.push({
+					id: shape.bpmnElement,
+					kind,
+					geometry: { kind: "shape", bounds: shape.bounds },
+				})
+				drawn.add(shape.bpmnElement)
+			}
 		}
 
-		// External labels for events and gateways
-		const isExtLabel = isEvent(type) || isGateway(type)
+		// External labels for events, gateways and data elements
+		const isExtLabel =
+			isEvent(type) ||
+			isGateway(type) ||
+			type === "dataObjectReference" ||
+			type === "dataStoreReference"
 		if (el?.name && isExtLabel) {
 			const lb = shape.label?.bounds ?? {
 				x: shape.bounds.x + shape.bounds.width / 2 - 40,
@@ -253,13 +386,16 @@ export function exportSvg(defs: BpmnDefinitions, options?: SvgExportOptions): st
 		}
 	}
 
+	for (const id of idx.elements.keys()) {
+		if (!drawn.has(id)) warnings.push({ type: "elementWithoutDi", id })
+	}
+
 	// ── Assemble SVG ──────────────────────────────────────────────────────────
-	const bgStyle = `fill="${t.bg}"`
 	const arrowFill = t.flowStroke
 
-	return [
-		`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${ox} ${oy} ${vw} ${vh}" width="${vw}" height="${vh}">`,
-		`<rect x="${ox}" y="${oy}" width="${vw}" height="${vh}" ${bgStyle}/>`,
+	const svg = [
+		`<svg xmlns="http://www.w3.org/2000/svg" viewBox="${ox} ${oy} ${vw} ${vh}" width="${width}" height="${height}">`,
+		...(withBg ? [`<rect x="${ox}" y="${oy}" width="${vw}" height="${vh}" fill="${t.bg}"/>`] : []),
 		"<defs>",
 		`  <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">`,
 		`    <path d="M0,0 L8,3 L0,6 Z" fill="${arrowFill}"/>`,
@@ -271,12 +407,63 @@ export function exportSvg(defs: BpmnDefinitions, options?: SvgExportOptions): st
 		...labelParts,
 		"</svg>",
 	].join("\n")
+	return { svg, viewBox: { x: ox, y: oy, w: vw, h: vh }, width, height, elements, warnings }
 }
-
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function emptySvg(t: Theme): string {
-	return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1" width="1" height="1"><rect width="1" height="1" fill="${t.bg}"/></svg>`
+/** @internal Theme colours and font settings from the shared export options. */
+export function resolveCtx(options: Pick<SvgExportOptions, "theme" | "font"> | undefined): SvgCtx {
+	const theme = options?.theme
+	const base = theme === "dark" ? DARK : typeof theme === "object" ? theme : LIGHT
+	return {
+		...base,
+		fontFamily: options?.font?.family ?? DEFAULT_FAMILY,
+		fontSize: options?.font?.size ?? DEFAULT_SIZE,
+		lineH: options?.font?.lineHeight ?? DEFAULT_LINE_H,
+	}
+}
+
+/** @internal `width`/`height` after `scale` and `maxSize` (the viewBox never changes). */
+export function fitSize(
+	vw: number,
+	vh: number,
+	options: Pick<SvgExportOptions, "scale" | "maxSize"> | undefined,
+): { width: number; height: number } {
+	let width = vw * (options?.scale ?? 1)
+	let height = vh * (options?.scale ?? 1)
+	if (options?.maxSize) {
+		const [mw, mh] = options.maxSize
+		const f = Math.min(1, mw / width, mh / height)
+		width = width * f
+		height = height * f
+	}
+	return { width, height }
+}
+
+function emptyResult(t: SvgCtx, withBg: boolean, warnings: SvgWarning[]): SvgExportResult {
+	const rect = withBg ? `<rect width="1" height="1" fill="${t.bg}"/>` : ""
+	return {
+		svg: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1" width="1" height="1">${rect}</svg>`,
+		viewBox: { x: 0, y: 0, w: 1, h: 1 },
+		width: 1,
+		height: 1,
+		elements: [],
+		warnings,
+	}
+}
+
+/** Picks the plane to draw; undefined when the model has none. */
+function selectPlane(
+	defs: BpmnDefinitions,
+	sel: SvgExportOptions["plane"],
+): BpmnDiagram["plane"] | undefined {
+	if (!sel) return defs.diagrams[0]?.plane
+	const hit =
+		"id" in sel
+			? defs.diagrams.find((d) => d.id === sel.id || d.plane.id === sel.id)
+			: defs.diagrams.find((d) => d.plane.bpmnElement === sel.process)
+	if (!hit) throw new Error(`Plane not found: ${"id" in sel ? sel.id : sel.process}`)
+	return hit.plane
 }
 
 function isEvent(type: string): boolean {
@@ -307,12 +494,14 @@ const DEFAULT_SIZE = 11
 const DEFAULT_LINE_H = 14
 
 /** Estimated glyph width for a label font — scaled from the 11px default. */
-function charPx(font: LabelFontCss | undefined): number {
-	if (!font) return AVG_CHAR_PX
+/** @internal */
+export function charPx(font: LabelFontCss | undefined, t: SvgCtx): number {
+	if (!font) return AVG_CHAR_PX * (t.fontSize / DEFAULT_SIZE)
 	return AVG_CHAR_PX * (font.fontSize / DEFAULT_SIZE) * (font.fontWeight === "bold" ? 1.1 : 1)
 }
 
-function wrapText(text: string, maxPx: number, charW = AVG_CHAR_PX): string[] {
+/** @internal */
+export function wrapText(text: string, maxPx: number, charW = AVG_CHAR_PX): string[] {
 	if (!text.trim()) return []
 	const words = text.split(/\s+/)
 	const lines: string[] = []
@@ -332,7 +521,8 @@ function wrapText(text: string, maxPx: number, charW = AVG_CHAR_PX): string[] {
 	return lines.length > 0 ? lines : [text]
 }
 
-function esc(s: string): string {
+/** @internal */
+export function esc(s: string): string {
 	return s
 		.replace(/&/g, "&amp;")
 		.replace(/</g, "&lt;")
@@ -340,8 +530,9 @@ function esc(s: string): string {
 		.replace(/"/g, "&quot;")
 }
 
-function fontStyle(font: LabelFontCss | undefined): string {
-	if (!font) return `font-family:${DEFAULT_FAMILY};font-size:${DEFAULT_SIZE}px`
+/** @internal */
+export function fontStyle(font: LabelFontCss | undefined, t: SvgCtx): string {
+	if (!font) return `font-family:${t.fontFamily};font-size:${t.fontSize}px`
 	let out = `font-family:${font.fontFamily};font-size:${font.fontSize}px`
 	if (font.fontWeight !== "normal") out += `;font-weight:${font.fontWeight}`
 	if (font.fontStyle !== "normal") out += `;font-style:${font.fontStyle}`
@@ -350,9 +541,9 @@ function fontStyle(font: LabelFontCss | undefined): string {
 }
 
 /** A label's inline style, XML-escaped for a double-quoted attribute. */
-function textStyle(t: Theme, font?: LabelFontCss): string {
+function textStyle(t: SvgCtx, font?: LabelFontCss): string {
 	return esc(
-		`fill:${t.text};${fontStyle(font)};text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:${t.textHalo};stroke-width:4px;stroke-linejoin:round`,
+		`fill:${t.text};${fontStyle(font, t)};text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:${t.textHalo};stroke-width:4px;stroke-linejoin:round`,
 	)
 }
 
@@ -361,17 +552,18 @@ function textStyle(t: Theme, font?: LabelFontCss): string {
  * topAlign=true makes multi-line text flow downward from cy rather than
  * being centred around it — prevents long labels from overlapping the shape above.
  */
-function labelSvg(
+/** @internal */
+export function labelSvg(
 	text: string,
 	cx: number,
 	cy: number,
 	maxWidth: number,
-	t: Theme,
+	t: SvgCtx,
 	topAlign = false,
 	font?: LabelFontCss,
 ): string {
-	const lines = wrapText(text, maxWidth, charPx(font))
-	const lineH = font ? (font.fontSize * DEFAULT_LINE_H) / DEFAULT_SIZE : DEFAULT_LINE_H
+	const lines = wrapText(text, maxWidth, charPx(font, t))
+	const lineH = font ? (font.fontSize * t.lineH) / t.fontSize : t.lineH
 	const style = textStyle(t, font)
 	if (lines.length === 1) {
 		return `<text style="${style}" x="${cx}" y="${cy}">${esc(lines[0] ?? text)}</text>`
@@ -496,34 +688,65 @@ function gatewayMarker(type: string): string {
 	}
 }
 
-// ── Sub-process marker ────────────────────────────────────────────────────────
+// ── Activity marker row ───────────────────────────────────────────────────────
 
-function subProcessMarker(type: string): string {
-	if (type === "adHocSubProcess") {
-		return `<path d="M-7 0Q-4 -4 0 0Q4 4 7 0" class="bi"/>`
+const MARKER_STEP = 16
+
+/**
+ * Bottom-centre marker row: multi-instance, compensation, ad-hoc tilde and the
+ * collapsed `+` box (call activities always, sub-process variants when collapsed).
+ */
+function activityMarkers(el: BpmnFlowElement, expanded: boolean): string {
+	const glyphs: string[] = []
+	const lc = "loopCharacteristics" in el ? el.loopCharacteristics : undefined
+	if (lc) {
+		glyphs.push(
+			lc.isSequential
+				? `<path d="M-5 -4h10M-5 0h10M-5 4h10" class="bi"/>`
+				: `<path d="M-4 -5v10M0 -5v10M4 -5v10" class="bi"/>`,
+		)
 	}
-	return `<rect x="-7" y="-7" width="14" height="14" rx="1" class="bi"/><path d="M0 -4v8M-4 0h8" class="bi"/>`
+	if ("isForCompensation" in el && el.isForCompensation) {
+		glyphs.push(`<path d="M1 -3.5l-5 3.5 5 3.5zM6 -3.5l-5 3.5 5 3.5z" class="bi"/>`)
+	}
+	if (el.type === "adHocSubProcess") glyphs.push(`<path d="M-7 0Q-4 -4 0 0Q4 4 7 0" class="bi"/>`)
+	const subProcess =
+		el.type === "subProcess" ||
+		el.type === "adHocSubProcess" ||
+		el.type === "eventSubProcess" ||
+		el.type === "transaction"
+	if (el.type === "callActivity" || (subProcess && !expanded)) {
+		glyphs.push(
+			`<rect x="-7" y="-7" width="14" height="14" rx="1" class="bi"/><path d="M0 -4v8M-4 0h8" class="bi"/>`,
+		)
+	}
+	const start = -((glyphs.length - 1) * MARKER_STEP) / 2
+	return glyphs
+		.map((g, i) => `<g transform="translate(${start + i * MARKER_STEP} 0)">${g}</g>`)
+		.join("")
 }
 
 // ── Shape renderers ────────────────────────────────────────────────────────────
 
-function shapeStyle(t: Theme, sw = 1.5, dash?: string): string {
+/** @internal */
+export function shapeStyle(t: SvgCtx, sw = 1.5, dash?: string): string {
 	return `fill:${t.shapeFill};stroke:${t.shapeStroke};stroke-width:${sw}${dash ? `;stroke-dasharray:${dash}` : ""}`
 }
 
-function iconStyle(t: Theme): string {
+/** @internal */
+export function iconStyle(t: SvgCtx): string {
 	return `fill:none;stroke:${t.shapeStroke};stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round`
 }
 
-function iconSolidStyle(t: Theme): string {
+function iconSolidStyle(t: SvgCtx): string {
 	return `fill:${t.shapeStroke};stroke:none`
 }
 
-function gwMarkerStyle(t: Theme): string {
+function gwMarkerStyle(t: SvgCtx): string {
 	return `fill:none;stroke:${t.shapeStroke};stroke-width:2.5;stroke-linecap:round`
 }
 
-function gwMarkerFillStyle(t: Theme): string {
+function gwMarkerFillStyle(t: SvgCtx): string {
 	return `fill:${t.shapeStroke};stroke:none`
 }
 
@@ -533,7 +756,8 @@ function gwMarkerFillStyle(t: Theme): string {
  * CSS classes cannot be used in standalone SVGs, so we map them to inline styles
  * via a local `<style>` element scoped to the enclosing `<g>`.
  */
-function iconGroup(content: string, x: number, y: number, t: Theme): string {
+/** @internal */
+export function iconGroup(content: string, x: number, y: number, t: SvgCtx): string {
 	const bi = iconStyle(t)
 	const bis = iconSolidStyle(t)
 	const gm = gwMarkerFillStyle(t)
@@ -547,7 +771,7 @@ function renderEvent(
 	el: BpmnFlowElement | undefined,
 	width: number,
 	height: number,
-	t: Theme,
+	t: SvgCtx,
 ): string {
 	const cx = width / 2
 	const cy = height / 2
@@ -591,7 +815,7 @@ function renderTask(
 	el: BpmnFlowElement | undefined,
 	width: number,
 	height: number,
-	t: Theme,
+	t: SvgCtx,
 	options?: { expanded?: boolean; font?: LabelFontCss | undefined },
 ): string {
 	const type = el?.type ?? ""
@@ -625,10 +849,8 @@ function renderTask(
 	}
 
 	// The "+" marker means "contents elsewhere"; an expanded body shows them.
-	const container = type === "subProcess" || type === "eventSubProcess" || type === "transaction"
-	if ((container && !options?.expanded) || type === "adHocSubProcess") {
-		out += iconGroup(subProcessMarker(type), width / 2, height - 10, t)
-	}
+	const markers = el ? activityMarkers(el, options?.expanded === true) : ""
+	if (markers) out += iconGroup(markers, width / 2, height - 10, t)
 
 	return out
 }
@@ -637,7 +859,7 @@ function renderGateway(
 	el: BpmnFlowElement | undefined,
 	width: number,
 	height: number,
-	t: Theme,
+	t: SvgCtx,
 ): string {
 	const cx = width / 2
 	const cy = height / 2
@@ -653,11 +875,50 @@ function renderGateway(
 	return out
 }
 
+function renderDataObject(
+	el: BpmnFlowElement | undefined,
+	width: number,
+	height: number,
+	t: SvgCtx,
+): string {
+	const fold = Math.min(14, width / 3)
+	let out =
+		`<path d="M0 0 H${width - fold} L${width} ${fold} V${height} H0 Z" style="${shapeStyle(t)}"/>` +
+		`<path d="M${width - fold} 0 V${fold} H${width}" style="${iconStyle(t)}"/>`
+	if (el?.type === "dataObjectReference" && el.isCollection) {
+		out += iconGroup(`<path d="M-3 -5v9M0 -5v9M3 -5v9" class="bi"/>`, width / 2, height - 6, t)
+	}
+	return out
+}
+
+function renderDataStore(width: number, height: number, t: SvgCtx): string {
+	const ry = Math.min(8, height / 6)
+	const rx = width / 2
+	return (
+		`<path d="M0 ${ry} A ${rx} ${ry} 0 0 0 ${width} ${ry} V ${height - ry} A ${rx} ${ry} 0 0 1 0 ${height - ry} Z" style="${shapeStyle(t)}"/>` +
+		`<ellipse cx="${rx}" cy="${ry}" rx="${rx}" ry="${ry}" style="${shapeStyle(t)}"/>` +
+		`<path d="M0 ${ry * 2} A ${rx} ${ry} 0 0 0 ${width} ${ry * 2} M0 ${ry * 3.4} A ${rx} ${ry} 0 0 0 ${width} ${ry * 3.4}" style="${iconStyle(t)}"/>`
+	)
+}
+
+function renderGroup(
+	name: string | undefined,
+	width: number,
+	height: number,
+	t: SvgCtx,
+	font?: LabelFontCss,
+): string {
+	const style = `fill:none;stroke:${t.shapeStroke};stroke-width:1.5;stroke-dasharray:6 3`
+	let out = `<rect x="0" y="0" width="${width}" height="${height}" rx="8" style="${style}"/>`
+	if (name) out += labelSvg(name, width / 2, 14, width - 16, t, true, font)
+	return out
+}
+
 function renderPool(
 	participant: BpmnParticipant | undefined,
 	width: number,
 	height: number,
-	t: Theme,
+	t: SvgCtx,
 	font?: LabelFontCss,
 ): string {
 	const bodyStyle = `fill:${t.shapeFill};stroke:${t.shapeStroke};stroke-width:1.5`
@@ -677,7 +938,7 @@ function renderLane(
 	lane: BpmnLane | undefined,
 	width: number,
 	height: number,
-	t: Theme,
+	t: SvgCtx,
 	font?: LabelFontCss,
 ): string {
 	const bodyStyle = `fill:${t.shapeFill};stroke:${t.shapeStroke};stroke-width:1.5`
@@ -697,7 +958,7 @@ function renderAnnotation(
 	text: string | undefined,
 	width: number,
 	height: number,
-	t: Theme,
+	t: SvgCtx,
 	font?: LabelFontCss,
 ): string {
 	const pathStyle = `fill:none;stroke:${t.shapeStroke};stroke-width:1.5`
@@ -716,6 +977,8 @@ interface ModelIndex {
 	annotations: Map<string, BpmnTextAnnotation>
 	participants: Map<string, BpmnParticipant>
 	lanes: Map<string, BpmnLane>
+	groups: Map<string, BpmnGroup>
+	groupLabel: (group: BpmnGroup) => string | undefined
 	messageFlowIds: Set<string>
 	defaultFlowIds: Set<string>
 }
@@ -726,6 +989,7 @@ function buildIndex(defs: BpmnDefinitions): ModelIndex {
 	const annotations = new Map<string, BpmnTextAnnotation>()
 	const participants = new Map<string, BpmnParticipant>()
 	const lanes = new Map<string, BpmnLane>()
+	const groups = new Map<string, BpmnGroup>()
 	const messageFlowIds = new Set<string>()
 	const defaultFlowIds = new Set<string>()
 
@@ -766,6 +1030,7 @@ function buildIndex(defs: BpmnDefinitions): ModelIndex {
 		for (const ta of proc.textAnnotations) {
 			annotations.set(ta.id, ta)
 		}
+		for (const g of proc.groups ?? []) groups.set(g.id, g)
 		if (proc.laneSet) indexLaneSet(proc.laneSet)
 	}
 
@@ -776,10 +1041,28 @@ function buildIndex(defs: BpmnDefinitions): ModelIndex {
 		for (const ta of collab.textAnnotations) {
 			annotations.set(ta.id, ta)
 		}
+		for (const g of collab.groups ?? []) groups.set(g.id, g)
 		for (const mf of collab.messageFlows) {
 			messageFlowIds.add(mf.id)
 		}
 	}
 
-	return { elements, flows, annotations, participants, lanes, messageFlowIds, defaultFlowIds }
+	const categoryValues = new Map<string, string | undefined>()
+	for (const cat of defs.categories ?? []) {
+		for (const v of cat.categoryValues) categoryValues.set(v.id, v.value)
+	}
+	const groupLabel = (g: BpmnGroup): string | undefined =>
+		g.categoryValueRef ? categoryValues.get(g.categoryValueRef) : undefined
+
+	return {
+		elements,
+		flows,
+		annotations,
+		participants,
+		lanes,
+		groups,
+		groupLabel,
+		messageFlowIds,
+		defaultFlowIds,
+	}
 }

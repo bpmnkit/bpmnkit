@@ -1,0 +1,13 @@
+{
+  "options": {
+    "theme": {
+      "bg": "#ffffff",
+      "shapeFill": "#fffbe6",
+      "shapeStroke": "#8a6d00",
+      "flowStroke": "#8a6d00",
+      "text": "#222222",
+      "poolHeader": "rgba(138,109,0,0.08)",
+      "textHalo": "#ffffff"
+    }
+  }
+}

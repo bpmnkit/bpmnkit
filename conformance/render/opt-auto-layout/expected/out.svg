@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 332 120" width="332" height="120">
+<rect x="0" y="0" width="332" height="120" fill="#f8f9fa"/>
+<defs>
+  <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+    <path d="M0,0 L8,3 L0,6 Z" fill="#404040"/>
+  </marker>
+</defs>
+<path d="M56,60 L116,60" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#arr)"/>
+<path d="M216,60 L276,60" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#arr)"/>
+<g transform="translate(20 42)"><circle cx="18" cy="18" r="17" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/></g>
+<g transform="translate(116 20)"><rect x="0" y="0" width="100" height="80" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="40">Do it</text></g>
+<g transform="translate(276 42)"><circle cx="18" cy="18" r="17" style="fill:#ffffff;stroke:#404040;stroke-width:3"/></g>
+</svg>

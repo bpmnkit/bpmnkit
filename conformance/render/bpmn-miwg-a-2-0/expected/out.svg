@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="166 152 622 288" width="622" height="288">
+<rect x="166" y="152" width="622" height="288" fill="#f8f9fa"/>
+<defs>
+  <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+    <path d="M0,0 L8,3 L0,6 Z" fill="#404040"/>
+  </marker>
+</defs>
+<path d="M563,206 L748,206 Q752,206 752,210 L752,244" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#arr)"/>
+<path d="M216,291 L230,291 Q234,291 238,291 L252,291" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#arr)"/>
+<path d="M335,291 L349,291 Q353,291 357,291 L399,291" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#arr)"/>
+<path d="M420,312 L420,382 Q420,386 424,386 L480,386" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#arr)"/>
+<path d="M663,336 L748,336 Q752,336 752,332 L752,276" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#arr)"/>
+<path d="M563,291 L638,291 Q642,291 642,295 L642,315" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#arr)"/>
+<path d="M420,270 L420,210 Q420,206 424,206 L480,206" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#arr)"/>
+<path d="M440,291 L454,291 Q458,291 462,291 L480,291" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#arr)"/>
+<path d="M563,386 L638,386 Q642,386 642,382 L642,357" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#arr)"/>
+<g transform="translate(186 276)"><circle cx="15" cy="15" r="14" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/></g>
+<g transform="translate(252 257)"><rect x="0" y="0" width="83" height="68" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><text style="fill:#333333;font-family:&quot;Arial&quot;, system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="41.5" y="34">Task 1</text></g>
+<g transform="translate(736 244)"><circle cx="16" cy="16" r="15" style="fill:#ffffff;stroke:#404040;stroke-width:3"/></g>
+<g transform="translate(480 172)"><rect x="0" y="0" width="83" height="68" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><text style="fill:#333333;font-family:&quot;Arial&quot;, system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="41.5" y="34">Task 2</text></g>
+<g transform="translate(480 257)"><rect x="0" y="0" width="83" height="68" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><text style="fill:#333333;font-family:&quot;Arial&quot;, system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="41.5" y="34">Task 3</text></g>
+<g transform="translate(399 270)"><polygon points="21,0 42,21 21,42 0,21" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(21 21)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><path d="M-6 -6l12 12M6 -6l-12 12" class="gms"/></g></g>
+<g transform="translate(480 352)"><rect x="0" y="0" width="83" height="68" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><text style="fill:#333333;font-family:&quot;Arial&quot;, system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="41.5" y="34">Task 4</text></g>
+<g transform="translate(621 315)"><polygon points="21,0 42,21 21,42 0,21" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(21 21)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><path d="M-6 -6l12 12M6 -6l-12 12" class="gms"/></g></g>
+<text style="fill:#333333;font-family:&quot;Arial&quot;, system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="201.1443342112394" y="317.7357089192708">Start Event</text>
+<text style="fill:#333333;font-family:&quot;Arial&quot;, system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="704.0629921259842" y="264.00000000000006">End Event</text>
+<text style="fill:#333333;font-family:&quot;Arial&quot;, system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="384.2598425196851" y="331.06826421395743">Gateway (Split</text><text style="fill:#333333;font-family:&quot;Arial&quot;, system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="384.2598425196851" y="345.06826421395743">Flow)</text>
+<text style="fill:#333333;font-family:&quot;Arial&quot;, system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="701.7874015748032" y="367.21259842519686">Gateway (Merge</text><text style="fill:#333333;font-family:&quot;Arial&quot;, system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="701.7874015748032" y="381.21259842519686">Flows)</text>
+</svg>
