@@ -1,5 +1,5 @@
 import { readFileSync, writeFileSync } from "node:fs"
-import { Bpmn, exportPreserving, lintDiagram } from "@bpmnkit/core"
+import { Bpmn, exportPreserving, lintDiagram, placeNewShapes } from "@bpmnkit/core"
 
 // 1. Create. The process id is the deploy key: same id = new version of that process.
 const definitions = Bpmn.createProcess("order")
@@ -23,12 +23,18 @@ const definitions = Bpmn.createProcess("order")
 // 2. Export.
 writeFileSync("order.bpmn", Bpmn.export(definitions))
 
-// 3. Edit an existing file: parse, change, write with exportPreserving to keep layout and formatting.
+// 3. Edit an existing file: change the model, draw only the new elements, write with
+//    exportPreserving. Existing shapes keep their positions and the file its formatting.
 const original = readFileSync("order.bpmn", "utf8")
-const edited = Bpmn.parse(original)
+const edited = Bpmn.continueProcess(Bpmn.parse(original), "order")
+	.insertAfter("ship")
+	.serviceTask("notify", { name: "Notify customer", taskType: "notify-customer" })
+	.build()
 const ship = edited.processes[0]?.flowElements.find((e) => e.id === "ship")
 if (ship) ship.name = "Ship parcel"
-writeFileSync("order.bpmn", exportPreserving(original, edited))
+const { definitions: drawn, unplaced } = placeNewShapes(edited)
+if (unplaced.length > 0) console.log("not drawn:", unplaced)
+writeFileSync("order.bpmn", exportPreserving(original, drawn))
 
 // 4. Validate: Camunda 8 deployability and modelling rules.
 const report = lintDiagram(Bpmn.parse(readFileSync("order.bpmn", "utf8")))
