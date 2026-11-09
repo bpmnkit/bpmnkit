@@ -70,7 +70,7 @@ function lanedCompact(): CompactDiagram {
 				elements: [
 					{ id: "start", type: "startEvent" },
 					{ id: "review", type: "userTask", name: "Review" },
-					{ id: "pay", type: "sendTask", name: "Pay" },
+					{ id: "pay", type: "sendTask", name: "Pay", jobType: "payment" },
 					{ id: "end", type: "endEvent" },
 				],
 				flows: [
@@ -152,7 +152,10 @@ describe("compactify: lanes, pools and executability", () => {
 
 		for (const [name, captured] of Object.entries(baseline)) {
 			const before = JSON.parse(captured.compact) as CompactDiagram
-			if (captured.xml !== null) expect(Bpmn.export(expand(before)), name).toBe(captured.xml)
+			// Ungated, as the capture was: the gate also marks its output as Camunda 8.
+			if (captured.xml !== null) {
+				expect(Bpmn.export(expand(before, { validate: false })), name).toBe(captured.xml)
+			}
 			if (!name.endsWith(".bpmn")) continue
 
 			// The one new key a lane-free file can produce: a process that says it is
@@ -171,11 +174,13 @@ describe("compactify: lanes, pools and executability", () => {
 	})
 })
 
+// Neither fixture is a Camunda 8 model (a Flowable Modeler export and a bpmn.io
+// sample), so the round trips skip the deploy gate.
 describe("expand(compactify(x)) round trip", () => {
 	for (const name of ["08-flowable-lanes-pools.bpmn", "02-collaboration.bpmn"]) {
 		it(`preserves lanes, participants, message flows and isExecutable of ${name}`, () => {
 			const original = fixture(name)
-			const restored = expand(compactify(original))
+			const restored = expand(compactify(original), { validate: false })
 
 			for (const process of original.processes) {
 				const back = processOf(restored, process.id)
@@ -201,7 +206,7 @@ describe("expand(compactify(x)) round trip", () => {
 		})
 
 		it(`gives ${name} a valid model with DI for every lane, pool and message flow`, () => {
-			const restored = expand(compactify(fixture(name)))
+			const restored = expand(compactify(fixture(name)), { validate: false })
 			const plane = restored.diagrams[0]?.plane
 			const shaped = new Set(plane?.shapes.map((shape) => shape.bpmnElement))
 			const edged = new Set(plane?.edges.map((edge) => edge.bpmnElement))
@@ -222,7 +227,9 @@ describe("expand(compactify(x)) round trip", () => {
 	}
 
 	it('writes isExecutable="false" on the partner process and survives export and parse', () => {
-		const xml = Bpmn.export(expand(compactify(fixture("08-flowable-lanes-pools.bpmn"))))
+		const xml = Bpmn.export(
+			expand(compactify(fixture("08-flowable-lanes-pools.bpmn")), { validate: false }),
+		)
 		const reparsed = Bpmn.parse(xml)
 		expect(processOf(reparsed, "customer").isExecutable).toBe(false)
 		expect(processOf(reparsed, "order").isExecutable).toBe(true)
@@ -275,7 +282,8 @@ describe("expand: lanes, pools and executability", () => {
 				},
 			],
 		}
-		const defs = expand(compact)
+		// Zeebe deploys nothing without an executable process, so this one is not gated.
+		const defs = expand(compact, { validate: false })
 		expect(processOf(defs, "p").isExecutable).toBe(false)
 		expect(compactify(defs).processes[0]?.executable).toBe(false)
 

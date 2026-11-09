@@ -1,2 +1,0 @@
-Not deployable on Camunda 8.10: 1 error(s)
-- sid-ad44e239-e96e-4a80-b0e4-cf63b741c3cb: Must contain at least one executable process (zeebe/executable-process)

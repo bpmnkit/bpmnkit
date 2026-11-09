@@ -18,7 +18,7 @@ lane sales[Sales team]: start, review, ok, reject
 lane ops[Operations]: ship, done`
 
 const POOLED = `# Payment
-start[start Order placed] > pay[send Request payment] > wait[receive Payment received] > done[end Paid]
+start[start Order placed] > pay[send Request payment] > wait[receive Payment received | msg=paid key=orderId] > done[end Paid]
 pool bank[Bank]
 msg pay >(Payment request) bank
 msg bank > wait`

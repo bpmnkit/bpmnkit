@@ -445,6 +445,9 @@ describe("primaryProcess", () => {
 	})
 
 	describe("primaryProcessId", () => {
+		// These files mimic bpmn.io and Flowable exports (no executable process, foreign
+		// attributes), which Zeebe would not deploy; the pin is what is under test.
+		const UNGATED = { validate: false } as const
 		const withContent = process("b", [node("t")], undefined, [], { id: "b", isExecutable: false })
 
 		it("picks the only process with content although it is marked non-executable", () => {
@@ -464,10 +467,12 @@ describe("primaryProcess", () => {
 
 		it("is not written when the file alone picks the same process", () => {
 			const defs = Bpmn.createProcess("p").startEvent("s").endEvent("e").build()
-			const xml = Bpmn.export({ ...defs, primaryProcessId: "p" })
-			expect(xml).toBe(Bpmn.export(defs))
+			const xml = Bpmn.export({ ...defs, primaryProcessId: "p" }, UNGATED)
+			expect(xml).toBe(Bpmn.export(defs, UNGATED))
 			expect(Bpmn.parse(xml).primaryProcessId).toBeUndefined()
-			expect(Bpmn.export({ ...defs, primaryProcessId: "gone" })).toBe(Bpmn.export(defs))
+			expect(Bpmn.export({ ...defs, primaryProcessId: "gone" }, UNGATED)).toBe(
+				Bpmn.export(defs, UNGATED),
+			)
 		})
 
 		it("is written, and read back, when the file alone would pick another process", () => {
@@ -481,7 +486,7 @@ describe("primaryProcess", () => {
 			defs.processes[0] = { ...defs.processes[0], isExecutable: undefined } as BpmnProcess
 			expect(primaryProcess(defs)?.id).toBe("partner")
 
-			const xml = Bpmn.export({ ...defs, primaryProcessId: "main" })
+			const xml = Bpmn.export({ ...defs, primaryProcessId: "main" }, UNGATED)
 			expect(xml).toContain('xmlns:bpmnkit="https://bpmnkit.com/schema/bpmn"')
 			expect(xml).toContain('bpmnkit:primaryProcess="main"')
 			const parsed = Bpmn.parse(xml)
@@ -490,7 +495,7 @@ describe("primaryProcess", () => {
 				false,
 			)
 			expect(primaryProcess(parsed)?.id).toBe("main")
-			expect(Bpmn.export(parsed)).toBe(xml)
+			expect(Bpmn.export(parsed, UNGATED)).toBe(xml)
 		})
 
 		it("yields to a process another tool has since made explicitly executable", () => {
@@ -511,7 +516,7 @@ describe("primaryProcess", () => {
 					'<bpmn:definitions xmlns:bpmnkit="https://bpmnkit.com/schema/bpmn" ',
 				)
 				.replace('<bpmn:process id="p"', '<bpmn:process id="p" bpmnkit:note="x"')
-			const out = Bpmn.export(Bpmn.parse(xml))
+			const out = Bpmn.export(Bpmn.parse(xml), UNGATED)
 			expect(out).toContain('xmlns:bpmnkit="https://bpmnkit.com/schema/bpmn"')
 			expect(out).toContain('bpmnkit:note="x"')
 		})
@@ -534,16 +539,16 @@ describe("primaryProcess", () => {
 			for (const use of uses) {
 				const input = use(pinned)
 				expect(input).not.toBe(pinned)
-				const out = Bpmn.export(Bpmn.parse(input))
+				const out = Bpmn.export(Bpmn.parse(input), UNGATED)
 				expect(out).toContain('xmlns:bk="https://bpmnkit.com/schema/bpmn"')
 				expect(out).not.toContain("bk:primaryProcess")
 				expect(out).toMatch(/bk:custom="kept"|<bk:note\/>/)
 			}
 			// A pin-only declaration stays too: an unused xmlns is valid XML.
-			const out = Bpmn.export(Bpmn.parse(pinned))
+			const out = Bpmn.export(Bpmn.parse(pinned), UNGATED)
 			expect(out).toContain('xmlns:bk="https://bpmnkit.com/schema/bpmn"')
 			expect(out).not.toContain("bk:primaryProcess")
-			expect(Bpmn.export(Bpmn.parse(out))).toBe(out)
+			expect(Bpmn.export(Bpmn.parse(out), UNGATED)).toBe(out)
 		})
 
 		it("writes the same bytes for a pinned document and one parsed from its file, before and after the pin goes", () => {
@@ -558,10 +563,10 @@ describe("primaryProcess", () => {
 
 			const pinned = pinPrimaryProcess(defs, "main")
 			expect(pinned.namespaces.bpmnkit).toBe("https://bpmnkit.com/schema/bpmn")
-			const replica = Bpmn.parse(Bpmn.export(pinned))
-			expect(Bpmn.export(replica)).toBe(Bpmn.export(pinned))
-			expect(Bpmn.export(pinPrimaryProcess(replica, undefined))).toBe(
-				Bpmn.export(pinPrimaryProcess(pinned, undefined)),
+			const replica = Bpmn.parse(Bpmn.export(pinned, UNGATED))
+			expect(Bpmn.export(replica, UNGATED)).toBe(Bpmn.export(pinned, UNGATED))
+			expect(Bpmn.export(pinPrimaryProcess(replica, undefined), UNGATED)).toBe(
+				Bpmn.export(pinPrimaryProcess(pinned, undefined), UNGATED),
 			)
 			expect(pinPrimaryProcess(pinned, undefined).primaryProcessId).toBeUndefined()
 		})
@@ -601,7 +606,7 @@ describe("primaryProcess", () => {
 					'<bpmn:definitions xmlns:bk="https://bpmnkit.com/schema/bpmn" bk:primaryProcess="p" ',
 				)
 				.replace('<bpmn:process id="p"', '<bpmn:process id="p" custom="bk:Item"')
-			const out = Bpmn.export(Bpmn.parse(xml))
+			const out = Bpmn.export(Bpmn.parse(xml), UNGATED)
 			expect(out).not.toContain("bk:primaryProcess")
 			expect(out).toContain('xmlns:bk="https://bpmnkit.com/schema/bpmn"')
 			expect(out).toContain('custom="bk:Item"')

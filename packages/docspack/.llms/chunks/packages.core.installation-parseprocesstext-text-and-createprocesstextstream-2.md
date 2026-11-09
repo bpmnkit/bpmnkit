@@ -1,5 +1,33 @@
 # @bpmnkit/core — Installation — `parseProcessText(text)` and `createProcessTextStream()` (2)
 
+```text
+s[start:timer Every hour | every=1h] > h[call Handle order | called=handle-order]
+h > w[catch Paid | msg=payment-received key=orderId] > n[throw:message Notify | msg=order-done job=notify] > e[end]
+failed[boundary:error Failed | on=h error=PAYMENT_FAILED] > f[end:error Give up | error=GIVEN_UP]
+```
+
+**Lanes and pools.** Three line kinds, written after the paths:
+
+```text
+lane sales[Sales team]: start, review, ok    the lane a role works in; one line per role
+pool bank[Bank]                              another party, drawn as an empty pool
+msg pay >(Payment) bank                      a message to that party; msg bank > paid one from it
+```
+
+The parser writes them as the compact `lanes`, `participants` and `messageFlows`, and `expand`
+draws the process in its own pool with its lanes. A node no lane lists — a join or end event the
+parser added, a boundary event, a node the model forgot — goes into its predecessor's lane (a
+boundary into its host's), else its successor's, else the first lane, and is listed in `fixes`.
+A node listed in two lanes stays in the later one; a member that is not a top-level node is left
+out. A message has one end in the process and the other on a `pool` line: a message between two
+pools, between two nodes of the process, out of a start or catch event, into an end or throw
+event, or touching a gateway is left out with a problem. Its label is kept as written, colons
+included. A lane without a bracket, `lane back_office: …`, is named from its id; `lane back_office[]: …`
+has no name. A pool needs its bracket (`pool tax_office[Tax office]`, or `pool tax_office[]` for no
+name), so two words of prose such as "pool party" stay prose. The writer writes an unnamed lane or
+pool with `[]`, so it reads back unnamed. Ids such as `lane_check[…]` still start paths: the keyword
+needs a space after it.
+
 ```typescript
 import { expand, Bpmn, parseProcessText, PROCESS_TEXT_GUIDE } from "@bpmnkit/core";
 
@@ -7,7 +35,11 @@ const { diagram, problems, fixes } = parseProcessText(modelOutput);
 const xml = Bpmn.export(expand(diagram));
 ```
 
-`parseProcessText` never throws, and its diagram always expands. It also keeps the structural
+`parseProcessText` never throws, and its diagram is always valid BPMN: `expand(diagram, {
+validate: false })` never throws. Whether it deploys is `expand`'s question: the gate runs there,
+and a caller that reports `problems` reports a `DeployabilityError` the same way. The parser
+cannot invent what only the writer knows, a correlation key or a timer's time, so text without
+them is refused at `expand` with the reason. It also keeps the structural
 rules `lintDiagram` checks — including bpmnlint's recommended set — whatever the model wrote.
 Text it cannot use, and anything it has to leave out, is returned in `problems` with its line
 number. What it adds or changes is listed in `fixes`:
@@ -46,8 +78,9 @@ number. What it adds or changes is listed in `fixes`:
 - an end event is added after every path that stops elsewhere, and a loop with no way out gets
   an exit branch from its decision; a loop with no decision loses the flows that close it
 - a link event in a path becomes a plain event, since the format cannot name its partner
-- a catch or boundary event written without a trigger becomes a message event, so it deploys.
-  A catch event named for a call it makes ("Send to SQS") becomes a service task instead
+- a catch or boundary event written without a trigger becomes a message event (it still needs
+  `key=` to deploy). A catch event named for a call it makes ("Send to SQS") becomes a service
+  task instead
 - an id written with spaces before its bracket (`call back[service …]`) is read as one id,
   `call_back`
 - a gateway with one way in and one way out — a question answered only one way — is removed;
@@ -66,7 +99,10 @@ number. What it adds or changes is listed in `fixes`:
 - flows out of anything but a decision carry no condition or label
 - an unnamed event, task or decision is named from its id
 - a service or send task without `job=` takes its id as job type, and a rule task its id as
-  decision id
+  decision id. Likewise, the id stands in for a missing `msg=` on a message event or receive task,
+  `job=` on a message throw or end event, `signal=` on a signal event, `error=` or `escalation=`
+  on an error or escalation throw or end event, and `called=` on a call activity. A correlation key
+  and a timer's time have no stand-in
 
 ---
 Source: https://bpmnkit.com/docs/packages/core

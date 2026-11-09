@@ -1,5 +1,13 @@
 # Progress
 
+## 2026-11-09 — Lanes and pools: rebased on main's deploy gate
+
+- `expand` keeps main's `CompactRoots` and deploy gate: a diagram with pools or lanes is built by `expandPools` (pools, lanes, one collaboration plane) and then gated like any other. `DiagramBuilder.build(options)` gates the laned document the same way.
+- Proxy: the MCP export and the QuickJS bridge lay out pools and lanes (`layoutDiagrams`) and stay ungated, as on `main`.
+- Tests: lane tests whose model Zeebe refuses for reasons unrelated to lanes (the Flowable and bpmn.io fixtures, a document with no executable process, an empty process kept executable) skip the gate; the others gained what Zeebe asks for (a job type, a correlation key, a timer duration). `lane-free-baseline.json` is re-captured from the base without lanes, since `compactify` on `main` now writes message names and correlation keys.
+- Conformance: `compact/bpmn-miwg-a-1-0`, `-a-4-0` and `-a-4-1` are `deployable: false` and expanded with `validate: false`: their sources mark every process non-executable, which `compactify` now keeps.
+- Changeset for the CLI and the proxy, which `changeset-check` asks for.
+
 ## 2026-11-09 — Lanes and pools: write support (#258, rebuilt on main)
 
 - Stacked on #263 (round-trip fidelity) and #272 (Escape and pointercancel), both split out of this PR. One editable process with lanes; partner pools are black boxes.

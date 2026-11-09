@@ -1051,6 +1051,8 @@ describe("final review: what a growing pool and a deleted swimlane leave behind"
 })
 
 describe("emptying the own pool next to a non-executable partner", () => {
+	// The editor saves a work in progress without the deploy gate, and `main` has no isExecutable.
+	const UNGATED = { validate: false } as const
 	/** `main` with no isExecutable (Flowable reads it as executable), `partner` marked false. */
 	function twoPools(): BpmnDefinitions {
 		const defs = Bpmn.createDiagram("d")
@@ -1086,19 +1088,19 @@ describe("emptying the own pool next to a non-executable partner", () => {
 	it("leads a replica parsed from the same XML, and a reload, to the same process", () => {
 		// A Drop room and its watchers apply the writer's ops to a document parsed from XML.
 		const writer = twoPools()
-		const room = Bpmn.parse(Bpmn.export(writer))
+		const room = Bpmn.parse(Bpmn.export(writer, UNGATED))
 		const emptied = run(writer, { kind: "delete", ids: ["a", "b"] })
 		const roomEmptied = run(room, { kind: "delete", ids: ["a", "b"] })
-		expect(Bpmn.export(roomEmptied)).toBe(Bpmn.export(emptied))
-		expect(Bpmn.export(emptied)).toContain('bpmnkit:primaryProcess="main"')
+		expect(Bpmn.export(roomEmptied, UNGATED)).toBe(Bpmn.export(emptied, UNGATED))
+		expect(Bpmn.export(emptied, UNGATED)).toContain('bpmnkit:primaryProcess="main"')
 
 		const own = boundsOf(emptied, "own")
 		const op = task(own.x + 60, own.y + 20, "probe")
-		const reloaded = Bpmn.parse(Bpmn.export(emptied))
+		const reloaded = Bpmn.parse(Bpmn.export(emptied, UNGATED))
 		for (const replica of [emptied, roomEmptied, reloaded]) {
 			const r = applyOp(replica, op)
 			expect(r.created).toHaveLength(1)
-			expect(Bpmn.export(r.defs)).toBe(Bpmn.export(applyOp(emptied, op).defs))
+			expect(Bpmn.export(r.defs, UNGATED)).toBe(Bpmn.export(applyOp(emptied, op).defs, UNGATED))
 		}
 	})
 
@@ -1107,7 +1109,7 @@ describe("emptying the own pool next to a non-executable partner", () => {
 		const own = boundsOf(emptied, "own")
 		const refilled = run(emptied, task(own.x + 60, own.y + 20, "refill"))
 		expect(refilled.primaryProcessId).toBeUndefined()
-		expect(Bpmn.export(refilled)).not.toContain("bpmnkit:primaryProcess")
+		expect(Bpmn.export(refilled, UNGATED)).not.toContain("bpmnkit:primaryProcess")
 
 		// The properties panel replaces the document with a snapshot.
 		const executable = (defs: BpmnDefinitions): BpmnDefinitions => ({
@@ -1115,10 +1117,10 @@ describe("emptying the own pool next to a non-executable partner", () => {
 			processes: defs.processes.map((p) => (p.id === "partner" ? { ...p, isExecutable: true } : p)),
 		})
 		const session = applyOp(refilled, { kind: "snapshot", defs: executable(refilled) }).defs
-		const reloaded = Bpmn.parse(Bpmn.export(refilled))
+		const reloaded = Bpmn.parse(Bpmn.export(refilled, UNGATED))
 		const reload = applyOp(reloaded, { kind: "snapshot", defs: executable(reloaded) }).defs
 		expect(primaryProcess(session)?.id).toBe(primaryProcess(reload)?.id)
-		expect(Bpmn.export(session)).toBe(Bpmn.export(reload))
+		expect(Bpmn.export(session, UNGATED)).toBe(Bpmn.export(reload, UNGATED))
 	})
 
 	it("pins through a change script, and a later script on the saved XML edits the own pool", () => {
@@ -1129,7 +1131,7 @@ describe("emptying the own pool next to a non-executable partner", () => {
 		expect(primaryProcess(result.definitions)?.id).toBe("main")
 
 		// Drop's AI paths start from Bpmn.parse(currentXml).
-		const saved = Bpmn.parse(Bpmn.export(result.definitions))
+		const saved = Bpmn.parse(Bpmn.export(result.definitions, UNGATED))
 		const next = applyProcessDelta(saved, parseProcessDelta("s[start] > f[end]"), {
 			aliases: writeProcessText(saved).aliases,
 		})
