@@ -12,6 +12,10 @@
 
 `exportSvg(defs, { scale, maxSize, colors: "di", plane, autoLayout, font, elementIds, background, theme })` plus `exportSvgDetailed` (size, viewBox, drawn elements, warnings). Data objects/stores, groups and multi-instance/compensation/call-activity markers are drawn. `exportDrdSvg(dmnDefs)` draws a requirements diagram (laid out when DI is missing) and `exportDecisionTableSvg(table, { name })` a decision table. Recorded as `conformance/render/` fixtures for the Rust renderer.
 
+## FEEL and DMN results for chat (2026-11-09)
+
+`Value::to_feel_string` / `to_json_string` / `from_json_str` and `Context::from_json_str` (`bpmnkit-feel`) move values to and from text and JSON. `bpmnkit_dmn::report::{result_to_text, result_to_markdown, result_to_slack_mrkdwn}` print a decision result as text, a Markdown table or Slack `mrkdwn`.
+
 ## Rust facade ergonomics and lint reports (2026-11-09)
 
 `bpmnkit::load(&str)` detects BPMN, DMN, a form, process text or compact JSON (`bpmnkit::detect`) and returns a `Document`; failures are one `bpmnkit::Error` with `From` for every crate error. `bpmnkit::prelude` gathers the common names. `bpmnkit_lint::report::{to_text, to_markdown, to_slack_mrkdwn}` (and `check_findings_*` for DMN and forms) print findings for terminals, PR comments and Slack. Examples: `text_to_bpmn`, `eval_dmn`, `lint_report`. Docs: [embedding the Rust crates](apps/landing/src/content/docs/rust/embedding.md).

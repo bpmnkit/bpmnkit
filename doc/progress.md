@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-09 — FEEL/DMN result helpers for chat and CLI (E2)
+
+- `bpmnkit-feel`: `Value::to_feel_string`, `to_json_string`, `to_json`, `from_json_str`, `from_json`; `Context::from_json_str` / `from_json` (reuse the `to json()` / `from json()` builtins: exact numbers, key order kept). No TS twin formatter exists beyond `string()`, already covered by the FEEL conformance cases, so no new fixtures.
+- `bpmnkit_dmn::report`: `result_to_text`, `result_to_markdown`, `result_to_slack_mrkdwn` for scalar, single-hit and multi-hit results. Docs: embedding guide.
+
 ## 2026-11-09 — Fix `rewire-flow` diff fixture; CI runs bpmnkit-render feature sets
 
 - `conformance/diff/rewire-flow/after.bpmn`: `incoming` lists now match the rewired `Flow_2` (it was still on the gateway), which broke bpmnlint parity (`fake-join`). Re-recorded TS; Rust matches.

@@ -7236,6 +7236,24 @@
 			]
 		},
 		{
+			"id": "rust.embedding.feel-and-dmn-results-in-chat",
+			"file": "chunks/rust.embedding.feel-and-dmn-results-in-chat.md",
+			"tokens": 150,
+			"tags": [
+				"rust",
+				"embedding",
+				"feel",
+				"dmn",
+				"results",
+				"chat"
+			],
+			"entities": [
+				"string()",
+				"to_json()",
+				"from_json()"
+			]
+		},
+		{
 			"id": "rust.embedding.cargo-features",
 			"file": "chunks/rust.embedding.cargo-features.md",
 			"tokens": 210,
