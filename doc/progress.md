@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-09 — Editor: Escape and pointercancel take back every gesture
+
+- Split out of the lane and pool PR (#258). `EditorStateMachine._cancelGesture` is the one way out of a gesture: Escape and `cancel()` (pointercancel) both call it. Escape used to skip the rubber band, the connection ghost and a dragged segment; both skipped the resize outline, which the new `cancelResize` callback removes.
+- Tests: `gesture-cancel.test.ts`.
+
 ## 2026-11-08 — Refresh Camunda connector templates (bot PR #245)
 
 - Merged `main` into `chore/connector-templates-refresh`. `main` now keeps the templates in `spec/templates/connectors.json` and generates both `generated.ts` files from it (`spec-gen`), so the refresh was regenerated with `pnpm update-connectors` instead of merged by hand. The registry now has 134 templates.
