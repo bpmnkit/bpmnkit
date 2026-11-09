@@ -170,7 +170,9 @@ function followsUnion(ancestors: readonly BpmnLane[]): boolean {
  * follows the union convention there; otherwise only the leaf is written.
  * Whether `nodeId` exists is not checked ({@link laneProblems} reports it).
  *
- * @throws Error when `laneId` is not a lane of `process`, or has child lanes.
+ * @throws Error when `laneId` is not a lane of `process`, or has child lanes,
+ *   or when `nodeId` is a boundary event whose host sits in another leaf lane:
+ *   a boundary event goes where its host goes.
  */
 export function assignLane(process: BpmnProcess, nodeId: string, laneId: string): BpmnProcess {
 	const laneSet = process.laneSet
@@ -182,6 +184,18 @@ export function assignLane(process: BpmnProcess, nodeId: string, laneId: string)
 		throw new Error(
 			`Lane "${laneId}" has child lanes; "${nodeId}" must go in one of its leaf lanes`,
 		)
+	}
+
+	const element = process.flowElements.find((candidate) => candidate.id === nodeId)
+	if (element?.type === "boundaryEvent") {
+		const host = leafLanes(laneSet).find((lane) =>
+			lane.flowNodeRefs.includes(element.attachedToRef),
+		)
+		if (host !== undefined && host !== target.lane) {
+			throw new Error(
+				`Boundary event "${nodeId}" sits in the lane of its host "${element.attachedToRef}" ("${host.id}"); move the host instead`,
+			)
+		}
 	}
 
 	const moving = [nodeId, ...boundaryEventIds(process, nodeId)]
@@ -217,7 +231,7 @@ export function pruneLaneRefs(process: BpmnProcess): BpmnProcess {
 	}
 }
 
-/** Ids of all lanes in `specs`, and of the leaves among them. Throws on a looping spec tree. */
+/** Ids of all lanes in `specs`, and of the leaves among them. Throws on a looping spec tree or a repeated id. */
 function specIds(specs: readonly LaneSpec[]): { all: Set<string>; leaves: Set<string> } {
 	const all = new Set<string>()
 	const leaves = new Set<string>()
@@ -226,6 +240,8 @@ function specIds(specs: readonly LaneSpec[]): { all: Set<string>; leaves: Set<st
 		for (const spec of children) {
 			if (seen.has(spec)) throw new Error(revisitMessage(spec.id))
 			seen.add(spec)
+			// Two leaves with one id would get the same refs and one DI shape between them.
+			if (all.has(spec.id)) throw new Error(`Lane "${spec.id}" is declared twice`)
 			all.add(spec.id)
 			if ((spec.lanes?.length ?? 0) === 0) leaves.add(spec.id)
 			else visit(spec.lanes ?? [])
@@ -244,7 +260,8 @@ function specIds(specs: readonly LaneSpec[]): { all: Set<string>; leaves: Set<st
  * `LaneSet_<laneId>` for a child set, with a numeric suffix when already in use.
  *
  * @throws Error listing every `leafOf` entry that names an undeclared lane or a
- *   lane with child lanes, or when `specs` loops back on itself.
+ *   lane with child lanes, or when `specs` loops back on itself or declares
+ *   one id twice.
  */
 export function buildLaneSet(
 	process: BpmnProcess,
@@ -428,7 +445,8 @@ export function pinnedPrimaryToWrite(defs: BpmnDefinitions): string | undefined 
  * Once an edit empties the process the user works on, nothing in the semantics
  * may tell it from an empty partner, and a switch would lock the user out of
  * their own pool. The drawing still does: a partner is a thin band.
- * ponytail: a file without pool DI falls back to document order.
+ * A file without pool DI has no thin band to go by, so it falls back to
+ * document order.
  */
 function emptiedPrimary(
 	defs: Pick<BpmnDefinitions, "collaborations" | "processes"> &
@@ -457,24 +475,88 @@ function emptiedPrimary(
 	return best
 }
 
-/** Every id the document already uses at the levels a new collaboration or participant could clash with. */
-function documentIds(defs: BpmnDefinitions): Set<string> {
-	const ids = new Set<string>()
-	for (const root of [...defs.messages, ...defs.errors, ...defs.signals, ...defs.escalations]) {
-		ids.add(root.id)
+/** What {@link documentIdList} reads; every part optional, so a builder can pass what it has. */
+export type IdSource = Partial<
+	Pick<
+		BpmnDefinitions,
+		"id" | "messages" | "errors" | "signals" | "escalations" | "processes" | "collaborations"
+	>
+>
+
+/** A scope that holds flow elements: a process, or a sub-process at any depth. */
+interface IdScope {
+	flowElements: readonly BpmnFlowElement[]
+	sequenceFlows: readonly { id: string }[]
+	textAnnotations?: readonly { id: string }[]
+	associations?: readonly { id: string }[]
+	groups?: readonly { id: string }[]
+}
+
+/**
+ * Every id the document uses, once per use, so an id listed twice is a clash:
+ * the definitions, root elements, processes with their flow elements, flows and
+ * artifacts at any depth, lane sets and lanes, and collaborations with what
+ * they hold. Duplicate checks and fresh ids both read this one list, so they
+ * cannot disagree about what is taken.
+ */
+export function documentIdList(defs: IdSource): string[] {
+	const ids: string[] = []
+	if (defs.id) ids.push(defs.id)
+	for (const root of [
+		...(defs.messages ?? []),
+		...(defs.errors ?? []),
+		...(defs.signals ?? []),
+		...(defs.escalations ?? []),
+	]) {
+		ids.push(root.id)
 	}
-	for (const collaboration of defs.collaborations) {
-		ids.add(collaboration.id)
-		for (const item of [...collaboration.participants, ...collaboration.messageFlows])
-			ids.add(item.id)
+	const visit = (scope: IdScope): void => {
+		for (const item of [
+			...scope.flowElements,
+			...scope.sequenceFlows,
+			...(scope.textAnnotations ?? []),
+			...(scope.associations ?? []),
+			...(scope.groups ?? []),
+		]) {
+			ids.push(item.id)
+		}
+		for (const element of scope.flowElements) {
+			if ("flowElements" in element && "sequenceFlows" in element) visit(element as IdScope)
+		}
 	}
-	for (const process of defs.processes) {
-		ids.add(process.id)
-		for (const item of [...process.flowElements, ...process.sequenceFlows]) ids.add(item.id)
-		for (const id of nestedElementIds(process.flowElements)) ids.add(id)
-		for (const lane of allLanes(process.laneSet)) ids.add(lane.id)
+	for (const process of defs.processes ?? []) {
+		ids.push(process.id)
+		visit(process)
+		const lanes = allLanes(process.laneSet)
+		for (const set of [process.laneSet, ...lanes.map((lane) => lane.childLaneSet)]) {
+			if (set?.id) ids.push(set.id)
+		}
+		for (const lane of lanes) ids.push(lane.id)
+	}
+	for (const collaboration of defs.collaborations ?? []) {
+		ids.push(collaboration.id)
+		for (const item of [
+			...collaboration.participants,
+			...collaboration.messageFlows,
+			...collaboration.textAnnotations,
+			...collaboration.associations,
+			...collaboration.groups,
+		]) {
+			ids.push(item.id)
+		}
 	}
 	return ids
+}
+
+/** Every repeated use in {@link documentIdList}: an id used three times is listed twice. */
+export function duplicateIds(defs: IdSource): string[] {
+	const seen = new Set<string>()
+	const repeats: string[] = []
+	for (const id of documentIdList(defs)) {
+		if (seen.has(id)) repeats.push(id)
+		else seen.add(id)
+	}
+	return repeats
 }
 
 /**
@@ -513,7 +595,7 @@ export function poolLanedProcesses(defs: BpmnDefinitions): BpmnDefinitions {
 	)
 	if (unpooled.length === 0 && defs.collaborations.length > 0) return defs
 
-	const taken = documentIds(defs)
+	const taken = new Set(documentIdList(defs))
 	const first: BpmnCollaboration = defs.collaborations[0] ?? {
 		id: freshId("Collaboration_1", (n) => `Collaboration_${n}`, taken),
 		participants: [],
@@ -552,8 +634,9 @@ export function poolLanedProcesses(defs: BpmnDefinitions): BpmnDefinitions {
  * duplicate lane ids, refs to missing ids, to sub-process children or to data
  * references, a flow node in two leaf lanes, and — once lanes exist — a
  * top-level flow node in no leaf lane (data references, and boundary events
- * whose host is assigned, are exempt). Whether parents repeat their children's
- * refs is not checked. Empty for a process without lanes.
+ * whose host is assigned, are exempt), and a boundary event in a leaf lane its
+ * host is not in. Whether parents repeat their children's refs is not checked.
+ * Empty for a process without lanes.
  */
 export function laneProblems(process: BpmnProcess): string[] {
 	const entries = laneEntries(process.laneSet)
@@ -592,7 +675,16 @@ export function laneProblems(process: BpmnProcess): string[] {
 				`Flow node "${element.id}" is in lanes ${leaves.map((id) => `"${id}"`).join(" and ")}; a node belongs to one leaf lane`,
 			)
 		}
-		if (leaves.length > 0) continue
+		if (leaves.length > 0) {
+			const host =
+				element.type === "boundaryEvent" ? leavesOf.get(element.attachedToRef) : undefined
+			if (element.type === "boundaryEvent" && host && !leaves.some((leaf) => host.includes(leaf))) {
+				problems.push(
+					`Boundary event "${element.id}" is in lane "${leaves[0]}" but its host "${element.attachedToRef}" is in "${host[0]}"; a boundary event sits in its host's lane`,
+				)
+			}
+			continue
+		}
 		if (element.type === "boundaryEvent" && leavesOf.has(element.attachedToRef)) continue
 		problems.push(`Flow node "${element.id}" is in no lane of process "${process.id}"`)
 	}
@@ -671,18 +763,17 @@ export function messageEndProblem(
  * content that no participant references. Empty without collaborations.
  */
 export function collaborationProblems(
-	defs: Pick<BpmnDefinitions, "collaborations" | "processes" | "messages">,
+	defs: Pick<BpmnDefinitions, "collaborations" | "processes" | "messages"> & IdSource,
 ): string[] {
 	if (defs.collaborations.length === 0) return []
 	const participants = defs.collaborations.flatMap((collaboration) => collaboration.participants)
 	const messageFlows = defs.collaborations.flatMap((collaboration) => collaboration.messageFlows)
 	const problems: string[] = []
 
-	const seen = new Set<string>()
-	for (const id of [...participants.map((p) => p.id), ...messageFlows.map((f) => f.id)]) {
-		if (seen.has(id)) problems.push(`Duplicate element ID "${id}"`)
-		seen.add(id)
-	}
+	// Every id in the document, not only pools and message flows: two processes
+	// may each declare the same lane, and a node may share a pool's id, which
+	// would also make the owning pool of a message-flow end ambiguous.
+	for (const id of duplicateIds(defs)) problems.push(`Duplicate element ID "${id}"`)
 
 	const processIds = new Set(defs.processes.map((process) => process.id))
 	const claimed = new Map<string, string>()

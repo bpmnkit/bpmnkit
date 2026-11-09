@@ -231,13 +231,17 @@ describe("parseProcessDelta — lanes, pools and messages", () => {
 	})
 
 	it("reads pool lines with and without a name", () => {
-		const delta = parseProcessDelta("pool bank[Bank]\npool shop")
+		const delta = parseProcessDelta("pool bank[Bank]\npool shop[]")
 		expect(delta.problems).toEqual([])
 		expect(delta.pools).toEqual([
 			{ id: "bank", name: "Bank", line: 1 },
 			{ id: "shop", line: 2 },
 		])
 		expect(delta.nodes).toEqual([])
+	})
+
+	it("does not read two words of prose as a pool", () => {
+		expect(parseProcessDelta("pool party").pools).toEqual([])
 	})
 
 	it("reads msg lines, keeping colons in the label", () => {

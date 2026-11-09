@@ -1003,7 +1003,8 @@ function applyToPrimaryFirst(
 				y: centreY(band) - size.height / 2,
 				...size,
 			}
-			// ponytail: one row; a full band widens the pool rather than wrapping inside the band.
+			// One row: a full band widens the pool rather than wrap inside the band,
+			// which keeps the left-to-right reading order of the nodes.
 			for (let k = 0; k < TRIES && all.some((o) => overlaps(candidate, o)); k++) {
 				candidate = { ...candidate, x: candidate.x + size.width + GAP / 2 }
 			}
@@ -1373,7 +1374,8 @@ function moveIntoBand(run: SwimlaneRun, id: string, laneId: string): void {
 	if (!band || !node) return
 	const cy = centreY(node)
 	if (cy >= band.y && cy <= bottom(band)) return
-	// ponytail: the middle of the band, not a free spot in it; slot() there if crowded lanes overlap
+	// The middle of the band, not a free spot in it: a script moves a few nodes
+	// at a time, so the simple spot is enough; in a crowded lane they may overlap.
 	const dy = centreY(band) - cy
 	// moveShapes carries boundary events and sub-process content along, and re-docks their messages.
 	run.defs = moveShapes(run.defs, [{ id, dx: 0, dy }])
@@ -1656,7 +1658,8 @@ function removeSwimlane(run: SwimlaneRun, removal: { id: string; line: number })
 		refuse("it is the pool of this process")
 		return
 	}
-	// A black box goes with its messages, and with its process when that is empty (U3).
+	// A black box goes with its messages, and with its process when that is empty,
+	// so no orphan process is left behind.
 	const next = removeBlackBox(run.defs, pool.id)
 	if (!next) {
 		refuse("it draws a process of its own")

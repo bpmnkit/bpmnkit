@@ -69,7 +69,7 @@ export interface Spaced {
 }
 
 /**
- * The `space` op (decision U10), on the plane that draws the
+ * The `space` op, on the plane that draws the
  * {@link primaryProcess}: room for `delta` along `axis` at `line` (an x for
  * `h`, a y for `v`), on the side `delta` points to, as the space tool makes
  * it. What lies beyond the line moves by `delta`, at any process, drawing only

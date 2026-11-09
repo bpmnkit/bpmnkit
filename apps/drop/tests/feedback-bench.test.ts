@@ -148,6 +148,7 @@ describe("createChangeLineFilter — lanes, pools and messages", () => {
 			"Lane sales: moves the review to the sales team",
 			"pool bank[Bank]",
 			"Pool the requests before sending them.",
+			"pool party",
 			"msg pay >(Payment: EUR) bank",
 			"msg bank > paid",
 			"Msg the bank about it",

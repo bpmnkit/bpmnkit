@@ -1,5 +1,5 @@
 /**
- * WP8d semantics: lane membership follows the drawing, nodes stay inside the
+ * Semantics: lane membership follows the drawing, nodes stay inside the
  * own pool, and lanes and partner pools can be deleted. Every op runs through
  * the Flowable guard.
  */
@@ -79,7 +79,7 @@ const task = (x: number, y: number, seed = "t"): EditorOp => ({
 	seed,
 })
 
-describe("8d.1 lane refs follow a moved node", () => {
+describe("lane refs follow a moved node", () => {
 	it("moves a node's ref to the lane its centre lands in", () => {
 		const after = run(flowableFixture(), move("Task_review", 0, 120))
 		expect(leafOf(after, "Task_review")).toBe("Lane_finance")
@@ -165,7 +165,7 @@ describe("8d.1 lane refs follow a moved node", () => {
 	})
 })
 
-describe("8d.1 lane refs of new nodes", () => {
+describe("lane refs of new nodes", () => {
 	it("puts a new node in the lane its centre is in", () => {
 		const r = applyOp(flowableFixture(), task(300, 260))
 		const [id] = r.created
@@ -234,7 +234,7 @@ describe("8d.1 lane refs of new nodes", () => {
 	})
 })
 
-describe("I4 nodes stay inside the own pool", () => {
+describe("nodes stay inside the own pool", () => {
 	it("refuses a move into a black box, between pools or with one node of several there", () => {
 		const defs = flowableFixture()
 		expect(run(defs, move("Task_review", 0, 460))).toBe(defs)
@@ -493,15 +493,15 @@ describe("growth: a node crossing the own pool's top, left or right edge", () =>
 })
 
 describe("growth: lane bands drawn without a pool frame the process as a pool does", () => {
-	// poolLessFlowable(true): Sales 0-160, Finance 160-320, Operations 320-436, all 825 wide from x 0.
+	// poolLessFlowable(true): Sales 0-160, Finance 160-320, Operations 320-436, all 665 wide from x 0.
 	const lanes = ["Lane_sales", "Lane_finance", "Lane_ops"]
 
 	it("widens every band for a node that crosses their right edge, the node in its lane", () => {
 		const defs = poolLessFlowable(true)
-		// Task_pay lands at x 767..867, its centre inside; the bands reach 30 past it.
-		const after = run(defs, move("Task_pay", 200, 0))
+		// Task_pay lands at x 597..697, its centre inside; the bands reach 30 past it.
+		const after = run(defs, move("Task_pay", 150, 0))
 		for (const lane of lanes)
-			expect(boundsOf(after, lane), lane).toMatchObject({ x: 0, width: 897 })
+			expect(boundsOf(after, lane), lane).toMatchObject({ x: 0, width: 727 })
 		expect(leafOf(after, "Task_pay")).toBe("Lane_finance")
 		expect(participants(after)).toEqual([])
 		expectUnmoved(defs, after, ["Task_pay", ...lanes])
@@ -512,7 +512,7 @@ describe("growth: lane bands drawn without a pool frame the process as a pool do
 		const defs = poolLessFlowable(true)
 		// Task_pay lands at y 380..460, its centre in Operations; the band reaches 30 below it.
 		const after = run(defs, move("Task_pay", 0, 180))
-		expect(boundsOf(after, "Lane_ops")).toEqual({ x: 0, y: 320, width: 825, height: 170 })
+		expect(boundsOf(after, "Lane_ops")).toEqual({ x: 0, y: 320, width: 665, height: 170 })
 		expect(boundsOf(after, "Lane_finance")).toEqual(boundsOf(defs, "Lane_finance"))
 		expect(leafOf(after, "Task_pay")).toBe("Lane_ops")
 		expectUnmoved(defs, after, ["Task_pay", "Lane_ops"])
@@ -522,12 +522,12 @@ describe("growth: lane bands drawn without a pool frame the process as a pool do
 	it("grows the top band up and every band left, as a pool's", () => {
 		const defs = poolLessFlowable(true)
 		const up = run(defs, move("Task_review", 0, -70))
-		expect(boundsOf(up, "Lane_sales")).toEqual({ x: 0, y: -60, width: 825, height: 220 })
+		expect(boundsOf(up, "Lane_sales")).toEqual({ x: 0, y: -60, width: 665, height: 220 })
 		expect(leafOf(up, "Task_review")).toBe("Lane_sales")
 		// Start_1 lands at x 11, over the name strip: every band moves 30 past it to the left.
 		const left = run(defs, move("Start_1", -70, 0))
 		for (const lane of lanes)
-			expect(boundsOf(left, lane), lane).toMatchObject({ x: -49, width: 874 })
+			expect(boundsOf(left, lane), lane).toMatchObject({ x: -49, width: 714 })
 		expectSwimlanesSound(up)
 		expectSwimlanesSound(left)
 	})
@@ -539,15 +539,15 @@ describe("growth: lane bands drawn without a pool frame the process as a pool do
 			kind: "createConnected",
 			sourceId: "End_1",
 			type: "task",
-			bounds: { x: 850, y: 338, width: 100, height: 80 },
+			bounds: { x: 690, y: 338, width: 100, height: 80 },
 			waypoints: [
-				{ x: 803, y: 378 },
-				{ x: 850, y: 378 },
+				{ x: 643, y: 378 },
+				{ x: 690, y: 378 },
 			],
 			seed: "q",
 		})
 		const [id = ""] = r.created
-		for (const lane of lanes) expect(boundsOf(r.defs, lane), lane).toMatchObject({ width: 980 })
+		for (const lane of lanes) expect(boundsOf(r.defs, lane), lane).toMatchObject({ width: 820 })
 		expect(leafOf(r.defs, id)).toBe("Lane_ops")
 		expectSwimlanesSound(r.defs)
 	})
@@ -661,7 +661,7 @@ function partnerBesideXml(): string {
 		)
 }
 
-describe("8d.2 black boxes", () => {
+describe("black boxes", () => {
 	const pool = (defs: BpmnDefinitions, id: string) => {
 		const found = participants(defs).find((p) => p.id === id)
 		if (!found) throw new Error(`no pool ${id}`)
@@ -715,7 +715,7 @@ describe("8d.2 black boxes", () => {
 	})
 })
 
-describe("8d.3 deleting lanes", () => {
+describe("deleting lanes", () => {
 	it("hands a deleted lane's band and nodes to the lane above", () => {
 		const defs = flowableFixture()
 		const after = run(defs, { kind: "delete", ids: ["Lane_finance"] })
@@ -771,7 +771,7 @@ describe("8d.3 deleting lanes", () => {
 	})
 })
 
-describe("8d.3 deleting pools", () => {
+describe("deleting pools", () => {
 	it("deletes a black box with its shape and its messages", () => {
 		const defs = flowableFixture()
 		const after = run(defs, { kind: "delete", ids: ["Participant_bank"] })
@@ -790,7 +790,7 @@ describe("8d.3 deleting pools", () => {
 		expectSwimlanesSound(after)
 	})
 
-	it("keeps the executable process on its plane when the partner listed before it goes (I1)", () => {
+	it("keeps the executable process on its plane when the partner listed before it goes", () => {
 		for (const order of ["second", "second-diagram"] as const) {
 			const defs = flowableFixture(order)
 			const after = run(defs, { kind: "delete", ids: ["Participant_partner"] })
@@ -841,7 +841,7 @@ describe("8d.3 deleting pools", () => {
 	})
 })
 
-describe("WP8a leftovers", () => {
+describe("swimlanes and locked nodes: smaller fixes", () => {
 	it("adds nothing for a paste of an empty clipboard", () => {
 		const defs = flowableFixture()
 		const clipboard = copyElements(primaryFirst(defs), ["Lane_ops", "Participant_bank"])
@@ -1050,7 +1050,7 @@ describe("final review: what a growing pool and a deleted swimlane leave behind"
 	})
 })
 
-describe("REV-20261028-008: emptying the own pool next to a non-executable partner", () => {
+describe("emptying the own pool next to a non-executable partner", () => {
 	/** `main` with no isExecutable (Flowable reads it as executable), `partner` marked false. */
 	function twoPools(): BpmnDefinitions {
 		const defs = Bpmn.createDiagram("d")

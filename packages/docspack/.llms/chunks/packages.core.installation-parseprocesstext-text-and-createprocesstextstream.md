@@ -61,8 +61,11 @@ A node listed in two lanes stays in the later one; a member that is not a top-le
 out. A message has one end in the process and the other on a `pool` line: a message between two
 pools, between two nodes of the process, out of a start or catch event, into an end or throw
 event, or touching a gateway is left out with a problem. Its label is kept as written, colons
-included. A bare `lane back_office: …` or `pool tax_office` is named from its id. Ids such as
-`lane_check[…]` still start paths: the keyword needs a space after it.
+included. A lane without a bracket, `lane back_office: …`, is named from its id; `lane back_office[]: …`
+has no name. A pool needs its bracket (`pool tax_office[Tax office]`, or `pool tax_office[]` for no
+name), so two words of prose such as "pool party" stay prose. The writer writes an unnamed lane or
+pool with `[]`, so it reads back unnamed. Ids such as `lane_check[…]` still start paths: the keyword
+needs a space after it.
 
 ---
 Source: https://bpmnkit.com/docs/packages/core

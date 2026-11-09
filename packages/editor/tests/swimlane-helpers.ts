@@ -202,7 +202,7 @@ export function poolLessFlowable(laned: boolean): BpmnDefinitions {
 /**
  * An executable process `P` with nested lanes and no pool, laid out by
  * auto-layout: `LA` (0-276, split into `LA1` 0-116 holding `s` and `LA2`
- * holding `t`, both inset 30) over `LB` (276-392, holding `e`), 536 wide from
+ * holding `t`, both inset 30) over `LB` (276-392, holding `e`), 456 wide from
  * x 0. Auto-layout draws below the bands what no lane holds: the task `loose`
  * (y 432, left out without `loose`) and the data reference `dor` that `t`
  * writes to (y 592).
@@ -330,7 +330,7 @@ function flowableFacts(defs: BpmnDefinitions): Map<string, string> {
 }
 
 /**
- * The Flowable guard (critique I15): every element that survives the edit has
+ * The Flowable guard: every element that survives the edit has
  * the `flowable:*` attributes and extension elements it had, every process
  * keeps its `isExecutable`, and no new process leaves `isExecutable` unset,
  * which Flowable would read as executable.

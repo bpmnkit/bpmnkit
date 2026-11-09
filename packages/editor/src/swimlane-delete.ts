@@ -39,7 +39,8 @@ import { drawsAny, dropAssociationsTo, isBlackBox, removeLaneBand } from "./swim
  * {@link primaryProcess} (its neighbour takes its band and nodes) or a
  * {@link isBlackBox} pool. The own pool, a pool that draws a process with
  * content, a lane with child lanes and a lane of another process stay
- * (decision U2). `false` for an id that is no pool or lane.
+ * (deleting them would take content with them). `false` for an id that is no
+ * pool or lane.
  */
 export function canDeleteSwimlane(defs: BpmnDefinitions, id: string): boolean {
 	const lane = allLanes(primaryProcess(defs)?.laneSet).find((candidate) => candidate.id === id)
@@ -51,7 +52,7 @@ export function canDeleteSwimlane(defs: BpmnDefinitions, id: string): boolean {
 /**
  * Returns a copy of `defs` without the black-box pool `poolId`: its
  * participant, its shapes, its message flows and their edges. Its process goes
- * too (decision U3) when no other pool draws it, it holds nothing (no flow
+ * too, rather than stay as an orphan, when no other pool draws it, it holds nothing (no flow
  * element, lane set, annotation or association) and does not say it is
  * executable; so does a diagram whose plane draws that process and nothing
  * else. `undefined` when `poolId` is no pool or not a black box.
@@ -63,7 +64,8 @@ export function removeBlackBox(defs: BpmnDefinitions, poolId: string): BpmnDefin
 	for (const flow of defs.collaborations.flatMap((c) => c.messageFlows)) {
 		if (flow.sourceRef === poolId || flow.targetRef === poolId) gone.add(flow.id)
 	}
-	// Only what held the pool or its messages is copied (8b.6).
+	// Only what held the pool or its messages is copied: the undo stack keeps
+	// every document, so a full copy per delete would keep 100 copies.
 	let next: BpmnDefinitions = {
 		...defs,
 		collaborations: defs.collaborations.map((c) =>

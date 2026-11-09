@@ -1277,11 +1277,12 @@ export function initEditorHud(
 
 	/**
 	 * What a pool or lane is offered, in bar and menu order, each only when the
-	 * edit would be made (critique: no refused actions): Add lane above and below
-	 * where `addLane` takes it (the own pool, top-level leaf lanes), Divide on an
-	 * own pool without lanes (U6), Connect on a partner pool (a black box or one
-	 * drawing a process) so a message flow can start there, Edit label, and
-	 * Delete where a delete would take it (U2).
+	 * edit would be made, so no action is offered only to be refused: Add lane
+	 * above and below where `addLane` takes it (the own pool, top-level leaf
+	 * lanes), Divide on an own pool without lanes, Connect on a partner pool (a
+	 * black box or one drawing a process) so a message flow can start there, Edit
+	 * label, and Delete where a delete would take it (not the own pool, whose
+	 * content would go with it).
 	 */
 	function swimlaneActions(id: string): SwimlaneAction[] {
 		const defs = editor.getDefinitions()
@@ -1795,8 +1796,8 @@ export function initEditorHud(
 		}
 		const containerRect = editor.container.getBoundingClientRect()
 		if (SWIMLANE_TYPES.has(editor.getElementType(ctxSourceId) ?? "")) {
-			// At the top of the header strip, just inside the band (critique I17): a
-			// tall pool's bottom centre is off-screen. Kept on screen while the band is.
+			// At the top of the header strip, just inside the band: a tall pool's
+			// bottom centre is off-screen. Kept on screen while the band is.
 			const left = bounds.x + POOL_HEADER * editor.getViewport().scale + 4 - containerRect.left
 			const top = bounds.y + 4 - containerRect.top
 			const lowest = bounds.y + bounds.height - 4 - containerRect.top

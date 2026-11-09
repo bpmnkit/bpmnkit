@@ -192,7 +192,7 @@ describe("applyProcessDelta lanes and pools: 08-flowable-lanes-pools.bpmn", () =
 	it("refuses to remove the own pool, and removes the partner pool over an empty process", () => {
 		const defs = fixture(file)
 		expect(apply(defs, "- Participant_company").definitions).toEqual(defs)
-		// The partner's empty, non-executable process makes it a black box (WP8d.2).
+		// The partner's empty, non-executable process makes it a black box.
 		const result = apply(defs, "- customer\n- Participant_company")
 		expect(result.problems.map((p) => p.line)).toEqual([2])
 		expect(participants(result.definitions).map((p) => p.id)).toEqual(["Participant_company"])
@@ -200,7 +200,7 @@ describe("applyProcessDelta lanes and pools: 08-flowable-lanes-pools.bpmn", () =
 
 	it("renames a pool, and a pool line restating one changes nothing", () => {
 		const defs = fixture(file)
-		expect(apply(defs, "pool customer").definitions).toEqual(defs)
+		expect(apply(defs, "pool customer[]").definitions).toEqual(defs)
 		const result = apply(defs, "pool customer[Client]")
 		expect(
 			participants(result.definitions).find((p) => p.id === "Participant_customer")?.name,
@@ -420,7 +420,7 @@ describe("applyProcessDelta lanes and pools: a diagram without them", () => {
 
 	it("adds a partner pool below the process, with the pool of its own drawn first", () => {
 		const defs = drawn()
-		const result = apply(defs, "pool bank\nmsg pay > bank")
+		const result = apply(defs, "pool bank[]\nmsg pay > bank")
 		expect(result.problems).toEqual([])
 		const next = result.definitions
 		expect(participants(next).map((p) => p.name)).toEqual(["Loan", "Bank"])
@@ -555,7 +555,7 @@ describe("applyProcessDelta lanes and pools: review findings", () => {
 		expectMessagesAttached(result.definitions, ["assignApprover"])
 	})
 
-	// A.4.1's pools are drawn vertically: a new lane is reported, not drawn across them (WP8c).
+	// A.4.1's pools are drawn vertically: a new lane is reported, not drawn across them.
 	it("miwg-A.4.1: a new lane on its vertical pool is reported and its messages stay", () => {
 		const defs = fixture("miwg-A.4.1.bpmn")
 		const { aliases } = writeProcessText(defs)
@@ -704,7 +704,7 @@ describe("applyProcessDelta lanes and pools: review findings", () => {
 
 		it("adds a pool and a message with an edge", () => {
 			const defs = fixture(file)
-			const result = apply(defs, "pool bank\nmsg plan_trip > bank")
+			const result = apply(defs, "pool bank[]\nmsg plan_trip > bank")
 			expect(result.problems).toEqual([])
 			const next = result.definitions
 			expect(next.diagrams.map((d) => d.plane.bpmnElement)).toEqual(
@@ -737,7 +737,7 @@ describe("applyProcessDelta lanes on a pool drawn vertically", () => {
 	})
 })
 
-describe("REV-20261028-009: a named message shows its name", () => {
+describe("a named message shows its name", () => {
 	const laidOut = () =>
 		Bpmn.createProcess("p")
 			.startEvent("a")
@@ -837,7 +837,7 @@ describe("pools, messages and lanes a script both makes and names", () => {
 
 	it("removes a lane and a pool the same script added, and reports neither as created", () => {
 		const defs = fixture("02-collaboration.bpmn")
-		const result = apply(defs, "lane shipping: ordered\npool bank\n- shipping\n- bank")
+		const result = apply(defs, "lane shipping: ordered\npool bank[]\n- shipping\n- bank")
 		expect(result.problems).toEqual([])
 		expect(laneNamed(result.definitions, "shipping")).toBeUndefined()
 		expect(participants(result.definitions).map((p) => p.id)).toEqual(
@@ -850,7 +850,7 @@ describe("pools, messages and lanes a script both makes and names", () => {
 
 	it("lists the own pool it draws around the process as created", () => {
 		const defs = Bpmn.parse(Bpmn.export(expand(parseProcessText(LOAN).diagram)))
-		const result = apply(defs, "pool bank")
+		const result = apply(defs, "pool bank[]")
 		expect(result.problems).toEqual([])
 		const own = participants(result.definitions).find(
 			(p) => p.processRef === primaryProcess(result.definitions)?.id,
@@ -879,7 +879,7 @@ describe("unconnected nodes past the first band's room", () => {
 	})
 })
 
-describe("REV-20261028-014: an unconnected node at the pool's right edge", () => {
+describe("an unconnected node at the pool's right edge", () => {
 	const ns =
 		'xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"'
 	const shape = (id: string, x: number, y: number, width: number, height: number) =>

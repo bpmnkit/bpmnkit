@@ -231,7 +231,7 @@ describe("collaboration builder — refusals", () => {
 	})
 })
 
-describe("REV-20261028-011: an explicit pool's collaboration id never collides", () => {
+describe("an explicit pool's collaboration id never collides", () => {
 	const ids = (defs: BpmnDefinitions): string[] => [
 		...defs.processes.flatMap((p) => [
 			p.id,

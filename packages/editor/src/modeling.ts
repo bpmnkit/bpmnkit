@@ -816,7 +816,7 @@ function isOnHostBoundary(eventBounds: BpmnBounds, hostBounds: BpmnBounds): bool
  * Moves the shapes `moves` names, re-routing the flows they end and re-docking
  * their messages. What the op leaves in place ({@link unmovableIds}) is
  * dropped first; boundary events on a moved host, a moved sub-process's
- * content and the own pool's content ({@link poolHolds}, 8c.2) come along,
+ * content and the own pool's content ({@link poolHolds}) come along,
  * each once. A flow the own pool carried with both ends is translated, bends
  * and ports kept, instead of re-routed.
  */
@@ -839,7 +839,8 @@ export function moveShapes(
 	const messages = messageFlowsById(defs)
 	const pools = participantIds(defs)
 
-	// Every cascade below adds an id once: the selection may already hold it (critique I10).
+	// Every cascade below adds an id once: the selection may already hold it, and a
+	// shape listed twice would move twice.
 	const extendedMoves = [...movable]
 	const seenIds = new Set(movable.map((m) => m.id))
 	const follow = (id: string, move: { dx: number; dy: number }) => {
@@ -848,7 +849,7 @@ export function moveShapes(
 		extendedMoves.push({ id, dx: move.dx, dy: move.dy })
 	}
 
-	// Cascade: the own pool takes what it holds (8c.2). Its flows keep their routes, translated.
+	// Cascade: the own pool takes what it holds. Its flows keep their routes, translated.
 	const rigid = new Set<string>()
 	for (const move of movable) {
 		for (const id of poolHolds(defs, move.id)) {

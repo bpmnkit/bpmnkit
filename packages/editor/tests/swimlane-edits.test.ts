@@ -1,5 +1,5 @@
 /**
- * WP8a modeling fixes: what the existing ops do to the pools, lanes, message
+ * Modeling fixes: what the existing ops do to the pools, lanes, message
  * flows and partner processes of a Flowable file. Every op runs through the
  * Flowable guard.
  */
@@ -61,7 +61,7 @@ function routes(defs: BpmnDefinitions): Map<string, string> {
 	return new Map(edges.map((e) => [e.bpmnElement, JSON.stringify(e.waypoints)]))
 }
 
-describe("8a.3 renaming lanes, pools and collaboration annotations", () => {
+describe("renaming lanes, pools and collaboration annotations", () => {
 	it("renames a top-level lane and a nested one", () => {
 		const flat = run(flowableFixture(), { kind: "rename", id: "Lane_finance", name: "Billing" })
 		expect(laneNamed(flat, "Lane_finance")?.name).toBe("Billing")
@@ -100,7 +100,7 @@ describe("8a.3 renaming lanes, pools and collaboration annotations", () => {
 	})
 })
 
-describe("8a.5 pools and lanes are not obstacles", () => {
+describe("pools and lanes are not obstacles", () => {
 	it("moving review in fixture 08 keeps the routes of edges that do not touch it", () => {
 		const before = fixture(FIXTURE_08)
 		const after = run(before, { kind: "move", moves: [{ id: "review", dx: 20, dy: 0 }] })
@@ -112,7 +112,7 @@ describe("8a.5 pools and lanes are not obstacles", () => {
 	})
 })
 
-describe("8a.6 no sequence flow to a pool or a lane", () => {
+describe("no sequence flow to a pool or a lane", () => {
 	const connect = (targetId: string): EditorOp => ({
 		kind: "createConnection",
 		sourceId: "Task_review",
@@ -126,7 +126,7 @@ describe("8a.6 no sequence flow to a pool or a lane", () => {
 
 	it("refuses a connection that ends on a lane or the own pool", () => {
 		const defs = flowableFixture()
-		// Participant_bank takes a message flow since 8d.4 (swimlane-messages.test.ts).
+		// Participant_bank takes a message flow (swimlane-messages.test.ts).
 		for (const target of ["Lane_finance", "Participant_own"]) {
 			expect(run(defs, connect(target)), target).toBe(defs)
 		}
@@ -146,7 +146,7 @@ describe("8a.6 no sequence flow to a pool or a lane", () => {
 	})
 })
 
-describe("8a.7 delete cleans up lanes, message flows and associations", () => {
+describe("delete cleans up lanes, message flows and associations", () => {
 	it("deleting ship in fixture 08 drops its lane ref and its message flow with the edge", () => {
 		const before = fixture(FIXTURE_08)
 		const after = run(before, { kind: "delete", ids: ["ship"] })
@@ -183,7 +183,7 @@ describe("8a.7 delete cleans up lanes, message flows and associations", () => {
 		expect(hasEdge(after, "Assoc_c")).toBe(false)
 	})
 
-	it("never deletes a lane's or a pool's shape without its model (lifted in WP8d)", () => {
+	it("never deletes a lane's or a pool's shape without its model", () => {
 		const defs = flowableFixture()
 		expect(run(defs, { kind: "delete", ids: ["Participant_own"] })).toBe(defs)
 		const mixed = run(defs, { kind: "delete", ids: ["Lane_ops", "End_1", "Participant_bank"] })
@@ -196,8 +196,8 @@ describe("8a.7 delete cleans up lanes, message flows and associations", () => {
 	})
 })
 
-describe("8a.8 moves leave the own pool and its lanes where they are", () => {
-	it("ignores a move of a lane, and moves the own pool with what it holds (8c.2)", () => {
+describe("moves leave the own pool and its lanes where they are", () => {
+	it("ignores a move of a lane, and moves the own pool with what it holds", () => {
 		const defs = flowableFixture()
 		expect(run(defs, { kind: "move", moves: [{ id: "Lane_finance", dx: 0, dy: 40 }] })).toBe(defs)
 		const moves = [
@@ -240,7 +240,7 @@ describe("8a.8 moves leave the own pool and its lanes where they are", () => {
 	})
 })
 
-describe("8a.9 the content of a partner process is read-only", () => {
+describe("the content of a partner process is read-only", () => {
 	it("locks the nodes and flows of a non-primary process with content", () => {
 		const locked = lockedIds(withLockedPartner())
 		expect([...locked].sort()).toEqual(["Flow_p", "Start_p", "Task_p"])
@@ -249,7 +249,7 @@ describe("8a.9 the content of a partner process is read-only", () => {
 
 	it("refuses move, delete, resize, connect and retype on a locked node", () => {
 		const defs = withLockedPartner()
-		// A message flow from Task_review to Task_p is allowed since 8d.4 (swimlane-messages.test.ts).
+		// A message flow from Task_review to Task_p is allowed (swimlane-messages.test.ts).
 		const ops: EditorOp[] = [
 			{ kind: "move", moves: [{ id: "Task_p", dx: 10, dy: 0 }] },
 			{ kind: "delete", ids: ["Task_p"] },
@@ -287,7 +287,7 @@ describe("8a.9 the content of a partner process is read-only", () => {
 	})
 })
 
-describe("8a.6 and 8a.9 dropping a container or a locked node on a flow", () => {
+describe("dropping a container or a locked node on a flow", () => {
 	const flowIds = (defs: BpmnDefinitions) =>
 		(primaryProcess(defs)?.sequenceFlows ?? []).map((f) => f.id)
 	const insert = (shapeId: string): EditorOp => ({
@@ -315,7 +315,7 @@ describe("8a.6 and 8a.9 dropping a container or a locked node on a flow", () => 
 	})
 })
 
-describe("8a.9 no boundary event on a locked node or a container", () => {
+describe("no boundary event on a locked node or a container", () => {
 	const attach = (hostId: string): EditorOp => ({
 		kind: "createBoundaryEvent",
 		hostId,

@@ -190,7 +190,7 @@ function moveLine(work: BandWork, edges: readonly BandEdge[], from: number, to: 
  * depth.
  *
  * Clamped, so the drag does the closest legal thing: no node changes band, so
- * no lane ref goes stale (critique I9). An edge already past a limit stays
+ * no lane ref goes stale. An edge already past a limit stays
  * where it is. `undefined` when `id` may not be resized.
  */
 function planResize(
@@ -269,8 +269,8 @@ export function swimlaneResizeBounds(
  * lane; a top or bottom edge moves every band edge on it, so the bands still
  * tile the pool, the lane beside gives or takes what the resized one takes or
  * gives, and an outer edge grows or shrinks the pool and its outer lanes.
- * Clamped, never refused, so no node changes band (critique I9: no lane ref
- * goes stale) and nothing moves but the bands. A pool growing down pushes
+ * Clamped, never refused, so no node changes band (no lane ref goes stale)
+ * and nothing moves but the bands. A pool growing down pushes
  * what is below it down, one shrinking from its bottom pulls the same up by
  * as much, as far as the shapes above leave room ({@link roomAbove}), and the
  * own pool widening pushes the pools beside it right ({@link pushRight}), as
@@ -333,7 +333,8 @@ function roomAbove(
 		.filter((s) => !moving.has(s.bpmnElement))
 		.map((s) => bands.get(s.bpmnElement) ?? s.bounds)
 	let room = Number.POSITIVE_INFINITY
-	// ponytail: every moving shape against every staying one, O(n²); sort by x if large planes lag.
+	// Every moving shape against every staying one, O(n²): one resize on planes
+	// of a few hundred shapes. Sorting by x would make it O(n log n) if needed.
 	for (const s of plane.shapes) {
 		if (!moving.has(s.bpmnElement)) continue
 		const m = s.bounds

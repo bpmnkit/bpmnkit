@@ -178,7 +178,7 @@ describe("process text: lanes", () => {
 	})
 
 	it("says what a lane or pool id clashes with", () => {
-		const { problems } = process("s[start] > e[end]\nlane bank: s, e\npool bank")
+		const { problems } = process("s[start] > e[end]\nlane bank: s, e\npool bank[]")
 		expect(problems).toEqual([
 			{ line: 3, message: 'pool bank: the id is a lane\'s; wrote the pool as "bank_pool"' },
 		])
@@ -258,11 +258,24 @@ describe("process text: pools and message flows", () => {
 		expect(edges).toEqual(expect.arrayContaining(["MessageFlow_1", "MessageFlow_2"]))
 	})
 
-	it("names a pool from its id when it has no name", () => {
+	it("leaves a pool written with [] unnamed", () => {
 		const { diagram } = parseProcessText(
-			"s[start] > t[send Ask] > e[end]\npool tax_office\nmsg t > tax_office",
+			"s[start] > t[send Ask] > e[end]\npool tax_office[]\nmsg t > tax_office",
 		)
-		expect(diagram.participants).toEqual([{ id: "tax_office", name: "Tax office" }])
+		expect(diagram.participants).toEqual([{ id: "tax_office" }])
+	})
+
+	it("needs the bracket: two words of prose are no pool", () => {
+		const { diagram } = parseProcessText("s[start] > e[end]\npool party")
+		expect(diagram.participants ?? []).toEqual([])
+	})
+
+	it("names a lane without a bracket after its id, and leaves one written with [] unnamed", () => {
+		const { diagram } = parseProcessText("s[start] > e[end]\nlane front_desk: s\nlane back[]: e")
+		expect(diagram.processes[0]?.lanes).toEqual([
+			{ id: "front_desk", name: "Front desk", members: ["s"] },
+			{ id: "back", members: ["e"] },
+		])
 	})
 
 	it("keeps a message label that holds a colon", () => {
