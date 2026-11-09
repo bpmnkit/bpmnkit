@@ -1,5 +1,8 @@
 //! SVG path literals copied verbatim from `packages/core/src/bpmn/svg.ts`.
 
+use bpmnkit_bpmn::js::js_number_to_string;
+use bpmnkit_bpmn::BpmnFlowElement;
+
 /// Task-type icon, 14×14 with origin at 0,0 (TS `taskIcon`).
 pub(crate) fn task_icon(type_name: &str) -> &'static str {
     match type_name {
@@ -79,11 +82,40 @@ pub(crate) fn gateway_marker(type_name: &str) -> &'static str {
     }
 }
 
-/// Collapsed sub-process `+`, or the ad-hoc `~` (TS `subProcessMarker`).
-pub(crate) fn sub_process_marker(type_name: &str) -> &'static str {
-    if type_name == "adHocSubProcess" {
-        r#"<path d="M-7 0Q-4 -4 0 0Q4 4 7 0" class="bi"/>"#
-    } else {
-        r#"<rect x="-7" y="-7" width="14" height="14" rx="1" class="bi"/><path d="M0 -4v8M-4 0h8" class="bi"/>"#
+const MARKER_STEP: f64 = 16.0;
+
+/// Bottom-centre marker row: multi-instance, compensation, ad-hoc `~` and the collapsed `+`
+/// (call activities always, sub-process variants when collapsed) (TS `activityMarkers`).
+pub(crate) fn activity_markers(el: &BpmnFlowElement, expanded: bool) -> String {
+    let mut glyphs: Vec<&str> = vec![];
+    if let Some(lc) = el.loop_characteristics() {
+        glyphs.push(if lc.is_sequential == Some(true) {
+            r#"<path d="M-5 -4h10M-5 0h10M-5 4h10" class="bi"/>"#
+        } else {
+            r#"<path d="M-4 -5v10M0 -5v10M4 -5v10" class="bi"/>"#
+        });
     }
+    if el.base().is_for_compensation == Some(true) {
+        glyphs.push(r#"<path d="M1 -3.5l-5 3.5 5 3.5zM6 -3.5l-5 3.5 5 3.5z" class="bi"/>"#);
+    }
+    let ty = el.type_name();
+    if ty == "adHocSubProcess" {
+        glyphs.push(r#"<path d="M-7 0Q-4 -4 0 0Q4 4 7 0" class="bi"/>"#);
+    }
+    let sub_process = matches!(
+        ty,
+        "subProcess" | "adHocSubProcess" | "eventSubProcess" | "transaction"
+    );
+    if ty == "callActivity" || (sub_process && !expanded) {
+        glyphs.push(r#"<rect x="-7" y="-7" width="14" height="14" rx="1" class="bi"/><path d="M0 -4v8M-4 0h8" class="bi"/>"#);
+    }
+    let start = -((glyphs.len() as f64 - 1.0) * MARKER_STEP) / 2.0;
+    let mut out = String::new();
+    for (i, g) in glyphs.iter().enumerate() {
+        out.push_str(&format!(
+            r#"<g transform="translate({} 0)">{g}</g>"#,
+            js_number_to_string(start + i as f64 * MARKER_STEP)
+        ));
+    }
+    out
 }

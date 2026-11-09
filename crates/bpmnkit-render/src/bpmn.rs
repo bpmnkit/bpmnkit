@@ -1,17 +1,19 @@
 //! Port of `packages/core/src/bpmn/svg.ts`, line by line so the bytes match.
 
-use crate::icons::{event_marker, gateway_marker, sub_process_marker, task_icon};
+use crate::icons::{activity_markers, event_marker, gateway_marker, task_icon};
 use crate::label_style::{
     collect_label_styles, label_font_css, resolve_label_font, LabelFontCss, LabelStyles,
 };
-use crate::options::{PlaneSelect, RenderOptions, ThemeColors};
+use crate::options::{ColorMode, PlaneSelect, RenderOptions, ThemeColors};
 use crate::text::{esc, wrap_text, AVG_CHAR_PX};
-use crate::{ElementKind, Geometry, RenderError, RenderedElement, Svg, ViewBox};
+use crate::{ElementKind, Geometry, RenderError, RenderWarning, RenderedElement, Svg, ViewBox};
 use bpmnkit_bpmn::js::js_number_to_string;
+use bpmnkit_bpmn::{Attrs, BpmnGroup};
 use bpmnkit_bpmn::{
     BpmnBounds, BpmnDefinitions, BpmnDiLabel, BpmnDiPlane, BpmnFlowElement, BpmnLane, BpmnLaneSet,
     BpmnParticipant, BpmnProcessContents, BpmnSequenceFlow, BpmnTextAnnotation, BpmnWaypoint,
 };
+use indexmap::IndexMap;
 use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
 
@@ -42,16 +44,16 @@ fn js_max(a: f64, b: f64) -> f64 {
     }
 }
 
-pub(crate) fn empty_svg(t: &ThemeColors) -> String {
-    format!(
-        r#"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1" width="1" height="1"><rect width="1" height="1" fill="{}"/></svg>"#,
-        t.bg
-    )
-}
-
-fn empty(t: &ThemeColors) -> Svg {
+fn empty(t: &ThemeColors, background: bool) -> Svg {
+    let rect = if background {
+        format!(r#"<rect width="1" height="1" fill="{}"/>"#, t.bg)
+    } else {
+        String::new()
+    };
     Svg {
-        markup: empty_svg(t),
+        markup: format!(
+            r#"<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1 1" width="1" height="1">{rect}</svg>"#
+        ),
         view_box: ViewBox {
             x: 0.0,
             y: 0.0,
@@ -89,36 +91,34 @@ fn find_plane<'a>(
 pub(crate) fn render(defs: &BpmnDefinitions, opts: &RenderOptions) -> Result<Svg, RenderError> {
     let t = opts.theme.colors();
     let plane = find_plane(defs, &opts.plane)?;
+    // Like TS: only the default plane is laid out, and only when it has no shapes.
     #[cfg(feature = "auto-layout")]
     if opts.auto_layout
-        && plane.is_none_or(|p| p.shapes.is_empty() && p.edges.is_empty())
-        && defs
-            .processes
-            .iter()
-            .any(|p| !p.contents.flow_elements.is_empty())
+        && opts.plane == PlaneSelect::First
+        && plane.is_none_or(|p| p.shapes.is_empty())
     {
         let laid =
             bpmnkit_layout::apply_auto_layout(defs, bpmnkit_layout::LayoutEngine::Semantic, None);
-        let plane = find_plane(&laid, &opts.plane)?;
-        let mut out = render_plane(&laid, plane, opts, &t);
-        out.warnings.push(crate::RenderWarning::AutoLayoutApplied);
+        let mut out = render_plane(&laid, find_plane(&laid, &opts.plane)?, opts, t);
+        out.warnings.insert(0, RenderWarning::AutoLayoutApplied);
         return Ok(out);
     }
-    match plane {
-        Some(plane) => Ok(render_plane(defs, Some(plane), opts, &t)),
-        None => Err(RenderError::NoDiagram),
+    if defs.diagrams.is_empty() {
+        return Err(RenderError::NoDiagram);
     }
+    Ok(render_plane(defs, plane, opts, t))
 }
 
+#[derive(Clone)]
 struct Ctx<'a> {
-    t: &'a ThemeColors,
+    t: ThemeColors,
     opts: &'a RenderOptions,
-    styles: LabelStyles,
+    styles: &'a LabelStyles,
 }
 
 impl Ctx<'_> {
     fn font_of(&self, label: Option<&BpmnDiLabel>) -> Option<LabelFontCss> {
-        let font = resolve_label_font(label, &self.styles)?;
+        let font = resolve_label_font(label, self.styles)?;
         Some(label_font_css(
             Some(font),
             &self.opts.font.family,
@@ -158,7 +158,7 @@ impl Ctx<'_> {
 
     /// A label's inline style, escaped for a double-quoted attribute (TS `textStyle`).
     fn text_style(&self, font: Option<&LabelFontCss>) -> String {
-        let t = self.t;
+        let t = &self.t;
         esc(&format!(
             "fill:{};{};text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:{};stroke-width:4px;stroke-linejoin:round",
             t.text,
@@ -210,7 +210,7 @@ impl Ctx<'_> {
     }
 
     fn shape_style(&self, sw: f64, dash: Option<&str>) -> String {
-        let t = self.t;
+        let t = &self.t;
         let mut s = format!(
             "fill:{};stroke:{};stroke-width:{}",
             t.shape_fill,
@@ -233,7 +233,7 @@ impl Ctx<'_> {
 
     /// Wraps icon markup in a `<g>` with a local `<style>` for its classes (TS `iconGroup`).
     fn icon_group(&self, content: &str, x: f64, y: f64) -> String {
-        let t = self.t;
+        let t = &self.t;
         format!(
             "<g transform=\"translate({} {})\"><style>.bi{{{}}}.bis{{fill:{};stroke:none}}.gm{{fill:{};stroke:none}}.gms{{fill:none;stroke:{};stroke-width:2.5;stroke-linecap:round}}</style>{}</g>",
             n(x),
@@ -247,7 +247,7 @@ impl Ctx<'_> {
     }
 
     fn render_event(&self, el: Option<&BpmnFlowElement>, width: f64, height: f64) -> String {
-        let t = self.t;
+        let t = &self.t;
         let cx = width / 2.0;
         let cy = height / 2.0;
         let r = js_min(cx, cy) - 1.0;
@@ -348,9 +348,11 @@ impl Ctx<'_> {
                 ));
             }
         }
-        let container = matches!(ty, "subProcess" | "eventSubProcess" | "transaction");
-        if (container && !expanded) || ty == "adHocSubProcess" {
-            out.push_str(&self.icon_group(sub_process_marker(ty), width / 2.0, height - 10.0));
+        if let Some(el) = el {
+            let markers = activity_markers(el, expanded);
+            if !markers.is_empty() {
+                out.push_str(&self.icon_group(&markers, width / 2.0, height - 10.0));
+            }
         }
         out
     }
@@ -383,7 +385,7 @@ impl Ctx<'_> {
         height: f64,
         font: Option<&LabelFontCss>,
     ) -> String {
-        let t = self.t;
+        let t = &self.t;
         let mut out = format!(
             r#"<rect x="0" y="0" width="{w}" height="{h}" style="fill:{};stroke:{};stroke-width:1.5"/><rect x="0" y="0" width="30" height="{h}" style="fill:{};stroke:{};stroke-width:1.5"/>"#,
             t.shape_fill,
@@ -429,6 +431,82 @@ impl Ctx<'_> {
         }
         out
     }
+
+    fn render_data_object(&self, el: Option<&BpmnFlowElement>, width: f64, height: f64) -> String {
+        let fold = js_min(14.0, width / 3.0);
+        let mut out = format!(
+            r#"<path d="M0 0 H{} L{} {} V{} H0 Z" style="{}"/><path d="M{} 0 V{} H{}" style="{}"/>"#,
+            n(width - fold),
+            n(width),
+            n(fold),
+            n(height),
+            self.shape_style(1.5, None),
+            n(width - fold),
+            n(fold),
+            n(width),
+            self.icon_style()
+        );
+        if let Some(BpmnFlowElement::DataObjectReference(d)) = el {
+            if d.is_collection == Some(true) {
+                out.push_str(&self.icon_group(
+                    r#"<path d="M-3 -5v9M0 -5v9M3 -5v9" class="bi"/>"#,
+                    width / 2.0,
+                    height - 6.0,
+                ));
+            }
+        }
+        out
+    }
+
+    fn render_data_store(&self, width: f64, height: f64) -> String {
+        let ry = js_min(8.0, height / 6.0);
+        let rx = width / 2.0;
+        let shape = self.shape_style(1.5, None);
+        format!(
+            r#"<path d="M0 {ry} A {rx} {ry} 0 0 0 {w} {ry} V {hr} A {rx} {ry} 0 0 1 0 {hr} Z" style="{shape}"/><ellipse cx="{rx}" cy="{ry}" rx="{rx}" ry="{ry}" style="{shape}"/><path d="M0 {r2} A {rx} {ry} 0 0 0 {w} {r2} M0 {r3} A {rx} {ry} 0 0 0 {w} {r3}" style="{}"/>"#,
+            self.icon_style(),
+            ry = n(ry),
+            rx = n(rx),
+            w = n(width),
+            hr = n(height - ry),
+            r2 = n(ry * 2.0),
+            r3 = n(ry * 3.4),
+        )
+    }
+
+    fn render_group(
+        &self,
+        name: Option<&str>,
+        width: f64,
+        height: f64,
+        font: Option<&LabelFontCss>,
+    ) -> String {
+        let mut out = format!(
+            r#"<rect x="0" y="0" width="{}" height="{}" rx="8" style="fill:none;stroke:{};stroke-width:1.5;stroke-dasharray:6 3"/>"#,
+            n(width),
+            n(height),
+            self.t.shape_stroke
+        );
+        if let Some(name) = name.filter(|s| !s.is_empty()) {
+            out.push_str(&self.label_svg(name, width / 2.0, 14.0, width - 16.0, true, font));
+        }
+        out
+    }
+
+    /// Fill/stroke from the DI (TS `readDiColor`); `None` when colours are ignored.
+    fn with_di_colors(&self, attrs: &Attrs) -> Option<Self> {
+        if self.opts.colors != ColorMode::Di {
+            return None;
+        }
+        let mut c = self.clone();
+        if let Some(fill) = di_fill(attrs) {
+            c.t.shape_fill = fill.clone();
+        }
+        if let Some(stroke) = di_stroke(attrs) {
+            c.t.shape_stroke = stroke.clone();
+        }
+        Some(c)
+    }
 }
 
 /// A rounded polyline: each inner corner becomes a quadratic curve (TS `waypointsToPath`).
@@ -470,6 +548,18 @@ fn waypoints_to_path(wps: &[BpmnWaypoint]) -> String {
     parts.join(" ")
 }
 
+fn di_fill(attrs: &Attrs) -> Option<&String> {
+    attrs
+        .get("bioc:fill")
+        .or_else(|| attrs.get("color:background-color"))
+}
+
+fn di_stroke(attrs: &Attrs) -> Option<&String> {
+    attrs
+        .get("bioc:stroke")
+        .or_else(|| attrs.get("color:border-color"))
+}
+
 fn is_event(ty: &str) -> bool {
     matches!(
         ty,
@@ -492,14 +582,17 @@ fn is_gateway(ty: &str) -> bool {
     )
 }
 
-/// Model lookups by id (TS `buildIndex`).
+/// Model lookups by id (TS `buildIndex`). `elements` keeps insertion order: the
+/// `ElementWithoutDi` warnings follow it.
 #[derive(Default)]
 struct ModelIndex<'a> {
-    elements: HashMap<&'a str, &'a BpmnFlowElement>,
+    elements: IndexMap<&'a str, &'a BpmnFlowElement>,
     flows: HashMap<&'a str, &'a BpmnSequenceFlow>,
     annotations: HashMap<&'a str, &'a BpmnTextAnnotation>,
     participants: HashMap<&'a str, &'a BpmnParticipant>,
     lanes: HashMap<&'a str, &'a BpmnLane>,
+    groups: HashMap<&'a str, &'a BpmnGroup>,
+    category_values: HashMap<&'a str, Option<&'a str>>,
     message_flow_ids: HashSet<&'a str>,
     default_flow_ids: HashSet<&'a str>,
 }
@@ -512,6 +605,9 @@ impl<'a> ModelIndex<'a> {
             for ta in &proc.contents.text_annotations {
                 idx.annotations.insert(&ta.id, ta);
             }
+            for g in &proc.contents.groups {
+                idx.groups.insert(&g.id, g);
+            }
             if let Some(ls) = &proc.lane_set {
                 idx.index_lane_set(ls);
             }
@@ -523,8 +619,16 @@ impl<'a> ModelIndex<'a> {
             for ta in &collab.text_annotations {
                 idx.annotations.insert(&ta.id, ta);
             }
+            for g in &collab.groups {
+                idx.groups.insert(&g.id, g);
+            }
             for mf in &collab.message_flows {
                 idx.message_flow_ids.insert(&mf.id);
+            }
+        }
+        for cat in &defs.categories {
+            for v in &cat.category_values {
+                idx.category_values.insert(&v.id, v.value.as_deref());
             }
         }
         idx
@@ -561,6 +665,11 @@ impl<'a> ModelIndex<'a> {
             }
         }
     }
+
+    fn group_label(&self, g: &BpmnGroup) -> Option<&'a str> {
+        let r = g.category_value_ref.as_deref().filter(|r| !r.is_empty())?;
+        self.category_values.get(r).copied().flatten()
+    }
 }
 
 fn id_attr(on: bool, id: &str) -> Cow<'static, str> {
@@ -575,18 +684,20 @@ fn render_plane(
     defs: &BpmnDefinitions,
     plane: Option<&BpmnDiPlane>,
     opts: &RenderOptions,
-    t: &ThemeColors,
+    t: ThemeColors,
 ) -> Svg {
     let Some(plane) = plane else {
-        return empty(t);
+        return empty(&t, opts.background);
     };
     let padding = opts.padding;
     let idx = ModelIndex::build(defs);
+    let styles = collect_label_styles(defs);
     let ctx = Ctx {
         t,
         opts,
-        styles: collect_label_styles(defs),
+        styles: &styles,
     };
+    let t = &ctx.t;
     let ids = opts.element_ids;
 
     let mut min_x = f64::INFINITY;
@@ -614,15 +725,17 @@ fn render_plane(
         }
     }
     if !min_x.is_finite() {
-        return empty(t);
+        return empty(t, opts.background);
     }
 
     let ox = min_x - padding;
     let oy = min_y - padding;
     let vw = max_x - min_x + padding * 2.0;
     let vh = max_y - min_y + padding * 2.0;
+    let (width, height) = output_size(vw, vh, opts.scale, opts.max_size);
 
     let mut elements = vec![];
+    let mut warnings = vec![];
 
     // ── Edges ──
     let mut edge_parts: Vec<String> = vec![];
@@ -635,15 +748,18 @@ fn render_plane(
         let is_msg = idx.message_flow_ids.contains(el_id);
         let is_assoc = flow.is_none() && !is_msg;
         let d = waypoints_to_path(&edge.waypoints);
-        let stroke = &t.flow_stroke;
+        let stroke = match opts.colors {
+            ColorMode::Di => di_stroke(&edge.unknown_attributes).unwrap_or(&t.flow_stroke),
+            ColorMode::Ignore => &t.flow_stroke,
+        };
         let sw = "1.5";
         let id = id_attr(ids, el_id);
         elements.push(RenderedElement {
             id: el_id.to_owned(),
-            kind: if is_assoc {
-                ElementKind::Association
-            } else if is_msg {
+            kind: if is_msg {
                 ElementKind::MessageFlow
+            } else if is_assoc {
+                ElementKind::Association
             } else {
                 ElementKind::SequenceFlow
             },
@@ -652,7 +768,7 @@ fn render_plane(
 
         if is_assoc {
             edge_parts.push(format!(
-                r#"<path{id} d="{d}" fill="none" stroke="{stroke}" stroke-width="{sw}" stroke-dasharray="5 3"/>"#
+                r#"<path d="{d}"{id} fill="none" stroke="{stroke}" stroke-width="{sw}" stroke-dasharray="5 3"/>"#
             ));
             continue;
         }
@@ -662,7 +778,7 @@ fn render_plane(
             ""
         };
         edge_parts.push(format!(
-            r#"<path{id} d="{d}" fill="none" stroke="{stroke}" stroke-width="{sw}"{dash} marker-end="url(#arr)"/>"#
+            r#"<path d="{d}"{id} fill="none" stroke="{stroke}" stroke-width="{sw}"{dash} marker-end="url(#arr)"/>"#
         ));
 
         // Default-flow slash
@@ -705,10 +821,11 @@ fn render_plane(
         }
     }
 
-    // ── Shapes ── pool/lane/expanded bodies are opaque, so they render first.
+    // ── Shapes ── pool/lane/group/expanded bodies are opaque, so they render first.
     let mut container_parts: Vec<String> = vec![];
     let mut shape_parts: Vec<String> = vec![];
     let mut label_parts: Vec<String> = vec![];
+    let mut drawn: HashSet<&str> = HashSet::new();
     for shape in &plane.shapes {
         let BpmnBounds {
             x,
@@ -721,43 +838,54 @@ fn render_plane(
         let ty = el.map_or("", |e| e.type_name());
         let font = ctx.font_of(shape.label.as_ref());
         let font = font.as_ref();
+        let colored = ctx.with_di_colors(&shape.unknown_attributes);
+        let sc = colored.as_ref().unwrap_or(&ctx);
 
         let mut is_container = false;
         let mut kind = el.map(|e| ElementKind::Flow(e.type_name()));
         let inner = if is_event(ty) {
-            ctx.render_event(el, width, height)
+            sc.render_event(el, width, height)
         } else if is_gateway(ty) {
-            ctx.render_gateway(el, width, height)
+            sc.render_gateway(el, width, height)
+        } else if ty == "dataObjectReference" {
+            sc.render_data_object(el, width, height)
+        } else if ty == "dataStoreReference" {
+            sc.render_data_store(width, height)
         } else if el.is_none() {
             if let Some(a) = idx.annotations.get(el_id) {
                 kind = Some(ElementKind::TextAnnotation);
-                ctx.render_annotation(a.text.as_deref(), width, height, font)
+                sc.render_annotation(a.text.as_deref(), width, height, font)
+            } else if let Some(g) = idx.groups.get(el_id) {
+                kind = Some(ElementKind::Group);
+                is_container = true;
+                sc.render_group(idx.group_label(g), width, height, font)
             } else if let Some(p) = idx.participants.get(el_id) {
-                is_container = true;
                 kind = Some(ElementKind::Participant);
-                ctx.render_container(p.name.as_deref(), width, height, font)
-            } else if let Some(l) = idx.lanes.get(el_id) {
                 is_container = true;
+                sc.render_container(p.name.as_deref(), width, height, font)
+            } else if let Some(l) = idx.lanes.get(el_id) {
                 kind = Some(ElementKind::Lane);
-                ctx.render_container(l.name.as_deref(), width, height, font)
+                is_container = true;
+                sc.render_container(l.name.as_deref(), width, height, font)
             } else {
                 String::new()
             }
         } else {
+            // An expanded body is opaque, so it renders under its own children, like a pool.
             let expanded = matches!(
                 ty,
                 "subProcess" | "adHocSubProcess" | "eventSubProcess" | "transaction"
             ) && shape.is_expanded == Some(true);
             is_container = expanded;
-            ctx.render_task(el, width, height, expanded, font)
+            sc.render_task(el, width, height, expanded, font)
         };
 
         if !inner.is_empty() {
             let g = format!(
-                r#"<g{} transform="translate({} {})">{inner}</g>"#,
-                id_attr(ids, el_id),
+                r#"<g transform="translate({} {})"{}>{inner}</g>"#,
                 n(x),
-                n(y)
+                n(y),
+                id_attr(ids, el_id)
             );
             if is_container {
                 container_parts.push(g);
@@ -770,39 +898,49 @@ fn render_plane(
                     kind,
                     geometry: Geometry::Shape(shape.bounds.clone()),
                 });
+                drawn.insert(el_id);
             }
         }
 
-        // External labels for events and gateways
+        // External labels for events, gateways and data elements
+        let ext_label = is_event(ty)
+            || is_gateway(ty)
+            || ty == "dataObjectReference"
+            || ty == "dataStoreReference";
         if let Some(name) = el
             .and_then(|e| e.base().name.as_deref())
-            .filter(|s| !s.is_empty())
+            .filter(|s| !s.is_empty() && ext_label)
         {
-            if is_event(ty) || is_gateway(ty) {
-                let lb = shape
-                    .label
-                    .as_ref()
-                    .and_then(|l| l.bounds.clone())
-                    .unwrap_or(BpmnBounds {
-                        x: shape.bounds.x + shape.bounds.width / 2.0 - 40.0,
-                        y: shape.bounds.y + shape.bounds.height + 6.0,
-                        width: 80.0,
-                        height: 20.0,
-                    });
-                label_parts.push(ctx.label_svg(
-                    name,
-                    lb.x + lb.width / 2.0,
-                    lb.y + lb.height / 2.0,
-                    lb.width,
-                    true,
-                    font,
-                ));
-            }
+            let lb = shape
+                .label
+                .as_ref()
+                .and_then(|l| l.bounds.clone())
+                .unwrap_or(BpmnBounds {
+                    x: shape.bounds.x + shape.bounds.width / 2.0 - 40.0,
+                    y: shape.bounds.y + shape.bounds.height + 6.0,
+                    width: 80.0,
+                    height: 20.0,
+                });
+            label_parts.push(ctx.label_svg(
+                name,
+                lb.x + lb.width / 2.0,
+                lb.y + lb.height / 2.0,
+                lb.width,
+                true,
+                font,
+            ));
+        }
+    }
+
+    for id in idx.elements.keys() {
+        if !drawn.contains(id) {
+            warnings.push(RenderWarning::ElementWithoutDi {
+                id: (*id).to_owned(),
+            });
         }
     }
 
     // ── Assemble ──
-    let (width, height) = output_size(vw, vh, opts.scale, opts.max_size);
     let mut out: Vec<String> = Vec::with_capacity(
         8 + container_parts.len() + edge_parts.len() + shape_parts.len() + label_parts.len(),
     );
@@ -850,7 +988,7 @@ fn render_plane(
         width,
         height,
         elements,
-        warnings: vec![],
+        warnings,
     }
 }
 
@@ -863,14 +1001,12 @@ pub(crate) fn output_size(
 ) -> (f64, f64) {
     let w = vw * scale;
     let h = vh * scale;
-    let Some((mw, mh)) = max_size else {
-        return (w, h);
-    };
-    let f = js_min(js_min(mw / w, mh / h), 1.0);
-    if f < 1.0 {
-        (w * f, h * f)
-    } else {
-        (w, h)
+    match max_size {
+        Some((mw, mh)) => {
+            let f = js_min(js_min(1.0, mw / w), mh / h);
+            (w * f, h * f)
+        }
+        None => (w, h),
     }
 }
 

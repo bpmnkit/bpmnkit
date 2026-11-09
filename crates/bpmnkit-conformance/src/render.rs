@@ -105,7 +105,11 @@ pub fn options_from_json(o: &Json) -> Result<RenderOptions, String> {
                 Some("di") => ColorMode::Di,
                 _ => return Err(format!("option colors: {v}")),
             }),
-            "plane" => opts.plane(PlaneSelect::ById(string(v, key)?)),
+            "plane" => opts.plane(match (v.get("id"), v.get("process")) {
+                (Some(id), None) => PlaneSelect::ById(string(id, "plane.id")?),
+                (None, Some(p)) => PlaneSelect::Process(string(p, "plane.process")?),
+                _ => return Err(format!("option plane: {v}")),
+            }),
             "autoLayout" => opts.auto_layout(v.as_bool().ok_or("option autoLayout")?),
             "elementIds" => opts.element_ids(v.as_bool().ok_or("option elementIds")?),
             "background" => opts.background(v.as_bool().ok_or("option background")?),
@@ -175,7 +179,8 @@ pub fn check_case(dir: &Path, id: &str) -> Result<Outcome, String> {
     let defs = parse_bpmn(&xml).map_err(|e| format!("parse: {e}"))?;
     reset_id_counter();
     let got = match bpmn_to_svg(&defs, &opts) {
-        Ok(svg) => svg.markup,
+        // The recorder ends the file with a newline.
+        Ok(svg) => svg.markup + "\n",
         // TS draws the empty 1×1 document where Rust reports that there is nothing to draw.
         Err(RenderError::NoDiagram) if want.contains(r#"viewBox="0 0 1 1""#) => {
             return Ok(Outcome::Pass)

@@ -114,8 +114,8 @@ pub struct RenderOptions {
     pub max_size: Option<(f64, f64)>,
     pub colors: ColorMode,
     pub plane: PlaneSelect,
-    /// Lay the model out first when the chosen plane has no shapes (needs feature
-    /// `auto-layout`). Default true.
+    /// Lay the model out first when the default plane has no shapes (needs feature
+    /// `auto-layout`). Default false, like TS; turn it on for models without DI.
     pub auto_layout: bool,
     pub font: FontOptions,
     /// Add `data-element-id="…"` to each drawn element. Default false.
@@ -133,7 +133,7 @@ impl Default for RenderOptions {
             max_size: None,
             colors: ColorMode::Ignore,
             plane: PlaneSelect::First,
-            auto_layout: true,
+            auto_layout: false,
             font: FontOptions::default(),
             element_ids: false,
             background: true,

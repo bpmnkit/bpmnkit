@@ -33,7 +33,7 @@ fn corpus_renders() {
             continue;
         };
         for theme in [Theme::Light, Theme::Dark] {
-            let opts = RenderOptions::default().theme(theme);
+            let opts = RenderOptions::default().theme(theme).auto_layout(true);
             let svg = match bpmn_to_svg(&defs, &opts) {
                 Ok(svg) => svg,
                 Err(bpmnkit_render::RenderError::NoDiagram) => continue,
@@ -70,16 +70,28 @@ fn options_change_only_what_they_name() {
     )
     .unwrap();
     let defs = bpmnkit_bpmn::parse_bpmn(&xml).unwrap();
-    let base = bpmn_to_svg(&defs, &RenderOptions::default()).unwrap();
-    let scaled = bpmn_to_svg(&defs, &RenderOptions::default().scale(2.0)).unwrap();
+    let base = bpmn_to_svg(&defs, &RenderOptions::default().auto_layout(true)).unwrap();
+    let scaled = bpmn_to_svg(
+        &defs,
+        &RenderOptions::default().auto_layout(true).scale(2.0),
+    )
+    .unwrap();
     assert_eq!(scaled.view_box, base.view_box);
     assert_eq!(scaled.width, base.width * 2.0);
 
-    let ids = bpmn_to_svg(&defs, &RenderOptions::default().element_ids(true)).unwrap();
+    let ids = bpmn_to_svg(
+        &defs,
+        &RenderOptions::default().auto_layout(true).element_ids(true),
+    )
+    .unwrap();
     assert!(ids.markup.contains(" data-element-id=\""));
     assert!(!base.markup.contains("data-element-id"));
 
-    let clear = bpmn_to_svg(&defs, &RenderOptions::default().background(false)).unwrap();
+    let clear = bpmn_to_svg(
+        &defs,
+        &RenderOptions::default().auto_layout(true).background(false),
+    )
+    .unwrap();
     assert_eq!(
         clear.markup.lines().count() + 1,
         base.markup.lines().count()

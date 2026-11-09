@@ -2,8 +2,9 @@
 //! (`packages/core/src/bpmn/svg.ts`).
 //!
 //! The SVG is the contract: [`bpmn_to_svg`] with default [`RenderOptions`] gives the same bytes
-//! as TS `exportSvg(defs)`, held by the `conformance/render/` cases. Models without diagram
-//! interchange are laid out first (feature `auto-layout`, on by default).
+//! as TS `exportSvg(defs)`, held by the `conformance/render/` cases. With
+//! [`RenderOptions::auto_layout`], models without diagram interchange are laid out first
+//! (feature `auto-layout`, on by default).
 //!
 //! ```
 //! use bpmnkit_render::{bpmn_xml_to_svg, RenderOptions, Theme};
@@ -16,7 +17,7 @@
 //!     <bpmn:sequenceFlow id="f1" sourceRef="s" targetRef="e"/>
 //!   </bpmn:process>
 //! </bpmn:definitions>"#;
-//! let svg = bpmn_xml_to_svg(xml, &RenderOptions::default().theme(Theme::Dark)).unwrap();
+//! let svg = bpmn_xml_to_svg(xml, &RenderOptions::default().theme(Theme::Dark).auto_layout(true)).unwrap();
 //! assert!(svg.markup.starts_with("<svg "));
 //! assert!(svg.markup.contains("Order received"));
 //! assert_eq!(svg.elements.len(), 3); // two events and the flow
@@ -86,6 +87,7 @@ pub enum ElementKind {
     Participant,
     Lane,
     TextAnnotation,
+    Group,
 }
 
 /// DI geometry of a drawn element.
@@ -101,6 +103,8 @@ pub enum Geometry {
 pub enum RenderWarning {
     /// The chosen plane was empty, so the model was auto-laid out first.
     AutoLayoutApplied,
+    /// A flow element of the model has no shape on the drawn plane.
+    ElementWithoutDi { id: String },
 }
 
 /// SVG for a BPMN model. Default options give the same bytes as TS `exportSvg(defs)`.
