@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-09 — fix: CLI 1.5.0 would not start (connectors export never released)
+
+- Root cause: #247 added `applyTemplates` to `@bpmnkit/connectors` with no changeset, so connectors stayed at 1.3.1 on npm. Published `@bpmnkit/cli` 1.5.0 depends on `@bpmnkit/connectors ^1.3.1` and imports the missing export.
+- Changesets: `connectors` minor + `cli` patch (moves the cli range to the new connectors); `patterns` patch (src changed since 0.1.2, also unreleased). Checked every published package's imports of other `@bpmnkit/*` packages against the npm release: the only other missing exports are core's deployability symbols, already covered by pending changesets.
+- Guard: `scripts/changeset-check.mjs` (+ test, in `test:scripts`) fails a PR when a published package's `src/` changed and no changeset names it; new `changeset-check` job in `ci.yml`. `changeset status` was not used: it only checks that some changeset exists.
+
 ## 2026-11-09 — reebe-wasm validates deployments like Zeebe by default
 
 - `reebe-wasm` turns on its `zeebe-validate` feature by default, so a browser deploy rejects what Zeebe rejects, as the server does. Measured: 730,418 B gzip (was 621,488 B without the validator).
