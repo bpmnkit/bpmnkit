@@ -92,6 +92,20 @@ options. `RenderOptions::default().theme(Theme::Dark).max_size(640.0, 360.0)` fi
 thumbnail; `.auto_layout(true)` draws models that have no diagram interchange. The returned
 `Svg` also carries the view box, the drawn size and each element's geometry.
 
+## Text to picture in one call
+
+With `text` and `render`, `bpmnkit::quick::render_svg(text, &RenderOptions)` turns process text (or
+compact JSON) into an `Svg`; with `render-png`, `bpmnkit::quick::render_png(text, &opts,
+&PngOptions::default())` returns PNG bytes. Auto layout is always on. Input that is not BPMN
+gives `Error::Unrecognized`. See the `text_to_png` example.
+
+## Stable ids in a server
+
+Text expansion derives ids from content, so the same text always gives the same ids, on any
+thread. Do not rely on `bpmnkit_bpmn::ids::reset_id_counter`: the counter is thread-local, and a
+tokio task may move between threads between calls. For models you build by hand, call
+`bpmnkit_bpmn::stable_ids::assign_stable_flow_ids` to get content-derived flow ids instead.
+
 ## Diff two models
 
 `diff_bpmn(&before, &after)` returns a `BpmnDiff`: every added, removed, changed (with
@@ -116,4 +130,4 @@ file with `files.uploadV2`, and post `diff_to_text` with `markdown: true` (or a 
 
 ## Examples
 
-`cargo run -p bpmnkit --all-features --example text_to_bpmn | eval_dmn | lint_report | render_svg | render_png | diff_html`.
+`cargo run -p bpmnkit --all-features --example text_to_bpmn | eval_dmn | lint_report | render_svg | render_png | text_to_png | diff_html`.

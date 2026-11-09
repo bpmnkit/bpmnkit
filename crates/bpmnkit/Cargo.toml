@@ -83,3 +83,7 @@ required-features = ["render-png", "diff-html"]
 [[example]]
 name = "diff_html"
 required-features = ["diff-html"]
+
+[[example]]
+name = "text_to_png"
+required-features = ["render-png", "text"]

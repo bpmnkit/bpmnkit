@@ -29,6 +29,8 @@ pub use bpmnkit_xml as xml;
 
 mod detect;
 mod error;
+#[cfg(all(feature = "text", feature = "render"))]
+pub mod quick;
 
 pub use detect::{detect, load, DocKind, Document};
 pub use error::Error;

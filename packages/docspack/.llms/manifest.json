@@ -7268,18 +7268,36 @@
 		{
 			"id": "rust.embedding.render-a-diagram",
 			"file": "chunks/rust.embedding.render-a-diagram.md",
-			"tokens": 282,
+			"tokens": 163,
 			"tags": [
 				"rust",
 				"embedding",
 				"render",
 				"diagram",
+				"text",
+				"picture",
+				"one",
+				"call"
+			],
+			"entities": [
+				"exportSvg"
+			]
+		},
+		{
+			"id": "rust.embedding.stable-ids-in-a-server",
+			"file": "chunks/rust.embedding.stable-ids-in-a-server.md",
+			"tokens": 290,
+			"tags": [
+				"rust",
+				"embedding",
+				"stable",
+				"ids",
+				"server",
 				"diff",
 				"two",
 				"models"
 			],
 			"entities": [
-				"exportSvg",
 				"BpmnDiff",
 				"renderDiffHtml"
 			]
@@ -7287,7 +7305,7 @@
 		{
 			"id": "rust.embedding.slack-recipe",
 			"file": "chunks/rust.embedding.slack-recipe.md",
-			"tokens": 122,
+			"tokens": 125,
 			"tags": [
 				"rust",
 				"embedding",

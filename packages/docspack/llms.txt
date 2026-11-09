@@ -486,5 +486,6 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Embedding the Rust crates — One error type](.llms/chunks/rust.embedding.one-error-type.md) — 200 tokens
 - [Embedding the Rust crates — FEEL and DMN results in chat](.llms/chunks/rust.embedding.feel-and-dmn-results-in-chat.md) — 150 tokens
 - [Embedding the Rust crates — Cargo features](.llms/chunks/rust.embedding.cargo-features.md) — 210 tokens
-- [Embedding the Rust crates — Render a diagram](.llms/chunks/rust.embedding.render-a-diagram.md) — 282 tokens
-- [Embedding the Rust crates — Slack recipe](.llms/chunks/rust.embedding.slack-recipe.md) — 122 tokens
+- [Embedding the Rust crates — Render a diagram](.llms/chunks/rust.embedding.render-a-diagram.md) — 163 tokens
+- [Embedding the Rust crates — Stable ids in a server](.llms/chunks/rust.embedding.stable-ids-in-a-server.md) — 290 tokens
+- [Embedding the Rust crates — Slack recipe](.llms/chunks/rust.embedding.slack-recipe.md) — 125 tokens

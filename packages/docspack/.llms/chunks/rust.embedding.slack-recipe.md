@@ -8,7 +8,7 @@ file with `files.uploadV2`, and post `diff_to_text` with `markdown: true` (or a 
 
 ## Examples
 
-`cargo run -p bpmnkit --all-features --example text_to_bpmn | eval_dmn | lint_report | render_svg | render_png | diff_html`.
+`cargo run -p bpmnkit --all-features --example text_to_bpmn | eval_dmn | lint_report | render_svg | render_png | text_to_png | diff_html`.
 
 ---
 Source: https://bpmnkit.com/docs/rust/embedding

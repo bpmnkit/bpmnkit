@@ -1,5 +1,9 @@
 # Features
 
+## Rust: process text to SVG/PNG in one call (2026-11-09)
+
+`bpmnkit::quick::render_svg(text, &RenderOptions)` and `render_png(text, &opts, &PngOptions)` (facade features `text` + `render` / `render-png`) go from process text or compact JSON to a laid-out image without touching the intermediate model. Example `text_to_png`.
+
 ## HTML diff viewer (2026-11-09)
 
 `casen diff bpmn old.bpmn new.bpmn --html diff.html` writes one self-contained page: both diagrams with added, removed, changed and moved elements outlined, side by side or overlaid, a filterable change list with field-level `before → after`, click-to-zoom and `j`/`k` stepping; it loads nothing and reads without JavaScript. `--png diff.png` is the later diagram with the same marks, for chat. Library: `renderDiffHtml` / `diffToSvg` in `@bpmnkit/core`, `diff_to_html` / `diff_to_svg` in `bpmnkit-diff` (feature `html`), byte-identical. The Rust facade gains `render`, `diff` and `diff-html` features.
