@@ -855,7 +855,6 @@ pub struct BpmnProcess {
     pub id: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub name: Option<String>,
-    /// Only ever `Some(true)`.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub is_executable: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -1125,4 +1124,10 @@ pub struct BpmnDefinitions {
     pub diagrams: Vec<BpmnDiagram>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub unknown_children: Vec<XmlElement>,
+    /// The process the edits go to, once one has been chosen: `primary_process` returns it
+    /// while `processes` holds it and no process is explicitly executable. Read from and
+    /// written to `<definitions bpmnkit:primaryProcess>`, but written only when the file
+    /// alone would lead `primary_process` elsewhere.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub primary_process_id: Option<String>,
 }

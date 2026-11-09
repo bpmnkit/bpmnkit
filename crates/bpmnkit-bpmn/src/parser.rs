@@ -7,6 +7,7 @@
 
 use crate::model::*;
 use crate::number::{js_number, js_trim};
+use crate::swimlanes::BPMNKIT_NAMESPACE;
 use bpmnkit_spec::elements::{bpmn_element, BpmnTrait};
 use bpmnkit_xml::{local_name, scan_xml, Attrs, Visit, XmlElement, XmlSink};
 use std::fmt;
@@ -2162,6 +2163,14 @@ impl Frame for DefinitionsFrame {
                 unknown_attributes.insert(key.clone(), value.clone());
             }
         }
+        // Two prefixes may name the namespace; the pin is under the one that carries it.
+        let pin_key = namespaces
+            .iter()
+            .filter(|(prefix, uri)| !prefix.is_empty() && *uri == BPMNKIT_NAMESPACE)
+            .map(|(prefix, _)| format!("{prefix}:primaryProcess"))
+            .find(|key| unknown_attributes.contains_key(key));
+        // The declaration stays: it is the model's, like any other.
+        let primary_process_id = pin_key.and_then(|key| unknown_attributes.shift_remove(&key));
         Ok(Out::Definitions(Box::new(BpmnDefinitions {
             // Optional in the schema, and the Flowable Modeler leaves it out.
             id: attr_string(attrs, "id").unwrap_or_default(),
@@ -2181,6 +2190,7 @@ impl Frame for DefinitionsFrame {
             processes: self.processes,
             diagrams: self.diagrams,
             unknown_children: self.unknown_children,
+            primary_process_id,
         })))
     }
 }
