@@ -1,5 +1,29 @@
 # Changelog
 
+## 0.5.12
+
+### Patch Changes
+
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [65aba71]
+- Updated dependencies [e57db77]
+- Updated dependencies [e57db77]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [e57db77]
+- Updated dependencies [e57db77]
+  - @bpmnkit/core@1.10.0
+  - @bpmnkit/connectors@1.4.0
+  - @bpmnkit/plugins@1.4.0
+  - @bpmnkit/engine@1.4.0
+  - @bpmnkit/editor@1.6.1
+
 ## 0.5.11
 
 ### Patch Changes

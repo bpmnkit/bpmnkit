@@ -1,5 +1,23 @@
 # @bpmnkit/editor
 
+## 1.6.1
+
+### Patch Changes
+
+- d2c39e6: Process text fixes: `writeProcessText` writes a timer's `after=<ISO duration>` (it was dropped, so a written timer read back without its wait), and a change script reads `after=` and applies it to a new or restated timer; `feel=` on a conditional event is its condition (it was ignored with a problem); kind words are own keys, so `constructor`, `__proto__` or `toString` no longer read as a kind; `createProcessTextStream` no longer drops a boundary drawn from its host (`t > w[boundary:timer …]`) and its path from later frames and `end()`. `expand` maps a job worker's `response` to a `resultVariable` named like an `Object.prototype` member (`constructor`, `toString`).
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [e57db77]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [e57db77]
+- Updated dependencies [e57db77]
+  - @bpmnkit/core@1.10.0
+
 ## 1.6.0
 
 ### Minor Changes

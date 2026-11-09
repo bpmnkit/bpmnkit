@@ -1,5 +1,23 @@
 # @bpmnkit/markdown
 
+## 0.1.2
+
+### Patch Changes
+
+- e57db77: A `bpmn-compact` / `bpmn-json` block that would not deploy on Camunda 8 (a service task without a job type, a message without a key) renders again: drawing a sketch is not a deployment, so it expands without the deploy gate.
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [e57db77]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [e57db77]
+- Updated dependencies [e57db77]
+  - @bpmnkit/core@1.10.0
+
 ## 0.1.1
 
 ### Patch Changes

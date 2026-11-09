@@ -1,5 +1,35 @@
 # @bpmnkit/landing
 
+## 0.0.58
+
+### Patch Changes
+
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [65aba71]
+- Updated dependencies [e57db77]
+- Updated dependencies [e57db77]
+- Updated dependencies [e57db77]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [65aba71]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [e57db77]
+- Updated dependencies [e57db77]
+  - @bpmnkit/core@1.10.0
+  - @bpmnkit/connectors@1.4.0
+  - @bpmnkit/markdown@0.1.2
+  - @bpmnkit/plugins@1.4.0
+  - @bpmnkit/engine@1.4.0
+  - @bpmnkit/feel@1.1.2
+  - @bpmnkit/patterns@0.1.3
+  - @bpmnkit/editor@1.6.1
+
 ## 0.0.57
 
 ### Patch Changes

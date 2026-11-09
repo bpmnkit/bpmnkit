@@ -1,5 +1,35 @@
 # @bpmnkit/cli
 
+## 1.6.0
+
+### Minor Changes
+
+- e57db77: Deploy gate in the CLI. `casen generate bpmn` writes BPMN that deploys on Camunda 8, or nothing: a definition, template or patched file Zeebe would refuse prints the gate's lines (`Not deployable on Camunda <version>: <n> error(s)` and `- <id>: <message> (zeebe/<rule>)`), writes no file and exits 1. New flags `--placeholders` (fill documented placeholder values, each listed on stderr) and `--no-validate` (write it as it is). The `error-boundary`, `event-subprocess`, `timer-start` and `message-start` templates were not deployable and now are (error code, interrupting error start, a timer cycle, a message name). `casen deploy` runs the gate on a `.bpmn` file before sending it, with `--no-validate` to skip it. `casen check --deploy` adds what the gate refuses in the file's bytes (the XML schema stage included) to its findings.
+
+### Patch Changes
+
+- 65aba71: `@bpmnkit/connectors` exports `applyTemplates`, which the CLI's `connector` command imports. It was added without a release, so the published CLI 1.5.0 (`@bpmnkit/connectors: ^1.3.1`) crashed on start against connectors 1.3.1. The CLI release raises its dependency range to the connectors version that has the export.
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [65aba71]
+- Updated dependencies [e57db77]
+- Updated dependencies [e57db77]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [65aba71]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [e57db77]
+- Updated dependencies [e57db77]
+  - @bpmnkit/core@1.10.0
+  - @bpmnkit/connectors@1.4.0
+  - @bpmnkit/proxy@0.7.0
+  - @bpmnkit/engine@1.4.0
+  - @bpmnkit/patterns@0.1.3
+
 ## 1.5.0
 
 ### Minor Changes
