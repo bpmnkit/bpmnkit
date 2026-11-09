@@ -67,13 +67,43 @@ the same for DMN and form `CheckFinding`s. See the `lint_report` example.
 | `default` | `feel`, `bpmn`, `dmn`, `form` |
 | `text` | process text and compact JSON in `load` (implies `bpmn`, `dmn`) |
 | `lint`, `layout`, `builder`, `compat`, `xml`, `spec` | the matching `bpmnkit-*` crate |
+| `render` | `bpmnkit::render`: BPMN to SVG, auto layout for models without DI |
+| `diff` | `bpmnkit::diff`: semantic diff, field-level changes, semantic hash |
+| `diff-html` | `diff_to_html` and `diff_to_svg` (implies `diff`, `render`) |
 | `full` | all of the above |
 
-Image rendering (`render`, `render-png`) and semantic diff (`diff`, `diff-html`) are planned in
+PNG output (`render-png`, `render-system-fonts`) is not in `full`; it is planned in
 [the embedding plan](https://github.com/bpmnkit/bpmnkit/blob/main/doc/plans/rust-embedding.md).
-For a Slack bot: build the image in `spawn_blocking`, upload with `files.uploadV2`, and post the
-lint report as `to_slack_mrkdwn`.
+
+## Render a diagram
+
+`bpmn_to_svg(&defs, &RenderOptions)` gives the same SVG bytes as TS `exportSvg` with the same
+options. `RenderOptions::default().theme(Theme::Dark).max_size(640.0, 360.0)` fits a chat
+thumbnail; `.auto_layout(true)` draws models that have no diagram interchange. The returned
+`Svg` also carries the view box, the drawn size and each element's geometry.
+
+## Diff two models
+
+`diff_bpmn(&before, &after)` returns a `BpmnDiff`: every added, removed, changed (with
+`path: before → after` per field) and moved (layout only) element, and the semantic hashes of
+both sides (equal means the models mean the same). `diff_to_text(&diff, &DiffTextOptions)`
+prints it as plain text or Markdown.
+
+With `diff-html`, `diff_to_html(&before, &after, &diff, &DiffHtmlOptions)` writes one HTML
+file: both diagrams with the changes highlighted, side by side or overlaid, a filterable change
+list, zoom to a change on click and `j`/`k` to step through them. It loads nothing (a CSP
+forbids it) and reads with JavaScript off. The TS `renderDiffHtml` and
+`casen diff bpmn a.bpmn b.bpmn --html diff.html` give the same bytes. `diff_to_svg(&after,
+&diff, &RenderOptions)` is the later diagram with the changes drawn over it, for surfaces that
+cannot show HTML.
+
+## Slack recipe
+
+Slack does not render HTML. In `spawn_blocking`: run `diff_bpmn`, upload `diff_to_html` as a
+file with `files.uploadV2`, and post `diff_to_text` with `markdown: true` (or a lint report as
+`to_slack_mrkdwn`). For an inline image, rasterize `diff_to_svg` (PNG support in
+`bpmnkit-render` is planned; until then `casen diff bpmn --png` does it from the CLI).
 
 ## Examples
 
-`cargo run -p bpmnkit --all-features --example text_to_bpmn | eval_dmn | lint_report`.
+`cargo run -p bpmnkit --all-features --example text_to_bpmn | eval_dmn | lint_report | render_svg | diff_html`.

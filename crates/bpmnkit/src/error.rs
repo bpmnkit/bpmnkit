@@ -32,6 +32,8 @@ pub enum Error {
     Text(bpmnkit_text::TextError),
     #[cfg(feature = "builder")]
     Build(bpmnkit_builder::BuildError),
+    #[cfg(feature = "render")]
+    Render(bpmnkit_render::RenderError),
 }
 
 impl fmt::Display for Error {
@@ -60,6 +62,8 @@ impl fmt::Display for Error {
             Error::Text(e) => write!(f, "text: {e}"),
             #[cfg(feature = "builder")]
             Error::Build(e) => write!(f, "build: {e}"),
+            #[cfg(feature = "render")]
+            Error::Render(e) => write!(f, "render: {e}"),
         }
     }
 }
@@ -82,6 +86,8 @@ impl std::error::Error for Error {
             Error::Text(e) => Some(e),
             #[cfg(feature = "builder")]
             Error::Build(e) => Some(e),
+            #[cfg(feature = "render")]
+            Error::Render(e) => Some(e),
         }
     }
 }
@@ -104,3 +110,4 @@ from!("form", Form, bpmnkit_form::ParseError);
 from!("feel", Feel, bpmnkit_feel::FeelError);
 from!("text", Text, bpmnkit_text::TextError);
 from!("builder", Build, bpmnkit_builder::BuildError);
+from!("render", Render, bpmnkit_render::RenderError);

@@ -25,12 +25,15 @@ bpmnkit-lint = { workspace = true, optional = true }
 bpmnkit-layout = { workspace = true, optional = true }
 bpmnkit-builder = { workspace = true, optional = true }
 bpmnkit-text = { workspace = true, optional = true }
+bpmnkit-render = { workspace = true, optional = true }
+bpmnkit-diff = { workspace = true, optional = true }
 serde_json = { workspace = true }
 
 [features]
 # What most users reach for: read, write and evaluate models.
 default = ["feel", "bpmn", "dmn", "form"]
-full = ["spec", "xml", "bpmn", "feel", "dmn", "form", "compat", "lint", "layout", "builder", "text"]
+# Not `render-png` (a raster stack); add it yourself when you need PNGs.
+full = ["spec", "xml", "bpmn", "feel", "dmn", "form", "compat", "lint", "layout", "builder", "text", "render", "diff", "diff-html"]
 spec = ["dep:bpmnkit-spec"]
 xml = ["dep:bpmnkit-xml"]
 bpmn = ["dep:bpmnkit-bpmn"]
@@ -43,6 +46,14 @@ layout = ["dep:bpmnkit-layout"]
 builder = ["dep:bpmnkit-builder"]
 # Process text and compact JSON expand into BPMN/DMN models, so their types must be reachable.
 text = ["dep:bpmnkit-text", "bpmn", "dmn"]
+# BPMN to SVG; models without diagram interchange are laid out first.
+render = ["dep:bpmnkit-render", "bpmnkit-render/auto-layout", "bpmn"]
+# TODO(T1): `render-png = ["render", "bpmnkit-render/png"]` and
+# `render-system-fonts = ["render-png", "bpmnkit-render/system-fonts"]` once bpmnkit-render has them.
+# Semantic diff, field-level changes and the semantic hash.
+diff = ["dep:bpmnkit-diff", "bpmn"]
+# The self-contained HTML diff viewer and the diff-over-diagram SVG.
+diff-html = ["diff", "render", "bpmnkit-diff/html"]
 
 [package.metadata.docs.rs]
 all-features = true
@@ -58,3 +69,11 @@ required-features = ["dmn", "feel", "text"]
 [[example]]
 name = "lint_report"
 required-features = ["lint", "bpmn"]
+
+[[example]]
+name = "render_svg"
+required-features = ["render"]
+
+[[example]]
+name = "diff_html"
+required-features = ["diff-html"]

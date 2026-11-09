@@ -27,6 +27,9 @@ cargo add bpmnkit --no-default-features --features feel
 | `layout`  | `bpmnkit::layout`   | `bpmnkit-layout`  |         | Auto layout of BPMN and DMN diagrams |
 | `builder` | `bpmnkit::builder`  | `bpmnkit-builder` |         | Fluent BPMN process builders, DMN decision-table and DRD builders |
 | `text`    | `bpmnkit::text`     | `bpmnkit-text`    |         | Compact JSON, the process line format and connector lines |
+| `render`  | `bpmnkit::render`   | `bpmnkit-render`  |         | BPMN to SVG (same bytes as `exportSvg`), auto layout for models without DI |
+| `diff`    | `bpmnkit::diff`     | `bpmnkit-diff`    |         | Semantic diff with field-level changes, layout-only moves and a semantic hash |
+| `diff-html` | `bpmnkit::diff`   | `bpmnkit-diff`    |         | Self-contained HTML diff viewer and the diff-over-diagram SVG (implies `diff`, `render`) |
 | `full`    |                     |                   |         | All of the above |
 
 A feature turns on the crates it needs; for example `text` also builds `bpmn`, `dmn` and `layout`, but only the modules you name are re-exported.
