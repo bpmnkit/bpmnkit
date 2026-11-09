@@ -88,6 +88,28 @@ jobs:
         env:
           BASE_REF: ${{ github.base_ref || 'main' }}
 
+  # A published package whose src changed with no changeset is never versioned or released, so a
+  # dependent (the CLI) can import a symbol the npm release lacks. Runs on PRs only.
+  changeset-check:
+    name: Changeset check
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Every changed published package has a changeset
+        run: node scripts/changeset-check.mjs --base "origin/${BASE_REF}"
+        env:
+          BASE_REF: ${{ github.base_ref }}
+
   ci:
     name: CI
     runs-on: ubuntu-latest
