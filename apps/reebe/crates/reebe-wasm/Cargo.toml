@@ -23,6 +23,9 @@ uuid = { workspace = true, features = ["js"] }
 
 [features]
 default = []
+# Zeebe's deploy-time validation, as on the server. Off: it adds ~106 KB gzip
+# (621 → 728 KB), over scripts/check-wasm-size.mjs's 640 KB budget.
+zeebe-validate = ["reebe-engine/zeebe-validate"]
 
 # No wasm-opt: after the size rustflags in apps/reebe/.cargo/config.toml, binaryen
 # shrinks the raw file but grows the gzip (-O: 621 → 648 KB, binaryen 116), and

@@ -370,6 +370,32 @@ pub fn analyze_camunda_compat(
     definitions: &BpmnDefinitions,
     version: Option<&str>,
 ) -> Vec<Finding> {
+    each_process(definitions, version, &mut |ctx| {
+        let c = &ctx.process.contents;
+        check_process(ctx);
+        check_scope(ctx, &c.flow_elements, &c.sequence_flows, None);
+        check_collapsed(ctx);
+        contents::check_contents(ctx);
+    })
+}
+
+/// Only the `compat/no-loop` findings of [`analyze_camunda_compat`], in the same
+/// order. reebe needs no other rule at deploy time; calling this instead keeps the
+/// other rules' code out of its browser build.
+pub fn find_straight_through_loops(
+    definitions: &BpmnDefinitions,
+    version: Option<&str>,
+) -> Vec<Finding> {
+    each_process(definitions, version, &mut no_loop::check_no_loop)
+}
+
+/// Runs `check` on a fresh [`Ctx`] for every process the target version checks.
+/// `dyn`: one copy of the loop for both callers.
+fn each_process(
+    definitions: &BpmnDefinitions,
+    version: Option<&str>,
+    check: &mut dyn FnMut(&mut Ctx),
+) -> Vec<Finding> {
     let target = match version {
         Some(v) => normalize_camunda_version(Some(v)),
         None => target_camunda_version(definitions),
@@ -393,10 +419,7 @@ pub fn analyze_camunda_compat(
         };
         let c = &process.contents;
         ctx.locate(&c.flow_elements, &c.sequence_flows, None);
-        check_process(&mut ctx);
-        check_scope(&mut ctx, &c.flow_elements, &c.sequence_flows, None);
-        check_collapsed(&mut ctx);
-        contents::check_contents(&mut ctx);
+        check(&mut ctx);
         findings.append(&mut ctx.findings);
     }
     findings

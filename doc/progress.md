@@ -1,5 +1,13 @@
 # Progress
 
+## 2026-11-09 — Zeebe validator in reebe-wasm: measured, shrunk, not enabled (over budget)
+
+- Measured (gzip -9 of wasm-bindgen output, `scripts/check-wasm-size.mjs` budget 640,000 B): without the validator 621,488 B; with `reebe-engine/zeebe-validate` 1,031,196 B.
+- Shrink 1: `bpmnkit-compat` takes `bpmnkit-feel` without default features; new `full-feel` feature (default on) restores IANA zones and full regex. reebe's workspace takes it with `default-features = false`, so the browser build gets the same FEEL as reebe's own wasm FEEL; native builds still get both through `reebe-feel/full-feel` (feature unification). 1,031,196 → 762,589 B.
+- Shrink 2: `bpmnkit_compat::compat::find_straight_through_loops` runs only `compat/no-loop` (same findings, same order; a test compares it with the filtered `analyze_camunda_compat`). reebe's deploy check calls it, so the other compat rules are no longer linked. 762,589 → 727,582 B.
+- What is left (+106 KB gzip): the validator's own code (`zeebe::xml` ~37 KB raw, events/structure/tasks/extensions/references ~13–17 KB each), ~91 KB of rodata (XSD content models, messages, rule table) and ~110 KB raw of generic core/alloc/hashbrown copies. No second FEEL, regex, quick-xml or serde_json build is pulled in, and BPMN parsing is already shared with reebe-bpmn. Even with every generic copy and the rule-message table removed (about 45 KB gzip at best), it stays about 45 KB over budget.
+- reebe-wasm: new opt-in feature `zeebe-validate` (off by default; the budget is unchanged). Its test `deploy_rejects_what_zeebe_rejects` checks that a browser deploy gets Zeebe's message. Enabling it by default needs a budget of about 730 KB; that decision is open.
+
 ## 2026-11-08 — Zeebe deployability, session 3 phase 5: every caller gated
 
 - Core: `assertDeployableXml(xml, options)` (TS) / `assert_deployable_xml` (Rust) gate XML as it is, with the `DeployabilityError` message; version from the option, else the document's `executionPlatformVersion`. Definitions-level `<bpmn:documentation>`: Zeebe refuses it (new repro `z00_definitions_documentation.bpmn`; the XSD stage already did, TS and Rust); the serializer now writes it inside a bare `<bpmn:extension>` (Zeebe accepts it) and the parser reads it back (TS + Rust). Fixture `01-root-elements.bpmn` uses the extension form; `conformance/bpmn/root-elements` deploys now (`deployable: false` removed); four root-elements outputs and `zeebe-verdicts.json` re-recorded.

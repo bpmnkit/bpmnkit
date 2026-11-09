@@ -7,7 +7,7 @@
 //! Zeebe's straight-through-loop check (a transformer check, not in the validator)
 //! comes from `compat/no-loop`, the port of Modeler's rule for it.
 
-use bpmnkit_compat::compat::analyze_camunda_compat;
+use bpmnkit_compat::compat::find_straight_through_loops;
 use bpmnkit_compat::zeebe::{validate_deployable_xml, ValidateOptions, ZeebeResolver};
 use bpmnkit_compat::{Finding, Severity};
 use std::collections::{HashMap, HashSet};
@@ -88,7 +88,7 @@ fn loop_errors(xml: &str) -> Vec<String> {
     let Ok(defs) = bpmnkit_bpmn::parse_bpmn(xml) else {
         return Vec::new();
     };
-    analyze_camunda_compat(&defs, Some("8.10"))
+    find_straight_through_loops(&defs, Some("8.10"))
         .into_iter()
         .filter(|f| f.data.id == "compat/no-loop")
         .map(|f| {
