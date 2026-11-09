@@ -1,7 +1,7 @@
 import { copyFileSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join, resolve as resolvePath } from "node:path"
-import { type CompactDiagram, isDeployable, validateDeployableXml } from "@bpmnkit/core"
+import { Bpmn, type CompactDiagram, isDeployable, validateDeployableXml } from "@bpmnkit/core"
 import { afterAll, beforeAll, describe, expect, it } from "vitest"
 import type { RunContext } from "../types.js"
 import { generateFromCompact, generateGroup, resolveModifyOutputPath } from "./generate.js"
@@ -123,6 +123,40 @@ describe("generate bpmn --input", () => {
 		copyFileSync(sample, input)
 		await run({ input, force: true })
 		expect(readFileSync(input, "utf-8")).toContain("<bpmn:definitions")
+	})
+
+	/**
+	 * A patch used to re-run the auto-layout over the whole file, so adding one
+	 * branch moved every shape someone had placed. It now draws only what is new.
+	 */
+	it("keeps the existing layout when a patch adds a branch", async () => {
+		copyFileSync(sample, input)
+		const output = join(dir, "order.branch.bpmn")
+		await run({
+			input,
+			output,
+			patch: JSON.stringify({
+				elements: [
+					{ id: "escalate", type: "serviceTask", name: "Escalate", jobType: "escalate" },
+					{ id: "end-escalated", type: "endEvent", name: "Escalated" },
+				],
+				flows: [
+					{ id: "flow-esc", from: "gw-check", to: "escalate", condition: "= urgent" },
+					{ id: "flow-esc2", from: "escalate", to: "end-escalated" },
+				],
+			}),
+		})
+		const shapes = (xml: string) =>
+			new Map(
+				Bpmn.parse(xml).diagrams.flatMap((d) =>
+					d.plane.shapes.map((shape) => [shape.bpmnElement, shape.bounds]),
+				),
+			)
+		const before = shapes(readFileSync(input, "utf-8"))
+		const after = shapes(readFileSync(output, "utf-8"))
+		for (const [id, bounds] of before) expect(after.get(id), id).toEqual(bounds)
+		expect(after.has("escalate")).toBe(true)
+		expect(after.has("end-escalated")).toBe(true)
 	})
 
 	/**
