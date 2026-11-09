@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-08 — Refresh Camunda connector templates (bot PR #245)
+
+- Merged `main` into `chore/connector-templates-refresh`. `main` now keeps the templates in `spec/templates/connectors.json` and generates both `generated.ts` files from it (`spec-gen`), so the refresh was regenerated with `pnpm update-connectors` instead of merged by hand. The registry now has 134 templates.
+- New template `io.camunda.connectors.ManagedScript.v1` (run a Python or JavaScript script without a job worker) needed a `CONNECTOR_ALIASES` entry (`managed-script`); the aliases test requires one alias per bundled template.
+
 ## 2026-11-09 — fix: CLI 1.5.0 would not start (connectors export never released)
 
 - Root cause: #247 added `applyTemplates` to `@bpmnkit/connectors` with no changeset, so connectors stayed at 1.3.1 on npm. Published `@bpmnkit/cli` 1.5.0 depends on `@bpmnkit/connectors ^1.3.1` and imports the missing export.

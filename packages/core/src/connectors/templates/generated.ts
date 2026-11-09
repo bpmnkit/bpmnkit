@@ -19,7 +19,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "ticket",
       "incident management"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/camunda-integrations/servicenow/connectors/incident-handler/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/camunda-integrations/servicenow/connectors/incident-handler/",
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -1005,7 +1005,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "messaging",
       "notification"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/twilio/?twilio=outbound",
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -3408,7 +3408,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "cloud event",
       "event driven"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=inbound",
     "deprecated": {
       "message": "Migrate to Amazon EventBridge Message Start Event Connector"
     },
@@ -3680,7 +3680,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property",
           "name": "activationCondition"
         },
-        "description": "Condition under which the connector triggers. Leave empty to catch all events. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a>"
+        "description": "Condition under which the connector triggers. Leave empty to catch all events. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a>"
       },
       {
         "label": "Result variable",
@@ -3718,7 +3718,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "HTTP callback",
       "listen for event"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/",
     "version": 16,
     "appliesTo": [
       "bpmn:StartEvent"
@@ -3793,7 +3793,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.shouldValidateHmac",
         "label": "HMAC authentication",
-        "description": "Choose whether HMAC verification is enabled. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a> and <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#example' target='_blank'>example</a> that explains how to use HMAC-related fields",
+        "description": "Choose whether HMAC verification is enabled. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a> and <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#example' target='_blank'>example</a> that explains how to use HMAC-related fields",
         "optional": false,
         "value": "disabled",
         "binding": {
@@ -3880,7 +3880,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.hmacScopes",
         "label": "HMAC scopes",
-        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.9/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
+        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
         "optional": true,
         "feel": "required",
         "binding": {
@@ -4018,7 +4018,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.auth.apiKeyLocator",
         "label": "API key locator",
-        "description": "A FEEL expression that extracts API key from the request. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#how-to-configure-api-key-authorization'>See documentation</a>",
+        "description": "A FEEL expression that extracts API key from the request. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#how-to-configure-api-key-authorization'>See documentation</a>",
         "optional": false,
         "value": "=split(request.headers.authorization, \" \")[2]",
         "constraints": {
@@ -4096,7 +4096,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.auth.jwt.permissionsExpression",
         "label": "JWT role property expression",
-        "description": "Expression to extract the roles from the JWT token. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#how-to-extract-roles-from-jwt-data'>See documentation</a>",
+        "description": "Expression to extract the roles from the JWT token. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#how-to-extract-roles-from-jwt-data'>See documentation</a>",
         "optional": false,
         "feel": "required",
         "binding": {
@@ -4130,7 +4130,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.verificationExpression",
         "label": "One time verification response expression",
-        "description": "Specify condition and response. Learn more in the <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#verification-expression' target='_blank'>documentation</a>",
+        "description": "Specify condition and response. Learn more in the <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#verification-expression' target='_blank'>documentation</a>",
         "optional": true,
         "feel": "required",
         "binding": {
@@ -4176,7 +4176,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "synchronousResponse",
         "label": "Response mode",
-        "description": "Synchronous or Asynchronous <a href=\"https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#response-mode\" target=\"_blank\">response handling</a>",
+        "description": "Synchronous or Asynchronous <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#response-mode\" target=\"_blank\">response handling</a>",
         "value": "false",
         "binding": {
           "name": "synchronousResponse",
@@ -4257,7 +4257,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -4267,7 +4267,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "value": "{\n  myRequestBody: request.body\n  // Use FEEL to extract values, e.g.,:\n  // myMessage: request.body.message\n}",
         "feel": "required",
         "binding": {
@@ -4369,7 +4369,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "correlationType.type",
         "label": "Correlation mode",
-        "description": "Send message with <a href='https://docs.camunda.io/docs/components/concepts/messages/#message-buffering' target='_blank'>buffer (publish)</a> or with <a href='https://docs.camunda.io/docs/components/concepts/messages/#message-response' target='_blank'>result (correlate)</a>",
+        "description": "Send message with <a href='https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-buffering' target='_blank'>buffer (publish)</a> or with <a href='https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-response' target='_blank'>result (correlate)</a>",
         "value": "publish",
         "binding": {
           "name": "correlationType.type",
@@ -4444,7 +4444,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -4454,7 +4454,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -4465,7 +4465,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -4565,8 +4565,8 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "robot",
       "automation"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/automation-anywhere/",
-    "version": 4,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/automation-anywhere/",
+    "version": 5,
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -4574,7 +4574,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "value": "bpmn:ServiceTask"
     },
     "engines": {
-      "camunda": "^8.4"
+      "camunda": "^8.10"
     },
     "properties": [
       {
@@ -4605,6 +4605,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         ]
       },
       {
+        "id": "authenticationConfiguration",
+        "label": "Control Room credential",
+        "description": "Choose a reusable Automation Anywhere credential, or configure one-time Control Room URL and authentication parameters below.",
+        "optional": true,
+        "binding": {
+          "name": "authenticationConfiguration",
+          "type": "zeebe:input"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:automation-anywhere:1"
+      },
+      {
         "id": "configuration.controlRoomUrl",
         "label": "Control room URL",
         "optional": false,
@@ -4616,16 +4628,26 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "name": "configuration.controlRoomUrl",
           "type": "zeebe:input"
         },
+        "condition": {
+          "property": "authenticationConfiguration",
+          "isEmpty": true,
+          "type": "simple"
+        },
         "type": "String"
       },
       {
         "id": "authentication.type",
         "label": "Type",
-        "description": "Choose the authentication type. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/automation-anywhere/\" target=\"_blank\">Automation Anywhere connector documentation</a>",
+        "description": "Choose the authentication type. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/automation-anywhere/\" target=\"_blank\">Automation Anywhere connector documentation</a>",
         "value": "passwordBasedAuthentication",
         "binding": {
           "name": "authentication.type",
           "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "authenticationConfiguration",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -4656,9 +4678,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "passwordBasedAuthentication",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "passwordBasedAuthentication",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -4675,11 +4706,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "passwordBasedAuthentication",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "passwordBasedAuthentication",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.multipleLogin",
@@ -4693,9 +4734,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "passwordBasedAuthentication",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "passwordBasedAuthentication",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "Dropdown",
         "choices": [
@@ -4722,9 +4772,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "apiKeyAuthentication",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "apiKeyAuthentication",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -4741,11 +4800,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "apiKeyAuthentication",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "apiKeyAuthentication",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.token",
@@ -4760,11 +4829,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "tokenBasedAuthentication",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "tokenBasedAuthentication",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "operation.queueId",
@@ -4858,7 +4937,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "id": "version",
         "label": "Version",
         "description": "Version of the element template",
-        "value": "4",
+        "value": "5",
         "binding": {
           "key": "elementTemplateVersion",
           "type": "zeebe:taskHeader"
@@ -4879,7 +4958,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -4889,7 +4968,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -4900,7 +4979,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -4984,6 +5063,176 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "operation.type": "listWorkItemsInQueue"
         }
       }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:automation-anywhere:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "Automation Anywhere Control Room",
+        "properties": [
+          {
+            "id": "controlRoomUrl",
+            "label": "Control room URL",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "configuration",
+            "binding": {
+              "name": "controlRoomUrl",
+              "type": "property"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.type",
+            "label": "Type",
+            "description": "Choose the authentication type. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/automation-anywhere/\" target=\"_blank\">Automation Anywhere connector documentation</a>",
+            "value": "passwordBasedAuthentication",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.type",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Authenticate (username and password)",
+                "value": "passwordBasedAuthentication"
+              },
+              {
+                "name": "Authenticate (username and API key)",
+                "value": "apiKeyAuthentication"
+              },
+              {
+                "name": "Authentication (refresh) token",
+                "value": "tokenBasedAuthentication"
+              }
+            ]
+          },
+          {
+            "id": "authentication.passwordBassesUsername",
+            "label": "Username",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.username",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "passwordBasedAuthentication",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.password",
+            "label": "Password",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.password",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "passwordBasedAuthentication",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.multipleLogin",
+            "label": "Multiple login",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.multipleLogin",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "passwordBasedAuthentication",
+              "type": "simple"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "TRUE",
+                "value": "true"
+              },
+              {
+                "name": "FALSE",
+                "value": "false"
+              }
+            ]
+          },
+          {
+            "id": "authentication.apiUsername",
+            "label": "Username",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.username",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "apiKeyAuthentication",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.apiKey",
+            "label": "API key",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.apiKey",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "apiKeyAuthentication",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.token",
+            "label": "Token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "tokenBasedAuthentication",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          }
+        ]
+      }
     ]
   },
   {
@@ -5060,7 +5309,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "messaging",
       "new message"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/slack/?slack=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/slack/?slack=inbound",
     "version": 7,
     "deprecated": {
       "message": "Migrate to Webhook Message Start Event Connector"
@@ -5238,7 +5487,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "subscribe to topic",
       "event driven"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sns/?amazonsns=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sns/?amazonsns=inbound",
     "version": 7,
     "appliesTo": [
       "bpmn:ReceiveTask"
@@ -5468,7 +5717,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -5478,7 +5727,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
@@ -5504,10 +5753,10 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "compose email",
       "email notification"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-o365-mail/",
-    "version": 6,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/microsoft-o365-mail/",
+    "version": 7,
     "engines": {
-      "camunda": "^8.4"
+      "camunda": "^8.11"
     },
     "appliesTo": [
       "bpmn:Task"
@@ -5561,6 +5810,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         ]
       },
       {
+        "id": "authenticationConfiguration",
+        "label": "Authentication credential",
+        "description": "Note: Microsoft Graph accepts only a bearer, OAuth 2.0, or refresh-token credential; API key and Basic credentials are not supported and always fail at runtime, even though they pass template validation. For an OAuth 2.0 or refresh-token credential, the scope must be <code>https://graph.microsoft.com/.default</code>, and a refresh-token credential's token endpoint must be your tenant's Microsoft Entra endpoint (<code>https://login.microsoftonline.com/{tenantId}/oauth2/v2.0/token</code>); a credential missing these passes template and binding validation but fails at runtime against Microsoft Graph. A bearer credential has no scope to configure and is used as-is. The credential's own URL field is not used by this connector.",
+        "optional": true,
+        "binding": {
+          "name": "authenticationConfiguration",
+          "type": "zeebe:input"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:rest-authentication:1"
+      },
+      {
         "id": "authentication.type",
         "label": "Type",
         "value": "oauth-client-credentials-flow",
@@ -5582,7 +5843,12 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
             "name": "Refresh token",
             "value": "oauth-refresh-token"
           }
-        ]
+        ],
+        "condition": {
+          "property": "authenticationConfiguration",
+          "isEmpty": true,
+          "type": "simple"
+        }
       },
       {
         "id": "authentication.token",
@@ -5597,9 +5863,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "bearer",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "bearer",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -5616,9 +5891,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-client-credentials-flow",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -5635,9 +5919,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-client-credentials-flow",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -5654,9 +5947,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-client-credentials-flow",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -5670,9 +5972,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-client-credentials-flow",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         }
       },
       {
@@ -5683,9 +5994,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-client-credentials-flow",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "Hidden"
       },
@@ -5702,9 +6022,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-refresh-token",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -5721,9 +6050,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-refresh-token",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -5738,9 +6076,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-refresh-token",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -5757,9 +6104,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-refresh-token",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -5771,9 +6127,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-refresh-token",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "Hidden"
       },
@@ -5785,9 +6150,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-refresh-token",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "Hidden"
       },
@@ -6349,7 +6723,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "id": "version",
         "label": "Version",
         "description": "Version of the element template",
-        "value": "6",
+        "value": "7",
         "binding": {
           "key": "elementTemplateVersion",
           "type": "zeebe:taskHeader"
@@ -6443,13 +6817,423 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "operationId": "users.user.sendMail"
         }
       }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:rest-authentication:1",
+        "kind": "CREDENTIAL",
+        "version": 2,
+        "name": "REST Authentication",
+        "properties": [
+          {
+            "id": "authentication.type",
+            "label": "Type",
+            "description": "Choose the authentication mechanism this credential provides.",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.type",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "API key",
+                "value": "apiKey"
+              },
+              {
+                "name": "Basic",
+                "value": "basic"
+              },
+              {
+                "name": "Bearer token",
+                "value": "bearer"
+              },
+              {
+                "name": "OAuth 2.0",
+                "value": "oauth-client-credentials-flow"
+              },
+              {
+                "name": "OAuth 2.0 Refresh Token",
+                "value": "oauth-refresh-token"
+              }
+            ]
+          },
+          {
+            "id": "authentication.apiKeyLocation",
+            "label": "Api key location",
+            "value": "headers",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.apiKeyLocation",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "apiKey",
+              "type": "simple"
+            },
+            "tooltip": "Send API key in header or as query parameter.",
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Headers",
+                "value": "headers"
+              },
+              {
+                "name": "Query parameters",
+                "value": "query"
+              }
+            ]
+          },
+          {
+            "id": "authentication.name",
+            "label": "API key name",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.name",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "apiKey",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.value",
+            "label": "API key value",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.value",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "apiKey",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.username",
+            "label": "Username",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.username",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "basic",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.password",
+            "label": "Password",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.password",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "basic",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.token",
+            "label": "Bearer token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "bearer",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.oauthTokenEndpoint",
+            "label": "OAuth 2.0 token endpoint",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^(=|(http://|https://|secrets|\\{\\{).*$)",
+                "message": "Must be a http(s) URL"
+              }
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.oauthTokenEndpoint",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "Your application's client ID from the OAuth client",
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientSecret",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "Your application's client secret from the OAuth client",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.audience",
+            "label": "Audience",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.audience",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "The unique identifier of the target API you want to access",
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientAuthentication",
+            "label": "Client authentication",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientAuthentication",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "Send client ID and client secret as a Basic Auth header, or as client credentials in the request body",
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Send client credentials in body",
+                "value": "credentialsBody"
+              },
+              {
+                "name": "Send as Basic Auth header",
+                "value": "basicAuthHeader"
+              }
+            ]
+          },
+          {
+            "id": "authentication.scopes",
+            "label": "Scopes",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.scopes",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "The scopes which you want to request authorization for",
+            "placeholder": "read:contacts",
+            "type": "String"
+          },
+          {
+            "id": "authentication.oauthRefreshToken.oauthTokenEndpoint",
+            "label": "OAuth 2.0 token endpoint",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^(=|(http://|https://|secrets|\\{\\{).*$)",
+                "message": "Must be a http(s) URL"
+              }
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.oauthTokenEndpoint",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.oauthRefreshToken.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            "tooltip": "Your application's client ID from the OAuth client",
+            "type": "String"
+          },
+          {
+            "id": "authentication.oauthRefreshToken.clientSecret",
+            "label": "Client secret",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            "tooltip": "Your application's client secret from the OAuth client",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.oauthRefreshToken.refreshToken",
+            "label": "Refresh token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.refreshToken",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            "tooltip": "The refresh token used to obtain a new access token",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.oauthRefreshToken.scopes",
+            "label": "Scopes",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.scopes",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            "tooltip": "The scopes to request authorization for (space-separated)",
+            "type": "String"
+          },
+          {
+            "id": "url",
+            "label": "URL",
+            "description": "The endpoint this credential is bound to. Required for basic, bearer and API key authentication; not shown for OAuth, which carries its own token endpoint.",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^((http://|https://|secrets|\\{\\{).*$)",
+                "message": "Must be a http(s) URL"
+              }
+            },
+            "group": "endpoint",
+            "binding": {
+              "name": "url",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "oneOf": [
+                "apiKey",
+                "basic",
+                "bearer"
+              ],
+              "type": "simple"
+            },
+            "type": "String"
+          }
+        ]
+      }
     ]
   },
   {
     "name": "A2A Client Polling Receive Task Connector (early access)",
     "id": "io.camunda.connectors.agenticai.a2a.client.polling.receive.v0",
     "description": "Agent-to-Agent (A2A) polling inbound connector. Supports polling asynchronous tasks, but can also directly correlate messages and synchronously completed tasks.",
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/early-access/alpha/a2a-client/a2a-client-polling-connector/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/early-access/alpha/a2a-client/a2a-client-polling-connector/",
     "version": 0,
     "appliesTo": [
       "bpmn:ReceiveTask"
@@ -6547,7 +7331,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "data.taskPollingInterval",
         "label": "Task polling interval",
-        "description": "The delay between A2A task polling requests, defined as ISO 8601 durations format. <a href='https://docs.camunda.io/docs/components/modeler/bpmn/timer-events/#time-duration' target='_blank'>How to configure a time duration</a>",
+        "description": "The delay between A2A task polling requests, defined as ISO 8601 durations format. <a href='https://docs.camunda.io/docs/8.10/components/modeler/bpmn/timer-events/#time-duration' target='_blank'>How to configure a time duration</a>",
         "optional": false,
         "value": "PT10S",
         "feel": "optional",
@@ -6699,7 +7483,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -6709,7 +7493,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "value": "={response: result}",
         "feel": "required",
         "binding": {
@@ -6733,7 +7517,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "stream data",
       "kafka topic"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/kafka/?kafka=outbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/kafka/?kafka=outbound",
     "version": 7,
     "appliesTo": [
       "bpmn:Task"
@@ -7008,7 +7792,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -7018,7 +7802,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -7029,7 +7813,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -7143,7 +7927,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "webhook",
       "inbound message"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound",
     "appliesTo": [
       "bpmn:BoundaryEvent"
     ],
@@ -7371,7 +8155,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "NoSQL",
       "database"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-dynamodb/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-dynamodb/",
     "version": 12,
     "appliesTo": [
       "bpmn:Task"
@@ -7489,7 +8273,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "authentication.type",
         "label": "Authentication",
-        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "authentication.type",
@@ -8482,7 +9266,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -8492,7 +9276,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -8503,7 +9287,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -8708,7 +9492,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "id": "authentication.type",
             "label": "Authentication",
-            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
             "value": "credentials",
             "group": "authentication",
             "binding": {
@@ -8800,7 +9584,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "send request",
       "invoke API"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/protocol/rest/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/protocol/rest/",
     "version": 18,
     "appliesTo": [
       "bpmn:Task"
@@ -9479,6 +10263,13 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "label": "URL",
         "description": "Overrides the URL carried by the selected credential. Required when the credential carries none, as an OAuth credential need not.",
         "optional": true,
+        "constraints": {
+          "notEmpty": false,
+          "pattern": {
+            "value": "^($|=|(http://|https://|secrets|\\{\\{).*$)",
+            "message": "Must be a http(s) URL"
+          }
+        },
         "feel": "optional",
         "binding": {
           "name": "url",
@@ -9680,7 +10471,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -9690,7 +10481,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "value": "{\n  myResponseBody: response.body\n  // Use FEEL to extract values, e.g.,:\n  // myUserId: response.body.post.userId\n}",
         "feel": "required",
         "binding": {
@@ -9702,7 +10493,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -10168,7 +10959,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "event bus",
       "cloud event"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=outbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=outbound",
     "version": 9,
     "appliesTo": [
       "bpmn:Task"
@@ -10203,7 +10994,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "authentication.type",
         "label": "Authentication",
-        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "authentication.type",
@@ -10417,7 +11208,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -10427,7 +11218,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -10438,7 +11229,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -10491,7 +11282,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "id": "authentication.type",
             "label": "Authentication",
-            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
             "value": "credentials",
             "group": "authentication",
             "binding": {
@@ -10583,7 +11374,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "delete project",
       "project management"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/asana/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/asana/",
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -11399,8 +12190,20 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     "description": "Execute a single AI-powered action with tool calling capabilities",
     "keywords": [
       "AI",
-      "AI Agent",
-      "agentic orchestration"
+      "Agent",
+      "agentic orchestration",
+      "LLM",
+      "GPT",
+      "OpenAI",
+      "Anthropic",
+      "Claude",
+      "Gemini",
+      "Vertex",
+      "Bedrock",
+      "Azure",
+      "Foundry",
+      "Ollama",
+      "LM Studio"
     ],
     "deprecated": {
       "message": "For Camunda 8.10+, please replace with the v2 version of the AI Agent element template. See documentation for details.",
@@ -11564,7 +12367,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "provider.bedrock.authentication.type",
         "label": "Authentication",
-        "description": "Specify the AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-bedrock/#authentication\" target=\"_blank\">documentation page</a>",
+        "description": "Specify the AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-bedrock/#authentication\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "provider.bedrock.authentication.type",
@@ -13121,7 +13924,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "value": "agent",
         "binding": {
           "key": "resultVariable",
@@ -13132,7 +13935,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -13143,7 +13946,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -13199,7 +14002,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "new email",
       "email notification"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/email",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/email",
     "version": 3,
     "appliesTo": [
       "bpmn:BoundaryEvent"
@@ -13695,7 +14498,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -13705,7 +14508,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
@@ -13823,7 +14626,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "publish to topic",
       "FIFO"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sns/?amazonsns=outbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sns/?amazonsns=outbound",
     "version": 11,
     "appliesTo": [
       "bpmn:Task"
@@ -13858,7 +14661,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "authentication.type",
         "label": "Authentication",
-        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "authentication.type",
@@ -14122,7 +14925,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -14132,7 +14935,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -14143,7 +14946,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -14196,7 +14999,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "id": "authentication.type",
             "label": "Authentication",
-            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
             "value": "credentials",
             "group": "authentication",
             "binding": {
@@ -14289,8 +15092,8 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "opportunity",
       "account"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/salesforce/",
-    "version": 9,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/salesforce/",
+    "version": 10,
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -14298,7 +15101,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "value": "bpmn:ServiceTask"
     },
     "engines": {
-      "camunda": "^8.3"
+      "camunda": "^8.10"
     },
     "properties": [
       {
@@ -14319,11 +15122,28 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "String"
       },
       {
+        "id": "authenticationConfiguration",
+        "label": "Authentication credential",
+        "description": "Choose a reusable Salesforce credential, or configure one-time authentication parameters below.",
+        "optional": true,
+        "binding": {
+          "name": "authenticationConfiguration",
+          "type": "zeebe:input"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:salesforce-authentication:1"
+      },
+      {
         "id": "authentication.type",
         "label": "Type",
         "binding": {
           "name": "authentication.type",
           "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "authenticationConfiguration",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -14350,9 +15170,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "bearer",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "bearer",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String",
         "secret": true
@@ -14370,9 +15199,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-client-credentials-flow",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -14389,9 +15227,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-client-credentials-flow",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String",
         "secret": true
@@ -14405,9 +15252,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-client-credentials-flow",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "Hidden"
       },
@@ -14420,9 +15276,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oauth-client-credentials-flow",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "Hidden"
       },
@@ -14936,7 +15801,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "id": "version",
         "label": "Version",
         "description": "Version of the element template",
-        "value": "9",
+        "value": "10",
         "binding": {
           "key": "elementTemplateVersion",
           "type": "zeebe:taskHeader"
@@ -14957,7 +15822,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -14967,7 +15832,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "value": "{\n  myResponseBody: response.body\n  // Use FEEL to extract values, e.g.,:\n  // myUserId: response.body.post.userId\n}",
         "feel": "required",
         "binding": {
@@ -15132,6 +15997,173 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "salesforceOperationType": "composite"
         }
       }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:salesforce-authentication:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "Salesforce Authentication",
+        "properties": [
+          {
+            "id": "authentication.type",
+            "label": "Type",
+            "description": "Choose the authentication mechanism this credential provides.",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.type",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Bearer token",
+                "value": "bearer"
+              },
+              {
+                "name": "OAuth 2.0",
+                "value": "oauth-client-credentials-flow"
+              }
+            ]
+          },
+          {
+            "id": "authentication.token",
+            "label": "Bearer token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "bearer",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.oauthTokenEndpoint",
+            "label": "OAuth 2.0 token endpoint",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^(=|(http://|https://|secrets|\\{\\{).*$)",
+                "message": "Must be a http(s) URL"
+              }
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.oauthTokenEndpoint",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "Your Salesforce instance's OAuth 2.0 token endpoint.",
+            "placeholder": "https://MyDomainName.my.salesforce.com/services/oauth2/token",
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "Your application's client ID from the OAuth client",
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientSecret",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "Your application's client secret from the OAuth client",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.clientAuthentication",
+            "label": "Client authentication",
+            "value": "credentialsBody",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientAuthentication",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "Send client ID and client secret as a Basic Auth header, or as client credentials in the request body",
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Send client credentials in body",
+                "value": "credentialsBody"
+              },
+              {
+                "name": "Send as Basic Auth header",
+                "value": "basicAuthHeader"
+              }
+            ]
+          },
+          {
+            "id": "url",
+            "label": "Salesforce instance URL",
+            "description": "Required for bearer credentials. Requests always go to the Salesforce base URL set on the task.",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^((http://|https://|secrets|\\{\\{).*$)",
+                "message": "Must be a http(s) URL"
+              }
+            },
+            "group": "endpoint",
+            "binding": {
+              "name": "url",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "bearer",
+              "type": "simple"
+            },
+            "placeholder": "https://MyDomainName.my.salesforce.com",
+            "type": "String"
+          }
+        ]
+      }
     ]
   },
   {
@@ -15140,8 +16172,20 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     "description": "Run a multi-step AI reasoning loop with dynamic tool selection",
     "keywords": [
       "AI",
-      "AI Agent",
-      "agentic orchestration"
+      "Agent",
+      "agentic orchestration",
+      "LLM",
+      "GPT",
+      "OpenAI",
+      "Anthropic",
+      "Claude",
+      "Gemini",
+      "Vertex",
+      "Bedrock",
+      "Azure",
+      "Foundry",
+      "Ollama",
+      "LM Studio"
     ],
     "deprecated": {
       "message": "For Camunda 8.10+, please replace with the v2 version of the AI Agent element template. See documentation for details.",
@@ -15331,7 +16375,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "provider.bedrock.authentication.type",
         "label": "Authentication",
-        "description": "Specify the AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-bedrock/#authentication\" target=\"_blank\">documentation page</a>",
+        "description": "Specify the AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-bedrock/#authentication\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "provider.bedrock.authentication.type",
@@ -16897,7 +17941,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "value": "agent",
         "binding": {
           "source": "=agent",
@@ -16908,7 +17952,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -17706,7 +18750,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "queue",
       "dequeue"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound",
     "version": 13,
     "appliesTo": [
       "bpmn:StartEvent"
@@ -17742,7 +18786,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "authentication.type",
         "label": "Authentication",
-        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "authentication.type",
@@ -18112,7 +19156,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -18122,7 +19166,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
@@ -18141,7 +19185,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "id": "authentication.type",
             "label": "Authentication",
-            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
             "value": "credentials",
             "group": "authentication",
             "binding": {
@@ -18219,7 +19263,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     "name": "A2A Client (early access)",
     "id": "io.camunda.connectors.agenticai.a2a.client.v0",
     "description": "Agent-to-Agent (A2A) client, enabling discovering remote agents' Agent Cards as well as sending messages to remote agents.",
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/early-access/alpha/a2a-client/a2a-client-connector/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/early-access/alpha/a2a-client/a2a-client-connector/",
     "version": 0,
     "appliesTo": [
       "bpmn:Task"
@@ -18916,7 +19960,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -18926,7 +19970,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -18937,7 +19981,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -19072,7 +20116,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "correlationType.type",
         "label": "Correlation mode",
-        "description": "Send message with <a href='https://docs.camunda.io/docs/components/concepts/messages/#message-buffering' target='_blank'>buffer (publish)</a> or with <a href='https://docs.camunda.io/docs/components/concepts/messages/#message-response' target='_blank'>result (correlate)</a>",
+        "description": "Send message with <a href='https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-buffering' target='_blank'>buffer (publish)</a> or with <a href='https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-response' target='_blank'>result (correlate)</a>",
         "value": "publish",
         "binding": {
           "name": "correlationType.type",
@@ -19147,7 +20191,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -19157,7 +20201,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -19168,7 +20212,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -19257,7 +20301,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     "name": "MCP Client",
     "id": "io.camunda.connectors.agenticai.mcp.client.v0",
     "description": "MCP (Model Context Protocol) client using MCP connections configured on the connector runtime.",
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-mcp-client-connector/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-mcp-client-connector/",
     "version": 3,
     "appliesTo": [
       "bpmn:Task"
@@ -19819,7 +20863,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "value": "toolCallResult",
         "binding": {
           "key": "resultVariable",
@@ -19830,7 +20874,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -19841,7 +20885,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -19898,8 +20942,8 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "message broker",
       "queue"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=inbound",
-    "version": 8,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=inbound",
+    "version": 9,
     "appliesTo": [
       "bpmn:BoundaryEvent"
     ],
@@ -19908,7 +20952,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "eventDefinition": "bpmn:MessageEventDefinition"
     },
     "engines": {
-      "camunda": "^8.3"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -19920,12 +20964,28 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "rabbitMqConnection",
+        "label": "Connection credential",
+        "optional": true,
+        "binding": {
+          "name": "rabbitMqConnection",
+          "type": "zeebe:property"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:rabbitmq-connection:1"
+      },
+      {
         "id": "authentication.authType",
         "label": "Connection type",
         "value": "uri",
         "binding": {
           "name": "authentication.authType",
           "type": "zeebe:property"
+        },
+        "condition": {
+          "property": "rabbitMqConnection",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -19955,11 +21015,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "uri",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "uri",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.userName",
@@ -19973,9 +21043,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -19991,11 +21070,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "routing.virtualHost",
@@ -20009,9 +21098,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -20027,9 +21125,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -20045,9 +21152,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -20263,7 +21379,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -20273,13 +21389,162 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
           "type": "zeebe:property"
         },
         "type": "Text"
+      }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:rabbitmq-connection:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "RabbitMQ Connection",
+        "properties": [
+          {
+            "id": "authentication.authType",
+            "label": "Connection type",
+            "value": "uri",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.authType",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "URI",
+                "value": "uri"
+              },
+              {
+                "name": "Username/Password",
+                "value": "credentials"
+              }
+            ]
+          },
+          {
+            "id": "authentication.uri",
+            "label": "URI",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^(=|(amqps?://|secrets|\\{\\{).*$)",
+                "message": "Must start with amqp(s):// or contain a secret reference"
+              }
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.uri",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "uri",
+              "type": "simple"
+            },
+            "tooltip": "URI should contain username, password, host name, port number, and virtual host",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.userName",
+            "label": "Username",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.userName",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.password",
+            "label": "Password",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.password",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "routing.virtualHost",
+            "label": "Virtual host",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.virtualHost",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          },
+          {
+            "id": "routing.hostName",
+            "label": "Host name",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.hostName",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          },
+          {
+            "id": "routing.port",
+            "label": "Port",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.port",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          }
+        ]
       }
     ]
   },
@@ -20295,7 +21560,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "messaging",
       "new message"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/slack/?slack=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/slack/?slack=inbound",
     "version": 9,
     "appliesTo": [
       "bpmn:StartEvent"
@@ -20558,7 +21823,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -20568,7 +21833,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "value": "{\n  myRequestBody: request.body\n  // Use FEEL to extract values, e.g.,:\n  // myUserId: request.body.event.user\n}",
         "feel": "required",
         "binding": {
@@ -20616,7 +21881,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "messaging",
       "new message"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/slack/?slack=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/slack/?slack=inbound",
     "version": 9,
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
@@ -20849,7 +22114,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -20859,7 +22124,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "value": "{\n  myRequestBody: request.body\n  // Use FEEL to extract values, e.g.,:\n  // myUserId: request.body.event.user\n}",
         "feel": "required",
         "binding": {
@@ -20908,8 +22173,8 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "message broker",
       "queue"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=inbound",
-    "version": 8,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=inbound",
+    "version": 9,
     "appliesTo": [
       "bpmn:ReceiveTask"
     ],
@@ -20917,7 +22182,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "value": "bpmn:ReceiveTask"
     },
     "engines": {
-      "camunda": "^8.3"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -20929,12 +22194,28 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "rabbitMqConnection",
+        "label": "Connection credential",
+        "optional": true,
+        "binding": {
+          "name": "rabbitMqConnection",
+          "type": "zeebe:property"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:rabbitmq-connection:1"
+      },
+      {
         "id": "authentication.authType",
         "label": "Connection type",
         "value": "uri",
         "binding": {
           "name": "authentication.authType",
           "type": "zeebe:property"
+        },
+        "condition": {
+          "property": "rabbitMqConnection",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -20964,11 +22245,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "uri",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "uri",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.userName",
@@ -20982,9 +22273,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -21000,11 +22300,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "routing.virtualHost",
@@ -21018,9 +22328,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -21036,9 +22355,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -21054,9 +22382,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -21272,7 +22609,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -21282,13 +22619,162 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
           "type": "zeebe:property"
         },
         "type": "Text"
+      }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:rabbitmq-connection:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "RabbitMQ Connection",
+        "properties": [
+          {
+            "id": "authentication.authType",
+            "label": "Connection type",
+            "value": "uri",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.authType",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "URI",
+                "value": "uri"
+              },
+              {
+                "name": "Username/Password",
+                "value": "credentials"
+              }
+            ]
+          },
+          {
+            "id": "authentication.uri",
+            "label": "URI",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^(=|(amqps?://|secrets|\\{\\{).*$)",
+                "message": "Must start with amqp(s):// or contain a secret reference"
+              }
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.uri",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "uri",
+              "type": "simple"
+            },
+            "tooltip": "URI should contain username, password, host name, port number, and virtual host",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.userName",
+            "label": "Username",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.userName",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.password",
+            "label": "Password",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.password",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "routing.virtualHost",
+            "label": "Virtual host",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.virtualHost",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          },
+          {
+            "id": "routing.hostName",
+            "label": "Host name",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.hostName",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          },
+          {
+            "id": "routing.port",
+            "label": "Port",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.port",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          }
+        ]
       }
     ]
   },
@@ -21323,7 +22809,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     ],
     "id": "io.camunda.connectors.HubSpot.v1",
     "version": 4,
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/hubspot/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/hubspot/",
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -23911,7 +25397,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "list labels",
       "update label"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=outbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/github/?github=outbound",
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -28565,7 +30051,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "message queue",
       "stream data"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound",
     "version": 8,
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
@@ -28992,7 +30478,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -29002,7 +30488,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
@@ -29078,7 +30564,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "queue",
       "dequeue"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound",
     "version": 13,
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
@@ -29115,7 +30601,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "authentication.type",
         "label": "Authentication",
-        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "authentication.type",
@@ -29454,7 +30940,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -29464,7 +30950,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
@@ -29483,7 +30969,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "id": "authentication.type",
             "label": "Authentication",
-            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
             "value": "credentials",
             "group": "authentication",
             "binding": {
@@ -29574,7 +31060,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "asynchronous",
       "real-time"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/amazon-textract/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-textract/",
     "version": 8,
     "appliesTo": [
       "bpmn:Task"
@@ -29609,7 +31095,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "authentication.type",
         "label": "Authentication",
-        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "authentication.type",
@@ -30224,7 +31710,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -30234,7 +31720,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -30245,7 +31731,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -30298,7 +31784,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "id": "authentication.type",
             "label": "Authentication",
-            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
             "value": "credentials",
             "group": "authentication",
             "binding": {
@@ -30384,7 +31870,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "message queue",
       "stream data"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound",
     "version": 8,
     "appliesTo": [
       "bpmn:BoundaryEvent"
@@ -30810,7 +32296,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -30820,7 +32306,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
@@ -30887,7 +32373,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     "name": "Ad-hoc tools schema",
     "id": "io.camunda.connectors.agenticai.adhoctoolsschema.v1",
     "description": "Connector to fetch tools schema information from an ad-hoc sub-process.",
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-ad-hoc-tools-schema-resolver/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-ad-hoc-tools-schema-resolver/",
     "version": 2,
     "appliesTo": [
       "bpmn:Task"
@@ -30947,7 +32433,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -30957,7 +32443,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -30968,7 +32454,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -31031,7 +32517,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "repository updated",
       "repository deleted"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/github/?github=inbound",
     "appliesTo": [
       "bpmn:BoundaryEvent"
     ],
@@ -31190,7 +32676,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "bucket",
       "file storage"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/amazon-s3/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-s3/",
     "version": 8,
     "appliesTo": [
       "bpmn:Task"
@@ -31249,7 +32735,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "authentication.type",
         "label": "Authentication",
-        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "authentication.type",
@@ -31769,7 +33255,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -31779,7 +33265,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -31790,7 +33276,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -31895,7 +33381,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "id": "authentication.type",
             "label": "Authentication",
-            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
             "value": "credentials",
             "group": "authentication",
             "binding": {
@@ -31985,10 +33471,10 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "prompt",
       "text generation"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/azure-open-ai/",
-    "version": 4,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-open-ai/",
+    "version": 5,
     "engines": {
-      "camunda": "^8.6"
+      "camunda": "^8.11"
     },
     "appliesTo": [
       "bpmn:Task"
@@ -32006,6 +33492,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "authenticationConfiguration",
+        "label": "Authentication credential",
+        "description": "Note: Azure OpenAI accepts only an API key credential (location <code>headers</code>, key name exactly <code>api-key</code>) or a bearer/OAuth 2.0 credential sent as a standard <code>Authorization: Bearer</code> header — the latter is the only option when local API key authentication is disabled, and must use the scope <code>https://cognitiveservices.azure.com/.default</code>. Basic authentication is not supported. An API key credential with the key sent as a query parameter instead of a header, or with any key name other than <code>api-key</code>, and a Basic credential, all pass template and binding validation but silently send a malformed request, so they fail at runtime against Azure OpenAI. The credential's own URL field is not used by this connector.",
+        "optional": true,
+        "binding": {
+          "name": "authenticationConfiguration",
+          "type": "zeebe:input"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:rest-authentication:1"
+      },
+      {
         "id": "authentication.type",
         "label": "Type",
         "description": "Choose the authentication type",
@@ -32014,7 +33512,12 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "name": "authentication.type",
           "type": "zeebe:input"
         },
-        "type": "Hidden"
+        "type": "Hidden",
+        "condition": {
+          "property": "authenticationConfiguration",
+          "isEmpty": true,
+          "type": "simple"
+        }
       },
       {
         "id": "authentication.apiKeyLocation",
@@ -32023,7 +33526,12 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "name": "authentication.apiKeyLocation",
           "type": "zeebe:input"
         },
-        "type": "Hidden"
+        "type": "Hidden",
+        "condition": {
+          "property": "authenticationConfiguration",
+          "isEmpty": true,
+          "type": "simple"
+        }
       },
       {
         "id": "authentication.name",
@@ -32034,9 +33542,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "apiKey",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "apiKey",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "Hidden"
       },
@@ -32053,9 +33570,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "apiKey",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "apiKey",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -33120,7 +34646,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "id": "version",
         "label": "Version",
         "description": "Version of the element template",
-        "value": "4",
+        "value": "5",
         "binding": {
           "key": "elementTemplateVersion",
           "type": "zeebe:taskHeader"
@@ -33193,6 +34719,416 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "properties": {
           "operation": "completionsExtension"
         }
+      }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:rest-authentication:1",
+        "kind": "CREDENTIAL",
+        "version": 2,
+        "name": "REST Authentication",
+        "properties": [
+          {
+            "id": "authentication.type",
+            "label": "Type",
+            "description": "Choose the authentication mechanism this credential provides.",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.type",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "API key",
+                "value": "apiKey"
+              },
+              {
+                "name": "Basic",
+                "value": "basic"
+              },
+              {
+                "name": "Bearer token",
+                "value": "bearer"
+              },
+              {
+                "name": "OAuth 2.0",
+                "value": "oauth-client-credentials-flow"
+              },
+              {
+                "name": "OAuth 2.0 Refresh Token",
+                "value": "oauth-refresh-token"
+              }
+            ]
+          },
+          {
+            "id": "authentication.apiKeyLocation",
+            "label": "Api key location",
+            "value": "headers",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.apiKeyLocation",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "apiKey",
+              "type": "simple"
+            },
+            "tooltip": "Send API key in header or as query parameter.",
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Headers",
+                "value": "headers"
+              },
+              {
+                "name": "Query parameters",
+                "value": "query"
+              }
+            ]
+          },
+          {
+            "id": "authentication.name",
+            "label": "API key name",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.name",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "apiKey",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.value",
+            "label": "API key value",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.value",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "apiKey",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.username",
+            "label": "Username",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.username",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "basic",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.password",
+            "label": "Password",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.password",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "basic",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.token",
+            "label": "Bearer token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "bearer",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.oauthTokenEndpoint",
+            "label": "OAuth 2.0 token endpoint",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^(=|(http://|https://|secrets|\\{\\{).*$)",
+                "message": "Must be a http(s) URL"
+              }
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.oauthTokenEndpoint",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "Your application's client ID from the OAuth client",
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientSecret",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "Your application's client secret from the OAuth client",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.audience",
+            "label": "Audience",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.audience",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "The unique identifier of the target API you want to access",
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientAuthentication",
+            "label": "Client authentication",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientAuthentication",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "Send client ID and client secret as a Basic Auth header, or as client credentials in the request body",
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Send client credentials in body",
+                "value": "credentialsBody"
+              },
+              {
+                "name": "Send as Basic Auth header",
+                "value": "basicAuthHeader"
+              }
+            ]
+          },
+          {
+            "id": "authentication.scopes",
+            "label": "Scopes",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.scopes",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "The scopes which you want to request authorization for",
+            "placeholder": "read:contacts",
+            "type": "String"
+          },
+          {
+            "id": "authentication.oauthRefreshToken.oauthTokenEndpoint",
+            "label": "OAuth 2.0 token endpoint",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^(=|(http://|https://|secrets|\\{\\{).*$)",
+                "message": "Must be a http(s) URL"
+              }
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.oauthTokenEndpoint",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.oauthRefreshToken.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            "tooltip": "Your application's client ID from the OAuth client",
+            "type": "String"
+          },
+          {
+            "id": "authentication.oauthRefreshToken.clientSecret",
+            "label": "Client secret",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            "tooltip": "Your application's client secret from the OAuth client",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.oauthRefreshToken.refreshToken",
+            "label": "Refresh token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.refreshToken",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            "tooltip": "The refresh token used to obtain a new access token",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.oauthRefreshToken.scopes",
+            "label": "Scopes",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.scopes",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oauth-refresh-token",
+              "type": "simple"
+            },
+            "tooltip": "The scopes to request authorization for (space-separated)",
+            "type": "String"
+          },
+          {
+            "id": "url",
+            "label": "URL",
+            "description": "The endpoint this credential is bound to. Required for basic, bearer and API key authentication; not shown for OAuth, which carries its own token endpoint.",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^((http://|https://|secrets|\\{\\{).*$)",
+                "message": "Must be a http(s) URL"
+              }
+            },
+            "group": "endpoint",
+            "binding": {
+              "name": "url",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "oneOf": [
+                "apiKey",
+                "basic",
+                "bearer"
+              ],
+              "type": "simple"
+            },
+            "type": "String"
+          }
+        ]
       }
     ]
   },
@@ -33316,7 +35252,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     "id": "io.camunda.connectors.AWSSQS.StartEvent.v1",
     "deprecated": {
       "message": "None Start Events are deprecated in favor of Message Start Events for message based Connectors.",
-      "documentationRef": "https://docs.camunda.io/docs/components/modeler/bpmn/none-events/"
+      "documentationRef": "https://docs.camunda.io/docs/8.10/components/modeler/bpmn/none-events/"
     },
     "description": "Receive message from a queue",
     "keywords": [
@@ -33327,7 +35263,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "queue",
       "dequeue"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound",
     "version": 10,
     "appliesTo": [
       "bpmn:StartEvent"
@@ -33350,7 +35286,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "authentication.type",
         "label": "Authentication",
-        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "authentication.type",
@@ -33448,7 +35384,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "queue.queue.pollingWaitTime",
         "label": "Polling wait time",
-        "description": "The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">documentation</a> for details",
+        "description": "The duration (in seconds) for which the call waits for a message to arrive in the queue before returning. See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">documentation</a> for details",
         "optional": false,
         "value": "20",
         "constraints": {
@@ -33466,7 +35402,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "queue.queue.attributeNames",
         "label": "Attribute names",
-        "description": "Array of queue attribute names. See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">documentation</a> for details",
+        "description": "Array of queue attribute names. See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">documentation</a> for details",
         "optional": false,
         "feel": "optional",
         "binding": {
@@ -33478,7 +35414,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "queue.queue.messageAttributeNames",
         "label": "Message attribute names",
-        "description": "Array of message attribute names. See <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">documentation</a> for details",
+        "description": "Array of message attribute names. See <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound\" target=\"_blank\">documentation</a> for details",
         "optional": false,
         "feel": "optional",
         "binding": {
@@ -34874,7 +36810,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -34884,7 +36820,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -34895,7 +36831,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -34995,7 +36931,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "cloud event",
       "event driven"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=inbound",
     "appliesTo": [
       "bpmn:BoundaryEvent"
     ],
@@ -35312,7 +37248,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property",
           "name": "activationCondition"
         },
-        "description": "Condition under which the connector triggers. Leave empty to catch all events. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a>"
+        "description": "Condition under which the connector triggers. Leave empty to catch all events. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a>"
       },
       {
         "label": "Result variable",
@@ -35352,9 +37288,9 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     ],
     "deprecated": {
       "message": "None Start Events are deprecated in favor of Message Start Events for message based Connectors.",
-      "documentationRef": "https://docs.camunda.io/docs/components/modeler/bpmn/none-events/"
+      "documentationRef": "https://docs.camunda.io/docs/8.10/components/modeler/bpmn/none-events/"
     },
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=inbound",
     "version": 8,
     "appliesTo": [
       "bpmn:StartEvent"
@@ -35456,7 +37392,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "routing.virtualHost",
         "label": "Virtual host",
-        "description": "Virtual name: get from RabbitMQ external application configurations. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\"target=\"_blank\">documentation</a>",
+        "description": "Virtual name: get from RabbitMQ external application configurations. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\"target=\"_blank\">documentation</a>",
         "optional": false,
         "constraints": {
           "notEmpty": true
@@ -35475,7 +37411,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "routing.hostName",
         "label": "Host name",
-        "description": "Host name: get from RabbitMQ external application configurations. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\"target=\"_blank\">documentation</a>",
+        "description": "Host name: get from RabbitMQ external application configurations. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\"target=\"_blank\">documentation</a>",
         "optional": false,
         "constraints": {
           "notEmpty": true
@@ -35494,7 +37430,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "routing.port",
         "label": "Port",
-        "description": "Port: get from RabbitMQ external application configurations. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\"target=\"_blank\">documentation</a>",
+        "description": "Port: get from RabbitMQ external application configurations. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\"target=\"_blank\">documentation</a>",
         "optional": false,
         "constraints": {
           "notEmpty": true
@@ -35739,7 +37675,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     "name": "A2A Client Webhook Intermediate Catch Event Connector (early access)",
     "id": "io.camunda.connectors.agenticai.a2a.client.webhook.intermediate.v0",
     "description": "Agent-to-Agent (A2A) webhook inbound connector that can be used to receive callbacks from remote A2A servers.",
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/early-access/alpha/a2a-client/a2a-client-webhook-connector/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/early-access/alpha/a2a-client/a2a-client-webhook-connector/",
     "version": 1,
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
@@ -35807,7 +37743,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.shouldValidateHmac",
         "label": "HMAC authentication",
-        "description": "Choose whether HMAC verification is enabled. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a> and <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#example' target='_blank'>example</a> that explains how to use HMAC-related fields",
+        "description": "Choose whether HMAC verification is enabled. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a> and <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#example' target='_blank'>example</a> that explains how to use HMAC-related fields",
         "optional": false,
         "value": "disabled",
         "binding": {
@@ -35894,7 +37830,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.hmacScopes",
         "label": "HMAC scopes",
-        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.9/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
+        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
         "optional": true,
         "feel": "required",
         "binding": {
@@ -36032,7 +37968,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.auth.apiKeyLocator",
         "label": "API key locator",
-        "description": "A FEEL expression that extracts API key from the request. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#how-to-configure-api-key-authorization'>See documentation</a>",
+        "description": "A FEEL expression that extracts API key from the request. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#how-to-configure-api-key-authorization'>See documentation</a>",
         "optional": false,
         "value": "=split(request.headers.authorization, \" \")[2]",
         "constraints": {
@@ -36110,7 +38046,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.auth.jwt.permissionsExpression",
         "label": "JWT role property expression",
-        "description": "Expression to extract the roles from the JWT token. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#how-to-extract-roles-from-jwt-data'>See documentation</a>",
+        "description": "Expression to extract the roles from the JWT token. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#how-to-extract-roles-from-jwt-data'>See documentation</a>",
         "optional": false,
         "feel": "required",
         "binding": {
@@ -36283,7 +38219,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -36293,7 +38229,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "value": "={response: request.body}",
         "feel": "required",
         "binding": {
@@ -36316,7 +38252,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "messaging",
       "new message"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/slack/?slack=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/slack/?slack=inbound",
     "version": 9,
     "appliesTo": [
       "bpmn:BoundaryEvent"
@@ -36548,7 +38484,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -36558,7 +38494,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "value": "{\n  myRequestBody: request.body\n  // Use FEEL to extract values, e.g.,:\n  // myUserId: request.body.event.user\n}",
         "feel": "required",
         "binding": {
@@ -36598,7 +38534,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     "name": "MCP Remote Client",
     "id": "io.camunda.connectors.agenticai.mcp.remoteclient.v0",
     "description": "MCP (Model Context Protocol) client, operating on temporary remote connections.",
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/agentic-ai-mcp-remote-client-connector/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-mcp-remote-client-connector/",
     "version": 3,
     "appliesTo": [
       "bpmn:Task"
@@ -37886,7 +39822,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "value": "toolCallResult",
         "binding": {
           "key": "resultVariable",
@@ -37897,7 +39833,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -37908,7 +39844,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -37967,8 +39903,8 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "file storage",
       "document management"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/box/",
-    "version": 6,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/box/",
+    "version": 7,
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -37976,7 +39912,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "value": "bpmn:ServiceTask"
     },
     "engines": {
-      "camunda": "^8.10"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -38102,25 +40038,6 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "simple"
         },
         "type": "Boolean"
-      },
-      {
-        "id": "operation.uploadFileName",
-        "label": "File name",
-        "optional": false,
-        "constraints": {
-          "notEmpty": true
-        },
-        "feel": "optional",
-        "binding": {
-          "name": "operation.name",
-          "type": "zeebe:input"
-        },
-        "condition": {
-          "property": "operation.type",
-          "equals": "uploadFile",
-          "type": "simple"
-        },
-        "type": "String"
       },
       {
         "id": "operation.uploadFileFolderPath",
@@ -38336,6 +40253,31 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "simple"
         },
         "type": "Hidden"
+      },
+      {
+        "id": "operation.uploadFileName",
+        "label": "File name",
+        "optional": true,
+        "feel": "optional",
+        "binding": {
+          "name": "operation.name",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "operation.document_documentSource",
+              "equals": "camunda",
+              "type": "simple"
+            },
+            {
+              "property": "operation.type",
+              "equals": "uploadFile",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
       },
       {
         "id": "operation.downloadFilePath",
@@ -38565,6 +40507,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Number"
       },
       {
+        "id": "boxCredential",
+        "label": "Box credential",
+        "description": "Choose a reusable Box credential, or configure one-time authentication parameters below.",
+        "optional": true,
+        "binding": {
+          "name": "boxCredential",
+          "type": "zeebe:input"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:box-credential:1"
+      },
+      {
         "id": "authentication.type",
         "label": "Authentication",
         "description": "Specify authentication strategy. Learn more at the <a href=\"https://developer.box.com/guides/authentication/\" target=\"_blank\">documentation page</a>",
@@ -38572,6 +40526,11 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "binding": {
           "name": "authentication.type",
           "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "boxCredential",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -38606,9 +40565,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentialsEnterprise",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentialsEnterprise",
+              "type": "simple"
+            },
+            {
+              "property": "boxCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -38625,11 +40593,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentialsEnterprise",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentialsEnterprise",
+              "type": "simple"
+            },
+            {
+              "property": "boxCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.enterpriseId",
@@ -38644,9 +40622,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentialsEnterprise",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentialsEnterprise",
+              "type": "simple"
+            },
+            {
+              "property": "boxCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -38663,9 +40650,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentialsUser",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentialsUser",
+              "type": "simple"
+            },
+            {
+              "property": "boxCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -38682,11 +40678,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentialsUser",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentialsUser",
+              "type": "simple"
+            },
+            {
+              "property": "boxCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.userId",
@@ -38701,9 +40707,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentialsUser",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentialsUser",
+              "type": "simple"
+            },
+            {
+              "property": "boxCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -38720,11 +40735,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "developerToken",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "developerToken",
+              "type": "simple"
+            },
+            {
+              "property": "boxCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.jsonConfig",
@@ -38739,17 +40764,27 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "jwtJsonConfig",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "jwtJsonConfig",
+              "type": "simple"
+            },
+            {
+              "property": "boxCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "version",
         "label": "Version",
         "description": "Version of the element template",
-        "value": "6",
+        "value": "7",
         "binding": {
           "key": "elementTemplateVersion",
           "type": "zeebe:taskHeader"
@@ -38770,7 +40805,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -38780,7 +40815,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -38791,7 +40826,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -38959,6 +40994,174 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "operation.type": "search"
         }
       }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:box-credential:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "Box Credential",
+        "properties": [
+          {
+            "id": "authentication.type",
+            "label": "Authentication",
+            "description": "Specify authentication strategy. Learn more at the <a href=\"https://developer.box.com/guides/authentication/\" target=\"_blank\">documentation page</a>",
+            "value": "clientCredentialsEnterprise",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.type",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Client Credentials Enterprise",
+                "value": "clientCredentialsEnterprise"
+              },
+              {
+                "name": "Client Credentials User",
+                "value": "clientCredentialsUser"
+              },
+              {
+                "name": "JWT JSON Config",
+                "value": "jwtJsonConfig"
+              }
+            ]
+          },
+          {
+            "id": "authentication.clientIdEnterprise",
+            "label": "Client id",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentialsEnterprise",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientSecretEnterprise",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentialsEnterprise",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.enterpriseId",
+            "label": "Enterprise ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.enterpriseId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentialsEnterprise",
+              "type": "simple"
+            },
+            "tooltip": "The enterprise ID to authenticate against",
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientIdUser",
+            "label": "Client id",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentialsUser",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientSecretUser",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentialsUser",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.userId",
+            "label": "User ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.userId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentialsUser",
+              "type": "simple"
+            },
+            "tooltip": "The user ID of the account to authenticate against",
+            "type": "String"
+          },
+          {
+            "id": "authentication.jsonConfig",
+            "label": "JSON config",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.jsonConfig",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "jwtJsonConfig",
+              "type": "simple"
+            },
+            "tooltip": "The JSON config as string",
+            "type": "String",
+            "secret": true
+          }
+        ]
+      }
     ]
   },
   {
@@ -38977,8 +41180,8 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "inbox",
       "poll email"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-o365-mail-inbound/",
-    "version": 2,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/microsoft-o365-mail-inbound/",
+    "version": 3,
     "appliesTo": [
       "bpmn:BoundaryEvent"
     ],
@@ -38987,7 +41190,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "eventDefinition": "bpmn:MessageEventDefinition"
     },
     "engines": {
-      "camunda": "^8.9"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -38999,13 +41202,29 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "authenticationConfiguration",
+        "label": "Microsoft Entra ID credential",
+        "optional": true,
+        "binding": {
+          "name": "authenticationConfiguration",
+          "type": "zeebe:property"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:microsoft-entra:1"
+      },
+      {
         "id": "authentication.type",
         "label": "Type",
-        "description": "Authentication type depends on your Microsoft Entra (Azure AD) configuration. See <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-teams/'>connector documentation</a>",
+        "description": "Authentication type depends on your Microsoft Entra (Azure AD) configuration. See <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/microsoft-teams/'>connector documentation</a>",
         "value": "clientCredentials",
         "binding": {
           "name": "authentication.type",
           "type": "zeebe:property"
+        },
+        "condition": {
+          "property": "authenticationConfiguration",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -39035,11 +41254,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "token",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "token",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.credentials.clientId",
@@ -39054,9 +41283,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -39073,9 +41311,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -39092,11 +41339,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.refresh.token",
@@ -39111,11 +41368,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.refresh.clientId",
@@ -39130,9 +41397,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -39149,9 +41425,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -39165,11 +41450,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "pollingConfig.userId",
@@ -39626,7 +41921,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -39636,13 +41931,196 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
           "type": "zeebe:property"
         },
         "type": "Text"
+      }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:microsoft-entra:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "Microsoft Entra ID",
+        "properties": [
+          {
+            "id": "authentication.type",
+            "label": "Type",
+            "description": "Choose the authentication mechanism this credential provides.",
+            "value": "clientCredentials",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.type",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Bearer token",
+                "value": "token"
+              },
+              {
+                "name": "Client credentials",
+                "value": "clientCredentials"
+              },
+              {
+                "name": "Refresh token",
+                "value": "refresh"
+              }
+            ]
+          },
+          {
+            "id": "authentication.bearer.token",
+            "label": "Bearer token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "token",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.credentials.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.credentials.tenantId",
+            "label": "Tenant ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.tenantId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.credentials.clientSecret",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.refresh.token",
+            "label": "Refresh token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.refresh.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.refresh.tenantId",
+            "label": "Tenant ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.tenantId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.refresh.clientSecret",
+            "label": "Client secret",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application; optional, depends on whether the client is public or private",
+            "type": "String",
+            "secret": true
+          }
+        ]
       }
     ]
   },
@@ -41627,7 +44105,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "execute query",
       "API call"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/protocol/graphql/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/protocol/graphql/",
     "version": 13,
     "appliesTo": [
       "bpmn:Task"
@@ -42261,6 +44739,13 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "label": "URL",
         "description": "Overrides the URL carried by the selected credential. Required when the credential carries none, as an OAuth credential need not.",
         "optional": true,
+        "constraints": {
+          "notEmpty": false,
+          "pattern": {
+            "value": "^($|=|(http://|https://|secrets|\\{\\{).*$)",
+            "message": "Must be a http(s) URL"
+          }
+        },
         "feel": "optional",
         "binding": {
           "name": "graphql.url",
@@ -42388,7 +44873,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -42398,7 +44883,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -42409,7 +44894,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -42876,8 +45361,8 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "message broker",
       "queue"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=inbound",
-    "version": 8,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=inbound",
+    "version": 9,
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
       "bpmn:IntermediateThrowEvent"
@@ -42887,7 +45372,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "eventDefinition": "bpmn:MessageEventDefinition"
     },
     "engines": {
-      "camunda": "^8.3"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -42899,12 +45384,28 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "rabbitMqConnection",
+        "label": "Connection credential",
+        "optional": true,
+        "binding": {
+          "name": "rabbitMqConnection",
+          "type": "zeebe:property"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:rabbitmq-connection:1"
+      },
+      {
         "id": "authentication.authType",
         "label": "Connection type",
         "value": "uri",
         "binding": {
           "name": "authentication.authType",
           "type": "zeebe:property"
+        },
+        "condition": {
+          "property": "rabbitMqConnection",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -42934,11 +45435,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "uri",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "uri",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.userName",
@@ -42952,9 +45463,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -42970,11 +45490,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "routing.virtualHost",
@@ -42988,9 +45518,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -43006,9 +45545,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -43024,9 +45572,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -43242,7 +45799,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -43252,13 +45809,162 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
           "type": "zeebe:property"
         },
         "type": "Text"
+      }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:rabbitmq-connection:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "RabbitMQ Connection",
+        "properties": [
+          {
+            "id": "authentication.authType",
+            "label": "Connection type",
+            "value": "uri",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.authType",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "URI",
+                "value": "uri"
+              },
+              {
+                "name": "Username/Password",
+                "value": "credentials"
+              }
+            ]
+          },
+          {
+            "id": "authentication.uri",
+            "label": "URI",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^(=|(amqps?://|secrets|\\{\\{).*$)",
+                "message": "Must start with amqp(s):// or contain a secret reference"
+              }
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.uri",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "uri",
+              "type": "simple"
+            },
+            "tooltip": "URI should contain username, password, host name, port number, and virtual host",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.userName",
+            "label": "Username",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.userName",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.password",
+            "label": "Password",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.password",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "routing.virtualHost",
+            "label": "Virtual host",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.virtualHost",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          },
+          {
+            "id": "routing.hostName",
+            "label": "Host name",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.hostName",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          },
+          {
+            "id": "routing.port",
+            "label": "Port",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.port",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          }
+        ]
       }
     ]
   },
@@ -43281,7 +45987,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "repository updated",
       "repository deleted"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/github/?github=inbound",
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
       "bpmn:IntermediateThrowEvent"
@@ -43443,7 +46149,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "chat",
       "notification"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/slack/?slack=outbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/slack/?slack=outbound",
     "version": 13,
     "appliesTo": [
       "bpmn:Task"
@@ -43529,6 +46235,17 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "simple"
         },
         "type": "String"
+      },
+      {
+        "id": "baseUrl",
+        "label": "API base URL",
+        "optional": false,
+        "value": "https://slack.com/api/",
+        "binding": {
+          "name": "baseUrl",
+          "type": "zeebe:input"
+        },
+        "type": "Hidden"
       },
       {
         "id": "data.messageType",
@@ -44276,7 +46993,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -44286,7 +47003,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "value": "{\n  myResponse: response\n  // Use FEEL to extract values depending on message\n  // type, e.g.,: myMessage: response.message.text\n}",
         "feel": "required",
         "binding": {
@@ -44298,7 +47015,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -44495,7 +47212,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "automation",
       "queue item"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/blueprism/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/blueprism/",
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -45055,8 +47772,8 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "dynamic template",
       "email template"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/sendgrid/",
-    "version": 6,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/sendgrid/",
+    "version": 7,
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -45064,7 +47781,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "value": "bpmn:ServiceTask"
     },
     "engines": {
-      "camunda": "^8.10"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -45074,6 +47791,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:taskDefinition"
         },
         "type": "Hidden"
+      },
+      {
+        "id": "sendGridCredential",
+        "label": "SendGrid credential",
+        "description": "Choose a reusable SendGrid credential, or configure a one-time API key below.",
+        "optional": true,
+        "binding": {
+          "name": "sendGridCredential",
+          "type": "zeebe:input"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:sendgrid-api-key:1"
       },
       {
         "id": "apiKey",
@@ -45087,7 +47816,13 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "name": "apiKey",
           "type": "zeebe:input"
         },
-        "type": "String"
+        "condition": {
+          "property": "sendGridCredential",
+          "isEmpty": true,
+          "type": "simple"
+        },
+        "type": "String",
+        "secret": true
       },
       {
         "id": "from.name",
@@ -45498,7 +48233,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "id": "version",
         "label": "Version",
         "description": "Version of the element template",
-        "value": "6",
+        "value": "7",
         "binding": {
           "key": "elementTemplateVersion",
           "type": "zeebe:taskHeader"
@@ -45519,7 +48254,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -45529,7 +48264,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -45540,7 +48275,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -45582,6 +48317,31 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         },
         "type": "String"
       }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:sendgrid-api-key:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "SendGrid API Key",
+        "properties": [
+          {
+            "id": "apiKey",
+            "label": "SendGrid API key",
+            "description": "The SendGrid API key used to send emails.",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "apiKey",
+              "type": "property"
+            },
+            "type": "String",
+            "secret": true
+          }
+        ]
+      }
     ]
   },
   {
@@ -45596,7 +48356,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "message queue",
       "stream data"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound",
     "version": 8,
     "appliesTo": [
       "bpmn:ReceiveTask"
@@ -46021,7 +48781,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -46031,7 +48791,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
@@ -46108,7 +48868,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "periodic request",
       "HTTP callback"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/protocol/polling/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/protocol/polling/",
     "version": 10,
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
@@ -46732,6 +49492,13 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "label": "URL",
         "description": "Overrides the URL carried by the selected credential. Required when the credential carries none, as an OAuth credential need not.",
         "optional": true,
+        "constraints": {
+          "notEmpty": false,
+          "pattern": {
+            "value": "^($|=|(http://|https://|secrets|\\{\\{).*$)",
+            "message": "Must be a http(s) URL"
+          }
+        },
         "feel": "optional",
         "binding": {
           "name": "url",
@@ -46956,7 +49723,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -46966,7 +49733,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "value": "{\n  myResponseBody: response.body\n  // Use FEEL to extract values, e.g.,:\n  // myUserId: response.body.post.userId\n}",
         "feel": "required",
         "binding": {
@@ -47408,7 +50175,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "update",
       "delete"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/sql/",
     "version": 6,
     "appliesTo": [
       "bpmn:Task"
@@ -47781,7 +50548,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -47791,7 +50558,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -47802,7 +50569,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -47863,7 +50630,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
               "name": "database",
               "type": "property"
             },
-            "tooltip": "If you choose Oracle, make sure the Oracle JDBC driver is included. <a href=\"https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/sql/#database\">Oracle JDBC driver setup</a>.",
+            "tooltip": "If you choose Oracle, make sure the Oracle JDBC driver is included. <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/sql/#database\">Oracle JDBC driver setup</a>.",
             "type": "Dropdown",
             "choices": [
               {
@@ -47969,7 +50736,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "repository updated",
       "repository deleted"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/github/?github=inbound",
     "appliesTo": [
       "bpmn:ReceiveTask"
     ],
@@ -48127,8 +50894,8 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "prompt",
       "multimodal"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/google-gemini/",
-    "version": 3,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-gemini/",
+    "version": 4,
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -48136,7 +50903,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "value": "bpmn:ServiceTask"
     },
     "engines": {
-      "camunda": "^8.7"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -48146,6 +50913,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:taskDefinition"
         },
         "type": "Hidden"
+      },
+      {
+        "id": "googleCredential",
+        "label": "Google credential",
+        "description": "Choose a reusable Google credential, or configure one-time authentication details below.",
+        "optional": true,
+        "binding": {
+          "name": "googleCredential",
+          "type": "zeebe:input"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda:google-credential:1"
       },
       {
         "id": "authentication.authType",
@@ -48158,6 +50937,11 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "binding": {
           "name": "authentication.authType",
           "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "googleCredential",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -48184,11 +50968,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "bearer",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "bearer",
+              "type": "simple"
+            },
+            {
+              "property": "googleCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.oauthClientId",
@@ -48203,9 +50997,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "googleCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -48222,11 +51025,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "googleCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.oauthRefreshToken",
@@ -48241,11 +51054,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "googleCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "input.projectId",
@@ -48657,7 +51480,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "id": "version",
         "label": "Version",
         "description": "Version of the element template",
-        "value": "3",
+        "value": "4",
         "binding": {
           "key": "elementTemplateVersion",
           "type": "zeebe:taskHeader"
@@ -48678,7 +51501,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -48688,7 +51511,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -48699,7 +51522,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -48740,6 +51563,115 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:taskHeader"
         },
         "type": "String"
+      }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda:google-credential:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "Google Credential",
+        "properties": [
+          {
+            "id": "authentication.authType",
+            "label": "Type",
+            "value": "refresh",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.authType",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Bearer token",
+                "value": "bearer"
+              },
+              {
+                "name": "Refresh token",
+                "value": "refresh"
+              }
+            ]
+          },
+          {
+            "id": "authentication.bearerToken",
+            "label": "Bearer token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.bearerToken",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "bearer",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.oauthClientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.oauthClientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.oauthClientSecret",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.oauthClientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.oauthRefreshToken",
+            "label": "Refresh token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.oauthRefreshToken",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          }
+        ]
       }
     ]
   },
@@ -48813,8 +51745,8 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "file storage",
       "document management"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/googledrive/",
-    "version": 9,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/googledrive/",
+    "version": 10,
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -48822,7 +51754,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "value": "bpmn:ServiceTask"
     },
     "engines": {
-      "camunda": "^8.10"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -48863,6 +51795,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         ]
       },
       {
+        "id": "googleCredential",
+        "label": "Google credential",
+        "description": "Choose a reusable Google credential, or configure one-time authentication details below.",
+        "optional": true,
+        "binding": {
+          "name": "googleCredential",
+          "type": "zeebe:input"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda:google-credential:1"
+      },
+      {
         "id": "authentication.authType",
         "label": "Type",
         "optional": false,
@@ -48873,6 +51817,11 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "binding": {
           "name": "authentication.authType",
           "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "googleCredential",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -48899,11 +51848,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "bearer",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "bearer",
+              "type": "simple"
+            },
+            {
+              "property": "googleCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.oauthClientId",
@@ -48918,9 +51877,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "googleCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -48937,11 +51905,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "googleCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.oauthRefreshToken",
@@ -48956,11 +51934,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "googleCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "resource.folderName",
@@ -49387,7 +52375,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "id": "version",
         "label": "Version",
         "description": "Version of the element template",
-        "value": "9",
+        "value": "10",
         "binding": {
           "key": "elementTemplateVersion",
           "type": "zeebe:taskHeader"
@@ -49408,7 +52396,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -49418,7 +52406,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -49429,7 +52417,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -49550,6 +52538,115 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "resource.type": "download"
         }
       }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda:google-credential:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "Google Credential",
+        "properties": [
+          {
+            "id": "authentication.authType",
+            "label": "Type",
+            "value": "refresh",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.authType",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Bearer token",
+                "value": "bearer"
+              },
+              {
+                "name": "Refresh token",
+                "value": "refresh"
+              }
+            ]
+          },
+          {
+            "id": "authentication.bearerToken",
+            "label": "Bearer token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.bearerToken",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "bearer",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.oauthClientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.oauthClientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.oauthClientSecret",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.oauthClientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.oauthRefreshToken",
+            "label": "Refresh token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.oauthRefreshToken",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          }
+        ]
+      }
     ]
   },
   {
@@ -49569,7 +52666,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "webhook",
       "inbound message"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound",
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
       "bpmn:IntermediateThrowEvent"
@@ -49794,7 +52891,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "automation",
       "workflow trigger"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/camunda-integrations/servicenow/connectors/flow-starter/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/camunda-integrations/servicenow/connectors/flow-starter/",
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -50367,7 +53464,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "subscribe to topic",
       "event driven"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sns/?amazonsns=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sns/?amazonsns=inbound",
     "version": 7,
     "appliesTo": [
       "bpmn:BoundaryEvent"
@@ -50598,7 +53695,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -50608,7 +53705,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
@@ -50630,7 +53727,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "new email",
       "email notification"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/email",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/email",
     "version": 3,
     "appliesTo": [
       "bpmn:ReceiveTask"
@@ -51125,7 +54222,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -51135,7 +54232,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
@@ -51264,7 +54361,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "prompt",
       "text generation"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/openai/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/openai/",
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -51742,7 +54839,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "authentication.type",
         "label": "Authentication",
-        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "authentication.type",
@@ -51942,7 +55039,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -51952,7 +55049,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -51963,7 +55060,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -52016,7 +55113,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "id": "authentication.type",
             "label": "Authentication",
-            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
             "value": "credentials",
             "group": "authentication",
             "binding": {
@@ -52110,7 +55207,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "search decision instances",
       "search audit logs"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/apis-tools/orchestration-cluster-api-rest/orchestration-cluster-api-rest-overview/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/apis-tools/orchestration-cluster-api-rest/orchestration-cluster-api-rest-overview/",
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -53615,7 +56712,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "repository updated",
       "repository deleted"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/github/?github=inbound",
     "appliesTo": [
       "bpmn:StartEvent"
     ],
@@ -53805,7 +56902,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "webhook",
       "inbound message"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound",
     "appliesTo": [
       "bpmn:StartEvent"
     ],
@@ -53985,7 +57082,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "subscribe to topic",
       "event driven"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sns/?amazonsns=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sns/?amazonsns=inbound",
     "version": 7,
     "appliesTo": [
       "bpmn:StartEvent"
@@ -54247,7 +57344,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -54257,7 +57354,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
@@ -54285,8 +57382,8 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "spreadsheet",
       "excel"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-sheets/",
-    "version": 7,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-sheets/",
+    "version": 8,
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -54294,7 +57391,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "value": "bpmn:ServiceTask"
     },
     "engines": {
-      "camunda": "^8.3"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -54358,6 +57455,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         ]
       },
       {
+        "id": "googleCredential",
+        "label": "Google credential",
+        "description": "Choose a reusable Google credential, or configure one-time authentication details below.",
+        "optional": true,
+        "binding": {
+          "name": "googleCredential",
+          "type": "zeebe:input"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda:google-credential:1"
+      },
+      {
         "id": "authentication.authType",
         "label": "Type",
         "optional": false,
@@ -54368,6 +57477,11 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "binding": {
           "name": "authentication.authType",
           "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "googleCredential",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -54394,11 +57508,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "bearer",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "bearer",
+              "type": "simple"
+            },
+            {
+              "property": "googleCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.oauthClientId",
@@ -54413,9 +57537,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "googleCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -54432,11 +57565,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "googleCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.oauthRefreshToken",
@@ -54451,11 +57594,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "googleCredential",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "createSpreadsheet.spreadsheetName",
@@ -55070,7 +58223,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "id": "version",
         "label": "Version",
         "description": "Version of the element template",
-        "value": "7",
+        "value": "8",
         "binding": {
           "key": "elementTemplateVersion",
           "type": "zeebe:taskHeader"
@@ -55091,7 +58244,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -55101,7 +58254,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -55112,7 +58265,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -55338,6 +58491,115 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "operation.type": "getWorksheetData"
         }
       }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda:google-credential:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "Google Credential",
+        "properties": [
+          {
+            "id": "authentication.authType",
+            "label": "Type",
+            "value": "refresh",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.authType",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Bearer token",
+                "value": "bearer"
+              },
+              {
+                "name": "Refresh token",
+                "value": "refresh"
+              }
+            ]
+          },
+          {
+            "id": "authentication.bearerToken",
+            "label": "Bearer token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.bearerToken",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "bearer",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.oauthClientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.oauthClientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.oauthClientSecret",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.oauthClientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.oauthRefreshToken",
+            "label": "Refresh token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.oauthRefreshToken",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          }
+        ]
+      }
     ]
   },
   {
@@ -55365,7 +58627,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "change task",
       "service catalog"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/camunda-integrations/servicenow/connectors/outbound-connector/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/camunda-integrations/servicenow/connectors/outbound-connector/",
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -56787,7 +60049,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "periodic request",
       "HTTP callback"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/protocol/polling/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/protocol/polling/",
     "version": 10,
     "appliesTo": [
       "bpmn:BoundaryEvent"
@@ -57410,6 +60672,13 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "label": "URL",
         "description": "Overrides the URL carried by the selected credential. Required when the credential carries none, as an OAuth credential need not.",
         "optional": true,
+        "constraints": {
+          "notEmpty": false,
+          "pattern": {
+            "value": "^($|=|(http://|https://|secrets|\\{\\{).*$)",
+            "message": "Must be a http(s) URL"
+          }
+        },
         "feel": "optional",
         "binding": {
           "name": "url",
@@ -57634,7 +60903,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -57644,7 +60913,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "value": "{\n  myResponseBody: response.body\n  // Use FEEL to extract values, e.g.,:\n  // myUserId: response.body.post.userId\n}",
         "feel": "required",
         "binding": {
@@ -58079,7 +61348,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "FIFO",
       "standard queue"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=outbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=outbound",
     "version": 14,
     "appliesTo": [
       "bpmn:Task"
@@ -58114,7 +61383,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "authentication.type",
         "label": "Authentication",
-        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "authentication.type",
@@ -58367,7 +61636,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -58377,7 +61646,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -58388,7 +61657,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -58441,7 +61710,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "id": "authentication.type",
             "label": "Authentication",
-            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
             "value": "credentials",
             "group": "authentication",
             "binding": {
@@ -58537,7 +61806,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "repository updated",
       "repository deleted"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/github/?github=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/github/?github=inbound",
     "appliesTo": [
       "bpmn:StartEvent"
     ],
@@ -58674,7 +61943,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "authentication.type",
         "label": "Authentication",
-        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "authentication.type",
@@ -58901,7 +62170,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -58911,7 +62180,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -58922,7 +62191,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -58975,7 +62244,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "id": "authentication.type",
             "label": "Authentication",
-            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
             "value": "credentials",
             "group": "authentication",
             "binding": {
@@ -59062,7 +62331,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "queue",
       "dequeue"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound",
     "version": 13,
     "appliesTo": [
       "bpmn:BoundaryEvent"
@@ -59098,7 +62367,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "authentication.type",
         "label": "Authentication",
-        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "authentication.type",
@@ -59437,7 +62706,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -59447,7 +62716,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
@@ -59466,7 +62735,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "id": "authentication.type",
             "label": "Authentication",
-            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
             "value": "credentials",
             "group": "authentication",
             "binding": {
@@ -60071,7 +63340,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -60081,7 +63350,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -60092,7 +63361,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -60190,7 +63459,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "routing",
       "maps"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/google-maps-platform/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-maps-platform/",
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -60758,7 +64027,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "webhook",
       "inbound message"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound",
     "appliesTo": [
       "bpmn:ReceiveTask"
     ],
@@ -60980,7 +64249,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "new email",
       "email notification"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/email",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/email",
     "version": 3,
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
@@ -61477,7 +64746,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -61487,7 +64756,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
@@ -61612,7 +64881,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "orchestrator",
       "robot"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/uipath/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/uipath/",
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -62203,7 +65472,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "cloud event",
       "event driven"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=inbound",
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
       "bpmn:IntermediateThrowEvent"
@@ -62521,7 +65790,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property",
           "name": "activationCondition"
         },
-        "description": "Condition under which the connector triggers. Leave empty to catch all events. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a>"
+        "description": "Condition under which the connector triggers. Leave empty to catch all events. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a>"
       },
       {
         "label": "Result variable",
@@ -62561,7 +65830,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "predict",
       "AI"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/amazon-sagemaker/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sagemaker/",
     "version": 5,
     "appliesTo": [
       "bpmn:Task"
@@ -62596,7 +65865,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "authentication.type",
         "label": "Authentication",
-        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "authentication.type",
@@ -63008,7 +66277,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -63018,7 +66287,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -63029,7 +66298,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -63082,7 +66351,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "id": "authentication.type",
             "label": "Authentication",
-            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
             "value": "credentials",
             "group": "authentication",
             "binding": {
@@ -63169,7 +66438,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "HTTP callback",
       "listen for event"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/",
     "version": 16,
     "appliesTo": [
       "bpmn:StartEvent"
@@ -63245,7 +66514,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.shouldValidateHmac",
         "label": "HMAC authentication",
-        "description": "Choose whether HMAC verification is enabled. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a> and <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#example' target='_blank'>example</a> that explains how to use HMAC-related fields",
+        "description": "Choose whether HMAC verification is enabled. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a> and <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#example' target='_blank'>example</a> that explains how to use HMAC-related fields",
         "optional": false,
         "value": "disabled",
         "binding": {
@@ -63332,7 +66601,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.hmacScopes",
         "label": "HMAC scopes",
-        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.9/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
+        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
         "optional": true,
         "feel": "required",
         "binding": {
@@ -63470,7 +66739,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.auth.apiKeyLocator",
         "label": "API key locator",
-        "description": "A FEEL expression that extracts API key from the request. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#how-to-configure-api-key-authorization'>See documentation</a>",
+        "description": "A FEEL expression that extracts API key from the request. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#how-to-configure-api-key-authorization'>See documentation</a>",
         "optional": false,
         "value": "=split(request.headers.authorization, \" \")[2]",
         "constraints": {
@@ -63548,7 +66817,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.auth.jwt.permissionsExpression",
         "label": "JWT role property expression",
-        "description": "Expression to extract the roles from the JWT token. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#how-to-extract-roles-from-jwt-data'>See documentation</a>",
+        "description": "Expression to extract the roles from the JWT token. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#how-to-extract-roles-from-jwt-data'>See documentation</a>",
         "optional": false,
         "feel": "required",
         "binding": {
@@ -63582,7 +66851,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.verificationExpression",
         "label": "One time verification response expression",
-        "description": "Specify condition and response. Learn more in the <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#verification-expression' target='_blank'>documentation</a>",
+        "description": "Specify condition and response. Learn more in the <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#verification-expression' target='_blank'>documentation</a>",
         "optional": true,
         "feel": "required",
         "binding": {
@@ -63628,7 +66897,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "synchronousResponse",
         "label": "Response mode",
-        "description": "Synchronous or Asynchronous <a href=\"https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#response-mode\" target=\"_blank\">response handling</a>",
+        "description": "Synchronous or Asynchronous <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#response-mode\" target=\"_blank\">response handling</a>",
         "value": "false",
         "binding": {
           "name": "synchronousResponse",
@@ -63822,7 +67091,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -63832,7 +67101,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "value": "{\n  myRequestBody: request.body\n  // Use FEEL to extract values, e.g.,:\n  // myMessage: request.body.message\n}",
         "feel": "required",
         "binding": {
@@ -63881,7 +67150,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "authentication.type",
         "label": "Authentication",
-        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "authentication.type",
@@ -64131,7 +67400,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -64141,7 +67410,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -64152,7 +67421,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -64205,7 +67474,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "id": "authentication.type",
             "label": "Authentication",
-            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
             "value": "credentials",
             "group": "authentication",
             "binding": {
@@ -64292,7 +67561,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "queue",
       "dequeue"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sqs/?amazonsqs=inbound",
     "version": 13,
     "appliesTo": [
       "bpmn:ReceiveTask"
@@ -64327,7 +67596,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "authentication.type",
         "label": "Authentication",
-        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "authentication.type",
@@ -64666,7 +67935,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -64676,7 +67945,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
@@ -64695,7 +67964,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "id": "authentication.type",
             "label": "Authentication",
-            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
             "value": "credentials",
             "group": "authentication",
             "binding": {
@@ -64787,7 +68056,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "workflow",
       "automate task"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/introduction-to-connectors/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/introduction-to-connectors/",
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -65406,6 +68675,192 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     ]
   },
   {
+    "name": "Managed script",
+    "id": "io.camunda.connectors.ManagedScript.v1",
+    "description": "Run a Python or JavaScript script without operating a job worker",
+    "version": 1,
+    "appliesTo": [
+      "bpmn:Task"
+    ],
+    "elementType": {
+      "value": "bpmn:ServiceTask"
+    },
+    "engines": {
+      "camunda": "^8.11"
+    },
+    "properties": [
+      {
+        "value": "io.camunda:managed-script:1",
+        "binding": {
+          "property": "type",
+          "type": "zeebe:taskDefinition"
+        },
+        "type": "Hidden"
+      },
+      {
+        "value": "ManagedScript",
+        "binding": {
+          "linkName": "script",
+          "property": "resourceType",
+          "type": "zeebe:linkedResource"
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "script.bindingType",
+        "label": "Script binding",
+        "value": "latest",
+        "binding": {
+          "linkName": "script",
+          "property": "bindingType",
+          "type": "zeebe:linkedResource"
+        },
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "Latest",
+            "value": "latest"
+          },
+          {
+            "name": "Deployment",
+            "value": "deployment"
+          },
+          {
+            "name": "Version tag",
+            "value": "versionTag"
+          }
+        ]
+      },
+      {
+        "id": "script.resourceId",
+        "label": "Script file",
+        "description": "File name of the .py or .js script, deployed as a resource",
+        "feel": "optional",
+        "binding": {
+          "linkName": "script",
+          "property": "resourceId",
+          "type": "zeebe:linkedResource"
+        },
+        "type": "String"
+      },
+      {
+        "id": "script.versionTag",
+        "label": "Version tag",
+        "binding": {
+          "linkName": "script",
+          "property": "versionTag",
+          "type": "zeebe:linkedResource"
+        },
+        "condition": {
+          "property": "script.bindingType",
+          "equals": "versionTag",
+          "type": "simple"
+        },
+        "type": "String"
+      },
+      {
+        "id": "scriptInput",
+        "label": "Script input",
+        "description": "Object passed to the script, for example ={a: order.amount, b: tax}",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "scriptInput",
+          "type": "zeebe:input"
+        },
+        "type": "Text"
+      },
+      {
+        "id": "version",
+        "label": "Version",
+        "description": "Version of the element template",
+        "value": "1",
+        "binding": {
+          "key": "elementTemplateVersion",
+          "type": "zeebe:taskHeader"
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "id",
+        "label": "ID",
+        "description": "ID of the element template",
+        "value": "io.camunda.connectors.ManagedScript.v1",
+        "binding": {
+          "key": "elementTemplateId",
+          "type": "zeebe:taskHeader"
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "resultVariable",
+        "label": "Result variable",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "binding": {
+          "key": "resultVariable",
+          "type": "zeebe:taskHeader"
+        },
+        "type": "String"
+      },
+      {
+        "id": "resultExpression",
+        "label": "Result expression",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "feel": "required",
+        "binding": {
+          "key": "resultExpression",
+          "type": "zeebe:taskHeader"
+        },
+        "type": "Text"
+      },
+      {
+        "id": "errorExpression",
+        "label": "Error expression",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "feel": "required",
+        "binding": {
+          "key": "errorExpression",
+          "type": "zeebe:taskHeader"
+        },
+        "type": "Text"
+      },
+      {
+        "id": "retryCount",
+        "label": "Retries",
+        "description": "Number of retries",
+        "value": "3",
+        "feel": "optional",
+        "binding": {
+          "property": "retries",
+          "type": "zeebe:taskDefinition"
+        },
+        "type": "String"
+      },
+      {
+        "id": "retryBackoff",
+        "label": "Retry backoff",
+        "description": "ISO-8601 duration to wait between retries",
+        "value": "PT30S",
+        "binding": {
+          "key": "retryBackoff",
+          "type": "zeebe:taskHeader"
+        },
+        "type": "String"
+      },
+      {
+        "id": "jobTimeout",
+        "label": "Job timeout",
+        "description": "ISO-8601 duration after which Zeebe considers this job timed out if not yet completed. Leave empty to use the default timeout",
+        "optional": true,
+        "binding": {
+          "key": "jobTimeout",
+          "type": "zeebe:taskHeader"
+        },
+        "type": "String"
+      }
+    ]
+  },
+  {
     "name": "Webhook Boundary Event Connector",
     "id": "io.camunda.connectors.webhook.WebhookConnectorBoundary.v1",
     "description": "Configure webhook to receive callbacks",
@@ -65418,7 +68873,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "HTTP callback",
       "listen for event"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/",
     "version": 16,
     "appliesTo": [
       "bpmn:BoundaryEvent"
@@ -65494,7 +68949,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.shouldValidateHmac",
         "label": "HMAC authentication",
-        "description": "Choose whether HMAC verification is enabled. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a> and <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#example' target='_blank'>example</a> that explains how to use HMAC-related fields",
+        "description": "Choose whether HMAC verification is enabled. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a> and <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#example' target='_blank'>example</a> that explains how to use HMAC-related fields",
         "optional": false,
         "value": "disabled",
         "binding": {
@@ -65581,7 +69036,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.hmacScopes",
         "label": "HMAC scopes",
-        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.9/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
+        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
         "optional": true,
         "feel": "required",
         "binding": {
@@ -65719,7 +69174,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.auth.apiKeyLocator",
         "label": "API key locator",
-        "description": "A FEEL expression that extracts API key from the request. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#how-to-configure-api-key-authorization'>See documentation</a>",
+        "description": "A FEEL expression that extracts API key from the request. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#how-to-configure-api-key-authorization'>See documentation</a>",
         "optional": false,
         "value": "=split(request.headers.authorization, \" \")[2]",
         "constraints": {
@@ -65797,7 +69252,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.auth.jwt.permissionsExpression",
         "label": "JWT role property expression",
-        "description": "Expression to extract the roles from the JWT token. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#how-to-extract-roles-from-jwt-data'>See documentation</a>",
+        "description": "Expression to extract the roles from the JWT token. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#how-to-extract-roles-from-jwt-data'>See documentation</a>",
         "optional": false,
         "feel": "required",
         "binding": {
@@ -65831,7 +69286,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.verificationExpression",
         "label": "One time verification response expression",
-        "description": "Specify condition and response. Learn more in the <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#verification-expression' target='_blank'>documentation</a>",
+        "description": "Specify condition and response. Learn more in the <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#verification-expression' target='_blank'>documentation</a>",
         "optional": true,
         "feel": "required",
         "binding": {
@@ -65877,7 +69332,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "synchronousResponse",
         "label": "Response mode",
-        "description": "Synchronous or Asynchronous <a href=\"https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#response-mode\" target=\"_blank\">response handling</a>",
+        "description": "Synchronous or Asynchronous <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#response-mode\" target=\"_blank\">response handling</a>",
         "value": "false",
         "binding": {
           "name": "synchronousResponse",
@@ -66040,7 +69495,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -66050,7 +69505,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "value": "{\n  myRequestBody: request.body\n  // Use FEEL to extract values, e.g.,:\n  // myMessage: request.body.message\n}",
         "feel": "required",
         "binding": {
@@ -66076,8 +69531,8 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "file storage",
       "cloud storage"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/azure-blob-storage/",
-    "version": 6,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/",
+    "version": 7,
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -66085,7 +69540,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "value": "bpmn:ServiceTask"
     },
     "engines": {
-      "camunda": "^8.10"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -66425,6 +69880,42 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "uploadOperationFileName",
+        "label": "Document file name",
+        "optional": true,
+        "feel": "optional",
+        "binding": {
+          "name": "operation.fileName",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "operation_document_documentSource",
+              "equals": "camunda",
+              "type": "simple"
+            },
+            {
+              "property": "operationDiscriminator",
+              "equals": "uploadBlob",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "authenticationConfiguration",
+        "label": "Azure Blob Storage credential",
+        "optional": true,
+        "binding": {
+          "name": "authenticationConfiguration",
+          "type": "zeebe:input"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:azure-blobstorage:1"
+      },
+      {
         "id": "authentication.type",
         "label": "Type",
         "description": "Choose the authentication type.",
@@ -66432,6 +69923,11 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "binding": {
           "name": "authentication.type",
           "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "authenticationConfiguration",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -66458,11 +69954,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "SAS",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "SAS",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.SASUrl",
@@ -66477,11 +69983,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "SAS",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "SAS",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.tenantId",
@@ -66496,9 +70012,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oAuth-client-credentials-flow",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oAuth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -66515,9 +70040,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oAuth-client-credentials-flow",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oAuth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -66534,11 +70068,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oAuth-client-credentials-flow",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oAuth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.accountUrl",
@@ -66553,25 +70097,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "oAuth-client-credentials-flow",
-          "type": "simple"
-        },
-        "type": "String"
-      },
-      {
-        "id": "uploadOperationFileName",
-        "label": "Document file name",
-        "optional": true,
-        "feel": "optional",
-        "binding": {
-          "name": "operation.fileName",
-          "type": "zeebe:input"
-        },
-        "condition": {
-          "property": "operationDiscriminator",
-          "equals": "uploadBlob",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "oAuth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -66599,7 +70136,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "id": "version",
         "label": "Version",
         "description": "Version of the element template",
-        "value": "6",
+        "value": "7",
         "binding": {
           "key": "elementTemplateVersion",
           "type": "zeebe:taskHeader"
@@ -66620,7 +70157,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -66630,7 +70167,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -66641,7 +70178,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -66723,6 +70260,155 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "operationDiscriminator": "uploadBlob"
         }
       }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:azure-blobstorage:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "Azure Blob Storage Credential",
+        "properties": [
+          {
+            "id": "authentication.type",
+            "label": "Type",
+            "description": "Choose the authentication mechanism this credential provides.",
+            "value": "SAS",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.type",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "SAS token",
+                "value": "SAS"
+              },
+              {
+                "name": "OAuth 2.0 (Microsoft Entra ID)",
+                "value": "oAuth-client-credentials-flow"
+              }
+            ]
+          },
+          {
+            "id": "authentication.SASToken",
+            "label": "SAS token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.SASToken",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "SAS",
+              "type": "simple"
+            },
+            "tooltip": "Shared access signature (SAS) token of the container. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#prerequisites\">Azure Blob Storage SAS token documentation</a>.",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.SASUrl",
+            "label": "SAS URL",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.SASUrl",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "SAS",
+              "type": "simple"
+            },
+            "tooltip": "Shared access signature (SAS) URL of the container. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#prerequisites\">Azure Blob Storage SAS token documentation</a>.",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.tenantId",
+            "label": "Tenant id",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.tenantId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oAuth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "ID of the Microsoft Entra ID tenant that owns the application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>.",
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientId",
+            "label": "Client id",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oAuth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "Application (client) ID of the registered Microsoft Entra ID application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>.",
+            "type": "String"
+          },
+          {
+            "id": "authentication.clientSecret",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oAuth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "Client secret generated for the registered Microsoft Entra ID application. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>.",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.accountUrl",
+            "label": "Account url",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.accountUrl",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "oAuth-client-credentials-flow",
+              "type": "simple"
+            },
+            "tooltip": "URL of the Azure Blob Storage account to connect to. Learn more in our <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/azure-blob-storage/#oauth-20\">Azure Blob Storage OAuth 2.0 documentation</a>.",
+            "type": "String"
+          }
+        ]
+      }
     ]
   },
   {
@@ -66737,7 +70423,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "messaging",
       "new message"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/slack/?slack=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/slack/?slack=inbound",
     "version": 9,
     "appliesTo": [
       "bpmn:ReceiveTask"
@@ -66968,7 +70654,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -66978,7 +70664,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "value": "{\n  myRequestBody: request.body\n  // Use FEEL to extract values, e.g.,:\n  // myUserId: request.body.event.user\n}",
         "feel": "required",
         "binding": {
@@ -67030,7 +70716,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "SOAP 1.1",
       "SOAP 1.2"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/protocol/soap/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/protocol/soap/",
     "version": 2,
     "appliesTo": [
       "bpmn:Task"
@@ -67636,7 +71322,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -67646,7 +71332,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -67657,7 +71343,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -67714,8 +71400,8 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "message broker",
       "queue"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=inbound",
-    "version": 8,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=inbound",
+    "version": 9,
     "appliesTo": [
       "bpmn:StartEvent"
     ],
@@ -67724,7 +71410,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "eventDefinition": "bpmn:MessageEventDefinition"
     },
     "engines": {
-      "camunda": "^8.3"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -67736,12 +71422,28 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "rabbitMqConnection",
+        "label": "Connection credential",
+        "optional": true,
+        "binding": {
+          "name": "rabbitMqConnection",
+          "type": "zeebe:property"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:rabbitmq-connection:1"
+      },
+      {
         "id": "authentication.authType",
         "label": "Connection type",
         "value": "uri",
         "binding": {
           "name": "authentication.authType",
           "type": "zeebe:property"
+        },
+        "condition": {
+          "property": "rabbitMqConnection",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -67771,11 +71473,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "uri",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "uri",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.userName",
@@ -67789,9 +71501,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -67807,11 +71528,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "routing.virtualHost",
@@ -67825,9 +71556,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -67843,9 +71583,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -67861,9 +71610,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -68110,7 +71868,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -68120,13 +71878,162 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
           "type": "zeebe:property"
         },
         "type": "Text"
+      }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:rabbitmq-connection:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "RabbitMQ Connection",
+        "properties": [
+          {
+            "id": "authentication.authType",
+            "label": "Connection type",
+            "value": "uri",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.authType",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "URI",
+                "value": "uri"
+              },
+              {
+                "name": "Username/Password",
+                "value": "credentials"
+              }
+            ]
+          },
+          {
+            "id": "authentication.uri",
+            "label": "URI",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^(=|(amqps?://|secrets|\\{\\{).*$)",
+                "message": "Must start with amqp(s):// or contain a secret reference"
+              }
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.uri",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "uri",
+              "type": "simple"
+            },
+            "tooltip": "URI should contain username, password, host name, port number, and virtual host",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.userName",
+            "label": "Username",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.userName",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.password",
+            "label": "Password",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.password",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "routing.virtualHost",
+            "label": "Virtual host",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.virtualHost",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          },
+          {
+            "id": "routing.hostName",
+            "label": "Host name",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.hostName",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          },
+          {
+            "id": "routing.port",
+            "label": "Port",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.port",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          }
+        ]
       }
     ]
   },
@@ -68143,8 +72050,8 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "message broker",
       "queue"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound",
-    "version": 6,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound",
+    "version": 7,
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -68152,7 +72059,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "value": "bpmn:ServiceTask"
     },
     "engines": {
-      "camunda": "^8.3"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -68164,12 +72071,28 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "rabbitMqConnection",
+        "label": "Connection credential",
+        "optional": true,
+        "binding": {
+          "name": "rabbitMqConnection",
+          "type": "zeebe:input"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:rabbitmq-connection:1"
+      },
+      {
         "id": "authentication.authType",
         "label": "Connection type",
         "value": "uri",
         "binding": {
           "name": "authentication.authType",
           "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "rabbitMqConnection",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -68200,11 +72123,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "uri",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "uri",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.userName",
@@ -68219,9 +72152,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -68238,11 +72180,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "routing.exchange",
@@ -68285,9 +72237,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -68304,9 +72265,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -68323,9 +72293,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.authType",
-          "equals": "credentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            {
+              "property": "rabbitMqConnection",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -68359,7 +72338,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "id": "version",
         "label": "Version",
         "description": "Version of the element template",
-        "value": "6",
+        "value": "7",
         "binding": {
           "key": "elementTemplateVersion",
           "type": "zeebe:taskHeader"
@@ -68380,7 +72359,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -68390,7 +72369,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -68401,7 +72380,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -68443,6 +72422,155 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         },
         "type": "String"
       }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:rabbitmq-connection:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "RabbitMQ Connection",
+        "properties": [
+          {
+            "id": "authentication.authType",
+            "label": "Connection type",
+            "value": "uri",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.authType",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "URI",
+                "value": "uri"
+              },
+              {
+                "name": "Username/Password",
+                "value": "credentials"
+              }
+            ]
+          },
+          {
+            "id": "authentication.uri",
+            "label": "URI",
+            "constraints": {
+              "notEmpty": true,
+              "pattern": {
+                "value": "^(=|(amqps?://|secrets|\\{\\{).*$)",
+                "message": "Must start with amqp(s):// or contain a secret reference"
+              }
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.uri",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "uri",
+              "type": "simple"
+            },
+            "tooltip": "URI should contain username, password, host name, port number, and virtual host",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.userName",
+            "label": "Username",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.userName",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.password",
+            "label": "Password",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.password",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "routing.virtualHost",
+            "label": "Virtual host",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.virtualHost",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          },
+          {
+            "id": "routing.hostName",
+            "label": "Host name",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.hostName",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          },
+          {
+            "id": "routing.port",
+            "label": "Port",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "routing",
+            "binding": {
+              "name": "routing.port",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.authType",
+              "equals": "credentials",
+              "type": "simple"
+            },
+            "tooltip": "Get from RabbitMQ external application configurations. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/rabbitmq/?rabbitmq=outbound#routing-data\" target=\"_blank\">RabbitMQ routing data docs</a>",
+            "type": "String"
+          }
+        ]
+      }
     ]
   },
   {
@@ -68458,7 +72586,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "HTTP callback",
       "listen for event"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/",
     "version": 16,
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
@@ -68535,7 +72663,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.shouldValidateHmac",
         "label": "HMAC authentication",
-        "description": "Choose whether HMAC verification is enabled. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a> and <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#example' target='_blank'>example</a> that explains how to use HMAC-related fields",
+        "description": "Choose whether HMAC verification is enabled. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a> and <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#example' target='_blank'>example</a> that explains how to use HMAC-related fields",
         "optional": false,
         "value": "disabled",
         "binding": {
@@ -68622,7 +72750,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.hmacScopes",
         "label": "HMAC scopes",
-        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.9/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
+        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
         "optional": true,
         "feel": "required",
         "binding": {
@@ -68760,7 +72888,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.auth.apiKeyLocator",
         "label": "API key locator",
-        "description": "A FEEL expression that extracts API key from the request. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#how-to-configure-api-key-authorization'>See documentation</a>",
+        "description": "A FEEL expression that extracts API key from the request. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#how-to-configure-api-key-authorization'>See documentation</a>",
         "optional": false,
         "value": "=split(request.headers.authorization, \" \")[2]",
         "constraints": {
@@ -68838,7 +72966,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.auth.jwt.permissionsExpression",
         "label": "JWT role property expression",
-        "description": "Expression to extract the roles from the JWT token. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#how-to-extract-roles-from-jwt-data'>See documentation</a>",
+        "description": "Expression to extract the roles from the JWT token. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#how-to-extract-roles-from-jwt-data'>See documentation</a>",
         "optional": false,
         "feel": "required",
         "binding": {
@@ -68872,7 +73000,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.verificationExpression",
         "label": "One time verification response expression",
-        "description": "Specify condition and response. Learn more in the <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#verification-expression' target='_blank'>documentation</a>",
+        "description": "Specify condition and response. Learn more in the <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#verification-expression' target='_blank'>documentation</a>",
         "optional": true,
         "feel": "required",
         "binding": {
@@ -68918,7 +73046,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "synchronousResponse",
         "label": "Response mode",
-        "description": "Synchronous or Asynchronous <a href=\"https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#response-mode\" target=\"_blank\">response handling</a>",
+        "description": "Synchronous or Asynchronous <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#response-mode\" target=\"_blank\">response handling</a>",
         "value": "false",
         "binding": {
           "name": "synchronousResponse",
@@ -69081,7 +73209,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -69091,7 +73219,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "value": "{\n  myRequestBody: request.body\n  // Use FEEL to extract values, e.g.,:\n  // myMessage: request.body.message\n}",
         "feel": "required",
         "binding": {
@@ -69122,7 +73250,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "POP3",
       "inbox"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/email/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/email/",
     "version": 8,
     "appliesTo": [
       "bpmn:Task"
@@ -70850,7 +74978,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -70860,7 +74988,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -70871,7 +74999,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -71518,9 +75646,9 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     ],
     "deprecated": {
       "message": "None Start Events are deprecated in favor of Message Start Events for message based Connectors.",
-      "documentationRef": "https://docs.camunda.io/docs/components/modeler/bpmn/none-events/"
+      "documentationRef": "https://docs.camunda.io/docs/8.10/components/modeler/bpmn/none-events/"
     },
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sns/?amazonsns=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sns/?amazonsns=inbound",
     "version": 6,
     "appliesTo": [
       "bpmn:StartEvent"
@@ -71637,8 +75765,9 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     "description": "Run a multi-step AI reasoning loop with dynamic tool selection",
     "keywords": [
       "AI",
-      "AI Agent",
-      "agentic orchestration"
+      "Agent",
+      "agentic orchestration",
+      "LLM"
     ],
     "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-subprocess/",
     "version": 1,
@@ -71720,6 +75849,10 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "name": "Google Gemini",
             "value": "google-gemini"
+          },
+          {
+            "name": "Mistral AI",
+            "value": "mistral"
           },
           {
             "name": "Custom Implementation (Self-Managed/Hybrid only)",
@@ -73318,7 +77451,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "provider.openai.backend.custom.endpoint",
         "label": "API endpoint",
-        "description": "Base URL of the OpenAI-compatible API; <code>/chat/completions</code> or <code>/responses</code> will be appended depending on the selected API.",
+        "description": "Base URL of the OpenAI-compatible API. <code>/chat/completions</code> or <code>/responses</code> will be appended depending on the selected API.",
         "optional": false,
         "constraints": {
           "notEmpty": true
@@ -73882,6 +78015,410 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "condition": {
           "property": "provider.type",
           "equals": "google-gemini",
+          "type": "simple"
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.type",
+        "label": "Connection",
+        "description": "Specify how the Mistral API is reached.",
+        "value": "mistral-api",
+        "binding": {
+          "name": "provider.mistral.backend.type",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
+          "type": "simple"
+        },
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "Mistral API",
+            "value": "mistral-api"
+          },
+          {
+            "name": "Custom / compatible endpoint",
+            "value": "custom"
+          }
+        ]
+      },
+      {
+        "id": "provider.mistral.backend.mistral.apiKey",
+        "label": "Mistral API key",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.mistral.apiKey",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "mistral-api",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.mistral.endpoint",
+        "label": "API endpoint",
+        "optional": true,
+        "value": "https://api.mistral.ai/v1",
+        "binding": {
+          "name": "provider.mistral.backend.mistral.endpoint",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "mistral-api",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "provider.mistral.backend.custom.endpoint",
+        "label": "API endpoint",
+        "description": "Base URL of the Mistral-compatible API. <code>/chat/completions</code> will be appended.",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.endpoint",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.type",
+        "label": "Authentication",
+        "description": "Authentication for the compatible API.",
+        "value": "none",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.type",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "None",
+            "value": "none"
+          },
+          {
+            "name": "API key",
+            "value": "apiKey"
+          },
+          {
+            "name": "OAuth 2.0",
+            "value": "oauth-client-credentials-flow"
+          }
+        ]
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.apiKey",
+        "label": "API key",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.apiKey",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "apiKey",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.oauthTokenEndpoint",
+        "label": "OAuth 2.0 token endpoint",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true,
+          "pattern": {
+            "value": "^(=|(http://|https://|secrets|\\{\\{).*$)",
+            "message": "Must be a http(s) URL"
+          }
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.oauthTokenEndpoint",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.clientId",
+        "label": "Client ID",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.clientId",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.clientSecret",
+        "label": "Client secret",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.clientSecret",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String",
+        "secret": true
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.audience",
+        "label": "Audience",
+        "optional": true,
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.audience",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.clientAuthentication",
+        "label": "Client authentication",
+        "optional": false,
+        "value": "BASIC_AUTH_HEADER",
+        "constraints": {
+          "notEmpty": true
+        },
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.clientAuthentication",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "Send as Basic Auth header",
+            "value": "BASIC_AUTH_HEADER"
+          },
+          {
+            "name": "Send client credentials in body",
+            "value": "CREDENTIALS_BODY"
+          }
+        ]
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.scopes",
+        "label": "Scopes",
+        "optional": true,
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.scopes",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.timeouts.timeout",
+        "label": "Timeout",
+        "description": "Timeout specification for API calls to the model provider defined as ISO-8601 duration (example: <code>PT60S</code>).",
+        "optional": true,
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.timeouts.timeout",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
           "type": "simple"
         },
         "type": "String"
@@ -74528,6 +79065,156 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "String"
       },
       {
+        "id": "provider.mistral.backend.mistral.headers",
+        "label": "Headers",
+        "optional": true,
+        "binding": {
+          "name": "provider.mistral.backend.mistral.headers",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "mistral-api",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "provider.mistral.backend.mistral.queryParameters",
+        "label": "Query parameters",
+        "optional": true,
+        "binding": {
+          "name": "provider.mistral.backend.mistral.queryParameters",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "mistral-api",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "provider.mistral.backend.mistral.bodyProperties",
+        "label": "Body properties",
+        "optional": true,
+        "binding": {
+          "name": "provider.mistral.backend.mistral.bodyProperties",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "mistral-api",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "provider.mistral.backend.custom.headers",
+        "label": "Headers",
+        "description": "Map of HTTP headers to add to the request.",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.backend.custom.headers",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.queryParameters",
+        "label": "Query parameters",
+        "description": "Map of query parameters to add to the request URL.",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.backend.custom.queryParameters",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.bodyProperties",
+        "label": "Body properties",
+        "description": "Map of additional properties to include in the request body.",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.backend.custom.bodyProperties",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
         "id": "provider.anthropic.model.model",
         "label": "Model",
         "optional": false,
@@ -74947,6 +79634,55 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         ]
       },
       {
+        "id": "provider.mistral.model.model",
+        "label": "Model",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.model.model",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
+          "type": "simple"
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.parameters.effort",
+        "label": "Effort",
+        "optional": false,
+        "value": "modelDefault",
+        "binding": {
+          "name": "provider.mistral.parameters.effort",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
+          "type": "simple"
+        },
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "default",
+            "value": "modelDefault"
+          },
+          {
+            "name": "none",
+            "value": "none"
+          },
+          {
+            "name": "high",
+            "value": "high"
+          }
+        ]
+      },
+      {
         "id": "provider.model",
         "label": "Model",
         "optional": false,
@@ -75287,6 +80023,54 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "condition": {
           "property": "provider.type",
           "equals": "google-gemini",
+          "type": "simple"
+        },
+        "type": "Number"
+      },
+      {
+        "id": "provider.mistral.parameters.maxTokens",
+        "label": "Max tokens",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.parameters.maxTokens",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
+          "type": "simple"
+        },
+        "type": "Number"
+      },
+      {
+        "id": "provider.mistral.parameters.temperature",
+        "label": "Temperature",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.parameters.temperature",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
+          "type": "simple"
+        },
+        "type": "Number"
+      },
+      {
+        "id": "provider.mistral.parameters.topP",
+        "label": "top P",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.parameters.topP",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
           "type": "simple"
         },
         "type": "Number"
@@ -75778,7 +80562,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "value": "agent",
         "binding": {
           "source": "=agent",
@@ -75789,7 +80573,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -75838,6 +80622,304 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         },
         "type": "Hidden"
       }
+    ],
+    "steps": [
+      {
+        "name": "Anthropic",
+        "description": "Claude models via the Anthropic API, AWS Bedrock, Microsoft Foundry, or a compatible endpoint.",
+        "steps": [
+          {
+            "name": "AI Agent Sub-process: Anthropic API",
+            "keywords": [
+              "Anthropic",
+              "Claude",
+              "Anthropic API"
+            ],
+            "presetId": "type_anthropic_type_anthropic-api"
+          },
+          {
+            "name": "AI Agent Sub-process: AWS Bedrock Mantle",
+            "keywords": [
+              "Anthropic",
+              "Claude",
+              "AWS Bedrock Mantle"
+            ],
+            "presetId": "type_anthropic_type_aws-bedrock-mantle"
+          },
+          {
+            "name": "AI Agent Sub-process: Microsoft Foundry (Azure)",
+            "keywords": [
+              "Anthropic",
+              "Claude",
+              "Microsoft Foundry (Azure)"
+            ],
+            "presetId": "type_anthropic_type_foundry"
+          },
+          {
+            "name": "AI Agent Sub-process: Anthropic custom / compatible endpoint",
+            "keywords": [
+              "Anthropic",
+              "Claude",
+              "Custom / compatible endpoint"
+            ],
+            "presetId": "type_anthropic_type_custom"
+          }
+        ]
+      },
+      {
+        "name": "AI Agent Sub-process: AWS Bedrock Converse",
+        "description": "Any Bedrock model via the Converse API.",
+        "keywords": [
+          "Bedrock",
+          "AWS"
+        ],
+        "presetId": "type_bedrock"
+      },
+      {
+        "name": "OpenAI",
+        "description": "GPT models via OpenAI, Microsoft Foundry, or an OpenAI-compatible endpoint.",
+        "steps": [
+          {
+            "name": "AI Agent Sub-process: OpenAI API",
+            "keywords": [
+              "OpenAI",
+              "GPT",
+              "OpenAI API"
+            ],
+            "presetId": "type_openai_type_openai-api"
+          },
+          {
+            "name": "AI Agent Sub-process: Microsoft Foundry (Azure)",
+            "keywords": [
+              "OpenAI",
+              "GPT",
+              "Microsoft Foundry (Azure)"
+            ],
+            "presetId": "type_openai_type_foundry"
+          },
+          {
+            "name": "AI Agent Sub-process: OpenAI custom / compatible endpoint",
+            "keywords": [
+              "OpenAI",
+              "GPT",
+              "Custom / compatible endpoint"
+            ],
+            "presetId": "type_openai_type_custom"
+          }
+        ]
+      },
+      {
+        "name": "OpenAI compatible",
+        "description": "Models like Ollama, LM Studio, and Camunda-provided LLM.",
+        "steps": [
+          {
+            "name": "AI Agent Sub-process: Ollama",
+            "description": "Local models via Ollama.",
+            "keywords": [
+              "Ollama",
+              "Local",
+              "Llama"
+            ],
+            "presetId": "type_openai_type_custom_ollama"
+          },
+          {
+            "name": "AI Agent Sub-process: LM Studio",
+            "description": "Local models via LM Studio.",
+            "keywords": [
+              "LM Studio",
+              "Local"
+            ],
+            "presetId": "type_openai_type_custom_lmstudio"
+          },
+          {
+            "name": "AI Agent Sub-process: Camunda-provided LLM (SaaS only)",
+            "description": "Only on select plans.",
+            "keywords": [
+              "Camunda",
+              "LLM",
+              "SaaS"
+            ],
+            "presetId": "type_openai_type_custom_camunda"
+          }
+        ]
+      },
+      {
+        "name": "Google Gemini",
+        "description": "Gemini models via the Gemini API or Vertex AI.",
+        "steps": [
+          {
+            "name": "AI Agent Sub-process: Google Gemini API",
+            "keywords": [
+              "Gemini",
+              "Google",
+              "Google Gemini API"
+            ],
+            "presetId": "type_google-gemini_type_google-gemini-api"
+          },
+          {
+            "name": "AI Agent Sub-process: Enterprise Agent Platform (Vertex AI)",
+            "keywords": [
+              "Gemini",
+              "Google",
+              "Enterprise Agent Platform (Vertex AI)"
+            ],
+            "presetId": "type_google-gemini_type_google-vertex-ai"
+          }
+        ]
+      },
+      {
+        "name": "Mistral AI",
+        "description": "Mistral models via the Mistral API or a compatible endpoint.",
+        "steps": [
+          {
+            "name": "AI Agent Sub-process: Mistral API",
+            "keywords": [
+              "Mistral",
+              "Mistral API"
+            ],
+            "presetId": "type_mistral_type_mistral-api"
+          },
+          {
+            "name": "AI Agent Sub-process: Mistral custom / compatible endpoint",
+            "keywords": [
+              "Mistral",
+              "Custom / compatible endpoint"
+            ],
+            "presetId": "type_mistral_type_custom"
+          }
+        ]
+      },
+      {
+        "name": "AI Agent Sub-process: Custom Implementation (Self-Managed/Hybrid only)",
+        "description": "Your own provider implementation.",
+        "keywords": [
+          "Custom"
+        ],
+        "presetId": "type_custom"
+      }
+    ],
+    "presets": [
+      {
+        "id": "type_anthropic_type_anthropic-api",
+        "properties": {
+          "provider.type": "anthropic",
+          "provider.anthropic.backend.type": "anthropic-api"
+        }
+      },
+      {
+        "id": "type_anthropic_type_aws-bedrock-mantle",
+        "properties": {
+          "provider.type": "anthropic",
+          "provider.anthropic.backend.type": "aws-bedrock-mantle"
+        }
+      },
+      {
+        "id": "type_anthropic_type_foundry",
+        "properties": {
+          "provider.type": "anthropic",
+          "provider.anthropic.backend.type": "foundry"
+        }
+      },
+      {
+        "id": "type_anthropic_type_custom",
+        "properties": {
+          "provider.type": "anthropic",
+          "provider.anthropic.backend.type": "custom"
+        }
+      },
+      {
+        "id": "type_bedrock",
+        "properties": {
+          "provider.type": "bedrock"
+        }
+      },
+      {
+        "id": "type_openai_type_openai-api",
+        "properties": {
+          "provider.type": "openai",
+          "provider.openai.backend.type": "openai-api"
+        }
+      },
+      {
+        "id": "type_openai_type_foundry",
+        "properties": {
+          "provider.type": "openai",
+          "provider.openai.backend.type": "foundry"
+        }
+      },
+      {
+        "id": "type_openai_type_custom",
+        "properties": {
+          "provider.type": "openai",
+          "provider.openai.backend.type": "custom"
+        }
+      },
+      {
+        "id": "type_openai_type_custom_ollama",
+        "properties": {
+          "provider.type": "openai",
+          "provider.openai.backend.type": "custom",
+          "provider.openai.api.type": "completions",
+          "provider.openai.backend.custom.endpoint": "http://localhost:11434/v1",
+          "provider.openai.backend.custom.authentication.type": "none"
+        }
+      },
+      {
+        "id": "type_openai_type_custom_lmstudio",
+        "properties": {
+          "provider.type": "openai",
+          "provider.openai.backend.type": "custom",
+          "provider.openai.api.type": "completions",
+          "provider.openai.backend.custom.endpoint": "http://localhost:1234/v1",
+          "provider.openai.backend.custom.authentication.type": "none"
+        }
+      },
+      {
+        "id": "type_openai_type_custom_camunda",
+        "properties": {
+          "provider.type": "openai",
+          "provider.openai.backend.type": "custom",
+          "provider.openai.api.type": "completions",
+          "provider.openai.backend.custom.endpoint": "=camunda.secrets.CAMUNDA_PROVIDED_LLM_API_ENDPOINT",
+          "provider.openai.backend.custom.authentication.type": "apiKey",
+          "provider.openai.backend.custom.authentication.apiKey": "=camunda.secrets.CAMUNDA_PROVIDED_LLM_API_KEY",
+          "provider.openai.model.model": "=camunda.secrets.CAMUNDA_PROVIDED_LLM_DEFAULT_MODEL"
+        }
+      },
+      {
+        "id": "type_google-gemini_type_google-gemini-api",
+        "properties": {
+          "provider.type": "google-gemini",
+          "provider.googleGemini.backend.type": "google-gemini-api"
+        }
+      },
+      {
+        "id": "type_google-gemini_type_google-vertex-ai",
+        "properties": {
+          "provider.type": "google-gemini",
+          "provider.googleGemini.backend.type": "google-vertex-ai"
+        }
+      },
+      {
+        "id": "type_mistral_type_mistral-api",
+        "properties": {
+          "provider.type": "mistral",
+          "provider.mistral.backend.type": "mistral-api"
+        }
+      },
+      {
+        "id": "type_mistral_type_custom",
+        "properties": {
+          "provider.type": "mistral",
+          "provider.mistral.backend.type": "custom"
+        }
+      },
+      {
+        "id": "type_custom",
+        "properties": {
+          "provider.type": "custom"
+        }
+      }
     ]
   },
   {
@@ -75852,7 +80934,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "message queue",
       "stream data"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/kafka/?kafka=inbound",
     "version": 8,
     "appliesTo": [
       "bpmn:StartEvent"
@@ -76309,7 +81391,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -76319,7 +81401,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
@@ -76394,7 +81476,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "new email",
       "email notification"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/email",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/email",
     "version": 3,
     "appliesTo": [
       "bpmn:StartEvent"
@@ -76921,7 +82003,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -76931,7 +82013,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
@@ -77050,7 +82132,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "natural language processing",
       "machine learning"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/amazon-comprehend/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-comprehend/",
     "version": 6,
     "appliesTo": [
       "bpmn:Task"
@@ -77104,7 +82186,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "authentication.type",
         "label": "Authentication",
-        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "authentication.type",
@@ -77652,7 +82734,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -77662,7 +82744,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -77673,7 +82755,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -77768,7 +82850,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "id": "authentication.type",
             "label": "Authentication",
-            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
             "value": "credentials",
             "group": "authentication",
             "binding": {
@@ -77851,7 +82933,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     },
     "deprecated": {
       "message": "Deprecation of the Operate API and Tasklist API. Please use the REST Connector for now.",
-      "documentationRef": "https://docs.camunda.io/docs/apis-tools/working-with-apis-tools/"
+      "documentationRef": "https://docs.camunda.io/docs/8.10/apis-tools/working-with-apis-tools/"
     },
     "description": "Fetch data from Camunda Operate API",
     "keywords": [
@@ -77868,7 +82950,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "process monitoring",
       "workflow status"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/protocol/rest/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/protocol/rest/",
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -78400,8 +83482,8 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "channel",
       "notification"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-teams/",
-    "version": 9,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/microsoft-teams/",
+    "version": 10,
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -78409,7 +83491,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "value": "bpmn:ServiceTask"
     },
     "engines": {
-      "camunda": "^8.10"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -78538,13 +83620,29 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         ]
       },
       {
+        "id": "authenticationConfiguration",
+        "label": "Microsoft Entra ID credential",
+        "optional": true,
+        "binding": {
+          "name": "authenticationConfiguration",
+          "type": "zeebe:input"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:microsoft-entra:1"
+      },
+      {
         "id": "authentication.type",
         "label": "Type",
-        "description": "Authentication type depends on your Microsoft Entra (Azure AD) configuration. See <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-teams/'>connector documentation</a>",
+        "description": "Authentication type depends on your Microsoft Entra (Azure AD) configuration. See <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/microsoft-teams/'>connector documentation</a>",
         "value": "clientCredentials",
         "binding": {
           "name": "authentication.type",
           "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "authenticationConfiguration",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -78575,11 +83673,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "token",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "token",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.credentials.clientId",
@@ -78594,9 +83702,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -78613,9 +83730,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -78632,11 +83758,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.refresh.token",
@@ -78651,11 +83787,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.refresh.clientId",
@@ -78670,9 +83816,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -78689,9 +83844,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -78705,11 +83869,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:input"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "data.createChat.chatType",
@@ -80322,7 +85496,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "id": "version",
         "label": "Version",
         "description": "Version of the element template",
-        "value": "9",
+        "value": "10",
         "binding": {
           "key": "elementTemplateVersion",
           "type": "zeebe:taskHeader"
@@ -80343,7 +85517,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -80353,7 +85527,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -80364,7 +85538,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -80707,6 +85881,189 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "data.channelMethod": "listMembersInChannel"
         }
       }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:microsoft-entra:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "Microsoft Entra ID",
+        "properties": [
+          {
+            "id": "authentication.type",
+            "label": "Type",
+            "description": "Choose the authentication mechanism this credential provides.",
+            "value": "clientCredentials",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.type",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Bearer token",
+                "value": "token"
+              },
+              {
+                "name": "Client credentials",
+                "value": "clientCredentials"
+              },
+              {
+                "name": "Refresh token",
+                "value": "refresh"
+              }
+            ]
+          },
+          {
+            "id": "authentication.bearer.token",
+            "label": "Bearer token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "token",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.credentials.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.credentials.tenantId",
+            "label": "Tenant ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.tenantId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.credentials.clientSecret",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.refresh.token",
+            "label": "Refresh token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.refresh.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.refresh.tenantId",
+            "label": "Tenant ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.tenantId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.refresh.clientSecret",
+            "label": "Client secret",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application; optional, depends on whether the client is public or private",
+            "type": "String",
+            "secret": true
+          }
+        ]
+      }
     ]
   },
   {
@@ -80725,8 +86082,8 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "inbox",
       "poll email"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-o365-mail-inbound/",
-    "version": 2,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/microsoft-o365-mail-inbound/",
+    "version": 3,
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
       "bpmn:IntermediateThrowEvent"
@@ -80736,7 +86093,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "eventDefinition": "bpmn:MessageEventDefinition"
     },
     "engines": {
-      "camunda": "^8.9"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -80748,13 +86105,29 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "authenticationConfiguration",
+        "label": "Microsoft Entra ID credential",
+        "optional": true,
+        "binding": {
+          "name": "authenticationConfiguration",
+          "type": "zeebe:property"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:microsoft-entra:1"
+      },
+      {
         "id": "authentication.type",
         "label": "Type",
-        "description": "Authentication type depends on your Microsoft Entra (Azure AD) configuration. See <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-teams/'>connector documentation</a>",
+        "description": "Authentication type depends on your Microsoft Entra (Azure AD) configuration. See <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/microsoft-teams/'>connector documentation</a>",
         "value": "clientCredentials",
         "binding": {
           "name": "authentication.type",
           "type": "zeebe:property"
+        },
+        "condition": {
+          "property": "authenticationConfiguration",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -80784,11 +86157,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "token",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "token",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.credentials.clientId",
@@ -80803,9 +86186,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -80822,9 +86214,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -80841,11 +86242,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.refresh.token",
@@ -80860,11 +86271,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.refresh.clientId",
@@ -80879,9 +86300,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -80898,9 +86328,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -80914,11 +86353,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "pollingConfig.userId",
@@ -81375,7 +86824,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -81385,13 +86834,196 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
           "type": "zeebe:property"
         },
         "type": "Text"
+      }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:microsoft-entra:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "Microsoft Entra ID",
+        "properties": [
+          {
+            "id": "authentication.type",
+            "label": "Type",
+            "description": "Choose the authentication mechanism this credential provides.",
+            "value": "clientCredentials",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.type",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Bearer token",
+                "value": "token"
+              },
+              {
+                "name": "Client credentials",
+                "value": "clientCredentials"
+              },
+              {
+                "name": "Refresh token",
+                "value": "refresh"
+              }
+            ]
+          },
+          {
+            "id": "authentication.bearer.token",
+            "label": "Bearer token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "token",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.credentials.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.credentials.tenantId",
+            "label": "Tenant ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.tenantId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.credentials.clientSecret",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.refresh.token",
+            "label": "Refresh token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.refresh.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.refresh.tenantId",
+            "label": "Tenant ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.tenantId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.refresh.clientSecret",
+            "label": "Client secret",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application; optional, depends on whether the client is public or private",
+            "type": "String",
+            "secret": true
+          }
+        ]
       }
     ]
   },
@@ -81413,8 +87045,8 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "object storage",
       "file storage"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/google-cloud-storage",
-    "version": 5,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-cloud-storage",
+    "version": 6,
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -81422,7 +87054,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "value": "bpmn:ServiceTask"
     },
     "engines": {
-      "camunda": "^8.10"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -81800,6 +87432,43 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "uploadOperationFileName",
+        "label": "Document file name",
+        "optional": true,
+        "feel": "optional",
+        "binding": {
+          "name": "operation.fileName",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "operation_document_documentSource",
+              "equals": "camunda",
+              "type": "simple"
+            },
+            {
+              "property": "operationDiscriminator",
+              "equals": "uploadObject",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "googleGcsCredential",
+        "label": "Google Cloud Storage credential",
+        "description": "Choose a reusable Google Cloud Storage credential, or configure a one-time service account key below.",
+        "optional": true,
+        "binding": {
+          "name": "googleGcsCredential",
+          "type": "zeebe:input"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda:google-gcs-credential:1"
+      },
+      {
         "id": "authentication.jsonKey",
         "label": "JSON key of the service account",
         "optional": false,
@@ -81811,29 +87480,19 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "name": "authentication.jsonKey",
           "type": "zeebe:input"
         },
-        "type": "String"
-      },
-      {
-        "id": "uploadOperationFileName",
-        "label": "Document file name",
-        "optional": true,
-        "feel": "optional",
-        "binding": {
-          "name": "operation.fileName",
-          "type": "zeebe:input"
-        },
         "condition": {
-          "property": "operationDiscriminator",
-          "equals": "uploadObject",
+          "property": "googleGcsCredential",
+          "isEmpty": true,
           "type": "simple"
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "version",
         "label": "Version",
         "description": "Version of the element template",
-        "value": "5",
+        "value": "6",
         "binding": {
           "key": "elementTemplateVersion",
           "type": "zeebe:taskHeader"
@@ -81854,7 +87513,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -81864,7 +87523,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -81875,7 +87534,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -81956,6 +87615,31 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "properties": {
           "operationDiscriminator": "uploadObject"
         }
+      }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda:google-gcs-credential:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "Google Cloud Storage Credential",
+        "properties": [
+          {
+            "id": "authentication.jsonKey",
+            "label": "JSON key of the service account",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.jsonKey",
+              "type": "property"
+            },
+            "tooltip": "Service account key in JSON format. See the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/google-cloud-storage/#authentication\" target=\"_blank\">Google Cloud Storage authentication guide</a> for details.",
+            "type": "String",
+            "secret": true
+          }
+        ]
       }
     ]
   },
@@ -82507,7 +88191,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "serverless",
       "function as a service"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/",
     "version": 9,
     "appliesTo": [
       "bpmn:Task"
@@ -82542,7 +88226,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "authentication.type",
         "label": "Authentication",
-        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "authentication.type",
@@ -82745,7 +88429,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -82755,7 +88439,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -82766,7 +88450,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -82819,7 +88503,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "id": "authentication.type",
             "label": "Authentication",
-            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
             "value": "credentials",
             "group": "authentication",
             "binding": {
@@ -82983,7 +88667,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "correlationType.type",
         "label": "Correlation mode",
-        "description": "Send message with <a href='https://docs.camunda.io/docs/components/concepts/messages/#message-buffering' target='_blank'>buffer (publish)</a> or with <a href='https://docs.camunda.io/docs/components/concepts/messages/#message-response' target='_blank'>result (correlate)</a>",
+        "description": "Send message with <a href='https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-buffering' target='_blank'>buffer (publish)</a> or with <a href='https://docs.camunda.io/docs/8.10/components/concepts/messages/#message-response' target='_blank'>result (correlate)</a>",
         "value": "publish",
         "binding": {
           "name": "correlationType.type",
@@ -83058,7 +88742,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -83068,7 +88752,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -83079,7 +88763,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -83176,7 +88860,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "cloud event",
       "event driven"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=inbound",
     "appliesTo": [
       "bpmn:ReceiveTask"
     ],
@@ -83492,7 +89176,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property",
           "name": "activationCondition"
         },
-        "description": "Condition under which the connector triggers. Leave empty to catch all events. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a>"
+        "description": "Condition under which the connector triggers. Leave empty to catch all events. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a>"
       },
       {
         "label": "Result variable",
@@ -83575,7 +89259,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "authentication.type",
         "label": "Authentication",
-        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "authentication.type",
@@ -83887,7 +89571,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -83897,7 +89581,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -83908,7 +89592,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -84002,7 +89686,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "id": "authentication.type",
             "label": "Authentication",
-            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
             "value": "credentials",
             "group": "authentication",
             "binding": {
@@ -84092,7 +89776,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "language model",
       "generative AI"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-bedrock/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-bedrock/",
     "version": 8,
     "appliesTo": [
       "bpmn:Task"
@@ -84147,7 +89831,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "authentication.type",
         "label": "Authentication",
-        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+        "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
         "value": "credentials",
         "binding": {
           "name": "authentication.type",
@@ -84736,7 +90420,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -84746,7 +90430,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -84757,7 +90441,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -84852,7 +90536,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "id": "authentication.type",
             "label": "Authentication",
-            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
+            "description": "Specify AWS authentication strategy. Learn more at the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/aws-lambda/#aws-authentication-types\" target=\"_blank\">documentation page</a>",
             "value": "credentials",
             "group": "authentication",
             "binding": {
@@ -84930,7 +90614,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     "name": "A2A Client Webhook Receive Task Connector (early access)",
     "id": "io.camunda.connectors.agenticai.a2a.client.webhook.receive.v0",
     "description": "Agent-to-Agent (A2A) webhook inbound connector that can be used to receive callbacks from remote A2A servers.",
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/early-access/alpha/a2a-client/a2a-client-webhook-connector/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/early-access/alpha/a2a-client/a2a-client-webhook-connector/",
     "version": 1,
     "appliesTo": [
       "bpmn:ReceiveTask"
@@ -84996,7 +90680,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.shouldValidateHmac",
         "label": "HMAC authentication",
-        "description": "Choose whether HMAC verification is enabled. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a> and <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#example' target='_blank'>example</a> that explains how to use HMAC-related fields",
+        "description": "Choose whether HMAC verification is enabled. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a> and <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#example' target='_blank'>example</a> that explains how to use HMAC-related fields",
         "optional": false,
         "value": "disabled",
         "binding": {
@@ -85083,7 +90767,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.hmacScopes",
         "label": "HMAC scopes",
-        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.9/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
+        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
         "optional": true,
         "feel": "required",
         "binding": {
@@ -85221,7 +90905,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.auth.apiKeyLocator",
         "label": "API key locator",
-        "description": "A FEEL expression that extracts API key from the request. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#how-to-configure-api-key-authorization'>See documentation</a>",
+        "description": "A FEEL expression that extracts API key from the request. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#how-to-configure-api-key-authorization'>See documentation</a>",
         "optional": false,
         "value": "=split(request.headers.authorization, \" \")[2]",
         "constraints": {
@@ -85299,7 +90983,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.auth.jwt.permissionsExpression",
         "label": "JWT role property expression",
-        "description": "Expression to extract the roles from the JWT token. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#how-to-extract-roles-from-jwt-data'>See documentation</a>",
+        "description": "Expression to extract the roles from the JWT token. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#how-to-extract-roles-from-jwt-data'>See documentation</a>",
         "optional": false,
         "feel": "required",
         "binding": {
@@ -85472,7 +91156,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -85482,7 +91166,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "value": "={response: request.body}",
         "feel": "required",
         "binding": {
@@ -85499,8 +91183,9 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
     "description": "Execute a single AI-powered action with tool calling capabilities",
     "keywords": [
       "AI",
-      "AI Agent",
-      "agentic orchestration"
+      "Agent",
+      "agentic orchestration",
+      "LLM"
     ],
     "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/agentic-ai-aiagent-task/",
     "version": 1,
@@ -85556,6 +91241,10 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           {
             "name": "Google Gemini",
             "value": "google-gemini"
+          },
+          {
+            "name": "Mistral AI",
+            "value": "mistral"
           },
           {
             "name": "Custom Implementation (Self-Managed/Hybrid only)",
@@ -87154,7 +92843,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "provider.openai.backend.custom.endpoint",
         "label": "API endpoint",
-        "description": "Base URL of the OpenAI-compatible API; <code>/chat/completions</code> or <code>/responses</code> will be appended depending on the selected API.",
+        "description": "Base URL of the OpenAI-compatible API. <code>/chat/completions</code> or <code>/responses</code> will be appended depending on the selected API.",
         "optional": false,
         "constraints": {
           "notEmpty": true
@@ -87718,6 +93407,410 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "condition": {
           "property": "provider.type",
           "equals": "google-gemini",
+          "type": "simple"
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.type",
+        "label": "Connection",
+        "description": "Specify how the Mistral API is reached.",
+        "value": "mistral-api",
+        "binding": {
+          "name": "provider.mistral.backend.type",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
+          "type": "simple"
+        },
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "Mistral API",
+            "value": "mistral-api"
+          },
+          {
+            "name": "Custom / compatible endpoint",
+            "value": "custom"
+          }
+        ]
+      },
+      {
+        "id": "provider.mistral.backend.mistral.apiKey",
+        "label": "Mistral API key",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.mistral.apiKey",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "mistral-api",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.mistral.endpoint",
+        "label": "API endpoint",
+        "optional": true,
+        "value": "https://api.mistral.ai/v1",
+        "binding": {
+          "name": "provider.mistral.backend.mistral.endpoint",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "mistral-api",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "provider.mistral.backend.custom.endpoint",
+        "label": "API endpoint",
+        "description": "Base URL of the Mistral-compatible API. <code>/chat/completions</code> will be appended.",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.endpoint",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.type",
+        "label": "Authentication",
+        "description": "Authentication for the compatible API.",
+        "value": "none",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.type",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "None",
+            "value": "none"
+          },
+          {
+            "name": "API key",
+            "value": "apiKey"
+          },
+          {
+            "name": "OAuth 2.0",
+            "value": "oauth-client-credentials-flow"
+          }
+        ]
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.apiKey",
+        "label": "API key",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.apiKey",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "apiKey",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.oauthTokenEndpoint",
+        "label": "OAuth 2.0 token endpoint",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true,
+          "pattern": {
+            "value": "^(=|(http://|https://|secrets|\\{\\{).*$)",
+            "message": "Must be a http(s) URL"
+          }
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.oauthTokenEndpoint",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.clientId",
+        "label": "Client ID",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.clientId",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.clientSecret",
+        "label": "Client secret",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.clientSecret",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String",
+        "secret": true
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.audience",
+        "label": "Audience",
+        "optional": true,
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.audience",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.clientAuthentication",
+        "label": "Client authentication",
+        "optional": false,
+        "value": "BASIC_AUTH_HEADER",
+        "constraints": {
+          "notEmpty": true
+        },
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.clientAuthentication",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "Send as Basic Auth header",
+            "value": "BASIC_AUTH_HEADER"
+          },
+          {
+            "name": "Send client credentials in body",
+            "value": "CREDENTIALS_BODY"
+          }
+        ]
+      },
+      {
+        "id": "provider.mistral.backend.custom.authentication.scopes",
+        "label": "Scopes",
+        "optional": true,
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.backend.custom.authentication.scopes",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.custom.authentication.type",
+              "equals": "oauth-client-credentials-flow",
+              "type": "simple"
+            },
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.timeouts.timeout",
+        "label": "Timeout",
+        "description": "Timeout specification for API calls to the model provider defined as ISO-8601 duration (example: <code>PT60S</code>).",
+        "optional": true,
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.timeouts.timeout",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
           "type": "simple"
         },
         "type": "String"
@@ -88364,6 +94457,156 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "String"
       },
       {
+        "id": "provider.mistral.backend.mistral.headers",
+        "label": "Headers",
+        "optional": true,
+        "binding": {
+          "name": "provider.mistral.backend.mistral.headers",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "mistral-api",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "provider.mistral.backend.mistral.queryParameters",
+        "label": "Query parameters",
+        "optional": true,
+        "binding": {
+          "name": "provider.mistral.backend.mistral.queryParameters",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "mistral-api",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "provider.mistral.backend.mistral.bodyProperties",
+        "label": "Body properties",
+        "optional": true,
+        "binding": {
+          "name": "provider.mistral.backend.mistral.bodyProperties",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "mistral-api",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "Hidden"
+      },
+      {
+        "id": "provider.mistral.backend.custom.headers",
+        "label": "Headers",
+        "description": "Map of HTTP headers to add to the request.",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.backend.custom.headers",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.queryParameters",
+        "label": "Query parameters",
+        "description": "Map of query parameters to add to the request URL.",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.backend.custom.queryParameters",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.backend.custom.bodyProperties",
+        "label": "Body properties",
+        "description": "Map of additional properties to include in the request body.",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.backend.custom.bodyProperties",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "allMatch": [
+            {
+              "property": "provider.mistral.backend.type",
+              "equals": "custom",
+              "type": "simple"
+            },
+            {
+              "property": "provider.type",
+              "equals": "mistral",
+              "type": "simple"
+            }
+          ]
+        },
+        "type": "String"
+      },
+      {
         "id": "provider.anthropic.model.model",
         "label": "Model",
         "optional": false,
@@ -88783,6 +95026,55 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         ]
       },
       {
+        "id": "provider.mistral.model.model",
+        "label": "Model",
+        "optional": false,
+        "constraints": {
+          "notEmpty": true
+        },
+        "feel": "optional",
+        "binding": {
+          "name": "provider.mistral.model.model",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
+          "type": "simple"
+        },
+        "type": "String"
+      },
+      {
+        "id": "provider.mistral.parameters.effort",
+        "label": "Effort",
+        "optional": false,
+        "value": "modelDefault",
+        "binding": {
+          "name": "provider.mistral.parameters.effort",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
+          "type": "simple"
+        },
+        "type": "Dropdown",
+        "choices": [
+          {
+            "name": "default",
+            "value": "modelDefault"
+          },
+          {
+            "name": "none",
+            "value": "none"
+          },
+          {
+            "name": "high",
+            "value": "high"
+          }
+        ]
+      },
+      {
         "id": "provider.model",
         "label": "Model",
         "optional": false,
@@ -89123,6 +95415,54 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "condition": {
           "property": "provider.type",
           "equals": "google-gemini",
+          "type": "simple"
+        },
+        "type": "Number"
+      },
+      {
+        "id": "provider.mistral.parameters.maxTokens",
+        "label": "Max tokens",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.parameters.maxTokens",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
+          "type": "simple"
+        },
+        "type": "Number"
+      },
+      {
+        "id": "provider.mistral.parameters.temperature",
+        "label": "Temperature",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.parameters.temperature",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
+          "type": "simple"
+        },
+        "type": "Number"
+      },
+      {
+        "id": "provider.mistral.parameters.topP",
+        "label": "top P",
+        "optional": true,
+        "feel": "required",
+        "binding": {
+          "name": "provider.mistral.parameters.topP",
+          "type": "zeebe:input"
+        },
+        "condition": {
+          "property": "provider.type",
+          "equals": "mistral",
           "type": "simple"
         },
         "type": "Number"
@@ -89605,7 +95945,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "value": "agent",
         "binding": {
           "key": "resultVariable",
@@ -89616,7 +95956,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -89627,7 +95967,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -89669,13 +96009,311 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         },
         "type": "String"
       }
+    ],
+    "steps": [
+      {
+        "name": "Anthropic",
+        "description": "Claude models via the Anthropic API, AWS Bedrock, Microsoft Foundry, or a compatible endpoint.",
+        "steps": [
+          {
+            "name": "AI Agent Task: Anthropic API",
+            "keywords": [
+              "Anthropic",
+              "Claude",
+              "Anthropic API"
+            ],
+            "presetId": "type_anthropic_type_anthropic-api"
+          },
+          {
+            "name": "AI Agent Task: AWS Bedrock Mantle",
+            "keywords": [
+              "Anthropic",
+              "Claude",
+              "AWS Bedrock Mantle"
+            ],
+            "presetId": "type_anthropic_type_aws-bedrock-mantle"
+          },
+          {
+            "name": "AI Agent Task: Microsoft Foundry (Azure)",
+            "keywords": [
+              "Anthropic",
+              "Claude",
+              "Microsoft Foundry (Azure)"
+            ],
+            "presetId": "type_anthropic_type_foundry"
+          },
+          {
+            "name": "AI Agent Task: Anthropic custom / compatible endpoint",
+            "keywords": [
+              "Anthropic",
+              "Claude",
+              "Custom / compatible endpoint"
+            ],
+            "presetId": "type_anthropic_type_custom"
+          }
+        ]
+      },
+      {
+        "name": "AI Agent Task: AWS Bedrock Converse",
+        "description": "Any Bedrock model via the Converse API.",
+        "keywords": [
+          "Bedrock",
+          "AWS"
+        ],
+        "presetId": "type_bedrock"
+      },
+      {
+        "name": "OpenAI",
+        "description": "GPT models via OpenAI, Microsoft Foundry, or an OpenAI-compatible endpoint.",
+        "steps": [
+          {
+            "name": "AI Agent Task: OpenAI API",
+            "keywords": [
+              "OpenAI",
+              "GPT",
+              "OpenAI API"
+            ],
+            "presetId": "type_openai_type_openai-api"
+          },
+          {
+            "name": "AI Agent Task: Microsoft Foundry (Azure)",
+            "keywords": [
+              "OpenAI",
+              "GPT",
+              "Microsoft Foundry (Azure)"
+            ],
+            "presetId": "type_openai_type_foundry"
+          },
+          {
+            "name": "AI Agent Task: OpenAI custom / compatible endpoint",
+            "keywords": [
+              "OpenAI",
+              "GPT",
+              "Custom / compatible endpoint"
+            ],
+            "presetId": "type_openai_type_custom"
+          }
+        ]
+      },
+      {
+        "name": "OpenAI compatible",
+        "description": "Models like Ollama, LM Studio, and Camunda-provided LLM.",
+        "steps": [
+          {
+            "name": "AI Agent Task: Ollama",
+            "description": "Local models via Ollama.",
+            "keywords": [
+              "Ollama",
+              "Local",
+              "Llama"
+            ],
+            "presetId": "type_openai_type_custom_ollama"
+          },
+          {
+            "name": "AI Agent Task: LM Studio",
+            "description": "Local models via LM Studio.",
+            "keywords": [
+              "LM Studio",
+              "Local"
+            ],
+            "presetId": "type_openai_type_custom_lmstudio"
+          },
+          {
+            "name": "AI Agent Task: Camunda-provided LLM (SaaS only)",
+            "description": "Only on select plans.",
+            "keywords": [
+              "Camunda",
+              "LLM",
+              "SaaS"
+            ],
+            "presetId": "type_openai_type_custom_camunda"
+          }
+        ]
+      },
+      {
+        "name": "Google Gemini",
+        "description": "Gemini models via the Gemini API or Vertex AI.",
+        "steps": [
+          {
+            "name": "AI Agent Task: Google Gemini API",
+            "keywords": [
+              "Gemini",
+              "Google",
+              "Google Gemini API"
+            ],
+            "presetId": "type_google-gemini_type_google-gemini-api"
+          },
+          {
+            "name": "AI Agent Task: Enterprise Agent Platform (Vertex AI)",
+            "keywords": [
+              "Gemini",
+              "Google",
+              "Enterprise Agent Platform (Vertex AI)"
+            ],
+            "presetId": "type_google-gemini_type_google-vertex-ai"
+          }
+        ]
+      },
+      {
+        "name": "Mistral AI",
+        "description": "Mistral models via the Mistral API or a compatible endpoint.",
+        "steps": [
+          {
+            "name": "AI Agent Task: Mistral API",
+            "keywords": [
+              "Mistral",
+              "Mistral API"
+            ],
+            "presetId": "type_mistral_type_mistral-api"
+          },
+          {
+            "name": "AI Agent Task: Mistral custom / compatible endpoint",
+            "keywords": [
+              "Mistral",
+              "Custom / compatible endpoint"
+            ],
+            "presetId": "type_mistral_type_custom"
+          }
+        ]
+      },
+      {
+        "name": "AI Agent Task: Custom Implementation (Self-Managed/Hybrid only)",
+        "description": "Your own provider implementation.",
+        "keywords": [
+          "Custom"
+        ],
+        "presetId": "type_custom"
+      }
+    ],
+    "presets": [
+      {
+        "id": "type_anthropic_type_anthropic-api",
+        "properties": {
+          "provider.type": "anthropic",
+          "provider.anthropic.backend.type": "anthropic-api"
+        }
+      },
+      {
+        "id": "type_anthropic_type_aws-bedrock-mantle",
+        "properties": {
+          "provider.type": "anthropic",
+          "provider.anthropic.backend.type": "aws-bedrock-mantle"
+        }
+      },
+      {
+        "id": "type_anthropic_type_foundry",
+        "properties": {
+          "provider.type": "anthropic",
+          "provider.anthropic.backend.type": "foundry"
+        }
+      },
+      {
+        "id": "type_anthropic_type_custom",
+        "properties": {
+          "provider.type": "anthropic",
+          "provider.anthropic.backend.type": "custom"
+        }
+      },
+      {
+        "id": "type_bedrock",
+        "properties": {
+          "provider.type": "bedrock"
+        }
+      },
+      {
+        "id": "type_openai_type_openai-api",
+        "properties": {
+          "provider.type": "openai",
+          "provider.openai.backend.type": "openai-api"
+        }
+      },
+      {
+        "id": "type_openai_type_foundry",
+        "properties": {
+          "provider.type": "openai",
+          "provider.openai.backend.type": "foundry"
+        }
+      },
+      {
+        "id": "type_openai_type_custom",
+        "properties": {
+          "provider.type": "openai",
+          "provider.openai.backend.type": "custom"
+        }
+      },
+      {
+        "id": "type_openai_type_custom_ollama",
+        "properties": {
+          "provider.type": "openai",
+          "provider.openai.backend.type": "custom",
+          "provider.openai.api.type": "completions",
+          "provider.openai.backend.custom.endpoint": "http://localhost:11434/v1",
+          "provider.openai.backend.custom.authentication.type": "none"
+        }
+      },
+      {
+        "id": "type_openai_type_custom_lmstudio",
+        "properties": {
+          "provider.type": "openai",
+          "provider.openai.backend.type": "custom",
+          "provider.openai.api.type": "completions",
+          "provider.openai.backend.custom.endpoint": "http://localhost:1234/v1",
+          "provider.openai.backend.custom.authentication.type": "none"
+        }
+      },
+      {
+        "id": "type_openai_type_custom_camunda",
+        "properties": {
+          "provider.type": "openai",
+          "provider.openai.backend.type": "custom",
+          "provider.openai.api.type": "completions",
+          "provider.openai.backend.custom.endpoint": "=camunda.secrets.CAMUNDA_PROVIDED_LLM_API_ENDPOINT",
+          "provider.openai.backend.custom.authentication.type": "apiKey",
+          "provider.openai.backend.custom.authentication.apiKey": "=camunda.secrets.CAMUNDA_PROVIDED_LLM_API_KEY",
+          "provider.openai.model.model": "=camunda.secrets.CAMUNDA_PROVIDED_LLM_DEFAULT_MODEL"
+        }
+      },
+      {
+        "id": "type_google-gemini_type_google-gemini-api",
+        "properties": {
+          "provider.type": "google-gemini",
+          "provider.googleGemini.backend.type": "google-gemini-api"
+        }
+      },
+      {
+        "id": "type_google-gemini_type_google-vertex-ai",
+        "properties": {
+          "provider.type": "google-gemini",
+          "provider.googleGemini.backend.type": "google-vertex-ai"
+        }
+      },
+      {
+        "id": "type_mistral_type_mistral-api",
+        "properties": {
+          "provider.type": "mistral",
+          "provider.mistral.backend.type": "mistral-api"
+        }
+      },
+      {
+        "id": "type_mistral_type_custom",
+        "properties": {
+          "provider.type": "mistral",
+          "provider.mistral.backend.type": "custom"
+        }
+      },
+      {
+        "id": "type_custom",
+        "properties": {
+          "provider.type": "custom"
+        }
+      }
     ]
   },
   {
     "name": "Embeddings Vector DB Outbound Connector",
     "id": "io.camunda.connectors.EmbeddingsVectorDB.v1",
     "description": "Embed and download documents with vector databases",
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/connectors/out-of-the-box-connectors/embeddings-vector-db/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/embeddings-vector-db/",
     "version": 3,
     "appliesTo": [
       "bpmn:Task"
@@ -91605,7 +98243,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "key": "resultVariable",
           "type": "zeebe:taskHeader"
@@ -91615,7 +98253,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "resultExpression",
@@ -91626,7 +98264,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to handle errors. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -91723,7 +98361,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "HTTP callback",
       "listen for event"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/",
     "version": 16,
     "appliesTo": [
       "bpmn:ReceiveTask"
@@ -91798,7 +98436,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.shouldValidateHmac",
         "label": "HMAC authentication",
-        "description": "Choose whether HMAC verification is enabled. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a> and <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#example' target='_blank'>example</a> that explains how to use HMAC-related fields",
+        "description": "Choose whether HMAC verification is enabled. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a> and <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#example' target='_blank'>example</a> that explains how to use HMAC-related fields",
         "optional": false,
         "value": "disabled",
         "binding": {
@@ -91885,7 +98523,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.hmacScopes",
         "label": "HMAC scopes",
-        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.9/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
+        "description": "Set HMAC scopes for calculating signature data. 'timestamp' is additive, not signable on its own: selecting only 'timestamp' implicitly signs the body as well, same as the default scope. See <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/' target='_blank'>documentation</a>",
         "optional": true,
         "feel": "required",
         "binding": {
@@ -92023,7 +98661,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.auth.apiKeyLocator",
         "label": "API key locator",
-        "description": "A FEEL expression that extracts API key from the request. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#how-to-configure-api-key-authorization'>See documentation</a>",
+        "description": "A FEEL expression that extracts API key from the request. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#how-to-configure-api-key-authorization'>See documentation</a>",
         "optional": false,
         "value": "=split(request.headers.authorization, \" \")[2]",
         "constraints": {
@@ -92101,7 +98739,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.auth.jwt.permissionsExpression",
         "label": "JWT role property expression",
-        "description": "Expression to extract the roles from the JWT token. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#how-to-extract-roles-from-jwt-data'>See documentation</a>",
+        "description": "Expression to extract the roles from the JWT token. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#how-to-extract-roles-from-jwt-data'>See documentation</a>",
         "optional": false,
         "feel": "required",
         "binding": {
@@ -92135,7 +98773,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "inbound.verificationExpression",
         "label": "One time verification response expression",
-        "description": "Specify condition and response. Learn more in the <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#verification-expression' target='_blank'>documentation</a>",
+        "description": "Specify condition and response. Learn more in the <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#verification-expression' target='_blank'>documentation</a>",
         "optional": true,
         "feel": "required",
         "binding": {
@@ -92181,7 +98819,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "synchronousResponse",
         "label": "Response mode",
-        "description": "Synchronous or Asynchronous <a href=\"https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#response-mode\" target=\"_blank\">response handling</a>",
+        "description": "Synchronous or Asynchronous <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#response-mode\" target=\"_blank\">response handling</a>",
         "value": "false",
         "binding": {
           "name": "synchronousResponse",
@@ -92344,7 +98982,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -92354,7 +98992,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "value": "{\n  myRequestBody: request.body\n  // Use FEEL to extract values, e.g.,:\n  // myMessage: request.body.message\n}",
         "feel": "required",
         "binding": {
@@ -92381,8 +99019,8 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "inbox",
       "poll email"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-o365-mail-inbound/",
-    "version": 2,
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/microsoft-o365-mail-inbound/",
+    "version": 3,
     "appliesTo": [
       "bpmn:StartEvent"
     ],
@@ -92391,7 +99029,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "eventDefinition": "bpmn:MessageEventDefinition"
     },
     "engines": {
-      "camunda": "^8.9"
+      "camunda": "^8.11"
     },
     "properties": [
       {
@@ -92403,13 +99041,29 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         "type": "Hidden"
       },
       {
+        "id": "authenticationConfiguration",
+        "label": "Microsoft Entra ID credential",
+        "optional": true,
+        "binding": {
+          "name": "authenticationConfiguration",
+          "type": "zeebe:property"
+        },
+        "type": "Configuration",
+        "configurationTemplate": "io.camunda.connectors:microsoft-entra:1"
+      },
+      {
         "id": "authentication.type",
         "label": "Type",
-        "description": "Authentication type depends on your Microsoft Entra (Azure AD) configuration. See <a href='https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/microsoft-teams/'>connector documentation</a>",
+        "description": "Authentication type depends on your Microsoft Entra (Azure AD) configuration. See <a href='https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/microsoft-teams/'>connector documentation</a>",
         "value": "clientCredentials",
         "binding": {
           "name": "authentication.type",
           "type": "zeebe:property"
+        },
+        "condition": {
+          "property": "authenticationConfiguration",
+          "isEmpty": true,
+          "type": "simple"
         },
         "type": "Dropdown",
         "choices": [
@@ -92439,11 +99093,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "token",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "token",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.credentials.clientId",
@@ -92458,9 +99122,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -92477,9 +99150,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -92496,11 +99178,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "clientCredentials",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.refresh.token",
@@ -92515,11 +99207,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "authentication.refresh.clientId",
@@ -92534,9 +99236,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -92553,9 +99264,18 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
         "type": "String"
       },
@@ -92569,11 +99289,21 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property"
         },
         "condition": {
-          "property": "authentication.type",
-          "equals": "refresh",
-          "type": "simple"
+          "allMatch": [
+            {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            {
+              "property": "authenticationConfiguration",
+              "isEmpty": true,
+              "type": "simple"
+            }
+          ]
         },
-        "type": "String"
+        "type": "String",
+        "secret": true
       },
       {
         "id": "pollingConfig.userId",
@@ -93061,7 +99791,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -93071,7 +99801,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
@@ -93079,13 +99809,196 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
         },
         "type": "Text"
       }
+    ],
+    "configurationTemplates": [
+      {
+        "id": "io.camunda.connectors:microsoft-entra:1",
+        "kind": "CREDENTIAL",
+        "version": 1,
+        "name": "Microsoft Entra ID",
+        "properties": [
+          {
+            "id": "authentication.type",
+            "label": "Type",
+            "description": "Choose the authentication mechanism this credential provides.",
+            "value": "clientCredentials",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.type",
+              "type": "property"
+            },
+            "type": "Dropdown",
+            "choices": [
+              {
+                "name": "Bearer token",
+                "value": "token"
+              },
+              {
+                "name": "Client credentials",
+                "value": "clientCredentials"
+              },
+              {
+                "name": "Refresh token",
+                "value": "refresh"
+              }
+            ]
+          },
+          {
+            "id": "authentication.bearer.token",
+            "label": "Bearer token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "token",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.credentials.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.credentials.tenantId",
+            "label": "Tenant ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.tenantId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.credentials.clientSecret",
+            "label": "Client secret",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "clientCredentials",
+              "type": "simple"
+            },
+            "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application",
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.refresh.token",
+            "label": "Refresh token",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.token",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String",
+            "secret": true
+          },
+          {
+            "id": "authentication.refresh.clientId",
+            "label": "Client ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.refresh.tenantId",
+            "label": "Tenant ID",
+            "constraints": {
+              "notEmpty": true
+            },
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.tenantId",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "type": "String"
+          },
+          {
+            "id": "authentication.refresh.clientSecret",
+            "label": "Client secret",
+            "group": "authentication",
+            "binding": {
+              "name": "authentication.clientSecret",
+              "type": "property"
+            },
+            "condition": {
+              "property": "authentication.type",
+              "equals": "refresh",
+              "type": "simple"
+            },
+            "tooltip": "The secret value of the Microsoft Entra ID (formerly Azure AD) application; optional, depends on whether the client is public or private",
+            "type": "String",
+            "secret": true
+          }
+        ]
+      }
     ]
   },
   {
     "name": "A2A Client Polling Intermediate Catch Event Connector (early access)",
     "id": "io.camunda.connectors.agenticai.a2a.client.polling.intermediate.v0",
     "description": "Agent-to-Agent (A2A) polling inbound connector. Supports polling asynchronous tasks, but can also directly correlate messages and synchronously completed tasks.",
-    "documentationRef": "https://docs.camunda.io/docs/8.9/components/early-access/alpha/a2a-client/a2a-client-polling-connector/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/early-access/alpha/a2a-client/a2a-client-polling-connector/",
     "version": 0,
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
@@ -93185,7 +100098,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "data.taskPollingInterval",
         "label": "Task polling interval",
-        "description": "The delay between A2A task polling requests, defined as ISO 8601 durations format. <a href='https://docs.camunda.io/docs/components/modeler/bpmn/timer-events/#time-duration' target='_blank'>How to configure a time duration</a>",
+        "description": "The delay between A2A task polling requests, defined as ISO 8601 durations format. <a href='https://docs.camunda.io/docs/8.10/components/modeler/bpmn/timer-events/#time-duration' target='_blank'>How to configure a time duration</a>",
         "optional": false,
         "value": "PT10S",
         "feel": "optional",
@@ -93337,7 +100250,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -93347,7 +100260,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "value": "={response: result}",
         "feel": "required",
         "binding": {
@@ -93378,7 +100291,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "LLM",
       "text generation"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/hugging-face/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/hugging-face/",
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -93577,7 +100490,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "cloud event",
       "event driven"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-eventbridge/?awseventbridge=inbound",
     "appliesTo": [
       "bpmn:StartEvent"
     ],
@@ -93868,7 +100781,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
           "type": "zeebe:property",
           "name": "activationCondition"
         },
-        "description": "Condition under which the connector triggers. Leave empty to catch all events. <a href='https://docs.camunda.io/docs/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a>"
+        "description": "Condition under which the connector triggers. Leave empty to catch all events. <a href='https://docs.camunda.io/docs/8.10/components/connectors/protocol/http-webhook/#make-your-http-webhook-connector-for-receiving-messages-executable' target='_blank'>See documentation</a>"
       },
       {
         "label": "Correlation required",
@@ -93965,7 +100878,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "webhook",
       "inbound message"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/twilio/?twilio=inbound",
     "appliesTo": [
       "bpmn:StartEvent"
     ],
@@ -94215,7 +101128,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "subscribe to topic",
       "event driven"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/amazon-sns/?amazonsns=inbound",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/amazon-sns/?amazonsns=inbound",
     "version": 7,
     "appliesTo": [
       "bpmn:IntermediateCatchEvent",
@@ -94447,7 +101360,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultVariable",
         "label": "Result variable",
-        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
+        "description": "Name of variable to store the response in. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">documentation</a>.",
         "binding": {
           "name": "resultVariable",
           "type": "zeebe:property"
@@ -94457,7 +101370,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "resultExpression",
         "label": "Result expression",
-        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
+        "description": "Expression to map the response into process variables. Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">documentation</a>.",
         "feel": "required",
         "binding": {
           "name": "resultExpression",
@@ -94486,7 +101399,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "logistics",
       "parcel tracking"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/easy-post/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/easy-post/",
     "appliesTo": [
       "bpmn:Task"
     ],
@@ -95249,7 +102162,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       },
       {
         "label": "Result variable",
-        "description": "Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
+        "description": "Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-variable\" target=\"_blank\">result variable documentation</a>",
         "type": "String",
         "binding": {
           "type": "zeebe:taskHeader",
@@ -95259,7 +102172,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "label": "Result expression",
         "id": "resultExpressionGetAddressId",
-        "description": "Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "description": "Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "type": "String",
         "feel": "required",
         "value": "={addressId:response.body.id}",
@@ -95277,7 +102190,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "label": "Result expression",
         "id": "resultExpressionGetPlaceId",
-        "description": "Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "description": "Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "type": "String",
         "feel": "required",
         "value": "={parcelId:response.body.id}",
@@ -95295,7 +102208,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "label": "Result expression",
         "id": "resultExpressionGetShipment",
-        "description": "Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "description": "Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "type": "String",
         "feel": "required",
         "value": "={shipmentId:response.body.id}",
@@ -95313,7 +102226,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "label": "Result expression",
         "id": "resultExpressionGetTracker",
-        "description": "Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "description": "Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "type": "String",
         "feel": "required",
         "value": "={trackerId: response.body.tracker.id, trackingCode: response.body.tracking_code, shipmentstatus:response.body.status}",
@@ -95331,7 +102244,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "label": "Result expression",
         "id": "resultExpressionGetTrackerStatus",
-        "description": "Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "description": "Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "type": "String",
         "feel": "required",
         "value": "={trackerStatus: response.body.status}",
@@ -95349,7 +102262,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "label": "Result expression",
         "id": "resultExpression",
-        "description": "Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
+        "description": "Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/#result-expression\" target=\"_blank\">result expression documentation</a>",
         "type": "String",
         "feel": "required",
         "binding": {
@@ -95366,7 +102279,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       {
         "id": "errorExpression",
         "label": "Error expression",
-        "description": "Details in the <a href=\"https://docs.camunda.io/docs/components/connectors/use-connectors/\" target=\"_blank\">error expression documentation</a>.",
+        "description": "Details in the <a href=\"https://docs.camunda.io/docs/8.10/components/connectors/use-connectors/\" target=\"_blank\">error expression documentation</a>.",
         "feel": "required",
         "binding": {
           "key": "errorExpression",
@@ -95560,7 +102473,7 @@ export const BUNDLED_CONNECTOR_TEMPLATES: readonly ElementTemplate[] = [
       "mobile messaging",
       "notification"
     ],
-    "documentationRef": "https://docs.camunda.io/docs/components/connectors/out-of-the-box-connectors/whatsapp/",
+    "documentationRef": "https://docs.camunda.io/docs/8.10/components/connectors/out-of-the-box-connectors/whatsapp/",
     "appliesTo": [
       "bpmn:Task"
     ],
