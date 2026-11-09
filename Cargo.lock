@@ -255,6 +255,7 @@ name = "bpmnkit-render"
 version = "0.1.0"
 dependencies = [
  "bpmnkit-bpmn",
+ "bpmnkit-dmn",
  "bpmnkit-layout",
  "indexmap",
  "resvg",

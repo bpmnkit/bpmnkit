@@ -1,5 +1,6 @@
-//! BPMN diagrams as SVG and PNG, the Rust twin of `@bpmnkit/core`'s `exportSvg`
-//! (`packages/core/src/bpmn/svg.ts`).
+//! BPMN diagrams, DRDs and decision tables as SVG and PNG, the Rust twin of `@bpmnkit/core`'s
+//! `exportSvg` (`packages/core/src/bpmn/svg.ts`), `exportDrdSvg` and `exportDecisionTableSvg`
+//! (`packages/core/src/dmn/svg.ts`).
 //!
 //! The SVG is the contract: [`bpmn_to_svg`] with default [`RenderOptions`] gives the same bytes
 //! as TS `exportSvg(defs)`, held by the `conformance/render/` cases. With
@@ -48,6 +49,7 @@
 //! | Feature | Default | Adds |
 //! | --- | --- | --- |
 //! | `auto-layout` | yes | [`RenderOptions::auto_layout`] (`bpmnkit-layout`) |
+//! | `dmn` | no | [`drd_to_svg`], [`decision_table_to_svg`] (implies `auto-layout`) |
 //! | `png` | no | [`svg_to_png`], [`bpmn_to_png`], [`PngOptions`] (resvg, ~2 MB, embedded font) |
 //! | `embedded-font` | with `png` | the bundled Inter subset |
 //! | `system-fonts` | no | `FontSource::System` / `FontSource::Both` |
@@ -55,6 +57,8 @@
 //! `png` + `embedded-font` builds for `wasm32-unknown-unknown`.
 
 mod bpmn;
+#[cfg(feature = "dmn")]
+mod dmn;
 mod error;
 mod icons;
 mod label_style;
@@ -121,6 +125,16 @@ pub enum ElementKind {
     Lane,
     TextAnnotation,
     Group,
+    DrdDecision,
+    DrdInputData,
+    DrdKnowledgeSource,
+    DrdBusinessKnowledgeModel,
+    DrdAnnotation,
+    /// Information, knowledge or authority requirement.
+    DrdRequirement,
+    DrdAssociation,
+    /// A decision-table rule row.
+    DecisionRule,
 }
 
 /// DI geometry of a drawn element.
@@ -143,6 +157,25 @@ pub enum RenderWarning {
 /// SVG for a BPMN model. Default options give the same bytes as TS `exportSvg(defs)`.
 pub fn bpmn_to_svg(defs: &BpmnDefinitions, opts: &RenderOptions) -> Result<Svg, RenderError> {
     bpmn::render(defs, opts)
+}
+
+/// SVG of a DMN requirements diagram (DRD), laid out first when it has no DI. Same bytes as TS
+/// `exportDrdSvg`; uses `theme`, `padding`, `scale`, `max_size`, `font`, `element_ids` and
+/// `background`.
+#[cfg(feature = "dmn")]
+pub fn drd_to_svg(defs: &bpmnkit_dmn::DmnDefinitions, opts: &RenderOptions) -> Svg {
+    dmn::drd(defs, opts)
+}
+
+/// SVG of a decision table, with `name` in a title bar. Same bytes as TS
+/// `exportDecisionTableSvg(table, { name, ... })`.
+#[cfg(feature = "dmn")]
+pub fn decision_table_to_svg(
+    table: &bpmnkit_dmn::DmnDecisionTable,
+    name: Option<&str>,
+    opts: &RenderOptions,
+) -> Svg {
+    dmn::decision_table(table, name, opts)
 }
 
 /// Parses BPMN XML and renders it: the CLI/chat-bot one-liner.

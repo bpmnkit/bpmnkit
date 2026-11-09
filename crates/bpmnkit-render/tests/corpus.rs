@@ -119,3 +119,43 @@ fn errors() {
         Err(RenderError::PlaneNotFound("x".into()))
     );
 }
+
+#[test]
+#[cfg(feature = "dmn")]
+fn dmn_corpus_renders() {
+    use bpmnkit_render::{decision_table_to_svg, drd_to_svg};
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../conformance");
+    let (mut drds, mut tables) = (0, 0);
+    for kind in ["dmn", "layout"] {
+        for e in std::fs::read_dir(root.join(kind))
+            .into_iter()
+            .flatten()
+            .flatten()
+        {
+            let f = e.path().join("input.dmn");
+            let Ok(xml) = std::fs::read_to_string(&f) else {
+                continue;
+            };
+            let Ok(defs) = bpmnkit_dmn::parse_dmn(&xml) else {
+                continue;
+            };
+            let svg = drd_to_svg(&defs, &RenderOptions::default());
+            assert!(svg.markup.starts_with("<svg ") && svg.markup.ends_with("</svg>"));
+            drds += 1;
+            for d in &defs.decisions {
+                if let Some(table) = &d.decision_table {
+                    let svg =
+                        decision_table_to_svg(table, d.name.as_deref(), &RenderOptions::default());
+                    assert_eq!(
+                        svg.elements.len(),
+                        table.rules.len(),
+                        "{}: one element per rule",
+                        f.display()
+                    );
+                    tables += 1;
+                }
+            }
+        }
+    }
+    assert!(drds > 5 && tables > 5, "{drds} DRDs, {tables} tables");
+}

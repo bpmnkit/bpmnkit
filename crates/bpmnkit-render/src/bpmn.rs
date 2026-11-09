@@ -18,12 +18,12 @@ use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
 
 /// JS `String(n)`.
-fn n(v: f64) -> String {
+pub(crate) fn n(v: f64) -> String {
     js_number_to_string(v)
 }
 
 /// JS `Math.min` of two: NaN wins.
-fn js_min(a: f64, b: f64) -> f64 {
+pub(crate) fn js_min(a: f64, b: f64) -> f64 {
     if a.is_nan() || b.is_nan() {
         f64::NAN
     } else if a < b || (a == b && a.is_sign_negative()) {
@@ -34,7 +34,7 @@ fn js_min(a: f64, b: f64) -> f64 {
 }
 
 /// JS `Math.max` of two: NaN wins.
-fn js_max(a: f64, b: f64) -> f64 {
+pub(crate) fn js_max(a: f64, b: f64) -> f64 {
     if a.is_nan() || b.is_nan() {
         f64::NAN
     } else if a > b || (a == b && a.is_sign_positive()) {
@@ -110,10 +110,10 @@ pub(crate) fn render(defs: &BpmnDefinitions, opts: &RenderOptions) -> Result<Svg
 }
 
 #[derive(Clone)]
-struct Ctx<'a> {
-    t: ThemeColors,
-    opts: &'a RenderOptions,
-    styles: &'a LabelStyles,
+pub(crate) struct Ctx<'a> {
+    pub t: ThemeColors,
+    pub opts: &'a RenderOptions,
+    pub styles: &'a LabelStyles,
 }
 
 impl Ctx<'_> {
@@ -134,7 +134,7 @@ impl Ctx<'_> {
         AVG_CHAR_PX * (font.size / 11.0) * if font.bold { 1.1 } else { 1.0 }
     }
 
-    fn font_style(&self, font: Option<&LabelFontCss>) -> String {
+    pub(crate) fn font_style(&self, font: Option<&LabelFontCss>) -> String {
         let Some(font) = font else {
             return format!(
                 "font-family:{};font-size:{}px",
@@ -168,7 +168,7 @@ impl Ctx<'_> {
     }
 
     /// `<text>` line(s) centred at (cx, cy); `top_align` flows extra lines downward (TS `labelSvg`).
-    fn label_svg(
+    pub(crate) fn label_svg(
         &self,
         text: &str,
         cx: f64,
@@ -209,7 +209,7 @@ impl Ctx<'_> {
         out
     }
 
-    fn shape_style(&self, sw: f64, dash: Option<&str>) -> String {
+    pub(crate) fn shape_style(&self, sw: f64, dash: Option<&str>) -> String {
         let t = &self.t;
         let mut s = format!(
             "fill:{};stroke:{};stroke-width:{}",
@@ -224,7 +224,7 @@ impl Ctx<'_> {
         s
     }
 
-    fn icon_style(&self) -> String {
+    pub(crate) fn icon_style(&self) -> String {
         format!(
             "fill:none;stroke:{};stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round",
             self.t.shape_stroke
@@ -672,7 +672,7 @@ impl<'a> ModelIndex<'a> {
     }
 }
 
-fn id_attr(on: bool, id: &str) -> Cow<'static, str> {
+pub(crate) fn id_attr(on: bool, id: &str) -> Cow<'static, str> {
     if on {
         Cow::Owned(format!(r#" data-element-id="{}""#, esc(id)))
     } else {

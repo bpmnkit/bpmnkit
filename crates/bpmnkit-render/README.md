@@ -1,8 +1,9 @@
 # bpmnkit-render
 
-BPMN diagrams as SVG, with output byte-identical to the TypeScript implementation.
+BPMN diagrams, DRDs and decision tables as SVG (byte-identical to the TypeScript implementation)
+and PNG.
 
-This is the Rust twin of `@bpmnkit/core` `exportSvg`. The TypeScript implementation is the oracle:
+This is the Rust twin of `@bpmnkit/core` `exportSvg`, `exportDrdSvg` and `exportDecisionTableSvg`. The TypeScript implementation is the oracle:
 both are held to the same conformance cases (`conformance/render/`), so the SVG bytes match.
 With `auto_layout(true)`, models without diagram interchange are laid out first (feature
 `auto-layout`, on by default).
@@ -65,6 +66,7 @@ a large allocation. `png` + `embedded-font` builds for `wasm32-unknown-unknown`.
 | Feature | Default | Adds |
 | --- | --- | --- |
 | `auto-layout` | yes | `RenderOptions::auto_layout` |
+| `dmn` | no | `drd_to_svg`, `decision_table_to_svg` (DRD and decision-table images) |
 | `png` | no | `svg_to_png`, `bpmn_to_png` (resvg, about 2 MB, embedded font) |
 | `system-fonts` | no | the machine's fonts |
 

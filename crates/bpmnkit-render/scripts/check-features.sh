@@ -3,7 +3,7 @@
 # reach (png, system-fonts, none), and checks the wasm32 build of png + embedded-font.
 set -euo pipefail
 cd "$(dirname "$0")/../../.."
-for features in "--no-default-features" "--features png" "--features system-fonts" "--all-features"; do
+for features in "--no-default-features" "--features dmn" "--features png" "--features system-fonts" "--all-features"; do
 	echo "== bpmnkit-render $features"
 	# shellcheck disable=SC2086
 	cargo clippy -p bpmnkit-render $features --all-targets --locked -- -D warnings

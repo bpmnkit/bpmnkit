@@ -2,7 +2,7 @@
 
 ## `bpmnkit-render`: BPMN to SVG and PNG in Rust (2026-11-09)
 
-`bpmnkit_render::bpmn_to_svg(&defs, &RenderOptions)` / `bpmn_xml_to_svg(xml, …)` give the same SVG bytes as `exportSvg` for every option (theme incl. custom colours, padding, scale, max size, DI colours, plane by id or process, auto-layout, font, element ids, background), held by the `conformance/render/` fixtures, and return the viewBox, output size, drawn elements with their DI geometry and warnings. Feature `png` adds `svg_to_png` / `bpmn_to_png` (resvg) with a bundled Inter subset, so a server without fonts (a Slack bot in a container) draws the same image as a laptop; `system-fonts` adds the machine's fonts for CJK and emoji. A `max_pixels` guard refuses huge images instead of allocating them. Builds for `wasm32-unknown-unknown`.
+`bpmnkit_render::bpmn_to_svg(&defs, &RenderOptions)` / `bpmn_xml_to_svg(xml, …)` give the same SVG bytes as `exportSvg` for every option (theme incl. custom colours, padding, scale, max size, DI colours, plane by id or process, auto-layout, font, element ids, background), held by the `conformance/render/` fixtures, and return the viewBox, output size, drawn elements with their DI geometry and warnings. Feature `png` adds `svg_to_png` / `bpmn_to_png` (resvg) with a bundled Inter subset, so a server without fonts (a Slack bot in a container) draws the same image as a laptop; `system-fonts` adds the machine's fonts for CJK and emoji. A `max_pixels` guard refuses huge images instead of allocating them. Feature `dmn` adds `drd_to_svg` and `decision_table_to_svg` (the twins of `exportDrdSvg` / `exportDecisionTableSvg`). Builds for `wasm32-unknown-unknown`.
 
 ## SVG export v2, DRD and decision-table images (2026-11-09)
 

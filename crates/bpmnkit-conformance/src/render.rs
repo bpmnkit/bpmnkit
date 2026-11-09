@@ -6,20 +6,13 @@
 
 use bpmnkit_bpmn::ids::reset_id_counter;
 use bpmnkit_bpmn::parse_bpmn;
+use bpmnkit_dmn::parse_dmn;
 use bpmnkit_render::{
-    bpmn_to_svg, ColorMode, FontOptions, PlaneSelect, RenderError, RenderOptions, Theme,
-    ThemeColors,
+    bpmn_to_svg, decision_table_to_svg, drd_to_svg, ColorMode, FontOptions, PlaneSelect,
+    RenderError, RenderOptions, Theme, ThemeColors,
 };
 use serde_json::{Map, Value as Json};
 use std::path::{Path, PathBuf};
-
-/// How a case ended when it did not fail.
-#[derive(Debug, Clone, PartialEq, Eq)]
-pub enum Outcome {
-    Pass,
-    /// The case needs a renderer this crate does not have yet (DMN).
-    Unsupported(String),
-}
 
 /// `render/<case>` ids, sorted; empty when the directory does not exist yet.
 pub fn case_ids(dir: &Path) -> Vec<String> {
@@ -158,23 +151,51 @@ fn first_difference(got: &str, want: &str) -> String {
     )
 }
 
+/// A `.dmn` input renders as a DRD, or as a decision table when `case.json` names a
+/// `"decision"`; the table title is the `name` option.
+fn check_dmn(xml: &str, spec: &Json, want: &str) -> Result<(), String> {
+    let mut options = spec.get("options").cloned().unwrap_or(Json::Null);
+    let name = options
+        .as_object_mut()
+        .and_then(|o| o.remove("name"))
+        .and_then(|v| v.as_str().map(str::to_owned));
+    let opts = options_from_json(&options)?;
+    let defs = parse_dmn(xml).map_err(|e| format!("parse: {e}"))?;
+    let svg = match spec.get("decision").and_then(Json::as_str) {
+        None => drd_to_svg(&defs, &opts),
+        Some(id) => {
+            let table = defs
+                .decisions
+                .iter()
+                .find(|d| d.id == id)
+                .and_then(|d| d.decision_table.as_ref())
+                .ok_or_else(|| format!("no decision table for {id}"))?;
+            decision_table_to_svg(table, name.as_deref(), &opts)
+        }
+    };
+    let got = svg.markup + "\n";
+    if got == want {
+        Ok(())
+    } else {
+        Err(first_difference(&got, want))
+    }
+}
+
 /// Runs one `render/<case>` against its expected SVG.
-pub fn check_case(dir: &Path, id: &str) -> Result<Outcome, String> {
+pub fn check_case(dir: &Path, id: &str) -> Result<(), String> {
     let case = dir.join(id);
     let spec: Json = match std::fs::read_to_string(case.join("case.json")) {
         Ok(t) => serde_json::from_str(&t).map_err(|e| format!("case.json: {e}"))?,
         Err(_) => Json::Object(Map::new()),
     };
     let input = input_path(dir, &case, &spec);
-    if input.extension().is_some_and(|x| x == "dmn") {
-        return Ok(Outcome::Unsupported(
-            "DMN rendering is not in bpmnkit-render yet".into(),
-        ));
-    }
     let xml = std::fs::read_to_string(&input).map_err(|e| format!("{}: {e}", input.display()))?;
     let want_path = case.join("expected").join("out.svg");
     let want =
         std::fs::read_to_string(&want_path).map_err(|e| format!("{}: {e}", want_path.display()))?;
+    if input.extension().is_some_and(|x| x == "dmn") {
+        return check_dmn(&xml, &spec, &want);
+    }
     let opts = options_from_json(spec.get("options").unwrap_or(&Json::Null))?;
     let defs = parse_bpmn(&xml).map_err(|e| format!("parse: {e}"))?;
     reset_id_counter();
@@ -182,13 +203,11 @@ pub fn check_case(dir: &Path, id: &str) -> Result<Outcome, String> {
         // The recorder ends the file with a newline.
         Ok(svg) => svg.markup + "\n",
         // TS draws the empty 1×1 document where Rust reports that there is nothing to draw.
-        Err(RenderError::NoDiagram) if want.contains(r#"viewBox="0 0 1 1""#) => {
-            return Ok(Outcome::Pass)
-        }
+        Err(RenderError::NoDiagram) if want.contains(r#"viewBox="0 0 1 1""#) => return Ok(()),
         Err(e) => return Err(format!("render: {e}")),
     };
     if got == want {
-        Ok(Outcome::Pass)
+        Ok(())
     } else {
         Err(first_difference(&got, &want))
     }
