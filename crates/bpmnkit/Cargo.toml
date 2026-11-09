@@ -27,13 +27,14 @@ bpmnkit-builder = { workspace = true, optional = true }
 bpmnkit-text = { workspace = true, optional = true }
 bpmnkit-render = { workspace = true, optional = true }
 bpmnkit-diff = { workspace = true, optional = true }
+bpmnkit-ascii = { workspace = true, optional = true }
 serde_json = { workspace = true }
 
 [features]
 # What most users reach for: read, write and evaluate models.
 default = ["feel", "bpmn", "dmn", "form"]
 # Not `render-png` (a raster stack); add it yourself when you need PNGs.
-full = ["spec", "xml", "bpmn", "feel", "dmn", "form", "compat", "lint", "layout", "builder", "text", "render", "diff", "diff-html"]
+full = ["spec", "xml", "bpmn", "feel", "dmn", "form", "compat", "lint", "layout", "builder", "text", "render", "diff", "diff-html", "ascii"]
 spec = ["dep:bpmnkit-spec"]
 xml = ["dep:bpmnkit-xml"]
 bpmn = ["dep:bpmnkit-bpmn"]
@@ -56,6 +57,8 @@ render-system-fonts = ["render-png", "bpmnkit-render/system-fonts"]
 diff = ["dep:bpmnkit-diff", "bpmn"]
 # The self-contained HTML diff viewer and the diff-over-diagram SVG.
 diff-html = ["diff", "render", "bpmnkit-diff/html"]
+# BPMN, DMN and forms as Unicode box-drawing text (terminals, chat code blocks).
+ascii = ["dep:bpmnkit-ascii"]
 
 [package.metadata.docs.rs]
 all-features = true

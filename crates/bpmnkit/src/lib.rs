@@ -1,5 +1,7 @@
 #![doc = include_str!("../README.md")]
 
+#[cfg(feature = "ascii")]
+pub use bpmnkit_ascii as ascii;
 #[cfg(feature = "bpmn")]
 pub use bpmnkit_bpmn as bpmn;
 #[cfg(feature = "builder")]

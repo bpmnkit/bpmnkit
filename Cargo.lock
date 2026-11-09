@@ -90,6 +90,7 @@ dependencies = [
 name = "bpmnkit"
 version = "0.1.0"
 dependencies = [
+ "bpmnkit-ascii",
  "bpmnkit-bpmn",
  "bpmnkit-builder",
  "bpmnkit-compat",
