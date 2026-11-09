@@ -3,7 +3,7 @@ import { mkdtempSync, readFileSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
-import { Bpmn, Dmn, Form, PROCESS_TEXT_GUIDE } from "@bpmnkit/core"
+import { Bpmn, Dmn, Form, PROCESS_TEXT_GUIDE, checkDiCompleteness } from "@bpmnkit/core"
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest"
 import type { RunContext } from "../types.js"
 import {
@@ -124,6 +124,9 @@ describe("agent card scripts run as printed", () => {
 		)
 		expect(definitions.diagrams[0]?.plane.shapes.length).toBeGreaterThan(5)
 		expect(xml).toContain("<zeebe:userTask")
+		// The task the edit inserted is drawn, and so are its flows.
+		expect(definitions.processes[0]?.flowElements.some((e) => e.id === "notify")).toBe(true)
+		expect(checkDiCompleteness(definitions)).toEqual({ missingShapes: [], missingEdges: [] })
 	})
 
 	it("writes a DRD whose approval decision requires riskScore", () => {
