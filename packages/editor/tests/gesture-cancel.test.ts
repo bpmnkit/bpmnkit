@@ -6,6 +6,7 @@
  */
 import { describe, expect, it } from "vitest"
 import { EditorStateMachine } from "../src/state-machine.js"
+import type { HitResult } from "../src/types.js"
 
 /** Callbacks that record every call by name; `getShapes` and `isResizable` answer for a shape drag. */
 function recorder() {
@@ -32,64 +33,101 @@ function recorder() {
 const pointer = (type: string, x: number, y: number, shiftKey = false) =>
 	new PointerEvent(type, { clientX: x, clientY: y, button: 0, shiftKey })
 
-const escapeKey = () => new KeyboardEvent("keydown", { key: "Escape" })
+const segment = (nearMidpoint: boolean): HitResult => ({
+	type: "edge-segment",
+	id: "F",
+	segIdx: 0,
+	isHoriz: true,
+	projPt: { x: 100, y: 100 },
+	nearMidpoint,
+})
+
+const handle: HitResult = { type: "handle", shapeId: "L", handle: "s" }
+const port: HitResult = { type: "port", shapeId: "L", port: "right" }
+const endpoint: HitResult = { type: "edge-endpoint", edgeId: "F", isStart: false }
+const waypoint: HitResult = { type: "edge-waypoint", id: "F", wpIdx: 1, pt: { x: 100, y: 100 } }
+
+interface Gesture {
+	/** The state the press (and drag) leads to. */
+	state: string
+	press: HitResult
+	drag: boolean
+	mode?: "select" | "space"
+	shift?: boolean
+	/** The callback that takes back the preview; null when nothing was drawn yet. */
+	undo: string | null
+}
+
+const GESTURES: Gesture[] = [
+	{ state: "translating", press: { type: "shape", id: "L" }, drag: true, undo: "cancelTranslate" },
+	{
+		state: "rubber-band",
+		press: { type: "canvas" },
+		drag: true,
+		mode: "select",
+		shift: true,
+		undo: "cancelRubberBand",
+	},
+	{ state: "resizing", press: handle, drag: true, undo: "cancelResize" },
+	{ state: "connecting", press: port, drag: true, undo: "cancelConnect" },
+	{ state: "pointing-edge-endpoint", press: endpoint, drag: false, undo: "cancelEndpointMove" },
+	{ state: "dragging-edge-endpoint", press: endpoint, drag: true, undo: "cancelEndpointMove" },
+	{
+		state: "dragging-edge-waypoint-new",
+		press: segment(true),
+		drag: true,
+		undo: "cancelWaypointInsert",
+	},
+	{ state: "dragging-edge-segment", press: segment(false), drag: true, undo: "cancelSegmentMove" },
+	{ state: "dragging-edge-waypoint", press: waypoint, drag: true, undo: "cancelWaypointMove" },
+	{ state: "dragging", press: { type: "canvas" }, drag: true, mode: "space", undo: "cancelSpace" },
+	{ state: "pointing-handle", press: handle, drag: false, undo: null },
+	{ state: "pointing-port", press: port, drag: false, undo: null },
+	{ state: "pointing-edge-segment", press: segment(false), drag: false, undo: null },
+	{ state: "pointing-edge-waypoint", press: waypoint, drag: false, undo: null },
+]
+
+const ENDS = ["escape", "pointercancel"] as const
+
+const CASES = GESTURES.flatMap((g) => ENDS.map((end) => ({ ...g, end })))
+
+function end(sm: EditorStateMachine, how: (typeof ENDS)[number]): void {
+	if (how === "escape") sm.onKeyDown(new KeyboardEvent("keydown", { key: "Escape" }))
+	else sm.cancel()
+}
 
 describe("cancelling a gesture", () => {
-	it("Escape takes back a rubber band and unlocks the viewport", () => {
+	it.each(CASES)("$end takes back $state and unlocks the viewport", (g) => {
 		const { cb, calls } = recorder()
 		const sm = new EditorStateMachine(cb)
-		sm.setMode({ mode: "select", sub: { name: "idle", hoveredId: null } })
-		sm.onPointerDown(pointer("pointerdown", 10, 10, true), { x: 10, y: 10 }, { type: "canvas" })
-		sm.onPointerMove(pointer("pointermove", 60, 60, true), { x: 60, y: 60 }, { type: "canvas" })
-		sm.onKeyDown(escapeKey())
-		expect(calls.cancelRubberBand).toHaveLength(1)
-		expect(calls.lockViewport?.at(-1)).toEqual([false])
-	})
-
-	it("Escape and a pointercancel both drop the resize outline", () => {
-		for (const end of ["escape", "cancel"] as const) {
-			const { cb, calls } = recorder()
-			const sm = new EditorStateMachine(cb)
-			const handle = { type: "handle", shapeId: "L", handle: "s" } as const
-			sm.onPointerDown(pointer("pointerdown", 100, 100), { x: 100, y: 100 }, handle)
-			sm.onPointerMove(pointer("pointermove", 100, 140), { x: 100, y: 140 }, handle)
-			expect(calls.previewResize, end).toBeDefined()
-			if (end === "escape") sm.onKeyDown(escapeKey())
-			else sm.cancel()
-			expect(calls.cancelResize, end).toHaveLength(1)
-			expect(calls.commitResize, end).toBeUndefined()
-			expect(calls.lockViewport?.at(-1), end).toEqual([false])
+		if (g.mode === "select") sm.setMode({ mode: "select", sub: { name: "idle", hoveredId: null } })
+		if (g.mode === "space") sm.setMode({ mode: "space", sub: { name: "idle" } })
+		sm.onPointerDown(pointer("pointerdown", 100, 100, g.shift), { x: 100, y: 100 }, g.press)
+		if (g.drag) {
+			sm.onPointerMove(pointer("pointermove", 100, 140, g.shift), { x: 100, y: 140 }, g.press)
 		}
-	})
+		const mode = sm.mode
+		expect("sub" in mode && mode.sub.name).toBe(g.state)
 
-	it("Escape takes back a dragged segment", () => {
-		const { cb, calls } = recorder()
-		const sm = new EditorStateMachine(cb)
-		const segment = {
-			type: "edge-segment",
-			id: "F",
-			segIdx: 0,
-			isHoriz: true,
-			projPt: { x: 50, y: 50 },
-			nearMidpoint: false,
-		} as const
-		sm.onPointerDown(pointer("pointerdown", 50, 50), { x: 50, y: 50 }, segment)
-		sm.onPointerMove(pointer("pointermove", 50, 90), { x: 50, y: 90 }, segment)
-		expect(calls.previewSegmentMove).toBeDefined()
-		sm.onKeyDown(escapeKey())
-		expect(calls.cancelSegmentMove).toHaveLength(1)
-		expect(calls.commitSegmentMove).toBeUndefined()
+		end(sm, g.end)
+
+		const cancels = Object.keys(calls).filter((name) => name.startsWith("cancel"))
+		expect(cancels).toEqual(g.undo ? [g.undo] : [])
+		if (g.undo) expect(calls[g.undo]).toHaveLength(1)
+		expect(Object.keys(calls).filter((name) => name.startsWith("commit"))).toEqual([])
 		expect(calls.lockViewport?.at(-1)).toEqual([false])
 	})
 
-	it("Escape takes back the connection ghost", () => {
+	it.each(ENDS)("%s while pointing at a shape takes back nothing", (how) => {
 		const { cb, calls } = recorder()
 		const sm = new EditorStateMachine(cb)
-		const port = { type: "port", shapeId: "L", port: "right" } as const
-		sm.onPointerDown(pointer("pointerdown", 200, 50), { x: 200, y: 50 }, port)
-		sm.onPointerMove(pointer("pointermove", 260, 50), { x: 260, y: 50 }, { type: "canvas" })
-		expect(calls.previewConnect).toBeDefined()
-		sm.onKeyDown(escapeKey())
-		expect(calls.cancelConnect).toHaveLength(1)
+		sm.onPointerDown(
+			pointer("pointerdown", 100, 100),
+			{ x: 100, y: 100 },
+			{ type: "shape", id: "L" },
+		)
+		end(sm, how)
+		expect(calls.lockViewport).toBeUndefined()
+		expect(Object.keys(calls).filter((name) => name.startsWith("cancel"))).toEqual([])
 	})
 })

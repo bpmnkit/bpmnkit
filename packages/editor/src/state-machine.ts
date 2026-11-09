@@ -767,20 +767,31 @@ export class EditorStateMachine {
 			case "pointing-edge-segment":
 			case "pointing-edge-waypoint":
 				break
-			default:
-				// Idle, hovering, pointing at the canvas or a shape, label editing: nothing was locked or drawn.
+			case "idle":
+			case "pointing-canvas":
+			case "pointing-shape":
+			case "editing-label":
+				// Nothing was locked or drawn yet.
 				return
+			default: {
+				// A new gesture has to decide here what cancelling it takes back.
+				const _unhandled: never = sub
+				return
+			}
 		}
 		this._cb.lockViewport(false)
+	}
+
+	private _cancelSpaceGesture(sub: SpaceSub): void {
+		if (sub.name !== "dragging") return
+		this._cb.lockViewport(false)
+		this._cb.cancelSpace()
 	}
 
 	cancel(): void {
 		const mode = this._mode
 		if (mode.mode === "space") {
-			if (mode.sub.name === "dragging") {
-				this._cb.lockViewport(false)
-				this._cb.cancelSpace()
-			}
+			this._cancelSpaceGesture(mode.sub)
 		} else if (mode.mode === "select" || mode.mode === "default") {
 			this._cancelGesture(mode.sub)
 		}
@@ -801,10 +812,7 @@ export class EditorStateMachine {
 
 		if (mode.mode === "space" && e.key === "Escape") {
 			e.preventDefault()
-			if (mode.sub.name === "dragging") {
-				this._cb.lockViewport(false)
-				this._cb.cancelSpace()
-			}
+			this._cancelSpaceGesture(mode.sub)
 			this._mode = { mode: "space", sub: { name: "idle" } }
 			return
 		}
