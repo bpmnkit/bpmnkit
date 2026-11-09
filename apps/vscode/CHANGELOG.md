@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.13
+
+### Patch Changes
+
+- Updated dependencies [293b8bb]
+  - @bpmnkit/core@1.10.1
+  - @bpmnkit/connectors@1.4.1
+
 ## 0.5.12
 
 ### Patch Changes

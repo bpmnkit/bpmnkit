@@ -1,5 +1,13 @@
 # @bpmnkit/connectors
 
+## 1.4.1
+
+### Patch Changes
+
+- 293b8bb: Refresh the bundled Camunda connector templates and add the `managed-script` alias for `io.camunda.connectors.ManagedScript.v1`.
+- Updated dependencies [293b8bb]
+  - @bpmnkit/core@1.10.1
+
 ## 1.4.0
 
 ### Minor Changes
