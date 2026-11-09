@@ -1,0 +1,32 @@
+# A single-node Camunda 8 engine for scripts/zeebe-broker-check.mjs (see README.md).
+# 8.8 and newer: the camunda/camunda all-in-one, broker only, no secondary storage, no auth.
+# 8.6 / 8.7: the camunda/zeebe broker with its embedded gateway (no auth by default).
+#
+#   CAMUNDA_VERSION=8.10.9 docker compose up -d --wait camunda
+#   ZEEBE_VERSION=8.6.42 docker compose --profile legacy up -d --wait zeebe
+services:
+  camunda:
+    image: camunda/camunda:${CAMUNDA_VERSION:-8.10.9}
+    ports: ["8080:8080", "26500:26500", "9600:9600"]
+    environment:
+      CAMUNDA_DATA_SECONDARYSTORAGE_TYPE: none
+      CAMUNDA_SECURITY_AUTHENTICATION_UNPROTECTEDAPI: "true"
+      CAMUNDA_SECURITY_AUTHORIZATIONS_ENABLED: "false"
+      SPRING_PROFILES_ACTIVE: broker,standalone
+      JAVA_TOOL_OPTIONS: -Xms512m -Xmx768m
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 5 bash -c '</dev/tcp/127.0.0.1/8080'"]
+      interval: 5s
+      retries: 60
+      start_period: 30s
+  zeebe:
+    profiles: [legacy]
+    image: camunda/zeebe:${ZEEBE_VERSION:-8.7.45}
+    ports: ["8080:8080", "26500:26500", "9600:9600"]
+    environment:
+      JAVA_TOOL_OPTIONS: -Xms512m -Xmx768m
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 5 bash -c '</dev/tcp/127.0.0.1/8080'"]
+      interval: 5s
+      retries: 60
+      start_period: 30s

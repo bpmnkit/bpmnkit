@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "End"
+      ],
+      "fixable": false,
+      "id": "zeebe/compensation-activity-exists",
+      "message": "The referenced compensation activity 'Missing' doesn't exist",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Point activityRef at an existing activity."
+    }
+  ]
+}

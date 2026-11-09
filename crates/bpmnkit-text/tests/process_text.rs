@@ -6,7 +6,7 @@ use std::path::{Path, PathBuf};
 
 use bpmnkit_bpmn::ids::reset_id_counter;
 use bpmnkit_bpmn::{parse_bpmn, serialize_bpmn};
-use bpmnkit_text::compact::{expand, CompactDiagram};
+use bpmnkit_text::compact::{expand, CompactDiagram, ExpandOptions};
 use bpmnkit_text::process_text::{
     parse_process_text, write_process_text, ProcessTextResult, ProcessTextStream,
     WriteProcessTextOptions,
@@ -21,9 +21,23 @@ fn read(path: &Path) -> Result<String, String> {
     fs::read_to_string(path).map_err(|e| format!("{}: {e}", path.display()))
 }
 
+/// `case.json` `expand`: the options the case's diagram is expanded with.
+fn case_options(case_dir: &Path) -> ExpandOptions {
+    let spec: Value = fs::read_to_string(case_dir.join("case.json"))
+        .ok()
+        .and_then(|s| serde_json::from_str(&s).ok())
+        .unwrap_or(Value::Null);
+    let options = &spec["expand"];
+    ExpandOptions {
+        validate: options["validate"].as_bool().unwrap_or(true),
+        placeholders: options["placeholders"].as_bool().unwrap_or(false),
+        camunda_version: options["camundaVersion"].as_str().map(str::to_owned),
+    }
+}
+
 /// `expand` + `serializeBpmn`, or the error message plus newline, as recorded.
-fn expanded(diagram: &CompactDiagram) -> (bool, String) {
-    match expand(diagram) {
+fn expanded(diagram: &CompactDiagram, options: &ExpandOptions) -> (bool, String) {
+    match expand(diagram, options) {
         Ok(defs) => (true, serialize_bpmn(&defs)),
         Err(e) => (false, format!("{}\n", e.message)),
     }
@@ -41,7 +55,8 @@ fn check_result(expected: &Path, result: &ProcessTextResult) -> Result<(), Strin
         ));
     }
     reset_id_counter();
-    let (ok, out) = expanded(&result.diagram);
+    let options = case_options(expected.parent().unwrap_or(expected));
+    let (ok, out) = expanded(&result.diagram, &options);
     let file = if ok { "output.bpmn" } else { "error.txt" };
     if read(&expected.join(file))? != out {
         return Err(format!("{file} differs"));

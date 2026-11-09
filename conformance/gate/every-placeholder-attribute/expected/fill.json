@@ -1,0 +1,53 @@
+{
+  "placeholders": [
+    {
+      "elementId": "reply_msg",
+      "field": "correlationKey",
+      "value": "=\"placeholder-reply_msg\"",
+      "rule": "zeebe/subscription-correlation-key"
+    },
+    {
+      "elementId": "publish",
+      "field": "correlationKey",
+      "value": "=\"placeholder-publish\"",
+      "rule": "zeebe/publish-message-correlation-key"
+    },
+    {
+      "elementId": "sig",
+      "field": "signalName",
+      "value": "placeholder-sig",
+      "rule": "zeebe/signal-name"
+    },
+    {
+      "elementId": "fail",
+      "field": "errorCode",
+      "value": "placeholder-fail",
+      "rule": "zeebe/error-code"
+    },
+    {
+      "elementId": "esc",
+      "field": "escalationCode",
+      "value": "placeholder-esc",
+      "rule": "zeebe/escalation-code"
+    },
+    {
+      "elementId": "sub",
+      "field": "calledElement",
+      "value": "placeholder-sub",
+      "rule": "zeebe/called-element-process-id"
+    },
+    {
+      "elementId": "f_a",
+      "field": "condition",
+      "value": "=false",
+      "rule": "zeebe/inclusive-flow-condition"
+    },
+    {
+      "elementId": "f_b",
+      "field": "condition",
+      "value": "=false",
+      "rule": "zeebe/inclusive-flow-condition"
+    }
+  ],
+  "warnings": []
+}

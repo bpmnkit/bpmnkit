@@ -1,0 +1,2 @@
+s[start:timer Every hour | every=PT1H] > w[catch:timer Until the deadline | at=2026-12-01T09:00:00Z] > t[service Work | job=work] > e[end]
+r[boundary:timer Remind | on=t nonint every=R3/PT10M] > re[end]

@@ -25,6 +25,12 @@ let definitions = Bpmn::create_process("order")
 assert!(serialize_bpmn(&definitions).contains(r#"<bpmn:process id="order""#));
 ```
 
+`build()` refuses a Camunda 8 model Zeebe would reject: the builder's own rules first (a gateway
+branch without a condition, a send task without `task_type`, ...), then
+`bpmnkit_compat::zeebe::assert_deployable`, whose `DeployabilityError` the `BuildError` carries in
+`deployability`. `BuildGateOptions` (`validate`, `placeholders`, `camunda_version`) changes that,
+as in TypeScript.
+
 ## Links
 
 - Website: <https://bpmnkit.com>

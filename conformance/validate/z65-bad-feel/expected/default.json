@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "M"
+      ],
+      "fixable": false,
+      "id": "zeebe/correlation-key-expression",
+      "message": "failed to parse expression '1+'",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Fix the FEEL syntax of the correlationKey."
+    }
+  ]
+}

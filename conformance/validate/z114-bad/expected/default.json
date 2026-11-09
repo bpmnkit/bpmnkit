@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/duplicate-user-task-extension",
+      "message": "Must have exactly one 'zeebe:assignmentDefinition' extension element when exists. Please check process definition XML and retain only one extension element.",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Keep a single zeebe:assignmentDefinition element on the user task."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/script-expression",
+      "message": "failed to parse expression 'a +'",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Write the script as a valid FEEL expression starting with '='."
+    }
+  ]
+}

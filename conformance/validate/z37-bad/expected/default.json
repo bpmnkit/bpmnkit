@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Start"
+      ],
+      "fixable": false,
+      "id": "zeebe/start-event-definitions",
+      "message": "Start event can't have more than one type",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Keep one event definition on the start event."
+    }
+  ]
+}

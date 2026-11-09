@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "g"
+      ],
+      "fixable": false,
+      "id": "zeebe/gateway-end-listener",
+      "message": "Execution listeners of type 'end' are not supported by gateway element",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Use a 'start' execution listener or move the listener to a neighbouring element."
+    }
+  ]
+}

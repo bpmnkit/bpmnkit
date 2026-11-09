@@ -60,6 +60,9 @@ const SKIP_FIELDS = new Set([
 	"formBindingType",
 	"formVersionTag",
 	"conditionVariableEvents",
+	// Deploy-gate knobs; generated processes keep the default refusal and the newest version.
+	"placeholders",
+	"camundaVersion",
 ])
 
 /**
@@ -96,10 +99,11 @@ const RULES = [
 	"Start with `Bpmn.createProcess(id)`, end with `.build()`, then `Bpmn.export(definitions)` for the XML. Call `.withAutoLayout()` before `.build()`, or the diagram has no shapes.",
 	"Element ids are unique. Each element connects to the previous one automatically; there are no manual flows.",
 	"`subProcess`, `transaction`, `eventSubProcess` and `adHocSubProcess` take the callback as the SECOND argument and options THIRD: `.subProcess(id, (sub) => sub.startEvent()..., { name })`. Swapped order is tolerated.",
-	"Gateways fork with `.branch(name, (b) => b...)`. Inside, `b.condition(feelExpr)` sets the flow condition and `b.defaultFlow()` marks the default flow. To merge, end a branch with `.connectTo(targetId)` and declare that target after the last branch.",
+	"Gateways fork with `.branch(name, (b) => b...)`. Inside, `b.condition(feelExpr)` sets the flow condition and `b.defaultFlow()` marks the default flow; every branch of an exclusive or inclusive gateway needs one of them. To merge, end a branch with `.connectTo(targetId)` and declare that target after the last branch.",
 	"Event definitions are named options, not nested objects: `timerDuration`, `timerDate`, `timerCycle`, `messageName` + `correlationKey`, `signalName`, `errorCode`, `escalationCode`, `linkName`. Unknown options are silently dropped: `timer: { duration }` does nothing.",
 	"`withBoundary(id, options, (b) => ...)` attaches a boundary event to the PRECEDING activity; the callback builds the path leaving it, and the main chain continues from the activity.",
 	"FEEL expressions start with `=`. Options without `?` are required.",
+	"`build()` refuses what Camunda 8 cannot deploy: send tasks and message throw/end events need `taskType`, and nothing may follow an end event.",
 ]
 
 /** One runnable example per element family. A test builds each and checks the diagram. */
@@ -336,18 +340,22 @@ function renderOptions(interfaces, aliases, order) {
 	const sharedSet = new Set(shared)
 	const longTypes = new Map()
 	const rows = []
+	const listed = new Set(order)
 	for (const name of order) {
 		const base = interfaces.get(name)
-		const extendsElement = (base.heritageClauses ?? []).some((c) =>
-			c.types.some((t) => t.expression.getText() === "ElementOptions"),
+		const bases = (base.heritageClauses ?? []).flatMap((c) =>
+			c.types.map((t) => t.expression.getText()),
 		)
-		const fields = fieldsOf(name, interfaces)
+		const extendsElement = bases.includes("ElementOptions")
+		// An option type that extends another listed one prints only its own fields.
+		const parent = bases.find((b) => b !== "ElementOptions" && listed.has(b))
+		const fields = fieldsOf(name, interfaces, undefined, new Set(parent ? [parent] : []))
 			.filter((f) => !(extendsElement && sharedSet.has(f.name)) || name === "ElementOptions")
 			.map((f) => ({ ...f, type: expandAlias(f.type, aliases) }))
 		for (const f of fields) {
 			if (f.type.length > 50) longTypes.set(f.type, [...(longTypes.get(f.type) ?? []), f.name])
 		}
-		rows.push({ name, extendsElement, fields })
+		rows.push({ name, extendsElement, parent, fields })
 	}
 	// A long type used by several fields (ioMapping on four task options) is printed once.
 	const sharedShapes = [...longTypes].filter(([, names]) => names.length > 1)
@@ -364,7 +372,8 @@ function renderOptions(interfaces, aliases, order) {
 			described.add(f.name)
 			return `${f.name}${f.optional ? "?" : ""}: ${type}${doc}`
 		})
-		lines.push(`- ${row.name}${row.extendsElement ? " +El" : ""}: ${items.join("; ")}`)
+		const plus = `${row.extendsElement ? " +El" : ""}${row.parent ? ` +${row.parent}` : ""}`
+		lines.push(`- ${row.name}${plus}: ${items.join("; ")}`)
 	}
 	if (sharedShapes.length > 0) {
 		for (const [type] of sharedShapes) lines.push(`- ${shapeLabel.get(type)} = ${type}`)
@@ -455,7 +464,13 @@ export function generateBuilderReference() {
 			`Not available inside callbacks (top-level only): ${processOnly.map((m) => m.name).join(", ")}.`,
 		)
 	}
-	out.push("", "## Options", "", "`+El` = also accepts the ElementOptions fields.", "")
+	out.push(
+		"",
+		"## Options",
+		"",
+		"`+El` = also accepts the ElementOptions fields; `+X` = also accepts X's fields.",
+		"",
+	)
 	out.push(...renderOptions(interfaces, aliases, options))
 	out.push("", "## Examples", "")
 	for (const example of EXAMPLES) out.push("```typescript", example, "```", "")

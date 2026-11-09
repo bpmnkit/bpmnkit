@@ -1,5 +1,31 @@
 # @bpmnkit/plugins
 
+## 1.4.0
+
+### Minor Changes
+
+- e57db77: Deploy gate in the plugins. The deploy pane decides with the deploy gate on the XML it would send (`deployVerdict`, exported from `@bpmnkit/plugins/deploy`): the Deploy button stays off and the pane lists the gate's lines; optimizer warnings stay advice. The AI panel asks the proxy for drafts (`validate: false`), inserts them as before and shows the gate's message under the answer. On-device generation (`generateProcess`) returns an undeployable answer as a draft with `deployability` (the gate's message), which the panel lists with the parser's notes; its prompt now teaches `msg=`, `key=`, `signal=`, `error=`, `escalation=`, `at=`, `every=` and `called=`, taken from core's `PROCESS_TEXT_GUIDE`.
+
+### Patch Changes
+
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [65aba71]
+- Updated dependencies [e57db77]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [e57db77]
+- Updated dependencies [e57db77]
+  - @bpmnkit/core@1.10.0
+  - @bpmnkit/connectors@1.4.0
+  - @bpmnkit/feel@1.1.2
+  - @bpmnkit/editor@1.6.1
+
 ## 1.3.0
 
 ### Minor Changes

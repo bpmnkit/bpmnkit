@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "X"
+      ],
+      "fixable": false,
+      "id": "zeebe/escalation-code",
+      "message": "EscalationCode must be present and not empty",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Set an escalationCode on the escalation."
+    }
+  ]
+}

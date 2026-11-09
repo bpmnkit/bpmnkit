@@ -1,3 +1,6 @@
-Bpmn.export: 2 deploy error(s):
-feel/empty-condition [f3]: Sequence flow "f3" exits a decision gateway without a condition expression. Fix: Add a FEEL condition expression or mark this flow as the default.
-feel/empty-condition [f4]: Sequence flow "f4" exits a decision gateway without a condition expression. Fix: Add a FEEL condition expression or mark this flow as the default.
+Not deployable on Camunda 8.10: 5 error(s)
+- validate: Must have exactly one 'zeebe:taskDefinition' extension element (zeebe/service-task-definition)
+- t: Attribute 'type' must be present and not empty (zeebe/task-definition-type)
+- t: Expected expression but not found. (zeebe/task-definition-expression)
+- f3: Must have a condition or be default flow (zeebe/exclusive-flow-condition)
+- f4: Must have a condition or be default flow (zeebe/exclusive-flow-condition)

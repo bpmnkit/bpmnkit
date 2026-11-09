@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "EventSub"
+      ],
+      "fixable": false,
+      "id": "zeebe/event-sub-process-start-type",
+      "message": "Start events in event subprocesses must be one of: message, timer, error, signal, escalation or conditional",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Give the event sub-process start event a message, timer, error, signal, escalation or conditional definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "EventSub"
+      ],
+      "fixable": false,
+      "id": "zeebe/compensation-event-sub-process-level",
+      "message": "A compensation event subprocess is not allowed on the process level",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Move the compensation event sub-process into a sub-process."
+    }
+  ]
+}

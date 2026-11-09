@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "p"
+      ],
+      "fixable": false,
+      "id": "zeebe/duplicate-error-catch",
+      "message": "The same scope can not contain more than one error catch event without error code. An error catch event without error code catches all errors.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Give each error catch event of the scope a different error code."
+    }
+  ]
+}

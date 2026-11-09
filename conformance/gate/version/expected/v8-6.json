@@ -1,0 +1,8 @@
+{
+  "error": "Not deployable on Camunda 8.6: 2 error(s)\n- charge: Must have exactly one 'zeebe:taskDefinition' extension element (zeebe/service-task-definition)\n- notify: Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element (zeebe/send-task-implementation)",
+  "camundaVersion": "8.6",
+  "findings": [
+    "zeebe/service-task-definition charge",
+    "zeebe/send-task-implementation notify"
+  ]
+}

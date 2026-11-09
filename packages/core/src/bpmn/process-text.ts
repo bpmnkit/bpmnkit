@@ -43,6 +43,7 @@ gw >(Label: default) y    branch taken when no condition holds
 Kinds: start end task user service rule (DMN decision) send receive script manual call xor and or eventgw catch (wait for message or timer) throw boundary adhoc (an AI agent that chooses among tools)
 Events take a trigger: start:message end:error catch:timer boundary:error (timer message signal error escalation terminate conditional compensate cancel)
 Attributes after |: on=<task id> (required on boundary), nonint (non-interrupting), job=<job type>, each=<list variable> (once per item), after=<ISO duration> (timer), result=<variable>, feel=<FEEL expression> (last)
+Names after |: msg=<message name> key=<FEEL> (key required where a message is waited for: catch, boundary, receive), signal=<name>, error=<code>, escalation=<code>, at=<ISO date-time> and every=<R/PT1H> (timers), called=<process id> (call)
 Also after |: form=<form id> (start, user), in.<name>=<FEEL> and out.<name>=<FEEL> map variables in and out of a step (value runs to the next word=; write comparisons with spaces: a = 1)
 Ad-hoc: agent[adhoc Name] is a container with flows like any node; tool[service Name | inside=agent] has no flows of its own; note <id>: text annotates a node
 doc <id>: text            the element's documentation; for a tool inside an ad-hoc agent it is the description the agent chooses the tool by
@@ -702,7 +703,8 @@ class Reader {
 		}
 		const bar = spec.indexOf("|")
 		// `boundary:timer on=poll`: an attribute written before the bar is one still
-		const loose = /\s+((?:on|job|each|after|result)=\S+|nonint)(?=\s|$)/g
+		const loose =
+			/\s+((?:on|job|each|after|at|every|result|msg|key|signal|error|escalation|called)=\S+|nonint)(?=\s|$)/g
 		const beforeBar = bar < 0 ? spec : spec.slice(0, bar)
 		const head = beforeBar.replace(loose, "").trim()
 		const attrs =
@@ -750,6 +752,14 @@ class Reader {
 			} else {
 				element.eventType = trigger
 			}
+		}
+		// `paid[catch Paid | msg=payment-received]`: an attribute naming what the event
+		// waits for or throws is its trigger, when the kind word did not say one
+		if (EVENTS.has(element.type) && element.eventType === undefined) {
+			const named = /(?:^|[\s,|])(msg|signal|error|escalation|at|every)=\S/.exec(attrs)?.[1]
+			const trigger = named === undefined ? undefined : NAMED_TRIGGERS.get(named)
+			if (trigger !== undefined && !(trigger === "timer" && element.type === "endEvent"))
+				element.eventType = trigger
 		}
 		if (label) element.name = label
 		// A catch or boundary event waits for something, and cannot deploy without
@@ -801,8 +811,38 @@ class Reader {
 			const [key, value] = attr.split("=", 2)
 			if (key === "on" && value) node.on = hostOf.get(value) ?? value
 			else if (key === "inside" && value) node.inside = hostOf.get(value) ?? value
+			// `c[call Run child | job=child]`: what a call activity runs is a process, not a job
+			else if (key === "job" && value && element.type === "callActivity")
+				element.calledProcess = value
 			else if (key === "job" && value) element.jobType = value
-			else if (key === "nonint" && value === undefined) element.interrupting = false
+			else if (key === "called" && value && element.type === "callActivity")
+				element.calledProcess = value
+			else if (
+				key === "key" &&
+				value &&
+				(EVENTS.has(element.type) || element.type === "receiveTask")
+			)
+				element.correlationKey = value.startsWith("=") ? value : `=${value}`
+			else if (key === "msg" && value && element.type === "receiveTask") element.messageName = value
+			else if (key !== undefined && value && NAMED_TRIGGERS.has(key) && EVENTS.has(element.type)) {
+				const trigger = NAMED_TRIGGERS.get(key)
+				if (element.eventType !== trigger) {
+					this.problems.push({
+						line: n,
+						message: `${key}= takes a ${trigger} event; ignored on "${id}"`,
+					})
+				} else if (key === "msg") element.messageName = value
+				else if (key === "signal") element.signalName = value
+				else if (key === "error") element.errorCode = value
+				else if (key === "escalation") element.escalationCode = value
+				else if (key === "at") element.timerDate = value
+				else if (cycle(value) !== undefined) element.timerCycle = cycle(value)
+				else
+					this.problems.push({
+						line: n,
+						message: `every=${value} on "${id}" is not a repeating interval (R/PT1H); ignored`,
+					})
+			} else if (key === "nonint" && value === undefined) element.interrupting = false
 			else if (
 				key === "form" &&
 				value &&
@@ -953,6 +993,26 @@ const UNITS: Record<string, string> = { s: "S", m: "M", h: "H", d: "D", w: "W" }
  * An ISO 8601 duration from what models write: `PT5M` as it is, `5m`, `5 min`,
  * `5 minutes`, `2 hours` or `1 day`, also inside a name ("Wait 5 minutes").
  */
+/** The trigger an attribute names (`msg=` a message): {@link parseProcessText} reads it as the event's. */
+const NAMED_TRIGGERS = new Map([
+	["msg", "message"],
+	["signal", "signal"],
+	["error", "error"],
+	["escalation", "escalation"],
+	["at", "timer"],
+	["every", "timer"],
+])
+
+/**
+ * A timer cycle from `every=`: an ISO 8601 repeating interval (`R/PT1H`, `R3/PT10M`)
+ * as written, or a duration (`PT1H`, `1h`, `2 days`) repeated forever.
+ */
+export function cycle(text: string): string | undefined {
+	if (/^R\d*\/P\S+$/i.test(text)) return text.toUpperCase()
+	const each = duration(text)
+	return each === undefined ? undefined : `R/${each}`
+}
+
 export function duration(text: string): string | undefined {
 	// `p1d` is P1D: models write ISO durations in lower case too
 	const iso = /\bP(?:\d+[YMWD])*(?:T(?:\d+[HMS])+)?\b/i.exec(text)?.[0]?.toUpperCase()
@@ -1816,9 +1876,20 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 	}
 
 	for (const node of [...nodes.values(), ...childNodes]) {
-		if (JOB_TASKS.has(node.element.type) && node.element.jobType === undefined) {
-			node.element.jobType = node.element.id
+		const el = node.element
+		if (JOB_TASKS.has(el.type) && el.jobType === undefined) {
+			el.jobType = el.id
 		}
+		// What an element sends, throws, waits for or calls needs a name to deploy; the id
+		// stands in, as it does for a job type. A correlation key has no such stand-in.
+		const throws = el.type === "intermediateThrowEvent" || el.type === "endEvent"
+		if (el.type === "callActivity") el.calledProcess ??= el.id
+		if (el.eventType === "message" || el.type === "receiveTask") el.messageName ??= el.id
+		if (el.eventType === "message" && throws) el.jobType ??= el.id
+		if (el.eventType === "signal") el.signalName ??= el.id
+		// A caught error or escalation without a code catches every one
+		if (el.eventType === "error" && throws) el.errorCode ??= el.id
+		if (el.eventType === "escalation" && throws) el.escalationCode ??= el.id
 		// A DMN task needs a decision to deploy; the id stands in, as it does for a job type.
 		if (
 			node.element.type === "businessRuleTask" &&
@@ -2026,7 +2097,8 @@ export function createProcessTextStream(): ProcessTextStream {
 				pending = pending.slice(nl + 1)
 			}
 			if (!changed || reader.nodes.size === 0) return null
-			return expand(assemble(reader, false).diagram)
+			// A frame is a preview of text still arriving, never deployed: no gate.
+			return expand(assemble(reader, false).diagram, { validate: false })
 		},
 		end(): ProcessTextResult {
 			if (pending !== "") reader.line(pending, ++lineNumber)

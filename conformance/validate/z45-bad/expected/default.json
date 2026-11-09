@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Catch"
+      ],
+      "fixable": false,
+      "id": "zeebe/intermediate-timer-value",
+      "message": "Intermediate timer catch event must have either a time duration or a time date.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Use a time duration or time date on the intermediate timer."
+    }
+  ]
+}

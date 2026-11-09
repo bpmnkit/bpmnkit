@@ -1,0 +1,2 @@
+Not deployable on Camunda 8.10: 1 error(s)
+- Message_wait: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)

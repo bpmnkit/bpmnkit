@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/user-task-priority",
+      "message": "Priority must be a number between 0 and 100, but was '150'.",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Set the priority to a whole number from 0 to 100."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/header-reserved-key",
+      "message": "Attribute 'key' contains 'io.camunda.zeebe:x', but header keys starting with 'io.camunda.zeebe:' are reserved for internal use.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Rename the header so it does not start with 'io.camunda.zeebe:'."
+    }
+  ]
+}

@@ -22,4 +22,15 @@ reebe-engine = { workspace = true, default-features = false, features = ["memory
 uuid = { workspace = true, features = ["js"] }
 
 [features]
-default = []
+default = ["zeebe-validate"]
+# Zeebe's deploy-time validation, as on the server, so a browser deploy rejects what
+# Zeebe rejects. It adds ~106 KB gzip (621 → 728 KB); scripts/check-wasm-size.mjs's
+# budget was raised for it.
+zeebe-validate = ["reebe-engine/zeebe-validate"]
+
+# No wasm-opt: after the size rustflags in apps/reebe/.cargo/config.toml, binaryen
+# shrinks the raw file but grows the gzip (-O: 621 → 648 KB, binaryen 116), and
+# skipping it leaves wasm-pack nothing to download. scripts/check-wasm-size.mjs
+# holds the size budget.
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = false

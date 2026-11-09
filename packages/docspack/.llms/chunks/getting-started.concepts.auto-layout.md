@@ -6,7 +6,7 @@ It produces clean, left-to-right layouts without any coordinate math:
 ```typescript
 const process = Bpmn.createProcess("flow")
   .startEvent("start")
-  .serviceTask("work")
+  .serviceTask("work", { taskType: "work" })
   .endEvent("end")
   .withAutoLayout()   // assigns x/y/width/height to all elements
   .build();

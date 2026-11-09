@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://example.com" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="Start"><bpmn:outgoing>F9</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:subProcess id="Sub"><bpmn:incoming>F9</bpmn:incoming><bpmn:outgoing>F10</bpmn:outgoing>
+    <bpmn:startEvent id="SStart"><bpmn:outgoing>H1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:intermediateThrowEvent id="ST"><bpmn:incoming>H1</bpmn:incoming><bpmn:linkEventDefinition id="ST_d" name="L" /></bpmn:intermediateThrowEvent>
+    <bpmn:sequenceFlow id="H1" sourceRef="SStart" targetRef="ST" />
+    <bpmn:intermediateCatchEvent id="SC"><bpmn:outgoing>H2</bpmn:outgoing><bpmn:linkEventDefinition id="SC_d" name="L" /></bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="SEnd"><bpmn:incoming>H2</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="H2" sourceRef="SC" targetRef="SEnd" />
+    </bpmn:subProcess>
+    <bpmn:endEvent id="End"><bpmn:incoming>F10</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="F9" sourceRef="Start" targetRef="Sub" />
+    <bpmn:sequenceFlow id="F10" sourceRef="Sub" targetRef="End" />
+    <bpmn:intermediateCatchEvent id="PC"><bpmn:outgoing>H5</bpmn:outgoing><bpmn:linkEventDefinition id="PC_d" name="L" /></bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="PEnd"><bpmn:incoming>H5</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="H5" sourceRef="PC" targetRef="PEnd" />
+  </bpmn:process>
+</bpmn:definitions>

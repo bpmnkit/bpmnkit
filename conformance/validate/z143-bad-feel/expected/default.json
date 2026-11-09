@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "f1"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "failed to parse expression 'x >>'",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
+    }
+  ]
+}

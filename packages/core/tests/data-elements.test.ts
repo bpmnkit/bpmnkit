@@ -44,7 +44,8 @@ describe("data objects, stores, and groups", () => {
 		const xml2 = Bpmn.export(Bpmn.parse(XML))
 		expect(xml2).toContain("<bpmn:dataObject ")
 		expect(xml2).toContain('dataObjectRef="do"')
-		expect(xml2).toContain('isCollection="true"')
+		// BPMN20.xsd allows isCollection on tDataObject only; Zeebe rejects it on a reference.
+		expect(xml2).not.toContain("isCollection")
 		expect(xml2).toContain('dataStoreRef="store"')
 		expect(xml2).toContain("<bpmn:group ")
 		expect(xml2).toContain('categoryValueRef="cat1"')

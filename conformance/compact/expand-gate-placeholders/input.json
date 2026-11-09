@@ -1,0 +1,45 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "s",
+          "type": "startEvent"
+        },
+        {
+          "id": "wait",
+          "type": "intermediateCatchEvent",
+          "eventType": "message"
+        },
+        {
+          "id": "work",
+          "type": "serviceTask"
+        },
+        {
+          "id": "fail",
+          "type": "endEvent",
+          "eventType": "error"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f1",
+          "from": "s",
+          "to": "wait"
+        },
+        {
+          "id": "f2",
+          "from": "wait",
+          "to": "work"
+        },
+        {
+          "id": "f3",
+          "from": "work",
+          "to": "fail"
+        }
+      ]
+    }
+  ]
+}

@@ -9,6 +9,9 @@ import type { TemplateApplicationProblem } from "../../src/connectors/index.js"
 import { Bpmn, lintDiagram } from "../../src/index.js"
 import type { BpmnDefinitions } from "../../src/index.js"
 
+// Exports here check what the serializer writes, not whether Zeebe would deploy the
+// model (a fragment, a round trip), so they pass `validate: false` to skip the gate.
+
 const FIXTURE = `<?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
   xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
@@ -54,7 +57,7 @@ describe("applyTemplates", () => {
 			},
 		])
 		expect(unexpected(problems)).toEqual([])
-		const xml = Bpmn.export(definitions)
+		const xml = Bpmn.export(definitions, { validate: false })
 		expect(xml).toContain('zeebe:modelerTemplateVersion="18"')
 		expect(xml).toContain('<zeebe:taskDefinition type="io.camunda:http-json:1" retries="3"')
 	})
@@ -73,7 +76,7 @@ describe("applyTemplates", () => {
 			},
 		])
 		expect(unexpected(problems)).toEqual([])
-		const xml = Bpmn.export(definitions)
+		const xml = Bpmn.export(definitions, { validate: false })
 		expect(xml).not.toContain("\\n")
 		const back = Bpmn.parse(xml)
 		const input = (id: string, target: string) => {
@@ -128,7 +131,9 @@ describe("applyTemplates", () => {
 		expect(problems).toHaveLength(1)
 		expect(problems[0]?.elementId).toBe("LookupSampleUsers")
 		expect(problems[0]?.message).toContain("18")
-		expect(Bpmn.export(definitions)).toBe(Bpmn.export(before))
+		expect(Bpmn.export(definitions, { validate: false })).toBe(
+			Bpmn.export(before, { validate: false }),
+		)
 	})
 
 	it("stringifies numbers and booleans", () => {
@@ -140,7 +145,7 @@ describe("applyTemplates", () => {
 			},
 		])
 		expect(unexpected(problems)).toEqual([])
-		const xml = Bpmn.export(definitions)
+		const xml = Bpmn.export(definitions, { validate: false })
 		expect(xml).toContain('retries="5"')
 		expect(xml).toMatch(
 			/target="ignoreNullValues"[^>]*source="true"|source="true"[^>]*target="ignoreNullValues"/,
@@ -163,7 +168,7 @@ describe("applyTemplates", () => {
 					'Value for "ignoreNullValues" was not written: the template only uses it when method is one of POST, PUT, PATCH',
 			},
 		])
-		expect(Bpmn.export(definitions)).not.toContain("ignoreNullValues")
+		expect(Bpmn.export(definitions, { validate: false })).not.toContain("ignoreNullValues")
 	})
 
 	it("resolves an alias and accepts a template object", () => {
@@ -171,13 +176,15 @@ describe("applyTemplates", () => {
 			{ elementId: "LookupSampleUsers", template: "http", values: { retryCount: 2 } },
 		])
 		expect(unexpected(viaAlias.problems)).toEqual([])
-		expect(Bpmn.export(viaAlias.definitions)).toContain('retries="2"')
+		expect(Bpmn.export(viaAlias.definitions, { validate: false })).toContain('retries="2"')
 		const tpl = getTemplate(HTTP)
 		if (!tpl) throw new Error("missing template")
 		const viaObject = applyTemplates(fixture(), [
 			{ elementId: "LookupSampleUsers", template: tpl, values: { retryCount: 2 } },
 		])
-		expect(Bpmn.export(viaObject.definitions)).toBe(Bpmn.export(viaAlias.definitions))
+		expect(Bpmn.export(viaObject.definitions, { validate: false })).toBe(
+			Bpmn.export(viaAlias.definitions, { validate: false }),
+		)
 	})
 
 	it("reports an unknown template and an unknown element, each with its elementId", () => {
@@ -205,7 +212,9 @@ describe("applyTemplates", () => {
 			{ elementId: "LookupSampleUsers", template: "HTTP", values: {} },
 		])
 		expect(unexpected(viaAlias.problems)).toEqual([])
-		expect(Bpmn.export(viaAlias.definitions)).toContain('zeebe:modelerTemplate="')
+		expect(Bpmn.export(viaAlias.definitions, { validate: false })).toContain(
+			'zeebe:modelerTemplate="',
+		)
 
 		const base = getTemplate(HTTP)
 		if (!base) throw new Error("bundled template missing")
@@ -266,6 +275,7 @@ describe("applyTemplates", () => {
 					[{ elementId: "LookupSampleUsers", template: HTTP, values: { url: "https://x.test" } }],
 					omitDefaults === undefined ? undefined : { omitDefaults },
 				).definitions,
+				{ validate: false },
 			)
 		const applyAgent = (extra: Record<string, string>, omitDefaults: boolean) =>
 			Bpmn.export(
@@ -274,6 +284,7 @@ describe("applyTemplates", () => {
 					[{ elementId: "AI_Agent", template: AGENT, values: { ...OPENAI, ...extra } }],
 					{ omitDefaults },
 				).definitions,
+				{ validate: false },
 			)
 
 		it("writes template defaults unless asked not to", () => {
@@ -301,7 +312,7 @@ describe("applyTemplates", () => {
 				[{ elementId: "LookupSampleUsers", template: HTTP, values: { followRedirects: false } }],
 				{ omitDefaults: true },
 			)
-			expect(Bpmn.export(definitions)).toContain('target="followRedirects"')
+			expect(Bpmn.export(definitions, { validate: false })).toContain('target="followRedirects"')
 		})
 
 		it("leaves out the OpenAI effort default but not what the caller set", () => {
@@ -316,7 +327,7 @@ describe("applyTemplates", () => {
 			const first = applyTemplates(fixture(), [
 				{ elementId: "LookupSampleUsers", template: HTTP, values: { url: "https://x.test" } },
 			]).definitions
-			expect(Bpmn.export(first)).toContain('target="followRedirects"')
+			expect(Bpmn.export(first, { validate: false })).toContain('target="followRedirects"')
 			expect(applyHttp(true, first)).not.toContain('target="followRedirects"')
 		})
 	})

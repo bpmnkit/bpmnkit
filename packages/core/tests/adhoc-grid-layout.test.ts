@@ -189,7 +189,8 @@ describe("unconnected children of an expanded sub-process (#221)", () => {
 			.addStartEvent("s2")
 			.endEvent("e2")
 			.withAutoLayout()
-			.build()
+			// Layout fixture with two none start events, which Zeebe refuses.
+			.build({ validate: false })
 		const top = boundsOf(defs)
 		expect(get(top, "s2").x).toBe(get(top, "s1").x)
 		expect(get(top, "s2").y).toBeGreaterThan(get(top, "s1").y)

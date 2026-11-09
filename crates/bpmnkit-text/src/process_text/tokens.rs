@@ -929,6 +929,35 @@ pub fn duration(text: &str) -> Option<String> {
     })
 }
 
+/// TS's `cycle`: a timer cycle from `every=`, an ISO 8601 repeating interval (`R/PT1H`,
+/// `R3/PT10M`) as written, or a duration (`PT1H`, `1h`, `2 days`) repeated forever.
+pub fn cycle(text: &str) -> Option<String> {
+    // `/^R\d*\/P\S+$/i`
+    let interval = text
+        .strip_prefix(['R', 'r'])
+        .map(|rest| rest.trim_start_matches(|c: char| c.is_ascii_digit()))
+        .and_then(|rest| rest.strip_prefix('/'))
+        .and_then(|rest| rest.strip_prefix(['P', 'p']))
+        .is_some_and(|rest| !rest.is_empty() && !rest.contains(is_js_space));
+    if interval {
+        return Some(text.to_uppercase());
+    }
+    duration(text).map(|each| format!("R/{each}"))
+}
+
+/// The trigger an attribute names (`msg=` a message), read as the event's: TS's
+/// `NAMED_TRIGGERS`.
+pub(crate) fn named_trigger(key: &str) -> Option<&'static str> {
+    Some(match key {
+        "msg" => "message",
+        "signal" => "signal",
+        "error" => "error",
+        "escalation" => "escalation",
+        "at" | "every" => "timer",
+        _ => return None,
+    })
+}
+
 /// TS's `edgeLabel`: `Name: condition`, `default`, `Name: default`.
 pub fn edge_label(label: Option<&str>) -> EdgeLabel {
     let Some(label) = label else {

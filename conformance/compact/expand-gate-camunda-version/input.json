@@ -1,0 +1,35 @@
+{
+  "id": "D",
+  "executionPlatformVersion": "8.6.0",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "s",
+          "type": "startEvent"
+        },
+        {
+          "id": "agent",
+          "type": "adHocSubProcess"
+        },
+        {
+          "id": "e",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f1",
+          "from": "s",
+          "to": "agent"
+        },
+        {
+          "id": "f2",
+          "from": "agent",
+          "to": "e"
+        }
+      ]
+    }
+  ]
+}

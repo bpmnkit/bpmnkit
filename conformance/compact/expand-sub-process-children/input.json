@@ -5,6 +5,10 @@
       "id": "P",
       "elements": [
         {
+          "id": "Start_P",
+          "type": "startEvent"
+        },
+        {
           "id": "sp",
           "type": "subProcess",
           "name": "Sub",
@@ -38,7 +42,13 @@
           }
         }
       ],
-      "flows": []
+      "flows": [
+        {
+          "id": "Flow_Start_P",
+          "from": "Start_P",
+          "to": "sp"
+        }
+      ]
     }
   ]
 }

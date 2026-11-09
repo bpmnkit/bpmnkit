@@ -917,13 +917,7 @@ function eventDefinitionFrame(
 			})
 			return null
 		case "messageEventDefinition":
-			target.push({
-				type: "message",
-				id: attr(attrs, "id"),
-				messageRef: attr(attrs, "messageRef"),
-				...definitionExtras(attrs, MESSAGE_DEF_ATTRS),
-			})
-			return null
+			return new MessageDefinitionFrame(attrs, target)
 		case "signalEventDefinition":
 			target.push({
 				type: "signal",
@@ -960,6 +954,34 @@ function eventDefinitionFrame(
 			return null
 		default:
 			return null
+	}
+}
+
+/** Keeps `zeebe:publishMessage`, which Zeebe reads from the message event definition. */
+class MessageDefinitionFrame extends Frame {
+	private extensionElements: XmlElement[] | null = null
+
+	constructor(
+		private readonly attrs: Attrs,
+		private readonly target: BpmnEventDefinition[],
+	) {
+		super()
+	}
+
+	override child(local: string): Frame | null {
+		if (local !== "extensionElements" || this.extensionElements !== null) return null
+		this.extensionElements = []
+		return new TreeFrame(this.extensionElements)
+	}
+
+	finish(): void {
+		this.target.push({
+			type: "message",
+			id: attr(this.attrs, "id"),
+			messageRef: attr(this.attrs, "messageRef"),
+			...(this.extensionElements ? { extensionElements: this.extensionElements } : {}),
+			...definitionExtras(this.attrs, MESSAGE_DEF_ATTRS),
+		})
 	}
 }
 
@@ -1833,7 +1855,29 @@ class DefinitionsFrame extends Frame implements TextOwner {
 		this.documentationAttributes = documentationAttrs(attrs)
 	}
 
+	/**
+	 * The serializer writes the definitions' documentation inside a bare `extension`
+	 * (the schema allows no `documentation` on `definitions`); read it back from there.
+	 */
+	private adoptExtensionDocumentation(): void {
+		if (this.documentationSeen) return
+		const index = this.unknownChildren.findIndex(
+			(c) =>
+				localName(c.name) === "extension" &&
+				Object.keys(c.attributes).length === 0 &&
+				c.children.length === 1 &&
+				localName(c.children[0]?.name ?? "") === "documentation" &&
+				c.children[0]?.children.length === 0,
+		)
+		const doc = this.unknownChildren[index]?.children[0]
+		if (doc === undefined) return
+		this.unknownChildren.splice(index, 1)
+		this.documentation = doc.text ?? ""
+		this.documentationAttributes = documentationAttrs(doc.attributes)
+	}
+
 	finish(): void {
+		this.adoptExtensionDocumentation()
 		const attrs = this.attrs
 		const namespaces: Record<string, string> = {}
 		const unknownAttributes: Record<string, string> = {}

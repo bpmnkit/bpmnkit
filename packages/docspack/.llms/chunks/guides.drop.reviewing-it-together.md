@@ -29,7 +29,11 @@ window fails with the model's error. With `?nolimit` the model also gets a large
 budget and the description keeps its line breaks, so headings and lists reach it. If the answer
 still hits the model's output limit, the page shows "The answer was cut off at the model's output
 limit — the diagram may be incomplete." The connector step takes the long description too. The
-readiness badge names the steps that keep a draft from running, including plain tasks.
+readiness badge names the steps that keep a draft from running, including plain tasks. When
+Camunda 8 would refuse the draft, the check under it shows the [deploy gate](/docs/guides/deploy-gate)'s
+lines, and **Fill placeholders** writes the documented placeholder values (job types, message
+names, correlation keys, timers) for you to replace later. **Share** is refused until the draft
+deploys; **Open in editor** opens it as it is, to finish it there.
 *Describe a process* can also draft on your device with Chrome's built-in model: open `/drop?ai=on-device`. See [On-device generation](/docs/guides/ai-on-device).
 
 **Version history.** Every file keeps the original it was uploaded as, pinned and never
@@ -43,14 +47,6 @@ loses work. Undoing a restore is another restore.
 removed, changed and *moved* elements marked on synchronised canvases, with pan and zoom
 locked together. The same diff is available offline as
 [`casen diff bpmn`](/docs/cli/diff) and as a plugin in `@bpmnkit/plugins`.
-
-**Comments.** Press **Comments** to open the review panel. With it open, click an element
-on the diagram to comment on that element, or just write to comment on the file as a
-whole. DMN, form and FEEL files take whole-file comments only. Each element with open
-threads gets a small numbered marker on the canvas; click it to jump to its threads.
-Threads take replies, and anyone who has commented on the drop can **Resolve** a thread or
-**Reopen** it. New comments, edits and resolutions reach everyone who has the drop open
-as they happen.
 
 ---
 Source: https://bpmnkit.com/docs/guides/drop

@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "g"
+      ],
+      "fixable": false,
+      "id": "zeebe/inclusive-default-source",
+      "message": "Default flow must start at gateway",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Make the default flow start at the gateway that declares it."
+    }
+  ]
+}

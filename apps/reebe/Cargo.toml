@@ -97,6 +97,7 @@ bpmnkit-feel = { path = "../../crates/bpmnkit-feel", default-features = false }
 bpmnkit-bpmn = { path = "../../crates/bpmnkit-bpmn" }
 bpmnkit-dmn = { path = "../../crates/bpmnkit-dmn", default-features = false }
 bpmnkit-xml = { path = "../../crates/bpmnkit-xml" }
+bpmnkit-compat = { path = "../../crates/bpmnkit-compat", default-features = false }
 reebe-feel = { path = "crates/reebe-feel", default-features = false }
 reebe-bpmn = { path = "crates/reebe-bpmn" }
 reebe-dmn = { path = "crates/reebe-dmn", default-features = false }

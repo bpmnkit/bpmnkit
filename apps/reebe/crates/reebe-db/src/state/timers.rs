@@ -19,12 +19,16 @@ pub struct Timer {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct TimerRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> TimerRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -44,7 +48,7 @@ impl<'a> TimerRepository<'a> {
         .bind(timer.repetitions)
         .bind(&timer.state)
         .bind(&timer.tenant_id)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -60,7 +64,7 @@ impl<'a> TimerRepository<'a> {
         )
         .bind(now)
         .bind(limit)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         Ok(rows.into_iter().map(row_to_timer).collect())
@@ -70,7 +74,7 @@ impl<'a> TimerRepository<'a> {
         sqlx::query("UPDATE timers SET state = $1 WHERE key = $2")
             .bind(state)
             .bind(key)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -78,7 +82,7 @@ impl<'a> TimerRepository<'a> {
     pub async fn delete(&self, key: i64) -> Result<()> {
         sqlx::query("DELETE FROM timers WHERE key = $1")
             .bind(key)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -90,7 +94,7 @@ impl<'a> TimerRepository<'a> {
                FROM timers WHERE process_instance_key = $1 ORDER BY key"#,
         )
         .bind(process_instance_key)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         Ok(rows.into_iter().map(row_to_timer).collect())
@@ -103,7 +107,7 @@ impl<'a> TimerRepository<'a> {
                FROM timers WHERE key = $1"#,
         )
         .bind(key)
-        .fetch_optional(self.pool)
+        .fetch_optional(&mut *self.pool.acquire().await?)
         .await?;
 
         match row {

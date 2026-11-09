@@ -1,0 +1,82 @@
+{
+  "report": {
+    "counts": {
+      "convertible": 1,
+      "manual": 6,
+      "unsupported": 0
+    },
+    "findings": [
+      {
+        "applied": true,
+        "construct": "modeler:executionPlatform",
+        "elementId": "Definitions_1",
+        "elementType": "definitions",
+        "message": "Execution platform set to Camunda Cloud 8.10.0.",
+        "processId": "",
+        "severity": "convertible",
+        "suggestion": "Camunda Modeler opens the file as a Camunda 8 diagram."
+      },
+      {
+        "applied": true,
+        "construct": "placeholder jobType",
+        "elementId": "validate",
+        "elementType": "serviceTask",
+        "message": "Placeholder jobType \"placeholder-validate\" written so the model deploys (zeebe/service-task-definition).",
+        "processId": "order-process",
+        "severity": "manual",
+        "suggestion": "Replace it with the real value; the placeholder does nothing useful at runtime."
+      },
+      {
+        "applied": true,
+        "construct": "placeholder jobType",
+        "elementId": "process",
+        "elementType": "serviceTask",
+        "message": "Placeholder jobType \"placeholder-process\" written so the model deploys (zeebe/service-task-definition).",
+        "processId": "order-process",
+        "severity": "manual",
+        "suggestion": "Replace it with the real value; the placeholder does nothing useful at runtime."
+      },
+      {
+        "applied": true,
+        "construct": "placeholder jobType",
+        "elementId": "reject",
+        "elementType": "serviceTask",
+        "message": "Placeholder jobType \"placeholder-reject\" written so the model deploys (zeebe/service-task-definition).",
+        "processId": "order-process",
+        "severity": "manual",
+        "suggestion": "Replace it with the real value; the placeholder does nothing useful at runtime."
+      },
+      {
+        "applied": true,
+        "construct": "placeholder jobType",
+        "elementId": "notify",
+        "elementType": "serviceTask",
+        "message": "Placeholder jobType \"placeholder-notify\" written so the model deploys (zeebe/service-task-definition).",
+        "processId": "order-process",
+        "severity": "manual",
+        "suggestion": "Replace it with the real value; the placeholder does nothing useful at runtime."
+      },
+      {
+        "applied": true,
+        "construct": "placeholder condition",
+        "elementId": "flow-yes",
+        "elementType": "sequenceFlow",
+        "message": "Placeholder condition \"=false\" written so the model deploys (zeebe/exclusive-flow-condition).",
+        "processId": "order-process",
+        "severity": "manual",
+        "suggestion": "Replace it with the real value; the placeholder does nothing useful at runtime."
+      },
+      {
+        "applied": true,
+        "construct": "placeholder condition",
+        "elementId": "flow-no",
+        "elementType": "sequenceFlow",
+        "message": "Placeholder condition \"=false\" written so the model deploys (zeebe/exclusive-flow-condition).",
+        "processId": "order-process",
+        "severity": "manual",
+        "suggestion": "Replace it with the real value; the placeholder does nothing useful at runtime."
+      }
+    ],
+    "total": 7
+  }
+}

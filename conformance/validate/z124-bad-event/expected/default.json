@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/task-listener-attributes",
+      "message": "No enum constant io.camunda.zeebe.model.bpmn.instance.zeebe.ZeebeTaskListenerEventType.finished",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Use a task listener event type such as creating, assigning or completing."
+    }
+  ]
+}

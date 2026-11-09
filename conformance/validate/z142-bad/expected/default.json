@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/conditional-flow-source",
+      "message": "Conditional sequence flows are only supported at exclusive or inclusive gateway",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Remove the condition or route the flow through an exclusive or inclusive gateway."
+    }
+  ]
+}

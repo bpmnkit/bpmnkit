@@ -20,8 +20,17 @@ const CASES: Array<[string, Add]> = [
 		"scriptTask",
 		(b) => b.scriptTask("t", { expression: "=1", resultVariable: "r", multiInstance: MI }),
 	],
-	["sendTask", (b) => b.sendTask("t", { name: "T", multiInstance: MI })],
-	["receiveTask", (b) => b.receiveTask("t", { name: "T", multiInstance: MI })],
+	["sendTask", (b) => b.sendTask("t", { name: "T", taskType: "send", multiInstance: MI })],
+	[
+		"receiveTask",
+		(b) =>
+			b.receiveTask("t", {
+				name: "T",
+				messageName: "m",
+				correlationKey: "=key",
+				multiInstance: MI,
+			}),
+	],
 	["businessRuleTask", (b) => b.businessRuleTask("t", { decisionId: "d", multiInstance: MI })],
 	["callActivity", (b) => b.callActivity("t", { processId: "child", multiInstance: MI })],
 ]
@@ -50,11 +59,17 @@ describe("multi-instance on every activity", () => {
 			Bpmn.createProcess("p")
 				.startEvent("s")
 				.exclusiveGateway("g")
-				.branch("a", (b) => b.sendTask("snd", { multiInstance: MI }).endEvent("e1"))
+				.branch("a", (b) =>
+					b.condition("=a").sendTask("snd", { taskType: "send", multiInstance: MI }).endEvent("e1"),
+				)
 				.branch("b", (b) =>
 					b
+						.defaultFlow()
 						.subProcess("sub", (i) =>
-							i.startEvent("is").receiveTask("rcv", { multiInstance: MI }).endEvent("ie"),
+							i
+								.startEvent("is")
+								.receiveTask("rcv", { messageName: "m", correlationKey: "=key", multiInstance: MI })
+								.endEvent("ie"),
 						)
 						.endEvent("e2"),
 				)

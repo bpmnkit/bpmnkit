@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_zeebe" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_zeebe" name="Zeebe surface" isExecutable="true">
+    <bpmn:startEvent id="Start_z">
+      <bpmn:outgoing>Flow_z1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="Task_service" camunda:type="external" camunda:topic="io.camunda:http-json:1" name="Call API">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="customerId">=customer.id</camunda:inputParameter>
+          <camunda:inputParameter name="amount">=order.total</camunda:inputParameter>
+          <camunda:outputParameter name="apiResult">=response.body</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_z1</bpmn:incoming>
+      <bpmn:outgoing>Flow_z2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="Task_human" camunda:assignee="=requester" camunda:candidateGroups="approvers" name="Approve">
+      <bpmn:incoming>Flow_z2</bpmn:incoming>
+      <bpmn:outgoing>Flow_z3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:businessRuleTask id="Task_decide" name="Decide">
+      <bpmn:incoming>Flow_z3</bpmn:incoming>
+      <bpmn:outgoing>Flow_z4</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:callActivity id="Task_call" calledElement="fulfilment" name="Fulfil">
+      <bpmn:extensionElements>
+        <camunda:in variables="all"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_z4</bpmn:incoming>
+      <bpmn:outgoing>Flow_z5</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:scriptTask id="Task_script" name="Summarise">
+      <bpmn:incoming>Flow_z5</bpmn:incoming>
+      <bpmn:outgoing>Flow_z6</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:endEvent id="End_z">
+      <bpmn:incoming>Flow_z6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_z1" sourceRef="Start_z" targetRef="Task_service"/>
+    <bpmn:sequenceFlow id="Flow_z2" sourceRef="Task_service" targetRef="Task_human"/>
+    <bpmn:sequenceFlow id="Flow_z3" sourceRef="Task_human" targetRef="Task_decide"/>
+    <bpmn:sequenceFlow id="Flow_z4" sourceRef="Task_decide" targetRef="Task_call"/>
+    <bpmn:sequenceFlow id="Flow_z5" sourceRef="Task_call" targetRef="Task_script"/>
+    <bpmn:sequenceFlow id="Flow_z6" sourceRef="Task_script" targetRef="End_z"/>
+  </bpmn:process>
+</bpmn:definitions>
+

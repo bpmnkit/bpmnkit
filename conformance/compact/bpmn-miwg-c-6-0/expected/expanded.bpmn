@@ -59,7 +59,7 @@
       <bpmn:startEvent id="_31a01c78-9a86-4b53-a485-e8a973ba6383">
         <bpmn:outgoing>_d51b76e8-b096-4376-ba01-7ca63ae51f70</bpmn:outgoing>
       </bpmn:startEvent>
-      <bpmn:subProcess id="_e880bf53-84ca-4776-aa75-d1bf53172240" name="Handle Compensation">
+      <bpmn:subProcess id="_e880bf53-84ca-4776-aa75-d1bf53172240" name="Handle Compensation" triggeredByEvent="true">
         <bpmn:endEvent id="_fc4826b1-1e63-49f6-8670-7cc8104e45ea">
           <bpmn:incoming>_b3d5a547-87a4-460d-b7c1-53b6506127e9</bpmn:incoming>
         </bpmn:endEvent>

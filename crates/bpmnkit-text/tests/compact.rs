@@ -7,7 +7,7 @@ use std::path::{Path, PathBuf};
 use bpmnkit_bpmn::ids::reset_id_counter;
 use bpmnkit_bpmn::{parse_bpmn, serialize_bpmn};
 use bpmnkit_text::compact::{
-    compactify, expand, CompactDiagram, CompactStream, CompactStreamOptions,
+    compactify, expand, CompactDiagram, CompactStream, CompactStreamOptions, ExpandOptions,
 };
 use serde_json::Value;
 
@@ -17,6 +17,20 @@ fn corpus() -> PathBuf {
 
 fn read(path: &Path) -> Option<String> {
     fs::read_to_string(path).ok()
+}
+
+/// `case.json` `expand`: the options the case's diagram is expanded with.
+fn case_options(case_dir: &Path) -> ExpandOptions {
+    let spec: Value = fs::read_to_string(case_dir.join("case.json"))
+        .ok()
+        .and_then(|s| serde_json::from_str(&s).ok())
+        .unwrap_or(Value::Null);
+    let options = &spec["expand"];
+    ExpandOptions {
+        validate: options["validate"].as_bool().unwrap_or(true),
+        placeholders: options["placeholders"].as_bool().unwrap_or(false),
+        camunda_version: options["camundaVersion"].as_str().map(str::to_owned),
+    }
 }
 
 /// Numbers as f64 so `18` and `18.0` agree; keys are sorted by `Value` already.
@@ -59,7 +73,7 @@ fn check_expand(
 ) {
     let expected = dir.join("expected");
     reset_id_counter();
-    match expand(diagram) {
+    match expand(diagram, &case_options(dir)) {
         Ok(defs) => {
             if let Some(err) = read(&expected.join(err_file)) {
                 failures.push(format!("{name}: expected error {err:?}, got a model"));
@@ -179,4 +193,48 @@ fn compact_corpus() {
         failures.len(),
         failures.join("\n")
     );
+}
+
+fn expand_json_str(json: &str) -> bpmnkit_bpmn::BpmnDefinitions {
+    reset_id_counter();
+    // Fragments: the tests below are about single fields, not deploying.
+    expand(
+        &serde_json::from_str::<CompactDiagram>(json).unwrap(),
+        &ExpandOptions::ungated(),
+    )
+    .unwrap()
+}
+
+#[test]
+fn link_name_round_trips_through_expand_and_compactify() {
+    let defs = expand_json_str(
+        r#"{"id":"d","processes":[{"id":"p","elements":[
+            {"id":"t","type":"intermediateThrowEvent","eventType":"link","linkName":"jump"},
+            {"id":"c","type":"intermediateCatchEvent","eventType":"link","linkName":"jump"}
+        ],"flows":[]}]}"#,
+    );
+    let xml = serialize_bpmn(&defs);
+    assert_eq!(xml.matches("name=\"jump\"").count(), 2, "{xml}");
+    let compact = to_value(&compactify(&defs));
+    let elements = &compact["processes"][0]["elements"];
+    assert_eq!(elements[0]["linkName"], "jump");
+    assert_eq!(elements[1]["linkName"], "jump");
+}
+
+#[test]
+fn expand_turns_flow_and_multi_instance_conditions_into_feel() {
+    let defs = expand_json_str(
+        r#"{"id":"d","processes":[{"id":"p","elements":[
+            {"id":"a","type":"serviceTask","multiInstance":{"collection":"=items","completionCondition":"${done}"}},
+            {"id":"b","type":"task"},{"id":"c","type":"task"}
+        ],"flows":[
+            {"id":"f1","from":"a","to":"b","condition":"amount > 5"},
+            {"id":"f2","from":"a","to":"c","condition":"=already"}
+        ]}]}"#,
+    );
+    let xml = serialize_bpmn(&defs);
+    assert!(xml.contains(">=amount &gt; 5<"), "{xml}");
+    assert!(xml.contains(">=already<"), "{xml}");
+    assert!(xml.contains("<bpmn:completionCondition"), "{xml}");
+    assert!(xml.contains(">=done<"), "{xml}");
 }

@@ -1,7 +1,7 @@
 {
 	"name": "@bpmnkit/landing",
 	"private": true,
-	"version": "0.0.57",
+	"version": "0.0.58",
 	"type": "module",
 	"scripts": {
 		"predev": "node ../../scripts/generate-plugins-doc.mjs && node ../../scripts/generate-ecosystem.mjs",
@@ -10,7 +10,7 @@
 		"build": "astro build",
 		"preview": "astro preview",
 		"deploy": "wrangler pages deploy dist --project-name=bpmn-sdk-landing",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "astro sync && tsc --noEmit",
 		"check": "biome check .",
 		"test": "vitest run"
 	},

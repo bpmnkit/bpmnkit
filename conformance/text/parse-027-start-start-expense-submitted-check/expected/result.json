@@ -33,6 +33,7 @@
             "type": "boundaryEvent"
           },
           {
+            "errorCode": "notice",
             "eventType": "error",
             "id": "notice",
             "name": "Failure notified",

@@ -53,6 +53,18 @@
       "processId": "proc",
       "severity": "info",
       "suggestion": ""
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "gw"
+      ],
+      "fixable": false,
+      "id": "zeebe/conditional-flow-source",
+      "message": "Conditional sequence flows are only supported at exclusive or inclusive gateway",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Remove the condition or route the flow through an exclusive or inclusive gateway."
     }
   ],
   "fixes": [
@@ -68,7 +80,7 @@
       "agentic": 0,
       "connector": 0,
       "data-flow": 2,
-      "deploy": 0,
+      "deploy": 1,
       "extract": 0,
       "feel": 0,
       "feel-syntax": 0,
@@ -78,10 +90,10 @@
       "task-reuse": 0
     },
     "bySeverity": {
-      "error": 1,
+      "error": 2,
       "info": 1,
       "warning": 2
     },
-    "total": 4
+    "total": 5
   }
 }

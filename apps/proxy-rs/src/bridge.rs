@@ -22,6 +22,14 @@ enum BridgeCmd {
         compact_json: String,
         reply: Reply<String>,
     },
+    FinalDiagram {
+        xml: String,
+        gate_json: String,
+        reply: Reply<String>,
+    },
+    McpDeployCheck {
+        reply: Reply<String>,
+    },
     McpInit {
         xml: Option<String>,
         reply: Reply<()>,
@@ -118,6 +126,21 @@ fn dispatch(ctx: &rquickjs::Ctx<'_>, cmd: BridgeCmd) {
             let result = js_set_json(ctx, "__a", &compact_json)
                 .and_then(|_| js_call_str(ctx, "Bridge.optimizeFindings(JSON.stringify(__a))"));
             let _ = reply.send(result);
+        }
+
+        BridgeCmd::FinalDiagram {
+            xml,
+            gate_json,
+            reply,
+        } => {
+            let result = js_set_opt_xml(ctx, "__a", &Some(xml))
+                .and_then(|_| js_set_opt_xml(ctx, "__b", &Some(gate_json)))
+                .and_then(|_| js_call_str(ctx, "Bridge.finalDiagram(__a, __b)"));
+            let _ = reply.send(result);
+        }
+
+        BridgeCmd::McpDeployCheck { reply } => {
+            let _ = reply.send(js_call_str(ctx, "Bridge.mcpDeployCheck()"));
         }
 
         BridgeCmd::McpInit { xml, reply } => {
@@ -246,6 +269,17 @@ impl CoreBridge {
         self.send(|reply| BridgeCmd::OptimizeFindings { compact_json, reply }).await
     }
 
+    /// The deploy gate on the diagram `/chat` returns: a JSON array of SSE events
+    /// (`xml`, `deployability`, `placeholders` or `error`), as the TS proxy writes them.
+    pub async fn final_diagram(&self, xml: String, gate_json: String) -> anyhow::Result<String> {
+        self.send(|reply| BridgeCmd::FinalDiagram {
+            xml,
+            gate_json,
+            reply,
+        })
+        .await
+    }
+
     // ── sync methods (used by MCP server on its own thread) ───────────────────
 
     fn send_sync<T>(&self, make_cmd: impl FnOnce(Reply<T>) -> BridgeCmd) -> anyhow::Result<T> {
@@ -267,6 +301,11 @@ impl CoreBridge {
 
     pub fn mcp_export_xml_sync(&self) -> anyhow::Result<String> {
         self.send_sync(|reply| BridgeCmd::McpExportXml { reply })
+    }
+
+    /// The deploy check line appended to a tool result that changed the diagram.
+    pub fn mcp_deploy_check_sync(&self) -> anyhow::Result<String> {
+        self.send_sync(|reply| BridgeCmd::McpDeployCheck { reply })
     }
 
     pub fn mcp_add_elements_sync(
@@ -339,5 +378,89 @@ impl CoreBridge {
 
     pub fn mcp_execute_code_sync(&self, code: String) -> anyhow::Result<String> {
         self.send_sync(|reply| BridgeCmd::McpExecuteCode { code, reply })
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::CoreBridge;
+    use serde_json::Value;
+
+    /// A service task with no job type: Zeebe refuses the deployment.
+    const REFUSED: &str = r#"<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="d" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s"><bpmn:outgoing>f</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:sequenceFlow id="f" sourceRef="s" targetRef="charge"/>
+    <bpmn:serviceTask id="charge"><bpmn:incoming>f</bpmn:incoming></bpmn:serviceTask>
+  </bpmn:process>
+</bpmn:definitions>"#;
+
+    fn events(json: &str) -> Vec<Value> {
+        serde_json::from_str(json).expect("a JSON array of events")
+    }
+
+    #[tokio::test]
+    async fn final_diagram_refuses_with_the_gate_message() {
+        let bridge = CoreBridge::new();
+        let out = events(
+            &bridge
+                .final_diagram(REFUSED.into(), "{}".into())
+                .await
+                .unwrap(),
+        );
+        assert_eq!(out.len(), 1);
+        assert_eq!(out[0]["type"], "error");
+        let message = out[0]["message"].as_str().unwrap();
+        assert!(
+            message.starts_with("Not deployable on Camunda "),
+            "{message}"
+        );
+        assert!(message.contains("- charge: "), "{message}");
+        assert!(
+            message.contains("(zeebe/service-task-definition)"),
+            "{message}"
+        );
+    }
+
+    #[tokio::test]
+    async fn final_diagram_fills_placeholders_or_returns_a_draft_when_asked() {
+        let bridge = CoreBridge::new();
+        let filled = events(
+            &bridge
+                .final_diagram(REFUSED.into(), r#"{"placeholders":true}"#.into())
+                .await
+                .unwrap(),
+        );
+        assert_eq!(filled[0]["type"], "xml");
+        assert!(filled[0]["xml"]
+            .as_str()
+            .unwrap()
+            .contains("placeholder-charge"));
+        assert_eq!(filled[1]["type"], "placeholders");
+
+        let draft = events(
+            &bridge
+                .final_diagram(REFUSED.into(), r#"{"validate":false}"#.into())
+                .await
+                .unwrap(),
+        );
+        assert_eq!(
+            draft[0],
+            serde_json::json!({ "type": "xml", "xml": REFUSED })
+        );
+        assert_eq!(draft[1]["type"], "deployability");
+    }
+
+    #[test]
+    fn mcp_deploy_check_reports_the_gate_lines() {
+        let bridge = CoreBridge::new();
+        bridge.mcp_init_sync(Some(REFUSED.into())).unwrap();
+        let check = bridge.mcp_deploy_check_sync().unwrap();
+        assert!(
+            check.starts_with("Deploy check: Not deployable on Camunda "),
+            "{check}"
+        );
+        assert!(check.contains("(zeebe/service-task-definition)"), "{check}");
     }
 }

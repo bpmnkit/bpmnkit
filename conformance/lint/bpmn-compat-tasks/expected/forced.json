@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 71,
+    "error": 74,
     "info": 11,
     "warning": 68
   },
@@ -1819,6 +1819,42 @@
       "processId": "tasks",
       "severity": "error",
       "suggestion": "Remove the condition, or route the flow through a gateway."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "flowNoCondition"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "eventGateway"
+      ],
+      "fixable": false,
+      "id": "zeebe/event-based-gateway-outgoing",
+      "message": "Event-based gateway must have at least 2 outgoing sequence flows.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Add a second outgoing flow to a catch event."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "eventGateway"
+      ],
+      "fixable": false,
+      "id": "zeebe/event-based-gateway-target",
+      "message": "Event-based gateway must not have an outgoing sequence flow to other elements than message/timer/signal/conditional intermediate catch events.",
+      "processId": "tasks",
+      "severity": "error",
+      "suggestion": "Route each flow to an intermediate catch event with one message, timer, signal or conditional definition."
     }
   ],
   "platform": {
@@ -1826,5 +1862,5 @@
     "name": "Camunda Cloud",
     "version": "8.6.0"
   },
-  "total": 150
+  "total": 153
 }

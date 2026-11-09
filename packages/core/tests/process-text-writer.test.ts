@@ -83,11 +83,13 @@ describe("writeProcessText", () => {
 		expect(writableName("Check [draft] | send\nnow")).toBe("Check (draft) / send now")
 	})
 
-	it("writes a sub-process as a fixed kind and an unreachable node on its own line", () => {
+	it("writes a sub-process as a fixed kind and leaves an event sub-process out", () => {
 		const xml = readFileSync(join(ROUNDTRIP, "06-events-and-containers.bpmn"), "utf8")
 		const { text } = writeProcessText(Bpmn.parse(xml))
 		expect(text).toContain("[sub Do the work]")
-		expect(text.split("\n")).toContain("on_signal[sub On signal]")
+		// compactify reads `subProcess triggeredByEvent` as an eventSubProcess, which the
+		// format cannot write (see the module comment); it used to come out as a plain `sub`
+		expect(text).not.toContain("On signal")
 	})
 
 	it("returns nothing for a document without a process", () => {

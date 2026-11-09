@@ -1,0 +1,3 @@
+{
+  "error": "Not deployable on Camunda 8.10: 1 error(s)\n- t2: Invalid timer date expression (Invalid date-time format '${dateTime().plusDays(1).toDate()}' for expression '${dateTime().plusDays(1).toDate()}'.) (zeebe/timer-expression)"
+}

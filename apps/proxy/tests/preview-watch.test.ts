@@ -21,19 +21,23 @@ describe("watchOutputFile", () => {
 	/** What the MCP server writes after a tool call adds one task. */
 	const xmlWith = (taskName: string): string =>
 		Bpmn.export(
-			expand({
-				id: "Definitions_1",
-				processes: [
-					{
-						id: "Process_1",
-						elements: [
-							{ id: "start", type: "startEvent", name: "Order Received" },
-							{ id: "t1", type: "serviceTask", name: taskName },
-						],
-						flows: [{ id: "f1", from: "start", to: "t1" }],
-					},
-				],
-			}),
+			expand(
+				{
+					id: "Definitions_1",
+					processes: [
+						{
+							id: "Process_1",
+							elements: [
+								{ id: "start", type: "startEvent", name: "Order Received" },
+								{ id: "t1", type: "serviceTask", name: taskName },
+							],
+							flows: [{ id: "f1", from: "start", to: "t1" }],
+						},
+					],
+				},
+				// As the MCP server grafts what a tool call adds: a fragment, ungated
+				{ validate: false },
+			),
 		)
 
 	beforeEach(() => {

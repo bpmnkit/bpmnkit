@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/call-activity-called-element",
+      "message": "Must have exactly one 'zeebe:calledElement' extension element",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Add a single zeebe:calledElement with the called process id."
+    }
+  ]
+}

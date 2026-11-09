@@ -1,0 +1,2 @@
+Not deployable on Camunda 8.10: 1 error(s)
+- F3: Must have a condition or be default flow (zeebe/exclusive-flow-condition)

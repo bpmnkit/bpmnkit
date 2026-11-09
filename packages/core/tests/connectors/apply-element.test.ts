@@ -306,6 +306,13 @@ describe("applyTemplateToElement — inbound connectors", () => {
 		)
 		expect(problems).toEqual([
 			expect.objectContaining({ key: "correlationKeyProcess", kind: "missing-required" }),
+			// Zeebe refuses the message without a key; the error on it belongs to "wait".
+			{
+				kind: "not-deployable",
+				message: expect.stringMatching(
+					/^Not deployable on Camunda 8\.10: Message_[\w-]+: Must have exactly one zeebe:subscription extension element \(zeebe\/message-subscription\)$/,
+				),
+			},
 		])
 		const wait = element(definitions, "wait")
 		expect(zeebeProperties(wait)["inbound.context"]).toBe("paid")

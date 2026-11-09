@@ -7,10 +7,9 @@
  */
 import { applyAutoLayout } from "../bpmn/auto-layout.js"
 import type { BpmnDefinitions } from "../bpmn/bpmn-model.js"
-import { Bpmn } from "../bpmn/index.js"
 import { optimize } from "../bpmn/optimize/index.js"
 import type { CompilePlanOptions, PlanProblem, SynthResult } from "./compile.js"
-import { compilePlan } from "./compile.js"
+import { compilePlan, gatePlan } from "./compile.js"
 import type { ProcessPlan } from "./types.js"
 
 /**
@@ -19,14 +18,16 @@ import type { ProcessPlan } from "./types.js"
  * are appended). `delta.steps[0]` must still be a `start` step — the merge
  * only uses `delta`'s flow elements and sequence flows, and drops the
  * delta's own start/end events when a same-id start/end already exists in
- * `existing`.
+ * `existing`. As for `compilePlan`, a merged model Zeebe would refuse returns
+ * no `xml`, with the reasons in `problems`.
  */
 export function mergePlan(
 	existing: BpmnDefinitions,
 	delta: ProcessPlan,
 	opts: CompilePlanOptions = {},
 ): SynthResult {
-	const deltaResult = compilePlan(delta, { ...opts, skipAutoFix: true })
+	// The delta alone need not deploy; the merged model is gated below.
+	const deltaResult = compilePlan(delta, { ...opts, skipAutoFix: true, validate: false })
 	if (!deltaResult.defs) return deltaResult
 
 	const targetProcess =
@@ -54,6 +55,12 @@ export function mergePlan(
 		(f) => !deltaElementIds.has(f.sourceRef) && !deltaElementIds.has(f.targetRef),
 	)
 	targetProcess.sequenceFlows.push(...deltaProcess.sequenceFlows)
+	// An untouched element can lose a flow above; a stale <incoming>/<outgoing> id does not deploy.
+	for (const el of targetProcess.flowElements) {
+		if (!("incoming" in el)) continue
+		el.incoming = targetProcess.sequenceFlows.filter((f) => f.targetRef === el.id).map((f) => f.id)
+		el.outgoing = targetProcess.sequenceFlows.filter((f) => f.sourceRef === el.id).map((f) => f.id)
+	}
 
 	// Pull in any new root error/message/signal/escalation definitions the delta introduced.
 	for (const err of deltaResult.defs.errors) {
@@ -87,5 +94,5 @@ export function mergePlan(
 		}
 	}
 
-	return { defs: laidOut, xml: Bpmn.export(laidOut), problems }
+	return gatePlan(laidOut, problems, opts)
 }

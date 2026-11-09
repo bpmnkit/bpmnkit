@@ -81,6 +81,18 @@
       "processId": "proc",
       "severity": "error",
       "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sub1"
+      ],
+      "fixable": false,
+      "id": "zeebe/sub-process-start-event",
+      "message": "Must have exactly one start event",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Give the sub-process exactly one start event."
     }
   ],
   "fixes": [],
@@ -89,7 +101,7 @@
       "agentic": 0,
       "connector": 0,
       "data-flow": 0,
-      "deploy": 1,
+      "deploy": 2,
       "extract": 0,
       "feel": 0,
       "feel-syntax": 0,
@@ -99,10 +111,10 @@
       "task-reuse": 0
     },
     "bySeverity": {
-      "error": 1,
+      "error": 2,
       "info": 3,
       "warning": 3
     },
-    "total": 7
+    "total": 8
   }
 }

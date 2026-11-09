@@ -112,7 +112,15 @@
           "unknownAttributes": {}
         },
         {
-          "extensionElements": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "send-order"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
           "id": "order",
           "incoming": [
             "Flow_bs_order"
@@ -221,7 +229,15 @@
           "unknownAttributes": {}
         },
         {
-          "extensionElements": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "send-invoice"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
           "id": "bill",
           "incoming": [
             "Flow_ship_bill"

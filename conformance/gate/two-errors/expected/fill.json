@@ -1,0 +1,17 @@
+{
+  "placeholders": [
+    {
+      "elementId": "charge",
+      "field": "jobType",
+      "value": "placeholder-charge",
+      "rule": "zeebe/service-task-definition"
+    },
+    {
+      "elementId": "notify",
+      "field": "jobType",
+      "value": "placeholder-notify",
+      "rule": "zeebe/send-task-implementation"
+    }
+  ],
+  "warnings": []
+}

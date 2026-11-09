@@ -14,6 +14,7 @@ pub mod elements;
 pub mod feel;
 pub mod lint;
 pub mod templates;
+pub mod zeebe;
 
 #[rustfmt::skip]
 mod generated {
@@ -24,6 +25,7 @@ mod generated {
     pub mod feel_builtins;
     pub mod lint_rules;
     pub mod zeebe_elements;
+    pub mod zeebe_rules;
 }
 
 #[cfg(test)]

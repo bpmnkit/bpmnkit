@@ -1,3 +1,3 @@
 s[start S] > eg[eventgw Wait]
-eg > m[catch:message Reply] > h[task Handle] > e[end E]
+eg > m[catch:message Reply | msg=m key=requestId] > h[task Handle] > e[end E]
 eg > t[catch:timer Too late | after=PT1H] > e2[end Timeout]

@@ -3,8 +3,113 @@ name: CI
 on:
   pull_request:
     branches: [main]
+  # Runs on main too so the Rust caches are saved there (PR caches are scoped to their PR,
+  # so only main's are shared); `save-if` keeps PR runs from writing their own.
+  push:
+    branches: [main]
 
 jobs:
+  # Fast, independent drift checks: fail in a few minutes instead of after the full build.
+  generated:
+    name: Generated files
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # spec/ is the single source for shared data; generated TS and Rust may not drift from it.
+      - name: spec-gen
+        run: node scripts/spec-gen.mjs --check
+
+      # The recording suites resolve @bpmnkit/feel and @bpmnkit/core through dist/; nothing
+      # else (the engine's wasm runner included) is needed to record.
+      - name: Build feel and core
+        run: pnpm turbo build --filter=@bpmnkit/feel --filter=@bpmnkit/core
+
+      - name: conformance-ts
+        run: |
+          pnpm conformance:record
+          git diff --exit-code conformance/
+
+  # Zeebe's own deploy-time validator (tools/zeebe-check) over every BPMN the conformance corpus
+  # records. The allowlist of known rejections may only shrink, which --base enforces.
+  zeebe-check:
+    name: Zeebe deployability
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # The shrink check reads the allowlist at the base branch via git show.
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+          cache-dependency-path: tools/zeebe-check/pom.xml
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Test the check's logic
+        run: node --test scripts/zeebe-check-lib.test.mjs
+
+      # ~110 MB of Zeebe jars; the stamp file inside makes the script skip the Maven step on a hit.
+      - name: Cache Zeebe dependencies
+        uses: actions/cache@v4
+        with:
+          path: tools/zeebe-check/lib
+          key: zeebe-check-lib-${{ hashFiles('tools/zeebe-check/pom.xml') }}
+
+      - name: Make sure the base ref exists
+        run: git fetch --no-tags origin "${BASE_REF}:refs/remotes/origin/${BASE_REF}"
+        env:
+          BASE_REF: ${{ github.base_ref || 'main' }}
+
+      - name: Zeebe validation
+        run: node scripts/zeebe-check.mjs --base "origin/${BASE_REF}"
+        env:
+          BASE_REF: ${{ github.base_ref || 'main' }}
+
+  # A published package whose src changed with no changeset is never versioned or released, so a
+  # dependent (the CLI) can import a symbol the npm release lacks. Runs on PRs only.
+  changeset-check:
+    name: Changeset check
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Every changed published package has a changeset
+        run: node scripts/changeset-check.mjs --base "origin/${BASE_REF}"
+        env:
+          BASE_REF: ${{ github.base_ref }}
+
   ci:
     name: CI
     runs-on: ubuntu-latest
@@ -24,32 +129,60 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # The wasm build is the slowest step and its output depends only on the Rust sources it
+      # compiles, so it is cached by their hash and rebuilt only when one changes. Engine tests
+      # always run against a wasm built from this commit's sources.
+      - name: Restore reebe-wasm
+        id: wasm-cache
+        uses: actions/cache@v4
+        with:
+          # wasm-pack also rewrites package.json (patched back below) and may emit snippets/.
+          path: |
+            apps/reebe-wasm/reebe_wasm*
+            apps/reebe-wasm/snippets
+            apps/reebe-wasm/package.json
+          # Everything the build reads: reebe (it include_str!s README and openapi.json), the
+          # crates it depends on by path, the lockfile, the version patch and the size gate (a
+          # cached wasm passed it when built).
+          key: reebe-wasm-v1-wasm-pack-0.15.0-${{ hashFiles('apps/reebe/**', 'crates/**', 'Cargo.toml', 'rust-toolchain*', 'apps/reebe-wasm/package.json', 'scripts/patch-wasm-pkg.mjs', 'scripts/check-wasm-size.mjs') }}
+
       - name: Add wasm32 target
+        if: steps.wasm-cache.outputs.cache-hit != 'true'
         run: rustup target add wasm32-unknown-unknown
 
       - name: Cache Rust build
+        if: steps.wasm-cache.outputs.cache-hit != 'true'
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: apps/reebe -> target
+          save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Install wasm-pack
+        if: steps.wasm-cache.outputs.cache-hit != 'true'
         # Direct download: jetli/wasm-pack-action renames /tmp -> ~/.cargo/bin, which
         # fails with EXDEV when they are on different filesystems. Pinned: v0.9.1's
         # wasm-opt rejects current rustc output.
         run: |
           mkdir -p "$HOME/.cargo/bin" "$RUNNER_TEMP/wasm-pack"
-          curl -fsSL https://github.com/rustwasm/wasm-pack/releases/download/v0.15.0/wasm-pack-v0.15.0-x86_64-unknown-linux-musl.tar.gz \
-            | tar xz -C "$RUNNER_TEMP/wasm-pack" --strip-components=1
-          install -m 755 "$RUNNER_TEMP/wasm-pack/wasm-pack" "$HOME/.cargo/bin/wasm-pack"
+          # GitHub release downloads sometimes 504 for minutes; build from crates.io then.
+          if curl -fsSL --retry 3 --retry-all-errors --retry-delay 5 -o "$RUNNER_TEMP/wasm-pack.tgz" \
+              https://github.com/rustwasm/wasm-pack/releases/download/v0.15.0/wasm-pack-v0.15.0-x86_64-unknown-linux-musl.tar.gz \
+            && tar xzf "$RUNNER_TEMP/wasm-pack.tgz" -C "$RUNNER_TEMP/wasm-pack" --strip-components=1; then
+            install -m 755 "$RUNNER_TEMP/wasm-pack/wasm-pack" "$HOME/.cargo/bin/wasm-pack"
+          else
+            cargo install wasm-pack --version 0.15.0 --locked
+          fi
           wasm-pack --version
 
       - name: Build reebe-wasm
+        if: steps.wasm-cache.outputs.cache-hit != 'true'
         env:
           CARGO_HTTP_MULTIPLEXING: false
         run: |
           WASM_VERSION=$(node -p "require('./apps/reebe-wasm/package.json').version")
-          wasm-pack build apps/reebe/crates/reebe-wasm --target web --scope bpmnkit --out-dir "$GITHUB_WORKSPACE/apps/reebe-wasm"
+          wasm-pack build apps/reebe/crates/reebe-wasm --target web --scope bpmnkit --out-dir "$GITHUB_WORKSPACE/apps/reebe-wasm" -- --locked
           node scripts/patch-wasm-pkg.mjs "$WASM_VERSION"
+          node scripts/check-wasm-size.mjs
 
       - name: Build
         run: pnpm build
@@ -84,17 +217,6 @@ jobs:
       - name: Check the public API surface
         run: pnpm check:api
 
-      - name: conformance-ts
-        run: |
-          pnpm conformance:record
-          git diff --exit-code conformance/
-
-      # spec/ is the single source for shared data; generated TS and Rust may not drift from it.
-      - name: spec-gen
-        run: |
-          pnpm spec:gen
-          git diff --exit-code spec/ crates/bpmnkit-spec packages/
-
   # The Rust crates: shared conformance cases plus the spec/ data crate.
   conformance-rs:
     name: Conformance (Rust)
@@ -105,15 +227,57 @@ jobs:
 
       - name: Cache Rust build
         uses: Swatinem/rust-cache@v2
+        with:
+          save-if: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Format
         run: cargo fmt --check
 
       - name: Clippy
-        run: cargo clippy --workspace --all-targets -- -D warnings
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
 
       - name: Test (conformance + spec data)
-        run: cargo test --workspace
+        run: cargo test --workspace --locked
+
+      # Benches are not tests, so nothing above builds them; this keeps them compiling. The
+      # release profile's fat LTO buys nothing for a compile check, so it is turned off here.
+      - name: Benches compile
+        env:
+          CARGO_PROFILE_RELEASE_LTO: "false"
+          CARGO_PROFILE_RELEASE_CODEGEN_UNITS: "16"
+        run: cargo bench --no-run --workspace --locked
 
       - name: Crate metadata (crates.io)
         run: node scripts/crates-publish.mjs --check
+
+      # The `bpmnkit` facade with no features and each feature alone, so a feature that only
+      # builds alongside the defaults fails here rather than for a user.
+      - name: Facade features
+        run: node scripts/crates-publish.mjs --check-features
+
+  # `rust-version` in Cargo.toml is a promise to users; build and test on exactly that toolchain.
+  # .cargo/config.toml makes the resolver pick dependency versions that support it.
+  msrv-rs:
+    name: MSRV (Rust)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install the MSRV toolchain
+        run: |
+          MSRV=$(sed -n 's/^rust-version = "\(.*\)"/\1/p' Cargo.toml)
+          rustup toolchain install "$MSRV" --profile minimal
+          echo "MSRV=$MSRV" >> "$GITHUB_ENV"
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: msrv
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Check
+        run: cargo +"$MSRV" check --workspace --all-targets --locked
+
+      - name: Test
+        run: cargo +"$MSRV" test --workspace --locked

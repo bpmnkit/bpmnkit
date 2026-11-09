@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/name-length",
+      "message": "Names must not be longer than the configured max-name-length of 255 characters.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Shorten the name to at most 255 characters."
+    }
+  ]
+}

@@ -1,18 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
   <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="Start_Process_1">
+      <bpmn:outgoing>Flow_Start_Process_1</bpmn:outgoing>
+    </bpmn:startEvent>
     <bpmn:subProcess id="sub" name="Handle Payment">
-      <bpmn:serviceTask id="inner" name="Charge Card"/>
+      <bpmn:incoming>Flow_Start_Process_1</bpmn:incoming>
+      <bpmn:startEvent id="Start_sub">
+        <bpmn:outgoing>Flow_Start_sub</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:serviceTask id="inner" name="Charge Card">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="inner"/>
+        </bpmn:extensionElements>
+        <bpmn:incoming>Flow_Start_sub</bpmn:incoming>
+      </bpmn:serviceTask>
+      <bpmn:sequenceFlow id="Flow_Start_sub" sourceRef="Start_sub" targetRef="inner"/>
     </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_Start_Process_1" sourceRef="Start_Process_1" targetRef="sub"/>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_Process_1">
     <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="Start_Process_1_di" bpmnElement="Start_Process_1">
+        <dc:Bounds x="0" y="100" width="36" height="36"/>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sub_di" bpmnElement="sub" isExpanded="true">
-        <dc:Bounds x="0" y="0" width="200" height="208"/>
+        <dc:Bounds x="136" y="0" width="296" height="208"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_sub_di" bpmnElement="Start_sub">
+        <dc:Bounds x="186" y="100" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="inner_di" bpmnElement="inner">
-        <dc:Bounds x="50" y="78" width="100" height="80"/>
+        <dc:Bounds x="282" y="78" width="100" height="80"/>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_Start_Process_1_di" bpmnElement="Flow_Start_Process_1">
+        <di:waypoint x="36" y="118"/>
+        <di:waypoint x="136" y="118"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Start_sub_di" bpmnElement="Flow_Start_sub">
+        <di:waypoint x="222" y="118"/>
+        <di:waypoint x="282" y="118"/>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

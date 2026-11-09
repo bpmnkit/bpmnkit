@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.8.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <bpmn:escalation id="placeholder-escalate" name="placeholder-escalate" escalationCode="placeholder-escalate"/>
+  <bpmn:error id="placeholder-fail" name="placeholder-fail" errorCode="placeholder-fail"/>
+  <bpmn:message id="m2" name="placeholder-m2">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=&quot;placeholder-m2&quot;"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="placeholder-reply" name="placeholder-reply">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=&quot;placeholder-reply&quot;"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:signal id="placeholder-broadcast" name="placeholder-broadcast"/>
+  <bpmn:process id="order" isExecutable="true">
+    <bpmn:startEvent id="start">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:serviceTask id="charge" name="Charge">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="placeholder-charge"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:scriptTask id="compute" name="Compute">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="placeholder-compute"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>f2</bpmn:incoming>
+      <bpmn:outgoing>f3</bpmn:outgoing>
+    </bpmn:scriptTask>
+    <bpmn:sendTask id="notify" name="Notify">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="placeholder-notify"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>f3</bpmn:incoming>
+      <bpmn:outgoing>f4</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:receiveTask id="await" name="Await" messageRef="m2">
+      <bpmn:incoming>f4</bpmn:incoming>
+      <bpmn:outgoing>f5</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:intermediateCatchEvent id="reply" name="Reply">
+      <bpmn:incoming>f5</bpmn:incoming>
+      <bpmn:outgoing>f6</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="reply_def" messageRef="placeholder-reply"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="wait" name="Wait">
+      <bpmn:incoming>f6</bpmn:incoming>
+      <bpmn:outgoing>f7</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="wait_def">
+        <bpmn:timeDuration>PT1H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateThrowEvent id="broadcast" name="Broadcast">
+      <bpmn:incoming>f7</bpmn:incoming>
+      <bpmn:outgoing>f8</bpmn:outgoing>
+      <bpmn:signalEventDefinition id="broadcast_def" signalRef="placeholder-broadcast"/>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateThrowEvent id="escalate" name="Escalate">
+      <bpmn:incoming>f8</bpmn:incoming>
+      <bpmn:outgoing>f9</bpmn:outgoing>
+      <bpmn:escalationEventDefinition id="escalate_def" escalationRef="placeholder-escalate"/>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:callActivity id="sub" name="Sub">
+      <bpmn:extensionElements>
+        <zeebe:calledElement processId="placeholder-sub"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>f9</bpmn:incoming>
+      <bpmn:outgoing>f10</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:businessRuleTask id="decide" name="Decide">
+      <bpmn:extensionElements>
+        <zeebe:calledDecision resultVariable="result" decisionId="placeholder-decide"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>f10</bpmn:incoming>
+      <bpmn:outgoing>f11</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:businessRuleTask id="rules" name="Rules">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="placeholder-rules"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>f11</bpmn:incoming>
+      <bpmn:outgoing>f12</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:exclusiveGateway id="ok" name="OK?" default="f_yes">
+      <bpmn:incoming>f12</bpmn:incoming>
+      <bpmn:outgoing>f_no</bpmn:outgoing>
+      <bpmn:outgoing>f_yes</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="fail" name="Fail">
+      <bpmn:incoming>f_no</bpmn:incoming>
+      <bpmn:errorEventDefinition id="fail_def" errorRef="placeholder-fail"/>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="done" name="Done">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="placeholder-done"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>f_yes</bpmn:incoming>
+      <bpmn:messageEventDefinition id="done_def"/>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="charge"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="charge" targetRef="compute"/>
+    <bpmn:sequenceFlow id="f3" sourceRef="compute" targetRef="notify"/>
+    <bpmn:sequenceFlow id="f4" sourceRef="notify" targetRef="await"/>
+    <bpmn:sequenceFlow id="f5" sourceRef="await" targetRef="reply"/>
+    <bpmn:sequenceFlow id="f6" sourceRef="reply" targetRef="wait"/>
+    <bpmn:sequenceFlow id="f7" sourceRef="wait" targetRef="broadcast"/>
+    <bpmn:sequenceFlow id="f8" sourceRef="broadcast" targetRef="escalate"/>
+    <bpmn:sequenceFlow id="f9" sourceRef="escalate" targetRef="sub"/>
+    <bpmn:sequenceFlow id="f10" sourceRef="sub" targetRef="decide"/>
+    <bpmn:sequenceFlow id="f11" sourceRef="decide" targetRef="rules"/>
+    <bpmn:sequenceFlow id="f12" sourceRef="rules" targetRef="ok"/>
+    <bpmn:sequenceFlow id="f_no" sourceRef="ok" targetRef="fail">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f_yes" sourceRef="ok" targetRef="done"/>
+  </bpmn:process>
+</bpmn:definitions>
+

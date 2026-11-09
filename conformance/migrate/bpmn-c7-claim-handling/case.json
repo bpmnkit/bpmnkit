@@ -9,6 +9,22 @@
     },
     "to-c7-roundtrip": {
       "direction": "8to7"
+    },
+    "placeholders": {
+      "options": {
+        "placeholders": true
+      }
+    },
+    "camunda-version": {
+      "options": {
+        "camundaVersion": "8.6"
+      }
+    },
+    "placeholders-8-6": {
+      "options": {
+        "placeholders": true,
+        "camundaVersion": "8.6"
+      }
     }
   }
 }

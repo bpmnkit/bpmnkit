@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "a"
+      ],
+      "fixable": false,
+      "id": "zeebe/ad-hoc-agent-completion-condition",
+      "message": "Must not define completionCondition in combination with zeebe:taskDefinition.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Remove the completion condition or the task definition."
+    }
+  ]
+}

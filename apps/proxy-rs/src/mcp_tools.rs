@@ -258,8 +258,28 @@ pub fn call_tool(
         _ => Err(anyhow::anyhow!("Unknown tool: {name}")),
     };
 
+    // Every tool but get_diagram changes the diagram: the model sees what Zeebe would
+    // refuse while it can still fix it (the TS MCP server's `MUTATING_TOOLS`). A content
+    // item of its own, so the tool's own result stays as it was.
+    let check = match &result {
+        Ok(_) if name != "get_diagram" => match bridge.mcp_deploy_check_sync() {
+            Ok(check) => Some(check),
+            Err(e) => {
+                eprintln!("[mcp] deploy check failed: {e}");
+                None
+            }
+        },
+        _ => None,
+    };
+
     match result {
-        Ok(text) => json!({ "content": [{ "type": "text", "text": text }], "isError": false }),
+        Ok(text) => {
+            let mut content = vec![json!({ "type": "text", "text": text })];
+            if let Some(check) = check {
+                content.push(json!({ "type": "text", "text": check }));
+            }
+            json!({ "content": content, "isError": false })
+        }
         Err(e) => json!({ "content": [{ "type": "text", "text": e.to_string() }], "isError": true }),
     }
 }

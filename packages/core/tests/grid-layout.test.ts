@@ -1239,7 +1239,8 @@ describe("DI completeness", () => {
 				)
 				.exclusiveGateway("merge")
 				.endEvent("end", { name: "Done" })
-				.build()
+				// Layout fixture, not a deployable model.
+				.build({ validate: false })
 			expect(checkDiCompleteness(defs)).toEqual({ missingShapes: [], missingEdges: [] })
 		})
 
@@ -1267,7 +1268,8 @@ describe("DI completeness", () => {
 					})
 				})
 				.endEvent("e")
-				.build()
+				// Layout fixture, not a deployable model.
+				.build({ validate: false })
 			expect(checkDiCompleteness(defs)).toEqual({ missingShapes: [], missingEdges: [] })
 		})
 
@@ -1283,7 +1285,8 @@ describe("DI completeness", () => {
 						.endEvent("outer-e")
 				})
 				.endEvent("e")
-				.build()
+				// Layout fixture, not a deployable model.
+				.build({ validate: false })
 			expect(checkDiCompleteness(defs)).toEqual({ missingShapes: [], missingEdges: [] })
 		})
 
@@ -1357,7 +1360,8 @@ describe("Auto-layout determinism", () => {
 			)
 			.textAnnotation("Needs review")
 			.endEvent("e")
-			.build()
+			// Layout fixture, not a deployable model.
+			.build({ validate: false })
 
 		const result1 = applyAutoLayout(defs)
 		const result2 = applyAutoLayout(defs)

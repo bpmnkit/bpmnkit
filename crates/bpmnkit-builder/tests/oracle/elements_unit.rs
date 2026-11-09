@@ -416,6 +416,7 @@ fn join_gateways_are_inferred_like_ts() {
         "C2",
         Some(&IntermediateCatchEventOptions {
             message_name: Some("m".to_owned()),
+            correlation_key: Some("=k".to_owned()),
             ..IntermediateCatchEventOptions::default()
         }),
         &mut shared,
@@ -440,9 +441,15 @@ fn join_gateways_are_inferred_like_ts() {
     flows[0].name = Some("a".to_owned());
     flows[2].name = Some("b".to_owned());
     finalize_scope(&mut elements, &mut flows, &mut shared).expect("finalize");
+    // The build hoists C2's subscription onto its message, so the expected process has none.
+    let hoisted = hoist_message_subscriptions(BpmnDefinitions {
+        messages: shared.messages.clone(),
+        processes: vec![process_of("j3", elements, flows, vec![])],
+        ..BpmnDefinitions::default()
+    });
     same(
         "event based",
-        &process_of("j3", elements, flows, vec![]),
+        &hoisted.processes[0],
         &parse::<BpmnProcess>(&nested.event_based),
     );
 }

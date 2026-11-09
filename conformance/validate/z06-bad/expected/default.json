@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        ""
+      ],
+      "fixable": false,
+      "id": "zeebe/xsd-required-name",
+      "message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=5: cvc-complex-type.4: Attribute 'name' must appear on element 'bpmn:linkEventDefinition'.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Add the attribute the BPMN schema requires."
+    }
+  ]
+}

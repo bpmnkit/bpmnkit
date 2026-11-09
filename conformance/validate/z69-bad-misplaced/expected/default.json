@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Node"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-throw-implementation",
+      "message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Add a zeebe:publishMessage to the message event definition, or a zeebe:taskDefinition to the event."
+    }
+  ]
+}

@@ -29,7 +29,9 @@ describe("continueProcess — the untouched remainder", () => {
 		it(`changes nothing when nothing is built — ${file}`, () => {
 			const before = fixture(file)
 			for (const process of before.processes) {
-				const after = Bpmn.continueProcess(before, process.id).build()
+				// Pins the round trip; some corpus files are not deployable (01-root-elements has a
+				// definitions-level documentation the BPMN XSD forbids).
+				const after = Bpmn.continueProcess(before, process.id).build({ validate: false })
 				expect(diffSemantics(before, after), `${file} / ${process.id}`).toEqual({
 					added: [],
 					removed: [],
@@ -146,8 +148,8 @@ describe("continueProcess — insertAfter", () => {
 		const forked = Bpmn.createProcess("p")
 			.startEvent("s")
 			.exclusiveGateway("g")
-			.branch("left", (b) => b.serviceTask("l", { taskType: "l" }))
-			.branch("right", (b) => b.serviceTask("r", { taskType: "r" }))
+			.branch("left", (b) => b.condition("=left").serviceTask("l", { taskType: "l" }))
+			.branch("right", (b) => b.defaultFlow().serviceTask("r", { taskType: "r" }))
 			.build()
 		expect(() => Bpmn.continueProcess(forked, "p").insertAfter("g")).toThrow(
 			/outgoing sequence flows, so "after" is ambiguous/,
@@ -235,7 +237,8 @@ describe("continueProcess — refusals and reuse", () => {
 				messageName: existing?.name as string,
 				correlationKey: "= id",
 			})
-			.build()
+			// 01-root-elements has a definitions-level documentation the BPMN XSD forbids.
+			.build({ validate: false })
 		expect(after.messages.filter((m) => m.name === existing?.name)).toHaveLength(1)
 	})
 

@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "M"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-subscription",
+      "message": "Must have exactly one zeebe:subscription extension element",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Add one zeebe:subscription with a correlationKey to the message."
+    }
+  ]
+}

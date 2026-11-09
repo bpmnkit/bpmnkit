@@ -98,7 +98,8 @@ export function storedBody(source: string, defs: BpmnDefinitions): string {
 		return exportPreserving(source, defs)
 	} catch {
 		// A source the splicer cannot work with must not cost the edit itself.
-		return Bpmn.export(defs)
+		// The user's own file, shown or written back as it is, not refused for deploy errors.
+		return Bpmn.export(defs, { validate: false })
 	}
 }
 
@@ -118,7 +119,8 @@ export async function docFromXml(
 	}
 	// Re-serialise rather than hashing the input: what is compared has to be what
 	// the next op will produce, and a parse is not byte-preserving.
-	const canonical = Bpmn.export(defs)
+	// The user's own file, shown or written back as it is, not refused for deploy errors.
+	const canonical = Bpmn.export(defs, { validate: false })
 	return { filename, version, xml: canonical, hash: await sha256Hex(canonical), defs }
 }
 
@@ -181,7 +183,8 @@ export async function advance(doc: RoomDoc, op: EditorOp): Promise<ApplyResult> 
 	const problem = checkIntegrity(next)
 	if (problem) return { ok: false, reason: "integrity", problem }
 
-	const xml = Bpmn.export(next)
+	// The user's own file, shown or written back as it is, not refused for deploy errors.
+	const xml = Bpmn.export(next, { validate: false })
 	// Checked on the edit rather than only on the save. A document past the cap is
 	// one D1 will refuse, and a room that discovered that thirty seconds later
 	// would have nothing useful to say about which change caused it — where here

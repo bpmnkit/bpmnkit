@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it } from "vitest"
 import { Bpmn, ValidationError, optimize, resetIdCounter } from "../src/index.js"
 
+// Builds and exports here check what the builder and serializer write, not whether Zeebe
+// would deploy the model (a fragment, an element Zeebe lacks, a round trip), so they pass
+// `validate: false` to skip the gate. The gate has its own tests: builder-gate.test.ts and
+// the conformance/builder cases.
+
 /** Extracts the first process from BpmnDefinitions with a runtime assertion. */
 function firstProcess(defs: ReturnType<ReturnType<typeof Bpmn.createProcess>["build"]>) {
 	const p = defs.processes[0]
@@ -87,12 +92,14 @@ describe("BpmnProcessBuilder", () => {
 		})
 
 		it("sets process as executable by default", () => {
-			const process = firstProcess(Bpmn.createProcess("proc").build())
+			const process = firstProcess(Bpmn.createProcess("proc").build({ validate: false }))
 			expect(process.isExecutable).toBe(true)
 		})
 
 		it("allows setting executable to false", () => {
-			const process = firstProcess(Bpmn.createProcess("proc").executable(false).build())
+			const process = firstProcess(
+				Bpmn.createProcess("proc").executable(false).build({ validate: false }),
+			)
 			expect(process.isExecutable).toBe(false)
 		})
 
@@ -116,7 +123,8 @@ describe("BpmnProcessBuilder", () => {
 						taskType: "my-worker",
 						retries: "5",
 					})
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const el = defined(process.flowElements.find((n) => n.id === "st1"))
@@ -135,7 +143,8 @@ describe("BpmnProcessBuilder", () => {
 						taskType: "worker",
 						taskHeaders: { key1: "val1", key2: "val2" },
 					})
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const el = defined(process.flowElements.find((n) => n.id === "st1"))
@@ -147,7 +156,9 @@ describe("BpmnProcessBuilder", () => {
 
 		it("creates a user task with form reference", () => {
 			const process = firstProcess(
-				Bpmn.createProcess("proc").userTask("ut1", { name: "Review", formId: "form-123" }).build(),
+				Bpmn.createProcess("proc")
+					.userTask("ut1", { name: "Review", formId: "form-123" })
+					.build({ validate: false }),
 			)
 
 			const el = defined(process.flowElements.find((n) => n.id === "ut1"))
@@ -160,7 +171,9 @@ describe("BpmnProcessBuilder", () => {
 
 		it("creates a zeebe user task with zeebeUserTask flag", () => {
 			const process = firstProcess(
-				Bpmn.createProcess("proc").userTask("ut2", { name: "Review", zeebeUserTask: true }).build(),
+				Bpmn.createProcess("proc")
+					.userTask("ut2", { name: "Review", zeebeUserTask: true })
+					.build({ validate: false }),
 			)
 
 			const el = defined(process.flowElements.find((n) => n.id === "ut2"))
@@ -173,7 +186,8 @@ describe("BpmnProcessBuilder", () => {
 			const process = firstProcess(
 				Bpmn.createProcess("proc")
 					.userTask("ut3", { name: "Review", zeebeUserTask: true, formId: "form-456" })
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const el = defined(process.flowElements.find((n) => n.id === "ut3"))
@@ -195,7 +209,8 @@ describe("BpmnProcessBuilder", () => {
 						expression: "=x + 1",
 						resultVariable: "result",
 					})
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const el = defined(process.flowElements.find((n) => n.id === "sc1"))
@@ -214,7 +229,8 @@ describe("BpmnProcessBuilder", () => {
 						name: "Sub Flow",
 						processId: "child-process",
 					})
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const el = defined(process.flowElements.find((n) => n.id === "ca1"))
@@ -245,7 +261,8 @@ describe("BpmnProcessBuilder", () => {
 					.startEvent("s")
 					.intermediateCatchEvent("ice1", { name: "Wait" })
 					.endEvent("e")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const el = defined(process.flowElements.find((n) => n.id === "ice1"))
@@ -261,7 +278,9 @@ describe("BpmnProcessBuilder", () => {
 	describe("element types — aspirational", () => {
 		it("creates a send task", () => {
 			const process = firstProcess(
-				Bpmn.createProcess("proc").sendTask("send1", { name: "Send Message" }).build(),
+				Bpmn.createProcess("proc")
+					.sendTask("send1", { name: "Send Message" })
+					.build({ validate: false }),
 			)
 
 			const el = defined(process.flowElements.find((n) => n.id === "send1"))
@@ -271,7 +290,9 @@ describe("BpmnProcessBuilder", () => {
 
 		it("creates a receive task", () => {
 			const process = firstProcess(
-				Bpmn.createProcess("proc").receiveTask("recv1", { name: "Wait for Message" }).build(),
+				Bpmn.createProcess("proc")
+					.receiveTask("recv1", { name: "Wait for Message" })
+					.build({ validate: false }),
 			)
 
 			const el = defined(process.flowElements.find((n) => n.id === "recv1"))
@@ -282,7 +303,7 @@ describe("BpmnProcessBuilder", () => {
 		it("receiveTask with messageName emits root bpmn:message and sets messageRef on task", () => {
 			const defs = Bpmn.createProcess("proc")
 				.startEvent("s")
-				.receiveTask("rt", { name: "Await ping", messageName: "PingMsg" })
+				.receiveTask("rt", { name: "Await ping", messageName: "PingMsg", correlationKey: "=k" })
 				.endEvent("e")
 				.build()
 
@@ -323,7 +344,8 @@ describe("BpmnProcessBuilder", () => {
 				.startEvent("s")
 				.sendTask("st", { name: "Send ping", messageName: "PingMsg" })
 				.endEvent("e")
-				.build()
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false })
 
 			expect(defs.messages).toHaveLength(1)
 			const rootMsg = defs.messages[0]
@@ -339,7 +361,8 @@ describe("BpmnProcessBuilder", () => {
 				.startEvent("s")
 				.receiveTask("rt", { name: "Bare receive" })
 				.endEvent("e")
-				.build()
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false })
 
 			expect(defs.messages).toHaveLength(0)
 			const el = defined(defs.processes[0]?.flowElements.find((n) => n.id === "rt"))
@@ -350,7 +373,7 @@ describe("BpmnProcessBuilder", () => {
 		it("messageName is de-duplicated across receiveTask and message start event", () => {
 			const defs = Bpmn.createProcess("proc")
 				.startEvent("s", { messageName: "SharedMsg" })
-				.receiveTask("rt", { name: "Await", messageName: "SharedMsg" })
+				.receiveTask("rt", { name: "Await", messageName: "SharedMsg", correlationKey: "=k" })
 				.endEvent("e")
 				.build()
 
@@ -377,11 +400,14 @@ describe("BpmnProcessBuilder", () => {
 				.startEvent("s")
 				.exclusiveGateway("gw")
 				.branch("A", (b) =>
-					b.receiveTask("rt", { name: "Wait", messageName: "BranchMsg" }).connectTo("e"),
+					b
+						.receiveTask("rt", { name: "Wait", messageName: "BranchMsg", correlationKey: "=k" })
+						.connectTo("e"),
 				)
 				.branch("B", (b) => b.endEvent("e2"))
 				.endEvent("e")
-				.build()
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false })
 
 			expect(defs.messages).toHaveLength(1)
 			const rootMsg = defs.messages[0]
@@ -397,7 +423,7 @@ describe("BpmnProcessBuilder", () => {
 				.startEvent("s")
 				.subProcess("sub", (b) => {
 					b.startEvent("sub-s")
-						.receiveTask("rt", { name: "Await ping", messageName: "SubMsg" })
+						.receiveTask("rt", { name: "Await ping", messageName: "SubMsg", correlationKey: "=k" })
 						.endEvent("sub-e")
 				})
 				.endEvent("e")
@@ -417,7 +443,7 @@ describe("BpmnProcessBuilder", () => {
 		it("receiveTask round-trips messageRef through export → parse", () => {
 			const defs = Bpmn.createProcess("proc")
 				.startEvent("s")
-				.receiveTask("rt", { name: "Await ping", messageName: "PingMsg" })
+				.receiveTask("rt", { name: "Await ping", messageName: "PingMsg", correlationKey: "=k" })
 				.endEvent("e")
 				.build()
 
@@ -435,7 +461,7 @@ describe("BpmnProcessBuilder", () => {
 
 		it("creates an abstract task with no extension elements", () => {
 			const process = firstProcess(
-				Bpmn.createProcess("proc").task("t1", { name: "Phase 1" }).build(),
+				Bpmn.createProcess("proc").task("t1", { name: "Phase 1" }).build({ validate: false }),
 			)
 
 			const el = defined(process.flowElements.find((n) => n.id === "t1"))
@@ -445,7 +471,7 @@ describe("BpmnProcessBuilder", () => {
 		})
 
 		it("creates an abstract task with no options", () => {
-			const process = firstProcess(Bpmn.createProcess("proc").task("t2").build())
+			const process = firstProcess(Bpmn.createProcess("proc").task("t2").build({ validate: false }))
 
 			const el = defined(process.flowElements.find((n) => n.id === "t2"))
 			expect(el.type).toBe("task")
@@ -479,7 +505,8 @@ describe("BpmnProcessBuilder", () => {
 					.branch("A", (b) => b.task("t-a", { name: "Path A" }).connectTo("merge"))
 					.branch("B", (b) => b.task("t-b", { name: "Path B" }).connectTo("merge"))
 					.exclusiveGateway("merge")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const ta = defined(process.flowElements.find((n) => n.id === "t-a"))
@@ -496,7 +523,8 @@ describe("BpmnProcessBuilder", () => {
 						decisionId: "Decision_1",
 						resultVariable: "outcome",
 					})
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const el = defined(process.flowElements.find((n) => n.id === "brt1"))
@@ -525,7 +553,8 @@ describe("BpmnProcessBuilder", () => {
 					.branch("No", (b) => b.serviceTask("t-no", { taskType: "no" }).connectTo("merge"))
 					.exclusiveGateway("merge", { name: "Merge" })
 					.endEvent("e")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			// 6 elements: s, gw1, t-yes, t-no, merge, e
@@ -577,7 +606,9 @@ describe("BpmnProcessBuilder", () => {
 				)
 			}
 
-			const process = firstProcess(builder.exclusiveGateway("gw-merge").endEvent("e").build())
+			const process = firstProcess(
+				builder.exclusiveGateway("gw-merge").endEvent("e").build({ validate: false }),
+			)
 
 			// 2 gateways + 9 call activities + start + end = 13
 			expect(process.flowElements).toHaveLength(13)
@@ -609,7 +640,8 @@ describe("BpmnProcessBuilder", () => {
 					.branch("B", (b) => b.serviceTask("b1", { taskType: "b" }).connectTo("merge"))
 					.exclusiveGateway("merge")
 					.endEvent("e")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			// Verify the structure is valid
@@ -702,7 +734,8 @@ describe("BpmnProcessBuilder", () => {
 					.branch("B", (b) => b.serviceTask("b", { taskType: "b" }).connectTo("ig-merge"))
 					.inclusiveGateway("ig-merge")
 					.endEvent("e")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const ig = defined(process.flowElements.find((n) => n.id === "ig1"))
@@ -724,7 +757,8 @@ describe("BpmnProcessBuilder", () => {
 					)
 					.serviceTask("after", { taskType: "continue" })
 					.endEvent("e")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const ebg = defined(process.flowElements.find((n) => n.id === "ebg1"))
@@ -749,7 +783,8 @@ describe("BpmnProcessBuilder", () => {
 					)
 					.branch("done", (b) => b.connectTo("end"))
 					.endEvent("end")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			// Verify loop flow: retry-task → check
@@ -772,7 +807,8 @@ describe("BpmnProcessBuilder", () => {
 					.branch("invalid", (b) => b.serviceTask("fix", { taskType: "fix" }).connectTo("process"))
 					.branch("valid", (b) => b.connectTo("done"))
 					.endEvent("done")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const loopFlow = process.sequenceFlows.find(
@@ -806,7 +842,8 @@ describe("BpmnProcessBuilder", () => {
 						{ name: "Review Steps" },
 					)
 					.endEvent("e")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const adhoc = defined(process.flowElements.find((n) => n.id === "adhoc1"))
@@ -874,7 +911,8 @@ describe("BpmnProcessBuilder", () => {
 							},
 						},
 					)
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const adhoc = defined(process.flowElements.find((n) => n.id === "seq-mi"))
@@ -894,7 +932,8 @@ describe("BpmnProcessBuilder", () => {
 							.endEvent("sub-end")
 					})
 					.endEvent("e")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const adhoc = defined(process.flowElements.find((n) => n.id === "adhoc1"))
@@ -994,7 +1033,8 @@ describe("BpmnProcessBuilder", () => {
 						})
 					})
 					.endEvent("e")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const outer = defined(process.flowElements.find((n) => n.id === "outer"))
@@ -1075,7 +1115,8 @@ describe("BpmnProcessBuilder", () => {
 							},
 						},
 					)
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const sub = defined(process.flowElements.find((n) => n.id === "sub-mi"))
@@ -1090,7 +1131,8 @@ describe("BpmnProcessBuilder", () => {
 					.subProcess("sub1", { name: "Embedded Sub" }, (sub) => {
 						sub.startEvent("sub-s").serviceTask("sub-t", { taskType: "inner" }).endEvent("sub-e")
 					})
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const sub = defined(process.flowElements.find((n) => n.id === "sub1"))
@@ -1123,7 +1165,8 @@ describe("BpmnProcessBuilder", () => {
 						{ name: "Error Handler" },
 					)
 					.endEvent("e")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const evtSub = defined(process.flowElements.find((n) => n.id === "evtsub1"))
@@ -1188,7 +1231,9 @@ describe("BpmnProcessBuilder", () => {
 							.startEvent("t-start", { timerDuration: "PT1H", isInterrupting: false })
 							.endEvent("t-end")
 					})
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
+				{ validate: false },
 			)
 
 			expect(xml).toContain('isInterrupting="false"')
@@ -1200,7 +1245,9 @@ describe("BpmnProcessBuilder", () => {
 					.eventSubProcess("esp", (sub) => {
 						sub.startEvent("t-start", { timerDuration: "PT1H" }).endEvent("t-end")
 					})
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
+				{ validate: false },
 			)
 
 			expect(xml).not.toContain("isInterrupting")
@@ -1233,7 +1280,8 @@ describe("BpmnProcessBuilder", () => {
 						sub.startEvent("esp-start", { timerDuration: "PT1H" }).endEvent("esp-end")
 					})
 					.endEvent("e")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			// both branch ends connect to "merge", not to "esp"
@@ -1257,7 +1305,8 @@ describe("BpmnProcessBuilder", () => {
 							.endEvent("err-end")
 					})
 					.endEvent("e")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const evtSub = defined(process.flowElements.find((n) => n.id === "evtsub1"))
@@ -1366,7 +1415,8 @@ describe("BpmnProcessBuilder", () => {
 					.branch("D", (b) => b.serviceTask("d", { taskType: "d" }).connectTo("gw2-merge"))
 					.exclusiveGateway("gw2-merge")
 					.endEvent("e")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			// s, gw1, a, b, gw1-merge, gw2, c, d, gw2-merge, e = 10
@@ -1388,7 +1438,8 @@ describe("BpmnProcessBuilder", () => {
 					.branch("short-path", (b) => b.serviceTask("t4", { taskType: "skip" }).connectTo("merge"))
 					.exclusiveGateway("merge")
 					.endEvent("e")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			// Verify long path has sequential flows
@@ -1550,7 +1601,8 @@ describe("BpmnProcessBuilder", () => {
 							.connectTo("end"),
 					)
 					.endEvent("end")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const sub = defined(process.flowElements.find((n) => n.id === "sub-mi"))
@@ -1602,7 +1654,8 @@ describe("BpmnProcessBuilder", () => {
 					.addStartEvent("s2")
 					.serviceTask("t2", { taskType: "b" })
 					.endEvent("e2")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			expect(process.flowElements).toHaveLength(6)
@@ -1697,7 +1750,8 @@ describe("BpmnProcessBuilder", () => {
 						timerDuration: "PT1H",
 					})
 					.endEvent("timeout-end")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const boundary = defined(process.flowElements.find((n) => n.id === "timer-boundary"))
@@ -1714,7 +1768,8 @@ describe("BpmnProcessBuilder", () => {
 					.serviceTask("task1", { taskType: "slow" })
 					.boundaryEvent("timer-boundary", "task1", { timerDuration: "PT1H" })
 					.endEvent("timeout-end")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const boundary = defined(process.flowElements.find((n) => n.id === "timer-boundary"))
@@ -1753,7 +1808,8 @@ describe("BpmnProcessBuilder", () => {
 							.boundaryEvent("reminder", "wait", { timerDuration: "P7D" })
 							.endEvent("escalated")
 					})
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const boundary = defined(process.flowElements.find((n) => n.id === "reminder"))
@@ -1769,7 +1825,9 @@ describe("BpmnProcessBuilder", () => {
 
 	describe("version tag", () => {
 		it("sets a version tag on the process", () => {
-			const process = firstProcess(Bpmn.createProcess("proc").versionTag("1.0.0").build())
+			const process = firstProcess(
+				Bpmn.createProcess("proc").versionTag("1.0.0").build({ validate: false }),
+			)
 
 			const versionExt = defined(
 				process.extensionElements.find((e) => e.name === "zeebe:versionTag"),
@@ -1841,7 +1899,8 @@ describe("BpmnProcessBuilder", () => {
 					.startEvent("s")
 					.intermediateThrowEvent("msg", { messageName: "notify" })
 					.endEvent("e")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const ite = defined(process.flowElements.find((n) => n.id === "msg"))
@@ -1887,7 +1946,8 @@ describe("BpmnProcessBuilder", () => {
 						modelerTemplateVersion: "2",
 						modelerTemplateIcon: "data:image/svg+xml;base64,abc",
 					})
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const el = defined(process.flowElements.find((n) => n.id === "st1"))
@@ -1922,7 +1982,8 @@ describe("BpmnProcessBuilder", () => {
 							},
 						},
 					)
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const adhoc = defined(process.flowElements.find((n) => n.id === "adhoc-lc"))
@@ -2012,7 +2073,8 @@ describe("BpmnProcessBuilder", () => {
 					.startEvent("s")
 					.intermediateCatchEvent("ice", { timerCycle: "R5/PT30M" })
 					.endEvent("e")
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const ice = defined(process.flowElements.find((n) => n.id === "ice"))
@@ -2090,7 +2152,8 @@ describe("BpmnProcessBuilder", () => {
 				.startEvent("s")
 				.intermediateThrowEvent("msg", { messageName: "order-placed" })
 				.endEvent("e")
-				.build()
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false })
 
 			expect(defs.messages).toHaveLength(1)
 			const rootMsg = defs.messages[0]
@@ -2176,7 +2239,7 @@ describe("BpmnProcessBuilder", () => {
 		it("intermediateCatchEvent messageName emits root message and sets messageRef to its ID", () => {
 			const defs = Bpmn.createProcess("proc")
 				.startEvent("s")
-				.intermediateCatchEvent("catch", { messageName: "PaymentConfirmed" })
+				.intermediateCatchEvent("catch", { messageName: "PaymentConfirmed", correlationKey: "=k" })
 				.endEvent("e")
 				.build()
 
@@ -2216,7 +2279,7 @@ describe("BpmnProcessBuilder", () => {
 			const defs = Bpmn.createProcess("proc")
 				.startEvent("s")
 				.serviceTask("task", { name: "T", taskType: "t" })
-				.boundaryEvent("bnd", { attachedTo: "task", messageName: "Retry" })
+				.boundaryEvent("bnd", { attachedTo: "task", messageName: "Retry", correlationKey: "=k" })
 				.endEvent("e")
 				.build()
 
@@ -2280,8 +2343,8 @@ describe("BpmnProcessBuilder", () => {
 		it("de-duplicates messages: two events with same messageName share one root", () => {
 			const defs = Bpmn.createProcess("proc")
 				.startEvent("s")
-				.intermediateCatchEvent("c1", { messageName: "Shared" })
-				.intermediateCatchEvent("c2", { messageName: "Shared" })
+				.intermediateCatchEvent("c1", { messageName: "Shared", correlationKey: "=k" })
+				.intermediateCatchEvent("c2", { messageName: "Shared", correlationKey: "=k" })
 				.endEvent("e")
 				.build()
 
@@ -2331,7 +2394,7 @@ describe("BpmnProcessBuilder", () => {
 			const defs = Bpmn.createProcess("proc")
 				.startEvent("s")
 				.intermediateThrowEvent("sig-throw", { signalName: "Sig1" })
-				.intermediateCatchEvent("msg-catch", { messageName: "Msg1" })
+				.intermediateCatchEvent("msg-catch", { messageName: "Msg1", correlationKey: "=k" })
 				.intermediateThrowEvent("esc-throw", { escalationCode: "ESC_1" })
 				.endEvent("e")
 				.build()
@@ -2417,7 +2480,8 @@ describe("BpmnProcessBuilder", () => {
 				.branch("no", (b) => b.connectTo("end"))
 				.exclusiveGateway("end")
 				.endEvent("e")
-				.build()
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false })
 
 			expect(defs.signals).toHaveLength(1)
 			const rootSig = defs.signals[0]
@@ -2442,7 +2506,8 @@ describe("BpmnProcessBuilder", () => {
 				.exclusiveGateway("end")
 				.intermediateThrowEvent("proc-esc", { escalationCode: "SHARED" })
 				.endEvent("e")
-				.build()
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false })
 
 			expect(defs.escalations).toHaveLength(1)
 			const rootEsc = defs.escalations[0]
@@ -2494,7 +2559,8 @@ describe("BpmnProcessBuilder", () => {
 				Bpmn.createProcess("proc")
 					.startEvent("s")
 					.endEvent("e", { messageName: "order-failed" })
-					.build(),
+					// A builder unit-test fragment, not a deployable model.
+					.build({ validate: false }),
 			)
 
 			const end = defined(process.flowElements.find((n) => n.id === "e"))
@@ -2613,7 +2679,8 @@ describe("BpmnProcessBuilder", () => {
 				.branch("b", (b) => b.serviceTask("t2", { name: "B", taskType: "b" }))
 				.exclusiveGateway("merge")
 				.endEvent("e")
-				.build()
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false })
 
 			const diagram = defined(defs.diagrams[0])
 			// s, gw, t1, t2, merge, e = 6 shapes
@@ -2648,14 +2715,15 @@ describe("BpmnProcessBuilder", () => {
 				.branch("b", (b) => b.serviceTask("t3", { name: "B", taskType: "b" }))
 				.exclusiveGateway("merge")
 				.endEvent("e")
-				.build()
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false })
 
 			// First cycle: export → parse
-			const xml1 = Bpmn.export(defs)
+			const xml1 = Bpmn.export(defs, { validate: false })
 			const parsed1 = Bpmn.parse(xml1)
 
 			// Second cycle: re-export → re-parse
-			const xml2 = Bpmn.export(parsed1)
+			const xml2 = Bpmn.export(parsed1, { validate: false })
 			const parsed2 = Bpmn.parse(xml2)
 
 			const diag1 = defined(parsed1.diagrams[0])
@@ -3037,9 +3105,10 @@ describe("BpmnProcessBuilder", () => {
 					esub.startEvent("esubStart", { documentation: "DOC_ESUB_START" }).endEvent("esubEnd")
 				})
 				.endEvent("e")
-				.build()
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false })
 
-			const xml = Bpmn.export(defs)
+			const xml = Bpmn.export(defs, { validate: false })
 			expect(xml).toContain("<bpmn:documentation>DOC_SUB_START</bpmn:documentation>")
 			expect(xml).toContain("<bpmn:documentation>DOC_ESUB_START</bpmn:documentation>")
 		})
@@ -3064,9 +3133,10 @@ describe("BpmnProcessBuilder", () => {
 				.intermediateCatchEvent("catch", { timerDuration: "PT1M", documentation: "DOC_catch" })
 				.exclusiveGateway("gw", { documentation: "DOC_gateway" })
 				.endEvent("e", { documentation: "DOC_end" })
-				.build()
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false })
 
-			const xml = Bpmn.export(defs)
+			const xml = Bpmn.export(defs, { validate: false })
 			const missing = [
 				"start",
 				"service",
@@ -3230,6 +3300,7 @@ describe("BpmnProcessBuilder", () => {
 							.intermediateCatchEvent("onMessage", {
 								name: "Message received",
 								messageName: "ResponseMessage",
+								correlationKey: "=k",
 							})
 							.connectTo("converge"),
 					)
@@ -3493,7 +3564,8 @@ describe("SubProcessContentBuilder branching", () => {
 					.endEvent("se")
 			})
 			.endEvent("e")
-			.build()
+			// A builder unit-test fragment, not a deployable model.
+			.build({ validate: false })
 
 		const sub = defined(defs.processes[0]?.flowElements.find((e) => e.id === "sub"))
 		if (sub.type !== "subProcess") throw new Error("expected subProcess")
@@ -3714,7 +3786,8 @@ describe("disconnectedStartEvent alias", () => {
 			.disconnectedStartEvent("s2")
 			.serviceTask("t2", { name: "T2", taskType: "y" })
 			.endEvent("e2")
-			.build()
+			// A builder unit-test fragment, not a deployable model.
+			.build({ validate: false })
 
 		const p = firstProcess(defs)
 		// s2 should have no incoming flows
@@ -3771,7 +3844,8 @@ describe("DiagramBuilder", () => {
 			.process("receiver", (p) =>
 				p.startEvent("catch", { messageName: "order-placed" }).endEvent("e2"),
 			)
-			.build()
+			// A builder unit-test fragment, not a deployable model.
+			.build({ validate: false })
 
 		// Both processes reference "order-placed" — messages should be collected
 		expect(defs.messages.length).toBeGreaterThanOrEqual(1)
@@ -3924,7 +3998,8 @@ describe("text annotations", () => {
 				)
 				.branch("no", (b) => b.endEvent("e2"))
 				.endEvent("e")
-				.build(),
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false }),
 		)
 
 		expect(process.textAnnotations).toHaveLength(1)
@@ -3944,7 +4019,9 @@ describe("compensation — isForCompensation serialization", () => {
 		const xml = Bpmn.export(
 			Bpmn.createProcess("proc")
 				.serviceTask("handler", { name: "Cancel", taskType: "cancel", isForCompensation: true })
-				.build(),
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false }),
+			{ validate: false },
 		)
 		expect(xml).toContain('isForCompensation="true"')
 		expect(xml).toContain('id="handler"')
@@ -3954,9 +4031,11 @@ describe("compensation — isForCompensation serialization", () => {
 		const xml1 = Bpmn.export(
 			Bpmn.createProcess("proc")
 				.serviceTask("handler", { name: "Cancel", taskType: "cancel", isForCompensation: true })
-				.build(),
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false }),
+			{ validate: false },
 		)
-		const xml2 = Bpmn.export(Bpmn.parse(xml1))
+		const xml2 = Bpmn.export(Bpmn.parse(xml1), { validate: false })
 		expect(xml2).toContain('isForCompensation="true"')
 	})
 })
@@ -3969,7 +4048,9 @@ describe("compensation", () => {
 				.serviceTask("BookHotel", { name: "Book Hotel", taskType: "book-hotel" })
 				.boundaryEvent("CompBoundary", { attachedTo: "BookHotel", compensation: true })
 				.endEvent("end")
-				.build(),
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false }),
+			{ validate: false },
 		)
 		expect(xml).toContain("compensateEventDefinition")
 		expect(xml).toContain('id="CompBoundary"')
@@ -3985,7 +4066,9 @@ describe("compensation", () => {
 					activityRef: "BookHotel",
 				})
 				.endEvent("end")
-				.build(),
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false }),
+			{ validate: false },
 		)
 		expect(xml).toContain("compensateEventDefinition")
 		expect(xml).toContain('activityRef="BookHotel"')
@@ -4126,7 +4209,8 @@ describe("BranchBuilder — isForCompensation forwarding (C1)", () => {
 				.branch("B", (b) => b.task("other", {}).connectTo("join"))
 				.parallelGateway("join")
 				.endEvent("end")
-				.build(),
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false }),
 		)
 		const el = defined(p.flowElements.find((e) => e.id === "send-comp"))
 		expect(el.isForCompensation).toBe(true)
@@ -4143,7 +4227,8 @@ describe("BranchBuilder — isForCompensation forwarding (C1)", () => {
 				.branch("B", (b) => b.task("other", {}).connectTo("join"))
 				.parallelGateway("join")
 				.endEvent("end")
-				.build(),
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false }),
 		)
 		const el = defined(p.flowElements.find((e) => e.id === "recv-comp"))
 		expect(el.isForCompensation).toBe(true)
@@ -4158,7 +4243,8 @@ describe("BranchBuilder — isForCompensation forwarding (C1)", () => {
 				.branch("B", (b) => b.task("other", {}).connectTo("join"))
 				.parallelGateway("join")
 				.endEvent("end")
-				.build(),
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false }),
 		)
 		const el = defined(p.flowElements.find((e) => e.id === "task-comp"))
 		expect(el.isForCompensation).toBe(true)
@@ -4176,7 +4262,8 @@ describe("SubProcessContentBuilder — isForCompensation forwarding (C2)", () =>
 						.endEvent("sub-end")
 				})
 				.endEvent("end")
-				.build(),
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false }),
 		)
 		const sub = defined(p.flowElements.find((e) => e.id === "sub"))
 		if (sub.type !== "subProcess") throw new Error("expected subProcess")
@@ -4194,7 +4281,8 @@ describe("SubProcessContentBuilder — isForCompensation forwarding (C2)", () =>
 						.endEvent("sub-end")
 				})
 				.endEvent("end")
-				.build(),
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false }),
 		)
 		const sub = defined(p.flowElements.find((e) => e.id === "sub"))
 		if (sub.type !== "subProcess") throw new Error("expected subProcess")
@@ -4212,7 +4300,8 @@ describe("SubProcessContentBuilder — isForCompensation forwarding (C2)", () =>
 						.endEvent("sub-end")
 				})
 				.endEvent("end")
-				.build(),
+				// A builder unit-test fragment, not a deployable model.
+				.build({ validate: false }),
 		)
 		const sub = defined(p.flowElements.find((e) => e.id === "sub"))
 		if (sub.type !== "subProcess") throw new Error("expected subProcess")
@@ -4238,7 +4327,8 @@ describe("BranchBuilder nested branch infrastructure", () => {
 					.userTask("t-after")
 			})
 			.branch("path-b", (b) => b.endEvent("e-b"))
-			.build()
+			// A builder unit-test fragment, not a deployable model.
+			.build({ validate: false })
 
 		const p = firstProcess(defs)
 		// t-x and t-y both connect via a convergence join to t-after
@@ -4264,7 +4354,8 @@ describe("BranchBuilder nested branch infrastructure", () => {
 					.branch("y", (bb) => bb.defaultFlow().endEvent("e-y"))
 			})
 			.branch("path-b", (b) => b.endEvent("e-b"))
-			.build()
+			// A builder unit-test fragment, not a deployable model.
+			.build({ validate: false })
 
 		const p = firstProcess(defs)
 		// inner-gw exists
@@ -4303,7 +4394,8 @@ describe("BranchBuilder nested branch infrastructure", () => {
 			)
 			.exclusiveGateway("outer-merge")
 			.endEvent("e")
-			.build()
+			// A builder unit-test fragment, not a deployable model.
+			.build({ validate: false })
 
 		const p = firstProcess(defs)
 		// Both inner branches connect to outer-merge
@@ -4365,7 +4457,8 @@ describe("boundary events inside a branch", () => {
 					.endEvent("e-timeout")
 			})
 			.branch("path-b", (b) => b.endEvent("e-b"))
-			.build()
+			// A builder unit-test fragment, not a deployable model.
+			.build({ validate: false })
 
 		const p = firstProcess(defs)
 		const be = p.flowElements.find((e) => e.id === "be")
@@ -4395,7 +4488,8 @@ describe("boundary events inside a branch", () => {
 					.endEvent("e-main")
 			})
 			.branch("path-b", (b) => b.endEvent("e-b"))
-			.build()
+			// A builder unit-test fragment, not a deployable model.
+			.build({ validate: false })
 
 		const p = firstProcess(defs)
 
@@ -4434,7 +4528,8 @@ describe("boundary events inside a branch", () => {
 					.endEvent("e-ok")
 			})
 			.branch("path-b", (b) => b.endEvent("e-b"))
-			.build()
+			// A builder unit-test fragment, not a deployable model.
+			.build({ validate: false })
 
 		const p = firstProcess(defs)
 		const be = p.flowElements.find((e) => e.id === "on-err")
@@ -4475,7 +4570,8 @@ describe("boundary events inside a branch", () => {
 					.endEvent("e-main")
 			})
 			.branch("path-b", (b) => b.endEvent("e-b"))
-			.build()
+			// A builder unit-test fragment, not a deployable model.
+			.build({ validate: false })
 
 		const p = firstProcess(defs)
 		const be = p.flowElements.find((e) => e.id === "be")
@@ -4537,7 +4633,8 @@ describe("boundary events inside a sub-process", () => {
 					.endEvent("e-timeout")
 			})
 			.endEvent("e")
-			.build()
+			// A builder unit-test fragment, not a deployable model.
+			.build({ validate: false })
 
 		const p = firstProcess(defs)
 		const sub = p.flowElements.find((n) => n.id === "sub")
@@ -4566,7 +4663,8 @@ describe("boundary events inside a sub-process", () => {
 					.endEvent("e-main")
 			})
 			.endEvent("e")
-			.build()
+			// A builder unit-test fragment, not a deployable model.
+			.build({ validate: false })
 
 		const p = firstProcess(defs)
 		const sub = p.flowElements.find((n) => n.id === "sub")
@@ -4599,7 +4697,8 @@ describe("sub-process style methods mirrored across builder contexts", () => {
 				})
 			})
 			.endEvent("e")
-			.build()
+			// A builder unit-test fragment, not a deployable model.
+			.build({ validate: false })
 
 		const p = firstProcess(defs)
 		const outer = p.flowElements.find((n) => n.id === "outer")
@@ -4618,7 +4717,8 @@ describe("sub-process style methods mirrored across builder contexts", () => {
 				})
 			})
 			.endEvent("e")
-			.build()
+			// A builder unit-test fragment, not a deployable model.
+			.build({ validate: false })
 
 		const p = firstProcess(defs)
 		const outer = p.flowElements.find((n) => n.id === "outer")
@@ -4638,7 +4738,8 @@ describe("sub-process style methods mirrored across builder contexts", () => {
 					.endEvent("outer-e")
 			})
 			.endEvent("e")
-			.build()
+			// A builder unit-test fragment, not a deployable model.
+			.build({ validate: false })
 
 		const p = firstProcess(defs)
 		const outer = p.flowElements.find((n) => n.id === "outer")
@@ -4681,7 +4782,8 @@ describe("sub-process style methods mirrored across builder contexts", () => {
 					.connectTo("end"),
 			)
 			.endEvent("end")
-			.build()
+			// A builder unit-test fragment, not a deployable model.
+			.build({ validate: false })
 
 		const p = firstProcess(defs)
 		const evtsub = p.flowElements.find((n) => n.id === "evtsub")
@@ -4713,7 +4815,8 @@ describe("zeebe:subscription placement", () => {
 			.intermediateCatchEvent("a", { messageName: "m", correlationKey: "=x" })
 			.intermediateCatchEvent("b", { messageName: "m", correlationKey: "=y" })
 			.endEvent("e")
-			.build()
+			// A builder unit-test fragment, not a deployable model.
+			.build({ validate: false })
 		const onElement = (id: string) =>
 			defs.processes[0]?.flowElements
 				.find((n) => n.id === id)

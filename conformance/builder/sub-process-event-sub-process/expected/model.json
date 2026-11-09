@@ -8,6 +8,15 @@
   "id": "Definitions_1",
   "messages": [
     {
+      "extensionElements": [
+        {
+          "attributes": {
+            "correlationKey": "=orderId"
+          },
+          "children": [],
+          "name": "zeebe:subscription"
+        }
+      ],
       "id": "Message_cancel",
       "name": "cancel",
       "unknownAttributes": {}

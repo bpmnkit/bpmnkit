@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 13,
+    "error": 15,
     "info": 0,
     "warning": 12
   },
@@ -333,10 +333,36 @@
       "processId": "_4a690dd7-809a-4fa9-ad63-515ac6685375",
       "severity": "error",
       "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_d74707c7-6af3-4db7-9403-924bfdf6a7d8"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "_0322c8c5-b921-44cc-9bf7-261dcb16f257",
+      "processId": "_4a690dd7-809a-4fa9-ad63-515ac6685375",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_1d201a22-d500-4412-a32a-2c7e24ad4d6b"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "_0322c8c5-b921-44cc-9bf7-261dcb16f257",
+      "processId": "_4a690dd7-809a-4fa9-ad63-515ac6685375",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
     }
   ],
   "platform": {
     "id": "none"
   },
-  "total": 25
+  "total": 27
 }

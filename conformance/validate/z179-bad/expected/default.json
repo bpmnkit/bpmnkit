@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/duplicate-execution-listener",
+      "message": "Found '2' duplicates based on eventType[start] and type[l], these combinations should be unique.",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Remove the repeated execution listeners."
+    }
+  ]
+}

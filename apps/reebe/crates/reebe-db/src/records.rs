@@ -20,12 +20,16 @@ pub struct DbRecord {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct RecordRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> RecordRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -48,7 +52,7 @@ impl<'a> RecordRepository<'a> {
         .bind(&record.payload)
         .bind(record.source_position)
         .bind(&record.tenant_id)
-        .fetch_one(self.pool)
+        .fetch_one(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;
@@ -78,7 +82,7 @@ impl<'a> RecordRepository<'a> {
                 .push_bind(r.source_position)
                 .push_bind(&r.tenant_id);
         });
-        qb.build().execute(self.pool).await?;
+        qb.build().execute(&mut *self.pool.acquire().await?).await?;
         Ok(())
     }
 
@@ -92,7 +96,7 @@ impl<'a> RecordRepository<'a> {
                RETURNING next_position - 1 AS pos"#,
         )
         .bind(partition_id)
-        .fetch_one(self.pool)
+        .fetch_one(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;
@@ -112,7 +116,7 @@ impl<'a> RecordRepository<'a> {
         )
         .bind(partition_id)
         .bind(n)
-        .fetch_one(self.pool)
+        .fetch_one(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;
@@ -131,7 +135,7 @@ impl<'a> RecordRepository<'a> {
                RETURNING next_position - 1 AS pos, next_key - 1 AS key"#,
         )
         .bind(partition_id)
-        .fetch_one(self.pool)
+        .fetch_one(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;
@@ -157,7 +161,7 @@ impl<'a> RecordRepository<'a> {
         .bind(partition_id)
         .bind(from_position)
         .bind(limit as i64)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;
@@ -182,7 +186,10 @@ impl<'a> RecordRepository<'a> {
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
-pub async fn next_key(pool: &DbPool, partition_id: i16) -> Result<i64> {
+pub async fn next_key<'a>(
+    pool: impl Into<crate::conn::Conn<'a>>,
+    partition_id: i16,
+) -> Result<i64> {
     // Upsert: auto-initialise the row if it doesn't exist yet (e.g. new partition).
     let row = sqlx::query(
         r#"
@@ -193,7 +200,7 @@ pub async fn next_key(pool: &DbPool, partition_id: i16) -> Result<i64> {
         "#,
     )
     .bind(partition_id)
-    .fetch_one(pool)
+    .fetch_one(&mut *pool.into().acquire().await?)
     .await?;
 
     use sqlx::Row;

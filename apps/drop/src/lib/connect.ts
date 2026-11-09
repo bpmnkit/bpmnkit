@@ -446,7 +446,9 @@ export function finishConnect(
 		),
 	]
 	return {
-		xml: Bpmn.export(applied.definitions),
+		// Still the draft: deploy errors in what was applied are among the problems
+		// (`applyConnectorLines`), and the page gates sharing on the deploy gate.
+		xml: Bpmn.export(applied.definitions, { validate: false }),
 		connected,
 		problems: [...problems, ...applied.problems.map((p) => p.message)],
 		fixes: [...fixes, ...applied.fixes],

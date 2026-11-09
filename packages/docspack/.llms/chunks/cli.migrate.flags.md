@@ -6,6 +6,8 @@
 | `--check` | off | Report only. Write nothing, and exit 1 if any `manual` or `unsupported` finding remains |
 | `--format` | `text` | `text` or `json` |
 | `--force` | off | Overwrite converted files that already exist |
+| `--placeholders` | off | Fill placeholder values the conversion cannot derive, instead of refusing the model |
+| `--no-validate` | validate | Write the converted model even when Camunda 8 would not deploy it |
 
 Put the flags after the file names: `casen migrate c7 models/*.bpmn --check`.
 

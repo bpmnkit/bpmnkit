@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/business-rule-task-implementation",
+      "message": "Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Give the task one zeebe:calledDecision or one zeebe:taskDefinition, not both."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/duplicate-called-decision",
+      "message": "Must have exactly one 'zeebe:calledDecision' extension element when exists. Please check process definition XML and retain only one extension element.",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Keep a single zeebe:calledDecision element on the task."
+    }
+  ]
+}

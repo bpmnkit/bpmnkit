@@ -1,5 +1,22 @@
 # @bpmnkit/demo
 
+## 0.1.13
+
+### Patch Changes
+
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [e57db77]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [e57db77]
+- Updated dependencies [e57db77]
+  - @bpmnkit/core@1.10.0
+
 ## 0.1.12
 
 ### Patch Changes

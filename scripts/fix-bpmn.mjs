@@ -52,6 +52,7 @@ if (applied > 0) {
 	}
 }
 
-const outXml = Bpmn.export(defs)
+// The user's own file, shown or written back as it is, not refused for deploy errors.
+const outXml = Bpmn.export(defs, { validate: false })
 writeFileSync(outputPath, outXml, "utf8")
 console.log(`\nWrote: ${outputPath}`)

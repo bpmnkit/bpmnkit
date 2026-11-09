@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "H"
+      ],
+      "fixable": false,
+      "id": "zeebe/compensation-handler-flows",
+      "message": "A compensation handler should have no outgoing sequence flows",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Remove the outgoing sequence flows of the compensation handler."
+    }
+  ]
+}

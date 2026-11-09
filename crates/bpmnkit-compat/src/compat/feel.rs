@@ -235,7 +235,7 @@ fn is_secret_reference(node: &Node, is_path_base: bool) -> bool {
     key == "secrets" && matches!(&base.kind, NodeKind::Name(n) if n == "camunda")
 }
 
-fn contains_secret_reference(node: &Node, is_path_base: bool) -> bool {
+pub(crate) fn contains_secret_reference(node: &Node, is_path_base: bool) -> bool {
     if is_secret_reference(node, is_path_base) {
         return true;
     }

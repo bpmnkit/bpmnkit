@@ -1,16 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
   <bpmn:process id="Process_1" isExecutable="true">
-    <bpmn:exclusiveGateway id="gw" name="Valid?"/>
+    <bpmn:startEvent id="Start_Process_1">
+      <bpmn:outgoing>Flow_Start_Process_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="gw" name="Valid?">
+      <bpmn:incoming>Flow_Start_Process_1</bpmn:incoming>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_Start_Process_1" sourceRef="Start_Process_1" targetRef="gw"/>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_Process_1">
     <bpmndi:BPMNPlane id="BPMNPlane_Process_1" bpmnElement="Process_1">
+      <bpmndi:BPMNShape id="Start_Process_1_di" bpmnElement="Start_Process_1">
+        <dc:Bounds x="0" y="7" width="36" height="36"/>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="gw_di" bpmnElement="gw" isMarkerVisible="true">
-        <dc:Bounds x="0" y="0" width="50" height="50"/>
+        <dc:Bounds x="96" y="0" width="50" height="50"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="4" y="54" width="42" height="14"/>
+          <dc:Bounds x="100" y="54" width="42" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_Start_Process_1_di" bpmnElement="Flow_Start_Process_1">
+        <di:waypoint x="36" y="25"/>
+        <di:waypoint x="96" y="25"/>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

@@ -17,12 +17,16 @@ pub struct JoinToken {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct JoinTokenRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> JoinTokenRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -44,7 +48,7 @@ impl<'a> JoinTokenRepository<'a> {
         .bind(flow_scope_key)
         .bind(gateway_id)
         .bind(sequence_flow_id)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -63,11 +67,11 @@ impl<'a> JoinTokenRepository<'a> {
         .bind(flow_scope_key)
         .bind(gateway_id)
         .bind(sequence_flow_id)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         sqlx::query("DELETE FROM join_tokens WHERE flow_scope_key = $1 AND token_count <= 0")
             .bind(flow_scope_key)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -82,7 +86,7 @@ impl<'a> JoinTokenRepository<'a> {
              ORDER BY flow_scope_key, gateway_id, sequence_flow_id",
         )
         .bind(process_instance_key)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
         use sqlx::Row;
         Ok(rows
@@ -100,7 +104,7 @@ impl<'a> JoinTokenRepository<'a> {
     pub async fn delete_by_flow_scope(&self, flow_scope_key: i64) -> Result<()> {
         sqlx::query("DELETE FROM join_tokens WHERE flow_scope_key = $1")
             .bind(flow_scope_key)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }

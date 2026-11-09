@@ -1,0 +1,8 @@
+{
+  "runs": {
+    "default": {},
+    "v8_3": {
+      "camundaVersion": "8.3"
+    }
+  }
+}

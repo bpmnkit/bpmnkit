@@ -5,15 +5,27 @@
 import {
 	type BpmnDefinitions,
 	type BpmnFlowElement,
+	DeployabilityError,
+	type OptimizationFinding,
+	assertDeployable,
+	assertDeployableXml,
 	detectExecutionPlatform,
 	lintDiagram,
 } from "@bpmnkit/core"
 import { parseExpression } from "@bpmnkit/feel"
 
+/** The deploy gate's refusal (`assertDeployable`), when it refuses the diagram. */
+export interface ReadinessGate {
+	/** The gate's message: a summary line, then one line per error. */
+	message: string
+	/** Every error is one a documented placeholder fills: "Fill placeholders" makes it deploy. */
+	fillable: boolean
+}
+
 export type Readiness =
 	| { state: "ready"; version: string }
-	| { state: "shape-only"; missing: { elementId: string; what: string }[] }
-	| { state: "invalid"; errors: { elementId: string; message: string }[] }
+	| { state: "shape-only"; missing: { elementId: string; what: string }[]; gate?: ReadinessGate }
+	| { state: "invalid"; errors: { elementId: string; message: string }[]; gate?: ReadinessGate }
 
 /** What a draft is judged against when the diagram names no platform version. */
 const DEFAULT_VERSION = "8.10"
@@ -23,7 +35,14 @@ const DEFAULT_VERSION = "8.10"
  * the right shape, a person still has to fill something in. Everything else
  * lint calls an error in an engine category stops a deploy.
  */
-const UNCONFIGURED = new Set(["deploy/service-task-no-type", "connector/missing-required"])
+const UNCONFIGURED = new Set([
+	"deploy/service-task-no-type",
+	"connector/missing-required",
+	// Values the deploy gate's placeholders fill ("Fill placeholders"): still to configure.
+	"deploy/message-catch-no-correlation",
+	"deploy/message-start-no-name",
+	"deploy/call-activity-no-process",
+])
 // `compat/implementation` joins them when it says an implementation is missing, which the
 // version-pinned check reports for a script task still to be written.
 
@@ -126,11 +145,20 @@ export function readiness(defs: BpmnDefinitions, camundaVersion?: string): Readi
 	const errors: { elementId: string; message: string }[] = []
 	const missing: { elementId: string; what: string }[] = []
 	const seen = new Set<string>()
+	// The deploy gate has the last word on "deploys". What a placeholder fills is still to
+	// configure, whichever check says so; what lint does not already say is added below.
+	const gate = gateVerdict(
+		defs,
+		camundaVersion ?? defs.unknownAttributes["modeler:executionPlatformVersion"] ?? DEFAULT_VERSION,
+	)
+	const unfillable = new Set(gate?.unfillable.map(findingKey))
+	const fillable = new Set(gate?.findings.map(findingKey).filter((k) => !unfillable.has(k)))
 	for (const d of report.diagnostics) {
 		if (d.severity !== "error" || !ENGINE.has(d.category)) continue
 		const elementId = d.elementIds[0] ?? ""
 		if (
 			UNCONFIGURED.has(d.id) ||
+			fillable.has(findingKey(d)) ||
 			(d.id === "compat/implementation" && /has no implementation/.test(d.message))
 		) {
 			seen.add(elementId)
@@ -142,7 +170,25 @@ export function readiness(defs: BpmnDefinitions, camundaVersion?: string): Readi
 			for (const message of badMappings(el)) errors.push({ elementId: el.id, message })
 		}
 	}
-	if (errors.length > 0) return { state: "invalid", errors }
+
+	if (gate !== undefined) {
+		const said = new Set([...errors.map((e) => e.elementId), ...seen])
+		for (const f of gate.findings) {
+			const elementId = f.elementIds[0] ?? ""
+			if (said.has(elementId) && elementId !== "") continue
+			// Lint names a process that is not executable without an element id.
+			if (f.id === "zeebe/executable-process" && errors.some((e) => /executable/.test(e.message)))
+				continue
+			if (unfillable.has(findingKey(f)))
+				errors.push({ elementId, message: `${f.message} (${f.id})` })
+			else {
+				seen.add(elementId)
+				missing.push({ elementId, what: f.message })
+			}
+		}
+	}
+	const gated = gate === undefined ? {} : { gate: gate.gate }
+	if (errors.length > 0) return { state: "invalid", errors, ...gated }
 
 	for (const process of defs.processes) {
 		for (const el of walk(process.flowElements)) {
@@ -153,13 +199,72 @@ export function readiness(defs: BpmnDefinitions, camundaVersion?: string): Readi
 			if (what !== undefined && !seen.has(el.id)) missing.push({ elementId: el.id, what })
 		}
 	}
-	if (missing.length > 0) return { state: "shape-only", missing }
+	if (missing.length > 0) return { state: "shape-only", missing, ...gated }
 	return {
 		state: "ready",
 		version:
 			report.platform.id === "none"
 				? (camundaVersion ?? DEFAULT_VERSION)
 				: (report.platform.version ?? camundaVersion ?? DEFAULT_VERSION),
+	}
+}
+
+const findingKey = (f: { id: string; elementIds: readonly string[] }) =>
+	`${f.id} ${f.elementIds[0] ?? ""}`
+
+/**
+ * The gate's refusal of `defs`, and which of its errors a placeholder fill leaves:
+ * `undefined` when the diagram deploys.
+ */
+function gateVerdict(
+	defs: BpmnDefinitions,
+	camundaVersion: string,
+):
+	| { gate: ReadinessGate; findings: OptimizationFinding[]; unfillable: OptimizationFinding[] }
+	| undefined {
+	try {
+		assertDeployable(defs, { camundaVersion })
+		return undefined
+	} catch (err) {
+		if (!(err instanceof DeployabilityError)) throw err
+		let unfillable: OptimizationFinding[] = []
+		try {
+			assertDeployable(defs, { camundaVersion, placeholders: true })
+		} catch (filled) {
+			if (!(filled instanceof DeployabilityError)) throw filled
+			unfillable = filled.findings
+		}
+		return {
+			gate: { message: err.message, fillable: unfillable.length === 0 },
+			findings: err.findings,
+			unfillable,
+		}
+	}
+}
+
+/**
+ * Fills every documented placeholder the deploy gate asks for: the explicit
+ * "Fill placeholders" action. `null` when something no placeholder can fix remains.
+ */
+export function fillPlaceholders(
+	defs: BpmnDefinitions,
+	camundaVersion?: string,
+): { definitions: BpmnDefinitions; filled: string[] } | null {
+	try {
+		const result = assertDeployable(defs, {
+			placeholders: true,
+			camundaVersion:
+				camundaVersion ??
+				defs.unknownAttributes["modeler:executionPlatformVersion"] ??
+				DEFAULT_VERSION,
+		})
+		return {
+			definitions: result.definitions,
+			filled: result.placeholders.map((p) => `${p.elementId}: ${p.field} = ${p.value}`),
+		}
+	} catch (err) {
+		if (err instanceof DeployabilityError) return null
+		throw err
 	}
 }
 
@@ -174,5 +279,19 @@ export function badgeText(r: Readiness): string {
 		}
 		case "invalid":
 			return `${r.errors.length} deploy ${r.errors.length === 1 ? "error" : "errors"}`
+	}
+}
+
+/**
+ * Why the draft may not be shared yet: the deploy gate's message on the exact XML
+ * that would be stored, then what to do about it. `null` when it deploys.
+ */
+export function shareRefusal(xml: string): string | null {
+	try {
+		assertDeployableXml(xml)
+		return null
+	} catch (err) {
+		if (!(err instanceof DeployabilityError)) throw err
+		return `${err.message}\nNot shared: it would not deploy on Camunda 8. Use "Fill placeholders", or complete the steps, then share. "Edit" opens the draft as it is.`
 	}
 }

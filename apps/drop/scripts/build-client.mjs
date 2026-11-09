@@ -53,8 +53,11 @@ await build({
 })
 
 // ── Use-case mini-diagrams (rendered once, served as a static asset) ─────────
+// Rendered to SVG only, never deployed: shape sketches with no job types or conditions.
 const mini = (id, elements, flows) =>
-	exportSvg(expand({ id, processes: [{ id: `${id}_p`, elements, flows }] }), { padding: 12 })
+	exportSvg(expand({ id, processes: [{ id: `${id}_p`, elements, flows }] }, { validate: false }), {
+		padding: 12,
+	})
 
 const usecases = {
 	review: mini(

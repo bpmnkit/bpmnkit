@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/element-type",
+      "message": "Elements of type 'ComplexGateway' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Use an element Zeebe supports."
+    }
+  ]
+}

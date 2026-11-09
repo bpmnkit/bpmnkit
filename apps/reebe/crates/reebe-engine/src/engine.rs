@@ -248,21 +248,15 @@ impl Engine {
                 Ok(records) if !records.is_empty() => {
                     consecutive_errors = 0;
                     for record in &records {
-                        last_position = record.position;
-                        self.process_one(record).await;
-                        if let Err(e) = self
-                            .state
-                            .backend
-                            .set_processed_position(self.state.partition_id, record.position)
-                            .await
-                        {
-                            tracing::error!(
-                                "Could not store processed position {} of partition {}: {}",
-                                record.position,
-                                self.state.partition_id,
-                                e
-                            );
+                        if !self.process_one(record).await {
+                            // Nothing of the record was committed: fetch it again.
+                            consecutive_errors += 1;
+                            break;
                         }
+                        last_position = record.position;
+                    }
+                    if consecutive_errors > 0 {
+                        tokio::time::sleep(Duration::from_millis(100)).await;
                     }
                     continue;
                 }
@@ -346,107 +340,188 @@ impl Engine {
         }
     }
 
-    pub async fn process_one(&self, record: &DbRecord) {
-        for processor in &self.processors {
-            if processor.accepts(&record.value_type, &record.intent) {
-                let mut writers = Writers::new();
-                match processor.process(record, &self.state, &mut writers).await {
-                    Ok(()) => {
-                        metrics::counter!("reebe_partition_records_total", "type" => "command")
-                            .increment(1);
-                        self.commit_results(record, writers).await;
+    /// Process one command in a unit of work: its state writes, the records it appends
+    /// and the processed position commit together, so after a crash it was either fully
+    /// processed or not at all, and resuming after the processed position processes
+    /// every command exactly once. Returns `false` when nothing could be committed; the
+    /// caller then retries the same command.
+    pub async fn process_one(&self, record: &DbRecord) -> bool {
+        let Some(processor) = self
+            .processors
+            .iter()
+            .find(|p| p.accepts(&record.value_type, &record.intent))
+        else {
+            tracing::debug!(
+                "No processor for {}.{} at position {}",
+                record.value_type,
+                record.intent,
+                record.position
+            );
+            if !self.skip(record).await {
+                return false;
+            }
+            self.respond(record, Ok(serde_json::Value::Null));
+            return true;
+        };
+
+        let mut attempt: u32 = 0;
+        loop {
+            let unit = match self.state.backend.begin().await {
+                Ok(unit) => unit,
+                Err(e) => {
+                    tracing::error!("Could not start a unit of work: {}", e);
+                    return false;
+                }
+            };
+            let state = EngineState {
+                backend: unit.state().clone(),
+                partition_id: self.state.partition_id,
+                process_def_cache: self.state.process_def_cache.clone(),
+                clock: self.state.clock.clone(),
+            };
+            let mut writers = Writers::new();
+            let result = match processor.process(record, &state, &mut writers).await {
+                Ok(()) => self
+                    .append_results(record, &writers, &state)
+                    .await
+                    .map_err(EngineError::from),
+                Err(e) => Err(e),
+            };
+            match result {
+                Ok(()) => {
+                    if let Err(e) = unit.commit().await {
+                        tracing::error!("Could not commit position {}: {}", record.position, e);
+                        self.state.process_def_cache.clear();
+                        return false;
                     }
-                    Err(e) => {
-                        tracing::error!(
-                            "Processing error for record at position {}: {}",
+                    self.after_commit(&writers);
+                    let response = writers
+                        .response
+                        .unwrap_or_else(|| serde_json::Value::Object(Default::default()));
+                    self.respond(record, Ok(response));
+                    return true;
+                }
+                Err(e) => {
+                    self.roll_back(unit).await;
+                    // A database error may be a deadlock or a lost connection: retry
+                    // a few times before treating it like any other failure.
+                    if matches!(e, EngineError::Db(_)) && attempt < 3 {
+                        attempt += 1;
+                        tracing::warn!(
+                            attempt,
+                            "Retrying position {} after: {}",
                             record.position,
                             e
                         );
-                        if let Some((_, tx)) = self.response_channels.remove(&record.position) {
-                            let _ = tx.send(Err(e));
-                        }
+                        tokio::time::sleep(Duration::from_millis(20 * 2_u64.pow(attempt))).await;
+                        continue;
                     }
+                    tracing::error!(
+                        "Processing error for record at position {}: {}",
+                        record.position,
+                        e
+                    );
+                    // The failed command leaves no state behind; only its position is
+                    // recorded, so it is not processed again.
+                    if !self.skip(record).await {
+                        return false;
+                    }
+                    self.respond(record, Err(e));
+                    return true;
                 }
-                return;
             }
-        }
-
-        tracing::debug!(
-            "No processor for {}.{} at position {}",
-            record.value_type,
-            record.intent,
-            record.position
-        );
-        if let Some((_, tx)) = self.response_channels.remove(&record.position) {
-            let _ = tx.send(Ok(serde_json::Value::Null));
         }
     }
 
-    async fn commit_results(&self, record: &DbRecord, writers: Writers) {
-        let total = writers.events.len() + writers.commands.len();
-        if total == 0 {
-            if let Some((_, tx)) = self.response_channels.remove(&record.position) {
-                let response = writers
-                    .response
-                    .unwrap_or_else(|| serde_json::Value::Object(Default::default()));
-                let _ = tx.send(Ok(response));
-            }
-            return;
+    async fn roll_back(&self, unit: reebe_db::UnitOfWork) {
+        if let Err(e) = unit.rollback().await {
+            tracing::error!("Could not roll back a unit of work: {}", e);
         }
+        // The processor may have cached a definition whose deployment rolled back.
+        self.state.process_def_cache.clear();
+    }
 
-        let now_ms = self.state.clock.now().timestamp_millis();
-
-        let first_pos = match self
+    /// Record a command as processed without changing any state.
+    async fn skip(&self, record: &DbRecord) -> bool {
+        match self
             .state
             .backend
-            .next_position_batch(self.state.partition_id, total)
+            .set_processed_position(self.state.partition_id, record.position)
             .await
         {
-            Ok(p) => p,
+            Ok(()) => true,
             Err(e) => {
-                tracing::error!("Error reserving position batch: {}", e);
-                if let Some((_, tx)) = self.response_channels.remove(&record.position) {
-                    let _ = tx.send(Err(crate::error::EngineError::Internal(e.to_string())));
-                }
-                return;
+                tracing::error!(
+                    "Could not store processed position {} of partition {}: {}",
+                    record.position,
+                    self.state.partition_id,
+                    e
+                );
+                false
             }
-        };
-
-        let mut db_records: Vec<DbRecord> = Vec::with_capacity(total);
-        for (i, event) in writers.events.iter().enumerate() {
-            db_records.push(DbRecord {
-                partition_id: self.state.partition_id,
-                position: first_pos + i as i64,
-                record_type: "EVENT".to_string(),
-                value_type: event.value_type.clone(),
-                intent: event.intent.clone(),
-                record_key: event.key,
-                timestamp_ms: now_ms,
-                payload: event.payload.clone(),
-                source_position: Some(record.position),
-                tenant_id: record.tenant_id.clone(),
-            });
         }
-        let cmd_offset = writers.events.len();
-        for (i, cmd) in writers.commands.iter().enumerate() {
-            db_records.push(DbRecord {
-                partition_id: self.state.partition_id,
-                position: first_pos + (cmd_offset + i) as i64,
-                record_type: "COMMAND".to_string(),
-                value_type: cmd.value_type.clone(),
-                intent: cmd.intent.clone(),
-                record_key: cmd.key,
-                timestamp_ms: now_ms,
-                payload: cmd.payload.clone(),
-                source_position: Some(record.position),
-                tenant_id: record.tenant_id.clone(),
-            });
-        }
+    }
 
-        if let Err(e) = self.state.backend.insert_records_batch(&db_records).await {
-            tracing::error!("Error writing batch records: {}", e);
+    fn respond(&self, record: &DbRecord, result: EngineResult<serde_json::Value>) {
+        if let Some((_, tx)) = self.response_channels.remove(&record.position) {
+            let _ = tx.send(result);
         }
+    }
 
+    /// Append the events and follow-up commands of `record` and its processed position,
+    /// inside the unit of work behind `state`. Positions are reserved in the same
+    /// transaction, so no later record becomes visible before these.
+    async fn append_results(
+        &self,
+        record: &DbRecord,
+        writers: &Writers,
+        state: &EngineState,
+    ) -> reebe_db::Result<()> {
+        let total = writers.events.len() + writers.commands.len();
+        if total > 0 {
+            let now_ms = self.state.clock.now().timestamp_millis();
+            let first_pos = state
+                .backend
+                .next_position_batch(self.state.partition_id, total)
+                .await?;
+            let events = writers
+                .events
+                .iter()
+                .map(|e| ("EVENT", &e.value_type, &e.intent, e.key, &e.payload));
+            let commands = writers
+                .commands
+                .iter()
+                .map(|c| ("COMMAND", &c.value_type, &c.intent, c.key, &c.payload));
+            let db_records: Vec<DbRecord> = events
+                .chain(commands)
+                .enumerate()
+                .map(
+                    |(i, (record_type, value_type, intent, key, payload))| DbRecord {
+                        partition_id: self.state.partition_id,
+                        position: first_pos + i as i64,
+                        record_type: record_type.to_string(),
+                        value_type: value_type.clone(),
+                        intent: intent.clone(),
+                        record_key: key,
+                        timestamp_ms: now_ms,
+                        payload: payload.clone(),
+                        source_position: Some(record.position),
+                        tenant_id: record.tenant_id.clone(),
+                    },
+                )
+                .collect();
+            state.backend.insert_records_batch(&db_records).await?;
+        }
+        state
+            .backend
+            .set_processed_position(self.state.partition_id, record.position)
+            .await
+    }
+
+    /// Side effects that must wait until the unit of work is visible: metrics, and
+    /// waking job workers, which would otherwise poll before the job exists for them.
+    fn after_commit(&self, writers: &Writers) {
+        metrics::counter!("reebe_partition_records_total", "type" => "command").increment(1);
         for event in &writers.events {
             metrics::counter!("reebe_partition_records_total", "type" => "event").increment(1);
             match (event.value_type.as_str(), event.intent.as_str()) {
@@ -459,6 +534,9 @@ impl Engine {
                 }
                 ("JOB", "CREATED") => {
                     metrics::counter!("reebe_jobs_created_total").increment(1);
+                    if let Some(job_type) = event.payload.get("jobType").and_then(|t| t.as_str()) {
+                        self.job_notifier.notify(job_type);
+                    }
                 }
                 ("JOB", "ACTIVATED") => {
                     metrics::counter!("reebe_jobs_activated_total").increment(1);
@@ -471,13 +549,6 @@ impl Engine {
                 }
                 _ => {}
             }
-        }
-
-        if let Some((_, tx)) = self.response_channels.remove(&record.position) {
-            let response = writers
-                .response
-                .unwrap_or_else(|| serde_json::Value::Object(Default::default()));
-            let _ = tx.send(Ok(response));
         }
     }
 }

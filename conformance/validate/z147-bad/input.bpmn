@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="d" targetNamespace="t" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+<bpmn:message id="m1" name="m1"><bpmn:extensionElements><zeebe:subscription correlationKey="=k"/></bpmn:extensionElements></bpmn:message>
+<bpmn:message id="m2" name="m2"><bpmn:extensionElements><zeebe:subscription correlationKey="=k"/></bpmn:extensionElements></bpmn:message>
+<bpmn:signal id="sg1" name="sg1"/>
+<bpmn:process id="p" isExecutable="true">
+<bpmn:startEvent id="s"><bpmn:outgoing>f0</bpmn:outgoing></bpmn:startEvent>
+<bpmn:eventBasedGateway id="g"><bpmn:incoming>f0</bpmn:incoming><bpmn:outgoing>f1</bpmn:outgoing><bpmn:outgoing>f2</bpmn:outgoing></bpmn:eventBasedGateway>
+<bpmn:intermediateCatchEvent id="c1"><bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f3</bpmn:outgoing><bpmn:messageEventDefinition messageRef="m1"/></bpmn:intermediateCatchEvent>
+<bpmn:intermediateCatchEvent id="c2"><bpmn:incoming>f2</bpmn:incoming><bpmn:incoming>f5</bpmn:incoming><bpmn:outgoing>f4</bpmn:outgoing><bpmn:timerEventDefinition><bpmn:timeDuration>PT1M</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:intermediateCatchEvent>
+<bpmn:serviceTask id="t"><bpmn:extensionElements><zeebe:taskDefinition type="x"/></bpmn:extensionElements><bpmn:incoming>f3</bpmn:incoming><bpmn:outgoing>f5</bpmn:outgoing></bpmn:serviceTask>
+<bpmn:endEvent id="e"><bpmn:incoming>f4</bpmn:incoming></bpmn:endEvent>
+<bpmn:sequenceFlow id="f0" sourceRef="s" targetRef="g"/>
+<bpmn:sequenceFlow id="f1" sourceRef="g" targetRef="c1"/>
+<bpmn:sequenceFlow id="f2" sourceRef="g" targetRef="c2"/>
+<bpmn:sequenceFlow id="f3" sourceRef="c1" targetRef="t"/>
+<bpmn:sequenceFlow id="f5" sourceRef="t" targetRef="c2"/>
+<bpmn:sequenceFlow id="f4" sourceRef="c2" targetRef="e"/>
+</bpmn:process>
+</bpmn:definitions>

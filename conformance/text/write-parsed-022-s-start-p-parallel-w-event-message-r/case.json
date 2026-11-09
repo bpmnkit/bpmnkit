@@ -1,3 +1,3 @@
 {
-	"input": "text/parse-022-s-start-p-parallel-w-event-message-r/expected/output.bpmn"
+	"note": "The output parse-022-s-start-p-parallel-w-event-message-r recorded before expand gated it: that text now needs a correlation key or a timer value to deploy, so the writer reads this copy."
 }

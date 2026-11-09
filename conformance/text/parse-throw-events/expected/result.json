@@ -13,6 +13,8 @@
           {
             "eventType": "message",
             "id": "a",
+            "jobType": "a",
+            "messageName": "a",
             "name": "Tell",
             "type": "intermediateThrowEvent"
           },
@@ -20,9 +22,11 @@
             "eventType": "signal",
             "id": "b",
             "name": "Shout",
+            "signalName": "b",
             "type": "intermediateThrowEvent"
           },
           {
+            "escalationCode": "c",
             "eventType": "escalation",
             "id": "c",
             "name": "Raise",

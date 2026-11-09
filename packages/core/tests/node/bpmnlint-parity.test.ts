@@ -34,6 +34,8 @@ function bpmnFiles(dir: string): string[] {
 // The builder cases' inputs and outputs have ids that are not XML names, which
 // bpmn-moddle skips, on purpose: they pin that continuing a document reads such ids
 // whole and that the build-time XSD check leaves a parsed document's ids alone.
+// The deployability repro z07 has a nested id that is not an XML name, to pin that Zeebe
+// rejects it.
 const MALFORMED = new Set([
 	"conformance/layout/edge-no-di-no-ids/input.bpmn",
 	"conformance/layout/edge-existing-di-duplicate-id/input.bpmn",
@@ -41,6 +43,17 @@ const MALFORMED = new Set([
 	"conformance/builder/from-insert-after-arrow-in-id/expected/output.bpmn",
 	"conformance/builder/xsd-continue-keeps-invalid-ids/input.bpmn",
 	"conformance/builder/xsd-continue-keeps-invalid-ids/expected/output.bpmn",
+	// zeebe-rules.md section A: XSD-invalid on purpose (Zeebe's parse stage).
+	"conformance/validate/z01-bad-end-tag/input.bpmn",
+	"conformance/validate/z02-bad/input.bpmn",
+	"conformance/validate/z03-bad/input.bpmn",
+	"conformance/validate/z04-bad/input.bpmn",
+	"conformance/validate/z05-bad/input.bpmn",
+	"conformance/validate/z07-bad/input.bpmn",
+	"conformance/validate/z07-bad-ncname/input.bpmn",
+	"conformance/validate/z08-bad/input.bpmn",
+	"conformance/validate/z10-bad/input.bpmn",
+	"doc/deployability/repro/z07_ncname_nested.bpmn",
 ])
 
 const FILES = bpmnFiles(ROOT)

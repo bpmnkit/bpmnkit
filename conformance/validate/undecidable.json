@@ -1,0 +1,5 @@
+{
+	"files": {
+		"conformance/validate/z68-bad/input.bpmn": "Z68 checks the evaluated message-start name length in Zeebe's transformer (StartEventTransformer), which zeebe-check does not run; a real deploy rejects it."
+	}
+}

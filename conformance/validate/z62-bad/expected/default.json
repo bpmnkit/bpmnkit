@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "M"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-name",
+      "message": "Name must be present and not empty",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Give the message a non-empty name."
+    }
+  ]
+}

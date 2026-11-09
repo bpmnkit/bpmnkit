@@ -261,6 +261,10 @@ fn no_loop_reports_a_straight_through_cycle() {
         .collect();
     assert_eq!(messages(&found), vec!["Loop detected: a -> g -> a"]);
     assert_eq!(found[0].data.element_ids, vec!["p"]);
+    let defs = parse_bpmn(&m(body)).expect("parse");
+    let only = find_straight_through_loops(&defs, None);
+    let data = |f: &[Finding]| f.iter().map(|f| f.data.clone()).collect::<Vec<_>>();
+    assert_eq!(data(&only), data(&found));
 }
 
 #[test]

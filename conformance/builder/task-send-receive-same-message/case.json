@@ -3,7 +3,7 @@
 	"script": [
 		["createProcess","p"],
 		["startEvent","s"],
-		["sendTask","s1",{"messageName":"ping"}],
+		["sendTask","s1",{"messageName":"ping","taskType":"send-ping"}],
 		["receiveTask","r1",{"messageName":"ping","correlationKey":"=k"}],
 		["endEvent","e"],
 		["build"]

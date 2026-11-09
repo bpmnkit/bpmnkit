@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:message id="Message_payment_confirmed" name="payment-confirmed"/>
   <bpmn:process id="QuoteToCash" name="Quote-to-Cash Process" isExecutable="true">
     <bpmn:startEvent id="start" name="Opportunity Received">
       <bpmn:outgoing>Flow_XjhCYuOK</bpmn:outgoing>
@@ -190,7 +191,7 @@
         <bpmn:incoming>Flow_Y2WHbokq</bpmn:incoming>
         <bpmn:outgoing>Flow_bxCEkomG</bpmn:outgoing>
       </bpmn:serviceTask>
-      <bpmn:receiveTask id="awaitPayment1" name="Await Payment (1)">
+      <bpmn:receiveTask id="awaitPayment1" name="Await Payment (1)" messageRef="Message_payment_confirmed">
         <bpmn:incoming>Flow_bxCEkomG</bpmn:incoming>
       </bpmn:receiveTask>
       <bpmn:boundaryEvent id="timerReminder1" name="7 Days" attachedToRef="awaitPayment1" cancelActivity="true">

@@ -57,4 +57,18 @@ describe("executePlan", () => {
 	it("throws with the compiler's problems when there is no XML", () => {
 		expect(() => executePlan(JSON.stringify({ ...PLAN, version: 2 }))).toThrow(/version/)
 	})
+	it("throws with the deploy errors of a plan Camunda 8 would refuse", () => {
+		const plan = {
+			version: 1,
+			process: { id: "shipping" },
+			steps: [
+				{ kind: "start" },
+				{ kind: "sendTask", id: "notify", name: "Notify", messageName: "Shipped" },
+				{ kind: "end" },
+			],
+		}
+		expect(() => executePlan(JSON.stringify(plan))).toThrow(
+			/element:notify: Not deployable on Camunda 8\.10: .*zeebe\/send-task-implementation/,
+		)
+	})
 })

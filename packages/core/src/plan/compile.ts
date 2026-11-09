@@ -23,6 +23,8 @@ import type {
 import type { BpmnDefinitions } from "../bpmn/bpmn-model.js"
 import { Bpmn } from "../bpmn/index.js"
 import { optimize } from "../bpmn/optimize/index.js"
+import { type PlaceholderFill, assertDeployable } from "../bpmn/zeebe-validate/gate.js"
+import { DeployabilityError } from "../errors.js"
 import { slugify, uniqueId } from "./slug.js"
 import type { PlanAgentTool, PlanBranch, PlanConnectorRef, PlanStep, ProcessPlan } from "./types.js"
 
@@ -34,8 +36,15 @@ export interface PlanProblem {
 
 export interface SynthResult {
 	defs?: BpmnDefinitions
+	/**
+	 * The BPMN XML, set only when the model deploys on Camunda 8 (or `validate: false`).
+	 * When Zeebe would refuse it, this is `undefined` and each reason is a `problems`
+	 * entry: `Not deployable on Camunda <version>: <message> (<rule>)`.
+	 */
 	xml?: string
 	problems: PlanProblem[]
+	/** The placeholder values written, with `placeholders: true`. */
+	placeholders?: PlaceholderFill[]
 }
 
 /** What a connector template resolves to — structurally matches `@bpmnkit/connectors`' `ApplyResult`. */
@@ -58,6 +67,52 @@ export interface CompilePlanOptions {
 	resolveConnector?: ConnectorResolver
 	/** Skip auto-applying safe optimizer fixes (default false). */
 	skipAutoFix?: boolean
+	/**
+	 * Gate the result with `assertDeployable` (default `true`): a model Zeebe would
+	 * refuse returns no `xml`, with the reasons in `problems`. `false` returns the
+	 * XML whatever it is.
+	 */
+	validate?: boolean
+	/** Fill the gate's documented placeholders instead of refusing; the fills are in `placeholders`. */
+	placeholders?: boolean
+	/** The Camunda 8 version to gate for. Default: the model's `executionPlatformVersion`. */
+	camundaVersion?: string
+}
+
+/**
+ * The XML of a compiled plan, or no XML and one problem per reason Zeebe would
+ * refuse it. Shared by {@link compilePlan} and `mergePlan`.
+ */
+export function gatePlan(
+	defs: BpmnDefinitions,
+	problems: PlanProblem[],
+	opts: CompilePlanOptions,
+): SynthResult {
+	// Gated here, with the problems channel, rather than by the export.
+	const exportXml = (d: BpmnDefinitions) => Bpmn.export(d, { validate: false })
+	if (opts.validate === false) return { defs, xml: exportXml(defs), problems }
+	try {
+		const gated = assertDeployable(defs, {
+			camundaVersion:
+				opts.camundaVersion ?? defs.unknownAttributes["modeler:executionPlatformVersion"],
+			placeholders: opts.placeholders === true,
+		})
+		return {
+			defs: gated.definitions,
+			xml: exportXml(gated.definitions),
+			problems,
+			placeholders: gated.placeholders,
+		}
+	} catch (err) {
+		if (!(err instanceof DeployabilityError)) throw err
+		for (const finding of err.findings) {
+			problems.push({
+				path: finding.elementIds.length > 0 ? `element:${finding.elementIds.join(",")}` : "process",
+				message: `Not deployable on Camunda ${err.camundaVersion}: ${finding.message} (${finding.id})`,
+			})
+		}
+		return { defs, problems }
+	}
 }
 
 // ---------------------------------------------------------------------------
@@ -345,7 +400,11 @@ function emitStep(
 		case "subProcess":
 			b.subProcess(
 				id,
-				(sb) => emitSteps(sb, step.steps, idOf, resolve, problems, `${path}.steps`),
+				(sb) => {
+					// Zeebe rejects an embedded sub-process without exactly one none start event.
+					sb.startEvent(`${id}_start`)
+					emitSteps(sb, step.steps, idOf, resolve, problems, `${path}.steps`)
+				},
 				{
 					name: step.name,
 					documentation: step.documentation,
@@ -465,7 +524,9 @@ function emitSteps(
 /**
  * Compiles a `ProcessPlan` into laid-out, validated BPMN XML. Deterministic:
  * the same plan always produces the same XML. Problems are collected, not
- * thrown — check `result.problems` before using `result.xml`.
+ * thrown — check `result.problems` before using `result.xml`. A model Zeebe
+ * would refuse on deploy returns no `xml` (unless `validate: false`); with
+ * `placeholders: true` the missing values are filled and listed instead.
  */
 export function compilePlan(plan: ProcessPlan, opts: CompilePlanOptions = {}): SynthResult {
 	const problems: PlanProblem[] = []
@@ -517,11 +578,12 @@ export function compilePlan(plan: ProcessPlan, opts: CompilePlanOptions = {}): S
 		zeebeProperties: startResult?.startEvent?.zeebeProperties,
 	})
 
-	emitSteps(builder, restSteps, idOf, opts.resolveConnector, problems, "steps", 1)
-
 	let defs: BpmnDefinitions
 	try {
-		defs = builder.build()
+		// The builder refuses some steps at the call (a message wait with no key): a problem, not a throw.
+		emitSteps(builder, restSteps, idOf, opts.resolveConnector, problems, "steps", 1)
+		// Gated once at the end, after the optimize pass has applied its fixes.
+		defs = builder.build({ validate: false })
 	} catch (err) {
 		problems.push({
 			path: "steps",
@@ -550,6 +612,5 @@ export function compilePlan(plan: ProcessPlan, opts: CompilePlanOptions = {}): S
 		}
 	}
 
-	const xml = Bpmn.export(laidOut)
-	return { defs: laidOut, xml, problems }
+	return gatePlan(laidOut, problems, opts)
 }

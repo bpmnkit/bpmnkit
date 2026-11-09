@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_events" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_events" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <bpmn:error id="Error_code" name="=code" errorCode="=code"/>
+  <bpmn:message id="Message_nokey" name="nokey"/>
+  <bpmn:message id="Message_ok" name="ok">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=orderId"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:signal id="Signal_go" name="go"/>
   <bpmn:process id="events" isExecutable="true">
     <bpmn:startEvent id="start"/>
     <bpmn:startEvent id="start2"/>
@@ -9,10 +17,12 @@
       </bpmn:timerEventDefinition>
     </bpmn:startEvent>
     <bpmn:startEvent id="startCron">
-      <bpmn:timerEventDefinition id="startCron_TimerEventDefinition"/>
+      <bpmn:timerEventDefinition id="startCron_TimerEventDefinition">
+        <bpmn:timeCycle>0 0 9 * * MON</bpmn:timeCycle>
+      </bpmn:timerEventDefinition>
     </bpmn:startEvent>
     <bpmn:startEvent id="startSignal">
-      <bpmn:signalEventDefinition id="startSignal_SignalEventDefinition"/>
+      <bpmn:signalEventDefinition id="startSignal_SignalEventDefinition" signalRef="Signal_go"/>
     </bpmn:startEvent>
     <bpmn:intermediateCatchEvent id="catchNoTimer">
       <bpmn:timerEventDefinition id="catchNoTimer_TimerEventDefinition"/>
@@ -23,10 +33,14 @@
       </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="catchDate">
-      <bpmn:timerEventDefinition id="catchDate_TimerEventDefinition"/>
+      <bpmn:timerEventDefinition id="catchDate_TimerEventDefinition">
+        <bpmn:timeDate>2026-02-01T09:00:00Z</bpmn:timeDate>
+      </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="catchCycle">
-      <bpmn:timerEventDefinition id="catchCycle_TimerEventDefinition"/>
+      <bpmn:timerEventDefinition id="catchCycle_TimerEventDefinition">
+        <bpmn:timeCycle>R3/PT10M</bpmn:timeCycle>
+      </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="catchMsgNoRef">
       <bpmn:messageEventDefinition id="catchMsgNoRef_MessageEventDefinition"/>
@@ -35,13 +49,13 @@
       <bpmn:messageEventDefinition id="catchMsgNoName_MessageEventDefinition"/>
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="catchMsgNoKey">
-      <bpmn:messageEventDefinition id="catchMsgNoKey_MessageEventDefinition"/>
+      <bpmn:messageEventDefinition id="catchMsgNoKey_MessageEventDefinition" messageRef="Message_nokey"/>
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="catchMsgOk">
-      <bpmn:messageEventDefinition id="catchMsgOk_MessageEventDefinition"/>
+      <bpmn:messageEventDefinition id="catchMsgOk_MessageEventDefinition" messageRef="Message_ok"/>
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="catchLink">
-      <bpmn:linkEventDefinition id="catchLink_LinkEventDefinition"/>
+      <bpmn:linkEventDefinition id="catchLink_LinkEventDefinition" name="a"/>
     </bpmn:intermediateCatchEvent>
     <bpmn:intermediateCatchEvent id="catchSignalNoName">
       <bpmn:signalEventDefinition id="catchSignalNoName_SignalEventDefinition"/>
@@ -57,13 +71,15 @@
       </bpmn:extensionElements>
     </bpmn:serviceTask>
     <bpmn:boundaryEvent id="boundaryCycle" attachedToRef="work" cancelActivity="true">
-      <bpmn:timerEventDefinition id="boundaryCycle_TimerEventDefinition"/>
+      <bpmn:timerEventDefinition id="boundaryCycle_TimerEventDefinition">
+        <bpmn:timeCycle>R/PT1H</bpmn:timeCycle>
+      </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="boundaryErrorNoRef" attachedToRef="work" cancelActivity="true">
       <bpmn:errorEventDefinition id="boundaryErrorNoRef_ErrorEventDefinition"/>
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="boundaryErrorExpr" attachedToRef="work" cancelActivity="true">
-      <bpmn:errorEventDefinition id="boundaryErrorExpr_ErrorEventDefinition"/>
+      <bpmn:errorEventDefinition id="boundaryErrorExpr_ErrorEventDefinition" errorRef="Error_code"/>
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="boundaryEscalation" attachedToRef="work" cancelActivity="false">
       <bpmn:escalationEventDefinition id="boundaryEscalation_EscalationEventDefinition"/>
@@ -97,7 +113,7 @@
       <bpmn:errorEventDefinition id="endErrorNoCode_ErrorEventDefinition"/>
     </bpmn:endEvent>
     <bpmn:endEvent id="endErrorExpr">
-      <bpmn:errorEventDefinition id="endErrorExpr_ErrorEventDefinition"/>
+      <bpmn:errorEventDefinition id="endErrorExpr_ErrorEventDefinition" errorRef="Error_code"/>
     </bpmn:endEvent>
     <bpmn:endEvent id="endTerminate">
       <bpmn:terminateEventDefinition id="endTerminate_TerminateEventDefinition"/>
@@ -105,21 +121,23 @@
     <bpmn:endEvent id="endSignalNoRef">
       <bpmn:signalEventDefinition id="endSignalNoRef_SignalEventDefinition"/>
     </bpmn:endEvent>
-    <bpmn:subProcess id="eventSub">
+    <bpmn:subProcess id="eventSub" triggeredByEvent="true">
       <bpmn:startEvent id="subTimerCycle">
-        <bpmn:timerEventDefinition id="subTimerCycle_TimerEventDefinition"/>
+        <bpmn:timerEventDefinition id="subTimerCycle_TimerEventDefinition">
+          <bpmn:timeCycle>R/PT1H</bpmn:timeCycle>
+        </bpmn:timerEventDefinition>
       </bpmn:startEvent>
       <bpmn:endEvent id="subEnd"/>
     </bpmn:subProcess>
-    <bpmn:subProcess id="signalSub">
-      <bpmn:startEvent id="subSignal">
-        <bpmn:signalEventDefinition id="subSignal_SignalEventDefinition"/>
+    <bpmn:subProcess id="signalSub" triggeredByEvent="true">
+      <bpmn:startEvent id="subSignal" isInterrupting="false">
+        <bpmn:signalEventDefinition id="subSignal_SignalEventDefinition" signalRef="Signal_go"/>
       </bpmn:startEvent>
       <bpmn:endEvent id="subEnd2"/>
     </bpmn:subProcess>
-    <bpmn:subProcess id="messageSub">
-      <bpmn:startEvent id="subMessage">
-        <bpmn:messageEventDefinition id="subMessage_MessageEventDefinition"/>
+    <bpmn:subProcess id="messageSub" triggeredByEvent="true">
+      <bpmn:startEvent id="subMessage" isInterrupting="false">
+        <bpmn:messageEventDefinition id="subMessage_MessageEventDefinition" messageRef="Message_nokey"/>
       </bpmn:startEvent>
       <bpmn:endEvent id="subEnd3"/>
     </bpmn:subProcess>

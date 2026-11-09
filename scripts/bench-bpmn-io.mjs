@@ -33,8 +33,10 @@ time("parse", () => {
 	for (const x of inputs) Bpmn.parse(x)
 })
 time("serialize", () => {
-	for (const m of models) Bpmn.export(m)
+	// Benchmarks the serializer alone, on corpus files Zeebe may reject.
+	for (const m of models) Bpmn.export(m, { validate: false })
 })
 time("parse+serialize", () => {
-	for (const x of inputs) Bpmn.export(Bpmn.parse(x))
+	// Benchmarks the serializer alone, on corpus files Zeebe may reject.
+	for (const x of inputs) Bpmn.export(Bpmn.parse(x), { validate: false })
 })

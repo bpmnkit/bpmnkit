@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 17,
+    "error": 27,
     "info": 1,
     "warning": 22
   },
@@ -501,10 +501,130 @@
       "processId": "proc",
       "severity": "info",
       "suggestion": ""
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "tx"
+      ],
+      "fixable": false,
+      "id": "zeebe/element-type",
+      "message": "Elements of type 'Transaction' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Use an element Zeebe supports."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "proc"
+      ],
+      "fixable": false,
+      "id": "zeebe/multiple-none-start",
+      "message": "Multiple none start events are not allowed",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Keep one none start event and give the others a trigger."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "boundary_timer"
+      ],
+      "fixable": false,
+      "id": "zeebe/timer-one-value",
+      "message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Give the timer exactly one of time duration, time date or time cycle."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sub_catch"
+      ],
+      "fixable": false,
+      "id": "zeebe/timer-one-value",
+      "message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Give the timer exactly one of time duration, time date or time cycle."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sub_catch"
+      ],
+      "fixable": false,
+      "id": "zeebe/intermediate-timer-value",
+      "message": "Intermediate timer catch event must have either a time duration or a time date.",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Use a time duration or time date on the intermediate timer."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "evt_start"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-reference",
+      "message": "Must reference a message",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Reference a message with messageRef on the message event definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sf9"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "f_plain"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "f_x1"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "f_x2"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
     }
   ],
   "platform": {
     "id": "none"
   },
-  "total": 40
+  "total": 50
 }

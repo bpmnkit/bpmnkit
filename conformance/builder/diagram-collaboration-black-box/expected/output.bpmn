@@ -11,6 +11,9 @@
       <bpmn:outgoing>Flow_s_ask</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sendTask id="ask" messageRef="Message_q">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="ask-partner"/>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_s_ask</bpmn:incoming>
       <bpmn:outgoing>Flow_ask_e</bpmn:outgoing>
     </bpmn:sendTask>

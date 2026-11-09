@@ -1,9 +1,10 @@
-import { copyFileSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs"
+import { copyFileSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join, resolve as resolvePath } from "node:path"
+import { type CompactDiagram, isDeployable, validateDeployableXml } from "@bpmnkit/core"
 import { afterAll, beforeAll, describe, expect, it } from "vitest"
 import type { RunContext } from "../types.js"
-import { generateGroup, resolveModifyOutputPath } from "./generate.js"
+import { generateFromCompact, generateGroup, resolveModifyOutputPath } from "./generate.js"
 
 describe("resolveModifyOutputPath", () => {
 	it("refuses to replace the input when no --output is given", () => {
@@ -171,5 +172,106 @@ describe("generate bpmn --input", () => {
 				patch: JSON.stringify({ flows: [{ id: "X", from: "nope", to: "alsonope" }] }),
 			}),
 		).rejects.toThrow(/no element with id "nope"/)
+	})
+})
+
+describe("generate bpmn: deploy gate", () => {
+	const SKETCH = {
+		id: "Defs",
+		processes: [
+			{
+				id: "order",
+				elements: [
+					{ id: "start", type: "startEvent" },
+					{ id: "charge", type: "serviceTask", name: "Charge" },
+					{ id: "end", type: "endEvent" },
+				],
+				flows: [
+					{ id: "f1", from: "start", to: "charge" },
+					{ id: "f2", from: "charge", to: "end" },
+				],
+			},
+		],
+	}
+	let dir: string
+	let wasTty: boolean | undefined
+
+	function run(flags: Record<string, string | boolean>): Promise<void> {
+		const bpmn = generateGroup.commands.find((command) => command.name === "bpmn")
+		if (!bpmn) throw new Error("generate bpmn command not registered")
+		return bpmn.run({
+			positional: [],
+			flags,
+			output: { ok() {}, info() {} },
+		} as unknown as RunContext)
+	}
+
+	beforeAll(() => {
+		wasTty = process.stdin.isTTY
+		process.stdin.isTTY = true
+		dir = mkdtempSync(join(tmpdir(), "casen-generate-gate-"))
+	})
+
+	afterAll(() => {
+		process.stdin.isTTY = wasTty as boolean
+		rmSync(dir, { recursive: true, force: true })
+	})
+
+	it("refuses an incomplete definition with the gate's lines and writes nothing", async () => {
+		const output = join(dir, "refused.bpmn")
+		const failure = run({ definition: JSON.stringify(SKETCH), output }).catch((e: Error) => e)
+		const err = (await failure) as Error
+		expect(err.message).toMatch(/^Not deployable on Camunda \d+\.\d+: 1 error\(s\)\n- charge: /)
+		expect(err.message).toContain("(zeebe/service-task-definition)")
+		expect(err.message).toContain("--placeholders")
+		expect(err.message).toContain("--no-validate")
+		expect(existsSync(output)).toBe(false)
+	})
+
+	it("--placeholders writes a deployable model and lists each fill", async () => {
+		const output = join(dir, "filled.bpmn")
+		const stderr: string[] = []
+		const write = process.stderr.write.bind(process.stderr)
+		process.stderr.write = ((chunk: string) => {
+			stderr.push(String(chunk))
+			return true
+		}) as typeof process.stderr.write
+		try {
+			await run({ definition: JSON.stringify(SKETCH), output, placeholders: true })
+		} finally {
+			process.stderr.write = write
+		}
+		const xml = readFileSync(output, "utf-8")
+		expect(xml).toContain('type="placeholder-charge"')
+		expect(isDeployable(validateDeployableXml(xml))).toBe(true)
+		expect(stderr.join("")).toContain(
+			"placeholder charge.jobType = placeholder-charge (zeebe/service-task-definition)",
+		)
+	})
+
+	it("--no-validate writes the model as it is", async () => {
+		const output = join(dir, "sketch.bpmn")
+		await run({ definition: JSON.stringify(SKETCH), output, validate: false })
+		expect(isDeployable(validateDeployableXml(readFileSync(output, "utf-8")))).toBe(false)
+	})
+
+	it("every built-in template deploys", async () => {
+		const templates = generateGroup.commands
+			.find((command) => command.name === "bpmn")
+			?.flags?.find((flag) => flag.name === "template")?.enum as string[]
+		expect(templates.length).toBeGreaterThan(0)
+		for (const name of templates) {
+			const output = join(dir, `${name}.bpmn`)
+			await run({ template: name, output, "process-id": name })
+			expect(isDeployable(validateDeployableXml(readFileSync(output, "utf-8"))), name).toBe(true)
+		}
+	})
+
+	it("generateFromCompact returns the fills it wrote", () => {
+		const { placeholders } = generateFromCompact(SKETCH as CompactDiagram, {
+			validate: true,
+			placeholders: true,
+		})
+		expect(placeholders.map((p) => `${p.elementId}.${p.field}`)).toEqual(["charge.jobType"])
 	})
 })

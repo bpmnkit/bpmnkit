@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/link-name",
+      "message": "Link name must be present and not empty.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Give the link event definition a name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "C0"
+      ],
+      "fixable": false,
+      "id": "zeebe/link-name",
+      "message": "Link name must be present and not empty.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Give the link event definition a name."
+    }
+  ]
+}

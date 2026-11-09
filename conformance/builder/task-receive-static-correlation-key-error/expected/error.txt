@@ -1,0 +1,1 @@
+correlationKey "orderId" of "recv" is a static value; Camunda 8 needs a FEEL expression here, e.g. "=orderId"

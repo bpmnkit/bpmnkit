@@ -71,7 +71,8 @@ describe("compact-diagram boundary", () => {
 				{ ...compact.processes[0], elements: [{ id: "S", type: "startEvent", name: "Begin" }] },
 			],
 		})
-		expect(() => expand({ id: "d", processes: [] })).not.toThrow()
+		// The argument guard is under test; an empty diagram has no process to deploy.
+		expect(() => expand({ id: "d", processes: [] }, { validate: false })).not.toThrow()
 	})
 })
 

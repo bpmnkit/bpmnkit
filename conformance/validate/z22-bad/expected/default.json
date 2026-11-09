@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "b"
+      ],
+      "fixable": false,
+      "id": "zeebe/escalation-boundary-host",
+      "message": "An escalation boundary event should only be attached to a subprocess, or a call activity.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Attach the escalation boundary event to a sub-process or a call activity."
+    }
+  ]
+}

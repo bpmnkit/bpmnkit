@@ -24,12 +24,16 @@ pub struct CompensationSubscription {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct CompensationSubscriptionRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> CompensationSubscriptionRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -53,7 +57,7 @@ impl<'a> CompensationSubscriptionRepository<'a> {
         .bind(sub.throw_event_instance_key)
         .bind(sub.compensation_handler_instance_key)
         .bind(&sub.tenant_id)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -69,7 +73,7 @@ impl<'a> CompensationSubscriptionRepository<'a> {
                FROM compensation_subscriptions WHERE process_instance_key = $1 ORDER BY key"#,
         )
         .bind(process_instance_key)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
         use sqlx::Row;
         Ok(rows
@@ -91,7 +95,7 @@ impl<'a> CompensationSubscriptionRepository<'a> {
     pub async fn delete(&self, key: i64) -> Result<()> {
         sqlx::query("DELETE FROM compensation_subscriptions WHERE key = $1")
             .bind(key)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }

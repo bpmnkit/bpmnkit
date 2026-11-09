@@ -1,0 +1,3 @@
+Not deployable on Camunda 8.10: 2 error(s)
+- t: Attribute 'type' must be present and not empty (zeebe/task-definition-type)
+- t: Expected expression but not found. (zeebe/task-definition-expression)

@@ -1,0 +1,117 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "eventType": "message",
+            "id": "s",
+            "messageName": "s",
+            "name": "Order placed",
+            "type": "startEvent"
+          },
+          {
+            "correlationKey": "=orderId",
+            "eventType": "message",
+            "id": "w",
+            "messageName": "w",
+            "name": "Paid",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "correlationKey": "=orderId",
+            "id": "r",
+            "messageName": "r",
+            "name": "Receipt",
+            "type": "receiveTask"
+          },
+          {
+            "eventType": "message",
+            "id": "n",
+            "jobType": "n",
+            "messageName": "n",
+            "name": "Notify",
+            "type": "intermediateThrowEvent"
+          },
+          {
+            "eventType": "signal",
+            "id": "g",
+            "name": "Go",
+            "signalName": "g",
+            "type": "intermediateThrowEvent"
+          },
+          {
+            "calledProcess": "c",
+            "id": "c",
+            "name": "Child",
+            "type": "callActivity"
+          },
+          {
+            "escalationCode": "e",
+            "eventType": "escalation",
+            "id": "e",
+            "name": "Escalated",
+            "type": "endEvent"
+          },
+          {
+            "eventType": "signal",
+            "id": "x",
+            "name": "Wake",
+            "signalName": "x",
+            "type": "startEvent"
+          },
+          {
+            "errorCode": "y",
+            "eventType": "error",
+            "id": "y",
+            "name": "Failed",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "w"
+          },
+          {
+            "from": "w",
+            "id": "Flow_2",
+            "to": "r"
+          },
+          {
+            "from": "r",
+            "id": "Flow_3",
+            "to": "n"
+          },
+          {
+            "from": "n",
+            "id": "Flow_4",
+            "to": "g"
+          },
+          {
+            "from": "g",
+            "id": "Flow_5",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "id": "Flow_6",
+            "to": "e"
+          },
+          {
+            "from": "x",
+            "id": "Flow_7",
+            "to": "y"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [],
+  "problems": [],
+  "questions": []
+}

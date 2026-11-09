@@ -1,7 +1,11 @@
 name: Release crates
 
 # Publishes the bpmnkit-* Rust crates to crates.io (doc/rust-crates-release.md). A run without
-# `publish` only verifies: it packages and builds every crate from its .crate file.
+# `publish` only verifies: it packages and builds every crate from its .crate file. The
+# `bpmnkit` facade depends on all the others, so crates-publish.mjs publishes it last.
+# Publishing uses crates.io trusted publishing (OIDC). crates.io can trust a workflow only for a
+# crate that exists, so a run where any crate is not on crates.io yet falls back to the
+# CARGO_REGISTRY_TOKEN secret and then registers this workflow as every crate's trusted publisher.
 on:
   workflow_dispatch:
     inputs:
@@ -39,6 +43,10 @@ jobs:
       - name: Test
         run: cargo test --workspace
 
+      - name: Facade features
+        run: node scripts/crates-publish.mjs --check-features
+
+      # Packages every crate, the `bpmnkit` facade included, and builds each from its .crate file.
       - name: Publish dry run
         run: node scripts/crates-publish.mjs --dry-run
 
@@ -49,6 +57,9 @@ jobs:
     runs-on: ubuntu-latest
     # Manual approval gate: configure required reviewers on the `crates-io` environment.
     environment: crates-io
+    permissions:
+      contents: read
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -58,12 +69,34 @@ jobs:
         with:
           node-version: lts/*
 
+      # Crates with no version on crates.io yet (sparse index). Any → this run bootstraps.
+      - name: New crates
+        id: new
+        run: |
+          new="$(node scripts/crates-publish.mjs --print-new)"
+          echo "$new"
+          if [ -n "$new" ]; then echo "bootstrap=true" >> "$GITHUB_OUTPUT"; fi
+
+      - name: Authenticate with crates.io (OIDC)
+        id: auth
+        if: steps.new.outputs.bootstrap != 'true'
+        uses: rust-lang/crates-io-auth-action@v1
+
+      # The secret is read only when bootstrapping; otherwise the short-lived OIDC token, which
+      # the auth action revokes when the job ends.
       - name: Publish
         env:
-          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+          CARGO_REGISTRY_TOKEN: ${{ steps.new.outputs.bootstrap == 'true' && secrets.CARGO_REGISTRY_TOKEN || steps.auth.outputs.token }}
         run: |
           if [ -z "$CARGO_REGISTRY_TOKEN" ]; then
-            echo "::error::Secret CARGO_REGISTRY_TOKEN is empty. Add it to the crates-io environment."
+            echo "::error::No crates.io token. Bootstrap runs need the CARGO_REGISTRY_TOKEN secret in the crates-io environment."
             exit 1
           fi
           node scripts/crates-publish.mjs --publish
+
+      # Needs the secret's trusted-publishing scope. Skips crates that already trust this workflow.
+      - name: Register trusted publishers
+        if: steps.new.outputs.bootstrap == 'true'
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+        run: node scripts/crates-publish.mjs --trust

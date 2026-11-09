@@ -37,6 +37,17 @@ fn check(name: &str, built: Result<bpmnkit_bpmn::BpmnDefinitions, BuildError>) {
     }
 }
 
+/// The scenarios pin the scope builders' model shapes, not deployability (scopes.mjs).
+fn no_gate() -> Option<BuildOptions> {
+    Some(BuildOptions {
+        gate: BuildGateOptions {
+            validate: Some(false),
+            ..BuildGateOptions::default()
+        },
+        ..BuildOptions::default()
+    })
+}
+
 fn svc(name: &str) -> ServiceTaskOptions {
     ServiceTaskOptions {
         name: name.to_owned(),
@@ -110,7 +121,7 @@ fn branches() {
                 .data_association("lc", "dr", DataDirection::Input);
         })
         .end_event(Some("end"), None)
-        .build(None);
+        .build(no_gate());
     check("branches", built);
 }
 
@@ -196,7 +207,7 @@ fn sub_processes() {
             )
             .end_event(Some("xe"), None);
         })
-        .build(None);
+        .build(no_gate());
     check("subProcesses", built);
 }
 
@@ -212,7 +223,7 @@ fn dup_in_sub() {
             },
             None,
         )
-        .build(None);
+        .build(no_gate());
     check("dupInSub", built);
 }
 
@@ -228,7 +239,7 @@ fn element_missing() {
             },
             None,
         )
-        .build(None);
+        .build(no_gate());
     check("elementMissing", built);
 }
 
@@ -244,7 +255,7 @@ fn annotation_without_cursor() {
             },
             None,
         )
-        .build(None);
+        .build(no_gate());
     check("annotationNoCursor", built);
 }
 
@@ -260,7 +271,7 @@ fn boundary_without_task() {
             },
             None,
         )
-        .build(None);
+        .build(no_gate());
     check("boundaryNoTask", built);
 }
 
@@ -276,7 +287,7 @@ fn branch_without_gateway() {
             },
             None,
         )
-        .build(None);
+        .build(no_gate());
     check("branchWithoutGateway", built);
 }
 
@@ -289,7 +300,7 @@ fn boundary_at_gateway() {
         .branch("x", |b| {
             b.with_boundary("b", timer("PT1S"), |_| {});
         })
-        .build(None);
+        .build(no_gate());
     check("boundaryAtGateway", built);
 }
 
@@ -310,7 +321,7 @@ fn duplicate_event_sub_process_in_branch() {
                 )
                 .end_event(Some("e"), None);
         })
-        .build(None);
+        .build(no_gate());
     check("dupEventSubInBranch", built);
 }
 
@@ -326,6 +337,6 @@ fn duplicate_across_branches() {
         .branch("y", |b| {
             b.task("t", None);
         })
-        .build(None);
+        .build(no_gate());
     check("dupAcrossBranches", built);
 }

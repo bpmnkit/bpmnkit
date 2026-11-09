@@ -9,7 +9,7 @@ All builder methods return `this` for chaining.
 | `.serviceTask(id, options?)` | Add a service task |
 | `.userTask(id, options?)` | Add a user task |
 | `.scriptTask(id, options?)` | Add a script task |
-| `.sendTask(id, options?)` | Add a send task |
+| `.sendTask(id, options?)` | Add a send task. Camunda 8 runs it as a job: set `taskType` |
 | `.receiveTask(id, options?)` | Add a receive task |
 | `.businessRuleTask(id, options?)` | Add a business rule task |
 | `.manualTask(id, options?)` | Add a manual task — work done outside the engine, no job worker |
@@ -32,7 +32,7 @@ All builder methods return `this` for chaining.
 | `.defaults(options)` | Set process-wide defaults (e.g. `{ serviceTask: { retries: "5" } }`) applied to all subsequent tasks |
 | `.disconnectedStartEvent(id?, options?)` | Add a start event with no auto-connection to the current cursor — alias for `addStartEvent` |
 | `.withAutoLayout()` | Apply Sugiyama layout before building |
-| `.build(options?)` | Return the completed `BpmnDefinitions`. Pass `{ explicitJoins: true }` to refuse inferred join gateways — see below |
+| `.build(options?)` | Return the completed `BpmnDefinitions`, refusing a Camunda 8 model Zeebe would reject (builder rules, then `assertDeployable`). Options: `validate` (default `true`), `placeholders`, `camundaVersion`, and `explicitJoins` to refuse inferred join gateways — see below and the building-processes guide |
 
 Every BPMN element type the model knows is reachable from a builder chain, except the three
 data types (`dataObject`, `dataObjectReference`, `dataStoreReference`) — those are wired by

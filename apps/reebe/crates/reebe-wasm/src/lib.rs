@@ -579,4 +579,31 @@ mod tests {
         let p = job_complete_payload(7, "not json", None).unwrap();
         assert_eq!(p["variables"], json!({}));
     }
+
+    /// The browser deploy path rejects what Zeebe rejects, with Zeebe's message.
+    #[cfg(feature = "zeebe-validate")]
+    #[test]
+    fn deploy_rejects_what_zeebe_rejects() {
+        let xml = r#"<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="d" targetNamespace="t">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:startEvent id="s"/>
+    <bpmn:serviceTask id="t"/>
+    <bpmn:sequenceFlow id="f" sourceRef="s" targetRef="t"/>
+  </bpmn:process>
+</bpmn:definitions>"#;
+        let encoded = base64::engine::general_purpose::STANDARD.encode(xml);
+        let err = WasmEngine::new()
+            .submit_and_drain(
+                "DEPLOYMENT",
+                "CREATE",
+                json!({ "resources": [{ "name": "p.bpmn", "content": encoded }] }),
+                "<default>",
+            )
+            .unwrap_err();
+        assert!(
+            err.contains("Must have exactly one 'zeebe:taskDefinition' extension element"),
+            "{err}"
+        );
+    }
 }

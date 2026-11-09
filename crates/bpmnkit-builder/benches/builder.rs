@@ -323,6 +323,12 @@ fn replay_process(
     ops: &[J],
 ) -> Option<Result<BpmnDefinitions, BuildError>> {
     for op in ops {
+        // `["$let", name, "build", opts?]`: an intermediate build, as in the conformance runner.
+        let items = op.items();
+        if items[0].str() == "$let" && items[2].str() == "build" {
+            black_box(b.build(opt(items.get(3))).ok());
+            continue;
+        }
         match split(op) {
             ("build", a) => {
                 if LAYOUT.get() {

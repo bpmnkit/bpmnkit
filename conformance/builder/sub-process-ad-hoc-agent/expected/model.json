@@ -34,13 +34,6 @@
         },
         {
           "associations": [],
-          "cancelRemainingInstances": false,
-          "completionCondition": {
-            "attributes": {
-              "xsi:type": "bpmn:tFormalExpression"
-            },
-            "text": "=done"
-          },
           "documentation": "agent",
           "extensionElements": [
             {
@@ -103,14 +96,13 @@
             },
             {
               "attributes": {
-                "agentType": "default"
+                "agentType": "aiAgentSubProcess"
               },
               "children": [],
               "name": "zeebe:agentDefinition"
             },
             {
               "attributes": {
-                "activeElementsCollection": "=toolCalls",
                 "outputCollection": "toolCallResults",
                 "outputElement": "={id: id}"
               },

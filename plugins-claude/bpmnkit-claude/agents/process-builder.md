@@ -58,8 +58,8 @@ For every job-type step with no connector and no existing worker, write `workers
 ### 9. Deploy
 
 ```sh
-casen lint lint <slug>.bpmn --profile deploy   # must be zero errors before this step
-casen deploy deploy <slug>.bpmn                # or --target camunda8
+casen check <slug>.bpmn --deploy               # the deploy gate: must be zero errors before this step
+casen deploy deploy <slug>.bpmn                # gated again; or --target camunda8
 ```
 
 ### 10. Summary

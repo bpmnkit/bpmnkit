@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "p"
+      ],
+      "fixable": false,
+      "id": "zeebe/multiple-none-start",
+      "message": "Multiple none start events are not allowed",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Keep one none start event and give the others a trigger."
+    }
+  ]
+}

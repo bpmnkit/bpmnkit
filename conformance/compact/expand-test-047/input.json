@@ -5,12 +5,22 @@
       "id": "Process_1",
       "elements": [
         {
+          "id": "Start_Process_1",
+          "type": "startEvent"
+        },
+        {
           "id": "gw",
           "type": "exclusiveGateway",
           "name": "Valid?"
         }
       ],
-      "flows": []
+      "flows": [
+        {
+          "id": "Flow_Start_Process_1",
+          "from": "Start_Process_1",
+          "to": "gw"
+        }
+      ]
     }
   ]
 }

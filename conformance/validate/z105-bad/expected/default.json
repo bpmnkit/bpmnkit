@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/input-mapping",
+      "message": "Expected path expression 'a b' but doesn't match the pattern '[a-zA-Z_][a-zA-Z0-9_]*(\\.[a-zA-Z_][a-zA-Z0-9_]*)*'.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Use a valid FEEL source and a variable name or dotted path as target."
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/linked-resource-attributes",
+      "message": "Attribute 'resourceId' must be present and not empty",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Set resourceId on zeebe:linkedResource."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/linked-resource-attributes",
+      "message": "Attribute 'resourceType' must be present and not empty",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Set resourceType on zeebe:linkedResource."
+    }
+  ]
+}

@@ -51,6 +51,7 @@
         },
         {
           "attachedTo": "Sub_work",
+          "errorCode": "BOOM",
           "eventType": "error",
           "id": "Boundary_error",
           "type": "boundaryEvent"
@@ -60,6 +61,7 @@
           "eventType": "timer",
           "id": "Boundary_timer",
           "interrupting": false,
+          "timerCycle": "R/PT1H",
           "type": "boundaryEvent"
         },
         {
@@ -68,6 +70,7 @@
           "type": "exclusiveGateway"
         },
         {
+          "escalationCode": "UP",
           "eventType": "escalation",
           "id": "Throw_escalate",
           "type": "intermediateThrowEvent"
@@ -91,6 +94,8 @@
               {
                 "eventType": "signal",
                 "id": "Start_signal",
+                "interrupting": false,
+                "signalName": "Go",
                 "type": "startEvent"
               },
               {
@@ -108,7 +113,7 @@
           },
           "id": "Sub_event",
           "name": "On signal",
-          "type": "subProcess"
+          "type": "eventSubProcess"
         }
       ],
       "flows": [

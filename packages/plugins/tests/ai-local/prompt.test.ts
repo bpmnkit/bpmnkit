@@ -1,9 +1,10 @@
-import { parseProcessText } from "@bpmnkit/core"
+import { PROCESS_TEXT_GUIDE, parseProcessText } from "@bpmnkit/core"
 import { describe, expect, it } from "vitest"
 import {
 	AI_LOCAL_EXAMPLE,
 	AI_LOCAL_GUIDE,
 	AI_LOCAL_SYSTEM_PROMPT,
+	guideLine,
 } from "../../src/ai-local/prompt.js"
 
 describe("ai-local prompt", () => {
@@ -33,6 +34,27 @@ describe("ai-local prompt", () => {
 		]) {
 			expect(AI_LOCAL_GUIDE).not.toContain(s)
 		}
+	})
+	it("teaches the named attributes the deploy gate needs, in core's own words", () => {
+		const names = guideLine("Names after |:")
+		expect(PROCESS_TEXT_GUIDE).toContain(names)
+		expect(AI_LOCAL_GUIDE).toContain(names)
+		for (const attr of [
+			"msg=",
+			"key=",
+			"signal=",
+			"error=",
+			"escalation=",
+			"at=",
+			"every=",
+			"called=",
+		]) {
+			expect(AI_LOCAL_GUIDE).toContain(attr)
+		}
+		expect(AI_LOCAL_GUIDE).toContain(guideLine("Events take a trigger:"))
+	})
+	it("guideLine names a missing line", () => {
+		expect(() => guideLine("No such line")).toThrow(/no line starting "No such line"/)
 	})
 	it("stays short", () => {
 		expect(AI_LOCAL_SYSTEM_PROMPT.length).toBeLessThan(2800) // ~700 tokens

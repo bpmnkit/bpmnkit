@@ -1,0 +1,1 @@
+s[start] > t[catch:timer Wait | after=PT1M msg=x] > u[task U | signal=y key=z] > c[catch:timer Cycle | every=soon] > e[end]

@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        ""
+      ],
+      "fixable": false,
+      "id": "zeebe/boundary-attached-ref",
+      "message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=9: cvc-complex-type.4: Attribute 'attachedToRef' must appear on element 'bpmn:boundaryEvent'.",
+      "processId": "",
+      "severity": "error",
+      "suggestion": "Set attachedToRef to the activity the boundary event is attached to."
+    }
+  ]
+}

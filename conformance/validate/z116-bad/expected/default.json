@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/form-definition-native",
+      "message": "Exactly one of the attributes 'formId, externalReference' must be present and not blank for native user tasks",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Set either formId or externalReference on the form definition, not both."
+    }
+  ]
+}

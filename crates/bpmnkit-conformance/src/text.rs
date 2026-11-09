@@ -2,10 +2,11 @@
 //! text stream and `write_process_text` against what TS recorded.
 
 use crate::bpmn::{first_diff_line, json_diff};
+use crate::compact::expand_options;
 use crate::tooling::{read, read_json};
 use bpmnkit_bpmn::ids::reset_id_counter;
 use bpmnkit_bpmn::{parse_bpmn, serialize_bpmn};
-use bpmnkit_text::compact::expand;
+use bpmnkit_text::compact::{expand, ExpandOptions};
 use bpmnkit_text::process_text::{
     parse_process_text, write_process_text, ProcessTextResult, ProcessTextStream,
     WriteProcessTextOptions,
@@ -27,14 +28,18 @@ pub(crate) fn same_text(file: &str, actual: &str, expected: &str) -> Result<(), 
 }
 
 /// `result.json`, then `output.bpmn` (or `error.txt`) of expanding its diagram.
-fn check_result(expected: &Path, result: &ProcessTextResult) -> Result<(), String> {
+fn check_result(
+    expected: &Path,
+    result: &ProcessTextResult,
+    options: &ExpandOptions,
+) -> Result<(), String> {
     let want = read_json(&expected.join("result.json"))?;
     let got = serde_json::to_value(result).map_err(|e| e.to_string())?;
     if let Some(d) = json_diff("$", &got, &want) {
         return Err(format!("result.json {d}"));
     }
     reset_id_counter();
-    match expand(&result.diagram) {
+    match expand(&result.diagram, options) {
         Ok(defs) => same_text(
             "output.bpmn",
             &serialize_bpmn(&defs),
@@ -48,14 +53,14 @@ fn check_result(expected: &Path, result: &ProcessTextResult) -> Result<(), Strin
     }
 }
 
-fn check_parse(case: &Path) -> Result<(), String> {
+fn check_parse(case: &Path, options: &ExpandOptions) -> Result<(), String> {
     let input = read(&case.join("input.txt"))?;
     reset_id_counter();
     let result = parse_process_text(&input);
-    check_result(&case.join("expected"), &result)
+    check_result(&case.join("expected"), &result, options)
 }
 
-fn check_stream(case: &Path, chunks: &[Json]) -> Result<(), String> {
+fn check_stream(case: &Path, chunks: &[Json], options: &ExpandOptions) -> Result<(), String> {
     let expected = case.join("expected");
     let frames = read_json(&expected.join("frames.json"))?;
     reset_id_counter();
@@ -78,7 +83,7 @@ fn check_stream(case: &Path, chunks: &[Json]) -> Result<(), String> {
             }
         }
     }
-    check_result(&expected, &stream.end())
+    check_result(&expected, &stream.end(), options)
 }
 
 fn check_write(case: &Path, input: &Path) -> Result<(), String> {
@@ -108,15 +113,20 @@ fn check_write(case: &Path, input: &Path) -> Result<(), String> {
 /// Replays one case (`text/<name>` under `dir`); the error says what differs.
 pub fn check_case(dir: &Path, id: &str) -> Result<(), String> {
     let case = dir.join(id);
-    if case.join("input.txt").exists() {
-        return check_parse(&case);
-    }
     let spec = match case.join("case.json").exists() {
         true => read_json(&case.join("case.json"))?,
         false => Json::Null,
     };
+    let options = expand_options(&spec);
+    if case.join("input.txt").exists() {
+        return check_parse(&case, &options);
+    }
     if let Some(chunks) = spec.get("chunks") {
-        return check_stream(&case, chunks.as_array().ok_or("chunks is not an array")?);
+        return check_stream(
+            &case,
+            chunks.as_array().ok_or("chunks is not an array")?,
+            &options,
+        );
     }
     let input = match spec.get("input").and_then(Json::as_str) {
         Some(rel) => dir.join(rel),

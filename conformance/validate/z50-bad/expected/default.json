@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Boundary"
+      ],
+      "fixable": false,
+      "id": "zeebe/boundary-event-definitions",
+      "message": "Must have exactly one event definition",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Give the boundary event exactly one event definition."
+    }
+  ]
+}

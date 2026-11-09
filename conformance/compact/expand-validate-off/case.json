@@ -1,0 +1,7 @@
+{
+  "expand": {
+    "validate": false
+  },
+  "deployable": false,
+  "deployableReason": "Pins expand(compact, { validate: false }): an unfinished diagram (no start event, a task without a job type) is expanded without the gate and without the Camunda 8 platform attributes."
+}

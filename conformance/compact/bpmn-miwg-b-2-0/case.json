@@ -1,3 +1,8 @@
 {
-	"input": "bpmn/miwg-b-2-0/input.bpmn"
+	"input": "bpmn/miwg-b-2-0/input.bpmn",
+	"deployable": false,
+	"deployableReason": "Source bpmn/miwg-b-2-0/input.bpmn is itself rejected by Zeebe (Message_1373638080954: Name must be present and not empty); the case pins how it is round-tripped, not a deployable model; expanded with validate:false to keep pinning the expansion.",
+	"expand": {
+		"validate": false
+	}
 }

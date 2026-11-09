@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sp"
+      ],
+      "fixable": false,
+      "id": "zeebe/duplicate-ad-hoc-extension",
+      "message": "Must have exactly one 'zeebe:adHoc' extension element when exists. Please check process definition XML and retain only one extension element.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Keep a single zeebe:adHoc extension element."
+    }
+  ]
+}

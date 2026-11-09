@@ -1,0 +1,88 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "s",
+          "type": "startEvent"
+        },
+        {
+          "id": "sub",
+          "type": "subProcess",
+          "children": {
+            "elements": [
+              {
+                "id": "sub_s",
+                "type": "startEvent"
+              },
+              {
+                "id": "inner",
+                "type": "task"
+              },
+              {
+                "id": "sub_e",
+                "type": "endEvent"
+              }
+            ],
+            "flows": [
+              {
+                "id": "i1",
+                "from": "sub_s",
+                "to": "inner"
+              },
+              {
+                "id": "i2",
+                "from": "inner",
+                "to": "sub_e"
+              }
+            ]
+          }
+        },
+        {
+          "id": "esp",
+          "type": "eventSubProcess",
+          "children": {
+            "elements": [
+              {
+                "id": "esp_s",
+                "type": "startEvent",
+                "eventType": "timer",
+                "timerCycle": "R/PT1M",
+                "interrupting": false
+              },
+              {
+                "id": "esp_e",
+                "type": "endEvent"
+              }
+            ],
+            "flows": [
+              {
+                "id": "e1",
+                "from": "esp_s",
+                "to": "esp_e"
+              }
+            ]
+          }
+        },
+        {
+          "id": "e",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f1",
+          "from": "s",
+          "to": "sub"
+        },
+        {
+          "id": "f2",
+          "from": "sub",
+          "to": "e"
+        }
+      ]
+    }
+  ]
+}

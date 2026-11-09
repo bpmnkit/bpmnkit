@@ -138,7 +138,11 @@ describe("generate prompt", () => {
 			const recommended = resolveBpmnlintConfig({ extends: "bpmnlint:recommended" })
 			const structural = new Set(["flow", "naming", "feel"])
 			const findings = answers.flatMap(({ model, prompt, text = "" }) =>
-				lintDiagram(expand(parseProcessText(text).diagram), { bpmnlint: recommended })
+				// Structural lint is under test; a recorded answer without a correlation key is
+				// a deploy error, not a lint one
+				lintDiagram(expand(parseProcessText(text).diagram, { validate: false }), {
+					bpmnlint: recommended,
+				})
 					// How long a condition the model wrote is, is up to the model.
 					.diagnostics.filter(
 						(d) =>

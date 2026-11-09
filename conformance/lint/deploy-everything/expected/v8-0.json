@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 37,
+    "error": 39,
     "info": 2,
     "warning": 20
   },
@@ -725,6 +725,30 @@
       "processId": "proc",
       "severity": "error",
       "suggestion": "Move the zeebe:subscription onto the bpmn:message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "m1"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-subscription",
+      "message": "Must have exactly one zeebe:subscription extension element",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add one zeebe:subscription with a correlationKey to the message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "m3"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-subscription",
+      "message": "Must have exactly one zeebe:subscription extension element",
+      "processId": "proc",
+      "severity": "error",
+      "suggestion": "Add one zeebe:subscription with a correlationKey to the message."
     }
   ],
   "platform": {
@@ -732,5 +756,5 @@
     "name": "Camunda Cloud",
     "version": "8.6.0"
   },
-  "total": 59
+  "total": 61
 }

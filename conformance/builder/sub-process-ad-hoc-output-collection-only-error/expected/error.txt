@@ -1,0 +1,1 @@
+Ad-hoc sub-process "ah" sets outputCollection without outputElement: set both, or neither

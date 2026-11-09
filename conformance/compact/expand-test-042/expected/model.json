@@ -51,6 +51,7 @@
     "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
     "dc": "http://www.omg.org/spec/DD/20100524/DC",
     "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
     "zeebe": "http://camunda.org/schema/zeebe/1.0"
   },
   "processes": [
@@ -69,7 +70,15 @@
           "unknownAttributes": {}
         },
         {
-          "extensionElements": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "ship"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
           "id": "ship",
           "incoming": [],
           "name": "Ship Order",
@@ -89,5 +98,7 @@
   ],
   "signals": [],
   "targetNamespace": "http://bpmn.io/schema/bpmn",
-  "unknownAttributes": {}
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud"
+  }
 }

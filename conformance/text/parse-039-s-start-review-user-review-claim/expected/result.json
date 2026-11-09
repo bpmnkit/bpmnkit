@@ -33,6 +33,7 @@
           {
             "eventType": "message",
             "id": "s2",
+            "messageName": "s2",
             "name": "Update",
             "type": "startEvent"
           },

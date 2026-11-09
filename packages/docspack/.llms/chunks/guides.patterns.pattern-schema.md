@@ -9,7 +9,7 @@ interface Pattern {
   readme: string                // domain context, Markdown
   workers: WorkerSpec[]
   variations: string            // common customizations, Markdown
-  template: PatternTemplate     // compact BPMN structure — a rough reference, predates ProcessPlan
+  template: PatternTemplate     // compact BPMN that expands to a deployable model; predates ProcessPlan
 }
 
 interface WorkerSpec {

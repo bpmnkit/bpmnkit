@@ -1,6 +1,23 @@
 import type { CompactDiagram } from "@bpmnkit/core"
 import { fenceUntrusted } from "./adapters/shared.js"
 
+// ── Deployability (every prompt that produces a diagram) ──────────────────────
+
+/**
+ * What Camunda 8 needs before it deploys a diagram. The proxy runs the deploy gate
+ * on every diagram it returns, so a model that leaves these out is refused.
+ */
+export const DEPLOYABLE_RULES = [
+	"DEPLOYABLE ON CAMUNDA 8 — a diagram that breaks one of these is refused, not returned:",
+	"  • serviceTask, sendTask, message intermediateThrowEvent / message endEvent: jobType",
+	'  • message start/catch events and receiveTask: messageName; a caught message (not a process start) also a correlationKey FEEL expression, e.g. "=orderId"',
+	'  • timer events: timerDuration ("PT15M"), timerDate ("2026-12-01T09:00:00Z") or timerCycle ("R/PT1H")',
+	"  • signal events: signalName · error endEvent: errorCode · escalation throw/end: escalationCode",
+	"  • callActivity: calledProcess · businessRuleTask: decisionId + resultVariable",
+	'  • every flow leaving an exclusive/inclusive split: a FEEL condition ("=amount > 100"), or isDefault: true on exactly one',
+	"  • conditions, correlation keys and collections are FEEL expressions: they start with =",
+].join("\n")
+
 // ── Shared format blocks (used by non-MCP fallback adapters) ──────────────────
 
 export const COMPACT_FORMAT = [
@@ -25,6 +42,8 @@ export const COMPACT_FORMAT = [
 	"Containers: subProcess, adHocSubProcess, eventSubProcess, transaction",
 	"Data: dataObject, dataObjectReference (add dataObjectRef), dataStoreReference (add dataStoreRef) — wired by data associations, not sequence flows",
 	'HTTP REST calls: always use jobType: "io.camunda:http-json:1" with inputs {url, method, headers?, body?} and resultVariable.',
+	"",
+	DEPLOYABLE_RULES,
 ].join("\n")
 
 // ── MCP prompt builders (for Claude + Copilot with MCP tools) ─────────────────
@@ -49,6 +68,10 @@ export function buildMcpSystemPrompt(): string {
 		"alias, operation and inputs. Credentials are {{secrets.NAME}}, never values. For an HTTP API",
 		"without a connector, find_connectors lists its real endpoints: use alias http with api=<service>.",
 		"add_http_call (or Bridge.mcpAddHttpCall inside compose_diagram) still adds a plain REST call.",
+		"",
+		DEPLOYABLE_RULES,
+		"Every tool that changes the diagram ends its result with a deploy check. When it lists errors,",
+		"fix each one (the line names the element and the rule) before you finish.",
 		"",
 		"═══════════════════════════════════════════════════════",
 		"CAMUNDA BPMN BEST PRACTICES (always apply these)",
@@ -132,6 +155,11 @@ export function buildMcpImprovePrompt(findings: FindingInfo[]): string {
 		'  • Split gateways: question ending in "?" — e.g. "Invoice valid?"',
 		'  • Gateway outgoing flows: condition labels — "Yes"/"No", "Approved"/"Rejected"',
 		"  • Join gateways: no label",
+	)
+	lines.push(
+		"",
+		DEPLOYABLE_RULES,
+		"Every tool that changes the diagram ends its result with a deploy check; fix what it lists.",
 	)
 	lines.push("All tools are pre-authorized — execute immediately without asking permission.")
 	return lines.join("\n")
@@ -354,6 +382,9 @@ export function buildImproveSystemPrompt(): string {
 		'  • XOR split outgoing flows: label with condition — "Yes"/"No", "Approved"/"Rejected"',
 		"  • Join gateways: no label",
 		"  • Never send >1 incoming flow to a task without a join gateway first",
+		"",
+		DEPLOYABLE_RULES,
+		"The edited model must deploy: an insert or update that leaves one of these out is refused.",
 	].join("\n")
 }
 

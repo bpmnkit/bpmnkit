@@ -20,6 +20,8 @@ pub(crate) mod throw_event;
 pub mod timer;
 pub mod user_task;
 pub mod variable;
+#[cfg(feature = "zeebe-validate")]
+mod zeebe_validate;
 
 pub use ad_hoc::AdHocSubProcessInstructionProcessor;
 pub use bpmn_element::BpmnElementProcessor;

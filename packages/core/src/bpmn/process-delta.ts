@@ -24,6 +24,7 @@ import {
 	NOTE_LINE,
 	type ProcessTextProblem,
 	TRIGGERS,
+	cycle,
 	duration,
 	edgeLabel,
 	kindOf,
@@ -95,6 +96,22 @@ export interface DeltaNode {
 	inside?: string
 	/** A timer's ISO 8601 duration (`PT5M`), from `after=`. */
 	timerDuration?: string
+	/** A timer's date, from `at=`. */
+	timerDate?: string
+	/** A timer's cycle (`R/PT1H`), from `every=`. */
+	timerCycle?: string
+	/** A call activity's called process id, from `called=`. */
+	calledProcess?: string
+	/** The message name, from `msg=`. */
+	messageName?: string
+	/** The FEEL correlation key with its leading `=`, from `key=`. */
+	correlationKey?: string
+	/** The signal name, from `signal=`. */
+	signalName?: string
+	/** The error code, from `error=`. */
+	errorCode?: string
+	/** The escalation code, from `escalation=`. */
+	escalationCode?: string
 	/** `nonint`: a non-interrupting boundary or start event. */
 	interrupting?: false
 	line: number
@@ -188,6 +205,15 @@ function readSpec(
 		else if (key === "inside" && value) node.inside = value
 		else if (key === "nonint" && value === undefined) node.interrupting = false
 		else if (key === "after" && value && duration(value)) node.timerDuration = duration(value)
+		else if (key === "at" && value) node.timerDate = value
+		else if (key === "every" && value && cycle(value)) node.timerCycle = cycle(value)
+		else if (key === "called" && value) node.calledProcess = value
+		else if (key === "msg" && value) node.messageName = value
+		else if (key === "key" && value)
+			node.correlationKey = value.startsWith("=") ? value : `=${value}`
+		else if (key === "signal" && value) node.signalName = value
+		else if (key === "error" && value) node.errorCode = value
+		else if (key === "escalation" && value) node.escalationCode = value
 		else problems.push({ line, message: `unknown attribute "${attr}" on "${id}"; ignored` })
 	}
 	return node

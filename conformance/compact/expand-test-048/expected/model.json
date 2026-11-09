@@ -7,16 +7,31 @@
         "bpmnElement": "Process_1",
         "edges": [
           {
+            "bpmnElement": "Flow_Start_Process_1",
+            "id": "Flow_Start_Process_1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 36,
+                "y": 25
+              },
+              {
+                "x": 96,
+                "y": 25
+              }
+            ]
+          },
+          {
             "bpmnElement": "f1",
             "id": "f1_di",
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 50,
+                "x": 146,
                 "y": 25
               },
               {
-                "x": 110,
+                "x": 206,
                 "y": 25
               }
             ]
@@ -26,9 +41,20 @@
         "shapes": [
           {
             "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 0,
+              "y": 7
+            },
+            "bpmnElement": "Start_Process_1",
+            "id": "Start_Process_1_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
               "height": 50,
               "width": 50,
-              "x": 0,
+              "x": 96,
               "y": 0
             },
             "bpmnElement": "gw",
@@ -38,7 +64,7 @@
               "bounds": {
                 "height": 14,
                 "width": 42,
-                "x": 4,
+                "x": 100,
                 "y": 54
               }
             },
@@ -48,7 +74,7 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 110,
+              "x": 206,
               "y": 7
             },
             "bpmnElement": "end",
@@ -57,7 +83,7 @@
               "bounds": {
                 "height": 14,
                 "width": 40,
-                "x": 108,
+                "x": 204,
                 "y": 47
               }
             },
@@ -76,6 +102,7 @@
     "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
     "dc": "http://www.omg.org/spec/DD/20100524/DC",
     "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
     "zeebe": "http://camunda.org/schema/zeebe/1.0"
   },
   "processes": [
@@ -84,9 +111,22 @@
       "extensionElements": [],
       "flowElements": [
         {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "Start_Process_1",
+          "incoming": [],
+          "outgoing": [
+            "Flow_Start_Process_1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
           "extensionElements": [],
           "id": "gw",
-          "incoming": [],
+          "incoming": [
+            "Flow_Start_Process_1"
+          ],
           "name": "Valid?",
           "outgoing": [
             "f1"
@@ -113,6 +153,13 @@
       "sequenceFlows": [
         {
           "extensionElements": [],
+          "id": "Flow_Start_Process_1",
+          "sourceRef": "Start_Process_1",
+          "targetRef": "gw",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
           "id": "f1",
           "sourceRef": "gw",
           "targetRef": "end",
@@ -125,5 +172,7 @@
   ],
   "signals": [],
   "targetNamespace": "http://bpmn.io/schema/bpmn",
-  "unknownAttributes": {}
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud"
+  }
 }

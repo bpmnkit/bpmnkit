@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 8,
+    "error": 12,
     "info": 2,
     "warning": 16
   },
@@ -350,10 +350,62 @@
       "processId": "handle-invoice",
       "severity": "error",
       "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "invoiceApproved"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value 'bpmn:getDataObject('approved')'. An expression must start with '=' (e.g. '=bpmn:getDataObject('approved')').",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "invoiceNotApproved"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value 'not(bpmn:getDataObject('approved'))'. An expression must start with '=' (e.g. '=not(bpmn:getDataObject('approved'))').",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "reviewSuccessful"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value 'bpmn:getDataObject('clarified') = 'yes''. An expression must start with '=' (e.g. '=bpmn:getDataObject('clarified') = 'yes'').",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "reviewNotSuccessful"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value 'bpmn:getDataObject('clarified') = 'no''. An expression must start with '=' (e.g. '=bpmn:getDataObject('clarified') = 'no'').",
+      "plane": "handle-invoice",
+      "processId": "handle-invoice",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
     }
   ],
   "platform": {
     "id": "none"
   },
-  "total": 26
+  "total": 30
 }

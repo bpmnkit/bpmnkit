@@ -10,16 +10,23 @@ import type {
 	BpmnDiShape,
 	BpmnDiagram,
 	BpmnElementType,
+	BpmnError,
+	BpmnEscalation,
 	BpmnEventDefinition,
 	BpmnFlowElement,
 	BpmnGroup,
+	BpmnMessage,
 	BpmnProcess,
 	BpmnSequenceFlow,
+	BpmnSignal,
 	BpmnTextAnnotation,
 } from "./bpmn-model.js"
+import { normalizeCamundaVersion } from "./camunda-compat.js"
+import { toFeelCondition } from "./feel-condition.js"
 import { restConnectorTaskType } from "./rest-connector.js"
-import { assignEventDefinitionIds } from "./stable-ids.js"
-import { makeConditionalDefinition } from "./zeebe-extensions.js"
+import { assignEventDefinitionIds, rootDefinitionId } from "./stable-ids.js"
+import { makeConditionalDefinition, zeebeExtensionsToXmlElements } from "./zeebe-extensions.js"
+import { assertDeployable } from "./zeebe-validate/gate.js"
 
 // ── Types ───────────────────────────────────────────────────────────────────
 
@@ -98,7 +105,7 @@ export interface CompactElement {
 	eventType?: string
 	/** Boundary event: host element ID */
 	attachedTo?: string
-	/** Boundary event: false = non-interrupting */
+	/** Boundary event, or the start event of an event sub-process: false = non-interrupting */
 	interrupting?: boolean
 	/** Nested content for sub-process container types (subProcess, eventSubProcess, etc.) */
 	children?: { elements: CompactElement[]; flows: CompactFlow[] }
@@ -119,8 +126,37 @@ export interface CompactElement {
 	}
 	/** A timer event's ISO 8601 duration (`PT5M`): how long it waits once reached. */
 	timerDuration?: string
+	/** A timer event's ISO 8601 date-time (`2026-12-01T09:00:00Z`): when it fires. */
+	timerDate?: string
+	/** A timer event's ISO 8601 repeating interval (`R/PT1H`, `R3/PT10M`) or cron expression. */
+	timerCycle?: string
+	/**
+	 * A message event's or receive task's message name. {@link expand} writes one
+	 * `bpmn:message` per name and correlation key and points the element at it.
+	 */
+	messageName?: string
+	/**
+	 * The FEEL expression (`=orderId`) a caught message is correlated on, written
+	 * as the message's `zeebe:subscription`. Camunda 8 needs it on every message
+	 * caught outside a process start event.
+	 */
+	correlationKey?: string
+	/** A signal event's signal name (a `bpmn:signal` per name). */
+	signalName?: string
+	/**
+	 * An error event's error code (a `bpmn:error` per code). A thrown error needs
+	 * one; an error boundary or start event without one catches every error.
+	 */
+	errorCode?: string
+	/** An escalation event's escalation code (a `bpmn:escalation` per code). */
+	escalationCode?: string
 	/** A conditional event's FEEL condition (Camunda 8.9+). */
 	condition?: string
+	/**
+	 * A link event's name: a throw jumps to the catch of the same name. BPMN
+	 * requires it on every link event definition.
+	 */
+	linkName?: string
 }
 
 /** A sequence flow in compact form. */
@@ -244,9 +280,57 @@ function findAttr(ext: XmlElement[], name: string, attr: string): string | undef
 	return ext.find((e) => e.name === name)?.attributes[attr]
 }
 
-function compactifyElement(el: BpmnFlowElement): CompactElement {
+/** The root elements an event definition points at, read by {@link compactify}. */
+type RootDefinitions = Pick<BpmnDefinitions, "messages" | "errors" | "signals" | "escalations">
+
+/** The names and codes an element's event definition or `messageRef` resolves to. */
+function compactifyReferences(
+	el: BpmnFlowElement,
+	result: CompactElement,
+	roots: RootDefinitions,
+): void {
+	const message = (ref: string | undefined) => {
+		// `?? []`: callers such as the lint plugin pass partial models.
+		const found = ref === undefined ? undefined : (roots.messages ?? []).find((m) => m.id === ref)
+		if (found?.name) result.messageName = found.name
+		const key = found?.extensionElements?.find((x) => x.name === "zeebe:subscription")?.attributes
+			.correlationKey
+		if (key) result.correlationKey = key
+	}
+	if (el.type === "receiveTask") message(el.messageRef)
+	const def = "eventDefinitions" in el ? el.eventDefinitions[0] : undefined
+	switch (def?.type) {
+		case "timer":
+			if (def.timeDate) result.timerDate = def.timeDate
+			if (def.timeCycle) result.timerCycle = def.timeCycle
+			break
+		case "message":
+			message(def.messageRef)
+			break
+		case "signal": {
+			const name = roots.signals?.find((x) => x.id === def.signalRef)?.name
+			if (name) result.signalName = name
+			break
+		}
+		case "error": {
+			const code = (roots.errors ?? []).find((x) => x.id === def.errorRef)?.errorCode
+			if (code) result.errorCode = code
+			break
+		}
+		case "escalation": {
+			const code = (roots.escalations ?? []).find((x) => x.id === def.escalationRef)?.escalationCode
+			if (code) result.escalationCode = code
+			break
+		}
+	}
+}
+
+function compactifyElement(el: BpmnFlowElement, roots: RootDefinitions): CompactElement {
 	const ext = el.extensionElements
-	const result: CompactElement = { id: el.id, type: el.type }
+	// A parsed event sub-process is a subProcess triggered by an event; expanded as a plain
+	// sub-process it would lose its trigger, and Zeebe refuses its typed start event there.
+	const type = el.type === "subProcess" && el.triggeredByEvent ? "eventSubProcess" : el.type
+	const result: CompactElement = { id: el.id, type }
 	if (el.name) result.name = el.name
 	if (el.documentation) result.documentation = el.documentation
 
@@ -351,7 +435,9 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 		result.eventType = def?.type
 		if (def?.type === "timer" && def.timeDuration) result.timerDuration = def.timeDuration
 		if (def?.type === "conditional" && def.condition !== undefined) result.condition = def.condition
+		if (def?.type === "link" && def.name !== undefined) result.linkName = def.name
 	}
+	compactifyReferences(el, result, roots)
 
 	const loop = "loopCharacteristics" in el ? el.loopCharacteristics : undefined
 	const zeebeLoop = loop?.extensionElements.find((x) => x.name === "zeebe:loopCharacteristics")
@@ -373,6 +459,7 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 		result.attachedTo = el.attachedToRef
 		if (el.cancelActivity === false) result.interrupting = false
 	}
+	if (el.type === "startEvent" && el.isInterrupting === false) result.interrupting = false
 
 	if (el.type === "dataObjectReference" && el.dataObjectRef !== undefined) {
 		result.dataObjectRef = el.dataObjectRef
@@ -389,7 +476,7 @@ function compactifyElement(el: BpmnFlowElement): CompactElement {
 		const seqFlows: BpmnSequenceFlow[] =
 			"sequenceFlows" in el && Array.isArray(el.sequenceFlows) ? el.sequenceFlows : []
 		result.children = {
-			elements: el.flowElements.map(compactifyElement),
+			elements: el.flowElements.map((child) => compactifyElement(child, roots)),
 			flows: compactifyFlows(el.flowElements, seqFlows),
 		}
 	}
@@ -447,7 +534,7 @@ export function compactify(defs: BpmnDefinitions): CompactDiagram {
 			id: process.id,
 			name: process.name,
 			documentation: process.documentation,
-			elements: process.flowElements.map(compactifyElement),
+			elements: process.flowElements.map((el) => compactifyElement(el, defs)),
 			flows: compactifyFlows(process.flowElements, process.sequenceFlows),
 		})),
 	}
@@ -732,6 +819,7 @@ export function makeExtensions(el: CompactElement): XmlElement[] {
 
 function buildSubContent(
 	children: { elements: CompactElement[]; flows: CompactFlow[] } | undefined,
+	roots: CompactRoots | undefined,
 ): {
 	flowElements: BpmnFlowElement[]
 	sequenceFlows: BpmnSequenceFlow[]
@@ -766,6 +854,7 @@ function buildSubContent(
 				inc.get(child.id) ?? [],
 				out.get(child.id) ?? [],
 				defaults.get(child.id),
+				roots,
 			),
 		),
 		sequenceFlows: children.flows.map((f) => ({
@@ -773,7 +862,9 @@ function buildSubContent(
 			name: f.name,
 			sourceRef: f.from,
 			targetRef: f.to,
-			conditionExpression: f.condition ? { text: f.condition, attributes: {} } : undefined,
+			conditionExpression: f.condition
+				? { text: toFeelCondition(f.condition), attributes: {} }
+				: undefined,
 			extensionElements: [],
 			unknownAttributes: {},
 		})),
@@ -791,12 +882,122 @@ function templateAttributes(el: CompactElement): Record<string, string> {
 		: { "zeebe:modelerTemplate": id, "zeebe:modelerTemplateVersion": String(version) }
 }
 
+/**
+ * The root elements {@link expand} writes for the names and codes elements carry:
+ * one message per name and correlation key, one signal per name, one error or
+ * escalation per code. Ids are made as the builder makes them (`Message_<name>`).
+ */
+export class CompactRoots {
+	readonly messages: BpmnMessage[] = []
+	readonly errors: BpmnError[] = []
+	readonly signals: BpmnSignal[] = []
+	readonly escalations: BpmnEscalation[] = []
+
+	message(name: string, correlationKey: string | undefined): string {
+		const key = (m: BpmnMessage) =>
+			m.extensionElements?.find((x) => x.name === "zeebe:subscription")?.attributes.correlationKey
+		let found = this.messages.find((m) => m.name === name && key(m) === correlationKey)
+		if (found === undefined) {
+			found = {
+				id: rootDefinitionId("Message", name, this.messages),
+				name,
+				unknownAttributes: {},
+			}
+			if (correlationKey !== undefined) {
+				found.extensionElements = zeebeExtensionsToXmlElements({
+					subscription: { correlationKey },
+				})
+			}
+			this.messages.push(found)
+		}
+		return found.id
+	}
+
+	signal(name: string): string {
+		let found = this.signals.find((x) => x.name === name)
+		if (found === undefined) {
+			found = { id: rootDefinitionId("Signal", name, this.signals), name, unknownAttributes: {} }
+			this.signals.push(found)
+		}
+		return found.id
+	}
+
+	error(code: string): string {
+		let found = this.errors.find((x) => x.errorCode === code)
+		if (found === undefined) {
+			found = {
+				id: rootDefinitionId("Error", code, this.errors),
+				name: code,
+				errorCode: code,
+				unknownAttributes: {},
+			}
+			this.errors.push(found)
+		}
+		return found.id
+	}
+
+	escalation(code: string): string {
+		let found = this.escalations.find((x) => x.escalationCode === code)
+		if (found === undefined) {
+			found = {
+				id: rootDefinitionId("Escalation", code, this.escalations),
+				name: code,
+				escalationCode: code,
+				unknownAttributes: {},
+			}
+			this.escalations.push(found)
+		}
+		return found.id
+	}
+}
+
+/** The element's event definition, with the names, codes and times it carries. */
+function eventDefinitionOf(
+	el: CompactElement,
+	roots: CompactRoots | undefined,
+): BpmnEventDefinition | undefined {
+	const made = el.eventType ? makeEventDef(el.eventType) : undefined
+	switch (made?.type) {
+		case "timer":
+			return {
+				...made,
+				...(el.timerDuration ? { timeDuration: el.timerDuration } : {}),
+				...(el.timerDate ? { timeDate: el.timerDate } : {}),
+				...(el.timerCycle ? { timeCycle: el.timerCycle } : {}),
+			}
+		case "conditional":
+			return el.condition !== undefined ? makeConditionalDefinition(el.condition) : made
+		case "link":
+			return el.linkName !== undefined ? { ...made, name: el.linkName } : made
+		case "message":
+			return roots && el.messageName
+				? { ...made, messageRef: roots.message(el.messageName, el.correlationKey || undefined) }
+				: made
+		case "signal":
+			return roots && el.signalName ? { ...made, signalRef: roots.signal(el.signalName) } : made
+		case "error":
+			return roots && el.errorCode ? { ...made, errorRef: roots.error(el.errorCode) } : made
+		case "escalation":
+			return roots && el.escalationCode
+				? { ...made, escalationRef: roots.escalation(el.escalationCode) }
+				: made
+		default:
+			return made
+	}
+}
+
+/**
+ * One compact element as a flow element. `roots`, when given, receives the
+ * messages, signals, errors and escalations the element names; without it the
+ * names and codes are not written.
+ */
 export function buildFlowElement(
 	el: CompactElement,
 	incoming: string[],
 	outgoing: string[],
 	/** Id of the outgoing flow marked `isDefault`, for a gateway that has one. */
 	defaultFlow?: string,
+	roots?: CompactRoots,
 ): BpmnFlowElement {
 	const base = {
 		id: el.id,
@@ -807,23 +1008,17 @@ export function buildFlowElement(
 		extensionElements: makeExtensions(el),
 		unknownAttributes: templateAttributes(el),
 	}
-	const made = el.eventType ? makeEventDef(el.eventType) : undefined
-	const eventDef =
-		made?.type === "timer" && el.timerDuration
-			? { ...made, timeDuration: el.timerDuration }
-			: made?.type === "conditional" && el.condition !== undefined
-				? makeConditionalDefinition(el.condition)
-				: made
+	const eventDef = eventDefinitionOf(el, roots)
 	const eventDefs: BpmnEventDefinition[] = eventDef ? [eventDef] : []
 	// Zeebe rejects an id-less definition at deploy time; the builder derives the same ids.
 	assignEventDefinitionIds(el.id, eventDefs)
-	const subContent = buildSubContent(el.children)
+	const subContent = buildSubContent(el.children, roots)
 	const loop = el.multiInstance && {
 		loopCharacteristics: {
 			isSequential: el.multiInstance.sequential || undefined,
 			completionCondition: el.multiInstance.completionCondition
 				? {
-						text: el.multiInstance.completionCondition,
+						text: toFeelCondition(el.multiInstance.completionCondition),
 						attributes: { "xsi:type": "bpmn:tFormalExpression" },
 					}
 				: undefined,
@@ -848,7 +1043,13 @@ export function buildFlowElement(
 
 	switch (el.type) {
 		case "startEvent":
-			return { ...base, type: "startEvent", eventDefinitions: eventDefs }
+			return {
+				...base,
+				type: "startEvent",
+				eventDefinitions: eventDefs,
+				// An event sub-process's start: `false` lets the scope go on
+				...(el.interrupting === false ? { isInterrupting: false } : {}),
+			}
 		case "endEvent":
 			return { ...base, type: "endEvent", eventDefinitions: eventDefs }
 		case "intermediateCatchEvent":
@@ -876,7 +1077,14 @@ export function buildFlowElement(
 		case "sendTask":
 			return { ...base, type: "sendTask", ...loop }
 		case "receiveTask":
-			return { ...base, type: "receiveTask", ...loop }
+			return {
+				...base,
+				type: "receiveTask",
+				...(roots && el.messageName
+					? { messageRef: roots.message(el.messageName, el.correlationKey || undefined) }
+					: {}),
+				...loop,
+			}
 		case "manualTask":
 			return { ...base, type: "manualTask", ...loop }
 		case "task":
@@ -979,7 +1187,10 @@ function buildDiagram(processId: string, process: BpmnProcess): BpmnDiagram {
 	}
 }
 
-function expandProcess(compact: CompactProcess): { process: BpmnProcess; diagram: BpmnDiagram } {
+function expandProcess(
+	compact: CompactProcess,
+	roots: CompactRoots,
+): { process: BpmnProcess; diagram: BpmnDiagram } {
 	const incoming = new Map<string, string[]>()
 	const outgoing = new Map<string, string[]>()
 	for (const f of compact.flows) {
@@ -993,7 +1204,13 @@ function expandProcess(compact: CompactProcess): { process: BpmnProcess; diagram
 
 	const defaults = defaultFlows(compact.elements, compact.flows)
 	const flowElements: BpmnFlowElement[] = compact.elements.map((el) =>
-		buildFlowElement(el, incoming.get(el.id) ?? [], outgoing.get(el.id) ?? [], defaults.get(el.id)),
+		buildFlowElement(
+			el,
+			incoming.get(el.id) ?? [],
+			outgoing.get(el.id) ?? [],
+			defaults.get(el.id),
+			roots,
+		),
 	)
 
 	const sequenceFlows: BpmnSequenceFlow[] = compact.flows.map((f) => ({
@@ -1001,7 +1218,9 @@ function expandProcess(compact: CompactProcess): { process: BpmnProcess; diagram
 		name: f.name,
 		sourceRef: f.from,
 		targetRef: f.to,
-		conditionExpression: f.condition ? { text: f.condition, attributes: {} } : undefined,
+		conditionExpression: f.condition
+			? { text: toFeelCondition(f.condition), attributes: {} }
+			: undefined,
 		extensionElements: [],
 		unknownAttributes: {},
 	}))
@@ -1042,12 +1261,40 @@ function expandProcess(compact: CompactProcess): { process: BpmnProcess; diagram
 }
 
 /**
+ * Options for {@link expand}. A compact diagram is written for Camunda 8, so
+ * the result is checked with `assertDeployable` unless `validate` is `false`.
+ */
+export interface ExpandOptions {
+	/**
+	 * Refuse a diagram Zeebe would reject on deploy (default `true`). Pass `false`
+	 * for a diagram that is not finished (a streamed preview, an edit in
+	 * progress) or not meant for Camunda 8; the result is then not marked as
+	 * Camunda 8 unless the diagram names an `executionPlatformVersion`.
+	 */
+	validate?: boolean
+	/**
+	 * Fill the documented `PLACEHOLDERS` (job types, message names, conditions,
+	 * ...) instead of refusing, and return the filled model. Default `false`.
+	 */
+	placeholders?: boolean
+	/** The Camunda 8 version to check for; defaults to the diagram's `executionPlatformVersion`. */
+	camundaVersion?: string
+}
+
+/**
  * Restores a {@link CompactDiagram} (produced by {@link compactify} or an AI
  * model) back to a full {@link BpmnDefinitions} with auto-generated layout.
+ *
+ * The result targets Camunda 8: it carries `modeler:executionPlatform="Camunda
+ * Cloud"` (and the diagram's `executionPlatformVersion`, when it names one), so a
+ * later `Bpmn.export` checks it the same way.
+ * Then `assertDeployable` refuses what Zeebe would reject, unless
+ * `options.validate` is `false`.
  *
  * @throws {Error} When the diagram cannot be valid BPMN — a flow or boundary
  * event naming an element that is not in its scope, a duplicate or missing id,
  * or an unknown `eventType`. The message lists every problem at once.
+ * @throws {DeployabilityError} When the gate runs and Zeebe would reject the model.
  *
  * @example
  * ```typescript
@@ -1057,21 +1304,25 @@ function expandProcess(compact: CompactProcess): { process: BpmnProcess; diagram
  * editor.loadXml(xml)
  * ```
  */
-export function expand(compact: CompactDiagram): BpmnDefinitions {
+export function expand(compact: CompactDiagram, options: ExpandOptions = {}): BpmnDefinitions {
 	assertCompactDiagram(compact, "expand")
 	const problems = compactProblems(compact)
 	if (problems.length > 0) {
 		throw new Error(`expand: invalid CompactDiagram — ${problems.join("; ")}`)
 	}
+	const roots = new CompactRoots()
 	const processes: BpmnProcess[] = []
 	const diagrams: BpmnDiagram[] = []
 	for (const cp of compact.processes) {
-		const { process, diagram } = expandProcess(cp)
+		const { process, diagram } = expandProcess(cp, roots)
 		processes.push(process)
 		diagrams.push(diagram)
 	}
+	const gate = options.validate !== false
 	const platform = compact.executionPlatformVersion
-	return {
+	// Gated output is Camunda 8 output: marking it so makes `Bpmn.export`'s "auto" check agree.
+	const camunda8 = gate || platform !== undefined
+	const definitions: BpmnDefinitions = {
 		id: compact.id,
 		targetNamespace: "http://bpmn.io/schema/bpmn",
 		namespaces: {
@@ -1080,21 +1331,23 @@ export function expand(compact: CompactDiagram): BpmnDefinitions {
 			dc: "http://www.omg.org/spec/DD/20100524/DC",
 			di: "http://www.omg.org/spec/DD/20100524/DI",
 			zeebe: "http://camunda.org/schema/zeebe/1.0",
-			...(platform === undefined ? {} : { modeler: "http://camunda.org/schema/modeler/1.0" }),
+			...(camunda8 ? { modeler: "http://camunda.org/schema/modeler/1.0" } : {}),
 		},
-		unknownAttributes:
-			platform === undefined
-				? {}
-				: {
-						"modeler:executionPlatform": "Camunda Cloud",
-						"modeler:executionPlatformVersion": platform,
-					},
-		errors: [],
-		escalations: [],
-		messages: [],
-		signals: [],
+		unknownAttributes: {
+			...(camunda8 ? { "modeler:executionPlatform": "Camunda Cloud" } : {}),
+			...(platform === undefined ? {} : { "modeler:executionPlatformVersion": platform }),
+		},
+		errors: roots.errors,
+		escalations: roots.escalations,
+		messages: roots.messages,
+		signals: roots.signals,
 		collaborations: [],
 		processes,
 		diagrams,
 	}
+	if (!gate) return definitions
+	return assertDeployable(definitions, {
+		camundaVersion: normalizeCamundaVersion(options.camundaVersion ?? platform),
+		placeholders: options.placeholders ?? false,
+	}).definitions
 }

@@ -6,6 +6,7 @@
         {
           "eventType": "message",
           "id": "_cc9778bd-edd8-4df2-ba15-56c310f90e62",
+          "messageName": "Service Level",
           "name": "Receive customer request",
           "type": "startEvent"
         },
@@ -81,6 +82,7 @@
           "attachedTo": "_d034722f-751d-4f37-a3d7-47993822e979",
           "eventType": "message",
           "id": "Bpmn_BoundaryEvent_LwKtwhqHEeWDuOtG0oS24A",
+          "messageName": "Service Level",
           "type": "boundaryEvent"
         }
       ],

@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/case-marker",
+      "message": "The case marker 'zeebe:case' is only allowed on a process, but was found on 'serviceTask'",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Move zeebe:case to the process."
+    }
+  ]
+}

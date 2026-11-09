@@ -1266,6 +1266,53 @@ pre {
 	border-color: var(--accent-on-ink);
 }
 
+/* The Rust twin sits under the npm list as one hairline row, not a second grid:
+   it is the same toolkit, so it should read as part of this section. */
+.pkg-rust {
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	gap: 8px 20px;
+	align-items: center;
+	margin-top: 22px;
+	padding: 16px 22px;
+	border: 1px solid var(--ink-rule);
+	color: var(--ink-fg-muted);
+}
+
+.pkg-rust:hover {
+	text-decoration: none;
+	border-color: var(--accent-on-ink);
+}
+
+.pkg-rust-label {
+	font-family: var(--font-mono);
+	font-size: 10.5px;
+	letter-spacing: 0.06em;
+	text-transform: uppercase;
+	color: var(--accent-on-ink);
+}
+
+.pkg-rust-body {
+	font-size: 13.5px;
+	line-height: 1.5;
+}
+
+.pkg-rust-body code,
+.pkg-rust-cmd {
+	font-family: var(--font-mono);
+	font-size: 12px;
+}
+
+.pkg-rust-cmd {
+	color: var(--ink-fg);
+}
+
+@media (max-width: 720px) {
+	.pkg-rust {
+		grid-template-columns: 1fr;
+	}
+}
+
 .pkg-links {
 	display: flex;
 	flex-wrap: wrap;

@@ -48,6 +48,12 @@ import {
 import * as claude from "./adapters/claude.js"
 import * as copilot from "./adapters/copilot.js"
 import * as gemini from "./adapters/gemini.js"
+import {
+	type FinalEvent,
+	type FinalGate,
+	finalDiagramEvents,
+	finalGateOf,
+} from "./final-diagram.js"
 import { watchOutputFile } from "./preview-watch.js"
 import type { FindingInfo, ImproveContext } from "./prompt.js"
 import {
@@ -391,6 +397,7 @@ const handleRequest: http.RequestListener = async (req, res) => {
 		let context: unknown
 		let backend: string | null
 		let action: string | null
+		let gate: FinalGate
 		try {
 			const parsed = JSON.parse(body) as {
 				messages: typeof messages
@@ -402,6 +409,7 @@ const handleRequest: http.RequestListener = async (req, res) => {
 			context = parsed.context ?? null
 			backend = parsed.backend ?? null
 			action = parsed.action ?? null
+			gate = finalGateOf(parsed)
 		} catch {
 			res.writeHead(400)
 			res.end("Bad Request")
@@ -502,7 +510,8 @@ const handleRequest: http.RequestListener = async (req, res) => {
 		// ── Apply auto-fixes, then collect remaining findings for improve ─────────
 		const findings: FindingInfo[] = []
 		// fixedDefs holds the auto-fixed diagram; used as input for the AI
-		const fixedDefs = currentCompact ? expand(currentCompact) : null
+		// The user's own diagram, possibly unfinished: the gate applies to what comes back.
+		const fixedDefs = currentCompact ? expand(currentCompact, { validate: false }) : null
 		if (currentCompact && fixedDefs) {
 			try {
 				const report = optimize(fixedDefs)
@@ -563,8 +572,13 @@ const handleRequest: http.RequestListener = async (req, res) => {
 
 			// Write input as BPMN XML (mcp-server reads XML, not CompactDiagram JSON)
 			// Use fixedDefs if available (auto-fixes already applied); fall back to raw expand
-			if (fixedDefs) writeFileSync(inputFile, Bpmn.export(fixedDefs))
-			else if (currentCompact) writeFileSync(inputFile, Bpmn.export(expand(currentCompact)))
+			// A work-in-progress diagram for the MCP editor: not gated for deploy errors here.
+			if (fixedDefs) writeFileSync(inputFile, Bpmn.export(fixedDefs, { validate: false }))
+			else if (currentCompact)
+				writeFileSync(
+					inputFile,
+					Bpmn.export(expand(currentCompact, { validate: false }), { validate: false }),
+				)
 
 			const mcpConfig = {
 				mcpServers: {
@@ -623,7 +637,8 @@ const handleRequest: http.RequestListener = async (req, res) => {
 			if (now - lastFrameAt < PREVIEW_FRAME_MS) return
 			lastFrameAt = now
 			try {
-				sendPreview(Bpmn.export(defs))
+				// A streamed preview frame is a partial diagram.
+				sendPreview(Bpmn.export(defs, { validate: false }))
 			} catch (err) {
 				console.error(`[server] preview frame dropped: ${String(err)}`)
 			}
@@ -658,23 +673,27 @@ const handleRequest: http.RequestListener = async (req, res) => {
 		// ── Post-process: get final diagram and emit XML ──────────────────────────
 		if (outputFile) {
 			// MCP path: mcp-server writes BPMN XML directly — read and emit as-is
+			let xml: string | null = null
 			try {
-				const xml = readFileSync(outputFile, "utf8")
-				res.write(`data: ${JSON.stringify({ type: "xml", xml })}\n\n`)
-				console.log("[server] MCP XML output read successfully")
+				xml = readFileSync(outputFile, "utf8")
 			} catch {
 				console.log("[server] MCP output file not written (no diagram changes)")
 			}
+			// The model saw the deploy check after every tool call; this is the last word.
+			if (xml !== null) writeFinal(res, finalDiagramEvents(xml, gate))
 		} else {
 			// Fallback path: extract CompactDiagram from LLM text response
 			const finalCompact = extractCompactDiagram(accumulated.join(""))
 			if (finalCompact) {
 				try {
-					const xml = Bpmn.export(expand(finalCompact))
-					res.write(`data: ${JSON.stringify({ type: "xml", xml })}\n\n`)
-					console.log("[server] XML emitted via core expand + export")
+					// Expanded ungated so the refusal names every problem, in the gate's words.
+					const xml = Bpmn.export(expand(finalCompact, { validate: false }), { validate: false })
+					writeFinal(res, finalDiagramEvents(xml, gate))
 				} catch (err) {
 					console.error("[server] failed to expand result:", String(err))
+					res.write(
+						`data: ${JSON.stringify({ type: "error", message: `The diagram could not be built: ${err instanceof Error ? err.message : String(err)}` })}\n\n`,
+					)
 				}
 			}
 		}
@@ -1261,6 +1280,7 @@ const handleRequest: http.RequestListener = async (req, res) => {
 		let definitions: BpmnDefinitions
 		let instruction: string | null
 		let backend: string | null
+		let gate: FinalGate
 		try {
 			const parsed = JSON.parse(body) as {
 				xml?: string
@@ -1268,6 +1288,7 @@ const handleRequest: http.RequestListener = async (req, res) => {
 				instruction?: string | null
 				backend?: string | null
 			}
+			gate = finalGateOf(parsed)
 			// `xml` carries the whole model, so operations apply to it directly and
 			// nothing outside the compact projection is lost. `context` is the older
 			// contract, kept working for clients that have not been updated — it can
@@ -1278,7 +1299,8 @@ const handleRequest: http.RequestListener = async (req, res) => {
 				console.warn(
 					"[server] /improve received compact context; send { xml } to keep pools, lanes and ioMapping detail",
 				)
-				definitions = expand(parsed.context)
+				// The user's own diagram, possibly unfinished: the gate applies to what comes back.
+				definitions = expand(parsed.context, { validate: false })
 			} else {
 				res.writeHead(400)
 				res.end("Bad Request: send { xml } or { context }")
@@ -1403,9 +1425,10 @@ const handleRequest: http.RequestListener = async (req, res) => {
 					)
 					res.write(`data: ${JSON.stringify({ type: "problems", problems: edited.problems })}\n\n`)
 				}
-				const xml = Bpmn.export(edited.definitions)
-				res.write(`data: ${JSON.stringify({ type: "xml", xml })}\n\n`)
-				console.log(`[server] /improve → ${edited.applied} ops applied, XML emitted`)
+				// Serialized ungated, then gated as the bytes returned, like /chat's answer.
+				const xml = Bpmn.export(edited.definitions, { validate: false })
+				writeFinal(res, finalDiagramEvents(xml, gate))
+				console.log(`[server] /improve → ${edited.applied} ops applied`)
 			} catch (err) {
 				console.error("[server] /improve apply failed:", String(err))
 				res.write(
@@ -1960,3 +1983,11 @@ export function startServer(port = PORT, options: ProxyServerOptions = {}): void
 // Auto-start when run directly as a binary (not imported as a library)
 const __isMain = fileURLToPath(import.meta.url) === process.argv[1]
 if (__isMain) startServer()
+
+/** Writes the final-diagram events of an AI route, logging a refusal. */
+function writeFinal(res: http.ServerResponse, events: FinalEvent[]): void {
+	for (const event of events) {
+		if (event.type === "error") console.log(`[server] diagram refused: ${event.message}`)
+		res.write(`data: ${JSON.stringify(event)}\n\n`)
+	}
+}

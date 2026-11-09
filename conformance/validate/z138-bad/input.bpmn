@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="d" targetNamespace="t" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+<bpmn:process id="p" isExecutable="true">
+<bpmn:startEvent id="s"><bpmn:outgoing>f0</bpmn:outgoing></bpmn:startEvent>
+<bpmn:parallelGateway id="pg"><bpmn:incoming>f0</bpmn:incoming><bpmn:outgoing>f1</bpmn:outgoing><bpmn:outgoing>f3</bpmn:outgoing></bpmn:parallelGateway>
+<bpmn:exclusiveGateway id="g" default="f4"><bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing><bpmn:outgoing>f6</bpmn:outgoing></bpmn:exclusiveGateway>
+<bpmn:exclusiveGateway id="g2" default="f4"><bpmn:incoming>f3</bpmn:incoming><bpmn:outgoing>f4</bpmn:outgoing><bpmn:outgoing>f5</bpmn:outgoing></bpmn:exclusiveGateway>
+<bpmn:endEvent id="e"><bpmn:incoming>f2</bpmn:incoming><bpmn:incoming>f6</bpmn:incoming><bpmn:incoming>f4</bpmn:incoming><bpmn:incoming>f5</bpmn:incoming></bpmn:endEvent>
+<bpmn:sequenceFlow id="f0" sourceRef="s" targetRef="pg"/>
+<bpmn:sequenceFlow id="f1" sourceRef="pg" targetRef="g"/>
+<bpmn:sequenceFlow id="f3" sourceRef="pg" targetRef="g2"/>
+<bpmn:sequenceFlow id="f2" sourceRef="g" targetRef="e"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=x &gt; 3</bpmn:conditionExpression></bpmn:sequenceFlow>
+<bpmn:sequenceFlow id="f6" sourceRef="g" targetRef="e"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=x &gt; 1</bpmn:conditionExpression></bpmn:sequenceFlow>
+<bpmn:sequenceFlow id="f4" sourceRef="g2" targetRef="e"/>
+<bpmn:sequenceFlow id="f5" sourceRef="g2" targetRef="e"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=x &gt; 2</bpmn:conditionExpression></bpmn:sequenceFlow>
+</bpmn:process>
+</bpmn:definitions>

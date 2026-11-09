@@ -122,7 +122,15 @@
           "unknownAttributes": {}
         },
         {
-          "extensionElements": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "send"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
           "id": "msend",
           "incoming": [
             "Flow_mc_msend"

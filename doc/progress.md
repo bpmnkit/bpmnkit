@@ -5,6 +5,262 @@
 - Merged `main` into `chore/connector-templates-refresh`. `main` now keeps the templates in `spec/templates/connectors.json` and generates both `generated.ts` files from it (`spec-gen`), so the refresh was regenerated with `pnpm update-connectors` instead of merged by hand. The registry now has 134 templates.
 - New template `io.camunda.connectors.ManagedScript.v1` (run a Python or JavaScript script without a job worker) needed a `CONNECTOR_ALIASES` entry (`managed-script`); the aliases test requires one alias per bundled template.
 
+## 2026-11-09 — fix: CLI 1.5.0 would not start (connectors export never released)
+
+- Root cause: #247 added `applyTemplates` to `@bpmnkit/connectors` with no changeset, so connectors stayed at 1.3.1 on npm. Published `@bpmnkit/cli` 1.5.0 depends on `@bpmnkit/connectors ^1.3.1` and imports the missing export.
+- Changesets: `connectors` minor + `cli` patch (moves the cli range to the new connectors); `patterns` patch (src changed since 0.1.2, also unreleased). Checked every published package's imports of other `@bpmnkit/*` packages against the npm release: the only other missing exports are core's deployability symbols, already covered by pending changesets.
+- Guard: `scripts/changeset-check.mjs` (+ test, in `test:scripts`) fails a PR when a published package's `src/` changed and no changeset names it; new `changeset-check` job in `ci.yml`. `changeset status` was not used: it only checks that some changeset exists.
+
+## 2026-11-09 — reebe-wasm validates deployments like Zeebe by default
+
+- `reebe-wasm` turns on its `zeebe-validate` feature by default, so a browser deploy rejects what Zeebe rejects, as the server does. Measured: 730,418 B gzip (was 621,488 B without the validator).
+- `scripts/check-wasm-size.mjs` budget raised from 640,000 to 752,000 B (the new size plus ~3%). The 500 KB goal stays open.
+- `packages/engine/tests/wasm-runner.test.ts`: the receive-task fixture had its `zeebe:subscription` on the receive task; Zeebe reads it from the `bpmn:message`, and the browser build now rejects the old form. Moved there.
+- Not changed: `cargo clippy -p reebe-wasm --target wasm32-unknown-unknown` reports 15 unused imports in `reebe-db` when it is built without `postgres`. They predate this change (same count with the validator off), and CI does not lint that build.
+
+## 2026-11-09 — reebe: one database transaction per processed command
+
+- Follow-up to "test_timer_accuracy no longer measures the CI disk". A command's state writes, its appended events and follow-up commands, its key and position counters and its processed position used to be separate autocommits. They now commit once.
+- Design: `StateBackend::begin()` returns a `UnitOfWork` (`state()`, `commit(self)`, `rollback(self)`; dropping it rolls back). The engine hands processors an `EngineState` whose backend is `unit.state()`, so processors are unchanged. The repositories take a `Conn` (pool, or the unit's shared transaction, in `reebe-db/src/conn.rs`), so one copy of the SQL serves both. SQLite opens units with `BEGIN IMMEDIATE`, since a deferred transaction that reads first fails with SQLITE_BUSY rather than waiting. The memory backend rolls back by restoring a snapshot (it has no isolation or durability). reebe-wasm keeps its own loop and is unchanged.
+- Exactly once, replay-safe: the processed position commits with the command's effects, so after a crash the command was either fully applied or not at all, and the engine resumes after the processed position. Keys and positions come from `partition_key_state` in the same transaction, so a rolled-back command's keys are reissued, and no later record becomes visible before its follow-ups.
+- Failures: a processor or write error rolls the unit back. Database errors are retried 3 times (deadlocks, lost connections), and after that the command is skipped by writing only its position (it used to leave partial state). A failed `begin` or `commit` retries the command and does not skip it. A rollback clears the process-definition cache. Job workers are woken only after commit, not while the job row is still invisible.
+- Tests: `reebe-engine/tests/unit_of_work.rs` counts write transactions with row triggers that log each writing xid. A start→task→end instance with a job completion makes 13 transactions (3 API appends + 10 processed commands), against 64 before. A test also injects a failure into the unit's last write and checks that no element instance, event or follow-up command remains and that the engine goes on. There are unit-of-work contract tests for SQLite (`reebe-db/tests/sqlite.rs`) and the memory backend.
+- Measured on local Postgres 16 with `synchronous_commit` on and the same setup before and after. Delay: strace on the postmaster with `-e inject=fdatasync,fsync:delay_exit=80000`.
+  | | before | after |
+  |---|---|---|
+  | write transactions per processed command | ~6 (trigger count), ~14.5 `xact_commit` incl. reads | 1.0 |
+  | `test_timer_accuracy` latency, no delay (median of 3) | 104 ms | 53 ms |
+  | same, 80 ms fsync delay | 1735 ms (one run 1999 ms vs the 2 s bound) | 632 ms |
+  | reebe-bench 500/50, no delay | 62.5–66.3 PI/s | 126–135 PI/s |
+  | reebe-bench 2000/50, no delay | 46.5 PI/s | 115.8 PI/s |
+  | reebe-bench 20/20, 80 ms delay | 1.1 PI/s | 4.1 PI/s |
+  | reebe-bench 200/50, 80 ms delay | all requests timed out | 2.7 PI/s, 0 errors |
+- Risks: the `partition_key_state` row lock is now held from a command's first key until its commit, so API command appends on that partition wait for the command being processed (milliseconds; throughput rose anyway). A deterministic `commit` failure would retry forever (logged). The raw cargo wasm is +3.4 KB gzip (~625 KB against the 640 KB gate).
+
+## 2026-11-09 — Zeebe validator in reebe-wasm: measured, shrunk, not enabled (over budget)
+
+- Measured (gzip -9 of wasm-bindgen output, `scripts/check-wasm-size.mjs` budget 640,000 B): without the validator 621,488 B; with `reebe-engine/zeebe-validate` 1,031,196 B.
+- Shrink 1: `bpmnkit-compat` takes `bpmnkit-feel` without default features; new `full-feel` feature (default on) restores IANA zones and full regex. reebe's workspace takes it with `default-features = false`, so the browser build gets the same FEEL as reebe's own wasm FEEL; native builds still get both through `reebe-feel/full-feel` (feature unification). 1,031,196 → 762,589 B.
+- Shrink 2: `bpmnkit_compat::compat::find_straight_through_loops` runs only `compat/no-loop` (same findings, same order; a test compares it with the filtered `analyze_camunda_compat`). reebe's deploy check calls it, so the other compat rules are no longer linked. 762,589 → 727,582 B.
+- What is left (+106 KB gzip): the validator's own code (`zeebe::xml` ~37 KB raw, events/structure/tasks/extensions/references ~13–17 KB each), ~91 KB of rodata (XSD content models, messages, rule table) and ~110 KB raw of generic core/alloc/hashbrown copies. No second FEEL, regex, quick-xml or serde_json build is pulled in, and BPMN parsing is already shared with reebe-bpmn. Even with every generic copy and the rule-message table removed (about 45 KB gzip at best), it stays about 45 KB over budget.
+- reebe-wasm: new opt-in feature `zeebe-validate` (off by default; the budget is unchanged). Its test `deploy_rejects_what_zeebe_rejects` checks that a browser deploy gets Zeebe's message. Enabling it by default needs a budget of about 730 KB; that decision is open.
+
+## 2026-11-08 — Zeebe deployability, session 3 phase 5: every caller gated
+
+- Core: `assertDeployableXml(xml, options)` (TS) / `assert_deployable_xml` (Rust) gate XML as it is, with the `DeployabilityError` message; version from the option, else the document's `executionPlatformVersion`. Definitions-level `<bpmn:documentation>`: Zeebe refuses it (new repro `z00_definitions_documentation.bpmn`; the XSD stage already did, TS and Rust); the serializer now writes it inside a bare `<bpmn:extension>` (Zeebe accepts it) and the parser reads it back (TS + Rust). Fixture `01-root-elements.bpmn` uses the extension form; `conformance/bpmn/root-elements` deploys now (`deployable: false` removed); four root-elements outputs and `zeebe-verdicts.json` re-recorded.
+- CLI: `casen generate bpmn` refuses an undeployable definition/template/patched file with the gate's lines + `Nothing written. Complete the model, pass --placeholders … or --no-validate …`, exit 1; new `--placeholders` (fills listed on stderr) and `--no-validate`; `--help-schema` teaches the new fields and the gate. Four built-in templates did not deploy (`error-boundary`, `event-subprocess`, `timer-start`, `message-start`): fixed. `casen deploy` gates `.bpmn` files first (`--no-validate`). `casen check --deploy` adds gate findings on the file's bytes (XSD stage) the lint did not report.
+- Proxy: `/chat` and `/improve` gate the returned diagram (`final-diagram.ts`): refusal = `error` event with the gate's message and a hint, no `xml`; body `placeholders: true` fills (and lists them in a `placeholders` event); `validate: false` returns a draft plus a `deployability` event. The user's input diagram expands ungated (it used to make `/chat` and `/improve` fail on an unfinished diagram). MCP tools that change a BPMN diagram return a second content item, `Deploy check: …`; prompts (TS and Rust) list what Camunda 8 needs. `sdk.exportXml` gates (optional `{"placeholders":true}`); analysis helpers run ungated. aikit: `bpmn_create`/`bpmn_update` take `placeholders`; `writeModelXml` refuses undeployable XML; `bpmn_deploy` gates (`validate: false`); `bpmn_validate` reports `deployable` + `deployability`. Rust proxy: `/chat` takes `validate`/`placeholders` and gates through the bridge (`finalDiagram`), MCP tools add the deploy check (`mcpDeployCheck`).
+- Found in the proxy: the QuickJS bridge bundle's `--global-name=Bridge` replaced `globalThis.Bridge` with `undefined` (every Rust proxy bridge call failed); QuickJS lacks `structuredClone` (polyfilled for placeholder fills); MCP layouts of XML without DI wrote undeclared `bpmndi:` prefixes (`declareDiNamespaces`). `add_http_call` grafts its task ungated.
+- Studio/plugins: the deploy pane decides with `deployVerdict` (the gate on the XML it sends; optimizer warnings stay advice) and lists the gate's lines; doDeploy re-checks the bytes. AI panel and studio command palette request drafts (`validate: false`) and show the gate's message. On-device AI returns undeployable answers as drafts with `deployability`, listed in the notes; its guide takes core's trigger and `Names after |:` lines (`guideLine`), so `msg=`, `key=`, `signal=`, `error=`, `escalation=`, `at=`, `every=`, `called=` are taught.
+- Drop: drafts render ungated when the gate refuses; `readiness` folds in the gate (fillable → `shape-only`, the rest `invalid`, `gate.message`, `gate.fillable`), the check shows the gate's lines and **Fill placeholders**; Share is refused via `shareRefusal`; Open in editor and the connect route stay work in progress.
+- Demo server: `executeSdkCode` gates the model's output; compact DSL gains `msg=`, `key=`, `signal=`, `error=`, `escalation=`, `duration=`, `date=`, `cycle=` and a `default` flow flag; every prompt carries the deploy rules. Markdown: compact blocks render ungated (a drawing is not a deployment).
+- Examples: `apps/examples/tests/deployable.test.ts` runs every example (and `ai/corpus-to-bpmn`) in a scratch directory and gates each written file. Learn glossary: two snippets used a non-existent `.join()`; fixed and checked to build gated.
+- Docs: new `guides/deploy-gate.md` (API, error format, placeholders table, every entry point and opt-out, behaviour change); updated `cli/generate`, `cli/check`, `cli/casen`, `guides/ai`, `ai-on-device`, `drop`, `claude-code-plugin`, `executable-camunda-process`, `building-processes`, `packages/core`, `getting-started/concepts` (snippets now deploy); BPMN agent card (and synced copies); plugins-claude deploy skill, process-builder agent, README; the PostToolUse hook runs `casen check <file> --deploy` and returns its errors to Claude (exit 2); root README highlight (`generate-readmes.mjs`, whose Quick Start snippet used a non-existent `type` option). Docspack rebuilt. Changesets: core extended; cli, proxy, plugins (minor), markdown, docspack (patch).
+- Decisions: `doc/deployability/gate-plan.md` "Phase 5 decisions".
+
+## 2026-11-08 — Zeebe deployability, session 3 phase 4: migration, connectors, patterns, optimize, compilePlan
+
+- C7→C8 migration (TS `convertCamunda7`, Rust `convert_camunda7`): `Camunda7ConvertOptions` gains `validate` (default `true`), `placeholders` and `camundaVersion` (default: `executionPlatformVersion`, else 8.10.0). The result goes through `assertDeployable`; a refusal throws its `DeployabilityError` (Rust: `Camunda7Error { message, deployability }`, `From<DeployabilityError>`, `source()`; `Camunda7ConvertOptions::ungated()`). Decision: the report stays the report — `analyzeCamunda7` never gates, so it gives the report of a refused model — and the error carries the findings. With `placeholders`, `Camunda7Conversion.placeholders` lists the fills and each is a `manual` finding: construct `placeholder <field>`, message `Placeholder <field> "<value>" written so the model deploys (<rule>).`, the element's type and process (a message the fill created is a root `message`). No converter gap had a deterministic fix: what the gate refuses in the corpus is a value only a person knows (a job type for a Groovy script or Camunda 7 connector, a correlation key, a JUEL date, a cardinality), a transaction, or a model with no executable process; JUEL conditions were already translated.
+- `casen migrate c7`: a refused file writes nothing, prints the gate's lines, a hint and the report, and the command exits 1 (`<n> of <m> file(s) would not deploy on Camunda 8 — pass --placeholders or --no-validate`); JSON entries get `refused: true`. New flags `--placeholders` and `--no-validate`.
+- Connector templates: `applyTemplateToElement`, `applyTemplates` and `applyConnectorLines` check the applied elements (and the message an inbound template writes) with `validateDeployableXml` and return each Zeebe error in their existing `problems` channel (decision: problems, not a throw — these functions already return a model with problems, and they run on unfinished diagrams, so only the applied elements are checked): `Not deployable on Camunda <version>: <id>: <message> (<rule>)`, `kind: "not-deployable"` on `ApplyProblem`, the element on `applyTemplates`, the line on `applyConnectorLines`. Options `validate` (default `true`) and `camundaVersion` (`ApplyToModelOptions`, new export of `@bpmnkit/core/connectors`). `applyElementTemplate` / `applyConnectorTemplate` return builder options; `build()` gates them. No Rust twin. One existing test now also gets the deploy error of an inbound message without a correlation key.
+- Patterns: the 7 compact `Pattern.template`s expand through the gate (decision: make them deployable rather than keep them as ungated references): unconditioned gateway branches got `isDefault: true`, message starts a `messageName`, the signature wait a name and `=contractId` key (`PatternFlow.isDefault`, `PatternElement.messageName` / `correlationKey`). The CLI `pattern get` note and the patterns guide no longer call them rough. Tests: `packages/patterns/tests/deployable.test.ts` (every `templateFiles` BPMN and every pattern), `apps/studio/tests/templates.test.ts` (the 5 hand-written XML templates; all already deployed).
+- Optimize auto-fixes: `task/reusable-group`'s generated process (TS + Rust) had no namespaces (an unbound `bpmn:` prefix) and `isExecutable="false"`; it now declares them and is executable. `packages/core/tests/optimize-fix-deployable.test.ts` applies every fixable finding of `conformance/optimize` whose input deploys (all five fix kinds) and asserts the model and any generated one still deploy. The other fixes (dead end → end event, join gateway, default flow, removing a gateway) did not break a deployable model.
+- `compilePlan` / `mergePlan`: `CompilePlanOptions` gains `validate` (default `true`), `placeholders`, `camundaVersion`; the final model goes through `assertDeployable` (`gatePlan`). Decision: a refused model returns no `xml` and one problem per error (`path: element:<id>`, `Not deployable on Camunda <version>: <message> (<rule>)`), matching both callers, which already treat a missing `xml` as failure; `SynthResult.placeholders` lists fills. `mergePlan` compiles the delta ungated and gates the merged model. Found by the gate: `mergePlan` left stale `incoming`/`outgoing` ids on elements whose flows it dropped (Zeebe refused the XML); a builder refusal at the call (a message wait with no key) threw out of `compilePlan` instead of becoming a problem. Callers: `casen synth` (new `--placeholders`, lists fills, hints at it on a refusal), `apps/demo/server/plan-executor.ts` (doc; it already threw on no XML). Tests: `packages/core/tests/plan-gate.test.ts`, synth and demo tests.
+- Conformance: `migrate/` runs write the converted model to `expected/<run>.bpmn` (the JSON keeps `report`); both runners read it, and run options pass `validate`, `placeholders` and `camundaVersion`. `scripts/lib/zeebe-corpus.mjs` checks every `7to8` output. 60 fragment cases (`c7mig-*`, `c7exp-009`, `ts-bug-*`: one rule, no start event) convert with `validate: false` and are `deployable: false`; `c7mig-049/050` pin their report ungated plus a `gated` refusal run; the 10 whole-model cases keep the gated `default` (now the refusal) and add a `placeholders` run; `bpmn-c7-claim-handling` adds `camunda-version` and `placeholders-8-6`. `zeebe-verdicts.json` re-recorded (1752 files). `known-undeployable.json` stays empty.
+- Zeebe rejections: migrate (newly checked) 83/100 → 63/89, every one a `deployable: false` fragment; 0 gated or placeholder outputs rejected. Pattern compact templates 7/7 → 0/7 through the gate. Optimize: generated reusable-group processes 2/2 rejected → 0. Templates 0/25 and studio templates 0/5 before and after. Other generators unchanged (builder 30/185, text 0/223, compact 40/119, bpmn 38/51, gate 0/3).
+
+## 2026-11-08 — Zeebe deployability, session 3 phase 3: compact, process text and expand gate
+
+- `expand(compact, { validate?, placeholders?, camundaVersion? })` (`ExpandOptions`) gates with `assertDeployable` by default and throws its `DeployabilityError`. Gated output is marked `modeler:executionPlatform="Camunda Cloud"` (plus the diagram's `executionPlatformVersion`, when it names one; none is invented), so `Bpmn.export`'s "auto" check agrees. `validate: false` writes no platform unless the diagram names a version. Version: the option, else `executionPlatformVersion`, else the newest. Rust: `expand(compact, &ExpandOptions)` / `expand_json(json, &ExpandOptions)` (`ExpandOptions::default()` gates, `::ungated()`), `TextError.deployability` (+ `From`, `source()`); bpmnkit-text now depends on bpmnkit-compat.
+- Compact fields (TS + Rust): `messageName` + `correlationKey` (message events, receive tasks), `signalName`, `errorCode`, `escalationCode`, `timerDate`, `timerCycle`; `interrupting: false` now also on an event sub-process's start event. `expand` writes one `bpmn:message` per name and key (the key as its `zeebe:subscription`), one signal per name, one error/escalation per code (`CompactRoots`, builder ids `Message_<name>`); `compactify` reads them back and reads a `subProcess triggeredByEvent` as `eventSubProcess`. Call activities already had `calledProcess`; link events `linkName`.
+- Process text (TS + Rust, guide, writer, change scripts): `msg=`, `key=` (`=` added), `signal=`, `error=`, `escalation=`, `at=` (timer date), `every=` (`R/PT1H`, or a duration repeated: `every=1h` → `R/PT1H`), `called=` (`job=` on a call activity means the same). One of them on an event without a trigger makes it that event; on another kind it is a problem. Deterministic repairs, like `job=`: the id stands in for a missing message name (message events, receive tasks), message throw/end job type, signal name, thrown error/escalation code and called process. A correlation key and a timer's time have no stand-in. `parseProcessText` stays tolerant; a refusal surfaces at `expand` (decision: the gate runs where the model is built, and callers that report `problems` report the `DeployabilityError` the same way). `writeProcessText` writes the new attributes when they read back as one token; `parseProcessDelta` and the editor's change scripts apply them.
+- `validate: false` inside core: `createCompactStream` and `createProcessTextStream` frames (previews of unfinished text). `applyOperations`, `reconcileCompact` and `process-delta` do not expand. `reconcileCompact` no longer patches unchanged names (a shared root would refuse) and treats `eventSubProcess` as the parsed `subProcess`; `applyBpmnOperations` accepts restating the value a shared root holds. Scripts: `bench-text.mjs` and the fuzz oracle (with the Rust bench and fuzz runner) expand ungated, since they time or fuzz the expansion. Dependents: none needed a change.
+- Serializer (TS + Rust): an `eventSubProcess` is written as `subProcess triggeredByEvent="true"`; a link event definition always has `name` (XSD); unmodelled `ioSpecification` goes before an activity's properties, `dataInput`/`dataOutput` before an event's data associations, process `ioSpecification`/`property`/... before the lane set, and a definitions-level `relationship` after the diagrams.
+- Conformance: compact and text `case.json` `"expand"` options, read by both recorders and both Rust runners. `known-undeployable.json` 83 → 0 entries.
+  - compact (36 entries): 4 fixed in code (event sub-process trigger and start `interrupting`, timer date/cycle: `bpmn-events-and-containers`, `bpmn-miwg-c-9-0/1/2`); 26 inputs completed (a start event, job types, names and keys, link names, a gateway for the conditioned flow in `expand-unicode-and-escaping`); 2 now gate errors (`expand-test-009` gateway branch without condition, `expand-test-083` empty AI agent); 4 intentional with `validate: false` (`expand-boundary-event-types`: cancel and compensate boundaries; `expand-gateways-all-kinds` and `expand-default-flow-inclusive-complex`: complex gateway; `expand-transaction-and-ad-hoc`: transaction). The 34 `bpmn-*` round trips already marked `deployable: false` (non-Camunda-8 sources) expand with `validate: false`, as does `expand-empty-process`; `bpmn-root-elements` lost a stale `deployable: false`.
+  - text (36 entries): 12 fixed by the new repairs with unchanged input; 5 hand-written feature cases completed (`key=`, a script, an escalation boundary on a call activity; `parse-boundary-all-triggers` drops its compensation boundary, which `parse-throw-compensation-boundary-pair` keeps); 19 now gate errors (model-written text without a correlation key or timer time, empty ad-hoc agents, invalid FEEL, a compensation boundary with a flow); 0 intentional. `write-parsed-022/042/055/082` read a copy of the output their parse case recorded before.
+  - bpmn: the 11 `miwg-*` round trips the serializer order broke now pass the XSD stage; each source is rejected for its own reason (no executable process, unnamed messages, a job type, FEEL), recorded as `deployable: false` + reason.
+  - New cases: compact `expand-names-and-codes`, `expand-timer-kinds`, `expand-call-activity`, `expand-sub-process-start`, `expand-gate-missing-values`, `expand-gate-no-start`, `expand-gate-placeholders`, `expand-gate-camunda-version`, `expand-gate-platform-version`, `expand-validate-off`, `roundtrip-names-and-codes`, `roundtrip-timer-kinds`; text `parse-names-and-codes`, `parse-timer-kinds`, `parse-named-triggers`, `parse-message-defaults`, `parse-call-job-and-called`, `parse-named-attribute-problems`, `parse-gate-missing-key`, `parse-gate-placeholders`, `write-names-and-codes`, `write-timer-kinds`.
+- Zeebe rejections (`pnpm zeebe:check`): compact 72/113 → 40/119 (all 40 intentional `deployable: false`), text 36/236 → 0/223, bpmn 38/51 → 38/51 (all `deployable: false`, none allowlisted). `zeebe-verdicts.json` re-recorded; the Rust process-text oracles (`pt_reader.json`, `pt_tokens.json`) regenerated.
+- Tests: `packages/core/tests/expand-gate.test.ts`, `crates/bpmnkit-text/tests/expand_gate.rs`. Core unit tests whose diagram is a fragment (no start event, a lone element) expand with `validate: false` and say why; two fixtures got a job type or a default flow instead.
+
+## 2026-11-08 — Zeebe deployability, session 3 phase 2: builder rules and gate
+
+- `ProcessBuilder.build()` and `DiagramBuilder.build()` take `validate` (default `true`), `placeholders` and `camundaVersion` (`BuildGateOptions`; `BuildOptions` extends it). When the model targets Camunda 8 (`targetsCamunda8`, moved to `zeebe-validate/gate.ts`; a `continueProcess` document keeps its own platform) the builder's rules run, then `assertDeployable` (version: the option, else `executionPlatformVersion`). `placeholders: true` returns the filled model; to see the fills, build with `validate: false` and call `assertDeployable` yourself (JSDoc). `DiagramBuilder.process` builds each pool ungated; the document is gated once. `compilePlan` builds with `validate: false` until phase 4 (it reports deploy errors as `problems`).
+- Builder rules (`packages/core/src/bpmn/builder-rules.ts`, Rust `bpmnkit_builder::rules`): plain `Error`s, read off the built model so TS and Rust agree byte for byte, first one wins:
+  - `Flow "<id>" leaves exclusive|inclusive gateway "<g>" without a condition: give its branch .condition("=<FEEL>") or .defaultFlow(); Camunda 8 needs one when a gateway has several outgoing flows`
+  - `Send task|Message throw event|Message end event "<id>" needs a taskType: Camunda 8 hands the message to a job worker of that type (zeebe:taskDefinition)` (a `zeebe:publishMessage` also satisfies it). New `taskType` option on `SendTaskOptions` (new type), `IntermediateThrowEventOptions` and `EndEventOptions`.
+  - `Ad-hoc sub-process "<id>" has a taskDefinition (an AI agent) and activeElementsCollection|completionCondition|cancelRemainingInstances: false; Camunda 8 refuses that combination: remove …, the agent job decides which tools run and when it is done`; `Ad-hoc sub-process "<id>" sets outputCollection without outputElement: set both, or neither` (and the reverse).
+  - Static FEEL: `<field> "<v>" of "<id>" is a static value; Camunda 8 needs a FEEL expression here, e.g. "=<v>"` for `correlationKey`, `Multi-instance inputCollection` and `activeElementsCollection`. Conditions stay normalised (phase 1): a boolean condition has no literal reading, a key or collection does.
+  - With `placeholders`, the job-type and condition rules are left to the fill. With `validate: false` all of the above are skipped.
+  - Structural, always on, at the call: `Cannot chain "<next>" after end event "<end>": an end event has no outgoing sequence flow. Remove the end event, or continue from another element.` (process, branch and sub-process chains and `connectTo`).
+- Rust: `BuildOptions.gate`, `BuildGateOptions`, `SendTaskOptions`, `task_type` on throw/end options, `DiagramBuilder::build(Option<BuildGateOptions>)`, `BuildError.deployability: Option<Box<DeployabilityError>>` (+ `From`, `source()`), `bpmnkit_compat::zeebe::targets_camunda8` (shared with `export_bpmn`). bpmnkit-builder now depends on bpmnkit-compat (no cycle). A gate refusal is not recorded in the builder's error slot, so a later build with other options can pass, as in TS.
+- Fix found by the gate: a message two `DiagramBuilder` pools share lost the `zeebe:subscription` the second pool hoisted onto it (`adoptMessageSubscriptions`, TS and Rust).
+- Conformance (`conformance/builder`, 309 cases): the TS recorder already passes `["build", {...}]` arguments; the Rust runner now passes them to `DiagramBuilder::build` too.
+  - Made deployable (14): `diagram-collaboration`, `diagram-collaboration-black-box`, `diagram-message-flow-to-inner-node`, `diagram-shared-errors-and-messages`, `event-end-message`, `event-intermediate-throw-message`, `gw-add-start-two-chains` (timer start), `gw-nested-branch-connect-to-open-ends`, `gw-nested-branch-link-catch`, `gw-three-branches`, `sub-process-ad-hoc-agent` (forbidden attributes moved to error cases), `task-multi-instance-sequential`, `task-send-message`, `task-send-receive-same-message`; `task-service-agent-linked` gets a valid `agentType`.
+  - Now an error: `gw-sequence-after-end`.
+  - Intentional, `["build",{"validate":false}]` + `deployable: false` with a reason: `gw-complex`, `sub-process-transaction`, `sub-process-transaction-multi-instance`, `sub-process-ad-hoc-in-branch` (transaction), `event-intermediate-throw-compensation`, `event-intermediate-catch-timer-cycle`, `gw-branch-start-event-non-interrupting`, `meta-name-executable`, `task-send-plain`; the already-intentional `meta-empty-process`, `event-intermediate-catch-no-definition`, `export-validate-off`, `export-validate-warn` now build ungated.
+  - 21 new cases: 17 error cases, one per rule message (both output-pair directions; after-end in a process, a branch, a sub-process, `connectTo`, and with `validate: false`), plus `build-camunda-version-error`, `gw-branch-no-condition-validate-off`, `gw-branch-no-condition-placeholders` and `diagram-send-task-validate-off`.
+- Zeebe rejections (`pnpm zeebe:check`), builder: 43/183 → 30/185, every one of the 30 an intentional `deployable: false` case. `known-undeployable.json` 107 → 83 entries (no `builder/*` left). `zeebe-verdicts.json` re-recorded.
+- Tests: `packages/core/tests/builder-gate.test.ts` and `crates/bpmnkit-builder/tests/gate.rs` cover the options and error shape. Builder unit tests whose model is a fragment, a non-Camunda-8 element, a layout/rendering fixture or a corpus round trip build with `validate: false` and say why; models that should deploy were made deployable (conditions, `taskType`, messages, a missing data object, a dunning model that chained one end event after another). Phase 1's serializer-test comment now covers builds too; `builder-multi-instance` exports gated again.
+- Fallout outside core: none of patterns, flow, examples, CLI, demo, plugins, proxy, landing or drop tests failed; their builder models already deploy. Docs: `guides/building-processes.md` (new "Deployable by default" section, fixed event snippets), `packages/core.md`, the BPMN agent card trap, `builder-reference.md` (rules taught; generator prints `+Parent` for derived option types and skips the gate knobs; budget 3200 → 3300 tokens with the reason), Rust README.
+
+## 2026-11-08 — reebe: test_timer_accuracy no longer measures the CI disk
+
+- `test_timer_accuracy` failed twice on CI (2.118 s and 2.380 s against a 2 s bound). Cause: between "timer due" and "job visible", the engine makes about 23 separate commits, each waiting for its WAL fsync. Each record (timer trigger, catch-event completion, task activation, job creation) writes several autocommitted rows plus its processed position. Reproduced locally by injecting an fsync delay into Postgres with strace: 80 ms per flush gives 1.79 s, against 0.16 s without.
+- Fix: `tests/common::setup_db` sets `synchronous_commit = off` on each throwaway test database, so the test measures the scheduler's poll and not the disk. The bound is unchanged. Under a 150 ms injected fsync delay the suite now passes.
+- Follow-up (engine): writing each record's state changes, follow-up records and processed position in one transaction would cut a command's flushes from ~5 to 1. That is a real throughput and latency gain on slow disks, but a larger change.
+
+## 2026-11-08 — Zeebe deployability, session 3 phase 1: the assertDeployable gate
+
+- `assertDeployable` (`packages/core/src/bpmn/zeebe-validate/gate.ts`), `DeployabilityError` (code `deployability-error`, `findings`, `camundaVersion`), `AssertDeployableOptions`, `PlaceholderFill`, `PlaceholderField`, `DeployableResult` and `PLACEHOLDERS`, exported from `@bpmnkit/core`. The check is `validateDeployableXml(serializeBpmn(defs))`. Message: `Not deployable on Camunda <version>: <n> error(s)` plus `- <elementId>: <message> (zeebe/<rule>)` per error.
+- `placeholders: true` fills, on a `structuredClone`, what the error findings ask for: job types, message names (a missing message is created, with a subscription when it is caught outside a process start), correlation keys, signal names, error and escalation codes (missing root elements are created), `PT1H` timers, called process ids, decision ids and `=false` conditions; up to 4 rounds, then a final check.
+- Rust twin `bpmnkit_compat::zeebe::gate` (`assert_deployable`, `AssertOptions`, `Deployable`, `DeployabilityError` with `Display` + `Error`, `PLACEHOLDERS`), byte-identical messages and fills.
+- `Bpmn.export` `validate` defaults to `"auto"` (gate when `modeler:executionPlatform` names Camunda Cloud, version from `executionPlatformVersion`, else the newest); `"error"` gates any model, `"warn"` logs, `false` skips. The old `lintDiagram` check is gone. `bpmnkit_lint::export_bpmn` mirrors it (`ExportValidate::Auto` default; `Err` is the `DeployabilityError`).
+- Conformance: new `conformance/gate/` (6 cases, 9 runs; TS records, Rust compares, filled BPMN byte for byte); `builder/export-validate-auto` added and the `export-validate-*` messages re-recorded. `zeebe-check` and the broker check also deploy `gate/*/expected/fill.bpmn`: Zeebe 8.9.28 accepts all 3. Verdicts for the 8 new files added to `zeebe-verdicts.json`.
+- Callers that export a work-in-progress or the user's own diagram pass `validate: false`: editor `exportXml`, plugins (tabs, storage, checkpoints, command palette, optimize, AI improve), desktop and landing editors, drop (doc, viewer, watcher), markdown links, proxy (MCP state, previews, `/improve`), CLI `lint --fix` and `connector` write-backs, `compilePlan`/`mergePlan` (they report deploy errors as `problems`), and the fix/bench/layout scripts. Serializer-focused core tests do the same; the ascii gateway and proxy model-write fixtures were made deployable.
+- Found while gating round trips: a definitions-level `<bpmn:documentation>` is not allowed by the BPMN XSD (`roundtrip-corpus`, `semantic-hash` fixtures); left for the serializer work.
+
+## 2026-11-08 — Zeebe deployability, session 4: nightly real-broker check; reebe adopts the Zeebe validator
+
+- Nightly `.github/workflows/zeebe-broker-nightly.yml` (schedule + `workflow_dispatch`) starts a real engine per version and deploys the corpus through `POST /v2/deployments`. The four versions, pinned by tag and digest:
+  - `camunda/zeebe` 8.6.42 and 8.7.45
+  - `camunda/camunda` 8.8.46 and 8.10.9 (broker only, no secondary storage, no auth)
+
+  `scripts/zeebe-broker-check.mjs` (pure logic in `scripts/zeebe-broker-lib.mjs`, tested against a mock engine) waits for a healthy topology and retries transient answers. Then it checks:
+  - every conformance output must deploy, unless it is allowlisted or marked `deployable: false`;
+  - each repro must be rejected with its recorded errors (skipped when the rule's `since` is newer than the engine);
+  - the new `doc/deployability/broker-repro/` deployments: Z35 straight-through loop, Z130 deployment binding missing or deployed together, Z183 duplicate process id across resources.
+
+  A rejection on an engine older than the file's `executionPlatformVersion` is reported, not failed. Mismatches are uploaded as an artifact. Local runs use `tools/zeebe-broker/docker-compose.yml` (see its README). Corpus collection moved to `scripts/lib/zeebe-corpus.mjs`, shared with `zeebe-check.mjs`.
+- reebe: the deployment processor runs `bpmnkit_compat::zeebe::validate_deployable_xml` on every BPMN resource before anything is stored (cargo feature `zeebe-validate`, on for reebe-engine/api/grpc/server, off for reebe-wasm). Behaviour:
+  - Errors use Zeebe's format.
+  - A resolver over the other resources of the deployment decides `bindingType="deployment"` targets and duplicate process ids. Z183 uses Zeebe's text and names both resources.
+  - Z35 comes from `compat/no-loop`.
+  - A `definitions` without `id` is accepted, as Zeebe does.
+  - reebe's own checks stay.
+- 34 reebe tests used BPMN Zeebe rejects. Most fixtures were fixed: XSD order, `xmlns:xsi`, gateway conditions, message subscriptions. Four tests now assert the deploy rejection. Two keep their intent another way: a parseable FEEL call, and termination through modification.
+- reebe-wasm size: the validator adds ~480 KB gzip (raw cargo wasm 1,199,013 → 1,679,528 B), far over the 640,000 B budget, so it stays off there.
+
+## 2026-11-08 — Zeebe validator accepts partial models
+
+- `validateDeployable` threw `defs.messages is not iterable` when the lint plugin passed a model without its root-element lists (plugins CI). It now treats missing `processes`, `messages`, `errors`, `signals`, `escalations`, `collaborations` and `diagrams` as empty. Regression test: `packages/core/tests/zeebe-validate-partial-model.test.ts`.
+
+## 2026-11-08 — Zeebe deployability, session 2: the static Zeebe validator
+
+- `spec/zeebe-rules.json` (schema `spec/schema/zeebe-rules.schema.json`): the 193 rows of `doc/deployability/zeebe-rules.md` with name (`zeebe/<name>`), elements, Zeebe's messages, `since`/`until`, kind, severity and `check` (`model` 158, `xml` 9, `context` 5, `none` 21 with a note; 9 umbrella rules name their specific rules in `coveredBy`). spec-gen writes `packages/core/src/generated/zeebe-rules.ts` and `bpmnkit_spec::zeebe`.
+- TS `packages/core/src/bpmn/zeebe-validate/` (`validateDeployable`, `validateDeployableXml`, `isDeployable`, exported from `@bpmnkit/core`) and its Rust twin `bpmnkit_compat::zeebe`: every decidable rule, ported from Zeebe 8.9.28's validator sources (8.10 rules from `main`), recursive, version-aware, not gated on `executionPlatform`; a strict XML/XSD stage with Zeebe's (Xerces') messages; a resolver for the context rules.
+- Lint: `optimize`'s `deploy` category runs the validator (TS and Rust), skipping elements another deploy finding already marks as an error; `lint/` and `optimize/` conformance re-recorded.
+- `compat/no-expression`: catch-event error/escalation code expressions are flagged on every version (Zeebe 8.9.28 rejects them); the plugin-parity test documents the divergence.
+- Fixes the validator surfaced: the parser keeps `extensionElements` on `messageEventDefinition` (TS and Rust), so `zeebe:publishMessage` is not lost; `compilePlan` adds a start event to each sub-process (Z154).
+- Conformance `conformance/validate/`: a `-bad` and an `-ok` case per decidable rule (462 runs), the 26 repros, and `zeebe-verdicts.json`, Zeebe's recorded verdict on all 1,596 BPMN files (`node scripts/zeebe-verdicts.mjs`, `--check`). TS and Rust agree with Zeebe on 1,596/1,596 files (1,644 of 1,665 Zeebe errors matched by message); `undecidable.json` documents `z68-bad` (checked by Zeebe's transformer, which zeebe-check does not run).
+- Gaps left: see the "Validator gaps" section of `doc/deployability/REPORT.md`. reebe's deploy path is not wired yet (session 4).
+
+## 2026-11-08 — reebe: job-timeout test no longer races the engine's checker
+
+- `reebe-engine/tests/compatibility.rs` `test_job_worker_timeout_retry` asserted that its own `mark_timed_out` call released the timed-out job. The engine's background timeout checker (every second) can release it first, which made the count 0 and failed CI once. The test now checks only that the job can be activated again.
+
+## 2026-11-08 — CI: retry the wasm-pack download
+
+- `ci.yml` fetches wasm-pack from GitHub releases with `curl`; two runs failed on a 504 from that download. It retries, and if GitHub still fails it builds wasm-pack 0.15.0 from crates.io (`cargo install --locked`).
+
+## 2026-11-08 — Zeebe deployability, session 1: serializer fixes and the Zeebe CI oracle
+
+- Fixed in TS and Rust, each with a regression test on both sides and a conformance case:
+  - (a) `xmlns:xsi` is declared whenever `xsi:type` is used (it was added to the serializer's namespace repair list);
+  - (b) input data associations target a `__targetRef_placeholder` property;
+  - (c) `isCollection` moved from `dataObjectReference` to its `dataObject`;
+  - (d) the compact `linkName` field;
+  - (e) message catches without a `correlationKey` are refused (Zeebe needs `zeebe:subscription` on every caught message except a process start), and `startEvent` takes `correlationKey` for event sub-process starts;
+  - (f) conditions are normalised to `=` FEEL, with C7 `${…}` going through the JUEL converter.
+- New conformance cases:
+  - `builder/condition-without-equals`, `data-object-reference-collection` and `event-sub-process-message-no-key`;
+  - `compact/expand-link-names` and `expand-condition-to-feel`.
+  - `event-intermediate-catch-message-no-key` now records the error. Three event-sub-process cases gained a `correlationKey`.
+- `pnpm zeebe:check` (`scripts/zeebe-check.mjs`) and a `zeebe-check` CI job run Zeebe 8.9.28's validator over every recorded BPMN and the repros:
+  - case metadata (`deployable: false` + `deployableReason`, 83 cases) marks the intentionally undeployable ones;
+  - `doc/deployability/known-undeployable.json` (107 entries) holds the generator gaps left for session 3, and may only shrink (`--base`);
+  - repro verdicts are pinned in `doc/deployability/repro/expected-verdicts.json`.
+- Zeebe rejections, before → after:
+  - builder 51 → 43 of 183;
+  - process-text 37 → 36 of 236;
+  - compact 74 → 72 of 113;
+  - bpmn round trips 38 → 38 of 51.
+- `apps/examples` 05-content-publishing gives its message catch a `correlationKey` (`=content.id`), which the builder now requires; its line budget goes 139 → 140.
+- Two more serializer XSD bugs were found and are allowlisted for later: `ioSpecification` is written after the data associations (9 MIWG round trips), and compact `expand` writes an `eventSubProcess` element.
+## 2026-11-08 — bpmnlint parity skips deployability repro z07
+
+- `packages/core/tests/node/bpmnlint-parity.test.ts` checks every `.bpmn` in the repo. The repro `doc/deployability/repro/z07_ncname_nested.bpmn` has a nested id that is not an XML name on purpose, and bpmn-moddle skips such ids, so the test now lists it with the other intentionally malformed files.
+
+## 2026-11-08 — Zeebe deployability gap analysis
+
+- New `doc/deployability/`:
+  - 189 Zeebe deploy rejection rules with file:line (`zeebe-rules.md`);
+  - a gap matrix showing which rules BPMN Kit prevents, detects or misses (`gap-matrix.md`);
+  - the TS and Rust generation paths and guards;
+  - 26 repro BPMN files;
+  - a 4-session fix plan (`REPORT.md`).
+- New `tools/zeebe-check/`: a Java CLI that runs Zeebe 8.9.28's own `BpmnValidator` on BPMN files (jars not committed).
+- Zeebe rejects 51/182 builder, 37/236 process-text and 74/111 compact conformance outputs.
+- Counts: P 10, P~ 19, D 1, D~ 90, M 69. No generation path runs a deploy guard automatically.
+- Serializer bugs found:
+  - unbound `xsi:` prefix;
+  - `dataInputAssociation` without `targetRef`;
+  - `isCollection` on `dataObjectReference`;
+  - compact link events without a name.
+- Decision: incomplete input is refused by default, with placeholders as an opt-in.
+
+## 2026-11-08 — Rust repo health: benches, CI, generated files
+
+- Benches: the builder bench replays `["$let", name, "build"]` as the conformance runner does (it panicked with `unknown op $let`). The FEEL bench gives `fuzz/19` (`count(for x in [67..100000) ...)`) its own rows: it was ~99 % of the old 84 µs/expr average; the other 380 expressions take 1.4 µs parse+eval, 0.3 µs eval.
+- `scripts/bench-rs.mjs` (`pnpm bench:rs`) runs every `crates/*/benches/*.rs` N times, keeps the fastest and compares with `benches/rust-baseline.json` (µs, 3 significant digits); a row > 20 % slower fails, but only when the baseline was recorded on the same CPU model (else it warns). `--update` rewrites the baseline. New nightly `bench-nightly.yml` (5 runs; `update` input uploads a runner-recorded baseline). The committed baseline is from the dev sandbox, so the nightly warns until one from the runner is committed. Tests: `scripts/bench-rs.test.mjs`.
+- `[profile.release]`: `lto = "fat"`, `codegen-units = 1`. Benches, min of 3 before → after: builder 7–30 % faster, BPMN/DMN I/O 2–13 %, lint 7–11 %, layout 4–7 %, FEEL 7–18 %; text was a wash (±30 % run-to-run noise either way). Release build of all benches: 1m33 → 2m17. `panic` stays `unwind`: `bpmnkit-fuzz` catches panics in its release build.
+- CI (`ci.yml`): new early job `generated` runs `spec-gen --check` and the TS conformance re-record + diff (only feel and core built). The reebe-wasm build is cached by the hash of everything it reads (`apps/reebe/**`, `crates/**`, lockfile, version patch) and skipped on a hit, so engine tests still run on a wasm of this commit's sources. `--locked` on cargo clippy/test and the wasm-pack build; new step `cargo bench --no-run --workspace` (LTO off for the compile check). CI also runs on pushes to main, and every `rust-cache` has `save-if` main.
+- `conformance/pending.json` is capped (`MAX_PENDING = 1` in `crates/bpmnkit-conformance/tests/conformance.rs`), and the runner fails when a pending case passes.
+- `fuzz-nightly.yml`: no more `tsc || true`; it compiles only `src/dmn.ts` (`packages/engine/tsconfig.dmn.json`), the oracle's one engine module, which needs no reebe-wasm.
+- `pnpm verify` ends with the new `pnpm verify:rust` (fmt, clippy, cargo test, spec-gen check, conformance re-record + diff); listed in CLAUDE.md.
+- `.gitattributes` marks conformance cases, spec data, oracle fixtures, `src/generated/`, the other generated TS and `api-surface.json` as `linguist-generated`.
+- The FEEL built-in names test asked for already exists (`packages/feel/tests/spec-data.test.ts`, against `spec/feel-builtins.json`).
+- Stale lines fixed below: the DMN hit-policy semantics are done, and pending is 1, not 2, after the 11-08 merge.
+
+## 2026-11-08 — reebe-wasm size gate; FEEL regex cache shares compiled patterns
+
+- reebe-wasm (`reebe_wasm_bg.wasm` after wasm-bindgen 0.2.114, gzip -9 / brotli 11), each step on top of the previous:
+
+  | Step | gzip | brotli |
+  |---|---|---|
+  | Before: size rustflags (`opt-level=z`, 1 codegen unit, `panic=abort`), no wasm-opt | 786 KB | 562 KB |
+  | + `lto = "fat"` | 786 KB | 562 KB |
+  | + `wasm-opt -O` (wasm-pack's default; binaryen 116) | 648 KB | 490 KB |
+  | + `wasm-opt -Oz` instead | 649 KB | 492 KB |
+  | `-C strip=symbols`, no wasm-opt (kept) | **621 KB** | **470 KB** |
+  | strip + `wasm-opt -O1` | 614 KB | 468 KB |
+  | strip, regex without Unicode tables (not kept: `\p{…}` stops working) | 568 KB | 441 KB |
+
+- Kept: `-C strip=symbols` in `apps/reebe/.cargo/config.toml` (drops the 1.6 MB `name` section) and `wasm-opt = false` in reebe-wasm's wasm-pack metadata. After the size flags, binaryen shrinks the raw file but grows the gzip; skipping it also removes wasm-pack's binaryen download from every CI build. Not kept: `lto = "fat"` (no gain), `-Oz` (worse than `-O`). FEEL's `tz` and `full-regex` were already off for the browser build. chrono needs `wasmbind` (`Utc::now`), and serde, serde-wasm-bindgen and chrono trims are each under 1%; `panic_immediate_abort` needs nightly `build-std`.
+- Gate: `scripts/check-wasm-size.mjs`, run in ci.yml right after the reebe-wasm build, fails above 640,000 B gzip (621 KB + 3%).
+- Open: the 500 KB goal is ~120 KB away. twiggy: reebe-engine is ~25% of code (`activate_element` alone 72 KB), regex ~10% plus ~53 KB gzip of Unicode tables in `.rodata`, hashbrown 4%, rust_decimal 3%. Options: split `activate_element`/`complete_element` into non-generic helpers, `regex-lite` for the browser build (no Unicode classes), dropping `Debug`/`Display` derives on wasm, nightly `build-std` with `panic_immediate_abort`, and `wasm-opt -O1` (−7 KB here; check it with the binaryen version wasm-pack downloads, 130, which this session could not run).
+- FEEL regex cache: the thread-local cache (Rust) held `Regex` and returned a clone per call; a clone starts with an empty search cache, so a cached `matches()` still cost 7.25 µs. It now holds `Rc<Regex>`: 0.45 µs per cached call; a new pattern each call costs ~45 µs (bench rows in `cargo bench -p bpmnkit-feel`). The TS twin already caches `RegExp` objects (and resets `lastIndex`). Tests for both: flag keying, failed patterns, correctness past the size bound.
+
+## 2026-11-08 — Rust crates: crates.io trusted publishing (OIDC)
+
+- `release-crates.yml` publish job: `id-token: write`; publishes with `rust-lang/crates-io-auth-action@v1`'s short-lived token. When any crate has no version on crates.io yet (`crates-publish.mjs --print-new`, sparse index), the run falls back to the `CARGO_REGISTRY_TOKEN` secret and then registers the workflow as every crate's trusted publisher (`--trust`, crates.io API, idempotent).
+- `scripts/crates-publish.mjs`: `--print-new`, `--trust`; tests for the index path and the publisher match. `doc/rust-crates-release.md`: bootstrap, then OIDC, and the maintainer's steps.
+
+## 2026-11-08 — Landing: Rust crates presented
+
+- Home: hero eyebrow names Rust; the packages section gets an "Also in Rust" row (`cargo add bpmnkit`, link to the docs page), styled as one hairline box with a mono label on the existing ink-band tokens.
+- `docs/packages/rust-crates` reworked around the `bpmnkit` facade: install lines with feature examples, the features table, the 11 crates with their TS twins, facade-path examples, the guarantee (TS oracle, ~3,300 conformance cases, nightly differential fuzzing), approximate speedups vs TS from the bench entries below, MSRV 1.85, reebe on the crates, crates.io/docs.rs as the release targets.
+- Docs index lede, `llms.txt` features and `llms-full.txt` intro mention the crates. Docspack rebuilt.
+- `apps/landing/.astro/` (2.4 MB build cache) untracked and gitignored; the landing `typecheck` script now runs `astro sync` first, since `src/env.d.ts` references `.astro/types.d.ts`.
+
+## 2026-11-08 — Rust crates: MSRV job, `bpmnkit` facade, package sizes
+
+- MSRV 1.85: `cargo +1.85 check --workspace --all-targets` failed on `proptest` 1.12 (needs 1.88), a dev-dependency of the unpublished `bpmnkit-fuzz`. The lockfile now pins `proptest` 1.11 and `.cargo/config.toml` sets `resolver.incompatible-rust-versions = "fallback"`, so `cargo update` keeps MSRV-compatible versions. Check and test pass on 1.85; the MSRV stays 1.85. New CI job `msrv-rs` (check + test on the toolchain named by `rust-version`).
+- New crate `crates/bpmnkit`: re-exports the 11 crates as modules behind same-named features; defaults `feel`, `bpmn`, `dmn`, `form`, plus `full`. README doubles as crate rustdoc (feature table, doctested example). CI checks it with no features and each feature alone.
+- `scripts/crates-publish.mjs`: the facade is published last (it depends on every crate); `--check` fails when a published crate is missing from the facade. Test: `scripts/crates-publish.test.mjs` (in `test:scripts`).
+- Packaged sizes recorded in `doc/rust-crates-release.md`; the largest, `bpmnkit-spec`, is 536 KiB compressed (limit 10 MB).
+
 ## 2026-11-08 — Rebuild camunda-docspack against camunda-docs@fa2c9cd
 
 - Regenerated `@bpmnkit/camunda-docspack` chunks, manifest and `llms.txt` (7161 chunks, camunda@8.10) from camunda-docs `fa2c9cd`. Merged `origin/main`; the only conflict was the pack version line in `llms.txt`, kept at 0.3.0.
@@ -36,7 +292,7 @@
 - Merged `origin/main` (#266, #267 and their version commits). Conflicts: `bpmn-builder.ts` `validate()` keeps the branch's copy-based signature (`elements`, `flows`) and adds main's XSD check on that copy; `dmn/lint.ts` and `form/lint.ts` keep the generated spec imports and add `withCardHint`; this file keeps both sides' entries. Main's version commit released its own changesets; the branch's pending ones are kept.
 - `builder-parity-fixes.test.ts` / `parity_fixes.rs`: the `→`-id regression tests now take their source from parsed XML, as a new build rejects non-NCName ids since #267. Both fixes hold.
 - Rust port: default `executionPlatformVersion` `8.10.0` in `ProcessBuilder`, `DiagramBuilder`, DMN table and DRD builders and C7 migration; the `See agent-cards/<type>.md#traps.` hints on builder and DMN compact errors; `lint_dmn` / `lint_form` fixes end with `(agent-cards/<type>.md#traps)`; new `bpmnkit-builder` `xsd_guards` (NCName ids for process, elements incl. sub-process content and flows on new builds; `retries` whole number or FEEL); new `bpmnkit_lint::export_bpmn(defs, ExportOptions { validate })` (`Off` / `Warn` / `Error`; the warning is returned instead of logged). TS's boolean XSD checks have no twin: those fields are `Option<bool>`.
-- Conformance: re-recorded 572 expected files (version stamps, card hints only). New `export` key on builder cases and 21 cases (`xsd-*`, `export-*`). Builder 284 cases, all exact; whole runner 3294 passed, 2 pending (unchanged), 0 failed. The builder oracle fixtures (`tests/oracle/*.json`) were regenerated for the same two changes.
+- Conformance: re-recorded 572 expected files (version stamps, card hints only). New `export` key on builder cases and 21 cases (`xsd-*`, `export-*`). Builder 284 cases, all exact; whole runner 3294 passed, 1 pending (`builder/sub-process-no-callback-error`; `arithmetic/25` left in phase 9), 0 failed. The builder oracle fixtures (`tests/oracle/*.json`) were regenerated for the same two changes.
 
 ## 2026-11-07 — Rust twin phase 8: builder, process text and compact
 
@@ -123,7 +379,7 @@
   - Rust DMN parse is slower than TS. It builds the generic XML tree first; a streaming parse like bpmn's would fix that.
   - TS bugs replicated in Rust, not fixed: a requirement that parsed to nothing is written as `href="#undefined"`; kept unknown content (any literal-expression decision) gains a whitespace line on every export; `exportForm` drops `valuesExpression` on radio and checklist; validation, layout and values entries drop unmodelled keys. The stability tests list the affected cases, so they will flag when TS is fixed.
   - The TS parser puts a decision's `literalExpression` into `extensionElements` and drops it when the decision has its own `<extensionElements>`.
-  - Zeebe semantics TS does not have: `UNIQUE` with several matches fails in Zeebe (TS takes the first); `PRIORITY`/`OUTPUT ORDER` don't sort by output values; there is no `typeRef` coercion.
+  - ~~Zeebe semantics TS does not have: `UNIQUE` with several matches, `PRIORITY`/`OUTPUT ORDER` sorting, `typeRef` coercion.~~ Done since: both evaluators fail `UNIQUE` on a second match, sort `PRIORITY`/`OUTPUT ORDER` by the output values and conform values to their `typeRef`.
   - Pre-existing: `cargo clippy -D warnings` fails in `reebe-feel`'s own parser (reebe CI does not run it).
 
 ## 2026-11-06 — Rust twin phase 4: BPMN I/O

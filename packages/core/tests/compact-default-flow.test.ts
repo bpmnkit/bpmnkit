@@ -88,7 +88,8 @@ describe("expand", () => {
 		const none = structuredClone(COMPACT)
 		// biome-ignore lint/performance/noDelete: the absence is the thing under test
 		delete none.processes[0]?.flows[2]?.isDefault
-		expect(gateway(Bpmn.export(expand(none))).default).toBeUndefined()
+		// Neither branch has a condition, which Zeebe refuses; the test is about the attribute.
+		expect(gateway(Bpmn.export(expand(none, { validate: false }))).default).toBeUndefined()
 	})
 
 	it("refuses two defaults on one gateway", () => {
@@ -132,7 +133,8 @@ describe("expand", () => {
 				},
 			],
 		}
-		expect(Bpmn.export(expand(nested))).toContain('default="SF2"')
+		// A fragment without start events: the test is about the nested default attribute.
+		expect(Bpmn.export(expand(nested, { validate: false }))).toContain('default="SF2"')
 	})
 })
 

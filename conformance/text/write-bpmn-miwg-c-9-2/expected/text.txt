@@ -1,6 +1,3 @@
 # Manual Check | camunda=8.1
 decide_manually[start Decide Manually] > decide_on_application[user Decide on application | in.risksText=string join(risks, ", ") in.age=applicant.age in.applicantName=applicant.name] > manually_decided[end Manually Decided]
-timeout_7_days[boundary:timer Timeout (7 days) | on=decide_on_application after=P7D] > timeout[end:error Timeout]
-sub[sub]
-sub_2[sub]
-sub_3[sub]
+timeout_7_days[boundary:timer Timeout (7 days) | on=decide_on_application after=P7D] > timeout[end:error Timeout | error=02]

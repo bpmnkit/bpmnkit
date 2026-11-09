@@ -12,10 +12,10 @@ Extract the `.bpmn` filename from $ARGUMENTS (find the single `.bpmn` in cwd, or
 ## 2. Gate on deploy-readiness
 
 ```sh
-casen lint lint <file>.bpmn --profile deploy
+casen check <file>.bpmn [<forms and decisions>...] --deploy
 ```
 
-If this reports any errors, **stop and fix them first** (or hand off to `/bpmnkit:review`) — do not deploy a process with deploy-profile errors.
+This runs the deploy gate (Zeebe's own rules, on the file's bytes) plus the deploy-profile lint. If it reports any errors, **stop and fix them first** (or hand off to `/bpmnkit:review`). Each gate line names the element and the rule: `- <id>: <message> (zeebe/<rule>)`. A missing job type, message name, correlation key, timer time or error code is something to fill in, not to work around.
 
 ## 3. Deploy
 
@@ -23,6 +23,8 @@ If this reports any errors, **stop and fix them first** (or hand off to `/bpmnki
 casen deploy deploy <file>.bpmn                     # local Reebe
 casen deploy deploy <file>.bpmn --target camunda8   # active Camunda 8 profile
 ```
+
+`casen deploy` runs the same gate before it sends anything and exits 1 with the gate's lines if the file would not deploy. Never pass `--no-validate` to get past it: that only sends a file Zeebe rejects.
 
 If local deploy fails to connect: tell the user to start Reebe first — `casen reebe start --port 26500` (matches the default `ZEEBE_ADDRESS` this command targets) — then retry.
 

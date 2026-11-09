@@ -6,7 +6,7 @@
 		["userTask","mi",{"name":"MI","multiInstance":{"isSequential":true,"collection":"=people","elementVariable":"p"}}],
 		["scriptTask","ms",{"expression":"=1","resultVariable":"r","multiInstance":{"collection":"=xs"}}],
 		["callActivity","mc",{"processId":"c","multiInstance":{"isSequential":false,"collection":"=ys"}}],
-		["sendTask","msend",{"multiInstance":{"collection":"=zs"}}],
+		["sendTask","msend",{"taskType":"send","multiInstance":{"collection":"=zs"}}],
 		["businessRuleTask","mb",{"decisionId":"d","multiInstance":{"collection":"=ws"}}],
 		["endEvent","e"],
 		["build"]

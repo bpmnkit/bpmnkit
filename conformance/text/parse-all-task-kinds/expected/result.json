@@ -39,13 +39,17 @@
             "type": "sendTask"
           },
           {
+            "correlationKey": "=requestId",
             "id": "f",
+            "messageName": "reply",
             "name": "F",
             "type": "receiveTask"
           },
           {
             "id": "g",
             "name": "G",
+            "resultVariable": "two",
+            "script": "= 1 + 1",
             "type": "scriptTask"
           },
           {
@@ -54,6 +58,7 @@
             "type": "manualTask"
           },
           {
+            "calledProcess": "i",
             "id": "i",
             "name": "I",
             "type": "callActivity"

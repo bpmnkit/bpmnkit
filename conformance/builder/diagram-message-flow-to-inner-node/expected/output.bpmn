@@ -18,6 +18,9 @@
         <bpmn:outgoing>Flow_is_inner</bpmn:outgoing>
       </bpmn:startEvent>
       <bpmn:sendTask id="inner" messageRef="Message_m">
+        <bpmn:extensionElements>
+          <zeebe:taskDefinition type="send-m"/>
+        </bpmn:extensionElements>
         <bpmn:incoming>Flow_is_inner</bpmn:incoming>
         <bpmn:outgoing>Flow_inner_ie</bpmn:outgoing>
       </bpmn:sendTask>

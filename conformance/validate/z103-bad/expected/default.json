@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/send-task-implementation",
+      "message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Give the send task one zeebe:taskDefinition (or one zeebe:publishMessage)."
+    }
+  ]
+}

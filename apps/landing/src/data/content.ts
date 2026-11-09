@@ -178,6 +178,7 @@ export const FEATURES = [
 	"Simulation engine: deploy and run processes locally, register job workers, evaluate DMN",
 	"REST API client: full Camunda 8 Orchestration Cluster API coverage",
 	"CLI: arrow-key TUI, connection profiles, tabular results",
+	"Rust crates: FEEL, BPMN, DMN, forms, lint, layout, builder and text formats as native bpmnkit-* crates (`cargo add bpmnkit`), held to the TypeScript packages by a shared conformance suite",
 ] as const
 
 // ── Code examples — plain text (for llms-full.txt) ────────────────────────────

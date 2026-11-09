@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="D" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="D" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
   <bpmn:process id="P" isExecutable="true">
+    <bpmn:startEvent id="Start_P">
+      <bpmn:outgoing>Flow_Start_P</bpmn:outgoing>
+    </bpmn:startEvent>
     <bpmn:subProcess id="sp" name="Sub">
+      <bpmn:incoming>Flow_Start_P</bpmn:incoming>
       <bpmn:startEvent id="is">
         <bpmn:outgoing>if1</bpmn:outgoing>
       </bpmn:startEvent>
@@ -15,28 +19,36 @@
       <bpmn:sequenceFlow id="if1" sourceRef="is" targetRef="it"/>
       <bpmn:sequenceFlow id="if2" sourceRef="it" targetRef="ie"/>
     </bpmn:subProcess>
+    <bpmn:sequenceFlow id="Flow_Start_P" sourceRef="Start_P" targetRef="sp"/>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_P">
     <bpmndi:BPMNPlane id="BPMNPlane_P" bpmnElement="P">
+      <bpmndi:BPMNShape id="Start_P_di" bpmnElement="Start_P">
+        <dc:Bounds x="0" y="100" width="36" height="36"/>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sp_di" bpmnElement="sp" isExpanded="true">
-        <dc:Bounds x="0" y="0" width="392" height="208"/>
+        <dc:Bounds x="136" y="0" width="392" height="208"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="is_di" bpmnElement="is">
-        <dc:Bounds x="50" y="100" width="36" height="36"/>
+        <dc:Bounds x="186" y="100" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="it_di" bpmnElement="it">
-        <dc:Bounds x="146" y="78" width="100" height="80"/>
+        <dc:Bounds x="282" y="78" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ie_di" bpmnElement="ie">
-        <dc:Bounds x="306" y="100" width="36" height="36"/>
+        <dc:Bounds x="442" y="100" width="36" height="36"/>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_Start_P_di" bpmnElement="Flow_Start_P">
+        <di:waypoint x="36" y="118"/>
+        <di:waypoint x="136" y="118"/>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="if1_di" bpmnElement="if1">
-        <di:waypoint x="86" y="118"/>
-        <di:waypoint x="146" y="118"/>
+        <di:waypoint x="222" y="118"/>
+        <di:waypoint x="282" y="118"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="if2_di" bpmnElement="if2">
-        <di:waypoint x="246" y="118"/>
-        <di:waypoint x="306" y="118"/>
+        <di:waypoint x="382" y="118"/>
+        <di:waypoint x="442" y="118"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -106,6 +106,7 @@
         {
           "eventType": "timer",
           "id": "wait_new_year",
+          "timerDate": "2027-01-01T00:00:00Z",
           "type": "intermediateCatchEvent"
         },
         {
@@ -192,6 +193,7 @@
         {
           "eventType": "message",
           "id": "await_confirmation",
+          "messageName": "payment-confirmed",
           "type": "intermediateCatchEvent"
         },
         {

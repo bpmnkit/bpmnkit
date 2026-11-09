@@ -437,3 +437,26 @@ describe("fuzz regressions", () => {
 		expect(eval_("[] in [[]]")).toBe(true)
 	})
 })
+
+describe("regex cache", () => {
+	it("keys compiled patterns on their flags", () => {
+		expect(eval_('matches("ABC", "abc")')).toBe(false)
+		expect(eval_('matches("ABC", "abc", "i")')).toBe(true)
+		expect(eval_('matches("ABC", "abc")')).toBe(false)
+	})
+
+	it("reuses a g-flagged pattern without stale lastIndex", () => {
+		for (let i = 0; i < 3; i++) {
+			expect(eval_('matches("abc", "c", "g")')).toBe(true)
+			expect(eval_('replace("a-b-c", "-", "+")')).toBe("a+b+c")
+			expect(eval_('extract("a1b22", "[0-9]+")')).toEqual(["1", "22"])
+		}
+	})
+
+	it("stays correct past its size bound", () => {
+		for (let i = 0; i < 300; i++) {
+			expect(eval_(`matches("x${i}y", "^x${i}y$")`)).toBe(true)
+		}
+		expect(eval_('split("a1b2c", "[0-9]")')).toEqual(["a", "b", "c"])
+	})
+})

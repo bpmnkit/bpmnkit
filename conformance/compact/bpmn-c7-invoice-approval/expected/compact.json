@@ -6,6 +6,7 @@
         {
           "eventType": "message",
           "id": "StartEvent_invoice",
+          "messageName": "InvoiceReceived",
           "name": "Invoice received",
           "type": "startEvent"
         },

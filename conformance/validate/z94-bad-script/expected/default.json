@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/duplicate-task-extension",
+      "message": "Must have exactly one 'zeebe:taskHeaders' extension element when exists. Please check process definition XML and retain only one extension element.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Merge the zeebe:taskHeaders elements into one."
+    }
+  ]
+}

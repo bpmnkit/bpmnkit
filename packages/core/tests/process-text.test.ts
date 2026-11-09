@@ -904,7 +904,8 @@ describe("parseProcessText", () => {
 			"s[start Go]\nt[catch:timer Wait] > u[task U]\nv[user V] > w",
 		]
 		for (const answer of answers) {
-			const defs = expand(parseProcessText(answer).diagram)
+			// Lint rules are under test; a timer without a time is a deploy error, not a lint one.
+			const defs = expand(parseProcessText(answer).diagram, { validate: false })
 			const findings = lintDiagram(defs, { bpmnlint: recommended }).diagnostics.filter(
 				(d) => d.category === "flow" || d.category === "naming" || d.category === "feel",
 			)
@@ -1194,10 +1195,13 @@ describe("forms, mappings and platform version", () => {
 		expect(xml).toContain("xmlns:modeler=")
 	})
 
-	it("leaves a diagram without a platform version as before", () => {
+	it("marks a diagram without a platform version as Camunda 8 only when gated", () => {
 		const { diagram } = parseProcessText("# Chat\na[start A] > e[end E]")
 		expect(diagram.executionPlatformVersion).toBeUndefined()
-		expect(Object.keys(expand(diagram).unknownAttributes)).toEqual([])
+		expect(expand(diagram).unknownAttributes).toEqual({
+			"modeler:executionPlatform": "Camunda Cloud",
+		})
+		expect(Object.keys(expand(diagram, { validate: false }).unknownAttributes)).toEqual([])
 	})
 
 	it("reports an unreadable platform version", () => {

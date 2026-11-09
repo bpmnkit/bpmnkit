@@ -38,6 +38,7 @@
               "sourceRefs": [
                 "DOR1"
               ],
+              "targetRef": "Property_t",
               "unknownAttributes": {}
             }
           ],
@@ -64,6 +65,13 @@
           "name": "t",
           "outgoing": [
             "Flow_t_e"
+          ],
+          "properties": [
+            {
+              "id": "Property_t",
+              "name": "__targetRef_placeholder",
+              "unknownAttributes": {}
+            }
           ],
           "type": "serviceTask",
           "unknownAttributes": {}

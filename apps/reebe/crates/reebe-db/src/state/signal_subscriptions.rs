@@ -18,12 +18,16 @@ pub struct SignalSubscription {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct SignalSubscriptionRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> SignalSubscriptionRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -43,7 +47,7 @@ impl<'a> SignalSubscriptionRepository<'a> {
         .bind(sub.process_definition_key)
         .bind(sub.flow_scope_key)
         .bind(&sub.tenant_id)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -62,7 +66,7 @@ impl<'a> SignalSubscriptionRepository<'a> {
         )
         .bind(signal_name)
         .bind(tenant_id)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;
@@ -85,7 +89,7 @@ impl<'a> SignalSubscriptionRepository<'a> {
     pub async fn delete(&self, key: i64) -> Result<()> {
         sqlx::query("DELETE FROM signal_subscriptions WHERE key = $1")
             .bind(key)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -93,7 +97,7 @@ impl<'a> SignalSubscriptionRepository<'a> {
     pub async fn delete_by_process_instance(&self, process_instance_key: i64) -> Result<()> {
         sqlx::query("DELETE FROM signal_subscriptions WHERE process_instance_key = $1")
             .bind(process_instance_key)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }

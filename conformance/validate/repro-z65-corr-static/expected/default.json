@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "M"
+      ],
+      "fixable": false,
+      "id": "zeebe/correlation-key-expression",
+      "message": "Expected expression but found static value 'orderId'. An expression must start with '=' (e.g. '=orderId').",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Start the correlationKey with '=' so it is a FEEL expression."
+    }
+  ]
+}

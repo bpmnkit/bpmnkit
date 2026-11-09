@@ -1,0 +1,101 @@
+{
+  "placeholders": [
+    {
+      "elementId": "wait",
+      "field": "timer",
+      "value": "PT1H",
+      "rule": "zeebe/timer-one-value"
+    },
+    {
+      "elementId": "reply",
+      "field": "messageName",
+      "value": "placeholder-reply",
+      "rule": "zeebe/message-reference"
+    },
+    {
+      "elementId": "reply",
+      "field": "correlationKey",
+      "value": "=\"placeholder-reply\"",
+      "rule": "zeebe/message-reference"
+    },
+    {
+      "elementId": "m2",
+      "field": "messageName",
+      "value": "placeholder-m2",
+      "rule": "zeebe/message-name"
+    },
+    {
+      "elementId": "m2",
+      "field": "correlationKey",
+      "value": "=\"placeholder-m2\"",
+      "rule": "zeebe/message-subscription"
+    },
+    {
+      "elementId": "done",
+      "field": "jobType",
+      "value": "placeholder-done",
+      "rule": "zeebe/message-throw-implementation"
+    },
+    {
+      "elementId": "broadcast",
+      "field": "signalName",
+      "value": "placeholder-broadcast",
+      "rule": "zeebe/signal-reference"
+    },
+    {
+      "elementId": "fail",
+      "field": "errorCode",
+      "value": "placeholder-fail",
+      "rule": "zeebe/error-end-reference"
+    },
+    {
+      "elementId": "escalate",
+      "field": "escalationCode",
+      "value": "placeholder-escalate",
+      "rule": "zeebe/escalation-throw-reference"
+    },
+    {
+      "elementId": "charge",
+      "field": "jobType",
+      "value": "placeholder-charge",
+      "rule": "zeebe/service-task-definition"
+    },
+    {
+      "elementId": "notify",
+      "field": "jobType",
+      "value": "placeholder-notify",
+      "rule": "zeebe/task-definition-type"
+    },
+    {
+      "elementId": "compute",
+      "field": "jobType",
+      "value": "placeholder-compute",
+      "rule": "zeebe/script-task-implementation"
+    },
+    {
+      "elementId": "sub",
+      "field": "calledElement",
+      "value": "placeholder-sub",
+      "rule": "zeebe/call-activity-called-element"
+    },
+    {
+      "elementId": "rules",
+      "field": "jobType",
+      "value": "placeholder-rules",
+      "rule": "zeebe/business-rule-task-implementation"
+    },
+    {
+      "elementId": "decide",
+      "field": "decisionId",
+      "value": "placeholder-decide",
+      "rule": "zeebe/called-decision-attributes"
+    },
+    {
+      "elementId": "f_no",
+      "field": "condition",
+      "value": "=false",
+      "rule": "zeebe/exclusive-flow-condition"
+    }
+  ],
+  "warnings": []
+}

@@ -13,7 +13,8 @@
         {
           "id": "ship",
           "type": "serviceTask",
-          "name": "Ship Order"
+          "name": "Ship Order",
+          "jobType": "ship"
         }
       ],
       "flows": [

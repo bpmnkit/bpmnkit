@@ -1,3 +1,8 @@
 {
-	"input": "bpmn/layout-kyc-onboarding/input.bpmn"
+	"input": "bpmn/layout-kyc-onboarding/input.bpmn",
+	"deployable": false,
+	"deployableReason": "Source bpmn/layout-kyc-onboarding/input.bpmn is itself rejected by Zeebe (riskClassification: Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element); the case pins how it is round-tripped, not a deployable model; expanded with validate:false to keep pinning the expansion.",
+	"expand": {
+		"validate": false
+	}
 }

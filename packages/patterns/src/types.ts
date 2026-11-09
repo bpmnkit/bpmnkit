@@ -14,6 +14,9 @@ export interface PatternElement {
 	formId?: string
 	attachedTo?: string
 	interrupting?: boolean
+	/** Message events: the message name, and (on a catch, not a start) its FEEL correlation key. */
+	messageName?: string
+	correlationKey?: string
 }
 
 export interface PatternFlow {
@@ -22,6 +25,8 @@ export interface PatternFlow {
 	to: string
 	name?: string
 	condition?: string
+	/** The gateway's default branch: Camunda 8 needs a condition or a default on each one. */
+	isDefault?: boolean
 }
 
 export interface PatternProcess {

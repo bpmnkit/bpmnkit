@@ -31,14 +31,6 @@ impl RecordProcessor for DeploymentProcessor {
         // Parse resources from payload
         let resources = payload["resources"].as_array().cloned().unwrap_or_default();
 
-        // Insert deployment record
-        let deployment = Deployment {
-            key: deployment_key,
-            tenant_id: tenant_id.clone(),
-            created_at: state.clock.now(),
-        };
-        state.backend.insert_deployment(&deployment).await?;
-
         let mut deployed_processes = Vec::new();
         let mut deployed_decisions = Vec::new();
         let mut deployed_drgs = Vec::new();
@@ -71,6 +63,30 @@ impl RecordProcessor for DeploymentProcessor {
             };
             decoded.push((resource_name, xml, drg, duplicate));
         }
+        // Like Zeebe, reject the whole deployment before any of it is stored.
+        #[cfg(feature = "zeebe-validate")]
+        {
+            let checked: Vec<_> = decoded
+                .iter()
+                .map(|(name, xml, drg, _)| super::zeebe_validate::Resource {
+                    name,
+                    xml,
+                    decisions: drg
+                        .as_ref()
+                        .map(|d| d.decisions.iter().map(|x| x.id.as_str()).collect()),
+                })
+                .collect();
+            super::zeebe_validate::validate(&checked).map_err(EngineError::BpmnParse)?;
+        }
+
+        // Insert deployment record
+        let deployment = Deployment {
+            key: deployment_key,
+            tenant_id: tenant_id.clone(),
+            created_at: state.clock.now(),
+        };
+        state.backend.insert_deployment(&deployment).await?;
+
         // As in Zeebe, a deployment of nothing but resources deployed before creates no
         // new versions; otherwise every resource of it gets a new version.
         let duplicates_only = decoded.iter().all(|(_, _, _, duplicate)| *duplicate);

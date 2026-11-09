@@ -20,14 +20,22 @@ function buildSdkContext(xml?: string): {
 				const defs = Bpmn.parse(String(rawXml))
 				return JSON.stringify(compactify(defs))
 			},
-			exportXml: (compactJson: unknown): string => {
-				const defs = expand(JSON.parse(String(compactJson)))
+			// The result: gated, throwing the gate's message; placeholders only when asked.
+			exportXml: (compactJson: unknown, optionsJson?: unknown): string => {
+				const options =
+					typeof optionsJson === "string" ? (JSON.parse(optionsJson) as unknown) : optionsJson
+				const placeholders =
+					typeof options === "object" &&
+					options !== null &&
+					(options as { placeholders?: unknown }).placeholders === true
+				const defs = expand(JSON.parse(String(compactJson)), { placeholders })
 				const laidOut = applyAutoLayout(defs)
 				return Bpmn.export(laidOut)
 			},
+			// Analysis of a diagram that may be unfinished: reporting, not producing BPMN.
 			optimize: (compactJson: unknown): string => {
 				const compact = JSON.parse(String(compactJson))
-				const defs = expand(compact)
+				const defs = expand(compact, { validate: false })
 				const report = optimize(defs)
 				return JSON.stringify({
 					diagram: compact,
@@ -35,12 +43,12 @@ function buildSdkContext(xml?: string): {
 				})
 			},
 			layout: (compactJson: unknown): string => {
-				const defs = expand(JSON.parse(String(compactJson)))
+				const defs = expand(JSON.parse(String(compactJson)), { validate: false })
 				const laidOut = applyAutoLayout(defs)
 				return JSON.stringify(compactify(laidOut))
 			},
 			analyzeVariables: (compactJson: unknown): string => {
-				const defs = expand(JSON.parse(String(compactJson)))
+				const defs = expand(JSON.parse(String(compactJson)), { validate: false })
 				// analyzeVariableFlow operates per-process; run on each and collect
 				const results = defs.processes.map((p) => analyzeVariableFlow(p))
 				return JSON.stringify(results)

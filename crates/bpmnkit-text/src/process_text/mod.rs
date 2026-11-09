@@ -26,7 +26,7 @@ mod writer;
 use bpmnkit_bpmn::BpmnDefinitions;
 use serde::{Deserialize, Serialize};
 
-use crate::compact::{expand, CompactDiagram};
+use crate::compact::{expand, CompactDiagram, ExpandOptions};
 use crate::connector_line::ConnectorLine;
 use crate::TextError;
 
@@ -50,6 +50,7 @@ gw >(Label: default) y    branch taken when no condition holds
 Kinds: start end task user service rule (DMN decision) send receive script manual call xor and or eventgw catch (wait for message or timer) throw boundary adhoc (an AI agent that chooses among tools)
 Events take a trigger: start:message end:error catch:timer boundary:error (timer message signal error escalation terminate conditional compensate cancel)
 Attributes after |: on=<task id> (required on boundary), nonint (non-interrupting), job=<job type>, each=<list variable> (once per item), after=<ISO duration> (timer), result=<variable>, feel=<FEEL expression> (last)
+Names after |: msg=<message name> key=<FEEL> (key required where a message is waited for: catch, boundary, receive), signal=<name>, error=<code>, escalation=<code>, at=<ISO date-time> and every=<R/PT1H> (timers), called=<process id> (call)
 Also after |: form=<form id> (start, user), in.<name>=<FEEL> and out.<name>=<FEEL> map variables in and out of a step (value runs to the next word=; write comparisons with spaces: a = 1)
 Ad-hoc: agent[adhoc Name] is a container with flows like any node; tool[service Name | inside=agent] has no flows of its own; note <id>: text annotates a node
 doc <id>: text            the element's documentation; for a tool inside an ad-hoc agent it is the description the agent chooses the tool by
@@ -165,7 +166,8 @@ impl ProcessTextStream {
             return Ok(None);
         }
         let result = assemble::assemble(&self.reader, false);
-        expand(&result.diagram).map(Some)
+        // A frame is a preview of text still arriving, never deployed: no gate.
+        expand(&result.diagram, &ExpandOptions::ungated()).map(Some)
     }
 
     /// TS's `end()`: reads the last, unterminated line and returns the full result.

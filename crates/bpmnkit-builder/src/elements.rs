@@ -65,6 +65,8 @@ pub(crate) struct FlowElementOptions {
     pub documentation: Option<String>,
     pub execution_listeners: Option<Vec<ZeebeListener>>,
     pub task_listeners: Option<Vec<ZeebeListener>>,
+    /// Send task and message throw/end event: the job Camunda 8 runs for the message.
+    pub task_type: Option<String>,
 }
 
 impl From<&ElementOptions> for FlowElementOptions {
@@ -273,17 +275,61 @@ pub(crate) fn hoist_message_subscriptions(mut defs: BpmnDefinitions) -> BpmnDefi
     defs
 }
 
-/// TS's `buildMessageSubscriptionExt`: `[]` for an absent or empty key.
-pub(crate) fn build_message_subscription_ext(correlation_key: Option<&str>) -> Vec<XmlElement> {
+/// TS's `buildMessageSubscriptionExt`: `[]` for an absent or empty key, unless a message
+/// name is set. Zeebe rejects a caught message without a subscription key and none can be
+/// inferred, so that case is an error rather than a model that cannot deploy.
+pub(crate) fn build_message_subscription_ext(
+    method: &str,
+    message_name: Option<&str>,
+    correlation_key: Option<&str>,
+) -> Result<Vec<XmlElement>, String> {
     let Some(key) = correlation_key.filter(|k| !k.is_empty()) else {
-        return vec![];
+        return match message_name.filter(|n| !n.is_empty()) {
+            Some(name) => Err(missing_correlation_key(&format!("{method}()"), name)),
+            None => Ok(vec![]),
+        };
     };
-    zeebe_extensions_to_xml_elements(&ZeebeExtensions {
+    Ok(zeebe_extensions_to_xml_elements(&ZeebeExtensions {
         subscription: Some(ZeebeSubscription {
             correlation_key: key.to_owned(),
         }),
         ..ZeebeExtensions::default()
-    })
+    }))
+}
+
+fn missing_correlation_key(subject: &str, message_name: &str) -> String {
+    format!("{subject}: message \"{message_name}\" needs a correlationKey; Camunda 8 requires a zeebe:subscription correlationKey on a message caught outside a process start event")
+}
+
+/// An event sub-process's message start is a catch too: Zeebe needs its correlation key.
+pub(crate) fn assert_event_sub_process_subscriptions(
+    elements: &[BpmnFlowElement],
+) -> Result<(), String> {
+    for el in elements {
+        let BpmnFlowElement::StartEvent(start) = el else {
+            continue;
+        };
+        let Some(message) = start.event_definitions.iter().find_map(|d| match d {
+            BpmnEventDefinition::Message(m) => Some(m),
+            _ => None,
+        }) else {
+            continue;
+        };
+        if start
+            .base
+            .extension_elements
+            .iter()
+            .any(|x| x.name == "zeebe:subscription")
+        {
+            continue;
+        }
+        let message_ref = message.message_ref.as_deref().unwrap_or(&start.base.id);
+        return Err(missing_correlation_key(
+            &format!("eventSubProcess(): start event \"{}\"", start.base.id),
+            message_ref,
+        ));
+    }
+    Ok(())
 }
 
 /// TS's `buildEventDefinitions`, always with the shared root lists (every TS call site
@@ -462,6 +508,23 @@ pub(crate) fn make_flow_element(
             extension_elements: options.extension_elements,
         },
     );
+    if let Some(task_type) = options.task_type {
+        if matches!(
+            ty,
+            BpmnElementType::SendTask
+                | BpmnElementType::IntermediateThrowEvent
+                | BpmnElementType::EndEvent
+        ) {
+            let ext = zeebe_extensions_to_xml_elements(&ZeebeExtensions {
+                task_definition: Some(ZeebeTaskDefinition {
+                    type_: task_type,
+                    retries: None,
+                }),
+                ..ZeebeExtensions::default()
+            });
+            el.base_mut().extension_elements.extend(ext);
+        }
+    }
     // Placement is checked here, so a listener on an element the schema forbids it on
     // fails at build time, not at deploy time.
     let listeners = zeebe_extensions_to_xml_elements(&ZeebeExtensions {
@@ -475,6 +538,23 @@ pub(crate) fn make_flow_element(
         el.base_mut().extension_elements.push(listener);
     }
     Ok(el)
+}
+
+/// TS's `assertNotAfterEnd`: Zeebe refuses an end event with an outgoing flow, so
+/// nothing may be chained after one. Structural, so it holds with `validate: false` too.
+pub(crate) fn assert_not_after_end(
+    elements: &[BpmnFlowElement],
+    source_id: &str,
+    next_id: &str,
+) -> Result<(), String> {
+    // From the back: the source is almost always one of the last elements added.
+    let source = elements.iter().rev().find(|e| e.base().id == source_id);
+    if !matches!(source, Some(BpmnFlowElement::EndEvent(_))) {
+        return Ok(());
+    }
+    Err(format!(
+        "Cannot chain \"{next_id}\" after end event \"{source_id}\": an end event has no outgoing sequence flow. Remove the end event, or continue from another element."
+    ))
 }
 
 /// TS's `buildMultiInstance`.
@@ -693,7 +773,7 @@ pub(crate) fn make_condition_expression(expression: &str) -> BpmnConditionExpres
     let mut attributes = Attrs::new();
     attributes.insert("xsi:type".to_owned(), "bpmn:tFormalExpression".to_owned());
     BpmnConditionExpression {
-        text: expression.to_owned(),
+        text: bpmnkit_bpmn::feel_condition::to_feel_condition(expression),
         attributes,
     }
 }
@@ -812,6 +892,7 @@ pub(crate) fn make_service_task_el(
             execution_listeners: options.execution_listeners.clone(),
             // Not in ServiceTaskOptions; forwarded so an untyped caller gets the placement error, not a silent drop.
             task_listeners: options.task_listeners.clone(),
+            task_type: None,
         },
     )?;
     el.base_mut().unknown_attributes = unknown_attributes;
@@ -839,6 +920,7 @@ pub(crate) fn make_script_task_el(
                 ..ZeebeExtensions::default()
             })),
             task_listeners: None,
+            task_type: None,
         },
     )?;
     flag_compensation(&mut el, options.is_for_compensation);
@@ -880,6 +962,14 @@ pub(crate) fn make_start_event_el(
             version_tag: None,
         });
     }
+    if let Some(key) = options
+        .and_then(|o| o.correlation_key.as_deref())
+        .filter(|k| !k.is_empty())
+    {
+        ext.subscription = Some(ZeebeSubscription {
+            correlation_key: key.to_owned(),
+        });
+    }
     if let Some(properties) = options.and_then(|o| o.zeebe_properties.as_ref()) {
         ext.properties = Some(ZeebeProperties {
             properties: properties.clone(),
@@ -894,6 +984,7 @@ pub(crate) fn make_start_event_el(
             execution_listeners: options.and_then(|o| o.element.execution_listeners.clone()),
             extension_elements: Some(zeebe_extensions_to_xml_elements(&ext)),
             task_listeners: None,
+            task_type: None,
         },
     )?;
     if let Some(o) = options {
@@ -995,6 +1086,7 @@ pub(crate) fn make_user_task_el(
             execution_listeners: options.and_then(|o| o.execution_listeners.clone()),
             task_listeners: options.and_then(|o| o.task_listeners.clone()),
             extension_elements: Some(ext),
+            task_type: None,
         },
     )?;
     if let Some(o) = options {
@@ -1106,6 +1198,7 @@ pub(crate) fn make_business_rule_task_el(
             execution_listeners: options.and_then(|o| o.execution_listeners.clone()),
             extension_elements: Some(ext),
             task_listeners: None,
+            task_type: None,
         },
     )?;
     flag_compensation(&mut el, options.and_then(|o| o.is_for_compensation));
@@ -1142,6 +1235,7 @@ pub(crate) fn make_call_activity_el(
             execution_listeners: options.execution_listeners.clone(),
             extension_elements: Some(zeebe_extensions_to_xml_elements(&extensions)),
             task_listeners: None,
+            task_type: None,
         },
     )?;
     flag_compensation(&mut el, options.is_for_compensation);
@@ -1178,12 +1272,14 @@ fn message_task_el(
     ty: BpmnElementType,
     options: Option<&MessageTaskOptions>,
     extension_elements: Option<Vec<XmlElement>>,
+    task_type: Option<String>,
     shared: &mut Shared,
 ) -> Result<BpmnFlowElement, String> {
     let mut flow_options = options
         .map(|o| FlowElementOptions::from(&o.element))
         .unwrap_or_default();
     flow_options.extension_elements = extension_elements;
+    flow_options.task_type = task_type;
     let mut el = make_flow_element(id, ty, flow_options)?;
     flag_compensation(&mut el, options.and_then(|o| o.element.is_for_compensation));
     if let Some(name) = options
@@ -1207,10 +1303,17 @@ fn message_task_el(
 /// `sendTask()` of all three builders: element, compensation flag, message, multi-instance.
 pub(crate) fn make_send_task_el(
     id: &str,
-    options: Option<&MessageTaskOptions>,
+    options: Option<&SendTaskOptions>,
     shared: &mut Shared,
 ) -> Result<BpmnFlowElement, String> {
-    message_task_el(id, BpmnElementType::SendTask, options, None, shared)
+    message_task_el(
+        id,
+        BpmnElementType::SendTask,
+        options.map(|o| &o.message),
+        None,
+        options.and_then(|o| o.task_type.clone()),
+        shared,
+    )
 }
 
 /// `receiveTask()` of all three builders: as [`make_send_task_el`] plus the subscription.
@@ -1219,8 +1322,19 @@ pub(crate) fn make_receive_task_el(
     options: Option<&MessageTaskOptions>,
     shared: &mut Shared,
 ) -> Result<BpmnFlowElement, String> {
-    let ext = build_message_subscription_ext(options.and_then(|o| o.correlation_key.as_deref()));
-    message_task_el(id, BpmnElementType::ReceiveTask, options, Some(ext), shared)
+    let ext = build_message_subscription_ext(
+        "receiveTask",
+        options.and_then(|o| o.message_name.as_deref()),
+        options.and_then(|o| o.correlation_key.as_deref()),
+    )?;
+    message_task_el(
+        id,
+        BpmnElementType::ReceiveTask,
+        options,
+        Some(ext),
+        None,
+        shared,
+    )
 }
 
 /// `manualTask()` / `task()` of all three builders (`ty` is `ManualTask` or `Task`).
@@ -1249,7 +1363,10 @@ pub(crate) fn make_end_event_el(
         id,
         BpmnElementType::EndEvent,
         options
-            .map(|o| FlowElementOptions::from(&o.element))
+            .map(|o| FlowElementOptions {
+                task_type: o.task_type.clone(),
+                ..FlowElementOptions::from(&o.element)
+            })
             .unwrap_or_default(),
     )?;
     if let (Some(o), Some(defs)) = (options, el.event_definitions_mut()) {
@@ -1268,7 +1385,10 @@ pub(crate) fn make_intermediate_throw_event_el(
         id,
         BpmnElementType::IntermediateThrowEvent,
         options
-            .map(|o| FlowElementOptions::from(&o.element))
+            .map(|o| FlowElementOptions {
+                task_type: o.task_type.clone(),
+                ..FlowElementOptions::from(&o.element)
+            })
             .unwrap_or_default(),
     )?;
     if let (Some(o), Some(defs)) = (options, el.event_definitions_mut()) {
@@ -1288,8 +1408,10 @@ pub(crate) fn make_intermediate_catch_event_el(
         .map(|o| FlowElementOptions::from(&o.element))
         .unwrap_or_default();
     flow_options.extension_elements = Some(build_message_subscription_ext(
+        "intermediateCatchEvent",
+        options.and_then(|o| o.message_name.as_deref()),
         options.and_then(|o| o.correlation_key.as_deref()),
-    ));
+    )?);
     let mut el = make_flow_element(id, BpmnElementType::IntermediateCatchEvent, flow_options)?;
     if let (Some(o), Some(defs)) = (options, el.event_definitions_mut()) {
         *defs = build_event_definitions(&EventDefinitionOptions::from(o), shared);
@@ -1321,8 +1443,10 @@ pub(crate) fn make_boundary_event_el(
     resolve_boundary_event_args(id, options)?;
     let mut flow_options = FlowElementOptions::from(&options.element);
     flow_options.extension_elements = Some(build_message_subscription_ext(
+        "boundaryEvent",
+        options.message_name.as_deref(),
         options.correlation_key.as_deref(),
-    ));
+    )?);
     let mut el = make_flow_element(id, BpmnElementType::BoundaryEvent, flow_options)?;
     if let BpmnFlowElement::BoundaryEvent(boundary) = &mut el {
         boundary.attached_to_ref = options.attached_to.clone();
@@ -1351,11 +1475,10 @@ pub(crate) fn make_data_element(
     );
     let collection = options.and_then(|o| o.is_collection) == Some(true);
     match &mut el {
+        // BPMN20.xsd allows isCollection on the data object only; a reference asking for it
+        // marks its target instead (`Scope::add_data_object_reference`).
         BpmnFlowElement::DataObjectReference(d) => {
             d.data_object_ref = data_ref.map(str::to_owned);
-            if collection {
-                d.is_collection = Some(true);
-            }
         }
         BpmnFlowElement::DataStoreReference(d) => d.data_store_ref = data_ref.map(str::to_owned),
         BpmnFlowElement::DataObject(d) if collection => d.is_collection = Some(true),

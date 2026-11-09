@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://example.com" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="Start"><bpmn:outgoing>F1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:serviceTask id="Task"><bpmn:extensionElements><zeebe:taskDefinition type="work" /></bpmn:extensionElements><bpmn:incoming>F1</bpmn:incoming><bpmn:outgoing>F2</bpmn:outgoing></bpmn:serviceTask>
+    <bpmn:endEvent id="End"><bpmn:incoming>F2</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="F1" sourceRef="Start" targetRef="Task" />
+    <bpmn:sequenceFlow id="F2" sourceRef="Task" targetRef="End" />
+    <bpmn:boundaryEvent id="Boundary" attachedToRef="Task"><bpmn:compensateEventDefinition id="CompDef" /></bpmn:boundaryEvent>
+    <bpmn:serviceTask id="Undo" isForCompensation="true"><bpmn:extensionElements><zeebe:taskDefinition type="undo" /></bpmn:extensionElements></bpmn:serviceTask>
+
+
+    <bpmn:association id="Assoc" associationDirection="One" sourceRef="Boundary" targetRef="Undo" />
+  </bpmn:process>
+</bpmn:definitions>

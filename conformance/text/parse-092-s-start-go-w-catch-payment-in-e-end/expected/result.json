@@ -13,6 +13,7 @@
           {
             "eventType": "message",
             "id": "w",
+            "messageName": "w",
             "name": "Payment in",
             "type": "intermediateCatchEvent"
           },

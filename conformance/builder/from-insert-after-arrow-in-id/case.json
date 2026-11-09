@@ -6,5 +6,7 @@
 		["insertAfter","start"],
 		["task","n"],
 		["build"]
-	]
+	],
+	"deployable": false,
+	"deployableReason": "Source builder/from-insert-after-arrow-in-id/input.bpmn is itself rejected by Zeebe (Error: URI=null Line=7: cvc-datatype-valid.1.2.1: 'a?b' is not a valid value for 'NCName'.); the case pins how it is round-tripped, not a deployable model."
 }

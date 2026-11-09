@@ -1,5 +1,11 @@
 # @bpmnkit/docspack
 
+## 1.3.1
+
+### Patch Changes
+
+- e57db77: The docs pack includes the new deploy gate guide (API, error format, placeholders, opt-outs, every entry point) and the updated CLI, AI and agent-card pages.
+
 ## 1.3.0
 
 ### Minor Changes

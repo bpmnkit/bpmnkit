@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Node"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-reference",
+      "message": "Must reference a message",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Reference a message with messageRef on the message event definition."
+    }
+  ]
+}

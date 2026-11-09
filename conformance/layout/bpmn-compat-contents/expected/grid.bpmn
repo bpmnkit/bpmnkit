@@ -185,7 +185,7 @@
       </bpmn:extensionElements>
     </bpmn:serviceTask>
     <bpmn:intermediateThrowEvent id="linkNoName">
-      <bpmn:linkEventDefinition id="linkNoNameDef"/>
+      <bpmn:linkEventDefinition id="linkNoNameDef" name=""/>
     </bpmn:intermediateThrowEvent>
     <bpmn:intermediateCatchEvent id="linkCatch1">
       <bpmn:linkEventDefinition id="linkCatch1Def" name="L"/>

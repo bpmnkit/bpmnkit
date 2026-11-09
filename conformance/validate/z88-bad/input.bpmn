@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://example.com" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="Start"><bpmn:outgoing>F1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:serviceTask id="A"><bpmn:extensionElements><zeebe:taskDefinition type="w" retries="3" /></bpmn:extensionElements><bpmn:incoming>F1</bpmn:incoming><bpmn:outgoing>F2</bpmn:outgoing></bpmn:serviceTask>
+    <bpmn:subProcess id="Sub"><bpmn:incoming>F2</bpmn:incoming><bpmn:outgoing>F3</bpmn:outgoing>
+    <bpmn:startEvent id="SStart"><bpmn:outgoing>H1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:endEvent id="SEnd"><bpmn:incoming>H1</bpmn:incoming><bpmn:compensateEventDefinition id="SEnd_d" activityRef="A" /></bpmn:endEvent>
+    <bpmn:sequenceFlow id="H1" sourceRef="SStart" targetRef="SEnd" />
+    </bpmn:subProcess>
+    <bpmn:endEvent id="End"><bpmn:incoming>F3</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="F1" sourceRef="Start" targetRef="A" />
+    <bpmn:sequenceFlow id="F2" sourceRef="A" targetRef="Sub" />
+    <bpmn:sequenceFlow id="F3" sourceRef="Sub" targetRef="End" />
+    <bpmn:boundaryEvent id="B" attachedToRef="A"><bpmn:compensateEventDefinition id="B_d" /></bpmn:boundaryEvent>
+    <bpmn:serviceTask id="H" isForCompensation="true"><bpmn:extensionElements><zeebe:taskDefinition type="undo" retries="3" /></bpmn:extensionElements></bpmn:serviceTask>
+    <bpmn:association id="As_B" associationDirection="One" sourceRef="B" targetRef="H" />
+  </bpmn:process>
+</bpmn:definitions>

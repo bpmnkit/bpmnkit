@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/service-task-definition",
+      "message": "Must have exactly one 'zeebe:taskDefinition' extension element",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Add one zeebe:taskDefinition with a job type to the service task."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/called-element-expression",
+      "message": "failed to parse expression 'a +'",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Fix the FEEL expression in processId, or remove the leading '='."
+    }
+  ]
+}

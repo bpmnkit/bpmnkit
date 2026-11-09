@@ -17,6 +17,7 @@ Behaviour (evaluation, rule logic) stays hand-written on each side; only data li
 | `feel-builtins.json` | `schema/feel-builtins.schema.json` | `packages/feel/src/generated/builtin-signatures.ts` | `bpmnkit_spec::feel` |
 | `lint-rules.json` | `schema/lint-rules.schema.json` | `packages/core/src/generated/lint-rules.ts` | `bpmnkit_spec::lint` |
 | `compat-rules.json` | `schema/compat-rules.schema.json` | `packages/core/src/generated/camunda-compat-data.ts` | `bpmnkit_spec::compat` |
+| `zeebe-rules.json` | `schema/zeebe-rules.schema.json` | `packages/core/src/generated/zeebe-rules.ts` | `bpmnkit_spec::zeebe` |
 | `templates/connectors.json` | `schema/connector-templates.schema.json` | `packages/core/src/connectors/templates/generated.ts`, `packages/connectors/src/templates/generated.ts` | `bpmnkit_spec::templates::CONNECTOR_TEMPLATES_JSON` (raw JSON) |
 | `elements/<family>.json` | `schema/elements.schema.json` | `packages/core/src/generated/{form,bpmn,zeebe}-elements.ts` | `bpmnkit_spec::elements` (`FORM_ELEMENTS`, `BPMN_ELEMENTS`, `ZEEBE_ELEMENTS`, `ZEEBE_ALLOWED_IN`) |
 
@@ -33,6 +34,14 @@ built-in and inbound-connector support per version, and the plugin's rules), wit
 `pnpm update-connectors` fetches the registry and writes this file (plus `catalog-meta.json`), then runs spec-gen,
 which splits each template into the core file (binding/validation keys) and the connectors file (panel-only keys).
 Edit the JSON, not the two TS files. Rust embeds the JSON text rather than generating literals.
+
+`zeebe-rules.json` lists every rule Zeebe applies when a BPMN is deployed (`doc/deployability/zeebe-rules.md`):
+id, `name` (finding id `zeebe/<name>`), the elements, Zeebe's messages, the Camunda versions it applies to
+(`since`/`until`), `kind` (static, feel, context), severity, and `check`: how BPMN Kit decides it (`model`:
+`validateDeployable`; `xml`: `validateDeployableXml` on the text; `context`: only with a resolver for the
+other resources; `none`: not decidable from one BPMN, with a `note`). Umbrella rules name the specific rules
+that report them in `coveredBy`. The checks are in `packages/core/src/bpmn/zeebe-validate` and
+`crates/bpmnkit-compat/src/zeebe`.
 
 ## Element definitions
 

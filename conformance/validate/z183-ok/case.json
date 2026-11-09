@@ -1,0 +1,12 @@
+{
+  "runs": {
+    "default": {},
+    "other": {
+      "deployment": {
+        "processes": [
+          "Other"
+        ]
+      }
+    }
+  }
+}

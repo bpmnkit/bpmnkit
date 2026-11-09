@@ -1,0 +1,11 @@
+{
+	"runs": {
+		"default": {
+			"limits": {
+				"maxIdLength": 255,
+				"maxNameLength": 255,
+				"maxWorkerTypeLength": 255
+			}
+		}
+	}
+}

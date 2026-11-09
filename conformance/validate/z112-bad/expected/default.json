@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/agent-type-required",
+      "message": "Attribute 'agentType' must be present and not empty",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Set agentType on zeebe:agentDefinition to one of: aiAgentSubProcess, aiAgentTask, external."
+    }
+  ]
+}

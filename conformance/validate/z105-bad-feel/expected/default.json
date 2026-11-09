@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/input-mapping",
+      "message": "failed to parse expression '1 +'",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Use a valid FEEL source and a variable name or dotted path as target."
+    }
+  ]
+}

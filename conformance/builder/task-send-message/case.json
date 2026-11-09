@@ -3,7 +3,7 @@
 	"script": [
 		["createProcess","p"],
 		["startEvent","s"],
-		["sendTask","send",{"name":"Send","messageName":"order-shipped","correlationKey":"=orderId"}],
+		["sendTask","send",{"name":"Send","messageName":"order-shipped","correlationKey":"=orderId","taskType":"send-order-shipped"}],
 		["endEvent","e"],
 		["build"]
 	]

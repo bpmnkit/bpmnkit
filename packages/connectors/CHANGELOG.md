@@ -1,5 +1,26 @@
 # @bpmnkit/connectors
 
+## 1.4.0
+
+### Minor Changes
+
+- 65aba71: `@bpmnkit/connectors` exports `applyTemplates`, which the CLI's `connector` command imports. It was added without a release, so the published CLI 1.5.0 (`@bpmnkit/connectors: ^1.3.1`) crashed on start against connectors 1.3.1. The CLI release raises its dependency range to the connectors version that has the export.
+
+### Patch Changes
+
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [e57db77]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [e57db77]
+- Updated dependencies [e57db77]
+  - @bpmnkit/core@1.10.0
+
 ## 1.3.1
 
 ### Patch Changes

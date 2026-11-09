@@ -1,5 +1,0 @@
----
-"@bpmnkit/core": patch
----
-
-Builder fixes. `withBoundary()` refuses a host that is not an activity in all three builders (`ProcessBuilder` attached to a start or boundary event before). `build()` refuses an id used twice anywhere in the process, nested scopes included (`Duplicate element ID "<id>" in process "<processId>"`). `BranchBuilder.startEvent()` honours `isInterrupting: false`. In a branch, `connectTo()` after a nested `branch()` wires the nested branches' open ends to the target instead of a flow from `undefined`, and `textAnnotation()` there throws `textAnnotation() must follow a flow element` instead of annotating `TextAnnotation_undefined_1`. `at()` and `element()` after `insertAfter()` keep the spliced flow on what was inserted. `build()` works on a copy: the result shares no objects with the builder, building twice gives the same model, and a refused `explicitJoins` build leaves nothing behind. Continuing a document whose ids contain `→` no longer misreads a spliced flow as rewired. The `startEvent()` doc now says it chains from the current position (use `addStartEvent()` for a disconnected path).

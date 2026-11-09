@@ -25,6 +25,7 @@
               },
               {
                 "documentation": "Catches timeout error event and starts the subprocess",
+                "errorCode": "00",
                 "eventType": "error",
                 "id": "StartErrorEvent_Timeout",
                 "name": "Timeout",
@@ -51,15 +52,17 @@
             ]
           },
           "id": "Activity_1ke2ixr",
-          "type": "subProcess"
+          "type": "eventSubProcess"
         },
         {
           "children": {
             "elements": [
               {
+                "correlationKey": "=01",
                 "documentation": "Customer onboarding cancellation message received",
                 "eventType": "message",
                 "id": "StartMessageEvent_CancellationRequested",
+                "messageName": "Message_CancellationRequested",
                 "name": "Cancelation requested",
                 "type": "startEvent"
               },
@@ -115,7 +118,7 @@
             ]
           },
           "id": "Activity_0vp33kx",
-          "type": "subProcess"
+          "type": "eventSubProcess"
         },
         {
           "calledProcess": "ManualCheck",
@@ -193,6 +196,7 @@
         {
           "attachedTo": "Activity_ManualCheck",
           "documentation": "Captures error if fraud is detected",
+          "errorCode": "02",
           "eventType": "error",
           "id": "ErrorBoundaryEvent_FraudDetected",
           "name": "Fraud detected",

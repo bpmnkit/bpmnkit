@@ -170,7 +170,8 @@ fn build_extracted_defs(
 
     let process = BpmnProcess {
         id: new_process_id.to_owned(),
-        is_executable: Some(false),
+        // The call activity that replaces the group calls this process, so it has to deploy.
+        is_executable: Some(true),
         contents: BpmnProcessContents {
             flow_elements: vec![start, task, end],
             sequence_flows: vec![
@@ -202,9 +203,21 @@ fn build_extracted_defs(
         unknown_children: vec![],
     };
 
+    // Without them the serialized file is not well-formed XML (an unbound `bpmn:` prefix).
+    let namespaces = [
+        ("bpmn", "http://www.omg.org/spec/BPMN/20100524/MODEL"),
+        ("bpmndi", "http://www.omg.org/spec/BPMN/20100524/DI"),
+        ("dc", "http://www.omg.org/spec/DD/20100524/DC"),
+        ("di", "http://www.omg.org/spec/DD/20100524/DI"),
+        ("zeebe", "http://camunda.org/schema/zeebe/1.0"),
+    ]
+    .into_iter()
+    .map(|(k, v)| (k.to_owned(), v.to_owned()))
+    .collect();
     BpmnDefinitions {
         id: generate_id("Definitions"),
         target_namespace: "http://bpmn.io/schema/bpmn".into(),
+        namespaces,
         processes: vec![process],
         diagrams: vec![diagram],
         ..Default::default()

@@ -1,0 +1,58 @@
+name: Rust benches
+
+# Runs every crates/*/benches/*.rs and compares with benches/rust-baseline.json; a row more
+# than 20% slower fails the run (scripts/bench-rs.mjs). Timings only compare on like hardware:
+# while the baseline comes from another CPU model, regressions only warn. To refresh it, run
+# this workflow with `update` and commit the uploaded rust-baseline.json.
+on:
+  schedule:
+    - cron: "41 2 * * *"
+  workflow_dispatch:
+    inputs:
+      update:
+        description: Record a new baseline (uploaded as an artifact) instead of comparing
+        type: boolean
+        default: false
+
+concurrency:
+  group: bench-nightly
+  cancel-in-progress: true
+
+jobs:
+  bench:
+    name: Benches
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Cache Rust build
+        uses: Swatinem/rust-cache@v2
+        with:
+          key: bench
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build the benches
+        run: cargo bench --no-run --workspace --locked
+
+      # Five runs per bench, fastest kept: shared runners are noisy.
+      - name: Compare with the baseline
+        if: ${{ !inputs.update }}
+        run: node scripts/bench-rs.mjs --runs 5
+
+      - name: Record a baseline
+        if: ${{ inputs.update }}
+        run: node scripts/bench-rs.mjs --runs 5 --update
+
+      - name: Upload the baseline
+        if: ${{ inputs.update }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: rust-baseline
+          path: benches/rust-baseline.json

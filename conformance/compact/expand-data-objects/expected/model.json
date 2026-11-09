@@ -5,14 +5,41 @@
       "id": "BPMNDiagram_P",
       "plane": {
         "bpmnElement": "P",
-        "edges": [],
+        "edges": [
+          {
+            "bpmnElement": "Flow_Start_P",
+            "id": "Flow_Start_P_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 43,
+                "y": 40
+              },
+              {
+                "x": 110,
+                "y": 40
+              }
+            ]
+          }
+        ],
         "id": "BPMNPlane_P",
         "shapes": [
           {
             "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 7,
+              "y": 22
+            },
+            "bpmnElement": "Start_P",
+            "id": "Start_P_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
               "height": 80,
               "width": 100,
-              "x": 0,
+              "x": 110,
               "y": 0
             },
             "bpmnElement": "t",
@@ -23,7 +50,7 @@
             "bounds": {
               "height": 50,
               "width": 36,
-              "x": 32,
+              "x": 7,
               "y": 160
             },
             "bpmnElement": "do",
@@ -34,7 +61,7 @@
             "bounds": {
               "height": 50,
               "width": 36,
-              "x": 32,
+              "x": 7,
               "y": 290
             },
             "bpmnElement": "ref",
@@ -45,7 +72,7 @@
             "bounds": {
               "height": 50,
               "width": 50,
-              "x": 25,
+              "x": 0,
               "y": 420
             },
             "bpmnElement": "ds",
@@ -65,6 +92,7 @@
     "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
     "dc": "http://www.omg.org/spec/DD/20100524/DC",
     "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
     "zeebe": "http://camunda.org/schema/zeebe/1.0"
   },
   "processes": [
@@ -73,9 +101,22 @@
       "extensionElements": [],
       "flowElements": [
         {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "Start_P",
+          "incoming": [],
+          "outgoing": [
+            "Flow_Start_P"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
           "extensionElements": [],
           "id": "t",
-          "incoming": [],
+          "incoming": [
+            "Flow_Start_P"
+          ],
           "outgoing": [],
           "type": "task",
           "unknownAttributes": {}
@@ -113,12 +154,22 @@
       "groups": [],
       "id": "P",
       "isExecutable": true,
-      "sequenceFlows": [],
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_Start_P",
+          "sourceRef": "Start_P",
+          "targetRef": "t",
+          "unknownAttributes": {}
+        }
+      ],
       "textAnnotations": [],
       "unknownAttributes": {}
     }
   ],
   "signals": [],
   "targetNamespace": "http://bpmn.io/schema/bpmn",
-  "unknownAttributes": {}
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud"
+  }
 }

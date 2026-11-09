@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Node"
+      ],
+      "fixable": false,
+      "id": "zeebe/escalation-throw-reference",
+      "message": "Must reference an escalation",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Reference an escalation with escalationRef on the escalation event definition."
+    }
+  ]
+}

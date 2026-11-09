@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/linked-resource-deployment",
+      "message": "Expected to find form with id 'f' in current deployment, but not found.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Deploy the form 'f' together with the process, or bind it by 'latest'."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/linked-resource-deployment",
+      "message": "Expected to find resource with id 'script' in current deployment, but not found.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Deploy the resource 'script' together with the process, or bind it by 'latest'."
+    }
+  ]
+}

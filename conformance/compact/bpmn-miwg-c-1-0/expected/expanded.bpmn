@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="sid-bdb880ac-c464-4e5c-aa56-569d709436e0" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:message id="Message_invoice_received_C_1_0" name="invoice-received-C.1.0"/>
   <bpmn:process id="sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57" name="Team-Assistant" isExecutable="true">
     <bpmn:startEvent id="sid-36EA43D1-0FE6-4197-AC57-7A43785B784B" name="Invoice&#10;received">
       <bpmn:outgoing>sid-7971C38C-2EF5-41F2-A24E-3FFCA069EDBF</bpmn:outgoing>
@@ -87,7 +88,7 @@
     </bpmn:endEvent>
     <bpmn:startEvent id="StartEvent_1" name="Invoice&#10;received">
       <bpmn:outgoing>SequenceFlow_1</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="StartEvent_1_MessageEventDefinition"/>
+      <bpmn:messageEventDefinition id="StartEvent_1_MessageEventDefinition" messageRef="Message_invoice_received_C_1_0"/>
     </bpmn:startEvent>
     <bpmn:userTask id="prepareBankTransfer" name="Prepare&#13;&#10;Bank&#13;&#10;Transfer">
       <bpmn:incoming>invoiceApproved</bpmn:incoming>
@@ -101,16 +102,16 @@
       <bpmn:outgoing>SequenceFlow_3</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sequenceFlow id="invoiceApproved" sourceRef="invoice_approved" targetRef="prepareBankTransfer" name="yes">
-      <bpmn:conditionExpression>${approved}</bpmn:conditionExpression>
+      <bpmn:conditionExpression>=approved</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="invoiceNotApproved" sourceRef="invoice_approved" targetRef="reviewInvoice" name="no">
-      <bpmn:conditionExpression>${!approved}</bpmn:conditionExpression>
+      <bpmn:conditionExpression>=not(approved)</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="reviewSuccessful" sourceRef="reviewSuccessful_gw" targetRef="approveInvoice" name="yes">
-      <bpmn:conditionExpression>${clarified == 'yes'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression>=clarified = "yes"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="reviewNotSuccessful" sourceRef="reviewSuccessful_gw" targetRef="invoiceNotProcessed" name="no">
-      <bpmn:conditionExpression>${clarified == 'no'}</bpmn:conditionExpression>
+      <bpmn:conditionExpression>=clarified = "no"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="sequenceFlow_180" sourceRef="approveInvoice" targetRef="invoice_approved"/>
     <bpmn:sequenceFlow id="sequenceFlow_183" sourceRef="reviewInvoice" targetRef="reviewSuccessful_gw"/>

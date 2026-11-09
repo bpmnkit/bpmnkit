@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Start"
+      ],
+      "fixable": false,
+      "id": "zeebe/start-form-public-access",
+      "message": "Start event forms with public access enabled are not supported. Please remove the 'publicAccess' property or set it to 'false'",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Remove the 'publicAccess' property from the start event."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "g"
+      ],
+      "fixable": false,
+      "id": "zeebe/event-based-gateway-target",
+      "message": "Event-based gateway must not have an outgoing sequence flow to other elements than message/timer/signal/conditional intermediate catch events.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Route each flow to an intermediate catch event with one message, timer, signal or conditional definition."
+    }
+  ]
+}

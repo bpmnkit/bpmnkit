@@ -1,0 +1,40 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "f1"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "f4"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "g"
+      ],
+      "fixable": false,
+      "id": "zeebe/event-based-gateway-target-incoming",
+      "message": "Target elements of an event gateway must not have any additional incoming sequence flows other than that from the event gateway.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Remove the other incoming flows of the catch events behind the gateway."
+    }
+  ]
+}

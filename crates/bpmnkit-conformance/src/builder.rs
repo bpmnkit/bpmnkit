@@ -361,7 +361,7 @@ fn replay_diagram(
 ) -> Option<Result<BpmnDefinitions, BuildError>> {
     for op in ops {
         match split(op) {
-            ("build", _) => return Some(b.build()),
+            ("build", a) => return Some(b.build(opt(a.first()))),
             ("executionPlatformVersion", a) => done(b.execution_platform_version(a[0].str())),
             ("process", a) => {
                 let ops = a[1].ops().expect("process callback");
@@ -536,13 +536,18 @@ fn exported(
     let Ok(defs) = result else {
         return Ok(result);
     };
-    let validate = match export.get("validate").and_then(J::as_str) {
-        Some("warn") => ExportValidate::Warn,
-        Some("error") => ExportValidate::Error,
-        _ => ExportValidate::Off,
+    // Absent means TS's default, "auto"; `false` turns the check off.
+    let validate = match export.get("validate") {
+        Some(v) if v.raw.trim() == "false" => ExportValidate::Off,
+        Some(v) => match v.as_str() {
+            Some("warn") => ExportValidate::Warn,
+            Some("error") => ExportValidate::Error,
+            _ => ExportValidate::Auto,
+        },
+        None => ExportValidate::Auto,
     };
     let warning = match export_bpmn(&defs, ExportOptions { validate }) {
-        Err(message) => return Ok(Err(BuildError { message })),
+        Err(e) => return Ok(Err(BuildError::from(e))),
         Ok(out) => out.warning,
     };
     let warning_path = expected.join("warning.txt");

@@ -25,9 +25,11 @@ export interface ApplyProblem {
 	 * with no resolvable task type ("no-task-type"). Callers that specifically
 	 * want "what's still required" (e.g. the deploy-lint connector check)
 	 * must filter on `kind === "missing-required"` — an unknown key is not
-	 * evidence that some other field is missing.
+	 * evidence that some other field is missing. `"not-deployable"` is an error
+	 * Zeebe would raise on deploy for the applied element (functions that write
+	 * onto a model check it unless `validate: false`).
 	 */
-	kind?: "missing-required" | "unknown-key" | "invalid-feel" | "no-task-type"
+	kind?: "missing-required" | "unknown-key" | "invalid-feel" | "no-task-type" | "not-deployable"
 }
 
 /**

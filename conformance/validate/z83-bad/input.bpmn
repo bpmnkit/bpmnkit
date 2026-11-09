@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://example.com" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="Start"><bpmn:outgoing>F1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:intermediateThrowEvent id="T"><bpmn:incoming>F1</bpmn:incoming><bpmn:linkEventDefinition id="T_d" name="" /></bpmn:intermediateThrowEvent>
+    <bpmn:sequenceFlow id="F1" sourceRef="Start" targetRef="T" />
+    <bpmn:intermediateCatchEvent id="C0"><bpmn:outgoing>G0</bpmn:outgoing><bpmn:linkEventDefinition id="C0_d" name="" /></bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="End0"><bpmn:incoming>G0</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="G0" sourceRef="C0" targetRef="End0" />
+  </bpmn:process>
+</bpmn:definitions>

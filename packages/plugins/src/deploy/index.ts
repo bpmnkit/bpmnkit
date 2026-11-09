@@ -1,9 +1,10 @@
 import type { CanvasPlugin } from "@bpmnkit/canvas"
-import { optimize } from "@bpmnkit/core"
 import type { BpmnDefinitions } from "@bpmnkit/core"
 import { DEPLOY_CSS, DEPLOY_STYLE_ID, injectDeployStyles } from "./css.js"
+import { type DeployVerdict, deployVerdict } from "./gate.js"
 
-export { DEPLOY_CSS, DEPLOY_STYLE_ID, injectDeployStyles }
+export { DEPLOY_CSS, DEPLOY_STYLE_ID, injectDeployStyles, deployVerdict }
+export type { DeployVerdict }
 
 // ── Public types ───────────────────────────────────────────────────────────────
 
@@ -12,7 +13,7 @@ export interface DeployPluginOptions {
 	proxyUrl?: string
 	/** Base URL of the operate app, used to build "View in Operate" links. */
 	operateUrl?: string
-	/** Return current BPMN definitions (for optimizer check and process ID extraction). */
+	/** Return current BPMN definitions (for optimizer warnings and process ID extraction). */
 	getDefinitions(): BpmnDefinitions | null
 	/** Return the raw BPMN XML to deploy. */
 	getXml(): string | null
@@ -85,6 +86,8 @@ function statusEl(kind: "ok" | "warn" | "err" | "info", text: string): HTMLDivEl
 	const dot = el("span", `dp-dot dp-dot-${kind}`)
 	const msg = el("span", "")
 	msg.textContent = text
+	// The gate's message is one line per error.
+	msg.style.whiteSpace = "pre-line"
 	wrap.appendChild(dot)
 	wrap.appendChild(msg)
 	return wrap
@@ -333,48 +336,37 @@ export function createDeployPlugin(options: DeployPluginOptions): DeployPlugin {
 		// ── Optimizer check ────────────────────────────────────────────────────
 
 		function runOptimizerCheck(): void {
-			const defs = options.getDefinitions()
-			if (!defs) {
+			const xml = options.getXml()
+			if (!xml) {
 				optStatus.innerHTML = ""
 				optStatus.appendChild(statusEl("info", "No process loaded"))
 				_optimizerOk = false
 				updateDeployBtn()
 				return
 			}
-			const report = optimize(defs)
-			const errors = report.findings.filter((f) => f.severity === "error")
-			const warnings = report.findings.filter((f) => f.severity === "warning")
+			const verdict = deployVerdict(xml, options.getDefinitions())
 			optStatus.innerHTML = ""
-			if (errors.length > 0) {
-				_optimizerOk = false
-				optStatus.appendChild(
-					statusEl(
-						"err",
-						`${errors.length} error${errors.length === 1 ? "" : "s"} — fix before deploying`,
-					),
-				)
+			_optimizerOk = verdict.ok
+			if (!verdict.ok) {
+				// The gate's own first line ("Not deployable on Camunda 8.x: n error(s)").
+				optStatus.appendChild(statusEl("err", verdict.message.split("\n")[0] ?? verdict.message))
 				const list = el("div", "dp-finding-list")
-				for (const f of errors) {
+				for (const line of verdict.lines) {
 					const item = el("div", "dp-finding")
-					const badge = el("span", "dp-finding-badge", "error")
+					item.appendChild(el("span", "dp-finding-badge", "error"))
 					const msg = el("span", "")
-					msg.textContent = f.message
-					item.appendChild(badge)
+					msg.textContent = line
 					item.appendChild(msg)
 					list.appendChild(item)
 				}
 				optStatus.appendChild(list)
-			} else if (warnings.length > 0) {
-				_optimizerOk = true
+			} else if (verdict.warnings.length > 0) {
+				const n = verdict.warnings.length
 				optStatus.appendChild(
-					statusEl(
-						"warn",
-						`${warnings.length} warning${warnings.length === 1 ? "" : "s"} — deploy allowed`,
-					),
+					statusEl("warn", `${n} warning${n === 1 ? "" : "s"} — deploy allowed`),
 				)
 			} else {
-				_optimizerOk = true
-				optStatus.appendChild(statusEl("ok", "No issues found"))
+				optStatus.appendChild(statusEl("ok", "Deploys on Camunda 8"))
 			}
 			updateDeployBtn()
 		}
@@ -419,6 +411,13 @@ export function createDeployPlugin(options: DeployPluginOptions): DeployPlugin {
 				return
 			}
 			const fileName = options.getFileName?.() ?? "process.bpmn"
+			// The bytes about to be sent, checked again: the diagram may have changed since.
+			const verdict = deployVerdict(xml, null)
+			if (!verdict.ok) {
+				deployStatus.innerHTML = ""
+				deployStatus.appendChild(statusEl("err", verdict.message))
+				return
+			}
 			deployBtn.disabled = true
 			deployBtn.textContent = "Deploying…"
 			deployStatus.innerHTML = ""

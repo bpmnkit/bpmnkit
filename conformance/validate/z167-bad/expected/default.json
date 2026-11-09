@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/feel-parse",
+      "message": "failed to parse expression 'user +'",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Fix the FEEL expression, or remove the leading '=' for a static value."
+    }
+  ]
+}

@@ -10,6 +10,9 @@
       <bpmn:outgoing>Flow_s_s1</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sendTask id="s1" messageRef="Message_ping">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="send-ping"/>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_s_s1</bpmn:incoming>
       <bpmn:outgoing>Flow_s1_r1</bpmn:outgoing>
     </bpmn:sendTask>

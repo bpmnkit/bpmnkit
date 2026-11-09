@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 6,
+    "error": 10,
     "info": 2,
     "warning": 8
   },
@@ -222,10 +222,62 @@
       "processId": "bpmn-miwg-test-case-c.1.0",
       "severity": "error",
       "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "invoiceApproved"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value '${approved}'. An expression must start with '=' (e.g. '=${approved}').",
+      "plane": "sid-e5defbed-c12d-4c0a-9b5e-0f187e35ffd3",
+      "processId": "bpmn-miwg-test-case-c.1.0",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "invoiceNotApproved"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value '${!approved}'. An expression must start with '=' (e.g. '=${!approved}').",
+      "plane": "sid-e5defbed-c12d-4c0a-9b5e-0f187e35ffd3",
+      "processId": "bpmn-miwg-test-case-c.1.0",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "reviewSuccessful"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value '${clarified == 'yes'}'. An expression must start with '=' (e.g. '=${clarified == 'yes'}').",
+      "plane": "sid-e5defbed-c12d-4c0a-9b5e-0f187e35ffd3",
+      "processId": "bpmn-miwg-test-case-c.1.0",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "reviewNotSuccessful"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value '${clarified == 'no'}'. An expression must start with '=' (e.g. '=${clarified == 'no'}').",
+      "plane": "sid-e5defbed-c12d-4c0a-9b5e-0f187e35ffd3",
+      "processId": "bpmn-miwg-test-case-c.1.0",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
     }
   ],
   "platform": {
     "id": "none"
   },
-  "total": 16
+  "total": 20
 }

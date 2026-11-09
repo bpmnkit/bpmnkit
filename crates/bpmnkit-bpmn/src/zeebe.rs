@@ -785,7 +785,7 @@ pub fn make_conditional_definition(
         _ => None,
     };
     crate::model::BpmnEventDefinition::Conditional(crate::model::BpmnConditionalEventDefinition {
-        condition: Some(condition.to_owned()),
+        condition: Some(crate::feel_condition::to_feel_condition(condition)),
         condition_attributes: Some(condition_attributes),
         extension_elements,
         ..Default::default()

@@ -2,6 +2,11 @@ import { beforeEach, describe, expect, it } from "vitest"
 import { Bpmn, resetIdCounter } from "../src/index.js"
 import type { BpmnDefinitions, SubProcessContentBuilder } from "../src/index.js"
 
+// Builds and exports here check what the builder and serializer write, not whether Zeebe
+// would deploy the model (a fragment, an element Zeebe lacks, a round trip), so they pass
+// `validate: false` to skip the gate. The gate has its own tests: builder-gate.test.ts and
+// the conformance/builder cases.
+
 /** Every `*Ref` attribute an event definition carries in the exported XML. */
 function eventRefs(xml: string): string[] {
 	return [...xml.matchAll(/(?:errorRef|messageRef|signalRef|escalationRef)="([^"]+)"/g)].map(
@@ -77,12 +82,15 @@ describe("SubProcessContentBuilder root definitions (#220)", () => {
 						b.defaultFlow().subProcess("bSub", referencingContent("br")).endEvent("by"),
 					)
 				c.eventSubProcess("evt", (ev) => {
-					ev.startEvent("evs", { messageName: "M1" }).endEvent("eve", { signalName: "S1" })
+					ev.startEvent("evs", { messageName: "M1", correlationKey: "=k" }).endEvent("eve", {
+						signalName: "S1",
+					})
 				})
 			})
 			.endEvent("e")
-			.build()
-		const xml = Bpmn.export(defs)
+			// Includes a transaction, which Zeebe does not support.
+			.build({ validate: false })
+		const xml = Bpmn.export(defs, { validate: false })
 
 		const ids = rootIds(defs)
 		const refs = eventRefs(xml)
@@ -137,14 +145,15 @@ describe("SubProcessContentBuilder root definitions (#220)", () => {
 						c.startEvent("hs").endEvent("he")
 					})
 					.eventSubProcess("bEvt", (ev) => {
-						ev.startEvent("evs", { messageName: "EV_MSG" }).endEvent("eve", {
+						ev.startEvent("evs", { messageName: "EV_MSG", correlationKey: "=k" }).endEvent("eve", {
 							escalationCode: "EV_ESC",
 						})
 					})
 					.endEvent("evte"),
 			)
-			.build()
-		const xml = Bpmn.export(defs)
+			// Includes a transaction, which Zeebe does not support.
+			.build({ validate: false })
+		const xml = Bpmn.export(defs, { validate: false })
 
 		const ids = rootIds(defs)
 		const refs = eventRefs(xml)
@@ -165,14 +174,16 @@ describe("SubProcessContentBuilder root definitions (#220)", () => {
 			})
 			.boundaryEvent("b", { attachedTo: "sub", errorCode: "X1" })
 			.endEvent("be")
+			.element("sub")
 			.subProcess("sub2", (c) => {
 				c.startEvent("ss2").endEvent("se2", { errorCode: "X1" })
 			})
+			.endEvent("e2")
 			.build()
 
 		expect(defs.escalations).toHaveLength(1)
 		expect(defs.errors).toHaveLength(1)
-		const xml = Bpmn.export(defs)
+		const xml = Bpmn.export(defs, { validate: false })
 		const escalationId = defs.escalations[0]?.id
 		expect(xml.match(new RegExp(`escalationRef="${escalationId}"`, "g"))).toHaveLength(2)
 	})

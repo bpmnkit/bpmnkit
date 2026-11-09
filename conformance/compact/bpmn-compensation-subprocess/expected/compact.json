@@ -26,7 +26,7 @@
         },
         {
           "id": "Evt",
-          "type": "subProcess"
+          "type": "eventSubProcess"
         },
         {
           "id": "Plain",

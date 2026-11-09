@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        ""
+      ],
+      "fixable": false,
+      "id": "zeebe/sequence-flow-refs",
+      "message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=7: cvc-complex-type.4: Attribute 'targetRef' must appear on element 'bpmn:sequenceFlow'.",
+      "processId": "",
+      "severity": "error",
+      "suggestion": "Give the sequence flow both sourceRef and targetRef."
+    }
+  ]
+}

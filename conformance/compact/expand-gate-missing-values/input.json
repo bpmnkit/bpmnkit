@@ -1,0 +1,60 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "s",
+          "type": "startEvent"
+        },
+        {
+          "id": "wait",
+          "type": "intermediateCatchEvent",
+          "eventType": "message",
+          "messageName": "reply"
+        },
+        {
+          "id": "timer",
+          "type": "intermediateCatchEvent",
+          "eventType": "timer"
+        },
+        {
+          "id": "jump",
+          "type": "intermediateThrowEvent",
+          "eventType": "link"
+        },
+        {
+          "id": "work",
+          "type": "serviceTask"
+        },
+        {
+          "id": "e",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f1",
+          "from": "s",
+          "to": "wait"
+        },
+        {
+          "id": "f2",
+          "from": "wait",
+          "to": "timer"
+        },
+        {
+          "id": "f3",
+          "from": "timer",
+          "to": "work"
+        },
+        {
+          "id": "f4",
+          "from": "work",
+          "to": "jump"
+        }
+      ]
+    }
+  ]
+}

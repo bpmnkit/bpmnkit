@@ -65,7 +65,13 @@
           "unknownAttributes": {}
         },
         {
-          "eventDefinitions": [],
+          "eventDefinitions": [
+            {
+              "id": "s2_TimerEventDefinition",
+              "timeCycle": "R/PT1H",
+              "type": "timer"
+            }
+          ],
           "extensionElements": [],
           "id": "s2",
           "incoming": [],

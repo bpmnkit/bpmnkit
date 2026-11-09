@@ -21,12 +21,16 @@ pub struct ElementInstance {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct ElementInstanceRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> ElementInstanceRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -49,7 +53,7 @@ impl<'a> ElementInstanceRepository<'a> {
         .bind(ei.scope_key)
         .bind(ei.incident_key)
         .bind(&ei.tenant_id)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -58,7 +62,7 @@ impl<'a> ElementInstanceRepository<'a> {
         sqlx::query("UPDATE element_instances SET state = $1 WHERE key = $2")
             .bind(state)
             .bind(key)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -71,7 +75,7 @@ impl<'a> ElementInstanceRepository<'a> {
                FROM element_instances WHERE key = $1"#,
         )
         .bind(key)
-        .fetch_optional(self.pool)
+        .fetch_optional(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;
@@ -105,7 +109,7 @@ impl<'a> ElementInstanceRepository<'a> {
                FROM element_instances WHERE process_instance_key = $1 ORDER BY key"#,
         )
         .bind(process_instance_key)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;
@@ -131,7 +135,7 @@ impl<'a> ElementInstanceRepository<'a> {
     pub async fn delete_by_process_instance(&self, process_instance_key: i64) -> Result<()> {
         sqlx::query("DELETE FROM element_instances WHERE process_instance_key = $1")
             .bind(process_instance_key)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -144,7 +148,7 @@ impl<'a> ElementInstanceRepository<'a> {
                  AND element_type != 'PROCESS'"#,
         )
         .bind(process_instance_key)
-        .fetch_one(self.pool)
+        .fetch_one(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;
@@ -156,7 +160,7 @@ impl<'a> ElementInstanceRepository<'a> {
             "UPDATE element_instances SET state = 'COMPLETED' WHERE process_instance_key = $1 AND element_type = 'PROCESS'",
         )
         .bind(process_instance_key)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }

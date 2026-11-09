@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        ""
+      ],
+      "fixable": false,
+      "id": "zeebe/xml-schema",
+      "message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=5: cvc-elt.4.3: Type 'bpmn:tFormalExpression' is not validly derived from the type definition, 'tTask', of element 'bpmn:task'.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Fix the XML so it is well-formed and the BPMN elements follow the schema order."
+    }
+  ]
+}

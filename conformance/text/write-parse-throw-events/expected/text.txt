@@ -1,1 +1,1 @@
-s[start S] > a[throw:message Tell] > b[throw:signal Shout] > c[throw:escalation Raise] > d[throw:compensate Undo] > e[end E]
+s[start S] > a[throw:message Tell | job=a msg=a] > b[throw:signal Shout | signal=b] > c[throw:escalation Raise | escalation=c] > d[throw:compensate Undo] > e[end E]

@@ -7,17 +7,74 @@
         "bpmnElement": "P",
         "edges": [
           {
+            "bpmnElement": "f0",
+            "id": "f0_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 36,
+                "y": 25
+              },
+              {
+                "x": 96,
+                "y": 25
+              }
+            ]
+          },
+          {
             "bpmnElement": "f",
             "id": "f_di",
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 36,
-                "y": 40
+                "x": 121,
+                "y": 50
               },
               {
-                "x": 96,
-                "y": 40
+                "x": 121,
+                "y": 128
+              },
+              {
+                "x": 206,
+                "y": 128
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f2",
+            "id": "f2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 146,
+                "y": 25
+              },
+              {
+                "x": 366,
+                "y": 25
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f3",
+            "id": "f3_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 256,
+                "y": 88
+              },
+              {
+                "x": 256,
+                "y": 65.5
+              },
+              {
+                "x": 384,
+                "y": 65.5
+              },
+              {
+                "x": 384,
+                "y": 43
               }
             ]
           }
@@ -29,7 +86,7 @@
               "height": 36,
               "width": 36,
               "x": 0,
-              "y": 22
+              "y": 7
             },
             "bpmnElement": "s",
             "id": "s_di",
@@ -38,7 +95,27 @@
                 "height": 14,
                 "width": 77,
                 "x": -20.5,
-                "y": 62
+                "y": 47
+              }
+            },
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 50,
+              "width": 50,
+              "x": 96,
+              "y": 0
+            },
+            "bpmnElement": "g",
+            "id": "g_di",
+            "isMarkerVisible": true,
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 70,
+                "x": 86,
+                "y": -18
               }
             },
             "unknownAttributes": {}
@@ -47,11 +124,30 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 96,
-              "y": 0
+              "x": 206,
+              "y": 88
             },
             "bpmnElement": "t",
             "id": "t_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 366,
+              "y": 7
+            },
+            "bpmnElement": "e",
+            "id": "e_di",
+            "label": {
+              "bounds": {
+                "height": 14,
+                "width": 40,
+                "x": 364,
+                "y": -11
+              }
+            },
             "unknownAttributes": {}
           }
         ]
@@ -67,6 +163,7 @@
     "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
     "dc": "http://www.omg.org/spec/DD/20100524/DC",
     "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
     "zeebe": "http://camunda.org/schema/zeebe/1.0"
   },
   "processes": [
@@ -81,9 +178,24 @@
           "incoming": [],
           "name": "Größe ✓ <&>",
           "outgoing": [
-            "f"
+            "f0"
           ],
           "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "default": "f2",
+          "extensionElements": [],
+          "id": "g",
+          "incoming": [
+            "f0"
+          ],
+          "name": "Größe < 1?",
+          "outgoing": [
+            "f",
+            "f2"
+          ],
+          "type": "exclusiveGateway",
           "unknownAttributes": {}
         },
         {
@@ -93,8 +205,23 @@
             "f"
           ],
           "name": "日本語 \"q\"",
-          "outgoing": [],
+          "outgoing": [
+            "f3"
+          ],
           "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e",
+          "incoming": [
+            "f2",
+            "f3"
+          ],
+          "name": "Ende",
+          "outgoing": [],
+          "type": "endEvent",
           "unknownAttributes": {}
         }
       ],
@@ -103,6 +230,13 @@
       "isExecutable": true,
       "sequenceFlows": [
         {
+          "extensionElements": [],
+          "id": "f0",
+          "sourceRef": "s",
+          "targetRef": "g",
+          "unknownAttributes": {}
+        },
+        {
           "conditionExpression": {
             "attributes": {},
             "text": "= x < 1"
@@ -110,8 +244,23 @@
           "extensionElements": [],
           "id": "f",
           "name": "a & b",
-          "sourceRef": "s",
+          "sourceRef": "g",
           "targetRef": "t",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f2",
+          "name": "sonst",
+          "sourceRef": "g",
+          "targetRef": "e",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f3",
+          "sourceRef": "t",
+          "targetRef": "e",
           "unknownAttributes": {}
         }
       ],
@@ -121,5 +270,7 @@
   ],
   "signals": [],
   "targetNamespace": "http://bpmn.io/schema/bpmn",
-  "unknownAttributes": {}
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud"
+  }
 }

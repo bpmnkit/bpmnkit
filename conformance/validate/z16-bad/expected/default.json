@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "s"
+      ],
+      "fixable": false,
+      "id": "zeebe/event-definition-type",
+      "message": "Event definition of this type is not supported",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Use an event definition Zeebe supports."
+    }
+  ]
+}

@@ -278,7 +278,7 @@ describe("applyProcessDelta", () => {
 		const defs = drawn(LOAN)
 		const result = apply(
 			defs,
-			"late[boundary:timer Two days | on=review nonint] > remind[send Remind applicant] > review_end[end Reminded]",
+			"late[boundary:timer Two days | on=review nonint after=P2D] > remind[send Remind applicant] > review_end[end Reminded]",
 		)
 		expect(result.problems).toEqual([])
 		const next = result.definitions

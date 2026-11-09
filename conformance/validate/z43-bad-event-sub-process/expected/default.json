@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "EventSub"
+      ],
+      "fixable": false,
+      "id": "zeebe/interrupting-timer-cycle",
+      "message": "Interrupting timer event with time cycle is not allowed.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Use a time duration or date, or make the event non-interrupting."
+    }
+  ]
+}

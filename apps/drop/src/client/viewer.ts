@@ -133,7 +133,8 @@ function showLiveUpdate(doc: WatcherDoc, change: Change | null): void {
 	if (!canvas || file?.filename !== doc.filename) return
 
 	canvas.loadDefinitions(doc.defs, { keepViewport: true })
-	shownXml = { filename: doc.filename, xml: Bpmn.export(doc.defs) }
+	// The user's own file, shown or written back as it is, not refused for deploy errors.
+	shownXml = { filename: doc.filename, xml: Bpmn.export(doc.defs, { validate: false }) }
 
 	if (flashTimer !== null) clearTimeout(flashTimer)
 	if (change) {

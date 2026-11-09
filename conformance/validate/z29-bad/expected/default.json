@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/duplicate-escalation-catch",
+      "message": "Multiple escalation catch events with the same escalation code 'x' are not supported on the same scope.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Give each escalation catch event of the scope a different escalation code."
+    }
+  ]
+}

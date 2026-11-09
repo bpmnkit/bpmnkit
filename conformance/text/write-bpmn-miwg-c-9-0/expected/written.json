@@ -14,8 +14,6 @@
     "report_fraud": "SendTask_ReportFraud",
     "risk": "ExclusiveGateway_Risk",
     "send_confirmation": "SendTask_SendPolicy",
-    "send_rejection": "SendTask_SendRejection",
-    "sub": "Activity_1ke2ixr",
-    "sub_2": "Activity_0vp33kx"
+    "send_rejection": "SendTask_SendRejection"
   }
 }

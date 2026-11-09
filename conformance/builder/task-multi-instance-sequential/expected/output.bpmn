@@ -38,6 +38,9 @@
       </bpmn:multiInstanceLoopCharacteristics>
     </bpmn:callActivity>
     <bpmn:sendTask id="msend">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="send"/>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_mc_msend</bpmn:incoming>
       <bpmn:outgoing>Flow_msend_mb</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics>

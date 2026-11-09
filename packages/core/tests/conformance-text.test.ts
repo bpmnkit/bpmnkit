@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url"
 import { describe, expect, it } from "vitest"
 import { parseBpmn } from "../src/bpmn/bpmn-parser.js"
 import { serializeBpmn } from "../src/bpmn/bpmn-serializer.js"
-import { expand } from "../src/bpmn/compact.js"
+import { type ExpandOptions, expand } from "../src/bpmn/compact.js"
 import { writeProcessText } from "../src/bpmn/process-text-writer.js"
 import { createProcessTextStream, parseProcessText } from "../src/bpmn/process-text.js"
 import { resetIdCounter } from "../src/types/id-generator.js"
@@ -18,6 +18,9 @@ import { resetIdCounter } from "../src/types/id-generator.js"
  *   then the same `result.json` / `output.bpmn` for `end()`
  * - `input.bpmn` (or `case.json` `input`): writeProcessText -> `text.txt`, `written.json`
  *
+ * `case.json` `expand` holds the options the diagram is expanded with
+ * (`validate`, `placeholders`, `camundaVersion`), for every kind that expands.
+ *
  * `pnpm conformance:record` rewrites the expected files from this
  * implementation, which is the oracle.
  */
@@ -29,6 +32,7 @@ const textRoot = path.join(root, "text")
 interface CaseFile {
 	input?: string
 	chunks?: string[]
+	expand?: ExpandOptions
 }
 
 function sortKeys(v: unknown): unknown {
@@ -48,23 +52,23 @@ const json = (v: unknown): string => `${JSON.stringify(sortKeys(v), null, 2)}\n`
 type Result = ReturnType<typeof parseProcessText>
 
 /** `result.json` plus the expanded `output.bpmn` (or `error.txt` when expand throws). */
-function resultFiles(result: Result): Record<string, string> {
+function resultFiles(result: Result, options: ExpandOptions | undefined): Record<string, string> {
 	const files: Record<string, string> = { "result.json": json(result) }
 	try {
 		resetIdCounter()
-		files["output.bpmn"] = serializeBpmn(expand(result.diagram))
+		files["output.bpmn"] = serializeBpmn(expand(result.diagram, options))
 	} catch (err) {
 		files["error.txt"] = `${(err as Error).message}\n`
 	}
 	return files
 }
 
-function parseCase(text: string): Record<string, string> {
+function parseCase(text: string, options: ExpandOptions | undefined): Record<string, string> {
 	resetIdCounter()
-	return resultFiles(parseProcessText(text))
+	return resultFiles(parseProcessText(text), options)
 }
 
-function streamCase(chunks: string[]): Record<string, string> {
+function streamCase(chunks: string[], options: ExpandOptions | undefined): Record<string, string> {
 	resetIdCounter()
 	const stream = createProcessTextStream()
 	const frames: (string | null)[] = []
@@ -79,7 +83,7 @@ function streamCase(chunks: string[]): Record<string, string> {
 		}
 	})
 	const result = stream.end()
-	return { "frames.json": json(frames), ...files, ...resultFiles(result) }
+	return { "frames.json": json(frames), ...files, ...resultFiles(result, options) }
 }
 
 function writeCase(xml: string): Record<string, string> {
@@ -104,9 +108,9 @@ function run(dir: string): Record<string, string> {
 		? (JSON.parse(fs.readFileSync(caseFile, "utf8")) as CaseFile)
 		: {}
 	if (fs.existsSync(path.join(dir, "input.txt"))) {
-		return parseCase(fs.readFileSync(path.join(dir, "input.txt"), "utf8"))
+		return parseCase(fs.readFileSync(path.join(dir, "input.txt"), "utf8"), spec.expand)
 	}
-	if (spec.chunks !== undefined) return streamCase(spec.chunks)
+	if (spec.chunks !== undefined) return streamCase(spec.chunks, spec.expand)
 	return writeCase(fs.readFileSync(inputPath(dir, spec), "utf8"))
 }
 

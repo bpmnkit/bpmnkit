@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        ""
+      ],
+      "fixable": false,
+      "id": "zeebe/association-refs",
+      "message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=10: cvc-complex-type.4: Attribute 'targetRef' must appear on element 'bpmn:association'.",
+      "processId": "",
+      "severity": "error",
+      "suggestion": "Give the association or message flow both sourceRef and targetRef."
+    }
+  ]
+}

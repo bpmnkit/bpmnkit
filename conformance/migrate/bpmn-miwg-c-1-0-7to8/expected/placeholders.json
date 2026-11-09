@@ -1,0 +1,162 @@
+{
+  "report": {
+    "counts": {
+      "convertible": 9,
+      "manual": 6,
+      "unsupported": 0
+    },
+    "findings": [
+      {
+        "applied": true,
+        "construct": "bpmn:userTask",
+        "elementId": "approveInvoice",
+        "elementType": "userTask",
+        "message": "Implemented as a Camunda user task (zeebe:userTask).",
+        "processId": "bpmn-miwg-test-case-c.1.0",
+        "severity": "convertible",
+        "suggestion": "zeebe:userTask"
+      },
+      {
+        "applied": true,
+        "construct": "bpmn:userTask",
+        "elementId": "assignApprover",
+        "elementType": "userTask",
+        "message": "Implemented as a Camunda user task (zeebe:userTask).",
+        "processId": "bpmn-miwg-test-case-c.1.0",
+        "severity": "convertible",
+        "suggestion": "zeebe:userTask"
+      },
+      {
+        "applied": true,
+        "construct": "bpmn:userTask",
+        "elementId": "reviewInvoice",
+        "elementType": "userTask",
+        "message": "Implemented as a Camunda user task (zeebe:userTask).",
+        "processId": "bpmn-miwg-test-case-c.1.0",
+        "severity": "convertible",
+        "suggestion": "zeebe:userTask"
+      },
+      {
+        "applied": true,
+        "construct": "bpmn:userTask",
+        "elementId": "prepareBankTransfer",
+        "elementType": "userTask",
+        "message": "Implemented as a Camunda user task (zeebe:userTask).",
+        "processId": "bpmn-miwg-test-case-c.1.0",
+        "severity": "convertible",
+        "suggestion": "zeebe:userTask"
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "invoiceApproved",
+        "elementType": "sequenceFlow",
+        "message": "Condition \"${approved}\" became \"=approved\".",
+        "processId": "bpmn-miwg-test-case-c.1.0",
+        "severity": "convertible",
+        "suggestion": "FEEL condition"
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "invoiceNotApproved",
+        "elementType": "sequenceFlow",
+        "message": "Condition \"${!approved}\" became \"=not(approved)\".",
+        "processId": "bpmn-miwg-test-case-c.1.0",
+        "severity": "convertible",
+        "suggestion": "FEEL condition"
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "reviewSuccessful",
+        "elementType": "sequenceFlow",
+        "message": "Condition \"${clarified == 'yes'}\" became \"=clarified = \"yes\"\".",
+        "processId": "bpmn-miwg-test-case-c.1.0",
+        "severity": "convertible",
+        "suggestion": "FEEL condition"
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "reviewNotSuccessful",
+        "elementType": "sequenceFlow",
+        "message": "Condition \"${clarified == 'no'}\" became \"=clarified = \"no\"\".",
+        "processId": "bpmn-miwg-test-case-c.1.0",
+        "severity": "convertible",
+        "suggestion": "FEEL condition"
+      },
+      {
+        "applied": true,
+        "construct": "modeler:executionPlatform",
+        "elementId": "sid-bdb880ac-c464-4e5c-aa56-569d709436e0",
+        "elementType": "definitions",
+        "message": "Execution platform set to Camunda Cloud 8.10.0.",
+        "processId": "",
+        "severity": "convertible",
+        "suggestion": "Camunda Modeler opens the file as a Camunda 8 diagram."
+      },
+      {
+        "applied": true,
+        "construct": "placeholder messageName",
+        "elementId": "sid-36EA43D1-0FE6-4197-AC57-7A43785B784B",
+        "elementType": "startEvent",
+        "message": "Placeholder messageName \"placeholder-sid-36EA43D1-0FE6-4197-AC57-7A43785B784B\" written so the model deploys (zeebe/message-reference).",
+        "processId": "sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57",
+        "severity": "manual",
+        "suggestion": "Replace it with the real value; the placeholder does nothing useful at runtime."
+      },
+      {
+        "applied": true,
+        "construct": "placeholder messageName",
+        "elementId": "sid-40EC6574-E644-425C-8CE7-EE384F0C3520",
+        "elementType": "intermediateCatchEvent",
+        "message": "Placeholder messageName \"placeholder-sid-40EC6574-E644-425C-8CE7-EE384F0C3520\" written so the model deploys (zeebe/message-reference).",
+        "processId": "sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57",
+        "severity": "manual",
+        "suggestion": "Replace it with the real value; the placeholder does nothing useful at runtime."
+      },
+      {
+        "applied": true,
+        "construct": "placeholder correlationKey",
+        "elementId": "sid-40EC6574-E644-425C-8CE7-EE384F0C3520",
+        "elementType": "intermediateCatchEvent",
+        "message": "Placeholder correlationKey \"=\"placeholder-sid-40EC6574-E644-425C-8CE7-EE384F0C3520\"\" written so the model deploys (zeebe/message-reference).",
+        "processId": "sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57",
+        "severity": "manual",
+        "suggestion": "Replace it with the real value; the placeholder does nothing useful at runtime."
+      },
+      {
+        "applied": true,
+        "construct": "placeholder messageName",
+        "elementId": "sid-B548B980-12E3-408E-9AC4-7031B85A8F2D",
+        "elementType": "intermediateCatchEvent",
+        "message": "Placeholder messageName \"placeholder-sid-B548B980-12E3-408E-9AC4-7031B85A8F2D\" written so the model deploys (zeebe/message-reference).",
+        "processId": "sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57",
+        "severity": "manual",
+        "suggestion": "Replace it with the real value; the placeholder does nothing useful at runtime."
+      },
+      {
+        "applied": true,
+        "construct": "placeholder correlationKey",
+        "elementId": "sid-B548B980-12E3-408E-9AC4-7031B85A8F2D",
+        "elementType": "intermediateCatchEvent",
+        "message": "Placeholder correlationKey \"=\"placeholder-sid-B548B980-12E3-408E-9AC4-7031B85A8F2D\"\" written so the model deploys (zeebe/message-reference).",
+        "processId": "sid-5FBB6CB3-8A7C-42B5-9024-15BB2684EC57",
+        "severity": "manual",
+        "suggestion": "Replace it with the real value; the placeholder does nothing useful at runtime."
+      },
+      {
+        "applied": true,
+        "construct": "placeholder jobType",
+        "elementId": "archiveInvoice",
+        "elementType": "serviceTask",
+        "message": "Placeholder jobType \"placeholder-archiveInvoice\" written so the model deploys (zeebe/service-task-definition).",
+        "processId": "bpmn-miwg-test-case-c.1.0",
+        "severity": "manual",
+        "suggestion": "Replace it with the real value; the placeholder does nothing useful at runtime."
+      }
+    ],
+    "total": 15
+  }
+}

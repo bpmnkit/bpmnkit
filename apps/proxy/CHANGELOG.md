@@ -1,5 +1,32 @@
 # @bpmnkit/ai-server
 
+## 0.7.0
+
+### Minor Changes
+
+- e57db77: Deploy gate on the AI routes. `/chat` and `/improve` return a diagram only when it deploys on Camunda 8; otherwise an `error` event carries the gate's message and no `xml` is sent. The request body takes `"placeholders": true` (fill documented placeholder values, listed in a `placeholders` event) and `"validate": false` (return the diagram as a draft, with the gate's message in a `deployability` event). The user's own diagram sent as input is no longer refused for being unfinished. Every MCP tool that changes a BPMN diagram adds a second result item with the deploy check, so the model fixes what Zeebe would refuse; the prompts list what Camunda 8 needs. `sdk.exportXml` throws the gate's message and takes `'{"placeholders":true}'`; `sdk.optimize`, `sdk.layout` and `sdk.analyzeVariables` work on unfinished diagrams. aikit MCP: `bpmn_create` and `bpmn_update` take `placeholders` and write nothing Camunda 8 would refuse; `bpmn_deploy` gates first (`validate: false` skips it); `bpmn_validate` reports `deployable` and the gate's message. The QuickJS bridge bundle no longer overwrites `globalThis.Bridge`, declares the diagram namespaces it lays out, and supports placeholder fills.
+
+### Patch Changes
+
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [65aba71]
+- Updated dependencies [e57db77]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [65aba71]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [e57db77]
+- Updated dependencies [e57db77]
+  - @bpmnkit/core@1.10.0
+  - @bpmnkit/connectors@1.4.0
+  - @bpmnkit/engine@1.4.0
+  - @bpmnkit/patterns@0.1.3
+
 ## 0.6.0
 
 ### Minor Changes

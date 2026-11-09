@@ -7,6 +7,9 @@ import {
 	semanticHash,
 } from "../src/index.js"
 
+// Exports here check what the serializer writes, not whether Zeebe would deploy the
+// model (a fragment, a round trip), so they pass `validate: false` to skip the gate.
+
 const c8 = (body: string, root = ""): string => `<?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="d" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.8.0">
   ${root}
@@ -122,7 +125,13 @@ describe("convertCamunda8To7", () => {
 				),
 			),
 		)
-		const back = Bpmn.export(convertCamunda7(Bpmn.parse(Bpmn.export(definitions))).definitions)
+		const back = Bpmn.export(
+			convertCamunda7(Bpmn.parse(Bpmn.export(definitions, { validate: false })), {
+				// A one-task fragment: it pins the round trip, not deployability.
+				validate: false,
+			}).definitions,
+			{ validate: false },
+		)
 		expect(back).toContain('type="charge"')
 		expect(back).toContain('target="in1"')
 	})

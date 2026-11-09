@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Node"
+      ],
+      "fixable": false,
+      "id": "zeebe/publish-message-correlation-key",
+      "message": "Attribute 'correlationKey' must be present and not empty",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Set correlationKey on zeebe:publishMessage to a FEEL expression such as '=orderId'."
+    }
+  ]
+}

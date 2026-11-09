@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "b"
+      ],
+      "fixable": false,
+      "id": "zeebe/non-interrupting-type",
+      "message": "Non-Interrupting event of this type is not allowed",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Make the boundary event interrupting, or use a message, timer, signal, escalation or conditional trigger."
+    }
+  ]
+}

@@ -69,7 +69,15 @@
           "unknownAttributes": {}
         },
         {
-          "extensionElements": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "ask-partner"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
           "id": "ask",
           "incoming": [
             "Flow_s_ask"

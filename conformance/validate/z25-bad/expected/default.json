@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "p"
+      ],
+      "fixable": false,
+      "id": "zeebe/duplicate-event-sub-process-trigger",
+      "message": "Multiple message event definitions with the same name 'order' are not allowed.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Use a different message for each of these events."
+    }
+  ]
+}

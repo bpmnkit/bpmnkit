@@ -16,6 +16,9 @@
     </bpmn:endEvent>
     <bpmn:startEvent id="s2">
       <bpmn:outgoing>Flow_s2_b</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="s2_TimerEventDefinition">
+        <bpmn:timeCycle>R/PT1H</bpmn:timeCycle>
+      </bpmn:timerEventDefinition>
     </bpmn:startEvent>
     <bpmn:serviceTask id="b" name="b">
       <bpmn:extensionElements>

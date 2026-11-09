@@ -10,7 +10,9 @@ pnpm workspaces + Turborepo, TypeScript strict, Biome (lint + format), Vitest.
 ## Commands
 
 - Build: `pnpm turbo build` · Typecheck: `pnpm turbo typecheck` · Lint/format: `pnpm biome check .` (or `pnpm turbo check`) · Test: `pnpm turbo test`
-- All at once: `pnpm verify`
+- All at once: `pnpm verify` (ends with `pnpm verify:rust`)
+- Rust (`pnpm verify:rust`): `cargo fmt --check` · `cargo clippy --workspace --all-targets --locked -- -D warnings` · `cargo test --workspace --locked` · `node scripts/spec-gen.mjs --check` · `pnpm conformance:record` + `git diff --exit-code conformance/` (needs feel and core built)
+- Rust benches: `pnpm bench:rs` compares with `benches/rust-baseline.json` (fails on > 20 % slower on the same CPU); `pnpm bench:rs --update` rewrites it
 
 ## Rules
 

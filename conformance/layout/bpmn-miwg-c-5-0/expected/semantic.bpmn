@@ -55,10 +55,6 @@
     <semantic:userTask id="_17db66a1-badd-4942-9ebd-02bc5595cdde" implementation="##unspecified" name="Prove/Provide identity">
       <semantic:incoming>_c132a484-8828-4f03-9a57-8201f4e9e864</semantic:incoming>
       <semantic:outgoing>_14c352ad-cd81-4a92-89e6-85f6e658e7bb</semantic:outgoing>
-      <semantic:dataOutputAssociation id="_e5e5b852-0c5f-4f5f-8c6c-a1d8245024b4">
-        <semantic:sourceRef>_e75ca33b-71b4-405b-82b7-26b036834ad0</semantic:sourceRef>
-        <semantic:targetRef>_dca1cc5b-74a4-453f-8ad2-61609dde35ff</semantic:targetRef>
-      </semantic:dataOutputAssociation>
       <semantic:ioSpecification>
         <semantic:dataOutput id="_e75ca33b-71b4-405b-82b7-26b036834ad0" name="ID document"/>
         <semantic:inputSet/>
@@ -66,6 +62,10 @@
           <semantic:dataOutputRefs>_e75ca33b-71b4-405b-82b7-26b036834ad0</semantic:dataOutputRefs>
         </semantic:outputSet>
       </semantic:ioSpecification>
+      <semantic:dataOutputAssociation id="_e5e5b852-0c5f-4f5f-8c6c-a1d8245024b4">
+        <semantic:sourceRef>_e75ca33b-71b4-405b-82b7-26b036834ad0</semantic:sourceRef>
+        <semantic:targetRef>_dca1cc5b-74a4-453f-8ad2-61609dde35ff</semantic:targetRef>
+      </semantic:dataOutputAssociation>
     </semantic:userTask>
     <semantic:exclusiveGateway id="_138f9ebc-0211-4051-b7c0-1c55695d5246" gatewayDirection="Diverging" name="Legal entity or individual?">
       <semantic:incoming>_14c352ad-cd81-4a92-89e6-85f6e658e7bb</semantic:incoming>
@@ -75,10 +75,6 @@
     <semantic:userTask id="_664f14a9-c1f1-490a-bbec-1f66ba4e7fe4" implementation="##unspecified" name="Obtain supporting data and documents of the customer">
       <semantic:incoming>_b6414e79-5e61-4a8e-a584-65201c4ea9a9</semantic:incoming>
       <semantic:outgoing>_8e88b32b-90d5-4ca4-a969-00b667a92d29</semantic:outgoing>
-      <semantic:dataInputAssociation id="_8a1de917-0cd0-4cb3-a449-5d10733575ee">
-        <semantic:sourceRef>_dca1cc5b-74a4-453f-8ad2-61609dde35ff</semantic:sourceRef>
-        <semantic:targetRef>_28d09a7b-8274-45b9-8ae1-66995807edf0</semantic:targetRef>
-      </semantic:dataInputAssociation>
       <semantic:ioSpecification>
         <semantic:dataInput id="_28d09a7b-8274-45b9-8ae1-66995807edf0" name="ID document"/>
         <semantic:inputSet id="_91229d44-17f5-41db-ba5a-6041c238ad6a">
@@ -86,18 +82,14 @@
         </semantic:inputSet>
         <semantic:outputSet/>
       </semantic:ioSpecification>
+      <semantic:dataInputAssociation id="_8a1de917-0cd0-4cb3-a449-5d10733575ee">
+        <semantic:sourceRef>_dca1cc5b-74a4-453f-8ad2-61609dde35ff</semantic:sourceRef>
+        <semantic:targetRef>_28d09a7b-8274-45b9-8ae1-66995807edf0</semantic:targetRef>
+      </semantic:dataInputAssociation>
     </semantic:userTask>
     <semantic:userTask id="_d22de266-6170-4783-91f9-40832e4cc58d" implementation="##unspecified" name="Check customer documents">
       <semantic:incoming>_8e88b32b-90d5-4ca4-a969-00b667a92d29</semantic:incoming>
       <semantic:outgoing>_c2f47722-9bb7-416c-b6bc-cff4e3a6eb65</semantic:outgoing>
-      <semantic:dataInputAssociation id="_e4d5f0c6-49e2-4467-80da-4818237bbbed">
-        <semantic:sourceRef>_dca1cc5b-74a4-453f-8ad2-61609dde35ff</semantic:sourceRef>
-        <semantic:targetRef>_f129e42a-e180-4068-970d-1895015a5a4e</semantic:targetRef>
-      </semantic:dataInputAssociation>
-      <semantic:dataOutputAssociation id="_1cfb93bd-7a02-481d-a42c-c69c614a4b00">
-        <semantic:sourceRef>_59c497a7-8a58-41f7-ab3f-e823fc8843e6</semantic:sourceRef>
-        <semantic:targetRef>_e0b6d1fe-4ddf-4e22-b84c-6d676afb389a</semantic:targetRef>
-      </semantic:dataOutputAssociation>
       <semantic:ioSpecification>
         <semantic:dataInput id="_f129e42a-e180-4068-970d-1895015a5a4e" name="ID document"/>
         <semantic:dataOutput id="_59c497a7-8a58-41f7-ab3f-e823fc8843e6" name="ID document"/>
@@ -108,6 +100,14 @@
           <semantic:dataOutputRefs>_59c497a7-8a58-41f7-ab3f-e823fc8843e6</semantic:dataOutputRefs>
         </semantic:outputSet>
       </semantic:ioSpecification>
+      <semantic:dataInputAssociation id="_e4d5f0c6-49e2-4467-80da-4818237bbbed">
+        <semantic:sourceRef>_dca1cc5b-74a4-453f-8ad2-61609dde35ff</semantic:sourceRef>
+        <semantic:targetRef>_f129e42a-e180-4068-970d-1895015a5a4e</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataOutputAssociation id="_1cfb93bd-7a02-481d-a42c-c69c614a4b00">
+        <semantic:sourceRef>_59c497a7-8a58-41f7-ab3f-e823fc8843e6</semantic:sourceRef>
+        <semantic:targetRef>_e0b6d1fe-4ddf-4e22-b84c-6d676afb389a</semantic:targetRef>
+      </semantic:dataOutputAssociation>
     </semantic:userTask>
     <semantic:exclusiveGateway id="_a4936291-3787-404c-bec7-8a3f3c5fd6e5" gatewayDirection="Diverging" name="Data complete?">
       <semantic:incoming>_c2f47722-9bb7-416c-b6bc-cff4e3a6eb65</semantic:incoming>
@@ -117,14 +117,6 @@
     <semantic:userTask id="_87785f46-7026-4d3c-b2c0-6a9468da67f6" implementation="##unspecified" name="Copy, sign, and scan documents">
       <semantic:incoming>_60066421-3da9-4318-8df2-d8b16b3011bb</semantic:incoming>
       <semantic:outgoing>_65fba7be-af41-4ebe-b4e8-a8f7a830a702</semantic:outgoing>
-      <semantic:dataInputAssociation id="_24b56549-d0fc-44d1-9fcf-b136ef8f420c">
-        <semantic:sourceRef>_e0b6d1fe-4ddf-4e22-b84c-6d676afb389a</semantic:sourceRef>
-        <semantic:targetRef>_da43ba9b-0964-4360-bba3-a63d040f0a76</semantic:targetRef>
-      </semantic:dataInputAssociation>
-      <semantic:dataOutputAssociation id="_fc3badce-d027-4ab8-91a5-bfcf3be7daa5">
-        <semantic:sourceRef>_581f63c2-d888-4329-9161-760518a3668d</semantic:sourceRef>
-        <semantic:targetRef>_4f982ccc-c9e4-43b1-832e-b82992d4d400</semantic:targetRef>
-      </semantic:dataOutputAssociation>
       <semantic:ioSpecification>
         <semantic:dataInput id="_da43ba9b-0964-4360-bba3-a63d040f0a76" name="ID document"/>
         <semantic:dataOutput id="_581f63c2-d888-4329-9161-760518a3668d" name="ID document"/>
@@ -135,18 +127,18 @@
           <semantic:dataOutputRefs>_581f63c2-d888-4329-9161-760518a3668d</semantic:dataOutputRefs>
         </semantic:outputSet>
       </semantic:ioSpecification>
+      <semantic:dataInputAssociation id="_24b56549-d0fc-44d1-9fcf-b136ef8f420c">
+        <semantic:sourceRef>_e0b6d1fe-4ddf-4e22-b84c-6d676afb389a</semantic:sourceRef>
+        <semantic:targetRef>_da43ba9b-0964-4360-bba3-a63d040f0a76</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataOutputAssociation id="_fc3badce-d027-4ab8-91a5-bfcf3be7daa5">
+        <semantic:sourceRef>_581f63c2-d888-4329-9161-760518a3668d</semantic:sourceRef>
+        <semantic:targetRef>_4f982ccc-c9e4-43b1-832e-b82992d4d400</semantic:targetRef>
+      </semantic:dataOutputAssociation>
     </semantic:userTask>
     <semantic:userTask id="_a73027a7-615e-4a4d-95ee-c4cd78ab30c4" implementation="##unspecified" name="File documents in customer file">
       <semantic:incoming>_65fba7be-af41-4ebe-b4e8-a8f7a830a702</semantic:incoming>
       <semantic:outgoing>_0cf86177-f481-4c25-8801-cd18d91ddec6</semantic:outgoing>
-      <semantic:dataInputAssociation id="_6518fef7-dc30-4737-84ee-f33ceba4a844">
-        <semantic:sourceRef>_4f982ccc-c9e4-43b1-832e-b82992d4d400</semantic:sourceRef>
-        <semantic:targetRef>_0fed0a5a-5936-4ce7-aca5-472138e30238</semantic:targetRef>
-      </semantic:dataInputAssociation>
-      <semantic:dataOutputAssociation id="_ed10a8d7-01db-4221-a281-03174f633376">
-        <semantic:sourceRef>_4c2bb575-fa47-4f1c-9aed-e10b9633884f</semantic:sourceRef>
-        <semantic:targetRef>_c5285566-0657-47c5-a7ad-d09e144377f3</semantic:targetRef>
-      </semantic:dataOutputAssociation>
       <semantic:ioSpecification>
         <semantic:dataInput id="_0fed0a5a-5936-4ce7-aca5-472138e30238" name="ID document"/>
         <semantic:dataOutput id="_4c2bb575-fa47-4f1c-9aed-e10b9633884f" name="Customer Data (temporary storage)"/>
@@ -157,6 +149,14 @@
           <semantic:dataOutputRefs>_4c2bb575-fa47-4f1c-9aed-e10b9633884f</semantic:dataOutputRefs>
         </semantic:outputSet>
       </semantic:ioSpecification>
+      <semantic:dataInputAssociation id="_6518fef7-dc30-4737-84ee-f33ceba4a844">
+        <semantic:sourceRef>_4f982ccc-c9e4-43b1-832e-b82992d4d400</semantic:sourceRef>
+        <semantic:targetRef>_0fed0a5a-5936-4ce7-aca5-472138e30238</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataOutputAssociation id="_ed10a8d7-01db-4221-a281-03174f633376">
+        <semantic:sourceRef>_4c2bb575-fa47-4f1c-9aed-e10b9633884f</semantic:sourceRef>
+        <semantic:targetRef>_c5285566-0657-47c5-a7ad-d09e144377f3</semantic:targetRef>
+      </semantic:dataOutputAssociation>
     </semantic:userTask>
     <semantic:parallelGateway id="_2b156883-2852-4665-aba0-d9bc57c7c225" gatewayDirection="Diverging">
       <semantic:incoming>_0cf86177-f481-4c25-8801-cd18d91ddec6</semantic:incoming>
@@ -166,14 +166,6 @@
     <semantic:userTask id="_9c5d383f-df57-4012-b490-fa36f9f90eed" implementation="##unspecified" name="Add personal data">
       <semantic:incoming>_8bd8a9d5-84da-4e96-b2af-9b8e003ad5a3</semantic:incoming>
       <semantic:outgoing>_c7c63b1c-bdd1-443b-903b-7c31da1e6eb9</semantic:outgoing>
-      <semantic:dataOutputAssociation id="_a1577e31-32ee-46db-be07-c31f1f047a5e">
-        <semantic:sourceRef>_0ff75fcb-3aa9-4a0c-9bbf-64e31ffec23a</semantic:sourceRef>
-        <semantic:targetRef>_be9fc840-d916-4495-9061-989af6035030</semantic:targetRef>
-      </semantic:dataOutputAssociation>
-      <semantic:dataOutputAssociation id="_aa4bda11-11a7-441a-b50f-7296b83542e4">
-        <semantic:sourceRef>_ffecd813-8488-4289-8a5b-60ca006a7e6c</semantic:sourceRef>
-        <semantic:targetRef>_c5285566-0657-47c5-a7ad-d09e144377f3</semantic:targetRef>
-      </semantic:dataOutputAssociation>
       <semantic:ioSpecification>
         <semantic:dataOutput id="_0ff75fcb-3aa9-4a0c-9bbf-64e31ffec23a" name="Customer data"/>
         <semantic:dataOutput id="_ffecd813-8488-4289-8a5b-60ca006a7e6c" name="Customer Data (temporary storage)"/>
@@ -183,6 +175,14 @@
           <semantic:dataOutputRefs>_ffecd813-8488-4289-8a5b-60ca006a7e6c</semantic:dataOutputRefs>
         </semantic:outputSet>
       </semantic:ioSpecification>
+      <semantic:dataOutputAssociation id="_a1577e31-32ee-46db-be07-c31f1f047a5e">
+        <semantic:sourceRef>_0ff75fcb-3aa9-4a0c-9bbf-64e31ffec23a</semantic:sourceRef>
+        <semantic:targetRef>_be9fc840-d916-4495-9061-989af6035030</semantic:targetRef>
+      </semantic:dataOutputAssociation>
+      <semantic:dataOutputAssociation id="_aa4bda11-11a7-441a-b50f-7296b83542e4">
+        <semantic:sourceRef>_ffecd813-8488-4289-8a5b-60ca006a7e6c</semantic:sourceRef>
+        <semantic:targetRef>_c5285566-0657-47c5-a7ad-d09e144377f3</semantic:targetRef>
+      </semantic:dataOutputAssociation>
     </semantic:userTask>
     <semantic:parallelGateway id="_3355cffe-aab4-4a05-8388-becf8ad599ae" gatewayDirection="Converging">
       <semantic:incoming>_c7c63b1c-bdd1-443b-903b-7c31da1e6eb9</semantic:incoming>
@@ -192,14 +192,6 @@
     <semantic:userTask id="_be6ea91a-4f8e-4240-86e8-f85036aee96f" implementation="##unspecified" name="Perform risk assessment of the customer">
       <semantic:incoming>_1a933b26-7ac6-47a8-85de-07e658241e1e</semantic:incoming>
       <semantic:outgoing>_40c01bbe-095a-4937-a334-95fa5b5225cc</semantic:outgoing>
-      <semantic:dataInputAssociation id="_9f68656f-415d-4288-be20-fd75bcd92f6a">
-        <semantic:sourceRef>_4257e72e-9c36-4832-8134-b68b8919de7e</semantic:sourceRef>
-        <semantic:targetRef>_721254f5-d2c9-4bc5-b1eb-2499e2fea042</semantic:targetRef>
-      </semantic:dataInputAssociation>
-      <semantic:dataOutputAssociation id="_2fdc6abd-cfec-425d-b386-fe8b61371495">
-        <semantic:sourceRef>_7c351bcf-ed3d-481b-a696-254d32fda486</semantic:sourceRef>
-        <semantic:targetRef>_c5285566-0657-47c5-a7ad-d09e144377f3</semantic:targetRef>
-      </semantic:dataOutputAssociation>
       <semantic:ioSpecification>
         <semantic:dataInput id="_721254f5-d2c9-4bc5-b1eb-2499e2fea042" name="Customer data"/>
         <semantic:dataOutput id="_7c351bcf-ed3d-481b-a696-254d32fda486" name="Customer Data (temporary storage)"/>
@@ -210,6 +202,14 @@
           <semantic:dataOutputRefs>_7c351bcf-ed3d-481b-a696-254d32fda486</semantic:dataOutputRefs>
         </semantic:outputSet>
       </semantic:ioSpecification>
+      <semantic:dataInputAssociation id="_9f68656f-415d-4288-be20-fd75bcd92f6a">
+        <semantic:sourceRef>_4257e72e-9c36-4832-8134-b68b8919de7e</semantic:sourceRef>
+        <semantic:targetRef>_721254f5-d2c9-4bc5-b1eb-2499e2fea042</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataOutputAssociation id="_2fdc6abd-cfec-425d-b386-fe8b61371495">
+        <semantic:sourceRef>_7c351bcf-ed3d-481b-a696-254d32fda486</semantic:sourceRef>
+        <semantic:targetRef>_c5285566-0657-47c5-a7ad-d09e144377f3</semantic:targetRef>
+      </semantic:dataOutputAssociation>
     </semantic:userTask>
     <semantic:exclusiveGateway id="_000a0565-911b-4f71-9993-1177021edd97" gatewayDirection="Diverging" name="Subject to approval?">
       <semantic:incoming>_40c01bbe-095a-4937-a334-95fa5b5225cc</semantic:incoming>
@@ -219,14 +219,6 @@
     <semantic:userTask id="_f006114d-c7cb-4ce0-9bfe-f0938c36a53e" implementation="##unspecified" name="Document risk assessment">
       <semantic:incoming>_7ab3e406-ce00-40e0-88f7-c64bcb0b864f</semantic:incoming>
       <semantic:outgoing>_f2b37ee6-7727-4106-bdd4-d93c4db15703</semantic:outgoing>
-      <semantic:dataInputAssociation id="_a8b81881-5b94-4d11-8b5c-5e9b76878dcd">
-        <semantic:sourceRef>_4257e72e-9c36-4832-8134-b68b8919de7e</semantic:sourceRef>
-        <semantic:targetRef>_7e58a64a-6396-4158-9a76-a0597a566f67</semantic:targetRef>
-      </semantic:dataInputAssociation>
-      <semantic:dataOutputAssociation id="_c7006cb5-a9f4-4528-8fca-9083fc7559ed">
-        <semantic:sourceRef>_e3b88a3e-9f69-4bd4-ada3-e277fd53656e</semantic:sourceRef>
-        <semantic:targetRef>_c5285566-0657-47c5-a7ad-d09e144377f3</semantic:targetRef>
-      </semantic:dataOutputAssociation>
       <semantic:ioSpecification>
         <semantic:dataInput id="_7e58a64a-6396-4158-9a76-a0597a566f67" name="Customer data"/>
         <semantic:dataOutput id="_e3b88a3e-9f69-4bd4-ada3-e277fd53656e" name="Customer Data (temporary storage)"/>
@@ -237,18 +229,18 @@
           <semantic:dataOutputRefs>_e3b88a3e-9f69-4bd4-ada3-e277fd53656e</semantic:dataOutputRefs>
         </semantic:outputSet>
       </semantic:ioSpecification>
+      <semantic:dataInputAssociation id="_a8b81881-5b94-4d11-8b5c-5e9b76878dcd">
+        <semantic:sourceRef>_4257e72e-9c36-4832-8134-b68b8919de7e</semantic:sourceRef>
+        <semantic:targetRef>_7e58a64a-6396-4158-9a76-a0597a566f67</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataOutputAssociation id="_c7006cb5-a9f4-4528-8fca-9083fc7559ed">
+        <semantic:sourceRef>_e3b88a3e-9f69-4bd4-ada3-e277fd53656e</semantic:sourceRef>
+        <semantic:targetRef>_c5285566-0657-47c5-a7ad-d09e144377f3</semantic:targetRef>
+      </semantic:dataOutputAssociation>
     </semantic:userTask>
     <semantic:callActivity id="_b9338c62-a257-47dd-8c2e-88b80b73c330" calledElement="_774bc005-0917-43d5-ab70-0f9fe123fbd1" name="Check for connected clients">
       <semantic:incoming>_f2b37ee6-7727-4106-bdd4-d93c4db15703</semantic:incoming>
       <semantic:outgoing>_f974945f-f2a6-4547-9d35-0d26049dcd6f</semantic:outgoing>
-      <semantic:dataInputAssociation id="_10466056-a9bd-4d46-b6ca-60cc6c5f6b13">
-        <semantic:sourceRef>_4257e72e-9c36-4832-8134-b68b8919de7e</semantic:sourceRef>
-        <semantic:targetRef>_32c34c33-47cf-4481-8310-401ce5b04a35</semantic:targetRef>
-      </semantic:dataInputAssociation>
-      <semantic:dataOutputAssociation id="_39450d6b-b008-4af2-bb98-35d65093922e">
-        <semantic:sourceRef>_f87c9123-3f07-420c-ae9f-4e29e3af5130</semantic:sourceRef>
-        <semantic:targetRef>_dd653cc9-c874-4cfe-ba6c-146726809ea5</semantic:targetRef>
-      </semantic:dataOutputAssociation>
       <semantic:ioSpecification>
         <semantic:dataInput id="_32c34c33-47cf-4481-8310-401ce5b04a35" name="Customer data"/>
         <semantic:dataOutput id="_f87c9123-3f07-420c-ae9f-4e29e3af5130" name="Customer data"/>
@@ -259,22 +251,18 @@
           <semantic:dataOutputRefs>_f87c9123-3f07-420c-ae9f-4e29e3af5130</semantic:dataOutputRefs>
         </semantic:outputSet>
       </semantic:ioSpecification>
+      <semantic:dataInputAssociation id="_10466056-a9bd-4d46-b6ca-60cc6c5f6b13">
+        <semantic:sourceRef>_4257e72e-9c36-4832-8134-b68b8919de7e</semantic:sourceRef>
+        <semantic:targetRef>_32c34c33-47cf-4481-8310-401ce5b04a35</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataOutputAssociation id="_39450d6b-b008-4af2-bb98-35d65093922e">
+        <semantic:sourceRef>_f87c9123-3f07-420c-ae9f-4e29e3af5130</semantic:sourceRef>
+        <semantic:targetRef>_dd653cc9-c874-4cfe-ba6c-146726809ea5</semantic:targetRef>
+      </semantic:dataOutputAssociation>
     </semantic:callActivity>
     <semantic:userTask id="_b360104e-8410-4b99-827a-776e2083fb96" implementation="##unspecified" name="Create customer in the system">
       <semantic:incoming>_f974945f-f2a6-4547-9d35-0d26049dcd6f</semantic:incoming>
       <semantic:outgoing>_0b3ae343-49aa-49dc-8b88-fe97b4ada3eb</semantic:outgoing>
-      <semantic:dataInputAssociation id="_bd748ab9-bd4e-47d1-8f69-cc8e451e0b2b">
-        <semantic:sourceRef>_dd653cc9-c874-4cfe-ba6c-146726809ea5</semantic:sourceRef>
-        <semantic:targetRef>_42e1d578-55c2-4ea6-9b6f-a32ee680ec72</semantic:targetRef>
-      </semantic:dataInputAssociation>
-      <semantic:dataInputAssociation id="_48edea23-f132-4ec7-b296-35c091e1755b">
-        <semantic:sourceRef>_66f4a1ff-fd8a-4002-ade7-7a4d1b1d529c</semantic:sourceRef>
-        <semantic:targetRef>_e4a8fda6-25e5-4d3a-af66-6bdc77e82aed</semantic:targetRef>
-      </semantic:dataInputAssociation>
-      <semantic:dataOutputAssociation id="_8eaa28a5-123c-4224-ad2a-218525c6c79e">
-        <semantic:sourceRef>_174d4bae-bb40-4877-86d7-6e1f88b9353e</semantic:sourceRef>
-        <semantic:targetRef>_ffd44905-4f54-4fe0-a156-0312c2a7a3cc</semantic:targetRef>
-      </semantic:dataOutputAssociation>
       <semantic:ioSpecification>
         <semantic:dataInput id="_42e1d578-55c2-4ea6-9b6f-a32ee680ec72" name="Customer data"/>
         <semantic:dataInput id="_e4a8fda6-25e5-4d3a-af66-6bdc77e82aed" name="Customer Data (temporary storage)"/>
@@ -287,6 +275,18 @@
           <semantic:dataOutputRefs>_174d4bae-bb40-4877-86d7-6e1f88b9353e</semantic:dataOutputRefs>
         </semantic:outputSet>
       </semantic:ioSpecification>
+      <semantic:dataInputAssociation id="_bd748ab9-bd4e-47d1-8f69-cc8e451e0b2b">
+        <semantic:sourceRef>_dd653cc9-c874-4cfe-ba6c-146726809ea5</semantic:sourceRef>
+        <semantic:targetRef>_42e1d578-55c2-4ea6-9b6f-a32ee680ec72</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataInputAssociation id="_48edea23-f132-4ec7-b296-35c091e1755b">
+        <semantic:sourceRef>_66f4a1ff-fd8a-4002-ade7-7a4d1b1d529c</semantic:sourceRef>
+        <semantic:targetRef>_e4a8fda6-25e5-4d3a-af66-6bdc77e82aed</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataOutputAssociation id="_8eaa28a5-123c-4224-ad2a-218525c6c79e">
+        <semantic:sourceRef>_174d4bae-bb40-4877-86d7-6e1f88b9353e</semantic:sourceRef>
+        <semantic:targetRef>_ffd44905-4f54-4fe0-a156-0312c2a7a3cc</semantic:targetRef>
+      </semantic:dataOutputAssociation>
     </semantic:userTask>
     <semantic:endEvent id="_8055ae64-cafd-4fd0-be36-2216e3b02e37" name="Identity determined and new customer created">
       <semantic:incoming>_0b3ae343-49aa-49dc-8b88-fe97b4ada3eb</semantic:incoming>
@@ -295,10 +295,6 @@
     <semantic:userTask id="_2fd5c7d3-797d-45a5-a0d8-dfa60654ba5e" implementation="##unspecified" name="Complete data and documents">
       <semantic:incoming>_664f3a71-3efa-4c94-8797-815f2e377cf7</semantic:incoming>
       <semantic:outgoing>_52e3c106-b055-40a0-a9f9-db9529adfb38</semantic:outgoing>
-      <semantic:dataOutputAssociation id="_a290cb0f-07ce-4e95-8d51-eb98307b3beb">
-        <semantic:sourceRef>_f0fd8c00-f695-4115-87b6-6aa5eaa1f7c4</semantic:sourceRef>
-        <semantic:targetRef>_e0b6d1fe-4ddf-4e22-b84c-6d676afb389a</semantic:targetRef>
-      </semantic:dataOutputAssociation>
       <semantic:ioSpecification>
         <semantic:dataOutput id="_f0fd8c00-f695-4115-87b6-6aa5eaa1f7c4" name="ID document"/>
         <semantic:inputSet/>
@@ -306,22 +302,14 @@
           <semantic:dataOutputRefs>_f0fd8c00-f695-4115-87b6-6aa5eaa1f7c4</semantic:dataOutputRefs>
         </semantic:outputSet>
       </semantic:ioSpecification>
+      <semantic:dataOutputAssociation id="_a290cb0f-07ce-4e95-8d51-eb98307b3beb">
+        <semantic:sourceRef>_f0fd8c00-f695-4115-87b6-6aa5eaa1f7c4</semantic:sourceRef>
+        <semantic:targetRef>_e0b6d1fe-4ddf-4e22-b84c-6d676afb389a</semantic:targetRef>
+      </semantic:dataOutputAssociation>
     </semantic:userTask>
     <semantic:userTask id="_09074897-556d-4fd2-afb6-2f6c774e1820" implementation="##unspecified" name="Perform know your customer (KYC) activities">
       <semantic:incoming>_f47c4e3f-3339-4c96-b8b0-829022bada78</semantic:incoming>
       <semantic:outgoing>_a4eaa7b6-f9ef-458a-ba70-e1fd3ff0595a</semantic:outgoing>
-      <semantic:dataInputAssociation id="_b181f888-d411-4665-aeea-89569a373e98">
-        <semantic:sourceRef>_be9fc840-d916-4495-9061-989af6035030</semantic:sourceRef>
-        <semantic:targetRef>_3fcd7c6a-65c8-434d-9998-5c8722c6810b</semantic:targetRef>
-      </semantic:dataInputAssociation>
-      <semantic:dataOutputAssociation id="_8234f225-632d-4b63-b7b4-9ee05ebd4971">
-        <semantic:sourceRef>_a130c3b1-aa52-47f6-8818-fc567f559ce2</semantic:sourceRef>
-        <semantic:targetRef>_4257e72e-9c36-4832-8134-b68b8919de7e</semantic:targetRef>
-      </semantic:dataOutputAssociation>
-      <semantic:dataOutputAssociation id="_9f70cdff-8fb7-432d-84f0-29db168610fa">
-        <semantic:sourceRef>_b6f553cf-dc70-4169-a2a0-0943cb92953a</semantic:sourceRef>
-        <semantic:targetRef>_c5285566-0657-47c5-a7ad-d09e144377f3</semantic:targetRef>
-      </semantic:dataOutputAssociation>
       <semantic:ioSpecification>
         <semantic:dataInput id="_3fcd7c6a-65c8-434d-9998-5c8722c6810b" name="Customer data"/>
         <semantic:dataOutput id="_a130c3b1-aa52-47f6-8818-fc567f559ce2" name="Customer data"/>
@@ -334,6 +322,18 @@
           <semantic:dataOutputRefs>_b6f553cf-dc70-4169-a2a0-0943cb92953a</semantic:dataOutputRefs>
         </semantic:outputSet>
       </semantic:ioSpecification>
+      <semantic:dataInputAssociation id="_b181f888-d411-4665-aeea-89569a373e98">
+        <semantic:sourceRef>_be9fc840-d916-4495-9061-989af6035030</semantic:sourceRef>
+        <semantic:targetRef>_3fcd7c6a-65c8-434d-9998-5c8722c6810b</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataOutputAssociation id="_8234f225-632d-4b63-b7b4-9ee05ebd4971">
+        <semantic:sourceRef>_a130c3b1-aa52-47f6-8818-fc567f559ce2</semantic:sourceRef>
+        <semantic:targetRef>_4257e72e-9c36-4832-8134-b68b8919de7e</semantic:targetRef>
+      </semantic:dataOutputAssociation>
+      <semantic:dataOutputAssociation id="_9f70cdff-8fb7-432d-84f0-29db168610fa">
+        <semantic:sourceRef>_b6f553cf-dc70-4169-a2a0-0943cb92953a</semantic:sourceRef>
+        <semantic:targetRef>_c5285566-0657-47c5-a7ad-d09e144377f3</semantic:targetRef>
+      </semantic:dataOutputAssociation>
     </semantic:userTask>
     <semantic:exclusiveGateway id="_54d66428-417b-447e-89d5-e726c1f12659" gatewayDirection="Converging">
       <semantic:incoming>_fcb09e30-bfe6-46b9-af01-6777c60026f2</semantic:incoming>
@@ -374,10 +374,6 @@
     <semantic:userTask id="_f0422f0d-396b-4ee7-ad83-fdd34a8bab71" implementation="##unspecified" name="Document the identity of the economic owner">
       <semantic:incoming>_6912e5ed-5cae-4798-b6e6-8d367ddb3f60</semantic:incoming>
       <semantic:outgoing>_a8da83e1-4e09-4a7b-a09f-1f869b372176</semantic:outgoing>
-      <semantic:dataInputAssociation id="_e470d57d-3556-40dd-b518-5ed19b3f63d9">
-        <semantic:sourceRef>_dca1cc5b-74a4-453f-8ad2-61609dde35ff</semantic:sourceRef>
-        <semantic:targetRef>_9d9659ca-4d33-4d6a-903a-dfeed15cee9a</semantic:targetRef>
-      </semantic:dataInputAssociation>
       <semantic:ioSpecification>
         <semantic:dataInput id="_9d9659ca-4d33-4d6a-903a-dfeed15cee9a" name="ID document"/>
         <semantic:inputSet id="_0ded1261-c1bd-49de-8f5b-3d46c4d5a095">
@@ -385,6 +381,10 @@
         </semantic:inputSet>
         <semantic:outputSet/>
       </semantic:ioSpecification>
+      <semantic:dataInputAssociation id="_e470d57d-3556-40dd-b518-5ed19b3f63d9">
+        <semantic:sourceRef>_dca1cc5b-74a4-453f-8ad2-61609dde35ff</semantic:sourceRef>
+        <semantic:targetRef>_9d9659ca-4d33-4d6a-903a-dfeed15cee9a</semantic:targetRef>
+      </semantic:dataInputAssociation>
     </semantic:userTask>
     <semantic:exclusiveGateway id="_a393c065-4412-4b16-b04f-52d07e76b518" gatewayDirection="Diverging" name="Identity of the economic owner certifiable?">
       <semantic:incoming>_a8da83e1-4e09-4a7b-a09f-1f869b372176</semantic:incoming>
@@ -401,10 +401,6 @@
     <semantic:userTask id="_1fc87527-9cad-4f8e-b9c7-ebe106cbe98d" implementation="##unspecified" name="Check risk and decide about approval">
       <semantic:incoming>_e88d64c7-3aaf-4a5f-9787-4e5ba696312b</semantic:incoming>
       <semantic:outgoing>_c3e90e5c-e5cf-4cfb-b15d-bdedcf0719ca</semantic:outgoing>
-      <semantic:dataInputAssociation id="_f4536257-490a-4f11-8174-59c44fe6d51d">
-        <semantic:sourceRef>_4257e72e-9c36-4832-8134-b68b8919de7e</semantic:sourceRef>
-        <semantic:targetRef>_85c0085f-9a81-472b-a54c-51943f4c247c</semantic:targetRef>
-      </semantic:dataInputAssociation>
       <semantic:ioSpecification>
         <semantic:dataInput id="_85c0085f-9a81-472b-a54c-51943f4c247c" name="Customer data"/>
         <semantic:inputSet id="_312af7f4-e30b-4606-aeb3-dd5008632579">
@@ -412,6 +408,10 @@
         </semantic:inputSet>
         <semantic:outputSet/>
       </semantic:ioSpecification>
+      <semantic:dataInputAssociation id="_f4536257-490a-4f11-8174-59c44fe6d51d">
+        <semantic:sourceRef>_4257e72e-9c36-4832-8134-b68b8919de7e</semantic:sourceRef>
+        <semantic:targetRef>_85c0085f-9a81-472b-a54c-51943f4c247c</semantic:targetRef>
+      </semantic:dataInputAssociation>
     </semantic:userTask>
     <semantic:exclusiveGateway id="_5f56934b-8a7e-4c35-b9f7-bf2605711bfd" gatewayDirection="Diverging" name="Approval?">
       <semantic:incoming>_c3e90e5c-e5cf-4cfb-b15d-bdedcf0719ca</semantic:incoming>

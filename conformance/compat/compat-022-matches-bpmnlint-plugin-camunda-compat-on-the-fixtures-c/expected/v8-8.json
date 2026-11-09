@@ -159,6 +159,18 @@
     {
       "category": "deploy",
       "elementIds": [
+        "boundaryErrorExpr"
+      ],
+      "fixable": false,
+      "id": "compat/no-expression",
+      "message": "Error boundary event \"boundaryErrorExpr\" catches error code \"=code\", an expression, which Camunda 8.8 does not support in a catch event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Use a static error code."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
         "boundaryEscalation"
       ],
       "fixable": false,

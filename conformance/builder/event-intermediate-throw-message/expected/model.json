@@ -46,7 +46,15 @@
               "type": "message"
             }
           ],
-          "extensionElements": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "publish-notify"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
           "id": "i",
           "incoming": [
             "Flow_s_i"

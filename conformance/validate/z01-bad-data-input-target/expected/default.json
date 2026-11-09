@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        ""
+      ],
+      "fixable": false,
+      "id": "zeebe/xml-schema",
+      "message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=5: cvc-complex-type.2.4.b: The content of element 'bpmn:dataInputAssociation' is not complete. One of '{\"http://www.omg.org/spec/BPMN/20100524/MODEL\":sourceRef, \"http://www.omg.org/spec/BPMN/20100524/MODEL\":targetRef}' is expected.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Fix the XML so it is well-formed and the BPMN elements follow the schema order."
+    }
+  ]
+}

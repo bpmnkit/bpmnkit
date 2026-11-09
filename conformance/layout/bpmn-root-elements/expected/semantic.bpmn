@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_roots" targetNamespace="http://bpmn.io/schema/bpmn" exporter="BPMN Kit" exporterVersion="0.1.0" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.6.0">
-  <bpmn:documentation>Definitions-level documentation.</bpmn:documentation>
+  <bpmn:extension>
+    <bpmn:documentation>Definitions-level documentation.</bpmn:documentation>
+  </bpmn:extension>
   <bpmn:escalation id="Escalation_manual" name="NeedsManualReview" escalationCode="MANUAL_REVIEW"/>
   <bpmn:error id="Error_payment" name="PaymentFailed" errorCode="PAYMENT_FAILED"/>
   <bpmn:message id="Message_order_placed" name="OrderPlaced">

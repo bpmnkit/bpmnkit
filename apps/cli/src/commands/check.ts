@@ -9,6 +9,7 @@ import {
 	lintDmn,
 	lintForm,
 	parseXml,
+	validateDeployableXml,
 } from "@bpmnkit/core"
 import type { Command, CommandGroup, ParsedFlags } from "../types.js"
 import { lintBpmn } from "./lint.js"
@@ -120,7 +121,33 @@ async function checkBpmn(
 			fix: `${f.suggestion !== "" ? f.suggestion : "See the rule's documentation."} (agent-cards/bpmn.md#traps)`,
 		}),
 	)
+	if (options.deploy === true) rows.push(...gateRows(text, outcome.defs, rows).map(row))
 	return { rows, refs: referencesOf(file, outcome.defs) }
+}
+
+/**
+ * What the deploy gate (`assertDeployable`) refuses that the lint did not already
+ * report: it checks the file's bytes, so the XML schema stage is covered too. An
+ * element the lint already marks as an error keeps that finding, which says more.
+ */
+function gateRows(text: string, defs: BpmnDefinitions, rows: CheckRow[]): CheckFinding[] {
+	const reported = new Set(rows.map((r) => `${r.rule} ${r.elementId ?? ""}`))
+	const flagged = new Set(rows.filter((r) => r.severity === "error").map((r) => r.elementId))
+	const camundaVersion = defs.unknownAttributes["modeler:executionPlatformVersion"]
+	return validateDeployableXml(text, camundaVersion === undefined ? {} : { camundaVersion })
+		.filter((f) => f.severity === "error")
+		.filter((f) => {
+			const elementId = f.elementIds[0]
+			if (reported.has(`${f.id} ${elementId ?? ""}`)) return false
+			return elementId === undefined || elementId === "" || !flagged.has(elementId)
+		})
+		.map((f) => ({
+			rule: f.id,
+			severity: "error" as const,
+			...(f.elementIds[0] ? { elementId: f.elementIds[0] } : {}),
+			message: f.message,
+			fix: `${f.suggestion !== "" ? f.suggestion : "See the rule's documentation."} (agent-cards/bpmn.md#traps)`,
+		}))
 }
 
 function idsOfForm(text: string): string | undefined {

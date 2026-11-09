@@ -68,6 +68,5 @@
       }
     ],
     "total": 6
-  },
-  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xmlns:modeler=\"http://camunda.org/schema/modeler/1.0\" xmlns:zeebe=\"http://camunda.org/schema/zeebe/1.0\" id=\"Definitions_test\" targetNamespace=\"http://bpmn.io/schema/bpmn\" modeler:executionPlatform=\"Camunda Cloud\" modeler:executionPlatformVersion=\"8.10.0\">\n  <bpmn:process id=\"p\" isExecutable=\"true\">\n    <bpmn:serviceTask id=\"t\">\n      <bpmn:extensionElements>\n        <camunda:inputOutput>\n          <camunda:inputParameter name=\"note\">Paid ${claim.id}</camunda:inputParameter>\n          <camunda:inputParameter name=\"audit\">\n            <camunda:script scriptFormat=\"groovy\">x.collect()</camunda:script>\n          </camunda:inputParameter>\n          <camunda:outputParameter name=\"my-var\">${a}</camunda:outputParameter>\n        </camunda:inputOutput>\n        <zeebe:taskDefinition type=\"x\"/>\n        <zeebe:ioMapping>\n          <zeebe:input source=\"=a\" target=\"ok\"/>\n          <zeebe:input source=\"=a + 1\" target=\"feel\"/>\n        </zeebe:ioMapping>\n      </bpmn:extensionElements>\n    </bpmn:serviceTask>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+  }
 }

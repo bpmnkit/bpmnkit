@@ -37,11 +37,11 @@
     <bpmn:task id="handler_top" name="Undo X1"/>
     <bpmn:intermediateThrowEvent id="link_throw" name="To B">
       <bpmn:incoming>f_x2_out</bpmn:incoming>
-      <bpmn:linkEventDefinition id="link_throw_LinkEventDefinition"/>
+      <bpmn:linkEventDefinition id="link_throw_LinkEventDefinition" name="B"/>
     </bpmn:intermediateThrowEvent>
     <bpmn:intermediateCatchEvent id="link_catch" name="From B">
       <bpmn:outgoing>f_catch</bpmn:outgoing>
-      <bpmn:linkEventDefinition id="link_catch_LinkEventDefinition"/>
+      <bpmn:linkEventDefinition id="link_catch_LinkEventDefinition" name="B"/>
     </bpmn:intermediateCatchEvent>
     <bpmn:task id="task_r1" name="R1">
       <bpmn:outgoing>f_r1</bpmn:outgoing>
@@ -140,7 +140,7 @@
       </bpmn:task>
       <bpmn:sequenceFlow id="tf1" sourceRef="tx_start" targetRef="tx_task"/>
     </bpmn:transaction>
-    <bpmn:subProcess id="evt_sub" name="On message">
+    <bpmn:subProcess id="evt_sub" name="On message" triggeredByEvent="true">
       <bpmn:startEvent id="evt_start">
         <bpmn:outgoing>ef1</bpmn:outgoing>
         <bpmn:messageEventDefinition id="evt_start_MessageEventDefinition"/>

@@ -23,6 +23,7 @@ import { applyTemplateToElement, messageRefOf } from "./apply-element.js"
 import { evalCondition, resolveValues } from "./apply.js"
 import { type ConnectorCard, connectorAlias, connectorCards, templateIdForAlias } from "./cards.js"
 import { allTemplates, getTemplate, isSecretField, propertyKey } from "./catalog.js"
+import { appliedDeployProblems } from "./deployability.js"
 import type { ElementTemplate, TemplateProperty } from "./template-types.js"
 
 /**
@@ -72,6 +73,13 @@ export interface ConnectorLineOptions {
 	 * operation needs; a call the index does not know becomes a question.
 	 */
 	apis?: readonly ApiService[]
+	/**
+	 * Check the elements the lines configured with Zeebe's deploy rules once all
+	 * lines are applied; each error is a problem on its line (default `true`).
+	 */
+	validate?: boolean
+	/** The Camunda 8 version to check for. Default: the model's `executionPlatformVersion`, else the newest. */
+	camundaVersion?: string
 }
 
 const HTTP_TEMPLATE = "io.camunda.connectors.HttpJson.v2"
@@ -535,6 +543,9 @@ export interface AppliedConnectorLines {
  *
  * Pass `parseProcessText(text).connectors` with the expanded diagram, or the
  * lines of a change script with the ids they resolve to.
+ *
+ * Unless `validate: false`, the configured elements are then checked with Zeebe's
+ * deploy rules; each error is a problem on the line that configured the element.
  */
 export function applyConnectorLines(
 	definitions: BpmnDefinitions,
@@ -542,6 +553,7 @@ export function applyConnectorLines(
 	options: ConnectorLineOptions = {},
 ): AppliedConnectorLines {
 	const out: AppliedConnectorLines = { definitions, problems: [], fixes: [], questions: [] }
+	const lineOf = new Map<string, number>()
 	for (const line of lines) {
 		const resolved = resolveConnectorLine(line, options)
 		for (const message of resolved.problems) out.problems.push({ line: line.line, message })
@@ -555,10 +567,15 @@ export function applyConnectorLines(
 			current?.unknownAttributes["zeebe:modelerTemplate"] === template.id
 				? readValues(out.definitions, current, template)
 				: {}
-		const applied = applyTemplateToElement(out.definitions, line.elementId, template, {
-			...kept,
-			...resolved.values,
-		})
+		const applied = applyTemplateToElement(
+			out.definitions,
+			line.elementId,
+			template,
+			{ ...kept, ...resolved.values },
+			// Checked once below, when every line has been applied.
+			{ validate: false },
+		)
+		if (!lineOf.has(line.elementId)) lineOf.set(line.elementId, line.line)
 		out.definitions = applied.definitions
 		const card = resolved.card
 		const head = `with ${line.id}: ${card.alias}${card.operation ? ` ${card.operation}` : ""}`
@@ -584,6 +601,9 @@ export function applyConnectorLines(
 				out.problems.push({ line: line.line, message: problem.message })
 			}
 		}
+	}
+	for (const problem of appliedDeployProblems(out.definitions, [...lineOf.keys()], options)) {
+		out.problems.push({ line: lineOf.get(problem.elementId) ?? 0, message: problem.message })
 	}
 	return out
 }

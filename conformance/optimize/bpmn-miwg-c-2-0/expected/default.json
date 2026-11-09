@@ -243,6 +243,150 @@
       "processId": "WFP-Page_1-4",
       "severity": "error",
       "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Message_1404332496319"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-name",
+      "message": "Name must be present and not empty",
+      "processId": "WFP-Page_1-1",
+      "severity": "error",
+      "suggestion": "Give the message a non-empty name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Message_1404332496320"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-name",
+      "message": "Name must be present and not empty",
+      "processId": "WFP-Page_1-1",
+      "severity": "error",
+      "suggestion": "Give the message a non-empty name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Message_1404332496321"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-name",
+      "message": "Name must be present and not empty",
+      "processId": "WFP-Page_1-1",
+      "severity": "error",
+      "suggestion": "Give the message a non-empty name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Message_1404332496323"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-name",
+      "message": "Name must be present and not empty",
+      "processId": "WFP-Page_1-1",
+      "severity": "error",
+      "suggestion": "Give the message a non-empty name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_f35ee29d-018c-47e2-afeb-eebc2e25925e"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-throw-implementation",
+      "message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element",
+      "processId": "WFP-Page_1-3",
+      "severity": "error",
+      "suggestion": "Add a zeebe:publishMessage to the message event definition, or a zeebe:taskDefinition to the event."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_7ea6639e-e773-4236-94bf-78f149188c30"
+      ],
+      "fixable": false,
+      "id": "zeebe/error-end-reference",
+      "message": "Must reference an error",
+      "processId": "WFP-Page_1-3",
+      "severity": "error",
+      "suggestion": "Reference an error with errorRef on the error event definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_63cf98c9-d0b1-4595-a4f2-9589439b311c"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "processId": "WFP-Page_1-3",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_ad0872cc-e2a9-4c44-98c6-c64e0638f37e"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "processId": "WFP-Page_1-3",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_bfa5c7b2-f5d2-4487-a307-b2ea662bd059"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "processId": "WFP-Page_1-3",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_50edb87c-9e46-48b1-a311-ef00e6e431e8"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "processId": "WFP-Page_1-3",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "__a12a7547-373d-47ec-890d-af5c177203ee"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "processId": "WFP-Page_1-3",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "__ffc1486a-8a32-490a-8835-d14cc5ab0a97"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "processId": "WFP-Page_1-3",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
     }
   ],
   "fixes": [
@@ -264,7 +408,7 @@
       "agentic": 0,
       "connector": 0,
       "data-flow": 0,
-      "deploy": 9,
+      "deploy": 21,
       "extract": 0,
       "feel": 3,
       "feel-syntax": 0,
@@ -274,10 +418,10 @@
       "task-reuse": 0
     },
     "bySeverity": {
-      "error": 12,
+      "error": 24,
       "info": 5,
       "warning": 4
     },
-    "total": 21
+    "total": 33
   }
 }

@@ -16,12 +16,16 @@ pub struct Tenant {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct TenantRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> TenantRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -33,7 +37,7 @@ impl<'a> TenantRepository<'a> {
         .bind(&tenant.tenant_id)
         .bind(&tenant.name)
         .bind(tenant.created_at)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -43,7 +47,7 @@ impl<'a> TenantRepository<'a> {
             "SELECT key, tenant_id, name, created_at FROM tenants WHERE tenant_id = $1",
         )
         .bind(tenant_id)
-        .fetch_optional(self.pool)
+        .fetch_optional(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;
@@ -66,7 +70,7 @@ impl<'a> TenantRepository<'a> {
         )
         .bind(after_key)
         .bind(page_size)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;
@@ -84,7 +88,7 @@ impl<'a> TenantRepository<'a> {
     pub async fn delete(&self, tenant_id: &str) -> Result<()> {
         sqlx::query("DELETE FROM tenants WHERE tenant_id = $1")
             .bind(tenant_id)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -104,12 +108,16 @@ pub struct User {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct UserRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> UserRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -124,7 +132,7 @@ impl<'a> UserRepository<'a> {
         .bind(&user.password_hash)
         .bind(user.enabled)
         .bind(user.created_at)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -134,7 +142,7 @@ impl<'a> UserRepository<'a> {
             "SELECT username, name, email, password_hash, enabled, created_at FROM users WHERE username = $1",
         )
         .bind(username)
-        .fetch_optional(self.pool)
+        .fetch_optional(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;
@@ -155,7 +163,7 @@ impl<'a> UserRepository<'a> {
         sqlx::query("UPDATE users SET enabled = $1 WHERE username = $2")
             .bind(enabled)
             .bind(username)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -163,7 +171,7 @@ impl<'a> UserRepository<'a> {
     pub async fn delete(&self, username: &str) -> Result<()> {
         sqlx::query("DELETE FROM users WHERE username = $1")
             .bind(username)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -176,7 +184,7 @@ impl<'a> UserRepository<'a> {
         )
         .bind(after_username)
         .bind(page_size)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;
@@ -206,12 +214,16 @@ pub struct Role {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct RoleRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> RoleRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -223,7 +235,7 @@ impl<'a> RoleRepository<'a> {
         .bind(&role.name)
         .bind(&role.description)
         .bind(role.created_at)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -233,7 +245,7 @@ impl<'a> RoleRepository<'a> {
             "SELECT role_id, name, description, created_at FROM roles WHERE role_id = $1",
         )
         .bind(role_id)
-        .fetch_optional(self.pool)
+        .fetch_optional(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;
@@ -256,7 +268,7 @@ impl<'a> RoleRepository<'a> {
         )
         .bind(after_id)
         .bind(page_size)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;
@@ -274,7 +286,7 @@ impl<'a> RoleRepository<'a> {
     pub async fn delete(&self, role_id: &str) -> Result<()> {
         sqlx::query("DELETE FROM roles WHERE role_id = $1")
             .bind(role_id)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -291,12 +303,16 @@ pub struct Group {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct GroupRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> GroupRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -305,7 +321,7 @@ impl<'a> GroupRepository<'a> {
             .bind(&group.group_id)
             .bind(&group.name)
             .bind(group.created_at)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -313,7 +329,7 @@ impl<'a> GroupRepository<'a> {
     pub async fn get_by_id(&self, group_id: &str) -> Result<Group> {
         let row = sqlx::query("SELECT group_id, name, created_at FROM groups WHERE group_id = $1")
             .bind(group_id)
-            .fetch_optional(self.pool)
+            .fetch_optional(&mut *self.pool.acquire().await?)
             .await?;
 
         use sqlx::Row;
@@ -335,7 +351,7 @@ impl<'a> GroupRepository<'a> {
         )
         .bind(after_id)
         .bind(page_size)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;
@@ -352,7 +368,7 @@ impl<'a> GroupRepository<'a> {
     pub async fn delete(&self, group_id: &str) -> Result<()> {
         sqlx::query("DELETE FROM groups WHERE group_id = $1")
             .bind(group_id)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -373,12 +389,16 @@ pub struct Authorization {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct AuthorizationRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> AuthorizationRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -398,7 +418,7 @@ impl<'a> AuthorizationRepository<'a> {
         .bind(&authz.resource_id)
         .bind(&authz.permissions)
         .bind(authz.created_at)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
 
         #[cfg(feature = "sqlite")]
@@ -419,7 +439,7 @@ impl<'a> AuthorizationRepository<'a> {
             .bind(&authz.resource_id)
             .bind(&perms_json)
             .bind(authz.created_at.to_rfc3339())
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         }
 
@@ -432,7 +452,7 @@ impl<'a> AuthorizationRepository<'a> {
                FROM authorizations WHERE key = $1"#,
         )
         .bind(key)
-        .fetch_optional(self.pool)
+        .fetch_optional(&mut *self.pool.acquire().await?)
         .await?;
 
         match row {
@@ -452,7 +472,7 @@ impl<'a> AuthorizationRepository<'a> {
         )
         .bind(owner_key)
         .bind(owner_type)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         Ok(rows.into_iter().map(row_to_authz).collect())
@@ -461,7 +481,7 @@ impl<'a> AuthorizationRepository<'a> {
     pub async fn delete(&self, key: i64) -> Result<()> {
         sqlx::query("DELETE FROM authorizations WHERE key = $1")
             .bind(key)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }

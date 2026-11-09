@@ -1,15 +1,15 @@
 # Rust crates — Overview
 
-The `bpmnkit-*` crates are a Rust implementation of BPMN Kit's core, built next to the
-TypeScript packages rather than instead of them. JavaScript hosts (browser, Node, the editor)
-keep using `@bpmnkit/*`; Rust programs (CLIs, the reebe engine, the desktop app, servers) use
-the crates natively, with no JS runtime.
+The `bpmnkit-*` crates are a Rust implementation of BPMN Kit's core. They are the Rust twin of
+the TypeScript packages and are built next to them, not instead of them. JavaScript hosts
+(browser, Node, the editor) keep using `@bpmnkit/*`. Rust programs (CLIs, servers, the desktop
+app) use the crates natively, with no JS runtime.
 
-The two are kept identical by a shared conformance suite under `conformance/` in the
-repository: about 3,300 cases recorded from the TypeScript packages (the oracle) that the Rust
-crates must reproduce byte for byte — models, serialized XML, lint findings, layout
-coordinates, FEEL results. CI runs it on every pull request, and a nightly job fuzzes both
-implementations against each other (see [Differential fuzzing](#differential-fuzzing)).
+The reebe engine (`apps/reebe`) runs on these crates. It parses BPMN and DMN and evaluates FEEL
+through them.
+
+The `bpmnkit` crate is the front door: one dependency that re-exports the other crates as
+modules behind cargo features.
 
 ---
 Source: https://bpmnkit.com/docs/packages/rust-crates

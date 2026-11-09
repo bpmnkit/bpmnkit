@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Process_1"
+      ],
+      "fixable": false,
+      "id": "zeebe/duplicate-link-catch",
+      "message": "Multiple intermediate catch link event definitions with the same name 'L' are not allowed.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Give each link catch event its own name."
+    }
+  ]
+}

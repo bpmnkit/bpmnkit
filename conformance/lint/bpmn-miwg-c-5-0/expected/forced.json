@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 27,
+    "error": 41,
     "info": 1,
     "warning": 42
   },
@@ -917,10 +917,192 @@
       "processId": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
       "severity": "error",
       "suggestion": "Set isExecutable=\"true\" — Camunda 8 refuses to deploy a non-executable process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_8055ae64-cafd-4fd0-be36-2216e3b02e37"
+      ],
+      "fixable": false,
+      "id": "zeebe/signal-reference",
+      "message": "Must reference a signal",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Reference a signal with signalRef on the signal event definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_1cf552d4-5152-4595-9218-84f31533bc70"
+      ],
+      "fixable": false,
+      "id": "zeebe/signal-reference",
+      "message": "Must reference a signal",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Reference a signal with signalRef on the signal event definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_fcb09e30-bfe6-46b9-af01-6777c60026f2"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_eec53048-291a-4802-8fec-012857f845eb"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_1887adee-8291-4640-a5fa-3dc5f33d5a34"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_664f3a71-3efa-4c94-8797-815f2e377cf7"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_6912e5ed-5cae-4798-b6e6-8d367ddb3f60"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_afc35597-a482-432a-8ace-17adaf609572"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_470d1a12-e1fa-4471-b753-cfd7dbe20d80"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_e88d64c7-3aaf-4a5f-9787-4e5ba696312b"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_8a77d7f6-320a-47ff-a155-57ee200df478"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_ae94e0c1-aa12-433f-bd44-a4d8a70a089e"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "_906eeac9-47e3-41c3-a8db-b8abb8fd95e6",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_e25b9c2d-690e-470b-8993-112002994fc2"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "processId": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_c329c58d-4a71-471f-acb9-b7f7113d8547"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "plane": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "processId": "_774bc005-0917-43d5-ab70-0f9fe123fbd1",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
     }
   ],
   "platform": {
     "id": "none"
   },
-  "total": 70
+  "total": 84
 }

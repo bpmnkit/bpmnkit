@@ -44,8 +44,11 @@
 			"packages/core/descriptors/**",
 			"packages/feel/tests/tck/**",
 			"conformance/**",
+			"doc/deployability/known-undeployable.json",
+			"doc/deployability/repro/expected-verdicts.json",
 			"spec/templates/**",
 			"crates/bpmnkit-spec/data/**",
+			"crates/bpmnkit-text/tests/oracle/*.json",
 			"descriptors/**"
 		]
 	}

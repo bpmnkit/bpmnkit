@@ -30,12 +30,16 @@ pub struct Job {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct JobRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> JobRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -66,7 +70,7 @@ impl<'a> JobRepository<'a> {
         .bind(&job.variables)
         .bind(job.created_at)
         .bind(&job.tenant_id)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -76,7 +80,7 @@ impl<'a> JobRepository<'a> {
         sqlx::query("UPDATE jobs SET state = 'COMPLETED', variables = $1 WHERE key = $2")
             .bind(&vars)
             .bind(key)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -107,7 +111,7 @@ impl<'a> JobRepository<'a> {
         .bind(error_code)
         .bind(key)
         .bind(retry_back_off_at)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -118,7 +122,7 @@ impl<'a> JobRepository<'a> {
         )
         .bind(retries)
         .bind(key)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -131,7 +135,7 @@ impl<'a> JobRepository<'a> {
         sqlx::query("UPDATE jobs SET deadline = $1 WHERE key = $2")
             .bind(deadline)
             .bind(key)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -145,7 +149,7 @@ impl<'a> JobRepository<'a> {
                FROM jobs WHERE key = $1"#,
         )
         .bind(key)
-        .fetch_optional(self.pool)
+        .fetch_optional(&mut *self.pool.acquire().await?)
         .await?;
 
         match row {
@@ -183,7 +187,7 @@ impl<'a> JobRepository<'a> {
         .bind(tenant_id)
         .bind(after_key)
         .bind(page_size)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         Ok(rows.into_iter().map(row_to_job).collect())
@@ -205,7 +209,7 @@ impl<'a> JobRepository<'a> {
         .bind(job_type)
         .bind(limit)
         .bind(now)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         Ok(rows.into_iter().map(row_to_job).collect())
@@ -218,7 +222,7 @@ impl<'a> JobRepository<'a> {
                WHERE state = 'ACTIVATED' AND deadline < $1"#,
         )
         .bind(now)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(result.rows_affected())
     }
@@ -228,7 +232,7 @@ impl<'a> JobRepository<'a> {
         let rows = sqlx::query(
             "SELECT job_type, COUNT(*) AS cnt FROM jobs WHERE state NOT IN ('COMPLETED', 'FAILED', 'CANCELED', 'ERROR') GROUP BY job_type"
         )
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
         Ok(rows
             .into_iter()
@@ -319,8 +323,8 @@ pub async fn activate_jobs(
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
-pub async fn cancel_jobs_by_process_instance(
-    pool: &DbPool,
+pub async fn cancel_jobs_by_process_instance<'a>(
+    pool: impl Into<crate::conn::Conn<'a>>,
     process_instance_key: i64,
 ) -> Result<u64> {
     let result = sqlx::query(
@@ -328,14 +332,14 @@ pub async fn cancel_jobs_by_process_instance(
            WHERE process_instance_key = $1 AND state IN ('ACTIVATABLE', 'ACTIVATED')"#,
     )
     .bind(process_instance_key)
-    .execute(pool)
+    .execute(&mut *pool.into().acquire().await?)
     .await?;
     Ok(result.rows_affected())
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
-pub async fn cancel_jobs_by_element_instance(
-    pool: &DbPool,
+pub async fn cancel_jobs_by_element_instance<'a>(
+    pool: impl Into<crate::conn::Conn<'a>>,
     element_instance_key: i64,
 ) -> Result<u64> {
     let result = sqlx::query(
@@ -343,7 +347,7 @@ pub async fn cancel_jobs_by_element_instance(
            WHERE element_instance_key = $1 AND state IN ('ACTIVATABLE', 'ACTIVATED')"#,
     )
     .bind(element_instance_key)
-    .execute(pool)
+    .execute(&mut *pool.into().acquire().await?)
     .await?;
     Ok(result.rows_affected())
 }

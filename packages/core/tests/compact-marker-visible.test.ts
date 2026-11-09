@@ -42,7 +42,8 @@ const COMPACT: CompactDiagram = {
 }
 
 describe("expand() gateway marker", () => {
-	const defs = expand(COMPACT)
+	// A layout fixture: its sub-process has no start event, so it is not deployable.
+	const defs = expand(COMPACT, { validate: false })
 	const shapes = defs.diagrams[0]?.plane.shapes ?? []
 	const shape = (id: string) => shapes.find((s) => s.bpmnElement === id)
 

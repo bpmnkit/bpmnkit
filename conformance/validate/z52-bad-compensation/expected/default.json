@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Boundary"
+      ],
+      "fixable": false,
+      "id": "zeebe/boundary-listeners",
+      "message": "Execution listeners of type 'start' and 'end' are not supported by [compensation] boundary events",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Remove the execution listeners from the compensation boundary event."
+    }
+  ]
+}

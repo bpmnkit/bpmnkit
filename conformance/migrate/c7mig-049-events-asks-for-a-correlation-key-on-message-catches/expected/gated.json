@@ -1,0 +1,3 @@
+{
+  "error": "Not deployable on Camunda 8.10: 1 error(s)\n- m: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)"
+}

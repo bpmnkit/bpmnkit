@@ -25,12 +25,16 @@ pub struct ProcessDefinition {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct DeploymentRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> DeploymentRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -39,7 +43,7 @@ impl<'a> DeploymentRepository<'a> {
             .bind(deployment.key)
             .bind(&deployment.tenant_id)
             .bind(deployment.created_at)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -59,7 +63,7 @@ impl<'a> DeploymentRepository<'a> {
         .bind(&pd.resource_name)
         .bind(&pd.bpmn_xml)
         .bind(&pd.bpmn_checksum)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -71,7 +75,7 @@ impl<'a> DeploymentRepository<'a> {
                FROM process_definitions WHERE key = $1"#,
         )
         .bind(key)
-        .fetch_optional(self.pool)
+        .fetch_optional(&mut *self.pool.acquire().await?)
         .await?;
 
         match row {
@@ -95,7 +99,7 @@ impl<'a> DeploymentRepository<'a> {
         )
         .bind(bpmn_process_id)
         .bind(tenant_id)
-        .fetch_optional(self.pool)
+        .fetch_optional(&mut *self.pool.acquire().await?)
         .await?;
 
         match row {
@@ -109,7 +113,7 @@ impl<'a> DeploymentRepository<'a> {
     pub async fn get_process_definition_xml(&self, key: i64) -> Result<String> {
         let row = sqlx::query("SELECT bpmn_xml FROM process_definitions WHERE key = $1")
             .bind(key)
-            .fetch_optional(self.pool)
+            .fetch_optional(&mut *self.pool.acquire().await?)
             .await?;
 
         use sqlx::Row;
@@ -134,7 +138,7 @@ impl<'a> DeploymentRepository<'a> {
         .bind(bpmn_process_id)
         .bind(version)
         .bind(tenant_id)
-        .fetch_optional(self.pool)
+        .fetch_optional(&mut *self.pool.acquire().await?)
         .await?;
 
         match row {
@@ -166,7 +170,7 @@ impl<'a> DeploymentRepository<'a> {
         .bind(tenant_id)
         .bind(after_key)
         .bind(page_size)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         Ok(rows.into_iter().map(row_to_pd).collect())
@@ -175,7 +179,7 @@ impl<'a> DeploymentRepository<'a> {
     pub async fn get_deployment_by_key(&self, key: i64) -> Result<Deployment> {
         let row = sqlx::query("SELECT key, tenant_id, created_at FROM deployments WHERE key = $1")
             .bind(key)
-            .fetch_optional(self.pool)
+            .fetch_optional(&mut *self.pool.acquire().await?)
             .await?;
 
         use sqlx::Row;

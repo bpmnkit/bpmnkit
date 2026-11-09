@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        ""
+      ],
+      "fixable": false,
+      "id": "zeebe/id-ncname-unique",
+      "message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=5: cvc-id.2: There are multiple occurrences of ID value 's'.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Use unique ids that are valid XML names (no spaces, no leading digit)."
+    }
+  ]
+}
