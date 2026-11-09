@@ -899,9 +899,7 @@ const generateBpmnCmd: Command = {
 			const keepLayout = patch !== null && defs.diagrams.length > 0
 			const laidOut = keepLayout ? placeNewShapes(edited).definitions : applyAutoLayout(edited)
 			const exported = exportEdited(laidOut, gate)
-			const patched = keepLayout
-				? exportPreserving(xml, Bpmn.parse(exported.xml))
-				: exported.xml
+			const patched = keepLayout ? exportPreserving(xml, Bpmn.parse(exported.xml)) : exported.xml
 			for (const line of placeholderLines(exported.placeholders)) {
 				process.stderr.write(`${line}\n`)
 			}

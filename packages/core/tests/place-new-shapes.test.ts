@@ -97,7 +97,12 @@ function process(defs: BpmnDefinitions): BpmnProcess {
 	return defs.processes[0] as BpmnProcess
 }
 
-function node(type: BpmnFlowElement["type"], id: string, name?: string, extra: object = {}): BpmnFlowElement {
+function node(
+	type: BpmnFlowElement["type"],
+	id: string,
+	name?: string,
+	extra: object = {},
+): BpmnFlowElement {
 	return {
 		id,
 		type,
@@ -170,8 +175,7 @@ function expectClear(after: BpmnDefinitions, added: string[]): void {
 		if (!a) continue
 		for (const [other, b] of shapes) {
 			if (other === id || FRAMES.has(other) || FRAMES.has(id)) continue
-			const boundaryOfOther =
-				id.startsWith("B_") || other.startsWith("B_") // boundary events sit on their host
+			const boundaryOfOther = id.startsWith("B_") || other.startsWith("B_") // boundary events sit on their host
 			if (boundaryOfOther) continue
 			expect(overlaps(a.bounds, b.bounds), `${id} covers ${other}`).toBe(false)
 		}
@@ -183,10 +187,16 @@ function expectDocked(after: BpmnDefinitions, flowIds: string[]): void {
 	const edges = new Map(after.diagrams.flatMap((d) => d.plane.edges.map((e) => [e.bpmnElement, e])))
 	const refs = new Map<string, { sourceRef: string; targetRef: string }>()
 	for (const p of after.processes) {
-		const walk = (els: BpmnFlowElement[], flows: Array<{ id: string; sourceRef: string; targetRef: string }>) => {
+		const walk = (
+			els: BpmnFlowElement[],
+			flows: Array<{ id: string; sourceRef: string; targetRef: string }>,
+		) => {
 			for (const f of flows) refs.set(f.id, f)
 			for (const el of els) {
-				const sub = el as unknown as { flowElements?: BpmnFlowElement[]; sequenceFlows?: typeof flows }
+				const sub = el as unknown as {
+					flowElements?: BpmnFlowElement[]
+					sequenceFlows?: typeof flows
+				}
 				if (sub.flowElements) walk(sub.flowElements, sub.sequenceFlows ?? [])
 			}
 		}
@@ -379,7 +389,9 @@ describe("placeNewShapes — S20-style edits", () => {
 		const result = placeNewShapes(edited)
 		const after = result.definitions
 		expect(result.unplaced).toEqual([])
-		expect(result.placed).toEqual(expect.arrayContaining(["Sub_Events", "Ev_Start", "Ev_Task", "Ev_End"]))
+		expect(result.placed).toEqual(
+			expect.arrayContaining(["Sub_Events", "Ev_Start", "Ev_Task", "Ev_End"]),
+		)
 		expectKept(before, after)
 		const shapes = shapeMap(after)
 		const block = shapes.get("Sub_Events") as BpmnDiShape
@@ -414,7 +426,12 @@ describe("placeNewShapes — S20-style edits", () => {
 
 	it("reports a new lane instead of moving the lanes below", () => {
 		const edited = structuredClone(drawn())
-		process(edited).laneSet?.lanes.push({ id: "L_New", name: "Neu", flowNodeRefs: [], unknownAttributes: {} })
+		process(edited).laneSet?.lanes.push({
+			id: "L_New",
+			name: "Neu",
+			flowNodeRefs: [],
+			unknownAttributes: {},
+		})
 		const result = placeNewShapes(edited)
 		expect(result.unplaced.map((u) => u.id)).toEqual(["L_New"])
 	})
@@ -492,14 +509,18 @@ describe("placeNewShapes — reference diagrams", () => {
 						const el = result.definitions.processes
 							.flatMap((p) => p.flowElements)
 							.find((e) => e.id === other)
-						if (el && ["subProcess", "adHocSubProcess", "eventSubProcess", "transaction"].includes(el.type)) {
+						if (
+							el &&
+							["subProcess", "adHocSubProcess", "eventSubProcess", "transaction"].includes(el.type)
+						) {
 							continue
 						}
-						expect(overlaps(mine.bounds, shape.bounds), `${file}: ${id} covers ${other}`).toBe(false)
+						expect(overlaps(mine.bounds, shape.bounds), `${file}: ${id} covers ${other}`).toBe(
+							false,
+						)
 					}
 				}
 			}
 		})
 	}
 })
-

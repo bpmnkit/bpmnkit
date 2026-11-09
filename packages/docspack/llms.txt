@@ -6,11 +6,11 @@
 
 Writing a BPMN process, DMN decision or form? Read its agent card first: a runnable script, the top options and the traps (`casen agent-card bpmn|dmn|form` prints the same card).
 
-- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 4 chunks, 1393 tokens
+- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 4 chunks, 1530 tokens
 - [DMN agent card](.llms/chunks/agent-cards.dmn.md) — 5 chunks, 1331 tokens
 - [Form agent card](.llms/chunks/agent-cards.form.md) — 4 chunks, 876 tokens
 
-Version 1.3.0. 448 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.3.1. 448 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -19,9 +19,9 @@ npx bpmnkit-docs ask "how do I deploy a process"
 
 ## agent-cards
 
-- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 461 tokens
+- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 531 tokens
 - [BPMN agent card — Top builder options](.llms/chunks/agent-cards.bpmn.top-builder-options.md) — 299 tokens
-- [BPMN agent card — Traps](.llms/chunks/agent-cards.bpmn.traps.md) — 424 tokens
+- [BPMN agent card — Traps](.llms/chunks/agent-cards.bpmn.traps.md) — 491 tokens
 - [BPMN agent card — Lint before you deploy or test](.llms/chunks/agent-cards.bpmn.lint-before-you-deploy-or-test.md) — 209 tokens
 - [DMN agent card](.llms/chunks/agent-cards.dmn.md) — 433 tokens
 - [DMN agent card — Several decisions in one file: `Dmn.drd()`](.llms/chunks/agent-cards.dmn.several-decisions-in-one-file-dmn.drd.md) — 299 tokens

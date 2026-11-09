@@ -10,7 +10,7 @@ Write a Camunda 8 BPMN process with `@bpmnkit/core` in one script: create, expor
 
 ```ts
 import { readFileSync, writeFileSync } from "node:fs"
-import { Bpmn, exportPreserving, lintDiagram } from "@bpmnkit/core"
+import { Bpmn, exportPreserving, lintDiagram, placeNewShapes } from "@bpmnkit/core"
 
 // 1. Create. The process id is the deploy key: same id = new version of that process.
 const definitions = Bpmn.createProcess("order")
@@ -34,12 +34,18 @@ const definitions = Bpmn.createProcess("order")
 // 2. Export.
 writeFileSync("order.bpmn", Bpmn.export(definitions))
 
-// 3. Edit an existing file: parse, change, write with exportPreserving to keep layout and formatting.
+// 3. Edit an existing file: change the model, draw only the new elements, write with
+//    exportPreserving. Existing shapes keep their positions and the file its formatting.
 const original = readFileSync("order.bpmn", "utf8")
-const edited = Bpmn.parse(original)
+const edited = Bpmn.continueProcess(Bpmn.parse(original), "order")
+	.insertAfter("ship")
+	.serviceTask("notify", { name: "Notify customer", taskType: "notify-customer" })
+	.build()
 const ship = edited.processes[0]?.flowElements.find((e) => e.id === "ship")
 if (ship) ship.name = "Ship parcel"
-writeFileSync("order.bpmn", exportPreserving(original, edited))
+const { definitions: drawn, unplaced } = placeNewShapes(edited)
+if (unplaced.length > 0) console.log("not drawn:", unplaced)
+writeFileSync("order.bpmn", exportPreserving(original, drawn))
 
 // 4. Validate: Camunda 8 deployability and modelling rules.
 const report = lintDiagram(Bpmn.parse(readFileSync("order.bpmn", "utf8")))
@@ -48,7 +54,7 @@ for (const d of report.diagnostics.filter((d) => d.severity !== "info"))
 if (report.counts.error > 0) process.exit(1)
 ```
 
-`npm i @bpmnkit/core`. The script writes `order.bpmn`, re-opens it, renames a task without moving a shape, and exits 1 on a lint error.
+`npm i @bpmnkit/core`. The script writes `order.bpmn`, re-opens it, adds a task and renames one without moving a shape, and exits 1 on a lint error.
 
 ---
 Source: https://bpmnkit.com/docs/agent-cards/bpmn

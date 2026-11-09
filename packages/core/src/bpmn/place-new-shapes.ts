@@ -1,3 +1,5 @@
+import { layoutProcess } from "../layout/layout-engine.js"
+import { type Port, type Side, routeOrthogonal, sidePorts } from "../layout/orthogonal.js"
 /**
  * Diagram interchange for the elements an edit added, around a layout that
  * stays put.
@@ -13,8 +15,6 @@
  * @packageDocumentation
  */
 import { externalLabelWidth } from "../layout/semantic/place.js"
-import { layoutProcess } from "../layout/layout-engine.js"
-import { type Port, type Side, routeOrthogonal, sidePorts } from "../layout/orthogonal.js"
 import { ELEMENT_SIZES, LABEL_HEIGHT } from "../layout/types.js"
 import type { Bounds, LayoutResult, Waypoint } from "../layout/types.js"
 import type {
@@ -80,12 +80,7 @@ const ANNOTATION_WIDTH = 100
 /** An edge end further than this from its shape no longer belongs to it. */
 const STALE_DISTANCE = 12
 
-const CONTAINER_TYPES = new Set([
-	"subProcess",
-	"adHocSubProcess",
-	"eventSubProcess",
-	"transaction",
-])
+const CONTAINER_TYPES = new Set(["subProcess", "adHocSubProcess", "eventSubProcess", "transaction"])
 
 interface Scope {
 	id: string
@@ -229,10 +224,9 @@ class Placer {
 	// -------------------------------------------------------------------------
 
 	private indexScope(
-		owner: Pick<
-			Scope,
-			"flowElements" | "sequenceFlows" | "textAnnotations" | "associations"
-		> & { id: string },
+		owner: Pick<Scope, "flowElements" | "sequenceFlows" | "textAnnotations" | "associations"> & {
+			id: string
+		},
 		processId: string,
 		isProcess: boolean,
 	): void {
@@ -268,8 +262,7 @@ class Placer {
 					collaboration.participants.some((p) => p.id === s.bpmnElement),
 				)
 				const left = pools.length > 0 ? Math.min(...pools.map((s) => s.bounds.x)) : 0
-				const width =
-					pools.length > 0 ? Math.max(...pools.map((s) => s.bounds.width)) : 600
+				const width = pools.length > 0 ? Math.max(...pools.map((s) => s.bounds.width)) : 600
 				const top =
 					pools.length > 0
 						? Math.max(...pools.map((s) => s.bounds.y + s.bounds.height)) + NEW_POOL_GAP
@@ -278,12 +271,17 @@ class Placer {
 					? this.defs.processes.find((p) => p.id === participant.processRef)
 					: undefined
 				if (!process || process.flowElements.length === 0) {
-					this.addShape(this.mainPlane, participant.id, {
-						x: left,
-						y: top,
-						width,
-						height: BLACK_BOX_HEIGHT,
-					}, { isHorizontal: true })
+					this.addShape(
+						this.mainPlane,
+						participant.id,
+						{
+							x: left,
+							y: top,
+							width,
+							height: BLACK_BOX_HEIGHT,
+						},
+						{ isHorizontal: true },
+					)
 					continue
 				}
 				// A pool whose whole content is new: lay that content out on its own and
@@ -380,9 +378,7 @@ class Placer {
 			.map((f) => f.sourceRef)
 		if (preds.length > 0) {
 			// The rightmost predecessor: the new node goes after the latest of them.
-			const id = preds.reduce((best, id) =>
-				this.rightOf(id) > this.rightOf(best) ? id : best,
-			)
+			const id = preds.reduce((best, id) => (this.rightOf(id) > this.rightOf(best) ? id : best))
 			// A boundary event's path leaves downwards, below its host.
 			const pred = this.elements.get(id)
 			return { id, direction: pred?.type === "boundaryEvent" ? "down" : "right" }
@@ -525,7 +521,10 @@ class Placer {
 			const di: BpmnDiEdge = {
 				id: this.diId(edge.id),
 				bpmnElement: edge.id,
-				waypoints: edge.waypoints.map((p) => ({ x: Math.round(p.x + dx), y: Math.round(p.y + dy) })),
+				waypoints: edge.waypoints.map((p) => ({
+					x: Math.round(p.x + dx),
+					y: Math.round(p.y + dy),
+				})),
 				unknownAttributes: {},
 			}
 			if (edge.labelBounds) di.label = { bounds: round(shift(edge.labelBounds, dx, dy)) }
@@ -568,7 +567,11 @@ class Placer {
 		return undefined
 	}
 
-	private laneFor(el: BpmnFlowElement, anchorId: string | undefined, scope: Scope): BpmnLane | undefined {
+	private laneFor(
+		el: BpmnFlowElement,
+		anchorId: string | undefined,
+		scope: Scope,
+	): BpmnLane | undefined {
 		if (!scope.isProcess) return undefined
 		const own = this.laneOf.get(el.id)
 		if (own) return own
@@ -587,7 +590,12 @@ class Placer {
 		if (drawn.length === 0) return undefined
 		const anchor = via ? this.shapes.get(via)?.shape.bounds : undefined
 		if (anchor) {
-			const centre = { x: anchor.x + anchor.width / 2, y: anchor.y + anchor.height / 2, width: 0, height: 0 }
+			const centre = {
+				x: anchor.x + anchor.width / 2,
+				y: anchor.y + anchor.height / 2,
+				width: 0,
+				height: 0,
+			}
 			const hit = drawn.find((l) => contains(this.shapes.get(l.id)?.shape.bounds as Rect, centre))
 			if (hit) return hit
 		}
@@ -726,9 +734,7 @@ class Placer {
 			const cy = a.y + a.height / 2
 			for (let c = 0; c < MAX_COLUMNS; c++) {
 				const x =
-					direction === "right"
-						? a.x + a.width + GAP + c * STEP
-						: a.x - GAP - size.width - c * STEP
+					direction === "right" ? a.x + a.width + GAP + c * STEP : a.x - GAP - size.width - c * STEP
 				for (const row of rows) push(x, cy + row.dy - size.height / 2, c * columnWeight + row.cost)
 			}
 			return out
@@ -855,7 +861,12 @@ class Placer {
 				if (other === shape || !this.isContainerShape(other)) continue
 				const holds = contains(other.bounds, { x: b.x, y: b.y, width: 1, height: 1 })
 				if (!holds || contains(other.bounds, b)) continue
-				this.growShape(other.bpmnElement, edge + INNER_PADDING, b.y + b.height + INNER_PADDING, plane)
+				this.growShape(
+					other.bpmnElement,
+					edge + INNER_PADDING,
+					b.y + b.height + INNER_PADDING,
+					plane,
+				)
 			}
 			return
 		}
@@ -871,9 +882,7 @@ class Placer {
 		}
 	}
 
-	private poolOfFrame(
-		elementId: string,
-	): { participantId: string; laneIds: string[] } | undefined {
+	private poolOfFrame(elementId: string): { participantId: string; laneIds: string[] } | undefined {
 		for (const [processId, lanes] of this.lanesOfProcess) {
 			const participantId = this.participantOf.get(processId)
 			if (!participantId) continue
@@ -952,15 +961,32 @@ class Placer {
 		}> = []
 		for (const scope of this.scopes.values()) {
 			for (const f of scope.sequenceFlows) {
-				connections.push({ id: f.id, sourceRef: f.sourceRef, targetRef: f.targetRef, kind: "sequence", ...(f.name ? { name: f.name } : {}) })
+				connections.push({
+					id: f.id,
+					sourceRef: f.sourceRef,
+					targetRef: f.targetRef,
+					kind: "sequence",
+					...(f.name ? { name: f.name } : {}),
+				})
 			}
 		}
 		for (const a of this.allAssociations()) {
-			connections.push({ id: a.id, sourceRef: a.sourceRef, targetRef: a.targetRef, kind: "association" })
+			connections.push({
+				id: a.id,
+				sourceRef: a.sourceRef,
+				targetRef: a.targetRef,
+				kind: "association",
+			})
 		}
 		for (const collaboration of this.defs.collaborations) {
 			for (const m of collaboration.messageFlows) {
-				connections.push({ id: m.id, sourceRef: m.sourceRef, targetRef: m.targetRef, kind: "message", ...(m.name ? { name: m.name } : {}) })
+				connections.push({
+					id: m.id,
+					sourceRef: m.sourceRef,
+					targetRef: m.targetRef,
+					kind: "message",
+					...(m.name ? { name: m.name } : {}),
+				})
 			}
 		}
 		for (const el of this.elements.values()) {
@@ -970,16 +996,24 @@ class Placer {
 			}
 			for (const a of node.dataInputAssociations ?? []) {
 				const source = a.sourceRefs[0]
-				if (a.id && source) connections.push({ id: a.id, sourceRef: source, targetRef: el.id, kind: "association" })
+				if (a.id && source)
+					connections.push({ id: a.id, sourceRef: source, targetRef: el.id, kind: "association" })
 			}
 			for (const a of node.dataOutputAssociations ?? []) {
-				if (a.id && a.targetRef) connections.push({ id: a.id, sourceRef: el.id, targetRef: a.targetRef, kind: "association" })
+				if (a.id && a.targetRef)
+					connections.push({
+						id: a.id,
+						sourceRef: el.id,
+						targetRef: a.targetRef,
+						kind: "association",
+					})
 			}
 		}
 
 		const existing = new Map<string, { edge: BpmnDiEdge; plane: BpmnDiPlane }>()
 		for (const diagram of this.defs.diagrams) {
-			for (const edge of diagram.plane.edges) existing.set(edge.bpmnElement, { edge, plane: diagram.plane })
+			for (const edge of diagram.plane.edges)
+				existing.set(edge.bpmnElement, { edge, plane: diagram.plane })
 		}
 
 		for (const c of connections) {
@@ -1009,7 +1043,10 @@ class Placer {
 			if (!source || !target) {
 				// A data association to an undrawn data object is not an error; anything
 				// else is worth reporting.
-				if (this.elements.get(c.sourceRef)?.type !== "dataObject" && this.elements.get(c.targetRef)?.type !== "dataObject") {
+				if (
+					this.elements.get(c.sourceRef)?.type !== "dataObject" &&
+					this.elements.get(c.targetRef)?.type !== "dataObject"
+				) {
 					this.result.unplaced.push({ id: c.id, reason: "one of its ends has no shape" })
 				}
 				continue
@@ -1102,8 +1139,18 @@ class Placer {
 			to = sidePorts(t, { left: 0, top: 15, bottom: 15, right: 120 })
 		} else if (kind === "message") {
 			const down = sCy < tCy
-			from = sidePorts(s, down ? { bottom: 0, left: 60, right: 60, top: 120 } : { top: 0, left: 60, right: 60, bottom: 120 })
-			to = sidePorts(t, down ? { top: 0, left: 60, right: 60, bottom: 120 } : { bottom: 0, left: 60, right: 60, top: 120 })
+			from = sidePorts(
+				s,
+				down
+					? { bottom: 0, left: 60, right: 60, top: 120 }
+					: { top: 0, left: 60, right: 60, bottom: 120 },
+			)
+			to = sidePorts(
+				t,
+				down
+					? { top: 0, left: 60, right: 60, bottom: 120 }
+					: { bottom: 0, left: 60, right: 60, top: 120 },
+			)
 		} else {
 			from = sidePorts(s)
 			to = sidePorts(t)
@@ -1186,7 +1233,9 @@ class Placer {
 	private isFrameShape(shape: BpmnDiShape): boolean {
 		return (
 			this.participants.has(shape.bpmnElement) ||
-			[...this.lanesOfProcess.values()].some((lanes) => lanes.some((l) => l.id === shape.bpmnElement))
+			[...this.lanesOfProcess.values()].some((lanes) =>
+				lanes.some((l) => l.id === shape.bpmnElement),
+			)
 		)
 	}
 
@@ -1361,9 +1410,7 @@ function segmentHits([p, q]: Segment, r: Rect, margin: number): boolean {
 		}
 		return true
 	}
-	return (
-		clip(-dx, p.x - x0) && clip(dx, x1 - p.x) && clip(-dy, p.y - y0) && clip(dy, y1 - p.y)
-	)
+	return clip(-dx, p.x - x0) && clip(dx, x1 - p.x) && clip(-dy, p.y - y0) && clip(dy, y1 - p.y)
 }
 
 /** How many other segments the orthogonal segment a→b crosses. */

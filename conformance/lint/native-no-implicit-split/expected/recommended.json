@@ -102,7 +102,7 @@
       "message": "Element \"start\" has no diagram information (BPMNDI).",
       "processId": "proc",
       "severity": "error",
-      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+      "suggestion": "In a script, call `placeNewShapes(definitions)` before `exportPreserving` to draw only the new elements; redraw everything only for a new file."
     },
     {
       "bpmnlintRule": "no-bpmndi",
@@ -115,7 +115,7 @@
       "message": "Element \"a\" has no diagram information (BPMNDI).",
       "processId": "proc",
       "severity": "error",
-      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+      "suggestion": "In a script, call `placeNewShapes(definitions)` before `exportPreserving` to draw only the new elements; redraw everything only for a new file."
     },
     {
       "bpmnlintRule": "no-bpmndi",
@@ -128,7 +128,7 @@
       "message": "Element \"end\" has no diagram information (BPMNDI).",
       "processId": "proc",
       "severity": "error",
-      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+      "suggestion": "In a script, call `placeNewShapes(definitions)` before `exportPreserving` to draw only the new elements; redraw everything only for a new file."
     },
     {
       "bpmnlintRule": "no-bpmndi",
@@ -141,7 +141,7 @@
       "message": "Element \"b\" has no diagram information (BPMNDI).",
       "processId": "proc",
       "severity": "error",
-      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+      "suggestion": "In a script, call `placeNewShapes(definitions)` before `exportPreserving` to draw only the new elements; redraw everything only for a new file."
     },
     {
       "bpmnlintRule": "no-bpmndi",
@@ -154,7 +154,7 @@
       "message": "Element \"c\" has no diagram information (BPMNDI).",
       "processId": "proc",
       "severity": "error",
-      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+      "suggestion": "In a script, call `placeNewShapes(definitions)` before `exportPreserving` to draw only the new elements; redraw everything only for a new file."
     },
     {
       "bpmnlintRule": "no-bpmndi",
@@ -167,7 +167,7 @@
       "message": "Element \"d\" has no diagram information (BPMNDI).",
       "processId": "proc",
       "severity": "error",
-      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+      "suggestion": "In a script, call `placeNewShapes(definitions)` before `exportPreserving` to draw only the new elements; redraw everything only for a new file."
     },
     {
       "bpmnlintRule": "no-bpmndi",
@@ -180,7 +180,7 @@
       "message": "Element \"f1\" has no diagram information (BPMNDI).",
       "processId": "proc",
       "severity": "error",
-      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+      "suggestion": "In a script, call `placeNewShapes(definitions)` before `exportPreserving` to draw only the new elements; redraw everything only for a new file."
     },
     {
       "bpmnlintRule": "no-bpmndi",
@@ -193,7 +193,7 @@
       "message": "Element \"f2\" has no diagram information (BPMNDI).",
       "processId": "proc",
       "severity": "error",
-      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+      "suggestion": "In a script, call `placeNewShapes(definitions)` before `exportPreserving` to draw only the new elements; redraw everything only for a new file."
     },
     {
       "bpmnlintRule": "no-bpmndi",
@@ -206,7 +206,7 @@
       "message": "Element \"f3\" has no diagram information (BPMNDI).",
       "processId": "proc",
       "severity": "error",
-      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+      "suggestion": "In a script, call `placeNewShapes(definitions)` before `exportPreserving` to draw only the new elements; redraw everything only for a new file."
     },
     {
       "bpmnlintRule": "no-bpmndi",
@@ -219,7 +219,7 @@
       "message": "Element \"f4\" has no diagram information (BPMNDI).",
       "processId": "proc",
       "severity": "error",
-      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+      "suggestion": "In a script, call `placeNewShapes(definitions)` before `exportPreserving` to draw only the new elements; redraw everything only for a new file."
     },
     {
       "bpmnlintRule": "no-bpmndi",
@@ -232,7 +232,7 @@
       "message": "Element \"f5\" has no diagram information (BPMNDI).",
       "processId": "proc",
       "severity": "error",
-      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+      "suggestion": "In a script, call `placeNewShapes(definitions)` before `exportPreserving` to draw only the new elements; redraw everything only for a new file."
     },
     {
       "bpmnlintRule": "no-implicit-split",

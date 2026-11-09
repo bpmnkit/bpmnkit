@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-09 — `placeNewShapes`: edits draw only new elements
+
+- `placeNewShapes(definitions)` (core) draws DI only for elements without shapes, never moves existing ones, and may widen pools, lanes and sub-processes. `casen generate bpmn --input --patch` uses it with `exportPreserving` instead of a full re-layout.
+- The `no-bpmndi` / missing-DI lint hint now points scripts at `placeNewShapes`; docs on `continueProcess` and the builder mention it; agent card updated.
+
 ## 2026-11-08 — Refresh Camunda connector templates (bot PR #245)
 
 - Merged `main` into `chore/connector-templates-refresh`. `main` now keeps the templates in `spec/templates/connectors.json` and generates both `generated.ts` files from it (`spec-gen`), so the refresh was regenerated with `pnpm update-connectors` instead of merged by hand. The registry now has 134 templates.

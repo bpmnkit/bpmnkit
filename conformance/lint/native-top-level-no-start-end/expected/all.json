@@ -49,7 +49,7 @@
       "message": "Element \"a\" has no diagram information (BPMNDI).",
       "processId": "proc",
       "severity": "error",
-      "suggestion": "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it."
+      "suggestion": "In a script, call `placeNewShapes(definitions)` before `exportPreserving` to draw only the new elements; redraw everything only for a new file."
     },
     {
       "bpmnlintRule": "no-disconnected",
