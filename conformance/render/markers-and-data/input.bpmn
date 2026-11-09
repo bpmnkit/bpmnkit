@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://example.com/render">
   <bpmn:process id="P1" isExecutable="true">
-    <bpmn:startEvent id="S1" name="Start"/>
+    <bpmn:startEvent id="S1" name="Start"><bpmn:outgoing>F1</bpmn:outgoing></bpmn:startEvent>
     <bpmn:userTask id="T_par" name="Parallel review">
-      <bpmn:multiInstanceLoopCharacteristics/>
+      <bpmn:multiInstanceLoopCharacteristics/><bpmn:incoming>F1</bpmn:incoming><bpmn:outgoing>F2</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:serviceTask id="T_seq" name="Sequential calls">
-      <bpmn:multiInstanceLoopCharacteristics isSequential="true"/>
+      <bpmn:multiInstanceLoopCharacteristics isSequential="true"/><bpmn:incoming>F2</bpmn:incoming><bpmn:outgoing>F3</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:serviceTask id="T_comp" name="Undo" isForCompensation="true"/>
-    <bpmn:callActivity id="CA" name="Call child"/>
+    <bpmn:callActivity id="CA" name="Call child"><bpmn:incoming>F3</bpmn:incoming><bpmn:outgoing>F4</bpmn:outgoing></bpmn:callActivity>
     <bpmn:adHocSubProcess id="AH" name="Ad hoc"/>
     <bpmn:subProcess id="SP" name="Collapsed"/>
     <bpmn:dataObjectReference id="DOR" name="Order" dataObjectRef="DO"/>
     <bpmn:dataObjectReference id="DOC" name="Items" isCollection="true"/>
     <bpmn:dataStoreReference id="DSR" name="Orders DB"/>
-    <bpmn:endEvent id="E1" name="Done"/>
+    <bpmn:endEvent id="E1" name="Done"><bpmn:incoming>F4</bpmn:incoming></bpmn:endEvent>
     <bpmn:sequenceFlow id="F1" sourceRef="S1" targetRef="T_par"/>
     <bpmn:sequenceFlow id="F2" sourceRef="T_par" targetRef="T_seq"/>
     <bpmn:sequenceFlow id="F3" sourceRef="T_seq" targetRef="CA"/>

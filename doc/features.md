@@ -1,5 +1,9 @@
 # Features
 
+## SVG export v2, DRD and decision-table images (2026-11-09)
+
+`exportSvg(defs, { scale, maxSize, colors: "di", plane, autoLayout, font, elementIds, background, theme })` plus `exportSvgDetailed` (size, viewBox, drawn elements, warnings). Data objects/stores, groups and multi-instance/compensation/call-activity markers are drawn. `exportDrdSvg(dmnDefs)` draws a requirements diagram (laid out when DI is missing) and `exportDecisionTableSvg(table, { name })` a decision table. Recorded as `conformance/render/` fixtures for the Rust renderer.
+
 ## Rust facade ergonomics and lint reports (2026-11-09)
 
 `bpmnkit::load(&str)` detects BPMN, DMN, a form, process text or compact JSON (`bpmnkit::detect`) and returns a `Document`; failures are one `bpmnkit::Error` with `From` for every crate error. `bpmnkit::prelude` gathers the common names. `bpmnkit_lint::report::{to_text, to_markdown, to_slack_mrkdwn}` (and `check_findings_*` for DMN and forms) print findings for terminals, PR comments and Slack. Examples: `text_to_bpmn`, `eval_dmn`, `lint_report`. Docs: [embedding the Rust crates](apps/landing/src/content/docs/rust/embedding.md).

@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-09 — TS `exportSvg` v2, DRD + decision-table SVG, render conformance (T2)
+
+- `exportSvg` options: `scale`, `maxSize`, `colors: "di"`, `plane`, `autoLayout`, `font`, `elementIds`, `background`, custom `theme` colours; new `exportSvgDetailed` (viewBox, size, drawn elements, warnings), `exportDrdSvg`, `exportDecisionTableSvg` (`packages/core/src/dmn/svg.ts`).
+- Default output changes (elements invisible before): data objects/stores (+ external labels), groups (dashed, label from the category value), multi-instance / compensation / call-activity `+` marker row (an ad-hoc collapsed sub-process now also shows `+`; a marker row is `<g transform="translate(x 0)">` per glyph).
+- `conformance/render/<case>/` (77 cases: every `bpmn/` input with defaults, one per option, markers/data, DRD, decision tables), recorded by `tests/render-conformance.test.ts`; format in `conformance/README.md`. Unit tests in `tests/svg-options.test.ts`. Changeset: `@bpmnkit/core` minor.
+
 ## 2026-11-09 — Rust facade: `Error`, `detect`/`load`, prelude, lint report renderers (T5)
 
 - `bpmnkit::Error` (`#[non_exhaustive]`, `From` for every crate error), `bpmnkit::detect` → `DocKind`, `bpmnkit::load` → `Document` (process text and compact JSON expand without the deploy gate), `bpmnkit::prelude`. `text` feature now implies `bpmn` and `dmn`; the facade depends on `serde_json` for JSON sniffing.
