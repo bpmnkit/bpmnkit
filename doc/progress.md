@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-09 — `bpmnkit-ascii`: BPMN/DMN/form → text in Rust (item 10 of the embedding plan)
+
+- New crate `crates/bpmnkit-ascii`: `bpmn_to_ascii` / `bpmn_xml_to_ascii`, `dmn_to_ascii` / `dmn_xml_to_ascii`, `form_to_ascii` / `form_json_to_ascii` with `AsciiOptions { title: FromModel | Hidden | Text }`. A line-by-line port of `packages/ascii` on the grid layout (`bpmnkit_layout::layout_flow_nodes`); text is handled as UTF-16 units so truncation and `trimEnd` match JS.
+- `conformance/ascii/<case>/` (120 cases: every non-error `bpmn/`, `dmn/`, `form/` input, hand-written gateway fan-outs, loops, all element types, Unicode/emoji truncation, empty models, title options), recorded by `packages/ascii/tests/ascii-conformance.test.ts` (now part of `pnpm conformance:record`) and replayed byte-equal by `bpmnkit-conformance` (`tests/ascii.rs`). Format in `conformance/README.md`.
+- Facade feature `ascii` (in `full`) re-exports the crate as `bpmnkit::ascii`.
+
 ## 2026-11-09 — FEEL/DMN result helpers for chat and CLI (E2)
 
 - `bpmnkit-feel`: `Value::to_feel_string`, `to_json_string`, `to_json`, `from_json_str`, `from_json`; `Context::from_json_str` / `from_json` (reuse the `to json()` / `from json()` builtins: exact numbers, key order kept). No TS twin formatter exists beyond `string()`, already covered by the FEEL conformance cases, so no new fixtures.

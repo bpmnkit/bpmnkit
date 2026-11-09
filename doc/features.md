@@ -1,5 +1,9 @@
 # Features
 
+## ASCII diagrams in Rust: `bpmnkit-ascii` (2026-11-09)
+
+`bpmnkit_ascii::bpmn_xml_to_ascii(xml, &AsciiOptions::default())` draws a process as Unicode boxes and orthogonal flows for a terminal or a Slack code block, with no diagram interchange needed; `dmn_xml_to_ascii` draws decision tables and `form_json_to_ascii` a form mock-up. The output is byte-identical to `@bpmnkit/ascii`, held by the `conformance/ascii/` cases. Also reachable as `bpmnkit::ascii` (feature `ascii`).
+
 ## Rust: process text to SVG/PNG in one call (2026-11-09)
 
 `bpmnkit::quick::render_svg(text, &RenderOptions)` and `render_png(text, &opts, &PngOptions)` (facade features `text` + `render` / `render-png`) go from process text or compact JSON to a laid-out image without touching the intermediate model. Example `text_to_png`.

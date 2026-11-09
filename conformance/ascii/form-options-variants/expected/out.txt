@@ -1,0 +1,24 @@
+f
+─
+
+A
+[ ▼ Select...            ]
+
+B
+[ ▼ Select...            ]
+
+C
+[ ▼ Select...            ]
+
+D
+  ○ Yes
+  ○ No
+
+E
+  ☐  (dynamic options)
+
+F
+[ × Tag1  × Tag2  +Add  ]
+
+G
+[ ▼ Select...            ]

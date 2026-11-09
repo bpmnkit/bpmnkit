@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="p" isExecutable="true" name="Ünïcødé 😀 process">
+    <bpmn:startEvent id="s" name="😀😀😀😀"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:userTask id="t" name="abcdefghijklm😀xyz"><bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing></bpmn:userTask>
+    <bpmn:task id="t2" name="日本語のタスク名はとても長いです"><bpmn:incoming>f2</bpmn:incoming><bpmn:outgoing>f3</bpmn:outgoing></bpmn:task>
+    <bpmn:endEvent id="e" name="end "><bpmn:incoming>f3</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="s" targetRef="t" name="😀 go"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="t" targetRef="t2"/>
+    <bpmn:sequenceFlow id="f3" sourceRef="t2" targetRef="e" name="ok 😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀😀"/>
+  </bpmn:process>
+</bpmn:definitions>

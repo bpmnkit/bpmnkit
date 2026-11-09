@@ -588,6 +588,20 @@ call-activity markers), `drd-*` and `table-*`.
 `data-element-id="<id>"` (option `elementIds`) goes right after the first attribute of an element's `<g>`
 (`transform`) or main `<path>` (`d`), XML-escaped like labels.
 
+## ASCII: `ascii/<case>/`
+
+Text output of `renderBpmnAscii` / `renderDmnAscii` / `renderFormAscii` (`packages/ascii`). Recorded by
+`packages/ascii/tests/ascii-conformance.test.ts`; replayed by `bpmnkit-ascii`.
+
+- `case.json`: `{"input": "<path relative to conformance/>", "options": {"title": "…" | false}}`. Without
+  `input`, the case's own `input.bpmn`, `input.dmn` or `input.form` is used. The extension picks the renderer.
+- `expected/out.txt`: the text plus one trailing newline, as UTF-8. Truncation counts UTF-16 units and can cut
+  a surrogate pair; the lone half is written (and compared) as U+FFFD.
+
+Cases: `bpmn-*`, `dmn-*`, `form-*` point at every non-error input of those families; `hand-*` are hand-written
+processes (gateways fanning out 2–5 ways, a loop back, every task/event type, Unicode and emoji truncation, an
+empty process, no process, unnamed elements); `opt-*` set `title` to text, `""` or `false`.
+
 ## Diff: `diff/<case>/`
 
 - `before.bpmn`, `after.bpmn`: the two models.

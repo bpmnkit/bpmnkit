@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="p" isExecutable="true" name="Three ways">
+    <bpmn:startEvent id="s" name="Start"><bpmn:outgoing>f_s</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:parallelGateway id="g" name="Split"><bpmn:incoming>f_s</bpmn:incoming><bpmn:outgoing>f_g0</bpmn:outgoing><bpmn:outgoing>f_g1</bpmn:outgoing><bpmn:outgoing>f_g2</bpmn:outgoing></bpmn:parallelGateway>
+    <bpmn:task id="t0" name="Branch 1"><bpmn:incoming>f_g0</bpmn:incoming><bpmn:outgoing>f_j0</bpmn:outgoing></bpmn:task>
+    <bpmn:task id="t1" name="Branch 2"><bpmn:incoming>f_g1</bpmn:incoming><bpmn:outgoing>f_j1</bpmn:outgoing></bpmn:task>
+    <bpmn:task id="t2" name="Branch 3"><bpmn:incoming>f_g2</bpmn:incoming><bpmn:outgoing>f_j2</bpmn:outgoing></bpmn:task>
+    <bpmn:parallelGateway id="j" name="Join"><bpmn:incoming>f_j0</bpmn:incoming><bpmn:incoming>f_j1</bpmn:incoming><bpmn:incoming>f_j2</bpmn:incoming><bpmn:outgoing>f_e</bpmn:outgoing></bpmn:parallelGateway>
+    <bpmn:endEvent id="e" name="End"><bpmn:incoming>f_e</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="f_s" sourceRef="s" targetRef="g"/>
+    <bpmn:sequenceFlow id="f_g0" sourceRef="g" targetRef="t0"/>
+    <bpmn:sequenceFlow id="f_j0" sourceRef="t0" targetRef="j"/>
+    <bpmn:sequenceFlow id="f_g1" sourceRef="g" targetRef="t1"/>
+    <bpmn:sequenceFlow id="f_j1" sourceRef="t1" targetRef="j"/>
+    <bpmn:sequenceFlow id="f_g2" sourceRef="g" targetRef="t2"/>
+    <bpmn:sequenceFlow id="f_j2" sourceRef="t2" targetRef="j"/>
+    <bpmn:sequenceFlow id="f_e" sourceRef="j" targetRef="e"/>
+  </bpmn:process>
+</bpmn:definitions>

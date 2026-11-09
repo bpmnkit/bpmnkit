@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="p" isExecutable="true" name="Five ways">
+    <bpmn:startEvent id="s" name="Start"><bpmn:outgoing>f_s</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:complexGateway id="g" name="Split"><bpmn:incoming>f_s</bpmn:incoming><bpmn:outgoing>f_g0</bpmn:outgoing><bpmn:outgoing>f_g1</bpmn:outgoing><bpmn:outgoing>f_g2</bpmn:outgoing><bpmn:outgoing>f_g3</bpmn:outgoing><bpmn:outgoing>f_g4</bpmn:outgoing></bpmn:complexGateway>
+    <bpmn:task id="t0" name="Branch 1"><bpmn:incoming>f_g0</bpmn:incoming><bpmn:outgoing>f_j0</bpmn:outgoing></bpmn:task>
+    <bpmn:task id="t1" name="Branch 2"><bpmn:incoming>f_g1</bpmn:incoming><bpmn:outgoing>f_j1</bpmn:outgoing></bpmn:task>
+    <bpmn:task id="t2" name="Branch 3"><bpmn:incoming>f_g2</bpmn:incoming><bpmn:outgoing>f_j2</bpmn:outgoing></bpmn:task>
+    <bpmn:task id="t3" name="Branch 4"><bpmn:incoming>f_g3</bpmn:incoming><bpmn:outgoing>f_j3</bpmn:outgoing></bpmn:task>
+    <bpmn:task id="t4" name="Branch 5"><bpmn:incoming>f_g4</bpmn:incoming><bpmn:outgoing>f_j4</bpmn:outgoing></bpmn:task>
+    <bpmn:exclusiveGateway id="j" name="Join"><bpmn:incoming>f_j0</bpmn:incoming><bpmn:incoming>f_j1</bpmn:incoming><bpmn:incoming>f_j2</bpmn:incoming><bpmn:incoming>f_j3</bpmn:incoming><bpmn:incoming>f_j4</bpmn:incoming><bpmn:outgoing>f_e</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:endEvent id="e" name="End"><bpmn:incoming>f_e</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="f_s" sourceRef="s" targetRef="g"/>
+    <bpmn:sequenceFlow id="f_g0" sourceRef="g" targetRef="t0" name="one"/>
+    <bpmn:sequenceFlow id="f_j0" sourceRef="t0" targetRef="j"/>
+    <bpmn:sequenceFlow id="f_g1" sourceRef="g" targetRef="t1" name="two"/>
+    <bpmn:sequenceFlow id="f_j1" sourceRef="t1" targetRef="j"/>
+    <bpmn:sequenceFlow id="f_g2" sourceRef="g" targetRef="t2" name="three"/>
+    <bpmn:sequenceFlow id="f_j2" sourceRef="t2" targetRef="j"/>
+    <bpmn:sequenceFlow id="f_g3" sourceRef="g" targetRef="t3" name="four"/>
+    <bpmn:sequenceFlow id="f_j3" sourceRef="t3" targetRef="j"/>
+    <bpmn:sequenceFlow id="f_g4" sourceRef="g" targetRef="t4" name="five"/>
+    <bpmn:sequenceFlow id="f_j4" sourceRef="t4" targetRef="j"/>
+    <bpmn:sequenceFlow id="f_e" sourceRef="j" targetRef="e"/>
+  </bpmn:process>
+</bpmn:definitions>

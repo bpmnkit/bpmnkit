@@ -2,6 +2,7 @@
 //! compares results canonically, so the TS and Rust implementations are held
 //! to the same expectations.
 
+pub mod ascii;
 mod bpmn;
 pub mod builder;
 pub mod compact;

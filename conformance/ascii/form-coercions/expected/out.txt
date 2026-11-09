@@ -1,0 +1,16 @@
+co
+──
+
+Date/Time
+[ YYYY-MM-DD ]  [ HH:MM ]
+
+Date/Time
+[ YYYY-MM-DD ]  [ HH:MM ]
+
+Date/Time
+[ YYYY-MM-DD ]  [ HH:MM ]
+
+Date/Time
+[ YYYY-MM-DD ]  [ HH:MM ]
+
+[    ]

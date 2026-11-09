@@ -107,6 +107,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "bpmnkit-ascii"
+version = "0.1.0"
+dependencies = [
+ "bpmnkit-bpmn",
+ "bpmnkit-dmn",
+ "bpmnkit-form",
+ "bpmnkit-layout",
+]
+
+[[package]]
 name = "bpmnkit-bpmn"
 version = "0.1.0"
 dependencies = [
@@ -149,6 +159,7 @@ dependencies = [
 name = "bpmnkit-conformance"
 version = "0.1.0"
 dependencies = [
+ "bpmnkit-ascii",
  "bpmnkit-bpmn",
  "bpmnkit-builder",
  "bpmnkit-compat",
