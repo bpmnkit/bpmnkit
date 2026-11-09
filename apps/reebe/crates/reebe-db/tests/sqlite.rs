@@ -12,7 +12,7 @@ use reebe_db::state::messages::{
     Message, MessageRepository, MessageSubscription, MessageSubscriptionRepository,
 };
 use reebe_db::state::user_tasks::{UserTask, UserTaskRepository};
-use reebe_db::{create_pool, pool::run_migrations, DbConfig, DbPool};
+use reebe_db::{create_pool, pool::run_migrations, DbConfig, DbPool, StateBackend};
 
 /// A fresh in-memory database. One connection, since each in-memory
 /// connection would otherwise be a database of its own.
@@ -177,4 +177,86 @@ async fn user_tasks_with_and_without_candidates_round_trip() {
     );
     repo.complete(1, None).await.expect("complete");
     assert_eq!(repo.get_by_key(1).await.unwrap().state, "COMPLETED");
+}
+
+#[tokio::test]
+async fn a_unit_of_work_commits_or_rolls_back_as_a_whole() {
+    let backend = reebe_db::SqlxBackend::new(pool().await);
+    unit_of_work_contract(&backend).await;
+
+    // A unit dropped without commit, as when the process dies, leaves nothing behind.
+    let unit = backend.begin().await.expect("begin");
+    unit.state()
+        .upsert_variable(&variable(99, "lost"))
+        .await
+        .expect("write");
+    drop(unit);
+    assert!(
+        backend
+            .get_variables_by_scope(7)
+            .await
+            .unwrap()
+            .iter()
+            .all(|v| v.name != "lost"),
+        "a dropped unit of work must not commit"
+    );
+}
+
+fn variable(key: i64, name: &str) -> reebe_db::state::variables::Variable {
+    reebe_db::state::variables::Variable {
+        key,
+        partition_id: 1,
+        name: name.to_string(),
+        value: serde_json::json!(1),
+        scope_key: 7,
+        process_instance_key: 7,
+        tenant_id: "<default>".to_string(),
+        is_preview: false,
+    }
+}
+
+/// The same checks as the memory backend's: writes, counters and the processed position
+/// commit together, reads inside the unit see its writes, and a finished unit refuses
+/// further statements.
+async fn unit_of_work_contract(backend: &dyn reebe_db::StateBackend) {
+    let key_before = backend.next_key(1).await.expect("key");
+
+    let unit = backend.begin().await.expect("begin");
+    let key = unit.state().next_key(1).await.expect("key in unit");
+    unit.state()
+        .upsert_variable(&variable(key, "a"))
+        .await
+        .expect("write");
+    unit.state()
+        .set_processed_position(1, 5)
+        .await
+        .expect("position");
+    assert_eq!(
+        unit.state().get_variables_by_scope(7).await.unwrap().len(),
+        1,
+        "a unit of work reads its own writes"
+    );
+    unit.rollback().await.expect("rollback");
+    assert!(backend.get_variables_by_scope(7).await.unwrap().is_empty());
+    assert_eq!(backend.get_processed_position(1).await.unwrap(), 0);
+    assert_eq!(
+        backend.next_key(1).await.unwrap(),
+        key_before + 1,
+        "keys taken by a rolled-back unit are handed out again"
+    );
+
+    let unit = backend.begin().await.expect("begin");
+    let state = unit.state().clone();
+    state.upsert_variable(&variable(50, "b")).await.unwrap();
+    state.set_processed_position(1, 6).await.unwrap();
+    unit.commit().await.expect("commit");
+    assert_eq!(backend.get_variables_by_scope(7).await.unwrap().len(), 1);
+    assert_eq!(backend.get_processed_position(1).await.unwrap(), 6);
+    assert!(
+        matches!(
+            state.set_processed_position(1, 7).await,
+            Err(reebe_db::DbError::TransactionClosed)
+        ),
+        "a committed unit refuses further writes"
+    );
 }

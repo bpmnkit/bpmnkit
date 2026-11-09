@@ -39,7 +39,7 @@ pub struct DecisionDefinition {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct DecisionRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
@@ -50,6 +50,10 @@ const DECISION_COLUMNS: &str =
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> DecisionRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -67,7 +71,7 @@ impl<'a> DecisionRepository<'a> {
         .bind(drg.deployment_key)
         .bind(&drg.resource_name)
         .bind(&drg.dmn_xml)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -85,7 +89,7 @@ impl<'a> DecisionRepository<'a> {
         )
         .bind(drg_id)
         .bind(tenant_id)
-        .fetch_optional(self.pool)
+        .fetch_optional(&mut *self.pool.acquire().await?)
         .await?;
         Ok(row.map(|r| DecisionRequirements {
             key: r.get("key"),
@@ -114,7 +118,7 @@ impl<'a> DecisionRepository<'a> {
         .bind(decision.deployment_key)
         .bind(&decision.resource_name)
         .bind(&decision.dmn_xml)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -131,7 +135,7 @@ impl<'a> DecisionRepository<'a> {
         ))
         .bind(decision_id)
         .bind(tenant_id)
-        .fetch_optional(self.pool)
+        .fetch_optional(&mut *self.pool.acquire().await?)
         .await?;
         Ok(row.map(row_to_decision))
     }
@@ -143,7 +147,7 @@ impl<'a> DecisionRepository<'a> {
              WHERE d.key = $1"
         ))
         .bind(key)
-        .fetch_optional(self.pool)
+        .fetch_optional(&mut *self.pool.acquire().await?)
         .await?;
         Ok(row.map(row_to_decision))
     }

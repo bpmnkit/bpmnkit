@@ -24,3 +24,6 @@ chrono = { version = "0.4", features = ["serde"] }
 uuid = { version = "1", features = ["v4", "serde"] }
 tracing = "0.1"
 reebe-protocol = { path = "../reebe-protocol" }
+
+[dev-dependencies]
+tokio = { version = "1", features = ["macros", "rt"] }

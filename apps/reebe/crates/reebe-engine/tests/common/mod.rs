@@ -36,9 +36,9 @@ pub async fn setup_db(max_connections: u32) -> Option<DbPool> {
         .execute(format!(r#"CREATE DATABASE "{name}""#).as_str())
         .await
         .unwrap_or_else(|e| panic!("cannot create test database {name}: {e}"));
-    // Every engine write is its own commit, so a command costs several WAL flushes; on a
-    // busy CI disk those flushes alone pushed a due timer's job past 2 s. The database
-    // is thrown away, so commits need not wait for the disk.
+    // Each processed command still costs one WAL flush, and a busy CI disk once pushed a
+    // due timer's job past 2 s. The database is thrown away, so commits need not wait
+    // for the disk.
     admin
         .execute(format!(r#"ALTER DATABASE "{name}" SET synchronous_commit = off"#).as_str())
         .await
