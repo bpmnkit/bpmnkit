@@ -71,20 +71,35 @@
             ]
           },
           {
+            "bpmnElement": "Flow_Start_Sub",
+            "id": "Flow_Start_Sub_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 492,
+                "y": 90
+              },
+              {
+                "x": 552,
+                "y": 90
+              }
+            ]
+          },
+          {
             "bpmnElement": "SF1",
             "id": "SF1_di",
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 481,
+                "x": 577,
                 "y": 115
               },
               {
-                "x": 481,
+                "x": 577,
                 "y": 230
               },
               {
-                "x": 566,
+                "x": 662,
                 "y": 230
               }
             ]
@@ -95,11 +110,11 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 506,
+                "x": 602,
                 "y": 90
               },
               {
-                "x": 566,
+                "x": 662,
                 "y": 90
               }
             ]
@@ -155,7 +170,7 @@
           {
             "bounds": {
               "height": 320,
-              "width": 310,
+              "width": 406,
               "x": 406,
               "y": 0
             },
@@ -166,9 +181,20 @@
           },
           {
             "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 456,
+              "y": 72
+            },
+            "bpmnElement": "Start_Sub",
+            "id": "Start_Sub_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
               "height": 50,
               "width": 50,
-              "x": 456,
+              "x": 552,
               "y": 65
             },
             "bpmnElement": "SubG",
@@ -180,7 +206,7 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 566,
+              "x": 662,
               "y": 190
             },
             "bpmnElement": "B",
@@ -191,7 +217,7 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 566,
+              "x": 662,
               "y": 50
             },
             "bpmnElement": "C",
@@ -211,6 +237,7 @@
     "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
     "dc": "http://www.omg.org/spec/DD/20100524/DC",
     "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
     "zeebe": "http://camunda.org/schema/zeebe/1.0"
   },
   "processes": [
@@ -270,10 +297,23 @@
           "extensionElements": [],
           "flowElements": [
             {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "Start_Sub",
+              "incoming": [],
+              "outgoing": [
+                "Flow_Start_Sub"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            },
+            {
               "default": "SF2",
               "extensionElements": [],
               "id": "SubG",
-              "incoming": [],
+              "incoming": [
+                "Flow_Start_Sub"
+              ],
               "outgoing": [
                 "SF1",
                 "SF2"
@@ -309,6 +349,13 @@
           ],
           "outgoing": [],
           "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "Flow_Start_Sub",
+              "sourceRef": "Start_Sub",
+              "targetRef": "SubG",
+              "unknownAttributes": {}
+            },
             {
               "conditionExpression": {
                 "attributes": {},
@@ -376,5 +423,7 @@
   ],
   "signals": [],
   "targetNamespace": "http://bpmn.io/schema/bpmn",
-  "unknownAttributes": {}
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud"
+  }
 }

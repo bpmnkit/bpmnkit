@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/script-task-implementation",
+      "message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Give the script task one zeebe:script or one zeebe:taskDefinition."
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_P",
+      "plane": {
+        "bpmnElement": "P",
+        "edges": [
+          {
+            "bpmnElement": "f1",
+            "id": "f1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 100,
+                "y": 40
+              },
+              {
+                "x": 160,
+                "y": 40
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_P",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 0,
+              "y": 0
+            },
+            "bpmnElement": "work",
+            "id": "work_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 160,
+              "y": 22
+            },
+            "bpmnElement": "e",
+            "id": "e_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "D",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "extensionElements": [],
+          "id": "work",
+          "incoming": [],
+          "outgoing": [
+            "f1"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e",
+          "incoming": [
+            "f1"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "P",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "f1",
+          "sourceRef": "work",
+          "targetRef": "e",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

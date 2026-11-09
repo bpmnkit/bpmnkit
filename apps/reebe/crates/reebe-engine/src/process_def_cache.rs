@@ -53,6 +53,13 @@ impl ProcessDefCache {
         self.by_key.insert(def.key, def);
     }
 
+    /// Forget every entry. Called when a unit of work rolls back, since it may have
+    /// cached a definition whose rows were never committed.
+    pub fn clear(&self) {
+        self.by_id_version.clear();
+        self.by_key.clear();
+    }
+
     /// Look up by process_definition_key.
     pub fn get_by_key(&self, key: i64) -> Option<Arc<CachedProcessDef>> {
         self.by_key.get(&key).map(|r| r.clone())

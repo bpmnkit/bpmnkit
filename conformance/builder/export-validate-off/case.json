@@ -6,6 +6,8 @@
 		["startEvent","s"],
 		["serviceTask","t",{"name":"t","taskType":""}],
 		["endEvent","e"],
-		["build"]
-	]
+		["build",{"validate":false}]
+	],
+	"deployable": false,
+	"deployableReason": "Deliberately broken model: pins that Bpmn.export with validate off returns the XML anyway."
 }

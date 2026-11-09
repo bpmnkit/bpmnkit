@@ -1,0 +1,28 @@
+{
+	"note": "Deployments that only a real broker decides: each passes Zeebe's BpmnValidator (zeebe-check), so the rejection comes from the transformer or from the other resources of the deployment. Checked nightly by scripts/zeebe-broker-check.mjs and by reebe's tests. `since` is the first Camunda minor with the rule.",
+	"deployments": {
+		"z35-straight-through-loop": {
+			"resources": ["z35_straight_through_loop.bpmn"],
+			"ok": false,
+			"contains": ["straight-through processing loop"]
+		},
+		"z130-deployment-binding-missing": {
+			"resources": ["z130_caller.bpmn"],
+			"ok": false,
+			"since": "8.6",
+			"contains": [
+				"Expected to find process with id 'z130-callee' in current deployment, but not found."
+			]
+		},
+		"z130-deployment-binding-together": {
+			"resources": ["z130_caller.bpmn", "z130_callee.bpmn"],
+			"ok": true,
+			"since": "8.6"
+		},
+		"z183-duplicate-process-id": {
+			"resources": ["z183_dup_a.bpmn", "z183_dup_b.bpmn"],
+			"ok": false,
+			"contains": ["Duplicated process id in resources 'z183_dup_a.bpmn' and 'z183_dup_b.bpmn'"]
+		}
+	}
+}

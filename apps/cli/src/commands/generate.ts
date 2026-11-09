@@ -1,7 +1,22 @@
 import { readFile, writeFile } from "node:fs/promises"
 import { resolve } from "node:path"
-import { Bpmn, applyAutoLayout, applyBpmnOperations, compactify, expand } from "@bpmnkit/core"
-import type { BpmnOperation, CompactDiagram, CompactElement, CompactFlow } from "@bpmnkit/core"
+import {
+	Bpmn,
+	DeployabilityError,
+	applyAutoLayout,
+	applyBpmnOperations,
+	assertDeployable,
+	compactify,
+	expand,
+} from "@bpmnkit/core"
+import type {
+	BpmnDefinitions,
+	BpmnOperation,
+	CompactDiagram,
+	CompactElement,
+	CompactFlow,
+	PlaceholderFill,
+} from "@bpmnkit/core"
 import type { Command, CommandGroup } from "../types.js"
 import { generateTypesCmd } from "./generate-types.js"
 
@@ -44,6 +59,15 @@ CompactElement — all fields except id+type are optional
     "eventType":      timer | message | signal | error | escalation
                       | terminate | cancel | conditional | link | compensate,
 
+    "messageName":    message events, receiveTask (required),
+    "correlationKey": FEEL key a caught message matches on, e.g. "=orderId" (required
+                      outside a process start),
+    "signalName":     signal events (required),
+    "errorCode":      error end events (required); omit on a boundary to catch all,
+    "escalationCode": escalation throw/end events (required),
+    "timerDuration" | "timerDate" | "timerCycle": timer events (one is required),
+                      e.g. "PT15M", "2026-12-01T09:00:00Z", "R/PT1H",
+
     boundaryEvent:
     "attachedTo":     ID of the host task,
     "interrupting":   false for non-interrupting (default: true),
@@ -58,8 +82,18 @@ CompactFlow
     "from":      source element ID,
     "to":        target element ID,
     "name"?:     flow label,
-    "condition"?: FEEL condition expression (e.g. "= status = \\"approved\\"")
+    "condition"?: FEEL condition expression (e.g. "= status = \\"approved\\""),
+    "isDefault"?: true for a gateway's default branch
   }
+
+DEPLOY GATE
+  The output must deploy on Camunda 8: every flow leaving an exclusive/inclusive
+  gateway needs a condition or isDefault, service/send tasks a jobType, message
+  events a messageName (and a correlationKey when caught), timers a time, error
+  end events an errorCode. Otherwise nothing is written and the command exits 1
+  with one line per problem. --placeholders fills documented placeholder values
+  instead (listed on stderr, replace them before deploying); --no-validate
+  writes the model as it is.
 
 ELEMENT TYPES
   Tasks:    serviceTask  userTask  scriptTask  businessRuleTask
@@ -109,7 +143,7 @@ FULL EXAMPLE — order approval
         { "id": "end-ok",    "type": "endEvent",        "name": "Processed" },
         { "id": "end-rej",   "type": "endEvent",        "name": "Rejected" },
         { "id": "err",       "type": "boundaryEvent",   "attachedTo": "validate", "eventType": "error" },
-        { "id": "end-err",   "type": "endEvent",        "name": "Validation Error", "eventType": "error" }
+        { "id": "end-err",   "type": "endEvent",        "name": "Validation Error", "eventType": "error", "errorCode": "VALIDATION_FAILED" }
       ],
       "flows": [
         { "id": "f1", "from": "start",    "to": "validate" },
@@ -322,7 +356,13 @@ const TEMPLATES: Record<string, TemplateFn> = {
 				id,
 				name: name ?? "Scheduled Process",
 				elements: [
-					{ id: "start", type: "startEvent", name: "Timer", eventType: "timer" },
+					{
+						id: "start",
+						type: "startEvent",
+						name: "Every day",
+						eventType: "timer",
+						timerCycle: "R/P1D",
+					},
 					{
 						id: "task1",
 						type: "serviceTask",
@@ -346,7 +386,13 @@ const TEMPLATES: Record<string, TemplateFn> = {
 				id,
 				name: name ?? "Message-Triggered Process",
 				elements: [
-					{ id: "start", type: "startEvent", name: "Message Received", eventType: "message" },
+					{
+						id: "start",
+						type: "startEvent",
+						name: "Message Received",
+						eventType: "message",
+						messageName: `${id}-requested`,
+					},
 					{
 						id: "task1",
 						type: "serviceTask",
@@ -380,7 +426,13 @@ const TEMPLATES: Record<string, TemplateFn> = {
 						name: "Error",
 					},
 					{ id: "end-ok", type: "endEvent", name: "Success" },
-					{ id: "end-err", type: "endEvent", name: "Failed", eventType: "error" },
+					{
+						id: "end-err",
+						type: "endEvent",
+						name: "Failed",
+						eventType: "error",
+						errorCode: "TASK_FAILED",
+					},
 				],
 				flows: [
 					{ id: "f1", from: "start", to: "task1" },
@@ -441,13 +493,8 @@ const TEMPLATES: Record<string, TemplateFn> = {
 						name: "Error Handler",
 						children: {
 							elements: [
-								{
-									id: "evtsp_start",
-									type: "startEvent",
-									name: "Error",
-									eventType: "error",
-									interrupting: false,
-								},
+								// An error start is always interrupting on Camunda 8.
+								{ id: "evtsp_start", type: "startEvent", name: "Error", eventType: "error" },
 								{
 									id: "evtsp_task",
 									type: "serviceTask",
@@ -534,6 +581,78 @@ export function resolveModifyOutputPath({
 	return output ?? inputFile
 }
 
+// ── Deploy gate ───────────────────────────────────────────────────────────────
+
+/** `--placeholders` / `--no-validate`: how the written model is checked against Camunda 8. */
+export interface GenerateGate {
+	/** Refuse a model Zeebe would reject (default `true`). */
+	validate: boolean
+	/** Fill documented placeholder values instead of refusing. */
+	placeholders: boolean
+}
+
+/** What the command prints when the gate refuses: the gate's lines, then the ways out. */
+export function generateRefusal(err: DeployabilityError): Error {
+	return new Error(
+		`${err.message}\nNothing written. Complete the model, pass --placeholders to fill placeholder values (listed, to replace before deploying), or --no-validate to write it as it is.`,
+	)
+}
+
+/** One line per placeholder value written, so the user knows what to replace. */
+export function placeholderLines(fills: readonly PlaceholderFill[]): string[] {
+	return fills.map((f) => `placeholder ${f.elementId}.${f.field} = ${f.value} (${f.rule})`)
+}
+
+/**
+ * Expands a compact definition through the deploy gate. With `placeholders`, the fills
+ * are read off an ungated expansion, since `expand` returns only the filled model.
+ */
+export function generateFromCompact(
+	compact: CompactDiagram,
+	gate: GenerateGate,
+): { xml: string; placeholders: PlaceholderFill[] } {
+	try {
+		const defs = expand(compact, gate)
+		const placeholders =
+			gate.validate && gate.placeholders
+				? assertDeployable(expand(compact, { validate: false }), { placeholders: true })
+						.placeholders
+				: []
+		// `expand` checked it already; `validate: false` here keeps --no-validate's promise.
+		return { xml: Bpmn.export(defs, { validate: false }), placeholders }
+	} catch (err) {
+		if (err instanceof DeployabilityError) throw generateRefusal(err)
+		throw err
+	}
+}
+
+/**
+ * Exports an edited file. A file that targets Camunda 8 goes through the gate, as
+ * `Bpmn.export` does by default; `--placeholders` fills it, `--no-validate` skips it.
+ */
+export function exportEdited(
+	defs: BpmnDefinitions,
+	gate: GenerateGate,
+): { xml: string; placeholders: PlaceholderFill[] } {
+	if (!gate.validate) return { xml: Bpmn.export(defs, { validate: false }), placeholders: [] }
+	try {
+		if (gate.placeholders) {
+			const result = assertDeployable(defs, {
+				placeholders: true,
+				camundaVersion: defs.unknownAttributes["modeler:executionPlatformVersion"],
+			})
+			return {
+				xml: Bpmn.export(result.definitions, { validate: false }),
+				placeholders: result.placeholders,
+			}
+		}
+		return { xml: Bpmn.export(defs), placeholders: [] }
+	} catch (err) {
+		if (err instanceof DeployabilityError) throw generateRefusal(err)
+		throw err
+	}
+}
+
 // ── Command ───────────────────────────────────────────────────────────────────
 
 const generateBpmnCmd: Command = {
@@ -604,6 +723,19 @@ const generateBpmnCmd: Command = {
 			description: "Allow --input to be replaced in place. Prefer --output <file>.",
 			type: "boolean",
 		},
+		{
+			name: "placeholders",
+			description:
+				"Fill documented placeholder values (job types, message names, correlation keys, ...) where the model has none, instead of refusing; each fill is listed so you can replace it",
+			type: "boolean",
+		},
+		{
+			name: "validate",
+			description:
+				"Refuse a model Camunda 8 would not deploy (default); --no-validate writes it as it is",
+			type: "boolean",
+			default: true,
+		},
 	],
 	examples: [
 		{
@@ -634,6 +766,10 @@ const generateBpmnCmd: Command = {
 		{
 			description: "Pipe CompactDiagram JSON from AI output",
 			command: "echo '{...}' | casen generate bpmn --output my-process.bpmn",
+		},
+		{
+			description: "Write a sketch with placeholder job types to replace before deploying",
+			command: "casen generate bpmn --definition '{...}' --placeholders",
 		},
 		{
 			description: "Print full JSON schema reference",
@@ -671,6 +807,10 @@ const generateBpmnCmd: Command = {
 		const defFlag = ctx.flags.definition as string | undefined
 		const inputFile = ctx.flags.input as string | undefined
 		const patchFlag = ctx.flags.patch as string | undefined
+		const gate: GenerateGate = {
+			validate: ctx.flags.validate !== false,
+			placeholders: ctx.flags.placeholders === true,
+		}
 
 		// ── Modify-existing mode (--input) ─────────────────────────────────────
 		if (inputFile) {
@@ -751,7 +891,8 @@ const generateBpmnCmd: Command = {
 				}
 			}
 
-			const patched = Bpmn.export(applyAutoLayout(edited))
+			const { xml: patched, placeholders } = exportEdited(applyAutoLayout(edited), gate)
+			for (const line of placeholderLines(placeholders)) process.stderr.write(`${line}\n`)
 
 			if (outputPath === null) {
 				process.stdout.write(patched)
@@ -787,11 +928,8 @@ const generateBpmnCmd: Command = {
 			}
 		}
 
-		let xml: string
-
-		if (compact) {
-			xml = Bpmn.export(expand(compact))
-		} else {
+		let source = compact
+		if (!source) {
 			const templateName = (ctx.flags.template as string | undefined) ?? "minimal"
 			const templateFn = TEMPLATES[templateName]
 			if (!templateFn) {
@@ -799,8 +937,11 @@ const generateBpmnCmd: Command = {
 					`Unknown template "${templateName}". Available: ${TEMPLATE_NAMES.join(", ")}`,
 				)
 			}
-			xml = Bpmn.export(expand(templateFn(processId, name)))
+			source = templateFn(processId, name)
 		}
+		const { xml, placeholders } = generateFromCompact(source, gate)
+		// stderr, so `--output -` still pipes clean XML.
+		for (const line of placeholderLines(placeholders)) process.stderr.write(`${line}\n`)
 
 		if (outputFlag === "-") {
 			process.stdout.write(xml)

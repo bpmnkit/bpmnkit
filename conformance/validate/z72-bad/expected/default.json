@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task"
+      ],
+      "fixable": false,
+      "id": "zeebe/receive-task-message",
+      "message": "Must reference a message",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Set messageRef on the receive task to a message."
+    }
+  ]
+}

@@ -5,6 +5,10 @@
       "id": "P",
       "elements": [
         {
+          "id": "Start_P",
+          "type": "startEvent"
+        },
+        {
           "id": "g",
           "type": "exclusiveGateway"
         },
@@ -18,6 +22,11 @@
         }
       ],
       "flows": [
+        {
+          "id": "Flow_Start_P",
+          "from": "Start_P",
+          "to": "g"
+        },
         {
           "id": "f1",
           "from": "g",

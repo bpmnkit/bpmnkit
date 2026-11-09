@@ -25,6 +25,7 @@ mod elements;
 pub mod facade;
 pub mod options;
 pub mod process;
+mod rules;
 mod shared;
 pub mod subprocess;
 mod xsd_guards;

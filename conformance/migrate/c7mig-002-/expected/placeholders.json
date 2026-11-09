@@ -1,0 +1,322 @@
+{
+  "report": {
+    "counts": {
+      "convertible": 19,
+      "manual": 10,
+      "unsupported": 2
+    },
+    "findings": [
+      {
+        "applied": true,
+        "construct": "camunda:versionTag",
+        "elementId": "order-fulfillment",
+        "elementType": "process",
+        "message": "Version tag \"3.1\" moved to zeebe:versionTag.",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:versionTag"
+      },
+      {
+        "applied": false,
+        "construct": "camunda:historyTimeToLive",
+        "elementId": "order-fulfillment",
+        "elementType": "process",
+        "message": "Camunda 8 has no per-process history time to live (was \"180\").",
+        "processId": "order-fulfillment",
+        "severity": "unsupported",
+        "suggestion": "Configure data retention for the cluster (Operate, Tasklist and Optimize archiving)."
+      },
+      {
+        "applied": false,
+        "construct": "camunda:executionListener",
+        "elementId": "order-fulfillment",
+        "elementType": "process",
+        "message": "Execution listener on \"start\" (class \"com.acme.orders.AuditListener\") runs Java or script code in the engine.",
+        "processId": "order-fulfillment",
+        "severity": "manual",
+        "suggestion": "Implement it as a job worker and declare it with zeebe:executionListeners (eventType=\"start\", type=\"<job type>\")."
+      },
+      {
+        "applied": false,
+        "construct": "camunda:initiator",
+        "elementId": "StartEvent_order",
+        "elementType": "startEvent",
+        "message": "Camunda 8 does not record the starting user in a variable.",
+        "processId": "order-fulfillment",
+        "severity": "unsupported",
+        "suggestion": "Pass the user as a variable when creating the instance."
+      },
+      {
+        "applied": true,
+        "construct": "bpmn:userTask",
+        "elementId": "Task_review",
+        "elementType": "userTask",
+        "message": "Implemented as a Camunda user task (zeebe:userTask).",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:userTask"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:assignee",
+        "elementId": "Task_review",
+        "elementType": "userTask",
+        "message": "assignee became zeebe:assignmentDefinition assignee=\"=starter\".",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:assignmentDefinition"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:candidateGroups",
+        "elementId": "Task_review",
+        "elementType": "userTask",
+        "message": "candidateGroups became zeebe:assignmentDefinition candidateGroups=\"sales,management\".",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:assignmentDefinition"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:dueDate",
+        "elementId": "Task_review",
+        "elementType": "userTask",
+        "message": "dueDate became zeebe:taskSchedule dueDate=\"=reviewDueDate\".",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:taskSchedule — the value must be an ISO 8601 date-time."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:priority",
+        "elementId": "Task_review",
+        "elementType": "userTask",
+        "message": "Priority 80 became zeebe:priorityDefinition.",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:priorityDefinition"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:formRef",
+        "elementId": "Task_review",
+        "elementType": "userTask",
+        "message": "Camunda Form \"review-order\" linked with zeebe:formDefinition formId.",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "Deploy the .form file with the process; Camunda 7 and 8 share the form-js schema."
+      },
+      {
+        "applied": false,
+        "construct": "camunda:taskListener",
+        "elementId": "Task_review",
+        "elementType": "userTask",
+        "message": "Task listener on \"create\" (class \"com.acme.orders.NotifyReviewer\") runs code in the engine.",
+        "processId": "order-fulfillment",
+        "severity": "manual",
+        "suggestion": "Implement it as a job worker and declare it with zeebe:taskListeners (eventType=\"creating\")."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:asyncBefore, camunda:jobPriority",
+        "elementId": "Task_charge",
+        "elementType": "serviceTask",
+        "message": "Dropped: Camunda 8 has no asynchronous continuations. The engine commits after every step and every job-based task is already a wait state, so there is no transaction boundary to place and no job executor job to prioritise.",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "Nothing to model. A failure no longer rolls back to the last async boundary: a job failure retries the job, and an expression failure raises an incident on the element."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:type=external",
+        "elementId": "Task_charge",
+        "elementType": "serviceTask",
+        "message": "External task topic \"charge-payment\" became job type \"charge-payment\".",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:taskDefinition type — point the external task worker at the Camunda 8 job API with the same type."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:inputOutput",
+        "elementId": "Task_charge",
+        "elementType": "serviceTask",
+        "message": "3 input/output parameters moved to zeebe:ioMapping, JUEL translated to FEEL.",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:ioMapping"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:failedJobRetryTimeCycle",
+        "elementId": "Task_charge",
+        "elementType": "serviceTask",
+        "message": "Retry count 5 moved to zeebe:taskDefinition retries.",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:taskDefinition retries"
+      },
+      {
+        "applied": false,
+        "construct": "camunda:failedJobRetryTimeCycle",
+        "elementId": "Task_charge",
+        "elementType": "serviceTask",
+        "message": "The retry interval (PT5M) is not part of the Camunda 8 model.",
+        "processId": "order-fulfillment",
+        "severity": "manual",
+        "suggestion": "Pass it as the retry back-off when the worker fails the job (fail-job retryBackOff)."
+      },
+      {
+        "applied": false,
+        "construct": "message correlation",
+        "elementId": "Task_awaitPayment",
+        "elementType": "receiveTask",
+        "message": "Camunda 7 correlates message \"PaymentConfirmed\" by API call (business key, process variables or instance id); the model names no key, and Camunda 8 requires one.",
+        "processId": "order-fulfillment",
+        "severity": "manual",
+        "suggestion": "Add <zeebe:subscription correlationKey=\"=…\"/> to message \"Message_PaymentConfirmed\", naming the variable publishers correlate on."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:decisionRef",
+        "elementId": "Task_shippingCost",
+        "elementType": "businessRuleTask",
+        "message": "Decision \"shipping-cost\" → zeebe:calledDecision, result in \"shippingCost\".",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:calledDecision"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:mapDecisionResult",
+        "elementId": "Task_shippingCost",
+        "elementType": "businessRuleTask",
+        "message": "Result mapper \"singleEntry\" matches Camunda 8, which stores a single output value as-is.",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "Nothing to model."
+      },
+      {
+        "applied": true,
+        "construct": "calledElement",
+        "elementId": "Task_invoice",
+        "elementType": "callActivity",
+        "message": "Calls \"invoice-process\" through zeebe:calledElement.",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:calledElement"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:in / camunda:out",
+        "elementId": "Task_invoice",
+        "elementType": "callActivity",
+        "message": "Variable passing kept as in Camunda 7: only mapped parent variables in, only mapped child variables out.",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "zeebe:calledElement propagateAllParentVariables / propagateAllChildVariables and zeebe:ioMapping"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:class",
+        "elementId": "Task_ship",
+        "elementType": "serviceTask",
+        "message": "Java delegate class \"com.acme.orders.ShipOrderDelegate\" runs inside the Camunda 7 engine; Camunda 8 runs no user code in the engine.",
+        "processId": "order-fulfillment",
+        "severity": "manual",
+        "suggestion": "Implement a job worker for type \"shipOrderDelegate\" (written as zeebe:taskDefinition type; the original is kept as the \"class\" task header, which the Camunda 7 adapter pattern can dispatch on)."
+      },
+      {
+        "applied": true,
+        "construct": "timer timeDuration",
+        "elementId": "Timer_wait",
+        "elementType": "intermediateCatchEvent",
+        "message": "Timer expression \"${deliveryWindow}\" became \"=deliveryWindow\".",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "FEEL timer expression"
+      },
+      {
+        "applied": false,
+        "construct": "scriptFormat=\"groovy\"",
+        "elementId": "Task_summary",
+        "elementType": "scriptTask",
+        "message": "Script was not converted: groovy scripts do not run in Camunda 8.",
+        "processId": "order-fulfillment",
+        "severity": "manual",
+        "suggestion": "Rewrite it as a FEEL expression in zeebe:script (expression, resultVariable), or implement it as a job worker with zeebe:taskDefinition."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:delegateExpression",
+        "elementId": "Task_notify",
+        "elementType": "serviceTask",
+        "message": "Delegate expression \"${notificationService}\" runs inside the Camunda 7 engine; Camunda 8 runs no user code in the engine.",
+        "processId": "order-fulfillment",
+        "severity": "manual",
+        "suggestion": "Implement a job worker for type \"notificationService\" (written as zeebe:taskDefinition type; the original is kept as the \"delegateExpression\" task header, which the Camunda 7 adapter pattern can dispatch on)."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:expression",
+        "elementId": "Task_escalate",
+        "elementType": "serviceTask",
+        "message": "Expression \"${escalation.raise(execution)}\" runs inside the Camunda 7 engine; Camunda 8 runs no user code in the engine.",
+        "processId": "order-fulfillment",
+        "severity": "manual",
+        "suggestion": "Implement a job worker for type \"Task_escalate\" (written as zeebe:taskDefinition type; the original is kept as the \"expression\" task header, which the Camunda 7 adapter pattern can dispatch on)."
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "Flow_approved",
+        "elementType": "sequenceFlow",
+        "message": "Condition \"${approved && order.total <= 1000}\" became \"=approved and order.total <= 1000\".",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "FEEL condition"
+      },
+      {
+        "applied": true,
+        "construct": "conditionExpression",
+        "elementId": "Flow_vip",
+        "elementType": "sequenceFlow",
+        "message": "Condition \"${approved and order.customer.vip eq true}\" became \"=approved and order.customer.vip = true\".",
+        "processId": "order-fulfillment",
+        "severity": "convertible",
+        "suggestion": "FEEL condition"
+      },
+      {
+        "applied": true,
+        "construct": "modeler:executionPlatform",
+        "elementId": "Definitions_1k3v0qa",
+        "elementType": "definitions",
+        "message": "Execution platform set to Camunda Cloud 8.10.0 (was Camunda Platform).",
+        "processId": "",
+        "severity": "convertible",
+        "suggestion": "Camunda Modeler opens the file as a Camunda 8 diagram."
+      },
+      {
+        "applied": true,
+        "construct": "placeholder correlationKey",
+        "elementId": "Message_PaymentConfirmed",
+        "elementType": "message",
+        "message": "Placeholder correlationKey \"=\"placeholder-Message_PaymentConfirmed\"\" written so the model deploys (zeebe/message-subscription).",
+        "processId": "",
+        "severity": "manual",
+        "suggestion": "Replace it with the real value; the placeholder does nothing useful at runtime."
+      },
+      {
+        "applied": true,
+        "construct": "placeholder jobType",
+        "elementId": "Task_summary",
+        "elementType": "scriptTask",
+        "message": "Placeholder jobType \"placeholder-Task_summary\" written so the model deploys (zeebe/script-task-implementation).",
+        "processId": "order-fulfillment",
+        "severity": "manual",
+        "suggestion": "Replace it with the real value; the placeholder does nothing useful at runtime."
+      }
+    ],
+    "total": 31
+  }
+}

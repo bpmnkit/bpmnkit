@@ -22,12 +22,16 @@ pub struct ProcessInstance {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct ProcessInstanceRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> ProcessInstanceRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -50,7 +54,7 @@ impl<'a> ProcessInstanceRepository<'a> {
         .bind(instance.parent_element_instance_key)
         .bind(instance.root_process_instance_key)
         .bind(&instance.tenant_id)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -65,7 +69,7 @@ impl<'a> ProcessInstanceRepository<'a> {
             .bind(state)
             .bind(end_date)
             .bind(key)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -78,7 +82,7 @@ impl<'a> ProcessInstanceRepository<'a> {
                FROM process_instances WHERE key = $1"#,
         )
         .bind(key)
-        .fetch_optional(self.pool)
+        .fetch_optional(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;
@@ -126,7 +130,7 @@ impl<'a> ProcessInstanceRepository<'a> {
         .bind(tenant_id)
         .bind(after_key)
         .bind(page_size)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;
@@ -154,7 +158,7 @@ impl<'a> ProcessInstanceRepository<'a> {
         let row = sqlx::query(
             "SELECT COUNT(*) AS cnt FROM process_instances WHERE state NOT IN ('COMPLETED', 'CANCELED', 'TERMINATED')"
         )
-        .fetch_one(self.pool)
+        .fetch_one(&mut *self.pool.acquire().await?)
         .await?;
         Ok(row.get::<i64, _>("cnt"))
     }

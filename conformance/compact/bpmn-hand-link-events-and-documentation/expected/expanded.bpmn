@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
   <bpmn:process id="p" name="Links" isExecutable="true">
     <bpmn:documentation>Process doc</bpmn:documentation>
     <bpmn:startEvent id="s" name="Go">
@@ -8,11 +8,11 @@
     </bpmn:startEvent>
     <bpmn:intermediateThrowEvent id="out" name="Jump">
       <bpmn:incoming>f1</bpmn:incoming>
-      <bpmn:linkEventDefinition id="out_LinkEventDefinition"/>
+      <bpmn:linkEventDefinition id="out_LinkEventDefinition" name="L"/>
     </bpmn:intermediateThrowEvent>
     <bpmn:intermediateCatchEvent id="in" name="Land">
       <bpmn:outgoing>f2</bpmn:outgoing>
-      <bpmn:linkEventDefinition id="in_LinkEventDefinition"/>
+      <bpmn:linkEventDefinition id="in_LinkEventDefinition" name="L"/>
     </bpmn:intermediateCatchEvent>
     <bpmn:endEvent id="e">
       <bpmn:incoming>f2</bpmn:incoming>

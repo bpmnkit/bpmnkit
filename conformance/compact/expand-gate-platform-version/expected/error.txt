@@ -1,0 +1,2 @@
+Not deployable on Camunda 8.7: 1 error(s)
+- agent: Must have at least one activity. (zeebe/ad-hoc-activity)

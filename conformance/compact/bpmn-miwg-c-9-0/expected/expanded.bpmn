@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="_5SVkEIXnEeSmwfgVk-ryvQ" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="_5SVkEIXnEeSmwfgVk-ryvQ" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+  <bpmn:error id="Error_x" name="00" errorCode="00"/>
+  <bpmn:error id="Error_x_2" name="02" errorCode="02"/>
+  <bpmn:message id="Message_Message_CancellationRequested" name="Message_CancellationRequested">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=01"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
   <bpmn:process id="customer_onboarding_en" name="Customer Onboarding" isExecutable="true">
     <bpmn:startEvent id="StartEvent_ApplicationReceived" name="Application received">
       <bpmn:extensionElements>
@@ -9,7 +16,7 @@
       </bpmn:extensionElements>
       <bpmn:outgoing>SequenceFlow_6</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:subProcess id="Activity_1ke2ixr">
+    <bpmn:subProcess id="Activity_1ke2ixr" triggeredByEvent="true">
       <bpmn:endEvent id="EndMessageEvent_Timeout" name="Timeout handled">
         <bpmn:documentation>Ends the subprocess and send message timeout handled</bpmn:documentation>
         <bpmn:extensionElements>
@@ -21,7 +28,7 @@
       <bpmn:startEvent id="StartErrorEvent_Timeout" name="Timeout">
         <bpmn:documentation>Catches timeout error event and starts the subprocess</bpmn:documentation>
         <bpmn:outgoing>Flow_151qlxc</bpmn:outgoing>
-        <bpmn:errorEventDefinition id="StartErrorEvent_Timeout_ErrorEventDefinition"/>
+        <bpmn:errorEventDefinition id="StartErrorEvent_Timeout_ErrorEventDefinition" errorRef="Error_x"/>
       </bpmn:startEvent>
       <bpmn:userTask id="UserTask_HandleTimeout" name="Handle Timeout">
         <bpmn:documentation>Manually handles the timeout</bpmn:documentation>
@@ -31,11 +38,11 @@
       <bpmn:sequenceFlow id="Flow_151qlxc" sourceRef="StartErrorEvent_Timeout" targetRef="UserTask_HandleTimeout"/>
       <bpmn:sequenceFlow id="Flow_0dppbeu" sourceRef="UserTask_HandleTimeout" targetRef="EndMessageEvent_Timeout"/>
     </bpmn:subProcess>
-    <bpmn:subProcess id="Activity_0vp33kx">
+    <bpmn:subProcess id="Activity_0vp33kx" triggeredByEvent="true">
       <bpmn:startEvent id="StartMessageEvent_CancellationRequested" name="Cancelation requested">
         <bpmn:documentation>Customer onboarding cancellation message received</bpmn:documentation>
         <bpmn:outgoing>Flow_12nmks0</bpmn:outgoing>
-        <bpmn:messageEventDefinition id="StartMessageEvent_CancellationRequested_MessageEventDefinition"/>
+        <bpmn:messageEventDefinition id="StartMessageEvent_CancellationRequested_MessageEventDefinition" messageRef="Message_Message_CancellationRequested"/>
       </bpmn:startEvent>
       <bpmn:serviceTask id="ServiceTask_CancelApplication" name="Cancel application">
         <bpmn:documentation>Cancel application</bpmn:documentation>
@@ -144,7 +151,7 @@
     <bpmn:boundaryEvent id="ErrorBoundaryEvent_FraudDetected" name="Fraud detected" attachedToRef="Activity_ManualCheck" cancelActivity="true">
       <bpmn:documentation>Captures error if fraud is detected</bpmn:documentation>
       <bpmn:outgoing>Flow_177paze</bpmn:outgoing>
-      <bpmn:errorEventDefinition id="ErrorBoundaryEvent_FraudDetected_ErrorEventDefinition"/>
+      <bpmn:errorEventDefinition id="ErrorBoundaryEvent_FraudDetected_ErrorEventDefinition" errorRef="Error_x_2"/>
     </bpmn:boundaryEvent>
     <bpmn:sendTask id="SendTask_ReportFraud" name="Report fraud">
       <bpmn:extensionElements>

@@ -1,0 +1,25 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        { "id": "s", "type": "startEvent" },
+        { "id": "g", "type": "exclusiveGateway" },
+        { "id": "a", "type": "endEvent" },
+        { "id": "b", "type": "endEvent" },
+        { "id": "c", "type": "endEvent" },
+        { "id": "d", "type": "endEvent" },
+        { "id": "w", "type": "intermediateCatchEvent", "eventType": "conditional", "condition": "stock < 5" }
+      ],
+      "flows": [
+        { "id": "f0", "from": "s", "to": "g" },
+        { "id": "f1", "from": "g", "to": "a", "condition": "x > 1" },
+        { "id": "f2", "from": "g", "to": "b", "condition": "${amount >= 100 && approved}" },
+        { "id": "f3", "from": "g", "to": "w", "condition": "= y" },
+        { "id": "f4", "from": "g", "to": "c", "isDefault": true },
+        { "id": "f5", "from": "w", "to": "d" }
+      ]
+    }
+  ]
+}

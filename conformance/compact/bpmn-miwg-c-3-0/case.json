@@ -1,3 +1,8 @@
 {
-	"input": "bpmn/miwg-c-3-0/input.bpmn"
+	"input": "bpmn/miwg-c-3-0/input.bpmn",
+	"deployable": false,
+	"deployableReason": "Source bpmn/miwg-c-3-0/input.bpmn is itself rejected by Zeebe (Bpmn_FormalExpression_ipW2kBqIEeWDuOtG0oS24A: Expected expression but found static value 'Service Level == 'Premium''. An expression must st); the case pins how it is round-tripped, not a deployable model; expanded with validate:false to keep pinning the expansion.",
+	"expand": {
+		"validate": false
+	}
 }

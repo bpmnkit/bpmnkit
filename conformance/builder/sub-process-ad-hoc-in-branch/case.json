@@ -5,7 +5,9 @@
 		["startEvent","s"],
 		["exclusiveGateway","g"],
 		["branch","a",{"$ops":[["condition","=x"],["adHocSubProcess","ah",{"$ops":[["serviceTask","t",{"name":"t","taskType":"t"}]]}],["endEvent","e1"]]}],
-		["branch","b",{"$ops":[["defaultFlow"],["subProcess","sp",{"$ops":[["startEvent","is"],["endEvent","ie"]]}],["transaction","tx",{"$ops":[["startEvent","ts"],["endEvent","te"]]}],["eventSubProcess","esp",{"$ops":[["startEvent","es",{"messageName":"m"}],["endEvent","ee"]]}],["endEvent","e2"]]}],
-		["build"]
-	]
+		["branch","b",{"$ops":[["defaultFlow"],["subProcess","sp",{"$ops":[["startEvent","is"],["endEvent","ie"]]}],["transaction","tx",{"$ops":[["startEvent","ts"],["endEvent","te"]]}],["eventSubProcess","esp",{"$ops":[["startEvent","es",{"messageName":"m","correlationKey":"=k"}],["endEvent","ee"]]}],["endEvent","e2"]]}],
+		["build",{"validate":false}]
+	],
+	"deployable": false,
+	"deployableReason": "Includes a transaction, which Zeebe does not support; the case pins every container kind inside a branch."
 }

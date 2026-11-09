@@ -74,6 +74,17 @@ pub struct MessageTaskOptions {
     pub correlation_key: Option<String>,
 }
 
+/// TS's `SendTaskOptions`.
+#[derive(Debug, Clone, Default, PartialEq, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SendTaskOptions {
+    #[serde(flatten)]
+    pub message: MessageTaskOptions,
+    /// Job type of the worker that sends the message (`zeebe:taskDefinition`); Camunda 8
+    /// runs a send task as a job, so `build()` requires it.
+    pub task_type: Option<String>,
+}
+
 /// TS's `StartEventOptions`.
 #[derive(Debug, Clone, Default, PartialEq, Deserialize)]
 #[serde(rename_all = "camelCase")]
@@ -86,6 +97,10 @@ pub struct StartEventOptions {
     pub timer_date: Option<String>,
     pub timer_cycle: Option<String>,
     pub message_name: Option<String>,
+    /// FEEL expression correlating the message (`zeebe:subscription`). Required for the
+    /// message start event of an event sub-process; a process's own message start does not
+    /// need one.
+    pub correlation_key: Option<String>,
     pub form_id: Option<String>,
     pub zeebe_properties: Option<Vec<ZeebePropertyEntry>>,
     pub modeler_template: Option<String>,
@@ -211,11 +226,35 @@ pub struct GatewayOptions {
     pub default_flow: Option<String>,
 }
 
-/// TS's `BuildOptions`.
+/// TS's `BuildOptions`: `explicit_joins` plus the deploy gate's options
+/// ([`BuildGateOptions`]).
 #[derive(Debug, Clone, Default, PartialEq, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct BuildOptions {
     pub explicit_joins: Option<bool>,
+    #[serde(flatten)]
+    pub gate: BuildGateOptions,
+}
+
+/// TS's `BuildGateOptions`, for `ProcessBuilder::build` and `DiagramBuilder::build`.
+///
+/// With `validate` on (the default) and a model that targets Camunda 8
+/// (`modeler:executionPlatform="Camunda Cloud"`, which every new model has), `build()`
+/// applies the builder's Camunda 8 rules and then
+/// `bpmnkit_compat::zeebe::assert_deployable`. To see what `placeholders` filled, build
+/// with `validate: Some(false)` and call `assert_deployable` with `placeholders: true`.
+#[derive(Debug, Clone, Default, PartialEq, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct BuildGateOptions {
+    /// Refuse a Camunda 8 model Zeebe would reject (default `true`). `false` skips the
+    /// Camunda 8 rules and the deploy check; structural rules still apply.
+    pub validate: Option<bool>,
+    /// Fill the documented placeholders instead of refusing and return the filled model;
+    /// the rules a placeholder satisfies (missing `taskType` or branch condition) are then
+    /// not applied. Default `false`.
+    pub placeholders: Option<bool>,
+    /// The Camunda 8 version to check for; defaults to the model's `executionPlatformVersion`.
+    pub camunda_version: Option<String>,
 }
 
 /// TS's `ParticipantOptions`.
@@ -273,6 +312,8 @@ pub struct IntermediateThrowEventOptions {
     pub compensation: Option<bool>,
     pub activity_ref: Option<String>,
     pub link_name: Option<String>,
+    /// Job type of the worker that publishes the message (`zeebe:taskDefinition`).
+    pub task_type: Option<String>,
 }
 
 /// TS's `EndEventOptions`.
@@ -286,6 +327,8 @@ pub struct EndEventOptions {
     pub message_name: Option<String>,
     pub signal_name: Option<String>,
     pub escalation_code: Option<String>,
+    /// Job type of the worker that publishes the message (`zeebe:taskDefinition`).
+    pub task_type: Option<String>,
 }
 
 /// TS's `BoundaryEventOptions`. `attached_to` is required in TS; an empty one is the TS

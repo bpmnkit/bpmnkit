@@ -137,7 +137,11 @@ function serializeEventDefinitions(defs: BpmnEventDefinition[], bp: string): Xml
 				const attrs: Record<string, string> = {}
 				if (d.id) attrs.id = d.id
 				if (d.messageRef) attrs.messageRef = d.messageRef
-				return el(`${bp}messageEventDefinition`, withUnknown(attrs, d), [])
+				return el(
+					`${bp}messageEventDefinition`,
+					withUnknown(attrs, d),
+					serializeExtensionElements(d.extensionElements ?? [], bp),
+				)
 			}
 			case "signal": {
 				const attrs: Record<string, string> = {}
@@ -157,7 +161,8 @@ function serializeEventDefinitions(defs: BpmnEventDefinition[], bp: string): Xml
 			case "link": {
 				const attrs: Record<string, string> = {}
 				if (d.id) attrs.id = d.id
-				if (d.name) attrs.name = d.name
+				// BPMN20.xsd requires `name`; an empty one is left for the validator to name.
+				attrs.name = d.name ?? ""
 				return el(`${bp}linkEventDefinition`, withUnknown(attrs, d), [])
 			}
 			case "cancel": {
@@ -287,6 +292,24 @@ function flowRefs(refs: string[], tag: string, bp: string): XmlElement[] {
 	return refs.map((r) => el(`${bp}${tag}`, {}, [], r))
 }
 
+/** An element name without its namespace prefix. */
+function localName(name: string): string {
+	return name.slice(name.indexOf(":") + 1)
+}
+
+/** Event children (tCatchEvent / tThrowEvent) that precede the data associations. */
+const EVENT_DATA = new Set(["dataInput", "dataOutput"])
+
+/** Process children of tCallableElement and tProcess that precede the lane set and flow elements. */
+const PROCESS_HEAD = new Set([
+	"supportedInterfaceRef",
+	"ioSpecification",
+	"ioBinding",
+	"auditing",
+	"monitoring",
+	"property",
+])
+
 function serializeFlowElement(fe: BpmnFlowElement, ns: Record<string, string>): XmlElement {
 	const bp = bpmnPrefix(ns)
 	const attrs: Record<string, string> = { id: fe.id, ...fe.unknownAttributes }
@@ -307,10 +330,15 @@ function serializeFlowElement(fe: BpmnFlowElement, ns: Record<string, string>): 
 	children.push(...flowRefs(fe.incoming, "incoming", bp))
 	children.push(...flowRefs(fe.outgoing, "outgoing", bp))
 
-	// Data wiring
+	// Data wiring. Unmodelled children the schema places between the modelled ones go there:
+	// an activity's `ioSpecification` precedes its properties, and an event's data inputs and
+	// outputs precede its data associations; Zeebe's XSD stage rejects any other order.
+	const unknown = fe.unknownChildren ?? []
+	children.push(...unknown.filter((c) => localName(c.name) === "ioSpecification"))
 	for (const property of fe.properties ?? []) {
 		children.push(serializeProperty(property, bp))
 	}
+	children.push(...unknown.filter((c) => EVENT_DATA.has(localName(c.name))))
 	for (const association of fe.dataInputAssociations ?? []) {
 		children.push(serializeDataAssociation(association, "dataInputAssociation", bp))
 	}
@@ -318,7 +346,12 @@ function serializeFlowElement(fe: BpmnFlowElement, ns: Record<string, string>): 
 		children.push(serializeDataAssociation(association, "dataOutputAssociation", bp))
 	}
 
-	children.push(...(fe.unknownChildren ?? []))
+	children.push(
+		...unknown.filter((c) => {
+			const name = localName(c.name)
+			return name !== "ioSpecification" && !EVENT_DATA.has(name)
+		}),
+	)
 
 	switch (fe.type) {
 		case "startEvent":
@@ -379,6 +412,8 @@ function serializeFlowElement(fe: BpmnFlowElement, ns: Record<string, string>): 
 			break
 
 		case "eventSubProcess":
+			// BPMN has no eventSubProcess element: it is a subProcess triggered by an event.
+			attrs.triggeredByEvent = "true"
 			children.push(...serializeProcessContents(fe, ns))
 			break
 
@@ -408,8 +443,8 @@ function serializeFlowElement(fe: BpmnFlowElement, ns: Record<string, string>): 
 			break
 
 		case "dataObjectReference":
+			// BPMN20.xsd allows isCollection only on dataObject; Zeebe rejects it here.
 			if (fe.dataObjectRef !== undefined) attrs.dataObjectRef = fe.dataObjectRef
-			if (fe.isCollection) attrs.isCollection = "true"
 			break
 
 		case "dataStoreReference":
@@ -417,7 +452,7 @@ function serializeFlowElement(fe: BpmnFlowElement, ns: Record<string, string>): 
 			break
 	}
 
-	return el(`${bp}${fe.type}`, attrs, children)
+	return el(`${bp}${fe.type === "eventSubProcess" ? "subProcess" : fe.type}`, attrs, children)
 }
 
 // ---------------------------------------------------------------------------
@@ -573,11 +608,13 @@ function serializeProcess(process: BpmnProcess, ns: Record<string, string>): Xml
 		},
 		bp,
 	)
+	const unknown = process.unknownChildren ?? []
+	children.push(...unknown.filter((c) => PROCESS_HEAD.has(localName(c.name))))
 	if (process.laneSet) {
 		children.push(serializeLaneSet(process.laneSet, bp))
 	}
 	children.push(...serializeProcessContents(process, ns))
-	children.push(...(process.unknownChildren ?? []))
+	children.push(...unknown.filter((c) => !PROCESS_HEAD.has(localName(c.name))))
 
 	return el(`${bp}process`, attrs, children)
 }
@@ -809,14 +846,27 @@ export function serializeBpmn(definitions: BpmnDefinitions): string {
 
 	const children: XmlElement[] = []
 
+	// Unmodelled children first: `import` and `extension` precede the root
+	// elements in the schema, and the rest are root elements themselves, so they
+	// sit legally alongside the modelled ones.
+	// `relationship` is the exception: the schema puts it after the diagrams.
+	const unknown = definitions.unknownChildren ?? []
+	const isRelationship = (c: XmlElement) => localName(c.name) === "relationship"
+	const isImport = (c: XmlElement) => localName(c.name) === "import"
+	children.push(...unknown.filter(isImport))
+
+	// The schema's `tDefinitions` has no `documentation` child (Zeebe refuses one), but an
+	// `extension` may carry documentation; the parser reads it back from there.
 	if (definitions.documentation !== undefined) {
 		children.push(
-			el(
-				`${bp}documentation`,
-				definitions.documentationAttributes ?? {},
-				[],
-				definitions.documentation,
-			),
+			el(`${bp}extension`, {}, [
+				el(
+					`${bp}documentation`,
+					definitions.documentationAttributes ?? {},
+					[],
+					definitions.documentation,
+				),
+			]),
 		)
 	}
 
@@ -825,10 +875,7 @@ export function serializeBpmn(definitions: BpmnDefinitions): string {
 		children.push(serializeCategory(category, bp))
 	}
 
-	// Unmodelled children first: `import` and `extension` precede the root
-	// elements in the schema, and the rest are root elements themselves, so they
-	// sit legally alongside the modelled ones.
-	children.push(...(definitions.unknownChildren ?? []))
+	children.push(...unknown.filter((c) => !isRelationship(c) && !isImport(c)))
 
 	// Root elements: errors, escalations, messages, signals first
 	for (const e of definitions.escalations) {
@@ -858,6 +905,7 @@ export function serializeBpmn(definitions: BpmnDefinitions): string {
 	for (const d of definitions.diagrams) {
 		children.push(serializeDiagram(d, ns))
 	}
+	children.push(...unknown.filter(isRelationship))
 
 	const root = el(`${bp}definitions`, attrs, children)
 	declareUsedNamespaces(root, attrs)
@@ -885,6 +933,10 @@ const KNOWN_NAMESPACE_URIS: Readonly<Record<string, string>> = {
 	modeler: "http://camunda.org/schema/modeler/1.0",
 	bioc: "http://bpmn.io/schema/bpmn/biocolor/1.0",
 	color: "http://www.omg.org/spec/BPMN/non-normative/color/1.0",
+	// Not an extension, but `xsi:type` rides on content the serializer copies
+	// (condition expressions, timer values) and the builder can add it to a
+	// parsed document that never declared xsi.
+	xsi: "http://www.w3.org/2001/XMLSchema-instance",
 }
 
 /** Prefixes an element tree uses, and prefixes it declares — at any depth. */

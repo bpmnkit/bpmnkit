@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        ""
+      ],
+      "fixable": false,
+      "id": "zeebe/idref-resolves",
+      "message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=10: cvc-id.1: There is no ID/IDREF binding for IDREF 'missing'.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Point the reference at an existing element id that is a valid XML name."
+    }
+  ]
+}

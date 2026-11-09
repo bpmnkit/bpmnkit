@@ -1,0 +1,79 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "eventType": "timer",
+            "id": "s",
+            "name": "Every hour",
+            "timerCycle": "R/PT1H",
+            "type": "startEvent"
+          },
+          {
+            "eventType": "timer",
+            "id": "w",
+            "name": "Until the deadline",
+            "timerDate": "2026-12-01T09:00:00Z",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "id": "t",
+            "jobType": "work",
+            "name": "Work",
+            "type": "serviceTask"
+          },
+          {
+            "id": "e",
+            "name": "E",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "t",
+            "eventType": "timer",
+            "id": "r",
+            "interrupting": false,
+            "name": "Remind",
+            "timerCycle": "R3/PT10M",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "re",
+            "name": "Re",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "w"
+          },
+          {
+            "from": "w",
+            "id": "Flow_2",
+            "to": "t"
+          },
+          {
+            "from": "t",
+            "id": "Flow_3",
+            "to": "e"
+          },
+          {
+            "from": "r",
+            "id": "Flow_4",
+            "to": "re"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

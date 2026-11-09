@@ -161,7 +161,11 @@ const handlers = {
 		const result = parseProcessText(text)
 		resetIdCounter()
 		try {
-			return { result: plain(result), xml: serializeBpmn(expand(result.diagram)) }
+			// Ungated, as in the Rust runner: the target is the expansion, not the deploy check.
+			return {
+				result: plain(result),
+				xml: serializeBpmn(expand(result.diagram, { validate: false })),
+			}
 		} catch (e) {
 			return { result: plain(result), expandError: message(e) }
 		}
@@ -176,7 +180,10 @@ const handlers = {
 		}
 		resetIdCounter()
 		try {
-			return { compact: plain(compact), expanded: serializeBpmn(expand(compact)) }
+			return {
+				compact: plain(compact),
+				expanded: serializeBpmn(expand(compact, { validate: false })),
+			}
 		} catch (e) {
 			return { compact: plain(compact), expandError: message(e) }
 		}

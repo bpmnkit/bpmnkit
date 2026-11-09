@@ -397,7 +397,8 @@ export function createCommandPalettePlugin(
 						closePalette()
 						return
 					}
-					const xml = Bpmn.export(_lastDefs)
+					// A work-in-progress diagram: saving it must not depend on whether Zeebe would deploy it.
+					const xml = Bpmn.export(_lastDefs, { validate: false })
 					const blob = new Blob([xml], { type: "text/xml" })
 					const url = URL.createObjectURL(blob)
 					const a = document.createElement("a")

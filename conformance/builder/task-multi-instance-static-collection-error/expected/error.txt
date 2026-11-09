@@ -1,0 +1,1 @@
+Multi-instance inputCollection "items" of "t" is a static value; Camunda 8 needs a FEEL expression here, e.g. "=items"

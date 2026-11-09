@@ -1,0 +1,4 @@
+{
+  "deployable": false,
+  "deployableReason": "Source bpmn/sample-parallel-approval/input.bpmn is itself rejected by Zeebe (finalize: Must have exactly one 'zeebe:taskDefinition' extension element); the case pins how it is round-tripped, not a deployable model."
+}

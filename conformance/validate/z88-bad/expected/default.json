@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "SEnd"
+      ],
+      "fixable": false,
+      "id": "zeebe/compensation-activity-scope",
+      "message": "The referenced compensation activity 'A' must be in the same scope as the compensation throw event",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Reference an activity from the same scope as the compensation throw event."
+    }
+  ]
+}

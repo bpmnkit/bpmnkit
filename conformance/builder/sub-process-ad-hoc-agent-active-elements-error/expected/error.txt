@@ -1,0 +1,1 @@
+Ad-hoc sub-process "agent" has a taskDefinition (an AI agent) and activeElementsCollection; Camunda 8 refuses that combination: remove activeElementsCollection, the agent job decides which tools run and when it is done

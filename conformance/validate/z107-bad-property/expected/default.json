@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/secret-literal",
+      "message": "Secret reference(s) 'camunda.secrets.token' must be used as an expression (e.g. '=camunda.secrets.<name>'), not as a string literal, in property value '=\"camunda.secrets.token\"'.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Write the secret reference as a FEEL expression, outside quotes."
+    }
+  ]
+}

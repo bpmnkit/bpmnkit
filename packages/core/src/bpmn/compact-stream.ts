@@ -184,7 +184,8 @@ export function createCompactStream(options?: CompactStreamOptions): CompactStre
 				],
 			}
 			try {
-				return expand(diagram)
+				// A frame is a preview of an unfinished diagram, never deployed: no gate.
+				return expand(diagram, { validate: false })
 			} catch {
 				return null // an element whose fields have not all arrived
 			}

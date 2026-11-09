@@ -40,16 +40,6 @@
       <incoming>reviewSuccessful</incoming>
       <incoming>sequenceFlow_178</incoming>
       <outgoing>sequenceFlow_180</outgoing>
-      <dataOutputAssociation id="Bpmn_DataOutputAssociation_Y55MYrH1EeSuDf0W70XLGw">
-        <extensionElements>
-          <w4graph:graphStyle>
-            <w4graph:basic background="255,255,255" foreground="0,0,0" autoResize="false" borderColor="100,100,100" collapsed="false"/>
-            <w4graph:line routerType="Rectilinear" automaticRoute="false" closestRoute="false" avoidObstacleRoute="false"/>
-          </w4graph:graphStyle>
-        </extensionElements>
-        <sourceRef>Bpmn_DataOutput_Y6S1ALH1EeSuDf0W70XLGw</sourceRef>
-        <targetRef>Bpmn_DataObjectReference_YGA4YLH1EeSuDf0W70XLGw</targetRef>
-      </dataOutputAssociation>
       <ioSpecification id="Bpmn_InputOutputSpecification_Y6GAsLH1EeSuDf0W70XLGw">
         <dataOutput id="Bpmn_DataOutput_Y6S1ALH1EeSuDf0W70XLGw" itemSubjectRef="xsdBool" isCollection="false" name="approved">
           <extensionElements>
@@ -66,6 +56,16 @@
           <inputSetRefs>Bpmn_InputSet_Y6GAsrH1EeSuDf0W70XLGw</inputSetRefs>
         </outputSet>
       </ioSpecification>
+      <dataOutputAssociation id="Bpmn_DataOutputAssociation_Y55MYrH1EeSuDf0W70XLGw">
+        <extensionElements>
+          <w4graph:graphStyle>
+            <w4graph:basic background="255,255,255" foreground="0,0,0" autoResize="false" borderColor="100,100,100" collapsed="false"/>
+            <w4graph:line routerType="Rectilinear" automaticRoute="false" closestRoute="false" avoidObstacleRoute="false"/>
+          </w4graph:graphStyle>
+        </extensionElements>
+        <sourceRef>Bpmn_DataOutput_Y6S1ALH1EeSuDf0W70XLGw</sourceRef>
+        <targetRef>Bpmn_DataObjectReference_YGA4YLH1EeSuDf0W70XLGw</targetRef>
+      </dataOutputAssociation>
       <potentialOwner id="Bpmn_ResourceRole_MdyGcLH0EeS1nbPdxxCzlg" name="Approve Invoice Potential Owner">
         <resourceRef>Bpmn_Resource_8nPrkLHzEeS1nbPdxxCzlg</resourceRef>
       </potentialOwner>
@@ -105,16 +105,6 @@
       </extensionElements>
       <incoming>SequenceFlow_1</incoming>
       <outgoing>sequenceFlow_178</outgoing>
-      <dataOutputAssociation id="Bpmn_DataOutputAssociation_assignApprover">
-        <extensionElements>
-          <w4graph:graphStyle>
-            <w4graph:basic background="255,255,255" foreground="0,0,0" autoResize="false" borderColor="100,100,100" collapsed="false"/>
-            <w4graph:line routerType="Rectilinear" automaticRoute="false" closestRoute="false" avoidObstacleRoute="false"/>
-          </w4graph:graphStyle>
-        </extensionElements>
-        <sourceRef>Bpmn_DataOutput_assignApprover</sourceRef>
-        <targetRef>Bpmn_DataObjectReference_assignApprover</targetRef>
-      </dataOutputAssociation>
       <ioSpecification id="Bpmn_InputOutputSpecification_assignApprover">
         <dataOutput id="Bpmn_DataOutput_assignApprover" itemSubjectRef="xsdString" isCollection="false" name="approver">
           <extensionElements>
@@ -131,6 +121,16 @@
           <inputSetRefs>Bpmn_InputSet_assignApprover</inputSetRefs>
         </outputSet>
       </ioSpecification>
+      <dataOutputAssociation id="Bpmn_DataOutputAssociation_assignApprover">
+        <extensionElements>
+          <w4graph:graphStyle>
+            <w4graph:basic background="255,255,255" foreground="0,0,0" autoResize="false" borderColor="100,100,100" collapsed="false"/>
+            <w4graph:line routerType="Rectilinear" automaticRoute="false" closestRoute="false" avoidObstacleRoute="false"/>
+          </w4graph:graphStyle>
+        </extensionElements>
+        <sourceRef>Bpmn_DataOutput_assignApprover</sourceRef>
+        <targetRef>Bpmn_DataObjectReference_assignApprover</targetRef>
+      </dataOutputAssociation>
       <potentialOwner id="Bpmn_ResourceRole_DSeNcLH0EeS1nbPdxxCzlg" name="Assign Approver Potential Owner">
         <resourceRef>Bpmn_Resource_6vVHsLHzEeS1nbPdxxCzlg</resourceRef>
       </potentialOwner>
@@ -155,16 +155,6 @@
       </extensionElements>
       <incoming>invoiceNotApproved</incoming>
       <outgoing>sequenceFlow_183</outgoing>
-      <dataOutputAssociation id="Bpmn_DataOutputAssociation_dB6xsrH1EeSuDf0W70XLGw">
-        <extensionElements>
-          <w4graph:graphStyle>
-            <w4graph:basic background="255,255,255" foreground="0,0,0" autoResize="false" borderColor="100,100,100" collapsed="false"/>
-            <w4graph:line routerType="Rectilinear" automaticRoute="false" closestRoute="false" avoidObstacleRoute="false"/>
-          </w4graph:graphStyle>
-        </extensionElements>
-        <sourceRef>Bpmn_DataOutput_dCG-8LH1EeSuDf0W70XLGw</sourceRef>
-        <targetRef>Bpmn_DataObjectReference_cdsDQLH1EeSuDf0W70XLGw</targetRef>
-      </dataOutputAssociation>
       <ioSpecification id="Bpmn_InputOutputSpecification_dB6xs7H1EeSuDf0W70XLGw">
         <dataOutput id="Bpmn_DataOutput_dCG-8LH1EeSuDf0W70XLGw" itemSubjectRef="xsdString" isCollection="false" name="clarified">
           <extensionElements>
@@ -181,6 +171,16 @@
           <inputSetRefs>Bpmn_InputSet_dB6xtbH1EeSuDf0W70XLGw</inputSetRefs>
         </outputSet>
       </ioSpecification>
+      <dataOutputAssociation id="Bpmn_DataOutputAssociation_dB6xsrH1EeSuDf0W70XLGw">
+        <extensionElements>
+          <w4graph:graphStyle>
+            <w4graph:basic background="255,255,255" foreground="0,0,0" autoResize="false" borderColor="100,100,100" collapsed="false"/>
+            <w4graph:line routerType="Rectilinear" automaticRoute="false" closestRoute="false" avoidObstacleRoute="false"/>
+          </w4graph:graphStyle>
+        </extensionElements>
+        <sourceRef>Bpmn_DataOutput_dCG-8LH1EeSuDf0W70XLGw</sourceRef>
+        <targetRef>Bpmn_DataObjectReference_cdsDQLH1EeSuDf0W70XLGw</targetRef>
+      </dataOutputAssociation>
       <potentialOwner id="Bpmn_ResourceRole_GrG9MLH0EeS1nbPdxxCzlg" name="Review Invoice Potential Owner">
         <resourceRef>Bpmn_Resource_6vVHsLHzEeS1nbPdxxCzlg</resourceRef>
       </potentialOwner>

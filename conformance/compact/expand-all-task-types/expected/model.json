@@ -7,16 +7,31 @@
         "bpmnElement": "P",
         "edges": [
           {
+            "bpmnElement": "Flow_Start_P",
+            "id": "Flow_Start_P_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 36,
+                "y": 40
+              },
+              {
+                "x": 96,
+                "y": 40
+              }
+            ]
+          },
+          {
             "bpmnElement": "f1",
             "id": "f1_di",
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 100,
+                "x": 196,
                 "y": 40
               },
               {
-                "x": 160,
+                "x": 256,
                 "y": 40
               }
             ]
@@ -27,11 +42,11 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 260,
+                "x": 356,
                 "y": 40
               },
               {
-                "x": 320,
+                "x": 416,
                 "y": 40
               }
             ]
@@ -42,11 +57,11 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 420,
+                "x": 516,
                 "y": 40
               },
               {
-                "x": 480,
+                "x": 576,
                 "y": 40
               }
             ]
@@ -57,11 +72,11 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 580,
+                "x": 676,
                 "y": 40
               },
               {
-                "x": 640,
+                "x": 736,
                 "y": 40
               }
             ]
@@ -72,11 +87,11 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 740,
+                "x": 836,
                 "y": 40
               },
               {
-                "x": 800,
+                "x": 896,
                 "y": 40
               }
             ]
@@ -87,11 +102,11 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 900,
+                "x": 996,
                 "y": 40
               },
               {
-                "x": 960,
+                "x": 1056,
                 "y": 40
               }
             ]
@@ -102,11 +117,11 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 1060,
+                "x": 1156,
                 "y": 40
               },
               {
-                "x": 1120,
+                "x": 1216,
                 "y": 40
               }
             ]
@@ -117,11 +132,11 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 1220,
+                "x": 1316,
                 "y": 40
               },
               {
-                "x": 1280,
+                "x": 1376,
                 "y": 40
               }
             ]
@@ -131,9 +146,20 @@
         "shapes": [
           {
             "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 0,
+              "y": 22
+            },
+            "bpmnElement": "Start_P",
+            "id": "Start_P_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
               "height": 80,
               "width": 100,
-              "x": 0,
+              "x": 96,
               "y": 0
             },
             "bpmnElement": "a",
@@ -144,7 +170,7 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 160,
+              "x": 256,
               "y": 0
             },
             "bpmnElement": "b",
@@ -155,7 +181,7 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 320,
+              "x": 416,
               "y": 0
             },
             "bpmnElement": "c",
@@ -166,7 +192,7 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 480,
+              "x": 576,
               "y": 0
             },
             "bpmnElement": "d",
@@ -177,7 +203,7 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 640,
+              "x": 736,
               "y": 0
             },
             "bpmnElement": "e",
@@ -188,7 +214,7 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 800,
+              "x": 896,
               "y": 0
             },
             "bpmnElement": "f",
@@ -199,7 +225,7 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 960,
+              "x": 1056,
               "y": 0
             },
             "bpmnElement": "g",
@@ -210,7 +236,7 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 1120,
+              "x": 1216,
               "y": 0
             },
             "bpmnElement": "h",
@@ -221,7 +247,7 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 1280,
+              "x": 1376,
               "y": 0
             },
             "bpmnElement": "i",
@@ -235,12 +261,28 @@
   "errors": [],
   "escalations": [],
   "id": "D",
-  "messages": [],
+  "messages": [
+    {
+      "extensionElements": [
+        {
+          "attributes": {
+            "correlationKey": "=orderId"
+          },
+          "children": [],
+          "name": "zeebe:subscription"
+        }
+      ],
+      "id": "Message_payment_received",
+      "name": "payment-received",
+      "unknownAttributes": {}
+    }
+  ],
   "namespaces": {
     "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
     "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
     "dc": "http://www.omg.org/spec/DD/20100524/DC",
     "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
     "zeebe": "http://camunda.org/schema/zeebe/1.0"
   },
   "processes": [
@@ -249,9 +291,22 @@
       "extensionElements": [],
       "flowElements": [
         {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "Start_P",
+          "incoming": [],
+          "outgoing": [
+            "Flow_Start_P"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
           "extensionElements": [],
           "id": "a",
-          "incoming": [],
+          "incoming": [
+            "Flow_Start_P"
+          ],
           "name": "A",
           "outgoing": [
             "f1"
@@ -340,6 +395,7 @@
           "incoming": [
             "f5"
           ],
+          "messageRef": "Message_payment_received",
           "outgoing": [
             "f6"
           ],
@@ -404,6 +460,13 @@
       "sequenceFlows": [
         {
           "extensionElements": [],
+          "id": "Flow_Start_P",
+          "sourceRef": "Start_P",
+          "targetRef": "a",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
           "id": "f1",
           "sourceRef": "a",
           "targetRef": "b",
@@ -465,5 +528,7 @@
   ],
   "signals": [],
   "targetNamespace": "http://bpmn.io/schema/bpmn",
-  "unknownAttributes": {}
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud"
+  }
 }

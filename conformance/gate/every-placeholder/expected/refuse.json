@@ -1,0 +1,24 @@
+{
+  "error": "Not deployable on Camunda 8.10: 18 error(s)\n- wait: Must be exactly one type of timer: timeDuration, timeDate or timeCycle (zeebe/timer-one-value)\n- wait: Intermediate timer catch event must have either a time duration or a time date. (zeebe/intermediate-timer-value)\n- reply: Must reference a message (zeebe/message-reference)\n- m2: Name must be present and not empty (zeebe/message-name)\n- m2: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)\n- done: Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element (zeebe/message-throw-implementation)\n- broadcast: Must reference a signal (zeebe/signal-reference)\n- fail: Must reference an error (zeebe/error-end-reference)\n- escalate: Must reference an escalation (zeebe/escalation-throw-reference)\n- charge: Must have exactly one 'zeebe:taskDefinition' extension element (zeebe/service-task-definition)\n- notify: Attribute 'type' must be present and not empty (zeebe/task-definition-type)\n- notify: Expected expression but not found. (zeebe/task-definition-expression)\n- compute: Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element (zeebe/script-task-implementation)\n- sub: Must have exactly one 'zeebe:calledElement' extension element (zeebe/call-activity-called-element)\n- rules: Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element (zeebe/business-rule-task-implementation)\n- decide: Attribute 'decisionId' must be present and not empty (zeebe/called-decision-attributes)\n- decide: Expected expression but not found. (zeebe/called-decision-expression)\n- f_no: Must have a condition or be default flow (zeebe/exclusive-flow-condition)",
+  "camundaVersion": "8.10",
+  "findings": [
+    "zeebe/timer-one-value wait",
+    "zeebe/intermediate-timer-value wait",
+    "zeebe/message-reference reply",
+    "zeebe/message-name m2",
+    "zeebe/message-subscription m2",
+    "zeebe/message-throw-implementation done",
+    "zeebe/signal-reference broadcast",
+    "zeebe/error-end-reference fail",
+    "zeebe/escalation-throw-reference escalate",
+    "zeebe/service-task-definition charge",
+    "zeebe/task-definition-type notify",
+    "zeebe/task-definition-expression notify",
+    "zeebe/script-task-implementation compute",
+    "zeebe/call-activity-called-element sub",
+    "zeebe/business-rule-task-implementation rules",
+    "zeebe/called-decision-attributes decide",
+    "zeebe/called-decision-expression decide",
+    "zeebe/exclusive-flow-condition f_no"
+  ]
+}

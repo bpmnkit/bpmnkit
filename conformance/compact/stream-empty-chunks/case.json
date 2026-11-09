@@ -5,5 +5,7 @@
 		"",
 		"\"type\":\"task\"}]}",
 		""
-	]
+	],
+	"deployable": false,
+	"deployableReason": "Deliberately empty stream: pins the frames for empty chunks."
 }

@@ -278,7 +278,8 @@ function setupPlayground(): void {
 		if (Array.isArray(defs.processes)) {
 			let xml: string
 			try {
-				xml = Bpmn.export(defs)
+				// A work-in-progress diagram: saving it must not depend on whether Zeebe would deploy it.
+				xml = Bpmn.export(defs, { validate: false })
 			} catch (err) {
 				errEl.textContent = `Export failed: ${err instanceof Error ? err.message : String(err)}`
 				errEl.style.display = ""

@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 60,
+    "error": 69,
     "info": 13,
     "warning": 37
   },
@@ -1221,6 +1221,18 @@
     {
       "category": "deploy",
       "elementIds": [
+        "boundaryErrorExpr"
+      ],
+      "fixable": false,
+      "id": "compat/no-expression",
+      "message": "Error boundary event \"boundaryErrorExpr\" catches error code \"=code\", an expression, which Camunda 8.6 does not support in a catch event.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Use a static error code."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
         "boundaryEscalation"
       ],
       "fixable": false,
@@ -1337,6 +1349,102 @@
       "processId": "events",
       "severity": "error",
       "suggestion": "Add a zeebe:subscription with a correlationKey to the message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "events"
+      ],
+      "fixable": false,
+      "id": "zeebe/multiple-none-start",
+      "message": "Multiple none start events are not allowed",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Keep one none start event and give the others a trigger."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "eventSub"
+      ],
+      "fixable": false,
+      "id": "zeebe/interrupting-timer-cycle",
+      "message": "Interrupting timer event with time cycle is not allowed.",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Use a time duration or date, or make the event non-interrupting."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "boundaryCompensation"
+      ],
+      "fixable": false,
+      "id": "zeebe/compensation-boundary-shape",
+      "message": "Compensation boundary events must have a compensation association and no outgoing sequence flows",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Connect the compensation boundary event to its handler with an association, not a sequence flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Msg_noname"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-name",
+      "message": "Name must be present and not empty",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Give the message a non-empty name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Msg_nokey"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-subscription",
+      "message": "Must have exactly one zeebe:subscription extension element",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Add one zeebe:subscription with a correlationKey to the message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Msg_noname"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-subscription",
+      "message": "Must have exactly one zeebe:subscription extension element",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Add one zeebe:subscription with a correlationKey to the message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Sig_noname"
+      ],
+      "fixable": false,
+      "id": "zeebe/signal-name",
+      "message": "Name must be present and not empty",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Give the signal a non-empty name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Esc_nocode"
+      ],
+      "fixable": false,
+      "id": "zeebe/escalation-code",
+      "message": "EscalationCode must be present and not empty",
+      "processId": "events",
+      "severity": "error",
+      "suggestion": "Set an escalationCode on the escalation."
     }
   ],
   "platform": {
@@ -1344,5 +1452,5 @@
     "name": "Camunda Cloud",
     "version": "8.6.0"
   },
-  "total": 110
+  "total": 119
 }

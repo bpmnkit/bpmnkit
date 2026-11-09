@@ -5,6 +5,9 @@ import { applyAutoLayout } from "../src/bpmn/auto-layout.js"
 import { Bpmn } from "../src/bpmn/index.js"
 import { diffSemantics, projectSemantics, semanticHash } from "../src/bpmn/semantic-hash.js"
 
+// Exports here check what the serializer writes, not whether Zeebe would deploy the
+// model (a fragment, a round trip), so they pass `validate: false` to skip the gate.
+
 const fixtureDirectory = join(import.meta.dirname, "fixtures", "roundtrip")
 
 function fixtures(): string[] {
@@ -44,7 +47,7 @@ describe("semanticHash", () => {
 	it("is unchanged by a serialise/parse round trip", () => {
 		for (const name of fixtures()) {
 			const definitions = parseFixture(name)
-			const reparsed = Bpmn.parse(Bpmn.export(definitions))
+			const reparsed = Bpmn.parse(Bpmn.export(definitions, { validate: false }))
 			expect(semanticHash(reparsed), name).toBe(semanticHash(definitions))
 		}
 	})

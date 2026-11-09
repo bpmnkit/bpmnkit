@@ -1,4 +1,4 @@
-use crate::backend::StateBackend;
+use crate::backend::{StateBackend, TxControl, UnitOfWork};
 use crate::error::DbError;
 use crate::records::DbRecord;
 use crate::state::compensation::CompensationSubscription;
@@ -22,8 +22,9 @@ use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use serde_json::Value;
 use std::collections::BTreeMap;
-use std::sync::Mutex;
+use std::sync::{Arc, Mutex};
 
+#[derive(Clone)]
 struct PartitionCounters {
     next_key: i64,
     next_position: i64,
@@ -38,6 +39,7 @@ impl Default for PartitionCounters {
     }
 }
 
+#[derive(Clone)]
 pub struct InMemoryStore {
     counters: std::collections::HashMap<i16, PartitionCounters>,
     records: Vec<DbRecord>,
@@ -93,6 +95,25 @@ impl InMemoryStore {
         }
     }
 
+    /// A copy of everything but the record log, which is append-only and only needs
+    /// its length to be rolled back.
+    fn snapshot(&mut self) -> StoreSnapshot {
+        let records = std::mem::take(&mut self.records);
+        let store = self.clone();
+        self.records = records;
+        StoreSnapshot {
+            store,
+            record_count: self.records.len(),
+        }
+    }
+
+    fn restore(&mut self, snapshot: StoreSnapshot) {
+        let mut records = std::mem::take(&mut self.records);
+        records.truncate(snapshot.record_count);
+        *self = snapshot.store;
+        self.records = records;
+    }
+
     fn counters_for(&mut self, partition_id: i16) -> &mut PartitionCounters {
         self.counters.entry(partition_id).or_default()
     }
@@ -128,14 +149,53 @@ impl InMemoryStore {
     }
 }
 
+struct StoreSnapshot {
+    store: InMemoryStore,
+    record_count: usize,
+}
+
 pub struct InMemoryBackend {
-    store: Mutex<InMemoryStore>,
+    store: Arc<Mutex<InMemoryStore>>,
+    /// Set on the backend a unit of work hands out.
+    in_unit: bool,
+}
+
+/// Rolls a unit of work back by restoring the store as it was at `begin`. Writes are
+/// visible to other readers before commit: the memory backend has no isolation and no
+/// durability, so this only undoes a record that failed.
+struct MemoryTxControl {
+    store: Arc<Mutex<InMemoryStore>>,
+    snapshot: Mutex<Option<StoreSnapshot>>,
+}
+
+#[async_trait]
+impl TxControl for MemoryTxControl {
+    async fn commit(&self) -> Result<()> {
+        self.snapshot
+            .lock()
+            .unwrap()
+            .take()
+            .ok_or(DbError::TransactionClosed)?;
+        Ok(())
+    }
+
+    async fn rollback(&self) -> Result<()> {
+        let snapshot = self
+            .snapshot
+            .lock()
+            .unwrap()
+            .take()
+            .ok_or(DbError::TransactionClosed)?;
+        self.store.lock().unwrap().restore(snapshot);
+        Ok(())
+    }
 }
 
 impl InMemoryBackend {
     pub fn new() -> Self {
         Self {
-            store: Mutex::new(InMemoryStore::new()),
+            store: Arc::new(Mutex::new(InMemoryStore::new())),
+            in_unit: false,
         }
     }
 
@@ -257,6 +317,26 @@ impl Default for InMemoryBackend {
 
 #[async_trait]
 impl StateBackend for InMemoryBackend {
+    async fn begin(&self) -> Result<UnitOfWork> {
+        if self.in_unit {
+            return Err(DbError::Conflict(
+                "a unit of work cannot start another one".to_string(),
+            ));
+        }
+        let snapshot = self.store.lock().unwrap().snapshot();
+        let state = InMemoryBackend {
+            store: self.store.clone(),
+            in_unit: true,
+        };
+        Ok(UnitOfWork::new(
+            Arc::new(state),
+            Box::new(MemoryTxControl {
+                store: self.store.clone(),
+                snapshot: Mutex::new(Some(snapshot)),
+            }),
+        ))
+    }
+
     async fn next_key(&self, partition_id: i16) -> Result<i64> {
         Ok(self.store.lock().unwrap().next_raw_key(partition_id))
     }
@@ -1328,5 +1408,80 @@ impl StateBackend for InMemoryBackend {
             .decision_definitions
             .get(&key)
             .cloned())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn variable(key: i64, name: &str) -> Variable {
+        Variable {
+            key,
+            partition_id: 1,
+            name: name.to_string(),
+            value: serde_json::json!(1),
+            scope_key: 7,
+            process_instance_key: 7,
+            tenant_id: "<default>".to_string(),
+            is_preview: false,
+        }
+    }
+
+    #[tokio::test]
+    async fn a_unit_of_work_commits_or_rolls_back_as_a_whole() {
+        let backend = InMemoryBackend::new();
+        let key_before = backend.next_key(1).await.unwrap();
+        backend.insert_records_batch(&[record(1)]).await.unwrap();
+
+        let unit = backend.begin().await.unwrap();
+        let key = unit.state().next_key(1).await.unwrap();
+        unit.state()
+            .upsert_variable(&variable(key, "a"))
+            .await
+            .unwrap();
+        unit.state()
+            .insert_records_batch(&[record(2)])
+            .await
+            .unwrap();
+        unit.state().set_processed_position(1, 5).await.unwrap();
+        assert!(matches!(
+            unit.state().begin().await,
+            Err(DbError::Conflict(_))
+        ));
+        unit.rollback().await.unwrap();
+        assert!(backend.get_variables_by_scope(7).await.unwrap().is_empty());
+        assert_eq!(backend.get_processed_position(1).await.unwrap(), 0);
+        assert_eq!(backend.next_key(1).await.unwrap(), key_before + 1);
+        assert_eq!(
+            backend.fetch_commands_from(1, 0, 10).await.unwrap().len(),
+            1,
+            "records appended by the unit are rolled back, earlier ones kept"
+        );
+
+        let unit = backend.begin().await.unwrap();
+        unit.state()
+            .upsert_variable(&variable(50, "b"))
+            .await
+            .unwrap();
+        unit.state().set_processed_position(1, 6).await.unwrap();
+        unit.commit().await.unwrap();
+        assert_eq!(backend.get_variables_by_scope(7).await.unwrap().len(), 1);
+        assert_eq!(backend.get_processed_position(1).await.unwrap(), 6);
+    }
+
+    fn record(position: i64) -> DbRecord {
+        DbRecord {
+            partition_id: 1,
+            position,
+            record_type: "COMMAND".to_string(),
+            value_type: "JOB".to_string(),
+            intent: "COMPLETE".to_string(),
+            record_key: 1,
+            timestamp_ms: 0,
+            payload: serde_json::json!({}),
+            source_position: None,
+            tenant_id: "<default>".to_string(),
+        }
     }
 }

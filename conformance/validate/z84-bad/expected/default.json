@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Process_1"
+      ],
+      "fixable": false,
+      "id": "zeebe/link-throw-catch",
+      "message": "Can't find an catch link event for the throw link event with the name 'L'.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Add a link catch event with the same name in the same scope."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/cancel-listener-placement",
+      "message": "The 'cancel' execution listener event type is not supported for the 'serviceTask' element. The 'cancel' event type is only supported on the 'process' element.",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Use the cancel event type on the process only."
+    }
+  ]
+}

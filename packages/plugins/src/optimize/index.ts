@@ -251,7 +251,8 @@ function showOptimizeDialog(
 				results.push(finding.applyFix(defs))
 			}
 
-			reload(Bpmn.export(defs))
+			// A work-in-progress diagram: saving it must not depend on whether Zeebe would deploy it.
+			reload(Bpmn.export(defs, { validate: false }))
 			showPhase2(results)
 		})
 
@@ -289,7 +290,8 @@ function showOptimizeDialog(
 				openBtn.className = "opt-result-open"
 				openBtn.textContent = "Open generated process in new tab"
 				openBtn.addEventListener("click", () => {
-					openTab(Bpmn.export(gen), "Extracted Process")
+					// A work-in-progress diagram: saving it must not depend on whether Zeebe would deploy it.
+					openTab(Bpmn.export(gen, { validate: false }), "Extracted Process")
 				})
 				rbody.append(openBtn)
 			}

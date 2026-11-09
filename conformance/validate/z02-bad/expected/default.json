@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        ""
+      ],
+      "fixable": false,
+      "id": "zeebe/target-namespace",
+      "message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=2: cvc-complex-type.4: Attribute 'targetNamespace' must appear on element 'bpmn:definitions'.",
+      "processId": "",
+      "severity": "error",
+      "suggestion": "Add a targetNamespace attribute to bpmn:definitions."
+    }
+  ]
+}

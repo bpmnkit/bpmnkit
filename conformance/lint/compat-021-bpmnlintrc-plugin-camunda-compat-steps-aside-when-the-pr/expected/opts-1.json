@@ -14,7 +14,7 @@
     "connector"
   ],
   "counts": {
-    "error": 1,
+    "error": 2,
     "info": 0,
     "warning": 3
   },
@@ -64,6 +64,18 @@
       "processId": "p",
       "severity": "warning",
       "suggestion": "Add an error boundary event to catch unhandled errors thrown inside the sub-process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "p"
+      ],
+      "fixable": false,
+      "id": "zeebe/process-start-event",
+      "message": "Must have at least one start event",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Add a start event to the process."
     }
   ],
   "platform": {
@@ -71,5 +83,5 @@
     "name": "Camunda Cloud",
     "version": "8.6.0"
   },
-  "total": 4
+  "total": 5
 }

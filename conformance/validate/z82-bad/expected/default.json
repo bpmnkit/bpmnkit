@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "B"
+      ],
+      "fixable": false,
+      "id": "zeebe/escalation-catch-code-expression",
+      "message": "The escalationCode of the escalation catch event is not allowed to be an expression",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Use a literal escalationCode, without a leading '='."
+    }
+  ]
+}

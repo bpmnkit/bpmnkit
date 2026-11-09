@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/task-definition-type",
+      "message": "Attribute 'type' must be present and not empty",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Set the job type on zeebe:taskDefinition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/task-definition-expression",
+      "message": "Expected expression but not found.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Write the job type and retries as a static value or a valid FEEL expression."
+    }
+  ]
+}

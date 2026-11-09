@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "p"
+      ],
+      "fixable": false,
+      "id": "zeebe/case-marker",
+      "message": "Attribute 'title' must be a variable name, not an expression",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Set the case title to a variable name without '='."
+    }
+  ]
+}

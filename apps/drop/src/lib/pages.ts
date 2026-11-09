@@ -400,6 +400,8 @@ select.ed-select{height:28px;border:1px solid var(--bpmnkit-ds-line);background:
 .gen-check .warn{color:var(--bpmnkit-warn,#d97706)}
 .gen-check .bad{color:var(--bpmnkit-danger,#dc2626)}
 .gen-check code{font-family:var(--bpmnkit-ds-font-mono);font-size:12px}
+.gen-check span:has(>.gate-lines){display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-width:0}
+.gen-check .gate-lines{margin:0;font-family:var(--bpmnkit-ds-font-mono);font-size:12px;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--bpmnkit-danger,#dc2626)}
 .gen-text{border-bottom:1px solid var(--bpmnkit-ds-line-soft)}
 .gen-text[hidden]{display:none}
 .gen-text summary{cursor:pointer;padding:8px 12px;font-family:var(--bpmnkit-ds-font-mono);font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--bpmnkit-ds-ink-3)}

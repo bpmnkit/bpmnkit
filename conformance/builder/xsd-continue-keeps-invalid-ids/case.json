@@ -6,5 +6,7 @@
 		["at","a→b"],
 		["task","n"],
 		["build"]
-	]
+	],
+	"deployable": false,
+	"deployableReason": "Source builder/xsd-continue-keeps-invalid-ids/input.bpmn is itself rejected by Zeebe (Error: URI=null Line=2: cvc-datatype-valid.1.2.1: 'Defs 1' is not a valid value for 'NCName'.); the case pins how it is round-tripped, not a deployable model."
 }

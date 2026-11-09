@@ -19,12 +19,53 @@ use crate::Result;
 use async_trait::async_trait;
 use chrono::{DateTime, Utc};
 use serde_json::Value;
+use std::sync::Arc;
+
+/// Ends a unit of work's transaction. Implemented by each backend.
+#[async_trait]
+pub trait TxControl: Send + Sync {
+    async fn commit(&self) -> Result<()>;
+    async fn rollback(&self) -> Result<()>;
+}
+
+/// All the writes of one processed record, made visible together or not at all.
+///
+/// `state` is a backend whose reads see the unit's own writes and whose writes stay
+/// invisible to others until `commit`. `commit` and `rollback` consume the unit, so it
+/// ends exactly once; dropping it without either rolls back.
+pub struct UnitOfWork {
+    state: Arc<dyn StateBackend>,
+    control: Box<dyn TxControl>,
+}
+
+impl UnitOfWork {
+    pub fn new(state: Arc<dyn StateBackend>, control: Box<dyn TxControl>) -> Self {
+        Self { state, control }
+    }
+
+    pub fn state(&self) -> &Arc<dyn StateBackend> {
+        &self.state
+    }
+
+    pub async fn commit(self) -> Result<()> {
+        self.control.commit().await
+    }
+
+    pub async fn rollback(self) -> Result<()> {
+        self.control.rollback().await
+    }
+}
 
 /// Abstraction over the storage backend used by the engine and processors.
 ///
 /// Implemented by `SqlxBackend` (Postgres/SQLite) and `InMemoryBackend` (WASM).
 #[async_trait]
 pub trait StateBackend: Send + Sync {
+    // ---- Units of work ----
+    /// Start a unit of work. Key and position counters, state rows, appended records
+    /// and the processed position written through its `state` commit together.
+    async fn begin(&self) -> Result<UnitOfWork>;
+
     // ---- Key generation ----
     async fn next_key(&self, partition_id: i16) -> Result<i64>;
     async fn next_position(&self, partition_id: i16) -> Result<i64>;

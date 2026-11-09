@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "b"
+      ],
+      "fixable": false,
+      "id": "zeebe/error-catch-code-expression",
+      "message": "The errorCode of the error catch event is not allowed to be an expression",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Use a literal errorCode, without a leading '='."
+    }
+  ]
+}

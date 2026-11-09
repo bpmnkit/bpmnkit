@@ -166,7 +166,7 @@ Consider whether rejected invoices should be archived or returned for correction
 						name: "Yes",
 						condition: "= isDuplicate",
 					},
-					{ id: "f5", from: "duplicateGw", to: "amountGw", name: "No" },
+					{ id: "f5", isDefault: true, from: "duplicateGw", to: "amountGw", name: "No" },
 					{
 						id: "f6",
 						from: "amountGw",
@@ -189,7 +189,13 @@ Consider whether rejected invoices should be archived or returned for correction
 						name: "Approved",
 						condition: '= decision = "approved"',
 					},
-					{ id: "f10", from: "approvalGw", to: "notifyRejection", name: "Rejected" },
+					{
+						id: "f10",
+						isDefault: true,
+						from: "approvalGw",
+						to: "notifyRejection",
+						name: "Rejected",
+					},
 					{ id: "f11", from: "triggerPayment", to: "end" },
 					{ id: "f12", from: "notifyRejection", to: "end" },
 				],

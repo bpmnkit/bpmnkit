@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="D" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+  <bpmn:escalation id="Escalation_LATE" name="LATE" escalationCode="LATE"/>
+  <bpmn:error id="Error_PAYMENT_FAILED" name="PAYMENT_FAILED" errorCode="PAYMENT_FAILED"/>
+  <bpmn:message id="Message_order_placed" name="order-placed"/>
+  <bpmn:message id="Message_payment_received" name="payment-received">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=orderId"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_order_cancelled" name="order-cancelled">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=orderId"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_payment_received_2" name="payment-received">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=invoiceId"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_order_done" name="order-done"/>
+  <bpmn:signal id="Signal_shutdown" name="shutdown"/>
+  <bpmn:process id="P" isExecutable="true">
+    <bpmn:startEvent id="start">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="start_MessageEventDefinition" messageRef="Message_order_placed"/>
+    </bpmn:startEvent>
+    <bpmn:subProcess id="sub" name="Handle order">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+      <bpmn:startEvent id="sub_start">
+        <bpmn:outgoing>s1</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:receiveTask id="pay" name="Payment" messageRef="Message_payment_received">
+        <bpmn:incoming>s1</bpmn:incoming>
+        <bpmn:outgoing>s2</bpmn:outgoing>
+      </bpmn:receiveTask>
+      <bpmn:intermediateThrowEvent id="late">
+        <bpmn:incoming>s2</bpmn:incoming>
+        <bpmn:outgoing>s3</bpmn:outgoing>
+        <bpmn:escalationEventDefinition id="late_EscalationEventDefinition" escalationRef="Escalation_LATE"/>
+      </bpmn:intermediateThrowEvent>
+      <bpmn:endEvent id="sub_end">
+        <bpmn:incoming>s3</bpmn:incoming>
+        <bpmn:errorEventDefinition id="sub_end_ErrorEventDefinition" errorRef="Error_PAYMENT_FAILED"/>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="s1" sourceRef="sub_start" targetRef="pay"/>
+      <bpmn:sequenceFlow id="s2" sourceRef="pay" targetRef="late"/>
+      <bpmn:sequenceFlow id="s3" sourceRef="late" targetRef="sub_end"/>
+    </bpmn:subProcess>
+    <bpmn:boundaryEvent id="failed" attachedToRef="sub" cancelActivity="true">
+      <bpmn:outgoing>f6</bpmn:outgoing>
+      <bpmn:errorEventDefinition id="failed_ErrorEventDefinition" errorRef="Error_PAYMENT_FAILED"/>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="escalated" attachedToRef="sub" cancelActivity="false">
+      <bpmn:outgoing>f7</bpmn:outgoing>
+      <bpmn:escalationEventDefinition id="escalated_EscalationEventDefinition" escalationRef="Escalation_LATE"/>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="cancel" attachedToRef="sub" cancelActivity="true">
+      <bpmn:outgoing>f8</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="cancel_MessageEventDefinition" messageRef="Message_order_cancelled"/>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="stop" attachedToRef="sub" cancelActivity="true">
+      <bpmn:outgoing>f9</bpmn:outgoing>
+      <bpmn:signalEventDefinition id="stop_SignalEventDefinition" signalRef="Signal_shutdown"/>
+    </bpmn:boundaryEvent>
+    <bpmn:intermediateCatchEvent id="again">
+      <bpmn:incoming>f2</bpmn:incoming>
+      <bpmn:outgoing>f3</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="again_MessageEventDefinition" messageRef="Message_payment_received"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="other">
+      <bpmn:incoming>f3</bpmn:incoming>
+      <bpmn:outgoing>f4</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="other_MessageEventDefinition" messageRef="Message_payment_received_2"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateThrowEvent id="notify">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="notify"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>f4</bpmn:incoming>
+      <bpmn:outgoing>f5</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="notify_MessageEventDefinition" messageRef="Message_order_done"/>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:endEvent id="broadcast">
+      <bpmn:incoming>f5</bpmn:incoming>
+      <bpmn:signalEventDefinition id="broadcast_SignalEventDefinition" signalRef="Signal_shutdown"/>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="e_failed">
+      <bpmn:incoming>f6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="e_escalated">
+      <bpmn:incoming>f7</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="e_cancel">
+      <bpmn:incoming>f8</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="e_stop">
+      <bpmn:incoming>f9</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="sub"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="sub" targetRef="again"/>
+    <bpmn:sequenceFlow id="f3" sourceRef="again" targetRef="other"/>
+    <bpmn:sequenceFlow id="f4" sourceRef="other" targetRef="notify"/>
+    <bpmn:sequenceFlow id="f5" sourceRef="notify" targetRef="broadcast"/>
+    <bpmn:sequenceFlow id="f6" sourceRef="failed" targetRef="e_failed"/>
+    <bpmn:sequenceFlow id="f7" sourceRef="escalated" targetRef="e_escalated"/>
+    <bpmn:sequenceFlow id="f8" sourceRef="cancel" targetRef="e_cancel"/>
+    <bpmn:sequenceFlow id="f9" sourceRef="stop" targetRef="e_stop"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_P">
+    <bpmndi:BPMNPlane id="BPMNPlane_P" bpmnElement="P">
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start">
+        <dc:Bounds x="0" y="100" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_di" bpmnElement="sub" isExpanded="true">
+        <dc:Bounds x="136" y="0" width="488" height="208"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="failed_di" bpmnElement="failed">
+        <dc:Bounds x="508.4" y="190" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="escalated_di" bpmnElement="escalated">
+        <dc:Bounds x="410.8" y="190" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="cancel_di" bpmnElement="cancel">
+        <dc:Bounds x="313.2" y="190" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="stop_di" bpmnElement="stop">
+        <dc:Bounds x="215.6" y="190" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="again_di" bpmnElement="again">
+        <dc:Bounds x="724" y="100" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="other_di" bpmnElement="other">
+        <dc:Bounds x="820" y="100" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="notify_di" bpmnElement="notify">
+        <dc:Bounds x="916" y="100" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="broadcast_di" bpmnElement="broadcast">
+        <dc:Bounds x="1012" y="100" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="e_failed_di" bpmnElement="e_failed">
+        <dc:Bounds x="724" y="268" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="e_escalated_di" bpmnElement="e_escalated">
+        <dc:Bounds x="724" y="364" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="e_cancel_di" bpmnElement="e_cancel">
+        <dc:Bounds x="724" y="460" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="e_stop_di" bpmnElement="e_stop">
+        <dc:Bounds x="724" y="556" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_start_di" bpmnElement="sub_start">
+        <dc:Bounds x="186" y="100" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="pay_di" bpmnElement="pay">
+        <dc:Bounds x="282" y="78" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="late_di" bpmnElement="late">
+        <dc:Bounds x="442" y="100" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sub_end_di" bpmnElement="sub_end">
+        <dc:Bounds x="538" y="100" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1">
+        <di:waypoint x="36" y="118"/>
+        <di:waypoint x="136" y="118"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2">
+        <di:waypoint x="624" y="118"/>
+        <di:waypoint x="724" y="118"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f3_di" bpmnElement="f3">
+        <di:waypoint x="760" y="118"/>
+        <di:waypoint x="820" y="118"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f4_di" bpmnElement="f4">
+        <di:waypoint x="856" y="118"/>
+        <di:waypoint x="916" y="118"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f5_di" bpmnElement="f5">
+        <di:waypoint x="952" y="118"/>
+        <di:waypoint x="1012" y="118"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f6_di" bpmnElement="f6">
+        <di:waypoint x="526.4" y="226"/>
+        <di:waypoint x="526.4" y="286"/>
+        <di:waypoint x="724" y="286"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f7_di" bpmnElement="f7">
+        <di:waypoint x="428.8" y="226"/>
+        <di:waypoint x="428.8" y="382"/>
+        <di:waypoint x="724" y="382"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f8_di" bpmnElement="f8">
+        <di:waypoint x="331.2" y="226"/>
+        <di:waypoint x="331.2" y="478"/>
+        <di:waypoint x="724" y="478"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f9_di" bpmnElement="f9">
+        <di:waypoint x="233.6" y="226"/>
+        <di:waypoint x="233.6" y="574"/>
+        <di:waypoint x="724" y="574"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="s1_di" bpmnElement="s1">
+        <di:waypoint x="222" y="118"/>
+        <di:waypoint x="282" y="118"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="s2_di" bpmnElement="s2">
+        <di:waypoint x="382" y="118"/>
+        <di:waypoint x="442" y="118"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="s3_di" bpmnElement="s3">
+        <di:waypoint x="478" y="118"/>
+        <di:waypoint x="538" y="118"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

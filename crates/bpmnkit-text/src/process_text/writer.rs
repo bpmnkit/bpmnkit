@@ -20,7 +20,7 @@ use bpmnkit_bpmn::{BpmnDefinitions, BpmnElementType, BpmnFlowElement};
 use indexmap::{IndexMap, IndexSet};
 use serde::{Deserialize, Serialize};
 
-use super::tokens::{duration, split_mappings, KINDS};
+use super::tokens::{cycle, duration, split_mappings, KINDS};
 use crate::catalog::FIXED_KINDS;
 use crate::compact::{compactify, CompactElement, CompactFlow};
 use crate::js_record::JsRecord;
@@ -242,6 +242,15 @@ fn alias_for(element: &CompactElement, taken: &mut IndexSet<String>) -> String {
     alias
 }
 
+/// TS's `token`: a value written as one attribute token reads back as itself, with no
+/// space, separator, `=` or bracket.
+fn token(value: &Option<String>) -> Option<&str> {
+    value.as_deref().filter(|v| {
+        !v.is_empty()
+            && !v.contains(|c: char| is_js_space(c) || matches!(c, ',' | '|' | '=' | '[' | ']'))
+    })
+}
+
 /// TS's `spec`: the bracket text of a declaration.
 fn spec(element: &CompactElement, host: Option<&str>, container: Option<&str>) -> String {
     let word = kind_word(&element.type_).unwrap_or("task");
@@ -271,8 +280,41 @@ fn spec(element: &CompactElement, host: Option<&str>, container: Option<&str>) -
             attrs.push(format!("after={after}"));
         }
     }
+    let timer = element.event_type.as_deref() == Some("timer");
+    if let Some(at) = token(&element.timer_date).filter(|_| timer) {
+        attrs.push(format!("at={at}"));
+    }
+    if let Some(every) = token(&element.timer_cycle).filter(|_| timer) {
+        if cycle(every).as_deref() == Some(every) {
+            attrs.push(format!("every={every}"));
+        }
+    }
     if let Some(job) = element.job_type.as_deref().filter(|s| !s.is_empty()) {
         attrs.push(format!("job={job}"));
+    }
+    if let Some(called) = token(&element.called_process) {
+        attrs.push(format!("called={called}"));
+    }
+    if let Some(name) = token(&element.message_name) {
+        attrs.push(format!("msg={name}"));
+    }
+    let key = element.correlation_key.as_deref().map(|k| {
+        k.trim_start_matches(is_js_space)
+            .strip_prefix('=')
+            .map_or(k, |rest| rest.trim_start_matches(is_js_space))
+            .to_owned()
+    });
+    if let Some(key) = token(&key) {
+        attrs.push(format!("key={key}"));
+    }
+    if let Some(name) = token(&element.signal_name) {
+        attrs.push(format!("signal={name}"));
+    }
+    if let Some(code) = token(&element.error_code) {
+        attrs.push(format!("error={code}"));
+    }
+    if let Some(code) = token(&element.escalation_code) {
+        attrs.push(format!("escalation={code}"));
     }
     if let Some(form) = element.form_id.as_deref().filter(|s| !s.is_empty()) {
         attrs.push(format!("form={form}"));

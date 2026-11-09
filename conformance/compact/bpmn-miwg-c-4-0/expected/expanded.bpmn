@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="_e7ccc12c-2987-48ae-92aa-08112101d9c9" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:signal id="Signal_New_employee_hired" name="New employee hired"/>
   <bpmn:process id="_42cba3a9-a8ab-40b5-b9a4-2e8f32be364e" name="Money Bank - Process" isExecutable="true">
     <bpmn:startEvent id="_a4220c17-364f-4a08-ae9c-757a6468b295" name="Candidate accepted offer">
       <bpmn:outgoing>_6d1a9d5a-127d-477a-8dbe-268f125f20d8</bpmn:outgoing>
@@ -56,7 +57,7 @@
     <bpmn:intermediateThrowEvent id="_855451b0-5298-48b2-a81d-84ecbcca0a85" name="New employee in department X">
       <bpmn:incoming>_3bb98d19-0d0b-4f47-a097-30c60183e334</bpmn:incoming>
       <bpmn:outgoing>_71b2c3f1-0d34-4cfb-956c-cedf83660dfb</bpmn:outgoing>
-      <bpmn:signalEventDefinition id="_855451b0-5298-48b2-a81d-84ecbcca0a85_SignalEventDefinition"/>
+      <bpmn:signalEventDefinition id="_855451b0-5298-48b2-a81d-84ecbcca0a85_SignalEventDefinition" signalRef="Signal_New_employee_hired"/>
     </bpmn:intermediateThrowEvent>
     <bpmn:userTask id="_72da5cee-0456-4c3c-ba8d-6dd085d6f52d" name="Introduce new employee to the team">
       <bpmn:incoming>_cad69ba8-8b26-41f9-87a1-372a899dcbf3</bpmn:incoming>
@@ -134,7 +135,7 @@
   <bpmn:process id="_f0035388-f829-470c-b82b-0b15c3da3399" name="IT - Process" isExecutable="true">
     <bpmn:startEvent id="_e9306b3f-3a77-42e1-b53e-2ed8ee45486d" name="New &#10;employee&#10;hired">
       <bpmn:outgoing>_495f04a4-ed17-4e7b-a952-11c06c2230d1</bpmn:outgoing>
-      <bpmn:signalEventDefinition id="_e9306b3f-3a77-42e1-b53e-2ed8ee45486d_SignalEventDefinition"/>
+      <bpmn:signalEventDefinition id="_e9306b3f-3a77-42e1-b53e-2ed8ee45486d_SignalEventDefinition" signalRef="Signal_New_employee_hired"/>
     </bpmn:startEvent>
     <bpmn:userTask id="_7e9d2e5a-21f7-493b-9ae4-03245aa33a5c" name="Create domain account">
       <bpmn:incoming>_495f04a4-ed17-4e7b-a952-11c06c2230d1</bpmn:incoming>
@@ -172,7 +173,7 @@
   <bpmn:process id="_da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4" name="Payroll - Process" isExecutable="true">
     <bpmn:startEvent id="_3d4130c6-48c9-47fe-8e95-2eeb56060e2b" name="New &#10;employee&#10;hired">
       <bpmn:outgoing>_6b24f6f7-bc44-4d73-ab54-1ac8b638423e</bpmn:outgoing>
-      <bpmn:signalEventDefinition id="_3d4130c6-48c9-47fe-8e95-2eeb56060e2b_SignalEventDefinition"/>
+      <bpmn:signalEventDefinition id="_3d4130c6-48c9-47fe-8e95-2eeb56060e2b_SignalEventDefinition" signalRef="Signal_New_employee_hired"/>
     </bpmn:startEvent>
     <bpmn:userTask id="_ae47ce79-bd91-452b-be68-47a2ea589e75" name="Validate provided information">
       <bpmn:incoming>_6b24f6f7-bc44-4d73-ab54-1ac8b638423e</bpmn:incoming>
@@ -208,7 +209,7 @@
   <bpmn:process id="_3486bf55-0a7f-4ff1-be15-1555669f58ad" name="Facilities - Process" isExecutable="true">
     <bpmn:startEvent id="_94a62738-dc7a-49f6-81d8-f5642f7ae850" name="New &#10;employee &#10;hired">
       <bpmn:outgoing>_ea0e1abf-e9f6-406a-96fb-12fcdf765634</bpmn:outgoing>
-      <bpmn:signalEventDefinition id="_94a62738-dc7a-49f6-81d8-f5642f7ae850_SignalEventDefinition"/>
+      <bpmn:signalEventDefinition id="_94a62738-dc7a-49f6-81d8-f5642f7ae850_SignalEventDefinition" signalRef="Signal_New_employee_hired"/>
     </bpmn:startEvent>
     <bpmn:manualTask id="_2bf94039-15a1-44bb-9d14-81358777466c" name="Prepare&#10;access &#10;card">
       <bpmn:incoming>_ea0e1abf-e9f6-406a-96fb-12fcdf765634</bpmn:incoming>

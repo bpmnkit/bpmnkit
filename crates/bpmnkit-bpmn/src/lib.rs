@@ -24,8 +24,10 @@
 //! ```
 
 pub mod element_shape;
+pub mod feel_condition;
 pub mod ids;
 pub mod js;
+pub mod juel;
 pub mod model;
 mod number;
 mod parser;

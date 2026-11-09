@@ -23,6 +23,9 @@
       <bpmn:outgoing>Flow_bs_order</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:sendTask id="order" messageRef="Message_order">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="send-order"/>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_bs_order</bpmn:incoming>
       <bpmn:outgoing>Flow_order_invoice</bpmn:outgoing>
     </bpmn:sendTask>
@@ -50,6 +53,9 @@
       <bpmn:outgoing>Flow_ship_bill</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:sendTask id="bill" messageRef="Message_invoice">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="send-invoice"/>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_ship_bill</bpmn:incoming>
       <bpmn:outgoing>Flow_bill_se</bpmn:outgoing>
     </bpmn:sendTask>

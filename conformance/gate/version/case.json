@@ -1,0 +1,1 @@
+{ "input": "gate/two-errors/input.bpmn", "runs": { "v8-6": { "camundaVersion": "8.6.2" }, "unknown": { "camundaVersion": "nonsense" } } }

@@ -1,0 +1,6 @@
+Not deployable on Camunda 8.10: 5 error(s)
+- timer: Must be exactly one type of timer: timeDuration, timeDate or timeCycle (zeebe/timer-one-value)
+- timer: Intermediate timer catch event must have either a time duration or a time date. (zeebe/intermediate-timer-value)
+- Message_reply: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)
+- jump: Link name must be present and not empty. (zeebe/link-name)
+- work: Must have exactly one 'zeebe:taskDefinition' extension element (zeebe/service-task-definition)

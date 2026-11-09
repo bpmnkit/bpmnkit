@@ -1,0 +1,2 @@
+s[start:message Order placed] > w[catch:message Paid | key=orderId] > r[receive Receipt | key=orderId] > n[throw:message Notify] > g[throw:signal Go] > c[call Child] > e[end:escalation Escalated]
+x[start:signal Wake] > y[end:error Failed]

@@ -1,0 +1,378 @@
+{
+  "collaborations": [],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_P",
+      "plane": {
+        "bpmnElement": "P",
+        "edges": [
+          {
+            "bpmnElement": "f1",
+            "id": "f1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 134,
+                "y": 90
+              },
+              {
+                "x": 332,
+                "y": 90
+              }
+            ]
+          },
+          {
+            "bpmnElement": "f2",
+            "id": "f2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 724,
+                "y": 90
+              },
+              {
+                "x": 824,
+                "y": 90
+              }
+            ]
+          },
+          {
+            "bpmnElement": "i1",
+            "id": "i1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 418,
+                "y": 90
+              },
+              {
+                "x": 478,
+                "y": 90
+              }
+            ]
+          },
+          {
+            "bpmnElement": "i2",
+            "id": "i2_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 578,
+                "y": 90
+              },
+              {
+                "x": 638,
+                "y": 90
+              }
+            ]
+          },
+          {
+            "bpmnElement": "e1",
+            "id": "e1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 86,
+                "y": 328
+              },
+              {
+                "x": 146,
+                "y": 328
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_P",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 98,
+              "y": 72
+            },
+            "bpmnElement": "s",
+            "id": "s_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 180,
+              "width": 392,
+              "x": 332,
+              "y": 0
+            },
+            "bpmnElement": "sub",
+            "id": "sub_di",
+            "isExpanded": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 136,
+              "width": 232,
+              "x": 0,
+              "y": 260
+            },
+            "bpmnElement": "esp",
+            "id": "esp_di",
+            "isExpanded": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 824,
+              "y": 72
+            },
+            "bpmnElement": "e",
+            "id": "e_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 382,
+              "y": 72
+            },
+            "bpmnElement": "sub_s",
+            "id": "sub_s_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 478,
+              "y": 50
+            },
+            "bpmnElement": "inner",
+            "id": "inner_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 638,
+              "y": 72
+            },
+            "bpmnElement": "sub_e",
+            "id": "sub_e_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 50,
+              "y": 310
+            },
+            "bpmnElement": "esp_s",
+            "id": "esp_s_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 146,
+              "y": 310
+            },
+            "bpmnElement": "esp_e",
+            "id": "esp_e_di",
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "id": "D",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "dc": "http://www.omg.org/spec/DD/20100524/DC",
+    "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
+    "zeebe": "http://camunda.org/schema/zeebe/1.0"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "s",
+          "incoming": [],
+          "outgoing": [
+            "f1"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "sub_s",
+              "incoming": [],
+              "outgoing": [
+                "i1"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "inner",
+              "incoming": [
+                "i1"
+              ],
+              "outgoing": [
+                "i2"
+              ],
+              "type": "task",
+              "unknownAttributes": {}
+            },
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "sub_e",
+              "incoming": [
+                "i2"
+              ],
+              "outgoing": [],
+              "type": "endEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "sub",
+          "incoming": [
+            "f1"
+          ],
+          "outgoing": [
+            "f2"
+          ],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "i1",
+              "sourceRef": "sub_s",
+              "targetRef": "inner",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "i2",
+              "sourceRef": "inner",
+              "targetRef": "sub_e",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "type": "subProcess",
+          "unknownAttributes": {}
+        },
+        {
+          "associations": [],
+          "extensionElements": [],
+          "flowElements": [
+            {
+              "eventDefinitions": [
+                {
+                  "id": "esp_s_TimerEventDefinition",
+                  "timeCycle": "R/PT1M",
+                  "type": "timer"
+                }
+              ],
+              "extensionElements": [],
+              "id": "esp_s",
+              "incoming": [],
+              "isInterrupting": false,
+              "outgoing": [
+                "e1"
+              ],
+              "type": "startEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "eventDefinitions": [],
+              "extensionElements": [],
+              "id": "esp_e",
+              "incoming": [
+                "e1"
+              ],
+              "outgoing": [],
+              "type": "endEvent",
+              "unknownAttributes": {}
+            }
+          ],
+          "groups": [],
+          "id": "esp",
+          "incoming": [],
+          "outgoing": [],
+          "sequenceFlows": [
+            {
+              "extensionElements": [],
+              "id": "e1",
+              "sourceRef": "esp_s",
+              "targetRef": "esp_e",
+              "unknownAttributes": {}
+            }
+          ],
+          "textAnnotations": [],
+          "type": "eventSubProcess",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "e",
+          "incoming": [
+            "f2"
+          ],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "P",
+      "isExecutable": true,
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "f1",
+          "sourceRef": "s",
+          "targetRef": "sub",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "f2",
+          "sourceRef": "sub",
+          "targetRef": "e",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud"
+  }
+}

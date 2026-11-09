@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Start"
+      ],
+      "fixable": false,
+      "id": "zeebe/start-event-start-listener",
+      "message": "Execution listeners of type 'start' are not supported by start events",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Use an 'end' execution listener on the start event."
+    }
+  ]
+}

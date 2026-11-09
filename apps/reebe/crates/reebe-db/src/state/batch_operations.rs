@@ -20,12 +20,16 @@ pub struct BatchOperation {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct BatchOperationRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> BatchOperationRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -45,7 +49,7 @@ impl<'a> BatchOperationRepository<'a> {
         .bind(&op.error_message)
         .bind(op.created_at)
         .bind(op.completed_at)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -57,7 +61,7 @@ impl<'a> BatchOperationRepository<'a> {
                FROM batch_operations WHERE key = $1"#,
         )
         .bind(key)
-        .fetch_optional(self.pool)
+        .fetch_optional(&mut *self.pool.acquire().await?)
         .await?;
 
         match row {
@@ -73,7 +77,7 @@ impl<'a> BatchOperationRepository<'a> {
         .bind(completed)
         .bind(failed)
         .bind(key)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -84,7 +88,7 @@ impl<'a> BatchOperationRepository<'a> {
         )
         .bind(key)
         .bind(chrono::Utc::now())
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -104,7 +108,7 @@ impl<'a> BatchOperationRepository<'a> {
         )
         .bind(after_key)
         .bind(page_size)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         Ok(rows.into_iter().map(row_to_batch_op).collect())

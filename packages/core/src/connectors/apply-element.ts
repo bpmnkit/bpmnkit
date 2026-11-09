@@ -27,11 +27,11 @@ import {
 } from "../index.js"
 import {
 	type Accumulator,
-	type ApplyOptions,
 	type ApplyProblem,
 	type TaskExtensionBinding,
 	resolveBindings,
 } from "./apply.js"
+import { type ApplyToModelOptions, appliedDeployProblems } from "./deployability.js"
 import type { ElementTemplate, TemplateBinding } from "./template-types.js"
 
 /** The one `elementType.eventDefinition` this toolkit writes. */
@@ -446,13 +446,15 @@ function ownedExtensions(
  * @param values - Keyed as in {@link applyElementTemplate}; `name` sets the element's name.
  * @param options - `omitDefaults` leaves out properties carrying only the template's default;
  *   re-applying replaces the extensions wholesale, so an earlier apply's default does not survive.
+ *   Unless `validate: false`, the applied element is checked with Zeebe's deploy rules and each
+ *   error is a `not-deployable` problem (the model is still returned, as for any other problem).
  */
 export function applyTemplateToElement(
 	definitions: BpmnDefinitions,
 	elementId: string,
 	template: ElementTemplate,
 	values: Record<string, string> = {},
-	options: ApplyOptions = {},
+	options: ApplyToModelOptions = {},
 ): ApplyToElementResult {
 	const refuse = (message: string): ApplyToElementResult => ({
 		definitions,
@@ -600,5 +602,8 @@ export function applyTemplateToElement(
 	}
 
 	location.siblings[location.index] = element
+	for (const problem of appliedDeployProblems(next, [elementId], options)) {
+		problems.push({ kind: "not-deployable", message: problem.message })
+	}
 	return { definitions: next, problems }
 }

@@ -1,0 +1,12 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["exclusiveGateway","g"],
+		["branch","a",{"$ops":[["condition","x > 1"],["endEvent","e1"]]}],
+		["branch","b",{"$ops":[["condition","${y == 2}"],["endEvent","e2"]]}],
+		["branch","c",{"$ops":[["defaultFlow"],["endEvent","e3"]]}],
+		["build"]
+	]
+}

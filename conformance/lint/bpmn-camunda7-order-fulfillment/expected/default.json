@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 9,
+    "error": 14,
     "info": 0,
     "warning": 2
   },
@@ -160,6 +160,70 @@
       "processId": "order-fulfillment",
       "severity": "error",
       "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Timer_wait"
+      ],
+      "fixable": false,
+      "id": "zeebe/timer-expression",
+      "message": "Invalid timer duration expression (Invalid duration format '${deliveryWindow}' for expression '${deliveryWindow}'.)",
+      "plane": "order-fulfillment",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Use an ISO-8601 duration such as PT5M, or a FEEL expression starting with '='."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Message_PaymentConfirmed"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-subscription",
+      "message": "Must have exactly one zeebe:subscription extension element",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Add one zeebe:subscription with a correlationKey to the message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_summary"
+      ],
+      "fixable": false,
+      "id": "zeebe/script-task-implementation",
+      "message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element",
+      "plane": "order-fulfillment",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Give the script task one zeebe:script or one zeebe:taskDefinition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Flow_approved"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value '${approved && order.total <= 1000}'. An expression must start with '=' (e.g. '=${approved && order.total <= 1000}').",
+      "plane": "order-fulfillment",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Flow_vip"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value '${approved and order.customer.vip eq true}'. An expression must start with '=' (e.g. '=${approved and order.customer.vip eq true}').",
+      "plane": "order-fulfillment",
+      "processId": "order-fulfillment",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
     }
   ],
   "platform": {
@@ -167,5 +231,5 @@
     "name": "Camunda Platform",
     "version": "7.22.0"
   },
-  "total": 11
+  "total": 16
 }

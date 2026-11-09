@@ -43,7 +43,7 @@
             },
             {
               "attributes": {
-                "agentType": "langchain"
+                "agentType": "aiAgentTask"
               },
               "children": [],
               "name": "zeebe:agentDefinition"

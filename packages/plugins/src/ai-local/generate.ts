@@ -1,4 +1,4 @@
-import { Bpmn, createProcessTextStream, expand } from "@bpmnkit/core"
+import { Bpmn, DeployabilityError, createProcessTextStream, expand } from "@bpmnkit/core"
 import type { BpmnDefinitions, ProcessTextProblem } from "@bpmnkit/core"
 import type { LocalSession } from "./model.js"
 
@@ -10,6 +10,11 @@ export interface GenerateResult {
 	fixes: string[]
 	/** True when the user aborted; the diagram is whatever had streamed so far. */
 	stopped: boolean
+	/**
+	 * The deploy gate's message when the diagram would not deploy on Camunda 8. It is
+	 * still returned, as a draft for the editor; the deploy pane refuses it until fixed.
+	 */
+	deployability?: string
 }
 
 const FENCE = /^\s*```/
@@ -57,10 +62,20 @@ export async function generateProcess(
 	// end() invents a start and end event for text with no nodes, so "no frame
 	// ever streamed" is what tells prose apart from a diagram.
 	if (frames === 0) return null
-	const definitions = expand(diagram)
+	let definitions: BpmnDefinitions
+	let deployability: string | undefined
+	try {
+		definitions = expand(diagram)
+	} catch (e) {
+		if (!(e instanceof DeployabilityError)) throw e
+		// A draft for the editor (work in progress): kept, with the gate's lines to show.
+		deployability = e.message
+		definitions = expand(diagram, { validate: false })
+	}
 	return {
 		definitions,
-		xml: Bpmn.export(definitions),
+		xml: Bpmn.export(definitions, { validate: false }),
+		...(deployability === undefined ? {} : { deployability }),
 		name: diagram.processes[0]?.name || "Generated process",
 		problems,
 		fixes,

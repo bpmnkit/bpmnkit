@@ -5,6 +5,8 @@
 		["startEvent","s"],
 		["intermediateCatchEvent","c",{"timerCycle":"R3/PT1M"}],
 		["endEvent","e"],
-		["build"]
-	]
+		["build",{"validate":false}]
+	],
+	"deployable": false,
+	"deployableReason": "Zeebe accepts only a duration or a date on an intermediate timer catch event; the case pins how the builder writes the timerCycle option."
 }

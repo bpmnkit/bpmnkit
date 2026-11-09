@@ -1,6 +1,5 @@
 {
   "report": {
     "findings": []
-  },
-  "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" id=\"Definitions_1\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"ad-hoc-tools\" isExecutable=\"true\">\n    <bpmn:startEvent id=\"start\">\n      <bpmn:outgoing>f1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:adHocSubProcess id=\"Agent\" camunda:type=\"external\" camunda:topic=\"agent\">\n      <bpmn:incoming>f1</bpmn:incoming>\n      <bpmn:outgoing>f2</bpmn:outgoing>\n      <bpmn:serviceTask id=\"T1\" camunda:type=\"external\" camunda:topic=\"t1\"/>\n      <bpmn:serviceTask id=\"T2\" camunda:type=\"external\" camunda:topic=\"t2\"/>\n    </bpmn:adHocSubProcess>\n    <bpmn:endEvent id=\"end\">\n      <bpmn:incoming>f2</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"f1\" sourceRef=\"start\" targetRef=\"Agent\"/>\n    <bpmn:sequenceFlow id=\"f2\" sourceRef=\"Agent\" targetRef=\"end\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
+  }
 }

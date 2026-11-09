@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+  <bpmn:escalation id="Escalation_c" name="c" escalationCode="c"/>
+  <bpmn:error id="Error_a" name="a" errorCode="a"/>
+  <bpmn:message id="Message_b" name="b"/>
+  <bpmn:signal id="Signal_d" name="d"/>
   <bpmn:process id="Process_1" isExecutable="true">
     <bpmn:startEvent id="s" name="S">
       <bpmn:outgoing>Flow_1</bpmn:outgoing>
@@ -13,19 +17,22 @@
     </bpmn:parallelGateway>
     <bpmn:endEvent id="a" name="Failed">
       <bpmn:incoming>Flow_2</bpmn:incoming>
-      <bpmn:errorEventDefinition id="a_ErrorEventDefinition"/>
+      <bpmn:errorEventDefinition id="a_ErrorEventDefinition" errorRef="Error_a"/>
     </bpmn:endEvent>
     <bpmn:endEvent id="b" name="Notified">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="b"/>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_3</bpmn:incoming>
-      <bpmn:messageEventDefinition id="b_MessageEventDefinition"/>
+      <bpmn:messageEventDefinition id="b_MessageEventDefinition" messageRef="Message_b"/>
     </bpmn:endEvent>
     <bpmn:endEvent id="c" name="Escalated">
       <bpmn:incoming>Flow_4</bpmn:incoming>
-      <bpmn:escalationEventDefinition id="c_EscalationEventDefinition"/>
+      <bpmn:escalationEventDefinition id="c_EscalationEventDefinition" escalationRef="Escalation_c"/>
     </bpmn:endEvent>
     <bpmn:endEvent id="d" name="Broadcast">
       <bpmn:incoming>Flow_5</bpmn:incoming>
-      <bpmn:signalEventDefinition id="d_SignalEventDefinition"/>
+      <bpmn:signalEventDefinition id="d_SignalEventDefinition" signalRef="Signal_d"/>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1" sourceRef="s" targetRef="g"/>
     <bpmn:sequenceFlow id="Flow_2" sourceRef="g" targetRef="a"/>

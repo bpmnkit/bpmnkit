@@ -1,5 +1,11 @@
 {
   "runs": {
-    "default": {}
-  }
+    "default": {
+      "options": {
+        "validate": false
+      }
+    }
+  },
+  "deployable": false,
+  "deployableReason": "A fragment that pins one conversion rule (no start event, or one element on its own); it is converted with validate: false. The gate on whole models is pinned by the bpmn-c7-* and bpmn-*-7to8 cases."
 }

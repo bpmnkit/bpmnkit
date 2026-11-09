@@ -10,6 +10,7 @@ export {
 	ValidationError,
 	WriteError,
 	WriteVerificationError,
+	DeployabilityError,
 } from "./errors.js"
 export type { ErrorCode } from "./errors.js"
 export {
@@ -70,6 +71,29 @@ export type {
 	ProcessContract,
 	ProcessTypesOptions,
 } from "./bpmn/process-types.js"
+export {
+	isDeployable,
+	validateDeployable,
+	validateDeployableXml,
+} from "./bpmn/zeebe-validate/index.js"
+export type {
+	ValidateDeployableOptions,
+	ZeebeLimits,
+	ZeebeResolver,
+} from "./bpmn/zeebe-validate/index.js"
+export { assertDeployable, assertDeployableXml, PLACEHOLDERS } from "./bpmn/zeebe-validate/gate.js"
+export type {
+	AssertDeployableOptions,
+	DeployableResult,
+	PlaceholderField,
+	PlaceholderFill,
+} from "./bpmn/zeebe-validate/gate.js"
+export {
+	ZEEBE_LATEST_VERSION,
+	ZEEBE_RULES,
+	ZEEBE_VERIFIED_VERSION,
+} from "./generated/zeebe-rules.js"
+export type { ZeebeRuleMeta, ZeebeRuleName } from "./generated/zeebe-rules.js"
 export { detectExecutionPlatform, lintCategories, lintDiagram } from "./bpmn/lint.js"
 export type {
 	DetectedPlatform,
@@ -138,6 +162,8 @@ export { DiagramBuilder, ProcessBuilder } from "./bpmn/bpmn-builder.js"
 export type {
 	BranchBuilder,
 	BuildOptions,
+	BuildGateOptions,
+	SendTaskOptions,
 	MessageFlowOptions,
 	ParticipantOptions,
 	DiagramMessageOptions,
@@ -529,6 +555,7 @@ export type {
 	CompactFlow,
 	CompactNote,
 	CompactProcess,
+	ExpandOptions,
 } from "./bpmn/compact.js"
 export {
 	compilePlan,

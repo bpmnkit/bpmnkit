@@ -8,6 +8,8 @@ const { Bpmn, resetIdCounter } = await import(
 )
 
 const svc = (name) => ({ name, taskType: "work" })
+// The scenarios pin the scope builders' model shapes, not deployability.
+const NO_GATE = { validate: false }
 
 const scenarios = {
 	branches: () =>
@@ -36,7 +38,7 @@ const scenarios = {
 					.dataAssociation("lc", "dr", "input"),
 			)
 			.endEvent("end")
-			.build(),
+			.build(NO_GATE),
 	subProcesses: () =>
 		Bpmn.createProcess("p")
 			.startEvent("s")
@@ -73,38 +75,38 @@ const scenarios = {
 			.branch("x", (b) =>
 				b.eventSubProcess("ev", (e) => e.startEvent("evs").endEvent("eve")).endEvent("xe"),
 			)
-			.build(),
+			.build(NO_GATE),
 	dupInSub: () =>
 		Bpmn.createProcess("p")
 			.startEvent("s")
 			.subProcess("sp", (sub) => sub.task("a").task("a"))
-			.build(),
+			.build(NO_GATE),
 	elementMissing: () =>
 		Bpmn.createProcess("p")
 			.startEvent("s")
 			.subProcess("sp", (sub) => sub.element("nope"))
-			.build(),
+			.build(NO_GATE),
 	annotationNoCursor: () =>
 		Bpmn.createProcess("p")
 			.startEvent("s")
 			.subProcess("sp", (sub) => sub.textAnnotation("x"))
-			.build(),
+			.build(NO_GATE),
 	boundaryNoTask: () =>
 		Bpmn.createProcess("p")
 			.startEvent("s")
 			.subProcess("sp", (sub) => sub.withBoundary("b", { timerDuration: "PT1S" }, () => {}))
-			.build(),
+			.build(NO_GATE),
 	branchWithoutGateway: () =>
 		Bpmn.createProcess("p")
 			.startEvent("s")
 			.subProcess("sp", (sub) => sub.task("a").branch("x", () => {}))
-			.build(),
+			.build(NO_GATE),
 	boundaryAtGateway: () =>
 		Bpmn.createProcess("p")
 			.startEvent("s")
 			.exclusiveGateway("gw")
 			.branch("x", (b) => b.withBoundary("b", { timerDuration: "PT1S" }, () => {}))
-			.build(),
+			.build(NO_GATE),
 	dupEventSubInBranch: () =>
 		Bpmn.createProcess("p")
 			.startEvent("s")
@@ -115,14 +117,14 @@ const scenarios = {
 					.eventSubProcess("t", (e) => e.startEvent("a", { timerDuration: "PT1H" }))
 					.endEvent("e"),
 			)
-			.build(),
+			.build(NO_GATE),
 	dupAcrossBranches: () =>
 		Bpmn.createProcess("p")
 			.startEvent("s")
 			.exclusiveGateway("gw")
 			.branch("x", (b) => b.task("t"))
 			.branch("y", (b) => b.task("t"))
-			.build(),
+			.build(NO_GATE),
 }
 
 const out = {}

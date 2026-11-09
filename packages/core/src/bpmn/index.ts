@@ -1,10 +1,11 @@
-import { ValidationError } from "../errors.js"
+import { DeployabilityError } from "../errors.js"
 import { applyAutoLayout } from "./auto-layout.js"
 import { DiagramBuilder, ProcessBuilder } from "./bpmn-builder.js"
 import type { BpmnDefinitions } from "./bpmn-model.js"
 import { parseBpmn } from "./bpmn-parser.js"
 import { serializeBpmn } from "./bpmn-serializer.js"
-import { lintDiagram } from "./lint.js"
+import { normalizeCamundaVersion } from "./camunda-compat.js"
+import { assertDeployable, targetsCamunda8 } from "./zeebe-validate/gate.js"
 
 /** A minimal 3-element BPMN diagram useful for first-launch or "New Diagram" defaults. */
 export const SAMPLE_BPMN_XML = `<?xml version="1.0" encoding="UTF-8"?>
@@ -76,8 +77,16 @@ export const SAMPLE_BPMN_XML = `<?xml version="1.0" encoding="UTF-8"?>
  */
 /** Options for {@link Bpmn.export}. */
 export interface ExportOptions {
-	/** Lint before writing: `"warn"` logs deploy errors, `"error"` throws; `false` (default) skips. */
-	validate?: "warn" | "error" | false
+	/**
+	 * Whether to refuse a model Zeebe would reject on deploy (see `assertDeployable`):
+	 * - `"auto"` (default): throws a `DeployabilityError` when the model targets Camunda 8
+	 *   (`modeler:executionPlatform="Camunda Cloud"`), checked for its
+	 *   `executionPlatformVersion`; a model for another engine is not checked.
+	 * - `"error"`: throws whatever the platform.
+	 * - `"warn"`: checks whatever the platform and logs the error's message with `console.warn`.
+	 * - `false`: no check, e.g. for a work-in-progress diagram an editor saves.
+	 */
+	validate?: "auto" | "error" | "warn" | false
 }
 
 export const Bpmn = {
@@ -166,8 +175,10 @@ export const Bpmn = {
 	 * Serialise a {@link BpmnDefinitions} model back to BPMN 2.0 XML.
 	 *
 	 * @param definitions - The typed BPMN model to export.
-	 * @param options - `validate: "warn" | "error"` lints first and reports what a deploy would reject (default `false`: no lint).
+	 * @param options - `validate`: `"auto"` (default) refuses a Camunda 8 model Zeebe would reject,
+	 *   `"error"` refuses any such model, `"warn"` logs instead, `false` skips the check.
 	 * @returns A BPMN 2.0 XML string.
+	 * @throws {DeployabilityError} When the check runs, fails, and `validate` is not `"warn"`.
 	 *
 	 * @example
 	 * ```typescript
@@ -176,18 +187,16 @@ export const Bpmn = {
 	 * ```
 	 */
 	export(definitions: BpmnDefinitions, options: ExportOptions = {}): string {
-		const mode = options.validate ?? false
-		if (mode !== false) {
-			// Only the errors a Camunda 8 deploy would reject; an engine-neutral model is not judged.
-			const errors = lintDiagram(definitions).diagnostics.filter((d) => d.severity === "error")
-			if (errors.length > 0) {
-				const text = errors
-					.map((d) => `${d.id} [${d.elementIds.join(", ")}]: ${d.message} Fix: ${d.suggestion}`)
-					.join("\n")
-				if (mode === "error") {
-					throw new ValidationError(`Bpmn.export: ${errors.length} deploy error(s):\n${text}`)
-				}
-				console.warn(`Bpmn.export: ${errors.length} deploy error(s):\n${text}`)
+		const mode = options.validate ?? "auto"
+		if (mode !== false && (mode !== "auto" || targetsCamunda8(definitions))) {
+			const camundaVersion = normalizeCamundaVersion(
+				definitions.unknownAttributes["modeler:executionPlatformVersion"],
+			)
+			try {
+				assertDeployable(definitions, { camundaVersion })
+			} catch (err) {
+				if (mode !== "warn" || !(err instanceof DeployabilityError)) throw err
+				console.warn(err.message)
 			}
 		}
 		return serializeBpmn(definitions)

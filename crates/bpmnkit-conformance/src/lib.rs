@@ -9,12 +9,15 @@ pub mod compat;
 mod dmn;
 mod feel;
 mod form;
+pub mod gate;
 pub mod layout;
 pub mod lint;
 pub mod migrate;
 pub mod optimize;
+pub mod sha256;
 pub mod text;
 pub mod tooling;
+pub mod validate;
 mod value;
 
 pub use bpmn::{
@@ -184,7 +187,7 @@ pub fn run_all(dir: &Path) -> Result<Vec<(String, bool)>, String> {
     );
     type Ids = fn(&Path) -> Vec<String>;
     type Check = fn(&Path, &str) -> Result<(), String>;
-    let tooling: [(Ids, Check); 7] = [
+    let tooling: [(Ids, Check); 9] = [
         (lint::case_ids, lint::check_case),
         (optimize::case_ids, optimize::check_case),
         (compat::case_ids, compat::check_case),
@@ -192,6 +195,8 @@ pub fn run_all(dir: &Path) -> Result<Vec<(String, bool)>, String> {
         (builder::case_ids, builder::check_case),
         (text::case_ids, text::check_case),
         (compact::case_ids, compact::check_case),
+        (validate::case_ids, validate::check_case),
+        (gate::case_ids, gate::check_case),
     ];
     for (ids, check) in tooling {
         for id in ids(dir) {

@@ -1,0 +1,2 @@
+Not deployable on Camunda 8.10: 1 error(s)
+- t: Must be exactly one type of timer: timeDuration, timeDate or timeCycle (zeebe/timer-one-value)

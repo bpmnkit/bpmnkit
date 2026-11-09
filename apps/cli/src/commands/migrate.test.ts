@@ -1,7 +1,7 @@
 import { copyFileSync, existsSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
-import { Bpmn, lintDiagram } from "@bpmnkit/core"
+import { Bpmn, assertDeployable, lintDiagram } from "@bpmnkit/core"
 import { beforeEach, describe, expect, it } from "vitest"
 import type { RunContext } from "../types.js"
 import { commandGroups } from "./index.js"
@@ -89,10 +89,10 @@ describe("casen migrate c7", () => {
 	})
 
 	it("writes into --out, creating it", async () => {
-		const input = fixture("claim-handling.bpmn")
+		const input = fixture("invoice-approval.bpmn")
 		const out = join(dir, "c8")
 		expect((await run([input], { out })).error).toBeUndefined()
-		expect(existsSync(join(out, "claim-handling.bpmn"))).toBe(true)
+		expect(existsSync(join(out, "invoice-approval.bpmn"))).toBe(true)
 	})
 
 	it("never overwrites without --force", async () => {
@@ -113,8 +113,8 @@ describe("casen migrate c7", () => {
 		expect(existsSync(join(dir, "invoice-approval.c8.bpmn"))).toBe(false)
 
 		const open = fixture("order-fulfillment.bpmn")
-		const result = await run([open], { check: true })
-		expect(result.error?.message).toBe("Migration check failed: 10 manual or unsupported findings")
+		const result = await run([open], { check: true, placeholders: true })
+		expect(result.error?.message).toBe("Migration check failed: 12 manual or unsupported findings")
 		expect(existsSync(join(dir, "order-fulfillment.c8.bpmn"))).toBe(false)
 	})
 
@@ -127,7 +127,10 @@ describe("casen migrate c7", () => {
 	})
 
 	it("prints JSON with counts and findings", async () => {
-		const { printed } = await run([fixture("claim-handling.bpmn")], { format: "json" })
+		const { printed } = await run([fixture("claim-handling.bpmn")], {
+			format: "json",
+			placeholders: true,
+		})
 		const [result] = printed[0] as Array<{
 			output: string
 			counts: Record<string, number>
@@ -140,6 +143,47 @@ describe("casen migrate c7", () => {
 				(result?.counts.manual ?? 0) +
 				(result?.counts.unsupported ?? 0),
 		)
+	})
+
+	it("refuses a model Camunda 8 would not deploy, writing nothing and saying why", async () => {
+		const input = fixture("order-fulfillment.bpmn")
+		const { printed, error } = await run([input])
+		expect(error?.message).toBe(
+			"1 of 1 file would not deploy on Camunda 8 — pass --placeholders or --no-validate",
+		)
+		expect(existsSync(join(dir, "order-fulfillment.c8.bpmn"))).toBe(false)
+		const text = String(printed[0])
+		expect(text).toContain("  ✖ Not deployable on Camunda 8.10: 2 error(s)")
+		expect(text).toContain(
+			"    - Message_PaymentConfirmed: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)",
+		)
+		expect(text).toContain("Pass --placeholders")
+		// The report still says what is left to do.
+		expect(text).toContain("19 convertible · 8 manual · 2 unsupported")
+
+		const json = await run([input], { format: "json", check: true })
+		const [result] = json.printed[0] as Array<{ refused?: boolean; error?: string }>
+		expect(result?.refused).toBe(true)
+		expect(result?.error).toMatch(/^Not deployable on Camunda 8\.10/)
+	})
+
+	it("--placeholders writes a deployable model and lists each fill", async () => {
+		const { printed, error } = await run([fixture("order-fulfillment.bpmn")], {
+			placeholders: true,
+		})
+		expect(error).toBeUndefined()
+		const converted = Bpmn.parse(readFileSync(join(dir, "order-fulfillment.c8.bpmn"), "utf-8"))
+		expect(() => assertDeployable(converted)).not.toThrow()
+		const text = String(printed[0])
+		expect(text).toContain("19 convertible · 10 manual · 2 unsupported")
+		expect(text).toContain("Task_summary  placeholder jobType")
+	})
+
+	it("--no-validate writes the conversion as it is", async () => {
+		const { error } = await run([fixture("order-fulfillment.bpmn")], { validate: false })
+		expect(error).toBeUndefined()
+		const converted = Bpmn.parse(readFileSync(join(dir, "order-fulfillment.c8.bpmn"), "utf-8"))
+		expect(() => assertDeployable(converted)).toThrow(/Not deployable/)
 	})
 
 	it("refuses a model that already targets Camunda 8", async () => {

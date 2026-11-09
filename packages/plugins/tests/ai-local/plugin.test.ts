@@ -103,6 +103,25 @@ describe("createAiLocalPlugin", () => {
 		await settle()
 		expect(s.q("ul.ai-local-notes").querySelectorAll("li").length).toBeGreaterThan(0)
 	})
+	it("lists the deploy gate's lines when the draft would not deploy", async () => {
+		const s = await setup({
+			chunks: [
+				"# Wait\n",
+				"s[start Go] > w[catch:message Reply received | msg=reply] > e[end Done]\n",
+			],
+		})
+		s.type("x")
+		s.run.click()
+		await settle()
+		const notes = [...s.q("ul.ai-local-notes").querySelectorAll("li")].map((li) => li.textContent)
+		expect(
+			notes.some((n) => /^Not deployable on Camunda \d+\.\d+: \d+ error\(s\)$/.test(n ?? "")),
+		).toBe(true)
+		expect(notes).toContain(
+			"- Message_reply: Must have exactly one zeebe:subscription extension element (zeebe/message-subscription)",
+		)
+		expect(s.status.textContent).toBe("Done")
+	})
 	it("creates one session for rapid double clicks", async () => {
 		const s = await setup()
 		s.type("Expense approval")

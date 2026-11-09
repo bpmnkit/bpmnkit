@@ -1,0 +1,4 @@
+{
+  "deployable": false,
+  "deployableReason": "Source uses a C7-style execution listener event type (beforeAll) Zeebe does not know; the round trip keeps it verbatim on purpose."
+}

@@ -1,0 +1,2 @@
+Not deployable on Camunda 8.10: 1 error(s)
+- P: Must have at least one start event (zeebe/process-start-event)

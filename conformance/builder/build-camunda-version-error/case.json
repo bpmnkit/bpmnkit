@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["intermediateCatchEvent","c"],
+		["endEvent","e"],
+		["build",{"camundaVersion":"8.7"}]
+	]
+}

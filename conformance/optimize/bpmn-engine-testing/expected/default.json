@@ -487,6 +487,18 @@
       "processId": "parallel-process",
       "severity": "warning",
       "suggestion": "Add documentation listing the process input variables so callers know the expected contract."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Msg_Confirm"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-subscription",
+      "message": "Must have exactly one zeebe:subscription extension element",
+      "processId": "order-process",
+      "severity": "error",
+      "suggestion": "Add one zeebe:subscription with a correlationKey to the message."
     }
   ],
   "fixes": [],
@@ -495,7 +507,7 @@
       "agentic": 0,
       "connector": 0,
       "data-flow": 2,
-      "deploy": 5,
+      "deploy": 6,
       "extract": 0,
       "feel": 0,
       "feel-syntax": 0,
@@ -505,10 +517,10 @@
       "task-reuse": 0
     },
     "bySeverity": {
-      "error": 6,
+      "error": 7,
       "info": 17,
       "warning": 17
     },
-    "total": 40
+    "total": 41
   }
 }

@@ -132,7 +132,8 @@ describe("boundary event labels and docking (#222)", () => {
 			.withBoundary("esc", escalated, (h) => h.endEvent("ee"))
 			.endEvent("e")
 			.withAutoLayout()
-			.build()
+			// Layout fixture: escalation boundaries on tasks, which Zeebe refuses.
+			.build({ validate: false })
 		const host = shape(defs, "t").bounds
 		const esc = shape(defs, "esc").bounds
 		expect(esc.y + esc.height / 2).toBe(host.y)
@@ -270,7 +271,8 @@ describe("boundary event labels and docking (#222)", () => {
 			names.forEach((name, i) => {
 				b = b.withBoundary(`b${i + 1}`, opts(name, top), (h) => h.endEvent(`x${i + 1}`))
 			})
-			const defs = b.endEvent("e").withAutoLayout().build()
+			// Layout fixture: escalation boundaries on tasks, which Zeebe refuses.
+			const defs = b.endEvent("e").withAutoLayout().build({ validate: false })
 			const where = `${host}, top: ${top}`
 
 			const svg = exportSvg(defs)

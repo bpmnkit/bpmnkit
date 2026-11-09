@@ -1,0 +1,18 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        { "id": "s", "type": "startEvent" },
+        { "id": "lt", "type": "intermediateThrowEvent", "eventType": "link", "linkName": "jump" },
+        { "id": "lc", "type": "intermediateCatchEvent", "eventType": "link", "linkName": "jump" },
+        { "id": "e", "type": "endEvent" }
+      ],
+      "flows": [
+        { "id": "f1", "from": "s", "to": "lt" },
+        { "id": "f2", "from": "lc", "to": "e" }
+      ]
+    }
+  ]
+}

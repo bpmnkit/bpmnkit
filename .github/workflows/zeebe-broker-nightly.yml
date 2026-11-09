@@ -1,0 +1,91 @@
+name: Zeebe broker (nightly)
+
+# Deploys every conformance BPMN, the repros and the broker-only repros to a real Camunda 8
+# engine, one version per job, and compares each outcome with the recorded expectation
+# (scripts/zeebe-broker-check.mjs, tools/zeebe-broker/README.md). This covers what the
+# per-file zeebe-check oracle in ci.yml cannot: the straight-through-loop check, deployment
+# binding and duplicate ids across resources. Mismatches are uploaded as an artifact.
+on:
+  schedule:
+    - cron: "41 2 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zeebe-broker-nightly
+  cancel-in-progress: true
+
+jobs:
+  broker:
+    name: Camunda ${{ matrix.version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # 8.6 / 8.7: the broker image with its embedded gateway (no auth by default).
+          - version: 8.6.42
+            image: camunda/zeebe:8.6.42@sha256:d5fa2a4cc5e4b00605028bac20cc235156f18323e8d06cd64a48a9f84d5be8bd
+            kind: zeebe
+          - version: 8.7.45
+            image: camunda/zeebe:8.7.45@sha256:ebca8bbf082478b22df6eaaa7aad376aff9eef16cc92299f7f77cf19fc5197d6
+            kind: zeebe
+          # 8.8+: the all-in-one, broker only (camunda/zeebe has no 8.10 release).
+          - version: 8.8.46
+            image: camunda/camunda:8.8.46@sha256:8c49eb0f95e84e832f89a75e5214e4bb91553ce4b1e924e2fec8881efcd0c287
+            kind: camunda
+          - version: 8.10.9
+            image: camunda/camunda:8.10.9@sha256:805fbed97b129e9e8619a5d2443438a23f30b02fc4600402242ab0382d7cd3e8
+            kind: camunda
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+
+      - name: Start Camunda ${{ matrix.version }}
+        env:
+          IMAGE: ${{ matrix.image }}
+          KIND: ${{ matrix.kind }}
+        run: |
+          env_args=(-e "JAVA_TOOL_OPTIONS=-Xms512m -Xmx1g")
+          if [ "$KIND" = camunda ]; then
+            env_args+=(
+              -e CAMUNDA_DATA_SECONDARYSTORAGE_TYPE=none
+              -e CAMUNDA_SECURITY_AUTHENTICATION_UNPROTECTEDAPI=true
+              -e CAMUNDA_SECURITY_AUTHORIZATIONS_ENABLED=false
+              -e SPRING_PROFILES_ACTIVE=broker,standalone
+            )
+          fi
+          for attempt in 1 2 3; do
+            docker pull "$IMAGE" && break
+            sleep $((attempt * 10))
+          done
+          docker run -d --name camunda -p 8080:8080 -p 26500:26500 -p 9600:9600 "${env_args[@]}" "$IMAGE"
+
+      - name: Deploy the corpus
+        run: >
+          node scripts/zeebe-broker-check.mjs
+          --version "${{ matrix.version }}"
+          --url http://localhost:8080
+          --ready-timeout 420
+          --out "zeebe-broker-check/${{ matrix.version }}"
+
+      - name: Engine log
+        if: failure()
+        run: docker logs --tail 300 camunda
+
+      - name: Upload results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: zeebe-broker-${{ matrix.version }}
+          path: zeebe-broker-check/${{ matrix.version }}
+          if-no-files-found: ignore
+          retention-days: 14

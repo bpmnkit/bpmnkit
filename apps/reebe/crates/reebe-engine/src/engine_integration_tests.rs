@@ -372,6 +372,7 @@ mod tests {
             r#"<?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
                   xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   targetNamespace="http://bpmn.io/schema/bpmn">
   <bpmn:process id="{process_id}" isExecutable="true">
 {body}
@@ -2134,19 +2135,19 @@ mod tests {
 
     #[tokio::test]
     async fn test_intermediate_catch_signal_waits_for_broadcast() {
-        let bpmn = wrap_process(
+        let bpmn = wrap_definitions(
+            r#"<bpmn:signal id="go-signal" name="go"/>"#,
             "proc",
             r#"
     <bpmn:startEvent id="start"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
     <bpmn:intermediateCatchEvent id="catch-sig">
-      <bpmn:signalEventDefinition signalRef="go-signal"/>
       <bpmn:incoming>f1</bpmn:incoming>
       <bpmn:outgoing>f2</bpmn:outgoing>
+      <bpmn:signalEventDefinition signalRef="go-signal"/>
     </bpmn:intermediateCatchEvent>
     <bpmn:endEvent id="end"><bpmn:incoming>f2</bpmn:incoming></bpmn:endEvent>
     <bpmn:sequenceFlow id="f1" sourceRef="start"     targetRef="catch-sig"/>
     <bpmn:sequenceFlow id="f2" sourceRef="catch-sig" targetRef="end"/>
-    <bpmn:signal id="go-signal" name="go"/>
 "#,
         );
         let h = Harness::new();
@@ -2178,36 +2179,36 @@ mod tests {
     #[tokio::test]
     async fn test_intermediate_throw_signal_resumes_catching_process() {
         // Catching process: waits for signal "ping"
-        let catcher_bpmn = wrap_process(
+        let catcher_bpmn = wrap_definitions(
+            r#"<bpmn:signal id="ping-sig" name="ping"/>"#,
             "catcher",
             r#"
     <bpmn:startEvent id="c-start"><bpmn:outgoing>cf1</bpmn:outgoing></bpmn:startEvent>
     <bpmn:intermediateCatchEvent id="c-catch">
-      <bpmn:signalEventDefinition signalRef="ping-sig"/>
       <bpmn:incoming>cf1</bpmn:incoming>
       <bpmn:outgoing>cf2</bpmn:outgoing>
+      <bpmn:signalEventDefinition signalRef="ping-sig"/>
     </bpmn:intermediateCatchEvent>
     <bpmn:endEvent id="c-end"><bpmn:incoming>cf2</bpmn:incoming></bpmn:endEvent>
     <bpmn:sequenceFlow id="cf1" sourceRef="c-start"  targetRef="c-catch"/>
     <bpmn:sequenceFlow id="cf2" sourceRef="c-catch"  targetRef="c-end"/>
-    <bpmn:signal id="ping-sig" name="ping"/>
 "#,
         );
 
         // Throwing process: immediately throws signal "ping"
-        let thrower_bpmn = wrap_process(
+        let thrower_bpmn = wrap_definitions(
+            r#"<bpmn:signal id="ping-sig" name="ping"/>"#,
             "thrower",
             r#"
     <bpmn:startEvent id="t-start"><bpmn:outgoing>tf1</bpmn:outgoing></bpmn:startEvent>
     <bpmn:intermediateThrowEvent id="t-throw">
-      <bpmn:signalEventDefinition signalRef="ping-sig"/>
       <bpmn:incoming>tf1</bpmn:incoming>
       <bpmn:outgoing>tf2</bpmn:outgoing>
+      <bpmn:signalEventDefinition signalRef="ping-sig"/>
     </bpmn:intermediateThrowEvent>
     <bpmn:endEvent id="t-end"><bpmn:incoming>tf2</bpmn:incoming></bpmn:endEvent>
     <bpmn:sequenceFlow id="tf1" sourceRef="t-start" targetRef="t-throw"/>
     <bpmn:sequenceFlow id="tf2" sourceRef="t-throw" targetRef="t-end"/>
-    <bpmn:signal id="ping-sig" name="ping"/>
 "#,
         );
 
@@ -2243,11 +2244,11 @@ mod tests {
             r#"
     <bpmn:startEvent id="start"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
     <bpmn:intermediateCatchEvent id="timer-catch">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
       <bpmn:timerEventDefinition>
         <bpmn:timeDuration>PT5S</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
-      <bpmn:incoming>f1</bpmn:incoming>
-      <bpmn:outgoing>f2</bpmn:outgoing>
     </bpmn:intermediateCatchEvent>
     <bpmn:endEvent id="end"><bpmn:incoming>f2</bpmn:incoming></bpmn:endEvent>
     <bpmn:sequenceFlow id="f1" sourceRef="start"       targetRef="timer-catch"/>
@@ -2278,19 +2279,21 @@ mod tests {
 
     #[tokio::test]
     async fn test_intermediate_catch_message_waits_for_publish() {
-        let bpmn = wrap_process(
+        let bpmn = wrap_definitions(
+            r#"<bpmn:message id="order-msg" name="order-ready">
+    <bpmn:extensionElements><zeebe:subscription correlationKey='="k"'/></bpmn:extensionElements>
+  </bpmn:message>"#,
             "proc",
             r#"
     <bpmn:startEvent id="start"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
     <bpmn:intermediateCatchEvent id="msg-catch">
-      <bpmn:messageEventDefinition messageRef="order-msg"/>
       <bpmn:incoming>f1</bpmn:incoming>
       <bpmn:outgoing>f2</bpmn:outgoing>
+      <bpmn:messageEventDefinition messageRef="order-msg"/>
     </bpmn:intermediateCatchEvent>
     <bpmn:endEvent id="end"><bpmn:incoming>f2</bpmn:incoming></bpmn:endEvent>
     <bpmn:sequenceFlow id="f1" sourceRef="start"     targetRef="msg-catch"/>
     <bpmn:sequenceFlow id="f2" sourceRef="msg-catch" targetRef="end"/>
-    <bpmn:message id="order-msg" name="order-ready"/>
 "#,
         );
         let h = Harness::new();
@@ -2303,7 +2306,7 @@ mod tests {
             "process should wait at message catch event"
         );
 
-        h.publish_message("order-ready", "", serde_json::json!({}))
+        h.publish_message("order-ready", "k", serde_json::json!({}))
             .await;
 
         assert_eq!(h.process_state("proc").as_deref(), Some("COMPLETED"));
@@ -2464,7 +2467,10 @@ mod tests {
 
     #[tokio::test]
     async fn test_receive_task_waits_for_message() {
-        let bpmn = wrap_process(
+        let bpmn = wrap_definitions(
+            r#"<bpmn:message id="payment-received" name="payment-received">
+    <bpmn:extensionElements><zeebe:subscription correlationKey='="k"'/></bpmn:extensionElements>
+  </bpmn:message>"#,
             "proc",
             r#"
     <bpmn:startEvent id="start"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
@@ -2475,7 +2481,6 @@ mod tests {
     <bpmn:endEvent id="end"><bpmn:incoming>f2</bpmn:incoming></bpmn:endEvent>
     <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="recv1"/>
     <bpmn:sequenceFlow id="f2" sourceRef="recv1" targetRef="end"/>
-    <bpmn:message id="payment-received" name="payment-received"/>
 "#,
         );
         let h = Harness::new();
@@ -2488,7 +2493,7 @@ mod tests {
             "process should wait at receive task"
         );
 
-        h.publish_message("payment-received", "", serde_json::json!({}))
+        h.publish_message("payment-received", "k", serde_json::json!({}))
             .await;
 
         assert_eq!(h.process_state("proc").as_deref(), Some("COMPLETED"));
@@ -2736,14 +2741,15 @@ mod tests {
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
                   xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
                   targetNamespace="http://bpmn.io/schema/bpmn">
-  <bpmn:message id="M_go" name="go"/>
+  <bpmn:message id="M_go" name="go">
+    <bpmn:extensionElements><zeebe:subscription correlationKey="=orderId"/></bpmn:extensionElements>
+  </bpmn:message>
   <bpmn:message id="M_paid" name="paid">
     <bpmn:extensionElements><zeebe:subscription correlationKey="=orderId"/></bpmn:extensionElements>
   </bpmn:message>
   <bpmn:process id="proc" isExecutable="true">
     <bpmn:startEvent id="start"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
     <bpmn:intermediateCatchEvent id="wait">
-      <bpmn:extensionElements><zeebe:subscription correlationKey="=orderId"/></bpmn:extensionElements>
       <bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing>
       <bpmn:messageEventDefinition messageRef="M_go"/>
     </bpmn:intermediateCatchEvent>
@@ -2801,6 +2807,7 @@ mod tests {
             r#"<?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
                   xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                   targetNamespace="http://bpmn.io/schema/bpmn">
 {roots}
   <bpmn:process id="{process_id}" isExecutable="true">
@@ -5419,8 +5426,8 @@ mod tests {
                 b = task("b", "b", "to-b", "b-join"),
                 after = task("after", "after", "f-after", "f-end"),
                 f0 = flow("f0", "start", "split"),
-                to_a = flow("to-a", "split", "a"),
-                to_b = flow("to-b", "split", "b"),
+                to_a = r#"<bpmn:sequenceFlow id="to-a" sourceRef="split" targetRef="a"><bpmn:conditionExpression>=true</bpmn:conditionExpression></bpmn:sequenceFlow>"#,
+                to_b = r#"<bpmn:sequenceFlow id="to-b" sourceRef="split" targetRef="b"><bpmn:conditionExpression>=true</bpmn:conditionExpression></bpmn:sequenceFlow>"#,
                 ac = flow("a-check", "a", "again"),
                 to_late = flow("to-late", "late-timer", "late"),
                 lj = flow("late-join", "late", "join"),
@@ -5862,8 +5869,8 @@ mod tests {
                 throw = link_throw("throw", "L", "a-link"),
                 catch = link_catch("catch", "L", "l-join"),
                 f0 = flow("f0", "start", "split"),
-                ta = flow("to-a", "split", "a"),
-                tb = flow("to-b", "split", "b"),
+                ta = r#"<bpmn:sequenceFlow id="to-a" sourceRef="split" targetRef="a"><bpmn:conditionExpression>=true</bpmn:conditionExpression></bpmn:sequenceFlow>"#,
+                tb = r#"<bpmn:sequenceFlow id="to-b" sourceRef="split" targetRef="b"><bpmn:conditionExpression>=true</bpmn:conditionExpression></bpmn:sequenceFlow>"#,
                 al = flow("a-link", "a", "throw"),
                 lj = flow("l-join", "catch", "join"),
                 bj = flow("b-join", "b", "join"),
@@ -5974,8 +5981,15 @@ mod tests {
     <bpmn:boundaryEvent id="comp-{id}" attachedToRef="{id}"><bpmn:compensateEventDefinition/></bpmn:boundaryEvent>
     <bpmn:serviceTask id="undo-{id}" isForCompensation="true">
       <bpmn:extensionElements><zeebe:taskDefinition type="undo-{id}"/></bpmn:extensionElements>
-    </bpmn:serviceTask>
-    <bpmn:association id="assoc-{id}" associationDirection="One" sourceRef="comp-{id}" targetRef="undo-{id}"/>"#
+    </bpmn:serviceTask>"#
+        )
+    }
+
+    /// The association from `compensable`'s boundary event to its handler. It is an
+    /// artifact, which the BPMN schema orders after every flow element of its scope.
+    fn comp_assoc(id: &str) -> String {
+        format!(
+            r#"<bpmn:association id="assoc-{id}" associationDirection="One" sourceRef="comp-{id}" targetRef="undo-{id}"/>"#
         )
     }
 
@@ -6006,7 +6020,10 @@ mod tests {
     {a}{b}{throw}{after}
     <bpmn:endEvent id="end"><bpmn:incoming>f5</bpmn:incoming></bpmn:endEvent>
     {f1}{f2}{f3}{f4}{f5}
+    {aa}{ab}
 "#,
+                aa = comp_assoc("a"),
+                ab = comp_assoc("b"),
                 a = compensable(
                     "a",
                     "f1",
@@ -6117,7 +6134,9 @@ mod tests {
     <bpmn:endEvent id="end-a"><bpmn:incoming>a-end</bpmn:incoming></bpmn:endEvent>
     <bpmn:endEvent id="end-c"><bpmn:incoming>t-end</bpmn:incoming></bpmn:endEvent>
     {f0}{ta}{tc}{ae}{ct}{te}
+    {aa}
 "#,
+                aa = comp_assoc("a"),
                 a = compensable("a", "to-a", "a-end", ""),
                 c = task("c", "c", "to-c", "c-throw"),
                 throw = compensation_throw("compensate", "c-throw", "t-end", None),
@@ -6159,12 +6178,13 @@ mod tests {
       <bpmn:startEvent id="s-start"><bpmn:outgoing>s1</bpmn:outgoing></bpmn:startEvent>
       {a}
       <bpmn:endEvent id="s-end"><bpmn:incoming>s2</bpmn:incoming></bpmn:endEvent>
-      {s1}{s2}
+      {s1}{s2}{aa}
     </bpmn:subProcess>
     {throw}
     <bpmn:endEvent id="end"><bpmn:incoming>f3</bpmn:incoming><bpmn:compensateEventDefinition/></bpmn:endEvent>
     {f1}{f2}{f3}
 "#,
+                aa = comp_assoc("a"),
                 a = compensable("a", "s1", "s2", ""),
                 s1 = flow("s1", "s-start", "a"),
                 s2 = flow("s2", "a", "s-end"),
@@ -6210,8 +6230,9 @@ mod tests {
       <bpmn:endEvent id="undo-all"><bpmn:incoming>e1</bpmn:incoming><bpmn:compensateEventDefinition/></bpmn:endEvent>
       <bpmn:sequenceFlow id="e1" sourceRef="err-start" targetRef="undo-all"/>
     </bpmn:subProcess>
-    {f1}{f2}{f3}
+    {f1}{f2}{f3}{aa}
 "#,
+                aa = comp_assoc("a"),
                 a = compensable("a", "f1", "f2", ""),
                 b = task("b", "b", "f2", "f3"),
                 f1 = flow("f1", "start", "a"),
@@ -6257,7 +6278,7 @@ mod tests {
       <bpmn:startEvent id="s-start"><bpmn:outgoing>s1</bpmn:outgoing></bpmn:startEvent>
       {a}{b}
       <bpmn:endEvent id="s-end"><bpmn:incoming>s3</bpmn:incoming></bpmn:endEvent>
-      {s1}{s2}{s3}
+      {s1}{s2}{s3}{aa}
     </bpmn:subProcess>
     <bpmn:boundaryEvent id="stopped" attachedToRef="sub"><bpmn:outgoing>f-stop</bpmn:outgoing>
       <bpmn:signalEventDefinition signalRef="Sig_stop"/></bpmn:boundaryEvent>
@@ -6266,6 +6287,7 @@ mod tests {
     <bpmn:endEvent id="end-stop"><bpmn:incoming>f-done</bpmn:incoming></bpmn:endEvent>
     {f1}{f2}{fs}{fd}
 "#,
+                aa = comp_assoc("a"),
                 a = compensable("a", "s1", "s2", ""),
                 b = task("b", "b", "s2", "s3"),
                 s1 = flow("s1", "s-start", "a"),
@@ -6298,13 +6320,16 @@ mod tests {
     <bpmn:startEvent id="start"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
     {a}{throw}
     <bpmn:endEvent id="end"><bpmn:incoming>f3</bpmn:incoming></bpmn:endEvent>
-    {f1}{f2}{f3}
+    {f1}{f2}{f3}{aa}
 "#,
-            a = compensable("a", "f1", "f2", "").replace(
-                "</bpmn:extensionElements>\n      <bpmn:incoming>f1",
-                "</bpmn:extensionElements>\n      <bpmn:multiInstanceLoopCharacteristics><bpmn:extensionElements>\
+            aa = comp_assoc("a"),
+            // loopCharacteristics follow incoming/outgoing in the schema's activity order.
+            a = compensable("a", "f1", "f2", "").replacen(
+                "</bpmn:outgoing>\n    </bpmn:serviceTask>",
+                "</bpmn:outgoing>\n      <bpmn:multiInstanceLoopCharacteristics><bpmn:extensionElements>\
                  <zeebe:loopCharacteristics inputCollection=\"=[1,2]\"/></bpmn:extensionElements>\
-                 </bpmn:multiInstanceLoopCharacteristics>\n      <bpmn:incoming>f1",
+                 </bpmn:multiInstanceLoopCharacteristics>\n    </bpmn:serviceTask>",
+                1,
             ),
             throw = compensation_throw("compensate", "f2", "f3", None),
             f1 = flow("f1", "start", "a"), f2 = flow("f2", "a", "compensate"), f3 = flow("f3", "compensate", "end"),
@@ -6327,7 +6352,11 @@ mod tests {
     async fn test_invalid_compensation_models_fail_deployment() {
         let h = Harness::new();
         let error = deploy_error(&h, &compensate_two(Some("after"))).await;
-        assert!(error.contains("activityRef 'after'"), "{error}");
+        // Zeebe's wording for a compensation activityRef that has no handler.
+        assert!(
+            error.contains("The referenced compensation activity 'after' must have either"),
+            "{error}"
+        );
 
         let esp = wrap_process(
             "proc",
@@ -6343,7 +6372,7 @@ mod tests {
         );
         let error = deploy_error(&h, &esp).await;
         assert!(
-            error.contains("compensation start events are not supported"),
+            error.contains("Start events in event subprocesses must be one of"),
             "{error}"
         );
     }
@@ -6481,7 +6510,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_parallel_gateway_ignores_conditions_on_its_flows() {
+    async fn test_a_condition_on_a_parallel_gateway_flow_is_rejected_at_deploy() {
         let bpmn = wrap_process(
             "proc",
             &format!(
@@ -6500,18 +6529,20 @@ mod tests {
                 f0 = flow("f0", "start", "fork")
             ),
         );
+        // Zeebe's validator refuses what its runtime would ignore.
         let h = Harness::new();
-        h.deploy(&bpmn).await;
-        h.start("proc", serde_json::json!({})).await;
+        let error = deploy_error(&h, &bpmn).await;
+        assert!(error.contains("Element: fork"), "{error}");
         assert!(
-            h.activatable_job("a").is_some(),
-            "the condition on a parallel gateway's flow is ignored"
+            error.contains(
+                "Conditional sequence flows are only supported at exclusive or inclusive gateway"
+            ),
+            "{error}"
         );
-        assert!(h.activatable_job("b").is_some());
     }
 
     #[tokio::test]
-    async fn test_io_mapping_incident_retries_the_same_element_instance() {
+    async fn test_io_mapping_with_an_unparsable_expression_is_rejected_at_deploy() {
         let bpmn = wrap_process(
             "proc",
             r#"
@@ -6528,35 +6559,16 @@ mod tests {
     <bpmn:sequenceFlow id="f2" sourceRef="task" targetRef="end"/>
 "#,
         );
-        let h = Harness::new();
-        h.deploy(&bpmn).await;
         // A runtime failure such as `10 / 0` is null in Zeebe, not an incident (see the next
-        // test). Reebe checks no expression at deployment, so a syntax error fails the mapping
-        // here: a multi-word name only parses once the variable exists.
-        h.start("proc", serde_json::json!({})).await;
-        let incident = h.incidents().remove(0);
-        assert_eq!(incident.error_type, "IO_MAPPING_ERROR");
-        assert_eq!(element_states(&h, "task"), vec!["ACTIVATING"]);
-
-        set_variables(&h, serde_json::json!({ "my divisor": 2 })).await;
-        resolve_incident(&h, incident.key).await;
-        assert_eq!(
-            element_states(&h, "task"),
-            vec!["ACTIVATED"],
-            "no second element instance, none left activating"
+        // test), and Zeebe parses every expression at deployment, so a mapping that raises
+        // an IO_MAPPING_ERROR incident can only come from a model it rejects.
+        let h = Harness::new();
+        let error = deploy_error(&h, &bpmn).await;
+        assert!(error.contains("Element: task"), "{error}");
+        assert!(
+            error.contains("failed to parse expression 'my divisor * 5'"),
+            "{error}"
         );
-        let task_key = h
-            .backend
-            .list_element_instances()
-            .into_iter()
-            .find(|e| e.element_id == "task")
-            .unwrap()
-            .key;
-        assert_eq!(task_key, incident.element_instance_key);
-        let job = h.activatable_job("work").unwrap();
-        assert_eq!(job.variables["share"].as_f64(), Some(10.0));
-        h.complete_job("work", serde_json::json!({})).await;
-        assert_eq!(h.process_state("proc").as_deref(), Some("COMPLETED"));
     }
 
     #[tokio::test]
@@ -6595,10 +6607,10 @@ mod tests {
     <bpmn:startEvent id="start"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
     <bpmn:serviceTask id="task">
       <bpmn:extensionElements><zeebe:taskDefinition type="work"/></bpmn:extensionElements>
+      <bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics><bpmn:extensionElements>
         <zeebe:loopCharacteristics inputCollection="=items"/>
       </bpmn:extensionElements></bpmn:multiInstanceLoopCharacteristics>
-      <bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="end"><bpmn:incoming>f2</bpmn:incoming></bpmn:endEvent>
     <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="task"/>
@@ -6754,7 +6766,7 @@ mod tests {
         );
         let h = Harness::new();
         let error = deploy_error(&h, &bpmn).await;
-        assert!(error.contains("Element 'complex'"), "{error}");
+        assert!(error.contains("Element: complex"), "{error}");
         assert!(error.contains("Elements of type 'ComplexGateway' are currently not supported. Please refer to the documentation"), "{error}");
     }
 
@@ -6995,19 +7007,25 @@ mod tests {
     /// `ad_hoc_tools` with a non-interrupting event sub-process `esp` started by the
     /// signal `nudge`, and `completionCondition` `condition`.
     fn ad_hoc_tools_with_event_sub_process(condition: &str) -> String {
+        // The schema puts the completion condition after the flow elements, and a signal
+        // is a root element.
         ad_hoc_tools(
             "",
             &format!(
                 r#"
-      <bpmn:completionCondition xsi:type="bpmn:tFormalExpression">{condition}</bpmn:completionCondition>
       <bpmn:subProcess id="esp" triggeredByEvent="true">
         <bpmn:startEvent id="esp-start" isInterrupting="false"><bpmn:outgoing>e1</bpmn:outgoing>
           <bpmn:signalEventDefinition signalRef="S_nudge"/></bpmn:startEvent>
         <bpmn:endEvent id="esp-end"><bpmn:incoming>e1</bpmn:incoming></bpmn:endEvent>
         <bpmn:sequenceFlow id="e1" sourceRef="esp-start" targetRef="esp-end"/>
       </bpmn:subProcess>
-      <bpmn:signal id="S_nudge" name="nudge"/>"#
+      <bpmn:completionCondition xsi:type="bpmn:tFormalExpression">{condition}</bpmn:completionCondition>"#
             ),
+        )
+        .replace(
+            "<bpmn:process ",
+            r#"<bpmn:signal id="S_nudge" name="nudge"/>
+  <bpmn:process "#,
         )
     }
 
@@ -7336,10 +7354,11 @@ mod tests {
             Some("Expected result of the expression 'orderValue >= 100' to be 'BOOLEAN', but was 'NULL'. The evaluation reported the following warnings:\n[NOT_COMPARABLE] Can't compare '\"99\"' with '100'"),
         );
 
-        // A value of another type, and an expression that fails, raise it too.
+        // A value of another type, and an expression that fails (a call of an unknown
+        // function parses, so Zeebe accepts the deployment), raise it too.
         for (condition, message) in [
             ("=\"yes\"", "Expected result of the expression '\"yes\"' to be 'BOOLEAN', but was 'STRING'."),
-            ("=no such function(1)", "Expected result of the expression 'no such function(1)' to be 'BOOLEAN', but it failed"),
+            ("=no_such_function(1)", "Expected result of the expression 'no_such_function(1)' to be 'BOOLEAN', but was 'NULL'"),
         ] {
             let h = Harness::new();
             h.deploy(&gateway_with_condition(false, condition)).await;
@@ -7358,9 +7377,9 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_conditions_on_an_activity_s_outgoing_flows_are_ignored_as_in_zeebe() {
-        // Zeebe takes every outgoing flow of an activity; it evaluates conditions only
-        // at exclusive and inclusive gateways.
+    async fn test_conditions_on_an_activity_s_outgoing_flows_are_rejected_at_deploy() {
+        // Zeebe evaluates conditions only at exclusive and inclusive gateways, and its
+        // validator refuses a condition anywhere else.
         let bpmn = wrap_process(
             "proc",
             &format!(
@@ -7388,12 +7407,14 @@ mod tests {
             ),
         );
         let h = Harness::new();
-        h.deploy(&bpmn).await;
-        h.start("proc", serde_json::json!({})).await;
-        h.complete_job("work", serde_json::json!({})).await;
-        assert!(h.incidents().is_empty());
-        assert!(h.activatable_job("a").is_some());
-        assert!(h.activatable_job("b").is_some());
+        let error = deploy_error(&h, &bpmn).await;
+        assert!(error.contains("Element: work"), "{error}");
+        assert!(
+            error.contains(
+                "Conditional sequence flows are only supported at exclusive or inclusive gateway"
+            ),
+            "{error}"
+        );
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -7759,8 +7780,9 @@ mod tests {
       <bpmn:endEvent id="undo-all"><bpmn:incoming>e1</bpmn:incoming><bpmn:compensateEventDefinition/></bpmn:endEvent>
       <bpmn:sequenceFlow id="e1" sourceRef="err-start" targetRef="undo-all"/>
     </bpmn:subProcess>
-    {f1}{f2}{f3}
+    {f1}{f2}{f3}{aa}
 "#,
+                aa = comp_assoc("a"),
                 a = compensable("a", "f1", "f2", ""),
                 b = task("b", "b", "f2", "f3"),
                 f1 = flow("f1", "start", "a"),
@@ -7811,12 +7833,14 @@ mod tests {
       </bpmn:startEvent>
       {c}
       <bpmn:endEvent id="undo-all"><bpmn:incoming>e2</bpmn:incoming><bpmn:compensateEventDefinition/></bpmn:endEvent>
-      {e1}{e2}
+      {e1}{e2}{ac}
     </bpmn:subProcess>
-    {f1}{f2}{f3}
+    {f1}{f2}{f3}{aa}
 "#,
+                aa = comp_assoc("a"),
                 a = compensable("a", "f1", "f2", ""),
                 b = task("b", "b", "f2", "f3"),
+                ac = comp_assoc("c"),
                 c = compensable("c", "e1", "e2", ""),
                 e1 = flow("e1", "err-start", "c"),
                 e2 = flow("e2", "c", "undo-all"),
@@ -7852,25 +7876,20 @@ mod tests {
 
     #[tokio::test]
     async fn test_a_terminated_compensation_handler_keeps_its_throw_event_waiting() {
-        // undo-a has an interrupting error boundary event: when it catches, the handler
-        // is terminated. As in Zeebe, whose BpmnCompensationSubscriptionBehaviour releases
-        // a throw event only from `completeCompensationHandler` (called when a handler
-        // completes), the throw event keeps waiting.
-        let handler_boundary = r#"
-    <bpmn:boundaryEvent id="undo-failed" attachedToRef="undo-a"><bpmn:outgoing>fu</bpmn:outgoing>
-      <bpmn:errorEventDefinition errorRef="Err_stock"/></bpmn:boundaryEvent>
-    <bpmn:endEvent id="undo-gave-up"><bpmn:incoming>fu</bpmn:incoming></bpmn:endEvent>
-    <bpmn:sequenceFlow id="fu" sourceRef="undo-failed" targetRef="undo-gave-up"/>"#;
-        let bpmn = wrap_definitions(
-            ERROR_ROOTS,
+        // undo-a is terminated (Zeebe rejects boundary events on a handler, so by process
+        // instance modification). As in Zeebe, whose BpmnCompensationSubscriptionBehaviour
+        // releases a throw event only from `completeCompensationHandler` (called when a
+        // handler completes), the throw event keeps waiting.
+        let bpmn = wrap_process(
             "proc",
             &format!(
                 r#"
     <bpmn:startEvent id="start"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
-    {a}{throw}{after}{handler_boundary}
+    {a}{throw}{after}
     <bpmn:endEvent id="end"><bpmn:incoming>f4</bpmn:incoming></bpmn:endEvent>
-    {f1}{f2}{f3}{f4}
+    {f1}{f2}{f3}{f4}{aa}
 "#,
+                aa = comp_assoc("a"),
                 a = compensable("a", "f1", "f2", ""),
                 throw = compensation_throw("compensate", "f2", "f3", None),
                 after = task("after", "after", "f3", "f4"),
@@ -7888,19 +7907,14 @@ mod tests {
             element_state(&h, "compensate").as_deref(),
             Some("ACTIVATED")
         );
-        let job = h.activatable_job("undo-a").unwrap();
-        h.run(
-            "JOB",
-            "THROW_ERROR",
-            serde_json::json!({ "jobKey": job.key.to_string(), "errorCode": "OUT_OF_STOCK" }),
+        modify(
+            &h,
+            serde_json::json!({ "terminateInstructions": [{ "elementId": "undo-a" }] }),
         )
-        .await;
+        .await
+        .unwrap();
 
         assert_eq!(element_states(&h, "undo-a"), vec!["TERMINATED"]);
-        assert_eq!(
-            element_state(&h, "undo-gave-up").as_deref(),
-            Some("COMPLETED")
-        );
         assert_eq!(
             element_state(&h, "compensate").as_deref(),
             Some("ACTIVATED"),
@@ -8324,23 +8338,25 @@ mod tests {
                 r#"
     <bpmn:startEvent id="start"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
     {a}
-    <bpmn:subProcess id="each"><bpmn:incoming>f2</bpmn:incoming>
+    <bpmn:subProcess id="each"><bpmn:incoming>f2</bpmn:incoming><bpmn:outgoing>g0</bpmn:outgoing>
       <bpmn:multiInstanceLoopCharacteristics><bpmn:extensionElements>
         <zeebe:loopCharacteristics inputCollection="=[1]"/></bpmn:extensionElements></bpmn:multiInstanceLoopCharacteristics>
       <bpmn:startEvent id="each-start"><bpmn:outgoing>e1</bpmn:outgoing></bpmn:startEvent>
       <bpmn:manualTask id="inside"><bpmn:incoming>e1</bpmn:incoming></bpmn:manualTask>
       <bpmn:sequenceFlow id="e1" sourceRef="each-start" targetRef="inside"/>
     </bpmn:subProcess>
-    <bpmn:eventBasedGateway id="gw"><bpmn:incoming>g0</bpmn:incoming><bpmn:outgoing>g1</bpmn:outgoing></bpmn:eventBasedGateway>
+    <bpmn:eventBasedGateway id="gw"><bpmn:incoming>g0</bpmn:incoming><bpmn:outgoing>g1</bpmn:outgoing><bpmn:outgoing>g2</bpmn:outgoing></bpmn:eventBasedGateway>
     <bpmn:intermediateCatchEvent id="wait-m"><bpmn:incoming>g1</bpmn:incoming><bpmn:messageEventDefinition messageRef="M"/></bpmn:intermediateCatchEvent>
-    <bpmn:startEvent id="other-start"><bpmn:outgoing>g0</bpmn:outgoing></bpmn:startEvent>
-    {f1}{f2}{g0}{g1}
+    <bpmn:intermediateCatchEvent id="wait-t"><bpmn:incoming>g2</bpmn:incoming>
+      <bpmn:timerEventDefinition><bpmn:timeDuration>PT1H</bpmn:timeDuration></bpmn:timerEventDefinition></bpmn:intermediateCatchEvent>
+    {f1}{f2}{g0}{g1}{g2}
 "#,
                 a = task("a", "a", "f1", "f2"),
                 f1 = flow("f1", "start", "a"),
                 f2 = flow("f2", "a", "each"),
-                g0 = flow("g0", "other-start", "gw"),
-                g1 = flow("g1", "gw", "wait-m")
+                g0 = flow("g0", "each", "gw"),
+                g1 = flow("g1", "gw", "wait-m"),
+                g2 = flow("g2", "gw", "wait-t")
             ),
         );
         let h = Harness::new();

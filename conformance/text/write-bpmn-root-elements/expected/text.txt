@@ -1,2 +1,2 @@
 # Root element carrier | camunda=8.6
-start[start:message] > end[end]
+start[start:message | msg=OrderPlaced key=orderId] > end[end]

@@ -1,9 +1,26 @@
 import { readFile } from "node:fs/promises"
 import { basename, resolve } from "node:path"
+import { DeployabilityError, assertDeployableXml } from "@bpmnkit/core"
 import { clusterApiUrl, getActiveProfile, getAuthHeader } from "@bpmnkit/profiles"
 import type { Command, CommandGroup } from "../types.js"
 
 const ZEEBE_ADDRESS = (process.env.ZEEBE_ADDRESS ?? "http://localhost:26500").replace(/\/$/, "")
+
+/**
+ * Refuses a `.bpmn` file Zeebe would reject before anything is sent, with the gate's
+ * lines: the engine's own error names one problem at a time, after a round trip.
+ */
+export function gateDeployment(fileName: string, content: string): void {
+	if (!fileName.toLowerCase().endsWith(".bpmn")) return
+	try {
+		assertDeployableXml(content)
+	} catch (err) {
+		if (!(err instanceof DeployabilityError)) throw err
+		throw new Error(
+			`${err.message}\nNot deployed. Fix the model (casen check ${fileName} --deploy), or pass --no-validate to send it anyway.`,
+		)
+	}
+}
 
 const deployCmd: Command = {
 	name: "deploy",
@@ -17,6 +34,13 @@ const deployCmd: Command = {
 			type: "string",
 			default: "local",
 			enum: ["local", "camunda8"],
+		},
+		{
+			name: "validate",
+			description:
+				"Refuse a BPMN file Camunda 8 would reject before sending it (default); --no-validate sends it as it is",
+			type: "boolean",
+			default: true,
 		},
 	],
 	examples: [
@@ -34,6 +58,7 @@ const deployCmd: Command = {
 		const content = await readFile(absPath, "utf-8").catch(() => {
 			throw new Error(`Cannot read file: ${absPath}`)
 		})
+		if (ctx.flags.validate !== false) gateDeployment(basename(absPath), content)
 
 		const formData = new FormData()
 		formData.append(

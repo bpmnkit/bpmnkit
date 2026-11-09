@@ -17,14 +17,22 @@
             "type": "serviceTask"
           },
           {
+            "calledProcess": "child",
+            "id": "c",
+            "name": "Child",
+            "type": "callActivity"
+          },
+          {
             "id": "e",
             "name": "E",
             "type": "endEvent"
           },
           {
             "attachedTo": "t",
+            "correlationKey": "=orderId",
             "eventType": "message",
             "id": "b1",
+            "messageName": "b1",
             "name": "Cancel",
             "type": "boundaryEvent"
           },
@@ -38,6 +46,7 @@
             "eventType": "signal",
             "id": "b2",
             "name": "Stop",
+            "signalName": "b2",
             "type": "boundaryEvent"
           },
           {
@@ -46,7 +55,7 @@
             "type": "endEvent"
           },
           {
-            "attachedTo": "t",
+            "attachedTo": "c",
             "eventType": "escalation",
             "id": "b3",
             "name": "Esc",
@@ -56,18 +65,6 @@
             "id": "x3",
             "name": "X3",
             "type": "endEvent"
-          },
-          {
-            "attachedTo": "t",
-            "eventType": "compensate",
-            "id": "b4",
-            "name": "Undo",
-            "type": "boundaryEvent"
-          },
-          {
-            "id": "x4",
-            "name": "Undo it",
-            "type": "task"
           },
           {
             "attachedTo": "t",
@@ -106,11 +103,6 @@
             "id": "x7",
             "name": "X7",
             "type": "endEvent"
-          },
-          {
-            "id": "x4_end",
-            "name": "Process completed",
-            "type": "endEvent"
           }
         ],
         "flows": [
@@ -122,27 +114,27 @@
           {
             "from": "t",
             "id": "Flow_2",
+            "to": "c"
+          },
+          {
+            "from": "c",
+            "id": "Flow_3",
             "to": "e"
           },
           {
             "from": "b1",
-            "id": "Flow_3",
+            "id": "Flow_4",
             "to": "x1"
           },
           {
             "from": "b2",
-            "id": "Flow_4",
+            "id": "Flow_5",
             "to": "x2"
           },
           {
             "from": "b3",
-            "id": "Flow_5",
-            "to": "x3"
-          },
-          {
-            "from": "b4",
             "id": "Flow_6",
-            "to": "x4"
+            "to": "x3"
           },
           {
             "from": "b5",
@@ -158,11 +150,6 @@
             "from": "b7",
             "id": "Flow_9",
             "to": "x7"
-          },
-          {
-            "from": "x4",
-            "id": "Flow_10",
-            "to": "x4_end"
           }
         ],
         "id": "Process_1"
@@ -170,7 +157,6 @@
     ]
   },
   "fixes": [
-    "added end event \"x4_end\" after \"x4\"",
     "named 8 unnamed element(s) from their ids"
   ],
   "problems": [],

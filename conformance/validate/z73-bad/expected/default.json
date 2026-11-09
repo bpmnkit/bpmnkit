@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task"
+      ],
+      "fixable": false,
+      "id": "zeebe/receive-task-boundary-message",
+      "message": "Cannot reference the same message name as a boundary event",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Give the receive task and its boundary event messages different names."
+    }
+  ]
+}

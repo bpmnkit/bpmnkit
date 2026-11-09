@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="d" targetNamespace="t" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.9.0">
+<bpmn:process id="p" isExecutable="true">
+<bpmn:startEvent id="s"><bpmn:outgoing>f0</bpmn:outgoing></bpmn:startEvent>
+<bpmn:task id="t"><bpmn:incoming>f0</bpmn:incoming><bpmn:outgoing>f1</bpmn:outgoing></bpmn:task>
+<bpmn:endEvent id="e"><bpmn:incoming>f1</bpmn:incoming></bpmn:endEvent>
+<bpmn:sequenceFlow id="f0" sourceRef="s" targetRef="t"/>
+<bpmn:sequenceFlow id="f1" sourceRef="t" targetRef="e"/>
+<bpmn:subProcess id="esp1" triggeredByEvent="true"><bpmn:startEvent id="esp1_s" isInterrupting="false"><bpmn:outgoing>esp1_f</bpmn:outgoing><bpmn:conditionalEventDefinition id="c1"><bpmn:condition xsi:type="bpmn:tFormalExpression">=x &gt; 1</bpmn:condition></bpmn:conditionalEventDefinition></bpmn:startEvent><bpmn:endEvent id="esp1_e"><bpmn:incoming>esp1_f</bpmn:incoming></bpmn:endEvent><bpmn:sequenceFlow id="esp1_f" sourceRef="esp1_s" targetRef="esp1_e"/></bpmn:subProcess>
+<bpmn:subProcess id="esp2" triggeredByEvent="true"><bpmn:startEvent id="esp2_s" isInterrupting="false"><bpmn:outgoing>esp2_f</bpmn:outgoing><bpmn:conditionalEventDefinition id="c2"><bpmn:condition xsi:type="bpmn:tFormalExpression">=x &gt; 2</bpmn:condition></bpmn:conditionalEventDefinition></bpmn:startEvent><bpmn:endEvent id="esp2_e"><bpmn:incoming>esp2_f</bpmn:incoming></bpmn:endEvent><bpmn:sequenceFlow id="esp2_f" sourceRef="esp2_s" targetRef="esp2_e"/></bpmn:subProcess>
+</bpmn:process>
+</bpmn:definitions>

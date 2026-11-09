@@ -52,12 +52,16 @@ pub struct MessageStartCorrelation {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct MessageRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> MessageRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -76,7 +80,7 @@ impl<'a> MessageRepository<'a> {
         .bind(&msg.state)
         .bind(&msg.tenant_id)
         .bind(msg.created_at)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -100,7 +104,7 @@ impl<'a> MessageRepository<'a> {
         .bind(tenant_id)
         // Bound rather than NOW(), which SQLite does not have.
         .bind(chrono::Utc::now())
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         Ok(rows.into_iter().map(row_to_message).collect())
@@ -111,7 +115,7 @@ impl<'a> MessageRepository<'a> {
             "UPDATE messages SET state = 'EXPIRED' WHERE state = 'PUBLISHED' AND expires_at <= $1",
         )
         .bind(chrono::Utc::now())
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(result.rows_affected())
     }
@@ -140,7 +144,7 @@ impl<'a> MessageRepository<'a> {
         .bind(tenant_id)
         .bind(after_key)
         .bind(page_size)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         Ok(rows.into_iter().map(row_to_message).collect())
@@ -165,12 +169,16 @@ fn row_to_message(r: crate::DbRow) -> Message {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct MessageSubscriptionRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> MessageSubscriptionRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -187,7 +195,7 @@ impl<'a> MessageSubscriptionRepository<'a> {
         .bind(sub.element_instance_key)
         .bind(&sub.state)
         .bind(&sub.tenant_id)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -208,7 +216,7 @@ impl<'a> MessageSubscriptionRepository<'a> {
         .bind(message_name)
         .bind(correlation_key)
         .bind(tenant_id)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         Ok(rows.into_iter().map(row_to_sub).collect())
@@ -218,7 +226,7 @@ impl<'a> MessageSubscriptionRepository<'a> {
         sqlx::query("UPDATE message_subscriptions SET state = $1 WHERE key = $2")
             .bind(state)
             .bind(key)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -226,7 +234,7 @@ impl<'a> MessageSubscriptionRepository<'a> {
     pub async fn delete(&self, key: i64) -> Result<()> {
         sqlx::query("DELETE FROM message_subscriptions WHERE key = $1")
             .bind(key)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -238,7 +246,7 @@ impl<'a> MessageSubscriptionRepository<'a> {
                FROM message_subscriptions WHERE key = $1"#,
         )
         .bind(key)
-        .fetch_optional(self.pool)
+        .fetch_optional(&mut *self.pool.acquire().await?)
         .await?;
 
         match row {
@@ -271,7 +279,7 @@ impl<'a> MessageSubscriptionRepository<'a> {
         .bind(tenant_id)
         .bind(after_key)
         .bind(page_size)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         Ok(rows.into_iter().map(row_to_sub).collect())

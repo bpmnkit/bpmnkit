@@ -3,6 +3,9 @@ import { Bpmn } from "../src/bpmn/index.js"
 import { detectExecutionPlatform } from "../src/bpmn/lint.js"
 import { ensureZeebeExtension } from "../src/bpmn/zeebe-extensions.js"
 
+// Exports here check what the serializer writes, not whether Zeebe would deploy the
+// model (a fragment, a round trip), so they pass `validate: false` to skip the gate.
+
 /**
  * A diagram authored somewhere vendor-neutral: no `modeler:executionPlatform`,
  * no Camunda namespaces, nothing claiming an engine.
@@ -96,7 +99,7 @@ describe("engine neutrality", () => {
 
 	it("a model that does name an engine keeps it verbatim", () => {
 		// The invariant runs both ways: we neither add a platform nor drop one.
-		const xml = Bpmn.export(Bpmn.parse(CAMUNDA_CLOUD))
+		const xml = Bpmn.export(Bpmn.parse(CAMUNDA_CLOUD), { validate: false })
 		expect(detectExecutionPlatform(Bpmn.parse(xml))).toEqual({
 			id: "camunda-cloud",
 			name: "Camunda Cloud",

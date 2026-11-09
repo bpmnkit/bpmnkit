@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/multi-instance-expression",
+      "message": "Expected expression but found static value 'items'. An expression must start with '=' (e.g. '=items').",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Write the value as a FEEL expression that starts with '='."
+    }
+  ]
+}

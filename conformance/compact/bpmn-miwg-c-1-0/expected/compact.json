@@ -150,6 +150,7 @@
         {
           "eventType": "message",
           "id": "StartEvent_1",
+          "messageName": "invoice-received-C.1.0",
           "name": "Invoice\nreceived",
           "type": "startEvent"
         },

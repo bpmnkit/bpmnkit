@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sp"
+      ],
+      "fixable": false,
+      "id": "zeebe/sub-process-start-event",
+      "message": "Must have exactly one start event",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Give the sub-process exactly one start event."
+    }
+  ]
+}

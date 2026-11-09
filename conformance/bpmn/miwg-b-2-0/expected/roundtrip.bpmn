@@ -97,10 +97,6 @@
     <semantic:userTask id="_0e87da16-736e-45b2-95e5-8f45940f3adf" implementation="##WebService" completionQuantity="1" startQuantity="1" name="User Task 3">
       <semantic:incoming>_e1f948a6-db76-4c35-ba36-e430eecb63a4</semantic:incoming>
       <semantic:outgoing>_4474c77a-01bb-435e-929a-7eb71bd824a8</semantic:outgoing>
-      <semantic:dataInputAssociation id="_f906ca20-8666-41ff-9d37-b76e09ac4f94">
-        <semantic:sourceRef>_aa8c769a-276c-4589-b182-7c7bbd0a9e1e</semantic:sourceRef>
-        <semantic:targetRef>Din1373638080886</semantic:targetRef>
-      </semantic:dataInputAssociation>
       <semantic:ioSpecification>
         <semantic:dataInput id="Din1373638080886"/>
         <semantic:inputSet>
@@ -108,6 +104,10 @@
         </semantic:inputSet>
         <semantic:outputSet/>
       </semantic:ioSpecification>
+      <semantic:dataInputAssociation id="_f906ca20-8666-41ff-9d37-b76e09ac4f94">
+        <semantic:sourceRef>_aa8c769a-276c-4589-b182-7c7bbd0a9e1e</semantic:sourceRef>
+        <semantic:targetRef>Din1373638080886</semantic:targetRef>
+      </semantic:dataInputAssociation>
     </semantic:userTask>
     <semantic:serviceTask id="_ac1fde31-c0cd-4a8a-9728-a5fb49602de7" implementation="##WebService" completionQuantity="1" startQuantity="1" name="Service Task 4">
       <semantic:incoming>_a9966baf-d9b9-4be1-a4d9-2906ab5add30</semantic:incoming>

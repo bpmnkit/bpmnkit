@@ -1,0 +1,2 @@
+Not deployable on Camunda 8.10: 1 error(s)
+- c: Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element (zeebe/script-task-implementation)

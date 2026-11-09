@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/multi-instance-output-pair",
+      "message": "Attribute 'outputCollection' must be present if the attribute 'outputElement' is set",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Set outputCollection or remove outputElement."
+    }
+  ]
+}

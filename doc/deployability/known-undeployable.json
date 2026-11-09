@@ -1,0 +1,5 @@
+{
+	"zeebeVersion": "8.9.28",
+	"note": "Corpus BPMN that Zeebe's deploy-time validator rejects, with the first error. This list may only shrink: fix the generator, then delete the entry. CI fails on additions (against the base branch), on entries that Zeebe now accepts, and on entries whose case no longer exists. Regenerate with `node scripts/zeebe-check.mjs --seed-allowlist` only after re-recording the corpus.",
+	"cases": {}
+}

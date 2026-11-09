@@ -1,0 +1,7 @@
+{
+  "expand": {
+    "validate": false
+  },
+  "deployable": false,
+  "deployableReason": "Covers every gateway type expand() writes, including the complex gateway, which Camunda 8 does not support; expanded with validate:false."
+}

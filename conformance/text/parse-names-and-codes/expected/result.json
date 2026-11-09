@@ -1,0 +1,157 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "processes": [
+      {
+        "elements": [
+          {
+            "eventType": "message",
+            "id": "s",
+            "messageName": "order-placed",
+            "name": "Order placed",
+            "type": "startEvent"
+          },
+          {
+            "calledProcess": "handle-order",
+            "id": "h",
+            "name": "Handle order",
+            "type": "callActivity"
+          },
+          {
+            "correlationKey": "=orderId",
+            "eventType": "message",
+            "id": "w",
+            "messageName": "payment-received",
+            "name": "Paid",
+            "type": "intermediateCatchEvent"
+          },
+          {
+            "correlationKey": "=orderId",
+            "id": "r",
+            "messageName": "receipt",
+            "name": "Receipt",
+            "type": "receiveTask"
+          },
+          {
+            "eventType": "message",
+            "id": "n",
+            "jobType": "notify",
+            "messageName": "order-done",
+            "name": "Notify",
+            "type": "intermediateThrowEvent"
+          },
+          {
+            "eventType": "signal",
+            "id": "b",
+            "name": "Broadcast",
+            "signalName": "shutdown",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "h",
+            "errorCode": "PAYMENT_FAILED",
+            "eventType": "error",
+            "id": "failed",
+            "name": "Failed",
+            "type": "boundaryEvent"
+          },
+          {
+            "errorCode": "GIVEN_UP",
+            "eventType": "error",
+            "id": "f",
+            "name": "Give up",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "h",
+            "escalationCode": "LATE",
+            "eventType": "escalation",
+            "id": "late",
+            "interrupting": false,
+            "name": "Late",
+            "type": "boundaryEvent"
+          },
+          {
+            "escalationCode": "ESCALATED",
+            "eventType": "escalation",
+            "id": "l",
+            "name": "Escalate",
+            "type": "intermediateThrowEvent"
+          },
+          {
+            "id": "le",
+            "name": "Le",
+            "type": "endEvent"
+          },
+          {
+            "attachedTo": "h",
+            "eventType": "signal",
+            "id": "stop",
+            "name": "Stop",
+            "signalName": "shutdown",
+            "type": "boundaryEvent"
+          },
+          {
+            "id": "se",
+            "name": "Se",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "s",
+            "id": "Flow_1",
+            "to": "h"
+          },
+          {
+            "from": "h",
+            "id": "Flow_2",
+            "to": "w"
+          },
+          {
+            "from": "w",
+            "id": "Flow_3",
+            "to": "r"
+          },
+          {
+            "from": "r",
+            "id": "Flow_4",
+            "to": "n"
+          },
+          {
+            "from": "n",
+            "id": "Flow_5",
+            "to": "b"
+          },
+          {
+            "from": "failed",
+            "id": "Flow_6",
+            "to": "f"
+          },
+          {
+            "from": "late",
+            "id": "Flow_7",
+            "to": "l"
+          },
+          {
+            "from": "l",
+            "id": "Flow_8",
+            "to": "le"
+          },
+          {
+            "from": "stop",
+            "id": "Flow_9",
+            "to": "se"
+          }
+        ],
+        "id": "Process_1"
+      }
+    ]
+  },
+  "fixes": [
+    "named 2 unnamed element(s) from their ids"
+  ],
+  "problems": [],
+  "questions": []
+}

@@ -93,6 +93,18 @@
       "processId": "WFP-6-",
       "severity": "error",
       "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_1ae31d1b-2559-4f78-a3ec-47986a49db48"
+      ],
+      "fixable": false,
+      "id": "zeebe/sub-process-start-event",
+      "message": "Must have exactly one start event",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Give the sub-process exactly one start event."
     }
   ],
   "fixes": [
@@ -108,7 +120,7 @@
       "agentic": 0,
       "connector": 0,
       "data-flow": 0,
-      "deploy": 4,
+      "deploy": 5,
       "extract": 0,
       "feel": 0,
       "feel-syntax": 0,
@@ -118,10 +130,10 @@
       "task-reuse": 0
     },
     "bySeverity": {
-      "error": 5,
+      "error": 6,
       "info": 0,
       "warning": 3
     },
-    "total": 8
+    "total": 9
   }
 }

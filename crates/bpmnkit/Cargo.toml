@@ -1,0 +1,44 @@
+[package]
+name = "bpmnkit"
+description = "BPMN Kit for Rust: BPMN, DMN, FEEL and Camunda forms (parse, serialize, evaluate, lint, lay out, build), one dependency with a cargo feature per bpmnkit-* crate"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["bpmn", "dmn", "feel", "camunda", "workflow"]
+categories = ["parser-implementations", "encoding"]
+
+[dependencies]
+bpmnkit-spec = { workspace = true, optional = true }
+bpmnkit-xml = { workspace = true, optional = true }
+bpmnkit-bpmn = { workspace = true, optional = true }
+bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.1.0", optional = true }
+bpmnkit-dmn = { workspace = true, optional = true }
+bpmnkit-form = { workspace = true, optional = true }
+bpmnkit-compat = { workspace = true, optional = true }
+bpmnkit-lint = { workspace = true, optional = true }
+bpmnkit-layout = { workspace = true, optional = true }
+bpmnkit-builder = { workspace = true, optional = true }
+bpmnkit-text = { workspace = true, optional = true }
+
+[features]
+# What most users reach for: read, write and evaluate models.
+default = ["feel", "bpmn", "dmn", "form"]
+full = ["spec", "xml", "bpmn", "feel", "dmn", "form", "compat", "lint", "layout", "builder", "text"]
+spec = ["dep:bpmnkit-spec"]
+xml = ["dep:bpmnkit-xml"]
+bpmn = ["dep:bpmnkit-bpmn"]
+feel = ["dep:bpmnkit-feel"]
+dmn = ["dep:bpmnkit-dmn"]
+form = ["dep:bpmnkit-form"]
+compat = ["dep:bpmnkit-compat"]
+lint = ["dep:bpmnkit-lint"]
+layout = ["dep:bpmnkit-layout"]
+builder = ["dep:bpmnkit-builder"]
+text = ["dep:bpmnkit-text"]
+
+[package.metadata.docs.rs]
+all-features = true

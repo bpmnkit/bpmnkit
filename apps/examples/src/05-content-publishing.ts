@@ -109,6 +109,7 @@ const definitions = Bpmn.createProcess("ContentPublishing")
 			.intermediateCatchEvent("publishCommand", {
 				name: "Publish Command Received",
 				messageName: "publish-approved",
+				correlationKey: "=content.id",
 			})
 			.connectTo("publishContent"),
 	)

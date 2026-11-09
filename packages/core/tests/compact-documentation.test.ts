@@ -13,7 +13,7 @@ import { applyOperations } from "../src/bpmn/operations.js"
  * contract.
  */
 const XML = `<?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="d" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="d" targetNamespace="http://bpmn.io/schema/bpmn">
   <bpmn:process id="P" name="Proc">
     <bpmn:documentation>Handles one support request.</bpmn:documentation>
     <bpmn:startEvent id="S">
@@ -33,6 +33,7 @@ const XML = `<?xml version="1.0" encoding="UTF-8"?>
       <bpmn:documentation>Resolves the request autonomously.</bpmn:documentation>
       <bpmn:serviceTask id="Tool_ListUsers" name="List users">
         <bpmn:documentation>Call this to retrieve all users.</bpmn:documentation>
+        <bpmn:extensionElements><zeebe:taskDefinition type="list-users"/></bpmn:extensionElements>
       </bpmn:serviceTask>
     </bpmn:adHocSubProcess>
     <bpmn:sequenceFlow id="F1" sourceRef="S" targetRef="Task_X"/>

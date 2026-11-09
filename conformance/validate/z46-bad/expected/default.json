@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Catch"
+      ],
+      "fixable": false,
+      "id": "zeebe/timer-expression",
+      "message": "Invalid timer duration expression (Invalid duration format '5 minutes' for expression '5 minutes'.)",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Use an ISO-8601 duration such as PT5M, or a FEEL expression starting with '='."
+    }
+  ]
+}

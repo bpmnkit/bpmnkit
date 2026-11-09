@@ -13,12 +13,14 @@
         {
           "id": "s2",
           "type": "startEvent",
-          "eventType": "message"
+          "eventType": "message",
+          "messageName": "order-placed"
         },
         {
           "id": "s3",
           "type": "startEvent",
-          "eventType": "signal"
+          "eventType": "signal",
+          "signalName": "go"
         },
         {
           "id": "s4",
@@ -29,7 +31,8 @@
         {
           "id": "s5",
           "type": "startEvent",
-          "eventType": "timer"
+          "eventType": "timer",
+          "timerCycle": "R3/PT10M"
         },
         {
           "id": "c1",
@@ -38,14 +41,23 @@
           "timerDuration": "PT1M"
         },
         {
+          "id": "c6",
+          "type": "intermediateCatchEvent",
+          "eventType": "timer",
+          "timerDate": "2026-12-01T09:00:00Z"
+        },
+        {
           "id": "c2",
           "type": "intermediateCatchEvent",
-          "eventType": "message"
+          "eventType": "message",
+          "messageName": "payment-received",
+          "correlationKey": "=orderId"
         },
         {
           "id": "c3",
           "type": "intermediateCatchEvent",
-          "eventType": "signal"
+          "eventType": "signal",
+          "signalName": "resume"
         },
         {
           "id": "c4",
@@ -56,22 +68,27 @@
         {
           "id": "c5",
           "type": "intermediateCatchEvent",
-          "eventType": "link"
+          "eventType": "link",
+          "linkName": "jump"
         },
         {
           "id": "t1",
           "type": "intermediateThrowEvent",
-          "eventType": "message"
+          "eventType": "message",
+          "messageName": "invoice-sent",
+          "jobType": "send-invoice"
         },
         {
           "id": "t2",
           "type": "intermediateThrowEvent",
-          "eventType": "signal"
+          "eventType": "signal",
+          "signalName": "alert"
         },
         {
           "id": "t3",
           "type": "intermediateThrowEvent",
-          "eventType": "escalation"
+          "eventType": "escalation",
+          "escalationCode": "LATE"
         },
         {
           "id": "t4",
@@ -81,7 +98,8 @@
         {
           "id": "t5",
           "type": "intermediateThrowEvent",
-          "eventType": "link"
+          "eventType": "link",
+          "linkName": "jump"
         },
         {
           "id": "t6",
@@ -90,22 +108,27 @@
         {
           "id": "e1",
           "type": "endEvent",
-          "eventType": "error"
+          "eventType": "error",
+          "errorCode": "PAYMENT_FAILED"
         },
         {
           "id": "e2",
           "type": "endEvent",
-          "eventType": "message"
+          "eventType": "message",
+          "messageName": "order-closed",
+          "jobType": "close-order"
         },
         {
           "id": "e3",
           "type": "endEvent",
-          "eventType": "signal"
+          "eventType": "signal",
+          "signalName": "finished"
         },
         {
           "id": "e4",
           "type": "endEvent",
-          "eventType": "escalation"
+          "eventType": "escalation",
+          "escalationCode": "GIVE_UP"
         },
         {
           "id": "e5",

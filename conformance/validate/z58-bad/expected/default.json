@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Catch"
+      ],
+      "fixable": false,
+      "id": "zeebe/conditional-condition",
+      "message": "Expected expression but found static value 'ready'. An expression must start with '=' (e.g. '=ready').",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression starting with '='."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Start"
+      ],
+      "fixable": false,
+      "id": "zeebe/timer-expression",
+      "message": "Invalid timer cycle expression (Cron expression contains 5 parts but we expect one of [6])",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Use an ISO-8601 repeating interval such as R3/PT10M or a 6-field cron expression."
+    }
+  ]
+}

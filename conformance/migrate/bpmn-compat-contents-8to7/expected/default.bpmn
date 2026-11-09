@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_contents" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0">
+  <bpmn:message id="Msg_secret" name="secret"/>
+  <bpmn:message id="Msg_webhook" name="webhook"/>
+  <bpmn:process id="contents" isExecutable="true">
+    <bpmn:startEvent id="start">
+      <bpmn:outgoing>toLoopA</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:startEvent id="webhookStart">
+      <bpmn:messageEventDefinition id="webhookDef" messageRef="Msg_webhook"/>
+    </bpmn:startEvent>
+    <bpmn:intermediateCatchEvent id="pollingCatch">
+      <bpmn:messageEventDefinition id="pollingDef" messageRef="Msg_webhook"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:manualTask id="loopA">
+      <bpmn:incoming>toLoopA</bpmn:incoming>
+      <bpmn:incoming>backToA</bpmn:incoming>
+      <bpmn:outgoing>toLoopGateway</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:exclusiveGateway id="loopGateway" default="toEnd">
+      <bpmn:incoming>toLoopGateway</bpmn:incoming>
+      <bpmn:outgoing>toLoopB</bpmn:outgoing>
+      <bpmn:outgoing>toEnd</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="loopB">
+      <bpmn:incoming>toLoopB</bpmn:incoming>
+      <bpmn:outgoing>backToA</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="end">
+      <bpmn:incoming>toEnd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:serviceTask id="feelNew" camunda:type="external" camunda:topic="=&quot;job-&quot; + string(random number())">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="id">=uuid()</camunda:inputParameter>
+          <camunda:inputParameter name="data">=from json(payload)</camunda:inputParameter>
+          <camunda:inputParameter name="label">=trim(name) + to base64(name)</camunda:inputParameter>
+          <camunda:outputParameter name="pages">=partition(items, 10)</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="feelShadowed" camunda:type="external" camunda:topic="t">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="a">={uuid: function() 1, id: uuid()}</camunda:inputParameter>
+          <camunda:inputParameter name="b">=for trim in [1] return trim(1)</camunda:inputParameter>
+          <camunda:inputParameter name="c">=uuid(</camunda:inputParameter>
+          <camunda:inputParameter name="d">uuid()</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:intermediateCatchEvent id="feelTimer">
+      <bpmn:timerEventDefinition id="feelTimerDef">
+        <bpmn:timeDate xsi:type="bpmn:tFormalExpression">=last day of month(today())</bpmn:timeDate>
+      </bpmn:timerEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:serviceTask id="badVars" camunda:type="external" camunda:topic="t">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="1st">=1</camunda:inputParameter>
+          <camunda:outputParameter name="my variable name">=2</camunda:outputParameter>
+          <camunda:outputParameter name="a.b_c">=3</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:multiInstanceLoopCharacteristics>
+        <bpmn:extensionElements>
+          <zeebe:loopCharacteristics inputCollection="=items" inputElement="item-x" outputCollection="results" outputElement="=item"/>
+        </bpmn:extensionElements>
+      </bpmn:multiInstanceLoopCharacteristics>
+    </bpmn:serviceTask>
+    <bpmn:scriptTask id="badResult"/>
+    <bpmn:businessRuleTask id="badDecisionResult"/>
+    <bpmn:adHocSubProcess id="badOutputCollection">
+      <bpmn:task id="adHocInner"/>
+    </bpmn:adHocSubProcess>
+    <bpmn:serviceTask id="secretsTask" camunda:type="external" camunda:topic="t">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="apiKey">secrets.API_KEY</camunda:inputParameter>
+          <camunda:inputParameter name="token">{{secrets.TOKEN}}</camunda:inputParameter>
+          <camunda:inputParameter name="ok">=camunda.secrets.OK</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:receiveTask id="secretReceive" messageRef="Msg_secret"/>
+    <bpmn:serviceTask id="secretLiteral" camunda:type="external" camunda:topic="t">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="a">camunda.secrets.PLAIN</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="secretQuoted" camunda:type="external" camunda:topic="t">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="a">="Bearer camunda.secrets.QUOTED"</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="secretProperty" camunda:type="external" camunda:topic="t"/>
+    <bpmn:serviceTask id="secretList" camunda:type="external" camunda:topic="t">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="a">={keys: [camunda.secrets.A, camunda.secrets.B]}</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="secretIfContext" camunda:type="external" camunda:topic="t">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="a">=if prod then {key: camunda.secrets.PROD} else null</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="secretFine" camunda:type="external" camunda:topic="t">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="a">={auth: {key: camunda.secrets.A}}</camunda:inputParameter>
+          <camunda:inputParameter name="b">=([camunda.secrets.B])</camunda:inputParameter>
+          <camunda:inputParameter name="c">=camunda.secrets.C.value</camunda:inputParameter>
+          <camunda:inputParameter name="d">=if prod then camunda.secrets.D else null</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:intermediateThrowEvent id="linkNoName">
+      <bpmn:linkEventDefinition id="linkNoNameDef" name=""/>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateCatchEvent id="linkCatch1">
+      <bpmn:linkEventDefinition id="linkCatch1Def" name="L"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:subProcess id="linkScope">
+      <bpmn:intermediateCatchEvent id="linkCatch2">
+        <bpmn:linkEventDefinition id="linkCatch2Def" name="L"/>
+      </bpmn:intermediateCatchEvent>
+      <bpmn:intermediateCatchEvent id="linkCatchBlank">
+        <bpmn:linkEventDefinition id="linkCatchBlankDef" name=" "/>
+      </bpmn:intermediateCatchEvent>
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="toLoopA" sourceRef="start" targetRef="loopA"/>
+    <bpmn:sequenceFlow id="toLoopGateway" sourceRef="loopA" targetRef="loopGateway"/>
+    <bpmn:sequenceFlow id="toLoopB" sourceRef="loopGateway" targetRef="loopB">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=is blank(reason)</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="toEnd" sourceRef="loopGateway" targetRef="end"/>
+    <bpmn:sequenceFlow id="backToA" sourceRef="loopB" targetRef="loopA"/>
+  </bpmn:process>
+  <bpmn:process id="waits" isExecutable="true">
+    <bpmn:startEvent id="waitsStart">
+      <bpmn:outgoing>waitsToTask</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="waitsTask">
+      <bpmn:incoming>waitsToTask</bpmn:incoming>
+      <bpmn:incoming>waitsBack</bpmn:incoming>
+      <bpmn:outgoing>waitsToService</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:serviceTask id="waitsService" camunda:type="external" camunda:topic="t">
+      <bpmn:incoming>waitsToService</bpmn:incoming>
+      <bpmn:outgoing>waitsBack</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="waitsToTask" sourceRef="waitsStart" targetRef="waitsTask"/>
+    <bpmn:sequenceFlow id="waitsToService" sourceRef="waitsTask" targetRef="waitsService"/>
+    <bpmn:sequenceFlow id="waitsBack" sourceRef="waitsService" targetRef="waitsTask"/>
+  </bpmn:process>
+  <bpmn:process id="recursive" isExecutable="true">
+    <bpmn:startEvent id="recursiveStart">
+      <bpmn:outgoing>recursiveToSub</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:subProcess id="recursiveSub">
+      <bpmn:incoming>recursiveToSub</bpmn:incoming>
+      <bpmn:startEvent id="recursiveSubStart">
+        <bpmn:outgoing>recursiveToCall</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:callActivity id="recursiveCall" calledElement="recursive">
+        <bpmn:extensionElements>
+          <camunda:in variables="all"/>
+          <camunda:out variables="all"/>
+        </bpmn:extensionElements>
+        <bpmn:incoming>recursiveToCall</bpmn:incoming>
+      </bpmn:callActivity>
+      <bpmn:sequenceFlow id="recursiveToCall" sourceRef="recursiveSubStart" targetRef="recursiveCall"/>
+    </bpmn:subProcess>
+    <bpmn:sequenceFlow id="recursiveToSub" sourceRef="recursiveStart" targetRef="recursiveSub"/>
+  </bpmn:process>
+</bpmn:definitions>
+

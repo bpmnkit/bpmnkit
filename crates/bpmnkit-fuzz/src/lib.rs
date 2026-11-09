@@ -11,7 +11,7 @@ use bpmnkit_bpmn::{parse_bpmn, serialize_bpmn};
 use bpmnkit_conformance::{evaluate_feel, first_diff_line, from_feel, json_diff, to_feel, Value};
 use bpmnkit_dmn::{parse_dmn, serialize_dmn};
 use bpmnkit_form::{export_form, parse_form};
-use bpmnkit_text::compact::{compactify, expand};
+use bpmnkit_text::compact::{compactify, expand, ExpandOptions};
 use bpmnkit_text::process_text::parse_process_text;
 use serde_json::{json, Value as Json};
 use std::collections::BTreeMap;
@@ -120,7 +120,9 @@ fn run_unguarded(target: Target, req: &Json) -> Json {
             reset_id_counter();
             let result = parse_process_text(str_field(req, "text"));
             reset_id_counter();
-            match expand(&result.diagram) {
+            // Ungated, here and in the oracle: the target is the expansion; random text is
+            // rarely a deployable model, and the deploy check has its own conformance cases.
+            match expand(&result.diagram, &ExpandOptions::ungated()) {
                 Ok(defs) => json!({ "result": to_json(&result), "xml": serialize_bpmn(&defs) }),
                 Err(e) => json!({ "result": to_json(&result), "expandError": e.message }),
             }
@@ -133,7 +135,7 @@ fn run_unguarded(target: Target, req: &Json) -> Json {
             };
             let compact = compactify(&defs);
             reset_id_counter();
-            match expand(&compact) {
+            match expand(&compact, &ExpandOptions::ungated()) {
                 Ok(out) => {
                     json!({ "compact": to_json(&compact), "expanded": serialize_bpmn(&out) })
                 }

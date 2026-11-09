@@ -16,6 +16,7 @@ use rust_decimal::prelude::ToPrimitive;
 use rust_decimal::Decimal;
 use std::cell::RefCell;
 use std::collections::HashMap;
+use std::rc::Rc;
 use std::str::FromStr;
 
 pub fn lookup(name: &str) -> Option<BuiltinFn> {
@@ -116,21 +117,26 @@ fn substring(args: &[Value]) -> Value {
 // Regular expressions
 // ---------------------------------------------------------------------------
 
+/// (pattern, flags) to the compiled pattern, or `None` when it does not compile.
+type RegexCache = HashMap<(String, String), Option<Rc<Regex>>>;
+
 thread_local! {
     // Patterns come from static expression text and are compiled again and
-    // again inside loops and decision tables.
-    static REGEX_CACHE: RefCell<HashMap<(String, String), Option<Regex>>> = RefCell::new(HashMap::new());
+    // again inside loops and decision tables. `Rc`, not a `Regex` clone: each
+    // clone starts with an empty search cache, which costs about as much as
+    // the match itself.
+    static REGEX_CACHE: RefCell<RegexCache> = RefCell::new(HashMap::new());
 }
 const REGEX_CACHE_LIMIT: usize = 256;
 
-fn cached_regex(pattern: &str, flags: &str) -> Option<Regex> {
+fn cached_regex(pattern: &str, flags: &str) -> Option<Rc<Regex>> {
     REGEX_CACHE.with(|cache| {
         let mut cache = cache.borrow_mut();
         let key = (pattern.to_owned(), flags.to_owned());
         if let Some(hit) = cache.get(&key) {
             return hit.clone();
         }
-        let re = build_regex(pattern, flags);
+        let re = build_regex(pattern, flags).map(Rc::new);
         if cache.len() >= REGEX_CACHE_LIMIT {
             cache.clear();
         }
@@ -808,6 +814,36 @@ mod tests {
     }
     fn list(items: &[&str]) -> Value {
         Value::List(items.iter().map(|s| st(s)).collect())
+    }
+
+    #[test]
+    fn regex_cache_keys_on_flags_and_survives_eviction() {
+        let m = |s: &str, p: &str, f: Option<&str>| {
+            let mut args = vec![st(s), st(p)];
+            args.extend(f.map(st));
+            call("matches", &args)
+        };
+        // Same pattern, different flags: separate cache entries.
+        assert_eq!(m("ABC", "abc", None), Value::Boolean(false));
+        assert_eq!(m("ABC", "abc", Some("i")), Value::Boolean(true));
+        assert_eq!(m("ABC", "abc", None), Value::Boolean(false));
+        // A pattern that fails to compile is cached as a failure, not retried into a match.
+        assert_eq!(m("a", "(", None), Value::Null);
+        assert_eq!(m("a", "(", None), Value::Null);
+        // Fill past the bound: results stay right after the cache is cleared.
+        for i in 0..REGEX_CACHE_LIMIT + 10 {
+            assert_eq!(
+                m(&format!("x{i}y"), &format!("^x{i}y$"), None),
+                Value::Boolean(true)
+            );
+        }
+        REGEX_CACHE.with(|c| assert!(c.borrow().len() <= REGEX_CACHE_LIMIT));
+        assert_eq!(m("ABC", "abc", Some("i")), Value::Boolean(true));
+        assert_eq!(call("replace", &[st("a-b"), st("-"), st("+")]), st("a+b"));
+        assert_eq!(
+            call("split", &[st("a1b2c"), st("[0-9]")]),
+            list(&["a", "b", "c"])
+        );
     }
 
     #[test]

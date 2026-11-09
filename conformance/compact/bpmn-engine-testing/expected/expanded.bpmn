@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_testing" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:message id="Message_payment_confirmed" name="payment-confirmed"/>
   <bpmn:process id="order-process" isExecutable="true">
     <bpmn:startEvent id="start">
       <bpmn:outgoing>f_start</bpmn:outgoing>
@@ -64,7 +65,9 @@
     <bpmn:intermediateCatchEvent id="wait_new_year">
       <bpmn:incoming>df1</bpmn:incoming>
       <bpmn:outgoing>df2</bpmn:outgoing>
-      <bpmn:timerEventDefinition id="wait_new_year_TimerEventDefinition"/>
+      <bpmn:timerEventDefinition id="wait_new_year_TimerEventDefinition">
+        <bpmn:timeDate>2027-01-01T00:00:00Z</bpmn:timeDate>
+      </bpmn:timerEventDefinition>
     </bpmn:intermediateCatchEvent>
     <bpmn:endEvent id="d_end">
       <bpmn:incoming>df2</bpmn:incoming>
@@ -111,7 +114,7 @@
     <bpmn:intermediateCatchEvent id="await_confirmation">
       <bpmn:incoming>mf1</bpmn:incoming>
       <bpmn:outgoing>mf2</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="await_confirmation_MessageEventDefinition"/>
+      <bpmn:messageEventDefinition id="await_confirmation_MessageEventDefinition" messageRef="Message_payment_confirmed"/>
     </bpmn:intermediateCatchEvent>
     <bpmn:endEvent id="m_end">
       <bpmn:incoming>mf2</bpmn:incoming>

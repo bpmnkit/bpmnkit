@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+  <bpmn:message id="Message_s2" name="s2"/>
   <bpmn:process id="Process_1" isExecutable="true">
     <bpmn:startEvent id="s" name="S">
       <bpmn:outgoing>Flow_1</bpmn:outgoing>
@@ -22,7 +23,7 @@
     </bpmn:task>
     <bpmn:startEvent id="s2" name="S2">
       <bpmn:outgoing>Flow_6</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="s2_MessageEventDefinition"/>
+      <bpmn:messageEventDefinition id="s2_MessageEventDefinition" messageRef="Message_s2"/>
     </bpmn:startEvent>
     <bpmn:exclusiveGateway id="g" name="Ok?" default="Flow_9">
       <bpmn:incoming>Flow_6</bpmn:incoming>

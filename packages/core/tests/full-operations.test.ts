@@ -534,7 +534,8 @@ describe("compact user-task fields", () => {
 			},
 			{ op: "update", id: "T", patch: { properties: { owner: "billing" } } },
 		])
-		const back = compactify(expand(edited)).processes[0]?.elements
+		// A field fixture without a start event: the test is about the user-task fields.
+		const back = compactify(expand(edited, { validate: false })).processes[0]?.elements
 		expect(back?.find((e) => e.id === "U")).toMatchObject({
 			assignee: "=initiator",
 			candidateGroups: "reviewers",

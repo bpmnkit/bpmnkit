@@ -1,5 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="_5SVkEIXnEeSmwfgVk-ryvQ" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="_5SVkEIXnEeSmwfgVk-ryvQ" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+  <bpmn:error id="Error_x" name="02" errorCode="02"/>
+  <bpmn:message id="Message_Message_DocumentRequested" name="Message_DocumentRequested">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="= documentReferenceId"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_Message_FraudSuspected" name="Message_FraudSuspected">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=fraudSuspectedId"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
   <bpmn:process id="ManualCheck" name="Manual Check" isExecutable="true">
     <bpmn:userTask id="UserTask_DecideOnApplication" name="Decide on application">
       <bpmn:extensionElements>
@@ -22,10 +33,10 @@
         <bpmn:timeDuration>P7D</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>
-    <bpmn:subProcess id="Activity_0uvp3cb">
-      <bpmn:startEvent id="StartMessageEvent_DocumentRequested" name="Document requested">
+    <bpmn:subProcess id="Activity_0uvp3cb" triggeredByEvent="true">
+      <bpmn:startEvent id="StartMessageEvent_DocumentRequested" name="Document requested" isInterrupting="false">
         <bpmn:outgoing>Flow_0irfroh</bpmn:outgoing>
-        <bpmn:messageEventDefinition id="StartMessageEvent_DocumentRequested_MessageEventDefinition"/>
+        <bpmn:messageEventDefinition id="StartMessageEvent_DocumentRequested_MessageEventDefinition" messageRef="Message_Message_DocumentRequested"/>
       </bpmn:startEvent>
       <bpmn:endEvent id="EndEvent_DocumentReceived" name="Document Received">
         <bpmn:incoming>Flow_1wwxns6</bpmn:incoming>
@@ -45,10 +56,12 @@
       <bpmn:sequenceFlow id="Flow_0irfroh" sourceRef="StartMessageEvent_DocumentRequested" targetRef="CallActivity_RequestDocument"/>
       <bpmn:sequenceFlow id="Flow_1wwxns6" sourceRef="CallActivity_RequestDocument" targetRef="EndEvent_DocumentReceived"/>
     </bpmn:subProcess>
-    <bpmn:subProcess id="Activity_1esx1s7">
-      <bpmn:startEvent id="StartTimerEvent_AcceleratedDecision" name="Accelerated decision">
+    <bpmn:subProcess id="Activity_1esx1s7" triggeredByEvent="true">
+      <bpmn:startEvent id="StartTimerEvent_AcceleratedDecision" name="Accelerated decision" isInterrupting="false">
         <bpmn:outgoing>Flow_0kaot38</bpmn:outgoing>
-        <bpmn:timerEventDefinition id="StartTimerEvent_AcceleratedDecision_TimerEventDefinition"/>
+        <bpmn:timerEventDefinition id="StartTimerEvent_AcceleratedDecision_TimerEventDefinition">
+          <bpmn:timeCycle>R1/P5D</bpmn:timeCycle>
+        </bpmn:timerEventDefinition>
       </bpmn:startEvent>
       <bpmn:userTask id="UserTask_AccelerateDecision" name="Accelerate decision making">
         <bpmn:extensionElements>
@@ -71,7 +84,7 @@
       <bpmn:sequenceFlow id="Flow_1t18skh" sourceRef="UserTask_AccelerateDecision" targetRef="EndEvent_DecisionAccelerated"/>
       <bpmn:sequenceFlow id="Flow_1octlto" sourceRef="SendTask_NotifyCustomerDelay" targetRef="UserTask_AccelerateDecision"/>
     </bpmn:subProcess>
-    <bpmn:subProcess id="Activity_02a6b2h">
+    <bpmn:subProcess id="Activity_02a6b2h" triggeredByEvent="true">
       <bpmn:userTask id="UserTask_CheckForFraud" name="Check for Fraud">
         <bpmn:extensionElements>
           <zeebe:assignmentDefinition candidateGroups="riskteam"/>
@@ -79,13 +92,13 @@
         <bpmn:incoming>Flow_0nttki4</bpmn:incoming>
         <bpmn:outgoing>Flow_1istmr0</bpmn:outgoing>
       </bpmn:userTask>
-      <bpmn:startEvent id="StartMessageEvent_FraudSuspected" name="Fraud suspected">
+      <bpmn:startEvent id="StartMessageEvent_FraudSuspected" name="Fraud suspected" isInterrupting="false">
         <bpmn:outgoing>Flow_0nttki4</bpmn:outgoing>
-        <bpmn:messageEventDefinition id="StartMessageEvent_FraudSuspected_MessageEventDefinition"/>
+        <bpmn:messageEventDefinition id="StartMessageEvent_FraudSuspected_MessageEventDefinition" messageRef="Message_Message_FraudSuspected"/>
       </bpmn:startEvent>
       <bpmn:endEvent id="ErrorEndEvent_FraudDetected" name="Fraud Detected">
         <bpmn:incoming>SequenceFlow_Yes</bpmn:incoming>
-        <bpmn:errorEventDefinition id="ErrorEndEvent_FraudDetected_ErrorEventDefinition"/>
+        <bpmn:errorEventDefinition id="ErrorEndEvent_FraudDetected_ErrorEventDefinition" errorRef="Error_x"/>
       </bpmn:endEvent>
       <bpmn:exclusiveGateway id="Gateway_FraudDetected" name="Fraud detected?" default="SequenceFlow_No">
         <bpmn:incoming>Flow_1istmr0</bpmn:incoming>
@@ -104,7 +117,7 @@
     </bpmn:subProcess>
     <bpmn:endEvent id="ErrorEndEvent_Timeout" name="Timeout">
       <bpmn:incoming>Flow_03n7pdb</bpmn:incoming>
-      <bpmn:errorEventDefinition id="ErrorEndEvent_Timeout_ErrorEventDefinition"/>
+      <bpmn:errorEventDefinition id="ErrorEndEvent_Timeout_ErrorEventDefinition" errorRef="Error_x"/>
     </bpmn:endEvent>
     <bpmn:endEvent id="EndEvent_ManuallyDecided" name="Manually Decided">
       <bpmn:incoming>Flow_0vjv3ik</bpmn:incoming>

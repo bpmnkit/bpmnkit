@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/form-definition-job-worker",
+      "message": "Exactly one of the attributes 'formId, formKey' must be present and not blank",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Set either formId or formKey on the form definition, not both."
+    }
+  ]
+}

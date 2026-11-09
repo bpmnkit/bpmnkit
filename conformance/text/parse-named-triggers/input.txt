@@ -1,0 +1,1 @@
+s[start Go] > w[catch Payment | msg=paid key=orderId] > d[catch Deadline | at=2026-12-01T09:00:00Z] > x[end Failed | error=FAILED]

@@ -19,26 +19,34 @@
 //!   annotations via `pack_annotations` + `add_annotation_shapes`, then the shift into the
 //!   positive quadrant (`-Math.min(0, ...xs)`), labels and waypoints moved too (a moved
 //!   waypoint drops any other attributes: TS writes `{ x, y }`).
-//! - `expand` namespaces: `modeler` only with a platform version; `unknownAttributes`
-//!   likewise. No `exporter`.
+//! - `expand` namespaces: `modeler` when gated or with a platform version;
+//!   `modeler:executionPlatform` likewise, `modeler:executionPlatformVersion` only with a
+//!   version. No `exporter`. Then `assert_deployable` unless `validate` is `false`.
+//! - [`CompactRoots`]: the messages (per name and correlation key), signals (per name),
+//!   errors and escalations (per code) the elements name, with `root_definition_id` ids.
 
+use bpmnkit_bpmn::feel_condition::to_feel_condition;
 use bpmnkit_bpmn::js::js_number_to_string;
 use bpmnkit_bpmn::rest_connector::rest_connector_task_type;
-use bpmnkit_bpmn::stable_ids::assign_event_definition_ids;
+use bpmnkit_bpmn::stable_ids::{assign_event_definition_ids, root_definition_id};
 use bpmnkit_bpmn::zeebe::make_conditional_definition;
 use bpmnkit_bpmn::{
     Attrs, BpmnActivity, BpmnAdHocSubProcess, BpmnAssociation, BpmnBoundaryEvent, BpmnBounds,
     BpmnConditionExpression, BpmnDataObject, BpmnDataObjectReference, BpmnDataStoreReference,
     BpmnDefinitions, BpmnDiEdge, BpmnDiLabel, BpmnDiPlane, BpmnDiShape, BpmnDiagram,
-    BpmnElementType, BpmnEvent, BpmnEventDefinition, BpmnEventSubProcess, BpmnFlowElement,
-    BpmnFlowNodeBase, BpmnGateway, BpmnMessageTask, BpmnMultiInstanceLoopCharacteristics,
-    BpmnProcess, BpmnProcessContents, BpmnSequenceFlow, BpmnStartEvent, BpmnSubProcess,
-    BpmnTextAnnotation, BpmnTransaction, BpmnWaypoint, XmlElement,
+    BpmnElementType, BpmnError, BpmnEscalation, BpmnEvent, BpmnEventDefinition,
+    BpmnEventSubProcess, BpmnFlowElement, BpmnFlowNodeBase, BpmnGateway, BpmnMessage,
+    BpmnMessageTask, BpmnMultiInstanceLoopCharacteristics, BpmnProcess, BpmnProcessContents,
+    BpmnSequenceFlow, BpmnSignal, BpmnStartEvent, BpmnSubProcess, BpmnTextAnnotation,
+    BpmnTransaction, BpmnWaypoint, XmlElement,
 };
+use bpmnkit_compat::compat::normalize_camunda_version;
+use bpmnkit_compat::zeebe::{assert_deployable, AssertOptions};
 use bpmnkit_layout::annotations::pack_annotations;
 use bpmnkit_layout::auto_layout::add_annotation_shapes;
 use bpmnkit_layout::{layout_process, LayoutEngine};
 use indexmap::{IndexMap, IndexSet};
+use std::borrow::Cow;
 
 use super::types::*;
 use crate::js_record::JsRecord;
@@ -427,7 +435,7 @@ fn sequence_flow(f: &CompactFlow) -> BpmnSequenceFlow {
         target_ref: f.to.clone(),
         condition_expression: f.condition.as_ref().filter(|c| !c.is_empty()).map(|c| {
             BpmnConditionExpression {
-                text: c.clone(),
+                text: to_feel_condition(c),
                 attributes: Attrs::new(),
             }
         }),
@@ -449,7 +457,10 @@ fn flow_maps(flows: &[CompactFlow]) -> (FlowIds<'_>, FlowIds<'_>) {
 }
 
 /// TS's `buildSubContent`.
-fn build_sub_content(children: Option<&CompactChildren>) -> Result<BpmnProcessContents, TextError> {
+fn build_sub_content(
+    children: Option<&CompactChildren>,
+    mut roots: Option<&mut CompactRoots>,
+) -> Result<BpmnProcessContents, TextError> {
     let Some(children) = children.filter(|c| !c.elements.is_empty()) else {
         return Ok(BpmnProcessContents::default());
     };
@@ -462,6 +473,7 @@ fn build_sub_content(children: Option<&CompactChildren>) -> Result<BpmnProcessCo
             inc.get(child.id.as_str()).cloned().unwrap_or_default(),
             out.get(child.id.as_str()).cloned().unwrap_or_default(),
             defaults.get(&child.id).map(String::as_str),
+            roots.as_deref_mut(),
         )?);
     }
     Ok(BpmnProcessContents {
@@ -509,7 +521,7 @@ fn multi_instance_loop(el: &CompactElement) -> Option<BpmnMultiInstanceLoopChara
             .as_ref()
             .filter(|c| !c.is_empty())
             .map(|c| BpmnConditionExpression {
-                text: c.clone(),
+                text: to_feel_condition(c),
                 attributes: Attrs::from_iter([(
                     "xsi:type".to_owned(),
                     "bpmn:tFormalExpression".to_owned(),
@@ -525,12 +537,177 @@ fn multi_instance_loop(el: &CompactElement) -> Option<BpmnMultiInstanceLoopChara
     })
 }
 
-/// TS's `buildFlowElement`. `default_flow` is the id of the outgoing flow marked default.
+/// TS's `CompactRoots`: the root elements `expand` writes for the names and codes elements
+/// carry, one message per name and correlation key, one signal per name, one error or
+/// escalation per code. Ids are made as the builder makes them (`Message_<name>`).
+#[derive(Debug, Clone, Default)]
+pub struct CompactRoots {
+    pub messages: Vec<BpmnMessage>,
+    pub errors: Vec<BpmnError>,
+    pub signals: Vec<BpmnSignal>,
+    pub escalations: Vec<BpmnEscalation>,
+}
+
+fn subscription_key(m: &BpmnMessage) -> Option<&str> {
+    m.extension_elements
+        .iter()
+        .flatten()
+        .find(|x| x.name == "zeebe:subscription")
+        .and_then(|x| x.attributes.get("correlationKey"))
+        .map(String::as_str)
+}
+
+impl CompactRoots {
+    /// The id of the message named `name` with `correlation_key`, created when missing.
+    pub fn message(&mut self, name: &str, correlation_key: Option<&str>) -> String {
+        if let Some(found) = self
+            .messages
+            .iter()
+            .find(|m| m.name.as_deref() == Some(name) && subscription_key(m) == correlation_key)
+        {
+            return found.id.clone();
+        }
+        let id = root_definition_id("Message", name, self.messages.iter().map(|m| m.id.as_str()));
+        let extension_elements = correlation_key.map(|key| {
+            let mut ext = XmlElement::new("zeebe:subscription");
+            ext.attributes
+                .insert("correlationKey".to_owned(), key.to_owned());
+            vec![ext]
+        });
+        self.messages.push(BpmnMessage {
+            id: id.clone(),
+            name: Some(name.to_owned()),
+            extension_elements,
+            ..BpmnMessage::default()
+        });
+        id
+    }
+
+    /// The id of the signal named `name`, created when missing.
+    pub fn signal(&mut self, name: &str) -> String {
+        if let Some(found) = self
+            .signals
+            .iter()
+            .find(|x| x.name.as_deref() == Some(name))
+        {
+            return found.id.clone();
+        }
+        let id = root_definition_id("Signal", name, self.signals.iter().map(|x| x.id.as_str()));
+        self.signals.push(BpmnSignal {
+            id: id.clone(),
+            name: Some(name.to_owned()),
+            ..BpmnSignal::default()
+        });
+        id
+    }
+
+    /// The id of the error with `code`, created when missing.
+    pub fn error(&mut self, code: &str) -> String {
+        if let Some(found) = self
+            .errors
+            .iter()
+            .find(|x| x.error_code.as_deref() == Some(code))
+        {
+            return found.id.clone();
+        }
+        let id = root_definition_id("Error", code, self.errors.iter().map(|x| x.id.as_str()));
+        self.errors.push(BpmnError {
+            id: id.clone(),
+            name: Some(code.to_owned()),
+            error_code: Some(code.to_owned()),
+            ..BpmnError::default()
+        });
+        id
+    }
+
+    /// The id of the escalation with `code`, created when missing.
+    pub fn escalation(&mut self, code: &str) -> String {
+        if let Some(found) = self
+            .escalations
+            .iter()
+            .find(|x| x.escalation_code.as_deref() == Some(code))
+        {
+            return found.id.clone();
+        }
+        let id = root_definition_id(
+            "Escalation",
+            code,
+            self.escalations.iter().map(|x| x.id.as_str()),
+        );
+        self.escalations.push(BpmnEscalation {
+            id: id.clone(),
+            name: Some(code.to_owned()),
+            escalation_code: Some(code.to_owned()),
+            ..BpmnEscalation::default()
+        });
+        id
+    }
+}
+
+/// TS's `eventDefinitionOf`: the element's event definition with the names, codes and
+/// times it carries.
+fn event_definition_of(
+    el: &CompactElement,
+    roots: Option<&mut CompactRoots>,
+) -> Option<BpmnEventDefinition> {
+    use BpmnEventDefinition as D;
+    let made = el
+        .event_type
+        .as_deref()
+        .filter(|t| !t.is_empty())
+        .and_then(make_event_def)?;
+    let key = truthy(&el.correlation_key);
+    Some(match made {
+        D::Timer(mut t) => {
+            t.time_duration = truthy(&el.timer_duration).map(str::to_owned);
+            t.time_date = truthy(&el.timer_date).map(str::to_owned);
+            t.time_cycle = truthy(&el.timer_cycle).map(str::to_owned);
+            D::Timer(t)
+        }
+        D::Conditional(_) if el.condition.is_some() => {
+            make_conditional_definition(el.condition.as_deref().unwrap_or_default(), None)
+        }
+        D::Link(mut l) if el.link_name.is_some() => {
+            l.name = el.link_name.clone();
+            D::Link(l)
+        }
+        D::Message(mut m) => {
+            if let (Some(roots), Some(name)) = (roots, truthy(&el.message_name)) {
+                m.message_ref = Some(roots.message(name, key));
+            }
+            D::Message(m)
+        }
+        D::Signal(mut x) => {
+            if let (Some(roots), Some(name)) = (roots, truthy(&el.signal_name)) {
+                x.signal_ref = Some(roots.signal(name));
+            }
+            D::Signal(x)
+        }
+        D::Error(mut x) => {
+            if let (Some(roots), Some(code)) = (roots, truthy(&el.error_code)) {
+                x.error_ref = Some(roots.error(code));
+            }
+            D::Error(x)
+        }
+        D::Escalation(mut x) => {
+            if let (Some(roots), Some(code)) = (roots, truthy(&el.escalation_code)) {
+                x.escalation_ref = Some(roots.escalation(code));
+            }
+            D::Escalation(x)
+        }
+        other => other,
+    })
+}
+
+/// TS's `buildFlowElement`. `default_flow` is the id of the outgoing flow marked default;
+/// `roots`, when given, receives the messages, signals, errors and escalations the element
+/// names (without it the names and codes are not written).
 pub fn build_flow_element(
     el: &CompactElement,
     incoming: Vec<String>,
     outgoing: Vec<String>,
     default_flow: Option<&str>,
+    mut roots: Option<&mut CompactRoots>,
 ) -> Result<BpmnFlowElement, TextError> {
     let base = BpmnFlowNodeBase {
         id: el.id.clone(),
@@ -542,27 +719,11 @@ pub fn build_flow_element(
         unknown_attributes: template_attributes(el),
         ..BpmnFlowNodeBase::default()
     };
-    let made = el
-        .event_type
-        .as_deref()
-        .filter(|t| !t.is_empty())
-        .and_then(make_event_def);
-    let event_def = match made {
-        Some(BpmnEventDefinition::Timer(mut t))
-            if el.timer_duration.as_deref().is_some_and(|d| !d.is_empty()) =>
-        {
-            t.time_duration = el.timer_duration.clone();
-            Some(BpmnEventDefinition::Timer(t))
-        }
-        Some(BpmnEventDefinition::Conditional(_)) if el.condition.is_some() => Some(
-            make_conditional_definition(el.condition.as_deref().unwrap_or_default(), None),
-        ),
-        other => other,
-    };
+    let event_def = event_definition_of(el, roots.as_deref_mut());
     let mut event_defs: Vec<BpmnEventDefinition> = event_def.into_iter().collect();
     // Zeebe rejects an id-less definition at deploy time; the builder derives the same ids.
     assign_event_definition_ids(&el.id, &mut event_defs);
-    let sub_content = build_sub_content(el.children.as_ref())?;
+    let sub_content = build_sub_content(el.children.as_ref(), roots.as_deref_mut())?;
     let loop_characteristics = multi_instance_loop(el);
 
     let Some(type_) = el.element_type() else {
@@ -585,7 +746,8 @@ pub fn build_flow_element(
         T::StartEvent => E::StartEvent(BpmnStartEvent {
             base,
             event_definitions: event_defs,
-            is_interrupting: None,
+            // An event sub-process's start: `false` lets the scope go on.
+            is_interrupting: (el.interrupting == Some(false)).then_some(false),
         }),
         T::EndEvent => E::EndEvent(BpmnEvent {
             base,
@@ -617,7 +779,10 @@ pub fn build_flow_element(
         }),
         T::ReceiveTask => E::ReceiveTask(BpmnMessageTask {
             base,
-            message_ref: None,
+            message_ref: match (roots, truthy(&el.message_name)) {
+                (Some(roots), Some(name)) => Some(roots.message(name, truthy(&el.correlation_key))),
+                _ => None,
+            },
             loop_characteristics,
         }),
         T::ManualTask => E::ManualTask(activity(base)),
@@ -774,7 +939,10 @@ fn build_diagram(process_id: &str, process: &BpmnProcess) -> BpmnDiagram {
 }
 
 /// TS's `expandProcess`.
-fn expand_process(compact: &CompactProcess) -> Result<(BpmnProcess, BpmnDiagram), TextError> {
+fn expand_process(
+    compact: &CompactProcess,
+    roots: &mut CompactRoots,
+) -> Result<(BpmnProcess, BpmnDiagram), TextError> {
     let (incoming, outgoing) = flow_maps(&compact.flows);
     let defaults = default_flows(&compact.elements, &compact.flows)?;
     let mut flow_elements = Vec::with_capacity(compact.elements.len());
@@ -784,6 +952,7 @@ fn expand_process(compact: &CompactProcess) -> Result<(BpmnProcess, BpmnDiagram)
             incoming.get(el.id.as_str()).cloned().unwrap_or_default(),
             outgoing.get(el.id.as_str()).cloned().unwrap_or_default(),
             defaults.get(&el.id).map(String::as_str),
+            Some(roots),
         )?);
     }
     let sequence_flows: Vec<BpmnSequenceFlow> = compact.flows.iter().map(sequence_flow).collect();
@@ -828,8 +997,47 @@ fn expand_process(compact: &CompactProcess) -> Result<(BpmnProcess, BpmnDiagram)
     Ok((process, diagram))
 }
 
-/// TS's `expand`: a full model with an auto-generated layout.
-pub fn expand(compact: &CompactDiagram) -> Result<BpmnDefinitions, TextError> {
+/// TS's `ExpandOptions`. The default gates: a compact diagram is written for Camunda 8.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ExpandOptions {
+    /// Refuse a diagram Zeebe would reject on deploy (default `true`). `false` for an
+    /// unfinished diagram or one not meant for Camunda 8; the result is then not marked as
+    /// Camunda 8 unless the diagram names an `execution_platform_version`.
+    pub validate: bool,
+    /// Fill the documented placeholders instead of refusing (default `false`).
+    pub placeholders: bool,
+    /// The Camunda 8 version to check for; defaults to the diagram's
+    /// `execution_platform_version`.
+    pub camunda_version: Option<String>,
+}
+
+impl Default for ExpandOptions {
+    fn default() -> Self {
+        Self {
+            validate: true,
+            placeholders: false,
+            camunda_version: None,
+        }
+    }
+}
+
+impl ExpandOptions {
+    /// `{ validate: false }`: no gate, for previews and models not meant for Camunda 8.
+    pub fn ungated() -> Self {
+        Self {
+            validate: false,
+            ..Self::default()
+        }
+    }
+}
+
+/// TS's `expand`: a full model with an auto-generated layout, refused by
+/// `assert_deployable` (as [`TextError::deployability`]) unless `options.validate` is
+/// `false`.
+pub fn expand(
+    compact: &CompactDiagram,
+    options: &ExpandOptions,
+) -> Result<BpmnDefinitions, TextError> {
     let problems = compact_problems(compact);
     if !problems.is_empty() {
         return Err(TextError::new(format!(
@@ -837,14 +1045,17 @@ pub fn expand(compact: &CompactDiagram) -> Result<BpmnDefinitions, TextError> {
             problems.join("; ")
         )));
     }
+    let mut roots = CompactRoots::default();
     let mut processes = Vec::new();
     let mut diagrams = Vec::new();
     for cp in &compact.processes {
-        let (process, diagram) = expand_process(cp)?;
+        let (process, diagram) = expand_process(cp, &mut roots)?;
         processes.push(process);
         diagrams.push(diagram);
     }
     let platform = compact.execution_platform_version.as_ref();
+    // Gated output is Camunda 8 output: marking it so makes `export_bpmn`'s "auto" agree.
+    let camunda8 = options.validate || platform.is_some();
     let mut namespaces = Attrs::new();
     for (k, v) in [
         ("bpmn", "http://www.omg.org/spec/BPMN/20100524/MODEL"),
@@ -856,7 +1067,7 @@ pub fn expand(compact: &CompactDiagram) -> Result<BpmnDefinitions, TextError> {
         namespaces.insert(k.to_owned(), v.to_owned());
     }
     let mut unknown_attributes = Attrs::new();
-    if let Some(platform) = platform {
+    if camunda8 {
         namespaces.insert(
             "modeler".to_owned(),
             "http://camunda.org/schema/modeler/1.0".to_owned(),
@@ -865,18 +1076,44 @@ pub fn expand(compact: &CompactDiagram) -> Result<BpmnDefinitions, TextError> {
             "modeler:executionPlatform".to_owned(),
             "Camunda Cloud".to_owned(),
         );
+    }
+    if let Some(platform) = platform {
         unknown_attributes.insert(
             "modeler:executionPlatformVersion".to_owned(),
             platform.clone(),
         );
     }
-    Ok(BpmnDefinitions {
+    let definitions = BpmnDefinitions {
         id: compact.id.clone(),
         target_namespace: "http://bpmn.io/schema/bpmn".to_owned(),
         namespaces,
         unknown_attributes,
+        errors: roots.errors,
+        escalations: roots.escalations,
+        messages: roots.messages,
+        signals: roots.signals,
         processes,
         diagrams,
         ..BpmnDefinitions::default()
-    })
+    };
+    if !options.validate {
+        return Ok(definitions);
+    }
+    let camunda_version = normalize_camunda_version(
+        options
+            .camunda_version
+            .as_deref()
+            .or(platform.map(String::as_str)),
+    )
+    .map(|v| v.as_str().to_string());
+    let assert_options = AssertOptions {
+        camunda_version,
+        placeholders: options.placeholders,
+        ..AssertOptions::default()
+    };
+    let filled = match assert_deployable(&definitions, &assert_options)?.definitions {
+        Cow::Owned(filled) => Some(filled),
+        Cow::Borrowed(_) => None,
+    };
+    Ok(filled.unwrap_or(definitions))
 }

@@ -1,6 +1,8 @@
 pub mod backend;
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub mod compat;
+#[cfg(any(feature = "postgres", feature = "sqlite"))]
+pub mod conn;
 pub mod error;
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub mod pool;
@@ -13,7 +15,7 @@ pub mod sqlx_backend;
 #[cfg(feature = "memory")]
 pub mod memory_backend;
 
-pub use backend::StateBackend;
+pub use backend::{StateBackend, TxControl, UnitOfWork};
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub use compat::DbRow;
 pub use error::DbError;

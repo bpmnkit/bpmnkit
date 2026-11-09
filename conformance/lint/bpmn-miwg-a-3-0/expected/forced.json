@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 5,
+    "error": 6,
     "info": 0,
     "warning": 3
   },
@@ -118,10 +118,23 @@
       "processId": "WFP-6-",
       "severity": "error",
       "suggestion": "Give every event definition an id (e.g. <ElementId>_TimerEventDefinition) — Zeebe rejects a definition without one."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "_1ae31d1b-2559-4f78-a3ec-47986a49db48"
+      ],
+      "fixable": false,
+      "id": "zeebe/sub-process-start-event",
+      "message": "Must have exactly one start event",
+      "plane": "WFP-6-",
+      "processId": "WFP-6-",
+      "severity": "error",
+      "suggestion": "Give the sub-process exactly one start event."
     }
   ],
   "platform": {
     "id": "none"
   },
-  "total": 8
+  "total": 9
 }

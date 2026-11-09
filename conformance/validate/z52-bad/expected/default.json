@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Boundary"
+      ],
+      "fixable": false,
+      "id": "zeebe/boundary-listeners",
+      "message": "Execution listeners of type 'start' are not supported by boundary events",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Use an 'end' execution listener on the boundary event."
+    }
+  ]
+}

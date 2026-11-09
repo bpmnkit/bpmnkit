@@ -1,0 +1,8 @@
+{
+  "error": "Not deployable on Camunda 8.10: 2 error(s)\n- order: Multiple none start events are not allowed (zeebe/multiple-none-start)\n- charge: Must have exactly one 'zeebe:taskDefinition' extension element (zeebe/service-task-definition)",
+  "camundaVersion": "8.10",
+  "findings": [
+    "zeebe/multiple-none-start order",
+    "zeebe/service-task-definition charge"
+  ]
+}

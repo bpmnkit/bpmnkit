@@ -12,7 +12,7 @@ use std::time::Instant;
 use bpmnkit_bpmn::ids::reset_id_counter;
 use bpmnkit_bpmn::parse_bpmn;
 use bpmnkit_dmn::parse_dmn;
-use bpmnkit_text::compact::{compactify, expand};
+use bpmnkit_text::compact::{compactify, expand, ExpandOptions};
 use bpmnkit_text::dmn_compact::{compactify_dmn, expand_dmn};
 use bpmnkit_text::process_text::{parse_process_text, write_process_text, WriteProcessTextOptions};
 use serde_json::Value;
@@ -89,7 +89,9 @@ fn main() {
     let diagrams: Vec<_> = bpmn
         .iter()
         .map(compactify)
-        .filter(|d| expand(d).is_ok())
+        // Ungated: the corpus round trips are mostly not Camunda 8 models, and the bench
+        // times the expansion, not the deploy check.
+        .filter(|d| expand(d, &ExpandOptions::ungated()).is_ok())
         .collect();
     let dmn: Vec<_> = cases("compact", "dmn-")
         .iter()
@@ -133,7 +135,7 @@ fn main() {
     time("expand", iterations, || {
         reset_id_counter();
         for d in &diagrams {
-            black_box(expand(black_box(d)).ok());
+            black_box(expand(black_box(d), &ExpandOptions::ungated()).ok());
         }
     });
     time("compactify dmn", iterations, || {

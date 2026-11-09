@@ -150,14 +150,6 @@
     <semantic:serviceTask id="_fea1c5af-6c76-403f-809e-26d476d92741" implementation="##WebService" completionQuantity="1" startQuantity="1" name="Service Task 7">
       <semantic:incoming>_6a248585-952e-40ff-82ec-b6d8f410b73a</semantic:incoming>
       <semantic:outgoing>_657f30ba-0690-4a14-8b8e-d8939efcc7bd</semantic:outgoing>
-      <semantic:dataInputAssociation id="_73afd30d-7d54-4897-9350-1f7d301ef1b2">
-        <semantic:sourceRef>_3d35229f-2c75-4d5d-a066-2d14e46e442e</semantic:sourceRef>
-        <semantic:targetRef>Din1373655174951</semantic:targetRef>
-      </semantic:dataInputAssociation>
-      <semantic:dataOutputAssociation id="_fa10ebaf-7088-4def-8cc3-d959b8876b06">
-        <semantic:sourceRef>Dout1373655174952</semantic:sourceRef>
-        <semantic:targetRef>_b9385abf-d293-40b7-848b-8add4db48415</semantic:targetRef>
-      </semantic:dataOutputAssociation>
       <semantic:ioSpecification>
         <semantic:dataInput id="Din1373655174951"/>
         <semantic:dataOutput id="Dout1373655174952"/>
@@ -168,6 +160,14 @@
           <semantic:dataOutputRefs>Dout1373655174952</semantic:dataOutputRefs>
         </semantic:outputSet>
       </semantic:ioSpecification>
+      <semantic:dataInputAssociation id="_73afd30d-7d54-4897-9350-1f7d301ef1b2">
+        <semantic:sourceRef>_3d35229f-2c75-4d5d-a066-2d14e46e442e</semantic:sourceRef>
+        <semantic:targetRef>Din1373655174951</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataOutputAssociation id="_fa10ebaf-7088-4def-8cc3-d959b8876b06">
+        <semantic:sourceRef>Dout1373655174952</semantic:sourceRef>
+        <semantic:targetRef>_b9385abf-d293-40b7-848b-8add4db48415</semantic:targetRef>
+      </semantic:dataOutputAssociation>
     </semantic:serviceTask>
     <semantic:endEvent id="_ae916437-d9aa-4e3d-a7c3-34998c410beb" name="End Event Terminate">
       <semantic:incoming>_54f45351-aa18-4c65-b0d0-edc3aa0a140d</semantic:incoming>

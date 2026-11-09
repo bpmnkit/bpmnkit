@@ -1,0 +1,3 @@
+Not deployable on Camunda 8.10: 2 error(s)
+- c: Must be exactly one type of timer: timeDuration, timeDate or timeCycle (zeebe/timer-one-value)
+- c: Intermediate timer catch event must have either a time duration or a time date. (zeebe/intermediate-timer-value)

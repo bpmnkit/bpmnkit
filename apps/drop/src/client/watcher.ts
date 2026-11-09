@@ -145,7 +145,8 @@ export class DocWatcher {
 			return this.drift("threw")
 		}
 
-		const xml = Bpmn.export(next)
+		// The user's own file, shown or written back as it is, not refused for deploy errors.
+		const xml = Bpmn.export(next, { validate: false })
 		const hash = await sha256Hex(xml)
 		// The whole point. Everything upstream is an argument that this matches;
 		// this is the check that the argument held.

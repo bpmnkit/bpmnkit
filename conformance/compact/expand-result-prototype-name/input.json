@@ -5,6 +5,10 @@
       "id": "P",
       "elements": [
         {
+          "id": "Start_P",
+          "type": "startEvent"
+        },
+        {
           "id": "a",
           "type": "serviceTask",
           "jobType": "work",
@@ -16,7 +20,9 @@
           "type": "serviceTask",
           "jobType": "work",
           "resultVariable": "toString",
-          "outputs": { "other": "= x" }
+          "outputs": {
+            "other": "= x"
+          }
         },
         {
           "id": "c",
@@ -26,8 +32,21 @@
         }
       ],
       "flows": [
-        { "id": "f1", "from": "a", "to": "b" },
-        { "id": "f2", "from": "b", "to": "c" }
+        {
+          "id": "Flow_Start_P",
+          "from": "Start_P",
+          "to": "a"
+        },
+        {
+          "id": "f1",
+          "from": "a",
+          "to": "b"
+        },
+        {
+          "id": "f2",
+          "from": "b",
+          "to": "c"
+        }
       ]
     }
   ]

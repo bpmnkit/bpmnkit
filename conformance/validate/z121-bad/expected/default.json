@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/task-schedule-date",
+      "message": "Expected static value to be a valid DateTime String, e.g. '2023-03-02T15:35+02:00', but found 'tomorrow'.",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Write dueDate as an ISO 8601 date-time with an offset, or as a FEEL expression."
+    }
+  ]
+}

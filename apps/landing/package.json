@@ -10,7 +10,7 @@
 		"build": "astro build",
 		"preview": "astro preview",
 		"deploy": "wrangler pages deploy dist --project-name=bpmn-sdk-landing",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "astro sync && tsc --noEmit",
 		"check": "biome check .",
 		"test": "vitest run"
 	},

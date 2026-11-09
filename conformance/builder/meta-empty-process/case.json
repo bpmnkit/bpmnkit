@@ -2,6 +2,8 @@
 	"kind": "bpmn",
 	"script": [
 		["createProcess","p"],
-		["build"]
-	]
+		["build",{"validate":false}]
+	],
+	"deployable": false,
+	"deployableReason": "Deliberately empty process: pins the builder's output for a process with no elements."
 }

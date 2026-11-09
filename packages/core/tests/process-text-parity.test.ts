@@ -74,7 +74,8 @@ describe("compact: result mapping", () => {
 				},
 			],
 		}
-		const xml = Bpmn.export(expand(diagram))
+		// One task, no start event: the test is about the output mapping.
+		const xml = Bpmn.export(expand(diagram, { validate: false }))
 		expect(xml).toContain(`<zeebe:output source="= response" target="${result}"`)
 	})
 })

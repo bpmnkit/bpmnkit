@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "p"
+      ],
+      "fixable": false,
+      "id": "zeebe/duplicate-event-sub-process-condition",
+      "message": "Duplicate condition expression '=x > 1' found in conditional start events of event subprocesses in process 'p'. Condition expressions for conditional start events in event subprocesses must be unique within a process.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Give each conditional event sub-process start a different condition."
+    }
+  ]
+}

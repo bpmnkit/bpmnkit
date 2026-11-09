@@ -55,12 +55,14 @@
         {
           "eventType": "link",
           "id": "link_throw",
+          "linkName": "B",
           "name": "To B",
           "type": "intermediateThrowEvent"
         },
         {
           "eventType": "link",
           "id": "link_catch",
+          "linkName": "B",
           "name": "From B",
           "type": "intermediateCatchEvent"
         },
@@ -274,7 +276,7 @@
           },
           "id": "evt_sub",
           "name": "On message",
-          "type": "subProcess"
+          "type": "eventSubProcess"
         },
         {
           "children": {

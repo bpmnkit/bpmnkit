@@ -29,4 +29,19 @@ process.stdout.write(Bpmn.export(definitions))
 	it("throws when code writes nothing to stdout", async () => {
 		await expect(executeSdkCode("const x = 1", REPO_ROOT)).rejects.toThrow("no output")
 	}, 15_000)
+
+	it("refuses output Camunda 8 would not deploy with the gate's lines", async () => {
+		const tsCode = `
+import { Bpmn } from "@bpmnkit/core"
+const definitions = Bpmn.createProcess("p")
+  .startEvent("start")
+  .serviceTask("charge", { name: "Charge" })
+  .endEvent("end")
+  .build({ validate: false })
+process.stdout.write(Bpmn.export(definitions, { validate: false }))
+`
+		await expect(executeSdkCode(tsCode, REPO_ROOT)).rejects.toThrow(
+			/^Not deployable on Camunda \d+\.\d+: \d+ error\(s\)\n- charge: /,
+		)
+	}, 30_000)
 })

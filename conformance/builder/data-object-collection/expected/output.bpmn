@@ -15,7 +15,7 @@
       </bpmn:dataOutputAssociation>
     </bpmn:serviceTask>
     <bpmn:dataObject id="DO1" name="Items" isCollection="true"/>
-    <bpmn:dataObjectReference id="DOR1" dataObjectRef="DO1" isCollection="true"/>
+    <bpmn:dataObjectReference id="DOR1" dataObjectRef="DO1"/>
     <bpmn:endEvent id="e">
       <bpmn:incoming>Flow_t_e</bpmn:incoming>
     </bpmn:endEvent>

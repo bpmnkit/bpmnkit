@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "g"
+      ],
+      "fixable": false,
+      "id": "zeebe/event-based-gateway-duplicate-trigger",
+      "message": "Multiple message event definitions with the same name 'm1' are not allowed.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Give each branch of the event-based gateway a different message."
+    }
+  ]
+}

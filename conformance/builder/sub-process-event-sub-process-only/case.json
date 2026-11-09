@@ -2,7 +2,7 @@
 	"kind": "bpmn",
 	"script": [
 		["createProcess","p"],
-		["eventSubProcess","esp",{"$ops":[["startEvent","es",{"messageName":"m"}],["endEvent","ee"]]}],
+		["eventSubProcess","esp",{"$ops":[["startEvent","es",{"messageName":"m","correlationKey":"=k"}],["endEvent","ee"]]}],
 		["startEvent","s"],
 		["endEvent","e"],
 		["build"]

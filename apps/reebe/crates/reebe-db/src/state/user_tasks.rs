@@ -30,12 +30,16 @@ pub struct UserTask {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct UserTaskRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> UserTaskRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -67,7 +71,7 @@ impl<'a> UserTaskRepository<'a> {
         .bind(&task.variables)
         .bind(task.created_at)
         .bind(&task.tenant_id)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
 
         #[cfg(feature = "sqlite")]
@@ -97,7 +101,7 @@ impl<'a> UserTaskRepository<'a> {
         .bind(&task.variables)
         .bind(task.created_at.to_rfc3339())
         .bind(&task.tenant_id)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
 
         Ok(())
@@ -107,7 +111,7 @@ impl<'a> UserTaskRepository<'a> {
         sqlx::query("UPDATE user_tasks SET assignee = $1 WHERE key = $2")
             .bind(assignee)
             .bind(key)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -122,7 +126,7 @@ impl<'a> UserTaskRepository<'a> {
         )
         .bind(&vars)
         .bind(key)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
 
         #[cfg(feature = "sqlite")]
@@ -132,7 +136,7 @@ impl<'a> UserTaskRepository<'a> {
         )
         .bind(&vars)
         .bind(key)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
 
         Ok(())
@@ -141,7 +145,7 @@ impl<'a> UserTaskRepository<'a> {
     pub async fn cancel(&self, key: i64) -> Result<()> {
         sqlx::query("UPDATE user_tasks SET state = 'CANCELED' WHERE key = $1")
             .bind(key)
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -155,7 +159,7 @@ impl<'a> UserTaskRepository<'a> {
                FROM user_tasks WHERE key = $1"#,
         )
         .bind(key)
-        .fetch_optional(self.pool)
+        .fetch_optional(&mut *self.pool.acquire().await?)
         .await?;
 
         match row {
@@ -194,7 +198,7 @@ impl<'a> UserTaskRepository<'a> {
         .bind(tenant_id)
         .bind(after_key)
         .bind(page_size)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         #[cfg(feature = "sqlite")]
@@ -218,7 +222,7 @@ impl<'a> UserTaskRepository<'a> {
         .bind(tenant_id)
         .bind(after_key)
         .bind(page_size)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         Ok(rows.into_iter().map(row_to_user_task).collect())

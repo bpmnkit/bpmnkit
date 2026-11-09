@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 31,
+    "error": 33,
     "info": 6,
     "warning": 27
   },
@@ -781,6 +781,30 @@
       "processId": "agents",
       "severity": "error",
       "suggestion": "Read the value from the toolCall variable instead."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "agents"
+      ],
+      "fixable": false,
+      "id": "zeebe/process-start-event",
+      "message": "Must have at least one start event",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Add a start event to the process."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "branch"
+      ],
+      "fixable": false,
+      "id": "zeebe/conditional-flow-source",
+      "message": "Conditional sequence flows are only supported at exclusive or inclusive gateway",
+      "processId": "agents",
+      "severity": "error",
+      "suggestion": "Remove the condition or route the flow through an exclusive or inclusive gateway."
     }
   ],
   "platform": {
@@ -788,5 +812,5 @@
     "name": "Camunda Cloud",
     "version": "8.8.0"
   },
-  "total": 64
+  "total": 66
 }

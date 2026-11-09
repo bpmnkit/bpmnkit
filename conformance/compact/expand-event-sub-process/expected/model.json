@@ -7,6 +7,21 @@
         "bpmnElement": "P",
         "edges": [
           {
+            "bpmnElement": "Flow_Start_P",
+            "id": "Flow_Start_P_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 144,
+                "y": 40
+              },
+              {
+                "x": 352,
+                "y": 40
+              }
+            ]
+          },
+          {
             "bpmnElement": "g",
             "id": "g_di",
             "unknownAttributes": {},
@@ -26,9 +41,20 @@
         "shapes": [
           {
             "bounds": {
+              "height": 36,
+              "width": 36,
+              "x": 108,
+              "y": 22
+            },
+            "bpmnElement": "Start_P",
+            "id": "Start_P_di",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
               "height": 80,
               "width": 100,
-              "x": 76,
+              "x": 352,
               "y": 0
             },
             "bpmnElement": "main",
@@ -92,12 +118,28 @@
   "errors": [],
   "escalations": [],
   "id": "D",
-  "messages": [],
+  "messages": [
+    {
+      "extensionElements": [
+        {
+          "attributes": {
+            "correlationKey": "=orderId"
+          },
+          "children": [],
+          "name": "zeebe:subscription"
+        }
+      ],
+      "id": "Message_cancel_order",
+      "name": "cancel-order",
+      "unknownAttributes": {}
+    }
+  ],
   "namespaces": {
     "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
     "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
     "dc": "http://www.omg.org/spec/DD/20100524/DC",
     "di": "http://www.omg.org/spec/DD/20100524/DI",
+    "modeler": "http://camunda.org/schema/modeler/1.0",
     "zeebe": "http://camunda.org/schema/zeebe/1.0"
   },
   "processes": [
@@ -106,9 +148,22 @@
       "extensionElements": [],
       "flowElements": [
         {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "Start_P",
+          "incoming": [],
+          "outgoing": [
+            "Flow_Start_P"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
           "extensionElements": [],
           "id": "main",
-          "incoming": [],
+          "incoming": [
+            "Flow_Start_P"
+          ],
           "outgoing": [],
           "type": "task",
           "unknownAttributes": {}
@@ -121,12 +176,14 @@
               "eventDefinitions": [
                 {
                   "id": "es_MessageEventDefinition",
+                  "messageRef": "Message_cancel_order",
                   "type": "message"
                 }
               ],
               "extensionElements": [],
               "id": "es",
               "incoming": [],
+              "isInterrupting": false,
               "name": "Cancelled",
               "outgoing": [
                 "g"
@@ -168,12 +225,22 @@
       "groups": [],
       "id": "P",
       "isExecutable": true,
-      "sequenceFlows": [],
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "Flow_Start_P",
+          "sourceRef": "Start_P",
+          "targetRef": "main",
+          "unknownAttributes": {}
+        }
+      ],
       "textAnnotations": [],
       "unknownAttributes": {}
     }
   ],
   "signals": [],
   "targetNamespace": "http://bpmn.io/schema/bpmn",
-  "unknownAttributes": {}
+  "unknownAttributes": {
+    "modeler:executionPlatform": "Camunda Cloud"
+  }
 }

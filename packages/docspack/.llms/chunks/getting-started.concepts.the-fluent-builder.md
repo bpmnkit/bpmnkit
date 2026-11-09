@@ -9,10 +9,14 @@ import { Bpmn } from "@bpmnkit/core";
 
 Bpmn.createProcess("my-process")
   .startEvent("start")       // cursor at startEvent
-  .serviceTask("task-1")     // cursor at task-1; sequence flow start → task-1 added
+  .serviceTask("task-1", { taskType: "do-work" }) // cursor at task-1; flow start → task-1 added
   .endEvent("end")           // cursor at end; sequence flow task-1 → end added
   .build();
 ```
+
+`build()` refuses a model Camunda 8 would not deploy — here, a service task without a
+`taskType` — with a `DeployabilityError` that names every problem. See
+[the deploy gate](/docs/guides/deploy-gate).
 
 ### Sequential flow
 
@@ -27,7 +31,7 @@ Use `.branch(id, builder)` to define outgoing paths:
 ```typescript
 .exclusiveGateway("gw")
 .branch("approved", (b) =>
-  b.condition("= approved").serviceTask("notify").endEvent("done")
+  b.condition("= approved").serviceTask("notify", { taskType: "notify" }).endEvent("done")
 )
 .branch("rejected", (b) =>
   b.defaultFlow().endEvent("rejected")

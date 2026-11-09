@@ -48,7 +48,15 @@
           "unknownAttributes": {}
         },
         {
-          "extensionElements": [],
+          "extensionElements": [
+            {
+              "attributes": {
+                "type": "send-ping"
+              },
+              "children": [],
+              "name": "zeebe:taskDefinition"
+            }
+          ],
           "id": "s1",
           "incoming": [
             "Flow_s_s1"

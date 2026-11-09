@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sp"
+      ],
+      "fixable": false,
+      "id": "zeebe/sub-process-start-none",
+      "message": "Start events in subprocesses must be of type none",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Use a none start event inside an embedded sub-process."
+    }
+  ]
+}

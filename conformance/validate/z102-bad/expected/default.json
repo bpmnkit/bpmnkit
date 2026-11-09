@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/job-priority-value",
+      "message": "Expected 'priority' to be a literal integer or a FEEL expression (starting with '='), but got 'high'.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Write the priority as an integer or a FEEL expression starting with '='."
+    }
+  ]
+}

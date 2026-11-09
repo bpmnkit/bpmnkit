@@ -81,7 +81,9 @@
           "type": "receiveTask"
         },
         {
+          "correlationKey": "=orderId",
           "id": "receiveOk",
+          "messageName": "ok",
           "type": "receiveTask"
         },
         {
@@ -132,7 +134,9 @@
           "type": "eventBasedGateway"
         },
         {
+          "correlationKey": "=orderId",
           "id": "afterEventGateway",
+          "messageName": "ok",
           "type": "receiveTask"
         },
         {
@@ -172,15 +176,17 @@
                 "children": {
                   "elements": [
                     {
+                      "correlationKey": "=orderId",
                       "eventType": "message",
                       "id": "adHocEventStart",
+                      "messageName": "ok",
                       "type": "startEvent"
                     }
                   ],
                   "flows": []
                 },
                 "id": "adHocEventSub",
-                "type": "subProcess"
+                "type": "eventSubProcess"
               }
             ],
             "flows": []

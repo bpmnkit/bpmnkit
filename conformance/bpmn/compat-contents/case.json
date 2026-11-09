@@ -1,0 +1,4 @@
+{
+  "deployable": false,
+  "deployableReason": "Source bpmn/compat-contents/input.bpmn is itself rejected by Zeebe (Error: URI=null Line=195: cvc-complex-type.4: Attribute 'name' must appear on element 'bpmn:linkEventDefinition'.); the case pins how it is round-tripped, not a deployable model."
+}

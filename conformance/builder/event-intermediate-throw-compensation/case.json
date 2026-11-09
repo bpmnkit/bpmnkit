@@ -6,6 +6,8 @@
 		["serviceTask","a",{"name":"a","taskType":"a"}],
 		["intermediateThrowEvent","i",{"compensation":true,"activityRef":"a"}],
 		["endEvent","e"],
-		["build"]
-	]
+		["build",{"validate":false}]
+	],
+	"deployable": false,
+	"deployableReason": "Zeebe rejects a compensation throw whose activity has no compensation boundary event; the case pins the throw's activityRef output."
 }

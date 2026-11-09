@@ -83,6 +83,42 @@
       "processId": "invoice-approval",
       "severity": "error",
       "suggestion": "Set the process id to call."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_total"
+      ],
+      "fixable": false,
+      "id": "zeebe/script-task-implementation",
+      "message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element",
+      "processId": "invoice-approval",
+      "severity": "error",
+      "suggestion": "Give the script task one zeebe:script or one zeebe:taskDefinition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Flow_yes"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value '${approved == true}'. An expression must start with '=' (e.g. '=${approved == true}').",
+      "processId": "invoice-approval",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Flow_no"
+      ],
+      "fixable": false,
+      "id": "zeebe/condition-expression",
+      "message": "Expected expression but found static value '${approved == false}'. An expression must start with '=' (e.g. '=${approved == false}').",
+      "processId": "invoice-approval",
+      "severity": "error",
+      "suggestion": "Write the condition as a FEEL expression that starts with '='."
     }
   ],
   "fixes": [
@@ -98,7 +134,7 @@
       "agentic": 0,
       "connector": 0,
       "data-flow": 0,
-      "deploy": 3,
+      "deploy": 6,
       "extract": 0,
       "feel": 1,
       "feel-syntax": 0,
@@ -108,10 +144,10 @@
       "task-reuse": 0
     },
     "bySeverity": {
-      "error": 4,
+      "error": 7,
       "info": 0,
       "warning": 3
     },
-    "total": 7
+    "total": 10
   }
 }

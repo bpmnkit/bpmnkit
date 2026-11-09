@@ -6,6 +6,8 @@ import {
 	type Camunda7Finding,
 	type Camunda7Report,
 	type Camunda7Severity,
+	DeployabilityError,
+	analyzeCamunda7,
 	convertCamunda7,
 	convertCamunda8To7,
 	exportPreserving,
@@ -20,6 +22,8 @@ interface FileResult {
 	/** Where the converted model was written; null with --check or when the file failed. */
 	output: string | null
 	error?: string
+	/** The converted model would not deploy on Camunda 8, so nothing was written. */
+	refused?: boolean
 	counts?: Camunda7Report["counts"]
 	findings?: Camunda7Finding[]
 }
@@ -48,8 +52,18 @@ function formatText(results: FileResult[], check: boolean): string {
 		const target = result.output === null ? "" : ` → ${result.output}`
 		lines.push(`${result.file}${target}`)
 		if (result.error !== undefined) {
-			lines.push(`  ✖ ${result.error}`, "")
-			continue
+			const [first, ...rest] = result.error.split("\n")
+			lines.push(`  ✖ ${first}`, ...rest.map((line) => `    ${line}`))
+			if (result.refused === true) {
+				lines.push(
+					"    Nothing written. Pass --placeholders to fill placeholder values (reported as manual",
+					"    work to replace), or --no-validate to write the model as it is.",
+				)
+			}
+			if (result.counts === undefined) {
+				lines.push("")
+				continue
+			}
 		}
 		const counts = result.counts ?? { convertible: 0, manual: 0, unsupported: 0 }
 		lines.push(
@@ -114,6 +128,19 @@ const c7Cmd: Command = {
 			description: "Overwrite converted files that already exist",
 			type: "boolean",
 		},
+		{
+			name: "placeholders",
+			description:
+				"Fill documented placeholder values (job types, correlation keys, ...) where the conversion cannot derive one, instead of refusing; each fill is listed under MANUAL",
+			type: "boolean",
+		},
+		{
+			name: "validate",
+			description:
+				"Refuse a converted model Camunda 8 would not deploy (default); --no-validate writes it as it is",
+			type: "boolean",
+			default: true,
+		},
 	],
 	examples: [
 		{
@@ -123,6 +150,10 @@ const c7Cmd: Command = {
 		{
 			description: "Convert a directory's models into another directory",
 			command: "casen migrate c7 models/*.bpmn --out c8-models",
+		},
+		{
+			description: "Write a deployable model with placeholder job types and keys to replace",
+			command: "casen migrate c7 order.bpmn --placeholders",
 		},
 		{
 			description: "Gate CI on models that still need manual migration work",
@@ -140,6 +171,8 @@ const c7Cmd: Command = {
 		}
 		const check = booleanFlag("check")
 		const force = booleanFlag("force")
+		const placeholders = booleanFlag("placeholders")
+		const validate = ctx.flags.validate !== false
 		if (files.length === 0) throw new Error("Missing required argument: <files...>")
 		const format = ctx.flags.format ?? "text"
 		if (format !== "text" && format !== "json") {
@@ -154,9 +187,12 @@ const c7Cmd: Command = {
 			const output = toC7
 				? migratedPath(file, outDir).replace(/\.c8\.bpmn$/, ".c7.bpmn")
 				: migratedPath(file, outDir)
+			let xml: string | undefined
 			try {
-				const xml = await readFile(file, "utf-8")
-				const { definitions, report } = toC7 ? exportToC7(xml) : convertCamunda7(Bpmn.parse(xml))
+				xml = await readFile(file, "utf-8")
+				const { definitions, report } = toC7
+					? exportToC7(xml)
+					: convertCamunda7(Bpmn.parse(xml), { validate, placeholders })
 				const result: FileResult = {
 					file,
 					output: null,
@@ -178,6 +214,19 @@ const c7Cmd: Command = {
 				}
 				results.push(result)
 			} catch (error) {
+				if (error instanceof DeployabilityError && xml !== undefined) {
+					// The report says what is left to do; the error says why Zeebe would refuse it.
+					const report = analyzeCamunda7(Bpmn.parse(xml))
+					results.push({
+						file,
+						output: null,
+						error: error.message,
+						refused: true,
+						counts: report.counts,
+						findings: report.findings,
+					})
+					continue
+				}
 				results.push({
 					file,
 					output: null,
@@ -188,10 +237,16 @@ const c7Cmd: Command = {
 
 		ctx.output.print(format === "json" ? results : formatText(results, check))
 
-		const failed = results.filter((result) => result.error !== undefined).length
+		const failed = results.filter((result) => result.error !== undefined && !result.refused).length
+		const refused = results.filter((result) => result.refused === true).length
 		if (failed > 0) {
 			throw new Error(
 				`${failed} of ${results.length} file${results.length === 1 ? "" : "s"} could not be migrated`,
+			)
+		}
+		if (refused > 0) {
+			throw new Error(
+				`${refused} of ${results.length} file${results.length === 1 ? "" : "s"} would not deploy on Camunda 8 — pass --placeholders or --no-validate`,
 			)
 		}
 		if (check) {

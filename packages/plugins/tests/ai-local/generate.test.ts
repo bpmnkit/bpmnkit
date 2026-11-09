@@ -1,4 +1,4 @@
-import { Bpmn } from "@bpmnkit/core"
+import { Bpmn, isDeployable, validateDeployableXml } from "@bpmnkit/core"
 import type { BpmnDefinitions } from "@bpmnkit/core"
 import { describe, expect, it, vi } from "vitest"
 import { generateProcess } from "../../src/ai-local/generate.js"
@@ -29,6 +29,23 @@ describe("generateProcess", () => {
 		expect(() => Bpmn.parse(r?.xml ?? "")).not.toThrow()
 		expect(r?.name).toBe("Expense approval")
 		expect(r?.stopped).toBe(false)
+	})
+	it("returns XML that deploys, with no gate message, for a complete answer", async () => {
+		const r = await run(lines).p
+		expect(r?.deployability).toBeUndefined()
+		expect(isDeployable(validateDeployableXml(r?.xml ?? ""))).toBe(true)
+	})
+	it("keeps an undeployable answer as a draft and returns the gate's lines", async () => {
+		// A message wait with no correlation key: Zeebe refuses it.
+		const r = await run([
+			"# Wait\n",
+			"s[start Go] > w[catch:message Reply received | msg=reply] > e[end Done]\n",
+		]).p
+		expect(r).not.toBeNull()
+		expect(r?.deployability).toMatch(
+			/^Not deployable on Camunda \d+\.\d+: \d+ error\(s\)\n- Message_reply: .*\(zeebe\/message-subscription\)/,
+		)
+		expect(() => Bpmn.parse(r?.xml ?? "")).not.toThrow()
 	})
 	it("ignores chunk boundaries and CRLF", async () => {
 		const whole = await run([answer]).p

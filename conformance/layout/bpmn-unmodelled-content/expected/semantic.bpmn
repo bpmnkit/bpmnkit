@@ -13,6 +13,16 @@
     </bpmn:correlationKey>
   </bpmn:collaboration>
   <bpmn:process id="Process_unmodelled" name="Unmodelled content carrier" isExecutable="true">
+    <bpmn:ioSpecification id="IoSpecification_1">
+      <bpmn:dataInput id="DataInput_order" name="order"/>
+      <bpmn:dataOutput id="DataOutput_receipt" name="receipt"/>
+      <bpmn:inputSet id="InputSet_1">
+        <bpmn:dataInputRefs>DataInput_order</bpmn:dataInputRefs>
+      </bpmn:inputSet>
+      <bpmn:outputSet id="OutputSet_1">
+        <bpmn:dataOutputRefs>DataOutput_receipt</bpmn:dataOutputRefs>
+      </bpmn:outputSet>
+    </bpmn:ioSpecification>
     <bpmn:startEvent id="Start_u">
       <bpmn:outgoing>Flow_u1</bpmn:outgoing>
     </bpmn:startEvent>
@@ -29,16 +39,6 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_u1" sourceRef="Start_u" targetRef="Task_u"/>
     <bpmn:sequenceFlow id="Flow_u2" sourceRef="Task_u" targetRef="End_u"/>
-    <bpmn:ioSpecification id="IoSpecification_1">
-      <bpmn:dataInput id="DataInput_order" name="order"/>
-      <bpmn:dataOutput id="DataOutput_receipt" name="receipt"/>
-      <bpmn:inputSet id="InputSet_1">
-        <bpmn:dataInputRefs>DataInput_order</bpmn:dataInputRefs>
-      </bpmn:inputSet>
-      <bpmn:outputSet id="OutputSet_1">
-        <bpmn:dataOutputRefs>DataOutput_receipt</bpmn:dataOutputRefs>
-      </bpmn:outputSet>
-    </bpmn:ioSpecification>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_unmodelled">

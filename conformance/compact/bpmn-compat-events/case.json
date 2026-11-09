@@ -1,3 +1,8 @@
 {
-	"input": "bpmn/compat-events/input.bpmn"
+	"input": "bpmn/compat-events/input.bpmn",
+	"deployable": false,
+	"deployableReason": "Source bpmn/compat-events/input.bpmn is itself rejected by Zeebe (E2: The errorCode of the error catch event is not allowed to be an expression); the case pins how it is round-tripped, not a deployable model; expanded with validate:false to keep pinning the expansion.",
+	"expand": {
+		"validate": false
+	}
 }

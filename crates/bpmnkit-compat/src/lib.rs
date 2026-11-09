@@ -26,5 +26,6 @@
 pub mod camunda7;
 pub mod compat;
 pub mod finding;
+pub mod zeebe;
 
 pub use finding::{ApplyFixResult, Category, Finding, FindingData, Fix, Severity};

@@ -226,6 +226,7 @@
               },
               {
                 "id": "awaitPayment1",
+                "messageName": "payment-confirmed",
                 "name": "Await Payment (1)",
                 "type": "receiveTask"
               },

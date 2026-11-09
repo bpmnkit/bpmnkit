@@ -7,7 +7,6 @@
     "end_2": "End_err",
     "end_3": "End_late",
     "escalate": "Gateway_check",
-    "on_signal": "Sub_event",
     "start": "Start_e",
     "throw": "Throw_escalate"
   }

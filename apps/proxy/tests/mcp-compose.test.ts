@@ -20,7 +20,7 @@ function callTool(
 	name: string,
 	args: Record<string, unknown>,
 	output: string,
-): Promise<{ text: string; isError: boolean }> {
+): Promise<{ text: string; isError: boolean; check?: string }> {
 	return new Promise((resolve, reject) => {
 		const proc = spawn(process.execPath, ["--import", "tsx", SERVER, "--output", output], {
 			stdio: ["pipe", "pipe", "ignore"],
@@ -34,7 +34,11 @@ function callTool(
 				result: { content: Array<{ text: string }>; isError: boolean }
 			}
 			proc.kill()
-			resolve({ text: res.result.content[0]?.text ?? "", isError: res.result.isError })
+			resolve({
+				text: res.result.content[0]?.text ?? "",
+				isError: res.result.isError,
+				check: res.result.content[1]?.text,
+			})
 		})
 		proc.on("error", reject)
 		proc.stdin.write(
@@ -66,7 +70,11 @@ describe("compose_diagram", () => {
 			},
 			output,
 		)
-		expect(result).toEqual({ text: "2", isError: false })
+		expect(result).toEqual({
+			text: "2",
+			isError: false,
+			check: "Deploy check: the diagram deploys on Camunda 8.",
+		})
 		expect(readFileSync(output, "utf8")).toContain("Order received")
 	}, 30000)
 
@@ -98,5 +106,28 @@ describe("sdk_execute", () => {
 			join(dir, "sdk.bpmn"),
 		)
 		expect(result.text).not.toContain("object")
+	}, 30000)
+})
+
+describe("deploy check on BPMN tools", () => {
+	it("ends the result with the deploy gate's lines when the diagram would not deploy", async () => {
+		const output = join(dir, "sketch.bpmn")
+		const result = await callTool(
+			"add_elements",
+			{
+				processId: "Process_1",
+				elements: [
+					{ id: "start", type: "startEvent", name: "Order received" },
+					{ id: "charge", type: "serviceTask", name: "Charge card" },
+				],
+				flows: [{ id: "f1", from: "start", to: "charge" }],
+			},
+			output,
+		)
+		expect(result.isError).toBe(false)
+		expect(result.check).toMatch(
+			/^Deploy check: Not deployable on Camunda \d+\.\d+: \d+ error\(s\)\n(.|\n)*- charge: .*\(zeebe\/service-task-definition\)/,
+		)
+		expect(result.check).toContain("Fix every error above before you finish")
 	}, 30000)
 })

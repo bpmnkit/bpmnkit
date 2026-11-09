@@ -23,7 +23,7 @@ use bpmnkit_bpmn::BpmnDefinitions;
 use indexmap::{IndexMap, IndexSet};
 use serde::Deserialize;
 
-use super::expand::expand;
+use super::expand::{expand, ExpandOptions};
 use super::types::*;
 use crate::catalog::is_element_type;
 
@@ -127,8 +127,9 @@ impl CompactStream {
                 notes: None,
             }],
         };
-        // An element whose fields have not all arrived fails here.
-        expand(&diagram).ok()
+        // An element whose fields have not all arrived fails here. A frame is a preview of an
+        // unfinished diagram, never deployed: no gate.
+        expand(&diagram, &ExpandOptions::ungated()).ok()
     }
 
     /// TS's inner `forget`.

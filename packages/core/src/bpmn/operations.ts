@@ -19,8 +19,8 @@ export type ElementPatch = Partial<Omit<CompactElement, "multiInstance">> & {
 	 * Names the `bpmn:message` / sets the error, escalation or signal the element's
 	 * event definition references: they are written on that root element, created
 	 * if the reference is missing. A root shared by several elements is reported
-	 * rather than changed for all of them. `""` clears. Only
-	 * {@link applyBpmnOperations} applies these.
+	 * rather than changed for all of them. `""` clears. On a compact diagram they
+	 * are the element's fields of the same names, which `expand` writes.
 	 */
 	messageName?: string
 	errorCode?: string
@@ -32,8 +32,8 @@ export type ElementPatch = Partial<Omit<CompactElement, "multiInstance">> & {
 	/**
 	 * The message correlation key (`zeebe:subscription`). It is written onto the
 	 * `bpmn:message` the element references, where Camunda reads it, so every
-	 * element sharing that message gets it. Only {@link applyBpmnOperations}
-	 * applies it: the compact form has no messages to hold it.
+	 * element sharing that message gets it. On a compact diagram it is the
+	 * element's `correlationKey`.
 	 */
 	correlationKey?: string
 	/**
@@ -152,19 +152,20 @@ function applyOne(diagram: CompactDiagram, op: BpmnOperation): void {
 			case "update": {
 				const found = findElementIn(process, op.id)
 				if (found) {
-					// Root-element fields have no home in the compact form.
-					const {
-						correlationKey: _messageLevel,
-						messageName: _m,
-						errorCode: _e,
-						escalationCode: _x,
-						signalName: _s,
-						timerDate: _d,
-						timerCycle: _c,
-						multiInstance,
-						...patch
-					} = op.patch
+					const { multiInstance, ...patch } = op.patch
 					Object.assign(found.element, patch)
+					// `""` clears a name or code, as it does on the full model
+					for (const key of [
+						"messageName",
+						"correlationKey",
+						"signalName",
+						"errorCode",
+						"escalationCode",
+						"timerDate",
+						"timerCycle",
+					] as const) {
+						if (found.element[key] === "") delete found.element[key]
+					}
 					if (multiInstance?.collection === "") found.element.multiInstance = undefined
 					else if (multiInstance) {
 						const merged = { ...found.element.multiInstance, ...multiInstance }

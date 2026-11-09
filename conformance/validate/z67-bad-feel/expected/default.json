@@ -1,0 +1,28 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "M"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-name-expression",
+      "message": "failed to parse expression '1+'",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Fix the FEEL syntax of the message name."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Start"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-start-name-constant",
+      "message": "Expected constant expression but found '=1+', which could not be evaluated without context: failed to parse expression '1+'",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Use a static message name, or a FEEL expression that needs no variables."
+    }
+  ]
+}

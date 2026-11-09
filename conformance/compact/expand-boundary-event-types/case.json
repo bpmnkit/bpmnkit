@@ -1,0 +1,7 @@
+{
+  "expand": {
+    "validate": false
+  },
+  "deployable": false,
+  "deployableReason": "Covers every boundary type expand() writes, including cancel (transaction only) and compensate (needs an association) on a service task, which Camunda 8 does not run; expanded with validate:false."
+}

@@ -2,6 +2,11 @@ import { describe, expect, it } from "vitest"
 import { getZeebeExtensions } from "../src/bpmn/utils.js"
 import { Bpmn, ProcessBuilder, analyzeCamundaCompat } from "../src/index.js"
 
+// Builds and exports here check what the builder and serializer write, not whether Zeebe
+// would deploy the model (a fragment, an element Zeebe lacks, a round trip), so they pass
+// `validate: false` to skip the gate. The gate has its own tests: builder-gate.test.ts and
+// the conformance/builder cases.
+
 describe("builder zeebe options", () => {
 	it("writes linkedResources on a service task and reads them back", () => {
 		const linkedResources = [
@@ -40,7 +45,9 @@ describe("builder zeebe options", () => {
 				.eventSubProcess("es", (sub) =>
 					sub.startEvent("es-s", { formId: "sub-form", isInterrupting: false }).endEvent("es-e"),
 				)
-				.build(),
+				// Pins the option's output on an element Zeebe refuses (an untyped event sub-process start, a start event in a branch).
+				.build({ validate: false }),
+			{ validate: false },
 		)
 		expect(xml).toContain('<zeebe:formDefinition formId="sub-form"')
 	})
@@ -104,7 +111,9 @@ describe("builder zeebe options", () => {
 						.endEvent("be"),
 				)
 				.branch("B", (b) => b.endEvent("e2"))
-				.build(),
+				// Pins the option's output on an element Zeebe refuses (an untyped event sub-process start, a start event in a branch).
+				.build({ validate: false }),
+			{ validate: false },
 		)
 		expect(xml).toContain('zeebe:modelerTemplate="tpl.start"')
 		expect(xml).toContain('zeebe:modelerTemplateVersion="3"')
@@ -125,7 +134,9 @@ describe("builder zeebe options", () => {
 						})
 						.endEvent("es-e"),
 				)
-				.build(),
+				// Pins the option's output on an element Zeebe refuses (an untyped event sub-process start, a start event in a branch).
+				.build({ validate: false }),
+			{ validate: false },
 		)
 		expect(xml).toContain('zeebe:modelerTemplate="tpl.sub"')
 		expect(xml).toContain('<zeebe:property name="pn" value="pv"')
@@ -226,8 +237,13 @@ describe("builder zeebe options", () => {
 
 describe("user task forms", () => {
 	const form = (opts: Record<string, unknown>) => {
-		const defs = Bpmn.createProcess("p").startEvent("s").userTask("u", opts).endEvent("e").build()
-		return { defs, xml: Bpmn.export(defs) }
+		// Pins each form attribute's output; not every one deploys on a job-worker user task.
+		const defs = Bpmn.createProcess("p")
+			.startEvent("s")
+			.userTask("u", opts)
+			.endEvent("e")
+			.build({ validate: false })
+		return { defs, xml: Bpmn.export(defs, { validate: false }) }
 	}
 
 	it("emits formKey and externalReference", () => {

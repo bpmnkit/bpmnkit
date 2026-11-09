@@ -22,7 +22,9 @@ While the Prompt API is an origin trial, the feature is opt-in: open the editor 
 - Type a description (up to 2,000 characters) and press Generate. A **new tab** opens, named from the
   `# Process name` line, and its diagram grows as lines arrive. Your open diagrams are never changed.
 - When the run ends, the panel lists the parser's problems and fixes. The tab holds a valid,
-  laid-out diagram.
+  laid-out diagram. When Camunda 8 would not deploy it yet (a message wait with no `key=`, a timer
+  with no time), the panel also lists the [deploy gate](/docs/guides/deploy-gate)'s lines: the tab
+  is a draft to finish, and the deploy pane refuses it until it deploys.
 - **Stop** aborts the run and keeps what was drawn. Switching to another tab during a run also stops it,
   so no frame lands in the wrong diagram.
 

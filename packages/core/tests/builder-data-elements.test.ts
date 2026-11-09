@@ -22,11 +22,10 @@ describe("builder data elements", () => {
 		expect(t?.dataInputAssociations?.[0]?.sourceRefs).toEqual(["dor1"])
 		expect(t?.dataOutputAssociations?.[0]?.targetRef).toBe("dsr1")
 		const dor = proc?.flowElements.find((e) => e.id === "dor1")
-		expect(dor).toMatchObject({
-			type: "dataObjectReference",
-			dataObjectRef: "do1",
-			isCollection: true,
-		})
+		expect(dor).toMatchObject({ type: "dataObjectReference", dataObjectRef: "do1" })
+		// BPMN20.xsd allows isCollection on the data object only, so it moves there.
+		expect(dor).not.toHaveProperty("isCollection")
+		expect(proc?.flowElements.find((e) => e.id === "do1")).toMatchObject({ isCollection: true })
 	})
 
 	it("round-trips through XML", () => {
@@ -54,6 +53,7 @@ describe("builder data elements", () => {
 				sub
 					.startEvent("ss")
 					.serviceTask("st", { name: "ST", taskType: "w" })
+					.dataObject("sdo")
 					.dataObjectReference("sdor", "sdo")
 					.dataAssociation("st", "sdor", "input")
 					.endEvent("se"),

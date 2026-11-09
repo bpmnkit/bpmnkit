@@ -134,7 +134,13 @@ introduce them via email/Slack.`,
 				id: "Process_employeeOnboarding",
 				name: "Employee Onboarding",
 				elements: [
-					{ id: "start", type: "startEvent", name: "Hire Confirmed", eventType: "message" },
+					{
+						id: "start",
+						type: "startEvent",
+						name: "Hire Confirmed",
+						eventType: "message",
+						messageName: "HireConfirmed",
+					},
 					{
 						id: "createAccounts",
 						type: "serviceTask",

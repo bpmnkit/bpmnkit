@@ -1,0 +1,1 @@
+Send task "send" needs a taskType: Camunda 8 hands the message to a job worker of that type (zeebe:taskDefinition)

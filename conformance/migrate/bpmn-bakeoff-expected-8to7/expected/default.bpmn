@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23">
+  <bpmn:process id="ai-agent-chat-with-tools" name="AI Agent Chat With Tools" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_TaskReceived" name="Task to perform received">
+      <bpmn:outgoing>Flow_StartEvent_TaskReceived_Gateway_RunAgent</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:exclusiveGateway id="Gateway_RunAgent">
+      <bpmn:incoming>Flow_StartEvent_TaskReceived_Gateway_RunAgent</bpmn:incoming>
+      <bpmn:incoming>Flow_No</bpmn:incoming>
+      <bpmn:outgoing>Flow_Gateway_RunAgent_AI_Agent</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:adHocSubProcess id="AI_Agent" camunda:type="external" camunda:topic="io.camunda.agenticai:aiagent:subprocess:2" name="AI Agent">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="provider.type">openai</camunda:inputParameter>
+          <camunda:inputParameter name="provider.openai.api.type">responses</camunda:inputParameter>
+          <camunda:inputParameter name="provider.openai.backend.type">custom</camunda:inputParameter>
+          <camunda:inputParameter name="provider.openai.backend.custom.endpoint">=camunda.secrets.CAMUNDA_PROVIDED_LLM_API_ENDPOINT</camunda:inputParameter>
+          <camunda:inputParameter name="provider.openai.backend.custom.authentication.type">apiKey</camunda:inputParameter>
+          <camunda:inputParameter name="provider.openai.backend.custom.authentication.apiKey">=camunda.secrets.CAMUNDA_PROVIDED_LLM_API_KEY</camunda:inputParameter>
+          <camunda:inputParameter name="provider.openai.model.model">=camunda.secrets.CAMUNDA_PROVIDED_LLM_DEFAULT_MODEL</camunda:inputParameter>
+          <camunda:inputParameter name="provider.openai.api.responses.effort">modelDefault</camunda:inputParameter>
+          <camunda:inputParameter name="data.systemPrompt.prompt">="You are **TaskAgent**, a helpful, generic chat agent that can handle a wide variety of customer requests using your own domain knowledge **and** any tools explicitly provided to you at runtime.
+
+If tools are provided, you should prefer them instead of guessing an answer. You can call the same tool multiple times by providing different input values. Don't guess any tools which were not explicitly configured. If no tool matches the request, try to generate an answer. If you're not able to find a good answer, return with a message stating why you're not able to."</camunda:inputParameter>
+          <camunda:inputParameter name="data.userPrompt.prompt">=if is defined(followUpInput) then followUpInput else inputText</camunda:inputParameter>
+          <camunda:inputParameter name="data.userPrompt.documents">=if is defined(followUpInput) or is defined(followUpDocuments) then followUpDocuments else inputDocuments</camunda:inputParameter>
+          <camunda:inputParameter name="agentContext">=agent.context</camunda:inputParameter>
+          <camunda:inputParameter name="data.memory.storage.type">in-process</camunda:inputParameter>
+          <camunda:inputParameter name="data.memory.contextWindowSize">20</camunda:inputParameter>
+          <camunda:inputParameter name="data.limits.maxModelCalls">10</camunda:inputParameter>
+          <camunda:inputParameter name="data.events.behavior">WAIT_FOR_TOOL_CALL_RESULTS</camunda:inputParameter>
+          <camunda:inputParameter name="data.response.format.type">text</camunda:inputParameter>
+          <camunda:inputParameter name="data.response.format.parseJson">false</camunda:inputParameter>
+          <camunda:inputParameter name="data.response.includeAssistantMessage">false</camunda:inputParameter>
+          <camunda:inputParameter name="data.response.includeAgentContext">true</camunda:inputParameter>
+          <camunda:outputParameter name="agent">=agent</camunda:outputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_Gateway_RunAgent_AI_Agent</bpmn:incoming>
+      <bpmn:outgoing>Flow_AI_Agent_UserTask_ReviewAgentResponse</bpmn:outgoing>
+      <bpmn:serviceTask id="LookupSampleUsers" camunda:type="external" camunda:topic="io.camunda:http-json:1" name="Find sample users">
+        <bpmn:documentation>Lists available users. Use this tool to look up names, usernames, or IDs. Do not use it for details not returned by the service. Input: none. Returns: an array of user objects containing id, name, and username.</bpmn:documentation>
+        <bpmn:extensionElements>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="authentication.type">noAuth</camunda:inputParameter>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://jsonplaceholder.typicode.com/users</camunda:inputParameter>
+            <camunda:inputParameter name="followRedirects">false</camunda:inputParameter>
+            <camunda:inputParameter name="documentReturnFormat.choice">JSON</camunda:inputParameter>
+            <camunda:inputParameter name="connectionTimeoutInSeconds">20</camunda:inputParameter>
+            <camunda:inputParameter name="readTimeoutInSeconds">20</camunda:inputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="SearchRecipes" camunda:type="external" camunda:topic="io.camunda:http-json:1" name="Search recipes">
+        <bpmn:documentation>Searches the recipe catalog. Use this tool when a request asks for a recipe, dish, cuisine, or cooking instructions. Do not use it for unrelated food facts or guaranteed dietary safety. Input: searchQuery describing the desired dish or cuisine. Returns: matching recipe objects, or "No result found."</bpmn:documentation>
+        <bpmn:extensionElements>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="authentication.type">noAuth</camunda:inputParameter>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://dummyjson.com/recipes/search</camunda:inputParameter>
+            <camunda:inputParameter name="queryParameters">={q: fromAi(toolCall.searchQuery, "The query describing which recipe to search (e.g. a specific dish or the cuisine).")}</camunda:inputParameter>
+            <camunda:inputParameter name="followRedirects">false</camunda:inputParameter>
+            <camunda:inputParameter name="documentReturnFormat.choice">JSON</camunda:inputParameter>
+            <camunda:inputParameter name="connectionTimeoutInSeconds">20</camunda:inputParameter>
+            <camunda:inputParameter name="readTimeoutInSeconds">20</camunda:inputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="FetchSafeJoke" camunda:type="external" camunda:topic="io.camunda:http-json:1" name="Get a safe joke">
+        <bpmn:documentation>Fetches one random safe-mode joke. Use this tool when the user asks for a joke or humorous response. Do not use it when the request requires a specific factual answer or a particular joke topic. Input: none. Returns: the joke as plain text.</bpmn:documentation>
+        <bpmn:extensionElements>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="authentication.type">noAuth</camunda:inputParameter>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://v2.jokeapi.dev/joke/Any?format=txt&amp;safe-mode</camunda:inputParameter>
+            <camunda:inputParameter name="followRedirects">false</camunda:inputParameter>
+            <camunda:inputParameter name="documentReturnFormat.choice">JSON</camunda:inputParameter>
+            <camunda:inputParameter name="connectionTimeoutInSeconds">20</camunda:inputParameter>
+            <camunda:inputParameter name="readTimeoutInSeconds">20</camunda:inputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+      <bpmn:serviceTask id="ListSampleTechnologyProducts" camunda:type="external" camunda:topic="io.camunda:http-json:1" name="List sample technology products">
+        <bpmn:documentation>Lists technology products. Use this tool when a request asks which devices or technology products are available or needs their attributes. Do not use it for live inventory, pricing, or purchasing. Input: none. Returns: an array of product objects with identifiers, names, and available attribute data.</bpmn:documentation>
+        <bpmn:extensionElements>
+          <camunda:inputOutput>
+            <camunda:inputParameter name="authentication.type">noAuth</camunda:inputParameter>
+            <camunda:inputParameter name="method">GET</camunda:inputParameter>
+            <camunda:inputParameter name="url">https://api.restful-api.dev/objects</camunda:inputParameter>
+            <camunda:inputParameter name="followRedirects">false</camunda:inputParameter>
+            <camunda:inputParameter name="documentReturnFormat.choice">JSON</camunda:inputParameter>
+            <camunda:inputParameter name="connectionTimeoutInSeconds">20</camunda:inputParameter>
+            <camunda:inputParameter name="readTimeoutInSeconds">20</camunda:inputParameter>
+          </camunda:inputOutput>
+        </bpmn:extensionElements>
+      </bpmn:serviceTask>
+    </bpmn:adHocSubProcess>
+    <bpmn:userTask id="UserTask_ReviewAgentResponse" name="User Feedback">
+      <bpmn:extensionElements>
+        <camunda:inputOutput>
+          <camunda:inputParameter name="responseText">=agent.responseText</camunda:inputParameter>
+        </camunda:inputOutput>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_AI_Agent_UserTask_ReviewAgentResponse</bpmn:incoming>
+      <bpmn:outgoing>Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_UserSatisfied" name="User satisfied?">
+      <bpmn:incoming>Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied</bpmn:incoming>
+      <bpmn:outgoing>Flow_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="EndEvent_UserSatisfied" name="User satisfied">
+      <bpmn:incoming>Flow_Yes</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_StartEvent_TaskReceived_Gateway_RunAgent" sourceRef="StartEvent_TaskReceived" targetRef="Gateway_RunAgent"/>
+    <bpmn:sequenceFlow id="Flow_Gateway_RunAgent_AI_Agent" sourceRef="Gateway_RunAgent" targetRef="AI_Agent"/>
+    <bpmn:sequenceFlow id="Flow_AI_Agent_UserTask_ReviewAgentResponse" sourceRef="AI_Agent" targetRef="UserTask_ReviewAgentResponse"/>
+    <bpmn:sequenceFlow id="Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied" sourceRef="UserTask_ReviewAgentResponse" targetRef="Gateway_UserSatisfied"/>
+    <bpmn:sequenceFlow id="Flow_Yes" sourceRef="Gateway_UserSatisfied" targetRef="EndEvent_UserSatisfied" name="Yes">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=userSatisfied</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_No" sourceRef="Gateway_UserSatisfied" targetRef="Gateway_RunAgent" name="No">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=userSatisfied = null or userSatisfied = false</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:textAnnotation id="TextAnnotation_StartEvent_TaskReceived_1">
+      <bpmn:text>Triggered when a user submits a task for the AI agent to perform. The agent uses available tools to complete the task, and the process ends once the user confirms they are satisfied.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_AI_Agent_1">
+      <bpmn:text>This is your agent running certain tasks to reach the goal it was given</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_FetchSafeJoke_1">
+      <bpmn:text>Each task you add represents a capability your agent will have. You can add new tasks and the agent will know what it's good for based on its documentation.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_StartEvent_TaskReceived_1" sourceRef="StartEvent_TaskReceived" targetRef="TextAnnotation_StartEvent_TaskReceived_1" associationDirection="None"/>
+    <bpmn:association id="Association_AI_Agent_1" sourceRef="AI_Agent" targetRef="TextAnnotation_AI_Agent_1" associationDirection="None"/>
+    <bpmn:association id="Association_FetchSafeJoke_1" sourceRef="FetchSafeJoke" targetRef="TextAnnotation_FetchSafeJoke_1" associationDirection="None"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="ai-agent-chat-with-tools_di">
+    <bpmndi:BPMNPlane id="ai-agent-chat-with-tools_di_plane" bpmnElement="ai-agent-chat-with-tools">
+      <bpmndi:BPMNShape id="StartEvent_TaskReceived_di" bpmnElement="StartEvent_TaskReceived">
+        <dc:Bounds x="102" y="185" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="36" y="225" width="168" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_RunAgent_di" bpmnElement="Gateway_RunAgent" isMarkerVisible="true">
+        <dc:Bounds x="222" y="178" width="50" height="50"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="AI_Agent_di" bpmnElement="AI_Agent" isExpanded="true">
+        <dc:Bounds x="372" y="163" width="340" height="308"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_ReviewAgentResponse_di" bpmnElement="UserTask_ReviewAgentResponse">
+        <dc:Bounds x="812" y="163" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_UserSatisfied_di" bpmnElement="Gateway_UserSatisfied" isMarkerVisible="true">
+        <dc:Bounds x="972" y="178" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="945" y="160" width="105" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_UserSatisfied_di" bpmnElement="EndEvent_UserSatisfied">
+        <dc:Bounds x="1099" y="185" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1068" y="225" width="98" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="LookupSampleUsers_di" bpmnElement="LookupSampleUsers">
+        <dc:Bounds x="422" y="241" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SearchRecipes_di" bpmnElement="SearchRecipes">
+        <dc:Bounds x="422" y="341" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="FetchSafeJoke_di" bpmnElement="FetchSafeJoke">
+        <dc:Bounds x="562" y="241" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ListSampleTechnologyProducts_di" bpmnElement="ListSampleTechnologyProducts">
+        <dc:Bounds x="562" y="341" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_StartEvent_TaskReceived_1_di" bpmnElement="TextAnnotation_StartEvent_TaskReceived_1">
+        <dc:Bounds x="20" y="20" width="200" height="115"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_AI_Agent_1_di" bpmnElement="TextAnnotation_AI_Agent_1">
+        <dc:Bounds x="442" y="55" width="200" height="58"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_FetchSafeJoke_1_di" bpmnElement="TextAnnotation_FetchSafeJoke_1">
+        <dc:Bounds x="752" y="371" width="200" height="101"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_StartEvent_TaskReceived_Gateway_RunAgent_di" bpmnElement="Flow_StartEvent_TaskReceived_Gateway_RunAgent">
+        <di:waypoint x="138" y="203"/>
+        <di:waypoint x="222" y="203"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Gateway_RunAgent_AI_Agent_di" bpmnElement="Flow_Gateway_RunAgent_AI_Agent">
+        <di:waypoint x="272" y="203"/>
+        <di:waypoint x="372" y="203"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_AI_Agent_UserTask_ReviewAgentResponse_di" bpmnElement="Flow_AI_Agent_UserTask_ReviewAgentResponse">
+        <di:waypoint x="712" y="203"/>
+        <di:waypoint x="812" y="203"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied_di" bpmnElement="Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied">
+        <di:waypoint x="912" y="203"/>
+        <di:waypoint x="972" y="203"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Yes_di" bpmnElement="Flow_Yes">
+        <di:waypoint x="1022" y="203"/>
+        <di:waypoint x="1099" y="203"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1028" y="186" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_No_di" bpmnElement="Flow_No">
+        <di:waypoint x="997" y="228"/>
+        <di:waypoint x="997" y="511"/>
+        <di:waypoint x="247" y="511"/>
+        <di:waypoint x="247" y="228"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1003" y="234" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_StartEvent_TaskReceived_1_di" bpmnElement="Association_StartEvent_TaskReceived_1">
+        <di:waypoint x="120" y="185"/>
+        <di:waypoint x="120" y="135"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_AI_Agent_1_di" bpmnElement="Association_AI_Agent_1">
+        <di:waypoint x="542" y="163"/>
+        <di:waypoint x="542" y="113"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_FetchSafeJoke_1_di" bpmnElement="Association_FetchSafeJoke_1">
+        <di:waypoint x="662" y="321"/>
+        <di:waypoint x="752" y="371"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

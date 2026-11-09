@@ -281,12 +281,19 @@ const cases = [
 		],
 	},
 	{
-		name: "receive task without key and with empty key",
+		name: "receive task with key and with orphan key",
 		steps: [
-			["receiveTask", "r", { messageName: "M1", correlationKey: "" }],
 			["receiveTask", "r2", { messageName: "M1", correlationKey: "=k" }],
 			["receiveTask", "r3", { correlationKey: "=orphan" }],
 		],
+	},
+	{
+		name: "receive task with empty key is refused",
+		steps: [["receiveTask", "r", { messageName: "M1", correlationKey: "" }]],
+	},
+	{
+		name: "receive task without key is refused",
+		steps: [["receiveTask", "r", { messageName: "M1" }]],
 	},
 	// ── gateways ──
 	{
@@ -474,7 +481,9 @@ const nested = (() => {
 	const eventBased = Bpmn.createProcess("j3")
 		.eventBasedGateway("eb")
 		.branch("a", (b) => b.intermediateCatchEvent("C1", { timerDuration: "PT1M" }).task("A"))
-		.branch("b", (b) => b.intermediateCatchEvent("C2", { messageName: "m" }).task("B"))
+		.branch("b", (b) =>
+			b.intermediateCatchEvent("C2", { messageName: "m", correlationKey: "=k" }).task("B"),
+		)
 		.task("Z")
 		.build()
 	const sub = Bpmn.createProcess("n")

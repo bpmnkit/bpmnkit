@@ -21,18 +21,18 @@
 
 ```typescript
 // Catch a timer (delay)
-.intermediateCatchEvent("wait-1h", {
-  timer: { timeDuration: "PT1H" },
-})
+.intermediateCatchEvent("wait-1h", { timerDuration: "PT1H" })
 
 // Catch a message (wait for external signal)
 .intermediateCatchEvent("wait-for-payment", {
-  message: { name: "payment-confirmed", correlationKey: "= orderId" },
+  messageName: "payment-confirmed",
+  correlationKey: "= orderId",
 })
 
-// Throw a message
+// Throw a message: Camunda 8 hands it to a job worker, so it needs a taskType
 .intermediateThrowEvent("notify-warehouse", {
-  message: { name: "order-ready" },
+  messageName: "order-ready",
+  taskType: "publish-order-ready",
 })
 ```
 
@@ -54,13 +54,12 @@ builder stops chaining at the throw and starts a new chain at the catch:
 .endEvent("end")
 
 // Error end (triggers error boundary event)
-.endEvent("end-error", {
-  error: { code: "PAYMENT_FAILED", message: "Payment processing failed" },
-})
+.endEvent("end-error", { errorCode: "PAYMENT_FAILED" })
 
-// Message end
+// Message end: a job worker publishes the message, so it needs a taskType
 .endEvent("end-notify", {
-  message: { name: "process-complete" },
+  messageName: "process-complete",
+  taskType: "publish-process-complete",
 })
 ```
 

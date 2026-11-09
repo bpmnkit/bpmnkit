@@ -43,7 +43,7 @@
     <bpmn:sequenceFlow id="_To9Z5zOCEeSknpIVFCxNIQ" sourceRef="_To9ZpzOCEeSknpIVFCxNIQ" targetRef="_To9ZyjOCEeSknpIVFCxNIQ"/>
     <bpmn:sequenceFlow id="_To9Z6jOCEeSknpIVFCxNIQ" sourceRef="_To9ZyjOCEeSknpIVFCxNIQ" targetRef="_To9ZtjOCEeSknpIVFCxNIQ" name="Default"/>
     <bpmn:sequenceFlow id="_To9Z7TOCEeSknpIVFCxNIQ" sourceRef="_To9ZtjOCEeSknpIVFCxNIQ" targetRef="_To9ZsTOCEeSknpIVFCxNIQ" name="Condition">
-      <bpmn:conditionExpression>true</bpmn:conditionExpression>
+      <bpmn:conditionExpression>=true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="_To9Z8DOCEeSknpIVFCxNIQ" sourceRef="_To9ZwDOCEeSknpIVFCxNIQ" targetRef="_To9Z2TOCEeSknpIVFCxNIQ"/>
     <bpmn:sequenceFlow id="_To9Z8zOCEeSknpIVFCxNIQ" sourceRef="_To9ZzzOCEeSknpIVFCxNIQ" targetRef="_To9Z2TOCEeSknpIVFCxNIQ" name="condition"/>

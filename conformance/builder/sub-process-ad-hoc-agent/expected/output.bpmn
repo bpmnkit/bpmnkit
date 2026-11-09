@@ -4,7 +4,7 @@
     <bpmn:startEvent id="s">
       <bpmn:outgoing>Flow_s_agent</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:adHocSubProcess id="agent" zeebe:modelerTemplate="io.camunda.connectors.agenticai.aiagent.jobworker.v1" zeebe:modelerTemplateVersion="6" name="AI Agent" cancelRemainingInstances="false">
+    <bpmn:adHocSubProcess id="agent" zeebe:modelerTemplate="io.camunda.connectors.agenticai.aiagent.jobworker.v1" zeebe:modelerTemplateVersion="6" name="AI Agent">
       <bpmn:documentation>agent</bpmn:documentation>
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="io.camunda.agenticai:aiagent-job-worker:1" retries="4"/>
@@ -18,8 +18,8 @@
         <zeebe:properties>
           <zeebe:property name="p" value="q"/>
         </zeebe:properties>
-        <zeebe:agentDefinition agentType="default"/>
-        <zeebe:adHoc activeElementsCollection="=toolCalls" outputCollection="toolCallResults" outputElement="={id: id}"/>
+        <zeebe:agentDefinition agentType="aiAgentSubProcess"/>
+        <zeebe:adHoc outputCollection="toolCallResults" outputElement="={id: id}"/>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_s_agent</bpmn:incoming>
       <bpmn:outgoing>Flow_agent_e</bpmn:outgoing>
@@ -35,7 +35,6 @@
           <zeebe:taskDefinition type="b"/>
         </bpmn:extensionElements>
       </bpmn:serviceTask>
-      <bpmn:completionCondition xsi:type="bpmn:tFormalExpression">=done</bpmn:completionCondition>
     </bpmn:adHocSubProcess>
     <bpmn:endEvent id="e">
       <bpmn:incoming>Flow_agent_e</bpmn:incoming>

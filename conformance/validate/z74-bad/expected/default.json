@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Node"
+      ],
+      "fixable": false,
+      "id": "zeebe/signal-reference",
+      "message": "Must reference a signal",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Reference a signal with signalRef on the signal event definition."
+    }
+  ]
+}

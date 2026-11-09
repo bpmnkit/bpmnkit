@@ -73,6 +73,7 @@
           "eventType": "signal",
           "id": "_855451b0-5298-48b2-a81d-84ecbcca0a85",
           "name": "New employee in department X",
+          "signalName": "New employee hired",
           "type": "intermediateThrowEvent"
         },
         {
@@ -272,6 +273,7 @@
           "eventType": "signal",
           "id": "_e9306b3f-3a77-42e1-b53e-2ed8ee45486d",
           "name": "New \nemployee\nhired",
+          "signalName": "New employee hired",
           "type": "startEvent"
         },
         {
@@ -359,6 +361,7 @@
           "eventType": "signal",
           "id": "_3d4130c6-48c9-47fe-8e95-2eeb56060e2b",
           "name": "New \nemployee\nhired",
+          "signalName": "New employee hired",
           "type": "startEvent"
         },
         {
@@ -443,6 +446,7 @@
           "eventType": "signal",
           "id": "_94a62738-dc7a-49f6-81d8-f5642f7ae850",
           "name": "New \nemployee \nhired",
+          "signalName": "New employee hired",
           "type": "startEvent"
         },
         {

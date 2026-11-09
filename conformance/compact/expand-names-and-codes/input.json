@@ -1,0 +1,185 @@
+{
+  "id": "D",
+  "processes": [
+    {
+      "id": "P",
+      "elements": [
+        {
+          "id": "start",
+          "type": "startEvent",
+          "eventType": "message",
+          "messageName": "order-placed"
+        },
+        {
+          "id": "sub",
+          "type": "subProcess",
+          "name": "Handle order",
+          "children": {
+            "elements": [
+              {
+                "id": "sub_start",
+                "type": "startEvent"
+              },
+              {
+                "id": "pay",
+                "type": "receiveTask",
+                "name": "Payment",
+                "messageName": "payment-received",
+                "correlationKey": "=orderId"
+              },
+              {
+                "id": "late",
+                "type": "intermediateThrowEvent",
+                "eventType": "escalation",
+                "escalationCode": "LATE"
+              },
+              {
+                "id": "sub_end",
+                "type": "endEvent",
+                "eventType": "error",
+                "errorCode": "PAYMENT_FAILED"
+              }
+            ],
+            "flows": [
+              {
+                "id": "s1",
+                "from": "sub_start",
+                "to": "pay"
+              },
+              {
+                "id": "s2",
+                "from": "pay",
+                "to": "late"
+              },
+              {
+                "id": "s3",
+                "from": "late",
+                "to": "sub_end"
+              }
+            ]
+          }
+        },
+        {
+          "id": "failed",
+          "type": "boundaryEvent",
+          "attachedTo": "sub",
+          "eventType": "error",
+          "errorCode": "PAYMENT_FAILED"
+        },
+        {
+          "id": "escalated",
+          "type": "boundaryEvent",
+          "attachedTo": "sub",
+          "eventType": "escalation",
+          "escalationCode": "LATE",
+          "interrupting": false
+        },
+        {
+          "id": "cancel",
+          "type": "boundaryEvent",
+          "attachedTo": "sub",
+          "eventType": "message",
+          "messageName": "order-cancelled",
+          "correlationKey": "=orderId"
+        },
+        {
+          "id": "stop",
+          "type": "boundaryEvent",
+          "attachedTo": "sub",
+          "eventType": "signal",
+          "signalName": "shutdown"
+        },
+        {
+          "id": "again",
+          "type": "intermediateCatchEvent",
+          "eventType": "message",
+          "messageName": "payment-received",
+          "correlationKey": "=orderId"
+        },
+        {
+          "id": "other",
+          "type": "intermediateCatchEvent",
+          "eventType": "message",
+          "messageName": "payment-received",
+          "correlationKey": "=invoiceId"
+        },
+        {
+          "id": "notify",
+          "type": "intermediateThrowEvent",
+          "eventType": "message",
+          "messageName": "order-done",
+          "jobType": "notify"
+        },
+        {
+          "id": "broadcast",
+          "type": "endEvent",
+          "eventType": "signal",
+          "signalName": "shutdown"
+        },
+        {
+          "id": "e_failed",
+          "type": "endEvent"
+        },
+        {
+          "id": "e_escalated",
+          "type": "endEvent"
+        },
+        {
+          "id": "e_cancel",
+          "type": "endEvent"
+        },
+        {
+          "id": "e_stop",
+          "type": "endEvent"
+        }
+      ],
+      "flows": [
+        {
+          "id": "f1",
+          "from": "start",
+          "to": "sub"
+        },
+        {
+          "id": "f2",
+          "from": "sub",
+          "to": "again"
+        },
+        {
+          "id": "f3",
+          "from": "again",
+          "to": "other"
+        },
+        {
+          "id": "f4",
+          "from": "other",
+          "to": "notify"
+        },
+        {
+          "id": "f5",
+          "from": "notify",
+          "to": "broadcast"
+        },
+        {
+          "id": "f6",
+          "from": "failed",
+          "to": "e_failed"
+        },
+        {
+          "id": "f7",
+          "from": "escalated",
+          "to": "e_escalated"
+        },
+        {
+          "id": "f8",
+          "from": "cancel",
+          "to": "e_cancel"
+        },
+        {
+          "id": "f9",
+          "from": "stop",
+          "to": "e_stop"
+        }
+      ]
+    }
+  ]
+}

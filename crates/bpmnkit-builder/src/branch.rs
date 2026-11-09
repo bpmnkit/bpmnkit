@@ -24,8 +24,8 @@ use bpmnkit_bpmn::ids::generate_id;
 use bpmnkit_bpmn::{BpmnElementType, BpmnFlowElement, BpmnSequenceFlow};
 
 use crate::elements::{
-    boundary_host_problem, build_event_definitions, is_link_event, make_condition_expression,
-    make_start_event_el,
+    assert_not_after_end, boundary_host_problem, build_event_definitions, is_link_event,
+    make_condition_expression, make_start_event_el,
 };
 use crate::options::*;
 use crate::shared::{check, fail, is_failed, BranchOutcome, Scope, SharedRef};
@@ -147,6 +147,10 @@ impl BranchBuilder {
         }
 
         if let Some(last) = self.cursor() {
+            if let Err(message) = assert_not_after_end(&self.scope.elements, &last, &id) {
+                fail(&self.shared, message);
+                return self;
+            }
             let flow = self.first_or_next_flow(&last, &id);
             let flow_id = flow.id.clone();
             self.scope.flows.push(flow);
@@ -225,6 +229,10 @@ impl BranchBuilder {
             self.connected = true;
             return self;
         };
+        if let Err(message) = assert_not_after_end(&self.scope.elements, &source, target_id) {
+            fail(&self.shared, message);
+            return self;
+        }
         let flow = self.first_or_next_flow(&source, target_id);
         let flow_id = flow.id.clone();
         self.scope.flows.push(flow);

@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/duplicate-header-key",
+      "message": "Headers contain duplicate entries for key 'a'",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Give every task header a distinct key."
+    }
+  ]
+}

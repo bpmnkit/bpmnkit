@@ -75,7 +75,6 @@
           "extensionElements": [],
           "id": "DOR1",
           "incoming": [],
-          "isCollection": true,
           "outgoing": [],
           "type": "dataObjectReference",
           "unknownAttributes": {}

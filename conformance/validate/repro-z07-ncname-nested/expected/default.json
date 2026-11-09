@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        ""
+      ],
+      "fixable": false,
+      "id": "zeebe/idref-resolves",
+      "message": "PARSE: SAXException while parsing input stream / Error: URI=null Line=4: cvc-datatype-valid.1.2.1: 'g 1' is not a valid value for 'QName'.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Point the reference at an existing element id that is a valid XML name."
+    }
+  ]
+}

@@ -5,6 +5,10 @@
       "id": "P",
       "elements": [
         {
+          "id": "Start_P",
+          "type": "startEvent"
+        },
+        {
           "id": "main",
           "type": "task"
         },
@@ -18,7 +22,9 @@
                 "type": "startEvent",
                 "name": "Cancelled",
                 "eventType": "message",
-                "interrupting": false
+                "interrupting": false,
+                "messageName": "cancel-order",
+                "correlationKey": "=orderId"
               },
               {
                 "id": "ee",
@@ -36,7 +42,13 @@
           }
         }
       ],
-      "flows": []
+      "flows": [
+        {
+          "id": "Flow_Start_P",
+          "from": "Start_P",
+          "to": "main"
+        }
+      ]
     }
   ]
 }

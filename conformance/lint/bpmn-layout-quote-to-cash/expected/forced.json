@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 10,
+    "error": 12,
     "info": 54,
     "warning": 28
   },
@@ -1132,6 +1132,30 @@
       "processId": "QuoteToCash",
       "severity": "warning",
       "suggestion": "Write the secret as {{secrets.NAME}}."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Message_VgqDdPrJ"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-subscription",
+      "message": "Must have exactly one zeebe:subscription extension element",
+      "processId": "QuoteToCash",
+      "severity": "error",
+      "suggestion": "Add one zeebe:subscription with a correlationKey to the message."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "paymentOutcome"
+      ],
+      "fixable": false,
+      "id": "zeebe/event-based-gateway-target",
+      "message": "Event-based gateway must not have an outgoing sequence flow to other elements than message/timer/signal/conditional intermediate catch events.",
+      "processId": "QuoteToCash",
+      "severity": "error",
+      "suggestion": "Route each flow to an intermediate catch event with one message, timer, signal or conditional definition."
     }
   ],
   "platform": {
@@ -1139,5 +1163,5 @@
     "name": "Camunda Cloud",
     "version": "8.9.0"
   },
-  "total": 92
+  "total": 94
 }

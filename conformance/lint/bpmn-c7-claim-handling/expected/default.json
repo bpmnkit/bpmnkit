@@ -13,7 +13,7 @@
     "connector"
   ],
   "counts": {
-    "error": 2,
+    "error": 5,
     "info": 0,
     "warning": 2
   },
@@ -69,6 +69,45 @@
       "processId": "claim-handling",
       "severity": "error",
       "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "EndEvent_paid"
+      ],
+      "fixable": false,
+      "id": "zeebe/message-throw-implementation",
+      "message": "Must have either one 'zeebe:publishMessage' or one 'zeebe:taskDefinition' extension element",
+      "plane": "claim-handling",
+      "processId": "claim-handling",
+      "severity": "error",
+      "suggestion": "Add a zeebe:publishMessage to the message event definition, or a zeebe:taskDefinition to the event."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Task_price"
+      ],
+      "fixable": false,
+      "id": "zeebe/script-task-implementation",
+      "message": "Must have either one 'zeebe:script' or one 'zeebe:taskDefinition' extension element",
+      "plane": "claim-handling",
+      "processId": "claim-handling",
+      "severity": "error",
+      "suggestion": "Give the script task one zeebe:script or one zeebe:taskDefinition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "SubProcess_items"
+      ],
+      "fixable": false,
+      "id": "zeebe/multi-instance-loop-characteristics",
+      "message": "Must have exactly one 'zeebe:loopCharacteristics' extension element",
+      "plane": "claim-handling",
+      "processId": "claim-handling",
+      "severity": "error",
+      "suggestion": "Add a single zeebe:loopCharacteristics element to the multi-instance loop."
     }
   ],
   "platform": {
@@ -76,5 +115,5 @@
     "name": "Camunda Platform",
     "version": "7.21.0"
   },
-  "total": 4
+  "total": 7
 }

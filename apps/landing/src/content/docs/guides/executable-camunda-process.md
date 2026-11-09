@@ -211,6 +211,10 @@ findings, so a correct model reports 0 errors. The `pattern` rules `gateway-no-d
 `subprocess-no-error-boundary` are warnings (style advice): Camunda's own gate does not flag
 them, and the reference file `expected.bpmn` trips both.
 
+`build()` already refused anything Zeebe would reject when the script ran (the
+[deploy gate](/docs/guides/deploy-gate)); `casen check process.bpmn --deploy` runs the same gate on
+the file's bytes, and `casen deploy` runs it again before it sends the file.
+
 ## Does it run? Test it with casen test
 
 Run the Camunda process test (CPT) JSON file with `casen test test`. It runs the file on

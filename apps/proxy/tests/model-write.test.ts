@@ -16,7 +16,11 @@ describe("writeModelXml", () => {
 
 	const xml = (name: string): string =>
 		Bpmn.export(
-			Bpmn.createProcess("p").startEvent("s").serviceTask("t", { name }).endEvent("e").build(),
+			Bpmn.createProcess("p")
+				.startEvent("s")
+				.serviceTask("t", { name, taskType: "ship" })
+				.endEvent("e")
+				.build(),
 		)
 
 	it("writes BPMN that reads back as the same model", async () => {
@@ -39,5 +43,21 @@ describe("writeModelXml", () => {
 		await expect(writeModelXml(path, "<not bpmn")).rejects.toThrow(/does not parse/)
 		expect(readFileSync(path, "utf8")).toBe("original")
 		expect(existsSync(join(dir, "other.bpmn"))).toBe(false)
+	})
+
+	it("refuses XML Camunda 8 would not deploy, with the gate's lines, and writes nothing", async () => {
+		const path = join(dir, "flow.bpmn")
+		const sketch = Bpmn.export(
+			Bpmn.createProcess("p")
+				.startEvent("s")
+				.serviceTask("t", { name: "Ship" })
+				.endEvent("e")
+				.build({ validate: false }),
+			{ validate: false },
+		)
+		await expect(writeModelXml(path, sketch)).rejects.toThrow(
+			/^Not deployable on Camunda \d+\.\d+: \d+ error\(s\)\n- t: (.|\n)*\(zeebe\/task-definition-type\)(.|\n)*\nThe model returned BPMN Camunda 8 would not deploy; nothing was written\.$/,
+		)
+		expect(existsSync(path)).toBe(false)
 	})
 })

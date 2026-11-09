@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_tasks" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:message id="Message_ok" name="ok">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=orderId"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
   <bpmn:process id="tasks" isExecutable="true">
     <bpmn:startEvent id="start"/>
     <bpmn:task id="plainTask">
@@ -56,7 +61,7 @@
     </bpmn:callActivity>
     <bpmn:sendTask id="sendNoType"/>
     <bpmn:receiveTask id="receiveNoRef"/>
-    <bpmn:receiveTask id="receiveOk"/>
+    <bpmn:receiveTask id="receiveOk" messageRef="Message_ok"/>
     <bpmn:userTask id="jobWorkerTask">
       <bpmn:extensionElements>
         <zeebe:formDefinition formId="f"/>
@@ -97,7 +102,7 @@
     <bpmn:eventBasedGateway id="eventGateway">
       <bpmn:outgoing>flowEventGateway</bpmn:outgoing>
     </bpmn:eventBasedGateway>
-    <bpmn:receiveTask id="afterEventGateway">
+    <bpmn:receiveTask id="afterEventGateway" messageRef="Message_ok">
       <bpmn:incoming>flowEventGateway</bpmn:incoming>
     </bpmn:receiveTask>
     <bpmn:subProcess id="collapsed">
@@ -108,9 +113,9 @@
     </bpmn:transaction>
     <bpmn:adHocSubProcess id="adHocEmpty">
       <bpmn:intermediateThrowEvent id="adHocThrow"/>
-      <bpmn:subProcess id="adHocEventSub">
+      <bpmn:subProcess id="adHocEventSub" triggeredByEvent="true">
         <bpmn:startEvent id="adHocEventStart">
-          <bpmn:messageEventDefinition id="adHocEventStart_MessageEventDefinition"/>
+          <bpmn:messageEventDefinition id="adHocEventStart_MessageEventDefinition" messageRef="Message_ok"/>
         </bpmn:startEvent>
       </bpmn:subProcess>
     </bpmn:adHocSubProcess>

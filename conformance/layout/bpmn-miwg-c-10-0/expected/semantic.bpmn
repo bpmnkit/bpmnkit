@@ -21,6 +21,18 @@
     <semantic:extensionElements>
       <ot:startPermission/>
     </semantic:extensionElements>
+    <semantic:ioSpecification>
+      <semantic:dataInput name="Client request" triso:readOnly="false" isCollection="false" ot:alias="input1" id="_48"/>
+      <semantic:dataOutput name="Hotel reservation" triso:readOnly="false" itemSubjectRef="_9765ffd2-35b3-4958-bddc-ef1ba5d8ebb4" ot:alias="output2" id="_49"/>
+      <semantic:dataOutput name="Tickets" triso:readOnly="false" itemSubjectRef="_9765ffd2-35b3-4958-bddc-ef1ba5d8ebb4" isCollection="true" ot:alias="output1" id="_59"/>
+      <semantic:inputSet id="_a2f30cba-7097-46b1-a0e0-cb8ad10b85b1">
+        <semantic:dataInputRefs>_48</semantic:dataInputRefs>
+      </semantic:inputSet>
+      <semantic:outputSet id="_a3ee2ca7-0791-485b-8538-1d2244fb554b">
+        <semantic:dataOutputRefs>_49</semantic:dataOutputRefs>
+        <semantic:dataOutputRefs>_59</semantic:dataOutputRefs>
+      </semantic:outputSet>
+    </semantic:ioSpecification>
     <semantic:laneSet>
       <semantic:lane id="_15" triso:readOnly="false" ot:displayName="Employee" ot:alias="lane1" name="Employee">
         <semantic:flowNodeRef>_39</semantic:flowNodeRef>
@@ -49,10 +61,6 @@
       </semantic:extensionElements>
       <semantic:incoming>_37</semantic:incoming>
       <semantic:outgoing>_40</semantic:outgoing>
-      <semantic:dataInputAssociation id="_50">
-        <semantic:sourceRef>Reference__2</semantic:sourceRef>
-        <semantic:targetRef>DataInput__39</semantic:targetRef>
-      </semantic:dataInputAssociation>
       <semantic:ioSpecification>
         <semantic:dataInput triso:readOnly="false" id="DataInput__39"/>
         <semantic:inputSet id="_f7372180-e3ad-4081-a6d4-d2963a93de14">
@@ -60,6 +68,10 @@
         </semantic:inputSet>
         <semantic:outputSet/>
       </semantic:ioSpecification>
+      <semantic:dataInputAssociation id="_50">
+        <semantic:sourceRef>Reference__2</semantic:sourceRef>
+        <semantic:targetRef>DataInput__39</semantic:targetRef>
+      </semantic:dataInputAssociation>
     </semantic:userTask>
     <semantic:endEvent id="_41" triso:readOnly="false" ot:displayName="Trip planned" ot:alias="event7" name="Trip planned">
       <semantic:incoming>_40</semantic:incoming>
@@ -70,14 +82,6 @@
       </semantic:extensionElements>
       <semantic:incoming>_20</semantic:incoming>
       <semantic:outgoing>_44</semantic:outgoing>
-      <semantic:dataInputAssociation id="_54">
-        <semantic:sourceRef>Reference__13</semantic:sourceRef>
-        <semantic:targetRef>DataInput__22</semantic:targetRef>
-      </semantic:dataInputAssociation>
-      <semantic:dataInputAssociation id="_56">
-        <semantic:sourceRef>Reference__11</semantic:sourceRef>
-        <semantic:targetRef>DataInput__22_1</semantic:targetRef>
-      </semantic:dataInputAssociation>
       <semantic:ioSpecification>
         <semantic:dataInput triso:readOnly="false" id="DataInput__22"/>
         <semantic:dataInput triso:readOnly="false" id="DataInput__22_1"/>
@@ -87,22 +91,18 @@
         </semantic:inputSet>
         <semantic:outputSet/>
       </semantic:ioSpecification>
+      <semantic:dataInputAssociation id="_54">
+        <semantic:sourceRef>Reference__13</semantic:sourceRef>
+        <semantic:targetRef>DataInput__22</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataInputAssociation id="_56">
+        <semantic:sourceRef>Reference__11</semantic:sourceRef>
+        <semantic:targetRef>DataInput__22_1</semantic:targetRef>
+      </semantic:dataInputAssociation>
     </semantic:userTask>
     <semantic:callActivity id="_29" triso:readOnly="false" ot:displayName="Plan trip" ot:alias="activity1" calledElement="Process_ID-73a31a41-43d5-11f1-744d-b02628b36240" name="Plan trip">
       <semantic:incoming>_42</semantic:incoming>
       <semantic:outgoing>_28</semantic:outgoing>
-      <semantic:dataInputAssociation id="_63">
-        <semantic:sourceRef>_48</semantic:sourceRef>
-        <semantic:targetRef>DataInput__29</semantic:targetRef>
-      </semantic:dataInputAssociation>
-      <semantic:dataOutputAssociation id="_58">
-        <semantic:sourceRef>_801b8c70-b793-499d-b462-4fd8d541f32b_29</semantic:sourceRef>
-        <semantic:targetRef>_49</semantic:targetRef>
-      </semantic:dataOutputAssociation>
-      <semantic:dataOutputAssociation id="_60">
-        <semantic:sourceRef>_801b8c70-b793-499d-b462-4fd8d541f32b_29</semantic:sourceRef>
-        <semantic:targetRef>_59</semantic:targetRef>
-      </semantic:dataOutputAssociation>
       <semantic:ioSpecification>
         <semantic:dataInput triso:readOnly="false" id="DataInput__29"/>
         <semantic:dataOutput triso:readOnly="false" itemSubjectRef="_triso-default-bpmnItemDefinition-string_id" isCollection="false" id="_801b8c70-b793-499d-b462-4fd8d541f32b_29"/>
@@ -115,14 +115,22 @@
           <semantic:dataOutputRefs>_8a969b23-b4b1-453c-8925-1cec72ddbaef_29</semantic:dataOutputRefs>
         </semantic:outputSet>
       </semantic:ioSpecification>
+      <semantic:dataInputAssociation id="_63">
+        <semantic:sourceRef>_48</semantic:sourceRef>
+        <semantic:targetRef>DataInput__29</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataOutputAssociation id="_58">
+        <semantic:sourceRef>_801b8c70-b793-499d-b462-4fd8d541f32b_29</semantic:sourceRef>
+        <semantic:targetRef>_49</semantic:targetRef>
+      </semantic:dataOutputAssociation>
+      <semantic:dataOutputAssociation id="_60">
+        <semantic:sourceRef>_801b8c70-b793-499d-b462-4fd8d541f32b_29</semantic:sourceRef>
+        <semantic:targetRef>_59</semantic:targetRef>
+      </semantic:dataOutputAssociation>
     </semantic:callActivity>
     <semantic:serviceTask id="_21" triso:readOnly="false" ot:displayName="Update employee's calendar" ot:connectorGuid="{00000000-0000-0000-0000-000000000000}" ot:alias="task1" implementation="##WebService" name="Update employee's calendar">
       <semantic:incoming>_28</semantic:incoming>
       <semantic:outgoing>_20</semantic:outgoing>
-      <semantic:dataOutputAssociation id="_74">
-        <semantic:sourceRef>DataOutput__21</semantic:sourceRef>
-        <semantic:targetRef>Reference__1</semantic:targetRef>
-      </semantic:dataOutputAssociation>
       <semantic:ioSpecification>
         <semantic:dataOutput triso:readOnly="false" triso:hidden="false" id="DataOutput__21"/>
         <semantic:inputSet/>
@@ -130,6 +138,10 @@
           <semantic:dataOutputRefs>DataOutput__21</semantic:dataOutputRefs>
         </semantic:outputSet>
       </semantic:ioSpecification>
+      <semantic:dataOutputAssociation id="_74">
+        <semantic:sourceRef>DataOutput__21</semantic:sourceRef>
+        <semantic:targetRef>Reference__1</semantic:targetRef>
+      </semantic:dataOutputAssociation>
     </semantic:serviceTask>
     <semantic:intermediateCatchEvent id="_38" triso:readOnly="false" ot:displayName="Recieve meeting details" ot:alias="event4" name="Recieve meeting details">
       <semantic:incoming>_46</semantic:incoming>
@@ -165,14 +177,6 @@
       </semantic:extensionElements>
       <semantic:incoming>_32</semantic:incoming>
       <semantic:outgoing>_47</semantic:outgoing>
-      <semantic:dataInputAssociation id="_68">
-        <semantic:sourceRef>_48</semantic:sourceRef>
-        <semantic:targetRef>DataInput__34</semantic:targetRef>
-      </semantic:dataInputAssociation>
-      <semantic:dataOutputAssociation id="_66">
-        <semantic:sourceRef>DataOutput__34</semantic:sourceRef>
-        <semantic:targetRef>Reference__12</semantic:targetRef>
-      </semantic:dataOutputAssociation>
       <semantic:ioSpecification>
         <semantic:dataInput triso:readOnly="false" id="DataInput__34"/>
         <semantic:dataOutput triso:readOnly="false" triso:hidden="false" id="DataOutput__34"/>
@@ -183,6 +187,14 @@
           <semantic:dataOutputRefs>DataOutput__34</semantic:dataOutputRefs>
         </semantic:outputSet>
       </semantic:ioSpecification>
+      <semantic:dataInputAssociation id="_68">
+        <semantic:sourceRef>_48</semantic:sourceRef>
+        <semantic:targetRef>DataInput__34</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataOutputAssociation id="_66">
+        <semantic:sourceRef>DataOutput__34</semantic:sourceRef>
+        <semantic:targetRef>Reference__12</semantic:targetRef>
+      </semantic:dataOutputAssociation>
     </semantic:userTask>
     <semantic:startEvent id="_33" triso:readOnly="false" ot:displayName="E-mail received" ot:alias="event2" name="E-mail received">
       <semantic:outgoing>_32</semantic:outgoing>
@@ -194,14 +206,6 @@
       </semantic:extensionElements>
       <semantic:incoming>_26</semantic:incoming>
       <semantic:outgoing>_23</semantic:outgoing>
-      <semantic:dataInputAssociation id="_71">
-        <semantic:sourceRef>Reference__1</semantic:sourceRef>
-        <semantic:targetRef>DataInput__24</semantic:targetRef>
-      </semantic:dataInputAssociation>
-      <semantic:dataOutputAssociation id="_70">
-        <semantic:sourceRef>DataOutput__24</semantic:sourceRef>
-        <semantic:targetRef>Reference__10</semantic:targetRef>
-      </semantic:dataOutputAssociation>
       <semantic:ioSpecification>
         <semantic:dataInput triso:readOnly="false" id="DataInput__24"/>
         <semantic:dataOutput triso:readOnly="false" triso:hidden="false" id="DataOutput__24"/>
@@ -212,6 +216,14 @@
           <semantic:dataOutputRefs>DataOutput__24</semantic:dataOutputRefs>
         </semantic:outputSet>
       </semantic:ioSpecification>
+      <semantic:dataInputAssociation id="_71">
+        <semantic:sourceRef>Reference__1</semantic:sourceRef>
+        <semantic:targetRef>DataInput__24</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataOutputAssociation id="_70">
+        <semantic:sourceRef>DataOutput__24</semantic:sourceRef>
+        <semantic:targetRef>Reference__10</semantic:targetRef>
+      </semantic:dataOutputAssociation>
     </semantic:userTask>
     <semantic:exclusiveGateway id="_27" triso:readOnly="false" ot:displayName="On-site Meeting?" ot:alias="gateway2" gatewayDirection="Diverging" name="On-site Meeting?">
       <semantic:incoming>_47</semantic:incoming>
@@ -245,82 +257,8 @@
     <semantic:sequenceFlow id="_44" sourceRef="_22" targetRef="_45" triso:readOnly="false" ot:alias="flow6" isImmediate="false"/>
     <semantic:sequenceFlow id="_46" sourceRef="_45" targetRef="_38" triso:readOnly="false" ot:alias="flow11" isImmediate="false"/>
     <semantic:sequenceFlow id="_47" sourceRef="_34" targetRef="_27" triso:readOnly="false" ot:alias="flow9" isImmediate="false"/>
-    <semantic:ioSpecification>
-      <semantic:dataInput name="Client request" triso:readOnly="false" isCollection="false" ot:alias="input1" id="_48"/>
-      <semantic:dataOutput name="Hotel reservation" triso:readOnly="false" itemSubjectRef="_9765ffd2-35b3-4958-bddc-ef1ba5d8ebb4" ot:alias="output2" id="_49"/>
-      <semantic:dataOutput name="Tickets" triso:readOnly="false" itemSubjectRef="_9765ffd2-35b3-4958-bddc-ef1ba5d8ebb4" isCollection="true" ot:alias="output1" id="_59"/>
-      <semantic:inputSet id="_a2f30cba-7097-46b1-a0e0-cb8ad10b85b1">
-        <semantic:dataInputRefs>_48</semantic:dataInputRefs>
-      </semantic:inputSet>
-      <semantic:outputSet id="_a3ee2ca7-0791-485b-8538-1d2244fb554b">
-        <semantic:dataOutputRefs>_49</semantic:dataOutputRefs>
-        <semantic:dataOutputRefs>_59</semantic:dataOutputRefs>
-      </semantic:outputSet>
-    </semantic:ioSpecification>
   </semantic:process>
   <semantic:process id="Process_ID-73a31a41-43d5-11f1-744d-b02628b36240" triso:readOnly="false" triso:collectEnds="true" isClosed="false" name="Plan Trip" isExecutable="false">
-    <semantic:dataObject id="ID-ee745c8c-43de-11f1-744d-b02628b36240" triso:readOnly="false" triso:displayName="Preferred hotel and travel means" name="Preferred hotel and travel means"/>
-    <semantic:startEvent id="ID-ee745c80-43de-11f1-744d-b02628b36240" triso:readOnly="false">
-      <semantic:outgoing>ID-ee745c84-43de-11f1-744d-b02628b36240</semantic:outgoing>
-    </semantic:startEvent>
-    <semantic:userTask id="ID-ee745c82-43de-11f1-744d-b02628b36240" triso:readOnly="false" implementation="##unspecified" name="Request employee preferences">
-      <semantic:incoming>ID-ee745c84-43de-11f1-744d-b02628b36240</semantic:incoming>
-      <semantic:outgoing>_1b18998a-581e-4a9f-a591-b4f360261866</semantic:outgoing>
-      <semantic:dataInputAssociation id="ID-ee745c88-43de-11f1-744d-b02628b36240">
-        <semantic:sourceRef>ID-ee745c85-43de-11f1-744d-b02628b36240</semantic:sourceRef>
-        <semantic:targetRef>DataInput_ID-ee745c82-43de-11f1-744d-b02628b36240</semantic:targetRef>
-      </semantic:dataInputAssociation>
-      <semantic:dataOutputAssociation id="ID-ee745c8e-43de-11f1-744d-b02628b36240">
-        <semantic:sourceRef>DataOutput_ID-ee745c82-43de-11f1-744d-b02628b36240</semantic:sourceRef>
-        <semantic:targetRef>Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240</semantic:targetRef>
-      </semantic:dataOutputAssociation>
-      <semantic:ioSpecification>
-        <semantic:dataInput triso:readOnly="false" id="DataInput_ID-ee745c82-43de-11f1-744d-b02628b36240"/>
-        <semantic:dataOutput triso:readOnly="false" triso:hidden="false" id="DataOutput_ID-ee745c82-43de-11f1-744d-b02628b36240"/>
-        <semantic:inputSet id="_e4d5030a-85d2-4313-b1dd-bffe5f54565c">
-          <semantic:dataInputRefs>DataInput_ID-ee745c82-43de-11f1-744d-b02628b36240</semantic:dataInputRefs>
-        </semantic:inputSet>
-        <semantic:outputSet id="_08f45118-5481-4ef5-8dfc-a5308a836242">
-          <semantic:dataOutputRefs>DataOutput_ID-ee745c82-43de-11f1-744d-b02628b36240</semantic:dataOutputRefs>
-        </semantic:outputSet>
-      </semantic:ioSpecification>
-    </semantic:userTask>
-    <semantic:userTask id="_5e0cd331-db4a-4561-9f7f-141eecba6967" triso:readOnly="false" implementation="##unspecified" name="Book trip">
-      <semantic:extensionElements>
-        <triso:notification id="_a9ffc4b8-99f5-4ce7-be34-3842028b3346" type="email" mode="others"/>
-      </semantic:extensionElements>
-      <semantic:incoming>_1b18998a-581e-4a9f-a591-b4f360261866</semantic:incoming>
-      <semantic:outgoing>_c0e8a59b-136b-4e14-8ef4-a9b1ff8f13fa</semantic:outgoing>
-      <semantic:dataInputAssociation id="dataAssoc_Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240_to__5e0cd331-db4a-4561-9f7f-141eecba6967">
-        <semantic:sourceRef>Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240</semantic:sourceRef>
-        <semantic:targetRef>dataInput_ump2i215t</semantic:targetRef>
-      </semantic:dataInputAssociation>
-      <semantic:dataOutputAssociation id="_8ad15c31-1a47-4349-a146-0fbea8774532">
-        <semantic:sourceRef>_393bfc2e-32d1-4b49-8dd2-22c654541596</semantic:sourceRef>
-        <semantic:targetRef>_801b8c70-b793-499d-b462-4fd8d541f32b</semantic:targetRef>
-      </semantic:dataOutputAssociation>
-      <semantic:dataOutputAssociation id="_5c59161c-f8b2-4e94-aac8-895517dcc1d4">
-        <semantic:sourceRef>_393bfc2e-32d1-4b49-8dd2-22c654541596</semantic:sourceRef>
-        <semantic:targetRef>_8a969b23-b4b1-453c-8925-1cec72ddbaef</semantic:targetRef>
-      </semantic:dataOutputAssociation>
-      <semantic:ioSpecification>
-        <semantic:dataInput id="dataInput_ump2i215t"/>
-        <semantic:dataOutput triso:readOnly="false" itemSubjectRef="_triso-default-bpmnItemDefinition-string_id" isCollection="false" triso:hidden="false" id="_393bfc2e-32d1-4b49-8dd2-22c654541596"/>
-        <semantic:inputSet>
-          <semantic:dataInputRefs>dataInput_ump2i215t</semantic:dataInputRefs>
-        </semantic:inputSet>
-        <semantic:outputSet id="_e9d2d1da-2259-4da4-a2a3-9146db175b2b">
-          <semantic:dataOutputRefs>_393bfc2e-32d1-4b49-8dd2-22c654541596</semantic:dataOutputRefs>
-        </semantic:outputSet>
-      </semantic:ioSpecification>
-    </semantic:userTask>
-    <semantic:endEvent id="_2a76b8fa-b11b-4f0a-9835-2a144fada546" triso:readOnly="false">
-      <semantic:incoming>_c0e8a59b-136b-4e14-8ef4-a9b1ff8f13fa</semantic:incoming>
-    </semantic:endEvent>
-    <semantic:dataObjectReference id="Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240" triso:readOnly="false" name="Preferred hotel and travel means" dataObjectRef="ID-ee745c8c-43de-11f1-744d-b02628b36240"/>
-    <semantic:sequenceFlow id="ID-ee745c84-43de-11f1-744d-b02628b36240" sourceRef="ID-ee745c80-43de-11f1-744d-b02628b36240" targetRef="ID-ee745c82-43de-11f1-744d-b02628b36240" triso:readOnly="false" isImmediate="false"/>
-    <semantic:sequenceFlow id="_1b18998a-581e-4a9f-a591-b4f360261866" sourceRef="ID-ee745c82-43de-11f1-744d-b02628b36240" targetRef="_5e0cd331-db4a-4561-9f7f-141eecba6967" triso:readOnly="false"/>
-    <semantic:sequenceFlow id="_c0e8a59b-136b-4e14-8ef4-a9b1ff8f13fa" sourceRef="_5e0cd331-db4a-4561-9f7f-141eecba6967" targetRef="_2a76b8fa-b11b-4f0a-9835-2a144fada546" triso:readOnly="false"/>
     <semantic:ioSpecification>
       <semantic:dataInput name="Client request" triso:readOnly="false" isCollection="false" id="ID-ee745c85-43de-11f1-744d-b02628b36240"/>
       <semantic:dataOutput name="Hotel reservation" triso:readOnly="false" itemSubjectRef="_9765ffd2-35b3-4958-bddc-ef1ba5d8ebb4" isCollection="true" ot:alias="output2" id="_801b8c70-b793-499d-b462-4fd8d541f32b" triso:displayName="Hotel reservation"/>
@@ -333,6 +271,68 @@
         <semantic:dataOutputRefs>_8a969b23-b4b1-453c-8925-1cec72ddbaef</semantic:dataOutputRefs>
       </semantic:outputSet>
     </semantic:ioSpecification>
+    <semantic:dataObject id="ID-ee745c8c-43de-11f1-744d-b02628b36240" triso:readOnly="false" triso:displayName="Preferred hotel and travel means" name="Preferred hotel and travel means"/>
+    <semantic:startEvent id="ID-ee745c80-43de-11f1-744d-b02628b36240" triso:readOnly="false">
+      <semantic:outgoing>ID-ee745c84-43de-11f1-744d-b02628b36240</semantic:outgoing>
+    </semantic:startEvent>
+    <semantic:userTask id="ID-ee745c82-43de-11f1-744d-b02628b36240" triso:readOnly="false" implementation="##unspecified" name="Request employee preferences">
+      <semantic:incoming>ID-ee745c84-43de-11f1-744d-b02628b36240</semantic:incoming>
+      <semantic:outgoing>_1b18998a-581e-4a9f-a591-b4f360261866</semantic:outgoing>
+      <semantic:ioSpecification>
+        <semantic:dataInput triso:readOnly="false" id="DataInput_ID-ee745c82-43de-11f1-744d-b02628b36240"/>
+        <semantic:dataOutput triso:readOnly="false" triso:hidden="false" id="DataOutput_ID-ee745c82-43de-11f1-744d-b02628b36240"/>
+        <semantic:inputSet id="_e4d5030a-85d2-4313-b1dd-bffe5f54565c">
+          <semantic:dataInputRefs>DataInput_ID-ee745c82-43de-11f1-744d-b02628b36240</semantic:dataInputRefs>
+        </semantic:inputSet>
+        <semantic:outputSet id="_08f45118-5481-4ef5-8dfc-a5308a836242">
+          <semantic:dataOutputRefs>DataOutput_ID-ee745c82-43de-11f1-744d-b02628b36240</semantic:dataOutputRefs>
+        </semantic:outputSet>
+      </semantic:ioSpecification>
+      <semantic:dataInputAssociation id="ID-ee745c88-43de-11f1-744d-b02628b36240">
+        <semantic:sourceRef>ID-ee745c85-43de-11f1-744d-b02628b36240</semantic:sourceRef>
+        <semantic:targetRef>DataInput_ID-ee745c82-43de-11f1-744d-b02628b36240</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataOutputAssociation id="ID-ee745c8e-43de-11f1-744d-b02628b36240">
+        <semantic:sourceRef>DataOutput_ID-ee745c82-43de-11f1-744d-b02628b36240</semantic:sourceRef>
+        <semantic:targetRef>Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240</semantic:targetRef>
+      </semantic:dataOutputAssociation>
+    </semantic:userTask>
+    <semantic:userTask id="_5e0cd331-db4a-4561-9f7f-141eecba6967" triso:readOnly="false" implementation="##unspecified" name="Book trip">
+      <semantic:extensionElements>
+        <triso:notification id="_a9ffc4b8-99f5-4ce7-be34-3842028b3346" type="email" mode="others"/>
+      </semantic:extensionElements>
+      <semantic:incoming>_1b18998a-581e-4a9f-a591-b4f360261866</semantic:incoming>
+      <semantic:outgoing>_c0e8a59b-136b-4e14-8ef4-a9b1ff8f13fa</semantic:outgoing>
+      <semantic:ioSpecification>
+        <semantic:dataInput id="dataInput_ump2i215t"/>
+        <semantic:dataOutput triso:readOnly="false" itemSubjectRef="_triso-default-bpmnItemDefinition-string_id" isCollection="false" triso:hidden="false" id="_393bfc2e-32d1-4b49-8dd2-22c654541596"/>
+        <semantic:inputSet>
+          <semantic:dataInputRefs>dataInput_ump2i215t</semantic:dataInputRefs>
+        </semantic:inputSet>
+        <semantic:outputSet id="_e9d2d1da-2259-4da4-a2a3-9146db175b2b">
+          <semantic:dataOutputRefs>_393bfc2e-32d1-4b49-8dd2-22c654541596</semantic:dataOutputRefs>
+        </semantic:outputSet>
+      </semantic:ioSpecification>
+      <semantic:dataInputAssociation id="dataAssoc_Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240_to__5e0cd331-db4a-4561-9f7f-141eecba6967">
+        <semantic:sourceRef>Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240</semantic:sourceRef>
+        <semantic:targetRef>dataInput_ump2i215t</semantic:targetRef>
+      </semantic:dataInputAssociation>
+      <semantic:dataOutputAssociation id="_8ad15c31-1a47-4349-a146-0fbea8774532">
+        <semantic:sourceRef>_393bfc2e-32d1-4b49-8dd2-22c654541596</semantic:sourceRef>
+        <semantic:targetRef>_801b8c70-b793-499d-b462-4fd8d541f32b</semantic:targetRef>
+      </semantic:dataOutputAssociation>
+      <semantic:dataOutputAssociation id="_5c59161c-f8b2-4e94-aac8-895517dcc1d4">
+        <semantic:sourceRef>_393bfc2e-32d1-4b49-8dd2-22c654541596</semantic:sourceRef>
+        <semantic:targetRef>_8a969b23-b4b1-453c-8925-1cec72ddbaef</semantic:targetRef>
+      </semantic:dataOutputAssociation>
+    </semantic:userTask>
+    <semantic:endEvent id="_2a76b8fa-b11b-4f0a-9835-2a144fada546" triso:readOnly="false">
+      <semantic:incoming>_c0e8a59b-136b-4e14-8ef4-a9b1ff8f13fa</semantic:incoming>
+    </semantic:endEvent>
+    <semantic:dataObjectReference id="Reference_ID-ee745c8c-43de-11f1-744d-b02628b36240" triso:readOnly="false" name="Preferred hotel and travel means" dataObjectRef="ID-ee745c8c-43de-11f1-744d-b02628b36240"/>
+    <semantic:sequenceFlow id="ID-ee745c84-43de-11f1-744d-b02628b36240" sourceRef="ID-ee745c80-43de-11f1-744d-b02628b36240" targetRef="ID-ee745c82-43de-11f1-744d-b02628b36240" triso:readOnly="false" isImmediate="false"/>
+    <semantic:sequenceFlow id="_1b18998a-581e-4a9f-a591-b4f360261866" sourceRef="ID-ee745c82-43de-11f1-744d-b02628b36240" targetRef="_5e0cd331-db4a-4561-9f7f-141eecba6967" triso:readOnly="false"/>
+    <semantic:sequenceFlow id="_c0e8a59b-136b-4e14-8ef4-a9b1ff8f13fa" sourceRef="_5e0cd331-db4a-4561-9f7f-141eecba6967" targetRef="_2a76b8fa-b11b-4f0a-9835-2a144fada546" triso:readOnly="false"/>
   </semantic:process>
   <bpmndi:BPMNDiagram id="_3" name="C.10.0.1">
     <bpmndi:BPMNPlane id="Plane__3" bpmnElement="_4" trisobpmn:diagramWidth="2154.52" trisobpmn:diagramHeight="1095.21">

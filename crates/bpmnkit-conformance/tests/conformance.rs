@@ -3,6 +3,19 @@
 
 use bpmnkit_conformance::*;
 
+/// pending.json may only shrink: lower this when a case leaves it, never raise it to make room.
+const MAX_PENDING: usize = 1;
+
+#[test]
+fn pending_does_not_grow() {
+    let pending = load_pending(&conformance_dir()).expect("pending.json");
+    assert!(
+        pending.len() <= MAX_PENDING,
+        "pending.json has {} cases, the cap is {MAX_PENDING}: fix the new failures instead",
+        pending.len()
+    );
+}
+
 #[test]
 fn conformance() {
     let dir = conformance_dir();
@@ -28,9 +41,11 @@ fn conformance() {
         report.pending,
         report.failed.len()
     );
-    for id in &report.removable {
-        println!("can be removed from pending.json: {id}");
-    }
+    assert!(
+        report.removable.is_empty(),
+        "pending cases now pass; delete them from pending.json and lower MAX_PENDING: {:#?}",
+        report.removable
+    );
     assert!(
         report.failed.is_empty(),
         "failing cases (fix, or CONFORMANCE_BLESS=1 to mark pending): {:#?}",

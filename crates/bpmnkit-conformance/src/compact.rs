@@ -9,12 +9,27 @@ use bpmnkit_bpmn::{parse_bpmn, serialize_bpmn};
 use bpmnkit_dmn::{parse_dmn, serialize_dmn};
 use bpmnkit_text::compact::{
     compactify, expand, expand_json, CompactDiagram, CompactStream, CompactStreamOptions,
+    ExpandOptions,
 };
 use bpmnkit_text::dmn_compact::{compactify_dmn, expand_dmn, CompactDmn};
 use bpmnkit_text::TextError;
 use serde::Serialize;
 use serde_json::Value as Json;
 use std::path::{Path, PathBuf};
+
+/// `case.json` `expand`: the options a diagram is expanded with (`validate`,
+/// `placeholders`, `camundaVersion`), read by the TS recorder too.
+pub(crate) fn expand_options(spec: &Json) -> ExpandOptions {
+    let options = &spec["expand"];
+    let defaults = ExpandOptions::default();
+    ExpandOptions {
+        validate: options["validate"].as_bool().unwrap_or(defaults.validate),
+        placeholders: options["placeholders"]
+            .as_bool()
+            .unwrap_or(defaults.placeholders),
+        camunda_version: options["camundaVersion"].as_str().map(str::to_owned),
+    }
+}
 
 /// Ids of every `compact/` case.
 pub fn case_ids(dir: &Path) -> Vec<String> {
@@ -55,13 +70,13 @@ fn check_expanded<T: Serialize>(
     }
 }
 
-fn check_bpmn(expected: &Path, input: &Path) -> Result<(), String> {
+fn check_bpmn(expected: &Path, input: &Path, options: &ExpandOptions) -> Result<(), String> {
     reset_id_counter();
     let defs = parse_bpmn(&read(input)?).map_err(|e| format!("parse: {e}"))?;
     let compact = compactify(&defs);
     same_json("compact.json", &compact, &expected.join("compact.json"))?;
     reset_id_counter();
-    let expanded = expand(&compact);
+    let expanded = expand(&compact, options);
     check_expanded(
         expected,
         expanded,
@@ -159,7 +174,7 @@ pub fn check_case(dir: &Path, id: &str) -> Result<(), String> {
     if let Some(p) = input("input.json") {
         let json = read(&p)?;
         reset_id_counter();
-        let result = expand_json(&json);
+        let result = expand_json(&json, &expand_options(&spec));
         return check_expanded(
             &expected,
             result,
@@ -170,7 +185,7 @@ pub fn check_case(dir: &Path, id: &str) -> Result<(), String> {
         );
     }
     if let Some(p) = input("input.bpmn") {
-        return check_bpmn(&expected, &p);
+        return check_bpmn(&expected, &p, &expand_options(&spec));
     }
     if let Some(p) = input("input.dmn") {
         return check_dmn(&expected, &p);

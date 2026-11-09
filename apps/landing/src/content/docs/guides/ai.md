@@ -91,32 +91,42 @@ Using the Anthropic SDK to generate a process from a description:
 
 ```typescript
 import Anthropic from "@anthropic-ai/sdk";
-import { Bpmn, expand } from "@bpmnkit/core";
+import { Bpmn, DeployabilityError, expand } from "@bpmnkit/core";
 import type { CompactDiagram } from "@bpmnkit/core";
 
 const anthropic = new Anthropic();
 
 async function generateProcess(description: string): Promise<string> {
-  const response = await anthropic.messages.create({
-    model: "claude-opus-4-6",
-    max_tokens: 2048,
-    system: `You are a BPMN process designer. Return only valid JSON matching the
-CompactDiagram schema. No explanation, no markdown — raw JSON only.`,
-    messages: [
-      {
-        role: "user",
-        content: `Create a BPMN process for: ${description}`,
-      },
-    ],
-  });
+  const messages: Anthropic.MessageParam[] = [
+    { role: "user", content: `Create a BPMN process for: ${description}` },
+  ];
+  // One repair round: the deploy gate's message tells the model exactly what to add.
+  for (let attempt = 0; attempt < 2; attempt++) {
+    const response = await anthropic.messages.create({
+      model: "claude-opus-4-6",
+      max_tokens: 2048,
+      system: `You are a BPMN process designer. Return only valid JSON matching the
+CompactDiagram schema. No explanation, no markdown — raw JSON only. Give every service task a
+jobType, every message a messageName (and a correlationKey where it is caught), every timer a
+time, and every flow leaving an exclusive gateway a condition or isDefault.`,
+      messages,
+    });
 
-  const json = response.content[0];
-  if (json?.type !== "text") throw new Error("Unexpected response type");
+    const json = response.content[0];
+    if (json?.type !== "text") throw new Error("Unexpected response type");
 
-  const compact = JSON.parse(json.text) as CompactDiagram;
-  const definitions = expand(compact);
-
-  return Bpmn.export(definitions);
+    try {
+      // expand() refuses a model Camunda 8 would not deploy (a DeployabilityError).
+      return Bpmn.export(expand(JSON.parse(json.text) as CompactDiagram));
+    } catch (err) {
+      if (!(err instanceof DeployabilityError) || attempt === 1) throw err;
+      messages.push(
+        { role: "assistant", content: json.text },
+        { role: "user", content: `Fix these and return the whole diagram again:\n${err.message}` },
+      );
+    }
+  }
+  throw new Error("unreachable");
 }
 
 const xml = await generateProcess(
@@ -228,6 +238,15 @@ own MCP servers, settings or plugins. What it can do depends on the request:
 | AI panel chat, improve, explain (`/chat`) | The diagram tools of the proxy's MCP server, which change only the diagram held in that server's memory. The result comes back as the `xml` event; nothing is written to your project. |
 | Create form or decision (`/chat`), improve with operations (`/improve`, `casen lint --ai`), Operate chat, incident assist, AI search, `casen ask` | No tools. The model answers with text or JSON, and the proxy does the rest. |
 
+Every tool call that changes the diagram ends with a deploy check, so the model sees what Camunda 8
+would refuse while it can still fix it. The diagram `/chat` and `/improve` return goes through the
+[deploy gate](/docs/guides/deploy-gate): one that would not deploy comes back as an `error` event
+with the gate's lines and no `xml`. A request can send `"placeholders": true` to get placeholder
+values filled instead (listed in a `placeholders` event), or `"validate": false` to get the diagram
+as a draft with the gate's message in a `deployability` event. The editor's AI panel does the
+latter: it inserts the draft and shows the message under the answer, and the deploy pane refuses
+the draft until it deploys.
+
 Everything that comes from the request — your chat text, the diagram, an incident's variables —
 reaches the model inside `<untrusted-input>` tags, and the system prompt tells it to treat that
 as data. A diagram that says "ignore your instructions" is still just a diagram.
@@ -258,11 +277,15 @@ as `io.github.bpmnkit/bpmnkit`.
 Tools:
 
 - `bpmn_create`, `bpmn_read`, `bpmn_update` — write and read `.bpmn` files through the compact
-  format, with auto-layout applied on write
-- `bpmn_validate` — run the optimizer's findings over a file
+  format, with auto-layout applied on write. A diagram Camunda 8 would not deploy is not written:
+  the tool error is the [deploy gate](/docs/guides/deploy-gate)'s message; `placeholders: true`
+  fills documented placeholder values instead
+- `bpmn_validate` — run the optimizer's findings over a file, plus the deploy gate's verdict
+  (`summary.deployable`, `deployability`)
 - `bpmn_simulate`, `bpmn_run_history` — run a process on the local engine and read past runs
   (needs the proxy running: `casen proxy start`)
-- `bpmn_deploy` — deploy to the active `casen` profile (Camunda 8 or a local Reebe)
+- `bpmn_deploy` — deploy to the active `casen` profile (Camunda 8 or a local Reebe), after the
+  deploy gate (`validate: false` skips it)
 - `form_create`, `dmn_create` — Camunda Forms and DMN decision tables
 - `worker_list`, `worker_scaffold` — list and generate job workers
 - `pattern_list`, `pattern_get` — the domain patterns in `@bpmnkit/patterns`

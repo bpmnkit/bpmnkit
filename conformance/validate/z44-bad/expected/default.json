@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Boundary"
+      ],
+      "fixable": false,
+      "id": "zeebe/timer-one-value",
+      "message": "Must be exactly one type of timer: timeDuration, timeDate or timeCycle",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Give the timer exactly one of time duration, time date or time cycle."
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Gateway"
+      ],
+      "fixable": false,
+      "id": "zeebe/event-based-gateway-duplicate-condition",
+      "message": "Multiple conditional event definitions with the same condition expression '=x > 1' are not allowed.",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Give each conditional event after the gateway a different condition."
+    }
+  ]
+}

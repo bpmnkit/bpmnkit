@@ -13,12 +13,14 @@
         {
           "eventType": "link",
           "id": "out",
+          "linkName": "L",
           "name": "Jump",
           "type": "intermediateThrowEvent"
         },
         {
           "eventType": "link",
           "id": "in",
+          "linkName": "L",
           "name": "Land",
           "type": "intermediateCatchEvent"
         },

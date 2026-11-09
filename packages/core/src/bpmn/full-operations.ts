@@ -10,6 +10,7 @@ import {
 	type CompactDiagram,
 	type CompactElement,
 	buildFlowElement,
+	compactify,
 	defaultFlows,
 	makeEventDef,
 } from "./compact.js"
@@ -216,6 +217,16 @@ const ROOT_FIELDS = [
 	["escalationCode", "escalation", "escalationCode"],
 	["signalName", "signal", "name"],
 ] as const
+/** The compact fields that live on root elements or timer definitions, compared before patching. */
+const ROOT_COMPACT_FIELDS = [
+	"messageName",
+	"correlationKey",
+	"signalName",
+	"errorCode",
+	"escalationCode",
+	"timerDate",
+	"timerCycle",
+] as const
 const TIMER_FIELDS = [
 	["timerDuration", "timeDuration"],
 	["timerDate", "timeDate"],
@@ -275,15 +286,18 @@ function misplacedEventFields(
 	element: BpmnFlowElement,
 	patch: ElementPatch,
 ): string | undefined {
-	for (const [field, kind] of ROOT_FIELDS) {
+	for (const [field, kind, attribute] of ROOT_FIELDS) {
 		if (patch[field] === undefined) continue
 		const definition = eventDefinitionOf(element, kind)
 		if (!definition)
 			return `${field} needs a ${kind} event definition, and "${element.id}" has none`
 		const ref = asRecord(definition)[refKey(kind)]
+		const root = rootsOf(definitions, kind).find((candidate) => candidate.id === ref)
+		// Restating the value a shared root already holds changes nothing for anyone
+		if (root !== undefined && root[attribute] === patch[field]) continue
 		if (
 			typeof ref === "string" &&
-			rootsOf(definitions, kind).some((root) => root.id === ref) &&
+			root !== undefined &&
 			referenceCount(definitions, kind, ref) > 1
 		) {
 			return `${field}: the ${kind} "${ref}" is shared by ${referenceCount(definitions, kind, ref)} elements; changing it would change them all`
@@ -619,7 +633,10 @@ function patchElement(
 	element: BpmnFlowElement,
 	patch: ElementPatch,
 ): string | undefined {
-	if (patch.type !== undefined && patch.type !== element.type) {
+	// compactify reads a `subProcess triggeredByEvent` as an eventSubProcess: the same element
+	const type =
+		element.type === "subProcess" && element.triggeredByEvent ? "eventSubProcess" : element.type
+	if (patch.type !== undefined && patch.type !== type) {
 		return `changing type (${element.type} → ${patch.type}) needs a delete and an insert, so that what the new element should carry is explicit`
 	}
 
@@ -658,6 +675,9 @@ function patchElement(
 	}
 	if (patch.decisionId !== undefined) {
 		setExtensionAttribute(element, "zeebe:calledDecision", "decisionId", patch.decisionId)
+		// Camunda will not deploy a decision without the variable its result goes to
+		const decision = ensureExtension(element, "zeebe:calledDecision")
+		decision.attributes.resultVariable ??= patch.resultVariable ?? "result"
 	}
 	if (patch.script !== undefined) {
 		const script = ensureExtension(element, "zeebe:script")
@@ -972,6 +992,11 @@ function operationsForCompact(
 	compact: CompactDiagram,
 ): BpmnOperation[] {
 	const operations: BpmnOperation[] = []
+	// The names and codes the model holds now: patching one unchanged would trip over a
+	// root element shared by several events, which the compact view cannot tell apart.
+	const current = new Map(
+		compactify(definitions).processes.flatMap((p) => p.elements.map((e) => [e.id, e] as const)),
+	)
 
 	for (const compactProcess of compact.processes) {
 		const process = definitions.processes.find((candidate) => candidate.id === compactProcess.id)
@@ -1019,6 +1044,10 @@ function operationsForCompact(
 			if (removed.has(id)) continue
 			if (present.includes(id)) {
 				const { id: _id, children: _children, ...patch } = element
+				const now = current.get(id)
+				for (const key of ROOT_COMPACT_FIELDS) {
+					if (patch[key] === now?.[key]) delete patch[key]
+				}
 				operations.push({ op: "update", id, patch })
 			} else {
 				operations.push({ op: "insert", element, parent: process.id })

@@ -3,7 +3,7 @@
 	"script": [
 		["createProcess","p"],
 		["startEvent","s"],
-		["intermediateThrowEvent","i",{"messageName":"notify"}],
+		["intermediateThrowEvent","i",{"messageName":"notify","taskType":"publish-notify"}],
 		["endEvent","e"],
 		["build"]
 	]

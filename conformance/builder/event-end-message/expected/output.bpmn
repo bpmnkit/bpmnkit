@@ -6,6 +6,9 @@
       <bpmn:outgoing>Flow_s_e</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:endEvent id="e">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="publish-done"/>
+      </bpmn:extensionElements>
       <bpmn:incoming>Flow_s_e</bpmn:incoming>
       <bpmn:messageEventDefinition id="e_MessageEventDefinition" messageRef="Message_done"/>
     </bpmn:endEvent>

@@ -123,7 +123,7 @@ pub struct CompactElement {
     /// A boundary event's host id.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub attached_to: Option<String>,
-    /// A boundary event: `false` is non-interrupting.
+    /// A boundary event, or an event sub-process's start event: `false` is non-interrupting.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub interrupting: Option<bool>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
@@ -132,8 +132,32 @@ pub struct CompactElement {
     pub multi_instance: Option<CompactMultiInstance>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub timer_duration: Option<String>,
+    /// A timer's ISO 8601 date-time: when it fires.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timer_date: Option<String>,
+    /// A timer's repeating interval (`R/PT1H`) or cron expression.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub timer_cycle: Option<String>,
+    /// A message event's or receive task's message name (one `bpmn:message` per name and key).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message_name: Option<String>,
+    /// The FEEL correlation key of a caught message (`zeebe:subscription` on the message).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub correlation_key: Option<String>,
+    /// A signal event's signal name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub signal_name: Option<String>,
+    /// An error event's error code.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub error_code: Option<String>,
+    /// An escalation event's escalation code.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub escalation_code: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub condition: Option<String>,
+    /// A link event's name: a throw jumps to the catch of the same name.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub link_name: Option<String>,
 }
 
 impl CompactElement {

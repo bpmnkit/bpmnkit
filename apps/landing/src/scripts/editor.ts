@@ -443,7 +443,8 @@ const optimizePlugin = createOptimizePlugin({
 const asciiViewPlugin = createAsciiViewPlugin({
 	getXml: () => {
 		const defs = editorRef?.getDefinitions()
-		return defs ? Bpmn.export(defs) : null
+		// A work-in-progress diagram: saving it must not depend on whether Zeebe would deploy it.
+		return defs ? Bpmn.export(defs, { validate: false }) : null
 	},
 })
 
@@ -549,7 +550,8 @@ const deployPlugin = createDeployPlugin({
 	getDefinitions: () => editorRef?.getDefinitions() ?? null,
 	getXml: () => {
 		const defs = editorRef?.getDefinitions()
-		return defs ? Bpmn.export(defs) : null
+		// A work-in-progress diagram: saving it must not depend on whether Zeebe would deploy it.
+		return defs ? Bpmn.export(defs, { validate: false }) : null
 	},
 	getFileName: () => currentFileName,
 })
@@ -659,7 +661,8 @@ editorOn("diagram:change", () => {
 		if (!ctx) return
 		const defs = editorRef?.getDefinitions()
 		if (!defs) return
-		void saveCheckpoint(ctx.projectId, ctx.fileId, Bpmn.export(defs))
+		// A work-in-progress diagram: saving it must not depend on whether Zeebe would deploy it.
+		void saveCheckpoint(ctx.projectId, ctx.fileId, Bpmn.export(defs, { validate: false }))
 	}, 600)
 })
 

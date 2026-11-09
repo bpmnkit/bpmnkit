@@ -18,12 +18,16 @@ pub struct Variable {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct VariableRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> VariableRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -43,7 +47,7 @@ impl<'a> VariableRepository<'a> {
         .bind(variable.process_instance_key)
         .bind(&variable.tenant_id)
         .bind(variable.is_preview)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -55,7 +59,7 @@ impl<'a> VariableRepository<'a> {
                FROM variables WHERE scope_key = $1 ORDER BY name"#,
         )
         .bind(scope_key)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;
@@ -86,7 +90,7 @@ impl<'a> VariableRepository<'a> {
         )
         .bind(scope_key)
         .bind(name)
-        .fetch_optional(self.pool)
+        .fetch_optional(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;
@@ -129,7 +133,7 @@ impl<'a> VariableRepository<'a> {
         .bind(tenant_id)
         .bind(after_key)
         .bind(page_size)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         use sqlx::Row;

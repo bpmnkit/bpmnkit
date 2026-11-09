@@ -32,7 +32,8 @@
                 "id": "Tool_ListUsers",
                 "type": "serviceTask",
                 "name": "List users",
-                "documentation": "Returns id, name, email."
+                "documentation": "Returns id, name, email.",
+                "jobType": "Tool_ListUsers"
               }
             ],
             "flows": []

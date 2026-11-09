@@ -133,9 +133,6 @@ impl JobProcessor {
             }),
         });
 
-        // Notify long-poll waiters
-        self.job_notifier.notify(&job_type);
-
         Ok(())
     }
 

@@ -296,6 +296,9 @@ describe("compilePlan", () => {
 		const sub = reparsed.processes[0]?.flowElements.find((e) => e.id === "notify_each")
 		expect(sub?.type).toBe("subProcess")
 		expect(sub?.loopCharacteristics).toBeDefined()
+		// Regression: Zeebe rejects a sub-process without a start event.
+		const children = sub !== undefined && "flowElements" in sub ? sub.flowElements : []
+		expect(children.filter((e) => e.type === "startEvent")).toHaveLength(1)
 	})
 
 	it("is deterministic: compiling the same plan twice produces identical XML", () => {

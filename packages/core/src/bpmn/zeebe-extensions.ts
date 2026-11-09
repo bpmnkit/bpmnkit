@@ -1,5 +1,6 @@
 import type { XmlElement } from "../types/xml-element.js"
 import type { BpmnConditionalEventDefinition } from "./bpmn-model.js"
+import { toFeelCondition } from "./feel-condition.js"
 import { ZEEBE_PLACEMENT } from "./zeebe-placement.js"
 
 /** Zeebe task definition extension. */
@@ -505,7 +506,7 @@ export function makeConditionalDefinition(
 ): BpmnConditionalEventDefinition {
 	return {
 		type: "conditional",
-		condition,
+		condition: toFeelCondition(condition),
 		conditionAttributes: { "xsi:type": "bpmn:tFormalExpression" },
 		...(variableEvents && variableEvents.length > 0
 			? {

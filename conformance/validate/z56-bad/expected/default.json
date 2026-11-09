@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "ErrEnd"
+      ],
+      "fixable": false,
+      "id": "zeebe/error-end-end-listener",
+      "message": "Execution listeners of type 'end' are not supported by [error] end events",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Use a 'start' execution listener on the error end event."
+    }
+  ]
+}

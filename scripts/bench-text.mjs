@@ -63,7 +63,10 @@ const bpmn = cases("compact", "bpmn-")
 	.map((d) => inputText(d, "input.bpmn"))
 	.filter((x) => x !== undefined)
 	.map((x) => parseBpmn(x))
-const diagrams = bpmn.map((m) => compactify(m)).filter((d) => ok(() => expand(d)))
+// Ungated, as in the Rust bench: the corpus round trips are mostly not Camunda 8 models, and
+// the bench times the expansion, not the deploy check.
+const ungated = { validate: false }
+const diagrams = bpmn.map((m) => compactify(m)).filter((d) => ok(() => expand(d, ungated)))
 const dmn = cases("compact", "dmn-")
 	.map((d) => inputText(d, "input.dmn"))
 	.filter((x) => x !== undefined)
@@ -102,7 +105,7 @@ time("expand", () => {
 	resetIdCounter()
 	for (const d of diagrams) {
 		try {
-			expand(d)
+			expand(d, ungated)
 		} catch {}
 	}
 })

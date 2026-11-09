@@ -1,3 +1,8 @@
 {
-	"input": "bpmn/engine-testing/input.bpmn"
+	"input": "bpmn/engine-testing/input.bpmn",
+	"deployable": false,
+	"deployableReason": "Source bpmn/engine-testing/input.bpmn is itself rejected by Zeebe (Msg_Confirm: Must have exactly one zeebe:subscription extension element); the case pins how it is round-tripped, not a deployable model; expanded with validate:false to keep pinning the expansion.",
+	"expand": {
+		"validate": false
+	}
 }

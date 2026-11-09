@@ -1,0 +1,3 @@
+Not deployable on Camunda 8.10: 2 error(s)
+- t: failed to parse expression ')(' (zeebe/input-mapping)
+- t: failed to parse expression '1 +' (zeebe/output-mapping)

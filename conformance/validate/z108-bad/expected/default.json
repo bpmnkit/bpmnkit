@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "t"
+      ],
+      "fixable": false,
+      "id": "zeebe/secret-in-list",
+      "message": "Input mapping source '=[camunda.secrets.token]' puts a secret reference inside a list, or inside a context built by an 'if' branch. Camunda can only replace a secret where the mapping assigns it directly to a value, so this secret would never be filled in. Assign each secret reference to its own input mapping instead.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Map each secret reference to its own input variable."
+    }
+  ]
+}

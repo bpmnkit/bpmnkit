@@ -119,6 +119,30 @@
       "processId": "order-process",
       "severity": "error",
       "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "flow-yes"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "processId": "order-process",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
+    },
+    {
+      "category": "deploy",
+      "elementIds": [
+        "flow-no"
+      ],
+      "fixable": false,
+      "id": "zeebe/exclusive-flow-condition",
+      "message": "Must have a condition or be default flow",
+      "processId": "order-process",
+      "severity": "error",
+      "suggestion": "Add a condition expression to the flow or make it the gateway's default flow."
     }
   ],
   "fixes": [
@@ -134,7 +158,7 @@
       "agentic": 0,
       "connector": 0,
       "data-flow": 0,
-      "deploy": 4,
+      "deploy": 6,
       "extract": 0,
       "feel": 3,
       "feel-syntax": 0,
@@ -144,10 +168,10 @@
       "task-reuse": 0
     },
     "bySeverity": {
-      "error": 6,
+      "error": 8,
       "info": 1,
       "warning": 3
     },
-    "total": 10
+    "total": 12
   }
 }

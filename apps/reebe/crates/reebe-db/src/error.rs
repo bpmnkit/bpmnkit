@@ -11,4 +11,6 @@ pub enum DbError {
     Conflict(String),
     #[error("Serialization error: {0}")]
     Serialization(#[from] serde_json::Error),
+    #[error("The transaction was already committed or rolled back")]
+    TransactionClosed,
 }

@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "T"
+      ],
+      "fixable": false,
+      "id": "zeebe/called-decision-binding-type",
+      "message": "Attribute 'bindingType' must be one of: deployment, latest, versionTag",
+      "processId": "P",
+      "severity": "error",
+      "suggestion": "Use bindingType deployment, latest or versionTag."
+    }
+  ]
+}

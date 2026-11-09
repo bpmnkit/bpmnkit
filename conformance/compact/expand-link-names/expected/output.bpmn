@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="D" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+  <bpmn:process id="P" isExecutable="true">
+    <bpmn:startEvent id="s">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:intermediateThrowEvent id="lt">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:linkEventDefinition id="lt_LinkEventDefinition" name="jump"/>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateCatchEvent id="lc">
+      <bpmn:outgoing>f2</bpmn:outgoing>
+      <bpmn:linkEventDefinition id="lc_LinkEventDefinition" name="jump"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="e">
+      <bpmn:incoming>f2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="s" targetRef="lt"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="lc" targetRef="e"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_P">
+    <bpmndi:BPMNPlane id="BPMNPlane_P" bpmnElement="P">
+      <bpmndi:BPMNShape id="s_di" bpmnElement="s">
+        <dc:Bounds x="0" y="0" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="lt_di" bpmnElement="lt">
+        <dc:Bounds x="96" y="0" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="lc_di" bpmnElement="lc">
+        <dc:Bounds x="0" y="116" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="e_di" bpmnElement="e">
+        <dc:Bounds x="96" y="116" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1">
+        <di:waypoint x="36" y="18"/>
+        <di:waypoint x="96" y="18"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2">
+        <di:waypoint x="36" y="134"/>
+        <di:waypoint x="96" y="134"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

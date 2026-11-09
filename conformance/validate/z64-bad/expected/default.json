@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "M"
+      ],
+      "fixable": false,
+      "id": "zeebe/subscription-correlation-key",
+      "message": "Attribute 'correlationKey' must be present and not empty",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Set correlationKey on zeebe:subscription to a FEEL expression such as '=orderId'."
+    }
+  ]
+}

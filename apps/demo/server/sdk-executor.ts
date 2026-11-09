@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process"
 import { randomUUID } from "node:crypto"
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
+import { assertDeployableXml } from "@bpmnkit/core"
 
 /**
  * Writes TS code to a temp file, executes it with tsx from the monorepo root
@@ -34,6 +35,9 @@ export async function executeSdkCode(tsCode: string, repoRoot: string): Promise<
 		const xml = result.stdout.trim()
 		if (!xml) throw new Error("tsx produced no output — code must write to stdout")
 
+		// The model's code can export ungated (`validate: false`, or a model that names no
+		// platform): the route's result is gated here, throwing the gate's message.
+		assertDeployableXml(xml)
 		return xml
 	} finally {
 		rmSync(dir, { recursive: true, force: true })

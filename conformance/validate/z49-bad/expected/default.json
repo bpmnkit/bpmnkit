@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "Boundary"
+      ],
+      "fixable": false,
+      "id": "zeebe/boundary-incoming",
+      "message": "Cannot have incoming sequence flows",
+      "processId": "Process_1",
+      "severity": "error",
+      "suggestion": "Remove the sequence flows into the boundary event."
+    }
+  ]
+}

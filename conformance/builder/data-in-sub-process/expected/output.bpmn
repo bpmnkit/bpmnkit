@@ -16,8 +16,10 @@
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_is_t</bpmn:incoming>
         <bpmn:outgoing>Flow_t_ie</bpmn:outgoing>
+        <bpmn:property id="Property_t" name="__targetRef_placeholder"/>
         <bpmn:dataInputAssociation>
           <bpmn:sourceRef>R1</bpmn:sourceRef>
+          <bpmn:targetRef>Property_t</bpmn:targetRef>
         </bpmn:dataInputAssociation>
         <bpmn:dataOutputAssociation>
           <bpmn:targetRef>DS1</bpmn:targetRef>

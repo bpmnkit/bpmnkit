@@ -21,7 +21,8 @@ const page = await browser.newPage({ deviceScaleFactor: 1 })
 for (const [name, xml] of Object.entries(SCENARIOS)) {
 	if (only && !name.startsWith(only)) continue
 	const defs = applyAutoLayout(Bpmn.parse(xml))
-	writeFileSync(join(out, `${name}.bpmn`), Bpmn.export(defs))
+	// The user's own file, shown or written back as it is, not refused for deploy errors.
+	writeFileSync(join(out, `${name}.bpmn`), Bpmn.export(defs, { validate: false }))
 	const svg = exportSvg(defs, { padding: 30 })
 	writeFileSync(join(out, `${name}.svg`), svg)
 	await page.setContent(`<html><body style="margin:0;background:#fff">${svg}</body></html>`)

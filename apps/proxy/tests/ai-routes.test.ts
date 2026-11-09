@@ -242,6 +242,86 @@ describe("POST /improve", () => {
 	})
 })
 
+// A service task with no job type: Zeebe refuses it.
+const UNDEPLOYABLE = `<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="d" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="start"><bpmn:outgoing>f</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:sequenceFlow id="f" sourceRef="start" targetRef="charge"/>
+    <bpmn:serviceTask id="charge"><bpmn:incoming>f</bpmn:incoming></bpmn:serviceTask>
+  </bpmn:process>
+</bpmn:definitions>`
+const GATE_LINES =
+	/^Not deployable on Camunda \d+\.\d+: 1 error\(s\)\n- charge: .*\(zeebe\/service-task-definition\)/
+
+/** Stands in for the MCP server: writes `xml` as the diagram the tools built. */
+function writesDiagram(xml: string): Reply {
+	return (call) => {
+		const config = JSON.parse(readFileSync(flag(call, "--mcp-config") as string, "utf8")) as {
+			mcpServers: Record<string, { args: string[] }>
+		}
+		const serverArgs = config.mcpServers.bpmn?.args ?? []
+		writeFileSync(serverArgs[serverArgs.indexOf("--output") + 1] as string, xml)
+		return "Built it."
+	}
+}
+
+describe("deploy gate on the AI routes", () => {
+	it("/chat refuses a diagram Zeebe would reject with the gate's message, and sends no XML", async () => {
+		reply = writesDiagram(UNDEPLOYABLE)
+		const out = events(
+			(await post("/chat", { messages: [{ role: "user", content: "Charge" }] })).body,
+		)
+		expect(out.some((e) => e.type === "xml")).toBe(false)
+		const error = out.find((e) => e.type === "error")
+		expect(error?.message).toMatch(GATE_LINES)
+		expect(error?.message).toContain('"placeholders": true')
+		expect(out.at(-1)).toEqual({ type: "done" })
+	})
+
+	it("/chat fills placeholders when the request asks for them", async () => {
+		reply = writesDiagram(UNDEPLOYABLE)
+		const out = events(
+			(await post("/chat", { messages: [{ role: "user", content: "Charge" }], placeholders: true }))
+				.body,
+		)
+		expect(out.find((e) => e.type === "xml")?.xml).toContain('type="placeholder-charge"')
+		expect(out.find((e) => e.type === "placeholders")?.placeholders).toHaveLength(1)
+	})
+
+	it("/chat returns a draft with the gate's message as advice when validate is false", async () => {
+		reply = writesDiagram(UNDEPLOYABLE)
+		const out = events(
+			(await post("/chat", { messages: [{ role: "user", content: "Charge" }], validate: false }))
+				.body,
+		)
+		expect(out).toContainEqual({ type: "xml", xml: UNDEPLOYABLE })
+		expect(out.find((e) => e.type === "deployability")?.message).toMatch(GATE_LINES)
+	})
+
+	it("/improve refuses an edit that leaves the model undeployable", async () => {
+		reply = () =>
+			'Adding a charge step.\n```json\n[{ "op": "insert", "element": { "id": "charge", "type": "serviceTask", "name": "Charge" }, "after": "task1" }]\n```'
+		const out = events(
+			(await post("/improve", { xml: Bpmn.export(expand(COMPACT as CompactDiagram)) })).body,
+		)
+		expect(out.some((e) => e.type === "xml")).toBe(false)
+		expect(out.find((e) => e.type === "error")?.message).toMatch(GATE_LINES)
+	})
+
+	it("/improve accepts an unfinished input diagram sent as compact context", async () => {
+		reply = () => 'Renaming.\n```json\n[{ "op": "rename", "id": "task1", "name": "Ship it" }]\n```'
+		const sketch = structuredClone(COMPACT) as CompactDiagram
+		const task = sketch.processes[0]?.elements[1]
+		if (task) task.jobType = undefined
+		const res = await post("/improve", { context: sketch, validate: false })
+		expect(res.status).toBe(200)
+		const out = events(res.body)
+		expect(out.find((e) => e.type === "xml")?.xml).toContain("Ship it")
+		expect(out.find((e) => e.type === "deployability")?.message).toContain("task1")
+	})
+})
+
 describe("POST /operate/incident-assist", () => {
 	it("hands the incident, variables and XML to a tool-less run, fenced", async () => {
 		vi.stubGlobal("fetch", async (url: string) => {

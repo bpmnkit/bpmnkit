@@ -1,1 +1,1 @@
-s[start S] > a[catch:signal Wake] > b[catch:conditional Ready] > c[catch:timer Wait | after=PT30S] > d[catch:message Reply] > e[end E]
+s[start S] > a[catch:signal Wake | signal=a] > b[catch:conditional Ready] > c[catch:timer Wait | after=PT30S] > d[catch:message Reply | msg=d key=requestId] > e[end E]

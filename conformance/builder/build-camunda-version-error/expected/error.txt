@@ -1,0 +1,2 @@
+Not deployable on Camunda 8.7: 1 error(s)
+- c: Must have exactly one event definition (zeebe/intermediate-catch-definitions)

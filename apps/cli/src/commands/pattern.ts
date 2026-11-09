@@ -50,7 +50,7 @@ const getCmd: Command = {
 			readme: pattern.readme,
 			workers: pattern.workers,
 			variations: pattern.variations,
-			note: "`template` is a rough structural reference in an older compact-diagram shape, not a ProcessPlan — use the readme/workers as context when writing your own plan, don't paste the template in as-is.",
+			note: "`template` is a compact diagram (`expand` turns it into a model that deploys on Camunda 8), not a ProcessPlan — use it, the readme and the workers as context when writing your own plan, don't paste the template in as-is.",
 			template: pattern.template,
 		})
 	},

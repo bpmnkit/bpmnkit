@@ -1,0 +1,212 @@
+{
+  "report": {
+    "counts": {
+      "convertible": 9,
+      "manual": 9,
+      "unsupported": 2
+    },
+    "findings": [
+      {
+        "applied": false,
+        "construct": "camunda:historyTimeToLive",
+        "elementId": "claim-handling",
+        "elementType": "process",
+        "message": "Camunda 8 has no per-process history time to live (was \"P30D\").",
+        "processId": "claim-handling",
+        "severity": "unsupported",
+        "suggestion": "Configure data retention for the cluster (Operate, Tasklist and Optimize archiving)."
+      },
+      {
+        "applied": false,
+        "construct": "camunda:candidateStarterGroups",
+        "elementId": "claim-handling",
+        "elementType": "process",
+        "message": "Camunda 8 does not restrict who may start a process in the model.",
+        "processId": "claim-handling",
+        "severity": "unsupported",
+        "suggestion": "Grant CREATE_PROCESS_INSTANCE on the process definition through authorizations."
+      },
+      {
+        "applied": true,
+        "construct": "bpmn:userTask",
+        "elementId": "Task_assess",
+        "elementType": "userTask",
+        "message": "Implemented as a Camunda user task (zeebe:userTask).",
+        "processId": "claim-handling",
+        "severity": "convertible",
+        "suggestion": "zeebe:userTask"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:candidateUsers",
+        "elementId": "Task_assess",
+        "elementType": "userTask",
+        "message": "candidateUsers expression became \"=assessors\". Camunda 7 accepted a comma-separated string or a collection here; Camunda 8 requires a list of strings.",
+        "processId": "claim-handling",
+        "severity": "manual",
+        "suggestion": "Make sure the expression evaluates to a list of strings."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:formKey",
+        "elementId": "Task_assess",
+        "elementType": "userTask",
+        "message": "Form key \"embedded:app:forms/assess-claim.html\" became a custom form reference (zeebe:formDefinition externalReference).",
+        "processId": "claim-handling",
+        "severity": "manual",
+        "suggestion": "Tasklist does not render embedded HTML forms: rebuild it as a Camunda Form, or serve it from a custom task application that reads externalReference."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:properties",
+        "elementId": "Task_assess",
+        "elementType": "userTask",
+        "message": "Extension properties moved to zeebe:properties.",
+        "processId": "claim-handling",
+        "severity": "convertible",
+        "suggestion": "zeebe:properties"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:field",
+        "elementId": "Task_fraudCheck",
+        "elementType": "serviceTask",
+        "message": "Field injection \"threshold\" became a task header.",
+        "processId": "claim-handling",
+        "severity": "convertible",
+        "suggestion": "zeebe:taskHeaders — read it from the job's custom headers."
+      },
+      {
+        "applied": false,
+        "construct": "camunda:field",
+        "elementId": "Task_fraudCheck",
+        "elementType": "serviceTask",
+        "message": "Field injection \"region\" is an expression evaluated by the engine.",
+        "processId": "claim-handling",
+        "severity": "manual",
+        "suggestion": "Map the value with an input mapping and read it as a job variable."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:class",
+        "elementId": "Task_fraudCheck",
+        "elementType": "serviceTask",
+        "message": "Java delegate class \"com.acme.claims.FraudCheckDelegate\" runs inside the Camunda 7 engine; Camunda 8 runs no user code in the engine.",
+        "processId": "claim-handling",
+        "severity": "manual",
+        "suggestion": "Implement a job worker for type \"fraudCheckDelegate\" (written as zeebe:taskDefinition type; the original is kept as the \"class\" task header, which the Camunda 7 adapter pattern can dispatch on)."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:collection",
+        "elementId": "SubProcess_items",
+        "elementType": "subProcess",
+        "message": "Multi-instance over \"${claim.items}\" became zeebe:loopCharacteristics inputCollection=\"=claim.items\" inputElement=\"item\".",
+        "processId": "claim-handling",
+        "severity": "convertible",
+        "suggestion": "zeebe:loopCharacteristics"
+      },
+      {
+        "applied": true,
+        "construct": "completionCondition",
+        "elementId": "SubProcess_items",
+        "elementType": "subProcess",
+        "message": "Completion condition became \"=numberOfCompletedInstances / numberOfInstances >= 0.6\" (nrOf… variables renamed to numberOf…).",
+        "processId": "claim-handling",
+        "severity": "convertible",
+        "suggestion": "FEEL completion condition"
+      },
+      {
+        "applied": true,
+        "construct": "scriptFormat=\"feel\"",
+        "elementId": "Task_price",
+        "elementType": "scriptTask",
+        "message": "FEEL script became zeebe:script, result in \"itemPrice\".",
+        "processId": "claim-handling",
+        "severity": "convertible",
+        "suggestion": "zeebe:script"
+      },
+      {
+        "applied": false,
+        "construct": "camunda:connector",
+        "elementId": "Task_payout",
+        "elementType": "serviceTask",
+        "message": "Camunda 7 connector \"http-connector\" has no Camunda 8 equivalent with the same inputs.",
+        "processId": "claim-handling",
+        "severity": "manual",
+        "suggestion": "Use the Camunda 8 REST connector (io.camunda:http-json:1) and map its inputs."
+      },
+      {
+        "applied": false,
+        "construct": "camunda:inputParameter",
+        "elementId": "Task_payout",
+        "elementType": "serviceTask",
+        "message": "Input parameter \"note\" was not converted: text mixed with ${…} is string templating, which FEEL does not do implicitly.",
+        "processId": "claim-handling",
+        "severity": "manual",
+        "suggestion": "Write it as <zeebe:input source=\"=…\" target=\"note\"/> by hand."
+      },
+      {
+        "applied": false,
+        "construct": "camunda:inputParameter",
+        "elementId": "Task_payout",
+        "elementType": "serviceTask",
+        "message": "Input parameter \"audit\" was not converted: it is a groovy script.",
+        "processId": "claim-handling",
+        "severity": "manual",
+        "suggestion": "Write it as <zeebe:input source=\"=…\" target=\"audit\"/> by hand."
+      },
+      {
+        "applied": true,
+        "construct": "camunda:inputOutput",
+        "elementId": "Task_payout",
+        "elementType": "serviceTask",
+        "message": "2 input/output parameters moved to zeebe:ioMapping, JUEL translated to FEEL.",
+        "processId": "claim-handling",
+        "severity": "convertible",
+        "suggestion": "zeebe:ioMapping"
+      },
+      {
+        "applied": true,
+        "construct": "camunda:type=external",
+        "elementId": "EndEvent_paid",
+        "elementType": "endEvent",
+        "message": "External task topic \"notify-claimant\" became job type \"notify-claimant\".",
+        "processId": "claim-handling",
+        "severity": "convertible",
+        "suggestion": "zeebe:taskDefinition type — point the external task worker at the Camunda 8 job API with the same type."
+      },
+      {
+        "applied": false,
+        "construct": "camunda:executionListener",
+        "elementId": "EndEvent_fraud",
+        "elementType": "endEvent",
+        "message": "Execution listener on \"end\" (javascript script) runs Java or script code in the engine.",
+        "processId": "claim-handling",
+        "severity": "manual",
+        "suggestion": "Implement it as a job worker and declare it with zeebe:executionListeners (eventType=\"end\", type=\"<job type>\")."
+      },
+      {
+        "applied": true,
+        "construct": "modeler:executionPlatform",
+        "elementId": "Definitions_0d9c2xk",
+        "elementType": "definitions",
+        "message": "Execution platform set to Camunda Cloud 8.10.0 (was Camunda Platform).",
+        "processId": "",
+        "severity": "convertible",
+        "suggestion": "Camunda Modeler opens the file as a Camunda 8 diagram."
+      },
+      {
+        "applied": true,
+        "construct": "placeholder jobType",
+        "elementId": "Task_payout",
+        "elementType": "serviceTask",
+        "message": "Placeholder jobType \"placeholder-Task_payout\" written so the model deploys (zeebe/service-task-definition).",
+        "processId": "claim-handling",
+        "severity": "manual",
+        "suggestion": "Replace it with the real value; the placeholder does nothing useful at runtime."
+      }
+    ],
+    "total": 20
+  }
+}

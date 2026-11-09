@@ -12,7 +12,7 @@
 				"hooks": [
 					{
 						"type": "command",
-						"command": "FILE=$(node -e \"try{const i=JSON.parse(process.env.CLAUDE_TOOL_INPUT||'{}');process.stdout.write(i.file_path||i.path||'')}catch{}\"); [[ \"$FILE\" == *.bpmn ]] && casen lint lint \"$FILE\" 2>/dev/null || true"
+						"command": "FILE=$(node -e \"try{const i=JSON.parse(process.env.CLAUDE_TOOL_INPUT||'{}');process.stdout.write(i.file_path||i.path||'')}catch{}\"); [[ \"$FILE\" == *.bpmn ]] || exit 0; command -v casen > /dev/null 2>&1 || exit 0; OUT=$(casen check \"$FILE\" --deploy 2>&1) && exit 0; echo \"$FILE would not deploy on Camunda 8 (casen check --deploy):\" >&2; echo \"$OUT\" >&2; exit 2"
 					}
 				]
 			}

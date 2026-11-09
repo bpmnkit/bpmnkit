@@ -6,6 +6,8 @@
 		["sendTask","send"],
 		["receiveTask","recv"],
 		["endEvent","e"],
-		["build"]
-	]
+		["build",{"validate":false}]
+	],
+	"deployable": false,
+	"deployableReason": "A receive task without a message is not deployable on Zeebe; the case pins send and receive tasks with no options."
 }

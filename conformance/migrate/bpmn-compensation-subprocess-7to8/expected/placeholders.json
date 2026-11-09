@@ -1,0 +1,3 @@
+{
+  "error": "Not deployable on Camunda 8.10: 6 error(s)\n- Tx: Elements of type 'Transaction' are currently not supported. Please refer to the documentation for a list of supported elements: https://docs.camunda.io/docs/components/modeler/bpmn/bpmn-coverage/ (zeebe/element-type)\n- Process_1: Must have at least one start event (zeebe/process-start-event)\n- Tx: Must have exactly one start event (zeebe/sub-process-start-event)\n- Evt: Must have exactly one start event (zeebe/sub-process-start-event)\n- Plain: Must have exactly one start event (zeebe/sub-process-start-event)\n- Adhoc: Must have at least one activity. (zeebe/ad-hoc-activity)"
+}

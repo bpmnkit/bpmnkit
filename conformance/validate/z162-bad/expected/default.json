@@ -1,0 +1,16 @@
+{
+  "findings": [
+    {
+      "category": "deploy",
+      "elementIds": [
+        "sp"
+      ],
+      "fixable": false,
+      "id": "zeebe/ad-hoc-agent-active-elements",
+      "message": "Must not define activeElementsCollection in combination with zeebe:taskDefinition.",
+      "processId": "p",
+      "severity": "error",
+      "suggestion": "Remove activeElementsCollection or the task definition."
+    }
+  ]
+}

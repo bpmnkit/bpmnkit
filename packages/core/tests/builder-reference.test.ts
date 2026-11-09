@@ -30,9 +30,10 @@ describe("builder-reference.md", () => {
 	})
 
 	// About a third of the ~10k-token README it replaced; raise it only with a reason, since
-	// every option added here is paid for on every builder prompt.
-	it("stays within the token budget (chars / 4 <= 3200)", () => {
-		expect(committed().length / 4).toBeLessThanOrEqual(3200)
+	// every option added here is paid for on every builder prompt. 3200 → 3300: the deploy
+	// gate's rules (branch conditions, taskType on message throws) are what models get wrong.
+	it("stays within the token budget (chars / 4 <= 3300)", () => {
+		expect(committed().length / 4).toBeLessThanOrEqual(3300)
 	})
 
 	it("lists methods and the options the generator derives", () => {

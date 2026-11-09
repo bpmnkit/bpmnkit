@@ -1,0 +1,10 @@
+{
+	"kind": "bpmn",
+	"script": [
+		["createProcess","p"],
+		["startEvent","s"],
+		["parallelGateway","g"],
+		["branch","a",{"$ops":[["endEvent","e1"],["serviceTask","orphan",{"name":"orphan","taskType":"orphan"}]]}],
+		["build"]
+	]
+}

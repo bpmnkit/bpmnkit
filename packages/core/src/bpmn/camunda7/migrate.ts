@@ -11,6 +11,7 @@ import type {
 } from "../bpmn-model.js"
 import { detectExecutionPlatform } from "../lint.js"
 import { bpmnElementName, isZeebePlacementAllowed } from "../zeebe-extensions.js"
+import { type PlaceholderFill, assertDeployable } from "../zeebe-validate/gate.js"
 import { containsJuel, feelString, isFeelName, translateJuelToFeel } from "./juel.js"
 
 /**
@@ -56,6 +57,19 @@ export interface Camunda7ConvertOptions {
 	/** Written as `modeler:executionPlatformVersion`. Default `"8.10.0"`. */
 	executionPlatformVersion?: string
 	/**
+	 * Refuse a result Zeebe would reject on deploy, with a `DeployabilityError`
+	 * (default `true`). `false` returns the conversion as it is, deployable or not.
+	 */
+	validate?: boolean
+	/**
+	 * Fill the gate's documented placeholders (`PLACEHOLDERS`) where a value the
+	 * conversion cannot derive is missing — a job type, a correlation key — instead
+	 * of refusing. Each fill is listed in the report as a `manual` finding.
+	 */
+	placeholders?: boolean
+	/** The Camunda 8 version the gate checks. Default: `executionPlatformVersion`. */
+	camundaVersion?: string
+	/**
 	 * Ignored. Kept for compatibility: earlier versions read `camunda:` attributes
 	 * on multi-instance loops and event definitions from the source XML, because
 	 * the parser dropped them. The parser now keeps them in `unknownAttributes`.
@@ -66,6 +80,8 @@ export interface Camunda7ConvertOptions {
 export interface Camunda7Conversion {
 	definitions: BpmnDefinitions
 	report: Camunda7Report
+	/** The placeholder values written; empty unless `placeholders: true` filled something. */
+	placeholders: PlaceholderFill[]
 }
 
 export const CAMUNDA7_NS = "http://camunda.org/schema/1.0/bpmn"
@@ -111,6 +127,13 @@ function localName(name: string): string {
  * What cannot be converted stays in the output verbatim — Camunda 8 ignores
  * `camunda:` content — and has a `manual` or `unsupported` finding saying why.
  *
+ * The result must deploy on Camunda 8: unless `validate: false`, it goes through
+ * `assertDeployable`, which throws a `DeployabilityError` listing every reason
+ * Zeebe would reject it (a service task with no job type, a message catch with no
+ * correlation key, ...). Get the report of a refused model from
+ * {@link analyzeCamunda7}. With `placeholders: true` the missing values are filled
+ * instead, and each fill is a `manual` finding in the report.
+ *
  * @example
  * ```typescript
  * const { definitions, report } = convertCamunda7(Bpmn.parse(xml))
@@ -131,7 +154,21 @@ export function convertCamunda7(
 	const draft = structuredClone(definitions)
 	const converter = new Converter(draft, options)
 	converter.run()
-	return { definitions: draft, report: converter.report() }
+	if (options.validate === false) {
+		return { definitions: draft, report: converter.report(), placeholders: [] }
+	}
+	// Throws DeployabilityError; `analyzeCamunda7` still gives the report of a refused model.
+	const gated = assertDeployable(draft, {
+		camundaVersion:
+			options.camundaVersion ?? options.executionPlatformVersion ?? DEFAULT_PLATFORM_VERSION,
+		placeholders: options.placeholders === true,
+	})
+	for (const fill of gated.placeholders) converter.addPlaceholder(fill, gated.definitions)
+	return {
+		definitions: gated.definitions,
+		report: converter.report(),
+		placeholders: gated.placeholders,
+	}
 }
 
 /**
@@ -142,7 +179,8 @@ export function analyzeCamunda7(
 	definitions: BpmnDefinitions,
 	options: Pick<Camunda7ConvertOptions, "sourceXml"> = {},
 ): Camunda7Report {
-	return convertCamunda7(definitions, options).report
+	// Analysis never gates: the report is what a refused conversion leaves to do.
+	return convertCamunda7(definitions, { ...options, validate: false }).report
 }
 
 /** `com.acme.ShipOrderDelegate` → `shipOrderDelegate`, the Spring bean name the class gets by default. */
@@ -212,6 +250,22 @@ class Converter {
 		}
 		for (const process of d.processes) this.convertProcess(process)
 		this.setExecutionPlatform()
+	}
+
+	/** Lists a gate placeholder as work left: the value has to be replaced before going live. */
+	addPlaceholder(fill: PlaceholderFill, filled: BpmnDefinitions): void {
+		// The filled copy: a placeholder can be a message the fill created.
+		const where = locateForReport(filled, fill.elementId)
+		this.findings.push({
+			elementId: fill.elementId,
+			elementType: where.type,
+			processId: where.processId,
+			construct: `placeholder ${fill.field}`,
+			severity: "manual",
+			message: `Placeholder ${fill.field} "${fill.value}" written so the model deploys (${fill.rule}).`,
+			suggestion: "Replace it with the real value; the placeholder does nothing useful at runtime.",
+			applied: true,
+		})
 	}
 
 	report(): Camunda7Report {
@@ -1817,6 +1871,37 @@ class Converter {
 			true,
 		)
 	}
+}
+
+/** The type and process of the element a placeholder went to; root elements belong to no process. */
+function locateForReport(
+	definitions: BpmnDefinitions,
+	id: string,
+): { type: string; processId: string } {
+	const visit = (elements: BpmnFlowElement[], flows: BpmnSequenceFlow[]): string | undefined => {
+		for (const element of elements) {
+			if (element.id === id) return element.type
+			if ("flowElements" in element) {
+				const nested = visit(element.flowElements, element.sequenceFlows)
+				if (nested !== undefined) return nested
+			}
+		}
+		return flows.some((flow) => flow.id === id) ? "sequenceFlow" : undefined
+	}
+	for (const process of definitions.processes) {
+		const type = visit(process.flowElements, process.sequenceFlows)
+		if (type !== undefined) return { type, processId: process.id }
+	}
+	const roots: Array<[string, Array<{ id: string }>]> = [
+		["message", definitions.messages],
+		["signal", definitions.signals],
+		["error", definitions.errors],
+		["escalation", definitions.escalations],
+	]
+	for (const [type, list] of roots) {
+		if (list.some((root) => root.id === id)) return { type, processId: "" }
+	}
+	return { type: "", processId: "" }
 }
 
 const DELEGATE_LABEL: Readonly<Record<string, string>> = {

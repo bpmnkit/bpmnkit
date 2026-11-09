@@ -151,6 +151,7 @@
         },
         {
           "attachedTo": "_2b960d84-feb1-46a9-a1a1-c300dd996b99",
+          "errorCode": "404",
           "eventType": "error",
           "id": "_f8fcb377-3d7d-4138-9a7e-6ab58b97e29d",
           "type": "boundaryEvent"

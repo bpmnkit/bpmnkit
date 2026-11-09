@@ -23,12 +23,16 @@ pub struct Incident {
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 pub struct IncidentRepository<'a> {
-    pool: &'a DbPool,
+    pool: crate::conn::Conn<'a>,
 }
 
 #[cfg(any(feature = "postgres", feature = "sqlite"))]
 impl<'a> IncidentRepository<'a> {
     pub fn new(pool: &'a DbPool) -> Self {
+        Self::with_conn(crate::conn::Conn::Pool(pool))
+    }
+
+    pub fn with_conn(pool: crate::conn::Conn<'a>) -> Self {
         Self { pool }
     }
 
@@ -52,7 +56,7 @@ impl<'a> IncidentRepository<'a> {
         .bind(incident.job_key)
         .bind(incident.created_at)
         .bind(&incident.tenant_id)
-        .execute(self.pool)
+        .execute(&mut *self.pool.acquire().await?)
         .await?;
         Ok(())
     }
@@ -61,7 +65,7 @@ impl<'a> IncidentRepository<'a> {
         sqlx::query("UPDATE incidents SET state = 'RESOLVED', resolved_at = $2 WHERE key = $1")
             .bind(key)
             .bind(chrono::Utc::now())
-            .execute(self.pool)
+            .execute(&mut *self.pool.acquire().await?)
             .await?;
         Ok(())
     }
@@ -74,7 +78,7 @@ impl<'a> IncidentRepository<'a> {
                FROM incidents WHERE key = $1"#,
         )
         .bind(key)
-        .fetch_optional(self.pool)
+        .fetch_optional(&mut *self.pool.acquire().await?)
         .await?;
 
         match row {
@@ -94,7 +98,7 @@ impl<'a> IncidentRepository<'a> {
                FROM incidents WHERE process_instance_key = $1 ORDER BY created_at"#,
         )
         .bind(process_instance_key)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         Ok(rows.into_iter().map(row_to_incident).collect())
@@ -128,7 +132,7 @@ impl<'a> IncidentRepository<'a> {
         .bind(tenant_id)
         .bind(after_key)
         .bind(page_size)
-        .fetch_all(self.pool)
+        .fetch_all(&mut *self.pool.acquire().await?)
         .await?;
 
         Ok(rows.into_iter().map(row_to_incident).collect())
@@ -137,7 +141,7 @@ impl<'a> IncidentRepository<'a> {
     pub async fn count_active(&self) -> Result<i64> {
         use sqlx::Row;
         let row = sqlx::query("SELECT COUNT(*) AS cnt FROM incidents WHERE state = 'ACTIVE'")
-            .fetch_one(self.pool)
+            .fetch_one(&mut *self.pool.acquire().await?)
             .await?;
         Ok(row.get::<i64, _>("cnt"))
     }

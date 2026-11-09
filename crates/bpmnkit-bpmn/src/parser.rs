@@ -988,11 +988,9 @@ fn event_definition_child(
                 unknown_attributes: extras(&attrs, &["id", "escalationRef"]),
             })
         }
-        "messageEventDefinition" => BpmnEventDefinition::Message(BpmnMessageEventDefinition {
-            id: id(),
-            message_ref: attr_string(&attrs, "messageRef"),
-            unknown_attributes: extras(&attrs, &["id", "messageRef"]),
-        }),
+        "messageEventDefinition" => {
+            return Child::Push(Box::new(MessageDefinitionFrame::new(attrs)))
+        }
         "signalEventDefinition" => BpmnEventDefinition::Signal(BpmnSignalEventDefinition {
             id: id(),
             signal_ref: attr_string(&attrs, "signalRef"),
@@ -1094,6 +1092,46 @@ impl Frame for TimerDefinitionFrame {
                 time_cycle: part_text(&cycle),
                 time_cycle_attributes: part_attributes(cycle),
                 unknown_attributes: extras(&self.attrs, &["id"]),
+            },
+        )))
+    }
+}
+
+/// Keeps `zeebe:publishMessage`, which Zeebe reads from the message event definition.
+struct MessageDefinitionFrame {
+    attrs: Attrs,
+    extension_elements: Option<Vec<XmlElement>>,
+}
+
+impl MessageDefinitionFrame {
+    fn new(attrs: Attrs) -> Self {
+        Self {
+            attrs,
+            extension_elements: None,
+        }
+    }
+}
+
+impl Frame for MessageDefinitionFrame {
+    fn child(&mut self, local: &str, _name: &str, _attrs: Attrs) -> Res<Child> {
+        if local != "extensionElements" || self.extension_elements.is_some() {
+            return Ok(Child::Skip);
+        }
+        self.extension_elements = Some(Vec::new());
+        Ok(tree_child())
+    }
+    fn accept(&mut self, out: Out) {
+        if let Out::Ext(v) = out {
+            self.extension_elements = Some(v);
+        }
+    }
+    fn finish(self: Box<Self>) -> Res<Out> {
+        Ok(Out::EventDef(BpmnEventDefinition::Message(
+            BpmnMessageEventDefinition {
+                id: attr_string(&self.attrs, "id"),
+                message_ref: attr_string(&self.attrs, "messageRef"),
+                extension_elements: self.extension_elements,
+                unknown_attributes: extras(&self.attrs, &["id", "messageRef"]),
             },
         )))
     }
@@ -2008,6 +2046,31 @@ struct DefinitionsFrame {
     unknown_children: Vec<XmlElement>,
 }
 
+impl DefinitionsFrame {
+    /// The serializer writes the definitions' documentation inside a bare `extension` (the
+    /// schema allows no `documentation` on `definitions`); read it back from there.
+    fn adopt_extension_documentation(&mut self) {
+        if self.documentation_seen {
+            return;
+        }
+        let Some(index) = self.unknown_children.iter().position(|c| {
+            local_name(&c.name) == "extension"
+                && c.attributes.is_empty()
+                && c.children.len() == 1
+                && local_name(&c.children[0].name) == "documentation"
+                && c.children[0].children.is_empty()
+        }) else {
+            return;
+        };
+        let extension = self.unknown_children.remove(index);
+        let Some(doc) = extension.children.into_iter().next() else {
+            return;
+        };
+        self.documentation = Some(doc.text.unwrap_or_default());
+        self.documentation_attributes = other_attrs(&doc.attributes, &[]);
+    }
+}
+
 impl Frame for DefinitionsFrame {
     fn child(&mut self, local: &str, name: &str, attrs: Attrs) -> Res<Child> {
         Ok(match local {
@@ -2073,7 +2136,8 @@ impl Frame for DefinitionsFrame {
             _ => {}
         }
     }
-    fn finish(self: Box<Self>) -> Res<Out> {
+    fn finish(mut self: Box<Self>) -> Res<Out> {
+        self.adopt_extension_documentation();
         let attrs = &self.attrs;
         let mut namespaces = Attrs::new();
         let mut unknown_attributes = Attrs::new();

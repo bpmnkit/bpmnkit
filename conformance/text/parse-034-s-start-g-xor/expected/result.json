@@ -28,6 +28,7 @@
           {
             "eventType": "message",
             "id": "s2",
+            "messageName": "s2",
             "name": "S2",
             "type": "startEvent"
           },

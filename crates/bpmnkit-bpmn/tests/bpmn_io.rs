@@ -182,3 +182,18 @@ fn is_for_compensation_is_kept_on_every_sub_process_kind() {
         );
     }
 }
+
+#[test]
+fn serializer_declares_xsi_when_the_document_lost_it() {
+    let xml = process_xml(
+        "",
+        r#"<bpmn:sequenceFlow id="f" sourceRef="a" targetRef="b"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=x</bpmn:conditionExpression></bpmn:sequenceFlow>"#,
+    );
+    let mut defs = parse_bpmn(&xml).unwrap();
+    defs.namespaces.shift_remove("xsi");
+    let out = serialize_bpmn(&defs);
+    assert!(
+        out.contains("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""),
+        "{out}"
+    );
+}

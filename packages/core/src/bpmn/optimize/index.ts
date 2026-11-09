@@ -1,5 +1,10 @@
 import type { BpmnDefinitions } from "../bpmn-model.js"
-import { analyzeCamundaCompat, dedupeCamundaCompat } from "../camunda-compat.js"
+import {
+	analyzeCamundaCompat,
+	dedupeCamundaCompat,
+	targetCamundaVersion,
+} from "../camunda-compat.js"
+import { validateDeployable } from "../zeebe-validate/index.js"
 import { analyzeAgentic } from "./agentic.js"
 import { analyzeDeploy } from "./deploy.js"
 import { analyzeFeelSyntax } from "./feel-syntax.js"
@@ -103,6 +108,27 @@ export function optimize(defs: BpmnDefinitions, options?: OptimizeOptions): Opti
 		if (options?.userTaskForms === "off") {
 			findings = findings.filter((f) => f.id !== USER_TASK_FORM_RULE)
 		}
+	}
+
+	// Zeebe's own deploy rules (`zeebe/…`), recursive and version-aware. An element
+	// another deploy or FEEL syntax finding already marks as an error keeps that
+	// finding, which says more and may carry a fix; `validateDeployable` still
+	// reports everything.
+	if (resolved.categories.includes("deploy")) {
+		const errors = findings.filter(
+			(f) => (f.category === "deploy" || f.category === "feel-syntax") && f.severity === "error",
+		)
+		const flagged = new Set(errors.flatMap((f) => f.elementIds))
+		// Rules that say the same as an existing finding on another element.
+		const said = new Set(errors.map((f) => f.id))
+		const covered = (id: string) =>
+			id === "zeebe/executable-process" && said.has("deploy/process-not-executable")
+		const camundaVersion = resolved.camundaVersion ?? targetCamundaVersion(defs)
+		findings.push(
+			...validateDeployable(defs, camundaVersion === undefined ? {} : { camundaVersion }).filter(
+				(f) => !covered(f.id) && !f.elementIds.some((id) => flagged.has(id)),
+			),
+		)
 	}
 
 	const byCategory = Object.fromEntries(

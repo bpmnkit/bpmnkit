@@ -107,8 +107,8 @@ describe("renderBpmnAscii — element markers", () => {
 				Bpmn.createProcess("p")
 					.startEvent("s")
 					.exclusiveGateway("gw")
-					.branch("yes", (b) => b.endEvent("e1"))
-					.branch("no", (b) => b.endEvent("e2")),
+					.branch("yes", (b) => b.condition("=ok").endEvent("e1"))
+					.branch("no", (b) => b.defaultFlow().endEvent("e2")),
 			),
 			{ title: false },
 		)

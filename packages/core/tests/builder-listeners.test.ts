@@ -3,6 +3,11 @@ import { applyBpmnOperations } from "../src/bpmn/full-operations.js"
 import { getZeebeExtensions } from "../src/bpmn/utils.js"
 import { Bpmn, analyzeCamundaCompat } from "../src/index.js"
 
+// Builds and exports here check what the builder and serializer write, not whether Zeebe
+// would deploy the model (a fragment, an element Zeebe lacks, a round trip), so they pass
+// `validate: false` to skip the gate. The gate has its own tests: builder-gate.test.ts and
+// the conformance/builder cases.
+
 const EXEC = [
 	{ eventType: "start", type: "audit-start" },
 	{ eventType: "end", type: "audit-end", retries: "5" },
@@ -21,7 +26,9 @@ describe("builder listeners", () => {
 				.serviceTask("svc", { name: "S", taskType: "w", executionListeners: EXEC })
 				.exclusiveGateway("g", { executionListeners: EXEC })
 				.endEvent("e", { executionListeners: EXEC })
-				.build(),
+				// Deliberately places listeners Zeebe refuses, for the compat rules.
+				.build({ validate: false }),
+			{ validate: false },
 		)
 		expect(xml).toContain('<zeebe:executionListener eventType="start" type="audit-start"')
 		expect(xml).toContain('retries="5"')
@@ -101,7 +108,9 @@ describe("builder listeners", () => {
 					],
 				})
 				.endEvent("e")
-				.build(),
+				// Deliberately places listeners Zeebe refuses, for the compat rules.
+				.build({ validate: false }),
+			{ validate: false },
 		)
 		const findings = analyzeCamundaCompat(Bpmn.parse(xml), "8.7.0")
 		expect(findings.map((f) => f.id)).toContain("compat/duplicate-execution-listeners")

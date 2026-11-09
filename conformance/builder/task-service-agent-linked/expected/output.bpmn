@@ -7,7 +7,7 @@
     <bpmn:serviceTask id="agent" name="Agent">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="agent-job"/>
-        <zeebe:agentDefinition agentType="langchain"/>
+        <zeebe:agentDefinition agentType="aiAgentTask"/>
         <zeebe:linkedResources>
           <zeebe:linkedResource resourceType="RPA" resourceId="script-1" linkName="rpa"/>
         </zeebe:linkedResources>

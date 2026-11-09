@@ -1,0 +1,13 @@
+# Collapse generated files in GitHub diffs and exclude them from language stats.
+conformance/** linguist-generated
+crates/bpmnkit-spec/data/** linguist-generated
+crates/*/tests/oracle/** linguist-generated
+**/src/generated/** linguist-generated
+api-surface.json linguist-generated
+# Written by scripts/spec-gen.mjs (outside src/generated)
+packages/connectors/src/templates/generated.ts linguist-generated
+packages/core/src/connectors/templates/generated.ts linguist-generated
+# Other files with "auto-generated / do not edit" headers
+apps/proxy/src/camunda-spec.ts linguist-generated
+packages/connector-gen/src/stats.ts linguist-generated
+apps/landing/src/data/feel-functions.ts linguist-generated

@@ -9,6 +9,7 @@
             "eventType": "signal",
             "id": "s",
             "name": "Alarm",
+            "signalName": "s",
             "type": "startEvent"
           },
           {
