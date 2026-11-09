@@ -36,7 +36,7 @@ tokio = { version = "1", default-features = false, features = ["sync"] }
 [features]
 default = ["postgres", "full-feel", "zeebe-validate"]
 # Zeebe's deploy-time validation (bpmnkit-compat). Off: only reebe's own checks run.
-# Off in reebe-wasm: it adds ~480 KB gzip, far over that build's size budget.
+# On in reebe-wasm too (its default); it adds ~106 KB gzip there.
 zeebe-validate = ["dep:bpmnkit-compat", "dep:bpmnkit-bpmn"]
 full-feel = ["reebe-feel/full-feel", "reebe-dmn/full-feel"]
 postgres = ["reebe-db/postgres"]

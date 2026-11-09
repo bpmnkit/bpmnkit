@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-11-09 — reebe-wasm validates deployments like Zeebe by default
+
+- `reebe-wasm` turns on its `zeebe-validate` feature by default, so a browser deploy rejects what Zeebe rejects, as the server does. Measured: 730,418 B gzip (was 621,488 B without the validator).
+- `scripts/check-wasm-size.mjs` budget raised from 640,000 to 752,000 B (the new size plus ~3%). The 500 KB goal stays open.
+- `packages/engine/tests/wasm-runner.test.ts`: the receive-task fixture had its `zeebe:subscription` on the receive task; Zeebe reads it from the `bpmn:message`, and the browser build now rejects the old form. Moved there.
+- Not changed: `cargo clippy -p reebe-wasm --target wasm32-unknown-unknown` reports 15 unused imports in `reebe-db` when it is built without `postgres`. They predate this change (same count with the validator off), and CI does not lint that build.
+
 ## 2026-11-09 — reebe: one database transaction per processed command
 
 - Follow-up to "test_timer_accuracy no longer measures the CI disk". A command's state writes, its appended events and follow-up commands, its key and position counters and its processed position used to be separate autocommits. They now commit once.

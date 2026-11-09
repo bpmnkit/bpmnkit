@@ -162,7 +162,9 @@ const USER_TASK_RECEIVE_XML = `<?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
                   xmlns:zeebe="http://camunda.org/schema/zeebe/1.0"
                   id="Definitions_3" targetNamespace="http://bpmn.io/schema/bpmn">
-  <bpmn:message id="M_paid" name="paid"/>
+  <bpmn:message id="M_paid" name="paid">
+    <bpmn:extensionElements><zeebe:subscription correlationKey="=orderId"/></bpmn:extensionElements>
+  </bpmn:message>
   <bpmn:process id="review-process" isExecutable="true">
     <bpmn:startEvent id="s"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
     <bpmn:userTask id="review">
@@ -170,7 +172,6 @@ const USER_TASK_RECEIVE_XML = `<?xml version="1.0" encoding="UTF-8"?>
       <bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:receiveTask id="await-payment" messageRef="M_paid">
-      <bpmn:extensionElements><zeebe:subscription correlationKey="=orderId"/></bpmn:extensionElements>
       <bpmn:incoming>f2</bpmn:incoming><bpmn:outgoing>f3</bpmn:outgoing>
     </bpmn:receiveTask>
     <bpmn:endEvent id="e"><bpmn:incoming>f3</bpmn:incoming></bpmn:endEvent>
