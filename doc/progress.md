@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-09 — Editor: Escape and pointercancel take back every gesture
+
+- Split out of the lane and pool PR (#258). `EditorStateMachine._cancelGesture` is the one way out of a gesture: Escape and `cancel()` (pointercancel) both call it. Escape used to skip the rubber band, the connection ghost and a dragged segment; both skipped the resize outline, which the new `cancelResize` callback removes.
+- Tests: `gesture-cancel.test.ts`.
+
 ## 2026-11-09 — Round trip: Flowable Modeler files
 
 - Split out of the lane and pool PR (#258), rebased on #269, which already keeps `isExecutable="false"` and writes `<childLaneSet>`. What is left, in `@bpmnkit/core` and `bpmnkit-bpmn` alike:
