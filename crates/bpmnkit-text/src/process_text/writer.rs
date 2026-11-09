@@ -1,5 +1,7 @@
-//! Port of `bpmn/process-text-writer.ts`: writes the first process of a model in the line
-//! format, under short aliases, for a model to read and answer with a change script.
+//! Port of `bpmn/process-text-writer.ts`: writes the primary process of a model in the line
+//! format, under short aliases, for a model to read and answer with a change script. Its
+//! leaf lanes, the other pools of its collaboration (as black boxes) and the message flows
+//! between one of its nodes and such a pool are written too.
 //!
 //! Porter notes:
 //! - Output text must match TS byte for byte.
@@ -11,12 +13,13 @@
 //!   control characters as `\n`, `\u001f`, …; non-ASCII kept), FEEL loses its leading `=`.
 //! - `platformVersion` needs `modeler:executionPlatform` containing "cloud"
 //!   (case-insensitive) and the major.minor of `modeler:executionPlatformVersion`.
-//! - The `connector_line` callback gets the full flow element (looked up by id in the first
-//!   process) and the definitions.
+//! - The `connector_line` callback gets the full flow element (looked up by id in the
+//!   written process) and the definitions.
 
 use std::collections::{HashSet, VecDeque};
 
-use bpmnkit_bpmn::{BpmnDefinitions, BpmnElementType, BpmnFlowElement};
+use bpmnkit_bpmn::swimlanes::{leaf_lanes, primary_process};
+use bpmnkit_bpmn::{BpmnDefinitions, BpmnElementType, BpmnFlowElement, BpmnProcess};
 use indexmap::{IndexMap, IndexSet};
 use serde::{Deserialize, Serialize};
 
@@ -198,14 +201,15 @@ fn platform_version(definitions: &BpmnDefinitions) -> Option<String> {
     Some(version[..major + 1 + minor].to_owned())
 }
 
-/// TS's `aliasFor`.
-fn alias_for(element: &CompactElement, taken: &mut IndexSet<String>) -> String {
-    if is_readable_id(&element.id) && !taken.contains(&element.id) {
-        taken.insert(element.id.clone());
-        return element.id.clone();
+/// TS's `aliasFor`: the id when readable and free, else derived from `name`, else from
+/// `kind`.
+fn alias_for(id: &str, name: Option<&str>, kind: &str, taken: &mut IndexSet<String>) -> String {
+    if is_readable_id(id) && !taken.contains(id) {
+        taken.insert(id.to_owned());
+        return id.to_owned();
     }
     // .replace(/([a-z0-9])([A-Z])/g, "$1 $2").toLowerCase().split(/[^a-z0-9]+/)
-    let name = element.name.as_deref().unwrap_or("");
+    let name = name.unwrap_or("");
     let mut spaced = String::with_capacity(name.len() + 4);
     let mut prev: Option<char> = None;
     for c in name.chars() {
@@ -225,11 +229,10 @@ fn alias_for(element: &CompactElement, taken: &mut IndexSet<String>) -> String {
         .collect();
     let mut base = words.join("_");
     if !base.starts_with(|c: char| c.is_ascii_lowercase()) {
-        let word = kind_word(&element.type_).unwrap_or("node");
         base = if base.is_empty() {
-            word.to_owned()
+            kind.to_owned()
         } else {
-            format!("{word}_{base}")
+            format!("{kind}_{base}")
         };
     }
     let mut alias = base.clone();
@@ -240,6 +243,163 @@ fn alias_for(element: &CompactElement, taken: &mut IndexSet<String>) -> String {
     }
     taken.insert(alias.clone());
     alias
+}
+
+/// The alias of a written node, from its kind word.
+fn node_alias(el: &CompactElement, taken: &mut IndexSet<String>) -> String {
+    alias_for(
+        &el.id,
+        el.name.as_deref(),
+        kind_word(&el.type_).unwrap_or("node"),
+        taken,
+    )
+}
+
+/// TS's `bracketed`: `[Name]`, or `[]` for no name: the reader names a lane without a
+/// bracket after its id.
+fn bracketed(name: Option<&str>) -> String {
+    format!(
+        "[{}]",
+        name.filter(|n| !n.is_empty())
+            .map_or_else(String::new, writable_name)
+    )
+}
+
+/// TS's `writableMessageLabel`: a message label as a `msg` line writes it: raw like a note,
+/// so colons stay, but a parenthesis would end it.
+pub fn writable_message_label(name: &str) -> String {
+    let replaced: String = name
+        .chars()
+        .map(|c| if matches!(c, '(' | ')') { ' ' } else { c })
+        .collect();
+    squash(&replaced)
+}
+
+/// TS's `swimlaneLines`: the `lane`, `pool` and `msg` lines of `source`, whose written
+/// top-level nodes are `nodes`. Lane and pool aliases are claimed here, after every node
+/// alias, so a diagram that gains a lane keeps the node aliases it had.
+///
+/// Only leaf lanes are written, each with the nodes it lists in ref order (a node two
+/// leaves list goes to the first). Every other participant of the collaboration holding
+/// `source`'s pool (else the first collaboration) is a `pool` line. A message is written
+/// only between a node of `nodes` and such a pool.
+fn swimlane_lines(
+    definitions: &BpmnDefinitions,
+    source: &BpmnProcess,
+    nodes: &IndexMap<&str, &CompactElement>,
+    alias: &mut IndexMap<String, String>,
+    taken: &mut IndexSet<String>,
+) -> Vec<String> {
+    let collaboration = definitions
+        .collaborations
+        .iter()
+        .find(|c| {
+            c.participants
+                .iter()
+                .any(|p| p.process_ref.as_deref() == Some(source.id.as_str()))
+        })
+        .or(definitions.collaborations.first());
+    let leaves = leaf_lanes(source.lane_set.as_ref());
+    // A node two leaves list is written in the first only, or the reader would move it.
+    let mut placed: HashSet<&str> = HashSet::new();
+    let mut members_of: IndexMap<&str, Vec<&str>> = IndexMap::new();
+    for lane in &leaves {
+        let unique: IndexSet<&str> = lane.flow_node_refs.iter().map(String::as_str).collect();
+        let members: Vec<&str> = unique
+            .into_iter()
+            .filter(|id| nodes.contains_key(id) && !placed.contains(id))
+            .collect();
+        placed.extend(members.iter().copied());
+        members_of.insert(&lane.id, members);
+    }
+    // An unnamed lane holding nothing has nothing to say, and `lane x:` reads as prose.
+    let lanes: Vec<_> = leaves
+        .into_iter()
+        .filter(|lane| {
+            lane.name.as_deref().is_some_and(|n| !n.is_empty())
+                || members_of
+                    .get(lane.id.as_str())
+                    .is_some_and(|m| !m.is_empty())
+        })
+        .collect();
+    let pools: Vec<_> = collaboration
+        .into_iter()
+        .flat_map(|c| &c.participants)
+        .filter(|p| p.process_ref.as_deref() != Some(source.id.as_str()))
+        .collect();
+    let named: Vec<(&str, Option<&str>, &str)> = lanes
+        .iter()
+        .map(|lane| (lane.id.as_str(), lane.name.as_deref(), "lane"))
+        .chain(
+            pools
+                .iter()
+                .map(|pool| (pool.id.as_str(), pool.name.as_deref(), "pool")),
+        )
+        .collect();
+    // Readable ids first, as for nodes.
+    for &(id, name, kind) in &named {
+        if is_readable_id(id) {
+            let a = alias_for(id, name, kind, taken);
+            alias.insert(id.to_owned(), a);
+        }
+    }
+    for &(id, name, kind) in &named {
+        if !alias.contains_key(id) {
+            let a = alias_for(id, name, kind, taken);
+            alias.insert(id.to_owned(), a);
+        }
+    }
+    let alias_of = |id: &str| alias.get(id).map_or("undefined", String::as_str);
+
+    let mut lines: Vec<String> = Vec::new();
+    for lane in &lanes {
+        let list = members_of
+            .get(lane.id.as_str())
+            .into_iter()
+            .flatten()
+            .map(|id| alias_of(id))
+            .collect::<Vec<_>>()
+            .join(", ");
+        let line = format!(
+            "lane {}{}: {list}",
+            alias_of(&lane.id),
+            bracketed(lane.name.as_deref())
+        );
+        lines.push(line.trim_end_matches(is_js_space).to_owned());
+    }
+    for pool in &pools {
+        lines.push(format!(
+            "pool {}{}",
+            alias_of(&pool.id),
+            bracketed(pool.name.as_deref())
+        ));
+    }
+    let pool_ids: HashSet<&str> = pools.iter().map(|pool| pool.id.as_str()).collect();
+    for flow in collaboration.into_iter().flat_map(|c| &c.message_flows) {
+        let (source_ref, target_ref) = (flow.source_ref.as_str(), flow.target_ref.as_str());
+        let node_to_pool = nodes.contains_key(source_ref) && pool_ids.contains(target_ref);
+        let pool_to_node = pool_ids.contains(source_ref) && nodes.contains_key(target_ref);
+        if !node_to_pool && !pool_to_node {
+            continue;
+        }
+        let name = flow
+            .name
+            .as_deref()
+            .filter(|n| !n.is_empty())
+            .map(writable_message_label)
+            .unwrap_or_default();
+        let arrow = if name.is_empty() {
+            ">".to_owned()
+        } else {
+            format!(">({name})")
+        };
+        lines.push(format!(
+            "msg {} {arrow} {}",
+            alias_of(source_ref),
+            alias_of(target_ref)
+        ));
+    }
+    lines
 }
 
 /// TS's `token`: a value written as one attribute token reads back as itself, with no
@@ -489,8 +649,16 @@ pub fn write_process_text(
     definitions: &BpmnDefinitions,
     options: WriteProcessTextOptions<'_>,
 ) -> WrittenProcessText {
+    let Some(source) = primary_process(definitions) else {
+        return WrittenProcessText::default();
+    };
+    // compactify keeps the process order, so the index finds the compact twin.
+    let index = definitions
+        .processes
+        .iter()
+        .position(|p| std::ptr::eq(p, source));
     let diagram = compactify(definitions);
-    let Some(process) = diagram.processes.first() else {
+    let Some(process) = index.and_then(|i| diagram.processes.get(i)) else {
         return WrittenProcessText::default();
     };
 
@@ -538,13 +706,13 @@ pub fn write_process_text(
         .collect();
     for el in &named {
         if is_readable_id(&el.id) {
-            let a = alias_for(el, &mut taken);
+            let a = node_alias(el, &mut taken);
             alias.insert(el.id.clone(), a);
         }
     }
     for el in &named {
         if !alias.contains_key(&el.id) {
-            let a = alias_for(el, &mut taken);
+            let a = node_alias(el, &mut taken);
             alias.insert(el.id.clone(), a);
         }
     }
@@ -608,6 +776,8 @@ pub fn write_process_text(
         let line = w.inside(id);
         w.lines.push(line);
     }
+    let swimlanes = swimlane_lines(definitions, source, &w.by_id, &mut w.alias, &mut taken);
+    w.lines.extend(swimlanes);
 
     // Documentation, on one line like a note: it is the tool description of an agent's tool
     for el in &named {
@@ -620,20 +790,23 @@ pub fn write_process_text(
     }
 
     // A note names an element it is associated with; one tied to nothing the format writes has no line.
-    let source = definitions.processes.first();
     let annotations: IndexMap<&str, &str> = source
-        .into_iter()
-        .flat_map(|p| &p.contents.text_annotations)
+        .contents
+        .text_annotations
+        .iter()
         .map(|a| (a.id.as_str(), a.text.as_deref().unwrap_or("")))
         .collect();
-    for assoc in source.into_iter().flat_map(|p| &p.contents.associations) {
+    for assoc in &source.contents.associations {
         let (annotation, target) = if annotations.contains_key(assoc.target_ref.as_str()) {
             (&assoc.target_ref, &assoc.source_ref)
         } else {
             (&assoc.source_ref, &assoc.target_ref)
         };
         let text = squash(annotations.get(annotation.as_str()).copied().unwrap_or(""));
-        let written = w.alias.get(target.as_str());
+        // Nodes only: the alias map also holds lanes and pools, which have no note line.
+        let is_node =
+            w.by_id.contains_key(target.as_str()) || w.inner.contains_key(target.as_str());
+        let written = w.alias.get(target.as_str()).filter(|_| is_node);
         if annotations.contains_key(annotation.as_str()) && written.is_some() && !text.is_empty() {
             let line = format!("note {}: {text}", written.map_or("", String::as_str));
             w.lines.push(line);
@@ -642,8 +815,9 @@ pub fn write_process_text(
 
     if let Some(connector_line) = options.connector_line {
         let real: IndexMap<&str, &BpmnFlowElement> = source
-            .into_iter()
-            .flat_map(|p| &p.contents.flow_elements)
+            .contents
+            .flow_elements
+            .iter()
             .map(|el| (el.base().id.as_str(), el))
             .collect();
         for el in &elements {
@@ -706,25 +880,25 @@ mod tests {
             ..Default::default()
         };
         assert_eq!(
-            alias_for(
+            node_alias(
                 &el("Activity_1", "Review applicationNow please ok", "userTask"),
                 &mut taken
             ),
             "review_application_now_please"
         );
         assert_eq!(
-            alias_for(
+            node_alias(
                 &el("Activity_2", "Review application Now please", "userTask"),
                 &mut taken
             ),
             "review_application_now_please_2"
         );
         assert_eq!(
-            alias_for(&el("Activity_3", "42 x", "userTask"), &mut taken),
+            node_alias(&el("Activity_3", "42 x", "userTask"), &mut taken),
             "user_42_x"
         );
         assert_eq!(
-            alias_for(&el("Activity_4", "", "weird"), &mut taken),
+            node_alias(&el("Activity_4", "", "weird"), &mut taken),
             "node"
         );
     }

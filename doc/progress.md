@@ -149,6 +149,15 @@
 
 - `placeNewShapes(definitions)` (core) draws DI only for elements without shapes, never moves existing ones, and may widen pools, lanes and sub-processes. `casen generate bpmn --input --patch` uses it with `exportPreserving` instead of a full re-layout.
 - The `no-bpmndi` / missing-DI lint hint now points scripts at `placeNewShapes`; docs on `continueProcess` and the builder mention it; agent card updated.
+## 2026-11-09 — Rust twin: lanes and pools
+
+- The 41 conformance cases this branch changed (25 `compact/`, 12 `text/write-*`, 4 `layout/`) now pass in Rust; `conformance/pending.json` is back to `main`'s one entry and `MAX_PENDING` stays 1. The `bpmnkit-text` corpus tests no longer need to skip pending cases and are back to `main`'s version.
+- `bpmnkit-bpmn`: new `swimlanes` module (lane walks, `assign_lane`, `build_lane_set`, `lane_for_new_node`, `primary_process`, `document_id_list`, `pool_laned_processes`, `collaboration_problems`, ...); `primary_process_id` read from and written as `bpmnkit:primaryProcess` on `<definitions>`, under the same rule as TS.
+- `bpmnkit-layout`: nested-lane inset and per-level header width, bands for a laned pool with no nodes yet, pool growth for nodes no lane claims, depth-first lane order in the semantic placer (the `nested-lanes` entry of `tests/fixtures/semantic/oracle.json` re-run from the TS placer: two lanes swap order, same bounds).
+- `bpmnkit-text`: compact `executable`, `lanes`, `participants` and `messageFlows` (compactify and expand, pools laid out on one collaboration plane); process text reads and writes `lane`, `pool` and `msg` lines, and the writer writes the primary process. `PROCESS_TEXT_GUIDE` matches the TS guide byte for byte.
+- New conformance case `text/parse-lanes-pools-messages` (recorded from TS): lane, pool and msg lines, an unbracketed lane, a node no lane lists, a label with a colon and a refused message to an end event.
+- Not ported: the builder's `.lane()`, `.participant()` and `withAutoLayout()` (no conformance case covers them yet), and `- msg` in change scripts (no Rust `process-delta` twin).
+
 ## 2026-11-09 — Lanes and pools: rebased on main's deploy gate
 
 - `expand` keeps main's `CompactRoots` and deploy gate: a diagram with pools or lanes is built by `expandPools` (pools, lanes, one collaboration plane) and then gated like any other. `DiagramBuilder.build(options)` gates the laned document the same way.

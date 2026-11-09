@@ -15,12 +15,6 @@ fn corpus() -> PathBuf {
     Path::new(env!("CARGO_MANIFEST_DIR")).join("../../conformance/compact")
 }
 
-/// Case ids `conformance/pending.json` lists: a TS change not ported yet (proposal §4.5).
-fn pending() -> serde_json::Map<String, Value> {
-    let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("../../conformance/pending.json");
-    serde_json::from_str(&fs::read_to_string(path).expect("pending.json")).expect("pending.json")
-}
-
 fn read(path: &Path) -> Option<String> {
     fs::read_to_string(path).ok()
 }
@@ -116,10 +110,9 @@ fn compact_corpus() {
     names.sort();
     let mut failures = Vec::new();
     let (mut passed, mut skipped) = (0, Vec::new());
-    let pending = pending();
     for dir in names {
         let name = dir.file_name().unwrap().to_string_lossy().into_owned();
-        if name.starts_with("dmn-") || pending.contains_key(&format!("compact/{name}")) {
+        if name.starts_with("dmn-") {
             continue;
         }
         let before = failures.len();

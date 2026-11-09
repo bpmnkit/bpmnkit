@@ -178,17 +178,8 @@ fn write_cases_match_ts() {
         .collect();
     dirs.sort();
     assert!(!dirs.is_empty(), "no write case found");
-    // Cases `conformance/pending.json` lists: a TS change not ported yet (proposal §4.5).
-    let pending: serde_json::Map<String, serde_json::Value> = serde_json::from_str(
-        &fs::read_to_string(text_dir().join("../pending.json")).expect("pending.json"),
-    )
-    .expect("pending.json");
     let failures: Vec<String> = dirs
         .iter()
-        .filter(|dir| {
-            let name = dir.file_name().unwrap().to_string_lossy();
-            !pending.contains_key(&format!("text/{name}"))
-        })
         .filter_map(|dir| {
             check_write(dir)
                 .err()

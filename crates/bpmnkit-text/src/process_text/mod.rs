@@ -8,6 +8,7 @@
 //! - `reader`: the `Reader` class (457–888).
 //! - `assemble`: `assemble()` up to the repairs and from the joins on (998–1216, 1623–1955).
 //! - `repair`: the `if (final)` repair block of `assemble()` (1217–1622).
+//! - `swimlanes`: the `lane`, `pool` and `msg` lines, read into lanes, pools and messages.
 //! - this file: the public types (66–113), [`parse_process_text`] and the stream
 //!   (1956–2017).
 //! - `writer`: `process-text-writer.ts`.
@@ -20,6 +21,7 @@
 mod assemble;
 mod reader;
 mod repair;
+mod swimlanes;
 pub mod tokens;
 mod writer;
 
@@ -54,6 +56,8 @@ Names after |: msg=<message name> key=<FEEL> (key required where a message is wa
 Also after |: form=<form id> (start, user), in.<name>=<FEEL> and out.<name>=<FEEL> map variables in and out of a step (value runs to the next word=; write comparisons with spaces: a = 1)
 Ad-hoc: agent[adhoc Name] is a container with flows like any node; tool[service Name | inside=agent] has no flows of its own; note <id>: text annotates a node
 doc <id>: text            the element's documentation; for a tool inside an ad-hoc agent it is the description the agent chooses the tool by
+lane sales[Sales team]: a, b  a and b are done by the Sales team: one line per role, after the paths
+pool bank[Bank]           another party; msg pay >(Payment) bank is a message to it, msg bank > paid one from it
 Ad-hoc example:
 ask[start Question asked] > agent[adhoc Answer with tools] > review[user Review answer] > done[end Answered]
 users[service Look up users | inside=agent]
@@ -66,6 +70,7 @@ Rules:
 - A boundary leads only to the handling. What happens next when nothing fails follows the task itself (read > count), never the boundary.
 - A step that only works on process data (count, sum, filter, compare, pick, format a message) is a script task, never a service or plain task: its FEEL reads the variables earlier steps set with result=. read[service Read issues | result=issues] > count[script Count open issues | result=openCount feel=count(issues[state = "open"])]
 - Branches that meet again are joined automatically; join parallel branches with an and node.
+- Lanes and pools only when the description names roles or other parties; then every node is in one lane.
 - Steps done at the same time start from an and node and meet at another. A deadline is a boundary:timer with after= on the task that may run late. A step done for every item of a list takes each=<list>; use it only when the description says every or each.
 
 Example:
