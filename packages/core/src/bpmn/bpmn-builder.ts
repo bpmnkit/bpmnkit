@@ -47,7 +47,6 @@ import {
 	rootDefinitionId,
 	setFlowDiscriminatorSource,
 } from "./stable-ids.js"
-import { assertRetriesOption, assertXsdValues } from "./xsd-guards.js"
 import {
 	type LaneSpec,
 	allLanes,
@@ -59,6 +58,7 @@ import {
 	laneProblems,
 	poolLanedProcesses,
 } from "./swimlanes.js"
+import { assertRetriesOption, assertXsdValues } from "./xsd-guards.js"
 import {
 	type ZeebeExtensions,
 	type ZeebeFormDefinition,
@@ -4383,7 +4383,9 @@ export class ProcessBuilder {
 				unknownAttributes: {},
 			},
 			// What the join inference added: the caller never saw those ids.
-			elements.slice(beforeCount).map((element) => element.id),
+			elements
+				.slice(beforeCount)
+				.map((element) => element.id),
 		)
 
 		const defs: BpmnDefinitions = {

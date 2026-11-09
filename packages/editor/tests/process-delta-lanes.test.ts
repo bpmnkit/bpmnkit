@@ -508,7 +508,7 @@ function expectMessagesAttached(defs: BpmnDefinitions, ids: string[]): void {
 
 describe("applyProcessDelta lanes and pools: review findings", () => {
 	it("restates a lane that lists a boundary event without a problem", () => {
-		const text = `${LOAN}\nreview > late[boundary:timer Two days | on=review] > esc[end Escalated]`
+		const text = `${LOAN}\nreview > late[boundary:timer Two days | on=review after=P2D] > esc[end Escalated]`
 		const drawn = Bpmn.parse(Bpmn.export(expand(parseProcessText(text).diagram)))
 		const laned = apply(drawn, "lane a[A]: start\nlane b[B]: review").definitions
 		expect(laneNamed(laned, "b")?.flowNodeRefs).toContain("late")
@@ -518,7 +518,7 @@ describe("applyProcessDelta lanes and pools: review findings", () => {
 	})
 
 	it("lets a lane line list a boundary event before its host", () => {
-		const text = `${LOAN}\nreview > late[boundary:timer Two days | on=review] > esc[end Escalated]`
+		const text = `${LOAN}\nreview > late[boundary:timer Two days | on=review after=P2D] > esc[end Escalated]`
 		const drawn = Bpmn.parse(Bpmn.export(expand(parseProcessText(text).diagram)))
 		const laned = apply(drawn, "lane a[A]: start\nlane b[B]: review").definitions
 		const result = apply(laned, "lane a: late, review")

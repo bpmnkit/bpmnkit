@@ -188,9 +188,9 @@ describe("lane builder — fresh build", () => {
 			Bpmn.createProcess("p")
 				.startEvent("s")
 				.subProcess("sub", (b) => b.startEvent("inner_s").endEvent("inner_e"))
-				.serviceTask("t", { taskType: "t" })
-				.endEvent("e")
-				.endEvent("orphan_end")
+				.parallelGateway("fork")
+				.branch("main", (b) => b.serviceTask("t", { taskType: "t" }).endEvent("e"))
+				.branch("side", (b) => b.endEvent("orphan_end"))
 				.lane("L_a", { flowNodes: ["s", "ghost", "inner_s", "t"] })
 				.lane("L_b", { flowNodes: ["t", "sub"] })
 				.lane("L_parent", { flowNodes: ["e"] })
@@ -456,7 +456,7 @@ describe("lane builder — DiagramBuilder", () => {
 			.process("order", (p) =>
 				p
 					.startEvent("s")
-					.sendTask("notify")
+					.sendTask("notify", { taskType: "notify" })
 					.endEvent("e")
 					.lane("L", {
 						flowNodes: ["s", "notify", "e"],
@@ -467,11 +467,14 @@ describe("lane builder — DiagramBuilder", () => {
 			.participant("P_customer", { name: "Customer", processId: "customer" })
 			.participant("P_bank", { name: "Bank", processId: "bank" })
 			.messageFlow("MF_1", { source: "notify", target: "P_customer" })
-			.build()
+			// An empty process kept executable on request is what this pins; Zeebe would refuse it.
+			.build({ validate: false })
 		expect(processOf(defs, "order").isExecutable).toBe(true)
 		expect(processOf(defs, "customer").isExecutable).toBe(false)
 		expect(processOf(defs, "bank").isExecutable).toBe(true)
-		expect(Bpmn.export(defs)).toContain('<bpmn:process id="customer" isExecutable="false"')
+		expect(Bpmn.export(defs, { validate: false })).toContain(
+			'<bpmn:process id="customer" isExecutable="false"',
+		)
 	})
 
 	it("lays out the whole diagram with withAutoLayout()", () => {
@@ -479,7 +482,7 @@ describe("lane builder — DiagramBuilder", () => {
 			.process("order", (p) =>
 				p
 					.startEvent("s")
-					.sendTask("notify")
+					.sendTask("notify", { taskType: "notify" })
 					.endEvent("e")
 					.annotate("notify", "Mail", { side: "above" })
 					.lane("L_a", { flowNodes: ["s", "notify"] })

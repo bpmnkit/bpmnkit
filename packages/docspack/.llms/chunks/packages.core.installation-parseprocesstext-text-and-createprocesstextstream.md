@@ -25,6 +25,15 @@ Attributes after `|`:
   getting its item in the singular (`each=approvers` → `approver`);
 - `after=<duration>` sets a timer's duration, ISO 8601 or `5m`, `2 hours`, `1 day`. Without
   it, a duration in the timer's name is read ("Wait 5 minutes" → `PT5M`).
+- `at=<date-time>` sets a timer's date (`at=2026-12-01T09:00:00Z`), and `every=<cycle>` its cycle:
+  an ISO 8601 repeating interval (`every=R3/PT10M`) or a duration repeated forever
+  (`every=1h` → `R/PT1H`);
+- `msg=<name>` names the message a message event or receive task waits for or sends, and
+  `key=<FEEL>` the correlation key it is caught on (`key=orderId` → `=orderId`). Camunda 8 needs a
+  key wherever a message is waited for, except at a process start;
+- `signal=<name>`, `error=<code>` and `escalation=<code>` name the signal, error or escalation;
+- `called=<process id>` sets the process a call activity runs. `job=` on a call activity means
+  the same;
 - `result=<variable>` names the variable a task's result goes to;
 - `feel=<expression>` makes the step a script task that evaluates the FEEL expression into
   `result=` (its id when there is none), written as `zeebe:script`. It comes last: the
@@ -43,29 +52,11 @@ ways out onto the task — all but the ones named for handling (failure, error, 
 An attribute written before the `|` (`late[boundary:timer on=pay]`) is read all the same.
 `after=` on an event that is not a timer makes it one, and a boundary without `on=` that one
 task is drawn into (`send > wait[boundary:timer …]`) goes on that task.
-Change scripts read `result=` and `feel=`, but not `each=` and `after=` yet.
-
-**Lanes and pools.** Three line kinds, written after the paths:
-
-```text
-lane sales[Sales team]: start, review, ok    the lane a role works in; one line per role
-pool bank[Bank]                              another party, drawn as an empty pool
-msg pay >(Payment) bank                      a message to that party; msg bank > paid one from it
-```
-
-The parser writes them as the compact `lanes`, `participants` and `messageFlows`, and `expand`
-draws the process in its own pool with its lanes. A node no lane lists — a join or end event the
-parser added, a boundary event, a node the model forgot — goes into its predecessor's lane (a
-boundary into its host's), else its successor's, else the first lane, and is listed in `fixes`.
-A node listed in two lanes stays in the later one; a member that is not a top-level node is left
-out. A message has one end in the process and the other on a `pool` line: a message between two
-pools, between two nodes of the process, out of a start or catch event, into an end or throw
-event, or touching a gateway is left out with a problem. Its label is kept as written, colons
-included. A lane without a bracket, `lane back_office: …`, is named from its id; `lane back_office[]: …`
-has no name. A pool needs its bracket (`pool tax_office[Tax office]`, or `pool tax_office[]` for no
-name), so two words of prose such as "pool party" stay prose. The writer writes an unnamed lane or
-pool with `[]`, so it reads back unnamed. Ids such as `lane_check[…]` still start paths: the keyword
-needs a space after it.
+`msg=`, `signal=`, `error=`, `escalation=`, `at=` and `every=` on an event written without a
+trigger make it that kind of event (`paid[catch Paid | msg=paid key=orderId]`); on an event of
+another kind they are reported and ignored.
+Change scripts read `result=`, `feel=`, `at=`, `every=`, `called=`, `msg=`, `key=`, `signal=`,
+`error=` and `escalation=`, but not `each=` yet.
 
 ---
 Source: https://bpmnkit.com/docs/packages/core
