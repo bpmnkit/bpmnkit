@@ -1,5 +1,24 @@
 # Progress
 
+## 2026-11-09 — reebe: one database transaction per processed command
+
+- Follow-up to "test_timer_accuracy no longer measures the CI disk". A command's state writes, its appended events and follow-up commands, its key and position counters and its processed position used to be separate autocommits. They now commit once.
+- Design: `StateBackend::begin()` returns a `UnitOfWork` (`state()`, `commit(self)`, `rollback(self)`; dropping it rolls back). The engine hands processors an `EngineState` whose backend is `unit.state()`, so processors are unchanged. The repositories take a `Conn` (pool, or the unit's shared transaction, in `reebe-db/src/conn.rs`), so one copy of the SQL serves both. SQLite opens units with `BEGIN IMMEDIATE`, since a deferred transaction that reads first fails with SQLITE_BUSY rather than waiting. The memory backend rolls back by restoring a snapshot (it has no isolation or durability). reebe-wasm keeps its own loop and is unchanged.
+- Exactly once, replay-safe: the processed position commits with the command's effects, so after a crash the command was either fully applied or not at all, and the engine resumes after the processed position. Keys and positions come from `partition_key_state` in the same transaction, so a rolled-back command's keys are reissued, and no later record becomes visible before its follow-ups.
+- Failures: a processor or write error rolls the unit back. Database errors are retried 3 times (deadlocks, lost connections), and after that the command is skipped by writing only its position (it used to leave partial state). A failed `begin` or `commit` retries the command and does not skip it. A rollback clears the process-definition cache. Job workers are woken only after commit, not while the job row is still invisible.
+- Tests: `reebe-engine/tests/unit_of_work.rs` counts write transactions with row triggers that log each writing xid. A start→task→end instance with a job completion makes 13 transactions (3 API appends + 10 processed commands), against 64 before. A test also injects a failure into the unit's last write and checks that no element instance, event or follow-up command remains and that the engine goes on. There are unit-of-work contract tests for SQLite (`reebe-db/tests/sqlite.rs`) and the memory backend.
+- Measured on local Postgres 16 with `synchronous_commit` on and the same setup before and after. Delay: strace on the postmaster with `-e inject=fdatasync,fsync:delay_exit=80000`.
+  | | before | after |
+  |---|---|---|
+  | write transactions per processed command | ~6 (trigger count), ~14.5 `xact_commit` incl. reads | 1.0 |
+  | `test_timer_accuracy` latency, no delay (median of 3) | 104 ms | 53 ms |
+  | same, 80 ms fsync delay | 1735 ms (one run 1999 ms vs the 2 s bound) | 632 ms |
+  | reebe-bench 500/50, no delay | 62.5–66.3 PI/s | 126–135 PI/s |
+  | reebe-bench 2000/50, no delay | 46.5 PI/s | 115.8 PI/s |
+  | reebe-bench 20/20, 80 ms delay | 1.1 PI/s | 4.1 PI/s |
+  | reebe-bench 200/50, 80 ms delay | all requests timed out | 2.7 PI/s, 0 errors |
+- Risks: the `partition_key_state` row lock is now held from a command's first key until its commit, so API command appends on that partition wait for the command being processed (milliseconds; throughput rose anyway). A deterministic `commit` failure would retry forever (logged). The raw cargo wasm is +3.4 KB gzip (~625 KB against the 640 KB gate).
+
 ## 2026-11-09 — Zeebe validator in reebe-wasm: measured, shrunk, not enabled (over budget)
 
 - Measured (gzip -9 of wasm-bindgen output, `scripts/check-wasm-size.mjs` budget 640,000 B): without the validator 621,488 B; with `reebe-engine/zeebe-validate` 1,031,196 B.
