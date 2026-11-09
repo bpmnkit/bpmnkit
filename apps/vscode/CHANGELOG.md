@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.14
+
+### Patch Changes
+
+- Updated dependencies [d7fb215]
+  - @bpmnkit/core@1.11.0
+
 ## 0.5.13
 
 ### Patch Changes

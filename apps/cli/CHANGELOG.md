@@ -1,5 +1,13 @@
 # @bpmnkit/cli
 
+## 1.6.1
+
+### Patch Changes
+
+- d7fb215: core: add `placeNewShapes()` to draw only elements without shapes. cli: `generate bpmn --input --patch` keeps the existing layout.
+- Updated dependencies [d7fb215]
+  - @bpmnkit/core@1.11.0
+
 ## 1.6.0
 
 ### Minor Changes
