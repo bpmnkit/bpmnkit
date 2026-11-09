@@ -1,5 +1,32 @@
 # @bpmnkit/engine
 
+## 1.4.0
+
+### Minor Changes
+
+- d2c39e6: DMN fixes. `@bpmnkit/core`: `Dmn.export` is idempotent (kept foreign content no longer gains a blank line per export); a requirement that parsed to nothing is written without a reference instead of `href="#undefined"`; a decision's `<literalExpression>` is modelled as `DmnDecision.literalExpression` and survives next to the decision's own `<extensionElements>` (an empty `<extensionElements/>` now counts as absent); `<outputValues>` is modelled as `DmnOutput.outputValues`.
+
+  `@bpmnkit/engine`: `evaluateDecision` throws when a UNIQUE table matches several rules; PRIORITY returns the match that ranks first in the output clause's `outputValues` and OUTPUT ORDER sorts by them (rule order without `outputValues`); a value that does not conform to its input or output `typeRef` fails the decision as in Zeebe (null, `Any` and unknown types are not checked; strings convert to temporal types). `literalExpressionText` reads `decision.literalExpression`.
+
+- d2c39e6: `evaluateDecisionGraph(definitions, decisionId, vars)` evaluates a decision with the decisions it requires: each required decision runs once, before its readers, and is in scope under its name. Decisions with a literal expression evaluate it (`literalExpressionText` reads it). Variable names with spaces now resolve in decision tables.
+
+### Patch Changes
+
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [e57db77]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [e57db77]
+- Updated dependencies [e57db77]
+  - @bpmnkit/core@1.10.0
+  - @bpmnkit/feel@1.1.2
+
 ## 1.3.0
 
 ### Minor Changes

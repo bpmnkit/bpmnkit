@@ -1,5 +1,23 @@
 # @bpmnkit/patterns
 
+## 0.1.3
+
+### Patch Changes
+
+- 65aba71: Release the pattern changes made since 0.1.2 (deployability fixes to the bundled patterns and a new field on the pattern types), which were merged without a changeset.
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [e57db77]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [d2c39e6]
+- Updated dependencies [e57db77]
+- Updated dependencies [e57db77]
+  - @bpmnkit/core@1.10.0
+
 ## 0.1.2
 
 ### Patch Changes
