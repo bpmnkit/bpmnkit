@@ -70,10 +70,9 @@ the same for DMN and form `CheckFinding`s. See the `lint_report` example.
 | `render` | `bpmnkit::render`: BPMN to SVG, auto layout for models without DI |
 | `diff` | `bpmnkit::diff`: semantic diff, field-level changes, semantic hash |
 | `diff-html` | `diff_to_html` and `diff_to_svg` (implies `diff`, `render`) |
-| `full` | all of the above |
-
-PNG output (`render-png`, `render-system-fonts`) is not in `full`; it is planned in
-[the embedding plan](https://github.com/bpmnkit/bpmnkit/blob/main/doc/plans/rust-embedding.md).
+| `render-png` | `svg_to_png`, `bpmn_to_png` (resvg, bundled Inter subset) |
+| `render-system-fonts` | PNG text from the machine's fonts too (`FontSource::System`) |
+| `full` | all of the above except `render-png` and `render-system-fonts` (a raster stack) |
 
 ## Render a diagram
 
@@ -101,9 +100,9 @@ cannot show HTML.
 
 Slack does not render HTML. In `spawn_blocking`: run `diff_bpmn`, upload `diff_to_html` as a
 file with `files.uploadV2`, and post `diff_to_text` with `markdown: true` (or a lint report as
-`to_slack_mrkdwn`). For an inline image, rasterize `diff_to_svg` (PNG support in
-`bpmnkit-render` is planned; until then `casen diff bpmn --png` does it from the CLI).
+`to_slack_mrkdwn`). For an inline image, `svg_to_png(&diff_to_svg(&after, &diff, &opts)?,
+&PngOptions::default())` (feature `render-png`) gives the later diagram with the changes marked.
 
 ## Examples
 
-`cargo run -p bpmnkit --all-features --example text_to_bpmn | eval_dmn | lint_report | render_svg | diff_html`.
+`cargo run -p bpmnkit --all-features --example text_to_bpmn | eval_dmn | lint_report | render_svg | render_png | diff_html`.

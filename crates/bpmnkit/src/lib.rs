@@ -49,6 +49,8 @@ pub mod prelude {
     pub use bpmnkit_feel::{evaluate, Context, Value};
     #[cfg(feature = "form")]
     pub use bpmnkit_form::{parse_form, FormDefinition};
+    #[cfg(feature = "render-png")]
+    pub use bpmnkit_render::{bpmn_to_png, svg_to_png, PngOptions};
     #[cfg(feature = "render")]
     pub use bpmnkit_render::{bpmn_to_svg, RenderOptions, Svg, Theme};
 }

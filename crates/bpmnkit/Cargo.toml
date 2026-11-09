@@ -48,8 +48,10 @@ builder = ["dep:bpmnkit-builder"]
 text = ["dep:bpmnkit-text", "bpmn", "dmn"]
 # BPMN to SVG; models without diagram interchange are laid out first.
 render = ["dep:bpmnkit-render", "bpmnkit-render/auto-layout", "bpmn"]
-# TODO(T1): `render-png = ["render", "bpmnkit-render/png"]` and
-# `render-system-fonts = ["render-png", "bpmnkit-render/system-fonts"]` once bpmnkit-render has them.
+# SVG → PNG with resvg and the bundled Inter subset: same pixels on every machine.
+render-png = ["render", "bpmnkit-render/png"]
+# PNG text may also use the machine's fonts (FontSource::System / Both).
+render-system-fonts = ["render-png", "bpmnkit-render/system-fonts"]
 # Semantic diff, field-level changes and the semantic hash.
 diff = ["dep:bpmnkit-diff", "bpmn"]
 # The self-contained HTML diff viewer and the diff-over-diagram SVG.
@@ -73,6 +75,10 @@ required-features = ["lint", "bpmn"]
 [[example]]
 name = "render_svg"
 required-features = ["render"]
+
+[[example]]
+name = "render_png"
+required-features = ["render-png", "diff-html"]
 
 [[example]]
 name = "diff_html"

@@ -7238,7 +7238,7 @@
 		{
 			"id": "rust.embedding.cargo-features",
 			"file": "chunks/rust.embedding.cargo-features.md",
-			"tokens": 190,
+			"tokens": 210,
 			"tags": [
 				"rust",
 				"embedding",
