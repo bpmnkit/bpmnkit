@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-09 — Plan: embedding the Rust crates (render, diff, CLI/Slack)
+
+- New `doc/plans/rust-embedding.md` (analysis + spec only, no code): `bpmnkit-render` crate (BPMN/DRD/decision-table SVG byte-identical to TS `exportSvg`, PNG via resvg with an embedded font), `bpmnkit-diff` crate (port of `diffSemantics` + `diffDiagram` with field-level changes) and a self-contained HTML diff viewer from one shared template, facade error/detect/lint-report helpers, and a five-task parallel work split.
+
 ## 2026-11-09 — `placeNewShapes`: edits draw only new elements
 
 - `placeNewShapes(definitions)` (core) draws DI only for elements without shapes, never moves existing ones, and may widen pools, lanes and sub-processes. `casen generate bpmn --input --patch` uses it with `exportPreserving` instead of a full re-layout.
