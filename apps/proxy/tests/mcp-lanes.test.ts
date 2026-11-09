@@ -79,7 +79,7 @@ describe("saving a diagram with pools and lanes", () => {
 	}, 30000)
 
 	it("refuses a compact whose message names no pool or node, and saves nothing", async () => {
-		// REV-20261028-010: replace_diagram used to save the dangling message as valid BPMN.
+		// replace_diagram used to save the dangling message as valid BPMN.
 		const output = join(dir, "refused.bpmn")
 		const compact = compactify(Bpmn.parse(readFileSync(LANED, "utf8")))
 		compact.messageFlows = [

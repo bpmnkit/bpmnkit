@@ -135,7 +135,7 @@ describe("loading a file without diagram interchange", () => {
 	})
 })
 
-describe("REV-20261028-008: the process the edits go to stays put when its pool is emptied", () => {
+describe("the process the edits go to stays put when its pool is emptied", () => {
 	/** A pool `own` drawing `main`, and a pool `other` drawing `partner`. */
 	function twoPoolsXml(main: string, partner: string): string {
 		const defs = Bpmn.createDiagram("d")

@@ -1,5 +1,5 @@
 /**
- * WP8b structure: the first pool, black-box partners and new lanes, as ops,
+ * Structure: the first pool, black-box partners and new lanes, as ops,
  * and edits that copy only what they change. Every op runs through the
  * Flowable guard.
  */
@@ -91,7 +91,7 @@ const add = (bounds = { x: 0, y: 700, width: 640, height: 60 }, name?: string): 
 	seed: "pool",
 })
 
-describe("8b.1 the first pool wraps the process", () => {
+describe("the first pool wraps the process", () => {
 	it("wraps a lane-free Flowable process: collaboration, participant, rebound plane", () => {
 		const defs = poolLessFlowable(false)
 		const r = run(defs, add({ x: 900, y: 900, width: 100, height: 60 }))
@@ -132,7 +132,7 @@ describe("8b.1 the first pool wraps the process", () => {
 		expectSwimlanesSound(r.defs)
 	})
 
-	// The change scripts share poolPrimary: before WP8b their pool was poolAround the
+	// The change scripts share poolPrimary: before the pool tool their pool was poolAround the
 	// nodes, so the auto-layout's bands stuck out of it and a new band went in off them.
 	it.each([
 		["lane billing[Billing]:", "billing"],
@@ -197,7 +197,7 @@ describe("8b.1 the first pool wraps the process", () => {
 	})
 })
 
-describe("8b.1 more pools are black boxes", () => {
+describe("more pools are black boxes", () => {
 	it("adds a pool without a processRef where the op draws it", () => {
 		const defs = flowableFixture()
 		const bounds = { x: 0, y: 600, width: 640, height: 60 }
@@ -252,7 +252,7 @@ const lane = (refId: string, where: "above" | "below"): EditorOp => ({
 	seed: "lane",
 })
 
-describe("8b.3 add lane", () => {
+describe("add lane", () => {
 	const BELOW_SALES = [
 		"Lane_finance",
 		"Lane_ops",
@@ -524,7 +524,7 @@ describe("8b.3 add lane", () => {
 		expect(canDivideLanes(unlaned, "P")).toBe(false)
 	})
 
-	it("refuses child lanes, parent lanes, black boxes, locked pools and unknown ids (I8)", () => {
+	it("refuses child lanes, parent lanes, black boxes, locked pools and unknown ids", () => {
 		const nested = fixture(FIXTURE_08)
 		expectRefused(nested, lane("Lane_inside", "above"))
 		expectRefused(nested, lane("Lane_desk", "below"))
@@ -564,7 +564,7 @@ describe("8b.3 add lane", () => {
 	}
 })
 
-describe("8b.3 a lane band keeps routes orthogonal", () => {
+describe("a lane band keeps routes orthogonal", () => {
 	type Point = { x: number; y: number }
 	const waypointsOf = (defs: BpmnDefinitions, id: string) =>
 		defs.diagrams[0]?.plane.edges.find((e) => e.bpmnElement === id)?.waypoints ?? []
@@ -789,7 +789,7 @@ describe("8b.3 a lane band keeps routes orthogonal", () => {
 
 const bottomOf = (b: { y: number; height: number }) => b.y + b.height
 
-describe("8b.3 divide into lanes", () => {
+describe("divide into lanes", () => {
 	const divide = (refId: string, count: 2 | 3, seed = "divide"): EditorOp => ({
 		kind: "addLane",
 		refId,
@@ -958,7 +958,7 @@ describe("8b.3 divide into lanes", () => {
 	})
 })
 
-describe("8b.6 edits copy only what they change", () => {
+describe("edits copy only what they change", () => {
 	it("shares the partner process and its diagram when a lane is added or deleted", () => {
 		const defs = flowableFixture("second-diagram")
 		const partner = defs.processes[0]
@@ -993,7 +993,7 @@ describe("8b.6 edits copy only what they change", () => {
 	})
 })
 
-describe("8b.5 what the context bar offers agrees with the ops", () => {
+describe("what the context bar offers agrees with the ops", () => {
 	/** Every pool and lane of `defs`, and a node, as candidate ids. */
 	const candidates = (defs: BpmnDefinitions) => [
 		...participants(defs).map((p) => p.id),
@@ -1027,7 +1027,7 @@ describe("8b.5 what the context bar offers agrees with the ops", () => {
 		})
 	}
 
-	it("offers Divide only on an own pool without lanes (U6)", () => {
+	it("offers Divide only on an own pool without lanes", () => {
 		const defs = unlaned()
 		const poolId = participants(defs)[0]?.id ?? ""
 		expect(canDivideLanes(defs, poolId)).toBe(true)
@@ -1038,7 +1038,7 @@ describe("8b.5 what the context bar offers agrees with the ops", () => {
 	})
 })
 
-describe("8b.2 where the pool tool puts a pool", () => {
+describe("where the pool tool puts a pool", () => {
 	it("is a black box beside the own pool, centred on the pointer", () => {
 		const defs = flowableFixture()
 		expect(newPoolBounds(defs, { x: 300, y: 630 })).toEqual(

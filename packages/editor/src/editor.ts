@@ -341,6 +341,9 @@ function nearestCandidate(
 	return best
 }
 
+/** Where the space tool started, where the pointer is, and the axis it spaces along. */
+type SpacePreviewArgs = [origin: DiagPoint, current: DiagPoint, axis: "h" | "v" | null]
+
 export class BpmnEditor {
 	// ── DOM ────────────────────────────────────────────────────────────
 	private readonly _id: string
@@ -635,7 +638,7 @@ export class BpmnEditor {
 			hideEdgeWaypointBalls: () => {
 				this._overlay.setEdgeWaypointBalls(null, null)
 			},
-			previewSpace: (origin, current, axis) => this._previewSpace(origin, current, axis),
+			previewSpace: (origin, current, axis) => this._queueSpacePreview(origin, current, axis),
 			commitSpace: (origin, current, axis) => this._commitSpace(origin, current, axis),
 			cancelSpace: () => this._cancelSpace(),
 		}
@@ -1112,6 +1115,7 @@ export class BpmnEditor {
 	}
 
 	destroy(): void {
+		this._dropSpaceFrame()
 		this._ro.disconnect()
 		this._viewport.destroy()
 		this._keyboard.destroy()
@@ -1487,6 +1491,34 @@ export class BpmnEditor {
 		return { kind: "space", origin: axis === "h" ? origin.x : origin.y, axis, delta }
 	}
 
+	/** The space-tool position waiting for the next frame, and that frame's id. */
+	private _spaceFrame: { id: number; args: SpacePreviewArgs } | null = null
+
+	/**
+	 * Draws the space-tool preview on the next frame, for the latest position
+	 * only: a pointer reports moves faster than a screen shows them, and each
+	 * preview runs the whole op on a copy of the diagram.
+	 */
+	private _queueSpacePreview(...args: SpacePreviewArgs): void {
+		if (this._spaceFrame) {
+			this._spaceFrame.args = args
+			return
+		}
+		const frame = { id: 0, args }
+		frame.id = requestAnimationFrame(() => {
+			this._spaceFrame = null
+			this._previewSpace(...frame.args)
+		})
+		this._spaceFrame = frame
+	}
+
+	/** Drops a preview still waiting for its frame, so it cannot draw after a commit or cancel. */
+	private _dropSpaceFrame(): void {
+		if (!this._spaceFrame) return
+		cancelAnimationFrame(this._spaceFrame.id)
+		this._spaceFrame = null
+	}
+
 	/** Puts every shape back where the document draws it, after a preview moved some. */
 	private _resetShapes(): void {
 		for (const shape of this._shapes) {
@@ -1508,7 +1540,8 @@ export class BpmnEditor {
 			this._overlay.setSpacePreview(axis, axis === "h" ? origin.x : origin.y)
 			return
 		}
-		// ponytail: the whole op per pointer move (one diagram copied); preview a shift list if large files lag.
+		// The op itself, on a copy, so the preview cannot disagree with the drop;
+		// _queueSpacePreview keeps it to one run per frame.
 		const spaced = applyOp(this._defs, op).defs
 		const after = new Map(
 			(primaryPlane(spaced)?.shapes ?? []).map((s) => [s.bpmnElement, s.bounds] as const),
@@ -1527,6 +1560,7 @@ export class BpmnEditor {
 	}
 
 	private _commitSpace(origin: DiagPoint, current: DiagPoint, axis: "h" | "v" | null): void {
+		this._dropSpaceFrame()
 		this._resetShapes()
 		this._overlay.setSpacePreview(null)
 		const op = this._spaceOp(origin, current, axis)
@@ -1534,6 +1568,7 @@ export class BpmnEditor {
 	}
 
 	private _cancelSpace(): void {
+		this._dropSpaceFrame()
 		this._resetShapes()
 		this._overlay.setSpacePreview(null)
 	}
@@ -2003,8 +2038,8 @@ export class BpmnEditor {
 
 	/**
 	 * Adds an unnamed lane `where` `refId`, the own pool or one of its top-level
-	 * lanes, and selects it; the first on a pool without lanes makes two
-	 * (decision U5). Returns the new lane's id, or null when refused (nested
+	 * lanes, and selects it; the first on a pool without lanes makes two, as
+	 * bpmn-js does, so the old content has a lane of its own. Returns the new lane's id, or null when refused (nested
 	 * lanes, other pools), which adds no undo step.
 	 */
 	addLane(refId: string, where: "above" | "below"): string | null {
@@ -2018,7 +2053,8 @@ export class BpmnEditor {
 
 	/**
 	 * Divides the own pool `poolId`, which has no lanes, into `count` sibling
-	 * lanes (decision U6): one `addLane` op with `count`, which splits the
+	 * lanes (dividing a lane would make child lanes, which the editor does not
+	 * edit): one `addLane` op with `count`, which splits the
 	 * pool's height when it is tall enough and grows it otherwise, so a relay
 	 * replays it as it is, in one undo step. Does nothing on a pool that has
 	 * lanes or is not the own.
@@ -2788,7 +2824,7 @@ export class BpmnEditor {
 			const id = shapeEl.getAttribute("data-bpmnkit-id")
 			// A pool or lane is grabbed by its header; its body is canvas, for lasso and pan.
 			if (id && this._swimlanes.has(id) && !this._onHeaderStrip(id, clientX, clientY)) {
-				// Except as a connection's end: a black box's body is all of it a message can reach (I6).
+				// Except as a connection's end: a black box has nothing inside, so its body is where a message lands.
 				const end = this._connectSourceId() ? this._innermostShapeAt(clientX, clientY) : null
 				return end ? { type: "shape", id: this._connectEnd(end) } : { type: "canvas" }
 			}

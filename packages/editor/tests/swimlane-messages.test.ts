@@ -1,5 +1,5 @@
 /**
- * WP8d message flows: a connection across pools becomes a message flow, its
+ * Message flows: a connection across pools becomes a message flow, its
  * edge follows the shapes it docks on, and it can be renamed. Every op runs
  * through the Flowable guard.
  */
@@ -77,7 +77,7 @@ describe("participantOf", () => {
 	})
 })
 
-describe("8d.4 connecting across pools adds a message flow", () => {
+describe("connecting across pools adds a message flow", () => {
 	it("connects a task to fixture 08's black box over an empty process", () => {
 		const before = fixture(FIXTURE_08)
 		const r = applyOp(before, connect("review", "Participant_customer"))
@@ -114,7 +114,7 @@ describe("8d.4 connecting across pools adds a message flow", () => {
 		expectSwimlanesSound(back)
 	})
 
-	it("connects two black boxes (U8) with an orthogonal route between their borders (I16)", () => {
+	it("connects two black boxes with an orthogonal route between their borders", () => {
 		const before = flowableFixture()
 		const after = run(before, connect("Participant_partner", "Participant_bank"))
 		expect(routeOf(after, addedMessage(before, after).id)).toEqual([
@@ -205,7 +205,7 @@ describe("8d.4 connecting across pools adds a message flow", () => {
 	})
 })
 
-describe("8d.4 refused ends", () => {
+describe("refused ends", () => {
 	it("creates nothing for ends a message flow cannot have", () => {
 		const defs = flowableFixture()
 		expectRefused(defs, connect("Gateway_ok", "Participant_bank"))
@@ -224,7 +224,7 @@ describe("8d.4 refused ends", () => {
 	})
 })
 
-describe("8d.5 message edges follow the shapes they dock on", () => {
+describe("message edges follow the shapes they dock on", () => {
 	const message = (defs: BpmnDefinitions) => routeOf(defs, "Message_pay")
 
 	it("re-docks a message flow whose node moved", () => {
@@ -301,7 +301,7 @@ describe("8d.5 message edges follow the shapes they dock on", () => {
 	})
 })
 
-describe("8d.6 renaming a message flow", () => {
+describe("renaming a message flow", () => {
 	it("renames it and gives its edge a label beside its longest segment", () => {
 		const before = flowableFixture()
 		expect(nameOf(before, "Message_pay")).toBe("Payment")
@@ -327,7 +327,7 @@ describe("8d.6 renaming a message flow", () => {
 	})
 })
 
-describe("WP8a leftovers on locked nodes", () => {
+describe("locked nodes of a partner process", () => {
 	it("reads the name of a partner's locked node", () => {
 		expect(nameOf(Bpmn.parse(lockedPartnerXml()), "Task_p")).toBe("Answer")
 	})
@@ -355,7 +355,7 @@ const bank = (defs: BpmnDefinitions) => boundsIn(defs, "Participant_bank")
 const routeLabel = (defs: BpmnDefinitions) =>
 	defs.diagrams[0]?.plane.edges.find((e) => e.bpmnElement === "Message_pay")?.label?.bounds
 
-describe("WP8d leftover: a re-routed message edge keeps its label beside the route", () => {
+describe("a re-routed message edge keeps its label beside the route", () => {
 	it("moves the label with the route when one end moves, as a translate does", () => {
 		const defs = structuredClone(flowableFixture())
 		const edge = defs.diagrams[0]?.plane.edges.find((e) => e.bpmnElement === "Message_pay")

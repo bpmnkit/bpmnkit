@@ -1,7 +1,7 @@
 /**
- * WP8c geometry: resizing pools and lanes through the `resize` op. A lane's
+ * Geometry: resizing pools and lanes through the `resize` op. A lane's
  * shared edge moves its neighbour's, an outer edge moves the pool's; every
- * band keeps its own nodes (critique I9), so no lane ref goes stale. Every op
+ * band keeps its own nodes, so no lane ref goes stale. Every op
  * runs through the Flowable guard.
  */
 import { Bpmn, type BpmnBounds, type BpmnDefinitions } from "@bpmnkit/core"
@@ -64,7 +64,7 @@ function waypointsOf(defs: BpmnDefinitions, flowId: string) {
 const FLAT_BANDS = ["Participant_own", "Lane_sales", "Lane_finance", "Lane_ops"]
 const NESTED_BANDS = ["Participant_company", "Lane_sales", "Lane_inside", "Lane_desk", "Lane_ops"]
 
-describe("8c.1 lane resize: shared edges balance", () => {
+describe("lane resize: shared edges balance", () => {
 	it("grows a lane's bottom by 40 and shrinks the lane below by 40, nodes unmoved", () => {
 		const defs = flowableFixture()
 		const next = resize(defs, "Lane_finance", { x: 30, y: 120, width: 610, height: 160 })
@@ -84,7 +84,7 @@ describe("8c.1 lane resize: shared edges balance", () => {
 		expect(boundsOf(next, "Lane_ops")).toEqual({ x: 30, y: 220, width: 610, height: 140 })
 	})
 
-	it("stops a shared edge at the nodes of the lane it shrinks (I9)", () => {
+	it("stops a shared edge at the nodes of the lane it shrinks", () => {
 		const defs = flowableFixture()
 		// Task_pay reaches y=220 in Finance; End_1 starts at y=282 in Operations.
 		const up = resize(defs, "Lane_finance", { x: 30, y: 120, width: 610, height: 40 })
@@ -118,7 +118,7 @@ describe("8c.1 lane resize: shared edges balance", () => {
 	})
 })
 
-describe("8c.1 lane resize: outer edges move the pool", () => {
+describe("lane resize: outer edges move the pool", () => {
 	it("grows the pool with the last lane and pushes the pools below, messages docked", () => {
 		const defs = flowableFixture()
 		const next = resize(defs, "Lane_ops", { x: 30, y: 240, width: 610, height: 160 })
@@ -226,7 +226,7 @@ function expectPoolsApart(defs: BpmnDefinitions): void {
 	}
 }
 
-describe("8c.1 shrinking a band pulls up what is below", () => {
+describe("shrinking a band pulls up what is below", () => {
 	/** Resizes `id` to `bounds`, checking the preview shows what the op does. */
 	const previewed = (defs: BpmnDefinitions, id: string, bounds: BpmnBounds) => {
 		const next = resize(defs, id, bounds)
@@ -307,13 +307,13 @@ describe("8c.1 shrinking a band pulls up what is below", () => {
 		)
 		const grown = previewed(defs, "Participant_own", { x: 0, y: 0, width: 640, height: 400 })
 		expect(boundsOf(grown, "Participant_bank").y).toBe(530)
-		// ponytail: one clamp for every shape below; the partner pushed under its own start event blocks the whole pull.
+		// One clamp for every shape below, so the pull stays one rigid shift: the partner pushed under its own start event blocks the whole pull.
 		const back = previewed(grown, "Participant_own", { x: 0, y: 0, width: 640, height: 360 })
 		expect(boundsOf(back, "Participant_bank").y).toBe(530)
 	})
 })
 
-describe("8c.1 pool resize", () => {
+describe("pool resize", () => {
 	it("applies a change in width to every lane", () => {
 		const next = resize(flowableFixture(), "Participant_own", {
 			x: 0,
@@ -520,7 +520,7 @@ function expectLanesOnPool(defs: BpmnDefinitions, poolId: string): void {
 	}
 }
 
-describe("8c.1 resize of bands drawn a pixel off the pool's edge", () => {
+describe("resize of bands drawn a pixel off the pool's edge", () => {
 	// Every lane ends at x=639, a pixel short of the pool's right edge at 640.
 	const shortLanes = () => Bpmn.parse(flowableXml().replaceAll('width="610"', 'width="609"'))
 	// Operations ends at y=359, a pixel above the pool's bottom at 360.
@@ -595,7 +595,7 @@ describe("8c.1 resize of bands drawn a pixel off the pool's edge", () => {
 	})
 })
 
-describe("8c.1 nested lanes (fixture 08)", () => {
+describe("nested lanes (fixture 08)", () => {
 	const nested = () => primaryFirst(fixture(FIXTURE_08))
 
 	it("moves a child's shared edge with its parent's and the next top-level lane's", () => {
@@ -649,7 +649,7 @@ describe("8c.1 nested lanes (fixture 08)", () => {
 	})
 })
 
-describe("8c.1 what cannot be resized", () => {
+describe("what cannot be resized", () => {
 	it("lists the own pool, its lanes and black boxes as resizable, nothing else", () => {
 		expect([...resizableSwimlanes(flowableFixture())].sort()).toEqual(
 			[...FLAT_BANDS, "Participant_partner", "Participant_bank"].sort(),
@@ -737,7 +737,7 @@ describe("8c.1 what cannot be resized", () => {
 	})
 })
 
-describe("8c.1 resizes land in the executable process, wherever it is listed", () => {
+describe("resizes land in the executable process, wherever it is listed", () => {
 	for (const order of ["second", "second-diagram"] as FlowableOrder[]) {
 		it(`balances the lanes and keeps the document order (${order})`, () => {
 			const defs = flowableFixture(order)
@@ -755,7 +755,7 @@ describe("8c.1 resizes land in the executable process, wherever it is listed", (
 	}
 })
 
-// ── 8c.2 moving a pool ───────────────────────────────────────────────────────
+// ── moving a pool ───────────────────────────────────────────────────────
 
 /** {@link flowableXml} with a note inside the own pool tied to Task_review, and one outside tied to Task_pay. */
 function annotatedXml(order: FlowableOrder = "first"): string {
@@ -800,7 +800,7 @@ const OWN_CONTENT = [
 	"Note_in",
 ]
 
-describe("8c.2 moving the own pool moves what it holds", () => {
+describe("moving the own pool moves what it holds", () => {
 	for (const order of ["first", "second", "second-diagram"] as FlowableOrder[]) {
 		it(`moves the lanes, nodes and notes inside by the same delta, routes kept (${order})`, () => {
 			const defs = Bpmn.parse(annotatedXml(order))
@@ -826,7 +826,7 @@ describe("8c.2 moving the own pool moves what it holds", () => {
 		})
 	}
 
-	it("moves everything once when the selection holds the pool, its lanes and its nodes (I10)", () => {
+	it("moves everything once when the selection holds the pool, its lanes and its nodes", () => {
 		const defs = Bpmn.parse(annotatedXml())
 		const alone = run(defs, { kind: "move", moves: [{ id: "Participant_own", dx: 40, dy: 20 }] })
 		const ids = [
@@ -854,7 +854,7 @@ describe("8c.2 moving the own pool moves what it holds", () => {
 		expect(message?.at(-1)?.y).toBe(boundsOf(next, "Participant_customer").y)
 	})
 
-	it("refuses a pool moved onto another pool, the own one or a black box (I4)", () => {
+	it("refuses a pool moved onto another pool, the own one or a black box", () => {
 		const defs = flowableFixture()
 		expectRefused(defs, { kind: "move", moves: [{ id: "Participant_own", dx: 0, dy: 100 }] })
 		expectRefused(defs, { kind: "move", moves: [{ id: "Participant_bank", dx: 0, dy: -60 }] })
@@ -877,7 +877,7 @@ describe("8c.2 moving the own pool moves what it holds", () => {
 		})
 	})
 
-	it("still ignores a lane dragged alone (U4)", () => {
+	it("still ignores a lane dragged alone", () => {
 		expectRefused(flowableFixture(), {
 			kind: "move",
 			moves: [{ id: "Lane_sales", dx: 0, dy: 40 }],
@@ -885,9 +885,9 @@ describe("8c.2 moving the own pool moves what it holds", () => {
 	})
 })
 
-// ── 8c.3 the space op ────────────────────────────────────────────────────────
+// ── the space op ────────────────────────────────────────────────────────
 
-describe("8c.3 space: horizontal", () => {
+describe("space: horizontal", () => {
 	it("widens the pools and lanes it crosses and moves what is right of the line", () => {
 		const defs = flowableFixture()
 		const next = run(defs, { kind: "space", origin: 380, axis: "h", delta: 200 })
@@ -944,7 +944,7 @@ describe("8c.3 space: horizontal", () => {
 	})
 })
 
-describe("8c.3 space: vertical", () => {
+describe("space: vertical", () => {
 	it("deepens the lane and the pool it crosses and shifts what is below", () => {
 		const defs = flowableFixture()
 		const next = run(defs, { kind: "space", origin: 200, axis: "v", delta: 60 })
@@ -1011,7 +1011,7 @@ describe("8c.3 space: vertical", () => {
 	}
 })
 
-describe("8c.3 space: past a vertical pool", () => {
+describe("space: past a vertical pool", () => {
 	const VERTICAL = ["P", "LA", "LB", "s"]
 
 	it("leaves a vertical pool before the line where it is", () => {
@@ -1047,7 +1047,7 @@ describe("8c.3 space: past a vertical pool", () => {
 	})
 })
 
-describe("8c.3 space: refused", () => {
+describe("space: refused", () => {
 	it("refuses a line across a vertical pool, and a space of nothing", () => {
 		for (const laned of [true, false]) {
 			const vertical = Bpmn.parse(verticalPoolXml(laned))
@@ -1075,7 +1075,7 @@ describe("8c.3 space: refused", () => {
 	})
 })
 
-describe("WP8b leftovers at the op layer", () => {
+describe("pools and lanes at the op layer: smaller fixes", () => {
 	it("refuses a color or label position on a partner's node", () => {
 		const defs = Bpmn.parse(lockedPartnerXml())
 		expectRefused(defs, { kind: "color", id: "Task_p", color: { fill: "#ffe0b2" } })
@@ -1169,7 +1169,7 @@ const HOSTED_XML = `<?xml version="1.0" encoding="UTF-8"?>
   </bpmndi:BPMNDiagram>
 </definitions>`
 
-describe("8c.3 space: boundary events stay on their host's edge", () => {
+describe("space: boundary events stay on their host's edge", () => {
 	for (const origin of [150, 250]) {
 		it(`keeps each event on its edge of a sub-process the line crosses (line at ${origin})`, () => {
 			const defs = Bpmn.parse(HOSTED_XML)

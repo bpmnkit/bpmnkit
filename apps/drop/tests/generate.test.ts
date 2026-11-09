@@ -189,6 +189,7 @@ describe("createDiagramLineFilter", () => {
 		expect(filtered(answer, 4)).toBe(answer)
 		expect(filtered("lane story: Once upon a time there was a process\n")).toBe("")
 		expect(filtered("pool party tonight, bring snacks\n")).toBe("")
+		expect(filtered("pool party\n")).toBe("")
 		expect(filtered("msg me > later please\n")).toBe("")
 	})
 

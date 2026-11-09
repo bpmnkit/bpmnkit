@@ -33,7 +33,13 @@ import {
 } from "./compact.js"
 import type { BpmnOperation, ElementPatch } from "./operations.js"
 import { assignEventDefinitionIds } from "./stable-ids.js"
-import { allLanes, collaborationProblems, poolLanedProcesses, pruneLaneRefs } from "./swimlanes.js"
+import {
+	allLanes,
+	collaborationProblems,
+	documentIdList,
+	poolLanedProcesses,
+	pruneLaneRefs,
+} from "./swimlanes.js"
 import {
 	type ZeebeListener,
 	assertZeebePlacement,
@@ -1028,50 +1034,10 @@ function newStructureProblems(before: BpmnDefinitions, after: BpmnDefinitions): 
 	return [...new Set(found)]
 }
 
-/** How many times each id is used by a process, element, flow, lane, lane set, artifact (sub-processes included), pool or root element. */
+/** How many times each id is used in the document ({@link documentIdList}). */
 function idCounts(definitions: BpmnDefinitions): Map<string, number> {
-	const roots = [
-		...definitions.messages,
-		...definitions.errors,
-		...definitions.signals,
-		...definitions.escalations,
-	]
-	const ids: string[] = roots.map((root) => root.id)
-	for (const container of containersOf(definitions)) {
-		for (const item of [...container.flowElements, ...container.sequenceFlows]) ids.push(item.id)
-		// Processes and sub-processes carry artifacts; other containers do not.
-		const scope = container as Partial<
-			Pick<BpmnProcess, "textAnnotations" | "associations" | "groups">
-		>
-		for (const item of [
-			...(scope.textAnnotations ?? []),
-			...(scope.associations ?? []),
-			...(scope.groups ?? []),
-		]) {
-			ids.push(item.id)
-		}
-	}
-	// Lane-set ids count too: relane keeps a set's old id, which a compact lane may claim.
-	for (const process of definitions.processes) {
-		ids.push(process.id)
-		const sets = [process.laneSet, ...allLanes(process.laneSet).map((lane) => lane.childLaneSet)]
-		for (const set of sets) if (set?.id !== undefined) ids.push(set.id)
-		for (const lane of allLanes(process.laneSet)) ids.push(lane.id)
-	}
-	for (const collaboration of definitions.collaborations) {
-		ids.push(collaboration.id)
-		for (const item of [
-			...collaboration.participants,
-			...collaboration.messageFlows,
-			...collaboration.textAnnotations,
-			...collaboration.associations,
-			...collaboration.groups,
-		]) {
-			ids.push(item.id)
-		}
-	}
 	const counts = new Map<string, number>()
-	for (const id of ids) counts.set(id, (counts.get(id) ?? 0) + 1)
+	for (const id of documentIdList(definitions)) counts.set(id, (counts.get(id) ?? 0) + 1)
 	return counts
 }
 
@@ -1208,14 +1174,7 @@ function mergeMessageFlow(
 
 /** Ids a new collaboration must not take: every process, element, flow and lane, and the compact's pool ids. */
 function documentIds(definitions: BpmnDefinitions, compact: CompactDiagram): Set<string> {
-	const ids = new Set<string>()
-	for (const container of containersOf(definitions)) {
-		for (const item of [...container.flowElements, ...container.sequenceFlows]) ids.add(item.id)
-	}
-	for (const process of definitions.processes) {
-		ids.add(process.id)
-		for (const lane of allLanes(process.laneSet)) ids.add(lane.id)
-	}
+	const ids = new Set(documentIdList(definitions))
 	for (const item of [...(compact.participants ?? []), ...(compact.messageFlows ?? [])]) {
 		ids.add(item.id)
 	}

@@ -116,11 +116,12 @@ export type EditorOp =
 	| { kind: "paste"; clipboard: Clipboard; offsetX: number; offsetY: number; seed: string }
 	/**
 	 * Moving the own pool takes its lanes, nodes and the notes inside it along
-	 * (`poolHolds`); lanes alone stay where they are (decision U4).
+	 * (`poolHolds`); lanes alone stay where they are, as in bpmn-js: a dragged
+	 * lane would lie over its neighbour.
 	 */
 	| { kind: "move"; moves: ShapeMove[]; onEdge?: { edgeId: string; shapeId: string } }
 	/**
-	 * The space tool (decision U10): room for `delta` at the line `origin` (an x
+	 * The space tool, its own op so one drag is one undo step: room for `delta` at the line `origin` (an x
 	 * for `h`, a y for `v`) on the side `delta` points to. What lies beyond
 	 * moves, the pools, lanes and sub-processes the line crosses grow, and the
 	 * lane refs follow (`makeSpace`). One undo step.

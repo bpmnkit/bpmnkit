@@ -130,9 +130,9 @@ function token(value: string | undefined): boolean {
 }
 
 /** A lane's or pool's name in brackets, or nothing for one without a name. */
+/** `[Name]`, or `[]` for no name: the reader names a lane without a bracket after its id. */
 function bracketed(name: string | undefined): string {
-	const written = name ? writableName(name) : ""
-	return written ? `[${written}]` : ""
+	return `[${name ? writableName(name) : ""}]`
 }
 
 /** A message label as a `msg` line writes it: raw like a note, so colons stay, but a parenthesis would end it. */

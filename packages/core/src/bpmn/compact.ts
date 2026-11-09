@@ -1537,9 +1537,9 @@ export function fillLanes(process: BpmnProcess, nodeIds: readonly string[]): Bpm
 	if (process.laneSet === undefined) return process
 	const types = new Map(process.flowElements.map((element) => [element.id, element.type]))
 	let laned = process
-	// ponytail: one pass in the order given, so an unlisted node whose only
-	// neighbours are later unlisted nodes lands in the first leaf; iterate to a
-	// fixpoint if models start leaving whole chains unlisted.
+	// One pass in the order given: an unlisted node whose only neighbours are
+	// later unlisted nodes lands in the first leaf. Models leave single nodes
+	// unlisted, not whole chains; a chain would need passes until nothing moves.
 	for (const id of nodeIds) {
 		const type = types.get(id)
 		if (type === undefined || DATA_ELEMENT_TYPES.has(type) || laneOf(laned, id) !== undefined) {

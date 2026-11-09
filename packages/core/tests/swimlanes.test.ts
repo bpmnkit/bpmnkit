@@ -198,6 +198,23 @@ describe("assignLane", () => {
 		expect(refsOf(assignLane(p, "a", "y"))).toEqual({ x: [], y: ["a", "timer"] })
 	})
 
+	it("keeps a boundary event in its host's lane", () => {
+		const p = process(
+			"p",
+			[node("a"), boundary("timer", "a")],
+			[lane("x", ["a", "timer"]), lane("y", [])],
+		)
+		expect(() => assignLane(p, "timer", "y")).toThrow(
+			/Boundary event "timer" sits in the lane of its host "a" \("x"\)/,
+		)
+		expect(refsOf(assignLane(p, "timer", "x"))).toEqual({ x: ["a", "timer"], y: [] })
+	})
+
+	it("places a boundary event whose host is in no lane", () => {
+		const p = process("p", [node("a"), boundary("timer", "a")], [lane("x", []), lane("y", [])])
+		expect(refsOf(assignLane(p, "timer", "y"))).toEqual({ x: [], y: ["timer"] })
+	})
+
 	it("refuses an unknown lane", () => {
 		expect(() => assignLane(leafOnly(), "a", "ghost")).toThrow(/Lane "ghost" is not declared/)
 	})
@@ -235,6 +252,20 @@ describe("pruneLaneRefs", () => {
 })
 
 describe("buildLaneSet", () => {
+	it("refuses a lane id declared twice, at any depth", () => {
+		const p = process("p", [node("a"), node("b")])
+		const leafOf = new Map([
+			["a", "A"],
+			["b", "A"],
+		])
+		expect(() => buildLaneSet(p, [{ id: "A" }, { id: "A" }], leafOf)).toThrow(
+			'Lane "A" is declared twice',
+		)
+		expect(() => buildLaneSet(p, [{ id: "A", lanes: [{ id: "B" }] }, { id: "B" }], leafOf)).toThrow(
+			'Lane "B" is declared twice',
+		)
+	})
+
 	const specs: LaneSpec[] = [
 		{ id: "sales", name: "Sales", lanes: [{ id: "inside" }, { id: "desk", name: "Desk" }] },
 		{ id: "ops" },
@@ -413,7 +444,7 @@ describe("primaryProcess", () => {
 		})
 	})
 
-	describe("REV-20261028-008: primaryProcessId", () => {
+	describe("primaryProcessId", () => {
 		const withContent = process("b", [node("t")], undefined, [], { id: "b", isExecutable: false })
 
 		it("picks the only process with content although it is marked non-executable", () => {
@@ -622,6 +653,16 @@ describe("poolLanedProcesses", () => {
 		expect(poolLanedProcesses(defs).collaborations[0]?.id).toBe("Collaboration_2")
 	})
 
+	it("steps around annotation and lane-set ids too", () => {
+		const laned = process("p", [node("a")], [lane("x", ["a"])], [], {
+			textAnnotations: [{ id: "Collaboration_1", text: "note", unknownAttributes: {} }],
+		})
+		if (laned.laneSet) laned.laneSet.id = "Participant_p"
+		const collaboration = poolLanedProcesses(defsOf([laned])).collaborations[0]
+		expect(collaboration?.id).toBe("Collaboration_2")
+		expect(collaboration?.participants[0]?.id).toBe("Participant_p_2")
+	})
+
 	it("pools every process with content and marks the partner non-executable for Flowable", () => {
 		const defs = defsOf([
 			process("main", [node("a")], undefined, [], { isExecutable: true }),
@@ -679,6 +720,11 @@ describe("laneProblems", () => {
 	})
 
 	const cases: Array<[string, BpmnProcess, RegExp]> = [
+		[
+			"a boundary event in another lane than its host",
+			process("p", [node("a"), boundary("t", "a")], [lane("x", ["a"]), lane("y", ["t"])]),
+			/Boundary event "t" is in lane "y" but its host "a" is in "x"/,
+		],
 		[
 			"a dangling ref",
 			process("p", [node("a")], [lane("x", ["a", "ghost"])]),
@@ -762,6 +808,32 @@ describe("collaborationProblems", () => {
 			"a duplicate id",
 			defsOf(two, [collaboration([["P", "p"], ["Q", "q"], ["P"]])]),
 			/Duplicate element ID "P"/,
+		],
+		[
+			"the same lane id in two processes",
+			defsOf(
+				[
+					process("p", [node("a")], [lane("L", ["a"])]),
+					process("q", [node("b")], [lane("L", ["b"])]),
+				],
+				[
+					collaboration([
+						["P", "p"],
+						["Q", "q"],
+					]),
+				],
+			),
+			/Duplicate element ID "L"/,
+		],
+		[
+			"a node sharing a pool's id",
+			defsOf(two, [
+				collaboration([
+					["a", "p"],
+					["Q", "q"],
+				]),
+			]),
+			/Duplicate element ID "a"/,
 		],
 		[
 			"a message flow to nothing",

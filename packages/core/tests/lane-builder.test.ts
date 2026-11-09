@@ -394,6 +394,28 @@ describe("lane builder — continuing a document", () => {
 })
 
 describe("lane builder — DiagramBuilder", () => {
+	it("refuses the same lane id in two processes", () => {
+		const build = () =>
+			Bpmn.createDiagram("D")
+				.process("P1", (b) =>
+					b
+						.startEvent("s1")
+						.endEvent("e1")
+						.lane("Lane_1", { flowNodes: ["s1", "e1"] })
+						.participant("Pool_1"),
+				)
+				.process("P2", (b) =>
+					b
+						.startEvent("s2")
+						.endEvent("e2")
+						.lane("Lane_1", { flowNodes: ["s2", "e2"] })
+						.participant("Pool_2")
+						.executable(false),
+				)
+				.build()
+		expect(build).toThrow('Duplicate element ID "Lane_1"')
+	})
+
 	it("adopts the pool of a laned process, and the pool a process names", () => {
 		const defs = Bpmn.createDiagram("d")
 			.process("shop", (p) =>

@@ -140,10 +140,10 @@ function everyOp({ defs, taskId, gatewayId, flowId, laneId }: OpTarget): EditorO
 		{ kind: "changeType", id: gatewayId, type: "parallelGateway" },
 		// Below the laned file's pools; on a pool-less document it is the first pool.
 		{ kind: "addParticipant", bounds: { x: 0, y: 700, width: 640, height: 60 }, seed: "s8" },
-		// A lane's bottom edge 40 down, the lane below giving up as much (8c.1).
+		// A lane's bottom edge 40 down, the lane below giving up as much.
 		{ kind: "resize", id: laneId, bounds: { x: 30, y: 120, width: 610, height: 160 } },
 		{ kind: "addLane", refId: laneId, where: "above", seed: "s9" },
-		// Room right of the task: the gateway moves, the pools and lanes the line crosses widen (8c.3).
+		// Room right of the task: the gateway moves, the pools and lanes the line crosses widen.
 		{ kind: "space", origin: 250, axis: "h", delta: 60 },
 		{ kind: "snapshot", defs: structuredClone(defs) },
 		{ kind: "autoLayout" },

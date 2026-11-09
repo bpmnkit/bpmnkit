@@ -1,12 +1,12 @@
 // @vitest-environment happy-dom
 /**
- * WP8a in the editor: how selection, hit testing, labels, connections and
+ * In the editor: how selection, hit testing, labels, connections and
  * the context bar and menu treat pools, lanes and message flows.
  */
 import { readFileSync } from "node:fs"
 import { join } from "node:path"
 import { Bpmn } from "@bpmnkit/core"
-import { afterEach, describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 import { BpmnEditor } from "../src/editor.js"
 import { initEditorHud } from "../src/hud.js"
 import { EditorStateMachine } from "../src/state-machine.js"
@@ -40,6 +40,12 @@ interface EditorInternals {
 		current: { x: number; y: number },
 		axis: "h" | "v",
 	): void
+	_queueSpacePreview(
+		origin: { x: number; y: number },
+		current: { x: number; y: number },
+		axis: "h" | "v",
+	): void
+	_cancelSpace(): void
 	_isConnectTargetInvalid(targetId: string | null): boolean
 	_doConnect(srcId: string, tgtId: string): void
 	_findEdgeDropTarget(dx: number, dy: number): string | null
@@ -90,7 +96,7 @@ function drawnGroup(inner: EditorInternals, id: string): Element {
 	return g
 }
 
-describe("8a.3 label editing on pools and lanes", () => {
+describe("label editing on pools and lanes", () => {
 	it("starts from the pool's name, over its header strip", () => {
 		const { ed } = mount()
 		ed.editLabel("Participant_own")
@@ -108,7 +114,7 @@ describe("8a.3 label editing on pools and lanes", () => {
 	})
 })
 
-describe("8a.4 element types and the context bar and menu", () => {
+describe("element types and the context bar and menu", () => {
 	it("names pools, lanes and message flows", () => {
 		const { ed } = mount()
 		expect(ed.getElementType("Participant_own")).toBe("participant")
@@ -126,7 +132,7 @@ describe("8a.4 element types and the context bar and menu", () => {
 		return [...items].map((item) => item.textContent ?? "")
 	}
 
-	it("offers a lane and a black box their swimlane actions only (8b.5)", () => {
+	it("offers a lane and a black box their swimlane actions only", () => {
 		const { ed } = mount(true)
 		expect(menuFor(ed, ["Lane_finance"])).toEqual([
 			"Add lane above",
@@ -160,14 +166,14 @@ describe("8a.4 element types and the context bar and menu", () => {
 		}
 	})
 
-	it("offers a label edit for a message flow (8d.6)", () => {
+	it("offers a label edit for a message flow", () => {
 		const { ed } = mount(true)
 		expect(menuFor(ed, ["Message_pay"])).toContain("Edit label")
 		expect(menuFor(ed, ["Flow_1"])).not.toContain("Edit label")
 	})
 })
 
-describe("8a.5 pools and lanes are not obstacles in the editor", () => {
+describe("pools and lanes are not obstacles in the editor", () => {
 	it("places a quick-added task to the right of its source inside a pool", () => {
 		const { ed } = mount()
 		const id = ed.addConnectedElement("Task_review", "task")
@@ -178,13 +184,13 @@ describe("8a.5 pools and lanes are not obstacles in the editor", () => {
 	})
 })
 
-describe("8a.6 connecting to a pool or a lane", () => {
+describe("connecting to a pool or a lane", () => {
 	it("turns the ghost red and commits nothing", () => {
 		const { ed, inner } = mount()
 		ed.startConnectionFrom("Task_review")
 		expect(inner._isConnectTargetInvalid("Lane_finance")).toBe(true)
 		expect(inner._isConnectTargetInvalid("Participant_own")).toBe(true)
-		// A partner pool takes a message flow since 8d.4.
+		// A partner pool takes a message flow.
 		expect(inner._isConnectTargetInvalid("Participant_bank")).toBe(false)
 		expect(inner._isConnectTargetInvalid("Task_pay")).toBe(false)
 		inner._doConnect("Task_review", "Lane_finance")
@@ -193,7 +199,7 @@ describe("8a.6 connecting to a pool or a lane", () => {
 	})
 })
 
-describe("8a.7 select-all leaves swimlanes out", () => {
+describe("select-all leaves swimlanes out", () => {
 	it("selects the nodes, not the pools and lanes, from the API and from Ctrl+A", () => {
 		const { ed, inner } = mount()
 		const seen: string[][] = []
@@ -208,7 +214,7 @@ describe("8a.7 select-all leaves swimlanes out", () => {
 	})
 })
 
-describe("8a.8 presses and drags on pools and lanes", () => {
+describe("presses and drags on pools and lanes", () => {
 	/** Hit-tests `(x, y)` as if the browser found `target` there. */
 	function hitAt(inner: EditorInternals, target: Element, x: number, y: number) {
 		const original = document.elementFromPoint
@@ -239,7 +245,7 @@ describe("8a.8 presses and drags on pools and lanes", () => {
 		expect(lane.getAttribute("transform")).toBe(before)
 	})
 
-	it("shifts the lanes below in the space tool preview and outlines the ones it stretches (8c.3)", () => {
+	it("shifts the lanes below in the space tool preview and outlines the ones it stretches", () => {
 		const { inner } = mount()
 		const lane = drawnGroup(inner, "Lane_ops")
 		inner._previewSpace({ x: 0, y: 200 }, { x: 0, y: 240 }, "v")
@@ -250,9 +256,37 @@ describe("8a.8 presses and drags on pools and lanes", () => {
 		expect(outlines).toContainEqual([0, 0, 640, 400])
 		expect(outlines).toContainEqual([30, 120, 610, 160])
 	})
+
+	it("previews the space tool once per frame, at the latest position, and not after a cancel", () => {
+		const { inner } = mount()
+		const frames: FrameRequestCallback[] = []
+		vi.stubGlobal("requestAnimationFrame", (callback: FrameRequestCallback) =>
+			frames.push(callback),
+		)
+		vi.stubGlobal("cancelAnimationFrame", (id: number) => {
+			frames[id - 1] = () => {}
+		})
+		try {
+			const lane = drawnGroup(inner, "Lane_ops")
+			const drawnAt = lane.getAttribute("transform")
+			inner._queueSpacePreview({ x: 0, y: 200 }, { x: 0, y: 220 }, "v")
+			inner._queueSpacePreview({ x: 0, y: 200 }, { x: 0, y: 240 }, "v")
+			expect(frames).toHaveLength(1)
+			expect(lane.getAttribute("transform")).toBe(drawnAt)
+			frames[0]?.(0)
+			expect(lane.getAttribute("transform")).toBe("translate(30 280)")
+
+			inner._queueSpacePreview({ x: 0, y: 200 }, { x: 0, y: 260 }, "v")
+			inner._cancelSpace()
+			frames[1]?.(0)
+			expect(lane.getAttribute("transform")).toBe(drawnAt)
+		} finally {
+			vi.unstubAllGlobals()
+		}
+	})
 })
 
-describe("8a.6 and 8a.9 drops on a flow and on a boundary host", () => {
+describe("drops on a flow and on a boundary host", () => {
 	it("offers no split of a flow under a dragged lane or pool", () => {
 		const { ed, inner } = mount()
 		ed.setSelection(["Lane_finance"])
@@ -275,7 +309,7 @@ describe("8a.6 and 8a.9 drops on a flow and on a boundary host", () => {
 	})
 })
 
-describe("WP8d in the editor", () => {
+describe("lane and pool semantics in the editor", () => {
 	/** The labels of the right-click menu for the selection `ids`. */
 	function menuFor(ed: BpmnEditor, ids: string[]): string[] {
 		ed.setSelection(ids)
@@ -357,7 +391,7 @@ describe("WP8d in the editor", () => {
 	})
 })
 
-describe("WP8d message flows in the editor", () => {
+describe("message flows in the editor", () => {
 	/** Hit-tests `(x, y)` as if the browser found `target` there. */
 	function hitAt(inner: EditorInternals, target: Element, x: number, y: number) {
 		const original = document.elementFromPoint
@@ -400,7 +434,7 @@ describe("WP8d message flows in the editor", () => {
 		expect(inner._isConnectTargetInvalid("Participant_bank")).toBe(true)
 	})
 
-	it("targets the innermost pool or lane under the pointer while connecting (I6)", () => {
+	it("targets the innermost pool or lane under the pointer while connecting", () => {
 		const { ed, inner } = mount()
 		const pool = drawnGroup(inner, "Participant_bank")
 		const lane = drawnGroup(inner, "Lane_finance")
@@ -581,7 +615,7 @@ describe("final review: drags the model refuses", () => {
 	})
 })
 
-describe("WP8b in the editor", () => {
+describe("adding pools and lanes in the editor", () => {
 	/** The labels of the right-click menu for the selection `ids`. */
 	function menuFor(ed: BpmnEditor, ids: string[]): string[] {
 		ed.setSelection(ids)
@@ -766,7 +800,7 @@ describe("WP8b in the editor", () => {
 		})
 	}
 
-	it("offers no Divide on a laned pool and no Add lane on nested lanes (I8, fixture 08)", () => {
+	it("offers no Divide on a laned pool and no Add lane on nested lanes (fixture 08)", () => {
 		const xml = readFileSync(
 			join(
 				import.meta.dirname,
@@ -932,7 +966,7 @@ describe("WP8b in the editor", () => {
 	})
 })
 
-describe("WP8c resizing pools and lanes in the editor", () => {
+describe("resizing pools and lanes in the editor", () => {
 	const pointer = (type: string, x: number, y: number) =>
 		new PointerEvent(type, { clientX: x, clientY: y, button: 0 })
 
@@ -1045,12 +1079,12 @@ describe("WP8c resizing pools and lanes in the editor", () => {
 	})
 })
 
-describe("WP8c moving pools and making space in the editor", () => {
+describe("moving pools and making space in the editor", () => {
 	/** The `<g>` the canvas draws for `id`: containers and nodes alike. */
 	const group = (inner: EditorInternals, id: string) =>
 		inner._svg.querySelector(`[data-bpmnkit-id="${id}"]`)
 
-	it("drags the own pool's lanes, nodes and notes along in the preview (8c.2)", () => {
+	it("drags the own pool's lanes, nodes and notes along in the preview", () => {
 		const { ed, inner } = mount()
 		ed.setSelection(["Participant_own"])
 		inner._previewTranslate(40, 20)
@@ -1177,7 +1211,7 @@ describe("WP8c moving pools and making space in the editor", () => {
 	})
 })
 
-describe("WP8b leftovers", () => {
+describe("pools and lanes in the editor: smaller fixes", () => {
 	const pointer = (type: string, x: number, y: number) =>
 		new PointerEvent(type, { clientX: x, clientY: y, button: 0 })
 	const reviews = (ed: BpmnEditor) =>

@@ -539,7 +539,7 @@ describe("reconcileCompact and full operations keep lanes consistent", () => {
 	})
 })
 
-describe("REV-20261028-010: reconcileCompact refuses broken pool, message and lane ids", () => {
+describe("reconcileCompact refuses broken pool, message and lane ids", () => {
 	const plain = () => Bpmn.createProcess("p").startEvent("a").endEvent("b").build()
 	const refused = /reconcileCompact: invalid CompactDiagram/
 
@@ -626,7 +626,7 @@ describe("REV-20261028-010: reconcileCompact refuses broken pool, message and la
 	})
 })
 
-describe("REV-20261028-012: withLanes refuses a looping lane tree", () => {
+describe("withLanes refuses a looping lane tree", () => {
 	const process = () =>
 		Bpmn.createProcess("p").startEvent("a").endEvent("b").build().processes[0] as BpmnProcess
 

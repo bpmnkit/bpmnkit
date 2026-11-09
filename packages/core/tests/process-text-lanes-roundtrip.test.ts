@@ -133,16 +133,32 @@ describe("process text lanes and pools — writer to change-script parser", () =
 		})
 	})
 
-	// Defect: the writer writes every leaf lane, so an unnamed lane that holds no
-	// written node becomes a bare `lane lane:`, which parseProcessDelta reads as
-	// prose and reports ("names nothing to change; ignored"). Modelers leave such
-	// empty lanes behind. Fix in the writer (skip the line, or write the lane under
-	// a name) and drop `.fails`.
+	// Modelers leave unnamed, empty lanes behind; the writer leaves them out, as
+	// such a line would say nothing.
 	it("an unnamed, empty leaf lane writes a line the change-script parser accepts", () => {
 		const defs = load("02-collaboration.bpmn")
 		const source = primaryProcess(defs)
 		source?.laneSet?.lanes.push({ id: "Lane_empty", flowNodeRefs: [], unknownAttributes: {} })
 		expect(parseProcessDelta(writeProcessText(defs).text).problems).toEqual([])
+	})
+
+	it("an unnamed lane and an unnamed pool read back unnamed", () => {
+		const defs = load("02-collaboration.bpmn")
+		const source = primaryProcess(defs)
+		const lane = leafLanes(source?.laneSet).find((candidate) => candidate.flowNodeRefs.length > 0)
+		const pool = defs.collaborations[0]?.participants.find((p) => p.processRef !== source?.id)
+		if (!lane || !pool) throw new Error("fixture has no laned own pool and partner pool")
+		lane.name = undefined
+		pool.name = undefined
+		const { text, aliases } = writeProcessText(defs)
+		const written = (id: string) => Object.keys(aliases).find((alias) => aliases[alias] === id)
+		const { diagram } = parseProcessText(text)
+		const read = diagram.processes[0]?.lanes?.find((l) => l.id === written(lane.id))
+		expect(read).toBeDefined()
+		expect(read?.name).toBeUndefined()
+		const partner = diagram.participants?.find((p) => p.id === written(pool.id))
+		expect(partner).toBeDefined()
+		expect(partner?.name).toBeUndefined()
 	})
 
 	it.each(laneFree)("%s has no lane, pool or msg line", (file) => {

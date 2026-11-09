@@ -90,7 +90,7 @@ interface Touched {
  * in `touched` are deep copies and every other one is the very object of
  * `defs`. The command stack keeps up to 100 documents, so an edit that copied
  * the whole document would keep 100 copies of the processes it never touched
- * (8b.6). The caller must list everything it changes in place.
+ * The caller must list everything it changes in place.
  */
 export function copyTouched(defs: BpmnDefinitions, touched: Touched): BpmnDefinitions {
 	const copy = <T>(items: T[], picked: readonly T[] = []): T[] =>
@@ -308,7 +308,7 @@ export function lockedIds(defs: BpmnDefinitions): Set<string> {
 
 /**
  * The ids a `move` leaves where they are: every lane (dragging one would lay
- * it over its neighbour, decision U4), every pool but a black box and the own
+ * it over its neighbour; bpmn-js ignores it too), every pool but a black box and the own
  * pool of the {@link primaryProcess}, which takes what it holds along
  * ({@link poolHolds}; a partner's content would stay behind), and the
  * {@link lockedIds}.
@@ -328,7 +328,7 @@ export function unmovableIds(defs: BpmnDefinitions): Set<string> {
 
 /**
  * What a move of pool `poolId` takes along when it is the own pool of the
- * {@link primaryProcess} (critique 8c.2): its lanes, every element and flow of
+ * {@link primaryProcess}: its lanes, every element and flow of
  * the process at any sub-process depth, and the annotations of the process and
  * of the collaborations whose centre lies inside the pool. A note beside the
  * pool stays, as it may be about another pool. Empty for any other pool.
@@ -826,7 +826,13 @@ export function removeLaneBand(
 	if (band) band.plane.shapes.splice(band.plane.shapes.indexOf(band.shape), 1)
 
 	let result = process
-	for (const ref of heir ? lane.flowNodeRefs : []) result = assignLane(result, ref, heir?.id ?? "")
+	// A boundary event goes with its host, which assignLane carries along.
+	const boundaries = new Set(
+		process.flowElements.filter((el) => el.type === "boundaryEvent").map((el) => el.id),
+	)
+	for (const ref of heir ? lane.flowNodeRefs : []) {
+		if (!boundaries.has(ref)) result = assignLane(result, ref, heir?.id ?? "")
+	}
 	next.processes[processIndex] = result
 	return dropAssociationsTo(next, new Set([laneId]))
 }

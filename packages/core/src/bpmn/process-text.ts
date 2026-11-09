@@ -232,11 +232,17 @@ export const DOC_LINE = /^doc\s+([A-Za-z_][\w.-]*)\s*:\s*(.*)$/i
  * keyword is required, so `lane_check[user …] > x` is still a path. The keywords
  * of this and the next two lines are lowercase only, as the guides teach them:
  * prose such as "Lane changes: move review into sales" starts with a capital.
+ * Without a bracket the lane is named after its id, as a node is; `[]` leaves
+ * it unnamed.
  */
 export const LANE_LINE = /^lane\s+([A-Za-z_][\w.-]*)\s*(?:\[([^\]]*)\])?\s*:\s*(.*)$/
 
-/** `pool <id>[Name]`, another party drawn as an empty pool. */
-export const POOL_LINE = /^pool\s+([A-Za-z_][\w.-]*)\s*(?:\[([^\]]*)\])?\s*$/
+/**
+ * `pool <id>[Name]`, another party drawn as an empty pool; `[]` leaves it
+ * unnamed. The bracket is required: without it, two words of prose such as
+ * "pool party" would declare a pool.
+ */
+export const POOL_LINE = /^pool\s+([A-Za-z_][\w.-]*)\s*\[([^\]]*)\]\s*$/
 
 /**
  * `msg a >(Label) b`, a message between a node and a pool. Its own keyword, so a
@@ -529,7 +535,14 @@ class Reader {
 	/** `doc` lines, with the written id resolved to the node it meant when read. */
 	readonly docs: { elementId: string; written: string; text: string; line: number }[] = []
 	/** `lane` lines. A member already declared is resolved when read, as a note is. */
-	readonly lanes: { written: string; name?: string; members: Ref[]; line: number }[] = []
+	readonly lanes: {
+		written: string
+		name?: string
+		/** Written with an empty `[]`: no name, not even one taken from the id. */
+		unnamed?: true
+		members: Ref[]
+		line: number
+	}[] = []
 	/** `pool` lines. */
 	readonly pools: { written: string; name?: string; line: number }[] = []
 	/** `msg` lines. */
@@ -567,7 +580,12 @@ class Reader {
 				.split(/[\s,]+/)
 				.filter(Boolean)
 				.map((id) => this.ref(id))
-			this.lanes.push({ written: lane[1] as string, ...(name ? { name } : {}), members, line: n })
+			this.lanes.push({
+				written: lane[1] as string,
+				...(name ? { name } : name === "" ? { unnamed: true } : {}),
+				members,
+				line: n,
+			})
 			return true
 		}
 		const pool = POOL_LINE.exec(text)
@@ -2143,7 +2161,9 @@ function readLanes(
 					message: `lane ${line.written}: the id is ${clashOwner(line.written, nodes, byWritten.values())}; wrote the lane as "${id}"`,
 				})
 			} else taken.add(id)
-			lane = { id, name: line.name ?? nameFromId(line.written), members: [] }
+			lane = line.unnamed
+				? { id, members: [] }
+				: { id, name: line.name ?? nameFromId(line.written), members: [] }
 			byWritten.set(line.written, lane)
 		} else if (line.name !== undefined) lane.name = line.name
 		for (const ref of line.members) {
@@ -2299,7 +2319,7 @@ function readPools(
 				message: `pool ${line.written}: the id is ${clashOwner(line.written, nodes, lanes)}; wrote the pool as "${id}"`,
 			})
 		} else taken.add(id)
-		pools.set(line.written, { id, name: line.name ?? nameFromId(line.written) })
+		pools.set(line.written, line.name === undefined ? { id } : { id, name: line.name })
 	}
 	return pools
 }

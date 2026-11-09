@@ -114,7 +114,7 @@ export function reassignLanes(
 
 /**
  * What an op that created (`created`) or moved the shapes `ids` must leave
- * behind, or `undefined` to refuse the whole op (critique I4).
+ * behind, or `undefined` to refuse the whole op.
  *
  * Refused: a flow element of the {@link primaryProcess} whose centre lands in another
  * process's pool (a black box or not: it would be saved in one process and

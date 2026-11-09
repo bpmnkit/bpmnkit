@@ -654,7 +654,7 @@ describe("the op stream", () => {
 		ed.destroy()
 	})
 
-	it("replays a pool and lane session to byte-identical XML (WP8c)", () => {
+	it("replays a pool and lane session to byte-identical XML", () => {
 		const xml = Bpmn.export(poolLessFlowable(false))
 		const ed = new BpmnEditor({ container: makeContainer(), xml, grid: false })
 		const ops = recorder(ed)

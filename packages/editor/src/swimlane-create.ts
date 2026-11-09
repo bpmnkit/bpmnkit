@@ -183,7 +183,7 @@ function poolBoundsFor(
  * `diagrams[0]`), made when missing: a collaboration when the file has none
  * (else the first one takes it), a participant named `name` for this process
  * only, and a pool shape drawn behind everything around the process (see
- * `poolBoundsFor`) on a plane that then draws the collaboration (critique X8).
+ * `poolBoundsFor`) on a plane that then draws the collaboration.
  * The process itself is not touched, so its `isExecutable` and `flowable:*`
  * stay as they are, and other processes are not pooled: pooling one would mark
  * it non-executable. `undefined` when there is no process or no diagram, and
@@ -363,9 +363,10 @@ export interface Made {
  * `processes[0]` drawn on `diagrams[0]`. When that process has no drawn pool
  * it gets one ({@link poolPrimary}), named `name`, around its content: `bounds`
  * only place the pool of a process with nothing drawn. Otherwise a black box
- * named `name`, with no `processRef` (decision U8), is drawn at `bounds`
- * ({@link addBlackBox}); refused when that overlaps the own pool, as a black
- * box moved there is (critique I4). `created`: the participant, then the
+ * named `name`, with no `processRef` (valid BPMN, and no empty process to
+ * keep in step), is drawn at `bounds` ({@link addBlackBox}); refused when that
+ * overlaps the own pool, as a black box moved there is: nodes inside it would
+ * read as the partner's. `created`: the participant, then the
  * collaboration when one was made. `undefined` when refused.
  */
 export function addPool(
@@ -410,12 +411,12 @@ export function addPool(
  * {@link LANE_BAND_HEIGHT} band goes `where` `refId`, the own pool or one of
  * its top-level leaf lanes, through {@link insertLaneBand}. In the lane set it
  * comes next to `refId`, or first or last for the pool. On a pool without
- * lanes the first add makes two (decision U5): the one asked for and one over
+ * lanes the first add makes two, as bpmn-js does: the one asked for and one over
  * the whole old pool holding every node ({@link addFirstLane}). Existing lane
  * refs never change, as the band goes in at an edge and what is below moves
  * by it. `created`: the new lane, then the lane that took the old pool and the
  * new lane set when made. `undefined`, refused, for a child lane, a lane with
- * child lanes (nested lane editing is out of v1, critique I8), any other pool
+ * child lanes (the editor does not edit nested lanes yet), any other pool
  * (black boxes, other processes' pools), an undrawn pool, a pool drawn
  * vertically (`isHorizontal="false"`, not supported yet) and unknown ids.
  */
@@ -478,7 +479,7 @@ export function addLaneBeside(
 }
 
 /**
- * The `addLane` op with a `count`, "Divide into lanes" (decision U6), on a
+ * The `addLane` op with a `count`, "Divide into lanes", on a
  * document whose primary process is `processes[0]`: the own pool `poolId`,
  * which has no lanes, becomes `count` top-level lanes. When each band keeps
  * {@link MIN_BAND}, the pool's height is split as bpmn-js splits it: equal
@@ -586,8 +587,8 @@ export function canAddLane(defs: BpmnDefinitions, refId: string): boolean {
 
 /**
  * Whether "Divide into lanes" applies to `poolId`: the drawn own pool of a
- * primary process with no lanes yet (decision U6; dividing a lane would make
- * child lanes, out of v1).
+ * primary process with no lanes yet (dividing a lane would make child lanes,
+ * which the editor does not edit).
  */
 export function canDivideLanes(defs: BpmnDefinitions, poolId: string): boolean {
 	const process = primaryProcess(defs)
