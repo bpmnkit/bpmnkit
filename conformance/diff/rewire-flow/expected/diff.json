@@ -1,0 +1,59 @@
+{
+  "afterHash": "0c2600e79dd8f728806214179b9f63852e0c1f1034f697f86202db20e8c8286d",
+  "beforeHash": "d5664749d621c5a6d05bda439108cf5bd158f36322b50bc1c2eeca91ba1152d2",
+  "changes": [
+    {
+      "elementType": "sequenceFlow",
+      "fields": [
+        {
+          "after": "End_done",
+          "before": "Gateway_ok",
+          "path": "targetRef"
+        }
+      ],
+      "geometryAfter": {
+        "waypoints": [
+          {
+            "x": 400,
+            "y": 160
+          },
+          {
+            "x": 470,
+            "y": 160
+          }
+        ]
+      },
+      "geometryBefore": {
+        "waypoints": [
+          {
+            "x": 400,
+            "y": 160
+          },
+          {
+            "x": 470,
+            "y": 160
+          }
+        ]
+      },
+      "id": "Flow_2",
+      "kind": "changed"
+    }
+  ],
+  "planes": [
+    {
+      "added": 0,
+      "changed": 1,
+      "id": "Process_1",
+      "moved": 0,
+      "removed": 0,
+      "total": 1
+    }
+  ],
+  "summary": {
+    "added": 0,
+    "changed": 1,
+    "moved": 0,
+    "removed": 0,
+    "total": 1
+  }
+}

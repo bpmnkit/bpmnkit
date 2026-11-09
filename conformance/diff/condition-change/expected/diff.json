@@ -1,0 +1,69 @@
+{
+  "afterHash": "11c13bf14d635e8fcf64138c4f8a8936d1c573ca65b0f1e1b8fca9ab68d7aa05",
+  "beforeHash": "d5664749d621c5a6d05bda439108cf5bd158f36322b50bc1c2eeca91ba1152d2",
+  "changes": [
+    {
+      "elementType": "sequenceFlow",
+      "fields": [
+        {
+          "after": "= approved and total < 1000",
+          "before": "= approved",
+          "path": "conditionExpression/text"
+        }
+      ],
+      "geometryAfter": {
+        "waypoints": [
+          {
+            "x": 550,
+            "y": 135
+          },
+          {
+            "x": 550,
+            "y": 110
+          },
+          {
+            "x": 632,
+            "y": 110
+          }
+        ]
+      },
+      "geometryBefore": {
+        "waypoints": [
+          {
+            "x": 550,
+            "y": 135
+          },
+          {
+            "x": 550,
+            "y": 110
+          },
+          {
+            "x": 632,
+            "y": 110
+          }
+        ]
+      },
+      "id": "Flow_yes",
+      "kind": "changed",
+      "nameAfter": "yes",
+      "nameBefore": "yes"
+    }
+  ],
+  "planes": [
+    {
+      "added": 0,
+      "changed": 1,
+      "id": "Process_1",
+      "moved": 0,
+      "removed": 0,
+      "total": 1
+    }
+  ],
+  "summary": {
+    "added": 0,
+    "changed": 1,
+    "moved": 0,
+    "removed": 0,
+    "total": 1
+  }
+}

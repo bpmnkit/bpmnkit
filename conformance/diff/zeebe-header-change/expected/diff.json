@@ -1,0 +1,54 @@
+{
+  "afterHash": "999b652b7a951849bbc543c72c2c572e01ffb4a147c0dc318609dae41bf15439",
+  "beforeHash": "d5664749d621c5a6d05bda439108cf5bd158f36322b50bc1c2eeca91ba1152d2",
+  "changes": [
+    {
+      "elementType": "serviceTask",
+      "fields": [
+        {
+          "after": "review-order-v2",
+          "before": "review-order",
+          "path": "extensionElements/zeebe:taskDefinition/@type"
+        },
+        {
+          "after": "finance",
+          "before": "ops",
+          "path": "extensionElements/zeebe:taskHeaders/zeebe:header/@value"
+        }
+      ],
+      "geometryAfter": {
+        "height": 80,
+        "width": 100,
+        "x": 300,
+        "y": 120
+      },
+      "geometryBefore": {
+        "height": 80,
+        "width": 100,
+        "x": 300,
+        "y": 120
+      },
+      "id": "Task_review",
+      "kind": "changed",
+      "nameAfter": "Review order",
+      "nameBefore": "Review order"
+    }
+  ],
+  "planes": [
+    {
+      "added": 0,
+      "changed": 1,
+      "id": "Process_1",
+      "moved": 0,
+      "removed": 0,
+      "total": 1
+    }
+  ],
+  "summary": {
+    "added": 0,
+    "changed": 1,
+    "moved": 0,
+    "removed": 0,
+    "total": 1
+  }
+}

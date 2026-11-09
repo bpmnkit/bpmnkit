@@ -6,6 +6,7 @@ mod bpmn;
 pub mod builder;
 pub mod compact;
 pub mod compat;
+pub mod diff;
 mod dmn;
 mod feel;
 mod form;
@@ -14,7 +15,7 @@ pub mod layout;
 pub mod lint;
 pub mod migrate;
 pub mod optimize;
-pub mod sha256;
+pub use bpmnkit_diff::sha256;
 pub mod text;
 pub mod tooling;
 pub mod validate;
@@ -77,7 +78,7 @@ pub fn load_feel_cases(dir: &Path) -> Result<Vec<FeelCase>, String> {
 }
 
 /// Ids of the cases of one kind (`<kind>/<case>`), one per directory.
-fn load_case_ids(dir: &Path, kind: &str) -> Vec<String> {
+pub(crate) fn load_case_ids(dir: &Path, kind: &str) -> Vec<String> {
     let Ok(rd) = std::fs::read_dir(dir.join(kind)) else {
         return vec![];
     };

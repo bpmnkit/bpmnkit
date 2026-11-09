@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="Start_1" name="Order received"><bpmn:outgoing>Flow_1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:serviceTask id="Task_review" name="Review order"><bpmn:extensionElements><zeebe:taskDefinition type="review-order" retries="3" /><zeebe:taskHeaders><zeebe:header key="owner" value="ops" /></zeebe:taskHeaders></bpmn:extensionElements><bpmn:incoming>Flow_1</bpmn:incoming><bpmn:outgoing>Flow_2</bpmn:outgoing></bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_ok" name="Approved?" default="Flow_no"><bpmn:incoming>Flow_2</bpmn:incoming><bpmn:outgoing>Flow_yes</bpmn:outgoing><bpmn:outgoing>Flow_no</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:endEvent id="End_done" name="Done"><bpmn:incoming>Flow_yes</bpmn:incoming></bpmn:endEvent>
+    <bpmn:endEvent id="End_rejected" name="Rejected"><bpmn:incoming>Flow_no</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="Start_1" targetRef="Task_review" />
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_review" targetRef="End_done" />
+    <bpmn:sequenceFlow id="Flow_yes" name="yes" sourceRef="Gateway_ok" targetRef="End_done"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">= approved</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_no" name="no" sourceRef="Gateway_ok" targetRef="End_rejected" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_1"><bpmndi:BPMNPlane id="Plane_1" bpmnElement="Process_1">
+    <bpmndi:BPMNShape id="Start_1_di" bpmnElement="Start_1"><dc:Bounds x="152" y="142" width="36" height="36" /></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="Task_review_di" bpmnElement="Task_review"><dc:Bounds x="300" y="120" width="100" height="80" /></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="Gateway_ok_di" bpmnElement="Gateway_ok" isMarkerVisible="true"><dc:Bounds x="525" y="135" width="50" height="50" /></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="End_done_di" bpmnElement="End_done"><dc:Bounds x="632" y="92" width="36" height="36" /></bpmndi:BPMNShape>
+    <bpmndi:BPMNShape id="End_rejected_di" bpmnElement="End_rejected"><dc:Bounds x="632" y="212" width="36" height="36" /></bpmndi:BPMNShape>
+    <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1"><di:waypoint x="188" y="160" /><di:waypoint x="300" y="160" /></bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2"><di:waypoint x="400" y="160" /><di:waypoint x="470" y="160" /></bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="Flow_yes_di" bpmnElement="Flow_yes"><di:waypoint x="550" y="135" /><di:waypoint x="550" y="110" /><di:waypoint x="632" y="110" /></bpmndi:BPMNEdge>
+    <bpmndi:BPMNEdge id="Flow_no_di" bpmnElement="Flow_no"><di:waypoint x="550" y="185" /><di:waypoint x="550" y="230" /><di:waypoint x="632" y="230" /></bpmndi:BPMNEdge>
+  </bpmndi:BPMNPlane></bpmndi:BPMNDiagram>
+</bpmn:definitions>

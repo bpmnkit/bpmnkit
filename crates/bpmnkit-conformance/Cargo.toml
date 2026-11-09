@@ -12,6 +12,7 @@ serde = { workspace = true }
 serde_json = { workspace = true, features = ["float_roundtrip"] }
 bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.1.0" }
 bpmnkit-bpmn = { workspace = true }
+bpmnkit-diff = { workspace = true }
 bpmnkit-form = { workspace = true }
 bpmnkit-dmn = { workspace = true }
 bpmnkit-compat = { workspace = true }

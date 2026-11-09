@@ -1,0 +1,23 @@
+[package]
+name = "bpmnkit-diff"
+description = "Semantic diff of BPMN models: field-level changes, layout-only moves, and a presentation-free semantic hash (Rust twin of @bpmnkit/core's diffBpmn)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["bpmn", "diff", "camunda", "semantic-hash"]
+categories = ["parser-implementations", "text-processing"]
+# Tests read the shared corpus under ../../conformance, outside the package.
+exclude = ["tests/"]
+
+[dependencies]
+bpmnkit-bpmn = { workspace = true }
+indexmap = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+[dev-dependencies]
+serde_json = { workspace = true, features = ["float_roundtrip"] }

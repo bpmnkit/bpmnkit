@@ -588,6 +588,13 @@ call-activity markers), `drd-*` and `table-*`.
 `data-element-id="<id>"` (option `elementIds`) goes right after the first attribute of an element's `<g>`
 (`transform`) or main `<path>` (`d`), XML-escaped like labels.
 
+## Diff: `diff/<case>/`
+
+- `before.bpmn`, `after.bpmn`: the two models.
+- `expected/diff.json`: `diffBpmn(parseBpmn(before), parseBpmn(after))` as JSON, keys sorted, 2-space indent. It carries `beforeHash` / `afterHash`, so `semanticHash` parity is checked too (the Rust runner compares numbers by value).
+
+Cases: `rename`, `retype`, `rewire-flow`, `condition-change`, `zeebe-header-change`, `lane-add`, `lane-remove`, `move-only` (DI only), `noop-reformat` (reordered, re-spaced, attribute order and sub-pixel noise: no changes, equal hashes), `ids-only-change`.
+
 ## `pending.json`
 
 `{"<case id or bpmn/<case>>": "<reason or issue link>"}`: cases a non-TS runner knows it does

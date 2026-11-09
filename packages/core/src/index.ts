@@ -143,6 +143,15 @@ export type {
 	CamundaCompatVersion,
 } from "./bpmn/camunda-compat-data.js"
 export { diffDiagram } from "./bpmn/diagram-diff.js"
+export { diffBpmn } from "./bpmn/bpmn-diff.js"
+export type {
+	BpmnChangeKind,
+	BpmnDiff,
+	BpmnDiffSummary,
+	BpmnElementChange,
+	BpmnFieldChange,
+	BpmnGeometry,
+} from "./bpmn/bpmn-diff.js"
 export {
 	exportPreserving,
 	exportPreservingResult,

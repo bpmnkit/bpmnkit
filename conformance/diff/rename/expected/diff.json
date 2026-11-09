@@ -1,0 +1,49 @@
+{
+  "afterHash": "29c59e1a2fcc3d0a17f46bf25962e3681b6cd7223f980ce7be0e3c710c67da72",
+  "beforeHash": "d5664749d621c5a6d05bda439108cf5bd158f36322b50bc1c2eeca91ba1152d2",
+  "changes": [
+    {
+      "elementType": "serviceTask",
+      "fields": [
+        {
+          "after": "Check order",
+          "before": "Review order",
+          "path": "name"
+        }
+      ],
+      "geometryAfter": {
+        "height": 80,
+        "width": 100,
+        "x": 300,
+        "y": 120
+      },
+      "geometryBefore": {
+        "height": 80,
+        "width": 100,
+        "x": 300,
+        "y": 120
+      },
+      "id": "Task_review",
+      "kind": "changed",
+      "nameAfter": "Check order",
+      "nameBefore": "Review order"
+    }
+  ],
+  "planes": [
+    {
+      "added": 0,
+      "changed": 1,
+      "id": "Process_1",
+      "moved": 0,
+      "removed": 0,
+      "total": 1
+    }
+  ],
+  "summary": {
+    "added": 0,
+    "changed": 1,
+    "moved": 0,
+    "removed": 0,
+    "total": 1
+  }
+}

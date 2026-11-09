@@ -12,6 +12,12 @@
 - `bpmnkit_lint::report`: `to_text` (`TextStyle{color,max}`), `to_markdown`, `to_slack_mrkdwn` (escapes `&<>`), plus `check_findings_*` for DMN/form findings. Snapshot tests; `detect`/`load` tested over the conformance corpus.
 - Examples `text_to_bpmn`, `eval_dmn`, `lint_report`; docs page `rust/embedding`. `render`/`diff` features wait for `bpmnkit-render` (T1) and `bpmnkit-diff` (T3).
 
+## 2026-11-09 — `bpmnkit-diff` crate + `diffBpmn` (T3 of the Rust embedding plan)
+
+- New crate `crates/bpmnkit-diff` and TS `diffBpmn(before, after)` (`packages/core/src/bpmn/bpmn-diff.ts`, exported from `@bpmnkit/core`): every semantic change as added / removed / changed with field-level `FieldChange`s (`path`, `before`, `after`; extension elements read `extensionElements/zeebe:taskDefinition/@type`, lists match by `id`/`name`), layout-only `moved` with rounded geometry, per-plane counts (`diffDiagram`), and `beforeHash` / `afterHash`. Rust: `project_semantics`, `semantic_hash`, `diff_bpmn`, `diff_to_text` (plain + markdown). `sha256.rs` moved from `bpmnkit-conformance` into the crate (conformance re-exports it).
+- `changes` lists every semantic difference (also non-drawable ones); `planes` keep `diffDiagram`'s drawable-only counts. A parent whose id list was only reordered by the canonical sort is not reported (no field differs). `casen diff bpmn` is unchanged; the facade feature line is T5's.
+- Conformance: `conformance/diff/<case>/{before.bpmn,after.bpmn,expected/diff.json}` (rename, retype, rewire-flow, condition-change, zeebe-header-change, lane-add, lane-remove, move-only, noop-reformat, ids-only-change), recorded by `packages/core/tests/diff-conformance.test.ts`, replayed by `crates/bpmnkit-conformance/tests/diff.rs`; Rust ≡ TS including the hashes (JS number and UTF-16 ordering reproduced for the hash).
+
 ## 2026-11-09 — Plan: embedding the Rust crates (render, diff, CLI/Slack)
 
 - New `doc/plans/rust-embedding.md` (analysis + spec only, no code): `bpmnkit-render` crate (BPMN/DRD/decision-table SVG byte-identical to TS `exportSvg`, PNG via resvg with an embedded font), `bpmnkit-diff` crate (port of `diffSemantics` + `diffDiagram` with field-level changes) and a self-contained HTML diff viewer from one shared template, facade error/detect/lint-report helpers, and a five-task parallel work split.
