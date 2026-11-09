@@ -834,7 +834,7 @@ export function serializeBpmn(definitions: BpmnDefinitions): string {
 		}
 	}
 
-	attrs.id = definitions.id
+	if (definitions.id !== "") attrs.id = definitions.id
 	attrs.targetNamespace = definitions.targetNamespace
 	if (definitions.exporter !== undefined) attrs.exporter = definitions.exporter
 	if (definitions.exporterVersion !== undefined) attrs.exporterVersion = definitions.exporterVersion

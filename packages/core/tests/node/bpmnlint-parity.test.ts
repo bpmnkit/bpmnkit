@@ -36,7 +36,10 @@ function bpmnFiles(dir: string): string[] {
 // whole and that the build-time XSD check leaves a parsed document's ids alone.
 // The deployability repro z07 has a nested id that is not an XML name, to pin that Zeebe
 // rejects it.
+// `lane-set-nested-legacy` nests a <laneSet> in a lane, as older versions wrote it:
+// BPMN Kit reads those lanes back, bpmn-moddle drops them (its round trip is compared).
 const MALFORMED = new Set([
+	"conformance/bpmn/lane-set-nested-legacy/input.bpmn",
 	"conformance/layout/edge-no-di-no-ids/input.bpmn",
 	"conformance/layout/edge-existing-di-duplicate-id/input.bpmn",
 	"conformance/builder/from-insert-after-arrow-in-id/input.bpmn",

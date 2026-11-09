@@ -921,7 +921,9 @@ pub fn serialize_bpmn(definitions: &BpmnDefinitions) -> String {
             attrs.insert(format!("xmlns:{prefix}"), uri.clone());
         }
     }
-    attrs.insert("id".into(), definitions.id.clone());
+    if !definitions.id.is_empty() {
+        attrs.insert("id".into(), definitions.id.clone());
+    }
     attrs.insert(
         "targetNamespace".into(),
         definitions.target_namespace.clone(),

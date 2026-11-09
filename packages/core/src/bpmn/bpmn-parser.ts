@@ -65,6 +65,17 @@ function attr(attributes: Attrs, name: string): string | undefined {
 	return undefined
 }
 
+/**
+ * An `xsd:boolean` attribute: `true`/`1` or `false`/`0`, surrounding whitespace
+ * ignored. Undefined when absent or not a boolean, so it is not written back.
+ */
+function xsdBoolean(value: string | undefined): boolean | undefined {
+	const v = value?.trim()
+	if (v === "true" || v === "1") return true
+	if (v === "false" || v === "0") return false
+	return undefined
+}
+
 function requiredAttr(attributes: Attrs, name: string, elementName: string): string {
 	const value = attr(attributes, name)
 	if (value === undefined) {
@@ -1403,6 +1414,9 @@ class LaneFrame extends BaseElementFrame implements LaneSetOwner {
 			case "flowNodeRef":
 				return new TextFrame(this, SLOT_FLOW_NODE_REF, attrs)
 			case "childLaneSet":
+			// @bpmnkit/core up to 1.9.0 wrote nested lanes as <laneSet>; read those
+			// files back rather than drop their lanes.
+			case "laneSet":
 				if (this.childLaneSetSeen) return null
 				this.childLaneSetSeen = true
 				return new LaneSetFrame(attrs, this)
@@ -1492,12 +1506,9 @@ class ProcessFrame extends Frame implements LaneSetOwner, TextOwner {
 		this.target.push({
 			id: this.id,
 			name: attr(attrs, "name"),
-			// Absent, "true" and "false" are three states: BPMN reads an absent flag as
-			// false, but a file that says "false" out loud should say it again.
-			isExecutable:
-				attr(attrs, "isExecutable") === undefined
-					? undefined
-					: attr(attrs, "isExecutable") === "true",
+			// Absent, true and false are three states: BPMN reads an absent flag as
+			// false and Flowable as true, so a file that says "false" should say it again.
+			isExecutable: xsdBoolean(attr(attrs, "isExecutable")),
 			...(this.documentation !== undefined ? { documentation: this.documentation } : {}),
 			...(this.documentationAttributes
 				? { documentationAttributes: this.documentationAttributes }
@@ -1895,7 +1906,8 @@ class DefinitionsFrame extends Frame implements TextOwner {
 		}
 
 		this.sink.result = {
-			id: requiredAttr(attrs, "id", this.name),
+			// Optional in the schema, and the Flowable Modeler leaves it out.
+			id: attr(attrs, "id") ?? "",
 			targetNamespace: requiredAttr(attrs, "targetNamespace", this.name),
 			exporter: attr(attrs, "exporter"),
 			exporterVersion: attr(attrs, "exporterVersion"),
