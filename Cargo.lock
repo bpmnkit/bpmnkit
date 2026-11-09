@@ -77,6 +77,7 @@ dependencies = [
  "bpmnkit-spec",
  "bpmnkit-text",
  "bpmnkit-xml",
+ "serde_json",
 ]
 
 [[package]]

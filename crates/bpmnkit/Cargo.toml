@@ -10,6 +10,8 @@ rust-version.workspace = true
 readme = "README.md"
 keywords = ["bpmn", "dmn", "feel", "camunda", "workflow"]
 categories = ["parser-implementations", "encoding"]
+# Tests read the shared corpus under ../../conformance, outside the package.
+exclude = ["tests/"]
 
 [dependencies]
 bpmnkit-spec = { workspace = true, optional = true }
@@ -23,6 +25,7 @@ bpmnkit-lint = { workspace = true, optional = true }
 bpmnkit-layout = { workspace = true, optional = true }
 bpmnkit-builder = { workspace = true, optional = true }
 bpmnkit-text = { workspace = true, optional = true }
+serde_json = { workspace = true }
 
 [features]
 # What most users reach for: read, write and evaluate models.
@@ -38,7 +41,20 @@ compat = ["dep:bpmnkit-compat"]
 lint = ["dep:bpmnkit-lint"]
 layout = ["dep:bpmnkit-layout"]
 builder = ["dep:bpmnkit-builder"]
-text = ["dep:bpmnkit-text"]
+# Process text and compact JSON expand into BPMN/DMN models, so their types must be reachable.
+text = ["dep:bpmnkit-text", "bpmn", "dmn"]
 
 [package.metadata.docs.rs]
 all-features = true
+
+[[example]]
+name = "text_to_bpmn"
+required-features = ["text"]
+
+[[example]]
+name = "eval_dmn"
+required-features = ["dmn", "feel", "text"]
+
+[[example]]
+name = "lint_report"
+required-features = ["lint", "bpmn"]

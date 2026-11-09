@@ -22,3 +22,23 @@ pub use bpmnkit_spec as spec;
 pub use bpmnkit_text as text;
 #[cfg(feature = "xml")]
 pub use bpmnkit_xml as xml;
+
+mod detect;
+mod error;
+
+pub use detect::{detect, load, DocKind, Document};
+pub use error::Error;
+
+/// The names most programs import: `use bpmnkit::prelude::*;`.
+pub mod prelude {
+    pub use crate::{detect, load, DocKind, Document, Error};
+
+    #[cfg(feature = "bpmn")]
+    pub use bpmnkit_bpmn::{model::BpmnDefinitions, parse_bpmn, serialize_bpmn};
+    #[cfg(feature = "dmn")]
+    pub use bpmnkit_dmn::{parse_dmn, DmnDefinitions};
+    #[cfg(feature = "feel")]
+    pub use bpmnkit_feel::{evaluate, Context, Value};
+    #[cfg(feature = "form")]
+    pub use bpmnkit_form::{parse_form, FormDefinition};
+}
