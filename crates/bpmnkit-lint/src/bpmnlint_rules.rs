@@ -1158,7 +1158,7 @@ fn check_bpmndi(defs: &BpmnDefinitions, r: &mut Report) {
         r.add(
             "pattern/missing-di",
             format!("Element \"{id}\" has no diagram information (BPMNDI)."),
-            "Open and save the file in a modeler, or run `casen bpmn layout`, to draw it.",
+            "In a script, call `placeNewShapes(definitions)` before `exportPreserving` to draw only the new elements; redraw everything only for a new file.",
             process_id,
             &[id],
         );

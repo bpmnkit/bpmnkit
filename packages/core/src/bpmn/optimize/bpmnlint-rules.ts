@@ -550,7 +550,7 @@ const RULES: Record<string, NativeRule> = {
 				report(
 					"pattern/missing-di",
 					`Element "${id}" has no diagram information (BPMNDI).`,
-					"Open and save the file in a modeler, or run `casen bpmn layout`, to draw it.",
+					"In a script, call `placeNewShapes(definitions)` before `exportPreserving` to draw only the new elements; redraw everything only for a new file.",
 					processId,
 					[id],
 				)

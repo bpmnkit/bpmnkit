@@ -4055,8 +4055,9 @@ export class ProcessBuilder {
 	 * continuing rather than regenerating.
 	 *
 	 * Diagram interchange is *not* regenerated: existing shapes keep their
-	 * positions, and elements added here have none until `withAutoLayout()` or a
-	 * later `applyAutoLayout()` gives them one.
+	 * positions, and elements added here have none until `placeNewShapes()` draws
+	 * just those (existing shapes never move), or `withAutoLayout()` /
+	 * `applyAutoLayout()` redraws everything.
 	 */
 	private buildOntoSource(
 		source: { definitions: BpmnDefinitions; process: BpmnProcess },

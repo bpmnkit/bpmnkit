@@ -8,6 +8,8 @@ import {
 	assertDeployable,
 	compactify,
 	expand,
+	exportPreserving,
+	placeNewShapes,
 } from "@bpmnkit/core"
 import type {
 	BpmnDefinitions,
@@ -790,7 +792,7 @@ const generateBpmnCmd: Command = {
 				'echo \'{"elements":[...],"flows":[...]}\' | casen generate bpmn --input order.bpmn --output order.patched.bpmn',
 		},
 		{
-			description: "Re-apply auto-layout to an existing file",
+			description: "Re-apply auto-layout to an existing file (a patch keeps the layout instead)",
 			command: "casen generate bpmn --input messy.bpmn --output clean.bpmn",
 		},
 	],
@@ -891,8 +893,16 @@ const generateBpmnCmd: Command = {
 				}
 			}
 
-			const { xml: patched, placeholders } = exportEdited(applyAutoLayout(edited), gate)
-			for (const line of placeholderLines(placeholders)) process.stderr.write(`${line}\n`)
+			// A patch to a drawn file keeps its layout: only the new elements get
+			// shapes, and the file keeps its formatting. Re-laying out everything
+			// is what --input alone is for, and what a file without DI needs.
+			const keepLayout = patch !== null && defs.diagrams.length > 0
+			const laidOut = keepLayout ? placeNewShapes(edited).definitions : applyAutoLayout(edited)
+			const exported = exportEdited(laidOut, gate)
+			const patched = keepLayout ? exportPreserving(xml, Bpmn.parse(exported.xml)) : exported.xml
+			for (const line of placeholderLines(exported.placeholders)) {
+				process.stderr.write(`${line}\n`)
+			}
 
 			if (outputPath === null) {
 				process.stdout.write(patched)

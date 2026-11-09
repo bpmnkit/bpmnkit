@@ -115,6 +115,8 @@ export const Bpmn = {
 	 * `build()` returns that document with the named process's contents replaced,
 	 * so other processes, the collaboration, lanes, diagram interchange, root
 	 * elements and unmodelled content all survive. The input is not mutated.
+	 * Added elements have no shapes; call `placeNewShapes()` on the result to
+	 * draw only those without moving existing ones.
 	 *
 	 * @param definitions - The parsed model to continue.
 	 * @param processId - Which process to continue, named explicitly.

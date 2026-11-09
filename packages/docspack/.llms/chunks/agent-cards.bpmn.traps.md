@@ -4,7 +4,7 @@
 - **User tasks default to job-worker tasks**, which 8.10 deprecates. Pass `zeebeUserTask: true` for a Camunda user task.
 - **Deploy ids.** The engine keys a process by its process id (`createProcess("order")`), a decision by its `<decision id>`, a form by its JSON `id`. File names and display names do not count. `formId` and `decisionId` must equal those ids exactly; by default they bind to the latest deployed version, so deploy the `.dmn` and `.form` before an instance reaches the task. Redeploying the same id makes a new version.
 - **Reference a DMN decision by its decision id**, not the DMN `definitions` id, the file name or the decision name.
-- **Edit with the preserving writer.** For an existing file, `Bpmn.parse` it, change the model, and write `exportPreserving(original, edited)`. Rebuilding it with `withAutoLayout()`, or `Bpmn.export` alone, moves every shape and reformats the diff.
+- **Edit with the preserving writer.** For an existing file, `Bpmn.parse` it (or `Bpmn.continueProcess(parsed, processId)`), change the model, run `placeNewShapes(edited)` so the new elements get shapes next to what they connect to, and write `exportPreserving(original, drawn)`. Existing shapes stay put; a pool, lane or sub-process only grows when the new shapes do not fit. Rebuilding with `withAutoLayout()`, `applyAutoLayout`, or `Bpmn.export` alone moves every shape and reformats the diff. `placeNewShapes` does not draw new lanes; it lists them in `unplaced`.
 - FEEL in the builder starts with `=` (`"=amount > 1000"`); a value without `=` is a literal string.
 - Unknown option names are silently dropped: `timer: { duration }` does nothing; use `timerDuration`.
 

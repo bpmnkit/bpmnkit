@@ -15,7 +15,7 @@ Write a Camunda 8 BPMN process with `@bpmnkit/core` in one script: create, expor
 
 ```ts
 import { readFileSync, writeFileSync } from "node:fs"
-import { Bpmn, exportPreserving, lintDiagram } from "@bpmnkit/core"
+import { Bpmn, exportPreserving, lintDiagram, placeNewShapes } from "@bpmnkit/core"
 
 // 1. Create. The process id is the deploy key: same id = new version of that process.
 const definitions = Bpmn.createProcess("order")
@@ -39,12 +39,18 @@ const definitions = Bpmn.createProcess("order")
 // 2. Export.
 writeFileSync("order.bpmn", Bpmn.export(definitions))
 
-// 3. Edit an existing file: parse, change, write with exportPreserving to keep layout and formatting.
+// 3. Edit an existing file: change the model, draw only the new elements, write with
+//    exportPreserving. Existing shapes keep their positions and the file its formatting.
 const original = readFileSync("order.bpmn", "utf8")
-const edited = Bpmn.parse(original)
+const edited = Bpmn.continueProcess(Bpmn.parse(original), "order")
+	.insertAfter("ship")
+	.serviceTask("notify", { name: "Notify customer", taskType: "notify-customer" })
+	.build()
 const ship = edited.processes[0]?.flowElements.find((e) => e.id === "ship")
 if (ship) ship.name = "Ship parcel"
-writeFileSync("order.bpmn", exportPreserving(original, edited))
+const { definitions: drawn, unplaced } = placeNewShapes(edited)
+if (unplaced.length > 0) console.log("not drawn:", unplaced)
+writeFileSync("order.bpmn", exportPreserving(original, drawn))
 
 // 4. Validate: Camunda 8 deployability and modelling rules.
 const report = lintDiagram(Bpmn.parse(readFileSync("order.bpmn", "utf8")))
@@ -53,7 +59,7 @@ for (const d of report.diagnostics.filter((d) => d.severity !== "info"))
 if (report.counts.error > 0) process.exit(1)
 ```
 
-`npm i @bpmnkit/core`. The script writes `order.bpmn`, re-opens it, renames a task without moving a shape, and exits 1 on a lint error.
+`npm i @bpmnkit/core`. The script writes `order.bpmn`, re-opens it, adds a task and renames one without moving a shape, and exits 1 on a lint error.
 
 ## Top builder options
 
@@ -74,7 +80,7 @@ if (report.counts.error > 0) process.exit(1)
 - **User tasks default to job-worker tasks**, which 8.10 deprecates. Pass `zeebeUserTask: true` for a Camunda user task.
 - **Deploy ids.** The engine keys a process by its process id (`createProcess("order")`), a decision by its `<decision id>`, a form by its JSON `id`. File names and display names do not count. `formId` and `decisionId` must equal those ids exactly; by default they bind to the latest deployed version, so deploy the `.dmn` and `.form` before an instance reaches the task. Redeploying the same id makes a new version.
 - **Reference a DMN decision by its decision id**, not the DMN `definitions` id, the file name or the decision name.
-- **Edit with the preserving writer.** For an existing file, `Bpmn.parse` it, change the model, and write `exportPreserving(original, edited)`. Rebuilding it with `withAutoLayout()`, or `Bpmn.export` alone, moves every shape and reformats the diff.
+- **Edit with the preserving writer.** For an existing file, `Bpmn.parse` it (or `Bpmn.continueProcess(parsed, processId)`), change the model, run `placeNewShapes(edited)` so the new elements get shapes next to what they connect to, and write `exportPreserving(original, drawn)`. Existing shapes stay put; a pool, lane or sub-process only grows when the new shapes do not fit. Rebuilding with `withAutoLayout()`, `applyAutoLayout`, or `Bpmn.export` alone moves every shape and reformats the diff. `placeNewShapes` does not draw new lanes; it lists them in `unplaced`.
 - FEEL in the builder starts with `=` (`"=amount > 1000"`); a value without `=` is a literal string.
 - Unknown option names are silently dropped: `timer: { duration }` does nothing; use `timerDuration`.
 
