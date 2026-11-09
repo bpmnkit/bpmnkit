@@ -17,23 +17,56 @@
 //!     <bpmn:sequenceFlow id="f1" sourceRef="s" targetRef="e"/>
 //!   </bpmn:process>
 //! </bpmn:definitions>"#;
+//! # #[cfg(feature = "auto-layout")] {
 //! let svg = bpmn_xml_to_svg(xml, &RenderOptions::default().theme(Theme::Dark).auto_layout(true)).unwrap();
 //! assert!(svg.markup.starts_with("<svg "));
 //! assert!(svg.markup.contains("Order received"));
 //! assert_eq!(svg.elements.len(), 3); // two events and the flow
+//! # }
 //! ```
 //!
 //! Everything is pure and synchronous; in an async server, call it from `spawn_blocking`.
+//!
+//! # PNG
+//!
+//! Feature `png` adds [`svg_to_png`] / [`bpmn_to_png`] (resvg). Glyphs come from a bundled
+//! Inter subset (Latin, Latin-1, Latin Extended-A; SIL OFL 1.1), so the image is the same on every
+//! machine, also in containers without fonts; other scripts (CJK, emoji) draw as missing glyphs.
+//! Feature `system-fonts` adds `FontSource::System` and `FontSource::Both` for wider coverage.
+//! Label wrapping is an estimate shared with TS, so wrapped lines can be slightly wider or narrower
+//! than the drawn glyphs; text is never clipped.
+//!
+//! ```ignore
+//! use bpmnkit_render::{bpmn_xml_to_svg, svg_to_png, PngOptions, RenderOptions};
+//! // A chat thumbnail: at most 800×600 CSS px, drawn at 2× for high-DPI screens.
+//! let svg = bpmn_xml_to_svg(&xml, &RenderOptions::default().auto_layout(true).max_size(800.0, 600.0))?;
+//! let png: Vec<u8> = svg_to_png(&svg, &PngOptions::default())?;
+//! ```
+//!
+//! # Features
+//!
+//! | Feature | Default | Adds |
+//! | --- | --- | --- |
+//! | `auto-layout` | yes | [`RenderOptions::auto_layout`] (`bpmnkit-layout`) |
+//! | `png` | no | [`svg_to_png`], [`bpmn_to_png`], [`PngOptions`] (resvg, ~2 MB, embedded font) |
+//! | `embedded-font` | with `png` | the bundled Inter subset |
+//! | `system-fonts` | no | `FontSource::System` / `FontSource::Both` |
+//!
+//! `png` + `embedded-font` builds for `wasm32-unknown-unknown`.
 
 mod bpmn;
 mod error;
 mod icons;
 mod label_style;
 mod options;
+#[cfg(feature = "png")]
+mod png;
 mod text;
 
 pub use error::RenderError;
 pub use options::{ColorMode, FontOptions, PlaneSelect, RenderOptions, Theme, ThemeColors};
+#[cfg(feature = "png")]
+pub use png::{bpmn_to_png, svg_to_png, FontSource, PngOptions, EMBEDDED_FAMILY};
 pub use text::wrap_text;
 
 use bpmnkit_bpmn::{BpmnBounds, BpmnDefinitions};

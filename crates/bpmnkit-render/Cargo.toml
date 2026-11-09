@@ -3,7 +3,8 @@ name = "bpmnkit-render"
 description = "BPMN diagram to SVG (byte-identical to @bpmnkit/core exportSvg) and PNG for BPMN Kit"
 version.workspace = true
 edition.workspace = true
-license.workspace = true
+# The bundled Inter subset (assets/fonts) is under the SIL Open Font License.
+license = "(MIT OR Apache-2.0) AND OFL-1.1"
 repository.workspace = true
 homepage.workspace = true
 rust-version.workspace = true
@@ -11,14 +12,29 @@ readme = "README.md"
 keywords = ["bpmn", "svg", "png", "diagram", "camunda"]
 categories = ["visualization", "rendering"]
 # Tests read the shared corpus under ../../conformance, outside the package.
-exclude = ["tests/"]
+exclude = ["tests/", "benches/", "scripts/"]
 
 [dependencies]
 bpmnkit-bpmn = { workspace = true }
 bpmnkit-layout = { workspace = true, optional = true }
 indexmap = { workspace = true }
+# resvg re-exports usvg, tiny-skia and fontdb.
+resvg = { version = "0.45", optional = true, default-features = false, features = ["text"] }
+
+[dev-dependencies]
+# Decodes PNGs in the tests.
+resvg = { version = "0.45", default-features = false }
 
 [features]
 default = ["auto-layout"]
 # Lay out models without diagram interchange before drawing them.
 auto-layout = ["dep:bpmnkit-layout"]
+# SVG → PNG with resvg and the bundled Inter subset (assets/fonts, OFL).
+png = ["dep:resvg", "embedded-font"]
+embedded-font = []
+# FontSource::System / Both: the machine's fonts (scans them once, output varies by machine).
+system-fonts = ["png", "resvg/system-fonts", "resvg/memmap-fonts"]
+
+[[bench]]
+name = "render"
+harness = false

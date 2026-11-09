@@ -63,6 +63,7 @@ fn corpus_renders() {
 }
 
 #[test]
+#[cfg(feature = "auto-layout")]
 fn options_change_only_what_they_name() {
     let xml = std::fs::read_to_string(
         Path::new(env!("CARGO_MANIFEST_DIR"))
