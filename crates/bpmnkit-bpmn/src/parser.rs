@@ -119,6 +119,16 @@ fn attr_bool(attrs: &Attrs, name: &str) -> Option<bool> {
     attr(attrs, name).map(|v| v == "true")
 }
 
+/// An `xsd:boolean` attribute: `true`/`1` or `false`/`0`, surrounding whitespace ignored.
+/// `None` when absent or not a boolean, so it is not written back.
+fn xsd_boolean(attrs: &Attrs, name: &str) -> Option<bool> {
+    match attr(attrs, name).map(js_trim) {
+        Some("true" | "1") => Some(true),
+        Some("false" | "0") => Some(false),
+        _ => None,
+    }
+}
+
 fn required_attr(attrs: &Attrs, name: &str, element_name: &str) -> Res<String> {
     attr_string(attrs, name).ok_or_else(|| {
         ParseError(format!(
@@ -1602,7 +1612,9 @@ impl Frame for LaneFrame {
             Probe::Hit(c) => Ok(c),
             Probe::Miss(attrs) => Ok(match local {
                 "flowNodeRef" => text_child(Slot::FlowNodeRef, attrs),
-                "childLaneSet" => {
+                // @bpmnkit/core up to 1.9.0 wrote nested lanes as <laneSet>; read those
+                // files back rather than drop their lanes.
+                "childLaneSet" | "laneSet" => {
                     if std::mem::replace(&mut self.child_lane_set_seen, true) {
                         Child::Skip
                     } else {
@@ -1727,8 +1739,8 @@ impl Frame for ProcessFrame {
         Ok(Out::Process(Box::new(BpmnProcess {
             id: self.id.clone(),
             name: attr_string(attrs, "name"),
-            // Absent, "true" and "false" stay three states; a file that says "false" says it again.
-            is_executable: attr_bool(attrs, "isExecutable"),
+            // Absent, true and false stay three states; a file that says "false" says it again.
+            is_executable: xsd_boolean(attrs, "isExecutable"),
             documentation: self.documentation,
             documentation_attributes: self.documentation_attributes,
             extension_elements: self.extension_elements.unwrap_or_default(),
@@ -2151,7 +2163,8 @@ impl Frame for DefinitionsFrame {
             }
         }
         Ok(Out::Definitions(Box::new(BpmnDefinitions {
-            id: required_attr(attrs, "id", &self.name)?,
+            // Optional in the schema, and the Flowable Modeler leaves it out.
+            id: attr_string(attrs, "id").unwrap_or_default(),
             target_namespace: required_attr(attrs, "targetNamespace", &self.name)?,
             exporter: attr_string(attrs, "exporter"),
             exporter_version: attr_string(attrs, "exporterVersion"),

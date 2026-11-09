@@ -20,11 +20,15 @@ fn err(xml: &str) -> String {
 }
 
 #[test]
+fn definitions_id_is_optional() {
+    // The schema makes it optional and the Flowable Modeler leaves it out.
+    let defs = parse_bpmn(r#"<bpmn:definitions targetNamespace="t"/>"#).expect("parses");
+    assert_eq!(defs.id, "");
+    assert!(!serialize_bpmn(&defs).contains(" id="));
+}
+
+#[test]
 fn missing_required_attribute_names_attribute_and_element() {
-    assert_eq!(
-        err(r#"<bpmn:definitions targetNamespace="t"/>"#),
-        r#"Missing required attribute "id" on <bpmn:definitions>"#
-    );
     assert_eq!(
         err(r#"<definitions id="d"/>"#),
         r#"Missing required attribute "targetNamespace" on <definitions>"#

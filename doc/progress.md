@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-11-09 — Round trip: Flowable Modeler files
+
+- Split out of the lane and pool PR (#258), rebased on #269, which already keeps `isExecutable="false"` and writes `<childLaneSet>`. What is left, in `@bpmnkit/core` and `bpmnkit-bpmn` alike:
+  - `<definitions>` without an `id` (the Flowable Modeler omits it; the schema makes it optional) parses, with `id: ""`, and is written back without one. It used to throw `ParseError`. Definitions-level lint findings then carry `""` as their scope; `elementIds` still name the element (pinned in a test).
+  - `isExecutable` is read as an `xsd:boolean`: `1`/`0` and surrounding whitespace count; a non-boolean value is dropped instead of read as `false`.
+  - Nested lanes written inside a `<laneSet>` (what `@bpmnkit/core` up to 1.9.0 wrote) are read back instead of dropped.
+- Docs: `concepts.md` no longer lists `isExecutable` among the attributes written only when true.
+- Tests: `flowable-roundtrip.test.ts`; corpus fixture `08-flowable-lanes-pools.bpmn` (golden hash, empty round-trip allowlist). Conformance: new cases `flowable-lanes-pools`, `is-executable-xsd-boolean`, `lane-set-nested-legacy`.
+
 ## 2026-11-08 — Refresh Camunda connector templates (bot PR #245)
 
 - Merged `main` into `chore/connector-templates-refresh`. `main` now keeps the templates in `spec/templates/connectors.json` and generates both `generated.ts` files from it (`spec-gen`), so the refresh was regenerated with `pnpm update-connectors` instead of merged by hand. The registry now has 134 templates.

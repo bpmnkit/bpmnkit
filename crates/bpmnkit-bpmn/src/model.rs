@@ -1090,6 +1090,7 @@ pub struct BpmnDiagram {
 #[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 pub struct BpmnDefinitions {
+    /// Empty when the file has none: the schema makes it optional and the Flowable Modeler omits it.
     pub id: String,
     pub target_namespace: String,
     #[serde(default, skip_serializing_if = "Option::is_none")]

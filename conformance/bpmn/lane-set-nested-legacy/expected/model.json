@@ -1,0 +1,83 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "Start",
+          "incoming": [],
+          "outgoing": [],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "End",
+          "incoming": [],
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "Process_1",
+      "isExecutable": true,
+      "laneSet": {
+        "id": "LaneSet_1",
+        "lanes": [
+          {
+            "childLaneSet": {
+              "id": "LaneSet_sales",
+              "lanes": [
+                {
+                  "flowNodeRefs": [
+                    "Start"
+                  ],
+                  "id": "Inside",
+                  "name": "Inside sales",
+                  "unknownAttributes": {}
+                },
+                {
+                  "flowNodeRefs": [
+                    "End"
+                  ],
+                  "id": "Field",
+                  "name": "Field sales",
+                  "unknownAttributes": {}
+                }
+              ],
+              "unknownAttributes": {}
+            },
+            "flowNodeRefs": [
+              "Start",
+              "End"
+            ],
+            "id": "Sales",
+            "name": "Sales",
+            "unknownAttributes": {}
+          }
+        ],
+        "unknownAttributes": {}
+      },
+      "sequenceFlows": [],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}
