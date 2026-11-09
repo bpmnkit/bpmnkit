@@ -1,5 +1,48 @@
 # Progress
 
+## 2026-11-09 — Rust twin: lanes and pools
+
+- The 41 conformance cases this branch changed (25 `compact/`, 12 `text/write-*`, 4 `layout/`) now pass in Rust; `conformance/pending.json` is back to `main`'s one entry and `MAX_PENDING` stays 1. The `bpmnkit-text` corpus tests no longer need to skip pending cases and are back to `main`'s version.
+- `bpmnkit-bpmn`: new `swimlanes` module (lane walks, `assign_lane`, `build_lane_set`, `lane_for_new_node`, `primary_process`, `document_id_list`, `pool_laned_processes`, `collaboration_problems`, ...); `primary_process_id` read from and written as `bpmnkit:primaryProcess` on `<definitions>`, under the same rule as TS.
+- `bpmnkit-layout`: nested-lane inset and per-level header width, bands for a laned pool with no nodes yet, pool growth for nodes no lane claims, depth-first lane order in the semantic placer (the `nested-lanes` entry of `tests/fixtures/semantic/oracle.json` re-run from the TS placer: two lanes swap order, same bounds).
+- `bpmnkit-text`: compact `executable`, `lanes`, `participants` and `messageFlows` (compactify and expand, pools laid out on one collaboration plane); process text reads and writes `lane`, `pool` and `msg` lines, and the writer writes the primary process. `PROCESS_TEXT_GUIDE` matches the TS guide byte for byte.
+- New conformance case `text/parse-lanes-pools-messages` (recorded from TS): lane, pool and msg lines, an unbracketed lane, a node no lane lists, a label with a colon and a refused message to an end event.
+- Not ported: the builder's `.lane()`, `.participant()` and `withAutoLayout()` (no conformance case covers them yet), and `- msg` in change scripts (no Rust `process-delta` twin).
+
+## 2026-11-09 — Lanes and pools: rebased on main's deploy gate
+
+- `expand` keeps main's `CompactRoots` and deploy gate: a diagram with pools or lanes is built by `expandPools` (pools, lanes, one collaboration plane) and then gated like any other. `DiagramBuilder.build(options)` gates the laned document the same way.
+- Proxy: the MCP export and the QuickJS bridge lay out pools and lanes (`layoutDiagrams`) and stay ungated, as on `main`.
+- Tests: lane tests whose model Zeebe refuses for reasons unrelated to lanes (the Flowable and bpmn.io fixtures, a document with no executable process, an empty process kept executable) skip the gate; the others gained what Zeebe asks for (a job type, a correlation key, a timer duration). `lane-free-baseline.json` is re-captured from the base without lanes, since `compactify` on `main` now writes message names and correlation keys.
+- Conformance: `compact/bpmn-miwg-a-1-0`, `-a-4-0` and `-a-4-1` are `deployable: false` and expanded with `validate: false`: their sources mark every process non-executable, which `compactify` now keeps.
+- Changeset for the CLI and the proxy, which `changeset-check` asks for.
+
+## 2026-11-09 — Lanes and pools: write support (#258, rebuilt on main)
+
+- Stacked on #263 (round-trip fidelity) and #272 (Escape and pointercancel), both split out of this PR. One editable process with lanes; partner pools are black boxes.
+- Core: `swimlanes.ts` helpers; builder `.lane()` / `.participant()`, `DiagramBuilder.withAutoLayout()`; compact `lanes` / `participants` / `messageFlows` / `executable`, checked by `reconcileCompact`; process text and change-script `lane` / `pool` / `msg` lines; nested-lane layout (lanes outside a pool are #269's, kept as they are); `BpmnDefinitions.primaryProcessId` (`bpmnkit:primaryProcess`, written only when the file alone would lead `primaryProcess` elsewhere).
+- Editor: edits go to the primary process wherever the file lists it (`withPrimaryFirst` puts it back by id, so the saved order is the file's); pool tool, add and divide lanes, resize, move and space across pools and lanes, lane membership by drawing, message flows across pools, delete of lanes and black boxes; `applyProcessDelta` applies swimlane lines keeping the layout. Pool and lane geometry lives in `swimlanes.ts` (model, primary process, what an edit leaves alone) and `swimlane-{placement,resize,space,create,delete}.ts`.
+- Canvas: message-flow labels (default position sized by the name) and wide hit paths; edge ends on a border stay where the DI puts them. Drop, proxy and CLI pass the new lines and compact keys.
+- Review of #258: round-trip changes split into #263; the pin's namespace declaration now stays in the model (`pinPrimaryProcess`), so the parser no longer tracks prefix use; `LANE_LINE`, `buildLaneSet`, `poolLanedProcesses`, `pruneLaneRefs` and `LaneSpec` no longer exported; every editor test is typechecked (`tsconfig.test.json` includes `tests`, plus `DOM.Iterable`); one changeset per package; the builder reference leaves `lane` / `participant` out to stay in its token budget.
+- Rebased on e49907c8 (#264–#269) and #263 (99200e2d): auto-layout keeps #269's lanes outside pools and adds only the nested-lane inset, bands for a laned pool with no nodes, and pool growth for nodes no lane claims. Golden values re-captured from main's output (`02-collaboration` and `miwg-A.4.0` layouts, builder hashes, `compact-lanes` baseline). Conformance re-recorded: 25 `compact/`, 12 `text/write-*` and 4 `layout/` cases change; they are in `conformance/pending.json` until `bpmnkit-text` and `bpmnkit-layout` are ported (proposal §4.5).
+- Review of #258, round 2: duplicate ids are checked across the whole document (`documentIdList` in `swimlanes.ts` is now the one id collector behind `collaborationProblems`, fresh ids and `reconcileCompact`'s checks), so two processes declaring `Lane_1` no longer build; `buildLaneSet` throws on a lane id declared twice; `assignLane` keeps a boundary event in its host's lane and `laneProblems` reports one that is not; a `pool` line needs its bracket (Drop's filters reuse `POOL_LINE`, so "pool party" stays prose) and `[]` writes and reads an unnamed lane or pool; the space-tool preview runs once per animation frame; comments say why instead of citing design labels. The Rust corpus tests in `bpmnkit-text` skip the cases `pending.json` lists, as the conformance runner does.
+- Known, not changed: re-routed message flows can overlap, a reroute leaves the label behind, comments and CDATA are not preserved.
+
+## 2026-11-09 — Editor: Escape and pointercancel take back every gesture
+
+- Split out of the lane and pool PR (#258). `EditorStateMachine._cancelGesture` is the one way out of a gesture: Escape and `cancel()` (pointercancel) both call it. Escape used to skip the rubber band, the connection ghost and a dragged segment; both skipped the resize outline, which the new `cancelResize` callback removes.
+- `_cancelGesture` names every `SelectSub` and ends in a `never` check, so a new gesture fails to compile until it says what cancelling takes back. Space mode cancels through `_cancelSpaceGesture` on both paths.
+- Tests: `gesture-cancel.test.ts`, one table over every gesture that locks the viewport or draws a preview (translate, rubber band, resize, connect, endpoint, new waypoint, segment, waypoint, space drag and the pointing states) × Escape and pointercancel: the matching cancel callback runs once, nothing commits, the viewport is unlocked.
+
+## 2026-11-09 — Round trip: Flowable Modeler files
+
+- Split out of the lane and pool PR (#258), rebased on #269, which already keeps `isExecutable="false"` and writes `<childLaneSet>`. What is left, in `@bpmnkit/core` and `bpmnkit-bpmn` alike:
+  - `<definitions>` without an `id` (the Flowable Modeler omits it; the schema makes it optional) parses, with `id: ""`, and is written back without one. It used to throw `ParseError`. Definitions-level lint findings then carry `""` as their scope; `elementIds` still name the element (pinned in a test).
+  - `isExecutable` is read as an `xsd:boolean`: `1`/`0` and surrounding whitespace count; a non-boolean value is dropped instead of read as `false`.
+  - Nested lanes written inside a `<laneSet>` (what `@bpmnkit/core` up to 1.9.0 wrote) are read back instead of dropped.
+- Docs: `concepts.md` no longer lists `isExecutable` among the attributes written only when true.
+- Tests: `flowable-roundtrip.test.ts`; corpus fixture `08-flowable-lanes-pools.bpmn` (golden hash, empty round-trip allowlist). Conformance: new cases `flowable-lanes-pools`, `is-executable-xsd-boolean`, `lane-set-nested-legacy`.
+
 ## 2026-11-08 — Refresh Camunda connector templates (bot PR #245)
 
 - Merged `main` into `chore/connector-templates-refresh`. `main` now keeps the templates in `spec/templates/connectors.json` and generates both `generated.ts` files from it (`spec-gen`), so the refresh was regenerated with `pnpm update-connectors` instead of merged by hand. The registry now has 134 templates.

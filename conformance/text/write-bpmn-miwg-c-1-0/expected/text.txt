@@ -1,4 +1,10 @@
-# Team-Assistant
-invoice_received[start:message Invoice received] > scan_invoice[task Scan Invoice] > archive_original[task Archive original] > approver_to_be_assigned[catch:message Approver to be assigned] > assign_approver[task Assign approver] > eventgw[eventgw]
-eventgw > catch_7_days[catch:timer 7 days] > end[end]
-eventgw > invoice_review_needed[catch:message Invoice review needed] > review_and_document_result[task Review and document result] > end_2[end]
+# BPMN MIWG Test Case C.1.0
+invoice_received[start:message Invoice received | msg=invoice-received-C.1.0] > assign_approver[user Assign Approver] > approve_invoice[user Approve Invoice] > invoice_approved[xor Invoice approved?]
+invoice_approved >(yes: ${approved}) prepare_bank_transfer[user Prepare Bank Transfer] > archive_invoice[service Archive Invoice] > invoice_processed[end Invoice processed]
+invoice_approved >(no: ${!approved}) rechnung_kl_ren[user Rechnung klären] > review_successful[xor Review successful?]
+review_successful >(yes: ${clarified == 'yes'}) approve_invoice
+review_successful >(no: ${clarified == 'no'}) invoice_not_processed[end Invoice not processed]
+lane approver[Approver]: approve_invoice, invoice_approved
+lane team_assistant[Team Assistant]: assign_approver, rechnung_kl_ren, review_successful, invoice_not_processed, invoice_received
+lane accountant[Accountant]: prepare_bank_transfer, invoice_processed, archive_invoice
+pool team_assistant_2[Team-Assistant]

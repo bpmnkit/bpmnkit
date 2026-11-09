@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+  <bpmn:message id="Message_paid" name="paid">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=orderId"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:collaboration id="Collaboration_1">
+    <bpmn:participant id="bank" name="Bank"/>
+    <bpmn:participant id="Participant_Order" name="Order" processRef="Order"/>
+    <bpmn:messageFlow id="MessageFlow_1" sourceRef="pay" targetRef="bank" name="Payment request: invoice"/>
+    <bpmn:messageFlow id="MessageFlow_2" sourceRef="bank" targetRef="wait"/>
+  </bpmn:collaboration>
+  <bpmn:process id="Order" name="Order" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_Order">
+      <bpmn:lane id="sales" name="Sales team">
+        <bpmn:flowNodeRef>start</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>review</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>ok</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>reject</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="ops" name="Ops">
+        <bpmn:flowNodeRef>pay</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>wait</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>done</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="start" name="Order received">
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="review" name="Review order">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="ok" name="Approved?" default="Flow_6">
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sendTask id="pay" name="Request payment">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="pay"/>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:sendTask>
+    <bpmn:receiveTask id="wait" name="Payment received" messageRef="Message_paid">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:endEvent id="done" name="Shipped">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="reject" name="Rejected">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="start" targetRef="review"/>
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="review" targetRef="ok"/>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="ok" targetRef="pay" name="Yes">
+      <bpmn:conditionExpression>= approved</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="pay" targetRef="wait"/>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="wait" targetRef="done"/>
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="ok" targetRef="reject" name="No"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1">
+      <bpmndi:BPMNShape id="bank_di" bpmnElement="bank" isHorizontal="true">
+        <dc:Bounds x="0" y="0" width="859.5" height="60"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="start_di" bpmnElement="start">
+        <dc:Bounds x="111" y="152" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="80" y="192" width="98" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="review_di" bpmnElement="review">
+        <dc:Bounds x="207" y="130" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ok_di" bpmnElement="ok" isMarkerVisible="true">
+        <dc:Bounds x="367" y="145" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="361" y="127" width="63" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="pay_di" bpmnElement="pay">
+        <dc:Bounds x="477" y="290" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="wait_di" bpmnElement="wait">
+        <dc:Bounds x="637" y="290" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="done_di" bpmnElement="done">
+        <dc:Bounds x="797" y="312" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="791" y="352" width="49" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="reject_di" bpmnElement="reject">
+        <dc:Bounds x="509" y="152" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="499" y="192" width="56" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_Order_di" bpmnElement="Participant_Order" isHorizontal="true">
+        <dc:Bounds x="0" y="90" width="859.5" height="320"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="sales_di" bpmnElement="sales" isHorizontal="true">
+        <dc:Bounds x="30" y="90" width="830" height="160"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ops_di" bpmnElement="ops" isHorizontal="true">
+        <dc:Bounds x="30" y="250" width="830" height="160"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+        <di:waypoint x="147" y="170"/>
+        <di:waypoint x="207" y="170"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_2_di" bpmnElement="Flow_2">
+        <di:waypoint x="307" y="170"/>
+        <di:waypoint x="367" y="170"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
+        <di:waypoint x="392" y="195"/>
+        <di:waypoint x="392" y="330"/>
+        <di:waypoint x="477" y="330"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="398" y="201" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
+        <di:waypoint x="577" y="330"/>
+        <di:waypoint x="637" y="330"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_5_di" bpmnElement="Flow_5">
+        <di:waypoint x="737" y="330"/>
+        <di:waypoint x="797" y="330"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_6_di" bpmnElement="Flow_6">
+        <di:waypoint x="417" y="170"/>
+        <di:waypoint x="509" y="170"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="423" y="153" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_1_di" bpmnElement="MessageFlow_1">
+        <di:waypoint x="547" y="290"/>
+        <di:waypoint x="547" y="60"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_2_di" bpmnElement="MessageFlow_2">
+        <di:waypoint x="687" y="60"/>
+        <di:waypoint x="687" y="290"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

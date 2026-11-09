@@ -125,7 +125,9 @@ impl CompactStream {
                 elements: kept,
                 flows,
                 notes: None,
+                ..CompactProcess::default()
             }],
+            ..CompactDiagram::default()
         };
         // An element whose fields have not all arrived fails here. A frame is a preview of an
         // unfinished diagram, never deployed: no gate.

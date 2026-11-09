@@ -192,6 +192,9 @@ export function computeWaypoints(src: BpmnBounds, tgt: BpmnBounds): BpmnWaypoint
 
 // ── Label position ────────────────────────────────────────────────────────────
 
+// Shared with the canvas, which draws an unplaced message-flow label there too.
+export { edgeLabelBounds } from "@bpmnkit/canvas"
+
 const LABEL_W = 80
 const LABEL_H = 20
 const LABEL_GAP = 6

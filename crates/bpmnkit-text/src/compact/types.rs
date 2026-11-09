@@ -200,10 +200,55 @@ pub struct CompactProcess {
     pub name: Option<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub documentation: Option<String>,
+    /// `isExecutable`. When absent, `expand` makes the process executable, except in a
+    /// diagram with pools or lanes: there only the first process without the key is.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub executable: Option<bool>,
+    /// The swimlanes, outermost first; members on leaf lanes only.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lanes: Option<Vec<CompactLane>>,
     pub elements: Vec<CompactElement>,
     pub flows: Vec<CompactFlow>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub notes: Option<Vec<CompactNote>>,
+}
+
+/// TS's `CompactLane`: a leaf lists its `members`, a parent its child `lanes`.
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CompactLane {
+    pub id: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    /// Ids of the top-level flow nodes in this lane. Leaf lanes only.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub members: Option<Vec<String>>,
+    /// Child lanes, outermost first.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub lanes: Option<Vec<CompactLane>>,
+}
+
+/// TS's `CompactParticipant`: a pool; a black box has no `process_id`.
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CompactParticipant {
+    pub id: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub process_id: Option<String>,
+}
+
+/// TS's `CompactMessageFlow`. `source`/`target`, not `from`/`to`: those mark a sequence
+/// flow, which is what a streamed preview turns them into.
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
+pub struct CompactMessageFlow {
+    pub id: String,
+    pub source: String,
+    pub target: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
 }
 
 /// TS's `CompactDiagram`: a read-only, token-efficient view of a model.
@@ -215,4 +260,10 @@ pub struct CompactDiagram {
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub execution_platform_version: Option<String>,
     pub processes: Vec<CompactProcess>,
+    /// The pools, in drawing order.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub participants: Option<Vec<CompactParticipant>>,
+    /// Messages between pools.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub message_flows: Option<Vec<CompactMessageFlow>>,
 }

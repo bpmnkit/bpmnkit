@@ -1,5 +1,8 @@
 {
   "aliases": {
+    "amazon": "__a42178ea-f777-4c5b-a0a1-c4014aee6431",
+    "carrier": "__bb6766c5-51e3-4f04-aedc-6c9e4afe0582",
+    "customer": "__6f70606b-6781-4f26-b207-5bfff80115d8",
     "receive_credit_card_information": "__0ef615c7-5456-45c8-9cfb-f1fe30c44436",
     "send_result": "__4011aa2d-a7a9-4e1a-9f16-8a662d138bd4",
     "take_payment": "__a7183fc9-402a-418c-bf2a-3b1927d3798d"

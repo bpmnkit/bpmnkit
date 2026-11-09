@@ -1,4 +1,24 @@
-# @bpmnkit/editor — HUD Options
+# @bpmnkit/editor — With Side Dock
+
+The side dock provides a collapsible properties + AI panel:
+
+```typescript
+import { BpmnEditor, initEditorHud, createSideDock } from "@bpmnkit/editor";
+
+const editor = new BpmnEditor({
+  container: document.getElementById("editor"),
+});
+
+const dock = createSideDock();
+document.body.appendChild(dock.el);
+
+const hud = initEditorHud(editor, {
+  aiButton: dock.aiPane.button,
+});
+```
+
+
+## HUD Options
 
 ```typescript
 type HudOptions = {
@@ -16,24 +36,6 @@ type EditorOptions = {
   theme?: "dark" | "light";
   persistTheme?: boolean;         // auto-save theme to localStorage
   plugins?: CanvasPlugin[];
-};
-```
-
-
-## SideDock API
-
-```typescript
-type SideDock = {
-  el: HTMLElement;
-  propertiesPane: HTMLElement;
-  aiPane: { button: HTMLElement; el: HTMLElement };
-  switchTab(tab: "properties" | "ai"): void;
-  expand(): void;
-  collapse(): void;
-  collapsed: boolean;
-  showPanel(): void;
-  hidePanel(): void;
-  setDiagramInfo(processName: string, fileName: string): void;
 };
 ```
 

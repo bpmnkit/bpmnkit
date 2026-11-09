@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="One" isExecutable="true">
+    <bpmn:startEvent id="Start1"/>
+  </bpmn:process>
+  <bpmn:process id="Zero" isExecutable="false">
+    <bpmn:startEvent id="Start2"/>
+  </bpmn:process>
+  <bpmn:process id="NotBoolean">
+    <bpmn:startEvent id="Start3"/>
+  </bpmn:process>
+</bpmn:definitions>
+

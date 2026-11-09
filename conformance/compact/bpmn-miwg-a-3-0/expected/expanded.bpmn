@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="_1373649919111" targetNamespace="http://bpmn.io/schema/bpmn">
-  <bpmn:process id="WFP-6-" isExecutable="true">
+  <bpmn:process id="WFP-6-" isExecutable="false">
     <bpmn:startEvent id="_1ac4b759-40e3-4dfb-b0e3-ad1d201d6c3d" name="Start Event">
       <bpmn:outgoing>_83f6ca65-43f7-496e-a7eb-2a4a2fc28f22</bpmn:outgoing>
     </bpmn:startEvent>

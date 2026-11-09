@@ -1,6 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_collab" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+  <bpmn:collaboration id="Collaboration_1">
+    <bpmn:participant id="Participant_buyer" name="Buyer" processRef="Process_buyer"/>
+    <bpmn:participant id="Participant_seller" name="Seller" processRef="Process_seller"/>
+    <bpmn:participant id="Participant_carrier" name="Carrier"/>
+    <bpmn:messageFlow id="MessageFlow_order" sourceRef="Participant_buyer" targetRef="Participant_seller" name="Order"/>
+    <bpmn:messageFlow id="MessageFlow_ack" sourceRef="Participant_seller" targetRef="Participant_buyer" name="Acknowledgement"/>
+  </bpmn:collaboration>
   <bpmn:process id="Process_buyer" name="Buyer" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_Process_buyer">
+      <bpmn:lane id="Lane_ordering" name="Ordering">
+        <bpmn:flowNodeRef>Start_buyer</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_place_order</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_receiving" name="Receiving">
+        <bpmn:flowNodeRef>End_buyer</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
     <bpmn:startEvent id="Start_buyer" name="Need identified">
       <bpmn:outgoing>Flow_b1</bpmn:outgoing>
     </bpmn:startEvent>
@@ -17,7 +33,7 @@
     <bpmn:sequenceFlow id="Flow_b1" sourceRef="Start_buyer" targetRef="Task_place_order"/>
     <bpmn:sequenceFlow id="Flow_b2" sourceRef="Task_place_order" targetRef="End_buyer"/>
   </bpmn:process>
-  <bpmn:process id="Process_seller" name="Seller" isExecutable="true">
+  <bpmn:process id="Process_seller" name="Seller" isExecutable="false">
     <bpmn:startEvent id="Start_seller">
       <bpmn:outgoing>Flow_s1</bpmn:outgoing>
     </bpmn:startEvent>
@@ -26,44 +42,68 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_s1" sourceRef="Start_seller" targetRef="End_seller"/>
   </bpmn:process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_Process_buyer">
-    <bpmndi:BPMNPlane id="BPMNPlane_Process_buyer" bpmnElement="Process_buyer">
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1">
       <bpmndi:BPMNShape id="Start_buyer_di" bpmnElement="Start_buyer">
-        <dc:Bounds x="0" y="22" width="36" height="36"/>
+        <dc:Bounds x="115" y="62" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="-34.5" y="62" width="105" height="14"/>
+          <dc:Bounds x="80" y="102" width="105" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_place_order_di" bpmnElement="Task_place_order">
-        <dc:Bounds x="96" y="0" width="100" height="80"/>
+        <dc:Bounds x="211" y="40" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="End_buyer_di" bpmnElement="End_buyer">
-        <dc:Bounds x="256" y="22" width="36" height="36"/>
+        <dc:Bounds x="371" y="200" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="249.5" y="62" width="49" height="14"/>
+          <dc:Bounds x="364" y="240" width="49" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_b1_di" bpmnElement="Flow_b1">
-        <di:waypoint x="36" y="40"/>
-        <di:waypoint x="96" y="40"/>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_b2_di" bpmnElement="Flow_b2">
-        <di:waypoint x="196" y="40"/>
-        <di:waypoint x="256" y="40"/>
-      </bpmndi:BPMNEdge>
-    </bpmndi:BPMNPlane>
-  </bpmndi:BPMNDiagram>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_Process_seller">
-    <bpmndi:BPMNPlane id="BPMNPlane_Process_seller" bpmnElement="Process_seller">
+      <bpmndi:BPMNShape id="Participant_buyer_di" bpmnElement="Participant_buyer" isHorizontal="true">
+        <dc:Bounds x="0" y="0" width="433" height="276"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_ordering_di" bpmnElement="Lane_ordering" isHorizontal="true">
+        <dc:Bounds x="30" y="0" width="403" height="160"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_receiving_di" bpmnElement="Lane_receiving" isHorizontal="true">
+        <dc:Bounds x="30" y="160" width="403" height="116"/>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Start_seller_di" bpmnElement="Start_seller">
-        <dc:Bounds x="0" y="0" width="36" height="36"/>
+        <dc:Bounds x="50" y="326" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="End_seller_di" bpmnElement="End_seller">
-        <dc:Bounds x="96" y="0" width="36" height="36"/>
+        <dc:Bounds x="146" y="326" width="36" height="36"/>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_seller_di" bpmnElement="Participant_seller" isHorizontal="true">
+        <dc:Bounds x="0" y="306" width="202" height="76"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Participant_carrier_di" bpmnElement="Participant_carrier" isHorizontal="true">
+        <dc:Bounds x="0" y="412" width="433" height="60"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_b1_di" bpmnElement="Flow_b1">
+        <di:waypoint x="151" y="80"/>
+        <di:waypoint x="211" y="80"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_b2_di" bpmnElement="Flow_b2">
+        <di:waypoint x="261" y="120"/>
+        <di:waypoint x="261" y="218"/>
+        <di:waypoint x="371" y="218"/>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_s1_di" bpmnElement="Flow_s1">
-        <di:waypoint x="36" y="18"/>
-        <di:waypoint x="96" y="18"/>
+        <di:waypoint x="86" y="344"/>
+        <di:waypoint x="146" y="344"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_order_di" bpmnElement="MessageFlow_order">
+        <di:waypoint x="217" y="276"/>
+        <di:waypoint x="217" y="286"/>
+        <di:waypoint x="101" y="286"/>
+        <di:waypoint x="101" y="306"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="MessageFlow_ack_di" bpmnElement="MessageFlow_ack">
+        <di:waypoint x="101" y="306"/>
+        <di:waypoint x="101" y="296"/>
+        <di:waypoint x="217" y="296"/>
+        <di:waypoint x="217" y="276"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
