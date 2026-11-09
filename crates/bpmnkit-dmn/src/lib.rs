@@ -28,6 +28,7 @@ pub mod eval;
 pub mod model;
 mod number;
 mod parser;
+pub mod report;
 mod serializer;
 
 pub use bpmnkit_xml::{Attrs, XmlElement};
