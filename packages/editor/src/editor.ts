@@ -475,6 +475,7 @@ export class BpmnEditor {
 			commitTranslate: (dx, dy) => this._commitTranslate(dx, dy),
 			cancelTranslate: () => this._cancelTranslate(),
 			previewResize: (bounds) => this._overlay.setResizePreview(bounds),
+			cancelResize: () => this._overlay.setResizePreview(null),
 			commitResize: (id, bounds) => {
 				this._overlay.setResizePreview(null)
 				this._executeOp({ kind: "resize", id, bounds }, { label: "Resize" })
