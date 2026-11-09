@@ -1,0 +1,115 @@
+//! BPMN diagrams as SVG and PNG, the Rust twin of `@bpmnkit/core`'s `exportSvg`
+//! (`packages/core/src/bpmn/svg.ts`).
+//!
+//! The SVG is the contract: [`bpmn_to_svg`] with default [`RenderOptions`] gives the same bytes
+//! as TS `exportSvg(defs)`, held by the `conformance/render/` cases. Models without diagram
+//! interchange are laid out first (feature `auto-layout`, on by default).
+//!
+//! ```
+//! use bpmnkit_render::{bpmn_xml_to_svg, RenderOptions, Theme};
+//!
+//! let xml = r#"<?xml version="1.0" encoding="UTF-8"?>
+//! <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+//!   <bpmn:process id="p" isExecutable="true">
+//!     <bpmn:startEvent id="s" name="Order received"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
+//!     <bpmn:endEvent id="e"><bpmn:incoming>f1</bpmn:incoming></bpmn:endEvent>
+//!     <bpmn:sequenceFlow id="f1" sourceRef="s" targetRef="e"/>
+//!   </bpmn:process>
+//! </bpmn:definitions>"#;
+//! let svg = bpmn_xml_to_svg(xml, &RenderOptions::default().theme(Theme::Dark)).unwrap();
+//! assert!(svg.markup.starts_with("<svg "));
+//! assert!(svg.markup.contains("Order received"));
+//! assert_eq!(svg.elements.len(), 3); // two events and the flow
+//! ```
+//!
+//! Everything is pure and synchronous; in an async server, call it from `spawn_blocking`.
+
+mod bpmn;
+mod error;
+mod icons;
+mod label_style;
+mod options;
+mod text;
+
+pub use error::RenderError;
+pub use options::{ColorMode, FontOptions, PlaneSelect, RenderOptions, Theme, ThemeColors};
+pub use text::wrap_text;
+
+use bpmnkit_bpmn::{BpmnBounds, BpmnDefinitions};
+
+/// A rendered SVG document and what it shows.
+#[derive(Debug, Clone, PartialEq)]
+pub struct Svg {
+    /// The full `<svg>` document.
+    pub markup: String,
+    /// Diagram coordinates shown, padding included.
+    pub view_box: ViewBox,
+    /// CSS px after `scale` and `max_size`.
+    pub width: f64,
+    pub height: f64,
+    /// Elements actually drawn, in drawing order within edges then shapes.
+    pub elements: Vec<RenderedElement>,
+    pub warnings: Vec<RenderWarning>,
+}
+
+impl std::fmt::Display for Svg {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(&self.markup)
+    }
+}
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub struct ViewBox {
+    pub x: f64,
+    pub y: f64,
+    pub w: f64,
+    pub h: f64,
+}
+
+/// One drawn element, for overlays and click maps.
+#[derive(Debug, Clone, PartialEq)]
+pub struct RenderedElement {
+    pub id: String,
+    pub kind: ElementKind,
+    pub geometry: Geometry,
+}
+
+/// What a drawn element is.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[non_exhaustive]
+pub enum ElementKind {
+    /// A flow element, by its BPMN local name (`"serviceTask"`, `"exclusiveGateway"`, …).
+    Flow(&'static str),
+    SequenceFlow,
+    MessageFlow,
+    Association,
+    Participant,
+    Lane,
+    TextAnnotation,
+}
+
+/// DI geometry of a drawn element.
+#[derive(Debug, Clone, PartialEq)]
+pub enum Geometry {
+    Shape(BpmnBounds),
+    Edge(Vec<(f64, f64)>),
+}
+
+/// Something worth knowing about a render that still succeeded.
+#[derive(Debug, Clone, PartialEq, Eq)]
+#[non_exhaustive]
+pub enum RenderWarning {
+    /// The chosen plane was empty, so the model was auto-laid out first.
+    AutoLayoutApplied,
+}
+
+/// SVG for a BPMN model. Default options give the same bytes as TS `exportSvg(defs)`.
+pub fn bpmn_to_svg(defs: &BpmnDefinitions, opts: &RenderOptions) -> Result<Svg, RenderError> {
+    bpmn::render(defs, opts)
+}
+
+/// Parses BPMN XML and renders it: the CLI/chat-bot one-liner.
+pub fn bpmn_xml_to_svg(xml: &str, opts: &RenderOptions) -> Result<Svg, RenderError> {
+    let defs = bpmnkit_bpmn::parse_bpmn(xml)?;
+    bpmn_to_svg(&defs, opts)
+}

@@ -1,0 +1,23 @@
+[package]
+name = "bpmnkit-render"
+description = "BPMN diagram to SVG (byte-identical to @bpmnkit/core exportSvg) and PNG for BPMN Kit"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["bpmn", "svg", "png", "diagram", "camunda"]
+categories = ["visualization", "rendering"]
+# Tests read the shared corpus under ../../conformance, outside the package.
+exclude = ["tests/"]
+
+[dependencies]
+bpmnkit-bpmn = { workspace = true }
+bpmnkit-layout = { workspace = true, optional = true }
+
+[features]
+default = ["auto-layout"]
+# Lay out models without diagram interchange before drawing them.
+auto-layout = ["dep:bpmnkit-layout"]

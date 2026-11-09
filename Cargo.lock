@@ -132,6 +132,7 @@ dependencies = [
  "bpmnkit-form",
  "bpmnkit-layout",
  "bpmnkit-lint",
+ "bpmnkit-render",
  "bpmnkit-text",
  "indexmap",
  "serde",
@@ -223,6 +224,14 @@ dependencies = [
  "indexmap",
  "serde",
  "serde_json",
+]
+
+[[package]]
+name = "bpmnkit-render"
+version = "0.1.0"
+dependencies = [
+ "bpmnkit-bpmn",
+ "bpmnkit-layout",
 ]
 
 [[package]]

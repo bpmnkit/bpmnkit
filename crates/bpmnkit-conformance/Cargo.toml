@@ -20,4 +20,5 @@ bpmnkit-lint = { workspace = true }
 bpmnkit-layout = { workspace = true }
 bpmnkit-builder = { workspace = true }
 bpmnkit-text = { workspace = true }
+bpmnkit-render = { workspace = true, features = ["auto-layout"] }
 indexmap = { workspace = true }

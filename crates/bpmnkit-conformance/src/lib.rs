@@ -15,6 +15,7 @@ pub mod layout;
 pub mod lint;
 pub mod migrate;
 pub mod optimize;
+pub mod render;
 pub use bpmnkit_diff::sha256;
 pub mod text;
 pub mod tooling;

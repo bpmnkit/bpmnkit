@@ -11,6 +11,10 @@
 - `bpmnkit::Error` (`#[non_exhaustive]`, `From` for every crate error), `bpmnkit::detect` → `DocKind`, `bpmnkit::load` → `Document` (process text and compact JSON expand without the deploy gate), `bpmnkit::prelude`. `text` feature now implies `bpmn` and `dmn`; the facade depends on `serde_json` for JSON sniffing.
 - `bpmnkit_lint::report`: `to_text` (`TextStyle{color,max}`), `to_markdown`, `to_slack_mrkdwn` (escapes `&<>`), plus `check_findings_*` for DMN/form findings. Snapshot tests; `detect`/`load` tested over the conformance corpus.
 - Examples `text_to_bpmn`, `eval_dmn`, `lint_report`; docs page `rust/embedding`. `render`/`diff` features wait for `bpmnkit-render` (T1) and `bpmnkit-diff` (T3).
+## 2026-11-09 — `bpmnkit-render`: BPMN → SVG in Rust (T1a)
+
+- New crate `crates/bpmnkit-render`: `bpmn_to_svg` / `bpmn_xml_to_svg`, a line-by-line port of `packages/core/src/bpmn/svg.ts` (label styles from `label-style.ts` included). Default options give the bytes of TS `exportSvg`; `theme` (light/dark/custom), `padding`, `scale`, `max_size`, `plane`, `auto_layout` (semantic layout for DI-less models, feature `auto-layout`), `font`, `element_ids`, `background`. Returns `Svg { markup, view_box, width, height, elements, warnings }`.
+- Conformance runner `crates/bpmnkit-conformance/src/render.rs` + `tests/render.rs` over `conformance/render/` (TS option names in `case.json`, byte-equal `expected/out.svg`). Checked locally against 267 TS-recorded runs (90 corpus inputs × default/dark/padding 40, 150 of them auto-laid out): all byte-equal. Fixtures themselves are recorded by T2.
 
 ## 2026-11-09 — `bpmnkit-diff` crate + `diffBpmn` (T3 of the Rust embedding plan)
 
