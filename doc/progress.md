@@ -4,6 +4,7 @@
 
 - `bpmnkit-feel`: `Value::to_feel_string`, `to_json_string`, `to_json`, `from_json_str`, `from_json`; `Context::from_json_str` / `from_json` (reuse the `to json()` / `from json()` builtins: exact numbers, key order kept). No TS twin formatter exists beyond `string()`, already covered by the FEEL conformance cases, so no new fixtures.
 - `bpmnkit_dmn::report`: `result_to_text`, `result_to_markdown`, `result_to_slack_mrkdwn` for scalar, single-hit and multi-hit results. Docs: embedding guide.
+
 ## 2026-11-09 — `bpmnkit::quick`: text → SVG/PNG in one call (E1)
 
 - Facade `bpmnkit` (features `text` + `render`): `quick::render_svg(text, &RenderOptions) -> Result<Svg, Error>` and, with `render-png`, `quick::render_png(text, &opts, &PngOptions)`. Auto-layout forced on; non-BPMN input gives `Error::Unrecognized`. (Not `bpmnkit::text::…`: that path is a re-export of the `bpmnkit-text` crate.) Example `text_to_png`; tests include every `conformance/text` input.
