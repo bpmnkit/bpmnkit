@@ -1,5 +1,8 @@
 # Features
 
+## HTML diff viewer (2026-11-09)
+
+`casen diff bpmn old.bpmn new.bpmn --html diff.html` writes one self-contained page: both diagrams with added, removed, changed and moved elements outlined, side by side or overlaid, a filterable change list with field-level `before → after`, click-to-zoom and `j`/`k` stepping; it loads nothing and reads without JavaScript. `--png diff.png` is the later diagram with the same marks, for chat. Library: `renderDiffHtml` / `diffToSvg` in `@bpmnkit/core`, `diff_to_html` / `diff_to_svg` in `bpmnkit-diff` (feature `html`), byte-identical. The Rust facade gains `render`, `diff` and `diff-html` features.
 ## `bpmnkit-render`: BPMN to SVG and PNG in Rust (2026-11-09)
 
 `bpmnkit_render::bpmn_to_svg(&defs, &RenderOptions)` / `bpmn_xml_to_svg(xml, …)` give the same SVG bytes as `exportSvg` for every option (theme incl. custom colours, padding, scale, max size, DI colours, plane by id or process, auto-layout, font, element ids, background), held by the `conformance/render/` fixtures, and return the viewBox, output size, drawn elements with their DI geometry and warnings. Feature `png` adds `svg_to_png` / `bpmn_to_png` (resvg) with a bundled Inter subset, so a server without fonts (a Slack bot in a container) draws the same image as a laptop; `system-fonts` adds the machine's fonts for CJK and emoji. A `max_pixels` guard refuses huge images instead of allocating them. Feature `dmn` adds `drd_to_svg` and `decision_table_to_svg` (the twins of `exportDrdSvg` / `exportDecisionTableSvg`). Builds for `wasm32-unknown-unknown`.

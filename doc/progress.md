@@ -1,5 +1,13 @@
 # Progress
 
+## 2026-11-09 — HTML diff viewer, `diff_to_html`, `casen diff --html/--png`, facade `render`/`diff` (T4)
+
+- One template, `spec/templates/diff-viewer.{html,css,js}`, inlined by `scripts/spec-gen/diff-viewer.mjs` into `packages/core/src/generated/diff-viewer.ts` and `crates/bpmnkit-spec/src/generated/diff_viewer.rs` (`bpmnkit_spec::diff_viewer`). TS `renderDiffHtml` / `diffToSvg` (`packages/core/src/bpmn/diff-html.ts`) and Rust `diff_to_html` / `diff_to_svg` / `DiffHtmlOptions` (`bpmnkit-diff`, feature `html`) only fill it in; `conformance/diff/*/expected/{diff.html,diff.svg}` (recorded by TS) are byte-equal in Rust.
+- Page: header chips + "semantically identical" badge, CSS-only modes (side by side / overlay with opacity slider / before / after) and per-kind filters, overlay marks inside each SVG (shapes: outset box; edges: wide translucent route; moves: dashed ghost of the old place), change list with `path: before → after`. JS (148 lines) adds click-to-zoom on both panes, synced wheel zoom / drag pan, `j`/`k`, `0` to fit; without it the marks link to their list rows. CSP `default-src 'none'`.
+- Deviations from the plan: SVGs are wrapped, not edited (`<svg viewBox=union><g translate>original</g><g class="bk-diff">…</g></svg>`) so both panes share one view box; ids are prefixed per pane (`bk-b-`/`bk-a-`) since both diagrams define `#arr`; extra placeholders `SUMMARY`, `CHANGES`, `*_LABEL` (server-rendered so the page works without JS); `DiffHtmlOptions` is `title`, labels, `theme`, `padding`, `auto_layout` rather than a full `RenderOptions`, so TS and Rust accept the same set.
+- `casen diff bpmn --html <file> --png <file>` (PNG via optional dependency `@resvg/resvg-js`, 2×). `scripts/diff-viewer-check.mjs`: Chromium with all requests blocked over the conformance pages (no requests, modes, filters, zoom, highlight → row, JS off) — 10/10 pass. Sample: `doc/plans/samples/order-diff.{html,png}`.
+- Facade `bpmnkit`: features `render` (with `auto-layout`), `diff`, `diff-html`, all in `full`; `bpmnkit::render`, `bpmnkit::diff`, prelude names, `Error::Render`; examples `render_svg`, `diff_html`. `render-png` / `render-system-fonts` are a TODO in `crates/bpmnkit/Cargo.toml` until `bpmnkit-render` has PNG (T1).
+
 ## 2026-11-09 — TS `exportSvg` v2, DRD + decision-table SVG, render conformance (T2)
 
 - `exportSvg` options: `scale`, `maxSize`, `colors: "di"`, `plane`, `autoLayout`, `font`, `elementIds`, `background`, custom `theme` colours; new `exportSvgDetailed` (viewBox, size, drawn elements, warnings), `exportDrdSvg`, `exportDecisionTableSvg` (`packages/core/src/dmn/svg.ts`).

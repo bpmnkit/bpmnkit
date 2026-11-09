@@ -20,8 +20,13 @@
 //! assert_ne!(diff.before_hash, diff.after_hash);
 //! println!("{}", diff_to_text(&diff, &DiffTextOptions::default()));
 //! ```
+//!
+//! Feature `html` adds [`diff_to_html`], a self-contained HTML viewer of both diagrams with the
+//! changes highlighted, and [`diff_to_svg`], the later diagram with the changes drawn over it.
 
 mod diff;
+#[cfg(feature = "html")]
+mod html;
 mod js;
 mod projection;
 pub mod sha256;
@@ -31,5 +36,7 @@ pub use diff::{
     diff_bpmn, BpmnDiff, ChangeKind, DiffSummary, ElementChange, FieldChange, Geometry,
     PlaneSummary, Point,
 };
+#[cfg(feature = "html")]
+pub use html::{diff_to_html, diff_to_svg, DiffHtmlOptions};
 pub use projection::{project_semantics, semantic_hash, SemanticProjection};
 pub use text::{diff_to_text, DiffTextOptions};

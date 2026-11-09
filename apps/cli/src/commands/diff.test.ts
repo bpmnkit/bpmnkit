@@ -1,4 +1,4 @@
-import { mkdtempSync, writeFileSync } from "node:fs"
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { beforeAll, describe, expect, it } from "vitest"
@@ -191,5 +191,21 @@ describe("casen diff bpmn", () => {
 		const path = fixture("only.bpmn", makeXml())
 		await expect(run([path])).rejects.toThrow(/Missing required argument: <after>/)
 		await expect(run([])).rejects.toThrow(/Missing required argument: <before>/)
+	})
+
+	it("writes a self-contained HTML viewer and a PNG", async () => {
+		const before = fixture("v1.bpmn", makeXml())
+		const after = fixture("v2.bpmn", makeXml({ chargeName: "Charge wallet", withLegacy: false }))
+		const html = join(dir, "diff.html")
+		const png = join(dir, "diff.png")
+		const captured = await run([before, after], { html, png, format: "json" })
+		// JSON output stays one parseable document; the files are named only in text mode.
+		expect(captured.printed).toHaveLength(1)
+		const page = readFileSync(html, "utf-8")
+		expect(page).toContain("<title>v1.bpmn → v2.bpmn</title>")
+		expect(page).toContain('<span class="bk-chip bk-k-removed">−1 removed</span>')
+		expect(page).toContain("Charge wallet")
+		const bytes = readFileSync(png)
+		expect(bytes.subarray(1, 4).toString("latin1")).toBe("PNG")
 	})
 })

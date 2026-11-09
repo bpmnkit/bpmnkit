@@ -10,6 +10,7 @@
 //! ```
 
 pub mod compat;
+pub mod diff_viewer;
 pub mod elements;
 pub mod feel;
 pub mod lint;
@@ -20,6 +21,7 @@ pub mod zeebe;
 mod generated {
     pub mod bpmn_elements;
     pub mod compat_rules;
+    pub mod diff_viewer;
     pub mod dmn_elements;
     pub mod form_elements;
     pub mod feel_builtins;

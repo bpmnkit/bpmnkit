@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="132 72 556 196" width="556" height="196">
+<rect x="132" y="72" width="556" height="196" fill="#f8f9fa"/>
+<defs>
+  <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+    <path d="M0,0 L8,3 L0,6 Z" fill="#404040"/>
+  </marker>
+</defs>
+<path d="M188,160 L300,160" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#arr)"/>
+<path d="M400,160 L470,160" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#arr)"/>
+<path d="M550,135 L550,114 Q550,110 554,110 L632,110" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#arr)"/>
+<path d="M550,185 L550,226 Q550,230 554,230 L632,230" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#arr)"/>
+<line x1="545" y1="195" x2="555" y2="195" stroke="#404040" stroke-width="1.5"/>
+<g transform="translate(152 142)"><circle cx="18" cy="18" r="17" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/></g>
+<g transform="translate(300 120)"><rect x="0" y="0" width="100" height="80" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(4 4)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><circle cx="7" cy="7" r="5.5" class="bi"/><circle cx="7" cy="7" r="2" class="bi"/><path d="M7 1v2.5M7 10.5v2.5M1 7h2.5M10.5 7h2.5M2.8 2.8l1.7 1.7M9.5 9.5l1.7 1.7M11.2 2.8l-1.7 1.7M4.5 9.5l-1.7 1.7" class="bi"/></g><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="40">Check order</text></g>
+<g transform="translate(525 135)"><polygon points="25,0 50,25 25,50 0,25" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(25 25)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><path d="M-6 -6l12 12M6 -6l-12 12" class="gms"/></g></g>
+<g transform="translate(632 92)"><circle cx="18" cy="18" r="17" style="fill:#ffffff;stroke:#404040;stroke-width:3"/></g>
+<g transform="translate(632 212)"><circle cx="18" cy="18" r="17" style="fill:#ffffff;stroke:#404040;stroke-width:3"/></g>
+<text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="170" y="201">Order</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="170" y="215">received</text>
+<text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="550" y="201">Approved?</text>
+<text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="650" y="144">Done</text>
+<text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="650" y="264">Rejected</text>
+<g class="bk-diff"><g class="bk-hl bk-k-changed" data-i="0"><title>changed: Check order (Task_review)</title><rect x="296" y="116" width="108" height="88" rx="6" fill="none" stroke="#d97706" stroke-width="4"/></g></g></svg>

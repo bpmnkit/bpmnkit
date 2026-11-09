@@ -93,11 +93,13 @@ dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-builder",
  "bpmnkit-compat",
+ "bpmnkit-diff",
  "bpmnkit-dmn",
  "bpmnkit-feel",
  "bpmnkit-form",
  "bpmnkit-layout",
  "bpmnkit-lint",
+ "bpmnkit-render",
  "bpmnkit-spec",
  "bpmnkit-text",
  "bpmnkit-xml",
@@ -168,6 +170,8 @@ name = "bpmnkit-diff"
 version = "0.1.0"
 dependencies = [
  "bpmnkit-bpmn",
+ "bpmnkit-render",
+ "bpmnkit-spec",
  "indexmap",
  "serde",
  "serde_json",

@@ -740,13 +740,19 @@
 		{
 			"id": "cli.diff.flags",
 			"file": "chunks/cli.diff.flags.md",
-			"tokens": 301,
+			"tokens": 561,
 			"tags": [
 				"cli",
 				"diff",
 				"flags"
 			],
-			"entities": []
+			"entities": [
+				"@resvg/resvg-js",
+				"diff.html",
+				"diff.png",
+				"renderDiffHtml()",
+				"@bpmnkit/core"
+			]
 		},
 		{
 			"id": "cli.diff.the-same-diff-elsewhere",
@@ -7232,27 +7238,48 @@
 		{
 			"id": "rust.embedding.cargo-features",
 			"file": "chunks/rust.embedding.cargo-features.md",
-			"tokens": 161,
+			"tokens": 190,
 			"tags": [
 				"rust",
 				"embedding",
 				"cargo",
 				"features"
 			],
-			"entities": [
-				"files.uploadV2"
-			]
+			"entities": []
 		},
 		{
-			"id": "rust.embedding.examples",
-			"file": "chunks/rust.embedding.examples.md",
-			"tokens": 35,
+			"id": "rust.embedding.render-a-diagram",
+			"file": "chunks/rust.embedding.render-a-diagram.md",
+			"tokens": 282,
 			"tags": [
 				"rust",
 				"embedding",
+				"render",
+				"diagram",
+				"diff",
+				"two",
+				"models"
+			],
+			"entities": [
+				"exportSvg",
+				"BpmnDiff",
+				"renderDiffHtml"
+			]
+		},
+		{
+			"id": "rust.embedding.slack-recipe",
+			"file": "chunks/rust.embedding.slack-recipe.md",
+			"tokens": 122,
+			"tags": [
+				"rust",
+				"embedding",
+				"slack",
+				"recipe",
 				"examples"
 			],
-			"entities": []
+			"entities": [
+				"files.uploadV2"
+			]
 		}
 	]
 }

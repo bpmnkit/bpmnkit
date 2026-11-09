@@ -29,6 +29,9 @@
 		"@bpmnkit/profiles": "workspace:^",
 		"@bpmnkit/proxy": "workspace:^"
 	},
+	"optionalDependencies": {
+		"@resvg/resvg-js": "^2.6.2"
+	},
 	"publishConfig": {
 		"access": "public"
 	},

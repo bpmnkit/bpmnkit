@@ -340,6 +340,10 @@ importers:
       '@bpmnkit/proxy':
         specifier: workspace:^
         version: link:../proxy
+    optionalDependencies:
+      '@resvg/resvg-js':
+        specifier: ^2.6.2
+        version: 2.6.2
 
   apps/demo:
     dependencies:
