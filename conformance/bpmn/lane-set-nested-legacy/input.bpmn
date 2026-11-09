@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Sales" name="Sales">
+        <bpmn:flowNodeRef>Start</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>End</bpmn:flowNodeRef>
+        <bpmn:laneSet id="LaneSet_sales">
+          <bpmn:lane id="Inside" name="Inside sales">
+            <bpmn:flowNodeRef>Start</bpmn:flowNodeRef>
+          </bpmn:lane>
+          <bpmn:lane id="Field" name="Field sales">
+            <bpmn:flowNodeRef>End</bpmn:flowNodeRef>
+          </bpmn:lane>
+        </bpmn:laneSet>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Start"/>
+    <bpmn:endEvent id="End"/>
+  </bpmn:process>
+</bpmn:definitions>
