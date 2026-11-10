@@ -9,16 +9,6 @@ pub use model::*;
 pub use parser::{parse_bpmn, BpmnParseError};
 pub use validator::{validate_bpmn, ValidationError};
 
-#[cfg(feature = "serialization")]
-pub fn serialize_process(process: &BpmnProcess) -> Result<Vec<u8>, bincode::Error> {
-    bincode::serialize(process)
-}
-
-#[cfg(feature = "serialization")]
-pub fn deserialize_process(bytes: &[u8]) -> Result<BpmnProcess, bincode::Error> {
-    bincode::deserialize(bytes)
-}
-
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
 

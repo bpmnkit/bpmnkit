@@ -1,0 +1,13 @@
+# `cargo audit` settings for the reebe workspace (apps/reebe/Cargo.lock).
+# Keep this list empty unless an advisory has no fix the lockfile can reach.
+
+[advisories]
+ignore = [
+    # libsqlite3-sys < 0.39 bundles SQLite < 3.54.0, which can return uninitialized page-cache
+    # memory when it opens a database together with a crafted `-wal` file. The fix (0.39) is not
+    # reachable: sqlx-sqlite 0.9.0, the newest release, requires libsqlite3-sys >=0.30.1, <0.38,
+    # so the lockfile pins 0.37.0. Reebe's embedded mode opens only the database file it creates
+    # under its own data directory (or the one the operator configures), never a file a less
+    # trusted party supplies. Remove this once an sqlx release allows libsqlite3-sys 0.39.
+    "RUSTSEC-2026-0459",
+]

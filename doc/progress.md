@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-11-10 — Reebe: `cargo audit` clean, audit step in CI
+
+- `apps/reebe`: `sqlx` 0.8 → 0.9 (rsa is opt-in there via `mysql-rsa`, so RUSTSEC-2023-0071 leaves the lockfile; `libsqlite3-sys` 0.30 → 0.37). sqlx 0.9 only accepts dynamic SQL wrapped in `AssertSqlSafe`; the four `format!` queries (constants spliced, values bound) and the Postgres test helpers now do that.
+- Dropped the unused `reebe-bpmn/serialization` feature and its `bincode` dependency (RUSTSEC-2025-0141). Semver-compatible lockfile bumps removed `rkyv` 0.7 (RUSTSEC-2026-0235), `pin-utils` and the `rand` warnings.
+- `libsqlite3-sys` RUSTSEC-2026-0459 stays ignored in `apps/reebe/.cargo/audit.toml`: the fix (0.39) is outside `sqlx-sqlite` 0.9.0's `<0.38` range, and reebe opens only its own database file.
+- CI (`Reebe tests`): `cargo audit --deny warnings` in `apps/reebe`. `cargo fmt --check` and `cargo clippy --workspace --all-targets -- -D warnings` pass there too.
+
 ## 2026-11-10 — Rust crates: security update (quick-xml 0.41, resvg 0.49), `cargo audit` in CI
 
 - `cargo audit`: the published crates pulled `quick-xml` 0.36 (RUSTSEC-2026-0194, -0195; patched in ≥ 0.41) and, via `bpmnkit-render`'s `png` feature, the unmaintained `rustybuzz` and `ttf-parser` (`resvg` 0.45). Requirements are now `quick-xml = "0.41"` (0.42 needs Rust 1.86; MSRV stays 1.85) and `resvg = "0.49"`, so downstream users can no longer resolve the vulnerable versions.
