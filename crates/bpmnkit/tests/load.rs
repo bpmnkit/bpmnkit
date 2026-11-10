@@ -97,3 +97,17 @@ fn error_conversion_and_display() {
     assert_eq!(e.to_string(), "text: boom");
     assert!(Error::Unrecognized.to_string().contains("unrecognized"));
 }
+
+#[test]
+fn ascii_error_converts_with_question_mark() {
+    fn run() -> Result<String, Error> {
+        Ok(bpmnkit::ascii::bpmn_xml_to_ascii(
+            "not xml",
+            &bpmnkit::ascii::AsciiOptions::default(),
+        )?)
+    }
+    let err = run().unwrap_err();
+    assert!(matches!(err, Error::Ascii(_)));
+    assert!(err.to_string().starts_with("ascii: "));
+    assert!(std::error::Error::source(&err).is_some());
+}

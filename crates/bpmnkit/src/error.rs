@@ -34,6 +34,8 @@ pub enum Error {
     Build(bpmnkit_builder::BuildError),
     #[cfg(feature = "render")]
     Render(bpmnkit_render::RenderError),
+    #[cfg(feature = "ascii")]
+    Ascii(bpmnkit_ascii::AsciiError),
 }
 
 impl fmt::Display for Error {
@@ -64,6 +66,8 @@ impl fmt::Display for Error {
             Error::Build(e) => write!(f, "build: {e}"),
             #[cfg(feature = "render")]
             Error::Render(e) => write!(f, "render: {e}"),
+            #[cfg(feature = "ascii")]
+            Error::Ascii(e) => write!(f, "ascii: {e}"),
         }
     }
 }
@@ -88,6 +92,8 @@ impl std::error::Error for Error {
             Error::Build(e) => Some(e),
             #[cfg(feature = "render")]
             Error::Render(e) => Some(e),
+            #[cfg(feature = "ascii")]
+            Error::Ascii(e) => Some(e),
         }
     }
 }
@@ -111,3 +117,4 @@ from!("feel", Feel, bpmnkit_feel::FeelError);
 from!("text", Text, bpmnkit_text::TextError);
 from!("builder", Build, bpmnkit_builder::BuildError);
 from!("render", Render, bpmnkit_render::RenderError);
+from!("ascii", Ascii, bpmnkit_ascii::AsciiError);

@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-10 — `bpmnkit::Error::Ascii`
+
+- Facade: `Error::Ascii(bpmnkit_ascii::AsciiError)` plus `From`, so `?` works on the `bpmnkit::ascii::*_xml/json_to_ascii` calls. Test in `crates/bpmnkit/tests/load.rs`.
+
 ## 2026-11-09 — `bpmnkit-ascii`: BPMN/DMN/form → text in Rust (item 10 of the embedding plan)
 
 - New crate `crates/bpmnkit-ascii`: `bpmn_to_ascii` / `bpmn_xml_to_ascii`, `dmn_to_ascii` / `dmn_xml_to_ascii`, `form_to_ascii` / `form_json_to_ascii` with `AsciiOptions { title: FromModel | Hidden | Text }`. A line-by-line port of `packages/ascii` on the grid layout (`bpmnkit_layout::layout_flow_nodes`); text is handled as UTF-16 units so truncation and `trimEnd` match JS.
