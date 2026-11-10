@@ -11,7 +11,7 @@ readme = "README.md"
 keywords = ["camunda", "form", "bpmn", "parser", "json"]
 categories = ["parser-implementations", "encoding"]
 # Tests and benches read the shared corpus under ../../conformance, outside the package.
-exclude = ["tests/", "benches/"]
+exclude = ["tests/", "benches/", "package.json"]
 
 [dependencies]
 bpmnkit-spec = { workspace = true }

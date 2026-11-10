@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-11-10 — Rust crates released with Changesets
+
+- Each crate has a private `crates/<crate>/package.json` (`@crates/<crate>`, 0.2.0); all are one lockstep `fixed` group in `.changeset/config.json`, and `scripts/crates-version.mjs` copies the bumped version into `Cargo.toml`. Same UX as npm: `pnpm changeset`, a Version Packages PR, per-crate `CHANGELOG.md`.
+- `scripts/changeset-check.mjs` also checks crates: a changed `src/**`, `build.rs` or `Cargo.toml` needs a changeset naming `@crates/<crate>` (tests, benches, examples, scripts and Markdown do not).
+- `release-crates.yml` starts on a push to `main` that touches `crates/*/package.json` and keeps the `crates-io` approval, OIDC and bootstrap paths. New `crates-publish.mjs --release` step tags `crates-v<V>` and creates the GitHub release from the crates' CHANGELOG sections plus the corpus provenance line; idempotent. Tests for the note builder and the check.
+- Docs: `doc/rust-crates-release.md`, `.changeset/README.md`.
+
 ## 2026-11-09 — TS `exportSvg` v2, DRD + decision-table SVG, render conformance (T2)
 
 - `exportSvg` options: `scale`, `maxSize`, `colors: "di"`, `plane`, `autoLayout`, `font`, `elementIds`, `background`, custom `theme` colours; new `exportSvgDetailed` (viewBox, size, drawn elements, warnings), `exportDrdSvg`, `exportDecisionTableSvg` (`packages/core/src/dmn/svg.ts`).

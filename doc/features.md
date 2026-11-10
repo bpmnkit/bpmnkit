@@ -1,5 +1,9 @@
 # Features
 
+## Rust crates released with Changesets (2026-11-10)
+
+The `bpmnkit-*` crates are versioned in lockstep through `@crates/<crate>` changesets, with a Version Packages PR, per-crate CHANGELOGs, a CI check that changed crate code has a changeset, and a release workflow that publishes to crates.io and creates the `crates-v<version>` GitHub release. See [releasing the Rust crates](rust-crates-release.md).
+
 ## SVG export v2, DRD and decision-table images (2026-11-09)
 
 `exportSvg(defs, { scale, maxSize, colors: "di", plane, autoLayout, font, elementIds, background, theme })` plus `exportSvgDetailed` (size, viewBox, drawn elements, warnings). Data objects/stores, groups and multi-instance/compensation/call-activity markers are drawn. `exportDrdSvg(dmnDefs)` draws a requirements diagram (laid out when DI is missing) and `exportDecisionTableSvg(table, { name })` a decision table. Recorded as `conformance/render/` fixtures for the Rust renderer.

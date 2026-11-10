@@ -13,12 +13,14 @@
 //   node scripts/crates-publish.mjs --trust     register the release workflow as each crate's
 //                                               trusted publisher; needs CARGO_REGISTRY_TOKEN
 //                                               with the trusted-publishing scope
+//   node scripts/crates-publish.mjs --release   tag `crates-v<V>` and create the GitHub release
+//                                               (idempotent; needs `gh` and a token)
 //
 // Only workspace members with `publish` unset (or a registry list) are handled; the conformance
 // crate stays `publish = false`. The `bpmnkit` facade depends on every other crate, so it is
 // published last.
 import { spawnSync } from "node:child_process"
-import { existsSync } from "node:fs"
+import { existsSync, readFileSync, readdirSync } from "node:fs"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 
@@ -109,6 +111,38 @@ export function check(crates) {
 	return problems
 }
 
+/**
+ * Changesets versions each publishable crate as a private `@crates/<name>` package
+ * (crates/<name>/package.json); scripts/crates-version.mjs copies that into Cargo. `read` returns
+ * the parsed package.json of a crate directory, or null when there is none.
+ */
+export function packageJsonProblems(packages, read) {
+	const problems = []
+	for (const p of packages) {
+		const pkg = read(dirname(p.manifest_path))
+		if (Array.isArray(p.publish) && p.publish.length === 0) {
+			if (pkg) problems.push(`${p.name}: publish = false, so package.json must not exist`)
+			continue
+		}
+		if (!pkg) problems.push(`${p.name}: package.json missing (changesets versions the crate)`)
+		else {
+			if (pkg.private !== true) problems.push(`${p.name}: package.json must be private`)
+			if (pkg.name !== `@crates/${p.name}`)
+				problems.push(`${p.name}: package.json name is ${pkg.name}, expected @crates/${p.name}`)
+			if (pkg.version !== p.version)
+				problems.push(
+					`${p.name}: package.json version ${pkg.version} differs from Cargo ${p.version}`,
+				)
+		}
+	}
+	return problems
+}
+
+function readPackageJson(dir) {
+	const path = join(dir, "package.json")
+	return existsSync(path) ? JSON.parse(readFileSync(path, "utf8")) : null
+}
+
 /** Sparse index path of a crate: `bp/mn/bpmnkit-xml`. */
 export function indexPath(name) {
 	const n = name.toLowerCase()
@@ -164,6 +198,98 @@ async function cratesApi(path, token, init = {}) {
 	return response.json()
 }
 
+/** The `## <version>` section of a changesets CHANGELOG, without its heading; "" when absent. */
+export function changelogSection(changelog, version) {
+	const lines = changelog.split("\n")
+	const start = lines.findIndex((l) => l.trim() === `## ${version}`)
+	if (start < 0) return ""
+	const end = lines.findIndex((l, i) => i > start && /^## /.test(l))
+	return lines
+		.slice(start + 1, end < 0 ? undefined : end)
+		.join("\n")
+		.trim()
+}
+
+/**
+ * GitHub release notes for `crates-v<version>`: the facade's section first, then the other crates
+ * (by name), empty sections skipped, then the corpus provenance line.
+ * `changelogs` is `[{ name, text }]` with `name` the crate directory name.
+ */
+export function buildReleaseNotes({ version, changelogs, corpus }) {
+	const sorted = [...changelogs].sort(
+		(a, b) => Number(b.name === FACADE) - Number(a.name === FACADE) || a.name.localeCompare(b.name),
+	)
+	const parts = []
+	for (const { name, text } of sorted) {
+		const section = changelogSection(text, version)
+		if (section) parts.push(`### ${name}\n\n${section}`)
+	}
+	if (parts.length === 0) parts.push("No user-facing changes.")
+	parts.push(
+		`Conformance corpus recorded from \`@bpmnkit/core\` ${corpus.core} and \`@bpmnkit/feel\` ${corpus.feel}.`,
+	)
+	return `${parts.join("\n\n")}\n`
+}
+
+/** The release inputs from the crates' package.json files: the common version, and each CHANGELOG. */
+export function loadRelease() {
+	const dirs = readdirSync(join(ROOT, "crates"), { withFileTypes: true })
+		.filter((e) => e.isDirectory() && existsSync(join(ROOT, "crates", e.name, "package.json")))
+		.map((e) => e.name)
+	const versions = new Set(
+		dirs.map(
+			(d) => JSON.parse(readFileSync(join(ROOT, "crates", d, "package.json"), "utf8")).version,
+		),
+	)
+	if (versions.size !== 1) throw new Error(`crate versions differ: ${[...versions].join(", ")}`)
+	const read = (p) => JSON.parse(readFileSync(join(ROOT, p), "utf8")).version
+	return {
+		version: [...versions][0],
+		changelogs: dirs.map((name) => {
+			const f = join(ROOT, "crates", name, "CHANGELOG.md")
+			return { name, text: existsSync(f) ? readFileSync(f, "utf8") : "" }
+		}),
+		corpus: { core: read("packages/core/package.json"), feel: read("packages/feel/package.json") },
+	}
+}
+
+/** Tag and release `crates-v<V>`; a tag or release that exists is left alone, so a rerun is safe. */
+function release() {
+	const { version, changelogs, corpus } = loadRelease()
+	const tag = `crates-v${version}`
+	const sh = (cmd, args) => spawnSync(cmd, args, { cwd: ROOT, encoding: "utf8" })
+	if (sh("gh", ["release", "view", tag]).status === 0) {
+		console.log(`skip ${tag}: release exists`)
+		return
+	}
+	const remote = sh("git", ["ls-remote", "--tags", "origin", `refs/tags/${tag}`]).stdout
+	if (!remote.trim()) {
+		for (const args of [
+			["tag", tag],
+			["push", "origin", tag],
+		]) {
+			if (cargo_like("git", args) !== 0) process.exit(1)
+		}
+	} else console.log(`tag ${tag} exists`)
+	const notes = buildReleaseNotes({ version, changelogs, corpus })
+	const status = cargo_like("gh", [
+		"release",
+		"create",
+		tag,
+		"--verify-tag",
+		"--title",
+		tag,
+		"--notes",
+		notes,
+	])
+	if (status !== 0) process.exit(status)
+	console.log(`released ${tag}`)
+}
+
+function cargo_like(cmd, args) {
+	return spawnSync(cmd, args, { cwd: ROOT, stdio: "inherit" }).status ?? 1
+}
+
 function cargo(args) {
 	const result = spawnSync("cargo", args, { cwd: ROOT, stdio: "inherit" })
 	return result.status ?? 1
@@ -176,7 +302,8 @@ async function main() {
 	if (args.includes("--print")) {
 		console.log(order.join("\n"))
 	} else if (args.includes("--check")) {
-		const problems = check(crates)
+		const all = JSON.parse(run("cargo", ["metadata", "--format-version", "1", "--no-deps"]).stdout)
+		const problems = [...check(crates), ...packageJsonProblems(all.packages, readPackageJson)]
 		if (problems.length > 0) {
 			console.error(`crates-publish: ${problems.length} problem(s)\n  ${problems.join("\n  ")}`)
 			process.exit(1)
@@ -214,6 +341,8 @@ async function main() {
 			// The index needs a moment before dependents can resolve this version.
 			await new Promise((resolve) => setTimeout(resolve, 15000))
 		}
+	} else if (args.includes("--release")) {
+		release()
 	} else if (args.includes("--print-new")) {
 		for (const name of order) if ((await publishedVersions(name)).length === 0) console.log(name)
 	} else if (args.includes("--trust")) {
@@ -241,7 +370,7 @@ async function main() {
 		}
 	} else {
 		console.error(
-			"usage: crates-publish.mjs --check | --print | --check-features | --dry-run | --publish | --print-new | --trust",
+			"usage: crates-publish.mjs --check | --print | --check-features | --dry-run | --publish | --print-new | --trust | --release",
 		)
 		process.exit(2)
 	}

@@ -11,7 +11,7 @@ readme = "README.md"
 keywords = ["bpmn", "zeebe", "camunda", "parser", "workflow"]
 categories = ["parser-implementations", "encoding"]
 # Tests and benches read the shared corpus under ../../conformance, outside the package.
-exclude = ["tests/", "benches/"]
+exclude = ["tests/", "benches/", "package.json"]
 
 [dependencies]
 bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.1.0", default-features = false }

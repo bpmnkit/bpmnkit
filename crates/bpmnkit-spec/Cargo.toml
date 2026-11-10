@@ -11,7 +11,7 @@ readme = "README.md"
 keywords = ["bpmn", "dmn", "camunda", "feel", "connectors"]
 categories = ["data-structures", "development-tools"]
 # Tests and benches read the shared corpus under ../../conformance, outside the package.
-exclude = ["tests/", "benches/"]
+exclude = ["tests/", "benches/", "package.json"]
 
 [dev-dependencies]
 serde_json = { workspace = true }

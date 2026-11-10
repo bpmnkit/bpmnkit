@@ -11,7 +11,7 @@ readme = "README.md"
 keywords = ["bpmn", "svg", "png", "diagram", "camunda"]
 categories = ["visualization", "rendering"]
 # Tests read the shared corpus under ../../conformance, outside the package.
-exclude = ["tests/"]
+exclude = ["tests/", "package.json"]
 
 [dependencies]
 bpmnkit-bpmn = { workspace = true }

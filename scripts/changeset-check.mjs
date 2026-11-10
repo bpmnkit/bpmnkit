@@ -8,18 +8,28 @@
  *   node scripts/changeset-check.mjs [--base origin/main]
  */
 import { execFileSync } from "node:child_process"
-import { readFileSync, readdirSync } from "node:fs"
+import { existsSync, readFileSync, readdirSync } from "node:fs"
 import { pathToFileURL } from "node:url"
 import { PUBLISHED } from "./published-packages.mjs"
 
 const TEST_OR_DOC = /(^|\/)(__tests__|test|tests)\/|\.(test|spec)\.[cm]?[jt]sx?$|\.md$/
 
-/** Published packages with changed non-test files under `src/` and no changeset naming them. */
+/** npm packages ship `src/`. */
+const npmRuntime = (dir, f) => f.startsWith(`${dir}/src/`)
+
+/** Crates ship `src/`, `build.rs` and `Cargo.toml`; tests, benches, examples and scripts do not. */
+export const crateRuntime = (dir, f) =>
+	f.startsWith(`${dir}/src/`) || f === `${dir}/build.rs` || f === `${dir}/Cargo.toml`
+
+/**
+ * Packages (`{ dir, name, runtime? }`) with a changed runtime file that is not a test or doc and
+ * no changeset naming them. `runtime(dir, file)` defaults to "under `src/`".
+ */
 export function missingChangesets(changedFiles, changesetTexts, packages) {
 	const named = changesetTexts.join("\n")
 	return packages.filter(
-		({ dir, name }) =>
-			changedFiles.some((f) => f.startsWith(`${dir}/src/`) && !TEST_OR_DOC.test(f)) &&
+		({ dir, name, runtime = npmRuntime }) =>
+			changedFiles.some((f) => runtime(dir, f) && !TEST_OR_DOC.test(f)) &&
 			!named.includes(`"${name}"`),
 	)
 }
@@ -39,6 +49,15 @@ function main() {
 		dir,
 		name: JSON.parse(readFileSync(`${dir}/package.json`, "utf8")).name,
 	}))
+	// Crates are versioned through a package.json shell named `@crates/<crate>`.
+	const crates = readdirSync("crates", { withFileTypes: true })
+		.filter((e) => e.isDirectory() && existsSync(`crates/${e.name}/package.json`))
+		.map((e) => ({
+			dir: `crates/${e.name}`,
+			name: JSON.parse(readFileSync(`crates/${e.name}/package.json`, "utf8")).name,
+			runtime: crateRuntime,
+		}))
+	packages.push(...crates)
 	const missing = missingChangesets(changed, texts, packages)
 	for (const m of missing) console.error(`${m.name}: src changed, no changeset names it`)
 	if (missing.length > 0) {
