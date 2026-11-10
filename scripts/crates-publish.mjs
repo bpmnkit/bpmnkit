@@ -117,6 +117,17 @@ export function indexPath(name) {
 	return `${n.slice(0, 2)}/${n.slice(2, 4)}/${n}`
 }
 
+/**
+ * When crates.io refuses with 429 it names the time to retry ("try again after Tue, 10 Nov 2026
+ * 09:11:57 GMT"); new crates are limited to a short burst, then about one per 10 minutes.
+ */
+export function retryAfter(stderr) {
+	if (!/429 Too Many Requests/.test(stderr)) return null
+	const match = /try again after ([^.]+? GMT)/.exec(stderr)
+	const at = match ? Date.parse(match[1]) : Number.NaN
+	return Number.isNaN(at) ? null : new Date(at)
+}
+
 /** The versions of `name` on crates.io, by the sparse index; empty when the crate does not exist. */
 async function publishedVersions(name) {
 	const response = await fetch(`https://index.crates.io/${indexPath(name)}`)
@@ -209,8 +220,21 @@ async function main() {
 				continue
 			}
 			console.log(`publish ${name}@${version}`)
-			const status = cargo(["publish", "-p", name])
-			if (status !== 0) process.exit(status)
+			// A bootstrap run publishes many new crates at once and hits the rate limit; wait it out.
+			for (let attempt = 1; ; attempt++) {
+				const result = spawnSync("cargo", ["publish", "-p", name], {
+					cwd: ROOT,
+					stdio: ["inherit", "inherit", "pipe"],
+					encoding: "utf8",
+				})
+				process.stderr.write(result.stderr ?? "")
+				if (result.status === 0) break
+				const at = retryAfter(result.stderr ?? "")
+				if (!at || attempt >= 20) process.exit(result.status ?? 1)
+				const ms = Math.max(0, at.getTime() - Date.now()) + 10000
+				console.log(`rate limited: retry ${name} in ${Math.ceil(ms / 1000)}s`)
+				await new Promise((resolve) => setTimeout(resolve, ms))
+			}
 			// The index needs a moment before dependents can resolve this version.
 			await new Promise((resolve) => setTimeout(resolve, 15000))
 		}
