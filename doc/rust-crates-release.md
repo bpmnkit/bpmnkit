@@ -65,6 +65,10 @@ Dependencies first (`node scripts/crates-publish.mjs --print`):
 
   `connectors.json` is most of `bpmnkit-spec`; it would have to grow about 18-fold before the limit matters.
 
+## Security advisories
+
+CI's Rust job runs `cargo audit --deny warnings` on the root `Cargo.lock`, so a RustSec advisory, an unmaintained or a yanked crate fails the build. A lockfile bump fixes CI only: also raise the requirement in `Cargo.toml` so that users of the published crates cannot resolve the affected version, and keep it within `rust-version` (`cargo info <crate>@<version>` shows a crate's MSRV).
+
 ## Workflow
 
 `.github/workflows/release-crates.yml`. It starts on a push to `main` that touches `crates/*/package.json` (the merge of the Version Packages PR) and publishes; started by hand (`workflow_dispatch`) it is a dry run unless `publish` is set:

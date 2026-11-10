@@ -36,7 +36,6 @@ tokio = { version = "1", features = ["full"] }
 chrono = { version = "0.4", features = ["serde"] }
 
 # XML parsing
-quick-xml = { version = "0.36", features = ["serialize"] }
 
 # Logging
 tracing = "0.1"

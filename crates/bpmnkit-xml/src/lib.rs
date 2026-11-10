@@ -127,8 +127,32 @@ pub fn scan_xml(xml: &str, sink: &mut impl XmlSink) -> Result<bool, XmlError> {
     // Whether each open element wants character data.
     let mut want_text: Vec<bool> = Vec::new();
     let mut seen_root = false;
+    // quick-xml reports entity references apart from the text around them; joining the run
+    // and decoding it once gives sinks one `text` call per run, as before.
+    let mut run = String::new();
     loop {
         let event = reader.read_event().map_err(err)?;
+        match &event {
+            Event::Text(t) => {
+                if want_text.last() == Some(&true) {
+                    run.push_str(utf8(t)?);
+                }
+                continue;
+            }
+            Event::GeneralRef(r) => {
+                if want_text.last() == Some(&true) {
+                    run.push('&');
+                    run.push_str(utf8(r)?);
+                    run.push(';');
+                }
+                continue;
+            }
+            _ if !run.is_empty() => {
+                sink.text(&decode_entities(&run));
+                run.clear();
+            }
+            _ => {}
+        }
         match event {
             Event::Start(e) => {
                 let name = utf8(e.name().into_inner())?;
@@ -162,11 +186,6 @@ pub fn scan_xml(xml: &str, sink: &mut impl XmlSink) -> Result<bool, XmlError> {
                 sink.end(utf8(e.name().into_inner())?);
                 if want_text.is_empty() {
                     return Ok(true);
-                }
-            }
-            Event::Text(t) => {
-                if want_text.last() == Some(&true) {
-                    sink.text(&decode_entities(utf8(&t)?));
                 }
             }
             Event::CData(t) => {
@@ -418,5 +437,32 @@ mod tests {
         let mut s = SkipB(vec![]);
         assert!(scan_xml("<r>t<x:b><c/>u</x:b><d/></r>", &mut s).unwrap());
         assert_eq!(s.0, ["<r", "<x:b", "<d", "</d", "</r"]);
+    }
+
+    #[test]
+    fn entity_references_join_the_surrounding_text() {
+        let el = parse_xml("<a>x &amp; &nbsp;&#65;<!--c-->y&lt;</a>").unwrap();
+        assert_eq!(el.text.as_deref(), Some("x & &nbsp;Ay<"));
+    }
+
+    // RUSTSEC-2026-0194/0195: duplicate-attribute checks and namespace bookkeeping must not
+    // grow with the square of, or beyond, the declarations in one start tag.
+    #[test]
+    fn many_attributes_and_namespace_declarations_stay_linear() {
+        let n = 50_000;
+        let mut xml = String::from("<r");
+        for i in 0..n {
+            xml.push_str(&format!(" xmlns:p{i}=\"urn:{i}\" a{i}=\"{i}\""));
+        }
+        xml.push_str(" a0=\"last\"/>");
+        let started = std::time::Instant::now();
+        let el = parse_xml(&xml).unwrap();
+        assert!(started.elapsed() < std::time::Duration::from_secs(5));
+        assert_eq!(el.attributes.len(), 2 * n);
+        assert_eq!(el.attr("a0"), Some("last"));
+        assert_eq!(
+            el.attributes.get_index(1).map(|(k, _)| k.as_str()),
+            Some("a0")
+        );
     }
 }
