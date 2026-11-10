@@ -1,6 +1,6 @@
 ---
 title: Embedding the Rust crates
-description: Use the bpmnkit crate in a Rust CLI or chat server (Slack): load any model with one call, one error type, lint reports as text, Markdown or Slack mrkdwn, and cargo features for rendering and diff.
+description: "Use the bpmnkit crate in a Rust CLI or chat server (Slack): load any model with one call, one error type, lint reports as text, Markdown or Slack mrkdwn, and cargo features for rendering and diff."
 sidebar:
   order: 21
 ---

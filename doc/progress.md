@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-10 — Fix landing build: quote `rust/embedding.md` description
+
+- The front-matter `description` held `: `, which YAML read as a nested key, so `astro build` failed. Quoted it.
+
 ## 2026-11-10 — `bpmnkit::Error::Ascii`
 
 - Facade: `Error::Ascii(bpmnkit_ascii::AsciiError)` plus `From`, so `?` works on the `bpmnkit::ascii::*_xml/json_to_ascii` calls. Test in `crates/bpmnkit/tests/load.rs`.
