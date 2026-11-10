@@ -26,16 +26,19 @@ Dependencies first (`node scripts/crates-publish.mjs --print`):
 
 1. `bpmnkit-spec`
 2. `bpmnkit-xml`
-3. `bpmnkit-bpmn`
-4. `bpmnkit-feel`
-5. `bpmnkit-form`
-6. `bpmnkit-compat`
-7. `bpmnkit-dmn`
+3. `bpmnkit-feel`
+4. `bpmnkit-form`
+5. `bpmnkit-bpmn`
+6. `bpmnkit-dmn`
+7. `bpmnkit-compat`
 8. `bpmnkit-layout`
-9. `bpmnkit-lint`
+9. `bpmnkit-ascii`
 10. `bpmnkit-builder`
-11. `bpmnkit-text`
-12. `bpmnkit` (the facade; it depends on all of the above, so it is always last)
+11. `bpmnkit-lint`
+12. `bpmnkit-render`
+13. `bpmnkit-text`
+14. `bpmnkit-diff`
+15. `bpmnkit` (the facade; it depends on all of the above, so it is always last)
 
 `--publish` skips a crate whose exact version is already on crates.io (sparse index), so a run that stopped half way can be started again.
 
@@ -83,6 +86,7 @@ Locally: `node scripts/crates-publish.mjs --check | --print | --check-features |
 1. Create a crates.io API token with the `publish-new`, `publish-update` and `trusted-publishing` scopes and add it as the secret `CARGO_REGISTRY_TOKEN` of a GitHub environment named `crates-io`. Add required reviewers to that environment. (Done.)
 2. Names: re-check just before a release that adds a crate that the name is free (`https://index.crates.io/bp/mn/<name>` answers 404).
 3. First release (0.1.0): run the workflow without `publish`, read the dry-run output, run it again with `publish` and approve. It is a bootstrap run: it publishes with the secret (12 crates, `bpmnkit` last) and registers the trusted publishers. On 2026-11-08, `bpmnkit-spec`, `-xml`, `-bpmn`, `-feel` and `-form` 0.1.0 were already on crates.io, so the next run publishes the other 7 and registers all 12. Then tag `crates-v0.1.0` and write the release notes (corpus provenance above).
+   That run never happened: by then `-spec`, `-bpmn` and `-feel` had changed (the dependents need the new code), and a published version cannot be replaced, so the set moved to 0.2.0 (2026-11-10). The 0.2.0 run is a bootstrap run: it publishes all 15 crates and registers the trusted publishers.
 4. Check on crates.io (each crate → Settings → Trusted Publishing) that the GitHub config is listed. If `--trust` failed (for example, the token lacks the scope), add it there by hand: owner `bpmnkit`, repository `bpmnkit`, workflow `release-crates.yml`, environment `crates-io`, or rerun `--trust` locally.
 5. From then on, releases use OIDC only. Optionally, once every crate trusts the workflow, turn on "trusted publishing only" for each crate on crates.io, and reduce the secret to what bootstrap runs need (or remove it until a new crate is added; a bootstrap run without it fails with a clear error).
 6. A later release that adds a crate is a bootstrap run again; it registers the new crate.

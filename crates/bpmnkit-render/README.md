@@ -45,7 +45,7 @@ std::fs::write("order.svg", svg.markup)?;
 ## PNG
 
 ```toml
-bpmnkit-render = { version = "0.1", features = ["png"] }
+bpmnkit-render = { version = "0.2", features = ["png"] }
 ```
 
 ```rust

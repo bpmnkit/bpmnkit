@@ -88,7 +88,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "bpmnkit-ascii",
  "bpmnkit-bpmn",
@@ -109,7 +109,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-ascii"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-dmn",
@@ -119,7 +119,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-bpmn"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "bpmnkit-feel",
  "bpmnkit-spec",
@@ -131,7 +131,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-builder"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-compat",
@@ -145,7 +145,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-compat"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-feel",
@@ -158,7 +158,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-conformance"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "bpmnkit-ascii",
  "bpmnkit-bpmn",
@@ -179,7 +179,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-diff"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-render",
@@ -191,7 +191,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-dmn"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "bpmnkit-feel",
  "bpmnkit-spec",
@@ -203,7 +203,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-feel"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "bpmnkit-spec",
  "chrono",
@@ -216,7 +216,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-form"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "bpmnkit-spec",
  "indexmap",
@@ -226,7 +226,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-fuzz"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-conformance",
@@ -242,7 +242,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-layout"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-dmn",
@@ -252,7 +252,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-lint"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-compat",
@@ -268,7 +268,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-render"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-dmn",
@@ -279,14 +279,14 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-spec"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "serde_json",
 ]
 
 [[package]]
 name = "bpmnkit-text"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-compat",
@@ -302,7 +302,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-xml"
-version = "0.1.0"
+version = "0.2.0"
 dependencies = [
  "indexmap",
  "quick-xml",

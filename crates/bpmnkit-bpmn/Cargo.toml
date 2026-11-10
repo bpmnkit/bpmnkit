@@ -14,7 +14,7 @@ categories = ["parser-implementations", "encoding"]
 exclude = ["tests/", "benches/"]
 
 [dependencies]
-bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.1.0", default-features = false }
+bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.2.0", default-features = false }
 bpmnkit-spec = { workspace = true }
 bpmnkit-xml = { workspace = true }
 indexmap = { workspace = true }

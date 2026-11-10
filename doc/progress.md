@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-10 — Rust crates 0.2.0 for the first full crates.io release
+
+- Lockstep bump 0.1.0 → 0.2.0 (`[workspace.package]`, `[workspace.dependencies]`, inline `bpmnkit-feel` entries). crates.io holds `bpmnkit-spec`, `-xml`, `-feel`, `-form`, `-bpmn` 0.1.0 from 2026-11-08; `-spec`, `-feel` and `-bpmn` changed since (Zeebe rules, diff viewer template, JUEL/FEEL conditions, `Value` JSON helpers), and the new crates (`-render`, `-diff`, `-ascii`, …) need that code, so 0.1.0 cannot be completed. `node scripts/crates-publish.mjs --dry-run` packages and builds all 15. Docs: `doc/rust-crates-release.md` (publish order now 15 crates), `version = "0.2"` in the embedding guide and the `bpmnkit-render` README.
+
 ## 2026-11-10 — Refresh `api-surface.json` for the new `@bpmnkit/core` exports
 
 - 21 additions only (`diffBpmn`, `renderDiffHtml`, `diffToSvg`, `exportSvgDetailed`, `exportDrdSvg`, `exportDecisionTableSvg` and their types); a minor, already covered by the existing changesets.
