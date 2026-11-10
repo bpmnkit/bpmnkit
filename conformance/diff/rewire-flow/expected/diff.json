@@ -1,0 +1,111 @@
+{
+  "afterHash": "e7251d5b60996df58ee276f943089dbcb30551615b5c522b8c620da9dbc9407d",
+  "beforeHash": "d5664749d621c5a6d05bda439108cf5bd158f36322b50bc1c2eeca91ba1152d2",
+  "changes": [
+    {
+      "elementType": "endEvent",
+      "fields": [
+        {
+          "after": "Flow_2",
+          "path": "incoming/Flow_2"
+        }
+      ],
+      "geometryAfter": {
+        "height": 36,
+        "width": 36,
+        "x": 632,
+        "y": 92
+      },
+      "geometryBefore": {
+        "height": 36,
+        "width": 36,
+        "x": 632,
+        "y": 92
+      },
+      "id": "End_done",
+      "kind": "changed",
+      "nameAfter": "Done",
+      "nameBefore": "Done"
+    },
+    {
+      "elementType": "sequenceFlow",
+      "fields": [
+        {
+          "after": "End_done",
+          "before": "Gateway_ok",
+          "path": "targetRef"
+        }
+      ],
+      "geometryAfter": {
+        "waypoints": [
+          {
+            "x": 400,
+            "y": 160
+          },
+          {
+            "x": 470,
+            "y": 160
+          }
+        ]
+      },
+      "geometryBefore": {
+        "waypoints": [
+          {
+            "x": 400,
+            "y": 160
+          },
+          {
+            "x": 470,
+            "y": 160
+          }
+        ]
+      },
+      "id": "Flow_2",
+      "kind": "changed"
+    },
+    {
+      "elementType": "exclusiveGateway",
+      "fields": [
+        {
+          "before": [
+            "Flow_2"
+          ],
+          "path": "incoming"
+        }
+      ],
+      "geometryAfter": {
+        "height": 50,
+        "width": 50,
+        "x": 525,
+        "y": 135
+      },
+      "geometryBefore": {
+        "height": 50,
+        "width": 50,
+        "x": 525,
+        "y": 135
+      },
+      "id": "Gateway_ok",
+      "kind": "changed",
+      "nameAfter": "Approved?",
+      "nameBefore": "Approved?"
+    }
+  ],
+  "planes": [
+    {
+      "added": 0,
+      "changed": 3,
+      "id": "Process_1",
+      "moved": 0,
+      "removed": 0,
+      "total": 3
+    }
+  ],
+  "summary": {
+    "added": 0,
+    "changed": 3,
+    "moved": 0,
+    "removed": 0,
+    "total": 3
+  }
+}

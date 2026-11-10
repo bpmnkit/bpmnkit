@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="generator" content="BPMN Kit">
+<title>{{TITLE}}</title>
+<style>{{STYLE}}</style>
+</head>
+<body>
+<input type="radio" name="bk-mode" id="bk-m-side" class="bk-ctl" checked>
+<input type="radio" name="bk-mode" id="bk-m-overlay" class="bk-ctl">
+<input type="radio" name="bk-mode" id="bk-m-before" class="bk-ctl">
+<input type="radio" name="bk-mode" id="bk-m-after" class="bk-ctl">
+<input type="checkbox" id="bk-f-added" class="bk-ctl" checked>
+<input type="checkbox" id="bk-f-removed" class="bk-ctl" checked>
+<input type="checkbox" id="bk-f-changed" class="bk-ctl" checked>
+<input type="checkbox" id="bk-f-moved" class="bk-ctl" checked>
+<header class="bk-head">
+<h1>{{TITLE}}</h1>
+{{SUMMARY}}
+</header>
+<nav class="bk-bar" aria-label="View">
+<span class="bk-seg" role="group" aria-label="Mode"><label for="bk-m-side">Side by side</label><label for="bk-m-overlay">Overlay</label><label for="bk-m-before">{{BEFORE_LABEL}}</label><label for="bk-m-after">{{AFTER_LABEL}}</label></span>
+<span class="bk-seg" role="group" aria-label="Show changes"><label for="bk-f-added" class="bk-k-added">+ added</label><label for="bk-f-removed" class="bk-k-removed">− removed</label><label for="bk-f-changed" class="bk-k-changed">~ changed</label><label for="bk-f-moved" class="bk-k-moved">↔ moved</label></span>
+<label class="bk-fade">{{BEFORE_LABEL}} opacity <input type="range" id="bk-fade" min="0" max="100" value="35"></label>
+<span class="bk-hint">j/k next/prev · wheel zoom · drag pan · 0 fit</span>
+</nav>
+<main class="bk-main">
+<section class="bk-views">
+<figure class="bk-pane bk-pane-before"><figcaption>{{BEFORE_LABEL}}</figcaption><div class="bk-canvas">{{BEFORE_SVG}}</div></figure>
+<figure class="bk-pane bk-pane-after"><figcaption>{{AFTER_LABEL}}</figcaption><div class="bk-canvas">{{AFTER_SVG}}</div></figure>
+</section>
+<aside class="bk-list" aria-label="Changes">
+{{CHANGES}}
+</aside>
+</main>
+<script type="application/json" id="bk-diff">{{DIFF_JSON}}</script>
+<script>{{SCRIPT}}</script>
+</body>
+</html>

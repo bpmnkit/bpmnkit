@@ -529,7 +529,7 @@ fn json_string(s: &str) -> String {
 }
 
 /// A value's JSON text, or `None` for one JSON has no form for (a function, a range).
-fn json_text(v: &Value) -> Option<String> {
+pub(crate) fn json_text(v: &Value) -> Option<String> {
     Some(match v {
         Value::Null => "null".to_owned(),
         Value::Boolean(b) => b.to_string(),
@@ -781,10 +781,8 @@ impl JsonParser<'_> {
     }
 }
 
-fn from_json(args: &[Value]) -> Value {
-    let Some(text) = str_arg(args, 0) else {
-        return Value::Null;
-    };
+/// Parses JSON text into a value (numbers exact, key order kept); `None` if it is not JSON.
+pub(crate) fn parse_json_text(text: &str) -> Option<Value> {
     let mut p = JsonParser {
         s: text,
         i: 0,
@@ -792,10 +790,13 @@ fn from_json(args: &[Value]) -> Value {
     };
     let value = p.value();
     p.skip_ws();
-    match value {
-        Some(v) if p.i == text.len() => v,
-        _ => Value::Null,
-    }
+    value.filter(|_| p.i == text.len())
+}
+
+fn from_json(args: &[Value]) -> Value {
+    str_arg(args, 0)
+        .and_then(parse_json_text)
+        .unwrap_or(Value::Null)
 }
 
 #[cfg(test)]

@@ -34,6 +34,9 @@ bpmnkit-lint = { path = "crates/bpmnkit-lint", version = "0.1.0" }
 bpmnkit-layout = { path = "crates/bpmnkit-layout", version = "0.1.0" }
 bpmnkit-builder = { path = "crates/bpmnkit-builder", version = "0.1.0" }
 bpmnkit-text = { path = "crates/bpmnkit-text", version = "0.1.0" }
+bpmnkit-diff = { path = "crates/bpmnkit-diff", version = "0.1.0" }
+bpmnkit-ascii = { path = "crates/bpmnkit-ascii", version = "0.1.0" }
+bpmnkit-render = { path = "crates/bpmnkit-render", version = "0.1.0", default-features = false }
 
 # Fat LTO + one codegen unit: whole-program inlining across the crates. `panic` stays
 # `unwind` because bpmnkit-fuzz catches panics in its release build.

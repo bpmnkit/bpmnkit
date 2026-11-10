@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="166 297 534 108" width="534" height="108">
+<rect x="166" y="297" width="534" height="108" fill="#f8f9fa"/>
+<defs>
+  <marker id="arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+    <path d="M0,0 L8,3 L0,6 Z" fill="#404040"/>
+  </marker>
+</defs>
+<path d="M342,351 L390,351" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#arr)"/>
+<path d="M216,351 L230,351 Q234,351 238,351 L258,351" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#arr)"/>
+<path d="M474,351 L522,351" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#arr)"/>
+<path d="M606,351 L620,351 Q624,351 628,351 L648,351" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#arr)"/>
+<g transform="translate(186 336)"><circle cx="15" cy="15" r="14" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/></g>
+<g transform="translate(258 317)"><rect x="0" y="0" width="83" height="68" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><text style="fill:#333333;font-family:&quot;Arial&quot;, system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="41.5" y="34">Task 1</text></g>
+<g transform="translate(390 317)"><rect x="0" y="0" width="83" height="68" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><text style="fill:#333333;font-family:&quot;Arial&quot;, system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="41.5" y="34">Task 2</text></g>
+<g transform="translate(522 317)"><rect x="0" y="0" width="83" height="68" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><text style="fill:#333333;font-family:&quot;Arial&quot;, system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="41.5" y="34">Task 3</text></g>
+<g transform="translate(648 335)"><circle cx="16" cy="16" r="15" style="fill:#ffffff;stroke:#404040;stroke-width:3"/></g>
+<text style="fill:#333333;font-family:&quot;Arial&quot;, system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="201.1443342112394" y="377.7357089192708">Start Event</text>
+<text style="fill:#333333;font-family:&quot;Arial&quot;, system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="664.0629921259844" y="378.7357089192708">End Event</text>
+</svg>

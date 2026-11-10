@@ -143,6 +143,17 @@ export type {
 	CamundaCompatVersion,
 } from "./bpmn/camunda-compat-data.js"
 export { diffDiagram } from "./bpmn/diagram-diff.js"
+export { diffBpmn } from "./bpmn/bpmn-diff.js"
+export { diffToSvg, renderDiffHtml } from "./bpmn/diff-html.js"
+export type { DiffHtmlOptions } from "./bpmn/diff-html.js"
+export type {
+	BpmnChangeKind,
+	BpmnDiff,
+	BpmnDiffSummary,
+	BpmnElementChange,
+	BpmnFieldChange,
+	BpmnGeometry,
+} from "./bpmn/bpmn-diff.js"
 export {
 	exportPreserving,
 	exportPreservingResult,
@@ -526,8 +537,18 @@ export type {
 } from "./bpmn/camunda7/migrate.js"
 export { translateJuelToFeel } from "./bpmn/camunda7/juel.js"
 export type { JuelToFeelOptions, JuelToFeelResult } from "./bpmn/camunda7/juel.js"
-export { exportSvg } from "./bpmn/svg.js"
-export type { SvgExportOptions } from "./bpmn/svg.js"
+export { exportSvg, exportSvgDetailed } from "./bpmn/svg.js"
+export type {
+	SvgElementKind,
+	SvgExportOptions,
+	SvgExportResult,
+	SvgGeometry,
+	SvgRenderedElement,
+	SvgThemeColors,
+	SvgWarning,
+} from "./bpmn/svg.js"
+export { exportDrdSvg, exportDecisionTableSvg } from "./dmn/svg.js"
+export type { DecisionTableSvgOptions, DmnSvgOptions } from "./dmn/svg.js"
 export {
 	buildProcessDocumentation,
 	documentationToDocx,

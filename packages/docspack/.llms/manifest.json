@@ -740,13 +740,19 @@
 		{
 			"id": "cli.diff.flags",
 			"file": "chunks/cli.diff.flags.md",
-			"tokens": 301,
+			"tokens": 561,
 			"tags": [
 				"cli",
 				"diff",
 				"flags"
 			],
-			"entities": []
+			"entities": [
+				"@resvg/resvg-js",
+				"diff.html",
+				"diff.png",
+				"renderDiffHtml()",
+				"@bpmnkit/core"
+			]
 		},
 		{
 			"id": "cli.diff.the-same-diff-elsewhere",
@@ -7189,6 +7195,127 @@
 				"also"
 			],
 			"entities": []
+		},
+		{
+			"id": "rust.embedding.overview",
+			"file": "chunks/rust.embedding.overview.md",
+			"tokens": 308,
+			"tags": [
+				"rust",
+				"embedding",
+				"overview",
+				"load",
+				"anything",
+				"detect"
+			],
+			"entities": [
+				"DocKind",
+				"ProcessText",
+				"CompactJson"
+			]
+		},
+		{
+			"id": "rust.embedding.one-error-type",
+			"file": "chunks/rust.embedding.one-error-type.md",
+			"tokens": 200,
+			"tags": [
+				"rust",
+				"embedding",
+				"one",
+				"error",
+				"type",
+				"lint",
+				"reports",
+				"people"
+			],
+			"entities": [
+				"source()",
+				"FeatureDisabled",
+				"LintReport",
+				"CheckFinding"
+			]
+		},
+		{
+			"id": "rust.embedding.feel-and-dmn-results-in-chat",
+			"file": "chunks/rust.embedding.feel-and-dmn-results-in-chat.md",
+			"tokens": 150,
+			"tags": [
+				"rust",
+				"embedding",
+				"feel",
+				"dmn",
+				"results",
+				"chat"
+			],
+			"entities": [
+				"string()",
+				"to_json()",
+				"from_json()"
+			]
+		},
+		{
+			"id": "rust.embedding.cargo-features",
+			"file": "chunks/rust.embedding.cargo-features.md",
+			"tokens": 210,
+			"tags": [
+				"rust",
+				"embedding",
+				"cargo",
+				"features"
+			],
+			"entities": []
+		},
+		{
+			"id": "rust.embedding.render-a-diagram",
+			"file": "chunks/rust.embedding.render-a-diagram.md",
+			"tokens": 163,
+			"tags": [
+				"rust",
+				"embedding",
+				"render",
+				"diagram",
+				"text",
+				"picture",
+				"one",
+				"call"
+			],
+			"entities": [
+				"exportSvg"
+			]
+		},
+		{
+			"id": "rust.embedding.stable-ids-in-a-server",
+			"file": "chunks/rust.embedding.stable-ids-in-a-server.md",
+			"tokens": 290,
+			"tags": [
+				"rust",
+				"embedding",
+				"stable",
+				"ids",
+				"server",
+				"diff",
+				"two",
+				"models"
+			],
+			"entities": [
+				"BpmnDiff",
+				"renderDiffHtml"
+			]
+		},
+		{
+			"id": "rust.embedding.slack-recipe",
+			"file": "chunks/rust.embedding.slack-recipe.md",
+			"tokens": 125,
+			"tags": [
+				"rust",
+				"embedding",
+				"slack",
+				"recipe",
+				"examples"
+			],
+			"entities": [
+				"files.uploadV2"
+			]
 		}
 	]
 }

@@ -22,6 +22,7 @@ const AREAS = [
 	"connector-templates",
 	"elements",
 	"zeebe-rules",
+	"diff-viewer",
 ]
 
 const readJson = (path) => JSON.parse(readFileSync(join(ROOT, path), "utf8"))
@@ -101,6 +102,11 @@ async function main() {
 	const files = {}
 	for (const name of AREAS) {
 		const area = await import(`./spec-gen/${name}.mjs`)
+		// A non-JSON source (an HTML template) has no schema and reads its own files.
+		if (area.raw) {
+			Object.assign(files, area.generate())
+			continue
+		}
 		// An area may span several files (spec/elements/<family>.json), each generated alone.
 		for (const source of area.sources ?? [area.source]) {
 			const spec = readJson(source)

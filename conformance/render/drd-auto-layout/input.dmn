@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:di="http://www.omg.org/spec/DMN/20180521/DI/" id="Defs_drd" name="DRD" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="dFinal" name="Final decision">
+    <informationRequirement id="r1"><requiredDecision href="#dMid"/></informationRequirement>
+    <informationRequirement id="r2"><requiredInput href="#inA"/></informationRequirement>
+    <knowledgeRequirement id="r3"><requiredKnowledge href="#bkm1"/></knowledgeRequirement>
+    <authorityRequirement id="r4"><requiredAuthority href="#ks1"/></authorityRequirement>
+    <literalExpression id="le1"><text>1</text></literalExpression>
+  </decision>
+  <decision id="dMid" name="Intermediate">
+    <informationRequirement id="r5"><requiredDecision href="#dLeaf"/></informationRequirement>
+    <informationRequirement id="r6"><requiredInput href="#inB"/></informationRequirement>
+    <literalExpression id="le2"><text>2</text></literalExpression>
+  </decision>
+  <decision id="dLeaf" name="Leaf decision with a long name">
+    <informationRequirement id="r7"><requiredInput href="#inA"/></informationRequirement>
+    <knowledgeRequirement id="r8"><requiredKnowledge href="#bkm2"/></knowledgeRequirement>
+    <literalExpression id="le3"><text>3</text></literalExpression>
+  </decision>
+  <inputData id="inA" name="Applicant"/>
+  <inputData id="inB" name="Income"/>
+  <inputData id="inUnused" name="Unused input"/>
+  <businessKnowledgeModel id="bkm1" name="Scoring">
+    <knowledgeRequirement id="r9"><requiredKnowledge href="#bkm2"/></knowledgeRequirement>
+  </businessKnowledgeModel>
+  <businessKnowledgeModel id="bkm2" name="Helper"/>
+  <knowledgeSource id="ks1" name="Policy">
+    <authorityRequirement id="r10"><requiredInput href="#inB"/></authorityRequirement>
+  </knowledgeSource>
+</definitions>

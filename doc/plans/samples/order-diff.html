@@ -1,0 +1,374 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="generator" content="BPMN Kit">
+<title>order-before.bpmn → order-after.bpmn</title>
+<style>
+:root {
+	color-scheme: light dark;
+	--bk-bg: var(--bpmnkit-bg, #f4f4f8);
+	--bk-surface: var(--bpmnkit-surface, #ffffff);
+	--bk-border: var(--bpmnkit-border, #d0d0e8);
+	--bk-fg: var(--bpmnkit-fg, #1a1a2e);
+	--bk-muted: var(--bpmnkit-fg-muted, #6666a0);
+	--bk-accent: var(--bpmnkit-accent, #1a56db);
+	--bk-accent-subtle: var(--bpmnkit-accent-subtle, rgba(26, 86, 219, 0.12));
+	--bk-mono: var(--bpmnkit-font-mono, ui-monospace, "Cascadia Code", "JetBrains Mono", monospace);
+	--bk-added: #16a34a;
+	--bk-removed: #dc2626;
+	--bk-changed: #d97706;
+	--bk-moved: #2563eb;
+	--bk-fade: 0.35;
+}
+@media (prefers-color-scheme: dark) {
+	:root {
+		--bk-bg: var(--bpmnkit-bg, #0d0d16);
+		--bk-surface: var(--bpmnkit-surface, #161626);
+		--bk-border: var(--bpmnkit-border, #2a2a42);
+		--bk-fg: var(--bpmnkit-fg, #cdd6f4);
+		--bk-muted: var(--bpmnkit-fg-muted, #8888a8);
+		--bk-accent: var(--bpmnkit-accent, #6b9df7);
+		--bk-accent-subtle: var(--bpmnkit-accent-subtle, rgba(107, 157, 247, 0.15));
+	}
+}
+* { box-sizing: border-box; }
+body { margin: 0; padding: 16px; background: var(--bk-bg); color: var(--bk-fg); font: 14px/1.45 var(--bpmnkit-font, system-ui, -apple-system, sans-serif); }
+h1 { margin: 0 0 8px; font-size: 18px; font-weight: 600; overflow-wrap: anywhere; }
+code, .bk-sum, .bk-bar, figcaption, .bk-group h2, .bk-type { font-family: var(--bk-mono); font-size: 12px; }
+.bk-ctl { position: absolute; opacity: 0; pointer-events: none; }
+.bk-sum { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 12px; }
+.bk-chip { padding: 2px 8px; border: 1px solid currentColor; }
+.bk-zero { opacity: 0.45; }
+.bk-same { color: var(--bk-accent); background: var(--bk-accent-subtle); }
+.bk-k-added { color: var(--bk-added); }
+.bk-k-removed { color: var(--bk-removed); }
+.bk-k-changed { color: var(--bk-changed); }
+.bk-k-moved { color: var(--bk-moved); }
+.bk-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin-bottom: 12px; }
+.bk-seg { display: inline-flex; border: 1px solid var(--bk-border); background: var(--bk-surface); }
+.bk-seg label { padding: 4px 10px; cursor: pointer; user-select: none; border-right: 1px solid var(--bk-border); }
+.bk-seg label:last-child { border-right: 0; }
+.bk-fade { display: none; align-items: center; gap: 6px; }
+.bk-hint { color: var(--bk-muted); }
+body:not(.bk-js) .bk-hint, body:not(.bk-js) .bk-fade { display: none !important; }
+#bk-m-side:checked ~ .bk-bar label[for="bk-m-side"], #bk-m-overlay:checked ~ .bk-bar label[for="bk-m-overlay"],
+#bk-m-before:checked ~ .bk-bar label[for="bk-m-before"], #bk-m-after:checked ~ .bk-bar label[for="bk-m-after"] { background: var(--bk-accent); color: var(--bpmnkit-accent-fg, #ffffff); }
+#bk-f-added:not(:checked) ~ .bk-bar label[for="bk-f-added"], #bk-f-removed:not(:checked) ~ .bk-bar label[for="bk-f-removed"],
+#bk-f-changed:not(:checked) ~ .bk-bar label[for="bk-f-changed"], #bk-f-moved:not(:checked) ~ .bk-bar label[for="bk-f-moved"] { opacity: 0.4; text-decoration: line-through; }
+.bk-ctl:focus-visible ~ .bk-bar .bk-seg { outline: 2px solid var(--bk-accent); outline-offset: 2px; }
+#bk-f-added:not(:checked) ~ .bk-main .bk-k-added, #bk-f-removed:not(:checked) ~ .bk-main .bk-k-removed,
+#bk-f-changed:not(:checked) ~ .bk-main .bk-k-changed, #bk-f-moved:not(:checked) ~ .bk-main .bk-k-moved { display: none; }
+.bk-main { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
+@media (min-width: 1100px) { .bk-main { grid-template-columns: minmax(0, 1fr) 360px; } }
+.bk-views { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; height: min(75vh, 760px); min-height: 280px; }
+@media (max-width: 700px) { .bk-views { grid-template-columns: minmax(0, 1fr); grid-template-rows: 1fr 1fr; height: 90vh; } }
+.bk-pane { margin: 0; display: flex; flex-direction: column; min-height: 0; border: 1px solid var(--bk-border); background: var(--bk-surface); }
+figcaption { padding: 4px 8px; border-bottom: 1px solid var(--bk-border); color: var(--bk-muted); }
+.bk-canvas { flex: 1; min-height: 0; overflow: hidden; touch-action: none; }
+.bk-svg { display: block; width: 100%; height: 100%; }
+.bk-js .bk-canvas { cursor: grab; }
+.bk-js .bk-canvas.bk-drag { cursor: grabbing; }
+#bk-m-overlay:checked ~ .bk-main .bk-views, #bk-m-before:checked ~ .bk-main .bk-views, #bk-m-after:checked ~ .bk-main .bk-views { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr); }
+#bk-m-overlay:checked ~ .bk-main .bk-pane { grid-area: 1 / 1; }
+#bk-m-overlay:checked ~ .bk-main .bk-pane-before { opacity: var(--bk-fade); }
+#bk-m-overlay:checked ~ .bk-main .bk-pane-after { background: transparent; }
+#bk-m-overlay:checked ~ .bk-main .bk-pane-after .bk-svg > g > svg > rect:first-child { fill-opacity: 0; }
+#bk-m-overlay:checked ~ .bk-main .bk-pane-before figcaption { visibility: hidden; }
+#bk-m-overlay:checked ~ .bk-bar .bk-fade { display: inline-flex; }
+#bk-m-before:checked ~ .bk-main .bk-pane-after, #bk-m-after:checked ~ .bk-main .bk-pane-before { display: none; }
+.bk-hl { cursor: pointer; }
+.bk-hl.bk-pulse { animation: bk-pulse 0.9s ease-out 2; }
+@keyframes bk-pulse { 50% { opacity: 0.2; } }
+@media (prefers-reduced-motion: reduce) { .bk-hl.bk-pulse { animation: none; } }
+.bk-list { border: 1px solid var(--bk-border); background: var(--bk-surface); padding: 8px 12px; overflow: auto; max-height: min(75vh, 760px); }
+@media (max-width: 1099px) { .bk-list { max-height: none; } }
+.bk-group h2 { margin: 8px 0 4px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+.bk-group ol { list-style: none; margin: 0; padding: 0; }
+.bk-row { color: var(--bk-fg); padding: 6px 8px; border-left: 3px solid currentColor; margin-bottom: 4px; cursor: pointer; overflow-wrap: anywhere; }
+.bk-row.bk-k-added { border-left-color: var(--bk-added); }
+.bk-row.bk-k-removed { border-left-color: var(--bk-removed); }
+.bk-row.bk-k-changed { border-left-color: var(--bk-changed); }
+.bk-row.bk-k-moved { border-left-color: var(--bk-moved); }
+.bk-row:hover, .bk-row.bk-sel, .bk-row:target { background: var(--bk-accent-subtle); }
+.bk-row:focus-visible { outline: 2px solid var(--bk-accent); }
+.bk-name { font-weight: 600; }
+.bk-type, .bk-id { color: var(--bk-muted); }
+.bk-fields { margin: 4px 0 0; padding-left: 16px; font-size: 12px; }
+.bk-fields del { color: var(--bk-removed); }
+.bk-fields ins { color: var(--bk-added); text-decoration: none; }
+.bk-empty { color: var(--bk-muted); }
+</style>
+</head>
+<body>
+<input type="radio" name="bk-mode" id="bk-m-side" class="bk-ctl" checked>
+<input type="radio" name="bk-mode" id="bk-m-overlay" class="bk-ctl">
+<input type="radio" name="bk-mode" id="bk-m-before" class="bk-ctl">
+<input type="radio" name="bk-mode" id="bk-m-after" class="bk-ctl">
+<input type="checkbox" id="bk-f-added" class="bk-ctl" checked>
+<input type="checkbox" id="bk-f-removed" class="bk-ctl" checked>
+<input type="checkbox" id="bk-f-changed" class="bk-ctl" checked>
+<input type="checkbox" id="bk-f-moved" class="bk-ctl" checked>
+<header class="bk-head">
+<h1>order-before.bpmn → order-after.bpmn</h1>
+<p class="bk-sum"><span class="bk-chip bk-k-added bk-zero">+0 added</span><span class="bk-chip bk-k-removed">−2 removed</span><span class="bk-chip bk-k-changed">~3 changed</span><span class="bk-chip bk-k-moved">↔1 moved</span></p>
+</header>
+<nav class="bk-bar" aria-label="View">
+<span class="bk-seg" role="group" aria-label="Mode"><label for="bk-m-side">Side by side</label><label for="bk-m-overlay">Overlay</label><label for="bk-m-before">order-before.bpmn</label><label for="bk-m-after">order-after.bpmn</label></span>
+<span class="bk-seg" role="group" aria-label="Show changes"><label for="bk-f-added" class="bk-k-added">+ added</label><label for="bk-f-removed" class="bk-k-removed">− removed</label><label for="bk-f-changed" class="bk-k-changed">~ changed</label><label for="bk-f-moved" class="bk-k-moved">↔ moved</label></span>
+<label class="bk-fade">order-before.bpmn opacity <input type="range" id="bk-fade" min="0" max="100" value="35"></label>
+<span class="bk-hint">j/k next/prev · wheel zoom · drag pan · 0 fit</span>
+</nav>
+<main class="bk-main">
+<section class="bk-views">
+<figure class="bk-pane bk-pane-before"><figcaption>order-before.bpmn</figcaption><div class="bk-canvas"><svg class="bk-svg" xmlns="http://www.w3.org/2000/svg" viewBox="132 20 1416 410" role="img" aria-label="order-before.bpmn"><g transform="translate(132 20)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="132 20 1416 380" width="1416" height="380">
+<rect x="132" y="20" width="1416" height="380" fill="#f8f9fa"/>
+<defs>
+  <marker id="bk-b-arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+    <path d="M0,0 L8,3 L0,6 Z" fill="#404040"/>
+  </marker>
+</defs>
+<path d="M188,200 L240,200" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-b-arr)"/>
+<path d="M340,200 L395,200" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-b-arr)"/>
+<path d="M445,200 L500,200" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-b-arr)"/>
+<path d="M420,225 L420,256 Q420,260 424,260 L546,260 Q550,260 550,256 L550,240" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-b-arr)"/>
+<path d="M420,225 L420,336 Q420,340 424,340 L500,340" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-b-arr)"/>
+<line x1="415" y1="235" x2="425" y2="235" stroke="#404040" stroke-width="1.5"/>
+<path d="M600,200 L650,200" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-b-arr)"/>
+<path d="M750,200 L800,200" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-b-arr)"/>
+<path d="M900,200 L950,200" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-b-arr)"/>
+<path d="M1050,200 L1100,200" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-b-arr)"/>
+<path d="M1200,200 L1252,200" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-b-arr)"/>
+<path d="M1288,200 L1340,200" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-b-arr)"/>
+<path d="M1440,200 L1492,200" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-b-arr)"/>
+<path d="M600,340 L652,340" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-b-arr)"/>
+<path d="M290,142 L290,84 Q290,80 294,80 L330,80" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-b-arr)"/>
+<path d="M430,80 L482,80" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-b-arr)"/>
+<g transform="translate(152 182)"><circle cx="18" cy="18" r="17" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/></g>
+<g transform="translate(240 160)"><rect x="0" y="0" width="100" height="80" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(4 4)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><circle cx="7" cy="4.5" r="2.5" class="bi"/><path d="M1.5 14Q1.5 9 7 9Q12.5 9 12.5 14" class="bi"/></g><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="40">Review order</text></g>
+<g transform="translate(395 175)"><polygon points="25,0 50,25 25,50 0,25" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(25 25)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><path d="M-6 -6l12 12M6 -6l-12 12" class="gms"/></g></g>
+<g transform="translate(500 160)"><rect x="0" y="0" width="100" height="80" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(4 4)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><circle cx="7" cy="7" r="5.5" class="bi"/><circle cx="7" cy="7" r="2" class="bi"/><path d="M7 1v2.5M7 10.5v2.5M1 7h2.5M10.5 7h2.5M2.8 2.8l1.7 1.7M9.5 9.5l1.7 1.7M11.2 2.8l-1.7 1.7M4.5 9.5l-1.7 1.7" class="bi"/></g><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="33">Charge</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="47">payment</text></g>
+<g transform="translate(650 160)"><rect x="0" y="0" width="100" height="80" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(4 4)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><rect x="1.5" y="3.5" width="11" height="8" class="bi"/><path d="M1.5 3.5l5.5 4.5 5.5-4.5" class="bi"/></g><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="26">Await</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="40">payment</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="54">confirmation</text></g>
+<g transform="translate(800 160)"><rect x="0" y="0" width="100" height="80" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(4 4)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><rect x="1" y="1" width="12" height="12" class="bi"/><path d="M1 4.5h12M4 1v12" class="bi"/></g><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="26">Determine</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="40">shipping</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="54">cost</text></g>
+<g transform="translate(950 160)"><rect x="0" y="0" width="100" height="80" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:3"/><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="33">Create</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="47">invoice</text><g transform="translate(50 70)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><g transform="translate(0 0)"><rect x="-7" y="-7" width="14" height="14" rx="1" class="bi"/><path d="M0 -4v8M-4 0h8" class="bi"/></g></g></g>
+<g transform="translate(1100 160)"><rect x="0" y="0" width="100" height="80" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(4 4)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><circle cx="7" cy="7" r="5.5" class="bi"/><circle cx="7" cy="7" r="2" class="bi"/><path d="M7 1v2.5M7 10.5v2.5M1 7h2.5M10.5 7h2.5M2.8 2.8l1.7 1.7M9.5 9.5l1.7 1.7M11.2 2.8l-1.7 1.7M4.5 9.5l-1.7 1.7" class="bi"/></g><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="40">Ship order</text></g>
+<g transform="translate(1252 182)"><circle cx="18" cy="18" r="17" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><circle cx="18" cy="18" r="14" style="fill:none;stroke:#404040;stroke-width:1.5"/><g transform="translate(18 18)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><circle cx="0" cy="0" r="5" class="bi"/><path d="M0 -3.5v3.5l2 2" class="bi"/></g></g>
+<g transform="translate(1340 160)"><rect x="0" y="0" width="100" height="80" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(4 4)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><rect x="2" y="0.5" width="10" height="13" rx="1" class="bi"/><path d="M4 4h6M4 7h6M4 10h4" class="bi"/></g><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="33">Build</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="47">summary</text></g>
+<g transform="translate(1492 182)"><circle cx="18" cy="18" r="17" style="fill:#ffffff;stroke:#404040;stroke-width:3"/></g>
+<g transform="translate(500 300)"><rect x="0" y="0" width="100" height="80" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(4 4)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><circle cx="7" cy="7" r="5.5" class="bi"/><circle cx="7" cy="7" r="2" class="bi"/><path d="M7 1v2.5M7 10.5v2.5M1 7h2.5M10.5 7h2.5M2.8 2.8l1.7 1.7M9.5 9.5l1.7 1.7M11.2 2.8l-1.7 1.7M4.5 9.5l-1.7 1.7" class="bi"/></g><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="33">Notify</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="47">customer</text></g>
+<g transform="translate(652 322)"><circle cx="18" cy="18" r="17" style="fill:#ffffff;stroke:#404040;stroke-width:3"/></g>
+<g transform="translate(330 40)"><rect x="0" y="0" width="100" height="80" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(4 4)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><circle cx="7" cy="7" r="5.5" class="bi"/><circle cx="7" cy="7" r="2" class="bi"/><path d="M7 1v2.5M7 10.5v2.5M1 7h2.5M10.5 7h2.5M2.8 2.8l1.7 1.7M9.5 9.5l1.7 1.7M11.2 2.8l-1.7 1.7M4.5 9.5l-1.7 1.7" class="bi"/></g><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="33">Escalate</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="47">review</text></g>
+<g transform="translate(482 62)"><circle cx="18" cy="18" r="17" style="fill:#ffffff;stroke:#404040;stroke-width:3"/></g>
+<g transform="translate(272 142)"><circle cx="18" cy="18" r="17" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><circle cx="18" cy="18" r="14" style="fill:none;stroke:#404040;stroke-width:1.5;stroke-dasharray:4 2"/><g transform="translate(18 18)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><circle cx="0" cy="0" r="5" class="bis"/><path d="M0 -3.5v3.5l2 2" class="bi"/></g></g>
+<text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="170.5" y="239">Order</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="170.5" y="253">received</text>
+<text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="420" y="152">Approved?</text>
+<text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="1270.5" y="245.5">Wait for</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="1270.5" y="259.5">delivery</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="1270.5" y="273.5">window</text>
+<text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="1510" y="239">Order</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="1510" y="253">fulfilled</text>
+<text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="670" y="379">Order</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="670" y="393">rejected</text>
+<text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="500.5" y="112">Escalated</text>
+<text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="320.5" y="137">3</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="320.5" y="151">days</text>
+</svg></g><g class="bk-diff"><a href="#bk-c0"><g class="bk-hl bk-k-removed" data-i="0"><title>removed: Escalated (EndEvent_escalated)</title><rect x="478" y="58" width="44" height="44" rx="6" fill="none" stroke="#dc2626" stroke-width="4"/></g></a><a href="#bk-c1"><g class="bk-hl bk-k-removed" data-i="1"><title>removed: Flow_toEscalated</title><polyline points="430,80 482,80" fill="none" stroke="#dc2626" stroke-width="10" stroke-opacity="0.35" stroke-linecap="round" stroke-linejoin="round"/></g></a><a href="#bk-c2"><g class="bk-hl bk-k-changed" data-i="2"><title>changed: Escalate review (Task_escalate)</title><rect x="326" y="36" width="108" height="88" rx="6" fill="none" stroke="#d97706" stroke-width="4"/></g></a><a href="#bk-c3"><g class="bk-hl bk-k-changed" data-i="3"><title>changed: Check order (Task_review)</title><rect x="236" y="156" width="108" height="88" rx="6" fill="none" stroke="#d97706" stroke-width="4"/></g></a><a href="#bk-c5"><g class="bk-hl bk-k-moved" data-i="5"><title>moved: Notify customer (Task_notify)</title><rect x="496" y="296" width="108" height="88" rx="6" fill="none" stroke="#2563eb" stroke-width="4"/></g></a></g></svg></div></figure>
+<figure class="bk-pane bk-pane-after"><figcaption>order-after.bpmn</figcaption><div class="bk-canvas"><svg class="bk-svg" xmlns="http://www.w3.org/2000/svg" viewBox="132 20 1416 410" role="img" aria-label="order-after.bpmn"><g transform="translate(132 20)"><svg xmlns="http://www.w3.org/2000/svg" viewBox="132 20 1416 410" width="1416" height="410">
+<rect x="132" y="20" width="1416" height="410" fill="#f8f9fa"/>
+<defs>
+  <marker id="bk-a-arr" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto" markerUnits="strokeWidth">
+    <path d="M0,0 L8,3 L0,6 Z" fill="#404040"/>
+  </marker>
+</defs>
+<path d="M188,200 L240,200" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-a-arr)"/>
+<path d="M340,200 L395,200" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-a-arr)"/>
+<path d="M445,200 L500,200" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-a-arr)"/>
+<path d="M420,225 L420,256 Q420,260 424,260 L546,260 Q550,260 550,256 L550,240" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-a-arr)"/>
+<path d="M420,225 L420,336 Q420,340 424,340 L500,340" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-a-arr)"/>
+<line x1="415" y1="235" x2="425" y2="235" stroke="#404040" stroke-width="1.5"/>
+<path d="M600,200 L650,200" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-a-arr)"/>
+<path d="M750,200 L800,200" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-a-arr)"/>
+<path d="M900,200 L950,200" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-a-arr)"/>
+<path d="M1050,200 L1100,200" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-a-arr)"/>
+<path d="M1200,200 L1252,200" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-a-arr)"/>
+<path d="M1288,200 L1340,200" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-a-arr)"/>
+<path d="M1440,200 L1492,200" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-a-arr)"/>
+<path d="M600,340 L652,340" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-a-arr)"/>
+<path d="M290,142 L290,84 Q290,80 294,80 L330,80" fill="none" stroke="#404040" stroke-width="1.5" marker-end="url(#bk-a-arr)"/>
+<g transform="translate(152 182)"><circle cx="18" cy="18" r="17" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/></g>
+<g transform="translate(240 160)"><rect x="0" y="0" width="100" height="80" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(4 4)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><circle cx="7" cy="4.5" r="2.5" class="bi"/><path d="M1.5 14Q1.5 9 7 9Q12.5 9 12.5 14" class="bi"/></g><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="40">Check order</text></g>
+<g transform="translate(395 175)"><polygon points="25,0 50,25 25,50 0,25" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(25 25)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><path d="M-6 -6l12 12M6 -6l-12 12" class="gms"/></g></g>
+<g transform="translate(500 160)"><rect x="0" y="0" width="100" height="80" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(4 4)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><circle cx="7" cy="7" r="5.5" class="bi"/><circle cx="7" cy="7" r="2" class="bi"/><path d="M7 1v2.5M7 10.5v2.5M1 7h2.5M10.5 7h2.5M2.8 2.8l1.7 1.7M9.5 9.5l1.7 1.7M11.2 2.8l-1.7 1.7M4.5 9.5l-1.7 1.7" class="bi"/></g><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="33">Charge</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="47">payment</text></g>
+<g transform="translate(650 160)"><rect x="0" y="0" width="100" height="80" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(4 4)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><rect x="1.5" y="3.5" width="11" height="8" class="bi"/><path d="M1.5 3.5l5.5 4.5 5.5-4.5" class="bi"/></g><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="26">Await</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="40">payment</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="54">confirmation</text></g>
+<g transform="translate(800 160)"><rect x="0" y="0" width="100" height="80" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(4 4)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><rect x="1" y="1" width="12" height="12" class="bi"/><path d="M1 4.5h12M4 1v12" class="bi"/></g><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="26">Determine</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="40">shipping</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="54">cost</text></g>
+<g transform="translate(950 160)"><rect x="0" y="0" width="100" height="80" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:3"/><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="33">Create</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="47">invoice</text><g transform="translate(50 70)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><g transform="translate(0 0)"><rect x="-7" y="-7" width="14" height="14" rx="1" class="bi"/><path d="M0 -4v8M-4 0h8" class="bi"/></g></g></g>
+<g transform="translate(1100 160)"><rect x="0" y="0" width="100" height="80" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(4 4)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><circle cx="7" cy="7" r="5.5" class="bi"/><circle cx="7" cy="7" r="2" class="bi"/><path d="M7 1v2.5M7 10.5v2.5M1 7h2.5M10.5 7h2.5M2.8 2.8l1.7 1.7M9.5 9.5l1.7 1.7M11.2 2.8l-1.7 1.7M4.5 9.5l-1.7 1.7" class="bi"/></g><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="40">Ship order</text></g>
+<g transform="translate(1252 182)"><circle cx="18" cy="18" r="17" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><circle cx="18" cy="18" r="14" style="fill:none;stroke:#404040;stroke-width:1.5"/><g transform="translate(18 18)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><circle cx="0" cy="0" r="5" class="bi"/><path d="M0 -3.5v3.5l2 2" class="bi"/></g></g>
+<g transform="translate(1340 160)"><rect x="0" y="0" width="100" height="80" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(4 4)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><rect x="2" y="0.5" width="10" height="13" rx="1" class="bi"/><path d="M4 4h6M4 7h6M4 10h4" class="bi"/></g><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="33">Build</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="47">summary</text></g>
+<g transform="translate(1492 182)"><circle cx="18" cy="18" r="17" style="fill:#ffffff;stroke:#404040;stroke-width:3"/></g>
+<g transform="translate(500 330)"><rect x="0" y="0" width="100" height="80" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(4 4)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><circle cx="7" cy="7" r="5.5" class="bi"/><circle cx="7" cy="7" r="2" class="bi"/><path d="M7 1v2.5M7 10.5v2.5M1 7h2.5M10.5 7h2.5M2.8 2.8l1.7 1.7M9.5 9.5l1.7 1.7M11.2 2.8l-1.7 1.7M4.5 9.5l-1.7 1.7" class="bi"/></g><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="33">Notify</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="47">customer</text></g>
+<g transform="translate(652 322)"><circle cx="18" cy="18" r="17" style="fill:#ffffff;stroke:#404040;stroke-width:3"/></g>
+<g transform="translate(330 40)"><rect x="0" y="0" width="100" height="80" rx="10" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><g transform="translate(4 4)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><circle cx="7" cy="7" r="5.5" class="bi"/><circle cx="7" cy="7" r="2" class="bi"/><path d="M7 1v2.5M7 10.5v2.5M1 7h2.5M10.5 7h2.5M2.8 2.8l1.7 1.7M9.5 9.5l1.7 1.7M11.2 2.8l-1.7 1.7M4.5 9.5l-1.7 1.7" class="bi"/></g><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="33">Escalate</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="50" y="47">review</text></g>
+<g transform="translate(272 142)"><circle cx="18" cy="18" r="17" style="fill:#ffffff;stroke:#404040;stroke-width:1.5"/><circle cx="18" cy="18" r="14" style="fill:none;stroke:#404040;stroke-width:1.5;stroke-dasharray:4 2"/><g transform="translate(18 18)"><style>.bi{fill:none;stroke:#404040;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}.bis{fill:#404040;stroke:none}.gm{fill:#404040;stroke:none}.gms{fill:none;stroke:#404040;stroke-width:2.5;stroke-linecap:round}</style><circle cx="0" cy="0" r="5" class="bis"/><path d="M0 -3.5v3.5l2 2" class="bi"/></g></g>
+<text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="170.5" y="239">Order</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="170.5" y="253">received</text>
+<text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="420" y="152">Approved?</text>
+<text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="1270.5" y="245.5">Wait for</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="1270.5" y="259.5">delivery</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="1270.5" y="273.5">window</text>
+<text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="1510" y="239">Order</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="1510" y="253">fulfilled</text>
+<text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="670" y="379">Order</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="670" y="393">rejected</text>
+<text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="320.5" y="137">3</text><text style="fill:#333333;font-family:system-ui,-apple-system,sans-serif;font-size:11px;text-anchor:middle;dominant-baseline:central;paint-order:stroke;stroke:#f8f9fa;stroke-width:4px;stroke-linejoin:round" x="320.5" y="151">days</text>
+</svg></g><g class="bk-diff"><a href="#bk-c2"><g class="bk-hl bk-k-changed" data-i="2"><title>changed: Escalate review (Task_escalate)</title><rect x="326" y="36" width="108" height="88" rx="6" fill="none" stroke="#d97706" stroke-width="4"/></g></a><a href="#bk-c3"><g class="bk-hl bk-k-changed" data-i="3"><title>changed: Check order (Task_review)</title><rect x="236" y="156" width="108" height="88" rx="6" fill="none" stroke="#d97706" stroke-width="4"/></g></a><a href="#bk-c5"><g class="bk-hl bk-k-moved" data-i="5"><title>moved: Notify customer (Task_notify)</title><rect x="496" y="296" width="108" height="88" rx="6" fill="none" stroke="#2563eb" stroke-width="2" stroke-dasharray="6 4"/><rect x="496" y="326" width="108" height="88" rx="6" fill="none" stroke="#2563eb" stroke-width="4"/></g></a></g></svg></div></figure>
+</section>
+<aside class="bk-list" aria-label="Changes">
+<section class="bk-group bk-k-removed"><h2>− removed <span class="bk-n">2</span></h2><ol><li class="bk-row bk-k-removed" id="bk-c0" data-i="0" tabindex="0"><span class="bk-name">Escalated</span> <span class="bk-type">endEvent</span> <code class="bk-id">EndEvent_escalated</code></li><li class="bk-row bk-k-removed" id="bk-c1" data-i="1" tabindex="0"><span class="bk-type">sequenceFlow</span> <code class="bk-id">Flow_toEscalated</code></li></ol></section><section class="bk-group bk-k-changed"><h2>~ changed <span class="bk-n">3</span></h2><ol><li class="bk-row bk-k-changed" id="bk-c2" data-i="2" tabindex="0"><span class="bk-name">Escalate review</span> <span class="bk-type">serviceTask</span> <code class="bk-id">Task_escalate</code><ul class="bk-fields"><li><code>unknownAttributes/camunda:expression</code> <del>&quot;${escalation.raise(execution)}&quot;</del> → <ins>&quot;${escalation.raise(execution, priority)}&quot;</ins></li></ul></li><li class="bk-row bk-k-changed" id="bk-c3" data-i="3" tabindex="0"><span class="bk-name">Check order</span> <span class="bk-type">userTask</span> <code class="bk-id">Task_review</code><ul class="bk-fields"><li><code>name</code> <del>&quot;Review order&quot;</del> → <ins>&quot;Check order&quot;</ins></li></ul></li><li class="bk-row bk-k-changed" id="bk-c4" data-i="4" tabindex="0"><span class="bk-name">Order fulfillment</span> <span class="bk-type">process</span> <code class="bk-id">order-fulfillment</code><ul class="bk-fields"><li><code>flowElements/EndEvent_escalated</code> <del>&quot;EndEvent_escalated&quot;</del> → <ins>(none)</ins></li><li><code>sequenceFlows/Flow_toEscalated</code> <del>&quot;Flow_toEscalated&quot;</del> → <ins>(none)</ins></li></ul></li></ol></section><section class="bk-group bk-k-moved"><h2>↔ moved <span class="bk-n">1</span></h2><ol><li class="bk-row bk-k-moved" id="bk-c5" data-i="5" tabindex="0"><span class="bk-name">Notify customer</span> <span class="bk-type">serviceTask</span> <code class="bk-id">Task_notify</code></li></ol></section>
+</aside>
+</main>
+<script type="application/json" id="bk-diff">{"afterHash":"a32fcbdc4826c7c144c65c4ab4ccf55d0b79dcc679addc0bdc5f594e744a31f7","beforeHash":"5b3532a620facfdfe362c66394c5bb85dfc6027720194682613ecaf449d0169f","changes":[{"elementType":"endEvent","fields":[],"geometryBefore":{"height":36,"width":36,"x":482,"y":62},"id":"EndEvent_escalated","kind":"removed","nameBefore":"Escalated"},{"elementType":"sequenceFlow","fields":[],"geometryBefore":{"waypoints":[{"x":430,"y":80},{"x":482,"y":80}]},"id":"Flow_toEscalated","kind":"removed"},{"elementType":"serviceTask","fields":[{"after":"${escalation.raise(execution, priority)}","before":"${escalation.raise(execution)}","path":"unknownAttributes/camunda:expression"}],"geometryAfter":{"height":80,"width":100,"x":330,"y":40},"geometryBefore":{"height":80,"width":100,"x":330,"y":40},"id":"Task_escalate","kind":"changed","nameAfter":"Escalate review","nameBefore":"Escalate review"},{"elementType":"userTask","fields":[{"after":"Check order","before":"Review order","path":"name"}],"geometryAfter":{"height":80,"width":100,"x":240,"y":160},"geometryBefore":{"height":80,"width":100,"x":240,"y":160},"id":"Task_review","kind":"changed","nameAfter":"Check order","nameBefore":"Review order"},{"elementType":"process","fields":[{"before":"EndEvent_escalated","path":"flowElements/EndEvent_escalated"},{"before":"Flow_toEscalated","path":"sequenceFlows/Flow_toEscalated"}],"id":"order-fulfillment","kind":"changed","nameAfter":"Order fulfillment","nameBefore":"Order fulfillment"},{"elementType":"serviceTask","fields":[],"geometryAfter":{"height":80,"width":100,"x":500,"y":330},"geometryBefore":{"height":80,"width":100,"x":500,"y":300},"id":"Task_notify","kind":"moved","nameAfter":"Notify customer","nameBefore":"Notify customer"}],"planes":[{"added":0,"changed":2,"id":"order-fulfillment","moved":1,"removed":2,"total":5}],"summary":{"added":0,"changed":3,"moved":1,"removed":2,"total":6}}</script>
+<script>
+// Progressive enhancement: everything above works without this script.
+;(() => {
+	const body = document.body
+	body.classList.add("bk-js")
+	const diff = JSON.parse(document.getElementById("bk-diff").textContent)
+	const svgs = [...document.querySelectorAll(".bk-svg")]
+	if (svgs.length === 0) return
+	const home = svgs[0].getAttribute("viewBox").split(" ").map(Number)
+	let vb = home.slice()
+	let anim = 0
+	const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches
+
+	const apply = (v) => {
+		vb = v
+		const s = v.join(" ")
+		for (const svg of svgs) svg.setAttribute("viewBox", s)
+	}
+	const animate = (to) => {
+		cancelAnimationFrame(anim)
+		if (reduce) return apply(to)
+		const from = vb.slice()
+		const t0 = performance.now()
+		const step = (now) => {
+			const t = Math.min(1, (now - t0) / 280)
+			const e = 1 - (1 - t) ** 3
+			apply(from.map((f, i) => f + (to[i] - f) * e))
+			if (t < 1) anim = requestAnimationFrame(step)
+		}
+		anim = requestAnimationFrame(step)
+	}
+
+	const boxOf = (g) => {
+		if (!g) return null
+		if (g.waypoints?.length) {
+			const xs = g.waypoints.map((p) => p.x)
+			const ys = g.waypoints.map((p) => p.y)
+			const x = Math.min(...xs)
+			const y = Math.min(...ys)
+			return [x, y, Math.max(...xs) - x, Math.max(...ys) - y]
+		}
+		if (g.width === undefined) return null
+		return [g.x, g.y, g.width, g.height]
+	}
+	const zoomTo = (change) => {
+		const b = boxOf(change.geometryAfter) ?? boxOf(change.geometryBefore)
+		if (!b) return
+		const w = Math.max(b[2] * 3, 360)
+		const h = Math.max(b[3] * 3, 240)
+		animate([b[0] + b[2] / 2 - w / 2, b[1] + b[3] / 2 - h / 2, w, h])
+	}
+
+	const rows = [...document.querySelectorAll(".bk-row")]
+	let current = -1
+	const select = (i, zoom) => {
+		const row = rows.find((r) => Number(r.dataset.i) === i)
+		if (!row) return
+		current = i
+		for (const r of rows) r.classList.toggle("bk-sel", r === row)
+		row.scrollIntoView({ block: "nearest", behavior: reduce ? "auto" : "smooth" })
+		if (zoom) zoomTo(diff.changes[i])
+		for (const g of document.querySelectorAll(`.bk-hl[data-i="${i}"]`)) {
+			g.classList.remove("bk-pulse")
+			void g.getBBox()
+			g.classList.add("bk-pulse")
+		}
+	}
+	for (const row of rows) {
+		row.addEventListener("click", () => select(Number(row.dataset.i), true))
+		row.addEventListener("keydown", (e) => {
+			if (e.key === "Enter" || e.key === " ") {
+				e.preventDefault()
+				select(Number(row.dataset.i), true)
+			}
+		})
+	}
+
+	let moved = false
+	for (const a of document.querySelectorAll(".bk-diff a")) {
+		a.addEventListener("click", (e) => {
+			e.preventDefault()
+			if (!moved) select(Number(a.firstElementChild.dataset.i), false)
+		})
+	}
+
+	const visible = () => rows.filter((r) => r.offsetParent !== null)
+	document.addEventListener("keydown", (e) => {
+		if (e.target instanceof HTMLInputElement && e.target.type === "range") return
+		if (e.metaKey || e.ctrlKey || e.altKey) return
+		if (e.key === "0") return animate(home)
+		if (e.key !== "j" && e.key !== "k") return
+		const list = visible()
+		if (list.length === 0) return
+		const at = list.findIndex((r) => Number(r.dataset.i) === current)
+		const next = e.key === "j" ? Math.min(list.length - 1, at + 1) : Math.max(0, at - 1)
+		select(Number(list[at === -1 ? 0 : next].dataset.i), true)
+	})
+
+	const scaleOf = (svg) => {
+		const r = svg.getBoundingClientRect()
+		return Math.max(vb[2] / r.width, vb[3] / r.height)
+	}
+	const toUser = (svg, cx, cy) => {
+		const r = svg.getBoundingClientRect()
+		const s = scaleOf(svg)
+		return [vb[0] + (cx - r.left - (r.width - vb[2] / s) / 2) * s, vb[1] + (cy - r.top - (r.height - vb[3] / s) / 2) * s]
+	}
+	for (const canvas of document.querySelectorAll(".bk-canvas")) {
+		const svg = canvas.querySelector(".bk-svg")
+		canvas.addEventListener(
+			"wheel",
+			(e) => {
+				e.preventDefault()
+				cancelAnimationFrame(anim)
+				const f = Math.exp(e.deltaY * 0.0015)
+				const [px, py] = toUser(svg, e.clientX, e.clientY)
+				apply([px - (px - vb[0]) * f, py - (py - vb[1]) * f, vb[2] * f, vb[3] * f])
+			},
+			{ passive: false },
+		)
+		let start = null
+		canvas.addEventListener("pointerdown", (e) => {
+			if (e.button !== 0) return
+			cancelAnimationFrame(anim)
+			start = { x: e.clientX, y: e.clientY, vb: vb.slice(), s: scaleOf(svg) }
+			moved = false
+		})
+		canvas.addEventListener("pointermove", (e) => {
+			if (!start) return
+			const dx = e.clientX - start.x
+			const dy = e.clientY - start.y
+			if (!moved && Math.hypot(dx, dy) < 4) return
+			if (!moved) canvas.setPointerCapture(e.pointerId)
+			moved = true
+			canvas.classList.add("bk-drag")
+			apply([start.vb[0] - dx * start.s, start.vb[1] - dy * start.s, start.vb[2], start.vb[3]])
+		})
+		const end = () => {
+			start = null
+			canvas.classList.remove("bk-drag")
+		}
+		canvas.addEventListener("pointerup", end)
+		canvas.addEventListener("pointercancel", end)
+		canvas.addEventListener("dblclick", () => animate(home))
+	}
+
+	const fade = document.getElementById("bk-fade")
+	fade.addEventListener("input", () => body.style.setProperty("--bk-fade", String(fade.value / 100)))
+})()
+</script>
+</body>
+</html>

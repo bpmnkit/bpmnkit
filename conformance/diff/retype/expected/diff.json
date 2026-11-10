@@ -1,0 +1,73 @@
+{
+  "afterHash": "3a4888d3e5e1db4863475206255f472aa1c573834f8fe26299f661c1f32b8816",
+  "beforeHash": "d5664749d621c5a6d05bda439108cf5bd158f36322b50bc1c2eeca91ba1152d2",
+  "changes": [
+    {
+      "elementType": "userTask",
+      "fields": [
+        {
+          "before": [
+            {
+              "attributes": {
+                "retries": "3",
+                "type": "review-order"
+              },
+              "name": "zeebe:taskDefinition"
+            },
+            {
+              "children": [
+                {
+                  "attributes": {
+                    "key": "owner",
+                    "value": "ops"
+                  },
+                  "name": "zeebe:header"
+                }
+              ],
+              "name": "zeebe:taskHeaders"
+            }
+          ],
+          "path": "extensionElements"
+        },
+        {
+          "after": "userTask",
+          "before": "serviceTask",
+          "path": "type"
+        }
+      ],
+      "geometryAfter": {
+        "height": 80,
+        "width": 100,
+        "x": 300,
+        "y": 120
+      },
+      "geometryBefore": {
+        "height": 80,
+        "width": 100,
+        "x": 300,
+        "y": 120
+      },
+      "id": "Task_review",
+      "kind": "changed",
+      "nameAfter": "Review order",
+      "nameBefore": "Review order"
+    }
+  ],
+  "planes": [
+    {
+      "added": 0,
+      "changed": 1,
+      "id": "Process_1",
+      "moved": 0,
+      "removed": 0,
+      "total": 1
+    }
+  ],
+  "summary": {
+    "added": 0,
+    "changed": 1,
+    "moved": 0,
+    "removed": 0,
+    "total": 1
+  }
+}

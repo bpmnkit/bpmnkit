@@ -159,6 +159,36 @@ impl Value {
     pub fn is_null(&self) -> bool {
         matches!(self, Value::Null)
     }
+
+    /// FEEL's `string()` of the value: the text to show a person. A top-level string is
+    /// unquoted, strings inside lists and contexts are quoted. `None` for null, ranges and
+    /// functions (use [`Display`](fmt::Display) to get `null` for those).
+    pub fn to_feel_string(&self) -> Option<String> {
+        crate::ops::to_feel_string(self)
+    }
+
+    /// FEEL's `to json()`: compact JSON text, numbers exact, temporal values as ISO strings.
+    /// `None` for ranges and functions, which JSON has no form for.
+    pub fn to_json_string(&self) -> Option<String> {
+        crate::builtins::string::json_text(self)
+    }
+
+    /// The value as a `serde_json::Value` (numbers become f64; use [`to_json_string`](Self::to_json_string)
+    /// to keep every digit); `None` as for it.
+    pub fn to_json(&self) -> Option<serde_json::Value> {
+        serde_json::from_str(&self.to_json_string()?).ok()
+    }
+
+    /// Parses JSON text (FEEL's `from json()`); numbers stay exact decimals and object key
+    /// order is kept. `None` if `text` is not one JSON value.
+    pub fn from_json_str(text: &str) -> Option<Value> {
+        crate::builtins::string::parse_json_text(text)
+    }
+
+    /// Converts a parsed JSON value. Numbers go through their text, so they stay exact.
+    pub fn from_json(json: &serde_json::Value) -> Value {
+        Value::from_json_str(&json.to_string()).unwrap_or_default()
+    }
 }
 
 /// Renders the value as FEEL's `string()` does (`null` for `Null`).
@@ -261,6 +291,22 @@ impl Context {
         self.0.is_empty()
     }
 
+    /// The variables of a JSON object (a chat or CLI request body); `None` for any other JSON.
+    pub fn from_json(json: &serde_json::Value) -> Option<Self> {
+        match Value::from_json(json) {
+            Value::Context(c) => Some(c),
+            _ => None,
+        }
+    }
+
+    /// Like [`from_json`](Self::from_json) for JSON text.
+    pub fn from_json_str(text: &str) -> Option<Self> {
+        match Value::from_json_str(text)? {
+            Value::Context(c) => Some(c),
+            _ => None,
+        }
+    }
+
     pub fn keys(&self) -> impl Iterator<Item = &String> {
         self.0.keys()
     }
@@ -289,5 +335,47 @@ impl<'a> IntoIterator for &'a Context {
     type IntoIter = indexmap::map::Iter<'a, String, Value>;
     fn into_iter(self) -> Self::IntoIter {
         self.0.iter()
+    }
+}
+
+#[cfg(test)]
+mod display_tests {
+    use super::*;
+
+    #[test]
+    fn feel_string_matches_string_builtin() {
+        let v = crate::evaluate(r#"{a: "x", b: [1, "y", 2.50]}"#, &Context::new()).unwrap();
+        assert_eq!(v.to_feel_string().unwrap(), r#"{a: "x", b: [1, "y", 2.5]}"#);
+        assert_eq!(Value::from("hi").to_feel_string().as_deref(), Some("hi"));
+        assert_eq!(Value::Null.to_feel_string(), None);
+        assert_eq!(Value::Null.to_string(), "null");
+    }
+
+    #[test]
+    fn json_roundtrip_keeps_precision_and_order() {
+        let ctx = Context::from_json_str(r#"{"z": 1, "a": [0.1000000000000000055511, null, "s"]}"#)
+            .unwrap();
+        assert_eq!(ctx.keys().collect::<Vec<_>>(), ["z", "a"]);
+        let v = Value::Context(ctx);
+        assert_eq!(
+            v.to_json_string().unwrap(),
+            r#"{"z":1,"a":[0.1000000000000000055511,null,"s"]}"#
+        );
+        assert_eq!(v.to_json().unwrap()["z"], serde_json::json!(1));
+        // serde_json holds numbers as f64, so only the text forms keep every digit.
+        let small = Value::from_json_str(r#"{"a":[1,2.5,"s",null]}"#).unwrap();
+        assert_eq!(Value::from_json(&small.to_json().unwrap()), small);
+    }
+
+    #[test]
+    fn json_edge_cases() {
+        assert!(Context::from_json_str("[1]").is_none());
+        assert!(Value::from_json_str("{").is_none());
+        assert!(crate::evaluate("[1..2]", &Context::new())
+            .unwrap()
+            .to_json()
+            .is_none());
+        let date = crate::evaluate("date(\"2025-01-02\")", &Context::new()).unwrap();
+        assert_eq!(date.to_json_string().as_deref(), Some("\"2025-01-02\""));
     }
 }

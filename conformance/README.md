@@ -567,6 +567,48 @@ errors, validation messages in one list); `dmn-expand-*`; `stream-*` replay the 
 stream (`tests/recordings/streamed-replace-diagram.json`) and hand-written fragments in chunks, with
 and without `base`.
 
+## Render: `render/<case>/`
+
+SVG output of `exportSvg` / `exportDrdSvg` / `exportDecisionTableSvg` (`packages/core/src/bpmn/svg.ts`,
+`packages/core/src/dmn/svg.ts`). Recorded by `packages/core/tests/render-conformance.test.ts`.
+
+- `input.bpmn` or `input.dmn`: the model (copied from the other families; `markers-and-data` is hand-written).
+- `case.json`: `{"options": {...}}` with the TS option names (`SvgExportOptions`: `theme` as `"light"|"dark"` or a
+  full `ThemeColors` object with camelCase keys, `padding`, `scale`, `maxSize` as `[w, h]`, `colors` as
+  `"ignore"|"di"`, `plane` as `{"id": …}` or `{"process": …}`, `autoLayout`, `font` as
+  `{family, size, lineHeight}`, `elementIds`, `background`). A `.dmn` input renders as a DRD; with a top-level
+  `"decision": "<id>"` it renders that decision's table instead, and `options.name` is the title bar text.
+  DMN cases honour `theme`, `padding`, `scale`, `maxSize`, `font`, `elementIds`, `background` only.
+- `expected/out.svg`: the SVG string plus one trailing newline.
+
+Case families: `bpmn-<name>` (default options over every `bpmn/` input), `opt-*` (one option each, plus
+`opt-combined`), `markers-and-data` (data objects/stores, group, multi-instance, compensation, ad-hoc and
+call-activity markers), `drd-*` and `table-*`.
+
+`data-element-id="<id>"` (option `elementIds`) goes right after the first attribute of an element's `<g>`
+(`transform`) or main `<path>` (`d`), XML-escaped like labels.
+
+## ASCII: `ascii/<case>/`
+
+Text output of `renderBpmnAscii` / `renderDmnAscii` / `renderFormAscii` (`packages/ascii`). Recorded by
+`packages/ascii/tests/ascii-conformance.test.ts`; replayed by `bpmnkit-ascii`.
+
+- `case.json`: `{"input": "<path relative to conformance/>", "options": {"title": "…" | false}}`. Without
+  `input`, the case's own `input.bpmn`, `input.dmn` or `input.form` is used. The extension picks the renderer.
+- `expected/out.txt`: the text plus one trailing newline, as UTF-8. Truncation counts UTF-16 units and can cut
+  a surrogate pair; the lone half is written (and compared) as U+FFFD.
+
+Cases: `bpmn-*`, `dmn-*`, `form-*` point at every non-error input of those families; `hand-*` are hand-written
+processes (gateways fanning out 2–5 ways, a loop back, every task/event type, Unicode and emoji truncation, an
+empty process, no process, unnamed elements); `opt-*` set `title` to text, `""` or `false`.
+
+## Diff: `diff/<case>/`
+
+- `before.bpmn`, `after.bpmn`: the two models.
+- `expected/diff.json`: `diffBpmn(parseBpmn(before), parseBpmn(after))` as JSON, keys sorted, 2-space indent. It carries `beforeHash` / `afterHash`, so `semanticHash` parity is checked too (the Rust runner compares numbers by value).
+
+Cases: `rename`, `retype`, `rewire-flow`, `condition-change`, `zeebe-header-change`, `lane-add`, `lane-remove`, `move-only` (DI only), `noop-reformat` (reordered, re-spaced, attribute order and sub-pixel noise: no changes, equal hashes), `ids-only-change`.
+
 ## `pending.json`
 
 `{"<case id or bpmn/<case>>": "<reason or issue link>"}`: cases a non-TS runner knows it does

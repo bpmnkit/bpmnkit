@@ -1,0 +1,10 @@
+5 changes: 1 added, 1 removed, 3 changed, 0 moved
++ serviceTask Task_check "Review order"
+- serviceTask Task_review "Review order"
+~ sequenceFlow Flow_1
+    targetRef: "Task_review" → "Task_check"
+~ sequenceFlow Flow_2
+    sourceRef: "Task_review" → "Task_check"
+~ process Process_1
+    flowElements/Task_check: (none) → "Task_check"
+    flowElements/Task_review: "Task_review" → (none)

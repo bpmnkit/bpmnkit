@@ -33,6 +33,7 @@ mod js;
 mod js_regex;
 pub mod lint;
 pub mod optimize;
+pub mod report;
 mod v8_json;
 
 pub use bpmnkit_compat::finding::{ApplyFixResult, Category, Finding, FindingData, Fix, Severity};

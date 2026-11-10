@@ -1,8 +1,40 @@
 # Features
 
+## ASCII diagrams in Rust: `bpmnkit-ascii` (2026-11-09)
+
+`bpmnkit_ascii::bpmn_xml_to_ascii(xml, &AsciiOptions::default())` draws a process as Unicode boxes and orthogonal flows for a terminal or a Slack code block, with no diagram interchange needed; `dmn_xml_to_ascii` draws decision tables and `form_json_to_ascii` a form mock-up. The output is byte-identical to `@bpmnkit/ascii`, held by the `conformance/ascii/` cases. Also reachable as `bpmnkit::ascii` (feature `ascii`).
+
+## Rust: process text to SVG/PNG in one call (2026-11-09)
+
+`bpmnkit::quick::render_svg(text, &RenderOptions)` and `render_png(text, &opts, &PngOptions)` (facade features `text` + `render` / `render-png`) go from process text or compact JSON to a laid-out image without touching the intermediate model. Example `text_to_png`.
+
+## HTML diff viewer (2026-11-09)
+
+`casen diff bpmn old.bpmn new.bpmn --html diff.html` writes one self-contained page: both diagrams with added, removed, changed and moved elements outlined, side by side or overlaid, a filterable change list with field-level `before → after`, click-to-zoom and `j`/`k` stepping; it loads nothing and reads without JavaScript. `--png diff.png` is the later diagram with the same marks, for chat. Library: `renderDiffHtml` / `diffToSvg` in `@bpmnkit/core`, `diff_to_html` / `diff_to_svg` in `bpmnkit-diff` (feature `html`), byte-identical. The Rust facade gains `render`, `diff` and `diff-html` features.
+
+## `bpmnkit-render`: BPMN to SVG and PNG in Rust (2026-11-09)
+
+`bpmnkit_render::bpmn_to_svg(&defs, &RenderOptions)` / `bpmn_xml_to_svg(xml, …)` give the same SVG bytes as `exportSvg` for every option (theme incl. custom colours, padding, scale, max size, DI colours, plane by id or process, auto-layout, font, element ids, background), held by the `conformance/render/` fixtures, and return the viewBox, output size, drawn elements with their DI geometry and warnings. Feature `png` adds `svg_to_png` / `bpmn_to_png` (resvg) with a bundled Inter subset, so a server without fonts (a Slack bot in a container) draws the same image as a laptop; `system-fonts` adds the machine's fonts for CJK and emoji. A `max_pixels` guard refuses huge images instead of allocating them. Feature `dmn` adds `drd_to_svg` and `decision_table_to_svg` (the twins of `exportDrdSvg` / `exportDecisionTableSvg`). Builds for `wasm32-unknown-unknown`.
+
+## SVG export v2, DRD and decision-table images (2026-11-09)
+
+`exportSvg(defs, { scale, maxSize, colors: "di", plane, autoLayout, font, elementIds, background, theme })` plus `exportSvgDetailed` (size, viewBox, drawn elements, warnings). Data objects/stores, groups and multi-instance/compensation/call-activity markers are drawn. `exportDrdSvg(dmnDefs)` draws a requirements diagram (laid out when DI is missing) and `exportDecisionTableSvg(table, { name })` a decision table. Recorded as `conformance/render/` fixtures for the Rust renderer.
+
+## FEEL and DMN results for chat (2026-11-09)
+
+`Value::to_feel_string` / `to_json_string` / `from_json_str` and `Context::from_json_str` (`bpmnkit-feel`) move values to and from text and JSON. `bpmnkit_dmn::report::{result_to_text, result_to_markdown, result_to_slack_mrkdwn}` print a decision result as text, a Markdown table or Slack `mrkdwn`.
+
+## Rust facade ergonomics and lint reports (2026-11-09)
+
+`bpmnkit::load(&str)` detects BPMN, DMN, a form, process text or compact JSON (`bpmnkit::detect`) and returns a `Document`; failures are one `bpmnkit::Error` with `From` for every crate error. `bpmnkit::prelude` gathers the common names. `bpmnkit_lint::report::{to_text, to_markdown, to_slack_mrkdwn}` (and `check_findings_*` for DMN and forms) print findings for terminals, PR comments and Slack. Examples: `text_to_bpmn`, `eval_dmn`, `lint_report`. Docs: [embedding the Rust crates](apps/landing/src/content/docs/rust/embedding.md).
+
 ## `placeNewShapes`: draw only new elements (2026-11-09)
 
 `placeNewShapes(definitions)` gives shapes and edges to elements that have none, leaves existing shapes where they are, and widens pools, lanes and sub-processes when needed. Use it before `exportPreserving` when editing a file. `casen generate bpmn --input --patch` keeps the existing layout this way.
+
+## Semantic BPMN diff: `diffBpmn` and `bpmnkit-diff` (2026-11-09)
+
+`diffBpmn(before, after)` (`@bpmnkit/core`) tells a reviewer what changed between two models: each element added, removed, changed (with the changed fields: `name`, `targetRef`, `conditionExpression/text`, `extensionElements/zeebe:taskDefinition/@type`, …) or only moved (position, size, waypoints, with both geometries), per-plane counts for collapsed sub-processes, and a semantic hash of each side (`beforeHash === afterHash` means identical, however the file is formatted or laid out). The Rust crate `bpmnkit-diff` is the twin (`diff_bpmn`, `project_semantics`, `semantic_hash`, `diff_to_text` for plain or Markdown chat output) and is held to the same `conformance/diff/` cases, hashes included.
 
 ## Deploy gate on every caller: CLI, AI routes, studio, Drop, demo, docs (2026-11-08)
 

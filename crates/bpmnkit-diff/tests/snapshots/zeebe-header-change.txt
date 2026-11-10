@@ -1,0 +1,4 @@
+1 change: 0 added, 0 removed, 1 changed, 0 moved
+~ serviceTask Task_review "Review order"
+    extensionElements/zeebe:taskDefinition/@type: "review-order" → "review-order-v2"
+    extensionElements/zeebe:taskHeaders/zeebe:header/@value: "ops" → "finance"

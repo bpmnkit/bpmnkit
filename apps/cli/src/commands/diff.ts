@@ -1,6 +1,7 @@
-import { readFile } from "node:fs/promises"
+import { readFile, writeFile } from "node:fs/promises"
+import { basename } from "node:path"
 import { renderBpmnAscii } from "@bpmnkit/ascii"
-import { Bpmn, diffDiagram } from "@bpmnkit/core"
+import { Bpmn, diffBpmn, diffDiagram, diffToSvg, renderDiffHtml } from "@bpmnkit/core"
 import type { BpmnDefinitions, BpmnDiffCategory, BpmnDiffResult } from "@bpmnkit/core"
 import type { Command, CommandGroup } from "../types.js"
 
@@ -68,6 +69,55 @@ function summarise(result: BpmnDiffResult): string {
 	return `${result.total} difference${result.total === 1 ? "" : "s"}: ${parts.join(", ")}`
 }
 
+/**
+ * SVG → PNG at 2× through `@resvg/resvg-js`, an optional native dependency: loaded only for
+ * `--png`, so the rest of the CLI installs and runs without it.
+ */
+async function svgToPng(svg: string): Promise<Uint8Array> {
+	let resvg: typeof import("@resvg/resvg-js")
+	try {
+		resvg = await import("@resvg/resvg-js")
+	} catch {
+		throw new Error("--png needs the optional dependency @resvg/resvg-js (npm i @resvg/resvg-js)")
+	}
+	const r = new resvg.Resvg(svg, {
+		fitTo: { mode: "zoom", value: 2 },
+		font: { loadSystemFonts: true },
+	})
+	return r.render().asPng()
+}
+
+/** Writes the viewer and image files the flags ask for; returns what was written. */
+async function writeReports(
+	flags: Record<string, unknown>,
+	paths: { before: string; after: string },
+	before: BpmnDefinitions,
+	after: BpmnDefinitions,
+): Promise<string[]> {
+	const htmlPath = typeof flags.html === "string" ? flags.html : undefined
+	const pngPath = typeof flags.png === "string" ? flags.png : undefined
+	if (htmlPath === undefined && pngPath === undefined) return []
+	// Diagrams without DI (e.g. generated ones) still get a picture.
+	const autoLayout = before.diagrams.length === 0 || after.diagrams.length === 0
+	const diff = diffBpmn(before, after)
+	const written: string[] = []
+	if (htmlPath !== undefined) {
+		const html = renderDiffHtml(before, after, diff, {
+			title: `${basename(paths.before)} → ${basename(paths.after)}`,
+			beforeLabel: basename(paths.before),
+			afterLabel: basename(paths.after),
+			autoLayout,
+		})
+		await writeFile(htmlPath, html, "utf-8")
+		written.push(htmlPath)
+	}
+	if (pngPath !== undefined) {
+		await writeFile(pngPath, await svgToPng(diffToSvg(after, diff, { autoLayout })))
+		written.push(pngPath)
+	}
+	return written
+}
+
 const diffBpmnCmd: Command = {
 	name: "bpmn",
 	description: "Compare two BPMN files and report what a reviewer would see change",
@@ -92,12 +142,28 @@ const diffBpmnCmd: Command = {
 			description: "Also render both diagrams as ASCII art",
 			type: "boolean",
 		},
+		{
+			name: "html",
+			description:
+				"Write a self-contained HTML viewer (both diagrams, highlighted changes) to this file",
+			type: "string",
+		},
+		{
+			name: "png",
+			description:
+				"Write a PNG of the later diagram with the changes highlighted (needs @resvg/resvg-js)",
+			type: "string",
+		},
 	],
 	examples: [
 		{ description: "Compare two files", command: "casen diff bpmn old.bpmn new.bpmn" },
 		{
 			description: "Fail a pipeline when a process changed",
 			command: "casen diff bpmn main.bpmn branch.bpmn --exit-code",
+		},
+		{
+			description: "Open the changes in a browser, or attach them to a review",
+			command: "casen diff bpmn old.bpmn new.bpmn --html diff.html --png diff.png",
 		},
 		{
 			description: "Machine-readable output",
@@ -117,6 +183,12 @@ const diffBpmnCmd: Command = {
 		const before = Bpmn.parse(beforeXml)
 		const after = Bpmn.parse(afterXml)
 		const result = diffDiagram(before, after)
+		const written = await writeReports(
+			ctx.flags,
+			{ before: beforePath, after: afterPath },
+			before,
+			after,
+		)
 
 		if (ctx.flags.format === "json") {
 			ctx.output.print(result)
@@ -125,6 +197,8 @@ const diffBpmnCmd: Command = {
 			}
 			return
 		}
+
+		for (const path of written) ctx.output.info(`Wrote ${path}`)
 
 		if (ctx.flags.ascii) {
 			ctx.output.print(`── ${beforePath} ──\n${renderBpmnAscii(beforeXml)}`)

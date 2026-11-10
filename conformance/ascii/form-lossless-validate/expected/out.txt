@@ -1,0 +1,23 @@
+f
+─
+
+A *
+[ ______________________ ]
+
+N
+[ 0 ▲▼ ]
+
+M
+[ 0 ▲▼ ]
+
+Date/Time *
+[ YYYY-MM-DD ]  [ HH:MM ]
+
+T *
+[ × Tag1  × Tag2  +Add  ]
+
+R
+  ○ (dynamic options)
+
+C *
+  ☐  (dynamic options)

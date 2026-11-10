@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://example.com/render">
+  <bpmn:process id="P1" isExecutable="true">
+    <bpmn:startEvent id="S1" name="Start"><bpmn:outgoing>F1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:userTask id="T_par" name="Parallel review">
+      <bpmn:multiInstanceLoopCharacteristics/><bpmn:incoming>F1</bpmn:incoming><bpmn:outgoing>F2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:serviceTask id="T_seq" name="Sequential calls">
+      <bpmn:multiInstanceLoopCharacteristics isSequential="true"/><bpmn:incoming>F2</bpmn:incoming><bpmn:outgoing>F3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="T_comp" name="Undo" isForCompensation="true"/>
+    <bpmn:callActivity id="CA" name="Call child"><bpmn:incoming>F3</bpmn:incoming><bpmn:outgoing>F4</bpmn:outgoing></bpmn:callActivity>
+    <bpmn:adHocSubProcess id="AH" name="Ad hoc"/>
+    <bpmn:subProcess id="SP" name="Collapsed"/>
+    <bpmn:dataObjectReference id="DOR" name="Order" dataObjectRef="DO"/>
+    <bpmn:dataObjectReference id="DOC" name="Items" isCollection="true"/>
+    <bpmn:dataStoreReference id="DSR" name="Orders DB"/>
+    <bpmn:endEvent id="E1" name="Done"><bpmn:incoming>F4</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="F1" sourceRef="S1" targetRef="T_par"/>
+    <bpmn:sequenceFlow id="F2" sourceRef="T_par" targetRef="T_seq"/>
+    <bpmn:sequenceFlow id="F3" sourceRef="T_seq" targetRef="CA"/>
+    <bpmn:sequenceFlow id="F4" sourceRef="CA" targetRef="E1"/>
+    <bpmn:group id="G1" categoryValueRef="CV1"/>
+  </bpmn:process>
+  <bpmn:category id="Cat1">
+    <bpmn:categoryValue id="CV1" value="Fulfilment"/>
+  </bpmn:category>
+  <bpmndi:BPMNDiagram id="D1">
+    <bpmndi:BPMNPlane id="PL1" bpmnElement="P1">
+      <bpmndi:BPMNShape id="G1_di" bpmnElement="G1"><dc:Bounds x="130" y="20" width="560" height="260"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="S1_di" bpmnElement="S1"><dc:Bounds x="152" y="102" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_par_di" bpmnElement="T_par"><dc:Bounds x="230" y="80" width="100" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_seq_di" bpmnElement="T_seq"><dc:Bounds x="370" y="80" width="100" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="CA_di" bpmnElement="CA"><dc:Bounds x="510" y="80" width="100" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E1_di" bpmnElement="E1"><dc:Bounds x="652" y="102" width="36" height="36"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="T_comp_di" bpmnElement="T_comp"><dc:Bounds x="370" y="200" width="100" height="60"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="AH_di" bpmnElement="AH"><dc:Bounds x="230" y="320" width="120" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SP_di" bpmnElement="SP"><dc:Bounds x="400" y="320" width="120" height="80"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DOR_di" bpmnElement="DOR"><dc:Bounds x="570" y="320" width="36" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DOC_di" bpmnElement="DOC"><dc:Bounds x="650" y="320" width="36" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DSR_di" bpmnElement="DSR"><dc:Bounds x="730" y="320" width="50" height="50"/></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="F1_di" bpmnElement="F1"><di:waypoint x="188" y="120"/><di:waypoint x="230" y="120"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F2_di" bpmnElement="F2"><di:waypoint x="330" y="120"/><di:waypoint x="370" y="120"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F3_di" bpmnElement="F3"><di:waypoint x="470" y="120"/><di:waypoint x="510" y="120"/></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="F4_di" bpmnElement="F4"><di:waypoint x="610" y="120"/><di:waypoint x="652" y="120"/></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

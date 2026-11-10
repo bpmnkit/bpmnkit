@@ -1,0 +1,8 @@
+{
+  "options": {
+    "name": "Credit check",
+    "theme": "dark",
+    "elementIds": true
+  },
+  "decision": "Decision_credit"
+}

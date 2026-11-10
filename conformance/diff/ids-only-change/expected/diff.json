@@ -1,0 +1,136 @@
+{
+  "afterHash": "79964aecc756a4d67482d13df2885f82ce43673ffd2e48596f34932ad8475f01",
+  "beforeHash": "d5664749d621c5a6d05bda439108cf5bd158f36322b50bc1c2eeca91ba1152d2",
+  "changes": [
+    {
+      "elementType": "serviceTask",
+      "fields": [],
+      "geometryAfter": {
+        "height": 80,
+        "width": 100,
+        "x": 300,
+        "y": 120
+      },
+      "id": "Task_check",
+      "kind": "added",
+      "nameAfter": "Review order"
+    },
+    {
+      "elementType": "serviceTask",
+      "fields": [],
+      "geometryBefore": {
+        "height": 80,
+        "width": 100,
+        "x": 300,
+        "y": 120
+      },
+      "id": "Task_review",
+      "kind": "removed",
+      "nameBefore": "Review order"
+    },
+    {
+      "elementType": "sequenceFlow",
+      "fields": [
+        {
+          "after": "Task_check",
+          "before": "Task_review",
+          "path": "targetRef"
+        }
+      ],
+      "geometryAfter": {
+        "waypoints": [
+          {
+            "x": 188,
+            "y": 160
+          },
+          {
+            "x": 300,
+            "y": 160
+          }
+        ]
+      },
+      "geometryBefore": {
+        "waypoints": [
+          {
+            "x": 188,
+            "y": 160
+          },
+          {
+            "x": 300,
+            "y": 160
+          }
+        ]
+      },
+      "id": "Flow_1",
+      "kind": "changed"
+    },
+    {
+      "elementType": "sequenceFlow",
+      "fields": [
+        {
+          "after": "Task_check",
+          "before": "Task_review",
+          "path": "sourceRef"
+        }
+      ],
+      "geometryAfter": {
+        "waypoints": [
+          {
+            "x": 400,
+            "y": 160
+          },
+          {
+            "x": 470,
+            "y": 160
+          }
+        ]
+      },
+      "geometryBefore": {
+        "waypoints": [
+          {
+            "x": 400,
+            "y": 160
+          },
+          {
+            "x": 470,
+            "y": 160
+          }
+        ]
+      },
+      "id": "Flow_2",
+      "kind": "changed"
+    },
+    {
+      "elementType": "process",
+      "fields": [
+        {
+          "after": "Task_check",
+          "path": "flowElements/Task_check"
+        },
+        {
+          "before": "Task_review",
+          "path": "flowElements/Task_review"
+        }
+      ],
+      "id": "Process_1",
+      "kind": "changed"
+    }
+  ],
+  "planes": [
+    {
+      "added": 1,
+      "changed": 2,
+      "id": "Process_1",
+      "moved": 0,
+      "removed": 1,
+      "total": 4
+    }
+  ],
+  "summary": {
+    "added": 1,
+    "changed": 3,
+    "moved": 0,
+    "removed": 1,
+    "total": 5
+  }
+}
