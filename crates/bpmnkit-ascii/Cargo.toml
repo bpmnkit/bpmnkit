@@ -1,0 +1,20 @@
+[package]
+name = "bpmnkit-ascii"
+description = "BPMN, DMN and Camunda forms as Unicode box-drawing text for terminals and chat code blocks (byte-identical to @bpmnkit/ascii)"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["bpmn", "ascii", "terminal", "diagram", "dmn"]
+categories = ["visualization", "command-line-interface"]
+# Tests read the shared corpus under ../../conformance, outside the package.
+exclude = ["tests/", "package.json"]
+
+[dependencies]
+bpmnkit-bpmn = { workspace = true }
+bpmnkit-dmn = { workspace = true }
+bpmnkit-form = { workspace = true }
+bpmnkit-layout = { workspace = true }

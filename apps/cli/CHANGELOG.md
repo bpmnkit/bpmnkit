@@ -1,5 +1,18 @@
 # @bpmnkit/cli
 
+## 1.7.0
+
+### Minor Changes
+
+- e6dd639: Add `renderDiffHtml(before, after, diff, options)`, a self-contained HTML diff viewer (both diagrams with highlighted changes, side by side or overlaid, change list, no network), and `diffToSvg(after, diff)`, the later diagram with the changes drawn over it. `casen diff bpmn` gets `--html <file>` and `--png <file>`.
+
+### Patch Changes
+
+- Updated dependencies [e6dd639]
+- Updated dependencies [e6dd639]
+- Updated dependencies [e6dd639]
+  - @bpmnkit/core@1.12.0
+
 ## 1.6.1
 
 ### Patch Changes

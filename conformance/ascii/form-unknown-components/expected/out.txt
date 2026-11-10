@@ -1,0 +1,12 @@
+f
+─
+
+[ future-widget ]
+
+[ plugin/rating ]
+
+[ ui:map ]
+
+[ Textfield ]
+
+[ spacer-x ]

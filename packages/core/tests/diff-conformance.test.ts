@@ -4,10 +4,13 @@ import { fileURLToPath } from "node:url"
 import { describe, expect, it } from "vitest"
 import { diffBpmn } from "../src/bpmn/bpmn-diff.js"
 import { parseBpmn } from "../src/bpmn/bpmn-parser.js"
+import { diffToSvg, renderDiffHtml } from "../src/bpmn/diff-html.js"
 
 /**
  * Replays conformance/diff/<case>/ : `diffBpmn(parse(before.bpmn), parse(after.bpmn))`
- * must equal `expected/diff.json` (keys sorted, 2-space indent). The hashes are part
+ * must equal `expected/diff.json` (keys sorted, 2-space indent), and `renderDiffHtml` of it
+ * `expected/diff.html` byte for byte, `diffToSvg` `expected/diff.svg` (the Rust twins read
+ * the same files). The hashes are part
  * of the file, so `semanticHash` parity with the Rust crate is pinned by it too.
  * `pnpm conformance:record` rewrites the expected files from this implementation.
  */
@@ -43,14 +46,22 @@ describe("conformance/diff", () => {
 		it(name, () => {
 			const dir = path.join(root, name)
 			const read = (f: string): string => fs.readFileSync(path.join(dir, f), "utf8")
-			const diff = diffBpmn(parseBpmn(read("before.bpmn")), parseBpmn(read("after.bpmn")))
-			const text = `${JSON.stringify(sortKeys(diff), null, 2)}\n`
-			const file = path.join(dir, "expected/diff.json")
-			if (RECORD) {
-				fs.mkdirSync(path.dirname(file), { recursive: true })
-				fs.writeFileSync(file, text)
+			const before = parseBpmn(read("before.bpmn"))
+			const after = parseBpmn(read("after.bpmn"))
+			const diff = diffBpmn(before, after)
+			const outputs = {
+				"expected/diff.json": `${JSON.stringify(sortKeys(diff), null, 2)}\n`,
+				"expected/diff.html": renderDiffHtml(before, after, diff, { title: name }),
+				"expected/diff.svg": diffToSvg(after, diff),
 			}
-			expect(text).toBe(fs.readFileSync(file, "utf8"))
+			for (const [rel, text] of Object.entries(outputs)) {
+				const file = path.join(dir, rel)
+				if (RECORD) {
+					fs.mkdirSync(path.dirname(file), { recursive: true })
+					fs.writeFileSync(file, text)
+				}
+				expect(text).toBe(fs.readFileSync(file, "utf8"))
+			}
 		})
 	}
 })

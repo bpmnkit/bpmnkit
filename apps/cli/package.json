@@ -1,6 +1,6 @@
 {
 	"name": "@bpmnkit/cli",
-	"version": "1.6.1",
+	"version": "1.7.0",
 	"description": "Command-line interface for Camunda 8 — deploy, manage, and monitor processes from the terminal",
 	"mcpName": "io.github.bpmnkit/bpmnkit",
 	"type": "module",
@@ -28,6 +28,9 @@
 		"@bpmnkit/patterns": "workspace:^",
 		"@bpmnkit/profiles": "workspace:^",
 		"@bpmnkit/proxy": "workspace:^"
+	},
+	"optionalDependencies": {
+		"@resvg/resvg-js": "^2.6.2"
 	},
 	"publishConfig": {
 		"access": "public"

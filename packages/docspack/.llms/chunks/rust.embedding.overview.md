@@ -6,7 +6,7 @@ covers loading, errors, lint reports and the cargo features.
 
 ```toml
 [dependencies]
-bpmnkit = { version = "0.1", features = ["lint", "layout"] }
+bpmnkit = { version = "0.2", features = ["lint", "layout"] }
 ```
 
 

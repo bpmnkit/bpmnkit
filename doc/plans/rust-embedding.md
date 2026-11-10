@@ -374,7 +374,7 @@ same template so they match:
 | 7 | **DMN table / DRD image** (§1.3) | none | in `bpmnkit-render` `dmn` feature | medium-high | M |
 | 8 | **Stable ids for generated models** | `stable_ids::assign_stable_flow_ids`, `ids::reset_id_counter` (thread-local) | doc only: in a tokio server never rely on `reset_id_counter` (task may hop threads); use text `expand` (content-derived ids) or `assign_stable_flow_ids` | medium | XS |
 | 9 | **FEEL / DMN eval for chat** | `evaluate`, `evaluate_decision_graph` | `Value` → display string helper (`feel::Value::to_feel_string()` if absent) + JSON in/out helpers `Context::from_json(&serde_json::Value)` (check existing) | medium | S |
-| 10 | **ASCII render in Rust** (port `packages/ascii`) | TS only | `bpmnkit-ascii` crate + conformance | medium (Slack code blocks, terminals) | M–L; PNG covers most needs, do later |
+| 10 | **ASCII render in Rust** (port `packages/ascii`) | TS only | `bpmnkit-ascii` crate + conformance | medium (Slack code blocks, terminals) | **done 2026-11-09** (`conformance/ascii/`, facade feature `ascii`) |
 | 11 | **wasm-bindgen of render/diff for TS** | — | see §1.4 | low now | L |
 
 Docs: one guide page `apps/landing/src/content/docs/rust/embedding.md` (render, diff, lint

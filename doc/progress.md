@@ -7,6 +7,51 @@
 - `release-crates.yml` starts on a push to `main` that touches `crates/*/package.json` and keeps the `crates-io` approval, OIDC and bootstrap paths. New `crates-publish.mjs --release` step tags `crates-v<V>` and creates the GitHub release from the crates' CHANGELOG sections plus the corpus provenance line; idempotent. Tests for the note builder and the check.
 - Docs: `doc/rust-crates-release.md`, `.changeset/README.md`.
 
+## 2026-11-10 — Rust crates 0.2.0 for the first full crates.io release
+
+- Lockstep bump 0.1.0 → 0.2.0 (`[workspace.package]`, `[workspace.dependencies]`, inline `bpmnkit-feel` entries). crates.io holds `bpmnkit-spec`, `-xml`, `-feel`, `-form`, `-bpmn` 0.1.0 from 2026-11-08; `-spec`, `-feel` and `-bpmn` changed since (Zeebe rules, diff viewer template, JUEL/FEEL conditions, `Value` JSON helpers), and the new crates (`-render`, `-diff`, `-ascii`, …) need that code, so 0.1.0 cannot be completed. `node scripts/crates-publish.mjs --dry-run` packages and builds all 15. Docs: `doc/rust-crates-release.md` (publish order now 15 crates), `version = "0.2"` in the embedding guide and the `bpmnkit-render` README.
+
+## 2026-11-10 — Refresh `api-surface.json` for the new `@bpmnkit/core` exports
+
+- 21 additions only (`diffBpmn`, `renderDiffHtml`, `diffToSvg`, `exportSvgDetailed`, `exportDrdSvg`, `exportDecisionTableSvg` and their types); a minor, already covered by the existing changesets.
+
+## 2026-11-10 — Fix landing build: quote `rust/embedding.md` description
+
+- The front-matter `description` held `: `, which YAML read as a nested key, so `astro build` failed. Quoted it.
+
+## 2026-11-10 — `bpmnkit::Error::Ascii`
+
+- Facade: `Error::Ascii(bpmnkit_ascii::AsciiError)` plus `From`, so `?` works on the `bpmnkit::ascii::*_xml/json_to_ascii` calls. Test in `crates/bpmnkit/tests/load.rs`.
+
+## 2026-11-09 — `bpmnkit-ascii`: BPMN/DMN/form → text in Rust (item 10 of the embedding plan)
+
+- New crate `crates/bpmnkit-ascii`: `bpmn_to_ascii` / `bpmn_xml_to_ascii`, `dmn_to_ascii` / `dmn_xml_to_ascii`, `form_to_ascii` / `form_json_to_ascii` with `AsciiOptions { title: FromModel | Hidden | Text }`. A line-by-line port of `packages/ascii` on the grid layout (`bpmnkit_layout::layout_flow_nodes`); text is handled as UTF-16 units so truncation and `trimEnd` match JS.
+- `conformance/ascii/<case>/` (120 cases: every non-error `bpmn/`, `dmn/`, `form/` input, hand-written gateway fan-outs, loops, all element types, Unicode/emoji truncation, empty models, title options), recorded by `packages/ascii/tests/ascii-conformance.test.ts` (now part of `pnpm conformance:record`) and replayed byte-equal by `bpmnkit-conformance` (`tests/ascii.rs`). Format in `conformance/README.md`.
+- Facade feature `ascii` (in `full`) re-exports the crate as `bpmnkit::ascii`.
+
+## 2026-11-09 — FEEL/DMN result helpers for chat and CLI (E2)
+
+- `bpmnkit-feel`: `Value::to_feel_string`, `to_json_string`, `to_json`, `from_json_str`, `from_json`; `Context::from_json_str` / `from_json` (reuse the `to json()` / `from json()` builtins: exact numbers, key order kept). No TS twin formatter exists beyond `string()`, already covered by the FEEL conformance cases, so no new fixtures.
+- `bpmnkit_dmn::report`: `result_to_text`, `result_to_markdown`, `result_to_slack_mrkdwn` for scalar, single-hit and multi-hit results. Docs: embedding guide.
+
+## 2026-11-09 — `bpmnkit::quick`: text → SVG/PNG in one call (E1)
+
+- Facade `bpmnkit` (features `text` + `render`): `quick::render_svg(text, &RenderOptions) -> Result<Svg, Error>` and, with `render-png`, `quick::render_png(text, &opts, &PngOptions)`. Auto-layout forced on; non-BPMN input gives `Error::Unrecognized`. (Not `bpmnkit::text::…`: that path is a re-export of the `bpmnkit-text` crate.) Example `text_to_png`; tests include every `conformance/text` input.
+- Docs page `rust/embedding`: new sections on the one-call helper and on stable ids in tokio (`reset_id_counter` is thread-local; use text expand or `assign_stable_flow_ids`).
+
+## 2026-11-09 — Fix `rewire-flow` diff fixture; CI runs bpmnkit-render feature sets
+
+- `conformance/diff/rewire-flow/after.bpmn`: `incoming` lists now match the rewired `Flow_2` (it was still on the gateway), which broke bpmnlint parity (`fake-join`). Re-recorded TS; Rust matches.
+- CI and `pnpm verify:rust` run `crates/bpmnkit-render/scripts/check-features.sh` (png, system-fonts, dmn, no-default).
+
+## 2026-11-09 — HTML diff viewer, `diff_to_html`, `casen diff --html/--png`, facade `render`/`diff` (T4)
+
+- One template, `spec/templates/diff-viewer.{html,css,js}`, inlined by `scripts/spec-gen/diff-viewer.mjs` into `packages/core/src/generated/diff-viewer.ts` and `crates/bpmnkit-spec/src/generated/diff_viewer.rs` (`bpmnkit_spec::diff_viewer`). TS `renderDiffHtml` / `diffToSvg` (`packages/core/src/bpmn/diff-html.ts`) and Rust `diff_to_html` / `diff_to_svg` / `DiffHtmlOptions` (`bpmnkit-diff`, feature `html`) only fill it in; `conformance/diff/*/expected/{diff.html,diff.svg}` (recorded by TS) are byte-equal in Rust.
+- Page: header chips + "semantically identical" badge, CSS-only modes (side by side / overlay with opacity slider / before / after) and per-kind filters, overlay marks inside each SVG (shapes: outset box; edges: wide translucent route; moves: dashed ghost of the old place), change list with `path: before → after`. JS (148 lines) adds click-to-zoom on both panes, synced wheel zoom / drag pan, `j`/`k`, `0` to fit; without it the marks link to their list rows. CSP `default-src 'none'`.
+- Deviations from the plan: SVGs are wrapped, not edited (`<svg viewBox=union><g translate>original</g><g class="bk-diff">…</g></svg>`) so both panes share one view box; ids are prefixed per pane (`bk-b-`/`bk-a-`) since both diagrams define `#arr`; extra placeholders `SUMMARY`, `CHANGES`, `*_LABEL` (server-rendered so the page works without JS); `DiffHtmlOptions` is `title`, labels, `theme`, `padding`, `auto_layout` rather than a full `RenderOptions`, so TS and Rust accept the same set.
+- `casen diff bpmn --html <file> --png <file>` (PNG via optional dependency `@resvg/resvg-js`, 2×). `scripts/diff-viewer-check.mjs`: Chromium with all requests blocked over the conformance pages (no requests, modes, filters, zoom, highlight → row, JS off) — 10/10 pass. Sample: `doc/plans/samples/order-diff.{html,png}`.
+- Facade `bpmnkit`: features `render` (with `auto-layout`), `diff`, `diff-html`, all in `full`; `bpmnkit::render`, `bpmnkit::diff`, prelude names, `Error::Render`; `render-png` / `render-system-fonts` (on T1's `png` / `system-fonts`, not in `full`); examples `render_svg`, `render_png`, `diff_html`.
+
 ## 2026-11-09 — TS `exportSvg` v2, DRD + decision-table SVG, render conformance (T2)
 
 - `exportSvg` options: `scale`, `maxSize`, `colors: "di"`, `plane`, `autoLayout`, `font`, `elementIds`, `background`, custom `theme` colours; new `exportSvgDetailed` (viewBox, size, drawn elements, warnings), `exportDrdSvg`, `exportDecisionTableSvg` (`packages/core/src/dmn/svg.ts`).
@@ -18,10 +63,13 @@
 - `bpmnkit::Error` (`#[non_exhaustive]`, `From` for every crate error), `bpmnkit::detect` → `DocKind`, `bpmnkit::load` → `Document` (process text and compact JSON expand without the deploy gate), `bpmnkit::prelude`. `text` feature now implies `bpmn` and `dmn`; the facade depends on `serde_json` for JSON sniffing.
 - `bpmnkit_lint::report`: `to_text` (`TextStyle{color,max}`), `to_markdown`, `to_slack_mrkdwn` (escapes `&<>`), plus `check_findings_*` for DMN/form findings. Snapshot tests; `detect`/`load` tested over the conformance corpus.
 - Examples `text_to_bpmn`, `eval_dmn`, `lint_report`; docs page `rust/embedding`. `render`/`diff` features wait for `bpmnkit-render` (T1) and `bpmnkit-diff` (T3).
-## 2026-11-09 — `bpmnkit-render`: BPMN → SVG in Rust (T1a)
+## 2026-11-09 — `bpmnkit-render`: BPMN → SVG and PNG in Rust (T1)
 
 - New crate `crates/bpmnkit-render`: `bpmn_to_svg` / `bpmn_xml_to_svg`, a line-by-line port of `packages/core/src/bpmn/svg.ts` (label styles from `label-style.ts` included). Default options give the bytes of TS `exportSvg`; all v2 options of T2 (`theme` light/dark/custom, `padding`, `scale`, `max_size`, `colors: Di`, `plane` by id or process, `auto_layout` via feature `auto-layout`, `font`, `element_ids`, `background`) plus data objects/stores, groups and the activity marker row. Returns `Svg { markup, view_box, width, height, elements, warnings }`; a model with no diagram at all is `RenderError::NoDiagram` (TS draws a 1×1 SVG).
-- Conformance runner `crates/bpmnkit-conformance/src/render.rs` + `tests/render.rs` over `conformance/render/` (TS option names in `case.json`, byte-equal `expected/out.svg`). All 66 BPMN fixtures byte-equal; also checked locally against 270 extra TS runs (90 corpus inputs × auto-layout / DI colours+ids+font+max-size / no background+scale). The 10 DRD/decision-table fixtures report "unsupported" until the `dmn` feature lands.
+- Feature `dmn`: `drd_to_svg` and `decision_table_to_svg(table, name, opts)`, ports of `packages/core/src/dmn/svg.ts` (a DRD without DI is laid out with `layout_dmn`).
+- Conformance runner `crates/bpmnkit-conformance/src/render.rs` + `tests/render.rs` over `conformance/render/`: all 76 fixtures byte-equal (66 BPMN, 6 DRD, 4 decision tables), nothing pending; also checked locally against 267 extra TS runs (90 corpus inputs × auto-layout / DI colours+ids+font+max-size / no background+scale).
+- PNG (feature `png`): `svg_to_png` / `bpmn_to_png`, `PngOptions { dpi_scale: 2, max_pixels: 16 M, fonts }`, resvg 0.45 with a bundled Inter 4.0 subset (Latin, Latin-1, Latin Ext-A, punctuation; 2 × 66 kB, OFL; in `crates/bpmnkit-render/assets/fonts/` rather than the repo root so `cargo publish` packages it). `system-fonts` adds `FontSource::System|Both` (database cached in a `OnceLock`). Smoke tests (size, drawn pixels, glyphs, transparency, `TooLarge`) and a golden PNG at 0.5 % tolerance (`BLESS_PNG=1` re-records). `scripts/check-features.sh` lints/tests every feature set and builds `wasm32-unknown-unknown` with `png,embedded-font` (passes).
+- Size: the `render` example, release, stripped: 1.54 MB SVG-only → 3.63 MB with `png` (+2.1 MB incl. fonts). Speed (`cargo bench -p bpmnkit-render --features png`): SVG of all 66 fixtures 4.9 ms, largest (99 shapes) 0.64 ms; PNG of a 44-shape diagram (3481×874 CSS px) 155 ms at dpi 2, 57 ms at dpi 1, 21 ms as an 800 px thumbnail (the plan's 50 ms target holds for thumbnail-sized output, not for full-size dpi 2 of wide diagrams; pixel fill dominates). The embedded font database is built once per process and adds little to the first call.
 
 ## 2026-11-09 — `bpmnkit-diff` crate + `diffBpmn` (T3 of the Rust embedding plan)
 

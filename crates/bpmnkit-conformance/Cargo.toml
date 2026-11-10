@@ -1,6 +1,6 @@
 [package]
 name = "bpmnkit-conformance"
-description = "Shared conformance cases (FEEL, BPMN, DMN, forms, lint, optimize, compat, migrate, layout, builder, text, compact) and runner for the BPMN Kit Rust crates"
+description = "Shared conformance cases (FEEL, BPMN, DMN, forms, lint, optimize, compat, migrate, layout, builder, text, compact, ascii) and runner for the BPMN Kit Rust crates"
 version.workspace = true
 edition.workspace = true
 license.workspace = true
@@ -10,9 +10,9 @@ publish = false
 [dependencies]
 serde = { workspace = true }
 serde_json = { workspace = true, features = ["float_roundtrip"] }
-bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.1.0" }
+bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.2.0" }
 bpmnkit-bpmn = { workspace = true }
-bpmnkit-diff = { workspace = true }
+bpmnkit-diff = { workspace = true, features = ["html"] }
 bpmnkit-form = { workspace = true }
 bpmnkit-dmn = { workspace = true }
 bpmnkit-compat = { workspace = true }
@@ -20,5 +20,6 @@ bpmnkit-lint = { workspace = true }
 bpmnkit-layout = { workspace = true }
 bpmnkit-builder = { workspace = true }
 bpmnkit-text = { workspace = true }
-bpmnkit-render = { workspace = true, features = ["auto-layout"] }
+bpmnkit-render = { workspace = true, features = ["auto-layout", "dmn"] }
+bpmnkit-ascii = { workspace = true }
 indexmap = { workspace = true }

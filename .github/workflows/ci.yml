@@ -239,6 +239,10 @@ jobs:
       - name: Test (conformance + spec data)
         run: cargo test --workspace --locked
 
+      # png / system-fonts / no-default builds of bpmnkit-render that the workspace test does not reach.
+      - name: Test bpmnkit-render feature sets
+        run: bash crates/bpmnkit-render/scripts/check-features.sh
+
       # Benches are not tests, so nothing above builds them; this keeps them compiling. The
       # release profile's fat LTO buys nothing for a compile check, so it is turned off here.
       - name: Benches compile

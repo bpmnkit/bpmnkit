@@ -17,7 +17,7 @@ exclude = ["tests/", "package.json"]
 bpmnkit-spec = { workspace = true, optional = true }
 bpmnkit-xml = { workspace = true, optional = true }
 bpmnkit-bpmn = { workspace = true, optional = true }
-bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.1.0", optional = true }
+bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.2.0", optional = true }
 bpmnkit-dmn = { workspace = true, optional = true }
 bpmnkit-form = { workspace = true, optional = true }
 bpmnkit-compat = { workspace = true, optional = true }
@@ -25,12 +25,16 @@ bpmnkit-lint = { workspace = true, optional = true }
 bpmnkit-layout = { workspace = true, optional = true }
 bpmnkit-builder = { workspace = true, optional = true }
 bpmnkit-text = { workspace = true, optional = true }
+bpmnkit-render = { workspace = true, optional = true }
+bpmnkit-diff = { workspace = true, optional = true }
+bpmnkit-ascii = { workspace = true, optional = true }
 serde_json = { workspace = true }
 
 [features]
 # What most users reach for: read, write and evaluate models.
 default = ["feel", "bpmn", "dmn", "form"]
-full = ["spec", "xml", "bpmn", "feel", "dmn", "form", "compat", "lint", "layout", "builder", "text"]
+# Not `render-png` (a raster stack); add it yourself when you need PNGs.
+full = ["spec", "xml", "bpmn", "feel", "dmn", "form", "compat", "lint", "layout", "builder", "text", "render", "diff", "diff-html", "ascii"]
 spec = ["dep:bpmnkit-spec"]
 xml = ["dep:bpmnkit-xml"]
 bpmn = ["dep:bpmnkit-bpmn"]
@@ -43,6 +47,18 @@ layout = ["dep:bpmnkit-layout"]
 builder = ["dep:bpmnkit-builder"]
 # Process text and compact JSON expand into BPMN/DMN models, so their types must be reachable.
 text = ["dep:bpmnkit-text", "bpmn", "dmn"]
+# BPMN to SVG; models without diagram interchange are laid out first.
+render = ["dep:bpmnkit-render", "bpmnkit-render/auto-layout", "bpmn"]
+# SVG → PNG with resvg and the bundled Inter subset: same pixels on every machine.
+render-png = ["render", "bpmnkit-render/png"]
+# PNG text may also use the machine's fonts (FontSource::System / Both).
+render-system-fonts = ["render-png", "bpmnkit-render/system-fonts"]
+# Semantic diff, field-level changes and the semantic hash.
+diff = ["dep:bpmnkit-diff", "bpmn"]
+# The self-contained HTML diff viewer and the diff-over-diagram SVG.
+diff-html = ["diff", "render", "bpmnkit-diff/html"]
+# BPMN, DMN and forms as Unicode box-drawing text (terminals, chat code blocks).
+ascii = ["dep:bpmnkit-ascii"]
 
 [package.metadata.docs.rs]
 all-features = true
@@ -58,3 +74,19 @@ required-features = ["dmn", "feel", "text"]
 [[example]]
 name = "lint_report"
 required-features = ["lint", "bpmn"]
+
+[[example]]
+name = "render_svg"
+required-features = ["render"]
+
+[[example]]
+name = "render_png"
+required-features = ["render-png", "diff-html"]
+
+[[example]]
+name = "diff_html"
+required-features = ["diff-html"]
+
+[[example]]
+name = "text_to_png"
+required-features = ["render-png", "text"]

@@ -1,0 +1,16 @@
+loanApplicationForm
+───────────────────
+
+Applicant name *
+[ ______________________ ]
+
+Requested amount
+[ 0 ▲▼ ]
+
+Credit score
+[ 0 ▲▼ ]
+
+Employment status
+[ ▼ Select...            ]
+
+☐  I confirm the information is accurate

@@ -18,6 +18,16 @@ bpmnkit-bpmn = { workspace = true }
 indexmap = { workspace = true }
 serde = { workspace = true }
 serde_json = { workspace = true }
+bpmnkit-render = { workspace = true, optional = true, features = ["auto-layout"] }
+bpmnkit-spec = { workspace = true, optional = true }
+
+[features]
+default = []
+# Self-contained HTML viewer and diff-over-diagram SVG.
+html = ["dep:bpmnkit-render", "dep:bpmnkit-spec"]
+
+[package.metadata.docs.rs]
+all-features = true
 
 [dev-dependencies]
 serde_json = { workspace = true, features = ["float_roundtrip"] }

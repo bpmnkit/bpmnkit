@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="p" isExecutable="true" name="Retry loop">
+    <bpmn:startEvent id="s" name="Go"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:serviceTask id="a" name="Call API"><bpmn:incoming>f1</bpmn:incoming><bpmn:incoming>f5</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing></bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="g" name="OK?"><bpmn:incoming>f2</bpmn:incoming><bpmn:outgoing>f3</bpmn:outgoing><bpmn:outgoing>f4</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:intermediateCatchEvent id="w" name="Wait"><bpmn:incoming>f4</bpmn:incoming><bpmn:outgoing>f5</bpmn:outgoing></bpmn:intermediateCatchEvent>
+    <bpmn:endEvent id="e" name="Done"><bpmn:incoming>f3</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="s" targetRef="a"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="a" targetRef="g"/>
+    <bpmn:sequenceFlow id="f3" sourceRef="g" targetRef="e" name="yes"/>
+    <bpmn:sequenceFlow id="f4" sourceRef="g" targetRef="w" name="no"/>
+    <bpmn:sequenceFlow id="f5" sourceRef="w" targetRef="a" name="retry"/>
+  </bpmn:process>
+</bpmn:definitions>

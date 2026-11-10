@@ -1,5 +1,14 @@
 # @bpmnkit/examples
 
+## 0.0.58
+
+### Patch Changes
+
+- Updated dependencies [e6dd639]
+- Updated dependencies [e6dd639]
+- Updated dependencies [e6dd639]
+  - @bpmnkit/core@1.12.0
+
 ## 0.0.57
 
 ### Patch Changes

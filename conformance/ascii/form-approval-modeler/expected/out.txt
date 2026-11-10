@@ -1,0 +1,8 @@
+approval-form
+─────────────
+
+Reason for approval *
+[ ______________________ ]
+
+Amount
+[ 0 ▲▼ ]

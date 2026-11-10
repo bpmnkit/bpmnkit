@@ -7,7 +7,7 @@ mod conversion;
 mod list;
 mod numeric;
 mod range;
-mod string;
+pub(crate) mod string;
 mod temporal;
 
 use crate::value::{Function, Value};
