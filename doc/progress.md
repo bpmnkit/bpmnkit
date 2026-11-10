@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-10 — Refresh `api-surface.json` for the new `@bpmnkit/core` exports
+
+- 21 additions only (`diffBpmn`, `renderDiffHtml`, `diffToSvg`, `exportSvgDetailed`, `exportDrdSvg`, `exportDecisionTableSvg` and their types); a minor, already covered by the existing changesets.
+
 ## 2026-11-10 — Fix landing build: quote `rust/embedding.md` description
 
 - The front-matter `description` held `: `, which YAML read as a nested key, so `astro build` failed. Quoted it.
