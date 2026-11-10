@@ -5,7 +5,7 @@ members = ["crates/*"]
 exclude = ["apps"]
 
 [workspace.package]
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 repository = "https://github.com/bpmnkit/bpmnkit"
@@ -24,19 +24,19 @@ quick-xml = "0.41"
 # Internal crates: lockstep versions (see doc/rust-crates-release.md). `path` for the workspace,
 # `version` for crates.io. bpmnkit-feel is declared inline in each member instead, because
 # members differ on `default-features` (a workspace entry cannot be overridden to `false`).
-bpmnkit-spec = { path = "crates/bpmnkit-spec", version = "0.2.0" }
-bpmnkit-xml = { path = "crates/bpmnkit-xml", version = "0.2.0" }
-bpmnkit-bpmn = { path = "crates/bpmnkit-bpmn", version = "0.2.0" }
-bpmnkit-dmn = { path = "crates/bpmnkit-dmn", version = "0.2.0" }
-bpmnkit-form = { path = "crates/bpmnkit-form", version = "0.2.0" }
-bpmnkit-compat = { path = "crates/bpmnkit-compat", version = "0.2.0" }
-bpmnkit-lint = { path = "crates/bpmnkit-lint", version = "0.2.0" }
-bpmnkit-layout = { path = "crates/bpmnkit-layout", version = "0.2.0" }
-bpmnkit-builder = { path = "crates/bpmnkit-builder", version = "0.2.0" }
-bpmnkit-text = { path = "crates/bpmnkit-text", version = "0.2.0" }
-bpmnkit-diff = { path = "crates/bpmnkit-diff", version = "0.2.0" }
-bpmnkit-ascii = { path = "crates/bpmnkit-ascii", version = "0.2.0" }
-bpmnkit-render = { path = "crates/bpmnkit-render", version = "0.2.0", default-features = false }
+bpmnkit-spec = { path = "crates/bpmnkit-spec", version = "0.2.1" }
+bpmnkit-xml = { path = "crates/bpmnkit-xml", version = "0.2.1" }
+bpmnkit-bpmn = { path = "crates/bpmnkit-bpmn", version = "0.2.1" }
+bpmnkit-dmn = { path = "crates/bpmnkit-dmn", version = "0.2.1" }
+bpmnkit-form = { path = "crates/bpmnkit-form", version = "0.2.1" }
+bpmnkit-compat = { path = "crates/bpmnkit-compat", version = "0.2.1" }
+bpmnkit-lint = { path = "crates/bpmnkit-lint", version = "0.2.1" }
+bpmnkit-layout = { path = "crates/bpmnkit-layout", version = "0.2.1" }
+bpmnkit-builder = { path = "crates/bpmnkit-builder", version = "0.2.1" }
+bpmnkit-text = { path = "crates/bpmnkit-text", version = "0.2.1" }
+bpmnkit-diff = { path = "crates/bpmnkit-diff", version = "0.2.1" }
+bpmnkit-ascii = { path = "crates/bpmnkit-ascii", version = "0.2.1" }
+bpmnkit-render = { path = "crates/bpmnkit-render", version = "0.2.1", default-features = false }
 
 # Fat LTO + one codegen unit: whole-program inlining across the crates. `panic` stays
 # `unwind` because bpmnkit-fuzz catches panics in its release build.
