@@ -1,5 +1,12 @@
 # @bpmnkit/core
 
+## 1.13.0
+
+### Minor Changes
+
+- 4d89511: Add `diffBpmn(before, after)`: a semantic diff of two models with field-level changes, layout-only moves, per-plane counts and a semantic hash of each side.
+- 4d89511: `exportSvg` gains `scale`, `maxSize`, `colors: "di"`, `plane`, `autoLayout`, `font`, `elementIds`, `background` and custom theme colours; new `exportSvgDetailed`, `exportDrdSvg` and `exportDecisionTableSvg`. Data objects/stores, groups and multi-instance, compensation and call-activity markers are now drawn.
+
 ## 1.12.0
 
 ### Minor Changes

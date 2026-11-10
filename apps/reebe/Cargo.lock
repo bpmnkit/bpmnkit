@@ -360,7 +360,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-bpmn"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "bpmnkit-feel",
  "bpmnkit-spec",
@@ -371,7 +371,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-compat"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "bpmnkit-bpmn",
  "bpmnkit-feel",
@@ -383,7 +383,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-dmn"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "bpmnkit-feel",
  "bpmnkit-xml",
@@ -393,7 +393,7 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-feel"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "bpmnkit-spec",
  "chrono",
@@ -406,11 +406,11 @@ dependencies = [
 
 [[package]]
 name = "bpmnkit-spec"
-version = "0.2.0"
+version = "0.2.1"
 
 [[package]]
 name = "bpmnkit-xml"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "indexmap 2.13.0",
  "quick-xml",
