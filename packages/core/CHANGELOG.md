@@ -1,5 +1,13 @@
 # @bpmnkit/core
 
+## 1.12.0
+
+### Minor Changes
+
+- e6dd639: Add `diffBpmn(before, after)`: a semantic diff of two models with field-level changes, layout-only moves, per-plane counts and a semantic hash of each side.
+- e6dd639: Add `renderDiffHtml(before, after, diff, options)`, a self-contained HTML diff viewer (both diagrams with highlighted changes, side by side or overlaid, change list, no network), and `diffToSvg(after, diff)`, the later diagram with the changes drawn over it. `casen diff bpmn` gets `--html <file>` and `--png <file>`.
+- e6dd639: `exportSvg` gains `scale`, `maxSize`, `colors: "di"`, `plane`, `autoLayout`, `font`, `elementIds`, `background` and custom theme colours; new `exportSvgDetailed`, `exportDrdSvg` and `exportDecisionTableSvg`. Data objects/stores, groups and multi-instance, compensation and call-activity markers are now drawn.
+
 ## 1.11.0
 
 ### Minor Changes
