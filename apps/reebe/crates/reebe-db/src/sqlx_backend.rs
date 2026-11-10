@@ -247,7 +247,8 @@ impl StateBackend for SqlxBackend {
                AND value_type = 'PROCESS_INSTANCE' AND intent = 'ACTIVATE_ELEMENT'
                AND {FIELD} = $4"
         );
-        let count: i64 = sqlx::query_scalar(&sql)
+        // `FIELD` is a backend-specific constant; values are bound.
+        let count: i64 = sqlx::query_scalar(sqlx::AssertSqlSafe(sql))
             .bind(partition_id)
             .bind(after_position)
             .bind(field)
@@ -275,7 +276,7 @@ impl StateBackend for SqlxBackend {
              ORDER BY position"
         );
         use sqlx::Row;
-        let rows = sqlx::query(&sql)
+        let rows = sqlx::query(sqlx::AssertSqlSafe(sql))
             .bind(partition_id)
             .bind(after_position)
             .bind(flow_scope_key)

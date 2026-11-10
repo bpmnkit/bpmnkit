@@ -985,7 +985,7 @@ async fn test_timer_boundary_event() {
 // Restart: the engine resumes after the last processed command
 // ---------------------------------------------------------------------------
 
-async fn count(pool: &DbPool, sql: &str) -> i64 {
+async fn count(pool: &DbPool, sql: &'static str) -> i64 {
     sqlx::query_scalar(sql).fetch_one(pool).await.expect(sql)
 }
 

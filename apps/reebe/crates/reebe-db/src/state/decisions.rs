@@ -128,11 +128,12 @@ impl<'a> DecisionRepository<'a> {
         decision_id: &str,
         tenant_id: &str,
     ) -> Result<Option<DecisionDefinition>> {
-        let row = sqlx::query(&format!(
+        // Only the column-list constant is spliced in; values are bound.
+        let row = sqlx::query(sqlx::AssertSqlSafe(format!(
             "SELECT {DECISION_COLUMNS} FROM decision_definitions d \
              LEFT JOIN decision_requirements r ON r.key = d.decision_requirements_key \
              WHERE d.decision_id = $1 AND d.tenant_id = $2 ORDER BY d.version DESC LIMIT 1"
-        ))
+        )))
         .bind(decision_id)
         .bind(tenant_id)
         .fetch_optional(&mut *self.pool.acquire().await?)
@@ -141,11 +142,12 @@ impl<'a> DecisionRepository<'a> {
     }
 
     pub async fn decision_by_key(&self, key: i64) -> Result<Option<DecisionDefinition>> {
-        let row = sqlx::query(&format!(
+        // Only the column-list constant is spliced in; values are bound.
+        let row = sqlx::query(sqlx::AssertSqlSafe(format!(
             "SELECT {DECISION_COLUMNS} FROM decision_definitions d \
              LEFT JOIN decision_requirements r ON r.key = d.decision_requirements_key \
              WHERE d.key = $1"
-        ))
+        )))
         .bind(key)
         .fetch_optional(&mut *self.pool.acquire().await?)
         .await?;

@@ -27,7 +27,7 @@ bpmnkit-compat = { workspace = true, optional = true }
 # Native (non-WASM): full tokio + sqlx for replay
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
 tokio = { version = "1", features = ["full"] }
-sqlx = { version = "0.8", features = ["runtime-tokio", "chrono", "json"] }
+sqlx = { version = "0.9", features = ["runtime-tokio", "chrono", "json"] }
 
 # WASM: only sync primitives (Mutex, Notify stubs)
 [target.'cfg(target_arch = "wasm32")'.dependencies]

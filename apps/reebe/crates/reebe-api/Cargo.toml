@@ -22,7 +22,7 @@ async-trait = { workspace = true }
 jsonwebtoken = { workspace = true }
 reqwest = { workspace = true }
 argon2 = { workspace = true }
-sqlx = { version = "0.8", features = ["runtime-tokio", "chrono", "uuid", "json"] }
+sqlx = { version = "0.9", features = ["runtime-tokio", "chrono", "uuid", "json"] }
 metrics = { workspace = true }
 metrics-exporter-prometheus = { workspace = true }
 reebe-protocol = { workspace = true }

@@ -61,6 +61,17 @@ jobs:
         with:
           workspaces: apps/reebe -> target
 
+      # RustSec advisories against apps/reebe/Cargo.lock (a separate workspace from the root
+      # one ci.yml audits). Run from apps/reebe so it reads apps/reebe/.cargo/audit.toml.
+      - name: Install cargo-audit
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-audit
+
+      - name: Security advisories (cargo audit)
+        working-directory: apps/reebe
+        run: cargo audit --deny warnings
+
       # No `cargo fmt --check` or `cargo clippy -D warnings` yet: the workspace
       # is not clean under either. See the "Reebe tests" note in CONTRIBUTING.md.
 

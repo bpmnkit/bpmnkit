@@ -69,6 +69,8 @@ Dependencies first (`node scripts/crates-publish.mjs --print`):
 
 CI's Rust job runs `cargo audit --deny warnings` on the root `Cargo.lock`, so a RustSec advisory, an unmaintained or a yanked crate fails the build. A lockfile bump fixes CI only: also raise the requirement in `Cargo.toml` so that users of the published crates cannot resolve the affected version, and keep it within `rust-version` (`cargo info <crate>@<version>` shows a crate's MSRV).
 
+The `Reebe` workflow runs the same check on `apps/reebe/Cargo.lock`, a separate workspace. Its one accepted advisory is in `apps/reebe/.cargo/audit.toml`, with the reason: `libsqlite3-sys` RUSTSEC-2026-0459 (patched in 0.39, but `sqlx-sqlite` 0.9.0 requires `<0.38`; reebe opens only its own database file). Remove the ignore once an sqlx release allows 0.39.
+
 ## Workflow
 
 `.github/workflows/release-crates.yml`. It starts on a push to `main` that touches `crates/*/package.json` (the merge of the Version Packages PR) and publishes; started by hand (`workflow_dispatch`) it is a dry run unless `publish` is set:

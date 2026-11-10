@@ -22,7 +22,7 @@ reebe-db = { workspace = true, default-features = false }
 base64 = { workspace = true }
 
 [dev-dependencies]
-sqlx = { version = "0.8", features = ["runtime-tokio", "postgres"] }
+sqlx = { version = "0.9", features = ["runtime-tokio", "postgres"] }
 reebe-db = { workspace = true, features = ["postgres"] }
 
 [features]
