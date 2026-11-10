@@ -254,6 +254,16 @@ jobs:
       - name: Crate metadata (crates.io)
         run: node scripts/crates-publish.mjs --check
 
+      # RustSec advisories against the lockfile of the published crates: a new advisory (or a
+      # yanked crate) fails here. Only the advisory database is fetched.
+      - name: Install cargo-audit
+        uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-audit
+
+      - name: Security advisories (cargo audit)
+        run: cargo audit --deny warnings
+
       # The `bpmnkit` facade with no features and each feature alone, so a feature that only
       # builds alongside the defaults fails here rather than for a user.
       - name: Facade features

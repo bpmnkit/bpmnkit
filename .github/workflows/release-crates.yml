@@ -6,7 +6,12 @@ name: Release crates
 # Publishing uses crates.io trusted publishing (OIDC). crates.io can trust a workflow only for a
 # crate that exists, so a run where any crate is not on crates.io yet falls back to the
 # CARGO_REGISTRY_TOKEN secret and then registers this workflow as every crate's trusted publisher.
+# A push to main that touches a crate's package.json (the Changesets "Version Packages" merge)
+# starts a run that publishes; the `crates-io` environment still asks for approval.
 on:
+  push:
+    branches: [main]
+    paths: ['crates/*/package.json']
   workflow_dispatch:
     inputs:
       publish:
@@ -52,13 +57,13 @@ jobs:
 
   publish:
     name: Publish
-    if: inputs.publish
+    if: inputs.publish || github.event_name == 'push'
     needs: verify
     runs-on: ubuntu-latest
     # Manual approval gate: configure required reviewers on the `crates-io` environment.
     environment: crates-io
     permissions:
-      contents: read
+      contents: write
       id-token: write
     steps:
       - name: Checkout
@@ -93,6 +98,13 @@ jobs:
             exit 1
           fi
           node scripts/crates-publish.mjs --publish
+
+      # Tag crates-v<V> and create the GitHub release from the crates' CHANGELOGs. Skips when the
+      # release exists, so a rerun is safe.
+      - name: Tag and release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/crates-publish.mjs --release
 
       # Needs the secret's trusted-publishing scope. Skips crates that already trust this workflow.
       - name: Register trusted publishers

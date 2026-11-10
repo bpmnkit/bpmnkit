@@ -11,7 +11,7 @@ readme = "README.md"
 keywords = ["bpmn", "dmn", "feel", "camunda", "workflow"]
 categories = ["parser-implementations", "encoding"]
 # Tests read the shared corpus under ../../conformance, outside the package.
-exclude = ["tests/"]
+exclude = ["tests/", "package.json"]
 
 [dependencies]
 bpmnkit-spec = { workspace = true, optional = true }

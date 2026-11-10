@@ -2,6 +2,7 @@ packages:
   - packages/*
   - apps/*
   - plugins-cli/*
+  - crates/*
 
 # pnpm 11 removed the `onlyBuiltDependencies` allowlist: every dependency that
 # ships a build script now needs an explicit yes or no here, and an unanswered

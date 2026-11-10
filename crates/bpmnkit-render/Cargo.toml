@@ -12,7 +12,7 @@ readme = "README.md"
 keywords = ["bpmn", "svg", "png", "diagram", "camunda"]
 categories = ["visualization", "rendering"]
 # Tests read the shared corpus under ../../conformance, outside the package.
-exclude = ["tests/", "benches/", "scripts/"]
+exclude = ["tests/", "benches/", "scripts/", "package.json"]
 
 [dependencies]
 bpmnkit-bpmn = { workspace = true }
@@ -20,11 +20,11 @@ bpmnkit-layout = { workspace = true, optional = true }
 bpmnkit-dmn = { workspace = true, optional = true }
 indexmap = { workspace = true }
 # resvg re-exports usvg, tiny-skia and fontdb.
-resvg = { version = "0.45", optional = true, default-features = false, features = ["text"] }
+resvg = { version = "0.49", optional = true, default-features = false, features = ["text"] }
 
 [dev-dependencies]
 # Decodes PNGs in the tests.
-resvg = { version = "0.45", default-features = false }
+resvg = { version = "0.49", default-features = false }
 
 [features]
 default = ["auto-layout"]

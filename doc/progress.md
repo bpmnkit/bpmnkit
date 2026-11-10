@@ -1,5 +1,19 @@
 # Progress
 
+## 2026-11-10 — Rust crates: security update (quick-xml 0.41, resvg 0.49), `cargo audit` in CI
+
+- `cargo audit`: the published crates pulled `quick-xml` 0.36 (RUSTSEC-2026-0194, -0195; patched in ≥ 0.41) and, via `bpmnkit-render`'s `png` feature, the unmaintained `rustybuzz` and `ttf-parser` (`resvg` 0.45). Requirements are now `quick-xml = "0.41"` (0.42 needs Rust 1.86; MSRV stays 1.85) and `resvg = "0.49"`, so downstream users can no longer resolve the vulnerable versions.
+- `bpmnkit-xml`: quick-xml ≥ 0.38 reports `&…;` as separate `GeneralRef` events; the scanner joins each text run and decodes it once, so sinks still get one `text` call and the output is byte-identical. Our own code was not affected by either advisory (`with_checks(false)` + `IndexMap`, no `NsReader`); regression tests cover entity runs and 50 000 attributes + 50 000 `xmlns:*` declarations in one tag.
+- `apps/reebe`: dropped its unused `quick-xml` dependency; semver-compatible lockfile bumps for `crossbeam-epoch`, `h2`, `quinn-proto`, `rustls`, `rustls-webpki`, `webpki-roots`, `tokio`, `anyhow`, `event-listener`, `spin`. Still open there (lockfile-only, not compiled with reebe's features): `libsqlite3-sys`/`rsa` (sqlx sqlite/mysql), `rkyv` 0.7 (`rust_decimal` optional), unmaintained `bincode` (optional `reebe-bpmn/serialization`); `pin-utils` (hyper) and `rand` 0.8 (sqlx-postgres) warnings.
+- CI (`conformance-rs`): `cargo audit --deny warnings` on the root `Cargo.lock`. Changeset: the crates' patch release notes the update.
+
+## 2026-11-10 — Rust crates released with Changesets
+
+- Each crate has a private `crates/<crate>/package.json` (`@crates/<crate>`, 0.2.0); all are one lockstep `fixed` group in `.changeset/config.json`, and `scripts/crates-version.mjs` copies the bumped version into `Cargo.toml`. Same UX as npm: `pnpm changeset`, a Version Packages PR, per-crate `CHANGELOG.md`.
+- `scripts/changeset-check.mjs` also checks crates: a changed `src/**`, `build.rs` or `Cargo.toml` needs a changeset naming `@crates/<crate>` (tests, benches, examples, scripts and Markdown do not).
+- `release-crates.yml` starts on a push to `main` that touches `crates/*/package.json` and keeps the `crates-io` approval, OIDC and bootstrap paths. New `crates-publish.mjs --release` step tags `crates-v<V>` and creates the GitHub release from the crates' CHANGELOG sections plus the corpus provenance line; idempotent. Tests for the note builder and the check.
+- Docs: `doc/rust-crates-release.md`, `.changeset/README.md`.
+
 ## 2026-11-10 — `crates-publish --publish` waits out the crates.io new-crate rate limit
 
 - The 0.2.0 bootstrap run published 10 crates, then crates.io answered 429 for `bpmnkit-lint` (new crates: short burst, then ~1 per 10 min). `--publish` now parses the "try again after …" time, waits, and retries (≤ 20 per crate). `retryAfter` is tested in `scripts/crates-publish.test.mjs`.

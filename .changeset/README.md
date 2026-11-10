@@ -6,3 +6,20 @@ find the full documentation for it [in our repository](https://github.com/change
 
 We have a quick list of common questions to get you started engaging with this project in
 [our documentation](https://github.com/changesets/changesets/blob/main/docs/common-questions.md)
+
+## Rust crates
+
+The crates under `crates/` are versioned here too, through private shells named `@crates/<crate>` (for example `@crates/bpmnkit-xml`, `@crates/bpmnkit` for the facade). A changeset names them like any package:
+
+```md
+---
+"@crates/bpmnkit-xml": minor
+---
+
+Describe the change.
+```
+
+- **Lockstep.** All `@crates/*` packages are one `fixed` group in `config.json`: a changeset for one bumps every crate to the same version.
+- **0.x semver.** A breaking change is `minor`, anything else `patch`.
+- A crate needs a changeset when its `src/**`, `build.rs` or `Cargo.toml` changes (`scripts/changeset-check.mjs`).
+- Merging the Version Packages PR starts `release-crates.yml`, which publishes to crates.io and tags `crates-v<version>`. See `doc/rust-crates-release.md`.
