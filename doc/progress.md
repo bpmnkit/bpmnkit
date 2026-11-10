@@ -7,6 +7,10 @@
 - `release-crates.yml` starts on a push to `main` that touches `crates/*/package.json` and keeps the `crates-io` approval, OIDC and bootstrap paths. New `crates-publish.mjs --release` step tags `crates-v<V>` and creates the GitHub release from the crates' CHANGELOG sections plus the corpus provenance line; idempotent. Tests for the note builder and the check.
 - Docs: `doc/rust-crates-release.md`, `.changeset/README.md`.
 
+## 2026-11-10 — `crates-publish --publish` waits out the crates.io new-crate rate limit
+
+- The 0.2.0 bootstrap run published 10 crates, then crates.io answered 429 for `bpmnkit-lint` (new crates: short burst, then ~1 per 10 min). `--publish` now parses the "try again after …" time, waits, and retries (≤ 20 per crate). `retryAfter` is tested in `scripts/crates-publish.test.mjs`.
+
 ## 2026-11-10 — Rust crates 0.2.0 for the first full crates.io release
 
 - Lockstep bump 0.1.0 → 0.2.0 (`[workspace.package]`, `[workspace.dependencies]`, inline `bpmnkit-feel` entries). crates.io holds `bpmnkit-spec`, `-xml`, `-feel`, `-form`, `-bpmn` 0.1.0 from 2026-11-08; `-spec`, `-feel` and `-bpmn` changed since (Zeebe rules, diff viewer template, JUEL/FEEL conditions, `Value` JSON helpers), and the new crates (`-render`, `-diff`, `-ascii`, …) need that code, so 0.1.0 cannot be completed. `node scripts/crates-publish.mjs --dry-run` packages and builds all 15. Docs: `doc/rust-crates-release.md` (publish order now 15 crates), `version = "0.2"` in the embedding guide and the `bpmnkit-render` README.

@@ -9,6 +9,7 @@ import {
 	indexPath,
 	packageJsonProblems,
 	publishOrder,
+	retryAfter,
 } from "./crates-publish.mjs"
 
 const crate = (name, deps = []) => ({
@@ -103,4 +104,12 @@ test("packageJsonProblems wants a matching private package.json for published cr
 		packageJsonProblems(pkgs, (d) => (d.endsWith("fuzz") ? good : good)),
 		["bpmnkit-fuzz: publish = false, so package.json must not exist"],
 	)
+})
+
+test("retryAfter reads the crates.io 429 retry time", () => {
+	const stderr =
+		"the remote server responded with an error (status 429 Too Many Requests): You have published too many new crates in a short period of time. Please try again after Tue, 10 Nov 2026 09:11:57 GMT and see https://crates.io/docs/rate-limits for more details."
+	assert.equal(retryAfter(stderr)?.toISOString(), "2026-11-10T09:11:57.000Z")
+	assert.equal(retryAfter("error: failed to verify package"), null)
+	assert.equal(retryAfter("status 429 Too Many Requests: slow down"), null)
 })

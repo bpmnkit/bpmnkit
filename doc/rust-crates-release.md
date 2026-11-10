@@ -38,7 +38,7 @@ Dependencies first (`node scripts/crates-publish.mjs --print`):
 11. `bpmnkit-text`
 12. `bpmnkit` (the facade; it depends on all of the above, so it is always last)
 
-`--publish` skips a crate whose exact version is already on crates.io (sparse index), so a run that stopped half way can be started again.
+`--publish` skips a crate whose exact version is already on crates.io (sparse index), so a run that stopped half way can be started again. crates.io allows only a short burst of new crates, then about one per 10 minutes; on a 429 `--publish` waits until the time crates.io names and retries (up to 20 times per crate), so a bootstrap run with many new crates takes longer but finishes.
 
 ## Packaging notes
 
