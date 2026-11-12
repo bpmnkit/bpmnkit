@@ -76,4 +76,21 @@ describe("toHtml", () => {
 		const s = "<a><!-- c --><![CDATA[x < y]]></a>"
 		expect(escapeXmlForScript(s)).toBe(s)
 	})
+
+	it("has a file picker and drop handling in every page", () => {
+		for (const html of [toHtml(xml), toHtml("")]) {
+			expect(html).toMatch(/<input[^>]*type="file"[^>]*accept="\.bpmn,\.xml"/)
+			expect(html).toContain("ondrop")
+			expect(html).toContain("ondragover")
+		}
+	})
+
+	it("makes an empty viewer when there is no XML", () => {
+		for (const empty of ["", "  \n"]) {
+			const html = toHtml(empty)
+			expect(html).not.toContain("{{BPMN}}")
+			expect(html).not.toContain(`<script type="application/bpmn+xml">`)
+			expect(html).toContain("Open or drop a .bpmn file")
+		}
+	})
 })

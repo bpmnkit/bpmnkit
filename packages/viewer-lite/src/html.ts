@@ -8,6 +8,9 @@ export interface HtmlOptions {
 // From dist/html.js and from src/html.ts (tests) this is the same file.
 const TEMPLATE = new URL("../dist/template.html", import.meta.url)
 const PLACEHOLDER = "{{BPMN}}"
+const SCRIPT_ELEMENT = '<script type="application/bpmn+xml">{{BPMN}}</script>'
+const EMPTY_VIEWER =
+	'<div class="bpmn-lite" data-bpmn-lite="message">Open or drop a .bpmn file</div>'
 const DEFAULT_TITLE = "BPMN diagram"
 
 // CDATA sections and comments hold `<` literally; everything else cannot.
@@ -50,17 +53,25 @@ export function escapeXmlForScript(xml: string): string {
 /**
  * One self-contained HTML page showing the diagram: the viewer script is
  * inlined, so the file needs no network and no other files. Run `pnpm build`
- * first (the page template is a build output).
+ * first (the page template is a build output). Every page has a file picker
+ * and accepts a dropped file; with blank `xml` it opens as an empty viewer
+ * that only shows that hint.
  */
 export function toHtml(xml: string, options: HtmlOptions = {}): string {
 	const template = readFileSync(TEMPLATE, "utf8")
+	const blank = !xml.trim()
 	const at = template.indexOf(PLACEHOLDER)
 	if (at < 0) throw new Error("viewer-lite template has no {{BPMN}} placeholder")
-	const head = template
-		.slice(0, at)
-		.replace(
+	const title = (t: string): string =>
+		t.replace(
 			`<title>${DEFAULT_TITLE}</title>`,
 			`<title>${escapeHtml(options.title ?? DEFAULT_TITLE)}</title>`,
 		)
-	return head + escapeXmlForScript(xml) + template.slice(at + PLACEHOLDER.length)
+	if (blank) {
+		const el = template.indexOf(SCRIPT_ELEMENT)
+		return title(template.slice(0, el)) + EMPTY_VIEWER + template.slice(el + SCRIPT_ELEMENT.length)
+	}
+	return (
+		title(template.slice(0, at)) + escapeXmlForScript(xml) + template.slice(at + PLACEHOLDER.length)
+	)
 }

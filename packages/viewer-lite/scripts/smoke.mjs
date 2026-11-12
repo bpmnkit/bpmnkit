@@ -67,6 +67,49 @@ try {
 	)
 	if (!same) fail("toHtml changed the XML the viewer reads")
 
+	// Open/drop: a picked file and a dropped file both replace the diagram, in a
+	// page with a diagram and in an empty viewer.
+	const other = fixture("sample-order-process")
+	for (const [label, source] of [
+		["inlined", toHtml(tricky)],
+		["empty", toHtml("")],
+	]) {
+		const p = await browser.newPage()
+		await p.setContent(source)
+		if (label === "empty" && !(await p.locator("body").innerText()).includes("Open or drop"))
+			fail("empty viewer shows no hint")
+		await p.setInputFiles("#bpmn-open", {
+			name: "a.bpmn",
+			mimeType: "text/xml",
+			buffer: Buffer.from(other),
+		})
+		await p
+			.locator(".bpmn-lite svg g")
+			.first()
+			.waitFor({ timeout: 5000 })
+			.catch(() => fail(`${label}: picked file drew nothing`))
+		// Fresh page: setContent reuses the document, and its old handlers.
+		await p.close()
+		const q = await browser.newPage()
+		await q.setContent(source)
+		await q.evaluate((x) => {
+			const dt = new DataTransfer()
+			dt.items.add(new File([x], "b.bpmn"))
+			document.dispatchEvent(
+				new DragEvent("dragover", { dataTransfer: dt, bubbles: true, cancelable: true }),
+			)
+			document.dispatchEvent(
+				new DragEvent("drop", { dataTransfer: dt, bubbles: true, cancelable: true }),
+			)
+		}, other)
+		await q
+			.locator(".bpmn-lite svg g")
+			.first()
+			.waitFor({ timeout: 5000 })
+			.catch(() => fail(`${label}: dropped file drew nothing`))
+		await q.close()
+	}
+
 	const names = readdirSync(FIXTURES).filter((n) => existsSync(join(FIXTURES, n, "input.bpmn")))
 	for (const n of names) {
 		const xml = fixture(n)

@@ -25,6 +25,7 @@ It uses the same SVG renderer as `@bpmnkit/core`'s `exportSvg`, fed by a small `
 ## Features
 
 - **One HTML file** — `dist/template.html` inlines the viewer; put the XML in place of `{{BPMN}}`
+- **Open and drop** — the template has a file picker (`.bpmn`, `.xml`) and accepts a dropped file, so one page can open any diagram; `toHtml("")` makes an empty viewer
 - **Auto-boot** — every `<script type="application/bpmn+xml">` on the page is replaced by its diagram
 - **Fit, pan and zoom** — fits the width on load; drag to pan, wheel to zoom
 - **Light and dark** — follows `prefers-color-scheme`
@@ -68,7 +69,7 @@ function render(xml: string, el: Element, options?: RenderOptions): boolean  // 
 function boot(root?: ParentNode): void            // replace application/bpmn+xml scripts
 function parseBpmnLite(xml: string): BpmnDefinitions  // the fields exportSvg draws
 // Node: import { toHtml } from "@bpmnkit/viewer-lite/html"
-function toHtml(xml: string, options?: { title?: string }): string  // one self-contained page
+function toHtml(xml: string, options?: { title?: string }): string  // one self-contained page; blank xml: empty viewer
 
 interface RenderOptions {
   theme?: "light" | "dark"   // default: prefers-color-scheme

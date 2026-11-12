@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-12 — viewer-lite: open and drop a file
+
+- `viewer-lite` template: file picker (`.bpmn,.xml`) and drop-anywhere, via a second tiny inline script (not in the size-gated IIFE; gzip size unchanged at 7.9 KB). `toHtml("")` (blank xml) gives an empty viewer with the hint "Open or drop a .bpmn file".
+- Tests: `toHtml` unit tests; Chromium smoke loads a fixture via `setInputFiles` and a synthetic drop, in an inlined and an empty page. Smoke needs a fresh page per check (`setContent` reuses the document and its old handlers).
+- Docs: README (`generate-readmes`) and landing guide.
+
 ## 2026-11-12 — `casen export html`, `toHtml`, size gate and smoke in CI
 
 - `viewer-lite`: new Node entry `@bpmnkit/viewer-lite/html` with `toHtml(xml, { title? })` (inlines template + script + escaped XML into one page; `escapeXmlForScript` keeps `</script` from ending the element: text stays as is, CDATA is split and rejoined, comments get `<\/script`; a real `<script>` element throws). The viewer reads the script's raw text, so only XML-level escapes survive; the README's old `&lt;/script` replace changed CDATA content, `toHtml` does not.
