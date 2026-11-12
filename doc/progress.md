@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-11-12 — `casen export html`, `toHtml`, size gate and smoke in CI
+
+- `viewer-lite`: new Node entry `@bpmnkit/viewer-lite/html` with `toHtml(xml, { title? })` (inlines template + script + escaped XML into one page; `escapeXmlForScript` keeps `</script` from ending the element: text stays as is, CDATA is split and rejoined, comments get `<\/script`; a real `<script>` element throws). The viewer reads the script's raw text, so only XML-level escapes survive; the README's old `&lt;/script` replace changed CDATA content, `toHtml` does not.
+- `viewer-lite` `test` now runs `build.mjs` + `check-size.mjs` first, so CI enforces the 8 KB gate (the build still does too). Chromium smoke also checks a `toHtml` page with `</script` in text and CDATA.
+- CI: installs Chromium (root devDependency `playwright`) and runs `pnpm --filter @bpmnkit/viewer-lite smoke` after the tests.
+- `apps/cli`: `casen export html <file.bpmn> [-o out.html] [--title]`.
+- Docs: landing guide "One-File BPMN Viewer" (CLI, `toHtml`, Rust `include_str!` replace), viewer-lite README via `generate-readmes`.
+- Environment: turbo needs `PATH=/opt/node22/bin:$PATH` and `node_modules/.bin/turbo` (the `pnpm` self-managed 12.10.1 shim fails with exec format error). reebe-wasm needs `wasm-pack`, which was not installed here, so the engine, cli tests and `verify:rust` could not run in this container.
+
 ## 2026-11-12 — `@bpmnkit/viewer-lite` and the `@bpmnkit/core/svg` entry
 
 - `core`: `bpmn/svg.ts` → `bpmn/svg-render.ts` without static imports of auto-layout or the `BPMNLabelStyle` reader; both are options now (`layout`, `labelStyles`). `svg.ts` (the barrel's `exportSvg`/`exportSvgDetailed`) defaults them, so existing output is unchanged. New export `@bpmnkit/core/svg` → `svg-render`. Bundled, `exportSvg` drops from ~30 KB to ~6.3 KB gzip.

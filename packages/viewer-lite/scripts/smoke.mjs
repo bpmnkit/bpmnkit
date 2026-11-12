@@ -12,6 +12,7 @@ import { createRequire } from "node:module"
 import { join } from "node:path"
 import { Bpmn } from "@bpmnkit/core"
 import { exportSvg } from "@bpmnkit/core/svg"
+import { toHtml } from "../dist/html.js"
 
 const { chromium } = createRequire(import.meta.url)("playwright")
 const here = new URL("..", import.meta.url).pathname
@@ -45,6 +46,26 @@ try {
 	if (zoomed === before || panned === zoomed)
 		fail(`pan/zoom did not change the viewBox (${before})`)
 	if (errors.length) fail(`page errors: ${errors.join("; ")}`)
+
+	// toHtml: `</script` in text and CDATA must neither end the element early nor
+	// change what the browser's XML parser reads back out of it.
+	const tricky = fixture("sample-order-process").replace(
+		"</bpmn:process>",
+		() =>
+			'<bpmn:textAnnotation id="TA"><bpmn:text>a &lt;/script> b</bpmn:text></bpmn:textAnnotation><bpmn:textAnnotation id="TB"><bpmn:text><![CDATA[x </script> y]]></bpmn:text></bpmn:textAnnotation></bpmn:process>',
+	)
+	const html = toHtml(tricky, { title: "t" })
+	const body = /<script type="application\/bpmn\+xml">([\s\S]*?)<\/script>/.exec(html)?.[1] ?? ""
+	await page.setContent(html)
+	if ((await page.locator(".bpmn-lite svg g").count()) === 0) fail("toHtml page drew nothing")
+	const same = await page.evaluate(
+		([a, b]) => {
+			const { parseBpmnLite } = globalThis.BpmnLite
+			return JSON.stringify(parseBpmnLite(a)) === JSON.stringify(parseBpmnLite(b))
+		},
+		[body, tricky],
+	)
+	if (!same) fail("toHtml changed the XML the viewer reads")
 
 	const names = readdirSync(FIXTURES).filter((n) => existsSync(join(FIXTURES, n, "input.bpmn")))
 	for (const n of names) {

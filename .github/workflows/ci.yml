@@ -199,6 +199,13 @@ jobs:
       - name: Test scripts
         run: pnpm test:scripts
 
+      # Real-browser check of the 8 KB viewer: pan/zoom, escaped XML, every conformance fixture.
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: viewer-lite smoke
+        run: pnpm --filter @bpmnkit/viewer-lite smoke
+
       # Packs every published package and checks the tarball contains each path
       # its manifest declares. The release workflow runs the full check, which
       # also installs and type-checks each tarball from the network — far too

@@ -10,14 +10,18 @@
 			"import": "./dist/index.js"
 		},
 		"./viewer-lite.min.js": "./dist/viewer-lite.min.js",
-		"./template.html": "./dist/template.html"
+		"./template.html": "./dist/template.html",
+		"./html": {
+			"types": "./dist/html.d.ts",
+			"import": "./dist/html.js"
+		}
 	},
 	"files": ["LICENSE", "README.md", "dist/**/*.js", "dist/**/*.d.ts", "dist/template.html"],
 	"scripts": {
 		"build": "tsc && node scripts/build.mjs && node scripts/check-size.mjs",
 		"typecheck": "tsc --noEmit && tsc -p tsconfig.tests.json",
 		"check": "biome check .",
-		"test": "vitest run",
+		"test": "node scripts/build.mjs && node scripts/check-size.mjs && vitest run",
 		"smoke": "node scripts/smoke.mjs"
 	},
 	"dependencies": {

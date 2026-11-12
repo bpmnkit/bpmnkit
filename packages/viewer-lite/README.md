@@ -39,17 +39,16 @@ npm install @bpmnkit/viewer-lite
 
 ## Quick Start
 
-A self-contained page from the template (in XML text, write `</script` as `&lt;/script`):
+A self-contained page, in Node:
 
 ```typescript
 import { readFileSync, writeFileSync } from "node:fs"
-import { createRequire } from "node:module"
+import { toHtml } from "@bpmnkit/viewer-lite/html"
 
-const require = createRequire(import.meta.url)
-const template = readFileSync(require.resolve("@bpmnkit/viewer-lite/template.html"), "utf8")
-const xml = readFileSync("order.bpmn", "utf8").replaceAll("</script", "&lt;/script")
-writeFileSync("order.html", template.replace("{{BPMN}}", () => xml))
+writeFileSync("order.html", toHtml(readFileSync("order.bpmn", "utf8"), { title: "Order process" }))
 ```
+
+`toHtml` inlines the script and the XML into `dist/template.html` and escapes any `</script` in the XML (text and comments are safe; CDATA is split and rejoined). Or from the shell: `casen export html order.bpmn -o order.html`. From another language, replace `{{BPMN}}` in `@bpmnkit/viewer-lite/template.html` with the XML, escaping `</script` the same way.
 
 Or in your own page:
 
@@ -68,6 +67,8 @@ Or in your own page:
 function render(xml: string, el: Element, options?: RenderOptions): boolean  // false: message shown
 function boot(root?: ParentNode): void            // replace application/bpmn+xml scripts
 function parseBpmnLite(xml: string): BpmnDefinitions  // the fields exportSvg draws
+// Node: import { toHtml } from "@bpmnkit/viewer-lite/html"
+function toHtml(xml: string, options?: { title?: string }): string  // one self-contained page
 
 interface RenderOptions {
   theme?: "light" | "dark"   // default: prefers-color-scheme

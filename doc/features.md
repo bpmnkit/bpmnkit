@@ -2,7 +2,7 @@
 
 ## `@bpmnkit/viewer-lite`: BPMN in one self-contained HTML file (2026-11-12)
 
-A dependency-free browser viewer under 8 KB gzip (7.9 KB), built to be inlined: `dist/template.html` carries the script and a `{{BPMN}}` placeholder, and every `<script type="application/bpmn+xml">` on a page is replaced by its diagram. Fits on load, drag to pan, wheel to zoom, follows `prefers-color-scheme`; a file without DI shows a short message. `BpmnLite.render(xml, el)` / ESM `render`, `boot`, `parseBpmnLite`. Draws exactly like `exportSvg` (checked on every conformance fixture, in happy-dom and Chromium); the build fails over the size budget. Enabled by the new layout-free `@bpmnkit/core/svg` entry.
+A dependency-free browser viewer under 8 KB gzip (7.9 KB), built to be inlined: `dist/template.html` carries the script and a `{{BPMN}}` placeholder, and every `<script type="application/bpmn+xml">` on a page is replaced by its diagram. Fits on load, drag to pan, wheel to zoom, follows `prefers-color-scheme`; a file without DI shows a short message. `BpmnLite.render(xml, el)` / ESM `render`, `boot`, `parseBpmnLite`. Draws exactly like `exportSvg` (checked on every conformance fixture, in happy-dom and Chromium); the build fails over the size budget. Enabled by the new layout-free `@bpmnkit/core/svg` entry. `toHtml(xml, { title? })` (`@bpmnkit/viewer-lite/html`) and `casen export html <file.bpmn> [-o out.html]` write the single file, escaping `</script` safely.
 
 ## Rust crates released with Changesets (2026-11-10)
 

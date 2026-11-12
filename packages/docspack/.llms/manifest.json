@@ -3882,6 +3882,71 @@
 			]
 		},
 		{
+			"id": "guides.single-file-bpmn-viewer",
+			"file": "chunks/guides.single-file-bpmn-viewer.md",
+			"tokens": 153,
+			"tags": [
+				"viewer-lite",
+				"html",
+				"single-file",
+				"export",
+				"self-contained",
+				"offline",
+				"bpmn",
+				"template",
+				"include_str",
+				"guides",
+				"single-file-bpmn-viewer",
+				"cli"
+			],
+			"entities": [
+				"@bpmnkit/viewer-lite",
+				"@bpmnkit/core"
+			]
+		},
+		{
+			"id": "guides.single-file-bpmn-viewer.from-node",
+			"file": "chunks/guides.single-file-bpmn-viewer.from-node.md",
+			"tokens": 163,
+			"tags": [
+				"guides",
+				"single-file-bpmn-viewer",
+				"node"
+			],
+			"entities": [
+				"toHtml"
+			]
+		},
+		{
+			"id": "guides.single-file-bpmn-viewer.from-rust-or-any-other-language",
+			"file": "chunks/guides.single-file-bpmn-viewer.from-rust-or-any-other-language.md",
+			"tokens": 215,
+			"tags": [
+				"guides",
+				"single-file-bpmn-viewer",
+				"rust",
+				"any",
+				"other",
+				"language"
+			],
+			"entities": [
+				"@bpmnkit/viewer-lite/template.html",
+				"toHtml"
+			]
+		},
+		{
+			"id": "guides.single-file-bpmn-viewer.your-own-page",
+			"file": "chunks/guides.single-file-bpmn-viewer.your-own-page.md",
+			"tokens": 58,
+			"tags": [
+				"guides",
+				"single-file-bpmn-viewer",
+				"own",
+				"page"
+			],
+			"entities": []
+		},
+		{
 			"id": "guides.templates",
 			"file": "chunks/guides.templates.md",
 			"tokens": 136,
