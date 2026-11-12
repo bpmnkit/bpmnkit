@@ -271,6 +271,9 @@ importers:
       markdown-it:
         specifier: ^15.0.2
         version: 15.0.2
+      playwright:
+        specifier: 1.63.0
+        version: 1.63.0
       rehype-stringify:
         specifier: ^10.0.1
         version: 10.0.1
@@ -340,6 +343,9 @@ importers:
       '@bpmnkit/proxy':
         specifier: workspace:^
         version: link:../proxy
+      '@bpmnkit/viewer-lite':
+        specifier: workspace:^
+        version: link:../../packages/viewer-lite
     optionalDependencies:
       '@resvg/resvg-js':
         specifier: ^2.6.2
@@ -659,6 +665,36 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui
 
+  crates/bpmnkit: {}
+
+  crates/bpmnkit-ascii: {}
+
+  crates/bpmnkit-bpmn: {}
+
+  crates/bpmnkit-builder: {}
+
+  crates/bpmnkit-compat: {}
+
+  crates/bpmnkit-diff: {}
+
+  crates/bpmnkit-dmn: {}
+
+  crates/bpmnkit-feel: {}
+
+  crates/bpmnkit-form: {}
+
+  crates/bpmnkit-layout: {}
+
+  crates/bpmnkit-lint: {}
+
+  crates/bpmnkit-render: {}
+
+  crates/bpmnkit-spec: {}
+
+  crates/bpmnkit-text: {}
+
+  crates/bpmnkit-xml: {}
+
   packages/api: {}
 
   packages/ascii:
@@ -827,6 +863,12 @@ importers:
       '@bpmnkit/ui':
         specifier: workspace:^
         version: link:../ui
+
+  packages/viewer-lite:
+    dependencies:
+      '@bpmnkit/core':
+        specifier: workspace:^
+        version: link:../core
 
   packages/worker-client: {}
 
@@ -4905,6 +4947,16 @@ packages:
   pkce-challenge@5.0.1:
     resolution: {integrity: sha512-wQ0b/W4Fr01qtpHlqSqspcj3EhBvimsdh0KlHhH8HRZnMsEa0ea2fTULOXOS9ccQr3om+GcGRk4e+isrZWV8qQ==}
     engines: {node: '>=16.20.0'}
+
+  playwright-core@1.63.0:
+    resolution: {integrity: sha512-rYCsBF/M5HjUch52bbtVONEFjv6Xu8sm8h72dNlR5bzIE1fvC/bxgspzkjSfU+MweEMmPM8KJebG6nnyxo5mCg==}
+    engines: {node: '>=20'}
+    hasBin: true
+
+  playwright@1.63.0:
+    resolution: {integrity: sha512-+7ziBLidS4NaNCdt57SUDT+wYmmd5fmiQejUic/kb+YsYSCPyOOE9sebzMjNmQrsnNpDJqd4WHvV/8lfKfUDUg==}
+    engines: {node: '>=20'}
+    hasBin: true
 
   pluralize@2.0.0:
     resolution: {integrity: sha512-TqNZzQCD4S42De9IfnnBvILN7HAW7riLqsCyp8lgjXeysyPlX5HhqKAcJHHHb9XskE4/a+7VGC9zzx8Ls0jOAw==}
@@ -10643,6 +10695,12 @@ snapshots:
       thread-stream: 4.0.0
 
   pkce-challenge@5.0.1: {}
+
+  playwright-core@1.63.0: {}
+
+  playwright@1.63.0:
+    dependencies:
+      playwright-core: 1.63.0
 
   pluralize@2.0.0: {}
 

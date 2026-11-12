@@ -1,0 +1,44 @@
+{
+	"name": "@bpmnkit/viewer-lite",
+	"version": "0.0.0",
+	"type": "module",
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./viewer-lite.min.js": "./dist/viewer-lite.min.js",
+		"./template.html": "./dist/template.html",
+		"./html": {
+			"types": "./dist/html.d.ts",
+			"import": "./dist/html.js"
+		}
+	},
+	"files": ["LICENSE", "README.md", "dist/**/*.js", "dist/**/*.d.ts", "dist/template.html"],
+	"scripts": {
+		"build": "tsc && node scripts/build.mjs && node scripts/check-size.mjs",
+		"typecheck": "tsc --noEmit && tsc -p tsconfig.tests.json",
+		"check": "biome check .",
+		"test": "node scripts/build.mjs && node scripts/check-size.mjs && vitest run",
+		"smoke": "node scripts/smoke.mjs"
+	},
+	"dependencies": {
+		"@bpmnkit/core": "workspace:^"
+	},
+	"description": "Dependency-free BPMN viewer for one self-contained HTML file — an 8 KB script that turns embedded BPMN XML into a pannable, zoomable SVG",
+	"keywords": ["bpmn", "bpmn2", "viewer", "svg", "html", "diagram", "standalone"],
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/bpmnkit/bpmnkit"
+	},
+	"homepage": "https://bpmnkit.com",
+	"bugs": {
+		"url": "https://github.com/bpmnkit/bpmnkit/issues"
+	},
+	"publishConfig": {
+		"access": "public"
+	}
+}

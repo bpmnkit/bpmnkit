@@ -1,5 +1,13 @@
 # Features
 
+## One-file BPMN viewer in Rust: `bpmnkit-viewer` (2026-11-12)
+
+`bpmnkit_viewer::to_html(xml, &HtmlOptions)` writes the same self-contained page as viewer-lite `toHtml` (byte-identical, checked against golden pages), for CLIs and chat bots (send it as a `.html` file). `parts` gives `head` / `body` / `scripts` to embed the viewer in your own page, and `VIEWER_JS`, `LOADER_JS`, `CSS` are the raw assets for CSP setups. No dependencies; facade feature `viewer`.
+
+## `@bpmnkit/viewer-lite`: BPMN in one self-contained HTML file (2026-11-12)
+
+A dependency-free browser viewer under 8 KB gzip (7.9 KB), built to be inlined: `dist/template.html` carries the script and a `{{BPMN}}` placeholder, and every `<script type="application/bpmn+xml">` on a page is replaced by its diagram. Fits on load, drag to pan, wheel to zoom, follows `prefers-color-scheme`; a file without DI shows a short message. `BpmnLite.render(xml, el)` / ESM `render`, `boot`, `parseBpmnLite`. Draws exactly like `exportSvg` (checked on every conformance fixture, in happy-dom and Chromium); the build fails over the size budget. Enabled by the new layout-free `@bpmnkit/core/svg` entry. `toHtml(xml, { title? })` (`@bpmnkit/viewer-lite/html`) and `casen export html <file.bpmn> [-o out.html]` write the single file, escaping `</script` safely.
+
 ## Rust crates released with Changesets (2026-11-10)
 
 The `bpmnkit-*` crates are versioned in lockstep through `@crates/<crate>` changesets, with a Version Packages PR, per-crate CHANGELOGs, a CI check that changed crate code has a changeset, and a release workflow that publishes to crates.io and creates the `crates-v<version>` GitHub release. See [releasing the Rust crates](rust-crates-release.md).

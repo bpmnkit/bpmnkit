@@ -1,0 +1,17 @@
+[package]
+name = "bpmnkit-viewer"
+description = "Self-contained HTML BPMN viewer pages, or the pieces to embed the viewer in your own page (byte-identical to @bpmnkit/viewer-lite toHtml); no dependencies"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+readme = "README.md"
+keywords = ["bpmn", "viewer", "html", "diagram", "svg"]
+categories = ["visualization", "web-programming"]
+# The golden pages are large and only for the parity tests.
+exclude = ["tests/", "package.json"]
+
+[dev-dependencies]
+serde_json = { workspace = true }

@@ -1,0 +1,21 @@
+[
+	{
+		"name": "order"
+	},
+	{
+		"name": "title",
+		"title": "A <b> & c {{BPMN}}"
+	},
+	{
+		"name": "cdata"
+	},
+	{
+		"name": "comment"
+	},
+	{
+		"name": "empty"
+	},
+	{
+		"name": "blank"
+	}
+]

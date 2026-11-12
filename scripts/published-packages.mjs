@@ -19,6 +19,7 @@ export const PUBLISHED = [
 	"packages/api",
 	"packages/ascii",
 	"packages/markdown",
+	"packages/viewer-lite",
 	"packages/docspack",
 	"packages/camunda-docspack",
 	"packages/profiles",
@@ -134,6 +135,7 @@ export const TIER = {
 	// The MCP server ships in the proxy and runs as `casen proxy mcp`.
 	"apps/proxy": "tools",
 	"packages/markdown": "tools",
+	"packages/viewer-lite": "tools",
 	"packages/camunda-docspack": "tools",
 	"packages/patterns": "tools",
 	"packages/worker-client": "tools",

@@ -26,6 +26,8 @@ pub use bpmnkit_render as render;
 pub use bpmnkit_spec as spec;
 #[cfg(feature = "text")]
 pub use bpmnkit_text as text;
+#[cfg(feature = "viewer")]
+pub use bpmnkit_viewer as viewer;
 #[cfg(feature = "xml")]
 pub use bpmnkit_xml as xml;
 
@@ -57,4 +59,6 @@ pub mod prelude {
     pub use bpmnkit_render::{bpmn_to_png, svg_to_png, PngOptions};
     #[cfg(feature = "render")]
     pub use bpmnkit_render::{bpmn_to_svg, RenderOptions, Svg, Theme};
+    #[cfg(feature = "viewer")]
+    pub use bpmnkit_viewer::HtmlOptions;
 }

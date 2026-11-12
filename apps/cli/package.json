@@ -27,7 +27,8 @@
 		"@bpmnkit/flow": "workspace:^",
 		"@bpmnkit/patterns": "workspace:^",
 		"@bpmnkit/profiles": "workspace:^",
-		"@bpmnkit/proxy": "workspace:^"
+		"@bpmnkit/proxy": "workspace:^",
+		"@bpmnkit/viewer-lite": "workspace:^"
 	},
 	"optionalDependencies": {
 		"@resvg/resvg-js": "^2.6.2"

@@ -38,6 +38,12 @@ jobs:
       - name: Build feel and core
         run: pnpm turbo build --filter=@bpmnkit/feel --filter=@bpmnkit/core
 
+      # crates/bpmnkit-viewer vendors the viewer-lite assets and golden pages from the JS toHtml.
+      - name: viewer-assets
+        run: |
+          pnpm turbo build --filter=@bpmnkit/viewer-lite
+          node scripts/viewer-assets.mjs --check
+
       - name: conformance-ts
         run: |
           pnpm conformance:record
@@ -198,6 +204,13 @@ jobs:
 
       - name: Test scripts
         run: pnpm test:scripts
+
+      # Real-browser check of the 8 KB viewer: pan/zoom, escaped XML, every conformance fixture.
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: viewer-lite smoke
+        run: pnpm --filter @bpmnkit/viewer-lite smoke
 
       # Packs every published package and checks the tarball contains each path
       # its manifest declares. The release workflow runs the full check, which

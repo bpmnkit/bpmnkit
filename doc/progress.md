@@ -1,5 +1,34 @@
 # Progress
 
+## 2026-11-12 — `bpmnkit-viewer`: the one-file viewer for Rust
+
+- New zero-dependency crate `crates/bpmnkit-viewer` (`@crates/bpmnkit-viewer`, fixed group; facade feature `viewer`, in `full`; `bpmnkit::Error::Viewer`; `prelude::HtmlOptions`). `to_html(xml, &HtmlOptions)` is byte-identical to the JS `toHtml`; `empty_html`; `parts` → `ViewerParts { head, body, scripts }` for embedding in your own page; `escape_xml_for_script`; raw `VIEWER_JS`, `LOADER_JS`, `CSS`; `HtmlOptions::title`, `no_picker` (Rust-only). Example `viewer_html`.
+- Assets are vendored into `crates/bpmnkit-viewer/assets/` (crates.io packages only the crate). `scripts/viewer-assets.mjs` writes them from the viewer-lite build (`build.mjs` now exports `css` and `picker`) plus golden pages from the JS `toHtml` (6 cases: default, title, `</script` in CDATA and in a comment, empty, blank); `--check` runs in CI and `verify:rust`. The parity test compares byte for byte.
+- Tests: the JS `html.test.ts` cases ported to Rust, unterminated CDATA/comment, U+FEFF-only input as blank; Chromium smoke of the example's page (one SVG, no errors). The empty and blank golden inputs are listed as malformed on purpose in core's bpmnlint parity test, which walks every `.bpmn` file. The API snapshot (`api-surface.json`) records the new `@bpmnkit/core/svg` entry.
+- Docs: crate README (where each part goes), facade README, landing guide "From Rust", `doc/rust-crates-release.md` packaging note.
+
+## 2026-11-12 — viewer-lite: open and drop a file
+
+- `viewer-lite` template: file picker (`.bpmn,.xml`) and drop-anywhere, via a second tiny inline script (not in the size-gated IIFE; gzip size unchanged at 7.9 KB). `toHtml("")` (blank xml) gives an empty viewer with the hint "Open or drop a .bpmn file".
+- Tests: `toHtml` unit tests; Chromium smoke loads a fixture via `setInputFiles` and a synthetic drop, in an inlined and an empty page. Smoke needs a fresh page per check (`setContent` reuses the document and its old handlers).
+- Docs: README (`generate-readmes`) and landing guide.
+
+## 2026-11-12 — `casen export html`, `toHtml`, size gate and smoke in CI
+
+- `viewer-lite`: new Node entry `@bpmnkit/viewer-lite/html` with `toHtml(xml, { title? })` (inlines template + script + escaped XML into one page; `escapeXmlForScript` keeps `</script` from ending the element: text stays as is, CDATA is split and rejoined, comments get `<\/script`; a real `<script>` element throws). The viewer reads the script's raw text, so only XML-level escapes survive; the README's old `&lt;/script` replace changed CDATA content, `toHtml` does not.
+- `viewer-lite` `test` now runs `build.mjs` + `check-size.mjs` first, so CI enforces the 8 KB gate (the build still does too). Chromium smoke also checks a `toHtml` page with `</script` in text and CDATA.
+- CI: installs Chromium (root devDependency `playwright`) and runs `pnpm --filter @bpmnkit/viewer-lite smoke` after the tests.
+- `apps/cli`: `casen export html <file.bpmn> [-o out.html] [--title]`.
+- Docs: landing guide "One-File BPMN Viewer" (CLI, `toHtml`, Rust `include_str!` replace), viewer-lite README via `generate-readmes`.
+- Environment: turbo needs `PATH=/opt/node22/bin:$PATH` and `node_modules/.bin/turbo` (the `pnpm` self-managed 12.10.1 shim fails with exec format error). reebe-wasm needs `wasm-pack`, which was not installed here, so the engine, cli tests and `verify:rust` could not run in this container.
+
+## 2026-11-12 — `@bpmnkit/viewer-lite` and the `@bpmnkit/core/svg` entry
+
+- `core`: `bpmn/svg.ts` → `bpmn/svg-render.ts` without static imports of auto-layout or the `BPMNLabelStyle` reader; both are options now (`layout`, `labelStyles`). `svg.ts` (the barrel's `exportSvg`/`exportSvgDetailed`) defaults them, so existing output is unchanged. New export `@bpmnkit/core/svg` → `svg-render`. Bundled, `exportSvg` drops from ~30 KB to ~6.3 KB gzip.
+- New `packages/viewer-lite`: `DOMParser` adapter to the `BpmnDefinitions` fields `exportSvg` reads, `render`/`boot`, pan/zoom via viewBox. esbuild IIFE (es2020) → `dist/viewer-lite.min.js` + `dist/template.html`; `scripts/check-size.mjs` (8 KB gzip -9) runs in the package build: 7.9 KB now, so little headroom. Label fonts and DI colours are not drawn (that was the trim to fit).
+- Tests: adapter vs core parser give byte-identical SVG on 47 conformance fixtures in happy-dom (its `DOMParser` rejects CDATA, so the 4 CDATA fixtures are skipped there); `pnpm --filter @bpmnkit/viewer-lite smoke` (Playwright, Chromium) checks the template, pan/zoom, and all 51 fixtures.
+- `pnpm install` failing here was `isolated-vm` (apps/proxy) building from source without `node-gyp` on Node 22.23; `npm i -g node-gyp` fixes it. `pnpm turbo` cannot spawn tasks in this container (exec format error); `pnpm -r run` works.
+
 ## 2026-11-10 — Reebe: `cargo audit` clean, audit step in CI
 
 - `apps/reebe`: `sqlx` 0.8 → 0.9 (rsa is opt-in there via `mysql-rsa`, so RUSTSEC-2023-0071 leaves the lockfile; `libsqlite3-sys` 0.30 → 0.37). sqlx 0.9 only accepts dynamic SQL wrapped in `AssertSqlSafe`; the four `format!` queries (constants spliced, values bound) and the Postgres test helpers now do that.

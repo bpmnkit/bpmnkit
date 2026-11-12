@@ -111,3 +111,17 @@ fn ascii_error_converts_with_question_mark() {
     assert!(err.to_string().starts_with("ascii: "));
     assert!(std::error::Error::source(&err).is_some());
 }
+
+#[test]
+fn viewer_error_converts_with_question_mark() {
+    fn run() -> Result<String, Error> {
+        Ok(bpmnkit::viewer::to_html(
+            "<a><script>1</script></a>",
+            &bpmnkit::prelude::HtmlOptions::default(),
+        )?)
+    }
+    let err = run().unwrap_err();
+    assert!(matches!(err, Error::Viewer(_)));
+    assert!(err.to_string().starts_with("viewer: "));
+    assert!(std::error::Error::source(&err).is_some());
+}

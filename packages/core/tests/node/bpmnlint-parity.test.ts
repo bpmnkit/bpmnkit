@@ -54,6 +54,9 @@ const MALFORMED = new Set([
 	"conformance/validate/z08-bad/input.bpmn",
 	"conformance/validate/z10-bad/input.bpmn",
 	"doc/deployability/repro/z07_ncname_nested.bpmn",
+	// Viewer golden inputs with no XML at all, to pin the empty-viewer page.
+	"crates/bpmnkit-viewer/tests/golden/blank.bpmn",
+	"crates/bpmnkit-viewer/tests/golden/empty.bpmn",
 ])
 
 const FILES = bpmnFiles(ROOT)

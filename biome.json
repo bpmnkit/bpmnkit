@@ -38,6 +38,8 @@
 			"**/swagger/**",
 			"**/target/**",
 			"apps/reebe-wasm/**",
+			"crates/bpmnkit-viewer/assets/**",
+			"crates/bpmnkit-viewer/tests/golden/**",
 			"apps/reebe/crates/**",
 			"apps/reebe/packages/reebe-wasm/src/wasm/**",
 			"**/public/drop/assets/**",
