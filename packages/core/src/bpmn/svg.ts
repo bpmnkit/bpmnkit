@@ -1,5 +1,6 @@
 import { applyAutoLayout } from "./auto-layout.js"
 import type { BpmnDefinitions } from "./bpmn-model.js"
+import { collectLabelStyles } from "./label-style.js"
 import {
 	type SvgExportOptions,
 	type SvgExportResult,
@@ -15,7 +16,7 @@ export function exportSvgDetailed(
 	defs: BpmnDefinitions,
 	options?: SvgExportOptions,
 ): SvgExportResult {
-	return render(defs, { layout: semanticLayout, ...options })
+	return render(defs, { layout: semanticLayout, labelStyles: collectLabelStyles, ...options })
 }
 
 /**

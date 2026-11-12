@@ -659,6 +659,36 @@ importers:
         specifier: workspace:*
         version: link:../../packages/ui
 
+  crates/bpmnkit: {}
+
+  crates/bpmnkit-ascii: {}
+
+  crates/bpmnkit-bpmn: {}
+
+  crates/bpmnkit-builder: {}
+
+  crates/bpmnkit-compat: {}
+
+  crates/bpmnkit-diff: {}
+
+  crates/bpmnkit-dmn: {}
+
+  crates/bpmnkit-feel: {}
+
+  crates/bpmnkit-form: {}
+
+  crates/bpmnkit-layout: {}
+
+  crates/bpmnkit-lint: {}
+
+  crates/bpmnkit-render: {}
+
+  crates/bpmnkit-spec: {}
+
+  crates/bpmnkit-text: {}
+
+  crates/bpmnkit-xml: {}
+
   packages/api: {}
 
   packages/ascii:
@@ -827,6 +857,12 @@ importers:
       '@bpmnkit/ui':
         specifier: workspace:^
         version: link:../ui
+
+  packages/viewer-lite:
+    dependencies:
+      '@bpmnkit/core':
+        specifier: workspace:^
+        version: link:../core
 
   packages/worker-client: {}
 

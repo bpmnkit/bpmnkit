@@ -12,11 +12,14 @@ import type {
 } from "./bpmn-model.js"
 import { readDiColor } from "./di-color.js"
 import {
+	type BpmnLabelFont,
 	type LabelFontCss,
-	collectLabelStyles,
 	labelFontCss,
 	resolveLabelFont,
 } from "./label-style.js"
+
+/** The model `exportSvg` draws, for `@bpmnkit/core/svg` users. */
+export type { BpmnDefinitions } from "./bpmn-model.js"
 
 // ── Theme ─────────────────────────────────────────────────────────────────────
 
@@ -93,6 +96,12 @@ export interface SvgExportOptions {
 	 * of small bundles, and `autoLayout` without `layout` draws nothing new.
 	 */
 	layout?: (defs: BpmnDefinitions) => BpmnDefinitions
+	/**
+	 * Reads the `bpmndi:BPMNLabelStyle` fonts labels refer to. `exportSvg` from
+	 * `@bpmnkit/core` defaults it to `collectLabelStyles`; `@bpmnkit/core/svg`
+	 * has none, so every label gets the default font.
+	 */
+	labelStyles?: (defs: BpmnDefinitions) => ReadonlyMap<string, BpmnLabelFont>
 	/** Label font. Defaults: `system-ui,-apple-system,sans-serif`, 11px, 14px line height. */
 	font?: { family?: string; size?: number; lineHeight?: number }
 	/** Add `data-element-id="…"` to each element's `<g>`/`<path>`. Default: false. */
@@ -172,7 +181,7 @@ export function exportSvgDetailed(
 
 	// Build model index for name/type lookups
 	const idx = buildIndex(defs)
-	const labelStyles = collectLabelStyles(defs)
+	const labelStyles = options?.labelStyles?.(defs) ?? new Map<string, BpmnLabelFont>()
 	const fontOf = (label: BpmnDiLabel | undefined): LabelFontCss | undefined => {
 		const font = resolveLabelFont(label, labelStyles)
 		return font ? labelFontCss(font, t.fontFamily, t.fontSize) : undefined

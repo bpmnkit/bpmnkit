@@ -83,6 +83,10 @@ function footer(currentPkg) {
 			desc: "BPMN diagrams in Markdown — remark, markdown-it and README pre-rendering",
 		},
 		{
+			name: "@bpmnkit/viewer-lite",
+			desc: "8 KB BPMN viewer for one self-contained HTML file",
+		},
+		{
 			name: "@bpmnkit/docspack",
 			desc: "BPMN Kit docs as an offline docspack package for AI agents",
 		},
@@ -1433,6 +1437,72 @@ interface RenderOptions {
 `,
 	},
 
+	// ── viewer-lite ───────────────────────────────────────────────────────────
+	"packages/viewer-lite": {
+		name: "@bpmnkit/viewer-lite",
+		description:
+			"Dependency-free BPMN viewer for one self-contained HTML file — an 8 KB script that turns embedded BPMN XML into a pannable, zoomable SVG",
+		content: `## Overview
+
+\`@bpmnkit/viewer-lite\` draws a BPMN 2.0 diagram in the browser with no dependencies, small enough (under 8 KB gzip) to inline into the HTML file that carries the diagram. One file, no server, no CDN: e-mail it, attach it to a ticket, open it offline.
+
+It uses the same SVG renderer as \`@bpmnkit/core\`'s \`exportSvg\`, fed by a small \`DOMParser\` reader instead of the full parser.
+
+## Features
+
+- **One HTML file** — \`dist/template.html\` inlines the viewer; put the XML in place of \`{{BPMN}}\`
+- **Auto-boot** — every \`<script type="application/bpmn+xml">\` on the page is replaced by its diagram
+- **Fit, pan and zoom** — fits the width on load; drag to pan, wheel to zoom
+- **Light and dark** — follows \`prefers-color-scheme\`
+- **Same drawing as core** — tested against every conformance fixture
+- **Size gate** — the build fails when the minified script is over 8 KB gzip
+
+## Installation
+
+\`\`\`sh
+npm install @bpmnkit/viewer-lite
+\`\`\`
+
+## Quick Start
+
+A self-contained page from the template (in XML text, write \`</script\` as \`&lt;/script\`):
+
+\`\`\`typescript
+import { readFileSync, writeFileSync } from "node:fs"
+import { createRequire } from "node:module"
+
+const require = createRequire(import.meta.url)
+const template = readFileSync(require.resolve("@bpmnkit/viewer-lite/template.html"), "utf8")
+const xml = readFileSync("order.bpmn", "utf8").replaceAll("</script", "&lt;/script")
+writeFileSync("order.html", template.replace("{{BPMN}}", () => xml))
+\`\`\`
+
+Or in your own page:
+
+\`\`\`html
+<script type="application/bpmn+xml">
+  <bpmn:definitions …>…</bpmn:definitions>
+</script>
+<script src="viewer-lite.min.js"></script>
+\`\`\`
+
+## API Reference
+
+\`\`\`typescript
+// ESM: import { render, boot, parseBpmnLite } from "@bpmnkit/viewer-lite"
+// IIFE: window.BpmnLite.render / .boot / .parseBpmnLite
+function render(xml: string, el: Element, options?: RenderOptions): boolean  // false: message shown
+function boot(root?: ParentNode): void            // replace application/bpmn+xml scripts
+function parseBpmnLite(xml: string): BpmnDefinitions  // the fields exportSvg draws
+
+interface RenderOptions {
+  theme?: "light" | "dark"   // default: prefers-color-scheme
+  interactive?: boolean      // drag to pan, wheel to zoom; default true
+}
+\`\`\`
+
+A file without diagram layout (\`bpmndi\`) shows a short message; lay it out first with \`@bpmnkit/core\`. Label fonts from \`bpmndi:BPMNLabelStyle\` and DI colours are not drawn.`,
+	},
 	// ── markdown ──────────────────────────────────────────────────────────────
 	"packages/markdown": {
 		name: "@bpmnkit/markdown",
