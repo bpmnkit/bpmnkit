@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-12 — viewer-lite: the bundle imports under Node
+
+- The release after #284 failed in `check:consumable`: importing `@bpmnkit/viewer-lite/viewer-lite.min.js` under Node threw `document is not defined` (CI runs only `--pack-only`). The IIFE now auto-boots only when a `document` exists; test `node-import.test.ts`; vendored crate asset and golden pages resynced. Size unchanged (7.9 KB).
+
 ## 2026-11-12 — `bpmnkit-viewer`: the one-file viewer for Rust
 
 - New zero-dependency crate `crates/bpmnkit-viewer` (`@crates/bpmnkit-viewer`, fixed group; facade feature `viewer`, in `full`; `bpmnkit::Error::Viewer`; `prelude::HtmlOptions`). `to_html(xml, &HtmlOptions)` is byte-identical to the JS `toHtml`; `empty_html`; `parts` → `ViewerParts { head, body, scripts }` for embedding in your own page; `escape_xml_for_script`; raw `VIEWER_JS`, `LOADER_JS`, `CSS`; `HtmlOptions::title`, `no_picker` (Rust-only). Example `viewer_html`.
