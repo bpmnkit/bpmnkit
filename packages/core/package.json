@@ -16,6 +16,10 @@
 		"./connectors": {
 			"types": "./dist/connectors/index.d.ts",
 			"import": "./dist/connectors/index.js"
+		},
+		"./svg": {
+			"types": "./dist/bpmn/svg-render.d.ts",
+			"import": "./dist/bpmn/svg-render.js"
 		}
 	},
 	"files": [
