@@ -665,6 +665,29 @@
 			"readBpmnlintrc": "value",
 			"runBpmnlint": "value",
 			"writeBpmn": "value"
+		},
+		"./svg": {
+			"BpmnDefinitions": "type",
+			"SvgCtx": "type",
+			"SvgElementKind": "type",
+			"SvgExportOptions": "type",
+			"SvgExportResult": "type",
+			"SvgGeometry": "type",
+			"SvgRenderedElement": "type",
+			"SvgThemeColors": "type",
+			"SvgWarning": "type",
+			"charPx": "value",
+			"esc": "value",
+			"exportSvg": "value",
+			"exportSvgDetailed": "value",
+			"fitSize": "value",
+			"fontStyle": "value",
+			"iconGroup": "value",
+			"iconStyle": "value",
+			"labelSvg": "value",
+			"resolveCtx": "value",
+			"shapeStyle": "value",
+			"wrapText": "value"
 		}
 	},
 	"@bpmnkit/canvas": {

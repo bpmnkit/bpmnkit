@@ -4,7 +4,7 @@
 
 - New zero-dependency crate `crates/bpmnkit-viewer` (`@crates/bpmnkit-viewer`, fixed group; facade feature `viewer`, in `full`; `bpmnkit::Error::Viewer`; `prelude::HtmlOptions`). `to_html(xml, &HtmlOptions)` is byte-identical to the JS `toHtml`; `empty_html`; `parts` → `ViewerParts { head, body, scripts }` for embedding in your own page; `escape_xml_for_script`; raw `VIEWER_JS`, `LOADER_JS`, `CSS`; `HtmlOptions::title`, `no_picker` (Rust-only). Example `viewer_html`.
 - Assets are vendored into `crates/bpmnkit-viewer/assets/` (crates.io packages only the crate). `scripts/viewer-assets.mjs` writes them from the viewer-lite build (`build.mjs` now exports `css` and `picker`) plus golden pages from the JS `toHtml` (6 cases: default, title, `</script` in CDATA and in a comment, empty, blank); `--check` runs in CI and `verify:rust`. The parity test compares byte for byte.
-- Tests: the JS `html.test.ts` cases ported to Rust, unterminated CDATA/comment, U+FEFF-only input as blank; Chromium smoke of the example's page (one SVG, no errors). The empty and blank golden inputs are listed as malformed on purpose in core's bpmnlint parity test, which walks every `.bpmn` file.
+- Tests: the JS `html.test.ts` cases ported to Rust, unterminated CDATA/comment, U+FEFF-only input as blank; Chromium smoke of the example's page (one SVG, no errors). The empty and blank golden inputs are listed as malformed on purpose in core's bpmnlint parity test, which walks every `.bpmn` file. The API snapshot (`api-surface.json`) records the new `@bpmnkit/core/svg` entry.
 - Docs: crate README (where each part goes), facade README, landing guide "From Rust", `doc/rust-crates-release.md` packaging note.
 
 ## 2026-11-12 — viewer-lite: open and drop a file
