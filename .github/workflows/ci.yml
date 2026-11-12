@@ -38,6 +38,12 @@ jobs:
       - name: Build feel and core
         run: pnpm turbo build --filter=@bpmnkit/feel --filter=@bpmnkit/core
 
+      # crates/bpmnkit-viewer vendors the viewer-lite assets and golden pages from the JS toHtml.
+      - name: viewer-assets
+        run: |
+          pnpm turbo build --filter=@bpmnkit/viewer-lite
+          node scripts/viewer-assets.mjs --check
+
       - name: conformance-ts
         run: |
           pnpm conformance:record

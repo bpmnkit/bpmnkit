@@ -97,6 +97,7 @@ dependencies = [
  "bpmnkit-render",
  "bpmnkit-spec",
  "bpmnkit-text",
+ "bpmnkit-viewer",
  "bpmnkit-xml",
  "serde_json",
 ]
@@ -291,6 +292,13 @@ dependencies = [
  "indexmap",
  "regex",
  "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "bpmnkit-viewer"
+version = "0.2.1"
+dependencies = [
  "serde_json",
 ]
 

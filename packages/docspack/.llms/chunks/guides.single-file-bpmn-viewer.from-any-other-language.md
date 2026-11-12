@@ -1,7 +1,7 @@
-# One-File BPMN Viewer — From Rust or any other language
+# One-File BPMN Viewer — From any other language
 
 The package ships the finished page as `@bpmnkit/viewer-lite/template.html`, with the viewer inlined
-and a `{{BPMN}}` placeholder where the XML goes. Copy it next to your code and replace the placeholder:
+and a `{{BPMN}}` placeholder where the XML goes. Copy it next to your code and replace the placeholder (shown in Rust; any language works the same):
 
 ```rust
 const TEMPLATE: &str = include_str!("template.html");
@@ -14,6 +14,8 @@ fn to_html(xml: &str) -> String {
     TEMPLATE.replacen("{{BPMN}}", &xml, 1)
 }
 ```
+
+The page also has a file picker and accepts a dropped `.bpmn` file (a small second inline script, outside the 8 KB viewer script). Replace `{{BPMN}}` with nothing for a page that only shows "Open or drop a .bpmn file"; with `toHtml("")` the hint is built in.
 
 `replacen(…, 1)` replaces only the first placeholder. This simple escape turns `</script` inside a CDATA
 section into the literal text `&lt;/script`, which is fine for display but not byte-exact. Use `toHtml`

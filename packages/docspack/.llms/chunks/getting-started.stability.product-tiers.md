@@ -13,7 +13,7 @@ on it. Each README and each package page on this site shows it.
   `@bpmnkit/engine`, `@bpmnkit/feel`, `@bpmnkit/api`, `@bpmnkit/ascii`, `@bpmnkit/docspack`,
   `@bpmnkit/connector-gen`, `@bpmnkit/connectors`, `@bpmnkit/cli`.
 - **Tools:** BPMN Kit for VS Code, Drop, `@bpmnkit/proxy` (the MCP server, `casen proxy mcp`),
-  `@bpmnkit/markdown`, `@bpmnkit/camunda-docspack`, `@bpmnkit/patterns`,
+  `@bpmnkit/markdown`, `@bpmnkit/viewer-lite`, `@bpmnkit/camunda-docspack`, `@bpmnkit/patterns`,
   `@bpmnkit/worker-client`, `@bpmnkit/cli-sdk`, `@bpmnkit/create-casen-plugin`,
   `@bpmnkit/casen-report`, `@bpmnkit/casen-worker-http`, `@bpmnkit/casen-worker-ai`, and the
   shared plumbing `@bpmnkit/ui`, `@bpmnkit/profiles` and `@bpmnkit/astro-shared`.

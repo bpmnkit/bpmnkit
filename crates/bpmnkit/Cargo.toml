@@ -28,13 +28,14 @@ bpmnkit-text = { workspace = true, optional = true }
 bpmnkit-render = { workspace = true, optional = true }
 bpmnkit-diff = { workspace = true, optional = true }
 bpmnkit-ascii = { workspace = true, optional = true }
+bpmnkit-viewer = { workspace = true, optional = true }
 serde_json = { workspace = true }
 
 [features]
 # What most users reach for: read, write and evaluate models.
 default = ["feel", "bpmn", "dmn", "form"]
 # Not `render-png` (a raster stack); add it yourself when you need PNGs.
-full = ["spec", "xml", "bpmn", "feel", "dmn", "form", "compat", "lint", "layout", "builder", "text", "render", "diff", "diff-html", "ascii"]
+full = ["spec", "xml", "bpmn", "feel", "dmn", "form", "compat", "lint", "layout", "builder", "text", "render", "diff", "diff-html", "ascii", "viewer"]
 spec = ["dep:bpmnkit-spec"]
 xml = ["dep:bpmnkit-xml"]
 bpmn = ["dep:bpmnkit-bpmn"]
@@ -59,6 +60,8 @@ diff = ["dep:bpmnkit-diff", "bpmn"]
 diff-html = ["diff", "render", "bpmnkit-diff/html"]
 # BPMN, DMN and forms as Unicode box-drawing text (terminals, chat code blocks).
 ascii = ["dep:bpmnkit-ascii"]
+# One self-contained HTML page per diagram (the viewer-lite script inlined), or its parts.
+viewer = ["dep:bpmnkit-viewer"]
 
 [package.metadata.docs.rs]
 all-features = true

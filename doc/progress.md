@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-11-12 — `bpmnkit-viewer`: the one-file viewer for Rust
+
+- New zero-dependency crate `crates/bpmnkit-viewer` (`@crates/bpmnkit-viewer`, fixed group; facade feature `viewer`, in `full`; `bpmnkit::Error::Viewer`; `prelude::HtmlOptions`). `to_html(xml, &HtmlOptions)` is byte-identical to the JS `toHtml`; `empty_html`; `parts` → `ViewerParts { head, body, scripts }` for embedding in your own page; `escape_xml_for_script`; raw `VIEWER_JS`, `LOADER_JS`, `CSS`; `HtmlOptions::title`, `no_picker` (Rust-only). Example `viewer_html`.
+- Assets are vendored into `crates/bpmnkit-viewer/assets/` (crates.io packages only the crate). `scripts/viewer-assets.mjs` writes them from the viewer-lite build (`build.mjs` now exports `css` and `picker`) plus golden pages from the JS `toHtml` (6 cases: default, title, `</script` in CDATA and in a comment, empty, blank); `--check` runs in CI and `verify:rust`. The parity test compares byte for byte.
+- Tests: the JS `html.test.ts` cases ported to Rust, unterminated CDATA/comment, U+FEFF-only input as blank; Chromium smoke of the example's page (one SVG, no errors).
+- Docs: crate README (where each part goes), facade README, landing guide "From Rust", `doc/rust-crates-release.md` packaging note.
+
 ## 2026-11-12 — viewer-lite: open and drop a file
 
 - `viewer-lite` template: file picker (`.bpmn,.xml`) and drop-anywhere, via a second tiny inline script (not in the size-gated IIFE; gzip size unchanged at 7.9 KB). `toHtml("")` (blank xml) gives an empty viewer with the hint "Open or drop a .bpmn file".

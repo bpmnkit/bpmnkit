@@ -32,6 +32,7 @@ cargo add bpmnkit --no-default-features --features feel
 | `render-system-fonts` | `bpmnkit::render` | `bpmnkit-render` | | PNG text may also use the machine's fonts (not in `full`) |
 | `diff`    | `bpmnkit::diff`     | `bpmnkit-diff`    |         | Semantic diff with field-level changes, layout-only moves and a semantic hash |
 | `diff-html` | `bpmnkit::diff`   | `bpmnkit-diff`    |         | Self-contained HTML diff viewer and the diff-over-diagram SVG (implies `diff`, `render`) |
+| `viewer`  | `bpmnkit::viewer`   | `bpmnkit-viewer`  |         | One self-contained HTML viewer page per diagram (same bytes as viewer-lite `toHtml`), or its head/body/scripts parts |
 | `full`    |                     |                   |         | All of the above except the PNG features |
 
 A feature turns on the crates it needs; for example `text` also builds `bpmn`, `dmn` and `layout`, but only the modules you name are re-exported.

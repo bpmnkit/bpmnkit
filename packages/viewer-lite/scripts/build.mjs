@@ -27,7 +27,8 @@ export async function bundle() {
 	return out.outputFiles[0].text.replaceAll("</script", "<\\/script")
 }
 
-const css =
+/** The page style; also vendored into crates/bpmnkit-viewer (scripts/viewer-assets.mjs). */
+export const css =
 	"html,body{margin:0;background:#f8f9fa;font:14px system-ui,sans-serif;color:#333}" +
 	"@media (prefers-color-scheme:dark){html,body{background:#1e1e2e;color:#cdd6f4}}" +
 	".bpmn-lite{padding:8px}[data-bpmn-lite=message]{padding:24px}" +
@@ -39,7 +40,7 @@ const css =
  * inline script that feeds a picked or dropped file to \`BpmnLite.render\`.
  * Runs after boot (registered later), so \`.bpmn-lite\` already exists.
  */
-const picker =
+export const picker =
 	'const d=document,b=d.body,f=d.getElementById("bpmn-open"),' +
 	"run=()=>{const c=d.querySelector('.bpmn-lite')," +
 	"open=async t=>{if(t)BpmnLite.render(await t.text(),c)};" +

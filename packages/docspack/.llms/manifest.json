@@ -1628,7 +1628,7 @@
 		{
 			"id": "getting-started.stability.product-tiers",
 			"file": "chunks/getting-started.stability.product-tiers.md",
-			"tokens": 422,
+			"tokens": 425,
 			"tags": [
 				"getting-started",
 				"stability",
@@ -3895,9 +3895,9 @@
 				"bpmn",
 				"template",
 				"include_str",
-				"guides",
-				"single-file-bpmn-viewer",
-				"cli"
+				"rust",
+				"bpmnkit-viewer",
+				"to_html"
 			],
 			"entities": [
 				"@bpmnkit/viewer-lite",
@@ -3918,13 +3918,25 @@
 			]
 		},
 		{
-			"id": "guides.single-file-bpmn-viewer.from-rust-or-any-other-language",
-			"file": "chunks/guides.single-file-bpmn-viewer.from-rust-or-any-other-language.md",
-			"tokens": 215,
+			"id": "guides.single-file-bpmn-viewer.from-rust",
+			"file": "chunks/guides.single-file-bpmn-viewer.from-rust.md",
+			"tokens": 299,
 			"tags": [
 				"guides",
 				"single-file-bpmn-viewer",
-				"rust",
+				"rust"
+			],
+			"entities": [
+				"toHtml"
+			]
+		},
+		{
+			"id": "guides.single-file-bpmn-viewer.from-any-other-language",
+			"file": "chunks/guides.single-file-bpmn-viewer.from-any-other-language.md",
+			"tokens": 292,
+			"tags": [
+				"guides",
+				"single-file-bpmn-viewer",
 				"any",
 				"other",
 				"language"
