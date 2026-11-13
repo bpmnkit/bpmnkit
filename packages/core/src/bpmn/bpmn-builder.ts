@@ -31,6 +31,7 @@ import { camunda8BuilderProblem } from "./builder-rules.js"
 import { normalizeCamundaVersion } from "./camunda-compat.js"
 import { createFlowElement, isLoopCapableType } from "./element-shape.js"
 import { toFeelCondition } from "./feel-condition.js"
+import { levenshtein } from "./optimize/variable-flow.js"
 import type { RestConnectorConfig } from "./rest-connector.js"
 import {
 	REST_CONNECTOR_TEMPLATE_VERSION,
@@ -1843,6 +1844,17 @@ function traceBackToSplit(
  * Use `.condition(expr)` to set a FEEL condition on the outgoing sequence
  * flow from the gateway, or `.defaultFlow()` to mark it as the default path.
  */
+/**
+ * A branch that adds nothing and connects nowhere leaves an unconditioned flow from
+ * the gateway to whatever comes next, which is never what the author meant.
+ */
+function assertBranchAddedSomething(b: BranchBuilder, name: string, gatewayId: string): void {
+	if (b._elements.length > 0 || b._connected) return
+	throw new Error(
+		`branch("${name}") on gateway "${gatewayId}" added no elements: add a node, end it with .endEvent(id), or route it with .connectTo(id)`,
+	)
+}
+
 export class BranchBuilder {
 	/** @internal */
 	readonly _elements: BpmnFlowElement[] = []
@@ -2470,7 +2482,10 @@ export class BranchBuilder {
 			this.rootLayoutHints,
 			this.lanes,
 		)
-		this.lanes?.scoped(() => callback(b))
+		// Inside a sub-process there is no lane state, but the callback must still run.
+		if (this.lanes) this.lanes.scoped(() => callback(b))
+		else callback(b)
+		assertBranchAddedSomething(b, name, this.currentGatewayId)
 
 		for (const el of b._elements) {
 			if (this._ids.has(el.id)) {
@@ -2850,6 +2865,7 @@ export class SubProcessContentBuilder {
 			this.rootLayoutHints,
 		)
 		callback(b)
+		assertBranchAddedSomething(b, name, this.currentGatewayId)
 
 		for (const el of b._elements) {
 			if (this._ids.has(el.id)) {
@@ -3772,6 +3788,7 @@ export class ProcessBuilder {
 			this.lanes,
 		)
 		this.lanes.scoped(() => callback(b))
+		assertBranchAddedSomething(b, name, this.currentGatewayId)
 
 		for (const el of b._elements) {
 			if (this.elementIds.has(el.id)) {
@@ -4421,6 +4438,22 @@ function adoptMessageSubscriptions(into: BpmnMessage[], incoming: readonly BpmnM
  * Builder for a complete BPMN definitions document containing one or more processes.
  * Use `Bpmn.createDiagram(id?)` to obtain an instance.
  */
+/** A "did you mean" suffix naming up to three existing ids close to `ref`. */
+function closeIds(ref: string, existing: string[]): string {
+	const lower = ref.toLowerCase()
+	const close = existing
+		.filter((id) => id.length >= 3)
+		.map((id) => ({ id, d: levenshtein(lower, id.toLowerCase()) }))
+		.filter(
+			({ id, d }) =>
+				d <= Math.max(2, Math.floor(ref.length / 3)) || id.includes(ref) || ref.includes(id),
+		)
+		.sort((a, b) => a.d - b.d)
+		.slice(0, 3)
+		.map(({ id }) => `"${id}"`)
+	return close.length > 0 ? `; did you mean ${close.join(", ")}?` : ""
+}
+
 export class DiagramBuilder {
 	private readonly _id: string
 	private readonly _processes: BpmnProcess[] = []
@@ -4570,7 +4603,7 @@ export class DiagramBuilder {
 			] as const) {
 				if (!owningParticipant.has(ref)) {
 					problems.push(
-						`Message flow "${flow.id}" names ${role} "${ref}", which is not a participant or a flow node in one`,
+						`Message flow "${flow.id}" names ${role} "${ref}", which is not a participant or a flow node in one${closeIds(ref, [...owningParticipant.keys()])}`,
 					)
 				}
 			}
