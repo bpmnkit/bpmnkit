@@ -30,11 +30,12 @@ export const BUILD_SPEC_GUIDE = `# Title | id=<process id> camunda=8.10   first 
 <line format paths>                     a > b[user Review | form=f fields=amount:number,ok:checkbox] > c
 ## Pool name | id=<process id>          starts a pool (its own process); "| blackbox" = partner without a process
 ### Lane name                           nodes declared after it go in this lane
-a ~> b: label                           message flow; a/b = node ids or pool ids
+a ~> b: label                           message flow; a/b = node ids or pool ids (a plain start it reaches turns message start)
 d[object Name] ..> task                 data input; task ..> d[store Name] = data output (objects = collection)
 sp[sub Name] > …  then  sp {            expanded sub-process: its body paths up to a line "}"
 n[annotation Text]                      text annotation; n[annotation Text] ..> task links it
-start:condition / catch:condition       conditional event: cond=<FEEL> (last)`
+start:condition / catch:condition       conditional event: cond=<FEEL> (last)
+r[rule Assess risk | decision=risk]     DMN decision id; default: the name kebab-cased (assess-risk)`
 
 export interface SpecBuild {
 	definitions: BpmnDefinitions
@@ -449,7 +450,7 @@ export function compileTextSpec(text: string): SpecBuild {
 			process.textAnnotations.push({ id: a.id, text: a.text, unknownAttributes: {} })
 	}
 
-	if (pools) addCollaboration(defs, sections, messageLines, problems)
+	if (pools) addCollaboration(defs, sections, messageLines, problems, fixes)
 	else
 		for (const m of messageLines)
 			problems.push(`line ${m.line}: a message flow needs pools ("## Pool name" sections)`)
@@ -531,17 +532,26 @@ function addData(
 		}
 		const name = (m[3] ?? "").trim() || undefined
 		if (kind === "store") {
+			// One store, however many pools use it: a same-name store is the same store.
+			const shared =
+				name === undefined
+					? undefined
+					: defs.unknownChildren?.find(
+							(c) => c.name === "bpmn:dataStore" && c.attributes.name === name,
+						)
 			const ref = createFlowElement(id, "dataStoreReference", { name })
-			if (ref.type === "dataStoreReference") ref.dataStoreRef = `DataStore_${id}`
+			if (ref.type === "dataStoreReference")
+				ref.dataStoreRef = shared?.attributes.id ?? `DataStore_${id}`
 			scope.push(ref)
-			defs.unknownChildren = [
-				...(defs.unknownChildren ?? []),
-				{
-					name: "bpmn:dataStore",
-					attributes: { id: `DataStore_${id}`, ...(name ? { name } : {}) },
-					children: [],
-				},
-			]
+			if (shared === undefined)
+				defs.unknownChildren = [
+					...(defs.unknownChildren ?? []),
+					{
+						name: "bpmn:dataStore",
+						attributes: { id: `DataStore_${id}`, ...(name ? { name } : {}) },
+						children: [],
+					},
+				]
 		} else {
 			const object = createFlowElement(`DataObject_${id}`, "dataObject", {})
 			if (object.type === "dataObject" && kind === "objects") object.isCollection = true
@@ -712,6 +722,7 @@ function addCollaboration(
 	sections: Section[],
 	messageLines: { line: number; text: string }[],
 	problems: string[],
+	fixes: string[],
 ): void {
 	const participants: BpmnParticipant[] = sections.map((s) =>
 		s.blackbox
@@ -759,6 +770,7 @@ function addCollaboration(
 			unknownAttributes: {},
 		})
 	}
+	for (const flow of flows) startOnMessage(defs, flow, fixes)
 	defs.collaborations = [
 		{
 			id: "Collaboration_1",
@@ -774,39 +786,90 @@ function addCollaboration(
 }
 
 /**
- * A message only thrown (message end/throw event, send task) needs no
- * subscription in Zeebe, but camunda-compat lint requires one on every
- * `bpmn:message` (`camunda-compat/subscription`). With no correlation key to
- * give it, the throw drops the reference instead: Zeebe deploys and runs it
- * the same, and the lint is clean. Returns the message ids removed.
+ * A message flow into a process's none start event means the process starts on
+ * that message: the start becomes a message start, with a message named after
+ * the flow's label (else the start's id). A process-level message start is
+ * correlated by name alone, so it needs no key.
  */
-export function dropThrowOnlyMessages(defs: BpmnDefinitions): string[] {
-	const subscribed = (m: BpmnDefinitions["messages"][number]) =>
-		m.extensionElements?.some((x) => x.name === "zeebe:subscription") === true
-	const candidates = new Set(defs.messages.filter((m) => !subscribed(m)).map((m) => m.id))
-	if (candidates.size === 0) return []
-	const throws: Array<{ messageRef?: string }> = []
+function startOnMessage(defs: BpmnDefinitions, flow: BpmnMessageFlow, fixes: string[]): void {
 	for (const process of defs.processes) {
+		const start = process.flowElements.find((e) => e.id === flow.targetRef)
+		if (start?.type !== "startEvent" || start.eventDefinitions.length > 0) continue
+		const name = flow.name ? specId(flow.name) : start.id
+		let id = `Message_${name}`
+		for (let n = 2; defs.messages.some((m) => m.id === id); n++) id = `Message_${name}_${n}`
+		const existing = defs.messages.find((m) => m.name === name)
+		const messageRef = existing?.id ?? id
+		if (existing === undefined) defs.messages.push({ id, name, unknownAttributes: {} })
+		start.eventDefinitions = [
+			{ type: "message", id: `${start.id}_MessageEventDefinition`, messageRef },
+		]
+		fixes.push(
+			`"${start.id}" receives message flow ${flow.id}: made a message start (message "${name}")`,
+		)
+	}
+}
+
+/**
+ * camunda-compat's `subscription` rule wants a `zeebe:subscription` with a
+ * correlation key on every message a catch *or throw* event references, though
+ * Zeebe only reads it where a message is waited for. A throw keeps its
+ * `messageRef` (the message flow says what is sent): it shares the message of
+ * the same name that is caught somewhere, or its message gets the correlation
+ * key the process waits with elsewhere. Returns what was done, one line each.
+ */
+export function keyThrownMessages(defs: BpmnDefinitions): string[] {
+	type Message = BpmnDefinitions["messages"][number]
+	const keyOf = (m: Message | undefined) =>
+		m?.extensionElements?.find((x) => x.name === "zeebe:subscription")?.attributes.correlationKey
+	const notes: string[] = []
+	const replaced = new Map<string, string>()
+	for (const m of defs.messages) {
+		if (keyOf(m)) continue
+		const keyed = defs.messages.find((o) => o !== m && o.name === m.name && keyOf(o))
+		if (keyed) replaced.set(m.id, keyed.id)
+	}
+	const refs: Array<{ holder: { messageRef?: string }; process: BpmnProcess; throws: boolean }> = []
+	for (const process of defs.processes)
 		for (const el of walk(process.flowElements)) {
-			const refs: Array<{ messageRef?: string }> = []
-			if (el.type === "sendTask" || el.type === "receiveTask") refs.push(el)
+			if (el.type === "sendTask" || el.type === "receiveTask")
+				refs.push({ holder: el, process, throws: false })
+			const throws = el.type === "endEvent" || el.type === "intermediateThrowEvent"
 			if ("eventDefinitions" in el)
-				for (const d of el.eventDefinitions) if (d.type === "message") refs.push(d)
-			const throwing =
-				el.type === "sendTask" || el.type === "endEvent" || el.type === "intermediateThrowEvent"
-			for (const ref of refs) {
-				if (ref.messageRef === undefined || !candidates.has(ref.messageRef)) continue
-				if (throwing) throws.push(ref)
-				else candidates.delete(ref.messageRef)
-			}
+				for (const d of el.eventDefinitions)
+					if (d.type === "message") refs.push({ holder: d, process, throws })
 		}
+	for (const { holder } of refs) {
+		const to = holder.messageRef === undefined ? undefined : replaced.get(holder.messageRef)
+		if (to !== undefined) holder.messageRef = to
 	}
 	for (const c of defs.collaborations)
-		for (const f of c.messageFlows) if (f.messageRef) candidates.delete(f.messageRef)
-	for (const ref of throws)
-		if (ref.messageRef && candidates.has(ref.messageRef)) ref.messageRef = undefined
-	defs.messages = defs.messages.filter((m) => !candidates.has(m.id))
-	return [...candidates]
+		for (const f of c.messageFlows) {
+			const to = f.messageRef === undefined ? undefined : replaced.get(f.messageRef)
+			if (to !== undefined) f.messageRef = to
+		}
+	defs.messages = defs.messages.filter((m) => !replaced.has(m.id))
+	for (const [from, to] of replaced) notes.push(`message ${from} merged into ${to} (same name)`)
+
+	const byId = new Map(defs.messages.map((m) => [m.id, m]))
+	const anyKey = defs.messages.map(keyOf).find((k) => k)
+	for (const m of defs.messages) {
+		if (keyOf(m)) continue
+		const users = refs.filter((r) => r.holder.messageRef === m.id)
+		if (!users.some((u) => u.throws)) continue
+		const process = users[0]?.process
+		const processKey = refs
+			.filter((r) => r.process === process)
+			.map((r) => keyOf(byId.get(r.holder.messageRef ?? "")))
+			.find((k) => k)
+		const key = processKey ?? anyKey ?? "=correlationKey"
+		m.extensionElements = [
+			...(m.extensionElements ?? []).filter((x) => x.name !== "zeebe:subscription"),
+			{ name: "zeebe:subscription", attributes: { correlationKey: key }, children: [] },
+		]
+		notes.push(`message "${m.name ?? m.id}" is only sent; it carries correlation key ${key}`)
+	}
+	return notes
 }
 
 /**

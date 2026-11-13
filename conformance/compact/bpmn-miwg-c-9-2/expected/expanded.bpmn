@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="_5SVkEIXnEeSmwfgVk-ryvQ" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="_5SVkEIXnEeSmwfgVk-ryvQ" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:error id="Error_x" name="02" errorCode="02"/>
   <bpmn:message id="Message_Message_DocumentRequested" name="Message_DocumentRequested">
     <bpmn:extensionElements>
@@ -110,7 +110,7 @@
       </bpmn:endEvent>
       <bpmn:sequenceFlow id="Flow_0nttki4" sourceRef="StartMessageEvent_FraudSuspected" targetRef="UserTask_CheckForFraud"/>
       <bpmn:sequenceFlow id="SequenceFlow_Yes" sourceRef="Gateway_FraudDetected" targetRef="ErrorEndEvent_FraudDetected" name="Yes">
-        <bpmn:conditionExpression>=fraud</bpmn:conditionExpression>
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=fraud</bpmn:conditionExpression>
       </bpmn:sequenceFlow>
       <bpmn:sequenceFlow id="Flow_1istmr0" sourceRef="UserTask_CheckForFraud" targetRef="Gateway_FraudDetected"/>
       <bpmn:sequenceFlow id="SequenceFlow_No" sourceRef="Gateway_FraudDetected" targetRef="EndEvent_FraudNoDetected" name="No"/>

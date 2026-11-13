@@ -499,14 +499,18 @@
         <di:waypoint x="238" y="130"/>
         <di:waypoint x="147" y="130"/>
         <di:waypoint x="147" y="197"/>
-        <bpmndi:BPMNLabel labelStyle="LS1373655174919"/>
+        <bpmndi:BPMNLabel labelStyle="LS1373655174919">
+          <dc:Bounds x="151" y="157" width="98" height="14"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="E1373655174976__9428f666-fc8a-41be-8a77-9b280e14e7ae" bpmnElement="_9428f666-fc8a-41be-8a77-9b280e14e7ae">
         <di:waypoint x="1699" y="487"/>
         <di:waypoint x="1699" y="140"/>
         <di:waypoint x="558" y="140"/>
         <di:waypoint x="558" y="100"/>
-        <bpmndi:BPMNLabel labelStyle="LS1373655174919"/>
+        <bpmndi:BPMNLabel labelStyle="LS1373655174919">
+          <dc:Bounds x="1703" y="307" width="98" height="14"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
     <bpmndi:BPMNLabelStyle id="LS1373655174919">

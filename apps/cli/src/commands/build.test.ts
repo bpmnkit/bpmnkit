@@ -6,7 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { parseArgs } from "../args.js"
 import { resolveOutputFormat } from "../output.js"
 import type { RunContext } from "../types.js"
-import { compileTextSpec, dropThrowOnlyMessages } from "./build-spec.js"
+import { compileTextSpec, keyThrownMessages } from "./build-spec.js"
 import { buildGroup } from "./build.js"
 import { clusterFromEnv } from "./deploy.js"
 import { bpmnlintrcKey } from "./lint.js"
@@ -49,6 +49,35 @@ opened[start:condition Headcount opened | cond=openings > 0] > search[service Se
 candidate ~> received: Application
 offer ~> candidate: Offer
 candidate ~> answer: Answer`
+
+const S16Y = `# Order fulfilment
+policy[annotation Orders ship within two days]
+## Shipping | id=shipping
+handover[start Parcel handed over] > ship[service Ship parcel | job=ship] > delivered[end:message Delivered | msg=delivered]
+## Shop | id=shop
+### Sales
+order[start:message Order received | msg=order] > risk[rule Assess risk] > ok[xor Risk acceptable?]
+ok >(Yes: risk = "low") charge[send Request payment | job=charge] > paid[catch Payment confirmed | msg=paid key=orderId] > pick[send Request picking | job=pick] > picked[catch Goods picked | msg=picked key=orderId] > confirm[end:message Order confirmed | msg=confirmed]
+ok >(No: default) refuse[end:message Order refused | msg=refused]
+orders[store Order DB] ..> risk
+n1[annotation Risk rules come from DMN] ..> risk
+## Customer | blackbox
+## Warehouse | id=warehouse
+req[start Picking requested] > prep[sub Prepare goods] > hand[send Hand over parcel | job=handover] > done[end Goods out]
+prep {
+  ps[start Start] > collect[user Collect items] > pack[user Pack parcel] > pe[end Packed]
+}
+prep ..> orders2[store Order DB]
+## Payment provider | blackbox
+customer ~> order: Order
+charge ~> payment-provider: Payment request
+payment-provider ~> paid: Payment confirmation
+pick ~> req: Pick list
+prep ~> picked: Picked
+hand ~> handover: Parcel
+delivered ~> customer: Delivery notice
+confirm ~> customer: Confirmation
+refuse ~> customer: Refusal`
 
 describe("compileTextSpec", () => {
 	it("builds sub-process bodies, conditional starts and free annotations, all drawn", () => {
@@ -160,19 +189,70 @@ describe("compileTextSpec", () => {
 	})
 })
 
-describe("dropThrowOnlyMessages", () => {
-	it("unlinks a message only thrown, keeps one that is caught", () => {
+describe("keyThrownMessages", () => {
+	it("keeps a thrown message's ref and gives it the key the process waits with", () => {
 		const { definitions } = compileTextSpec(
 			"# T | id=t\ns[start S] > m[catch Paid | msg=paid key=id] > sent[end:message Sent]",
 		)
-		expect(definitions.messages.map((m) => m.name)).toEqual(["paid", "sent"])
-		expect(dropThrowOnlyMessages(definitions)).toEqual(["Message_sent"])
-		expect(definitions.messages.map((m) => m.name)).toEqual(["paid"])
+		expect(keyThrownMessages(definitions)).toEqual([
+			'message "sent" is only sent; it carries correlation key =id',
+		])
 		const sent = definitions.processes[0]?.flowElements.find((e) => e.id === "sent")
-		expect(sent && "eventDefinitions" in sent && sent.eventDefinitions[0]).toEqual({
+		const ref = sent && "eventDefinitions" in sent ? sent.eventDefinitions[0] : undefined
+		expect(ref && "messageRef" in ref && ref.messageRef).toBe("Message_sent")
+		const report = lintDiagram(Bpmn.parse(Bpmn.export(definitions)))
+		expect(JSON.stringify(report.diagnostics)).not.toContain("subscription")
+	})
+
+	it("shares the caught message of the same name across pools", () => {
+		const { definitions } = compileTextSpec(
+			"# T\n## A | id=a\ns[start S] > w[catch Done | msg=done key=orderId] > e[end E]\n## B | id=b\nt[start T] > d[end:message Done | msg=done]\nd ~> w",
+		)
+		keyThrownMessages(definitions)
+		expect(definitions.messages.map((m) => m.name)).toEqual(["done"])
+	})
+})
+
+describe("judge findings", () => {
+	it("writes conditions as tFormalExpression", () => {
+		const xml = Bpmn.export(compileTextSpec(S04).definitions)
+		expect(xml).toMatch(/<bpmn:conditionExpression xsi:type="bpmn:tFormalExpression"/)
+	})
+
+	it("names a rule task's decision from decision= or its name", () => {
+		const { definitions: d, fixes } = compileTextSpec(
+			"s[start S] > r[rule Assess risk] > q[rule Score | decision=credit-score] > e[end E]",
+		)
+		const decision = (id: string) =>
+			JSON.stringify(d.processes[0]?.flowElements.find((e) => e.id === id)?.extensionElements)
+		expect(decision("r")).toContain('"decisionId":"assess-risk"')
+		expect(decision("q")).toContain('"decisionId":"credit-score"')
+		expect(fixes).toContain('"r" calls decision "assess-risk"; set decision= to call another')
+	})
+
+	it("declares a same-name data store once, referenced from each pool", () => {
+		const { definitions: d, problems } = compileTextSpec(
+			"# T\n## A | id=a\ns[start S] > t[task T] > e[end E]\nt ..> db[store Order DB]\n## B | id=b\nu[start U] > v[task V] > w[end W]\ndb2[store Order DB] ..> v",
+		)
+		expect(problems).toEqual([])
+		expect(d.unknownChildren?.filter((c) => c.name === "bpmn:dataStore")).toHaveLength(1)
+		const refs = d.processes.flatMap((p) =>
+			p.flowElements.flatMap((e) => (e.type === "dataStoreReference" ? [e.dataStoreRef] : [])),
+		)
+		expect(refs).toEqual(["DataStore_db", "DataStore_db"])
+	})
+
+	it("makes a none start that a message flow targets a message start", () => {
+		const { definitions: d, problems } = compileTextSpec(
+			"# T\n## A | id=a\ns[start S] > t[send Ask | job=ask] > e[end E]\n## B | id=b\nu[start Asked] > w[end W]\nt ~> u: Pick list",
+		)
+		expect(problems).toEqual([])
+		const u = d.processes[1]?.flowElements.find((e) => e.id === "u")
+		expect(u && "eventDefinitions" in u && u.eventDefinitions[0]).toMatchObject({
 			type: "message",
-			id: "sent_MessageEventDefinition",
+			messageRef: "Message_pick-list",
 		})
+		expect(d.messages.find((m) => m.id === "Message_pick-list")?.name).toBe("pick-list")
 	})
 })
 
@@ -254,6 +334,17 @@ describe("casen build", () => {
 			"amount",
 			"approved",
 		])
+	})
+
+	it("builds five pools with shared store, message ends and a DMN task, lint clean", async () => {
+		await writeFile(join(dir, "s16y.txt"), S16Y)
+		await run([join(dir, "s16y.txt")])
+		expect(lines.at(-1)).toMatch(/^ok s16y\.bpmn \+ 2 forms .* · lint clean$/)
+		const xml = await readFile(join(dir, "s16y.bpmn"), "utf8")
+		expect(xml.match(/<bpmn:dataStore /g)).toHaveLength(1)
+		for (const id of ["delivered", "confirm", "refuse"])
+			expect(xml).toMatch(new RegExp(`id="${id}"[\\s\\S]*?messageRef="Message_`))
+		expect(xml).toContain('decisionId="assess-risk"')
 	})
 
 	it("-o is the output file, not the global --output format", async () => {

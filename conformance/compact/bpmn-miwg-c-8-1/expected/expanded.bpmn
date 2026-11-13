@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="_d4aecb6e-8641-4d7a-af45-dcfae1d639ea" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="_d4aecb6e-8641-4d7a-af45-dcfae1d639ea" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:error id="Error_x" name="404" errorCode="404"/>
   <bpmn:process id="VacationRequestProcess" name="Vacation Request" isExecutable="true">
     <bpmn:documentation>Vacation Request - BPMN MIWG demo for 2022</bpmn:documentation>
@@ -139,15 +139,15 @@
     <bpmn:sequenceFlow id="_2a5ee73c-c495-48a0-945b-3dabab28ca91" sourceRef="_42367c5f-d084-44ee-90c7-960d1ab02a3b" targetRef="_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9" name="Refused"/>
     <bpmn:sequenceFlow id="_130d903a-f211-4b3e-9711-9061f5978d94" sourceRef="_9ed61a6a-7cc1-4ed1-86d8-03482b0983c9" targetRef="_1688f604-5edf-4187-ad9e-18f74bfede53"/>
     <bpmn:sequenceFlow id="_0a1c4f20-509f-4aeb-baf9-acc762f4fdf9" sourceRef="_42367c5f-d084-44ee-90c7-960d1ab02a3b" targetRef="_79523269-7444-4b01-90e9-e23957a9d020" name="Manual Validation Required">
-      <bpmn:conditionExpression>=Vacation Approval = "Manual Validation Required"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=Vacation Approval = "Manual Validation Required"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="_325973e7-0bc8-4136-b6df-be1e681d8608" sourceRef="_42367c5f-d084-44ee-90c7-960d1ab02a3b" targetRef="_93ec9873-edf1-4549-b052-961994ec8234" name="Approved">
-      <bpmn:conditionExpression>=Vacation Approval = "Approved"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=Vacation Approval = "Approved"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="_188d38f6-b73d-4c62-964b-affc6fe040c1" sourceRef="_93ec9873-edf1-4549-b052-961994ec8234" targetRef="_4b72053b-8ebb-4ae6-99c6-7c93cf1c1d1b"/>
     <bpmn:sequenceFlow id="_3c50d7bb-5ecc-4d34-82a9-a5fa41d9c018" sourceRef="_79523269-7444-4b01-90e9-e23957a9d020" targetRef="_64bb8b55-d348-41d6-9ea8-f333b1d8cb69"/>
     <bpmn:sequenceFlow id="_f2b0da63-d841-4457-ad85-7d86c8b5c1d2" sourceRef="_64bb8b55-d348-41d6-9ea8-f333b1d8cb69" targetRef="_a97c1a48-faba-447b-bfa6-7aa81a6fe0a0" name="Approved">
-      <bpmn:conditionExpression>=Vacation Approval = "Approved"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=Vacation Approval = "Approved"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="_d3a575d8-cd41-4246-ad7a-7a068de6679f" sourceRef="_64bb8b55-d348-41d6-9ea8-f333b1d8cb69" targetRef="_02232e32-c3d2-473c-a15d-9c5dca00eadc" name="Refused"/>
     <bpmn:sequenceFlow id="_93ac178c-3efc-48ae-8a99-8d29a0c4aaf6" sourceRef="_02232e32-c3d2-473c-a15d-9c5dca00eadc" targetRef="_3ae826ca-5f38-43c4-be3a-35d1157aa27f"/>

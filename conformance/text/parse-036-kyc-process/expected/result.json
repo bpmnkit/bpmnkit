@@ -16,7 +16,7 @@
             "type": "userTask"
           },
           {
-            "decisionId": "verify",
+            "decisionId": "verify-data",
             "id": "verify",
             "name": "Verify data",
             "type": "businessRuleTask"
@@ -61,7 +61,8 @@
     ]
   },
   "fixes": [
-    "named 1 unnamed element(s) from their ids"
+    "named 1 unnamed element(s) from their ids",
+    "\"verify\" calls decision \"verify-data\"; set decision= to call another"
   ],
   "problems": [
     {

@@ -1,6 +1,7 @@
 import { associationWaypoints, packAnnotations } from "../layout/annotations.js"
 import type { MessageLink } from "../layout/collaboration/alignment.js"
 import { alignPools } from "../layout/collaboration/alignment.js"
+import { placeMessageFlowLabels } from "../layout/collaboration/message-labels.js"
 import type { PoolLink } from "../layout/collaboration/ordering.js"
 import { orderPools } from "../layout/collaboration/ordering.js"
 import { collapseCollinear } from "../layout/grid/grid-router.js"
@@ -898,6 +899,7 @@ export function applyAutoLayout(
 		const order = orderPools(
 			participantPools.length,
 			poolLinks(collab, poolOwners(defs, collab), (id) => depths.get(id)),
+			new Set(participantPools.flatMap((pool, i) => (pool.process ? [] : [i]))),
 		)
 		for (const index of order) {
 			const pool = participantPools[index]
@@ -1212,6 +1214,24 @@ export function applyAutoLayout(
 
 	const repair = routeRepair(defs)
 	repair(allShapes, allEdges)
+	if (collab && collab.messageFlows.length > 0) {
+		const pools = new Set(collab.participants.map((p) => p.id))
+		placeMessageFlowLabels({
+			shapes: allShapes,
+			edges: allEdges,
+			names: new Map(
+				collab.messageFlows.flatMap((f) =>
+					f.name?.trim() ? [[f.id, f.name.trim()] as const] : [],
+				),
+			),
+			containers: new Set([
+				...pools,
+				...defs.processes.flatMap((p) => (p.laneSet?.lanes ?? []).map((lane) => lane.id)),
+				...allShapes.filter((s) => s.isExpanded === true).map((s) => s.bpmnElement),
+			]),
+			pools,
+		})
+	}
 	for (const plane of rootPlanes) repair(plane.shapes, plane.edges)
 
 	const planeBpmnElement = collab?.id ?? defs.processes[0]?.id ?? "plane"

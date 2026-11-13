@@ -240,9 +240,13 @@ describe("parseProcessText", () => {
 		})
 	})
 
-	it("gives a rule task its id as decision id, so it deploys", () => {
-		const els = elements("s[start] > credit[rule Check credit] > e[end]")
-		expect(els.find((e) => e.id === "credit")?.decisionId).toBe("credit")
+	it("gives a rule task a decision id from its name, or decision=, so it deploys", () => {
+		const els = elements(
+			"s[start] > credit[rule Check credit] > score[rule 2nd score | decision=score-v2] > x[rule] > e[end]",
+		)
+		expect(els.find((e) => e.id === "credit")?.decisionId).toBe("check-credit")
+		expect(els.find((e) => e.id === "score")?.decisionId).toBe("score-v2")
+		expect(els.find((e) => e.id === "x")?.decisionId).toBe("x")
 	})
 
 	it("adds an id that is used but never declared as a task named from it", () => {

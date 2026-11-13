@@ -817,6 +817,8 @@ class Reader {
 			else if (key === "job" && value) element.jobType = value
 			else if (key === "called" && value && element.type === "callActivity")
 				element.calledProcess = value
+			else if (key === "decision" && value && element.type === "businessRuleTask")
+				element.decisionId = value
 			else if (
 				key === "key" &&
 				value &&
@@ -1032,6 +1034,17 @@ const UNITS: Record<string, string> = { s: "S", m: "M", h: "H", d: "D", w: "W" }
  * An ISO 8601 duration from what models write: `PT5M` as it is, `5m`, `5 min`,
  * `5 minutes`, `2 hours` or `1 day`, also inside a name ("Wait 5 minutes").
  */
+/** A readable decision id from a task name: `Assess risk` → `assess-risk`. */
+export function decisionIdFrom(name: string): string | undefined {
+	const id = name
+		.trim()
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, "-")
+		.replace(/^-+|-+$/g, "")
+	if (id === "") return undefined
+	return /^[a-z]/.test(id) ? id : `decision-${id}`
+}
+
 /** The trigger an attribute names (`msg=` a message): {@link parseProcessText} reads it as the event's. */
 const NAMED_TRIGGERS = new Map([
 	["msg", "message"],
@@ -1929,13 +1942,16 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		// A caught error or escalation without a code catches every one
 		if (el.eventType === "error" && throws) el.errorCode ??= el.id
 		if (el.eventType === "escalation" && throws) el.escalationCode ??= el.id
-		// A DMN task needs a decision to deploy; the id stands in, as it does for a job type.
+		// A DMN task needs a decision to deploy. Its name reads better as the DMN's id than an
+		// element id does, and the DMN file is written to match it.
 		if (
 			node.element.type === "businessRuleTask" &&
 			node.element.jobType === undefined &&
 			node.element.decisionId === undefined
 		) {
-			node.element.decisionId = node.element.id
+			const decision = decisionIdFrom(node.element.name ?? "") ?? node.element.id
+			node.element.decisionId = decision
+			fixes.push(`"${node.element.id}" calls decision "${decision}"; set decision= to call another`)
 		}
 	}
 
@@ -2076,7 +2092,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
  *   gateway's question; flows out of anything else carry no condition or label;
  * - an unnamed event, task or decision is named from its id;
  * - a service or send task without `job=` uses its id as its job type, and a
- *   rule task its id as its decision id.
+ *   rule task its name, kebab-cased, as its decision id (`decision=` names another).
  *
  * @example
  * ```typescript

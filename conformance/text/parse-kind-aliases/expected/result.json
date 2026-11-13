@@ -16,13 +16,13 @@
             "type": "userTask"
           },
           {
-            "decisionId": "b",
+            "decisionId": "check",
             "id": "b",
             "name": "Check",
             "type": "businessRuleTask"
           },
           {
-            "decisionId": "c",
+            "decisionId": "check-more",
             "id": "c",
             "name": "Check more",
             "type": "businessRuleTask"
@@ -73,7 +73,9 @@
     ]
   },
   "fixes": [
-    "named 2 unnamed element(s) from their ids"
+    "named 2 unnamed element(s) from their ids",
+    "\"b\" calls decision \"check\"; set decision= to call another",
+    "\"c\" calls decision \"check-more\"; set decision= to call another"
   ],
   "problems": [
     {

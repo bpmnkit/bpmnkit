@@ -6,7 +6,7 @@
     </bpmn:startEvent>
     <bpmn:businessRuleTask id="credit" name="Check credit">
       <bpmn:extensionElements>
-        <zeebe:calledDecision decisionId="credit" resultVariable="result"/>
+        <zeebe:calledDecision decisionId="check-credit" resultVariable="result"/>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1</bpmn:incoming>
       <bpmn:outgoing>Flow_2</bpmn:outgoing>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:process id="Process_1" isExecutable="true">
     <bpmn:startEvent id="start_order_received" name="Order Received">
       <bpmn:outgoing>flow_1</bpmn:outgoing>
@@ -31,12 +31,12 @@
     <bpmn:sequenceFlow id="flow_1" sourceRef="start_order_received" targetRef="task_check_stock"/>
     <bpmn:sequenceFlow id="flow_2" sourceRef="task_check_stock" targetRef="gw_in_stock"/>
     <bpmn:sequenceFlow id="flow_3" sourceRef="gw_in_stock" targetRef="task_charge_card" name="In Stock">
-      <bpmn:conditionExpression>= stockAvailable = true</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= stockAvailable = true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="flow_4" sourceRef="task_charge_card" targetRef="task_ship_order"/>
     <bpmn:sequenceFlow id="flow_5" sourceRef="task_ship_order" targetRef="end_fulfilled"/>
     <bpmn:sequenceFlow id="flow_6" sourceRef="gw_in_stock" targetRef="task_notify_unavailable" name="Out of Stock">
-      <bpmn:conditionExpression>= stockAvailable = false</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= stockAvailable = false</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_Process_1">

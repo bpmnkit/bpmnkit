@@ -76,7 +76,7 @@
     <bpmn:sequenceFlow id="Flow_e1" sourceRef="Start_e" targetRef="Sub_work"/>
     <bpmn:sequenceFlow id="Flow_e2" sourceRef="Sub_work" targetRef="Gateway_check"/>
     <bpmn:sequenceFlow id="Flow_yes" sourceRef="Gateway_check" targetRef="Throw_escalate" name="Yes">
-      <bpmn:conditionExpression>=overdue</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=overdue</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_no" sourceRef="Gateway_check" targetRef="End_ok" name="No"/>
     <bpmn:sequenceFlow id="Flow_e3" sourceRef="Throw_escalate" targetRef="End_ok"/>

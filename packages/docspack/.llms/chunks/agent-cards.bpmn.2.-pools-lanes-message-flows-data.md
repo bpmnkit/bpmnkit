@@ -26,7 +26,7 @@ bank ~> paid: Payment confirmed
 
 - `## Name | id=<process id>` starts a pool with its own process; `## Name | blackbox` a partner pool without one (its id: `id=` or the name in lower case).
 - `### Lane`: nodes declared after it go in that lane; repeat a header to switch back. Gateways and events the reader adds follow their neighbours.
-- `a ~> b: label` is a message flow; `a` and `b` are node ids or pool ids, in different pools.
+- `a ~> b: label` is a message flow; `a` and `b` are node ids or pool ids, in different pools. A plain `start` it reaches becomes a message start. A same-name `store` in several pools is one data store.
 - `d[object Name] ..> task`: the task reads it; `task ..> d[store Name]`: the task writes it. `objects` marks a collection.
 - `sp[sub Name]`, then `sp {`, its paths (own start and end), `}`: an expanded sub-process. Bodies nest.
 - `n[annotation Text]`: a text annotation, on the collaboration when written before the first `##`; `n[annotation Text] ..> task` links it.

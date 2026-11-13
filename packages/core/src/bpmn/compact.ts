@@ -869,7 +869,10 @@ function buildSubContent(
 			sourceRef: f.from,
 			targetRef: f.to,
 			conditionExpression: f.condition
-				? { text: toFeelCondition(f.condition), attributes: {} }
+				? {
+						text: toFeelCondition(f.condition),
+						attributes: { "xsi:type": "bpmn:tFormalExpression" },
+					}
 				: undefined,
 			extensionElements: [],
 			unknownAttributes: {},
@@ -1225,7 +1228,7 @@ function expandProcess(
 		sourceRef: f.from,
 		targetRef: f.to,
 		conditionExpression: f.condition
-			? { text: toFeelCondition(f.condition), attributes: {} }
+			? { text: toFeelCondition(f.condition), attributes: { "xsi:type": "bpmn:tFormalExpression" } }
 			: undefined,
 		extensionElements: [],
 		unknownAttributes: {},

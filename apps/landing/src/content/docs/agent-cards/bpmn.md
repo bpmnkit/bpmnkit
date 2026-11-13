@@ -38,7 +38,7 @@ failed[boundary:error Payment failed | on=pay error=PAY_FAILED] > notify[send No
 - Kinds: `start end task user service rule send receive script manual call sub xor and or eventgw catch throw boundary adhoc`. Triggers: `start:message`, `start:timer`, `start:condition`, `catch:timer`, `catch:condition`, `boundary:timer`, `boundary:error`, `end:error`, `end:message`, `end:terminate`, `signal`, `escalation`.
 - Decision: `gw >(Label: FEEL condition) x` per branch, exactly one `gw >(Label: default) y`. Branches that meet are joined for you; parallel work: `and` split, `and` join.
 - Attributes: `job=` job type (service, send, message end; default: the id) · `form=<form id>` (default: generated `<process id>-<task id>`) · `fields=key[:number|checkbox|textarea|date|select(a|b)],…` for the generated form · `msg=` + `key=<FEEL>` (every message caught after the start) · `after=PT1H`, `every=R/PT1H`, `at=2026-01-31T09:00:00Z` (timers; a timer start takes only a literal date, `catch:timer at==<FEEL>` a variable) · `cond=<FEEL>` (conditional, last) · `error=`, `signal=`, `escalation=` · `on=<task>` and `nonint` (boundary) · `result=<var>` · `called=<process id>` · `each=<list var>` (multi-instance: once per item) · `in.x=<FEEL>`, `out.x=<FEEL>` · `feel=<FEEL>` (script, last) · service/send: `retries=3`, `header.k=v` · user: `assignee=` `groups=a;b` `users=` `due=P2D` `priority=0-100`.
-- A rule task's id is its DMN decision id: pass the `.dmn` too, `casen build order.txt risk.dmn --deploy`.
+- A rule task calls `decision=<id>`; without it, its name kebab-cased (`risk[rule Assess risk]` calls `assess-risk`). Pass the `.dmn` too: `casen build order.txt risk.dmn --deploy`.
 
 ## 2. Pools, lanes, message flows, data
 
@@ -68,7 +68,7 @@ bank ~> paid: Payment confirmed
 
 - `## Name | id=<process id>` starts a pool with its own process; `## Name | blackbox` a partner pool without one (its id: `id=` or the name in lower case).
 - `### Lane`: nodes declared after it go in that lane; repeat a header to switch back. Gateways and events the reader adds follow their neighbours.
-- `a ~> b: label` is a message flow; `a` and `b` are node ids or pool ids, in different pools.
+- `a ~> b: label` is a message flow; `a` and `b` are node ids or pool ids, in different pools. A plain `start` it reaches becomes a message start. A same-name `store` in several pools is one data store.
 - `d[object Name] ..> task`: the task reads it; `task ..> d[store Name]`: the task writes it. `objects` marks a collection.
 - `sp[sub Name]`, then `sp {`, its paths (own start and end), `}`: an expanded sub-process. Bodies nest.
 - `n[annotation Text]`: a text annotation, on the collaboration when written before the first `##`; `n[annotation Text] ..> task` links it.
@@ -104,6 +104,6 @@ Event sub-processes, transactions, compensation, groups, nested lanes, a collaps
 
 - A finding reads `✖ order.bpmn pay: <message> [<rule id>, .bpmnlintrc "<key>"]`: the key is what c8ctl lint calls the rule. Fix the model; do not silence rules unless the task says so.
 - Deploy ids: `formId` and decision ids must equal the deployed form's and decision's ids. Generated forms already do; a hand-written `.form` next to the output is used instead of generating one with its id.
-- A message caught after the start needs `key=` (`correlationKey`); a message start event or a message only thrown does not.
+- A message caught after the start needs `key=` (`correlationKey`); a message start event does not. A message only thrown keeps its message and takes the key the process waits with (else `=correlationKey`).
 - An event-based gateway (`eventgw`) is followed only by catch events.
 - `casen build` refuses what Camunda 8 cannot deploy, one line per problem, `- <id>: <message> (zeebe/<rule>)`, and writes nothing.

@@ -213,7 +213,9 @@
         },
         {
           "conditionExpression": {
-            "attributes": {},
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
             "text": "= retry"
           },
           "extensionElements": [],

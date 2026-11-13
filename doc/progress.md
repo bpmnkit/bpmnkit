@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-11-13 — `casen build` collaboration fidelity and layout (judge findings on S16X)
+
+- Conditions: `expand` (TS + Rust) writes `conditionExpression xsi:type="bpmn:tFormalExpression"`.
+- Rule tasks: `decision=<id>` in the line format; without it the decision id is the name kebab-cased (`Assess risk` → `assess-risk`, was the element id), listed in `fixes` (TS + Rust `bpmnkit-text`).
+- Message throws keep `messageRef`: `keyThrownMessages` (replaces `dropThrowOnlyMessages`) shares the caught message of the same name, else gives the message the process's correlation key, so real camunda-compat `subscription` (it checks ThrowEvents too) stays clean. Send tasks keep theirs.
+- Text spec: a same-name `store` in several pools is one `bpmn:dataStore`; a plain `start` that a message flow reaches becomes a message start (message named from the flow label).
+- Layout (TS + Rust): black-box pools prefer the top/bottom edge (soft, one pool step; hard pinning measured worse); message flows get label DI in the band between pools, off other labels, shapes and flows; an event's name moves above (or beside) a message flow docking under it.
+- Measured on a 5-pool spec (shared store, DMN task, 3 message ends, sub-process): labels crossed by flows 4 → 0, shape cuts 0 → 0, label overlaps 0 → 0 (9 message labels added), edge crossings 1 → 1; S16X: labels crossed 2 → 0. Both lint clean in `casen build` and real bpmnlint 11 + `camunda-cloud-8-10`. Conformance re-recorded.
+
 ## 2026-11-13 — `casen build`: sub-processes, conditional events, free annotations in the text spec; edits that keep the file
 
 - Text spec (`build-spec.ts`): `sp[sub Name]` + an `sp {` … `}` body (nests; ids renamed on collision) is an expanded sub-process; `start:condition` / `catch:condition` + `cond=<FEEL>`; `n[annotation Text]` free (collaboration before the first `##`, else the pool's process) and `n[annotation Text] ..> node` linked, with DI (collaboration notes in a row above the pools). A timer start with a non-literal `at=` is one problem line. An unknown kind is one line naming the fallback (builder module, card "Not in the text spec") instead of `used task` + `nothing written`.

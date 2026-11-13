@@ -22,7 +22,7 @@
             "type": "intermediateCatchEvent"
           },
           {
-            "decisionId": "d",
+            "decisionId": "check-credit",
             "id": "d",
             "name": "Check credit",
             "type": "businessRuleTask"
@@ -85,7 +85,8 @@
   },
   "fixes": [
     "joined 2 flows into \"e\" with and gateway \"e_join\"",
-    "named 2 unnamed element(s) from their ids"
+    "named 2 unnamed element(s) from their ids",
+    "\"d\" calls decision \"check-credit\"; set decision= to call another"
   ],
   "problems": [],
   "questions": []

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:message id="Message_s2" name="s2"/>
   <bpmn:process id="Process_1" isExecutable="true">
     <bpmn:startEvent id="s" name="S">
@@ -41,14 +41,14 @@
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_1" sourceRef="s" targetRef="check"/>
     <bpmn:sequenceFlow id="Flow_2" sourceRef="check" targetRef="review" name="Yes: applicant is eligible">
-      <bpmn:conditionExpression>= eligible = true</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= eligible = true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_3" sourceRef="review" targetRef="a"/>
     <bpmn:sequenceFlow id="Flow_4" sourceRef="check" targetRef="reject" name="No: applicant not eligible"/>
     <bpmn:sequenceFlow id="Flow_5" sourceRef="reject" targetRef="b"/>
     <bpmn:sequenceFlow id="Flow_6" sourceRef="s2" targetRef="g"/>
     <bpmn:sequenceFlow id="Flow_7" sourceRef="g" targetRef="big" name="Yes">
-      <bpmn:conditionExpression>= amount &gt; 1000</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= amount &gt; 1000</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_8" sourceRef="g" targetRef="small" name="No: amount is small"/>
   </bpmn:process>

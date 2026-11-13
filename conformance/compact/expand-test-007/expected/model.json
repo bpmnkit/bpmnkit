@@ -195,7 +195,9 @@
         },
         {
           "conditionExpression": {
-            "attributes": {},
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
             "text": "= total > 10000"
           },
           "extensionElements": [],

@@ -19,7 +19,7 @@ import type { Command, CommandGroup } from "../types.js"
 import {
 	BUILD_SPEC_GUIDE,
 	compileTextSpec,
-	dropThrowOnlyMessages,
+	keyThrownMessages,
 	splitMixedGateways,
 } from "./build-spec.js"
 import { type CheckRow, checkFiles } from "./check.js"
@@ -383,7 +383,7 @@ const buildCmd: Command = {
 				// The preserving writer keeps the root tag as it was.
 				if (camunda !== undefined) xml = withPlatformVersion(xml, defs)
 			} else {
-				dropThrowOnlyMessages(defs)
+				keyThrownMessages(defs)
 				if (defs.diagrams.length === 0) defs = applyAutoLayout(defs)
 				xml = Bpmn.export(defs)
 			}

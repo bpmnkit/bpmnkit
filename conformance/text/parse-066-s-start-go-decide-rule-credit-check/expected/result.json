@@ -11,7 +11,7 @@
             "type": "startEvent"
           },
           {
-            "decisionId": "decide",
+            "decisionId": "credit-check",
             "id": "decide",
             "name": "Credit check",
             "type": "businessRuleTask"
@@ -84,7 +84,8 @@
   "fixes": [
     "split the flows out of \"decide\" with xor gateway \"decide_split\"",
     "made decide_split > no the default branch of \"decide_split\"",
-    "gave decide_split > ok the condition \"= creditCheckOutcome = \"Approve loan\"\""
+    "gave decide_split > ok the condition \"= creditCheckOutcome = \"Approve loan\"\"",
+    "\"decide\" calls decision \"credit-check\"; set decision= to call another"
   ],
   "problems": [],
   "questions": [

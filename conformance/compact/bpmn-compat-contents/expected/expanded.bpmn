@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_contents" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_contents" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:message id="Message_webhook" name="webhook"/>
   <bpmn:message id="Message_secret" name="secret">
     <bpmn:extensionElements>
@@ -187,7 +187,7 @@
     <bpmn:sequenceFlow id="toLoopA" sourceRef="start" targetRef="loopA"/>
     <bpmn:sequenceFlow id="toLoopGateway" sourceRef="loopA" targetRef="loopGateway"/>
     <bpmn:sequenceFlow id="toLoopB" sourceRef="loopGateway" targetRef="loopB">
-      <bpmn:conditionExpression>=is blank(reason)</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=is blank(reason)</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="toEnd" sourceRef="loopGateway" targetRef="end"/>
     <bpmn:sequenceFlow id="backToA" sourceRef="loopB" targetRef="loopA"/>

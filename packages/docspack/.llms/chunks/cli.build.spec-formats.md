@@ -28,8 +28,15 @@ bank ~> paid: Payment confirmed
 A timer start takes only a literal date (`at=2026-01-31T09:00:00Z`). What the text spec cannot
 express (event sub-processes, transactions, compensation, groups) is reported in one line that
 points to a builder module. A module's model gets the same completions as a text spec: a gateway
-that both joins and splits gets a merge gateway in front, and a message that is only thrown is
-unlinked.
+that both joins and splits gets a merge gateway in front, and a message that is only thrown keeps
+its `messageRef`: it shares the caught message of the same name, or takes the correlation key the
+process waits with, so camunda-compat's `subscription` rule stays clean.
+
+A plain `start` that a message flow reaches becomes a message start; a `store` with the same name in
+several pools is one `bpmn:dataStore`; a rule task calls `decision=<id>`, else its name kebab-cased.
+In the layout, black-box pools go to the top or bottom when that costs the messages nothing,
+message flows carry their label in the band between pools, and an event's name moves above a
+message flow that docks under it.
 
 ---
 Source: https://bpmnkit.com/docs/cli/build

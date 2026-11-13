@@ -436,7 +436,10 @@ fn sequence_flow(f: &CompactFlow) -> BpmnSequenceFlow {
         condition_expression: f.condition.as_ref().filter(|c| !c.is_empty()).map(|c| {
             BpmnConditionExpression {
                 text: to_feel_condition(c),
-                attributes: Attrs::new(),
+                attributes: Attrs::from_iter([(
+                    "xsi:type".to_owned(),
+                    "bpmn:tFormalExpression".to_owned(),
+                )]),
             }
         }),
         ..BpmnSequenceFlow::default()

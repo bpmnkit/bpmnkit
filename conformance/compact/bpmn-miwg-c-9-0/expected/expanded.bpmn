@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="_5SVkEIXnEeSmwfgVk-ryvQ" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="_5SVkEIXnEeSmwfgVk-ryvQ" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:error id="Error_x" name="00" errorCode="00"/>
   <bpmn:error id="Error_x_2" name="02" errorCode="02"/>
   <bpmn:message id="Message_Message_CancellationRequested" name="Message_CancellationRequested">
@@ -196,21 +196,21 @@
     <bpmn:sequenceFlow id="SequenceFlow_01vh1zw" sourceRef="ServiceTask_RejectPolicy" targetRef="SendTask_SendRejection"/>
     <bpmn:sequenceFlow id="SequenceFlow_13" sourceRef="SendTask_SendRejection" targetRef="EndEvent_ApplicationRejected"/>
     <bpmn:sequenceFlow id="SequenceFlow_Red" sourceRef="ExclusiveGateway_Risk" targetRef="ServiceTask_RejectPolicy" name="Red (severe risk)">
-      <bpmn:conditionExpression>= some risk in riskLevels satisfies risk = "red"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= some risk in riskLevels satisfies risk = "red"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_2" sourceRef="BusinessRuleTask_CheckApplicationAutomatically" targetRef="ExclusiveGateway_Risk"/>
     <bpmn:sequenceFlow id="SequenceFlow_Green" sourceRef="ExclusiveGateway_Risk" targetRef="ServiceTask_DeliverPolicy" name="Green (no risk)"/>
     <bpmn:sequenceFlow id="SequenceFlow_10" sourceRef="ServiceTask_DeliverPolicy" targetRef="SendTask_SendPolicy"/>
     <bpmn:sequenceFlow id="SequenceFlow_11" sourceRef="SendTask_SendPolicy" targetRef="EndEvent_ApplicationIssued"/>
     <bpmn:sequenceFlow id="SequenceFlow_ApplicationAccepted" sourceRef="ExclusiveGateway_Decision" targetRef="ServiceTask_DeliverPolicy" name="Application accepted">
-      <bpmn:conditionExpression>= approved </bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= approved </bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_ApplicationDeclined" sourceRef="ExclusiveGateway_Decision" targetRef="ServiceTask_RejectPolicy" name="Application declined">
-      <bpmn:conditionExpression>= not(approved)</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= not(approved)</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="SequenceFlow_6" sourceRef="StartEvent_ApplicationReceived" targetRef="ServiceTask_GetCreditScore"/>
     <bpmn:sequenceFlow id="SequenceFlow_Yellow" sourceRef="ExclusiveGateway_Risk" targetRef="Activity_ManualCheck" name="Yellow (moderate risk)">
-      <bpmn:conditionExpression>= every risk in riskLevels satisfies risk = "yellow"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= every risk in riskLevels satisfies risk = "yellow"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_0ik8h65" sourceRef="Activity_ManualCheck" targetRef="ExclusiveGateway_Decision"/>
     <bpmn:sequenceFlow id="Flow_177paze" sourceRef="ErrorBoundaryEvent_FraudDetected" targetRef="SendTask_ReportFraud"/>
