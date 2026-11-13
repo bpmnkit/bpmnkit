@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-13 — Builder lanes: `inLane()` and `{ lane }`
+
+- `ProcessBuilder`/`BranchBuilder.inLane(id, { name })` and a per-node `lane` option build a `laneSet` (first-use order). Branch-scoped switch, boundary events follow the host, inferred joins follow their split, sub-process contents stay out. A process that uses lanes must put every top-level node in one: `build()` lists the rest. Auto-layout already draws the bands. Spec: `docs/superpowers/specs/2026-11-13-builder-lanes-design.md`; tests `packages/core/tests/builder-lanes.test.ts`.
+- Agent card replaces "no lane API yet" with the lane rules and a tiny example; `builder-reference.md` regenerated; agent cards synced; changeset added.
+
 ## 2026-11-13 — Agent docs: pools, message flows, compact path
 
 - BPMN agent card (source `apps/cli/agent-cards/bpmn.md`): "Pools and message flows" section with one runnable `createDiagram` example (two pools, a black box, message flows; shapes via `applyAutoLayout`), compact-mode pointer for small new single-pool processes (lossy for pools/lanes/message flows/data stores), "tiny edit = edit the XML, structural = preserving script" rule, an explicit "no lane API yet" note, annotation/data-store pointers.

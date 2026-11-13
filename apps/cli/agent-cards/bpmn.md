@@ -82,7 +82,20 @@ const report = lintDiagram(Bpmn.parse(xml))
 if (report.counts.error > 0) process.exit(1)
 ```
 
-- **Lanes:** the builder has no lane API yet; do not search for one. Model roles with `candidateGroups`/`assignee`, or pools.
+- **Lanes:** `.inLane(id, { name })` puts the nodes after it in that lane (lanes stack top to bottom in first-use order); inside a `branch()` callback it applies to that branch only. `{ lane: id }` on one node overrides it. Once any lane is used, every top-level flow node needs one (`build()` names the rest); boundary events follow their host; sub-process contents are not lane members. No nested lanes.
+
+```ts
+import { Bpmn } from "@bpmnkit/core"
+
+Bpmn.createProcess("p")
+	.withAutoLayout()
+	.inLane("sales", { name: "Sales" })
+	.startEvent("s", { name: "Start" })
+	.inLane("ops", { name: "Ops" })
+	.serviceTask("t", { name: "Ship", taskType: "ship" })
+	.endEvent("e", { name: "Done", lane: "sales" })
+	.build()
+```
 - **Small new single-pool process:** write `CompactDiagram` JSON and run `casen generate bpmn --definition '<json>'` (schema: `--help`), or `expand(compact)`. Lossy for pools, lanes, message flows and data stores: never round-trip an existing file through it.
 - **Annotations, data stores:** `.annotate(id, text)`, `.dataStoreReference(id, ref)`; see `builder-reference.md`.
 

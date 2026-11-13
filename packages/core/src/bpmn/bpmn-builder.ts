@@ -14,6 +14,8 @@ import type {
 	BpmnEscalation,
 	BpmnEventDefinition,
 	BpmnFlowElement,
+	BpmnLane,
+	BpmnLaneSet,
 	BpmnMessage,
 	BpmnMessageFlow,
 	BpmnMultiInstanceLoopCharacteristics,
@@ -67,9 +69,17 @@ const EXPORTER_VERSION = "0.0.23"
 // Option types
 // ---------------------------------------------------------------------------
 
+/** Options for {@link ProcessBuilder.inLane}. */
+export interface LaneOptions {
+	/** Label shown on the lane; defaults to its id. */
+	name?: string
+}
+
 /** Options shared by all element methods. */
 export interface ElementOptions {
 	name?: string
+	/** Lane of this node only, overriding the one `inLane()` set; declared on first use. */
+	lane?: string
 	isForCompensation?: boolean
 	/** Free-text documentation (`<bpmn:documentation>`). Used by the AI Agent connector as a tool description. */
 	documentation?: string
@@ -143,6 +153,8 @@ export interface StartEventOptions extends ElementOptions {
 
 /** Options for creating a service task. */
 export interface ServiceTaskOptions {
+	/** Lane of this node only, overriding the one `inLane()` set; declared on first use. */
+	lane?: string
 	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
 	executionListeners?: ZeebeListener[]
 	/** Runs the activity once per item of a list. */
@@ -180,6 +192,8 @@ export interface ServiceTaskOptions {
 
 /** Options for creating a script task. */
 export interface ScriptTaskOptions {
+	/** Lane of this node only, overriding the one `inLane()` set; declared on first use. */
+	lane?: string
 	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
 	executionListeners?: ZeebeListener[]
 	/** Runs the activity once per item of a list. */
@@ -198,6 +212,8 @@ export interface ScriptTaskOptions {
 
 /** Options for creating a user task. */
 export interface UserTaskOptions {
+	/** Lane of this node only, overriding the one `inLane()` set; declared on first use. */
+	lane?: string
 	/** Listeners on the user task's own lifecycle (`zeebe:taskListeners`); needs `zeebeUserTask`. */
 	taskListeners?: ZeebeListener[]
 	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
@@ -258,6 +274,8 @@ export interface UserTaskOptions {
 
 /** Options for creating a call activity. */
 export interface CallActivityOptions {
+	/** Lane of this node only, overriding the one `inLane()` set; declared on first use. */
+	lane?: string
 	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
 	executionListeners?: ZeebeListener[]
 	/** Runs the activity once per item of a list. */
@@ -296,6 +314,8 @@ export interface CallActivityOptions {
 
 /** Options for creating a business rule task. */
 export interface BusinessRuleTaskOptions {
+	/** Lane of this node only, overriding the one `inLane()` set; declared on first use. */
+	lane?: string
 	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
 	executionListeners?: ZeebeListener[]
 	/** Runs the activity once per item of a list. */
@@ -912,11 +932,90 @@ const MESSAGE_JOB_TYPES = new Set<BpmnElementType>([
 	"endEvent",
 ])
 
+/** Per-node `lane` option, read when the owning builder adds the element. */
+const laneOverride = new WeakMap<BpmnFlowElement, string>()
+
+/**
+ * Lane bookkeeping shared by a process builder and its gateway branches (never by
+ * sub-process contents: nodes inside a sub-process are not lane members).
+ */
+class LaneState {
+	/** Lane id -> name, in first-use order (top to bottom). */
+	readonly names = new Map<string, string | undefined>()
+	readonly membership = new Map<string, string>()
+	current: string | undefined
+
+	declare(id: string, name?: string): void {
+		if (id === "") throw new Error("inLane() needs a non-empty lane id")
+		if (!this.names.has(id) || (name !== undefined && this.names.get(id) === undefined)) {
+			this.names.set(id, name)
+		}
+	}
+
+	enter(id: string, name?: string): void {
+		this.declare(id, name)
+		this.current = id
+	}
+
+	record(el: BpmnFlowElement): void {
+		// A boundary event rides on its host's lane (as bpmn-js lists it); resolved at build.
+		if (el.type === "boundaryEvent") return
+		const lane = laneOverride.get(el) ?? this.current
+		if (lane === undefined) return
+		this.declare(lane)
+		this.membership.set(el.id, lane)
+	}
+
+	/** Runs `fn`, then puts back the lane that was current before it. */
+	scoped(fn: () => void): void {
+		const saved = this.current
+		try {
+			fn()
+		} finally {
+			this.current = saved
+		}
+	}
+
+	/** The process's lane set, or undefined when no lane was used. */
+	toLaneSet(
+		processId: string,
+		elements: BpmnFlowElement[],
+		inferredFrom: number,
+	): BpmnLaneSet | undefined {
+		if (this.names.size === 0) return undefined
+		const laneOf = new Map(this.membership)
+		// Joins inferred at build() sit on the lane of the split they close.
+		for (const el of elements.slice(inferredFrom)) {
+			const lane = laneOf.get(el.id.replace(/_join$/, ""))
+			if (lane !== undefined) laneOf.set(el.id, lane)
+		}
+		for (const el of elements) {
+			if (el.type !== "boundaryEvent" || !el.attachedToRef) continue
+			const lane = laneOf.get(el.attachedToRef)
+			if (lane !== undefined) laneOf.set(el.id, lane)
+		}
+		const missing = elements.filter((el) => !laneOf.has(el.id)).map((el) => el.id)
+		if (missing.length > 0) {
+			throw new Error(
+				`Process "${processId}" uses lanes, so every flow node needs one; no lane for: ${missing.join(", ")}. Call inLane(id) before them or pass { lane } on the node. See agent-cards/bpmn.md#traps.`,
+			)
+		}
+		const lanes: BpmnLane[] = [...this.names].map(([id, name]) => ({
+			id,
+			name: name ?? id,
+			flowNodeRefs: elements.filter((el) => laneOf.get(el.id) === id).map((el) => el.id),
+			unknownAttributes: {},
+		}))
+		return { id: `${processId}_laneSet`, lanes }
+	}
+}
+
 function makeFlowElement(
 	id: string,
 	type: BpmnElementType,
 	options?: {
 		name?: string
+		lane?: string
 		extensionElements?: XmlElement[]
 		documentation?: string
 		executionListeners?: ZeebeListener[]
@@ -926,6 +1025,7 @@ function makeFlowElement(
 	},
 ): BpmnFlowElement {
 	const el = createFlowElement(id, type, options)
+	if (options?.lane !== undefined) laneOverride.set(el, options.lane)
 	el.extensionElements = [...el.extensionElements]
 	if (options?.taskType !== undefined && MESSAGE_JOB_TYPES.has(type)) {
 		el.extensionElements.push(
@@ -1271,6 +1371,7 @@ function makeServiceTaskEl(id: string, options: ServiceTaskOptions): BpmnFlowEle
 		unknownAttributes["zeebe:modelerTemplateIcon"] = options.modelerTemplateIcon
 	const el = makeFlowElement(id, "serviceTask", {
 		name: options.name,
+		lane: options.lane,
 		documentation: options.documentation,
 		extensionElements: buildServiceTaskExtensions(options),
 		executionListeners: options.executionListeners,
@@ -1285,6 +1386,7 @@ function makeServiceTaskEl(id: string, options: ServiceTaskOptions): BpmnFlowEle
 function makeScriptTaskEl(id: string, options: ScriptTaskOptions): BpmnFlowElement {
 	const el = makeFlowElement(id, "scriptTask", {
 		name: options.name,
+		lane: options.lane,
 		documentation: options.documentation,
 		executionListeners: options.executionListeners,
 		extensionElements: zeebeExtensionsToXmlElements({
@@ -1322,6 +1424,7 @@ function applyModelerTemplate(
 function makeStartEventEl(id: string, options?: StartEventOptions): BpmnFlowElement {
 	const el = makeFlowElement(id, "startEvent", {
 		name: options?.name,
+		lane: options?.lane,
 		documentation: options?.documentation,
 		executionListeners: options?.executionListeners,
 		extensionElements: zeebeExtensionsToXmlElements({
@@ -1381,6 +1484,7 @@ function makeUserTaskEl(id: string, options?: UserTaskOptions): BpmnFlowElement 
 	})
 	const el = makeFlowElement(id, "userTask", {
 		name: options?.name,
+		lane: options?.lane,
 		documentation: options?.documentation,
 		executionListeners: options?.executionListeners,
 		taskListeners: options?.taskListeners,
@@ -1435,6 +1539,7 @@ function makeBusinessRuleTaskEl(id: string, options?: BusinessRuleTaskOptions): 
 	}
 	const el = makeFlowElement(id, "businessRuleTask", {
 		name: options?.name,
+		lane: options?.lane,
 		documentation: options?.documentation,
 		executionListeners: options?.executionListeners,
 		extensionElements: ext,
@@ -1462,6 +1567,7 @@ function makeCallActivityEl(id: string, options: CallActivityOptions): BpmnFlowE
 	}
 	const el = makeFlowElement(id, "callActivity", {
 		name: options.name,
+		lane: options.lane,
 		documentation: options.documentation,
 		executionListeners: options.executionListeners,
 		extensionElements: zeebeExtensionsToXmlElements(extensions),
@@ -1770,6 +1876,8 @@ export class BranchBuilder {
 	private readonly rootSignals: BpmnSignal[]
 	private readonly rootEscalations: BpmnEscalation[]
 	private readonly rootLayoutHints: Required<LayoutHints>
+	/** Absent inside a sub-process, whose nodes are not lane members. */
+	private readonly lanes: LaneState | undefined
 
 	/** @internal */
 	constructor(
@@ -1780,7 +1888,9 @@ export class BranchBuilder {
 		rootSignals: BpmnSignal[] = [],
 		rootEscalations: BpmnEscalation[] = [],
 		rootLayoutHints: Required<LayoutHints> = emptyLayoutHints(),
+		lanes?: LaneState,
 	) {
+		this.lanes = lanes
 		this.gatewayId = gatewayId
 		this.branchName = branchName
 		this.lastNodeId = gatewayId
@@ -1834,9 +1944,17 @@ export class BranchBuilder {
 		if (this.pendingFlowId !== undefined) markExplicitFlowId(flow)
 	}
 
+	/** Moves the rest of this branch (and branches nested in it) to a lane; undone when the branch ends. */
+	inLane(id: string, options?: LaneOptions): this {
+		if (!this.lanes) throw new Error("inLane() is not available inside a sub-process.")
+		this.lanes.enter(id, options?.name)
+		return this
+	}
+
 	private addElement(element: BpmnFlowElement): this {
 		this._elements.push(element)
 		this._ids.add(element.id)
+		this.lanes?.record(element)
 
 		if (isLinkEvent(element, "intermediateCatchEvent")) {
 			this.isFirstElement = false
@@ -2291,6 +2409,7 @@ export class BranchBuilder {
 		)
 		const element = makeFlowElement(id, "adHocSubProcess", {
 			name: resolved.options?.name,
+			lane: resolved.options?.lane,
 			documentation: resolved.options?.documentation,
 			executionListeners: resolved.options?.executionListeners,
 			extensionElements,
@@ -2349,8 +2468,9 @@ export class BranchBuilder {
 			this.rootSignals,
 			this.rootEscalations,
 			this.rootLayoutHints,
+			this.lanes,
 		)
-		callback(b)
+		this.lanes?.scoped(() => callback(b))
 
 		for (const el of b._elements) {
 			if (this._ids.has(el.id)) {
@@ -2929,6 +3049,7 @@ export class SubProcessContentBuilder {
 		)
 		const element = makeFlowElement(id, "adHocSubProcess", {
 			name: resolved.options?.name,
+			lane: resolved.options?.lane,
 			documentation: resolved.options?.documentation,
 			executionListeners: resolved.options?.executionListeners,
 			extensionElements,
@@ -3008,6 +3129,7 @@ export class ProcessBuilder {
 	private _pendingSpliceFlowId: string | undefined
 	/** Flows the caller deliberately spliced, exempt from the rewiring guard. */
 	private readonly _splicedFlowIds = new Set<string>()
+	private readonly lanes = new LaneState()
 
 	constructor(processId: string) {
 		this.processId = processId
@@ -3647,8 +3769,9 @@ export class ProcessBuilder {
 			this.rootSignals,
 			this.rootEscalations,
 			this.rootLayoutHints,
+			this.lanes,
 		)
-		callback(b)
+		this.lanes.scoped(() => callback(b))
 
 		for (const el of b._elements) {
 			if (this.elementIds.has(el.id)) {
@@ -3751,6 +3874,7 @@ export class ProcessBuilder {
 		)
 		const element = makeFlowElement(id, "adHocSubProcess", {
 			name: resolved.options?.name,
+			lane: resolved.options?.lane,
 			documentation: resolved.options?.documentation,
 			executionListeners: resolved.options?.executionListeners,
 			extensionElements,
@@ -3977,7 +4101,15 @@ export class ProcessBuilder {
 		}
 		recomputeIncomingOutgoing(elements, flows)
 
-		if (this._source !== undefined) return this.buildOntoSource(this._source, elements, flows)
+		if (this._source !== undefined) {
+			if (this.lanes.names.size > 0) {
+				throw new Error(
+					"inLane() and { lane } build new lanes; they cannot be combined with ProcessBuilder.from(), which keeps the document's own lanes.",
+				)
+			}
+			return this.buildOntoSource(this._source, elements, flows)
+		}
+		const laneSet = this.lanes.toLaneSet(this.processId, elements, beforeCount)
 
 		const extensionElements: XmlElement[] = embeddedFormElements(elements)
 		if (this._versionTag) {
@@ -4000,6 +4132,7 @@ export class ProcessBuilder {
 			groups: [],
 			unknownAttributes: {},
 		}
+		if (laneSet) process.laneSet = laneSet
 
 		const defs: BpmnDefinitions = {
 			id: "Definitions_1",
@@ -4170,10 +4303,28 @@ export class ProcessBuilder {
 		}
 	}
 
+	/**
+	 * Puts the nodes that follow in lane `id`, declaring it on first use (top to
+	 * bottom in first-use order); a later call may name it. Inside a `branch()`
+	 * callback it changes the lane for that branch only. Once any lane is used,
+	 * every top-level flow node needs one, or `build()` throws.
+	 *
+	 * @example
+	 * ```ts
+	 * Bpmn.createProcess("p").inLane("sales", { name: "Sales" }).startEvent("s")
+	 *   .inLane("ops").serviceTask("t", { taskType: "x" }).endEvent("e").build()
+	 * ```
+	 */
+	inLane(id: string, options?: LaneOptions): this {
+		this.lanes.enter(id, options?.name)
+		return this
+	}
+
 	private addFlowElement(element: BpmnFlowElement): void {
 		if (this.elementIds.has(element.id)) {
 			throw new Error(`Duplicate element ID "${element.id}" in process "${this.processId}"`)
 		}
+		this.lanes.record(element)
 
 		this.flowElements.push(element)
 		this.elementIds.add(element.id)
