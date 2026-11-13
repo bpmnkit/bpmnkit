@@ -338,8 +338,6 @@ function compactifyElement(el: BpmnFlowElement, roots: RootDefinitions): Compact
 
 	const jobType = findAttr(ext, "zeebe:taskDefinition", "type")
 	if (jobType) result.jobType = jobType
-	const retries = findAttr(ext, "zeebe:taskDefinition", "retries")
-	if (retries) result.retries = retries
 
 	// Extract task headers (key→value map from zeebe:taskHeaders children). A connector's
 	// result variable is a header; it is kept apart to round-trip as `resultVariable`.
