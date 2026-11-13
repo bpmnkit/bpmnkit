@@ -6,7 +6,7 @@
 
 Writing a BPMN process, DMN decision or form? Read its agent card first: a runnable script, the top options and the traps (`casen agent-card bpmn|dmn|form` prints the same card).
 
-- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 5 chunks, 1787 tokens
+- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 5 chunks, 2135 tokens
 - [DMN agent card](.llms/chunks/agent-cards.dmn.md) — 5 chunks, 1331 tokens
 - [Form agent card](.llms/chunks/agent-cards.form.md) — 4 chunks, 876 tokens
 
@@ -19,11 +19,11 @@ npx bpmnkit-docs ask "how do I deploy a process"
 
 ## agent-cards
 
-- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 434 tokens
-- [BPMN agent card — 1. One pool](.llms/chunks/agent-cards.bpmn.1.-one-pool.md) — 436 tokens
-- [BPMN agent card — 2. Pools, lanes, message flows, data](.llms/chunks/agent-cards.bpmn.2.-pools-lanes-message-flows-data.md) — 314 tokens
-- [BPMN agent card — 3. Edit an existing file](.llms/chunks/agent-cards.bpmn.3.-edit-an-existing-file.md) — 409 tokens
-- [BPMN agent card — Traps](.llms/chunks/agent-cards.bpmn.traps.md) — 194 tokens
+- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 437 tokens
+- [BPMN agent card — 1. One pool](.llms/chunks/agent-cards.bpmn.1.-one-pool.md) — 493 tokens
+- [BPMN agent card — 2. Pools, lanes, message flows, data](.llms/chunks/agent-cards.bpmn.2.-pools-lanes-message-flows-data.md) — 465 tokens
+- [BPMN agent card — 3. Edit an existing file](.llms/chunks/agent-cards.bpmn.3.-edit-an-existing-file.md) — 444 tokens
+- [BPMN agent card — Not in the text spec](.llms/chunks/agent-cards.bpmn.not-in-the-text-spec.md) — 296 tokens
 - [DMN agent card](.llms/chunks/agent-cards.dmn.md) — 433 tokens
 - [DMN agent card — Several decisions in one file: `Dmn.drd()`](.llms/chunks/agent-cards.dmn.several-decisions-in-one-file-dmn.drd.md) — 299 tokens
 - [DMN agent card — Top builder options](.llms/chunks/agent-cards.dmn.top-builder-options.md) — 188 tokens
@@ -37,9 +37,9 @@ npx bpmnkit-docs ask "how do I deploy a process"
 ## cli
 
 - [casen build](.llms/chunks/cli.build.md) — 134 tokens
-- [casen build — Spec formats](.llms/chunks/cli.build.spec-formats.md) — 267 tokens
-- [casen build — Editing an existing file](.llms/chunks/cli.build.editing-an-existing-file.md) — 189 tokens
-- [casen build — Options](.llms/chunks/cli.build.options.md) — 219 tokens
+- [casen build — Spec formats](.llms/chunks/cli.build.spec-formats.md) — 440 tokens
+- [casen build — Editing an existing file](.llms/chunks/cli.build.editing-an-existing-file.md) — 174 tokens
+- [casen build — Findings](.llms/chunks/cli.build.findings.md) — 326 tokens
 - [casen CLI](.llms/chunks/cli.casen.md) — 783 tokens
 - [casen CLI — Generate BPMN files](.llms/chunks/cli.casen.generate-bpmn-files.md) — 195 tokens
 - [casen CLI — Start from a gallery template](.llms/chunks/cli.casen.start-from-a-gallery-template.md) — 151 tokens

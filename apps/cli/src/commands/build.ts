@@ -16,7 +16,12 @@ import {
 	placeNewShapes,
 } from "@bpmnkit/core"
 import type { Command, CommandGroup } from "../types.js"
-import { BUILD_SPEC_GUIDE, compileTextSpec, dropThrowOnlyMessages } from "./build-spec.js"
+import {
+	BUILD_SPEC_GUIDE,
+	compileTextSpec,
+	dropThrowOnlyMessages,
+	splitMixedGateways,
+} from "./build-spec.js"
 import { type CheckRow, checkFiles } from "./check.js"
 import { deployResources } from "./deploy.js"
 import { bpmnlintrcKey } from "./lint.js"
@@ -92,7 +97,40 @@ function findingLine(r: CheckRow): string {
 	const at = r.elementId ? `${r.elementId}: ` : ""
 	const key = bpmnlintrcKey(r.rule)
 	const rule = key === undefined ? r.rule : `${r.rule}, .bpmnlintrc "${key}"`
-	return `${symbol} ${basename(r.file)} ${at}${r.message} [${rule}]`
+	const hint = key === undefined ? undefined : HINTS[key]
+	return `${symbol} ${basename(r.file)} ${at}${r.message}${hint ? `; ${hint}` : ""} [${rule}]`
+}
+
+/**
+ * The rules `bpmnlint:recommended` (what c8ctl and Modeler lint extend) sets to
+ * "error": the kit reports some of them as warnings, but c8ctl fails on them.
+ */
+const RECOMMENDED_ERRORS = new Set([
+	"ad-hoc-sub-process",
+	"conditional-flows",
+	"end-event-required",
+	"event-based-gateway",
+	"event-sub-process-typed-start-event",
+	"label-required",
+	"link-event",
+	"no-bpmndi",
+	"no-complex-gateway",
+	"no-disconnected",
+	"no-duplicate-sequence-flows",
+	"no-gateway-join-fork",
+	"no-implicit-split",
+	"no-implicit-end",
+	"no-implicit-start",
+	"single-blank-start-event",
+	"single-event-definition",
+	"start-event-required",
+	"sub-process-blank-start-event",
+])
+
+/** Extra words for a finding whose fix is not in its message. */
+const HINTS: Record<string, string> = {
+	"no-gateway-join-fork":
+		"put a merge gateway in front: connect the incoming paths to an exclusiveGateway that leads to it",
 }
 
 /**
@@ -108,7 +146,86 @@ async function lintBuilt(files: string[]): Promise<CheckRow[]> {
 			bpmnlintrcKey(r.rule) !== undefined &&
 			!seen.has(`${r.rule} ${r.elementId ?? ""}`),
 	)
+	for (const w of warnings)
+		if (RECOMMENDED_ERRORS.has(bpmnlintrcKey(w.rule) ?? "")) w.severity = "error"
 	return [...errors, ...warnings]
+}
+
+function elementIds(defs: BpmnDefinitions): Set<string> {
+	const ids = new Set<string>()
+	const visit = (elements: readonly core.BpmnFlowElement[]) => {
+		for (const el of elements) {
+			ids.add(el.id)
+			if ("flowElements" in el && Array.isArray(el.flowElements)) visit(el.flowElements)
+		}
+	}
+	for (const p of defs.processes) visit(p.flowElements)
+	return ids
+}
+
+/** `8.10` → `modeler:executionPlatformVersion="8.10.0"`, Camunda Cloud; other attributes kept. */
+function setPlatformVersion(defs: BpmnDefinitions, camunda: string): void {
+	if (!/^\d+\.\d+(?:\.\d+)?$/.test(camunda))
+		throw new Error(`--camunda takes a version like 8.10, not "${camunda}"`)
+	const version = /^\d+\.\d+$/.test(camunda) ? `${camunda}.0` : camunda
+	defs.unknownAttributes["modeler:executionPlatform"] = "Camunda Cloud"
+	defs.unknownAttributes["modeler:executionPlatformVersion"] = version
+	defs.namespaces.modeler ??= "http://camunda.org/schema/modeler/1.0"
+}
+
+/**
+ * An insertion rewires an existing flow (`a > b` becomes `a > new`); its old
+ * route still runs to `b` and would block the spot the new node belongs in.
+ * Drops those routes so placeNewShapes draws them again.
+ */
+function dropRewiredEdges(defs: BpmnDefinitions, before: BpmnDefinitions): void {
+	const ends = new Map<string, string>()
+	const visit = (flows: readonly core.BpmnSequenceFlow[], into: Map<string, string>) => {
+		for (const f of flows) into.set(f.id, `${f.sourceRef}>${f.targetRef}`)
+	}
+	const all = (d: BpmnDefinitions, into: Map<string, string>) => {
+		for (const p of d.processes) {
+			visit(p.sequenceFlows, into)
+			const inner = (elements: readonly core.BpmnFlowElement[]) => {
+				for (const el of elements)
+					if ("sequenceFlows" in el && Array.isArray(el.sequenceFlows)) {
+						visit(el.sequenceFlows, into)
+						inner(el.flowElements)
+					}
+			}
+			inner(p.flowElements)
+		}
+	}
+	all(before, ends)
+	const now = new Map<string, string>()
+	all(defs, now)
+	const rewired = new Set(
+		[...now].filter(([id, e]) => ends.has(id) && ends.get(id) !== e).map(([id]) => id),
+	)
+	if (rewired.size === 0) return
+	for (const d of defs.diagrams)
+		d.plane.edges = d.plane.edges.filter((e) => !rewired.has(e.bpmnElement))
+}
+
+/** Writes `defs`' platform attributes into the `<definitions>` start tag of `xml`. */
+function withPlatformVersion(xml: string, defs: BpmnDefinitions): string {
+	return xml.replace(/<([\w]+:)?definitions\b[^>]*>/, (tag) => {
+		let out = tag
+		const set = (name: string, value: string | undefined) => {
+			if (value === undefined) return
+			const attr = new RegExp(`\\s${name}="[^"]*"`)
+			out = attr.test(out)
+				? out.replace(attr, ` ${name}="${value}"`)
+				: out.replace(/\s*(\/?)>$/, ` ${name}="${value}"$1>`)
+		}
+		set("xmlns:modeler", defs.namespaces.modeler)
+		set("modeler:executionPlatform", defs.unknownAttributes["modeler:executionPlatform"])
+		set(
+			"modeler:executionPlatformVersion",
+			defs.unknownAttributes["modeler:executionPlatformVersion"],
+		)
+		return out
+	})
 }
 
 const buildCmd: Command = {
@@ -133,6 +250,12 @@ const buildCmd: Command = {
 		{
 			name: "edit",
 			description: "Existing .bpmn: the module gets (kit, model); existing shapes keep their place",
+			type: "string",
+		},
+		{
+			name: "camunda",
+			description:
+				"Target Camunda version, e.g. 8.10: sets the file's executionPlatformVersion (over a text spec's \"camunda=\")",
 			type: "string",
 		},
 		{
@@ -173,6 +296,10 @@ const buildCmd: Command = {
 		{
 			description: "Insert a task into an existing file, layout kept",
 			command: "casen build edit.mjs --edit order.bpmn",
+		},
+		{
+			description: "Edit and move the file to Camunda 8.10",
+			command: "casen build edit.mjs --edit order.bpmn --camunda 8.10",
 		},
 	],
 	async run(ctx) {
@@ -216,28 +343,45 @@ const buildCmd: Command = {
 			if (ctx.flags.verbose === true) for (const f of built.fixes) ctx.output.info(f)
 			if (built.problems.length > 0) {
 				for (const p of built.problems) process.stdout.write(`✖ ${basename(specPath)} ${p}\n`)
-				throw new Error(`${built.problems.length} problem(s) in the spec; nothing written`)
+				throw new Error(
+					`${built.problems.length} problem(s) in the spec; nothing written. Fix the lines above and run again`,
+				)
 			}
 			defs = built.definitions
 			fields = built.fields
 		}
 
+		if (MODULE_EXT.has(ext) && original === undefined && splitMixedGateways(defs).length > 0)
+			// A merge gateway was added: lay the new file out again.
+			defs.diagrams = []
+		const camunda =
+			ctx.flags.camunda === undefined || ctx.flags.camunda === true
+				? undefined
+				: String(ctx.flags.camunda)
+		if (camunda !== undefined) setPlatformVersion(defs, camunda)
+
 		const existingForms = await formsIn(outDir)
+		// An edit gives forms to the user tasks it adds; the ones already there stay as they are.
+		const before = original === undefined ? undefined : Bpmn.parse(original)
+		const skip = before === undefined ? undefined : elementIds(before)
 		const { forms } =
 			ctx.flags.forms === false
 				? { forms: [] }
-				: attachUserTaskForms(defs, { fields, existing: new Set(existingForms.keys()) })
+				: attachUserTaskForms(defs, { fields, existing: new Set(existingForms.keys()), skip })
 
 		let xml: string
 		let unplaced: { id: string; reason: string }[] = []
 		try {
 			if (original !== undefined) {
+				if (before) dropRewiredEdges(defs, before)
 				// Room first: placeNewShapes never moves a shape, so an insertion would land on the next one.
 				const placed = placeNewShapes(makeRoom(defs).definitions)
 				unplaced = placed.unplaced
 				// Gate the model before writing over the user's file.
 				Bpmn.export(placed.definitions)
 				xml = exportPreserving(original, placed.definitions)
+				// The preserving writer keeps the root tag as it was.
+				if (camunda !== undefined) xml = withPlatformVersion(xml, defs)
 			} else {
 				dropThrowOnlyMessages(defs)
 				if (defs.diagrams.length === 0) defs = applyAutoLayout(defs)
@@ -267,7 +411,10 @@ const buildCmd: Command = {
 			`${basename(out)}${forms.length > 0 ? ` + ${forms.length} form${forms.length === 1 ? "" : "s"} (${forms.map((f) => `${f.id}.form`).join(", ")})` : ""}`,
 		]
 		if (ctx.flags.lint !== false) {
-			const rows = await lintBuilt(files)
+			const rows = (await lintBuilt(files)).filter(
+				// A form an existing task links was missing before the edit too; deploying it is not this edit's job.
+				(r) => !(r.rule === "check/unresolved-form" && skip?.has(r.elementId ?? "")),
+			)
 			for (const r of rows) process.stdout.write(`${findingLine(r)}\n`)
 			const errors = rows.filter((r) => r.severity === "error").length
 			if (errors > 0)

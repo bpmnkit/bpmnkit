@@ -32,6 +32,15 @@ describe("attachUserTaskForms", () => {
 		expect(forms.map((f) => f.id)).toEqual(["expense-review"])
 	})
 
+	it("leaves the skipped elements as they are", () => {
+		const defs = build()
+		const { attached, forms } = attachUserTaskForms(defs, { skip: new Set(["review", "approve"]) })
+		expect(attached).toEqual([])
+		expect(forms).toEqual([])
+		const review = defs.processes[0]?.flowElements.find((e) => e.id === "review")
+		expect(review?.extensionElements).toEqual([])
+	})
+
 	it("reads the field list", () => {
 		expect(
 			parseFormFields("first name,due:date,decision:select(approve|reject),note:textarea"),

@@ -30,7 +30,73 @@ offer ..> db[store HR system]
 offer ~> candidate: Offer
 candidate ~> answer: Answer`
 
+const S16X = `# Hiring
+policy[annotation Hiring follows the company policy]
+## HR | id=hiring
+### Recruiter
+received[start:message Application received | msg=application] > screen[user Screen candidate] > interviews[sub Organise interviews] > decide[xor Hire?]
+interviews {
+  is[start Interviews needed] > plan[user Plan interviews] > hold[user Hold interview | each=interviewers] > ie[end Interviews held]
+}
+### Manager
+decide >(Yes: hire = true) offer[send Send offer | job=send-offer] > answer[catch Answer received | msg=answer key=candidateId] > hired[end Hired]
+decide >(No: default) reject[send Send rejection | job=send-rejection] > rejected[end Rejected]
+cv[object CV] ..> screen
+n2[annotation Offers need manager approval] ..> offer
+## Talent pool | id=talent
+opened[start:condition Headcount opened | cond=openings > 0] > search[service Search talent pool | job=search] > found[end Search done]
+## Candidate | blackbox
+candidate ~> received: Application
+offer ~> candidate: Offer
+candidate ~> answer: Answer`
+
 describe("compileTextSpec", () => {
+	it("builds sub-process bodies, conditional starts and free annotations, all drawn", () => {
+		const { definitions: d, problems } = compileTextSpec(S16X)
+		expect(problems).toEqual([])
+		const hiring = d.processes.find((p) => p.id === "hiring")
+		const sub = hiring?.flowElements.find((e) => e.id === "interviews")
+		expect(sub?.type).toBe("subProcess")
+		expect(sub && "flowElements" in sub && sub.flowElements.map((e) => e.id)).toEqual(
+			expect.arrayContaining(["is", "plan", "hold", "ie"]),
+		)
+		const opened = d.processes.find((p) => p.id === "talent")?.flowElements[0]
+		expect(opened && "eventDefinitions" in opened && opened.eventDefinitions[0]?.type).toBe(
+			"conditional",
+		)
+		expect(d.collaborations[0]?.textAnnotations.map((a) => a.id)).toEqual(["policy"])
+		expect(hiring?.textAnnotations.map((a) => a.id)).toEqual(["n2"])
+		expect(hiring?.associations.map((a) => [a.sourceRef, a.targetRef])).toEqual([["offer", "n2"]])
+		const shapes = new Map(d.diagrams[0]?.plane.shapes.map((s) => [s.bpmnElement, s]))
+		for (const id of ["policy", "n2", "interviews", "plan", "opened"])
+			expect(shapes.has(id), id).toBe(true)
+		expect(shapes.get("interviews")?.isExpanded).toBe(true)
+		// An annotation in a pool stays inside it.
+		const pool = shapes.get("Pool_hiring")?.bounds
+		const n2 = shapes.get("n2")?.bounds
+		expect(n2 && pool && n2.y + n2.height <= pool.y + pool.height).toBe(true)
+		const report = lintDiagram(Bpmn.parse(Bpmn.export(d)))
+		expect(report.diagnostics.filter((x) => x.severity === "error")).toEqual([])
+	})
+
+	it("says in one line what the spec cannot use and where to go instead", () => {
+		const problems = (text: string) => compileTextSpec(text).problems
+		expect(problems("s[start S] > x[subprocess X] > e[end E]")).toEqual([
+			'line 1: "x": kind "subprocess" is not in the text spec (kinds: casen build --help); write a builder module (.mjs) instead, see the card\'s "Not in the text spec"',
+		])
+		expect(problems("s[start S] > x[sub X] > e[end E]")).toEqual([
+			'"x": a sub-process needs its body: "x {" on its own line, its paths, then "}"',
+		])
+		expect(problems("s[start S] > x[sub X] > e[end E]\nx {\na[start A] > b[end B]")).toEqual([
+			'line 2: "x {" is not closed; end the body with "}"',
+		])
+		expect(problems("s[start S] > e[end E]\n}")).toEqual(['line 2: "}" closes no "id {" body'])
+		expect(problems("s[start:timer S | at==dueDate] > e[end E]")[0]).toMatch(
+			/^line 1: "s" at==dueDate: a timer start takes a literal date-time/,
+		)
+		expect(problems("s[start:timer S | at=2026-01-31T09:00:00Z] > e[end E]")).toEqual([])
+	})
+
 	it("builds one process with its id, version and form fields", () => {
 		const { definitions, fields, problems } = compileTextSpec(S04)
 		expect(problems).toEqual([])
@@ -236,6 +302,54 @@ describe("casen build", () => {
 		expect(at(after, "notify")).toBeDefined()
 		// "paid" was right of the insertion point: it moved right to make room.
 		expect(at(after, "paid")?.x).toBeGreaterThan(at(before, "paid")?.x ?? 0)
+	})
+
+	it("splits a gateway a builder module made a join and a split", async () => {
+		await writeFile(
+			join(dir, "loop.mjs"),
+			`export default (kit) => kit.Bpmn.createProcess("p").name("P")
+	.startEvent("s", { name: "S" })
+	.eventBasedGateway("gw", { name: "Wait" })
+	.branch("a", (b) => b.intermediateCatchEvent("m", { name: "Msg", messageName: "m", correlationKey: "=id" }).endEvent("e", { name: "E" }))
+	.branch("b", (b) => b.intermediateCatchEvent("t", { name: "Hour", timerDuration: "PT1H" }).serviceTask("r", { name: "Remind", taskType: "remind" }).connectTo("gw"))`,
+		)
+		await run([join(dir, "loop.mjs")])
+		expect(lines).toEqual(["ok loop.bpmn · lint clean"])
+		const defs = Bpmn.parse(await readFile(join(dir, "loop.bpmn"), "utf8"))
+		const merge = defs.processes[0]?.flowElements.find((e) => e.id === "gw_merge")
+		expect(merge?.type).toBe("exclusiveGateway")
+	})
+
+	it("an edit gives forms only to new user tasks, moves only what it must, sets --camunda", async () => {
+		await writeFile(join(dir, "s04.txt"), `${S04.replace("id=expense", "id=expense camunda=8.8")}`)
+		await run([join(dir, "s04.txt")])
+		const before = Bpmn.parse(await readFile(join(dir, "s04.bpmn"), "utf8"))
+		await writeFile(
+			join(dir, "edit.mjs"),
+			`export default (kit, model) => kit.Bpmn.continueProcess(model, "expense")
+	.insertAfter("pay").userTask("archive", { name: "Archive", assignee: "clerk", candidateGroups: "finance" })`,
+		)
+		lines.length = 0
+		const parsed = parseArgs([
+			"build",
+			join(dir, "edit.mjs"),
+			"--edit",
+			join(dir, "s04.bpmn"),
+			"--camunda",
+			"8.10",
+		])
+		await run(parsed.positional.slice(1), parsed.flags)
+		expect(lines).toEqual(["ok s04.bpmn + 1 form (expense-archive.form) · lint clean"])
+		const xml = await readFile(join(dir, "s04.bpmn"), "utf8")
+		expect(xml).toContain('executionPlatformVersion="8.10.0"')
+		expect(xml).toContain('assignee="clerk" candidateGroups="finance"')
+		const after = Bpmn.parse(xml)
+		const at = (d: typeof before, id: string) =>
+			d.diagrams[0]?.plane.shapes.find((s) => s.bpmnElement === id)?.bounds
+		for (const id of ["start", "review", "ok", "pay", "fix"])
+			expect(at(after, id), id).toEqual(at(before, id))
+		// The new task sits on the row of the task it follows.
+		expect(at(after, "archive")?.y).toBe(at(before, "pay")?.y)
 	})
 
 	it("deploys the model with its forms in one request", async () => {

@@ -18,18 +18,19 @@ const x = (defs: ReturnType<typeof base>, id: string) =>
 	defs.diagrams[0]?.plane.shapes.find((s) => s.bpmnElement === id)?.bounds.x ?? Number.NaN
 
 describe("makeRoom", () => {
-	it("moves what is right of an insertion by the new nodes' width, nothing left of it", () => {
+	it("moves what is right of an insertion as far as the new nodes need, nothing left of it", () => {
 		const original = base()
 		const edited = Bpmn.continueProcess(original, "p")
 			.insertAfter("a")
 			.serviceTask("n", { name: "N", taskType: "n" })
 			.build()
 		const { definitions, shifted } = makeRoom(edited)
-		expect(shifted).toEqual([{ after: "a", dx: 150 }])
+		// N's width and gap (150) and a gap before b, less the 60 already free between a and b.
+		expect(shifted).toEqual([{ after: "a", dx: 140 }])
 		expect(x(definitions, "s")).toBe(x(original, "s"))
 		expect(x(definitions, "a")).toBe(x(original, "a"))
-		expect(x(definitions, "b")).toBe(x(original, "b") + 150)
-		expect(x(definitions, "e")).toBe(x(original, "e") + 150)
+		expect(x(definitions, "b")).toBe(x(original, "b") + 140)
+		expect(x(definitions, "e")).toBe(x(original, "e") + 140)
 		// The input is not changed.
 		expect(x(edited, "b")).toBe(x(original, "b"))
 		const placed = placeNewShapes(definitions)
@@ -37,6 +38,32 @@ describe("makeRoom", () => {
 		const n = x(placed.definitions, "n")
 		expect(n).toBeGreaterThan(x(original, "a"))
 		expect(n).toBeLessThan(x(definitions, "b"))
+	})
+
+	it("moves nothing when the row right of the insertion is already free", () => {
+		const original = base()
+		for (const shape of original.diagrams[0]?.plane.shapes ?? [])
+			if (shape.bpmnElement === "b" || shape.bpmnElement === "e") shape.bounds.x += 300
+		const edited = Bpmn.continueProcess(original, "p")
+			.insertAfter("a")
+			.serviceTask("n", { name: "N", taskType: "n" })
+			.build()
+		const { definitions, shifted } = makeRoom(edited)
+		expect(shifted).toEqual([])
+		expect(x(definitions, "b")).toBe(x(original, "b"))
+	})
+
+	it("counts the longest new path, not every branch of a new split", () => {
+		const edited = Bpmn.continueProcess(base(), "p")
+			.insertAfter("a")
+			.parallelGateway("fork", { name: "Fork" })
+			.branch("x", (b) => b.serviceTask("t1", { name: "T1", taskType: "t1" }))
+			.branch("y", (b) => b.serviceTask("t2", { name: "T2", taskType: "t2" }))
+			.parallelGateway("join", { name: "Join" })
+			.build()
+		const [shift] = makeRoom(edited).shifted
+		// fork, one task, join: 100 + 150 + 100, a gap before b, less the 60 free.
+		expect(shift).toEqual({ after: "a", dx: 340 })
 	})
 
 	it("needs no room for an exception path below a task", () => {
@@ -79,8 +106,8 @@ describe("makeRoom", () => {
 			.serviceTask("n", { name: "N", taskType: "n" })
 			.build()
 		const { definitions } = makeRoom(edited)
-		expect(width(definitions, "pool")).toBe(width(parsed, "pool") + 150)
-		expect(width(definitions, "l1")).toBe(width(parsed, "l1") + 150)
+		expect(width(definitions, "pool")).toBe(width(parsed, "pool") + 140)
+		expect(width(definitions, "l1")).toBe(width(parsed, "l1") + 140)
 	})
 })
 

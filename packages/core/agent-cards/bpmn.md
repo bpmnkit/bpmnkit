@@ -2,7 +2,7 @@
 
 Build a Camunda 8 BPMN file in one command. Write a short spec with the Write tool, then run `casen build <spec>`: it writes the laid-out `.bpmn` and a `.form` per user task, lints like c8ctl (bpmnlint + camunda-compat), and with `--deploy` deploys them together. This card is all you need: do not plan in prose or read other docs; copy the template that fits, change it, run it once.
 
-<!-- docspack: tags=agent-card,cheat-sheet,build-script,bpmn,process,create,write,script,builder,edit,casen-build,text-spec,collaboration,pools,lanes,message-flow,data-object,form -->
+<!-- docspack: tags=agent-card,cheat-sheet,build,build-script,bpmn,process,create,write,script,builder,edit,casen-build,sub-process,annotation,conditional,text-spec,collaboration,pools,lanes,message-flow,data-object,form -->
 
 | Task | Write | Run |
 | --- | --- | --- |
@@ -28,23 +28,30 @@ failed[boundary:error Payment failed | on=pay error=PAY_FAILED] > notify[send No
 
 - `# Name | id=<process id>`: the process id is the deploy key. Add `camunda=8.8` for an older cluster (default 8.10).
 - `a > b > c` is a path. Declare a node the first time: `id[kind Name | attrs]`; later write only `id`.
-- Kinds: `start end task user service rule send receive script manual call xor and or eventgw catch throw boundary adhoc`. Triggers: `start:message`, `start:timer`, `catch:timer`, `boundary:timer`, `boundary:error`, `end:error`, `end:message`, `end:terminate`, `signal`, `escalation`.
+- Kinds: `start end task user service rule send receive script manual call sub xor and or eventgw catch throw boundary adhoc`. Triggers: `start:message`, `start:timer`, `start:condition`, `catch:timer`, `catch:condition`, `boundary:timer`, `boundary:error`, `end:error`, `end:message`, `end:terminate`, `signal`, `escalation`.
 - Decision: `gw >(Label: FEEL condition) x` per branch, exactly one `gw >(Label: default) y`. Branches that meet are joined for you; parallel work: `and` split, `and` join.
-- Attributes: `job=` job type (service, send, message end; default: the id) · `form=<form id>` (default: generated `<process id>-<task id>`) · `fields=key[:number|checkbox|textarea|date|select(a|b)],…` for the generated form · `msg=` + `key=<FEEL>` (every message caught after the start) · `after=PT1H`, `every=R/PT1H`, `at=<date>` (timers) · `error=`, `signal=`, `escalation=` · `on=<task>` and `nonint` (boundary) · `result=<var>` · `called=<process id>` · `each=<list var>` (once per item) · `in.x=<FEEL>`, `out.x=<FEEL>` · `feel=<FEEL>` (script, last) · service/send: `retries=3`, `header.k=v` · user: `assignee=` `groups=a;b` `users=` `due=P2D` `priority=0-100`.
+- Attributes: `job=` job type (service, send, message end; default: the id) · `form=<form id>` (default: generated `<process id>-<task id>`) · `fields=key[:number|checkbox|textarea|date|select(a|b)],…` for the generated form · `msg=` + `key=<FEEL>` (every message caught after the start) · `after=PT1H`, `every=R/PT1H`, `at=2026-01-31T09:00:00Z` (timers; a timer start takes only a literal date, `catch:timer at==<FEEL>` a variable) · `cond=<FEEL>` (conditional, last) · `error=`, `signal=`, `escalation=` · `on=<task>` and `nonint` (boundary) · `result=<var>` · `called=<process id>` · `each=<list var>` (multi-instance: once per item) · `in.x=<FEEL>`, `out.x=<FEEL>` · `feel=<FEEL>` (script, last) · service/send: `retries=3`, `header.k=v` · user: `assignee=` `groups=a;b` `users=` `due=P2D` `priority=0-100`.
 - A rule task's id is its DMN decision id: pass the `.dmn` too, `casen build order.txt risk.dmn --deploy`.
 
 ## 2. Pools, lanes, message flows, data
 
 ```text
 # Order fulfilment
+policy[annotation Orders ship within two days]
 ## Shop | id=shop
 ### Sales
 placed[start:message Order placed | msg=order-placed] > check[service Check stock | job=check-stock] > ask[send Request payment | job=request-payment]
-ask > paid[catch Payment received | msg=payment-received key=orderId] > ship[user Ship order]
+ask > paid[catch Payment received | msg=payment-received key=orderId] > pack[sub Pack order]
+pack {
+  ps[start Packing started] > pick[user Pick item | each=items] > box[user Box items] > pe[end Packed]
+}
 ### Warehouse
-ship > done[end Order shipped]
+pack > ship[user Ship order] > done[end Order shipped]
 check ..> stock[store Stock DB]
 ship ..> slip[object Packing slip]
+fragile[annotation Fragile items get extra padding] ..> pack
+## Restock | id=restock
+low[start:condition Stock low | cond=stock < 10] > reorder[service Reorder stock | job=reorder] > reordered[end Stock reordered]
 ## Bank | blackbox
 ## Customer | blackbox
 customer ~> placed: Order
@@ -56,6 +63,8 @@ bank ~> paid: Payment confirmed
 - `### Lane`: nodes declared after it go in that lane; repeat a header to switch back. Gateways and events the reader adds follow their neighbours.
 - `a ~> b: label` is a message flow; `a` and `b` are node ids or pool ids, in different pools.
 - `d[object Name] ..> task`: the task reads it; `task ..> d[store Name]`: the task writes it. `objects` marks a collection.
+- `sp[sub Name]`, then `sp {`, its paths (own start and end), `}`: an expanded sub-process. Bodies nest.
+- `n[annotation Text]`: a text annotation, on the collaboration when written before the first `##`; `n[annotation Text] ..> task` links it.
 - Ids are global: give every node a unique id across pools.
 
 ## 3. Edit an existing file
@@ -71,14 +80,18 @@ export default (kit, model) =>
 		)
 ```
 
-`casen build edit.mjs --edit order.bpmn` rewrites `order.bpmn` in place. Existing shapes keep their place, shapes right of the insertion move right to make room, a second flow into a task gets a merge gateway, new user tasks get forms. `kit` is `@bpmnkit/core`, `model` the parsed file.
+`casen build edit.mjs --edit order.bpmn` rewrites `order.bpmn` in place. Existing shapes, tasks and their forms stay as they are; shapes right of the insertion move only as far as the new steps need; a second flow into a task gets a merge gateway; only new user tasks get forms (`--no-forms`: none). `--camunda 8.10` sets the file's `executionPlatformVersion`, other attributes kept. `kit` is `@bpmnkit/core`, `model` the parsed file.
 
 - `continueProcess(model, processId)`: `.insertAfter(id)` splices into the path after `id`; `.at(id)` continues from a node that has no outgoing flow.
-- Steps: `serviceTask(id, { name, taskType })` · `userTask(id, { name, formId })` · `sendTask(id, { name, taskType })` · `intermediateCatchEvent(id, { name, messageName, correlationKey: "=orderId" })` or `{ timerDuration: "PT1H" }` · `endEvent(id, { name })` · `.connectTo(id)` joins an existing node.
+- Steps: `serviceTask(id, { name, taskType })` · `userTask(id, { name, formId, assignee, candidateGroups })` · `sendTask(id, { name, taskType })` · `intermediateCatchEvent(id, { name, messageName, correlationKey: "=orderId" })` or `{ timerDuration: "PT1H" }` · `endEvent(id, { name })` · `.connectTo(id)` joins an existing node.
 - Decision: `.exclusiveGateway(id, { name }).branch("yes", (b) => b.condition("=x > 1").label("Yes")…).branch("no", (b) => b.defaultFlow().label("No")…)`.
 - Boundary: `.withBoundary(id, { errorCode } | { timerDuration } | { messageName, correlationKey }, (b) => …)` on the step before it.
 - Rename or set one attribute: change `model` and return it: `model.processes[0].flowElements.find((e) => e.id === "pay").name = "Pay now"; return model`.
 - Builder FEEL starts with `=`; text-spec conditions do not.
+
+## Not in the text spec
+
+Event sub-processes, transactions, compensation, groups, nested lanes, a collapsed sub-process: write a module `flow.mjs` with `export default (kit) => kit.Bpmn.createProcess("id")…` (or `kit.Bpmn.createDiagram` for pools; `.eventSubProcess(id, (b) => …)`, `.transaction(id, (b) => …)`) and run `casen build flow.mjs`. The build splits a gateway that both joins and splits, and unlinks a message only thrown, as for a text spec.
 
 ## Traps
 

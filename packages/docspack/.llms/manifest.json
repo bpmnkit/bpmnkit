@@ -21,10 +21,11 @@
 		{
 			"id": "agent-cards.bpmn",
 			"file": "chunks/agent-cards.bpmn.md",
-			"tokens": 434,
+			"tokens": 437,
 			"tags": [
 				"agent-card",
 				"cheat-sheet",
+				"build",
 				"build-script",
 				"bpmn",
 				"process",
@@ -33,8 +34,7 @@
 				"script",
 				"builder",
 				"edit",
-				"casen-build",
-				"text-spec"
+				"casen-build"
 			],
 			"entities": [
 				"order.txt",
@@ -45,7 +45,7 @@
 		{
 			"id": "agent-cards.bpmn.1.-one-pool",
 			"file": "chunks/agent-cards.bpmn.1.-one-pool.md",
-			"tokens": 436,
+			"tokens": 493,
 			"tags": [
 				"agent-cards",
 				"bpmn",
@@ -57,7 +57,7 @@
 		{
 			"id": "agent-cards.bpmn.2.-pools-lanes-message-flows-data",
 			"file": "chunks/agent-cards.bpmn.2.-pools-lanes-message-flows-data.md",
-			"tokens": 314,
+			"tokens": 465,
 			"tags": [
 				"agent-cards",
 				"bpmn",
@@ -72,7 +72,7 @@
 		{
 			"id": "agent-cards.bpmn.3.-edit-an-existing-file",
 			"file": "chunks/agent-cards.bpmn.3.-edit-an-existing-file.md",
-			"tokens": 409,
+			"tokens": 444,
 			"tags": [
 				"agent-cards",
 				"bpmn",
@@ -82,19 +82,25 @@
 			],
 			"entities": [
 				"order.bpmn",
+				"executionPlatformVersion",
 				"@bpmnkit/core"
 			]
 		},
 		{
-			"id": "agent-cards.bpmn.traps",
-			"file": "chunks/agent-cards.bpmn.traps.md",
-			"tokens": 194,
+			"id": "agent-cards.bpmn.not-in-the-text-spec",
+			"file": "chunks/agent-cards.bpmn.not-in-the-text-spec.md",
+			"tokens": 296,
 			"tags": [
 				"agent-cards",
 				"bpmn",
+				"not",
+				"text",
+				"spec",
 				"traps"
 			],
 			"entities": [
+				"flow.mjs",
+				"kit.Bpmn.createDiagram",
 				"formId",
 				"correlationKey"
 			]
@@ -262,7 +268,7 @@
 		{
 			"id": "cli.build.spec-formats",
 			"file": "chunks/cli.build.spec-formats.md",
-			"tokens": 267,
+			"tokens": 440,
 			"tags": [
 				"cli",
 				"build",
@@ -277,31 +283,34 @@
 		{
 			"id": "cli.build.editing-an-existing-file",
 			"file": "chunks/cli.build.editing-an-existing-file.md",
-			"tokens": 189,
+			"tokens": 174,
 			"tags": [
 				"cli",
 				"build",
 				"editing",
 				"existing",
-				"file",
-				"findings"
+				"file"
 			],
 			"entities": [
 				"makeRoom",
 				"placeNewShapes",
-				"exportPreserving"
+				"exportPreserving",
+				"executionPlatformVersion"
 			]
 		},
 		{
-			"id": "cli.build.options",
-			"file": "chunks/cli.build.options.md",
-			"tokens": 219,
+			"id": "cli.build.findings",
+			"file": "chunks/cli.build.findings.md",
+			"tokens": 326,
 			"tags": [
 				"cli",
 				"build",
+				"findings",
 				"options"
 			],
-			"entities": []
+			"entities": [
+				"executionPlatformVersion"
+			]
 		},
 		{
 			"id": "cli.casen",

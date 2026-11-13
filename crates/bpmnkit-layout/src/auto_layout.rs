@@ -23,6 +23,47 @@ use std::borrow::Cow;
 const POOL_HEADER: f64 = 30.0;
 const LANE_HEADER: f64 = 30.0;
 const PADDING: f64 = 20.0;
+
+/// Lane bands grown to hold the annotations the packer put above or below them:
+/// the pool takes the bands' height, so an annotation outside them would hang
+/// over the pool's edge. The outermost band on that side grows.
+fn stretch_bands<'a>(
+    bands: &[LaneBand],
+    annotations: impl IntoIterator<Item = &'a Bounds>,
+) -> Vec<LaneBand> {
+    let mut out = bands.to_vec();
+    if out.is_empty() {
+        return out;
+    }
+    let mut top = out
+        .iter()
+        .fold(f64::INFINITY, |m, b| js::min(m, b.bounds.y));
+    let mut bottom = out.iter().fold(f64::NEG_INFINITY, |m, b| {
+        js::max(m, b.bounds.y + b.bounds.height)
+    });
+    for a in annotations {
+        let high = a.y - PADDING;
+        let low = a.y + a.height + PADDING;
+        if low > bottom {
+            for b in out.iter_mut() {
+                if b.bounds.y + b.bounds.height == bottom {
+                    b.bounds.height += low - bottom;
+                }
+            }
+            bottom = low;
+        }
+        if high < top {
+            for b in out.iter_mut() {
+                if b.bounds.y == top {
+                    b.bounds.height += top - high;
+                    b.bounds.y = high;
+                }
+            }
+            top = high;
+        }
+    }
+    out
+}
 const POOL_GAP: f64 = 30.0;
 
 const EMPTY_POOL_HEIGHT: f64 = 60.0;
@@ -1342,7 +1383,11 @@ fn laid_out_diagrams(
         // Engine lane bands already stack the content vertically, so the pool
         // aligns to the band space rather than to the content bounding box —
         // otherwise the shapes drift out of the lanes drawn around them.
-        let lane_bands = if has_lanes { engine_lanes } else { None };
+        let stretched = match engine_lanes {
+            Some(bands) if has_lanes => Some(stretch_bands(bands, ann_bounds.values())),
+            _ => None,
+        };
+        let lane_bands = stretched.as_ref();
         // Bands arrive outermost first and nested lanes overlap their parent, so the
         // pool spans their extent rather than the first band or the sum of heights.
         let band_top = lane_bands
@@ -2151,6 +2196,37 @@ impl<'a> RouteRepair<'a> {
 mod tests {
     use super::*;
     use bpmnkit_bpmn::{parse_bpmn, serialize_bpmn};
+
+    #[test]
+    fn stretch_bands_grows_the_outer_band_around_an_annotation() {
+        let band = |id: &str, y: f64, height: f64| LaneBand {
+            id: id.into(),
+            bounds: Bounds {
+                x: 0.0,
+                y,
+                width: 300.0,
+                height,
+            },
+        };
+        let bands = vec![band("l1", 0.0, 100.0), band("l2", 100.0, 100.0)];
+        let below = Bounds {
+            x: 10.0,
+            y: 190.0,
+            width: 200.0,
+            height: 30.0,
+        };
+        let above = Bounds {
+            x: 10.0,
+            y: -40.0,
+            width: 200.0,
+            height: 30.0,
+        };
+        let out = stretch_bands(&bands, [&below, &above]);
+        assert_eq!(out[0].bounds.y, -60.0);
+        assert_eq!(out[0].bounds.height, 160.0);
+        assert_eq!(out[1].bounds.y, 100.0);
+        assert_eq!(out[1].bounds.height, 140.0);
+    }
 
     fn shape(id: &str, element: &str) -> BpmnDiShape {
         BpmnDiShape {

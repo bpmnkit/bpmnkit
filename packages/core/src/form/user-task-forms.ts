@@ -13,6 +13,8 @@ export interface UserTaskFormsOptions {
 	fields?: Record<string, string>
 	/** Form ids that already exist (a `.form` file next to the model); no form is generated for them. */
 	existing?: ReadonlySet<string>
+	/** Element ids left as they are: an edit gives forms to the user tasks it adds, not to those already there. */
+	skip?: ReadonlySet<string>
 }
 
 /** What {@link attachUserTaskForms} did. */
@@ -134,6 +136,7 @@ export function attachUserTaskForms(
 	for (const process of defs.processes) {
 		for (const el of walk(process.flowElements)) {
 			if (el.type !== "userTask" && el.type !== "startEvent") continue
+			if (options.skip?.has(el.id)) continue
 			const ext: XmlElement[] = el.extensionElements
 			let link = ext.find((x) => FORM_LINK.has(x.name))
 			if (link === undefined && el.type === "userTask") {

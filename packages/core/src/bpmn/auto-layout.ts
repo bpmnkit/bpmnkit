@@ -26,6 +26,39 @@ import type {
 const POOL_HEADER = 30
 const LANE_HEADER = 30
 const PADDING = 20
+
+/**
+ * Lane bands grown to hold the annotations the packer put above or below them:
+ * the pool takes the bands' height, so an annotation outside them would hang
+ * over the pool's edge. The outermost band on that side grows.
+ */
+function stretchBands(
+	bands: Array<{ id: string; bounds: Bounds }>,
+	annotations: Iterable<Bounds>,
+): Array<{ id: string; bounds: Bounds }> {
+	const out = bands.map((b) => ({ ...b, bounds: { ...b.bounds } }))
+	if (out.length === 0) return out
+	let top = Math.min(...out.map((b) => b.bounds.y))
+	let bottom = Math.max(...out.map((b) => b.bounds.y + b.bounds.height))
+	for (const a of annotations) {
+		const high = a.y - PADDING
+		const low = a.y + a.height + PADDING
+		if (low > bottom) {
+			for (const b of out)
+				if (b.bounds.y + b.bounds.height === bottom) b.bounds.height += low - bottom
+			bottom = low
+		}
+		if (high < top) {
+			for (const b of out)
+				if (b.bounds.y === top) {
+					b.bounds.height += top - high
+					b.bounds.y = high
+				}
+			top = high
+		}
+	}
+	return out
+}
 const POOL_GAP = 30
 
 type LocalBounds = { x: number; y: number; width: number; height: number }
@@ -962,7 +995,8 @@ export function applyAutoLayout(
 		// Engine lane bands already stack the content vertically, so the pool
 		// aligns to the band space rather than to the content bounding box —
 		// otherwise the shapes drift out of the lanes drawn around them.
-		const laneBands = hasLanes ? engineLanes : undefined
+		const laneBands =
+			hasLanes && engineLanes ? stretchBands(engineLanes, annBounds.values()) : undefined
 		// Bands arrive outermost first and nested lanes overlap their parent, so the
 		// pool spans their extent rather than the first band or the sum of heights.
 		const bandTop = laneBands ? Math.min(...laneBands.map((lane) => lane.bounds.y)) : 0

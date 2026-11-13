@@ -7,12 +7,15 @@
  * the line format has no syntax for, on the expanded model.
  */
 import {
+	type BpmnAssociation,
 	type BpmnDefinitions,
 	type BpmnFlowElement,
 	type BpmnLane,
 	type BpmnMessageFlow,
 	type BpmnParticipant,
 	type BpmnProcess,
+	type BpmnSequenceFlow,
+	type BpmnTextAnnotation,
 	type CompactDiagram,
 	type CompactElement,
 	type CompactProcess,
@@ -28,7 +31,10 @@ export const BUILD_SPEC_GUIDE = `# Title | id=<process id> camunda=8.10   first 
 ## Pool name | id=<process id>          starts a pool (its own process); "| blackbox" = partner without a process
 ### Lane name                           nodes declared after it go in this lane
 a ~> b: label                           message flow; a/b = node ids or pool ids
-d[object Name] ..> task                 data input; task ..> d[store Name] = data output (objects = collection)`
+d[object Name] ..> task                 data input; task ..> d[store Name] = data output (objects = collection)
+sp[sub Name] > …  then  sp {            expanded sub-process: its body paths up to a line "}"
+n[annotation Text]                      text annotation; n[annotation Text] ..> task links it
+start:condition / catch:condition       conditional event: cond=<FEEL> (last)`
 
 export interface SpecBuild {
 	definitions: BpmnDefinitions
@@ -52,12 +58,41 @@ interface Section {
 	/** The lane the next declared nodes go in: the last `###` read. */
 	lane?: { id: string; name: string; nodes: string[] }
 	data: { line: number; text: string }[]
+	/** `id {` … `}` bodies of the sub-processes declared in this pool. */
+	blocks: Block[]
+	annotations: Annotation[]
+}
+
+/** The body of a sub-process: `sp {`, its path lines, `}`. */
+interface Block {
+	id: string
+	line: number
+	parent?: Block
+	/** Line-format text by line number, like {@link Section.lines}. */
+	lines: string[]
+}
+
+interface Annotation {
+	id: string
+	text: string
+}
+
+/** A `..>` line with a text annotation at one end, and the pool it was written in. */
+interface AnnotationLink {
+	line: number
+	text: string
+	section?: Section
 }
 
 const MESSAGE_LINE = /^(\S+)\s*~>\s*(\S+?)\s*(?::\s*(.*))?$/
 const DATA_ARROW = /\s*\.\.>\s*/
 const DATA_NODE = /^([A-Za-z_][\w.-]*)(?:\[(object|objects|store)\s*([^\]]*)\])?$/
 const DECLARATION = /([A-Za-z_][\w.-]*)\[([^\]]*)\]/g
+const ANNOTATION = /^([A-Za-z_][\w.-]*)\[annotation\b\s*([^\]]*)\]$/
+/** The node a `… {` line opens the body of: its last id, declared or not. */
+const BLOCK_OPEN = /([A-Za-z_][\w.-]*)(?:\[[^\]]*\])?$/
+/** A literal ISO 8601 date or date-time: all a timer start event can be given. */
+const ISO_DATE = /^\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}(?::\d{2}(?:\.\d+)?)?(?:Z|[+-]\d{2}:?\d{2})?)?$/
 
 /** A readable NCName: `Expense approval` → `expense-approval`. */
 export function specId(name: string): string {
@@ -98,6 +133,38 @@ function takeFields(line: string, fields: Record<string, string>): string {
 			.trimEnd()
 		return `${id}[${rest}]`
 	})
+}
+
+/**
+ * Rewrites what the spec adds to the line format into words `parseProcessText`
+ * knows: `sub` (an expanded sub-process, typed once its body is attached),
+ * `:condition` and `cond=`. Rejects a timer start `at=` that is not a literal date.
+ */
+function normalize(line: string, n: number, subs: Set<string>, problems: string[]): string {
+	return line.replace(DECLARATION, (_whole, id: string, raw: string) => {
+		let body = raw
+			.trimStart()
+			.replace(/^(start|catch|boundary):condition\b(?!al)/, "$1:conditional")
+			.replace(/(^|[\s|,])cond=/, "$1feel=")
+		if (/^sub(?:\s|\||$)/.test(body)) {
+			subs.add(id)
+			body = `task${body.slice(3)}`
+		}
+		const at = /^start:timer\b.*?(?:^|[\s|,])at=(\S+)/.exec(body)?.[1]
+		if (at !== undefined && !ISO_DATE.test(at))
+			problems.push(
+				`line ${n}: "${id}" at=${at}: a timer start takes a literal date-time (at=2026-01-31T09:00:00Z); for a date from a variable, start plainly and wait with catch:timer at==<FEEL>`,
+			)
+		return `${id}[${body}]`
+	})
+}
+
+/** One line for a kind the reader does not know, with the way out. */
+function unsupported(message: string): string {
+	const m = /^unknown kind "([^"]*)" for "([^"]*)"; used \w+$/.exec(message)
+	return m === null
+		? message
+		: `"${m[2]}": kind "${m[1]}" is not in the text spec (kinds: casen build --help); write a builder module (.mjs) instead, see the card's "Not in the text spec"`
 }
 
 function* walk(elements: readonly BpmnFlowElement[]): Generator<BpmnFlowElement> {
@@ -173,6 +240,10 @@ export function compileTextSpec(text: string): SpecBuild {
 	let title: { name: string; attrs: Map<string, string> } | undefined
 	const sections: Section[] = []
 	const messageLines: { line: number; text: string }[] = []
+	/** Annotations written before the first pool: on the collaboration, or the only process. */
+	const loose: Annotation[] = []
+	const links: AnnotationLink[] = []
+	const subs = new Set<string>()
 	const newSection = (name: string, attrs: Map<string, string>, line: number): Section => ({
 		name,
 		id: attrs.get("id") || specId(name),
@@ -181,27 +252,75 @@ export function compileTextSpec(text: string): SpecBuild {
 		lines: [],
 		lanes: [],
 		data: [],
+		blocks: [],
+		annotations: [],
 	})
 	let current: Section | undefined
+	let block: Block | undefined
+	const ensureSection = (): Section => {
+		if (current === undefined) {
+			current = newSection(title?.name ?? "Process", title?.attrs ?? new Map(), 0)
+			sections.push(current)
+		}
+		return current
+	}
+	const closeBlocks = () => {
+		for (; block !== undefined; block = block.parent)
+			problems.push(`line ${block.line}: "${block.id} {" is not closed; end the body with "}"`)
+	}
+
+	/** One path, message, data or annotation line, in the current pool and body. */
+	const take = (line: string, n: number) => {
+		const annotation = ANNOTATION.exec(line)
+		if (annotation !== null) {
+			const list = current?.annotations ?? loose
+			list.push({ id: annotation[1] ?? "", text: (annotation[2] ?? "").trim() })
+			return
+		}
+		if (line.includes("~>")) {
+			messageLines.push({ line: n, text: line })
+			return
+		}
+		if (line.includes("..>") && /\[annotation\b/.test(line)) {
+			links.push({ line: n, text: line, section: current })
+			return
+		}
+		const section = ensureSection()
+		if (line.includes("..>")) {
+			section.data.push({ line: n, text: line })
+			return
+		}
+		const kept = takeFields(normalize(line, n, subs, problems), fields)
+		if (block !== undefined) {
+			block.lines[n] = kept
+			return
+		}
+		section.lane?.nodes.push(...declaredIds(kept))
+		section.lines[n] = kept
+	}
 
 	raw.forEach((rawLine, index) => {
 		const n = index + 1
 		const line = rawLine.trim()
+		if (line === "}") {
+			if (block === undefined) problems.push(`line ${n}: "}" closes no "id {" body`)
+			else block = block.parent
+			return
+		}
 		if (line.startsWith("###")) {
-			if (current === undefined) {
-				current = newSection(title?.name ?? "Process", title?.attrs ?? new Map(), 0)
-				sections.push(current)
-			}
+			closeBlocks()
+			const section = ensureSection()
 			const { name } = header(line.slice(3))
 			const id = `Lane_${specId(name)}`
-			current.lane = current.lanes.find((l) => l.id === id)
-			if (current.lane === undefined) {
-				current.lane = { id, name, nodes: [] }
-				current.lanes.push(current.lane)
+			section.lane = section.lanes.find((l) => l.id === id)
+			if (section.lane === undefined) {
+				section.lane = { id, name, nodes: [] }
+				section.lanes.push(section.lane)
 			}
 			return
 		}
 		if (line.startsWith("##")) {
+			closeBlocks()
 			const { name, attrs } = header(line.slice(2))
 			current = newSection(name, attrs, n)
 			sections.push(current)
@@ -212,26 +331,73 @@ export function compileTextSpec(text: string): SpecBuild {
 			return
 		}
 		if (line === "" || line.startsWith("//")) return
-		if (line.includes("~>")) {
-			messageLines.push({ line: n, text: line })
+		if (line.endsWith("{")) {
+			// `sp {` alone, or `a > sp[sub Name] {`: the path, then the body of its last node.
+			const before = line.slice(0, -1).trim()
+			const id = BLOCK_OPEN.exec(before)?.[1]
+			if (id === undefined) {
+				problems.push(`line ${n}: write a sub-process body as "<id> {" on its own line`)
+				return
+			}
+			if (before !== id) take(before, n)
+			const section = ensureSection()
+			block = { id, line: n, parent: block, lines: [] }
+			section.blocks.push(block)
 			return
 		}
-		if (current === undefined) {
-			current = newSection(title?.name ?? "Process", title?.attrs ?? new Map(), 0)
-			sections.push(current)
-		}
-		if (line.includes("..>")) {
-			current.data.push({ line: n, text: line })
-			return
-		}
-		const kept = takeFields(line, fields)
-		current.lane?.nodes.push(...declaredIds(kept))
-		current.lines[n] = kept
+		take(line, n)
 	})
+	closeBlocks()
 
 	const camunda = title?.attrs.get("camunda")
 	const version = camunda ? (/^\d+\.\d+$/.test(camunda) ? `${camunda}.0` : camunda) : "8.10.0"
 	const pools = sections.length > 1 || sections.some((s) => s.header > 0)
+
+	/** Parses line-format text kept by line number, as `parseProcessText` reads one process. */
+	const parseLines = (lines: string[], name: string, where: string): CompactProcess | undefined => {
+		// Keep line numbers: line n of the text is line n of the file.
+		const body = Array.from({ length: raw.length + 1 }, (_, i) => lines[i] ?? "")
+		body[0] = `# ${name}`
+		const parsed = parseProcessText(body.join("\n"))
+		for (const p of parsed.problems)
+			problems.push(`${where}line ${p.line - 1}: ${unsupported(p.message)}`)
+		for (const f of parsed.fixes) fixes.push(`${where}${f}`)
+		return parsed.diagram.processes[0]
+	}
+
+	/** Parses each body in `blocks` and makes its node an expanded sub-process holding it. */
+	const attachBodies = (
+		process: CompactProcess,
+		scope: { elements: CompactElement[] },
+		blocks: Block[],
+		all: Block[],
+		where: string,
+	) => {
+		for (const b of blocks) {
+			const el = scope.elements.find((e) => e.id === b.id)
+			if (el === undefined || !subs.has(b.id)) {
+				problems.push(
+					`${where}line ${b.line}: "${b.id} {" opens a body, but "${b.id}" is not declared ${b.id}[sub Name] in that scope`,
+				)
+				continue
+			}
+			const inner = parseLines(b.lines, el.name ?? b.id, where)
+			if (inner === undefined) continue
+			inner.id = b.id
+			// Ids are unique in a file: rename body ids the rest of the pool already uses.
+			renameCollisions(inner, compactIds(process), fixes)
+			el.type = "subProcess"
+			el.children = { elements: inner.elements, flows: inner.flows }
+			if (inner.notes?.length) process.notes = [...(process.notes ?? []), ...inner.notes]
+			attachBodies(
+				process,
+				el.children,
+				all.filter((c) => c.parent === b),
+				all,
+				where,
+			)
+		}
+	}
 
 	// ── parse each executable pool ────────────────────────────────────────────
 	const taken = new Set<string>()
@@ -240,20 +406,31 @@ export function compileTextSpec(text: string): SpecBuild {
 	for (const section of sections) {
 		if (section.blackbox) continue
 		const where = pools ? `pool "${section.name}" ` : ""
-		// Keep line numbers: line n of the section text is line n of the file.
-		const body = Array.from({ length: raw.length + 1 }, (_, i) => section.lines[i] ?? "")
-		body[0] = `# ${section.name}`
-		const parsed = parseProcessText(body.join("\n"))
-		for (const p of parsed.problems) problems.push(`${where}line ${p.line - 1}: ${p.message}`)
-		for (const f of parsed.fixes) fixes.push(`${where}${f}`)
-		const process = parsed.diagram.processes[0]
+		const process = parseLines(section.lines, section.name, where)
 		if (process === undefined) continue
 		process.id = section.id
 		process.name = section.name
+		attachBodies(
+			process,
+			process,
+			section.blocks.filter((b) => b.parent === undefined),
+			section.blocks,
+			where,
+		)
 		renameCollisions(process, taken, fixes)
 		compactProcesses.push(process)
 		sectionByProcess.set(process.id, section)
 	}
+	const visitSubs = (elements: CompactElement[]) => {
+		for (const e of elements) {
+			if (subs.has(e.id) && e.type !== "subProcess")
+				problems.push(
+					`"${e.id}": a sub-process needs its body: "${e.id} {" on its own line, its paths, then "}"`,
+				)
+			if (e.children) visitSubs(e.children.elements)
+		}
+	}
+	for (const p of compactProcesses) visitSubs(p.elements)
 
 	const compact: CompactDiagram = {
 		id: `Definitions_${specId(title?.name ?? sections[0]?.name ?? "diagram")}`,
@@ -268,14 +445,17 @@ export function compileTextSpec(text: string): SpecBuild {
 		if (section === undefined) continue
 		if (section.lanes.length > 0) addLanes(process, section)
 		for (const d of section.data) addData(defs, process, d, problems)
+		for (const a of section.annotations)
+			process.textAnnotations.push({ id: a.id, text: a.text, unknownAttributes: {} })
 	}
 
 	if (pools) addCollaboration(defs, sections, messageLines, problems)
 	else
 		for (const m of messageLines)
 			problems.push(`line ${m.line}: a message flow needs pools ("## Pool name" sections)`)
+	addAnnotations(defs, sections, loose, links, problems)
 
-	return { definitions: applyAutoLayout(defs), fields, problems, fixes }
+	return { definitions: placeCollaborationNotes(applyAutoLayout(defs)), fields, problems, fixes }
 }
 
 /** Puts every top-level node in a lane: declared ones where written, the rest next to a neighbour. */
@@ -414,6 +594,119 @@ function addData(
 	}
 }
 
+/**
+ * Free text annotations (`n[annotation Text]`) and their links (`n[annotation Text] ..> task`).
+ * One written in a pool is the process's; one written before the first pool is the
+ * collaboration's (the process's when there are no pools). The layout places them.
+ */
+function addAnnotations(
+	defs: BpmnDefinitions,
+	sections: Section[],
+	loose: Annotation[],
+	links: AnnotationLink[],
+	problems: string[],
+): void {
+	const collab = defs.collaborations[0]
+	type Holder = { textAnnotations: BpmnTextAnnotation[]; associations: BpmnAssociation[] }
+	const holderOf = (section: Section | undefined): Holder | undefined =>
+		section === undefined
+			? (collab ?? defs.processes[0])
+			: defs.processes.find((p) => p.id === section.id)
+	const nodes = new Set<string>()
+	for (const p of defs.processes) for (const el of walk(p.flowElements)) nodes.add(el.id)
+	for (const p of collab?.participants ?? []) {
+		nodes.add(p.id)
+		if (p.processRef) nodes.add(p.processRef)
+	}
+	const notes = new Set([
+		...loose.map((a) => a.id),
+		...sections.flatMap((s) => s.annotations.map((a) => a.id)),
+	])
+	const looseHolder = holderOf(undefined)
+	for (const a of loose)
+		looseHolder?.textAnnotations.push({ id: a.id, text: a.text, unknownAttributes: {} })
+
+	for (const link of links) {
+		const ends = link.text.split(DATA_ARROW).map((t) => t.trim())
+		const holder = holderOf(link.section)
+		let note: string | undefined
+		let node: string | undefined
+		for (const end of ends) {
+			const declared = ANNOTATION.exec(end)
+			if (declared !== null) {
+				note = declared[1] ?? ""
+				if (!notes.has(note)) {
+					notes.add(note)
+					holder?.textAnnotations.push({
+						id: note,
+						text: (declared[2] ?? "").trim(),
+						unknownAttributes: {},
+					})
+				}
+			} else if (notes.has(end)) note = end
+			else node = end
+		}
+		if (ends.length !== 2 || note === undefined || node === undefined || holder === undefined) {
+			problems.push(`line ${link.line}: write an annotation link as "n[annotation Text] ..> task"`)
+			continue
+		}
+		const target = participantOrNode(node, defs)
+		if (!nodes.has(node)) {
+			problems.push(`line ${link.line}: no node or pool "${node}"`)
+			continue
+		}
+		holder.associations.push({
+			id: `Association_${note}_${target}`,
+			sourceRef: target,
+			targetRef: note,
+			unknownAttributes: {},
+		})
+	}
+}
+
+/**
+ * The layout places a process's annotations; a collaboration's go in a row above
+ * the pools, each association a straight line down to the shape it notes.
+ */
+function placeCollaborationNotes(defs: BpmnDefinitions): BpmnDefinitions {
+	const collab = defs.collaborations[0]
+	const plane = defs.diagrams[0]?.plane
+	if (collab === undefined || plane === undefined || collab.textAnnotations.length === 0)
+		return defs
+	const shapes = new Map(plane.shapes.map((s) => [s.bpmnElement, s.bounds]))
+	const top = Math.min(...plane.shapes.map((s) => s.bounds.y))
+	let x = Math.min(...plane.shapes.map((s) => s.bounds.x))
+	const width = 200
+	const placed = collab.textAnnotations.filter((a) => !shapes.has(a.id))
+	const heights = placed.map((a) => 30 + 15 * (Math.ceil(((a.text ?? "").length * 6.4) / 180) - 1))
+	placed.forEach((a, i) => {
+		const height = heights[i] ?? 30
+		const bounds = { x, y: top - 40 - height, width, height }
+		x += width + 30
+		shapes.set(a.id, bounds)
+		plane.shapes.push({ id: `${a.id}_di`, bpmnElement: a.id, bounds, unknownAttributes: {} })
+	})
+	for (const assoc of collab.associations) {
+		const note = shapes.get(assoc.targetRef)
+		const node = shapes.get(assoc.sourceRef)
+		if (note === undefined || node === undefined) continue
+		if (plane.edges.some((e) => e.bpmnElement === assoc.id)) continue
+		const from = { x: note.x + note.width / 2, y: note.y + note.height }
+		plane.edges.push({
+			id: `${assoc.id}_di`,
+			bpmnElement: assoc.id,
+			waypoints: [from, { x: Math.min(Math.max(from.x, node.x), node.x + node.width), y: node.y }],
+			unknownAttributes: {},
+		})
+	}
+	return defs
+}
+
+/** A pool named by its process id means the pool's participant. */
+function participantOrNode(id: string, defs: BpmnDefinitions): string {
+	return defs.collaborations[0]?.participants.find((p) => p.processRef === id)?.id ?? id
+}
+
 function addCollaboration(
 	defs: BpmnDefinitions,
 	sections: Section[],
@@ -514,4 +807,61 @@ export function dropThrowOnlyMessages(defs: BpmnDefinitions): string[] {
 		if (ref.messageRef && candidates.has(ref.messageRef)) ref.messageRef = undefined
 	defs.messages = defs.messages.filter((m) => !candidates.has(m.id))
 	return [...candidates]
+}
+
+/**
+ * A gateway with two or more flows in and out is a join and a split at once
+ * (bpmnlint `no-gateway-join-fork`), most often a loop back into an event-based
+ * gateway. The text spec never writes one; a builder module can. Puts a merge
+ * gateway in front of it (parallel before a parallel split, inclusive before an
+ * inclusive one, else exclusive) and returns the gateways it split.
+ */
+export function splitMixedGateways(defs: BpmnDefinitions): string[] {
+	const split: string[] = []
+	const ids = new Set<string>()
+	for (const p of defs.processes) {
+		for (const el of walk(p.flowElements)) ids.add(el.id)
+		for (const f of p.sequenceFlows) ids.add(f.id)
+	}
+	const fresh = (base: string) => {
+		let id = base
+		for (let n = 2; ids.has(id); n++) id = `${base}_${n}`
+		ids.add(id)
+		return id
+	}
+	const visit = (elements: BpmnFlowElement[], flows: BpmnSequenceFlow[], process: BpmnProcess) => {
+		for (const el of [...elements]) {
+			const inner = el as { flowElements?: BpmnFlowElement[]; sequenceFlows?: BpmnSequenceFlow[] }
+			if (inner.flowElements && inner.sequenceFlows)
+				visit(inner.flowElements, inner.sequenceFlows, process)
+			if (!el.type.endsWith("Gateway")) continue
+			const incoming = flows.filter((f) => f.targetRef === el.id)
+			if (incoming.length < 2 || flows.filter((f) => f.sourceRef === el.id).length < 2) continue
+			const type =
+				el.type === "parallelGateway" || el.type === "inclusiveGateway"
+					? el.type
+					: "exclusiveGateway"
+			const merge = createFlowElement(fresh(`${el.id}_merge`), type, {})
+			const flow: BpmnSequenceFlow = {
+				id: fresh(`Flow_${merge.id}`),
+				sourceRef: merge.id,
+				targetRef: el.id,
+				extensionElements: [],
+				unknownAttributes: {},
+			}
+			for (const f of incoming) f.targetRef = merge.id
+			if ("incoming" in merge && "incoming" in el) {
+				merge.incoming = incoming.map((f) => f.id)
+				merge.outgoing = [flow.id]
+				el.incoming = [flow.id]
+			}
+			elements.splice(elements.indexOf(el), 0, merge)
+			flows.push(flow)
+			for (const lane of process.laneSet?.lanes ?? [])
+				if (lane.flowNodeRefs.includes(el.id)) lane.flowNodeRefs.push(merge.id)
+			split.push(el.id)
+		}
+	}
+	for (const p of defs.processes) visit(p.flowElements, p.sequenceFlows, p)
+	return split
 }

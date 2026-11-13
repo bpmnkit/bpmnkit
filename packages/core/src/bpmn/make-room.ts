@@ -37,7 +37,8 @@ function* scopes(elements: BpmnFlowElement[], flows: BpmnSequenceFlow[]): Genera
 /**
  * Makes space for nodes inserted into a path of a laid-out diagram, the way a
  * modeler's "make space" does: every shape right of the node a new path leaves
- * from moves right by the width of the new nodes, and pools, lanes and expanded
+ * from moves right by the width the new nodes need on their longest path, less
+ * the room already free on that row; pools, lanes and expanded
  * sub-processes spanning that point grow by as much. Run it before
  * {@link placeNewShapes}, which then finds room next to the anchor instead of
  * drawing the new nodes over the old ones.
@@ -92,11 +93,39 @@ export function makeRoom(input: BpmnDefinitions): MakeRoomResult {
 						if (f.sourceRef === id && isNew(f.targetRef)) queue.push(f.targetRef)
 				}
 				if (chain.size === 0) continue
-				let dx = 0
-				for (const id of chain) {
+				// Branches of a new split stack vertically: only the longest path needs width.
+				const memo = new Map<string, number>()
+				const longest = (id: string, seen: Set<string>): number => {
+					const known = memo.get(id)
+					if (known !== undefined) return known
+					if (seen.has(id)) return 0
+					seen.add(id)
 					const node = byId.get(id)
-					if (node) dx += sizeOf(node).width + GAP
+					let next = 0
+					for (const f of scope.flows)
+						if (f.sourceRef === id && chain.has(f.targetRef))
+							next = Math.max(next, longest(f.targetRef, seen))
+					seen.delete(id)
+					const width = (node ? sizeOf(node).width + GAP : 0) + next
+					memo.set(id, width)
+					return width
 				}
+				let need = 0
+				for (const f of scope.flows)
+					if (f.sourceRef === el.id && chain.has(f.targetRef))
+						need = Math.max(need, longest(f.targetRef, new Set()))
+				// Room already free on the anchor's row counts: a shape only moves as far as it must.
+				const x0 = shape.bounds.x + shape.bounds.width
+				const top = shape.bounds.y - 20
+				const bottom = shape.bounds.y + shape.bounds.height + 20
+				let nextX = Number.POSITIVE_INFINITY
+				for (const s of shapes) {
+					const b = s.bounds
+					if (s === shape || containers.has(s.bpmnElement) || b.x < x0) continue
+					if (b.y + b.height > top && b.y < bottom) nextX = Math.min(nextX, b.x)
+				}
+				const dx = Math.max(0, need + GAP - (nextX - x0))
+				if (dx === 0) continue
 				anchors.push({ shape, after: el.id, dx })
 			}
 		}

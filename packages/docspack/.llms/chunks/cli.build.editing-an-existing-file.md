@@ -1,25 +1,17 @@
 # casen build — Editing an existing file
 
 `--edit order.bpmn` passes the parsed file to a module spec and writes the result over it.
-Existing shapes keep their place; shapes right of an insertion move right to make room
-(`makeRoom`), new elements are drawn next to what they connect to (`placeNewShapes`), and the
-file's formatting is kept (`exportPreserving`).
+Existing shapes keep their place; shapes right of an insertion move right only as far as the
+new steps need beyond the room already free (`makeRoom`), new elements are drawn next to what
+they connect to (`placeNewShapes`), and the file's formatting is kept (`exportPreserving`).
+Only the user tasks the edit adds get forms; existing tasks and their form links stay as they
+are. `--camunda 8.10` sets the file's `executionPlatformVersion`.
 
 ```js
 export default (kit, model) =>
 	kit.Bpmn.continueProcess(model, "order")
 		.insertAfter("ask")
 		.serviceTask("fraud", { name: "Check fraud", taskType: "check-fraud" })
-```
-
-
-## Findings
-
-Each finding names the element, the BPMN Kit rule id and the key the rule has in
-`.bpmnlintrc` (what c8ctl and Camunda Modeler lint print):
-
-```
-✖ order.bpmn review: User task "Review" has no form. [compat/user-task-definition, .bpmnlintrc "camunda-compat/user-task-definition"]
 ```
 
 ---

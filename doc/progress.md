@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-11-13 — `casen build`: sub-processes, conditional events, free annotations in the text spec; edits that keep the file
+
+- Text spec (`build-spec.ts`): `sp[sub Name]` + an `sp {` … `}` body (nests; ids renamed on collision) is an expanded sub-process; `start:condition` / `catch:condition` + `cond=<FEEL>`; `n[annotation Text]` free (collaboration before the first `##`, else the pool's process) and `n[annotation Text] ..> node` linked, with DI (collaboration notes in a row above the pools). A timer start with a non-literal `at=` is one problem line. An unknown kind is one line naming the fallback (builder module, card "Not in the text spec") instead of `used task` + `nothing written`.
+- Builder modules: a gateway that joins and splits gets a merge gateway in front (`splitMixedGateways`, then a fresh layout); the gate escalates `bpmnlint:recommended` error rules (e.g. `no-gateway-join-fork`) the kit reports as warnings, so `✓` means c8ctl passes too, with a hint on the fix.
+- `--edit`: forms only for user tasks the edit adds (`attachUserTaskForms({ skip })`); existing tasks' missing forms are not this edit's error; rewired flows lose their stale route so new steps sit on the row; `makeRoom` moves shapes only by the longest new path less the room already free on the row (was: the width of every new node, parallel branches summed). `--camunda 8.10` sets `executionPlatformVersion` (kept attributes otherwise). Arg parser keeps `8.10` a string (number only when it reads back the same).
+- Layout (TS + Rust `stretch_bands`): an annotation packed above/below the lanes grows the outer lane, so it stays inside the pool. Conformance unchanged.
+- Card (102 lines): template 2 shows sub-process body, conditional start, annotations; edit behaviour, `--no-forms`, `--camunda`, `assignee`/`candidateGroups`; "Not in the text spec" section. docspack rebuilt: `bpmnkit-docs ask "build a bpmn process"` → the card first.
+- Measured: S16X-like spec (2 pools + blackbox, lanes, message flows, expanded sub-process with multi-instance, conditional start, data object/store, free + linked annotations) builds in ≈ 0.5 s, lint clean in `casen build` and in real bpmnlint 11 + `camunda-compat/camunda-cloud-8-10`.
+
 ## 2026-11-13 — `casen build` text spec: retries, headers, user-task attrs; clearer success line and typos
 
 - Text spec: `retries=<n>` (service/send), `header.<k>=<v>` (zeebe:taskHeaders), user task `assignee=`, `groups=a;b`, `users=`, `due=`, `priority=`; `CompactElement.retries` is written on export only (compactify unchanged: conformance snapshots stay). Wrong-kind use is a problem, not silent.
