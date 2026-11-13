@@ -1082,6 +1082,27 @@ pub(crate) fn assemble(reader: &Reader, final_: bool) -> ProcessTextResult {
     }
 }
 
+/// A readable decision id from a task name: `Assess risk` → `assess-risk`.
+pub fn decision_id_from(name: &str) -> Option<String> {
+    let mut id = String::new();
+    for c in name.trim().to_lowercase().chars() {
+        if c.is_ascii_lowercase() || c.is_ascii_digit() {
+            id.push(c);
+        } else if !id.ends_with('-') {
+            id.push('-');
+        }
+    }
+    let id = id.trim_matches('-');
+    if id.is_empty() {
+        return None;
+    }
+    Some(if id.starts_with(|c: char| c.is_ascii_lowercase()) {
+        id.to_owned()
+    } else {
+        format!("decision-{id}")
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -1163,25 +1184,4 @@ mod tests {
         assert!(starts_with_word("no-go", "no"));
         assert!(!starts_with_word("né", "no"));
     }
-}
-
-/// A readable decision id from a task name: `Assess risk` → `assess-risk`.
-pub fn decision_id_from(name: &str) -> Option<String> {
-    let mut id = String::new();
-    for c in name.trim().to_lowercase().chars() {
-        if c.is_ascii_lowercase() || c.is_ascii_digit() {
-            id.push(c);
-        } else if !id.ends_with('-') {
-            id.push('-');
-        }
-    }
-    let id = id.trim_matches('-');
-    if id.is_empty() {
-        return None;
-    }
-    Some(if id.starts_with(|c: char| c.is_ascii_lowercase()) {
-        id.to_owned()
-    } else {
-        format!("decision-{id}")
-    })
 }

@@ -2,6 +2,7 @@
 
 use crate::annotations::{association_waypoints, pack_annotations};
 use crate::collaboration::alignment::{align_pools, MessageLink};
+use crate::collaboration::message_labels::{place_message_flow_labels, MessageLabelInput};
 use crate::collaboration::ordering::{order_pools, PoolLink};
 use crate::engine::{layout_process, LayoutEngine};
 use crate::grid::router::collapse_collinear;
@@ -19,6 +20,7 @@ use bpmnkit_bpmn::model::{
 use bpmnkit_bpmn::Attrs;
 use indexmap::{IndexMap, IndexSet};
 use std::borrow::Cow;
+use std::collections::{HashMap, HashSet};
 
 const POOL_HEADER: f64 = 30.0;
 const LANE_HEADER: f64 = 30.0;
@@ -1239,6 +1241,12 @@ fn laid_out_diagrams(
             &pool_links(collab, &pool_owners(defs, collab), |id| {
                 depths.get(id).copied()
             }),
+            &participant_pools
+                .iter()
+                .enumerate()
+                .filter(|(_, pool)| pool.process.is_none())
+                .map(|(i, _)| i)
+                .collect(),
         );
         for index in order {
             // An index may repeat in TS; a pool is cheap to rebuild from its parts.
@@ -1696,6 +1704,37 @@ fn laid_out_diagrams(
 
     let repair = RouteRepair::new(defs);
     repair.apply(&all_shapes, &mut all_edges);
+    if let Some(collab) = collab.filter(|c| !c.message_flows.is_empty()) {
+        let pools: HashSet<String> = collab.participants.iter().map(|p| p.id.clone()).collect();
+        let names: HashMap<String, String> = collab
+            .message_flows
+            .iter()
+            .filter_map(|f| {
+                let name = f.name.as_deref().map(str::trim).filter(|n| !n.is_empty())?;
+                Some((f.id.clone(), name.to_string()))
+            })
+            .collect();
+        let mut containers: HashSet<String> = pools.clone();
+        for process in &defs.processes {
+            for lane in process.lane_set.iter().flat_map(|set| &set.lanes) {
+                containers.insert(lane.id.clone());
+            }
+        }
+        for s in &all_shapes {
+            if s.is_expanded == Some(true) {
+                containers.insert(s.bpmn_element.clone());
+            }
+        }
+        place_message_flow_labels(
+            &mut all_shapes,
+            &mut all_edges,
+            &MessageLabelInput {
+                names: &names,
+                containers: &containers,
+                pools: &pools,
+            },
+        );
+    }
     for plane in &mut root_planes {
         repair.apply(&plane.shapes, &mut plane.edges);
     }
