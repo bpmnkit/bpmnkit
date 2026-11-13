@@ -1,8 +1,53 @@
 # BPMN agent card
 
-Write a Camunda 8 BPMN process with `@bpmnkit/core` in one script: create, export, edit, validate. Run it with `node --experimental-strip-types build.ts` (Node 22.6+) or `npx tsx build.ts`. Never write a whole BPMN file by hand.
+Write a Camunda 8 BPMN process with `@bpmnkit/core`. Run a script with `node --experimental-strip-types build.ts` (Node 22.6+) or `npx tsx build.ts`. Never write a whole BPMN file by hand.
 
-<!-- docspack: tags=agent-card,cheat-sheet,build-script,bpmn,process,create,write,script,builder -->
+<!-- docspack: tags=agent-card,cheat-sheet,build-script,bpmn,process,create,write,script,builder,compact -->
+
+**Pick one path:**
+
+| Task | Use |
+| --- | --- |
+| New process, one pool, up to ~15 nodes, no boundary events | compact JSON + `expand` (next block) |
+| Pools, message flows, boundaries, sub-processes, lanes, or bigger | the builder script below |
+| Edit an existing file | XML edit for ≤ 3 nodes/flows, else the preserving script (step 3 below) |
+
+**Done =** the gate is clean and the deploy succeeds. The gate is the lint/deploy command your task names; with none, `casen check <files> --deploy`. Then stop: `applyAutoLayout` output is final, never hand-route DI or render images.
+
+## Compact: a small single-pool process
+
+```ts
+import { writeFileSync } from "node:fs"
+import { Bpmn, type CompactDiagram, expand, lintDiagram } from "@bpmnkit/core"
+
+const compact: CompactDiagram = {
+	id: "claims",
+	processes: [{
+		id: "claim",
+		elements: [
+			{ id: "start", type: "startEvent", name: "Claim filed" },
+			{ id: "big", type: "exclusiveGateway", name: "Over 1000?" },
+			{ id: "approve", type: "userTask", name: "Approve claim", formId: "approve-claim" },
+			{ id: "merge", type: "exclusiveGateway" },
+			{ id: "pay", type: "serviceTask", name: "Pay claim", jobType: "pay-claim" },
+			{ id: "done", type: "endEvent", name: "Claim paid" },
+		],
+		flows: [
+			{ id: "f1", from: "start", to: "big" },
+			{ id: "f2", from: "big", to: "approve", name: "Yes", condition: "=amount > 1000" },
+			{ id: "f3", from: "big", to: "merge", name: "No", isDefault: true },
+			{ id: "f4", from: "approve", to: "merge" },
+			{ id: "f5", from: "merge", to: "pay" },
+			{ id: "f6", from: "pay", to: "done" },
+		],
+	}],
+}
+const xml = Bpmn.export(expand(compact)) // laid out; throws naming what Camunda 8 needs
+writeFileSync("claim.bpmn", xml)
+if (lintDiagram(Bpmn.parse(xml)).counts.error > 0) process.exit(1)
+```
+
+Two flows into one task need a merge gateway (`merge` above). Same JSON on the CLI: `casen generate bpmn --definition '<json>'`. Lossy for pools, lanes, message flows and data stores: never round-trip an existing file through it.
 
 ## Minimal BPMN build script: create, export, edit, validate
 
@@ -56,7 +101,7 @@ if (report.counts.error > 0) process.exit(1)
 
 ## Pools and message flows
 
-`Bpmn.createDiagram(id)` builds several processes in one file. `.participant` without `processId` is a black-box pool (a partner you only exchange messages with). A message flow joins two pools (participant or node ids). Participant ids must differ from the diagram id. Diagrams get shapes only from `applyAutoLayout`.
+`Bpmn.createDiagram(id)` builds several processes in one file. `.participant` without `processId` is a black-box pool (a partner you only exchange messages with). A message flow joins two pools (participant or node ids). Participant ids must differ from the diagram id. Diagrams get shapes only from `applyAutoLayout`, which returns a new model: use its return value. Ids are global across pools: prefix them per pool (`build()` names both pools on a clash).
 
 ```ts
 import { writeFileSync } from "node:fs"
@@ -96,29 +141,29 @@ Bpmn.createProcess("p")
 	.endEvent("e", { name: "Done", lane: "sales" })
 	.build()
 ```
-- **Small new single-pool process:** write `CompactDiagram` JSON and run `casen generate bpmn --definition '<json>'` (schema: `--help`), or `expand(compact)`. Lossy for pools, lanes, message flows and data stores: never round-trip an existing file through it.
-- **Annotations, data stores:** `.annotate(id, text)`, `.dataStoreReference(id, ref)`; see `builder-reference.md`.
+- **Annotations, data:** `.annotate(id, text)` follows a flow element; `.dataObjectReference(id, objectId)` declares its data object, `.dataStoreReference(id, ref)` its root data store; see `builder-reference.md`.
 
 ## Top builder options
 
 - `Bpmn.createProcess(id)` … `.build()`; `.withAutoLayout()` before `.build()`, or the file has no shapes.
 - Every element takes `(id, options)`; ids are unique and each element connects to the previous one.
 - `serviceTask(id, { name, taskType, retries, ioMapping: { inputs, outputs }, taskHeaders })`: `taskType` is the job type a worker subscribes to.
-- `userTask(id, { name, zeebeUserTask: true, formId, assignee, candidateGroups, dueDate })`.
+- `userTask(id, { name, zeebeUserTask: true, formId, assignee, candidateGroups, dueDate })`: give every user task a `formId` (a deployed form's id, see `form.md`); without one lint warns.
 - `businessRuleTask(id, { decisionId, resultVariable })`: both are required to deploy.
 - `scriptTask(id, { expression: "=a + b", resultVariable })`; `callActivity(id, { processId })`.
-- Gateways: `.exclusiveGateway(id)` then `.branch(name, (b) => b.condition("=x > 1")...)`, one branch `b.defaultFlow()`; `.label(text)` sets the flow label. Merge with `.connectTo(id)` and declare that id after the last branch.
-- Events take named options: `timerDuration: "PT1H"`, `messageName` + `correlationKey`, `errorCode`, `signalName`. `.withBoundary(id, { errorCode }, (b) => ...)` hangs a boundary on the previous task.
+- Gateways: `.exclusiveGateway(id)` then `.branch(name, (b) => b.condition("=x > 1")...)`, one branch `b.defaultFlow()`. `branch(name)` labels the flow only after exclusive/inclusive gateways; `.label(text)` sets it explicitly. Merge with `.connectTo(id)` and declare that id after the last branch; branches nest at any depth, also inside sub-processes. A 2nd flow into a task (a loop back) gets an exclusive `<id>_merge` gateway at `build()`.
+- Events take named options: `timerDuration: "PT1H"`, `messageName` + `correlationKey` (catch, and also message end/throw events), `errorCode`, `signalName`. `.withBoundary(id, { errorCode }, (b) => ...)` hangs a boundary on the previous task.
 - `multiInstance: { collection: "=items", elementVariable: "item" }` on any task.
 - Full method list: `packages/core/builder-reference.md` in `@bpmnkit/core`, or `npx bpmnkit-docs ask "<option>"`.
 
 ## Traps
 
 - **Camunda 8.10 is the default target.** To target an older cluster, call `.executionPlatformVersion("8.8.0")` so lint checks that version.
+- **Message end/throw events:** pass `correlationKey` with `messageName`, or the message has no `zeebe:subscription` and c8ctl lint warns. A diagram-level `.message(id, { name, correlationKey })` merges into the message a pool already created.
 - **User tasks default to job-worker tasks**, which 8.10 deprecates. Pass `zeebeUserTask: true` for a Camunda user task.
 - **Deploy ids.** The engine keys a process by its process id (`createProcess("order")`), a decision by its `<decision id>`, a form by its JSON `id`. File names and display names do not count. `formId` and `decisionId` must equal those ids exactly; by default they bind to the latest deployed version, so deploy the `.dmn` and `.form` before an instance reaches the task. Redeploying the same id makes a new version.
 - **Reference a DMN decision by its decision id**, not the DMN `definitions` id, the file name or the decision name.
-- **Edit by size.** A tiny edit (rename, one attribute or property) of an existing file: change that XML text directly, no script. A structural change (new or removed element, flow, pool): the preserving script below.
+- **Edit by size.** Adding or changing ≤ 3 nodes or flows in an existing file: edit the XML directly (copy a neighbour's `<bpmn:…>` and its `<bpmndi:BPMNShape>`, shift x). Bigger restructures: the preserving script (step 3). `placeNewShapes` never moves existing shapes; it lists a new shape that overlaps one in `unplaced`.
 - **Preserving writer.** To restructure an existing file, `Bpmn.parse` it (or `Bpmn.continueProcess(parsed, processId)`), change the model, run `placeNewShapes(edited)` so the new elements get shapes next to what they connect to, and write `exportPreserving(original, drawn)`. Existing shapes stay put; a pool, lane or sub-process only grows when the new shapes do not fit. Rebuilding with `withAutoLayout()`, `applyAutoLayout`, or `Bpmn.export` alone moves every shape and reformats the diff. `placeNewShapes` does not draw new lanes; it lists them in `unplaced`.
 - FEEL in the builder starts with `=` (`"=amount > 1000"`); a value without `=` is a literal string.
 - Unknown option names are silently dropped: `timer: { duration }` does nothing; use `timerDuration`.
@@ -127,8 +172,10 @@ Bpmn.createProcess("p")
 
 ## Lint before you deploy or test
 
+One gate: the command your task names (c8ctl lint, deploy). Otherwise:
+
 ```sh
-casen check order.bpmn risk.dmn review-order.form --deploy   # one gate: BPMN + DMN + forms, and the ids that link them
+casen check order.bpmn risk.dmn review-order.form --deploy   # BPMN + DMN + forms, and the ids that link them
 casen lint lint order.bpmn --profile deploy   # BPMN only, errors only
 casen deploy deploy order.bpmn                # gated first; local Reebe, --target camunda8 for a cluster
 ```

@@ -10,11 +10,11 @@ Do not read README.md (20 KB) or the .d.ts files first. Read the one card for yo
 
 Rules that hold for all three:
 
-- Build with the builders (`Bpmn`, `Dmn`, `Form`). Never write XML or form JSON by hand.
-- Several pools or message flows: `Bpmn.createDiagram()` (BPMN card). A small new single-pool process: compact JSON via `casen generate bpmn --definition`.
-- Edit an existing file with `Bpmn.parse` and the `export*Preserving` writers, so layout and formatting stay.
+- New files: build with the builders (`Bpmn`, `Dmn`, `Form`), never write a whole file by hand. One pool, up to ~15 nodes: compact JSON + `expand` (BPMN card, first example). Several pools or message flows: `Bpmn.createDiagram()`.
+- Edit an existing file: ≤ 3 nodes or flows, edit the XML directly; bigger, `Bpmn.parse` and the `export*Preserving` writers, so layout and formatting stay.
 - `formId` and `decisionId` must equal the deployed form id and decision id exactly.
-- Validate before you finish: `npx @bpmnkit/cli check order.bpmn risk.dmn review.form --deploy` (`casen check` if the CLI is installed). Fix every error.
+- One gate: the lint/deploy command your task names; with none, `npx @bpmnkit/cli check order.bpmn risk.dmn review.form --deploy`. Fix every error.
+- Done = gate clean + deploy succeeds. Stop there: never hand-route DI or render images.
 - Builder errors and check findings end with `agent-cards/<type>.md#traps`. Read that section.
 
 The full API reference is `builder-reference.md` in this folder. Open it only when a card does not cover an option.

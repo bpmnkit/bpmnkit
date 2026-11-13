@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-11-13 — Agent friction fixes (`doc/agent-friction.md` causes 1, 3–8)
+
+- Cause 1 (regression from lanes): `BranchBuilder.branch` ran its callback via `this.lanes?.scoped(...)`, so a branch nested inside a sub-process body never ran. Fixed; a branch that adds no element and does not `connectTo` throws; a message-flow endpoint not found lists close ids. Tests `builder-nested-branch-subprocess.test.ts` (subProcess, adHocSubProcess, event sub-process, lanes).
+- Cause 3: `branch(name)` labels flows only after exclusive/inclusive/complex gateways (`.label()` still explicit). Cause 4: `correlationKey` on `EndEventOptions`/`IntermediateThrowEventOptions`; `DiagramBuilder.message()` merges into a same-id or same-name message (refs remapped). No `build()` error for throw-only messages without a key: Zeebe deploys them (only c8ctl lint warns); catch-side subscription is already gated. Tests `builder-agent-friction-labels-messages.test.ts`.
+- Cause 5: a non-gateway node with ≥ 2 incoming flows gets an exclusive `<id>_merge` gateway at `build()` (auto-insert, not an error: a task with two incoming already acts as an exclusive merge; this is what agents hand-built); merges take the lane of the node they feed. `continueProcess` edits give new event definitions ids. `placeNewShapes` keeps existing shapes fixed and reports new shapes whose shape/label overlaps in `unplaced`. Tests `builder-loop-back.test.ts`; four existing assertions moved to the merged shape.
+- Causes 6/7: lint `flow/unreachable`/`flow/dead-end` skip data objects/stores; `dataObjectReference` auto-declares its `dataObject`; data associations get ids and auto-layout DI edges; one root `bpmn:dataStore` per `dataStoreRef`; `DiagramBuilder.build()` reports ids reused across pools naming both. Free-standing annotation skipped (needs layout work). Tests `builder-data-friction.test.ts`.
+- Rust ports mirrored (`bpmnkit-builder`, `bpmnkit-lint`, `bpmnkit-layout`); conformance re-recorded.
+- Cause 8: BPMN agent card (source `apps/cli/agent-cards/bpmn.md`) opens with a path decision table, a runnable compact example (run by `agent-card-examples.test.ts`), one gate and a stop rule; "edit by size" is ≤ 3 nodes → XML; traps for formId, message correlation keys, global ids, `applyAutoLayout` return value. `AGENTS.md`/`llms.txt` via `scripts/sync-agent-cards.mjs`. Cause 2 (orthogonal message-flow routing) skipped.
+
 ## 2026-11-13 — Builder lanes: `inLane()` and `{ lane }`
 
 - `ProcessBuilder`/`BranchBuilder.inLane(id, { name })` and a per-node `lane` option build a `laneSet` (first-use order). Branch-scoped switch, boundary events follow the host, inferred joins follow their split, sub-process contents stay out. A process that uses lanes must put every top-level node in one: `build()` lists the rest. Auto-layout already draws the bands. Spec: `docs/superpowers/specs/2026-11-13-builder-lanes-design.md`; tests `packages/core/tests/builder-lanes.test.ts`.

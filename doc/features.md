@@ -1,5 +1,9 @@
 # Features
 
+## Builder: agent-friendly defaults (2026-11-13)
+
+Message end/throw events take `correlationKey`; `DiagramBuilder.message()` merges into a message a pool already created. A loop back into a task gets an exclusive `<id>_merge` gateway at `build()`. `dataObjectReference` declares its data object, data stores get a root `bpmn:dataStore`, and data associations get ids and DI edges. `placeNewShapes` reports new shapes that overlap existing ones. `DiagramBuilder.build()` names both pools when an id is reused.
+
 ## One-file BPMN viewer in Rust: `bpmnkit-viewer` (2026-11-12)
 
 `bpmnkit_viewer::to_html(xml, &HtmlOptions)` writes the same self-contained page as viewer-lite `toHtml` (byte-identical, checked against golden pages), for CLIs and chat bots (send it as a `.html` file). `parts` gives `head` / `body` / `scripts` to embed the viewer in your own page, and `VIEWER_JS`, `LOADER_JS`, `CSS` are the raw assets for CSP setups. No dependencies; facade feature `viewer`.

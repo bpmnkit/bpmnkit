@@ -74,7 +74,10 @@ describe("builder lanes", () => {
 			.branch("w", (b) => b.defaultFlow().connectTo("end"))
 			.endEvent("end")
 			.build({ validate: false })
-		expect(lanesOf(defs)).toEqual({ a: ["s", "g1", "g2", "in_a", "end", "g2_join", "end_merge"], b: ["in_b"] })
+		expect(lanesOf(defs)).toEqual({
+			a: ["s", "g1", "g2", "in_a", "end", "g2_join", "end_merge"],
+			b: ["in_b"],
+		})
 	})
 
 	it("lets the lane option override one node and auto-declares an unknown lane", () => {
