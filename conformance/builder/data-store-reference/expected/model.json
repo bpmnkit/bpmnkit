@@ -35,6 +35,7 @@
         {
           "dataInputAssociations": [
             {
+              "id": "DataInputAssociation_t_DS1_1",
               "sourceRefs": [
                 "DS1"
               ],
@@ -119,5 +120,15 @@
   "unknownAttributes": {
     "modeler:executionPlatform": "Camunda Cloud",
     "modeler:executionPlatformVersion": "8.10.0"
-  }
+  },
+  "unknownChildren": [
+    {
+      "attributes": {
+        "id": "Store_1",
+        "name": "Orders DB"
+      },
+      "children": [],
+      "name": "bpmn:dataStore"
+    }
+  ]
 }

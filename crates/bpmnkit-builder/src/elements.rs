@@ -230,6 +230,51 @@ fn element_at_mut<'a>(
     }
 }
 
+/// TS's `finishDocument`: hoists message subscriptions, then declares root data stores.
+pub(crate) fn finish_document(defs: BpmnDefinitions) -> BpmnDefinitions {
+    declare_data_stores(hoist_message_subscriptions(defs))
+}
+
+/// TS's `declareDataStores`: a `dataStoreReference` points at a root `bpmn:dataStore`; it is
+/// declared once per id here, after the model is complete.
+fn declare_data_stores(mut defs: BpmnDefinitions) -> BpmnDefinitions {
+    fn visit(
+        elements: &[BpmnFlowElement],
+        declared: &mut IndexSet<String>,
+        out: &mut Vec<XmlElement>,
+    ) {
+        for el in elements {
+            if let BpmnFlowElement::DataStoreReference(d) = el {
+                if let Some(store) = &d.data_store_ref {
+                    if declared.insert(store.clone()) {
+                        let mut x = XmlElement::new("bpmn:dataStore");
+                        x.attributes.insert("id".to_owned(), store.clone());
+                        if let Some(name) = &d.base.name {
+                            x.attributes.insert("name".to_owned(), name.clone());
+                        }
+                        out.push(x);
+                    }
+                }
+            }
+            if let Some(c) = el.contents() {
+                visit(&c.flow_elements, declared, out);
+            }
+        }
+    }
+    let mut declared: IndexSet<String> = defs
+        .unknown_children
+        .iter()
+        .filter(|c| c.name == "bpmn:dataStore")
+        .filter_map(|c| c.attributes.get("id").cloned())
+        .collect();
+    let mut stores = Vec::new();
+    for process in &defs.processes {
+        visit(&process.contents.flow_elements, &mut declared, &mut stores);
+    }
+    defs.unknown_children.extend(stores);
+    defs
+}
+
 /// TS's `hoistMessageSubscriptions`: moves each element's `zeebe:subscription` onto the
 /// `bpmn:message` it refers to, unless the message's users disagree on the key.
 pub(crate) fn hoist_message_subscriptions(mut defs: BpmnDefinitions) -> BpmnDefinitions {

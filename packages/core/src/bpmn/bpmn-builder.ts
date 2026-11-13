@@ -606,6 +606,26 @@ function addDataElement(
 	ids.add(element.id)
 }
 
+/** Data objects a `dataObjectReference()` declared on its own; a later explicit `dataObject()` adopts them. */
+const implicitDataObjects = new WeakSet<BpmnFlowElement>()
+
+function addDataObject(
+	elements: BpmnFlowElement[],
+	ids: Set<string>,
+	id: string,
+	options?: DataElementOptions,
+): void {
+	const implicit = elements.find((e) => e.id === id && implicitDataObjects.has(e))
+	if (implicit?.type === "dataObject") {
+		implicitDataObjects.delete(implicit)
+		const explicit = makeDataElement(id, "dataObject", undefined, options)
+		if (explicit.name !== undefined) implicit.name = explicit.name
+		if (options?.isCollection) implicit.isCollection = true
+		return
+	}
+	addDataElement(elements, ids, makeDataElement(id, "dataObject", undefined, options))
+}
+
 function makeDataElement(
 	id: string,
 	type: "dataObject" | "dataObjectReference" | "dataStoreReference",
@@ -631,6 +651,13 @@ function addDataObjectReference(
 	dataObjectRef: string,
 	options?: DataElementOptions,
 ): void {
+	// An unresolved dataObjectRef is a raw XSD IDREF error at build; agents
+	// expect the reference to bring its object, so declare it here.
+	if (!elements.some((e) => e.id === dataObjectRef && e.type === "dataObject")) {
+		const object = makeDataElement(dataObjectRef, "dataObject", undefined, undefined)
+		addDataElement(elements, ids, object)
+		implicitDataObjects.add(object)
+	}
 	addDataElement(elements, ids, makeDataElement(id, "dataObjectReference", dataObjectRef, options))
 	if (!options?.isCollection) return
 	const target = elements.find((e) => e.id === dataObjectRef)
@@ -664,15 +691,18 @@ function addDataAssociation(
 ): void {
 	const activity = elements.find((e) => e.id === activityId)
 	if (!activity) throw new Error(`dataAssociation(): no element "${activityId}" in this scope`)
+	const key = direction === "input" ? "dataInputAssociations" : "dataOutputAssociations"
+	// Ids let auto layout draw the association; without one it has no DI edge.
+	const id = `${direction === "input" ? "DataInputAssociation" : "DataOutputAssociation"}_${activityId}_${dataRefId}_${(activity[key]?.length ?? 0) + 1}`
 	const association: BpmnDataAssociation =
 		direction === "input"
 			? {
+					id,
 					sourceRefs: [dataRefId],
 					targetRef: targetRefPlaceholder(activity),
 					unknownAttributes: {},
 				}
-			: { sourceRefs: [], targetRef: dataRefId, unknownAttributes: {} }
-	const key = direction === "input" ? "dataInputAssociations" : "dataOutputAssociations"
+			: { id, sourceRefs: [], targetRef: dataRefId, unknownAttributes: {} }
 	activity[key] = [...(activity[key] ?? []), association]
 }
 
@@ -742,6 +772,45 @@ function resolveMessage(messageName: string, rootMessages: BpmnMessage[]): strin
  * cannot hold both, so those stay on their elements, where lint reports them,
  * rather than one silently winning.
  */
+function finishDocument(defs: BpmnDefinitions): BpmnDefinitions {
+	return declareDataStores(hoistMessageSubscriptions(defs))
+}
+
+/**
+ * A `dataStoreReference` points at a root `bpmn:dataStore`; the builder only
+ * knows the reference, so the store is declared once per id here, after the
+ * model is complete (a store shared by two pools stays one element).
+ */
+function declareDataStores(defs: BpmnDefinitions): BpmnDefinitions {
+	const declared = new Set(
+		(defs.unknownChildren ?? [])
+			.filter((c) => c.name === "bpmn:dataStore")
+			.map((c) => c.attributes.id),
+	)
+	const stores: XmlElement[] = []
+	const visit = (elements: readonly BpmnFlowElement[]) => {
+		for (const el of elements) {
+			if (el.type === "dataStoreReference" && el.dataStoreRef !== undefined) {
+				if (!declared.has(el.dataStoreRef)) {
+					declared.add(el.dataStoreRef)
+					stores.push({
+						name: "bpmn:dataStore",
+						attributes: {
+							id: el.dataStoreRef,
+							...(el.name !== undefined ? { name: el.name } : {}),
+						},
+						children: [],
+					})
+				}
+			}
+			if ("flowElements" in el && Array.isArray(el.flowElements)) visit(el.flowElements)
+		}
+	}
+	for (const process of defs.processes) visit(process.flowElements)
+	if (stores.length > 0) defs.unknownChildren = [...(defs.unknownChildren ?? []), ...stores]
+	return defs
+}
+
 function hoistMessageSubscriptions(defs: BpmnDefinitions): BpmnDefinitions {
 	const isSubscription = (el: XmlElement) => el.name === "zeebe:subscription"
 	const owners = new Map<string, { host: BpmnFlowElement; sub: XmlElement }[]>()
@@ -2107,7 +2176,7 @@ export class BranchBuilder {
 
 	/** Declares a data object. Link it to an activity via a `dataObjectReference()`. */
 	dataObject(id: string, options?: DataElementOptions): this {
-		addDataElement(this._elements, this._ids, makeDataElement(id, "dataObject", undefined, options))
+		addDataObject(this._elements, this._ids, id, options)
 		return this
 	}
 
@@ -2822,7 +2891,7 @@ export class SubProcessContentBuilder {
 
 	/** Declares a data object. Link it to an activity via a `dataObjectReference()`. */
 	dataObject(id: string, options?: DataElementOptions): this {
-		addDataElement(this._elements, this._ids, makeDataElement(id, "dataObject", undefined, options))
+		addDataObject(this._elements, this._ids, id, options)
 		return this
 	}
 
@@ -4007,11 +4076,7 @@ export class ProcessBuilder {
 
 	/** Declares a data object. Link it to an activity via a `dataObjectReference()`. */
 	dataObject(id: string, options?: DataElementOptions): this {
-		addDataElement(
-			this.flowElements,
-			this.elementIds,
-			makeDataElement(id, "dataObject", undefined, options),
-		)
+		addDataObject(this.flowElements, this.elementIds, id, options)
 		return this
 	}
 
@@ -4224,7 +4289,7 @@ export class ProcessBuilder {
 				: [],
 		}
 
-		return hoistMessageSubscriptions(
+		return finishDocument(
 			this._autoLayout ? applyAutoLayout(defs, "semantic", this.rootLayoutHints) : defs,
 		)
 	}
@@ -4667,6 +4732,36 @@ export class DiagramBuilder {
 			seen.add(id)
 		}
 
+		// Ids are global in a collaboration, so the same id in two pools is a
+		// raw XSD error otherwise; name both pools and the fix.
+		const idOwner = new Map<string, string>()
+		const claimId = (id: string, processId: string): void => {
+			const first = idOwner.get(id)
+			if (first === undefined) idOwner.set(id, processId)
+			else if (first !== processId) {
+				problems.push(
+					`Duplicate element ID "${id}" in processes "${first}" and "${processId}": ids are global in a collaboration; prefix them per pool (e.g. "${processId}_${id}")`,
+				)
+			}
+		}
+		const claimScope = (scope: BpmnFlowElement[], processId: string): void => {
+			for (const element of scope) {
+				claimId(element.id, processId)
+				if ("flowElements" in element && Array.isArray(element.flowElements)) {
+					claimScope(element.flowElements, processId)
+				}
+				for (const flow of "sequenceFlows" in element && Array.isArray(element.sequenceFlows)
+					? (element.sequenceFlows as { id: string }[])
+					: []) {
+					claimId(flow.id, processId)
+				}
+			}
+		}
+		for (const process of this._processes) {
+			claimScope(process.flowElements, process.id)
+			for (const flow of process.sequenceFlows) claimId(flow.id, process.id)
+		}
+
 		const processIds = new Set(this._processes.map((process) => process.id))
 		const claimed = new Map<string, string>()
 		for (const participant of this._participants) {
@@ -4756,7 +4851,7 @@ export class DiagramBuilder {
 	}
 
 	private buildModel(): BpmnDefinitions {
-		return hoistMessageSubscriptions({
+		return finishDocument({
 			id: this._id,
 			targetNamespace: "http://bpmn.io/schema/bpmn",
 			exporter: "@bpmnkit/core",

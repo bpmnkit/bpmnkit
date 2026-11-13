@@ -11,9 +11,9 @@
     "data-flow"
   ],
   "counts": {
-    "error": 27,
+    "error": 24,
     "info": 1,
-    "warning": 22
+    "warning": 19
   },
   "diagnostics": [
     {
@@ -255,78 +255,6 @@
       "fixable": true,
       "id": "flow/dead-end",
       "message": "Element \"adhoc\" (adHocSubProcess) has no outgoing sequence flows.",
-      "processId": "proc",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "data_obj"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"data_obj\" (dataObject) is not reachable from any start event.",
-      "processId": "proc",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "data_obj"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"data_obj\" (dataObject) has no outgoing sequence flows.",
-      "processId": "proc",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "data_ref"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"data_ref\" (dataObjectReference) is not reachable from any start event.",
-      "processId": "proc",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "data_ref"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"data_ref\" (dataObjectReference) has no outgoing sequence flows.",
-      "processId": "proc",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "store_ref"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"store_ref\" (dataStoreReference) is not reachable from any start event.",
-      "processId": "proc",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "store_ref"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"store_ref\" (dataStoreReference) has no outgoing sequence flows.",
       "processId": "proc",
       "severity": "warning",
       "suggestion": "Connect this element to a downstream element or an end event."
@@ -637,5 +565,5 @@
   "platform": {
     "id": "none"
   },
-  "total": 50
+  "total": 44
 }

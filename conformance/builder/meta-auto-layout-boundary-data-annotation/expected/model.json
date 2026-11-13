@@ -69,6 +69,21 @@
                 "y": 50
               }
             ]
+          },
+          {
+            "bpmnElement": "DataInputAssociation_t_R_1",
+            "id": "DataInputAssociation_t_R_1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 56,
+                "y": 486
+              },
+              {
+                "x": 116,
+                "y": 180
+              }
+            ]
           }
         ],
         "id": "p_di_plane",
@@ -207,6 +222,7 @@
         {
           "dataInputAssociations": [
             {
+              "id": "DataInputAssociation_t_R_1",
               "sourceRefs": [
                 "R"
               ],

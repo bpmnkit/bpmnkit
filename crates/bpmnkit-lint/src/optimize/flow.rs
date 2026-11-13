@@ -107,6 +107,14 @@ pub fn analyze_flow(p: &BpmnProcess, _opts: &ResolvedOptions) -> Vec<Finding> {
         let id = el.base().id.as_str();
         let ty = el.type_name();
 
+        // Data elements sit beside the flow: no sequence flow in or out, by design.
+        if matches!(
+            ty,
+            "dataObject" | "dataObjectReference" | "dataStoreReference"
+        ) {
+            continue;
+        }
+
         if !reachable.contains(id) {
             findings.push(finding(
                 "flow/unreachable",

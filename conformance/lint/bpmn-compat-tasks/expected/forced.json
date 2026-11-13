@@ -13,9 +13,9 @@
     "connector"
   ],
   "counts": {
-    "error": 74,
+    "error": 73,
     "info": 11,
-    "warning": 68
+    "warning": 67
   },
   "diagnostics": [
     {
@@ -686,30 +686,6 @@
       "fixable": true,
       "id": "flow/dead-end",
       "message": "Element \"adHocEmpty\" (adHocSubProcess) has no outgoing sequence flows.",
-      "processId": "tasks",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "data"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"data\" (dataObject) is not reachable from any start event.",
-      "processId": "tasks",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "data"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"data\" (dataObject) has no outgoing sequence flows.",
       "processId": "tasks",
       "severity": "warning",
       "suggestion": "Connect this element to a downstream element or an end event."
@@ -1862,5 +1838,5 @@
     "name": "Camunda Cloud",
     "version": "8.6.0"
   },
-  "total": 153
+  "total": 151
 }

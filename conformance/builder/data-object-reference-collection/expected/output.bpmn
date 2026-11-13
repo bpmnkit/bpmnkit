@@ -11,11 +11,11 @@
       <bpmn:incoming>Flow_s_t</bpmn:incoming>
       <bpmn:outgoing>Flow_t_e</bpmn:outgoing>
       <bpmn:property id="Property_t" name="__targetRef_placeholder"/>
-      <bpmn:dataInputAssociation>
+      <bpmn:dataInputAssociation id="DataInputAssociation_t_DOR1_1">
         <bpmn:sourceRef>DOR1</bpmn:sourceRef>
         <bpmn:targetRef>Property_t</bpmn:targetRef>
       </bpmn:dataInputAssociation>
-      <bpmn:dataInputAssociation>
+      <bpmn:dataInputAssociation id="DataInputAssociation_t_DOR1_2">
         <bpmn:sourceRef>DOR1</bpmn:sourceRef>
         <bpmn:targetRef>Property_t</bpmn:targetRef>
       </bpmn:dataInputAssociation>

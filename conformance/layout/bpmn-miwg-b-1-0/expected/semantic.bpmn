@@ -479,6 +479,16 @@
         <di:waypoint x="771" y="415"/>
         <bpmndi:BPMNLabel labelStyle="LS1373655174919"/>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E1373655174977__73afd30d-7d54-4897-9350-1f7d301ef1b2" bpmnElement="_73afd30d-7d54-4897-9350-1f7d301ef1b2" targetElement="S1373655174947__fea1c5af-6c76-403f-809e-26d476d92741">
+        <di:waypoint x="165" y="1951"/>
+        <di:waypoint x="894" y="1073"/>
+        <bpmndi:BPMNLabel labelStyle="LS1373655174919"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E1373655174966__fa10ebaf-7088-4def-8cc3-d959b8876b06" bpmnElement="_fa10ebaf-7088-4def-8cc3-d959b8876b06" sourceElement="S1373655174947__fea1c5af-6c76-403f-809e-26d476d92741">
+        <di:waypoint x="894" y="1073"/>
+        <di:waypoint x="172" y="2081"/>
+        <bpmndi:BPMNLabel labelStyle="LS1373655174919"/>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="E1373655174973__60ed96e6-5954-48de-861b-7d1e3c1fb23e" bpmnElement="_60ed96e6-5954-48de-861b-7d1e3c1fb23e">
         <di:waypoint x="83" y="1221"/>
         <di:waypoint x="83" y="1255"/>

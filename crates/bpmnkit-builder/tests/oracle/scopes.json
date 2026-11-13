@@ -152,6 +152,7 @@
 							],
 							"dataInputAssociations": [
 								{
+									"id": "DataInputAssociation_lc_dr_1",
 									"sourceRefs": ["dr"],
 									"targetRef": "Property_lc",
 									"unknownAttributes": {}

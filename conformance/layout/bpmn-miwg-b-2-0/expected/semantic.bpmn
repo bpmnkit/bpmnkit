@@ -1180,6 +1180,11 @@
         <di:waypoint x="1346" y="147"/>
         <bpmndi:BPMNLabel labelStyle="LS1373638080849"/>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="E1373638081021__f906ca20-8666-41ff-9d37-b76e09ac4f94" bpmnElement="_f906ca20-8666-41ff-9d37-b76e09ac4f94" targetElement="S1373638080869__0e87da16-736e-45b2-95e5-8f45940f3adf">
+        <di:waypoint x="135" y="639"/>
+        <di:waypoint x="521" y="355"/>
+        <bpmndi:BPMNLabel labelStyle="LS1373638080849"/>
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="E1373638081009__a63c8cd6-eee8-4fbe-be5e-f6980b180b52" bpmnElement="_a63c8cd6-eee8-4fbe-be5e-f6980b180b52">
         <di:waypoint x="179" y="1180"/>
         <di:waypoint x="259" y="1180"/>
