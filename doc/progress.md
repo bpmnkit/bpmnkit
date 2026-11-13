@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-13 — Agent cards: plain `casen build` (allowlists match `casen …`, not `npx casen …`)
+
+- Card, `AGENTS.md` and synced copies say `casen build`, with `npx casen` only as the fallback when casen is not on PATH: a permission allowlist like `Bash(casen build *)` refused the `npx` form.
+
 ## 2026-11-13 — `casen build`: one command from spec to deployed process (agent wall time)
 
 - New `casen build <spec> [resources…] [-o out.bpmn] [--edit in.bpmn] [--deploy] [--target auto|local|camunda8] [--no-lint] [--no-forms] [--verbose]` (`apps/cli/src/commands/build.ts`): spec → laid-out `.bpmn` + a `.form` per user task → deploy-gate errors plus the warnings a bpmnlint/camunda-compat rule reports → one deployment with the forms. Prints `✓ x.bpmn + 2 forms · lint clean · deployed 3 to camunda8 (key …)` or one line per problem. Specs: line-format text (`build-spec.ts`: `## Pool | id= / blackbox`, `### Lane`, `a ~> b: label`, `d[object|objects|store Name] ..> task`, `fields=`), CompactDiagram JSON, or a module (`export default` model / builder / `(kit, model) => …`). `--edit` = module edit with `makeRoom` + `placeNewShapes` + `exportPreserving`. Throw-only messages without a key lose their `messageRef` instead of failing `camunda-compat/subscription`.
