@@ -33,16 +33,20 @@
         <zeebe:taskDefinition type="t3"/>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_outer_t3</bpmn:incoming>
-      <bpmn:outgoing>Flow_t3_e</bpmn:outgoing>
+      <bpmn:outgoing>Flow_t3_e_merge</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="e">
-      <bpmn:incoming>Flow_t3_e</bpmn:incoming>
-      <bpmn:incoming>Flow_inner_join_e</bpmn:incoming>
+      <bpmn:incoming>Flow_e_merge_e</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:exclusiveGateway id="inner_join">
       <bpmn:incoming>Flow_t1_inner_join</bpmn:incoming>
       <bpmn:incoming>Flow_t2_inner_join</bpmn:incoming>
-      <bpmn:outgoing>Flow_inner_join_e</bpmn:outgoing>
+      <bpmn:outgoing>Flow_inner_join_e_merge</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="e_merge">
+      <bpmn:incoming>Flow_t3_e_merge</bpmn:incoming>
+      <bpmn:incoming>Flow_inner_join_e_merge</bpmn:incoming>
+      <bpmn:outgoing>Flow_e_merge_e</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_s_outer" sourceRef="s" targetRef="outer"/>
     <bpmn:sequenceFlow id="Flow_outer_inner" sourceRef="outer" targetRef="inner"/>
@@ -53,8 +57,9 @@
     <bpmn:sequenceFlow id="Flow_outer_t3" sourceRef="outer" targetRef="t3"/>
     <bpmn:sequenceFlow id="Flow_t1_inner_join" sourceRef="t1" targetRef="inner_join"/>
     <bpmn:sequenceFlow id="Flow_t2_inner_join" sourceRef="t2" targetRef="inner_join"/>
-    <bpmn:sequenceFlow id="Flow_t3_e" sourceRef="t3" targetRef="e"/>
-    <bpmn:sequenceFlow id="Flow_inner_join_e" sourceRef="inner_join" targetRef="e"/>
+    <bpmn:sequenceFlow id="Flow_t3_e_merge" sourceRef="t3" targetRef="e_merge"/>
+    <bpmn:sequenceFlow id="Flow_inner_join_e_merge" sourceRef="inner_join" targetRef="e_merge"/>
+    <bpmn:sequenceFlow id="Flow_e_merge_e" sourceRef="e_merge" targetRef="e"/>
   </bpmn:process>
 </bpmn:definitions>
 

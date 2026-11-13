@@ -32,7 +32,9 @@
 						{
 							"id": "s",
 							"incoming": [],
-							"outgoing": ["Flow_s_gw"],
+							"outgoing": [
+								"Flow_s_gw"
+							],
 							"extensionElements": [],
 							"unknownAttributes": {},
 							"type": "startEvent",
@@ -40,8 +42,13 @@
 						},
 						{
 							"id": "gw",
-							"incoming": ["Flow_s_gw"],
-							"outgoing": ["F_yes", "Flow_gw_lt"],
+							"incoming": [
+								"Flow_s_gw"
+							],
+							"outgoing": [
+								"F_yes",
+								"Flow_gw_lt"
+							],
 							"extensionElements": [],
 							"unknownAttributes": {},
 							"type": "exclusiveGateway",
@@ -50,8 +57,12 @@
 						{
 							"id": "t1",
 							"name": "T1",
-							"incoming": ["F_yes"],
-							"outgoing": ["Flow_t1_inner"],
+							"incoming": [
+								"F_yes"
+							],
+							"outgoing": [
+								"Flow_t1_inner"
+							],
 							"extensionElements": [
 								{
 									"name": "zeebe:taskDefinition",
@@ -67,7 +78,9 @@
 						{
 							"id": "bd",
 							"incoming": [],
-							"outgoing": ["Flow_bd_e2"],
+							"outgoing": [
+								"Flow_bd_e2"
+							],
 							"extensionElements": [],
 							"unknownAttributes": {},
 							"type": "boundaryEvent",
@@ -82,7 +95,9 @@
 						},
 						{
 							"id": "e2",
-							"incoming": ["Flow_bd_e2"],
+							"incoming": [
+								"Flow_bd_e2"
+							],
 							"outgoing": [],
 							"extensionElements": [],
 							"unknownAttributes": {},
@@ -91,8 +106,13 @@
 						},
 						{
 							"id": "inner",
-							"incoming": ["Flow_t1_inner"],
-							"outgoing": ["Flow_inner_ta", "Flow_inner_tb"],
+							"incoming": [
+								"Flow_t1_inner"
+							],
+							"outgoing": [
+								"Flow_inner_ta",
+								"Flow_inner_tb"
+							],
 							"extensionElements": [],
 							"unknownAttributes": {},
 							"type": "exclusiveGateway",
@@ -100,23 +120,33 @@
 						},
 						{
 							"id": "ta",
-							"incoming": ["Flow_inner_ta"],
-							"outgoing": ["Flow_ta_inner_join"],
+							"incoming": [
+								"Flow_inner_ta"
+							],
+							"outgoing": [
+								"Flow_ta_inner_join"
+							],
 							"extensionElements": [],
 							"unknownAttributes": {},
 							"type": "task"
 						},
 						{
 							"id": "tb",
-							"incoming": ["Flow_inner_tb"],
-							"outgoing": ["Flow_tb_inner_join"],
+							"incoming": [
+								"Flow_inner_tb"
+							],
+							"outgoing": [
+								"Flow_tb_inner_join"
+							],
 							"extensionElements": [],
 							"unknownAttributes": {},
 							"type": "userTask"
 						},
 						{
 							"id": "lt",
-							"incoming": ["Flow_gw_lt"],
+							"incoming": [
+								"Flow_gw_lt"
+							],
 							"outgoing": [],
 							"extensionElements": [],
 							"unknownAttributes": {},
@@ -132,7 +162,9 @@
 						{
 							"id": "lc",
 							"incoming": [],
-							"outgoing": ["Flow_lc_end"],
+							"outgoing": [
+								"Flow_lc_end_merge"
+							],
 							"extensionElements": [],
 							"unknownAttributes": {},
 							"type": "intermediateCatchEvent",
@@ -153,7 +185,9 @@
 							"dataInputAssociations": [
 								{
 									"id": "DataInputAssociation_lc_dr_1",
-									"sourceRefs": ["dr"],
+									"sourceRefs": [
+										"dr"
+									],
 									"targetRef": "Property_lc",
 									"unknownAttributes": {}
 								}
@@ -179,7 +213,9 @@
 						},
 						{
 							"id": "end",
-							"incoming": ["Flow_lc_end", "Flow_inner_join_end"],
+							"incoming": [
+								"Flow_end_merge_end"
+							],
 							"outgoing": [],
 							"extensionElements": [],
 							"unknownAttributes": {},
@@ -188,8 +224,26 @@
 						},
 						{
 							"id": "inner_join",
-							"incoming": ["Flow_tb_inner_join", "Flow_ta_inner_join"],
-							"outgoing": ["Flow_inner_join_end"],
+							"incoming": [
+								"Flow_tb_inner_join",
+								"Flow_ta_inner_join"
+							],
+							"outgoing": [
+								"Flow_inner_join_end_merge"
+							],
+							"extensionElements": [],
+							"unknownAttributes": {},
+							"type": "exclusiveGateway"
+						},
+						{
+							"id": "end_merge",
+							"incoming": [
+								"Flow_lc_end_merge",
+								"Flow_inner_join_end_merge"
+							],
+							"outgoing": [
+								"Flow_end_merge_end"
+							],
 							"extensionElements": [],
 							"unknownAttributes": {},
 							"type": "exclusiveGateway"
@@ -270,15 +324,22 @@
 							"unknownAttributes": {}
 						},
 						{
-							"id": "Flow_lc_end",
+							"id": "Flow_lc_end_merge",
 							"sourceRef": "lc",
-							"targetRef": "end",
+							"targetRef": "end_merge",
 							"extensionElements": [],
 							"unknownAttributes": {}
 						},
 						{
-							"id": "Flow_inner_join_end",
+							"id": "Flow_inner_join_end_merge",
 							"sourceRef": "inner_join",
+							"targetRef": "end_merge",
+							"extensionElements": [],
+							"unknownAttributes": {}
+						},
+						{
+							"id": "Flow_end_merge_end",
+							"sourceRef": "end_merge",
 							"targetRef": "end",
 							"extensionElements": [],
 							"unknownAttributes": {}
@@ -352,7 +413,9 @@
 						{
 							"id": "s",
 							"incoming": [],
-							"outgoing": ["Flow_s_sp"],
+							"outgoing": [
+								"Flow_s_sp"
+							],
 							"extensionElements": [],
 							"unknownAttributes": {},
 							"type": "startEvent",
@@ -360,8 +423,12 @@
 						},
 						{
 							"id": "sp",
-							"incoming": ["Flow_s_sp"],
-							"outgoing": ["Flow_sp_tx"],
+							"incoming": [
+								"Flow_s_sp"
+							],
+							"outgoing": [
+								"Flow_sp_tx"
+							],
 							"extensionElements": [],
 							"unknownAttributes": {},
 							"type": "subProcess",
@@ -369,7 +436,9 @@
 								{
 									"id": "ss",
 									"incoming": [],
-									"outgoing": ["Flow_ss_a"],
+									"outgoing": [
+										"Flow_ss_a"
+									],
 									"extensionElements": [],
 									"unknownAttributes": {},
 									"type": "startEvent",
@@ -378,8 +447,13 @@
 								},
 								{
 									"id": "a",
-									"incoming": ["Flow_ss_a"],
-									"outgoing": ["Flow_a_g", "Flow_a_join"],
+									"incoming": [
+										"Flow_ss_a"
+									],
+									"outgoing": [
+										"Flow_a_g",
+										"Flow_a_join_merge"
+									],
 									"extensionElements": [],
 									"unknownAttributes": {},
 									"type": "task"
@@ -387,7 +461,9 @@
 								{
 									"id": "sb",
 									"incoming": [],
-									"outgoing": ["Flow_sb_onTimeout"],
+									"outgoing": [
+										"Flow_sb_onTimeout"
+									],
 									"extensionElements": [],
 									"unknownAttributes": {},
 									"type": "boundaryEvent",
@@ -402,7 +478,9 @@
 								},
 								{
 									"id": "onTimeout",
-									"incoming": ["Flow_sb_onTimeout"],
+									"incoming": [
+										"Flow_sb_onTimeout"
+									],
 									"outgoing": [],
 									"extensionElements": [],
 									"unknownAttributes": {},
@@ -410,8 +488,13 @@
 								},
 								{
 									"id": "g",
-									"incoming": ["Flow_a_g"],
-									"outgoing": ["Flow_g_b1", "Flow_g_b2"],
+									"incoming": [
+										"Flow_a_g"
+									],
+									"outgoing": [
+										"Flow_g_b1",
+										"Flow_g_b2"
+									],
 									"extensionElements": [],
 									"unknownAttributes": {},
 									"type": "exclusiveGateway",
@@ -419,23 +502,33 @@
 								},
 								{
 									"id": "b1",
-									"incoming": ["Flow_g_b1"],
-									"outgoing": ["Flow_b1_g_join"],
+									"incoming": [
+										"Flow_g_b1"
+									],
+									"outgoing": [
+										"Flow_b1_g_join"
+									],
 									"extensionElements": [],
 									"unknownAttributes": {},
 									"type": "task"
 								},
 								{
 									"id": "b2",
-									"incoming": ["Flow_g_b2"],
-									"outgoing": ["Flow_b2_g_join"],
+									"incoming": [
+										"Flow_g_b2"
+									],
+									"outgoing": [
+										"Flow_b2_g_join"
+									],
 									"extensionElements": [],
 									"unknownAttributes": {},
 									"type": "task"
 								},
 								{
 									"id": "join",
-									"incoming": ["Flow_a_join", "Flow_g_join_join"],
+									"incoming": [
+										"Flow_join_merge_join"
+									],
 									"outgoing": [],
 									"extensionElements": [],
 									"unknownAttributes": {},
@@ -461,7 +554,9 @@
 										{
 											"id": "es",
 											"incoming": [],
-											"outgoing": ["Flow_es_ee"],
+											"outgoing": [
+												"Flow_es_ee"
+											],
 											"extensionElements": [],
 											"unknownAttributes": {},
 											"type": "startEvent",
@@ -475,7 +570,9 @@
 										},
 										{
 											"id": "ee",
-											"incoming": ["Flow_es_ee"],
+											"incoming": [
+												"Flow_es_ee"
+											],
 											"outgoing": [],
 											"extensionElements": [],
 											"unknownAttributes": {},
@@ -499,8 +596,26 @@
 								},
 								{
 									"id": "g_join",
-									"incoming": ["Flow_b1_g_join", "Flow_b2_g_join"],
-									"outgoing": ["Flow_g_join_join"],
+									"incoming": [
+										"Flow_b1_g_join",
+										"Flow_b2_g_join"
+									],
+									"outgoing": [
+										"Flow_g_join_join_merge"
+									],
+									"extensionElements": [],
+									"unknownAttributes": {},
+									"type": "exclusiveGateway"
+								},
+								{
+									"id": "join_merge",
+									"incoming": [
+										"Flow_a_join_merge",
+										"Flow_g_join_join_merge"
+									],
+									"outgoing": [
+										"Flow_join_merge_join"
+									],
 									"extensionElements": [],
 									"unknownAttributes": {},
 									"type": "exclusiveGateway"
@@ -559,15 +674,22 @@
 									"unknownAttributes": {}
 								},
 								{
-									"id": "Flow_a_join",
+									"id": "Flow_a_join_merge",
 									"sourceRef": "a",
-									"targetRef": "join",
+									"targetRef": "join_merge",
 									"extensionElements": [],
 									"unknownAttributes": {}
 								},
 								{
-									"id": "Flow_g_join_join",
+									"id": "Flow_g_join_join_merge",
 									"sourceRef": "g_join",
+									"targetRef": "join_merge",
+									"extensionElements": [],
+									"unknownAttributes": {}
+								},
+								{
+									"id": "Flow_join_merge_join",
+									"sourceRef": "join_merge",
 									"targetRef": "join",
 									"extensionElements": [],
 									"unknownAttributes": {}
@@ -591,8 +713,12 @@
 						},
 						{
 							"id": "tx",
-							"incoming": ["Flow_sp_tx"],
-							"outgoing": ["Flow_tx_ah"],
+							"incoming": [
+								"Flow_sp_tx"
+							],
+							"outgoing": [
+								"Flow_tx_ah"
+							],
 							"extensionElements": [],
 							"unknownAttributes": {},
 							"type": "transaction",
@@ -600,14 +726,18 @@
 								{
 									"id": "x1",
 									"incoming": [],
-									"outgoing": ["Flow_x1_x2"],
+									"outgoing": [
+										"Flow_x1_x2"
+									],
 									"extensionElements": [],
 									"unknownAttributes": {},
 									"type": "task"
 								},
 								{
 									"id": "x2",
-									"incoming": ["Flow_x1_x2"],
+									"incoming": [
+										"Flow_x1_x2"
+									],
 									"outgoing": [],
 									"extensionElements": [],
 									"unknownAttributes": {},
@@ -629,8 +759,12 @@
 						},
 						{
 							"id": "ah",
-							"incoming": ["Flow_tx_ah"],
-							"outgoing": ["Flow_ah_gw"],
+							"incoming": [
+								"Flow_tx_ah"
+							],
+							"outgoing": [
+								"Flow_ah_gw"
+							],
 							"extensionElements": [],
 							"unknownAttributes": {},
 							"type": "adHocSubProcess",
@@ -638,7 +772,9 @@
 								{
 									"id": "tool1",
 									"name": "Tool 1",
-									"incoming": ["Flow_tool2_tool1"],
+									"incoming": [
+										"Flow_tool2_tool1"
+									],
 									"outgoing": [],
 									"extensionElements": [
 										{
@@ -656,7 +792,9 @@
 									"id": "tool2",
 									"name": "Tool 2",
 									"incoming": [],
-									"outgoing": ["Flow_tool2_tool1"],
+									"outgoing": [
+										"Flow_tool2_tool1"
+									],
 									"extensionElements": [
 										{
 											"name": "zeebe:taskDefinition",
@@ -685,8 +823,12 @@
 						},
 						{
 							"id": "gw",
-							"incoming": ["Flow_ah_gw"],
-							"outgoing": ["Flow_gw_xe"],
+							"incoming": [
+								"Flow_ah_gw"
+							],
+							"outgoing": [
+								"Flow_gw_xe"
+							],
 							"extensionElements": [],
 							"unknownAttributes": {},
 							"type": "exclusiveGateway"
@@ -702,7 +844,9 @@
 								{
 									"id": "evs",
 									"incoming": [],
-									"outgoing": ["Flow_evs_eve"],
+									"outgoing": [
+										"Flow_evs_eve"
+									],
 									"extensionElements": [],
 									"unknownAttributes": {},
 									"type": "startEvent",
@@ -710,7 +854,9 @@
 								},
 								{
 									"id": "eve",
-									"incoming": ["Flow_evs_eve"],
+									"incoming": [
+										"Flow_evs_eve"
+									],
 									"outgoing": [],
 									"extensionElements": [],
 									"unknownAttributes": {},
@@ -734,7 +880,9 @@
 						},
 						{
 							"id": "xe",
-							"incoming": ["Flow_gw_xe"],
+							"incoming": [
+								"Flow_gw_xe"
+							],
 							"outgoing": [],
 							"extensionElements": [],
 							"unknownAttributes": {},
