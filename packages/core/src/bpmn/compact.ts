@@ -43,6 +43,8 @@ export interface CompactElement {
 	documentation?: string
 	/** Zeebe job type (serviceTask: zeebe:taskDefinition.type) */
 	jobType?: string
+	/** Job retries (`zeebe:taskDefinition` retries), a number or FEEL. */
+	retries?: string
 	/** dataObjectReference: id of the dataObject it points at. */
 	dataObjectRef?: string
 	/** dataStoreReference: id of the data store it points at. */
@@ -336,6 +338,8 @@ function compactifyElement(el: BpmnFlowElement, roots: RootDefinitions): Compact
 
 	const jobType = findAttr(ext, "zeebe:taskDefinition", "type")
 	if (jobType) result.jobType = jobType
+	const retries = findAttr(ext, "zeebe:taskDefinition", "retries")
+	if (retries) result.retries = retries
 
 	// Extract task headers (key→value map from zeebe:taskHeaders children). A connector's
 	// result variable is a header; it is kept apart to round-trip as `resultVariable`.
@@ -718,7 +722,11 @@ export function makeExtensions(el: CompactElement): XmlElement[] {
 	const ext: XmlElement[] = []
 	const { inputs, headers } = zeebeConfig(el)
 	if (el.jobType) {
-		ext.push({ name: "zeebe:taskDefinition", attributes: { type: el.jobType }, children: [] })
+		ext.push({
+			name: "zeebe:taskDefinition",
+			attributes: { type: el.jobType, ...(el.retries ? { retries: el.retries } : {}) },
+			children: [],
+		})
 	}
 	if (Object.keys(headers).length > 0) {
 		ext.push({

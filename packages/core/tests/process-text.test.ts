@@ -1170,6 +1170,34 @@ describe("forms, mappings and platform version", () => {
 		expect(problems.map((p) => p.message).join()).toContain('unknown attribute "a=1"')
 	})
 
+	it("reads retries, task headers and user task assignment", () => {
+		const { problems, diagram } = parseProcessText(
+			"a[start A] > t[service T | job=x retries=3 header.region=eu] > u[user U | assignee=alice groups=ops;qa due=P2D priority=80] > e[end E]",
+		)
+		expect(problems).toEqual([])
+		const xml = Bpmn.export(expand(diagram, { validate: false }))
+		expect(xml).toContain('retries="3"')
+		expect(xml).toContain('key="region" value="eu"')
+		expect(xml).toContain('assignee="alice"')
+		expect(xml).toContain('candidateGroups="ops,qa"')
+		expect(xml).toContain('dueDate="P2D"')
+		expect(xml).toContain('priority="80"')
+		const bad = parseProcessText(
+			"a[start A] > t[task T | retries=3] > u[service U | assignee=x] > e[end E]",
+		)
+		expect(bad.problems.map((p) => p.message)).toEqual([
+			expect.stringContaining("retries= takes a service or send task"),
+			expect.stringContaining("assignee= takes a user task"),
+		])
+	})
+
+	it("suggests the fix for a doubled =", () => {
+		const { problems } = parseProcessText(
+			"a[start A] > c[catch:message C | msg=m key==orderId] > e[end E]",
+		)
+		expect(problems[0]?.message).toContain("did you mean key=orderId")
+	})
+
 	it("ignores form= on a kind that cannot have one", () => {
 		const { problems, diagram } = parseProcessText("a[start A] > t[service T | form=f] > e[end E]")
 		expect(problems.map((p) => p.message).join()).toContain("form=")

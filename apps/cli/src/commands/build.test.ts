@@ -3,6 +3,8 @@ import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { Bpmn, lintDiagram } from "@bpmnkit/core"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
+import { parseArgs } from "../args.js"
+import { resolveOutputFormat } from "../output.js"
 import type { RunContext } from "../types.js"
 import { compileTextSpec, dropThrowOnlyMessages } from "./build-spec.js"
 import { buildGroup } from "./build.js"
@@ -171,7 +173,9 @@ describe("casen build", () => {
 	it("writes the .bpmn and a form per user task, lint clean, one line", async () => {
 		await writeFile(join(dir, "s04.txt"), S04)
 		await run([join(dir, "s04.txt")])
-		expect(lines).toEqual(["ok s04.bpmn + 2 forms · lint clean"])
+		expect(lines).toEqual([
+			"ok s04.bpmn + 2 forms (expense-review.form, expense-fix.form) · lint clean",
+		])
 		expect((await readdir(dir)).sort()).toEqual([
 			"expense-fix.form",
 			"expense-review.form",
@@ -186,6 +190,16 @@ describe("casen build", () => {
 		])
 	})
 
+	it("-o is the output file, not the global --output format", async () => {
+		await writeFile(join(dir, "s.txt"), "a[start A] > t[service T | retries=3] > e[end E]")
+		const parsed = parseArgs(["build", join(dir, "s.txt"), "-o", join(dir, "y.bpmn")])
+		expect(resolveOutputFormat("build", parsed.flags)).toBe("table")
+		expect(resolveOutputFormat("list", { o: "json" })).toBe("json")
+		await run(parsed.positional.slice(1), parsed.flags)
+		expect((await readdir(dir)).sort()).toEqual(["s.txt", "y.bpmn"])
+		expect(await readFile(join(dir, "y.bpmn"), "utf8")).toContain('retries="3"')
+	})
+
 	it("keeps an existing form and fails without writing on a spec problem", async () => {
 		await writeFile(
 			join(dir, "f.form"),
@@ -197,7 +211,7 @@ describe("casen build", () => {
 		)
 		await writeFile(join(dir, "s.txt"), S04)
 		await run([join(dir, "s.txt")], { out: join(dir, "out.bpmn") })
-		expect(lines).toEqual(["ok out.bpmn + 1 form · lint clean"])
+		expect(lines).toEqual(["ok out.bpmn + 1 form (expense-fix.form) · lint clean"])
 		await writeFile(join(dir, "bad.txt"), "a[task A] > b[task B]\na ~> b")
 		await expect(run([join(dir, "bad.txt")])).rejects.toThrow(/problem/)
 		expect((await readdir(dir)).includes("bad.bpmn")).toBe(false)
@@ -233,7 +247,9 @@ describe("casen build", () => {
 		vi.stubGlobal("fetch", fetch)
 		await writeFile(join(dir, "s04.txt"), S04)
 		await run([join(dir, "s04.txt")], { deploy: true })
-		expect(lines).toEqual(["ok s04.bpmn + 2 forms · lint clean · deployed 3 to camunda8 (key 42)"])
+		expect(lines).toEqual([
+			"ok s04.bpmn + 2 forms (expense-review.form, expense-fix.form) · lint clean · deployed 3 to camunda8 (key 42)",
+		])
 		expect(fetch.mock.calls[0]?.[0]).toBe("http://cluster:8080/v2/deployments")
 		const body = fetch.mock.calls[0]?.[1]?.body as FormData
 		expect(body.getAll("resources[]").map((f) => (f as File).name)).toEqual([

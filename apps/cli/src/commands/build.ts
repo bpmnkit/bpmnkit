@@ -264,7 +264,7 @@ const buildCmd: Command = {
 		for (const u of unplaced) process.stdout.write(`⚠ ${u.id}: ${u.reason}\n`)
 
 		const parts = [
-			`${basename(out)}${forms.length > 0 ? ` + ${forms.length} form${forms.length === 1 ? "" : "s"}` : ""}`,
+			`${basename(out)}${forms.length > 0 ? ` + ${forms.length} form${forms.length === 1 ? "" : "s"} (${forms.map((f) => `${f.id}.form`).join(", ")})` : ""}`,
 		]
 		if (ctx.flags.lint !== false) {
 			const rows = await lintBuilt(files)

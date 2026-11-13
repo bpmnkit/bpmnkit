@@ -883,8 +883,37 @@ class Reader {
 				element.timerDuration = duration(value)
 			} else if (key === "result" && value && ACTIVITIES.has(element.type)) {
 				element.resultVariable = value
-			} else
-				this.problems.push({ line: n, message: `unknown attribute "${attr}" on "${id}"; ignored` })
+			} else if (
+				key === "retries" &&
+				value &&
+				(element.type === "serviceTask" || element.type === "sendTask")
+			) {
+				element.retries = value
+			} else if (
+				key?.startsWith("header.") &&
+				key.length > 7 &&
+				value &&
+				ACTIVITIES.has(element.type)
+			) {
+				element.taskHeaders = { ...element.taskHeaders, [key.slice(7)]: value }
+			} else if (key !== undefined && value && USER_ATTRS.has(key) && element.type === "userTask") {
+				const field = USER_ATTRS.get(key) as USERFIELD
+				// `;` separates list items: `,` already separates attributes
+				if (field === "priority") element.priority = /^\d+$/.test(value) ? Number(value) : value
+				else element[field] = value.replace(/;/g, ",")
+			} else if (key !== undefined && value && (key === "retries" || USER_ATTRS.has(key))) {
+				this.problems.push({
+					line: n,
+					message: `${key}= takes a ${key === "retries" ? "service or send" : "user"} task; ignored on "${id}"`,
+				})
+			} else {
+				const typo = /^([A-Za-z][\w.-]*)=+(.+)$/.exec(attr)
+				const hint = attr.includes("==") && typo ? `; did you mean ${typo[1]}=${typo[2]}` : ""
+				this.problems.push({
+					line: n,
+					message: `unknown attribute "${attr}" on "${id}"${hint}; ignored`,
+				})
+			}
 		}
 		if (feel !== undefined) {
 			// `calc[task Count open issues | feel=…]`: a step that evaluates FEEL is a script task
@@ -946,6 +975,16 @@ class Reader {
 		return id
 	}
 }
+
+type USERFIELD = "assignee" | "candidateGroups" | "candidateUsers" | "dueDate" | "priority"
+/** Text attribute → user task field (assignment, schedule, priority). */
+const USER_ATTRS = new Map<string, USERFIELD>([
+	["assignee", "assignee"],
+	["groups", "candidateGroups"],
+	["users", "candidateUsers"],
+	["due", "dueDate"],
+	["priority", "priority"],
+])
 
 /** "Every day" is a schedule, not a list. */
 const TIME_WORDS = new Set([

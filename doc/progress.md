@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-13 — `casen build` text spec: retries, headers, user-task attrs; clearer success line and typos
+
+- Text spec: `retries=<n>` (service/send), `header.<k>=<v>` (zeebe:taskHeaders), user task `assignee=`, `groups=a;b`, `users=`, `due=`, `priority=`; `CompactElement.retries` round-trips `zeebe:taskDefinition retries`. Wrong-kind use is a problem, not silent.
+- Success line names generated forms: `x.bpmn + 1 form (id.form) · lint clean`. `key==x` → `did you mean key=x`.
+- `-o` is `--out` for `build` (`resolveOutputFormat`), not the global output format; tested.
+
 ## 2026-11-13 — Agent cards: plain `casen build` (allowlists match `casen …`, not `npx casen …`)
 
 - Card, `AGENTS.md` and synced copies say `casen build`, with `npx casen` only as the fallback when casen is not on PATH: a permission allowlist like `Bash(casen build *)` refused the `npx` form.

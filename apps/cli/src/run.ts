@@ -21,6 +21,7 @@ import {
 	createOutputWriter,
 	printHttpErrorDetails,
 	printRawResponse,
+	resolveOutputFormat,
 } from "./output.js"
 import { loadPlugins } from "./plugin-loader.js"
 import { runProfileManager } from "./profile-tui.js"
@@ -109,7 +110,7 @@ export async function run(argv: string[]): Promise<void> {
 		return
 	}
 
-	const outputFormat = (flags.output ?? flags.o ?? "table") as OutputFormat
+	const outputFormat = resolveOutputFormat(positional[0], flags)
 	const profileName = (flags.profile as string | undefined) ?? (flags.p as string | undefined)
 
 	// ── Top-level: main menu TUI or help ─────────────────────────────────────
