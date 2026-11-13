@@ -247,8 +247,10 @@ fn g_link_catch_in_a_branch_leaves_open_ends_for_the_next_element() {
         .expect("build");
     let pairs = flow_pairs(&built);
     assert!(!pairs.iter().any(|p| p.ends_with("->lc")), "{pairs:?}");
-    assert!(pairs.contains(&"lc->t3".to_owned()));
-    assert!(pairs.contains(&"g2_join->t3".to_owned()));
+    // Both reach t3 through the exclusive merge a second incoming flow gets.
+    assert!(pairs.contains(&"lc->t3_merge".to_owned()));
+    assert!(pairs.contains(&"g2_join->t3_merge".to_owned()));
+    assert!(pairs.contains(&"t3_merge->t3".to_owned()));
 }
 
 #[test]

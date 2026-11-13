@@ -172,7 +172,7 @@ describe("stable sequence flow ids", () => {
 			// A fragment that pins flow-id derivation, not a deployable model.
 			.build({ validate: false })
 
-		expect(flowIds(defs)).toContain("Flow_gw_work")
+		expect(flowIds(defs)).toContain("Flow_gw_work_merge")
 	})
 
 	it("names a spliced flow after where it ended up, not where it started", () => {

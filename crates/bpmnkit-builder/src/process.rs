@@ -63,8 +63,8 @@ use bpmnkit_compat::zeebe::{assert_deployable, targets_camunda8, AssertOptions};
 use crate::elements::{
     assert_element_ids_unique, assert_not_after_end, boundary_host_problem,
     build_event_definitions, can_declare_root, embedded_form_elements, hoist_message_subscriptions,
-    insert_join_gateways, is_gateway_type, is_link_event, make_boundary_event_el,
-    make_business_rule_task_el, make_call_activity_el, make_data_element,
+    insert_join_gateways, insert_merge_gateways, is_gateway_type, is_link_event,
+    make_boundary_event_el, make_business_rule_task_el, make_call_activity_el, make_data_element,
     make_defaultable_gateway_el, make_end_event_el, make_flow_element,
     make_intermediate_catch_event_el, make_intermediate_throw_event_el, make_plain_task_el,
     make_receive_task_el, make_script_task_el, make_send_task_el, make_service_task_el,
@@ -746,25 +746,45 @@ impl ProcessBuilder {
             ));
         }
 
+        // A continued document's flows keep their ids.
+        let source_flow_ids: Option<IndexSet<String>> = self
+            .source
+            .as_ref()
+            .map(|_| self.source_flow_targets.keys().cloned().collect());
+        let moved_flow_ids =
+            insert_merge_gateways(&mut elements, &mut flows, source_flow_ids.as_ref());
+
         assert_element_ids_unique(&elements, &self.process_id)?;
         self.validate(&elements, &flows)?;
-        self.assert_source_topology_intact(&flows)?;
-        {
-            // A continued document's flows keep their ids.
-            let preserve: Option<IndexSet<String>> = self
-                .source
-                .as_ref()
-                .map(|_| self.source_flow_targets.keys().cloned().collect());
-            assign_stable_flow_ids(&mut elements, &mut flows, &mut flow_tags, preserve.as_ref())?;
-            assert_explicit_flow_ids_unique(&elements, &flows, &flow_tags)?;
-        }
-        // A continued document keeps its untouched part byte-for-byte, ids included.
-        if self.source.is_none() {
-            for el in &mut elements {
-                let id = el.base().id.clone();
-                if let Some(defs) = el.event_definitions_mut() {
-                    assign_event_definition_ids(&id, defs);
-                }
+        self.assert_source_topology_intact(&flows, &moved_flow_ids)?;
+        assign_stable_flow_ids(
+            &mut elements,
+            &mut flows,
+            &mut flow_tags,
+            source_flow_ids.as_ref(),
+        )?;
+        assert_explicit_flow_ids_unique(&elements, &flows, &flow_tags)?;
+        // A continued document keeps its untouched part byte-for-byte, ids included, so
+        // only the elements this builder added get event definition ids there.
+        let source_element_ids: IndexSet<String> = self
+            .source
+            .as_ref()
+            .map(|source| {
+                source.definitions.processes[source.process_index]
+                    .contents
+                    .flow_elements
+                    .iter()
+                    .map(|e| e.base().id.clone())
+                    .collect()
+            })
+            .unwrap_or_default();
+        for el in &mut elements {
+            let id = el.base().id.clone();
+            if source_element_ids.contains(&id) {
+                continue;
+            }
+            if let Some(defs) = el.event_definitions_mut() {
+                assign_event_definition_ids(&id, defs);
             }
         }
         recompute_incoming_outgoing(&mut elements, &flows);
@@ -943,7 +963,11 @@ impl ProcessBuilder {
 
     /// TS's private `assertSourceTopologyIntact`: continuing a model must leave the flows
     /// it already had where they were.
-    fn assert_source_topology_intact(&self, flows: &[BpmnSequenceFlow]) -> Result<(), String> {
+    fn assert_source_topology_intact(
+        &self,
+        flows: &[BpmnSequenceFlow],
+        merged_flow_ids: &IndexSet<String>,
+    ) -> Result<(), String> {
         if self.source.is_none() {
             return Ok(());
         }
@@ -959,7 +983,7 @@ impl ProcessBuilder {
                 continue;
             };
             // A spliced flow may only move its source: `insertAfter` inserts into a path.
-            if self.spliced_flow_ids.contains(id) {
+            if self.spliced_flow_ids.contains(id) || merged_flow_ids.contains(id) {
                 if &flow.target_ref != target {
                     rewired.push(format!(
                         "{id} (spliced flow now targets {}, not {target})",

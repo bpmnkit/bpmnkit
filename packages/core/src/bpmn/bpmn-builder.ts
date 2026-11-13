@@ -1693,6 +1693,83 @@ function insertJoinGateways(elements: BpmnFlowElement[], flows: BpmnSequenceFlow
 }
 
 /**
+ * Puts an exclusive merge gateway (`<target>_merge`) in front of every
+ * non-gateway node that still has several incoming flows once join inference
+ * has run — typically a `connectTo()` looping back to a task, or a boundary
+ * path rejoining the main flow. Several flows into a task already mean "each
+ * arriving token starts it", which is exactly what an exclusive merge does, so
+ * this changes how the diagram reads (and lints), not how it runs.
+ *
+ * `sourceFlows` holds the flows of a document being continued: they must keep
+ * their id and target, so at most one of them may enter the node, and that one
+ * becomes `merge → node` (only its source moves, as with `insertAfter`) while a
+ * new flow takes its old source into the merge. Nodes with two or more of them
+ * were already like that in the document and are left alone. The ids of flows
+ * whose source moved are returned so the rewiring guard can allow it.
+ */
+function insertMergeGateways(
+	elements: BpmnFlowElement[],
+	flows: BpmnSequenceFlow[],
+	sourceFlows?: ReadonlySet<string>,
+): Set<string> {
+	const moved = new Set<string>()
+	const taken = new Set(elements.map((el) => el.id))
+	const incoming = new Map<string, BpmnSequenceFlow[]>()
+	for (const flow of flows) {
+		const arr = incoming.get(flow.targetRef)
+		if (arr) arr.push(flow)
+		else incoming.set(flow.targetRef, [flow])
+	}
+	for (const el of [...elements]) {
+		if (isGatewayType(el.type) || el.type === "startEvent") continue
+		const inFlows = incoming.get(el.id) ?? []
+		if (inFlows.length < 2) continue
+		const kept = inFlows.filter((flow) => sourceFlows?.has(flow.id))
+		if (kept.length > 1) continue
+		// A kept flow carrying a gateway's condition (or being its default) cannot
+		// have its source moved without moving the decision; leave that node as is.
+		const fixed = kept[0]
+		if (
+			fixed !== undefined &&
+			(fixed.conditionExpression !== undefined ||
+				elements.some((e) => "default" in e && e.default === fixed.id))
+		) {
+			continue
+		}
+
+		let mergeId = `${el.id}_merge`
+		for (let n = 2; taken.has(mergeId); n++) mergeId = `${el.id}_merge_${n}`
+		taken.add(mergeId)
+		elements.push(makeFlowElement(mergeId, "exclusiveGateway", {}))
+
+		const anchor = kept[0]
+		for (const flow of inFlows) {
+			if (flow !== anchor) flow.targetRef = mergeId
+		}
+		if (anchor === undefined) {
+			flows.push({
+				id: generateId("Flow"),
+				sourceRef: mergeId,
+				targetRef: el.id,
+				extensionElements: [],
+				unknownAttributes: {},
+			})
+			continue
+		}
+		flows.push({
+			id: generateId("Flow"),
+			sourceRef: anchor.sourceRef,
+			targetRef: mergeId,
+			extensionElements: [],
+			unknownAttributes: {},
+		})
+		anchor.sourceRef = mergeId
+		moved.add(anchor.id)
+	}
+	return moved
+}
+
+/**
  * Settles a finished scope: infer the joins its branches imply, name its
  * sequence flows after what they connect, then rebuild the `incoming`/
  * `outgoing` lists the ids feed. Order matters — a flow's endpoints are not
@@ -1703,6 +1780,7 @@ function finalizeScope(elements: BpmnFlowElement[], flows: BpmnSequenceFlow[]): 
 		if ("eventDefinitions" in el) assignEventDefinitionIds(el.id, el.eventDefinitions)
 	}
 	insertJoinGateways(elements, flows)
+	insertMergeGateways(elements, flows)
 	assignStableFlowIds(elements, flows)
 	recomputeIncomingOutgoing(elements, flows)
 }
@@ -3958,22 +4036,23 @@ export class ProcessBuilder {
 			)
 		}
 
+		const sourceFlowIds =
+			this._source === undefined ? undefined : new Set(this._sourceFlowTargets.keys())
+		const movedFlowIds = insertMergeGateways(elements, flows, sourceFlowIds)
+
 		assertElementIdsUnique(elements, this.processId)
 		this.validate(elements, flows)
-		this.assertSourceTopologyIntact(flows)
+		this.assertSourceTopologyIntact(flows, movedFlowIds)
 		// Flows the document already had keep their ids: continuing a model must
 		// not renumber the part the caller did not touch.
-		assignStableFlowIds(
-			elements,
-			flows,
-			this._source === undefined ? undefined : new Set(this._sourceFlowTargets.keys()),
-		)
+		assignStableFlowIds(elements, flows, sourceFlowIds)
 		assertExplicitFlowIdsUnique(elements, flows)
-		// A continued document keeps its untouched part byte-for-byte, ids included.
-		if (this._source === undefined) {
-			for (const el of elements) {
-				if ("eventDefinitions" in el) assignEventDefinitionIds(el.id, el.eventDefinitions)
-			}
+		// A continued document keeps its untouched part byte-for-byte, ids included,
+		// so only the elements this builder added get event definition ids there.
+		const sourceElementIds = new Set(this._source?.process.flowElements.map((el) => el.id))
+		for (const el of elements) {
+			if (sourceElementIds.has(el.id)) continue
+			if ("eventDefinitions" in el) assignEventDefinitionIds(el.id, el.eventDefinitions)
 		}
 		recomputeIncomingOutgoing(elements, flows)
 
@@ -4115,7 +4194,10 @@ export class ProcessBuilder {
 	 * document would come back with edges the caller never touched pointing
 	 * somewhere else. Continuing a model has to leave the model alone.
 	 */
-	private assertSourceTopologyIntact(flows: BpmnSequenceFlow[]): void {
+	private assertSourceTopologyIntact(
+		flows: BpmnSequenceFlow[],
+		mergedFlowIds: ReadonlySet<string>,
+	): void {
 		if (this._source === undefined) return
 		const rewired: string[] = []
 		const byId = new Map(flows.map((flow) => [flow.id, flow]))
@@ -4127,7 +4209,7 @@ export class ProcessBuilder {
 			}
 			// A spliced flow was moved on purpose, but only its source may move:
 			// `insertAfter` inserts into a path, it does not redirect one.
-			if (this._splicedFlowIds.has(id)) {
+			if (this._splicedFlowIds.has(id) || mergedFlowIds.has(id)) {
 				if (flow.targetRef !== target) {
 					rewired.push(`${id} (spliced flow now targets ${flow.targetRef}, not ${target})`)
 				}

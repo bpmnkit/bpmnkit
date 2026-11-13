@@ -155,7 +155,7 @@
           "incoming": [],
           "name": "Start",
           "outgoing": [
-            "f1"
+            "Flow_start_validate_merge"
           ],
           "type": "startEvent",
           "unknownAttributes": {}
@@ -164,8 +164,7 @@
           "extensionElements": [],
           "id": "validate",
           "incoming": [
-            "f1",
-            "Flow_open_validate"
+            "f1"
           ],
           "name": "Validate",
           "outgoing": [
@@ -207,9 +206,22 @@
           ],
           "name": "Open end",
           "outgoing": [
-            "Flow_open_validate"
+            "Flow_open_validate_merge"
           ],
           "type": "task",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "validate_merge",
+          "incoming": [
+            "Flow_open_validate_merge",
+            "Flow_start_validate_merge"
+          ],
+          "outgoing": [
+            "f1"
+          ],
+          "type": "exclusiveGateway",
           "unknownAttributes": {}
         }
       ],
@@ -220,7 +232,7 @@
         {
           "extensionElements": [],
           "id": "f1",
-          "sourceRef": "start",
+          "sourceRef": "validate_merge",
           "targetRef": "validate",
           "unknownAttributes": {}
         },
@@ -247,9 +259,16 @@
         },
         {
           "extensionElements": [],
-          "id": "Flow_open_validate",
+          "id": "Flow_open_validate_merge",
           "sourceRef": "open",
-          "targetRef": "validate",
+          "targetRef": "validate_merge",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_start_validate_merge",
+          "sourceRef": "start",
+          "targetRef": "validate_merge",
           "unknownAttributes": {}
         }
       ],

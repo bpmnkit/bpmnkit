@@ -1603,6 +1603,94 @@ pub(crate) fn insert_join_gateways(
     }
 }
 
+/// TS's `insertMergeGateways`: an exclusive `<target>_merge` gateway in front of every
+/// non-gateway node that still has several incoming flows after join inference. With
+/// `source_flows` (a continued document) at most one of those may enter the node; it keeps
+/// its id and target and only its source moves to the merge. Returns the moved flow ids.
+pub(crate) fn insert_merge_gateways(
+    elements: &mut Vec<BpmnFlowElement>,
+    flows: &mut Vec<BpmnSequenceFlow>,
+    source_flows: Option<&IndexSet<String>>,
+) -> IndexSet<String> {
+    let mut moved: IndexSet<String> = IndexSet::new();
+    let mut taken: IndexSet<String> = elements.iter().map(|e| e.base().id.clone()).collect();
+    let mut incoming: IndexMap<String, Vec<usize>> = IndexMap::new();
+    for (i, flow) in flows.iter().enumerate() {
+        incoming.entry(flow.target_ref.clone()).or_default().push(i);
+    }
+    let candidates: Vec<(String, BpmnElementType)> = elements
+        .iter()
+        .map(|e| (e.base().id.clone(), e.element_type()))
+        .collect();
+    for (el_id, ty) in candidates {
+        if is_gateway_type(ty) || ty == BpmnElementType::StartEvent {
+            continue;
+        }
+        let in_flows = incoming.get(&el_id).cloned().unwrap_or_default();
+        if in_flows.len() < 2 {
+            continue;
+        }
+        let kept: Vec<usize> = in_flows
+            .iter()
+            .copied()
+            .filter(|&fi| source_flows.is_some_and(|s| s.contains(&flows[fi].id)))
+            .collect();
+        if kept.len() > 1 {
+            continue;
+        }
+        // A kept flow carrying a gateway's decision cannot have its source moved.
+        if let Some(&fi) = kept.first() {
+            let fixed = &flows[fi];
+            if fixed.condition_expression.is_some()
+                || elements
+                    .iter()
+                    .any(|e| e.default_flow() == Some(fixed.id.as_str()))
+            {
+                continue;
+            }
+        }
+
+        let mut merge_id = format!("{el_id}_merge");
+        let mut n = 2;
+        while taken.contains(&merge_id) {
+            merge_id = format!("{el_id}_merge_{n}");
+            n += 1;
+        }
+        taken.insert(merge_id.clone());
+        elements.push(create_flow_element(
+            &merge_id,
+            BpmnElementType::ExclusiveGateway,
+            CreateFlowElementOptions::default(),
+        ));
+
+        let anchor = kept.first().copied();
+        for &fi in &in_flows {
+            if Some(fi) != anchor {
+                flows[fi].target_ref = merge_id.clone();
+            }
+        }
+        match anchor {
+            None => flows.push(BpmnSequenceFlow {
+                id: generate_id("Flow"),
+                source_ref: merge_id,
+                target_ref: el_id,
+                ..BpmnSequenceFlow::default()
+            }),
+            Some(fi) => {
+                let source_ref = std::mem::replace(&mut flows[fi].source_ref, merge_id.clone());
+                moved.insert(flows[fi].id.clone());
+                flows.push(BpmnSequenceFlow {
+                    id: generate_id("Flow"),
+                    source_ref,
+                    target_ref: merge_id,
+                    ..BpmnSequenceFlow::default()
+                });
+            }
+        }
+    }
+    moved
+}
+
 /// TS's `finalizeScope`: event-definition ids, joins, stable flow ids, incoming/outgoing.
 pub(crate) fn finalize_scope(
     elements: &mut Vec<BpmnFlowElement>,
@@ -1616,6 +1704,7 @@ pub(crate) fn finalize_scope(
         }
     }
     insert_join_gateways(elements, flows);
+    insert_merge_gateways(elements, flows, None);
     assign_stable_flow_ids(elements, flows, &mut shared.flow_tags, None)?;
     recompute_incoming_outgoing(elements, flows);
     Ok(())
