@@ -45,12 +45,12 @@
       <bpmn:outgoing>Flow_inner_join_e</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_s_outer" sourceRef="s" targetRef="outer"/>
-    <bpmn:sequenceFlow id="Flow_outer_inner" sourceRef="outer" targetRef="inner" name="left"/>
+    <bpmn:sequenceFlow id="Flow_outer_inner" sourceRef="outer" targetRef="inner"/>
     <bpmn:sequenceFlow id="Flow_inner_t1" sourceRef="inner" targetRef="t1" name="l1">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=l1</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_inner_t2" sourceRef="inner" targetRef="t2" name="l2"/>
-    <bpmn:sequenceFlow id="Flow_outer_t3" sourceRef="outer" targetRef="t3" name="right"/>
+    <bpmn:sequenceFlow id="Flow_outer_t3" sourceRef="outer" targetRef="t3"/>
     <bpmn:sequenceFlow id="Flow_t1_inner_join" sourceRef="t1" targetRef="inner_join"/>
     <bpmn:sequenceFlow id="Flow_t2_inner_join" sourceRef="t2" targetRef="inner_join"/>
     <bpmn:sequenceFlow id="Flow_t3_e" sourceRef="t3" targetRef="e"/>

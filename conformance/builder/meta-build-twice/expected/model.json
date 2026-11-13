@@ -122,7 +122,6 @@
         {
           "extensionElements": [],
           "id": "Flow_g_a",
-          "name": "a",
           "sourceRef": "g",
           "targetRef": "a",
           "unknownAttributes": {}
@@ -130,7 +129,6 @@
         {
           "extensionElements": [],
           "id": "Flow_g_b",
-          "name": "b",
           "sourceRef": "g",
           "targetRef": "b",
           "unknownAttributes": {}
@@ -152,7 +150,6 @@
         {
           "extensionElements": [],
           "id": "Flow_g_c",
-          "name": "c",
           "sourceRef": "g",
           "targetRef": "c",
           "unknownAttributes": {}

@@ -67,6 +67,8 @@ pub(crate) struct FlowElementOptions {
     pub task_listeners: Option<Vec<ZeebeListener>>,
     /// Send task and message throw/end event: the job Camunda 8 runs for the message.
     pub task_type: Option<String>,
+    /// Message end/throw event: `(message name, correlation key)` for the `zeebe:subscription`.
+    pub message_subscription: Option<String>,
 }
 
 impl From<&ElementOptions> for FlowElementOptions {
@@ -508,6 +510,21 @@ pub(crate) fn make_flow_element(
             extension_elements: options.extension_elements,
         },
     );
+    if let Some(key) = options.message_subscription.filter(|k| !k.is_empty()) {
+        if matches!(
+            ty,
+            BpmnElementType::IntermediateThrowEvent | BpmnElementType::EndEvent
+        ) {
+            el.base_mut()
+                .extension_elements
+                .extend(zeebe_extensions_to_xml_elements(&ZeebeExtensions {
+                    subscription: Some(ZeebeSubscription {
+                        correlation_key: key,
+                    }),
+                    ..ZeebeExtensions::default()
+                }));
+        }
+    }
     if let Some(task_type) = options.task_type {
         if matches!(
             ty,
@@ -886,6 +903,7 @@ pub(crate) fn make_service_task_el(
         id,
         BpmnElementType::ServiceTask,
         FlowElementOptions {
+            message_subscription: None,
             name: Some(options.name.clone()),
             documentation: options.documentation.clone(),
             extension_elements: Some(build_service_task_extensions(options)?),
@@ -912,6 +930,7 @@ pub(crate) fn make_script_task_el(
         id,
         BpmnElementType::ScriptTask,
         FlowElementOptions {
+            message_subscription: None,
             name: options.name.clone(),
             documentation: options.documentation.clone(),
             execution_listeners: options.execution_listeners.clone(),
@@ -979,6 +998,7 @@ pub(crate) fn make_start_event_el(
         id,
         BpmnElementType::StartEvent,
         FlowElementOptions {
+            message_subscription: None,
             name: options.and_then(|o| o.element.name.clone()),
             documentation: options.and_then(|o| o.element.documentation.clone()),
             execution_listeners: options.and_then(|o| o.element.execution_listeners.clone()),
@@ -1081,6 +1101,7 @@ pub(crate) fn make_user_task_el(
         id,
         BpmnElementType::UserTask,
         FlowElementOptions {
+            message_subscription: None,
             name: options.and_then(|o| o.name.clone()),
             documentation: options.and_then(|o| o.documentation.clone()),
             execution_listeners: options.and_then(|o| o.execution_listeners.clone()),
@@ -1193,6 +1214,7 @@ pub(crate) fn make_business_rule_task_el(
         id,
         BpmnElementType::BusinessRuleTask,
         FlowElementOptions {
+            message_subscription: None,
             name: options.and_then(|o| o.name.clone()),
             documentation: options.and_then(|o| o.documentation.clone()),
             execution_listeners: options.and_then(|o| o.execution_listeners.clone()),
@@ -1230,6 +1252,7 @@ pub(crate) fn make_call_activity_el(
         id,
         BpmnElementType::CallActivity,
         FlowElementOptions {
+            message_subscription: None,
             name: options.name.clone(),
             documentation: options.documentation.clone(),
             execution_listeners: options.execution_listeners.clone(),
@@ -1365,6 +1388,11 @@ pub(crate) fn make_end_event_el(
         options
             .map(|o| FlowElementOptions {
                 task_type: o.task_type.clone(),
+                message_subscription: o
+                    .message_name
+                    .as_deref()
+                    .filter(|n| !n.is_empty())
+                    .and(o.correlation_key.clone()),
                 ..FlowElementOptions::from(&o.element)
             })
             .unwrap_or_default(),
@@ -1387,6 +1415,11 @@ pub(crate) fn make_intermediate_throw_event_el(
         options
             .map(|o| FlowElementOptions {
                 task_type: o.task_type.clone(),
+                message_subscription: o
+                    .message_name
+                    .as_deref()
+                    .filter(|n| !n.is_empty())
+                    .and(o.correlation_key.clone()),
                 ..FlowElementOptions::from(&o.element)
             })
             .unwrap_or_default(),

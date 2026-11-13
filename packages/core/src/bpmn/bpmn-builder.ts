@@ -444,6 +444,8 @@ export interface IntermediateCatchEventOptions extends ElementOptions {
 export interface IntermediateThrowEventOptions extends ElementOptions {
 	/** Message name — creates a message throw event (aspirational). */
 	messageName?: string
+	/** FEEL expression correlating the message (`zeebe:subscription`, written on the message). Camunda 8 lint expects one on a message throw event's message. */
+	correlationKey?: string
 	/** Signal name — creates a signal throw event (aspirational). */
 	signalName?: string
 	/** Escalation code — creates an escalation throw event (aspirational). */
@@ -473,6 +475,8 @@ export interface EndEventOptions extends ElementOptions {
 	errorRef?: string
 	/** Message name — creates a message end event. */
 	messageName?: string
+	/** FEEL expression correlating the message (`zeebe:subscription`, written on the message). Camunda 8 lint expects one on a message end event's message. */
+	correlationKey?: string
 	/** Signal name — creates a signal end event. */
 	signalName?: string
 	/** Escalation code — creates an escalation end event. */
@@ -1023,11 +1027,23 @@ function makeFlowElement(
 		taskListeners?: ZeebeListener[]
 		/** Send task and message throw/end event: the job Camunda 8 runs for the message. */
 		taskType?: string
+		/** Message end/throw event: the `zeebe:subscription` key, hoisted onto the message at build. */
+		correlationKey?: string
+		messageName?: string
 	},
 ): BpmnFlowElement {
 	const el = createFlowElement(id, type, options)
 	if (options?.lane !== undefined) laneOverride.set(el, options.lane)
 	el.extensionElements = [...el.extensionElements]
+	if (
+		options?.messageName &&
+		options.correlationKey &&
+		(type === "endEvent" || type === "intermediateThrowEvent")
+	) {
+		el.extensionElements.push(
+			...zeebeExtensionsToXmlElements({ subscription: { correlationKey: options.correlationKey } }),
+		)
+	}
 	if (options?.taskType !== undefined && MESSAGE_JOB_TYPES.has(type)) {
 		el.extensionElements.push(
 			...zeebeExtensionsToXmlElements({ taskDefinition: { type: options.taskType } }),
@@ -1419,6 +1435,11 @@ function applyModelerTemplate(
 	if (options.modelerTemplateIcon) {
 		el.unknownAttributes["zeebe:modelerTemplateIcon"] = options.modelerTemplateIcon
 	}
+}
+
+/** Only decision gateways give their branches a flow label; a parallel or event-based split's flows are unconditioned. */
+function branchesAreNamed(gateway: BpmnFlowElement | undefined): boolean {
+	return gateway?.type !== "parallelGateway" && gateway?.type !== "eventBasedGateway"
 }
 
 /** Start-event shell shared by all three builders; the caller adds event definitions. */
@@ -1867,6 +1888,8 @@ export class BranchBuilder {
 	private lastNodeId: string | undefined
 	private readonly gatewayId: string
 	private readonly branchName: string
+	/** False after a parallel or event-based gateway, whose outgoing flows Camunda lints as `superfluous-label` when named. */
+	private readonly nameFlow: boolean
 	private isFirstElement = true
 	private pendingCondition: string | undefined
 	private pendingLabel: string | undefined
@@ -1901,10 +1924,12 @@ export class BranchBuilder {
 		rootEscalations: BpmnEscalation[] = [],
 		rootLayoutHints: Required<LayoutHints> = emptyLayoutHints(),
 		lanes?: LaneState,
+		nameFlow = true,
 	) {
 		this.lanes = lanes
 		this.gatewayId = gatewayId
 		this.branchName = branchName
+		this.nameFlow = nameFlow
 		this.lastNodeId = gatewayId
 		this.rootErrors = rootErrors
 		this.rootMessages = rootMessages
@@ -1983,7 +2008,9 @@ export class BranchBuilder {
 				id: flowId,
 				sourceRef: this.lastNodeId,
 				targetRef: element.id,
-				name: this.isFirstElement ? (this.pendingLabel ?? this.branchName) : undefined,
+				name: this.isFirstElement
+					? (this.pendingLabel ?? (this.nameFlow ? this.branchName : undefined))
+					: undefined,
 				conditionExpression:
 					this.isFirstElement && this.pendingCondition
 						? makeConditionExpression(this.pendingCondition)
@@ -2043,7 +2070,9 @@ export class BranchBuilder {
 			id: flowId,
 			sourceRef: this.lastNodeId,
 			targetRef: targetId,
-			name: this.isFirstElement ? (this.pendingLabel ?? this.branchName) : undefined,
+			name: this.isFirstElement
+				? (this.pendingLabel ?? (this.nameFlow ? this.branchName : undefined))
+				: undefined,
 			conditionExpression:
 				this.isFirstElement && this.pendingCondition
 					? makeConditionExpression(this.pendingCondition)
@@ -2481,6 +2510,7 @@ export class BranchBuilder {
 			this.rootEscalations,
 			this.rootLayoutHints,
 			this.lanes,
+			branchesAreNamed(this._elements.find((n) => n.id === this.currentGatewayId)),
 		)
 		// Inside a sub-process there is no lane state, but the callback must still run.
 		if (this.lanes) this.lanes.scoped(() => callback(b))
@@ -2863,6 +2893,8 @@ export class SubProcessContentBuilder {
 			this.rootSignals,
 			this.rootEscalations,
 			this.rootLayoutHints,
+			undefined,
+			branchesAreNamed(this._elements.find((n) => n.id === this.currentGatewayId)),
 		)
 		callback(b)
 		assertBranchAddedSomething(b, name, this.currentGatewayId)
@@ -3786,6 +3818,7 @@ export class ProcessBuilder {
 			this.rootEscalations,
 			this.rootLayoutHints,
 			this.lanes,
+			branchesAreNamed(this.flowElements.find((n) => n.id === this.currentGatewayId)),
 		)
 		this.lanes.scoped(() => callback(b))
 		assertBranchAddedSomething(b, name, this.currentGatewayId)
@@ -4418,6 +4451,26 @@ function mergeRootDefinitions<T extends { id: string }>(into: T[], incoming: rea
 	}
 }
 
+function remapMessageRefs(
+	elements: readonly BpmnFlowElement[],
+	to: ReadonlyMap<string, string>,
+): void {
+	for (const el of elements) {
+		if ("messageRef" in el && typeof el.messageRef === "string") {
+			el.messageRef = to.get(el.messageRef) ?? el.messageRef
+		}
+		if ("eventDefinitions" in el) {
+			for (const d of el.eventDefinitions) {
+				if (d.type === "message" && d.messageRef !== undefined) {
+					d.messageRef = to.get(d.messageRef) ?? d.messageRef
+				}
+			}
+		}
+		if ("flowElements" in el && Array.isArray(el.flowElements))
+			remapMessageRefs(el.flowElements, to)
+	}
+}
+
 /**
  * A message two pools share keeps the correlation key a later pool hoisted onto
  * its copy when the first copy has none; dropping it would leave that pool's
@@ -4484,6 +4537,23 @@ export class DiagramBuilder {
 		// two pools declaring the same one produce the same definition twice. The
 		// document needs it once.
 		mergeRootDefinitions(this._errors, defs.errors)
+		const remap = new Map<string, string>()
+		for (const incoming of defs.messages) {
+			const declared = this._messages.find(
+				(m) => m.id !== incoming.id && m.name !== undefined && m.name === incoming.name,
+			)
+			if (!declared) continue
+			remap.set(incoming.id, declared.id)
+			// message() ran first under another id: point this pool at that message.
+			const sub = incoming.extensionElements?.find((x) => x.name === "zeebe:subscription")
+			if (sub && !declared.extensionElements?.some((x) => x.name === "zeebe:subscription")) {
+				declared.extensionElements = [...(declared.extensionElements ?? []), sub]
+			}
+		}
+		if (remap.size > 0) {
+			for (const process of defs.processes) remapMessageRefs(process.flowElements, remap)
+			defs.messages = defs.messages.filter((m) => !remap.has(m.id))
+		}
 		mergeRootDefinitions(this._messages, defs.messages)
 		adoptMessageSubscriptions(this._messages, defs.messages)
 		return this
@@ -4523,13 +4593,36 @@ export class DiagramBuilder {
 	 * @param id - The message's element id, used verbatim.
 	 */
 	message(id: string, options: DiagramMessageOptions = {}): this {
-		const message: BpmnMessage = { id, unknownAttributes: {} }
-		if (options.name !== undefined) message.name = options.name
+		const keepOthers = (x: XmlElement) => x.name !== "zeebe:subscription"
 		const extensions = zeebeExtensionsToXmlElements(
 			options.correlationKey === undefined
 				? {}
 				: { subscription: { correlationKey: options.correlationKey } },
 		)
+		// A process that already named the message created it as Message_<name>; a
+		// second definition with that id or name would be a duplicate in the XML.
+		const existing =
+			this._messages.find((m) => m.id === id) ??
+			(options.name === undefined ? undefined : this._messages.find((m) => m.name === options.name))
+		if (existing) {
+			if (existing.id !== id) {
+				// The declared id wins, as it does when message() runs first: message
+				// flows name it, so the pools built so far are re-pointed at it.
+				const renamed = new Map([[existing.id, id]])
+				for (const process of this._processes) remapMessageRefs(process.flowElements, renamed)
+				existing.id = id
+			}
+			if (options.name !== undefined) existing.name = options.name
+			if (extensions.length > 0) {
+				existing.extensionElements = [
+					...(existing.extensionElements ?? []).filter(keepOthers),
+					...extensions,
+				]
+			}
+			return this
+		}
+		const message: BpmnMessage = { id, unknownAttributes: {} }
+		if (options.name !== undefined) message.name = options.name
 		if (extensions.length > 0) message.extensionElements = extensions
 		this._messages.push(message)
 		return this

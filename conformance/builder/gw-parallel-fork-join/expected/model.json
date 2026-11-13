@@ -150,7 +150,6 @@
         {
           "extensionElements": [],
           "id": "Flow_fork_ta",
-          "name": "a",
           "sourceRef": "fork",
           "targetRef": "ta",
           "unknownAttributes": {}
@@ -158,7 +157,6 @@
         {
           "extensionElements": [],
           "id": "Flow_fork_tb",
-          "name": "b",
           "sourceRef": "fork",
           "targetRef": "tb",
           "unknownAttributes": {}
@@ -166,7 +164,6 @@
         {
           "extensionElements": [],
           "id": "Flow_fork_tc",
-          "name": "c",
           "sourceRef": "fork",
           "targetRef": "tc",
           "unknownAttributes": {}
