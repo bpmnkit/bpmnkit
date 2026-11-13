@@ -62,9 +62,9 @@ use bpmnkit_compat::zeebe::{assert_deployable, targets_camunda8, AssertOptions};
 
 use crate::elements::{
     assert_element_ids_unique, assert_not_after_end, boundary_host_problem,
-    build_event_definitions, can_declare_root, embedded_form_elements, hoist_message_subscriptions,
-    insert_join_gateways, is_gateway_type, is_link_event, make_boundary_event_el,
-    make_business_rule_task_el, make_call_activity_el, make_data_element,
+    build_event_definitions, can_declare_root, embedded_form_elements, finish_document,
+    hoist_message_subscriptions, insert_join_gateways, is_gateway_type, is_link_event,
+    make_boundary_event_el, make_business_rule_task_el, make_call_activity_el, make_data_element,
     make_defaultable_gateway_el, make_end_event_el, make_flow_element,
     make_intermediate_catch_event_el, make_intermediate_throw_event_el, make_plain_task_el,
     make_receive_task_el, make_script_task_el, make_send_task_el, make_service_task_el,
@@ -874,7 +874,7 @@ impl ProcessBuilder {
         } else {
             defs
         };
-        Ok(hoist_message_subscriptions(defs))
+        Ok(finish_document(defs))
     }
 
     /// TS's private `buildOntoSource`: everything the builder has no opinion about (other

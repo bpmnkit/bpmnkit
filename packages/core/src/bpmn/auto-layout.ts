@@ -218,6 +218,19 @@ function buildLaneShapes(
 	})
 }
 
+/** Data associations drawn as association edges; only those with an id can have a DI edge. */
+function dataAssociations(el: BpmnFlowElement, out: BpmnProcess["associations"]): void {
+	for (const a of el.dataInputAssociations ?? []) {
+		const source = a.sourceRefs[0]
+		if (a.id !== undefined && source !== undefined)
+			out.push({ id: a.id, sourceRef: source, targetRef: el.id, unknownAttributes: {} })
+	}
+	for (const a of el.dataOutputAssociations ?? []) {
+		if (a.id !== undefined && a.targetRef !== undefined)
+			out.push({ id: a.id, sourceRef: el.id, targetRef: a.targetRef, unknownAttributes: {} })
+	}
+}
+
 /**
  * A view of `process` whose annotations and associations include those declared
  * inside (nested) sub-processes. The builder stores them on the sub-process
@@ -234,6 +247,7 @@ function withNestedAnnotations(process: BpmnProcess): BpmnProcess {
 				textAnnotations?: BpmnProcess["textAnnotations"]
 				associations?: BpmnProcess["associations"]
 			}
+			dataAssociations(el, associations)
 			if (scope.textAnnotations) textAnnotations.push(...scope.textAnnotations)
 			if (scope.associations) associations.push(...scope.associations)
 			if (scope.flowElements) walk(scope.flowElements)

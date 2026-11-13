@@ -77,6 +77,18 @@
         <di:waypoint x="390" y="60"/>
         <di:waypoint x="450" y="60"/>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="dia1_di" bpmnElement="dia1">
+        <di:waypoint x="63" y="310"/>
+        <di:waypoint x="130" y="100"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="doa1_di" bpmnElement="doa1">
+        <di:waypoint x="130" y="100"/>
+        <di:waypoint x="63" y="440"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="doa2_di" bpmnElement="doa2">
+        <di:waypoint x="290" y="100"/>
+        <di:waypoint x="70" y="570"/>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

@@ -10,9 +10,9 @@
     "data-flow"
   ],
   "counts": {
-    "error": 15,
+    "error": 10,
     "info": 30,
-    "warning": 17
+    "warning": 12
   },
   "diagnostics": [
     {
@@ -171,128 +171,6 @@
       "processId": "VacationRequestProcess",
       "severity": "error",
       "suggestion": "Fix the FEEL syntax — see the error position for the offending token."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_775c93ab-82e5-4a62-97f0-d305eda76c92"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"_775c93ab-82e5-4a62-97f0-d305eda76c92\" (dataObject) is not reachable from any start event.",
-      "processId": "VacationRequestProcess",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_775c93ab-82e5-4a62-97f0-d305eda76c92"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"_775c93ab-82e5-4a62-97f0-d305eda76c92\" (dataObject) has no outgoing sequence flows.",
-      "processId": "VacationRequestProcess",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_4234afd4-3ab0-4e09-8a7c-b475458db18a"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"_4234afd4-3ab0-4e09-8a7c-b475458db18a\" (dataObject) is not reachable from any start event.",
-      "processId": "VacationRequestProcess",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_4234afd4-3ab0-4e09-8a7c-b475458db18a"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"_4234afd4-3ab0-4e09-8a7c-b475458db18a\" (dataObject) has no outgoing sequence flows.",
-      "processId": "VacationRequestProcess",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "vacationApproved"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"vacationApproved\" (dataObject) is not reachable from any start event.",
-      "processId": "VacationRequestProcess",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "vacationApproved"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"vacationApproved\" (dataObject) has no outgoing sequence flows.",
-      "processId": "VacationRequestProcess",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "vacationRefused"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"vacationRefused\" (dataObject) is not reachable from any start event.",
-      "processId": "VacationRequestProcess",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "vacationRefused"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"vacationRefused\" (dataObject) has no outgoing sequence flows.",
-      "processId": "VacationRequestProcess",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_831726fb-e5ba-40aa-b484-1fc65de4980a"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"_831726fb-e5ba-40aa-b484-1fc65de4980a\" (dataObjectReference) is not reachable from any start event.",
-      "plane": "Collaboration_1rz14um",
-      "processId": "VacationRequestProcess",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_831726fb-e5ba-40aa-b484-1fc65de4980a"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"_831726fb-e5ba-40aa-b484-1fc65de4980a\" (dataObjectReference) has no outgoing sequence flows.",
-      "plane": "Collaboration_1rz14um",
-      "processId": "VacationRequestProcess",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
     },
     {
       "category": "naming",
@@ -834,5 +712,5 @@
   "platform": {
     "id": "none"
   },
-  "total": 62
+  "total": 52
 }

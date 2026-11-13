@@ -1,78 +1,6 @@
 {
   "findings": [
     {
-      "category": "flow",
-      "elementIds": [
-        "DataObject_invoice"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"DataObject_invoice\" (dataObject) is not reachable from any start event.",
-      "processId": "Process_data",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "DataObject_invoice"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"DataObject_invoice\" (dataObject) has no outgoing sequence flows.",
-      "processId": "Process_data",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "DataObjectRef_invoice"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"DataObjectRef_invoice\" (dataObjectReference) is not reachable from any start event.",
-      "processId": "Process_data",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "DataObjectRef_invoice"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"DataObjectRef_invoice\" (dataObjectReference) has no outgoing sequence flows.",
-      "processId": "Process_data",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "DataStore_ledger"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"DataStore_ledger\" (dataStoreReference) is not reachable from any start event.",
-      "processId": "Process_data",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "DataStore_ledger"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"DataStore_ledger\" (dataStoreReference) has no outgoing sequence flows.",
-      "processId": "Process_data",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
       "category": "naming",
       "elementIds": [
         "Start_data"
@@ -121,26 +49,7 @@
       "suggestion": "Set a job type — Camunda 8 refuses to deploy a task with no task definition."
     }
   ],
-  "fixes": [
-    {
-      "description": "Added end event \"EndEvent_0000001\" connected from \"DataObject_invoice\"",
-      "id": "flow/dead-end",
-      "index": 1,
-      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" id=\"Definitions_data\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"Process_data\" name=\"Data wiring\" isExecutable=\"true\">\n    <bpmn:dataObject id=\"DataObject_invoice\" name=\"Invoice\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:dataObject>\n    <bpmn:dataObjectReference id=\"DataObjectRef_invoice\" name=\"Invoice\" dataObjectRef=\"DataObject_invoice\"/>\n    <bpmn:dataStoreReference id=\"DataStore_ledger\" name=\"Ledger\"/>\n    <bpmn:startEvent id=\"Start_data\">\n      <bpmn:outgoing>Flow_d1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"Task_post\" name=\"Post to ledger\">\n      <bpmn:incoming>Flow_d1</bpmn:incoming>\n      <bpmn:outgoing>Flow_d2</bpmn:outgoing>\n      <bpmn:property id=\"Property_target\" name=\"__targetRef_placeholder\"/>\n      <bpmn:dataInputAssociation id=\"DataInputAssoc_1\">\n        <bpmn:sourceRef>DataObjectRef_invoice</bpmn:sourceRef>\n        <bpmn:targetRef>Property_target</bpmn:targetRef>\n      </bpmn:dataInputAssociation>\n      <bpmn:dataOutputAssociation id=\"DataOutputAssoc_1\">\n        <bpmn:targetRef>DataStore_ledger</bpmn:targetRef>\n      </bpmn:dataOutputAssociation>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"End_data\">\n      <bpmn:incoming>Flow_d2</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_d1\" sourceRef=\"Start_data\" targetRef=\"Task_post\"/>\n    <bpmn:sequenceFlow id=\"Flow_d2\" sourceRef=\"Task_post\" targetRef=\"End_data\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"DataObject_invoice\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
-    },
-    {
-      "description": "Added end event \"EndEvent_0000001\" connected from \"DataObjectRef_invoice\"",
-      "id": "flow/dead-end",
-      "index": 3,
-      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" id=\"Definitions_data\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"Process_data\" name=\"Data wiring\" isExecutable=\"true\">\n    <bpmn:dataObject id=\"DataObject_invoice\" name=\"Invoice\"/>\n    <bpmn:dataObjectReference id=\"DataObjectRef_invoice\" name=\"Invoice\" dataObjectRef=\"DataObject_invoice\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:dataObjectReference>\n    <bpmn:dataStoreReference id=\"DataStore_ledger\" name=\"Ledger\"/>\n    <bpmn:startEvent id=\"Start_data\">\n      <bpmn:outgoing>Flow_d1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"Task_post\" name=\"Post to ledger\">\n      <bpmn:incoming>Flow_d1</bpmn:incoming>\n      <bpmn:outgoing>Flow_d2</bpmn:outgoing>\n      <bpmn:property id=\"Property_target\" name=\"__targetRef_placeholder\"/>\n      <bpmn:dataInputAssociation id=\"DataInputAssoc_1\">\n        <bpmn:sourceRef>DataObjectRef_invoice</bpmn:sourceRef>\n        <bpmn:targetRef>Property_target</bpmn:targetRef>\n      </bpmn:dataInputAssociation>\n      <bpmn:dataOutputAssociation id=\"DataOutputAssoc_1\">\n        <bpmn:targetRef>DataStore_ledger</bpmn:targetRef>\n      </bpmn:dataOutputAssociation>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"End_data\">\n      <bpmn:incoming>Flow_d2</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_d1\" sourceRef=\"Start_data\" targetRef=\"Task_post\"/>\n    <bpmn:sequenceFlow id=\"Flow_d2\" sourceRef=\"Task_post\" targetRef=\"End_data\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"DataObjectRef_invoice\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
-    },
-    {
-      "description": "Added end event \"EndEvent_0000001\" connected from \"DataStore_ledger\"",
-      "id": "flow/dead-end",
-      "index": 5,
-      "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\" id=\"Definitions_data\" targetNamespace=\"http://bpmn.io/schema/bpmn\">\n  <bpmn:process id=\"Process_data\" name=\"Data wiring\" isExecutable=\"true\">\n    <bpmn:dataObject id=\"DataObject_invoice\" name=\"Invoice\"/>\n    <bpmn:dataObjectReference id=\"DataObjectRef_invoice\" name=\"Invoice\" dataObjectRef=\"DataObject_invoice\"/>\n    <bpmn:dataStoreReference id=\"DataStore_ledger\" name=\"Ledger\">\n      <bpmn:outgoing>Flow_0000002</bpmn:outgoing>\n    </bpmn:dataStoreReference>\n    <bpmn:startEvent id=\"Start_data\">\n      <bpmn:outgoing>Flow_d1</bpmn:outgoing>\n    </bpmn:startEvent>\n    <bpmn:serviceTask id=\"Task_post\" name=\"Post to ledger\">\n      <bpmn:incoming>Flow_d1</bpmn:incoming>\n      <bpmn:outgoing>Flow_d2</bpmn:outgoing>\n      <bpmn:property id=\"Property_target\" name=\"__targetRef_placeholder\"/>\n      <bpmn:dataInputAssociation id=\"DataInputAssoc_1\">\n        <bpmn:sourceRef>DataObjectRef_invoice</bpmn:sourceRef>\n        <bpmn:targetRef>Property_target</bpmn:targetRef>\n      </bpmn:dataInputAssociation>\n      <bpmn:dataOutputAssociation id=\"DataOutputAssoc_1\">\n        <bpmn:targetRef>DataStore_ledger</bpmn:targetRef>\n      </bpmn:dataOutputAssociation>\n    </bpmn:serviceTask>\n    <bpmn:endEvent id=\"End_data\">\n      <bpmn:incoming>Flow_d2</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:endEvent id=\"EndEvent_0000001\">\n      <bpmn:incoming>Flow_0000002</bpmn:incoming>\n    </bpmn:endEvent>\n    <bpmn:sequenceFlow id=\"Flow_d1\" sourceRef=\"Start_data\" targetRef=\"Task_post\"/>\n    <bpmn:sequenceFlow id=\"Flow_d2\" sourceRef=\"Task_post\" targetRef=\"End_data\"/>\n    <bpmn:sequenceFlow id=\"Flow_0000002\" sourceRef=\"DataStore_ledger\" targetRef=\"EndEvent_0000001\"/>\n  </bpmn:process>\n</bpmn:definitions>\n\n"
-    }
-  ],
+  "fixes": [],
   "summary": {
     "byCategory": {
       "agentic": 0,
@@ -150,16 +59,16 @@
       "extract": 0,
       "feel": 0,
       "feel-syntax": 0,
-      "flow": 6,
+      "flow": 0,
       "naming": 2,
       "pattern": 1,
       "task-reuse": 0
     },
     "bySeverity": {
-      "error": 4,
+      "error": 1,
       "info": 2,
-      "warning": 4
+      "warning": 1
     },
-    "total": 10
+    "total": 4
   }
 }

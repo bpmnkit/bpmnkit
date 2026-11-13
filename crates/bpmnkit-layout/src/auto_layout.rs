@@ -281,6 +281,32 @@ fn build_lane_shapes(
         .collect()
 }
 
+/// `dataAssociations(el, out)`: data associations drawn as association edges; only those
+/// with an id can have a DI edge.
+fn data_associations(el: &BpmnFlowElement, out: &mut Vec<bpmnkit_bpmn::model::BpmnAssociation>) {
+    let base = el.base();
+    for a in &base.data_input_associations {
+        if let (Some(id), Some(source)) = (&a.id, a.source_refs.first()) {
+            out.push(bpmnkit_bpmn::model::BpmnAssociation {
+                id: id.clone(),
+                source_ref: source.clone(),
+                target_ref: base.id.clone(),
+                ..Default::default()
+            });
+        }
+    }
+    for a in &base.data_output_associations {
+        if let (Some(id), Some(target)) = (&a.id, &a.target_ref) {
+            out.push(bpmnkit_bpmn::model::BpmnAssociation {
+                id: id.clone(),
+                source_ref: base.id.clone(),
+                target_ref: target.clone(),
+                ..Default::default()
+            });
+        }
+    }
+}
+
 /// `withNestedAnnotations(process)`: a view of `process` whose annotations and
 /// associations include those declared inside (nested) sub-processes. The builder
 /// stores them on the sub-process element, so packing only the process-level lists
@@ -295,6 +321,7 @@ fn with_nested_annotations(process: &BpmnProcess) -> Cow<'_, BpmnProcess> {
         associations: &mut Vec<bpmnkit_bpmn::model::BpmnAssociation>,
     ) {
         for el in elements {
+            data_associations(el, associations);
             if let Some(c) = el.contents() {
                 text_annotations.extend(c.text_annotations.iter().cloned());
                 associations.extend(c.associations.iter().cloned());

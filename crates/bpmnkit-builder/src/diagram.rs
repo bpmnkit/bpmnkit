@@ -20,7 +20,7 @@ use bpmnkit_bpmn::{
 use bpmnkit_xml::{Attrs, XmlElement};
 use indexmap::{IndexMap, IndexSet};
 
-use crate::elements::{hoist_message_subscriptions, merge_root_definitions, EXPORTER_VERSION};
+use crate::elements::{finish_document, merge_root_definitions, EXPORTER_VERSION};
 use crate::options::*;
 use crate::process::{gate_build, ProcessBuilder};
 use crate::shared::BuildError;
@@ -198,6 +198,21 @@ impl DiagramBuilder {
             seen.insert(id);
         }
 
+        // Ids are global in a collaboration, so the same id in two pools is a raw XSD error
+        // otherwise; name both pools and the fix.
+        let mut id_owner: IndexMap<&str, &str> = IndexMap::new();
+        for process in &self.processes {
+            claim_scope(
+                &process.contents.flow_elements,
+                &process.id,
+                &mut id_owner,
+                &mut problems,
+            );
+            for flow in &process.contents.sequence_flows {
+                claim_id(&flow.id, &process.id, &mut id_owner, &mut problems);
+            }
+        }
+
         let process_ids: IndexSet<&str> = self.processes.iter().map(|p| p.id.as_str()).collect();
         let mut claimed: IndexMap<&str, &str> = IndexMap::new();
         for participant in &self.participants {
@@ -320,7 +335,7 @@ impl DiagramBuilder {
             "modeler:executionPlatformVersion".to_owned(),
             self.execution_platform_version.clone(),
         );
-        Ok(hoist_message_subscriptions(BpmnDefinitions {
+        Ok(finish_document(BpmnDefinitions {
             id: self.id.clone(),
             target_namespace: "http://bpmn.io/schema/bpmn".to_owned(),
             exporter: Some("@bpmnkit/core".to_owned()),
@@ -357,5 +372,39 @@ impl DiagramBuilder {
             message_flows: self.message_flows.clone(),
             ..Default::default()
         }])
+    }
+}
+
+fn claim_id<'a>(
+    id: &'a str,
+    process_id: &'a str,
+    owners: &mut IndexMap<&'a str, &'a str>,
+    problems: &mut Vec<String>,
+) {
+    match owners.get(id) {
+        None => {
+            owners.insert(id, process_id);
+        }
+        Some(first) if *first != process_id => problems.push(format!(
+            "Duplicate element ID \"{id}\" in processes \"{first}\" and \"{process_id}\": ids are global in a collaboration; prefix them per pool (e.g. \"{process_id}_{id}\")"
+        )),
+        Some(_) => {}
+    }
+}
+
+fn claim_scope<'a>(
+    elements: &'a [BpmnFlowElement],
+    process_id: &'a str,
+    owners: &mut IndexMap<&'a str, &'a str>,
+    problems: &mut Vec<String>,
+) {
+    for element in elements {
+        claim_id(&element.base().id, process_id, owners, problems);
+        if let Some(c) = element.contents() {
+            claim_scope(&c.flow_elements, process_id, owners, problems);
+            for flow in &c.sequence_flows {
+                claim_id(&flow.id, process_id, owners, problems);
+            }
+        }
     }
 }

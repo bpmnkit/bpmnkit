@@ -3234,6 +3234,11 @@ Your BOC Adonis Process Automation</adonis:MailBody>
         <di:waypoint x="520" y="185"/>
         <bpmndi:BPMNLabel color:color="#000000" triso:labelPosition="custom" labelStyle="LS_a9e3a63e-db87-4fa1-9091-328acae4f490_0"/>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="BPMN_Edge_40d3cb58-31bb-47a4-9591-032a38011de3" bpmnElement="_40d3cb58-31bb-47a4-9591-032a38011de3" color:border-color="#000000" sourceElement="BPMN_Shape_2b960d84-feb1-46a9-a1a1-c300dd996b99">
+        <di:waypoint x="195" y="225"/>
+        <di:waypoint x="113" y="300"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:labelPosition="custom" labelStyle="LS_a9e3a63e-db87-4fa1-9091-328acae4f490_0"/>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
     <bpmndi:BPMNLabelStyle id="LS_a9e3a63e-db87-4fa1-9091-328acae4f490_0">
       <dc:Font name="arial,helvetica,sans-serif" size="11" isBold="false" isItalic="false" isStrikeThrough="false" isUnderline="false"/>

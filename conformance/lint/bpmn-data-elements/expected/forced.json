@@ -13,83 +13,11 @@
     "connector"
   ],
   "counts": {
-    "error": 4,
+    "error": 1,
     "info": 2,
-    "warning": 4
+    "warning": 1
   },
   "diagnostics": [
-    {
-      "category": "flow",
-      "elementIds": [
-        "DataObject_invoice"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"DataObject_invoice\" (dataObject) is not reachable from any start event.",
-      "processId": "Process_data",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "DataObject_invoice"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"DataObject_invoice\" (dataObject) has no outgoing sequence flows.",
-      "processId": "Process_data",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "DataObjectRef_invoice"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"DataObjectRef_invoice\" (dataObjectReference) is not reachable from any start event.",
-      "processId": "Process_data",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "DataObjectRef_invoice"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"DataObjectRef_invoice\" (dataObjectReference) has no outgoing sequence flows.",
-      "processId": "Process_data",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "DataStore_ledger"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"DataStore_ledger\" (dataStoreReference) is not reachable from any start event.",
-      "processId": "Process_data",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "DataStore_ledger"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"DataStore_ledger\" (dataStoreReference) has no outgoing sequence flows.",
-      "processId": "Process_data",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
     {
       "category": "naming",
       "elementIds": [
@@ -142,5 +70,5 @@
   "platform": {
     "id": "none"
   },
-  "total": 10
+  "total": 4
 }

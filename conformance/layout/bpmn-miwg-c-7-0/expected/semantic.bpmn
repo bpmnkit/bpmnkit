@@ -364,6 +364,34 @@
         <di:waypoint x="1272" y="265"/>
         <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_9786170f-6612-400e-a37d-2970ab70f1f3_0"/>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_e8b6f60a-4389-4b71-9d2e-c73bcca8ffda" bpmnElement="_e2734375-2aa0-418c-9f0b-8c2ca1022285" color:border-color="#000000" sourceElement="_8ce3cd47-c554-4454-80c4-7e045d45a7cc">
+        <di:waypoint x="200" y="120"/>
+        <di:waypoint x="140" y="500"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_9786170f-6612-400e-a37d-2970ab70f1f3_0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_1b44492b-f117-42e7-a97e-98e7e4b7f7e3" bpmnElement="_9ce7bb4a-930c-4132-a09d-61b345cce434" color:border-color="#000000" targetElement="_59a87229-94ce-4df6-ab1d-b669632dc093">
+        <di:waypoint x="140" y="630"/>
+        <di:waypoint x="520" y="120"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_9786170f-6612-400e-a37d-2970ab70f1f3_0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_115b0056-5e1b-483a-b8a9-81677d847e18" bpmnElement="_5c3fc96e-20d0-4879-8471-d41224632e24" color:border-color="#000000" targetElement="_292acb9f-6f5b-402b-adc0-0bd34c2d558d">
+        <di:waypoint x="140" y="500"/>
+        <di:waypoint x="360" y="280"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_9786170f-6612-400e-a37d-2970ab70f1f3_0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_850ff2e3-6389-4b70-895b-b9e4381e9b98" bpmnElement="_4164c380-3ee3-4a6a-8e66-5bc201416108" color:border-color="#000000" sourceElement="_292acb9f-6f5b-402b-adc0-0bd34c2d558d">
+        <di:waypoint x="360" y="280"/>
+        <di:waypoint x="140" y="630"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_9786170f-6612-400e-a37d-2970ab70f1f3_0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_d65b0a3d-8c42-4be7-9ac1-7324aa3d31f8_di" bpmnElement="_d65b0a3d-8c42-4be7-9ac1-7324aa3d31f8">
+        <di:waypoint x="927" y="420"/>
+        <di:waypoint x="140" y="760"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_505fa8cf-5697-4e35-bc4e-63df8e99093e_di" bpmnElement="_505fa8cf-5697-4e35-bc4e-63df8e99093e">
+        <di:waypoint x="140" y="760"/>
+        <di:waypoint x="1087" y="420"/>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
     <bpmndi:BPMNLabelStyle id="LS_9786170f-6612-400e-a37d-2970ab70f1f3_0">
       <dc:Font name="arial,helvetica,sans-serif" size="11" isBold="false" isItalic="false" isStrikeThrough="false" isUnderline="false"/>

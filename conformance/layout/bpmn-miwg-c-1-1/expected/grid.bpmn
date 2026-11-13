@@ -557,6 +557,21 @@
         <omgdi:waypoint x="98" y="60"/>
         <omgdi:waypoint x="180" y="60"/>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Bpmndi_BPMNEdge_Y55MYLH1EeSuDf0W70XLGw" bpmnElement="Bpmn_DataOutputAssociation_Y55MYrH1EeSuDf0W70XLGw" sourceElement="approveInvoice_gui">
+        <omgdi:waypoint x="330" y="100"/>
+        <omgdi:waypoint x="98" y="595"/>
+        <bpmndi:BPMNLabel id="Bpmndi_BPMNLabel_Y55MYbH1EeSuDf0W70XLGw"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Bpmndi_BPMNEdge_assignApprover" bpmnElement="Bpmn_DataOutputAssociation_assignApprover" sourceElement="assignApprover_gui">
+        <omgdi:waypoint x="180" y="100"/>
+        <omgdi:waypoint x="98" y="315"/>
+        <bpmndi:BPMNLabel id="Bpmndi_BPMNLabel_assignApprover2"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Bpmndi_BPMNEdge_dB6xsLH1EeSuDf0W70XLGw" bpmnElement="Bpmn_DataOutputAssociation_dB6xsrH1EeSuDf0W70XLGw" sourceElement="reviewInvoice_gui">
+        <omgdi:waypoint x="630" y="240"/>
+        <omgdi:waypoint x="98" y="875"/>
+        <bpmndi:BPMNLabel id="Bpmndi_BPMNLabel_dB6xsbH1EeSuDf0W70XLGw"/>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
     <bpmndi:BPMNLabelStyle id="Bpmndi_BPMNLabelStyle_VNihULHzEeS1nbPdxxCzlg">
       <omgdc:Font name="Segoe UI" size="12.0"/>
