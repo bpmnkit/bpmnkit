@@ -1582,7 +1582,9 @@ impl ProcessBuilder {
             return self;
         }
         let gateway = truthy(&self.scope.current_gateway_id).map(str::to_owned);
-        let Ok(outcome) = run_branch(&self.shared, gateway.as_deref(), name, callback) else {
+        let name_flow = self.scope.branches_are_named(gateway.as_deref());
+        let Ok(outcome) = run_branch(&self.shared, gateway.as_deref(), name, name_flow, callback)
+        else {
             return self;
         };
         let merged = self.scope.merge_branch(outcome);

@@ -162,7 +162,6 @@
         {
           "extensionElements": [],
           "id": "Flow_outer_inner",
-          "name": "left",
           "sourceRef": "outer",
           "targetRef": "inner",
           "unknownAttributes": {}
@@ -192,7 +191,6 @@
         {
           "extensionElements": [],
           "id": "Flow_outer_t3",
-          "name": "right",
           "sourceRef": "outer",
           "targetRef": "t3",
           "unknownAttributes": {}

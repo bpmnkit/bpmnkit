@@ -48,25 +48,6 @@
   "id": "Collab",
   "messages": [
     {
-      "id": "Message_order",
-      "name": "order",
-      "unknownAttributes": {}
-    },
-    {
-      "extensionElements": [
-        {
-          "attributes": {
-            "correlationKey": "=id"
-          },
-          "children": [],
-          "name": "zeebe:subscription"
-        }
-      ],
-      "id": "Message_invoice",
-      "name": "invoice",
-      "unknownAttributes": {}
-    },
-    {
       "extensionElements": [
         {
           "attributes": {
@@ -81,6 +62,15 @@
       "unknownAttributes": {}
     },
     {
+      "extensionElements": [
+        {
+          "attributes": {
+            "correlationKey": "=id"
+          },
+          "children": [],
+          "name": "zeebe:subscription"
+        }
+      ],
       "id": "Msg_Invoice",
       "name": "invoice",
       "unknownAttributes": {}
@@ -125,7 +115,7 @@
           "incoming": [
             "Flow_bs_order"
           ],
-          "messageRef": "Message_order",
+          "messageRef": "Msg_Order",
           "outgoing": [
             "Flow_order_invoice"
           ],
@@ -138,7 +128,7 @@
           "incoming": [
             "Flow_order_invoice"
           ],
-          "messageRef": "Message_invoice",
+          "messageRef": "Msg_Invoice",
           "outgoing": [
             "Flow_invoice_be"
           ],
@@ -194,7 +184,7 @@
           "eventDefinitions": [
             {
               "id": "ss_MessageEventDefinition",
-              "messageRef": "Message_order",
+              "messageRef": "Msg_Order",
               "type": "message"
             }
           ],
@@ -242,7 +232,7 @@
           "incoming": [
             "Flow_ship_bill"
           ],
-          "messageRef": "Message_invoice",
+          "messageRef": "Msg_Invoice",
           "outgoing": [
             "Flow_bill_se"
           ],

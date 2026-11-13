@@ -38,11 +38,6 @@
   "id": "D",
   "messages": [
     {
-      "id": "Message_m",
-      "name": "m",
-      "unknownAttributes": {}
-    },
-    {
       "id": "M",
       "name": "m",
       "unknownAttributes": {}
@@ -102,7 +97,7 @@
               "incoming": [
                 "Flow_is_inner"
               ],
-              "messageRef": "Message_m",
+              "messageRef": "M",
               "outgoing": [
                 "Flow_inner_ie"
               ],
@@ -191,7 +186,7 @@
           "eventDefinitions": [
             {
               "id": "s2_MessageEventDefinition",
-              "messageRef": "Message_m",
+              "messageRef": "M",
               "type": "message"
             }
           ],

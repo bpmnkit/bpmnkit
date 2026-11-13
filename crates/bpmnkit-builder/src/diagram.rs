@@ -14,8 +14,8 @@
 //!   `signals` are always empty, `diagrams` empty, no auto-layout.
 
 use bpmnkit_bpmn::{
-    BpmnCollaboration, BpmnDefinitions, BpmnError, BpmnFlowElement, BpmnMessage, BpmnMessageFlow,
-    BpmnParticipant, BpmnProcess,
+    BpmnCollaboration, BpmnDefinitions, BpmnError, BpmnEventDefinition, BpmnFlowElement,
+    BpmnMessage, BpmnMessageFlow, BpmnParticipant, BpmnProcess,
 };
 use bpmnkit_xml::{Attrs, XmlElement};
 use indexmap::{IndexMap, IndexSet};
@@ -37,6 +37,32 @@ pub struct DiagramBuilder {
     pub(crate) collaboration_id: String,
     pub(crate) execution_platform_version: String,
     pub(crate) error: Option<BuildError>,
+}
+
+/// TS's `remapMessageRefs`: re-points message references at another message id.
+fn remap_message_refs(elements: &mut [BpmnFlowElement], to: &IndexMap<String, String>) {
+    for el in elements {
+        match el {
+            BpmnFlowElement::SendTask(t) | BpmnFlowElement::ReceiveTask(t) => {
+                if let Some(r) = t.message_ref.as_mut().and_then(|r| to.get(r.as_str())) {
+                    t.message_ref = Some(r.clone());
+                }
+            }
+            _ => {}
+        }
+        if let Some(defs) = el.event_definitions_mut() {
+            for def in defs {
+                if let BpmnEventDefinition::Message(d) = def {
+                    if let Some(r) = d.message_ref.as_ref().and_then(|r| to.get(r.as_str())) {
+                        d.message_ref = Some(r.clone());
+                    }
+                }
+            }
+        }
+        if let Some(contents) = el.contents_mut() {
+            remap_message_refs(&mut contents.flow_elements, to);
+        }
+    }
 }
 
 /// TS's `adoptMessageSubscriptions`: a message two pools share keeps the correlation key a
@@ -112,9 +138,36 @@ impl DiagramBuilder {
                 return self;
             }
         };
-        self.processes.extend(defs.processes);
         // Two pools declaring the same message or error code produce one definition.
         merge_root_definitions(&mut self.errors, &defs.errors, |d| d.id.as_str());
+        // message() ran first under another id: point this pool at that message.
+        let mut remap: IndexMap<String, String> = IndexMap::new();
+        for incoming in &defs.messages {
+            let declared = self
+                .messages
+                .iter_mut()
+                .find(|m| m.id != incoming.id && m.name.is_some() && m.name == incoming.name);
+            let Some(declared) = declared else { continue };
+            remap.insert(incoming.id.clone(), declared.id.clone());
+            let sub = incoming
+                .extension_elements
+                .as_deref()
+                .and_then(|x| x.iter().find(|x| x.name == "zeebe:subscription"));
+            if let Some(sub) = sub {
+                let ext = declared.extension_elements.get_or_insert_with(Vec::new);
+                if !ext.iter().any(|x| x.name == "zeebe:subscription") {
+                    ext.push(sub.clone());
+                }
+            }
+        }
+        let mut defs = defs;
+        if !remap.is_empty() {
+            for process in &mut defs.processes {
+                remap_message_refs(&mut process.contents.flow_elements, &remap);
+            }
+            defs.messages.retain(|m| !remap.contains_key(&m.id));
+        }
+        self.processes.extend(std::mem::take(&mut defs.processes));
         merge_root_definitions(&mut self.messages, &defs.messages, |d| d.id.as_str());
         adopt_message_subscriptions(&mut self.messages, &defs.messages);
         self
@@ -150,17 +203,47 @@ impl DiagramBuilder {
             return self;
         }
         let options = options.unwrap_or_default();
+        // An empty key still yields the element here (TS tests `subscription`, not the key).
+        let subscription = options.correlation_key.map(|key| {
+            let mut ext = XmlElement::new("zeebe:subscription");
+            ext.attributes.insert("correlationKey".to_owned(), key);
+            ext
+        });
+        // A process that already named the message created it as Message_<name>; a second
+        // definition with that id or name would be a duplicate in the XML.
+        let at = self.messages.iter().position(|m| m.id == id).or_else(|| {
+            options.name.as_ref().and_then(|n| {
+                self.messages
+                    .iter()
+                    .position(|m| m.name.as_ref() == Some(n))
+            })
+        });
+        if let Some(at) = at {
+            if self.messages[at].id != id {
+                // The declared id wins; the pools built so far are re-pointed at it.
+                let renamed = IndexMap::from([(self.messages[at].id.clone(), id.to_owned())]);
+                for process in &mut self.processes {
+                    remap_message_refs(&mut process.contents.flow_elements, &renamed);
+                }
+                self.messages[at].id = id.to_owned();
+            }
+            let existing = &mut self.messages[at];
+            if options.name.is_some() {
+                existing.name = options.name;
+            }
+            if let Some(sub) = subscription {
+                let ext = existing.extension_elements.get_or_insert_with(Vec::new);
+                ext.retain(|x| x.name != "zeebe:subscription");
+                ext.push(sub);
+            }
+            return self;
+        }
         let mut message = BpmnMessage {
             id: id.to_owned(),
             name: options.name,
             ..Default::default()
         };
-        // An empty key still yields the element here (TS tests `subscription`, not the key).
-        if let Some(key) = options.correlation_key {
-            let mut ext = XmlElement::new("zeebe:subscription");
-            ext.attributes.insert("correlationKey".to_owned(), key);
-            message.extension_elements = Some(vec![ext]);
-        }
+        message.extension_elements = subscription.map(|s| vec![s]);
         self.messages.push(message);
         self
     }

@@ -191,6 +191,14 @@ pub(crate) struct BranchOutcome {
 }
 
 impl Scope {
+    /// TS's `branchesAreNamed`: only decision gateways label their branches' flows.
+    pub fn branches_are_named(&self, gateway_id: Option<&str>) -> bool {
+        !matches!(
+            gateway_id.and_then(|id| self.find(id)),
+            Some(BpmnFlowElement::ParallelGateway(_) | BpmnFlowElement::EventBasedGateway(_))
+        )
+    }
+
     pub fn find(&self, id: &str) -> Option<&BpmnFlowElement> {
         self.elements.iter().find(|e| e.base().id == id)
     }
@@ -345,6 +353,7 @@ pub(crate) fn run_branch(
     shared: &SharedRef,
     current_gateway_id: Option<&str>,
     name: &str,
+    name_flow: bool,
     callback: impl FnOnce(&mut BranchBuilder),
 ) -> Result<BranchOutcome, Failed> {
     let Some(gateway_id) = current_gateway_id else {
@@ -353,7 +362,7 @@ pub(crate) fn run_branch(
             "branch() must be called after a gateway element",
         ));
     };
-    let mut branch = BranchBuilder::new(gateway_id, name, Rc::clone(shared));
+    let mut branch = BranchBuilder::new(gateway_id, name, name_flow, Rc::clone(shared));
     callback(&mut branch);
     if is_failed(shared) {
         return Err(Failed);
