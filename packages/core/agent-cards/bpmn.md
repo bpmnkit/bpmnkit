@@ -1,6 +1,6 @@
 # BPMN agent card
 
-Write a Camunda 8 BPMN process with `@bpmnkit/core` in one script: create, export, edit, validate. Run it with `node --experimental-strip-types build.ts` (Node 22.6+) or `npx tsx build.ts`. Never write BPMN XML by hand.
+Write a Camunda 8 BPMN process with `@bpmnkit/core` in one script: create, export, edit, validate. Run it with `node --experimental-strip-types build.ts` (Node 22.6+) or `npx tsx build.ts`. Never write a whole BPMN file by hand.
 
 <!-- docspack: tags=agent-card,cheat-sheet,build-script,bpmn,process,create,write,script,builder -->
 
@@ -54,6 +54,38 @@ if (report.counts.error > 0) process.exit(1)
 
 `npm i @bpmnkit/core`. The script writes `order.bpmn`, re-opens it, adds a task and renames one without moving a shape, and exits 1 on a lint error.
 
+## Pools and message flows
+
+`Bpmn.createDiagram(id)` builds several processes in one file. `.participant` without `processId` is a black-box pool (a partner you only exchange messages with). A message flow joins two pools (participant or node ids). Participant ids must differ from the diagram id. Diagrams get shapes only from `applyAutoLayout`.
+
+```ts
+import { writeFileSync } from "node:fs"
+import { Bpmn, applyAutoLayout, lintDiagram } from "@bpmnkit/core"
+
+const definitions = Bpmn.createDiagram("shop")
+	.process("order", (p) =>
+		p
+			.startEvent("start", { name: "Order placed" })
+			.serviceTask("ask", { name: "Request payment", taskType: "request-payment" })
+			.intermediateCatchEvent("paid", { name: "Paid", messageName: "paid", correlationKey: "=orderId" })
+			.endEvent("end", { name: "Order done" }),
+	)
+	.participant("shopPool", { name: "Shop", processId: "order" })
+	.participant("bankPool", { name: "Bank" })
+	.messageFlow("pay", { source: "ask", target: "bankPool", name: "payment request" })
+	.messageFlow("ok", { source: "bankPool", target: "paid" })
+	.build()
+const xml = Bpmn.export(applyAutoLayout(definitions))
+writeFileSync("shop.bpmn", xml)
+
+const report = lintDiagram(Bpmn.parse(xml))
+if (report.counts.error > 0) process.exit(1)
+```
+
+- **Lanes:** the builder has no lane API yet; do not search for one. Model roles with `candidateGroups`/`assignee`, or pools.
+- **Small new single-pool process:** write `CompactDiagram` JSON and run `casen generate bpmn --definition '<json>'` (schema: `--help`), or `expand(compact)`. Lossy for pools, lanes, message flows and data stores: never round-trip an existing file through it.
+- **Annotations, data stores:** `.annotate(id, text)`, `.dataStoreReference(id, ref)`; see `builder-reference.md`.
+
 ## Top builder options
 
 - `Bpmn.createProcess(id)` … `.build()`; `.withAutoLayout()` before `.build()`, or the file has no shapes.
@@ -73,7 +105,8 @@ if (report.counts.error > 0) process.exit(1)
 - **User tasks default to job-worker tasks**, which 8.10 deprecates. Pass `zeebeUserTask: true` for a Camunda user task.
 - **Deploy ids.** The engine keys a process by its process id (`createProcess("order")`), a decision by its `<decision id>`, a form by its JSON `id`. File names and display names do not count. `formId` and `decisionId` must equal those ids exactly; by default they bind to the latest deployed version, so deploy the `.dmn` and `.form` before an instance reaches the task. Redeploying the same id makes a new version.
 - **Reference a DMN decision by its decision id**, not the DMN `definitions` id, the file name or the decision name.
-- **Edit with the preserving writer.** For an existing file, `Bpmn.parse` it (or `Bpmn.continueProcess(parsed, processId)`), change the model, run `placeNewShapes(edited)` so the new elements get shapes next to what they connect to, and write `exportPreserving(original, drawn)`. Existing shapes stay put; a pool, lane or sub-process only grows when the new shapes do not fit. Rebuilding with `withAutoLayout()`, `applyAutoLayout`, or `Bpmn.export` alone moves every shape and reformats the diff. `placeNewShapes` does not draw new lanes; it lists them in `unplaced`.
+- **Edit by size.** A tiny edit (rename, one attribute or property) of an existing file: change that XML text directly, no script. A structural change (new or removed element, flow, pool): the preserving script below.
+- **Preserving writer.** To restructure an existing file, `Bpmn.parse` it (or `Bpmn.continueProcess(parsed, processId)`), change the model, run `placeNewShapes(edited)` so the new elements get shapes next to what they connect to, and write `exportPreserving(original, drawn)`. Existing shapes stay put; a pool, lane or sub-process only grows when the new shapes do not fit. Rebuilding with `withAutoLayout()`, `applyAutoLayout`, or `Bpmn.export` alone moves every shape and reformats the diff. `placeNewShapes` does not draw new lanes; it lists them in `unplaced`.
 - FEEL in the builder starts with `=` (`"=amount > 1000"`); a value without `=` is a literal string.
 - Unknown option names are silently dropped: `timer: { duration }` does nothing; use `timerDuration`.
 

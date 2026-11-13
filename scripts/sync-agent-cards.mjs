@@ -52,6 +52,7 @@ Do not read README.md (20 KB) or the .d.ts files first. Read the one card for yo
 Rules that hold for all three:
 
 - Build with the builders (\`Bpmn\`, \`Dmn\`, \`Form\`). Never write XML or form JSON by hand.
+- Several pools or message flows: \`Bpmn.createDiagram()\` (BPMN card). A small new single-pool process: compact JSON via \`casen generate bpmn --definition\`.
 - Edit an existing file with \`Bpmn.parse\` and the \`export*Preserving\` writers, so layout and formatting stay.
 - \`formId\` and \`decisionId\` must equal the deployed form id and decision id exactly.
 - Validate before you finish: \`npx @bpmnkit/cli check order.bpmn risk.dmn review.form --deploy\` (\`casen check\` if the CLI is installed). Fix every error.
@@ -65,7 +66,7 @@ const CORE_LLMS = `# @bpmnkit/core
 > BPMN 2.0, DMN and Camunda Form SDK for TypeScript. Agents: read the card for your type, not the README.
 
 - [AGENTS.md](AGENTS.md): what to read and the rules for all types
-- [BPMN card](agent-cards/bpmn.md): process build script and traps
+- [BPMN card](agent-cards/bpmn.md): process build script, pools and message flows, compact path, traps
 - [DMN card](agent-cards/dmn.md): decision table and DRD script and traps
 - [Form card](agent-cards/form.md): form script and traps
 - [Builder reference](builder-reference.md): every builder option

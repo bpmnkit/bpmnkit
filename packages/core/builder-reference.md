@@ -107,6 +107,22 @@ Not available inside callbacks (top-level only): at, insertAfter, withAutoLayout
 - BuildOptions: validate?: boolean (Refuse a Camunda 8 model Zeebe…); explicitJoins?: boolean (Refuse to infer join gateways, so…)
 - ioMapping shape = {inputs?: Array<{source: string; target: string}>; outputs?: Array<{source: string; target: string}>}
 
+## DiagramBuilder (pools, message flows)
+
+`Bpmn.createDiagram(id?)`: several processes in one file. `.build()` returns definitions; draw shapes with `applyAutoLayout(defs)` before `Bpmn.export`. Omit `processId` on `participant` for a black-box pool. No lane API yet.
+
+- executionPlatformVersion(version: string)
+- process(id: string, callback: (b: ProcessBuilder) => void)
+- collaborationId(id: string)
+- participant(id: string, options: ParticipantOptions)
+- message(id: string, options: DiagramMessageOptions)
+- messageFlow(id: string, options: MessageFlowOptions)
+- build(options?: BuildGateOptions)
+
+- ParticipantOptions: name?: string (Pool label); processId?: string (Id of the process this pool…)
+- DiagramMessageOptions: name?: string; correlationKey?: string (FEEL expression Camunda 8…)
+- MessageFlowOptions: source: string (Id of the participant, or of a…); target: string (Id of the participant, or of a…); name?: string; messageRef?: string (Id of a message declared with…)
+
 ## Examples
 
 ```typescript

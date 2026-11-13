@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-13 — Agent docs: pools, message flows, compact path
+
+- BPMN agent card (source `apps/cli/agent-cards/bpmn.md`): "Pools and message flows" section with one runnable `createDiagram` example (two pools, a black box, message flows; shapes via `applyAutoLayout`), compact-mode pointer for small new single-pool processes (lossy for pools/lanes/message flows/data stores), "tiny edit = edit the XML, structural = preserving script" rule, an explicit "no lane API yet" note, annotation/data-store pointers.
+- `builder-reference.md` is generated: `scripts/generate-builder-reference.mjs` now emits a DiagramBuilder section (methods + participant/message/message-flow options). Token budget test raised 3300 → 3600. `AGENTS.md`/`llms.txt` (via `scripts/sync-agent-cards.mjs`) mention collaboration and the compact path.
+- New `packages/core/tests/agent-card-examples.test.ts` runs every `@bpmnkit/core` ts block of `agent-cards/*.md` against the source (exit 1 on lint error fails the test).
+
 ## 2026-11-12 — `bpmnkit-viewer`: the one-file viewer for Rust
 
 - New zero-dependency crate `crates/bpmnkit-viewer` (`@crates/bpmnkit-viewer`, fixed group; facade feature `viewer`, in `full`; `bpmnkit::Error::Viewer`; `prelude::HtmlOptions`). `to_html(xml, &HtmlOptions)` is byte-identical to the JS `toHtml`; `empty_html`; `parts` → `ViewerParts { head, body, scripts }` for embedding in your own page; `escape_xml_for_script`; raw `VIEWER_JS`, `LOADER_JS`, `CSS`; `HtmlOptions::title`, `no_picker` (Rust-only). Example `viewer_html`.
