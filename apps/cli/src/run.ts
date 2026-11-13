@@ -160,13 +160,14 @@ export async function run(argv: string[]): Promise<void> {
 
 	// ── dev: `casen dev [dir]` — the one positional is a directory, not a subcommand ──
 	// ── check: `casen check <file...>` — every positional is a file ──
-	if (group.name === "dev" || group.name === "check") {
+	// ── build: `casen build <spec> [resources…]`; -o is the output file there, not the format ──
+	if (group.name === "dev" || group.name === "check" || group.name === "build") {
 		const cmd = group.commands[0]
 		if (wantHelp) {
 			if (cmd) printCommandHelp(group, cmd, colors)
 			return
 		}
-		const output = createOutputWriter(outputFormat, noColor)
+		const output = createOutputWriter(group.name === "build" ? "table" : outputFormat, noColor)
 		const ctx: RunContext = {
 			positional: positional.slice(1),
 			flags,

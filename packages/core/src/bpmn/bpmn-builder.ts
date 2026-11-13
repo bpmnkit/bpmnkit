@@ -1068,7 +1068,12 @@ class LaneState {
 			const lane = laneOf.get(el.attachedToRef)
 			if (lane !== undefined) laneOf.set(el.id, lane)
 		}
-		const missing = elements.filter((el) => !laneOf.has(el.id)).map((el) => el.id)
+		// Data objects and stores are flow elements, not flow nodes: no lane holds them.
+		const isData = (el: BpmnFlowElement) =>
+			el.type === "dataObject" ||
+			el.type === "dataObjectReference" ||
+			el.type === "dataStoreReference"
+		const missing = elements.filter((el) => !isData(el) && !laneOf.has(el.id)).map((el) => el.id)
 		if (missing.length > 0) {
 			throw new Error(
 				`Process "${processId}" uses lanes, so every flow node needs one; no lane for: ${missing.join(", ")}. Call inLane(id) before them or pass { lane } on the node. See agent-cards/bpmn.md#traps.`,

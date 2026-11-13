@@ -1,6 +1,6 @@
 # @bpmnkit/core for agents
 
-Do not read README.md (20 KB) or the .d.ts files first. Read the one card for your task (~1k tokens each). Each has a runnable script, the top options and the known traps.
+Do not read README.md (20 KB) or the .d.ts files. Read the one card for your task (~2k tokens each); it is self-sufficient. BPMN: write a short spec with the Write tool and run one command, `npx casen build <spec> --deploy` (`@bpmnkit/cli`); it writes the .bpmn and its forms, lints and deploys.
 
 | You write | Read |
 | --- | --- |
@@ -10,11 +10,11 @@ Do not read README.md (20 KB) or the .d.ts files first. Read the one card for yo
 
 Rules that hold for all three:
 
-- New files: build with the builders (`Bpmn`, `Dmn`, `Form`), never write a whole file by hand. One pool, up to ~15 nodes: compact JSON + `expand` (BPMN card, first example). Several pools or message flows: `Bpmn.createDiagram()`.
-- Edit an existing file: ≤ 3 nodes or flows, edit the XML directly; bigger, `Bpmn.parse` and the `export*Preserving` writers, so layout and formatting stay.
+- New BPMN: a `casen build` text spec (one pool, or `## Pool` sections with lanes, message flows, data). DMN and forms: the builders (`Dmn`, `Form`). Never write a whole file by hand.
+- Edit an existing BPMN file: an edit module, `npx casen build edit.mjs --edit order.bpmn` (layout kept). DMN/forms: the `export*Preserving` writers.
 - `formId` and `decisionId` must equal the deployed form id and decision id exactly.
-- One gate: the lint/deploy command your task names; with none, `npx @bpmnkit/cli check order.bpmn risk.dmn review.form --deploy`. Fix every error.
-- Done = gate clean + deploy succeeds. Stop there: never hand-route DI or render images.
+- One gate: `casen build` lints like c8ctl (bpmnlint + camunda-compat) and prints the rule's `.bpmnlintrc` key; a task-named command is the final word. Fix every error.
+- Done = gate clean + deploy succeeds. Stop there and answer in one line: never hand-route DI or render images.
 - Builder errors and check findings end with `agent-cards/<type>.md#traps`. Read that section.
 
 The full API reference is `builder-reference.md` in this folder. Open it only when a card does not cover an option.

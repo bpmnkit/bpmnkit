@@ -52,11 +52,8 @@
       <bpmndi:BPMNShape id="timeout_di" bpmnElement="timeout">
         <dc:Bounds x="276" y="240" width="36" height="36"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DO_di" bpmnElement="DO">
-        <dc:Bounds x="20" y="356" width="36" height="50"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="R_di" bpmnElement="R">
-        <dc:Bounds x="20" y="486" width="36" height="50"/>
+        <dc:Bounds x="20" y="356" width="36" height="50"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="e_di" bpmnElement="e">
         <dc:Bounds x="276" y="122" width="36" height="36"/>
@@ -82,7 +79,7 @@
         <di:waypoint x="166" y="50"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="DataInputAssociation_t_R_1_di" bpmnElement="DataInputAssociation_t_R_1">
-        <di:waypoint x="56" y="486"/>
+        <di:waypoint x="56" y="356"/>
         <di:waypoint x="116" y="180"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

@@ -1,0 +1,5 @@
+# Expense approval | id=expense
+start[start Expense submitted] > review[user Review expense | fields=amount:number,approved:checkbox] > ok[xor Approved?]
+ok >(Yes: approved = true) pay[service Pay expense | job=pay-expense] > paid[end Expense paid]
+ok >(No: default) rework[user Rework expense] > review
+failed[boundary:error Payment failed | on=pay error=PAY_FAILED] > notify[send Notify submitter | job=notify] > notified[end Payment failed]

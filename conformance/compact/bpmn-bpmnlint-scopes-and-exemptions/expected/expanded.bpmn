@@ -279,14 +279,11 @@
       <bpmndi:BPMNShape id="adhoc_di" bpmnElement="adhoc" isExpanded="true">
         <dc:Bounds x="0" y="2354" width="340" height="208"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="data_obj_di" bpmnElement="data_obj">
+      <bpmndi:BPMNShape id="data_ref_di" bpmnElement="data_ref">
         <dc:Bounds x="152" y="2642" width="36" height="50"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="data_ref_di" bpmnElement="data_ref">
-        <dc:Bounds x="152" y="2772" width="36" height="50"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="store_ref_di" bpmnElement="store_ref">
-        <dc:Bounds x="145" y="2902" width="50" height="50"/>
+        <dc:Bounds x="145" y="2772" width="50" height="50"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sub_start_di" bpmnElement="sub_start">
         <dc:Bounds x="672" y="526" width="36" height="36"/>

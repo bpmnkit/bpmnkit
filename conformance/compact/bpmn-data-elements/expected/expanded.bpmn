@@ -19,31 +19,28 @@
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_Process_data">
     <bpmndi:BPMNPlane id="BPMNPlane_Process_data" bpmnElement="Process_data">
-      <bpmndi:BPMNShape id="DataObject_invoice_di" bpmnElement="DataObject_invoice">
+      <bpmndi:BPMNShape id="DataObjectRef_invoice_di" bpmnElement="DataObjectRef_invoice">
         <dc:Bounds x="7" y="0" width="36" height="50"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DataObjectRef_invoice_di" bpmnElement="DataObjectRef_invoice">
-        <dc:Bounds x="7" y="130" width="36" height="50"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="DataStore_ledger_di" bpmnElement="DataStore_ledger">
-        <dc:Bounds x="0" y="260" width="50" height="50"/>
+        <dc:Bounds x="0" y="130" width="50" height="50"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Start_data_di" bpmnElement="Start_data">
-        <dc:Bounds x="7" y="412" width="36" height="36"/>
+        <dc:Bounds x="7" y="282" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_post_di" bpmnElement="Task_post">
-        <dc:Bounds x="110" y="390" width="100" height="80"/>
+        <dc:Bounds x="110" y="260" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="End_data_di" bpmnElement="End_data">
-        <dc:Bounds x="270" y="412" width="36" height="36"/>
+        <dc:Bounds x="270" y="282" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_d1_di" bpmnElement="Flow_d1">
-        <di:waypoint x="43" y="430"/>
-        <di:waypoint x="110" y="430"/>
+        <di:waypoint x="43" y="300"/>
+        <di:waypoint x="110" y="300"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_d2_di" bpmnElement="Flow_d2">
-        <di:waypoint x="210" y="430"/>
-        <di:waypoint x="270" y="430"/>
+        <di:waypoint x="210" y="300"/>
+        <di:waypoint x="270" y="300"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

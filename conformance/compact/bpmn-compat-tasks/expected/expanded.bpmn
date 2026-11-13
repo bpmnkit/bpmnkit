@@ -224,9 +224,6 @@
       <bpmndi:BPMNShape id="adHocEmpty_di" bpmnElement="adHocEmpty" isExpanded="true">
         <dc:Bounds x="0" y="4018" width="362" height="236"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="data_di" bpmnElement="data">
-        <dc:Bounds x="163" y="4334" width="36" height="50"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="collapsedStart_di" bpmnElement="collapsedStart">
         <dc:Bounds x="163" y="3636" width="36" height="36"/>
       </bpmndi:BPMNShape>

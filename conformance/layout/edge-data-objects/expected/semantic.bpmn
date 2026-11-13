@@ -53,17 +53,14 @@
           <dc:Bounds x="448" y="82" width="40" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DO1_di" bpmnElement="DO1">
+      <bpmndi:BPMNShape id="DOR1_di" bpmnElement="DOR1">
         <dc:Bounds x="27" y="180" width="36" height="50"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DOR1_di" bpmnElement="DOR1">
+      <bpmndi:BPMNShape id="DOR2_di" bpmnElement="DOR2">
         <dc:Bounds x="27" y="310" width="36" height="50"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="DOR2_di" bpmnElement="DOR2">
-        <dc:Bounds x="27" y="440" width="36" height="50"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="DS1_di" bpmnElement="DS1">
-        <dc:Bounds x="20" y="570" width="50" height="50"/>
+        <dc:Bounds x="20" y="440" width="50" height="50"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1">
         <di:waypoint x="63" y="60"/>
@@ -78,16 +75,16 @@
         <di:waypoint x="450" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="dia1_di" bpmnElement="dia1">
-        <di:waypoint x="63" y="310"/>
+        <di:waypoint x="63" y="180"/>
         <di:waypoint x="130" y="100"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="doa1_di" bpmnElement="doa1">
         <di:waypoint x="130" y="100"/>
-        <di:waypoint x="63" y="440"/>
+        <di:waypoint x="63" y="310"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="doa2_di" bpmnElement="doa2">
         <di:waypoint x="290" y="100"/>
-        <di:waypoint x="70" y="570"/>
+        <di:waypoint x="70" y="440"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

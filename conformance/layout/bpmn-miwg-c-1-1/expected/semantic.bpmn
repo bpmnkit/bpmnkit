@@ -481,25 +481,16 @@
         <omgdc:Bounds x="748" y="23" width="100" height="80"/>
         <bpmndi:BPMNLabel id="Bpmndi_BPMNLabel_OiSG8AbSEealeL5I4Yl3Dw" labelStyle="Bpmndi_BPMNLabelStyle_VNihULHzEeS1nbPdxxCzlg"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Bpmn_DataObject_approver_di" bpmnElement="Bpmn_DataObject_approver">
-        <omgdc:Bounds x="62" y="326" width="36" height="50"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Bpmndi_BPMNShape_assignApprover" bpmnElement="Bpmn_DataObjectReference_assignApprover" color:background-color="#999999">
-        <omgdc:Bounds x="62" y="456" width="36" height="50"/>
+        <omgdc:Bounds x="62" y="326" width="36" height="50"/>
         <bpmndi:BPMNLabel id="Bpmndi_BPMNLabel_assignApprover" labelStyle="Bpmndi_BPMNLabelStyle_YGO60LH1EeSuDf0W70XLGw"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Bpmn_DataObject_WUfQYrH1EeSuDf0W70XLGw_di" bpmnElement="Bpmn_DataObject_WUfQYrH1EeSuDf0W70XLGw">
-        <omgdc:Bounds x="62" y="586" width="36" height="50"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Bpmndi_BPMNShape_YGA4YbH1EeSuDf0W70XLGw" bpmnElement="Bpmn_DataObjectReference_YGA4YLH1EeSuDf0W70XLGw" color:background-color="#999999">
-        <omgdc:Bounds x="62" y="716" width="36" height="50"/>
+        <omgdc:Bounds x="62" y="456" width="36" height="50"/>
         <bpmndi:BPMNLabel id="Bpmndi_BPMNLabel_YGA4YrH1EeSuDf0W70XLGw" labelStyle="Bpmndi_BPMNLabelStyle_YGO60LH1EeSuDf0W70XLGw"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Bpmn_DataObject_aT_L0rH1EeSuDf0W70XLGw_di" bpmnElement="Bpmn_DataObject_aT_L0rH1EeSuDf0W70XLGw">
-        <omgdc:Bounds x="62" y="846" width="36" height="50"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Bpmndi_BPMNShape_cdsDQbH1EeSuDf0W70XLGw" bpmnElement="Bpmn_DataObjectReference_cdsDQLH1EeSuDf0W70XLGw" color:background-color="#999999">
-        <omgdc:Bounds x="62" y="976" width="36" height="50"/>
+        <omgdc:Bounds x="62" y="586" width="36" height="50"/>
         <bpmndi:BPMNLabel id="Bpmndi_BPMNLabel_cdsDQrH1EeSuDf0W70XLGw" labelStyle="Bpmndi_BPMNLabelStyle_cd6FsLH1EeSuDf0W70XLGw"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="invoiceApproved_gui" bpmnElement="invoiceApproved">
@@ -559,17 +550,17 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Bpmndi_BPMNEdge_Y55MYLH1EeSuDf0W70XLGw" bpmnElement="Bpmn_DataOutputAssociation_Y55MYrH1EeSuDf0W70XLGw" sourceElement="approveInvoice_gui">
         <omgdi:waypoint x="318" y="103"/>
-        <omgdi:waypoint x="98" y="716"/>
+        <omgdi:waypoint x="98" y="456"/>
         <bpmndi:BPMNLabel id="Bpmndi_BPMNLabel_Y55MYbH1EeSuDf0W70XLGw"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Bpmndi_BPMNEdge_assignApprover" bpmnElement="Bpmn_DataOutputAssociation_assignApprover" sourceElement="assignApprover_gui">
         <omgdi:waypoint x="158" y="103"/>
-        <omgdi:waypoint x="98" y="456"/>
+        <omgdi:waypoint x="98" y="326"/>
         <bpmndi:BPMNLabel id="Bpmndi_BPMNLabel_assignApprover2"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Bpmndi_BPMNEdge_dB6xsLH1EeSuDf0W70XLGw" bpmnElement="Bpmn_DataOutputAssociation_dB6xsrH1EeSuDf0W70XLGw" sourceElement="reviewInvoice_gui">
         <omgdi:waypoint x="588" y="243"/>
-        <omgdi:waypoint x="98" y="976"/>
+        <omgdi:waypoint x="98" y="586"/>
         <bpmndi:BPMNLabel id="Bpmndi_BPMNLabel_dB6xsbH1EeSuDf0W70XLGw"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

@@ -747,6 +747,54 @@ fn emit_lanes<'a>(
 ///
 /// Nested lane sets keep both levels: leaf lanes take a band each, and an
 /// ancestor lane spans the bands of its descendants.
+/// Puts each lane's data objects and stores in a row under the lane's flow nodes,
+/// each centred below the activity it is wired to, so the lane grows by one row
+/// instead of stretching to wherever the data was ranked.
+fn place_data_under_activities(
+    members: &IndexMap<&str, Vec<&str>>,
+    data_home: &IndexMap<&str, &str>,
+    bounds: &mut IndexMap<&str, Bounds>,
+) {
+    for ids in members.values() {
+        let flow: Vec<Option<Bounds>> = ids
+            .iter()
+            .filter(|id| !data_home.contains_key(**id))
+            .map(|id| bounds.get(*id).copied())
+            .collect();
+        let home_x = |id: &str| -> f64 {
+            data_home
+                .get(id)
+                .and_then(|h| bounds.get(*h))
+                .map_or(0.0, |b| b.x)
+        };
+        let mut data: Vec<&str> = ids
+            .iter()
+            .copied()
+            .filter(|id| data_home.contains_key(*id))
+            .collect();
+        data.sort_by(|a, b| home_x(a).total_cmp(&home_x(b)));
+        if data.is_empty() || flow.is_empty() {
+            continue;
+        }
+        let bottom = flow
+            .iter()
+            .map(|b| b.map_or(0.0, |b| b.y + b.height))
+            .fold(f64::NEG_INFINITY, f64::max);
+        let mut right = f64::NEG_INFINITY;
+        for id in data {
+            let Some(home) = data_home.get(id).and_then(|h| bounds.get(*h)).copied() else {
+                continue;
+            };
+            let Some(b) = bounds.get_mut(id) else {
+                continue;
+            };
+            b.x = (home.x + home.width / 2.0 - b.width / 2.0).max(right + H_GAP / 2.0);
+            b.y = bottom + V_GAP / 2.0;
+            right = b.x + b.width;
+        }
+    }
+}
+
 fn apply_lanes(
     graph: &SemanticGraph,
     lane_set: &BpmnLaneSet,
@@ -766,6 +814,31 @@ fn apply_lanes(
             lane_of.insert(r.as_str(), leaf);
         }
     }
+    // A data object or store is never a lane member (BPMN lanes hold flow nodes), so it
+    // follows the first laned activity wired to it; otherwise it lands below the
+    // lanes, outside the pool.
+    let mut data_home: IndexMap<&str, &str> = IndexMap::default();
+    for node in &graph.nodes {
+        let base = node.base();
+        let Some(lane) = lane_of.get(base.id.as_str()).copied() else {
+            continue;
+        };
+        let refs = base
+            .data_input_associations
+            .iter()
+            .flat_map(|a| a.source_refs.iter())
+            .chain(
+                base.data_output_associations
+                    .iter()
+                    .filter_map(|a| a.target_ref.as_ref()),
+            );
+        for r in refs {
+            if !lane_of.contains_key(r.as_str()) {
+                lane_of.insert(r.as_str(), lane);
+                data_home.insert(r.as_str(), base.id.as_str());
+            }
+        }
+    }
 
     let mut members: IndexMap<&str, Vec<&str>> = IndexMap::default();
     for leaf in &leaves {
@@ -780,6 +853,8 @@ fn apply_lanes(
             None => orphans.push(id),
         }
     }
+
+    place_data_under_activities(&members, &data_home, bounds);
 
     let mut min_x = f64::INFINITY;
     let mut max_x = f64::NEG_INFINITY;

@@ -1,5 +1,9 @@
 # Features
 
+## `casen build`: spec to deployed process in one command (2026-11-13)
+
+Write a few lines of text (one pool, or `## Pool` sections with `### Lane`s, `~>` message flows and `..>` data objects) or an edit module, run `casen build spec.txt --deploy`: it writes the laid-out `.bpmn` and a Camunda form per user task (`fields=` picks the fields), lints like c8ctl with the `.bpmnlintrc` key on each finding, and deploys model and forms together (env credentials like c8ctl, the profile, or local Reebe). `--edit order.bpmn` changes an existing file with the builder while shapes stay put and the rest moves right to make room. Library: `attachUserTaskForms`, `makeRoom`.
+
 ## Builder: agent-friendly defaults (2026-11-13)
 
 Message end/throw events take `correlationKey`; `DiagramBuilder.message()` merges into a message a pool already created. A loop back into a task gets an exclusive `<id>_merge` gateway at `build()`. `dataObjectReference` declares its data object, data stores get a root `bpmn:dataStore`, and data associations get ids and DI edges. `placeNewShapes` reports new shapes that overlap existing ones. `DiagramBuilder.build()` names both pools when an id is reused.

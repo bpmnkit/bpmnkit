@@ -1,0 +1,14 @@
+# Order fulfilment
+## Shop | id=shop
+### Sales
+placed[start:message Order placed | msg=order-placed] > check[service Check stock | job=check-stock] > ask[send Request payment | job=request-payment]
+ask > paid[catch Payment received | msg=payment-received key=orderId] > ship[user Ship order]
+### Warehouse
+ship > done[end Order shipped]
+check ..> stock[store Stock DB]
+ship ..> slip[object Packing slip]
+## Bank | blackbox
+## Customer | blackbox
+customer ~> placed: Order
+ask ~> bank: Payment request
+bank ~> paid: Payment confirmed

@@ -210,9 +210,6 @@
       <bpmndi:BPMNShape id="_02232e32-c3d2-473c-a15d-9c5dca00eadc_di" bpmnElement="_02232e32-c3d2-473c-a15d-9c5dca00eadc">
         <dc:Bounds x="1100" y="420" width="100" height="80"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_775c93ab-82e5-4a62-97f0-d305eda76c92_di" bpmnElement="_775c93ab-82e5-4a62-97f0-d305eda76c92">
-        <dc:Bounds x="0" y="580" width="36" height="50"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_3ae826ca-5f38-43c4-be3a-35d1157aa27f_di" bpmnElement="_3ae826ca-5f38-43c4-be3a-35d1157aa27f">
         <dc:Bounds x="1353" y="442" width="36" height="36"/>
         <bpmndi:BPMNLabel>
@@ -231,20 +228,11 @@
           <dc:Bounds x="270.5" y="342" width="126" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_4234afd4-3ab0-4e09-8a7c-b475458db18a_di" bpmnElement="_4234afd4-3ab0-4e09-8a7c-b475458db18a">
-        <dc:Bounds x="0" y="710" width="36" height="50"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="vacationApproved_di" bpmnElement="vacationApproved">
-        <dc:Bounds x="0" y="840" width="36" height="50"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="vacationRefused_di" bpmnElement="vacationRefused">
-        <dc:Bounds x="0" y="970" width="36" height="50"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_f8fcb377-3d7d-4138-9a7e-6ab58b97e29d_di" bpmnElement="_f8fcb377-3d7d-4138-9a7e-6ab58b97e29d">
         <dc:Bounds x="155.5" y="202" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_831726fb-e5ba-40aa-b484-1fc65de4980a_di" bpmnElement="_831726fb-e5ba-40aa-b484-1fc65de4980a">
-        <dc:Bounds x="0" y="1100" width="36" height="50"/>
+        <dc:Bounds x="0" y="580" width="36" height="50"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="_b02b5bfa-5629-4af5-b1bc-ac2a86d88adb_di" bpmnElement="_b02b5bfa-5629-4af5-b1bc-ac2a86d88adb">
         <di:waypoint x="36" y="180"/>

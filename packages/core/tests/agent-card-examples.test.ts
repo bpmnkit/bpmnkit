@@ -50,6 +50,9 @@ describe("agent card examples run as printed", () => {
 	}
 
 	it("the BPMN card shows a pools example", () => {
-		expect(blocks("bpmn.md").some((c) => c.includes("createDiagram"))).toBe(true)
+		// The card's templates are casen build specs; apps/cli's agent-card test builds them.
+		const card = readFileSync(join(CARDS, "bpmn.md"), "utf8")
+		expect(card).toMatch(/^## .*\| id=/m)
+		expect(card).toContain(" ~> ")
 	})
 })

@@ -7,7 +7,7 @@ description: "Write or edit a Camunda 8 form (.form JSON) with @bpmnkit/core (cr
 
 Task: $ARGUMENTS
 
-Follow this card. Start from its script, change it to fit the task, run it, and fix every lint error before you finish.
+Follow this card. Start from its template or script, change it to fit the task, run it, and fix every lint error before you finish.
 
 # Form agent card
 

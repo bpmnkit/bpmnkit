@@ -77,7 +77,7 @@
             "waypoints": [
               {
                 "x": 56,
-                "y": 486
+                "y": 356
               },
               {
                 "x": 116,
@@ -138,17 +138,6 @@
               "width": 36,
               "x": 20,
               "y": 356
-            },
-            "bpmnElement": "DO",
-            "id": "DO_di",
-            "unknownAttributes": {}
-          },
-          {
-            "bounds": {
-              "height": 50,
-              "width": 36,
-              "x": 20,
-              "y": 486
             },
             "bpmnElement": "R",
             "id": "R_di",

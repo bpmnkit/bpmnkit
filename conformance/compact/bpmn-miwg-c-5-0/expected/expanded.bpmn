@@ -360,12 +360,6 @@
           <dc:Bounds x="3321" y="202" width="196" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_0fa2af52-a3d6-4be6-9ecc-9fad8ca4d448_di" bpmnElement="_0fa2af52-a3d6-4be6-9ecc-9fad8ca4d448">
-        <dc:Bounds x="7" y="1473" width="36" height="50"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_79993b0e-60c2-487b-a12e-0cbecc2ef5c1_di" bpmnElement="_79993b0e-60c2-487b-a12e-0cbecc2ef5c1">
-        <dc:Bounds x="7" y="1603" width="36" height="50"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="_bac89998-7084-4b2e-a2ea-dff839336d74_di" bpmnElement="_bac89998-7084-4b2e-a2ea-dff839336d74">
         <di:waypoint x="43" y="40"/>
         <di:waypoint x="158.5" y="40"/>

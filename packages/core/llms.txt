@@ -3,7 +3,7 @@
 > BPMN 2.0, DMN and Camunda Form SDK for TypeScript. Agents: read the card for your type, not the README.
 
 - [AGENTS.md](AGENTS.md): what to read and the rules for all types
-- [BPMN card](agent-cards/bpmn.md): path decision rule, compact example, build script, pools and message flows, traps
+- [BPMN card](agent-cards/bpmn.md): one `casen build` command; templates for one pool, pools/lanes/message flows/data, and layout-preserving edits; traps
 - [DMN card](agent-cards/dmn.md): decision table and DRD script and traps
 - [Form card](agent-cards/form.md): form script and traps
 - [Builder reference](builder-reference.md): every builder option
