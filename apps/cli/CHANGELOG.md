@@ -1,5 +1,23 @@
 # @bpmnkit/cli
 
+## 1.8.0
+
+### Minor Changes
+
+- 086acf7: `casen export html <file.bpmn> [-o out.html]` writes one self-contained HTML page that shows the diagram. `@bpmnkit/viewer-lite/html` exports `toHtml(xml, { title? })` for the same from Node, escaping `</script` in the XML safely.
+- 19c5bd0: `@bpmnkit/viewer-lite` is light by default instead of following `prefers-color-scheme` (a dark OS no longer gives a dark, bluish diagram on a light page). `theme: "auto"` opts back in, `theme` also takes a partial `SvgThemeColors` palette, and `--bpmnkit-viewer-*` CSS variables or `data-theme` on the script brand it without code. `toHtml` gets `theme` and `colors` options (values are validated). `casen export html` gets `--theme light|dark|auto` and a repeatable `--color key=value`. `@bpmnkit/core/svg` exports `SVG_THEMES`.
+
+### Patch Changes
+
+- Updated dependencies [086acf7]
+- Updated dependencies [086acf7]
+- Updated dependencies [19c5bd0]
+- Updated dependencies [07b63a2]
+- Updated dependencies [086acf7]
+- Updated dependencies [086acf7]
+  - @bpmnkit/viewer-lite@0.1.0
+  - @bpmnkit/core@1.14.0
+
 ## 1.7.0
 
 ### Minor Changes
