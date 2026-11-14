@@ -32,11 +32,11 @@
       <bpmn:outgoing>Flow_g_join_e</bpmn:outgoing>
     </bpmn:parallelGateway>
     <bpmn:sequenceFlow id="Flow_s_g" sourceRef="s" targetRef="g"/>
-    <bpmn:sequenceFlow id="Flow_g_a" sourceRef="g" targetRef="a" name="a"/>
-    <bpmn:sequenceFlow id="Flow_g_b" sourceRef="g" targetRef="b" name="b"/>
+    <bpmn:sequenceFlow id="Flow_g_a" sourceRef="g" targetRef="a"/>
+    <bpmn:sequenceFlow id="Flow_g_b" sourceRef="g" targetRef="b"/>
     <bpmn:sequenceFlow id="Flow_a_g_join" sourceRef="a" targetRef="g_join"/>
     <bpmn:sequenceFlow id="Flow_b_g_join" sourceRef="b" targetRef="g_join"/>
-    <bpmn:sequenceFlow id="Flow_g_c" sourceRef="g" targetRef="c" name="c"/>
+    <bpmn:sequenceFlow id="Flow_g_c" sourceRef="g" targetRef="c"/>
     <bpmn:sequenceFlow id="Flow_c_g_join" sourceRef="c" targetRef="g_join"/>
     <bpmn:sequenceFlow id="Flow_g_join_e" sourceRef="g_join" targetRef="e"/>
   </bpmn:process>

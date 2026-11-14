@@ -80,7 +80,18 @@ function pairCosts(links: readonly PoolLink[]): PairCost[] {
  * term is a tie-break: with nothing to gain from moving, the pools stay where
  * the author put them.
  */
-function cost(order: readonly number[], pairs: readonly PairCost[]): number {
+/**
+ * What an edge pool costs for sitting between two others: one message's pool
+ * step. It settles near-ties toward the rim but never stretches the messages
+ * further, which reads worse than a black box in the middle.
+ */
+const EDGE_PENALTY = 1
+
+function cost(
+	order: readonly number[],
+	pairs: readonly PairCost[],
+	edges: ReadonlySet<number> = new Set(),
+): number {
 	const position: number[] = []
 	for (let i = 0; i < order.length; i++) {
 		const id = order[i]
@@ -95,6 +106,8 @@ function cost(order: readonly number[], pairs: readonly PairCost[]): number {
 		total += pair.weight * Math.abs(a - b) + (a < b ? pair.aAbove : pair.aBelow)
 	}
 
+	for (let i = 1; i + 1 < order.length; i++) if (edges.has(order[i] ?? -1)) total += EDGE_PENALTY
+
 	let drift = 0
 	for (let i = 0; i < order.length; i++) drift += Math.abs((order[i] ?? i) - i)
 	return total + drift / (order.length * order.length + 1)
@@ -103,23 +116,37 @@ function cost(order: readonly number[], pairs: readonly PairCost[]): number {
 /**
  * Order pools by their message-flow relationships. Returns indices into the
  * input order; an input with no message flows comes back unchanged.
+ *
+ * `edges` are pools that read better at the top or bottom of the stack: black
+ * boxes, partners on the rim of the conversation. Preferred there when it costs
+ * the messages no more than one pool step.
  */
-export function orderPools(count: number, links: readonly PoolLink[]): number[] {
+export function orderPools(
+	count: number,
+	links: readonly PoolLink[],
+	edges: ReadonlySet<number> = new Set(),
+): number[] {
 	const identity = Array.from({ length: count }, (_, i) => i)
 	if (count < 3 || links.length === 0) return identity
 
 	const pairs = pairCosts(links)
-	return count <= EXHAUSTIVE_LIMIT ? exhaustive(identity, pairs) : refine(identity, pairs)
+	return count <= EXHAUSTIVE_LIMIT
+		? exhaustive(identity, pairs, edges)
+		: refine(identity, pairs, edges)
 }
 
 /** Every order, best first-found wins — so declaration order survives a tie. */
-function exhaustive(identity: number[], pairs: readonly PairCost[]): number[] {
+function exhaustive(
+	identity: number[],
+	pairs: readonly PairCost[],
+	edges: ReadonlySet<number>,
+): number[] {
 	let best = identity
-	let bestCost = cost(identity, pairs)
+	let bestCost = cost(identity, pairs, edges)
 
 	const permute = (prefix: number[], rest: number[]): void => {
 		if (rest.length === 0) {
-			const candidate = cost(prefix, pairs)
+			const candidate = cost(prefix, pairs, edges)
 			if (candidate < bestCost) {
 				best = [...prefix]
 				bestCost = candidate
@@ -141,9 +168,13 @@ function exhaustive(identity: number[], pairs: readonly PairCost[]): number[] {
  * Take each pool out and put it back wherever it fits best, repeating until a
  * full sweep changes nothing.
  */
-function refine(identity: number[], pairs: readonly PairCost[]): number[] {
+function refine(
+	identity: number[],
+	pairs: readonly PairCost[],
+	edges: ReadonlySet<number>,
+): number[] {
 	let order = [...identity]
-	let current = cost(order, pairs)
+	let current = cost(order, pairs, edges)
 
 	for (let sweep = 0; sweep < order.length; sweep++) {
 		let improved = false
@@ -155,7 +186,7 @@ function refine(identity: number[], pairs: readonly PairCost[]): number[] {
 			for (let to = 0; to <= without.length; to++) {
 				if (to === from) continue
 				const candidate = [...without.slice(0, to), pool, ...without.slice(to)]
-				const candidateCost = cost(candidate, pairs)
+				const candidateCost = cost(candidate, pairs, edges)
 				if (candidateCost < current) {
 					order = candidate
 					current = candidateCost

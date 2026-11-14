@@ -1,5 +1,15 @@
 # Features
 
+## `casen build`: spec to deployed process in one command (2026-11-13)
+
+Write a few lines of text (one pool, or `## Pool` sections with `### Lane`s, `~>` message flows and `..>` data objects) or an edit module, run `casen build spec.txt --deploy`: it writes the laid-out `.bpmn` and a Camunda form per user task (`fields=` picks the fields), lints like c8ctl with the `.bpmnlintrc` key on each finding, and deploys model and forms together (env credentials like c8ctl, the profile, or local Reebe). `--edit order.bpmn` changes an existing file with the builder while shapes stay put and the rest moves right to make room. Library: `attachUserTaskForms`, `makeRoom`. Collaborations: message ends keep their message, a same-name data store is one store, a start a message flow reaches is a message start, rule tasks call `decision=` (else the name), message-flow labels sit between the pools. A user task without `fields=` gets form fields from the conditions it feeds; spec nodes need no id (`[user Review expense]` is `reviewExpense`, referable by name), job types and message names default from them; the success line lists pools, process ids, task/gateway/message-flow/form counts and the Camunda version.
+
+The text spec also writes expanded sub-processes (`sp[sub Name]` + `sp { … }`), conditional start/catch events (`cond=<FEEL>`) and free or linked text annotations (`n[annotation Text]`), all laid out. Edits give forms only to new user tasks, move existing shapes only as far as needed, and `--camunda 8.10` retargets the file.
+
+## Builder: agent-friendly defaults (2026-11-13)
+
+Message end/throw events take `correlationKey`; `DiagramBuilder.message()` merges into a message a pool already created. A loop back into a task gets an exclusive `<id>_merge` gateway at `build()`. `dataObjectReference` declares its data object, data stores get a root `bpmn:dataStore`, and data associations get ids and DI edges. `placeNewShapes` reports new shapes that overlap existing ones. `DiagramBuilder.build()` names both pools when an id is reused.
+
 ## One-file BPMN viewer in Rust: `bpmnkit-viewer` (2026-11-12)
 
 `bpmnkit_viewer::to_html(xml, &HtmlOptions)` writes the same self-contained page as viewer-lite `toHtml` (byte-identical, checked against golden pages), for CLIs and chat bots (send it as a `.html` file). `parts` gives `head` / `body` / `scripts` to embed the viewer in your own page, and `VIEWER_JS`, `LOADER_JS`, `CSS` are the raw assets for CSP setups. No dependencies; facade feature `viewer`.
@@ -59,6 +69,10 @@ Every BPMN BPMN Kit hands over (written, downloaded, deployed or returned as a r
 ## Compact and process text for Camunda 8: names, codes, timers and the `expand` gate (2026-11-08)
 
 `expand(compact)` refuses a diagram Zeebe would reject (`DeployabilityError`, every reason listed) and marks its output as Camunda 8; `validate: false` for previews, `placeholders: true` to fill, `camundaVersion` to choose the version. Compact elements carry `messageName` + `correlationKey`, `signalName`, `errorCode`, `escalationCode`, `timerDate` and `timerCycle`, written as root messages (with their `zeebe:subscription`), signals, errors and escalations and read back by `compactify`. The line format gains `msg=`, `key=`, `signal=`, `error=`, `escalation=`, `at=`, `every=` and `called=`, written back by `writeProcessText` and read by change scripts; the id stands in for a missing name or code, as it does for `job=`. Rust: `expand(compact, &ExpandOptions)`, same fields, syntax and messages.
+
+## Builder lanes: `inLane()` and `{ lane }` (2026-11-13)
+
+`ProcessBuilder.inLane(id, { name })` puts the following nodes in a lane (a branch callback switches it for that branch only); `{ lane }` on a node overrides it once. The builder writes the `laneSet`, auto-layout draws the bands, and a process with lanes needs every top-level node in one (`build()` names the rest). No nested lanes.
 
 ## Builder deploy gate: `build({ validate, placeholders, camundaVersion })` (2026-11-08)
 

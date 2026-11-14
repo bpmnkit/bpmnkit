@@ -35,6 +35,7 @@
         {
           "dataOutputAssociations": [
             {
+              "id": "DataOutputAssociation_t_DOR1_1",
               "sourceRefs": [],
               "targetRef": "DOR1",
               "unknownAttributes": {}

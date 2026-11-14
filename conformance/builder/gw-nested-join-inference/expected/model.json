@@ -117,7 +117,7 @@
           ],
           "name": "t3",
           "outgoing": [
-            "Flow_t3_e"
+            "Flow_t3_e_merge"
           ],
           "type": "serviceTask",
           "unknownAttributes": {}
@@ -127,8 +127,7 @@
           "extensionElements": [],
           "id": "e",
           "incoming": [
-            "Flow_t3_e",
-            "Flow_inner_join_e"
+            "Flow_e_merge_e"
           ],
           "outgoing": [],
           "type": "endEvent",
@@ -142,7 +141,20 @@
             "Flow_t2_inner_join"
           ],
           "outgoing": [
-            "Flow_inner_join_e"
+            "Flow_inner_join_e_merge"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "e_merge",
+          "incoming": [
+            "Flow_t3_e_merge",
+            "Flow_inner_join_e_merge"
+          ],
+          "outgoing": [
+            "Flow_e_merge_e"
           ],
           "type": "exclusiveGateway",
           "unknownAttributes": {}
@@ -162,7 +174,6 @@
         {
           "extensionElements": [],
           "id": "Flow_outer_inner",
-          "name": "left",
           "sourceRef": "outer",
           "targetRef": "inner",
           "unknownAttributes": {}
@@ -192,7 +203,6 @@
         {
           "extensionElements": [],
           "id": "Flow_outer_t3",
-          "name": "right",
           "sourceRef": "outer",
           "targetRef": "t3",
           "unknownAttributes": {}
@@ -213,15 +223,22 @@
         },
         {
           "extensionElements": [],
-          "id": "Flow_t3_e",
+          "id": "Flow_t3_e_merge",
           "sourceRef": "t3",
-          "targetRef": "e",
+          "targetRef": "e_merge",
           "unknownAttributes": {}
         },
         {
           "extensionElements": [],
-          "id": "Flow_inner_join_e",
+          "id": "Flow_inner_join_e_merge",
           "sourceRef": "inner_join",
+          "targetRef": "e_merge",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_e_merge_e",
+          "sourceRef": "e_merge",
           "targetRef": "e",
           "unknownAttributes": {}
         }

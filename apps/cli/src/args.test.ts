@@ -49,6 +49,11 @@ describe("parseArgs", () => {
 		expect(flags.limit).toBe(20)
 	})
 
+	it("keeps a value a number would change as a string", () => {
+		expect(parseArgs(["--camunda", "8.10"]).flags.camunda).toBe("8.10")
+		expect(parseArgs(["--camunda=8.8"]).flags.camunda).toBe(8.8)
+	})
+
 	it("coerces boolean string values", () => {
 		const { flags } = parseArgs(["--verbose", "true"])
 		expect(flags.verbose).toBe(true)

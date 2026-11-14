@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:process id="KycOnboarding" name="KYC Onboarding Process" isExecutable="true">
     <bpmn:startEvent id="start" name="Onboarding Started">
       <bpmn:outgoing>Flow_dzvGWk3K</bpmn:outgoing>
@@ -170,31 +170,31 @@
     <bpmn:sequenceFlow id="Flow_jFSBMYJb" sourceRef="uploadDocument" targetRef="verifyDocument"/>
     <bpmn:sequenceFlow id="Flow_1TTrGjjw" sourceRef="verifyDocument" targetRef="qualityGateway"/>
     <bpmn:sequenceFlow id="Flow_0LEUQOxJ" sourceRef="qualityGateway" targetRef="sanctionsScreening" name="document-verified">
-      <bpmn:conditionExpression>=ocrResponse.verified = true</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=ocrResponse.verified = true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_mYkhul6F" sourceRef="qualityGateway" targetRef="retryGateway" name="document-failed">
-      <bpmn:conditionExpression>=ocrResponse.verified = false</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=ocrResponse.verified = false</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_S3pkDgDT" sourceRef="retryGateway" targetRef="incrementRetry" name="retry-upload">
-      <bpmn:conditionExpression>=retryCount &lt; 2</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=retryCount &lt; 2</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_rlKvyhN6" sourceRef="incrementRetry" targetRef="uploadDocument"/>
     <bpmn:sequenceFlow id="Flow_uHPpRk4d" sourceRef="retryGateway" targetRef="sendVerificationRejection" name="retries-exhausted"/>
     <bpmn:sequenceFlow id="Flow_tODzlPDa" sourceRef="sendVerificationRejection" targetRef="endRejectedDocument"/>
     <bpmn:sequenceFlow id="Flow_IRsmpnbh" sourceRef="sanctionsScreening" targetRef="dueDiligenceGateway"/>
     <bpmn:sequenceFlow id="Flow_8vSOCU50" sourceRef="dueDiligenceGateway" targetRef="standardDueDiligence" name="standard-dd">
-      <bpmn:conditionExpression>=screeningResponse.riskLevel = "low" and screeningResponse.isPep = false</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=screeningResponse.riskLevel = "low" and screeningResponse.isPep = false</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_K56CWSVL" sourceRef="standardDueDiligence" targetRef="dueDiligenceGateway_join"/>
     <bpmn:sequenceFlow id="Flow_P4BQYrEw" sourceRef="dueDiligenceGateway" targetRef="enhancedDueDiligence" name="enhanced-dd"/>
     <bpmn:sequenceFlow id="Flow_01TCJkY6" sourceRef="enhancedDueDiligence" targetRef="dueDiligenceGateway_join"/>
     <bpmn:sequenceFlow id="Flow_afmDHVqD" sourceRef="finalRiskClassification" targetRef="outcomeGateway"/>
     <bpmn:sequenceFlow id="Flow_nsEpR6Kw" sourceRef="outcomeGateway" targetRef="activateAccount" name="outcome-approved">
-      <bpmn:conditionExpression>=finalClassification.decision = "approve"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=finalClassification.decision = "approve"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_hyA4P19S" sourceRef="activateAccount" targetRef="endApproved"/>
     <bpmn:sequenceFlow id="Flow_NgrHE8n7" sourceRef="outcomeGateway" targetRef="escalateToCompliance" name="outcome-escalated">
-      <bpmn:conditionExpression>=finalClassification.decision = "escalate"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=finalClassification.decision = "escalate"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_jEsjEcCl" sourceRef="escalateToCompliance" targetRef="endEscalated"/>
     <bpmn:sequenceFlow id="Flow_RGXncTod" sourceRef="outcomeGateway" targetRef="sendKycRejection" name="outcome-rejected"/>

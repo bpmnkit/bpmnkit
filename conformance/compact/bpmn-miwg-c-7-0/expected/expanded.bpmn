@@ -124,15 +124,6 @@
       <bpmndi:BPMNShape id="_c68abea8-c5b4-4aef-b1a5-1e81caec0cba_di" bpmnElement="_c68abea8-c5b4-4aef-b1a5-1e81caec0cba">
         <dc:Bounds x="0" y="560" width="36" height="50"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_ef29e636-bdfe-4eb0-9633-7d0195a8ae3a_di" bpmnElement="_ef29e636-bdfe-4eb0-9633-7d0195a8ae3a">
-        <dc:Bounds x="0" y="690" width="36" height="50"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_8f2796af-2fbe-4f72-80c1-96933c38990f_di" bpmnElement="_8f2796af-2fbe-4f72-80c1-96933c38990f">
-        <dc:Bounds x="0" y="820" width="36" height="50"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_f60fe1d9-58bd-462c-9d62-153e530dc79d_di" bpmnElement="_f60fe1d9-58bd-462c-9d62-153e530dc79d">
-        <dc:Bounds x="0" y="950" width="36" height="50"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="_a4c93e8a-2b52-4367-8381-a3f78450a075_di" bpmnElement="_a4c93e8a-2b52-4367-8381-a3f78450a075">
         <di:waypoint x="36" y="40"/>
         <di:waypoint x="96" y="40"/>

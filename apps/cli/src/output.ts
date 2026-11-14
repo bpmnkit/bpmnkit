@@ -304,3 +304,12 @@ export function printHttpErrorDetails(raw: RawResponseEvent, noColor: boolean): 
 		}
 	}
 }
+
+/** `-o` is the global --output short, except for `build`, where it is --out (a file). */
+export function resolveOutputFormat(
+	group: string | undefined,
+	flags: Record<string, unknown>,
+): OutputFormat {
+	const short = group === "build" ? undefined : flags.o
+	return (flags.output ?? short ?? "table") as OutputFormat
+}

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="sid-bdb880ac-c464-4e5c-aa56-569d709436e0" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="sid-bdb880ac-c464-4e5c-aa56-569d709436e0" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:process id="handle-invoice" name="Invoice Handling (OMG BPMN MIWG Demo)" isExecutable="true">
     <bpmn:userTask id="approveInvoice" name="Approve Invoice">
       <bpmn:incoming>reviewSuccessful</bpmn:incoming>
@@ -48,16 +48,16 @@
     <bpmn:dataObject id="Bpmn_DataObject_aT_L0rH1EeSuDf0W70XLGw" name="clarified"/>
     <bpmn:dataObjectReference id="Bpmn_DataObjectReference_cdsDQLH1EeSuDf0W70XLGw" name="clarified" dataObjectRef="Bpmn_DataObject_aT_L0rH1EeSuDf0W70XLGw"/>
     <bpmn:sequenceFlow id="invoiceApproved" sourceRef="invoice_approved" targetRef="prepareBankTransfer" name="yes">
-      <bpmn:conditionExpression>=bpmn:getDataObject('approved')</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=bpmn:getDataObject('approved')</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="invoiceNotApproved" sourceRef="invoice_approved" targetRef="reviewInvoice" name="no">
-      <bpmn:conditionExpression>=not(bpmn:getDataObject('approved'))</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=not(bpmn:getDataObject('approved'))</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="reviewSuccessful" sourceRef="reviewSuccessful_gw" targetRef="approveInvoice" name="yes">
-      <bpmn:conditionExpression>=bpmn:getDataObject('clarified') = 'yes'</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=bpmn:getDataObject('clarified') = 'yes'</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="reviewNotSuccessful" sourceRef="reviewSuccessful_gw" targetRef="invoiceNotProcessed" name="no">
-      <bpmn:conditionExpression>=bpmn:getDataObject('clarified') = 'no'</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=bpmn:getDataObject('clarified') = 'no'</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="sequenceFlow_180" sourceRef="approveInvoice" targetRef="invoice_approved"/>
     <bpmn:sequenceFlow id="sequenceFlow_183" sourceRef="reviewInvoice" targetRef="reviewSuccessful_gw"/>
@@ -113,23 +113,14 @@
       <bpmndi:BPMNShape id="archiveInvoice_di" bpmnElement="archiveInvoice">
         <dc:Bounds x="686" y="0" width="100" height="80"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Bpmn_DataObject_approver_di" bpmnElement="Bpmn_DataObject_approver">
+      <bpmndi:BPMNShape id="Bpmn_DataObjectReference_assignApprover_di" bpmnElement="Bpmn_DataObjectReference_assignApprover">
         <dc:Bounds x="0" y="303" width="36" height="50"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Bpmn_DataObjectReference_assignApprover_di" bpmnElement="Bpmn_DataObjectReference_assignApprover">
+      <bpmndi:BPMNShape id="Bpmn_DataObjectReference_YGA4YLH1EeSuDf0W70XLGw_di" bpmnElement="Bpmn_DataObjectReference_YGA4YLH1EeSuDf0W70XLGw">
         <dc:Bounds x="0" y="433" width="36" height="50"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Bpmn_DataObject_WUfQYrH1EeSuDf0W70XLGw_di" bpmnElement="Bpmn_DataObject_WUfQYrH1EeSuDf0W70XLGw">
-        <dc:Bounds x="0" y="563" width="36" height="50"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Bpmn_DataObjectReference_YGA4YLH1EeSuDf0W70XLGw_di" bpmnElement="Bpmn_DataObjectReference_YGA4YLH1EeSuDf0W70XLGw">
-        <dc:Bounds x="0" y="693" width="36" height="50"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Bpmn_DataObject_aT_L0rH1EeSuDf0W70XLGw_di" bpmnElement="Bpmn_DataObject_aT_L0rH1EeSuDf0W70XLGw">
-        <dc:Bounds x="0" y="823" width="36" height="50"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Bpmn_DataObjectReference_cdsDQLH1EeSuDf0W70XLGw_di" bpmnElement="Bpmn_DataObjectReference_cdsDQLH1EeSuDf0W70XLGw">
-        <dc:Bounds x="0" y="953" width="36" height="50"/>
+        <dc:Bounds x="0" y="563" width="36" height="50"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="invoiceApproved_di" bpmnElement="invoiceApproved">
         <di:waypoint x="466" y="40"/>

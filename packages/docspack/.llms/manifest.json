@@ -21,10 +21,11 @@
 		{
 			"id": "agent-cards.bpmn",
 			"file": "chunks/agent-cards.bpmn.md",
-			"tokens": 531,
+			"tokens": 421,
 			"tags": [
 				"agent-card",
 				"cheat-sheet",
+				"build",
 				"build-script",
 				"bpmn",
 				"process",
@@ -32,78 +33,76 @@
 				"write",
 				"script",
 				"builder",
-				"agent-cards",
-				"minimal",
-				"build"
+				"edit",
+				"casen-build"
 			],
 			"entities": [
-				"@bpmnkit/core",
-				"order.bpmn"
+				"order.txt",
+				"shop.txt",
+				"edit.mjs"
 			]
 		},
 		{
-			"id": "agent-cards.bpmn.top-builder-options",
-			"file": "chunks/agent-cards.bpmn.top-builder-options.md",
-			"tokens": 299,
+			"id": "agent-cards.bpmn.1.-one-pool",
+			"file": "chunks/agent-cards.bpmn.1.-one-pool.md",
+			"tokens": 546,
 			"tags": [
 				"agent-cards",
 				"bpmn",
-				"top",
-				"builder",
-				"options"
+				"one",
+				"pool"
 			],
 			"entities": [
-				"b.defaultFlow()",
-				"messageName",
-				"correlationKey",
-				"errorCode",
-				"signalName",
-				"packages/core/builder-reference.md",
+				"reviewExpense"
+			]
+		},
+		{
+			"id": "agent-cards.bpmn.2.-pools-lanes-message-flows-data",
+			"file": "chunks/agent-cards.bpmn.2.-pools-lanes-message-flows-data.md",
+			"tokens": 448,
+			"tags": [
+				"agent-cards",
+				"bpmn",
+				"pools",
+				"lanes",
+				"message",
+				"flows",
+				"data"
+			],
+			"entities": []
+		},
+		{
+			"id": "agent-cards.bpmn.3.-edit-an-existing-file",
+			"file": "chunks/agent-cards.bpmn.3.-edit-an-existing-file.md",
+			"tokens": 344,
+			"tags": [
+				"agent-cards",
+				"bpmn",
+				"edit",
+				"existing",
+				"file"
+			],
+			"entities": [
+				"executionPlatformVersion",
 				"@bpmnkit/core"
 			]
 		},
 		{
-			"id": "agent-cards.bpmn.traps",
-			"file": "chunks/agent-cards.bpmn.traps.md",
-			"tokens": 491,
+			"id": "agent-cards.bpmn.not-in-the-text-spec",
+			"file": "chunks/agent-cards.bpmn.not-in-the-text-spec.md",
+			"tokens": 220,
 			"tags": [
 				"agent-cards",
 				"bpmn",
+				"not",
+				"text",
+				"spec",
 				"traps"
 			],
 			"entities": [
-				"formId",
-				"decisionId",
-				"Bpmn.parse",
-				"withAutoLayout()",
-				"applyAutoLayout",
-				"Bpmn.export",
-				"placeNewShapes",
-				"timerDuration",
-				"build()",
-				"expand()",
-				"defaultFlow",
-				"taskType"
-			]
-		},
-		{
-			"id": "agent-cards.bpmn.lint-before-you-deploy-or-test",
-			"file": "chunks/agent-cards.bpmn.lint-before-you-deploy-or-test.md",
-			"tokens": 209,
-			"tags": [
-				"agent-cards",
-				"bpmn",
-				"lint",
-				"before",
-				"deploy",
-				"test",
-				"writing",
-				"process",
-				"text",
-				"instead"
-			],
-			"entities": [
-				"@bpmnkit/core"
+				"flow.mjs",
+				"createDiagram",
+				"formId"
 			]
 		},
 		{
@@ -257,9 +256,68 @@
 			]
 		},
 		{
+			"id": "cli.build",
+			"file": "chunks/cli.build.md",
+			"tokens": 157,
+			"tags": [
+				"cli",
+				"build"
+			],
+			"entities": []
+		},
+		{
+			"id": "cli.build.spec-formats",
+			"file": "chunks/cli.build.spec-formats.md",
+			"tokens": 640,
+			"tags": [
+				"cli",
+				"build",
+				"spec",
+				"formats"
+			],
+			"entities": [
+				"reviewExpense",
+				"CompactDiagram",
+				"@bpmnkit/core",
+				"messageRef"
+			]
+		},
+		{
+			"id": "cli.build.editing-an-existing-file",
+			"file": "chunks/cli.build.editing-an-existing-file.md",
+			"tokens": 174,
+			"tags": [
+				"cli",
+				"build",
+				"editing",
+				"existing",
+				"file"
+			],
+			"entities": [
+				"makeRoom",
+				"placeNewShapes",
+				"exportPreserving",
+				"executionPlatformVersion"
+			]
+		},
+		{
+			"id": "cli.build.findings",
+			"file": "chunks/cli.build.findings.md",
+			"tokens": 326,
+			"tags": [
+				"cli",
+				"build",
+				"findings",
+				"options"
+			],
+			"entities": [
+				"executionPlatformVersion"
+			]
+		},
+		{
 			"id": "cli.casen",
 			"file": "chunks/cli.casen.md",
-			"tokens": 756,
+			"tokens": 783,
 			"tags": [
 				"cli",
 				"casen",

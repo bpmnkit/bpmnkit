@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:process id="ai-agent-chat-with-tools" name="AI Agent Chat With Tools" isExecutable="true">
     <bpmn:startEvent id="StartEvent_TaskReceived" name="Task to perform received">
       <bpmn:extensionElements>
@@ -158,10 +158,10 @@
     <bpmn:sequenceFlow id="Flow_AI_Agent_UserTask_ReviewAgentResponse" sourceRef="AI_Agent" targetRef="UserTask_ReviewAgentResponse"/>
     <bpmn:sequenceFlow id="Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied" sourceRef="UserTask_ReviewAgentResponse" targetRef="Gateway_UserSatisfied"/>
     <bpmn:sequenceFlow id="Flow_Yes" sourceRef="Gateway_UserSatisfied" targetRef="EndEvent_UserSatisfied" name="Yes">
-      <bpmn:conditionExpression>=userSatisfied</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=userSatisfied</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_No" sourceRef="Gateway_UserSatisfied" targetRef="Gateway_RunAgent" name="No">
-      <bpmn:conditionExpression>=userSatisfied = null or userSatisfied = false</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=userSatisfied = null or userSatisfied = false</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_ai-agent-chat-with-tools">

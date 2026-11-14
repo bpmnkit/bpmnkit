@@ -356,12 +356,16 @@
         <omgdi:waypoint x="1004" y="180"/>
         <omgdi:waypoint x="417" y="180"/>
         <omgdi:waypoint x="417" y="120"/>
-        <bpmndi:BPMNLabel labelStyle="sid-b486dfff-4569-4ca7-85f3-5be00f2c3a65"/>
+        <bpmndi:BPMNLabel labelStyle="sid-b486dfff-4569-4ca7-85f3-5be00f2c3a65">
+          <omgdc:Bounds x="1008" y="332" width="98" height="14"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-D0B859BF-CBFB-4B35-BBC8-BCA308F6455C_gui" bpmnElement="sid-D0B859BF-CBFB-4B35-BBC8-BCA308F6455C">
         <omgdi:waypoint x="257" y="120"/>
         <omgdi:waypoint x="257" y="230"/>
-        <bpmndi:BPMNLabel labelStyle="sid-b486dfff-4569-4ca7-85f3-5be00f2c3a65"/>
+        <bpmndi:BPMNLabel labelStyle="sid-b486dfff-4569-4ca7-85f3-5be00f2c3a65">
+          <omgdc:Bounds x="261" y="168" width="98" height="14"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
     <bpmndi:BPMNLabelStyle id="sid-b486dfff-4569-4ca7-85f3-5be00f2c3a65">

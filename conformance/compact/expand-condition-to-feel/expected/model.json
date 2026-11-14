@@ -317,7 +317,9 @@
         },
         {
           "conditionExpression": {
-            "attributes": {},
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
             "text": "=x > 1"
           },
           "extensionElements": [],
@@ -328,7 +330,9 @@
         },
         {
           "conditionExpression": {
-            "attributes": {},
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
             "text": "=amount >= 100 and approved"
           },
           "extensionElements": [],
@@ -339,7 +343,9 @@
         },
         {
           "conditionExpression": {
-            "attributes": {},
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
             "text": "= y"
           },
           "extensionElements": [],

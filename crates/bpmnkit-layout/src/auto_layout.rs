@@ -2,6 +2,7 @@
 
 use crate::annotations::{association_waypoints, pack_annotations};
 use crate::collaboration::alignment::{align_pools, MessageLink};
+use crate::collaboration::message_labels::{place_message_flow_labels, MessageLabelInput};
 use crate::collaboration::ordering::{order_pools, PoolLink};
 use crate::engine::{layout_process, LayoutEngine};
 use crate::grid::router::collapse_collinear;
@@ -19,10 +20,52 @@ use bpmnkit_bpmn::model::{
 use bpmnkit_bpmn::Attrs;
 use indexmap::{IndexMap, IndexSet};
 use std::borrow::Cow;
+use std::collections::{HashMap, HashSet};
 
 const POOL_HEADER: f64 = 30.0;
 const LANE_HEADER: f64 = 30.0;
 const PADDING: f64 = 20.0;
+
+/// Lane bands grown to hold the annotations the packer put above or below them:
+/// the pool takes the bands' height, so an annotation outside them would hang
+/// over the pool's edge. The outermost band on that side grows.
+fn stretch_bands<'a>(
+    bands: &[LaneBand],
+    annotations: impl IntoIterator<Item = &'a Bounds>,
+) -> Vec<LaneBand> {
+    let mut out = bands.to_vec();
+    if out.is_empty() {
+        return out;
+    }
+    let mut top = out
+        .iter()
+        .fold(f64::INFINITY, |m, b| js::min(m, b.bounds.y));
+    let mut bottom = out.iter().fold(f64::NEG_INFINITY, |m, b| {
+        js::max(m, b.bounds.y + b.bounds.height)
+    });
+    for a in annotations {
+        let high = a.y - PADDING;
+        let low = a.y + a.height + PADDING;
+        if low > bottom {
+            for b in out.iter_mut() {
+                if b.bounds.y + b.bounds.height == bottom {
+                    b.bounds.height += low - bottom;
+                }
+            }
+            bottom = low;
+        }
+        if high < top {
+            for b in out.iter_mut() {
+                if b.bounds.y == top {
+                    b.bounds.height += top - high;
+                    b.bounds.y = high;
+                }
+            }
+            top = high;
+        }
+    }
+    out
+}
 const POOL_GAP: f64 = 30.0;
 
 const EMPTY_POOL_HEIGHT: f64 = 60.0;
@@ -281,6 +324,32 @@ fn build_lane_shapes(
         .collect()
 }
 
+/// `dataAssociations(el, out)`: data associations drawn as association edges; only those
+/// with an id can have a DI edge.
+fn data_associations(el: &BpmnFlowElement, out: &mut Vec<bpmnkit_bpmn::model::BpmnAssociation>) {
+    let base = el.base();
+    for a in &base.data_input_associations {
+        if let (Some(id), Some(source)) = (&a.id, a.source_refs.first()) {
+            out.push(bpmnkit_bpmn::model::BpmnAssociation {
+                id: id.clone(),
+                source_ref: source.clone(),
+                target_ref: base.id.clone(),
+                ..Default::default()
+            });
+        }
+    }
+    for a in &base.data_output_associations {
+        if let (Some(id), Some(target)) = (&a.id, &a.target_ref) {
+            out.push(bpmnkit_bpmn::model::BpmnAssociation {
+                id: id.clone(),
+                source_ref: base.id.clone(),
+                target_ref: target.clone(),
+                ..Default::default()
+            });
+        }
+    }
+}
+
 /// `withNestedAnnotations(process)`: a view of `process` whose annotations and
 /// associations include those declared inside (nested) sub-processes. The builder
 /// stores them on the sub-process element, so packing only the process-level lists
@@ -295,6 +364,7 @@ fn with_nested_annotations(process: &BpmnProcess) -> Cow<'_, BpmnProcess> {
         associations: &mut Vec<bpmnkit_bpmn::model::BpmnAssociation>,
     ) {
         for el in elements {
+            data_associations(el, associations);
             if let Some(c) = el.contents() {
                 text_annotations.extend(c.text_annotations.iter().cloned());
                 associations.extend(c.associations.iter().cloned());
@@ -1171,6 +1241,12 @@ fn laid_out_diagrams(
             &pool_links(collab, &pool_owners(defs, collab), |id| {
                 depths.get(id).copied()
             }),
+            &participant_pools
+                .iter()
+                .enumerate()
+                .filter(|(_, pool)| pool.process.is_none())
+                .map(|(i, _)| i)
+                .collect(),
         );
         for index in order {
             // An index may repeat in TS; a pool is cheap to rebuild from its parts.
@@ -1315,7 +1391,11 @@ fn laid_out_diagrams(
         // Engine lane bands already stack the content vertically, so the pool
         // aligns to the band space rather than to the content bounding box —
         // otherwise the shapes drift out of the lanes drawn around them.
-        let lane_bands = if has_lanes { engine_lanes } else { None };
+        let stretched = match engine_lanes {
+            Some(bands) if has_lanes => Some(stretch_bands(bands, ann_bounds.values())),
+            _ => None,
+        };
+        let lane_bands = stretched.as_ref();
         // Bands arrive outermost first and nested lanes overlap their parent, so the
         // pool spans their extent rather than the first band or the sum of heights.
         let band_top = lane_bands
@@ -1624,6 +1704,37 @@ fn laid_out_diagrams(
 
     let repair = RouteRepair::new(defs);
     repair.apply(&all_shapes, &mut all_edges);
+    if let Some(collab) = collab.filter(|c| !c.message_flows.is_empty()) {
+        let pools: HashSet<String> = collab.participants.iter().map(|p| p.id.clone()).collect();
+        let names: HashMap<String, String> = collab
+            .message_flows
+            .iter()
+            .filter_map(|f| {
+                let name = f.name.as_deref().map(str::trim).filter(|n| !n.is_empty())?;
+                Some((f.id.clone(), name.to_string()))
+            })
+            .collect();
+        let mut containers: HashSet<String> = pools.clone();
+        for process in &defs.processes {
+            for lane in process.lane_set.iter().flat_map(|set| &set.lanes) {
+                containers.insert(lane.id.clone());
+            }
+        }
+        for s in &all_shapes {
+            if s.is_expanded == Some(true) {
+                containers.insert(s.bpmn_element.clone());
+            }
+        }
+        place_message_flow_labels(
+            &mut all_shapes,
+            &mut all_edges,
+            &MessageLabelInput {
+                names: &names,
+                containers: &containers,
+                pools: &pools,
+            },
+        );
+    }
     for plane in &mut root_planes {
         repair.apply(&plane.shapes, &mut plane.edges);
     }
@@ -2124,6 +2235,37 @@ impl<'a> RouteRepair<'a> {
 mod tests {
     use super::*;
     use bpmnkit_bpmn::{parse_bpmn, serialize_bpmn};
+
+    #[test]
+    fn stretch_bands_grows_the_outer_band_around_an_annotation() {
+        let band = |id: &str, y: f64, height: f64| LaneBand {
+            id: id.into(),
+            bounds: Bounds {
+                x: 0.0,
+                y,
+                width: 300.0,
+                height,
+            },
+        };
+        let bands = vec![band("l1", 0.0, 100.0), band("l2", 100.0, 100.0)];
+        let below = Bounds {
+            x: 10.0,
+            y: 190.0,
+            width: 200.0,
+            height: 30.0,
+        };
+        let above = Bounds {
+            x: 10.0,
+            y: -40.0,
+            width: 200.0,
+            height: 30.0,
+        };
+        let out = stretch_bands(&bands, [&below, &above]);
+        assert_eq!(out[0].bounds.y, -60.0);
+        assert_eq!(out[0].bounds.height, 160.0);
+        assert_eq!(out[1].bounds.y, 100.0);
+        assert_eq!(out[1].bounds.height, 140.0);
+    }
 
     fn shape(id: &str, element: &str) -> BpmnDiShape {
         BpmnDiShape {

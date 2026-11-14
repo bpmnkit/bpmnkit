@@ -41,9 +41,9 @@
       <bpmn:incoming>Flow_join_e</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_s_fork" sourceRef="s" targetRef="fork"/>
-    <bpmn:sequenceFlow id="Flow_fork_ta" sourceRef="fork" targetRef="ta" name="a"/>
-    <bpmn:sequenceFlow id="Flow_fork_tb" sourceRef="fork" targetRef="tb" name="b"/>
-    <bpmn:sequenceFlow id="Flow_fork_tc" sourceRef="fork" targetRef="tc" name="c"/>
+    <bpmn:sequenceFlow id="Flow_fork_ta" sourceRef="fork" targetRef="ta"/>
+    <bpmn:sequenceFlow id="Flow_fork_tb" sourceRef="fork" targetRef="tb"/>
+    <bpmn:sequenceFlow id="Flow_fork_tc" sourceRef="fork" targetRef="tc"/>
     <bpmn:sequenceFlow id="Flow_ta_join" sourceRef="ta" targetRef="join"/>
     <bpmn:sequenceFlow id="Flow_tb_join" sourceRef="tb" targetRef="join"/>
     <bpmn:sequenceFlow id="Flow_tc_join" sourceRef="tc" targetRef="join"/>

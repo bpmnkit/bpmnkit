@@ -71,6 +71,7 @@ Other:
 - dataObjectReference(id: string, dataObjectRef: string, options?: DataElementOptions)
 - dataStoreReference(id: string, dataStoreRef: string, options?: Pick<DataElementOptions, "name">)
 - dataAssociation(activityId: string, dataRefId: string, direction: "input" | "output")
+- inLane(id: string, options?: LaneOptions)
 
 Only inside `.branch()` callbacks (BranchBuilder), applied to the flow leaving the gateway:
 - condition(expression: string)
@@ -84,28 +85,45 @@ Not available inside callbacks (top-level only): at, insertAfter, withAutoLayout
 
 `+El` = also accepts the ElementOptions fields; `+X` = also accepts X's fields.
 
-- ElementOptions: name?: string; documentation?: string (Free-text documentation…)
+- ElementOptions: name?: string; lane?: string (Lane of this node only,…); documentation?: string (Free-text documentation…)
 - StartEventOptions +El: condition?: string (FEEL condition); timerDuration?: string (Timer duration (ISO 8601)); timerDate?: string (Timer date (ISO 8601)); timerCycle?: string (Timer cycle (ISO 8601)); messageName?: string (Message name); correlationKey?: string (FEEL expression correlating the…); formId?: string (Form to show when the process is…); isInterrupting?: boolean (Non-interrupting flag)
-- EndEventOptions +El: errorCode?: string (Error code); messageName?: string; signalName?: string (Signal name); escalationCode?: string (Escalation code); taskType?: string (Job type of the worker that…)
-- IntermediateThrowEventOptions +El: messageName?: string; signalName?: string; escalationCode?: string; compensation?: boolean (Emit a compensateEventDefinition); linkName?: string (Link name); taskType?: string
+- EndEventOptions +El: errorCode?: string (Error code); messageName?: string; correlationKey?: string; signalName?: string (Signal name); escalationCode?: string (Escalation code); taskType?: string (Job type of the worker that…)
+- IntermediateThrowEventOptions +El: messageName?: string; correlationKey?: string; signalName?: string; escalationCode?: string; compensation?: boolean (Emit a compensateEventDefinition); linkName?: string (Link name); taskType?: string
 - IntermediateCatchEventOptions +El: timerDuration?: string; timerDate?: string; timerCycle?: string; messageName?: string; correlationKey?: string; signalName?: string; linkName?: string; condition?: string
 - BoundaryEventOptions +El: attachedTo: string (ID of the activity this boundary…); cancelActivity?: boolean (Whether the host activity is…); errorCode?: string; timerDuration?: string; timerDate?: string; timerCycle?: string; messageName?: string; correlationKey?: string; signalName?: string; compensation?: boolean; condition?: string
-- ServiceTaskOptions: multiInstance?: MultiInstanceOptions (Runs the activity once per item…); name: string; taskType: string; retries?: string (Number of retries…); ioMapping?: ioMapping shape (Input/output variable mappings); taskHeaders?: Record<string, string> (Task header key-value pairs); linkedResources?: ZeebeLinkedResource[] (Resources the task runs, e.g. an…); documentation?: string
+- ServiceTaskOptions: lane?: string; multiInstance?: MultiInstanceOptions (Runs the activity once per item…); name: string; taskType: string; retries?: string (Number of retries…); ioMapping?: ioMapping shape (Input/output variable mappings); taskHeaders?: Record<string, string> (Task header key-value pairs); linkedResources?: ZeebeLinkedResource[] (Resources the task runs, e.g. an…); documentation?: string
 - MultiInstanceOptions: isSequential?: boolean; collection?: string; elementVariable?: string; outputCollection?: string (Variable that collects each…); outputElement?: string (FEEL expression evaluated per…); completionCondition?: string
 - RestConnectorConfig: name?: string; method: "GET" | "POST" | "PUT" | "PATCH" | "DELETE" (HTTP method…); url: string (Target URL); authentication?: {type: "noAuth"} | {type: "bearer"; token: string} (Authentication configuration); headers?: Record<string, string> | string (HTTP headers as key-value pairs…); body?: string (Request body); retries?: string; resultVariable?: string (Variable name to store the full…); resultExpression?: string (FEEL expression to extract values…)
-- ScriptTaskOptions: multiInstance?: MultiInstanceOptions; name?: string; expression: string (FEEL expression for the script); resultVariable: string; documentation?: string
-- UserTaskOptions: multiInstance?: MultiInstanceOptions; name?: string; formId?: string; externalReference?: string (External form URL…); embeddedForm?: {id: string; schema: string} (Embeds a Camunda Form: writes a…); ioMapping?: ioMapping shape; taskHeaders?: Record<string, string>; documentation?: string; assignee?: string (Static assignee…); candidateGroups?: string (Candidate groups, comma-separated…); candidateUsers?: string (Candidate users, comma-separated…); dueDate?: string (Due date); followUpDate?: string (Follow-up date); priority?: number (Task priority 0-100, default 50…)
+- ScriptTaskOptions: lane?: string; multiInstance?: MultiInstanceOptions; name?: string; expression: string (FEEL expression for the script); resultVariable: string; documentation?: string
+- UserTaskOptions: lane?: string; multiInstance?: MultiInstanceOptions; name?: string; formId?: string; externalReference?: string (External form URL…); embeddedForm?: {id: string; schema: string} (Embeds a Camunda Form: writes a…); ioMapping?: ioMapping shape; taskHeaders?: Record<string, string>; documentation?: string; assignee?: string (Static assignee…); candidateGroups?: string (Candidate groups, comma-separated…); candidateUsers?: string (Candidate users, comma-separated…); dueDate?: string (Due date); followUpDate?: string (Follow-up date); priority?: number (Task priority 0-100, default 50…)
 - SendTaskOptions +MessageTaskOptions: taskType?: string
 - MessageTaskOptions +El: multiInstance?: MultiInstanceOptions; messageName?: string; correlationKey?: string
-- BusinessRuleTaskOptions: multiInstance?: MultiInstanceOptions; name?: string; taskType?: string; decisionId?: string (DMN decision ID to evaluate); resultVariable?: string; documentation?: string
-- CallActivityOptions: multiInstance?: MultiInstanceOptions; name?: string; processId: string (Process ID to call); propagateAllChildVariables?: boolean (Whether to propagate all child…); propagateAllParentVariables?: boolean (Whether the child process…); bindingType?: "latest" | "deployment" | "versionTag" (How the called process version is…); versionTag?: string (Version tag of the called…); ioMapping?: ioMapping shape; documentation?: string
+- BusinessRuleTaskOptions: lane?: string; multiInstance?: MultiInstanceOptions; name?: string; taskType?: string; decisionId?: string (DMN decision ID to evaluate); resultVariable?: string; documentation?: string
+- CallActivityOptions: lane?: string; multiInstance?: MultiInstanceOptions; name?: string; processId: string (Process ID to call); propagateAllChildVariables?: boolean (Whether to propagate all child…); propagateAllParentVariables?: boolean (Whether the child process…); bindingType?: "latest" | "deployment" | "versionTag" (How the called process version is…); versionTag?: string (Version tag of the called…); ioMapping?: ioMapping shape; documentation?: string
 - GatewayOptions +El: defaultFlow?: string (ID of the default sequence flow…)
 - AdHocSubProcessOptions +El: activeElementsCollection?: string (FEEL expression for determining…); outputCollection?: string; outputElement?: string; taskDefinition?: {type: string; retries?: string} (Zeebe task definition…); ioMapping?: ioMapping shape; taskHeaders?: Record<string, string>; multiInstance?: MultiInstanceOptions; completionCondition?: string
 - SubProcessOptions +El: multiInstance?: MultiInstanceOptions
 - DataElementOptions: name?: string; isCollection?: boolean (Draws the collection…)
 - AnnotateOptions: side?: "above" | "below" | "left" | "right" (Which side of the element…)
 - BuildOptions: validate?: boolean (Refuse a Camunda 8 model Zeebe…); explicitJoins?: boolean (Refuse to infer join gateways, so…)
+- LaneOptions: name?: string
 - ioMapping shape = {inputs?: Array<{source: string; target: string}>; outputs?: Array<{source: string; target: string}>}
+
+## DiagramBuilder (pools, message flows)
+
+`Bpmn.createDiagram(id?)`: several processes in one file. `.build()` returns definitions; draw shapes with `applyAutoLayout(defs)` before `Bpmn.export`. Omit `processId` on `participant` for a black-box pool. No lane API yet.
+
+- executionPlatformVersion(version: string)
+- process(id: string, callback: (b: ProcessBuilder) => void)
+- collaborationId(id: string)
+- participant(id: string, options: ParticipantOptions)
+- message(id: string, options: DiagramMessageOptions)
+- messageFlow(id: string, options: MessageFlowOptions)
+- build(options?: BuildGateOptions)
+
+- ParticipantOptions: name?: string (Pool label); processId?: string (Id of the process this pool…)
+- DiagramMessageOptions: name?: string; correlationKey?: string (FEEL expression Camunda 8…)
+- MessageFlowOptions: source: string (Id of the participant, or of a…); target: string (Id of the participant, or of a…); name?: string; messageRef?: string (Id of a message declared with…)
 
 ## Examples
 

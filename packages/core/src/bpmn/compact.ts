@@ -43,6 +43,8 @@ export interface CompactElement {
 	documentation?: string
 	/** Zeebe job type (serviceTask: zeebe:taskDefinition.type) */
 	jobType?: string
+	/** Job retries (`zeebe:taskDefinition` retries), a number or FEEL. */
+	retries?: string
 	/** dataObjectReference: id of the dataObject it points at. */
 	dataObjectRef?: string
 	/** dataStoreReference: id of the data store it points at. */
@@ -718,7 +720,11 @@ export function makeExtensions(el: CompactElement): XmlElement[] {
 	const ext: XmlElement[] = []
 	const { inputs, headers } = zeebeConfig(el)
 	if (el.jobType) {
-		ext.push({ name: "zeebe:taskDefinition", attributes: { type: el.jobType }, children: [] })
+		ext.push({
+			name: "zeebe:taskDefinition",
+			attributes: { type: el.jobType, ...(el.retries ? { retries: el.retries } : {}) },
+			children: [],
+		})
 	}
 	if (Object.keys(headers).length > 0) {
 		ext.push({
@@ -863,7 +869,10 @@ function buildSubContent(
 			sourceRef: f.from,
 			targetRef: f.to,
 			conditionExpression: f.condition
-				? { text: toFeelCondition(f.condition), attributes: {} }
+				? {
+						text: toFeelCondition(f.condition),
+						attributes: { "xsi:type": "bpmn:tFormalExpression" },
+					}
 				: undefined,
 			extensionElements: [],
 			unknownAttributes: {},
@@ -1219,7 +1228,7 @@ function expandProcess(
 		sourceRef: f.from,
 		targetRef: f.to,
 		conditionExpression: f.condition
-			? { text: toFeelCondition(f.condition), attributes: {} }
+			? { text: toFeelCondition(f.condition), attributes: { "xsi:type": "bpmn:tFormalExpression" } }
 			: undefined,
 		extensionElements: [],
 		unknownAttributes: {},

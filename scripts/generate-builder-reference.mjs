@@ -472,6 +472,25 @@ export function generateBuilderReference() {
 		"",
 	)
 	out.push(...renderOptions(interfaces, aliases, options))
+	const diagram = publicMethods(main, "DiagramBuilder")
+	out.push(
+		"",
+		"## DiagramBuilder (pools, message flows)",
+		"",
+		"`Bpmn.createDiagram(id?)`: several processes in one file. `.build()` returns definitions; draw shapes with `applyAutoLayout(defs)` before `Bpmn.export`. Omit `processId` on `participant` for a black-box pool. No lane API yet.",
+		"",
+	)
+	for (const m of diagram) out.push(`- ${m.signature}`)
+	out.push(
+		"",
+		...renderOptions(
+			interfaces,
+			aliases,
+			["ParticipantOptions", "DiagramMessageOptions", "MessageFlowOptions"].filter((n) =>
+				interfaces.has(n),
+			),
+		),
+	)
 	out.push("", "## Examples", "")
 	for (const example of EXAMPLES) out.push("```typescript", example, "```", "")
 	return `${out.join("\n").trimEnd()}\n`

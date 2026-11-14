@@ -35,10 +35,12 @@ describe("builder data elements", () => {
 		expect(proc?.flowElements.find((e) => e.id === "t")?.dataInputAssociations).toHaveLength(1)
 	})
 
-	it("auto-layout gives every data element a shape", () => {
+	it("auto-layout draws data references, not the data object itself", () => {
 		const defs = build().withAutoLayout().build()
 		const shapes = new Set(defs.diagrams.flatMap((d) => d.plane.shapes.map((s) => s.bpmnElement)))
-		for (const id of ["do1", "dor1", "dsr1"]) expect(shapes.has(id), id).toBe(true)
+		for (const id of ["dor1", "dsr1"]) expect(shapes.has(id), id).toBe(true)
+		// bpmn:dataObject has no visual representation; bpmnlint reports a shape for one.
+		expect(shapes.has("do1")).toBe(false)
 	})
 
 	it("rejects duplicate ids and unknown activities", () => {

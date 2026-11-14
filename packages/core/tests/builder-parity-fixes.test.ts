@@ -154,8 +154,10 @@ describe("link catch inside a branch (G: not a defect)", () => {
 			.build()
 		const pairs = flowPairs(defs)
 		expect(pairs.filter((p) => p.endsWith("->lc"))).toEqual([])
-		expect(pairs).toContain("lc->t3")
-		expect(pairs).toContain("g2_join->t3")
+		// Both reach t3 through the exclusive merge a second incoming flow gets.
+		expect(pairs).toContain("lc->t3_merge")
+		expect(pairs).toContain("g2_join->t3_merge")
+		expect(pairs).toContain("t3_merge->t3")
 	})
 })
 

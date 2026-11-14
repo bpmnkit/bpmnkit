@@ -15,20 +15,25 @@
           <zeebe:taskDefinition type="a"/>
         </bpmn:extensionElements>
         <bpmn:incoming>Flow_is_a</bpmn:incoming>
-        <bpmn:outgoing>Flow_a_b</bpmn:outgoing>
-        <bpmn:outgoing>Flow_a_b_2</bpmn:outgoing>
+        <bpmn:outgoing>Flow_a_b_merge</bpmn:outgoing>
+        <bpmn:outgoing>Flow_a_b_merge_2</bpmn:outgoing>
       </bpmn:serviceTask>
       <bpmn:serviceTask id="b" name="b">
         <bpmn:extensionElements>
           <zeebe:taskDefinition type="b"/>
         </bpmn:extensionElements>
-        <bpmn:incoming>Flow_a_b</bpmn:incoming>
-        <bpmn:incoming>Flow_a_b_2</bpmn:incoming>
+        <bpmn:incoming>Flow_b_merge_b</bpmn:incoming>
       </bpmn:serviceTask>
       <bpmn:endEvent id="ie"/>
+      <bpmn:exclusiveGateway id="b_merge">
+        <bpmn:incoming>Flow_a_b_merge</bpmn:incoming>
+        <bpmn:incoming>Flow_a_b_merge_2</bpmn:incoming>
+        <bpmn:outgoing>Flow_b_merge_b</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
       <bpmn:sequenceFlow id="Flow_is_a" sourceRef="is" targetRef="a"/>
-      <bpmn:sequenceFlow id="Flow_a_b" sourceRef="a" targetRef="b"/>
-      <bpmn:sequenceFlow id="Flow_a_b_2" sourceRef="a" targetRef="b"/>
+      <bpmn:sequenceFlow id="Flow_a_b_merge" sourceRef="a" targetRef="b_merge"/>
+      <bpmn:sequenceFlow id="Flow_a_b_merge_2" sourceRef="a" targetRef="b_merge"/>
+      <bpmn:sequenceFlow id="Flow_b_merge_b" sourceRef="b_merge" targetRef="b"/>
     </bpmn:subProcess>
     <bpmn:endEvent id="e">
       <bpmn:incoming>Flow_sp_e</bpmn:incoming>

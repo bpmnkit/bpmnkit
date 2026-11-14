@@ -14,6 +14,8 @@ import type {
 	BpmnEscalation,
 	BpmnEventDefinition,
 	BpmnFlowElement,
+	BpmnLane,
+	BpmnLaneSet,
 	BpmnMessage,
 	BpmnMessageFlow,
 	BpmnMultiInstanceLoopCharacteristics,
@@ -29,6 +31,7 @@ import { camunda8BuilderProblem } from "./builder-rules.js"
 import { normalizeCamundaVersion } from "./camunda-compat.js"
 import { createFlowElement, isLoopCapableType } from "./element-shape.js"
 import { toFeelCondition } from "./feel-condition.js"
+import { levenshtein } from "./optimize/variable-flow.js"
 import type { RestConnectorConfig } from "./rest-connector.js"
 import {
 	REST_CONNECTOR_TEMPLATE_VERSION,
@@ -67,9 +70,17 @@ const EXPORTER_VERSION = "0.0.23"
 // Option types
 // ---------------------------------------------------------------------------
 
+/** Options for {@link ProcessBuilder.inLane}. */
+export interface LaneOptions {
+	/** Label shown on the lane; defaults to its id. */
+	name?: string
+}
+
 /** Options shared by all element methods. */
 export interface ElementOptions {
 	name?: string
+	/** Lane of this node only, overriding the one `inLane()` set; declared on first use. */
+	lane?: string
 	isForCompensation?: boolean
 	/** Free-text documentation (`<bpmn:documentation>`). Used by the AI Agent connector as a tool description. */
 	documentation?: string
@@ -143,6 +154,8 @@ export interface StartEventOptions extends ElementOptions {
 
 /** Options for creating a service task. */
 export interface ServiceTaskOptions {
+	/** Lane of this node only, overriding the one `inLane()` set; declared on first use. */
+	lane?: string
 	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
 	executionListeners?: ZeebeListener[]
 	/** Runs the activity once per item of a list. */
@@ -180,6 +193,8 @@ export interface ServiceTaskOptions {
 
 /** Options for creating a script task. */
 export interface ScriptTaskOptions {
+	/** Lane of this node only, overriding the one `inLane()` set; declared on first use. */
+	lane?: string
 	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
 	executionListeners?: ZeebeListener[]
 	/** Runs the activity once per item of a list. */
@@ -198,6 +213,8 @@ export interface ScriptTaskOptions {
 
 /** Options for creating a user task. */
 export interface UserTaskOptions {
+	/** Lane of this node only, overriding the one `inLane()` set; declared on first use. */
+	lane?: string
 	/** Listeners on the user task's own lifecycle (`zeebe:taskListeners`); needs `zeebeUserTask`. */
 	taskListeners?: ZeebeListener[]
 	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
@@ -258,6 +275,8 @@ export interface UserTaskOptions {
 
 /** Options for creating a call activity. */
 export interface CallActivityOptions {
+	/** Lane of this node only, overriding the one `inLane()` set; declared on first use. */
+	lane?: string
 	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
 	executionListeners?: ZeebeListener[]
 	/** Runs the activity once per item of a list. */
@@ -296,6 +315,8 @@ export interface CallActivityOptions {
 
 /** Options for creating a business rule task. */
 export interface BusinessRuleTaskOptions {
+	/** Lane of this node only, overriding the one `inLane()` set; declared on first use. */
+	lane?: string
 	/** Job-worker listeners on this element's lifecycle (`zeebe:executionListeners`). */
 	executionListeners?: ZeebeListener[]
 	/** Runs the activity once per item of a list. */
@@ -423,6 +444,8 @@ export interface IntermediateCatchEventOptions extends ElementOptions {
 export interface IntermediateThrowEventOptions extends ElementOptions {
 	/** Message name — creates a message throw event (aspirational). */
 	messageName?: string
+	/** FEEL expression correlating the message (`zeebe:subscription`, written on the message). Camunda 8 lint expects one on a message throw event's message. */
+	correlationKey?: string
 	/** Signal name — creates a signal throw event (aspirational). */
 	signalName?: string
 	/** Escalation code — creates an escalation throw event (aspirational). */
@@ -452,6 +475,8 @@ export interface EndEventOptions extends ElementOptions {
 	errorRef?: string
 	/** Message name — creates a message end event. */
 	messageName?: string
+	/** FEEL expression correlating the message (`zeebe:subscription`, written on the message). Camunda 8 lint expects one on a message end event's message. */
+	correlationKey?: string
 	/** Signal name — creates a signal end event. */
 	signalName?: string
 	/** Escalation code — creates an escalation end event. */
@@ -581,6 +606,26 @@ function addDataElement(
 	ids.add(element.id)
 }
 
+/** Data objects a `dataObjectReference()` declared on its own; a later explicit `dataObject()` adopts them. */
+const implicitDataObjects = new WeakSet<BpmnFlowElement>()
+
+function addDataObject(
+	elements: BpmnFlowElement[],
+	ids: Set<string>,
+	id: string,
+	options?: DataElementOptions,
+): void {
+	const implicit = elements.find((e) => e.id === id && implicitDataObjects.has(e))
+	if (implicit?.type === "dataObject") {
+		implicitDataObjects.delete(implicit)
+		const explicit = makeDataElement(id, "dataObject", undefined, options)
+		if (explicit.name !== undefined) implicit.name = explicit.name
+		if (options?.isCollection) implicit.isCollection = true
+		return
+	}
+	addDataElement(elements, ids, makeDataElement(id, "dataObject", undefined, options))
+}
+
 function makeDataElement(
 	id: string,
 	type: "dataObject" | "dataObjectReference" | "dataStoreReference",
@@ -606,6 +651,13 @@ function addDataObjectReference(
 	dataObjectRef: string,
 	options?: DataElementOptions,
 ): void {
+	// An unresolved dataObjectRef is a raw XSD IDREF error at build; agents
+	// expect the reference to bring its object, so declare it here.
+	if (!elements.some((e) => e.id === dataObjectRef && e.type === "dataObject")) {
+		const object = makeDataElement(dataObjectRef, "dataObject", undefined, undefined)
+		addDataElement(elements, ids, object)
+		implicitDataObjects.add(object)
+	}
 	addDataElement(elements, ids, makeDataElement(id, "dataObjectReference", dataObjectRef, options))
 	if (!options?.isCollection) return
 	const target = elements.find((e) => e.id === dataObjectRef)
@@ -639,15 +691,18 @@ function addDataAssociation(
 ): void {
 	const activity = elements.find((e) => e.id === activityId)
 	if (!activity) throw new Error(`dataAssociation(): no element "${activityId}" in this scope`)
+	const key = direction === "input" ? "dataInputAssociations" : "dataOutputAssociations"
+	// Ids let auto layout draw the association; without one it has no DI edge.
+	const id = `${direction === "input" ? "DataInputAssociation" : "DataOutputAssociation"}_${activityId}_${dataRefId}_${(activity[key]?.length ?? 0) + 1}`
 	const association: BpmnDataAssociation =
 		direction === "input"
 			? {
+					id,
 					sourceRefs: [dataRefId],
 					targetRef: targetRefPlaceholder(activity),
 					unknownAttributes: {},
 				}
-			: { sourceRefs: [], targetRef: dataRefId, unknownAttributes: {} }
-	const key = direction === "input" ? "dataInputAssociations" : "dataOutputAssociations"
+			: { id, sourceRefs: [], targetRef: dataRefId, unknownAttributes: {} }
 	activity[key] = [...(activity[key] ?? []), association]
 }
 
@@ -717,6 +772,45 @@ function resolveMessage(messageName: string, rootMessages: BpmnMessage[]): strin
  * cannot hold both, so those stay on their elements, where lint reports them,
  * rather than one silently winning.
  */
+function finishDocument(defs: BpmnDefinitions): BpmnDefinitions {
+	return declareDataStores(hoistMessageSubscriptions(defs))
+}
+
+/**
+ * A `dataStoreReference` points at a root `bpmn:dataStore`; the builder only
+ * knows the reference, so the store is declared once per id here, after the
+ * model is complete (a store shared by two pools stays one element).
+ */
+function declareDataStores(defs: BpmnDefinitions): BpmnDefinitions {
+	const declared = new Set(
+		(defs.unknownChildren ?? [])
+			.filter((c) => c.name === "bpmn:dataStore")
+			.map((c) => c.attributes.id),
+	)
+	const stores: XmlElement[] = []
+	const visit = (elements: readonly BpmnFlowElement[]) => {
+		for (const el of elements) {
+			if (el.type === "dataStoreReference" && el.dataStoreRef !== undefined) {
+				if (!declared.has(el.dataStoreRef)) {
+					declared.add(el.dataStoreRef)
+					stores.push({
+						name: "bpmn:dataStore",
+						attributes: {
+							id: el.dataStoreRef,
+							...(el.name !== undefined ? { name: el.name } : {}),
+						},
+						children: [],
+					})
+				}
+			}
+			if ("flowElements" in el && Array.isArray(el.flowElements)) visit(el.flowElements)
+		}
+	}
+	for (const process of defs.processes) visit(process.flowElements)
+	if (stores.length > 0) defs.unknownChildren = [...(defs.unknownChildren ?? []), ...stores]
+	return defs
+}
+
 function hoistMessageSubscriptions(defs: BpmnDefinitions): BpmnDefinitions {
 	const isSubscription = (el: XmlElement) => el.name === "zeebe:subscription"
 	const owners = new Map<string, { host: BpmnFlowElement; sub: XmlElement }[]>()
@@ -912,21 +1006,118 @@ const MESSAGE_JOB_TYPES = new Set<BpmnElementType>([
 	"endEvent",
 ])
 
+/** Per-node `lane` option, read when the owning builder adds the element. */
+const laneOverride = new WeakMap<BpmnFlowElement, string>()
+
+/**
+ * Lane bookkeeping shared by a process builder and its gateway branches (never by
+ * sub-process contents: nodes inside a sub-process are not lane members).
+ */
+class LaneState {
+	/** Lane id -> name, in first-use order (top to bottom). */
+	readonly names = new Map<string, string | undefined>()
+	readonly membership = new Map<string, string>()
+	current: string | undefined
+
+	declare(id: string, name?: string): void {
+		if (id === "") throw new Error("inLane() needs a non-empty lane id")
+		if (!this.names.has(id) || (name !== undefined && this.names.get(id) === undefined)) {
+			this.names.set(id, name)
+		}
+	}
+
+	enter(id: string, name?: string): void {
+		this.declare(id, name)
+		this.current = id
+	}
+
+	record(el: BpmnFlowElement): void {
+		// A boundary event rides on its host's lane (as bpmn-js lists it); resolved at build.
+		if (el.type === "boundaryEvent") return
+		const lane = laneOverride.get(el) ?? this.current
+		if (lane === undefined) return
+		this.declare(lane)
+		this.membership.set(el.id, lane)
+	}
+
+	/** Runs `fn`, then puts back the lane that was current before it. */
+	scoped(fn: () => void): void {
+		const saved = this.current
+		try {
+			fn()
+		} finally {
+			this.current = saved
+		}
+	}
+
+	/** The process's lane set, or undefined when no lane was used. */
+	toLaneSet(
+		processId: string,
+		elements: BpmnFlowElement[],
+		inferredFrom: number,
+	): BpmnLaneSet | undefined {
+		if (this.names.size === 0) return undefined
+		const laneOf = new Map(this.membership)
+		// Joins inferred at build() sit on the lane of the split they close.
+		for (const el of elements.slice(inferredFrom)) {
+			const lane = laneOf.get(el.id.replace(/_(join|merge)(_\d+)?$/, ""))
+			if (lane !== undefined) laneOf.set(el.id, lane)
+		}
+		for (const el of elements) {
+			if (el.type !== "boundaryEvent" || !el.attachedToRef) continue
+			const lane = laneOf.get(el.attachedToRef)
+			if (lane !== undefined) laneOf.set(el.id, lane)
+		}
+		// Data objects and stores are flow elements, not flow nodes: no lane holds them.
+		const isData = (el: BpmnFlowElement) =>
+			el.type === "dataObject" ||
+			el.type === "dataObjectReference" ||
+			el.type === "dataStoreReference"
+		const missing = elements.filter((el) => !isData(el) && !laneOf.has(el.id)).map((el) => el.id)
+		if (missing.length > 0) {
+			throw new Error(
+				`Process "${processId}" uses lanes, so every flow node needs one; no lane for: ${missing.join(", ")}. Call inLane(id) before them or pass { lane } on the node. See agent-cards/bpmn.md#traps.`,
+			)
+		}
+		const lanes: BpmnLane[] = [...this.names].map(([id, name]) => ({
+			id,
+			name: name ?? id,
+			flowNodeRefs: elements.filter((el) => laneOf.get(el.id) === id).map((el) => el.id),
+			unknownAttributes: {},
+		}))
+		return { id: `${processId}_laneSet`, lanes }
+	}
+}
+
 function makeFlowElement(
 	id: string,
 	type: BpmnElementType,
 	options?: {
 		name?: string
+		lane?: string
 		extensionElements?: XmlElement[]
 		documentation?: string
 		executionListeners?: ZeebeListener[]
 		taskListeners?: ZeebeListener[]
 		/** Send task and message throw/end event: the job Camunda 8 runs for the message. */
 		taskType?: string
+		/** Message end/throw event: the `zeebe:subscription` key, hoisted onto the message at build. */
+		correlationKey?: string
+		messageName?: string
 	},
 ): BpmnFlowElement {
 	const el = createFlowElement(id, type, options)
+	if (options?.lane !== undefined) laneOverride.set(el, options.lane)
 	el.extensionElements = [...el.extensionElements]
+	if (
+		options?.messageName &&
+		options.correlationKey &&
+		(type === "endEvent" || type === "intermediateThrowEvent")
+	) {
+		el.extensionElements.push(
+			...zeebeExtensionsToXmlElements({ subscription: { correlationKey: options.correlationKey } }),
+		)
+	}
 	if (options?.taskType !== undefined && MESSAGE_JOB_TYPES.has(type)) {
 		el.extensionElements.push(
 			...zeebeExtensionsToXmlElements({ taskDefinition: { type: options.taskType } }),
@@ -1271,6 +1462,7 @@ function makeServiceTaskEl(id: string, options: ServiceTaskOptions): BpmnFlowEle
 		unknownAttributes["zeebe:modelerTemplateIcon"] = options.modelerTemplateIcon
 	const el = makeFlowElement(id, "serviceTask", {
 		name: options.name,
+		lane: options.lane,
 		documentation: options.documentation,
 		extensionElements: buildServiceTaskExtensions(options),
 		executionListeners: options.executionListeners,
@@ -1285,6 +1477,7 @@ function makeServiceTaskEl(id: string, options: ServiceTaskOptions): BpmnFlowEle
 function makeScriptTaskEl(id: string, options: ScriptTaskOptions): BpmnFlowElement {
 	const el = makeFlowElement(id, "scriptTask", {
 		name: options.name,
+		lane: options.lane,
 		documentation: options.documentation,
 		executionListeners: options.executionListeners,
 		extensionElements: zeebeExtensionsToXmlElements({
@@ -1318,10 +1511,16 @@ function applyModelerTemplate(
 	}
 }
 
+/** Only decision gateways give their branches a flow label; a parallel or event-based split's flows are unconditioned. */
+function branchesAreNamed(gateway: BpmnFlowElement | undefined): boolean {
+	return gateway?.type !== "parallelGateway" && gateway?.type !== "eventBasedGateway"
+}
+
 /** Start-event shell shared by all three builders; the caller adds event definitions. */
 function makeStartEventEl(id: string, options?: StartEventOptions): BpmnFlowElement {
 	const el = makeFlowElement(id, "startEvent", {
 		name: options?.name,
+		lane: options?.lane,
 		documentation: options?.documentation,
 		executionListeners: options?.executionListeners,
 		extensionElements: zeebeExtensionsToXmlElements({
@@ -1381,6 +1580,7 @@ function makeUserTaskEl(id: string, options?: UserTaskOptions): BpmnFlowElement 
 	})
 	const el = makeFlowElement(id, "userTask", {
 		name: options?.name,
+		lane: options?.lane,
 		documentation: options?.documentation,
 		executionListeners: options?.executionListeners,
 		taskListeners: options?.taskListeners,
@@ -1435,6 +1635,7 @@ function makeBusinessRuleTaskEl(id: string, options?: BusinessRuleTaskOptions): 
 	}
 	const el = makeFlowElement(id, "businessRuleTask", {
 		name: options?.name,
+		lane: options?.lane,
 		documentation: options?.documentation,
 		executionListeners: options?.executionListeners,
 		extensionElements: ext,
@@ -1462,6 +1663,7 @@ function makeCallActivityEl(id: string, options: CallActivityOptions): BpmnFlowE
 	}
 	const el = makeFlowElement(id, "callActivity", {
 		name: options.name,
+		lane: options.lane,
 		documentation: options.documentation,
 		executionListeners: options.executionListeners,
 		extensionElements: zeebeExtensionsToXmlElements(extensions),
@@ -1693,6 +1895,83 @@ function insertJoinGateways(elements: BpmnFlowElement[], flows: BpmnSequenceFlow
 }
 
 /**
+ * Puts an exclusive merge gateway (`<target>_merge`) in front of every
+ * non-gateway node that still has several incoming flows once join inference
+ * has run — typically a `connectTo()` looping back to a task, or a boundary
+ * path rejoining the main flow. Several flows into a task already mean "each
+ * arriving token starts it", which is exactly what an exclusive merge does, so
+ * this changes how the diagram reads (and lints), not how it runs.
+ *
+ * `sourceFlows` holds the flows of a document being continued: they must keep
+ * their id and target, so at most one of them may enter the node, and that one
+ * becomes `merge → node` (only its source moves, as with `insertAfter`) while a
+ * new flow takes its old source into the merge. Nodes with two or more of them
+ * were already like that in the document and are left alone. The ids of flows
+ * whose source moved are returned so the rewiring guard can allow it.
+ */
+function insertMergeGateways(
+	elements: BpmnFlowElement[],
+	flows: BpmnSequenceFlow[],
+	sourceFlows?: ReadonlySet<string>,
+): Set<string> {
+	const moved = new Set<string>()
+	const taken = new Set(elements.map((el) => el.id))
+	const incoming = new Map<string, BpmnSequenceFlow[]>()
+	for (const flow of flows) {
+		const arr = incoming.get(flow.targetRef)
+		if (arr) arr.push(flow)
+		else incoming.set(flow.targetRef, [flow])
+	}
+	for (const el of [...elements]) {
+		if (isGatewayType(el.type) || el.type === "startEvent") continue
+		const inFlows = incoming.get(el.id) ?? []
+		if (inFlows.length < 2) continue
+		const kept = inFlows.filter((flow) => sourceFlows?.has(flow.id))
+		if (kept.length > 1) continue
+		// A kept flow carrying a gateway's condition (or being its default) cannot
+		// have its source moved without moving the decision; leave that node as is.
+		const fixed = kept[0]
+		if (
+			fixed !== undefined &&
+			(fixed.conditionExpression !== undefined ||
+				elements.some((e) => "default" in e && e.default === fixed.id))
+		) {
+			continue
+		}
+
+		let mergeId = `${el.id}_merge`
+		for (let n = 2; taken.has(mergeId); n++) mergeId = `${el.id}_merge_${n}`
+		taken.add(mergeId)
+		elements.push(makeFlowElement(mergeId, "exclusiveGateway", {}))
+
+		const anchor = kept[0]
+		for (const flow of inFlows) {
+			if (flow !== anchor) flow.targetRef = mergeId
+		}
+		if (anchor === undefined) {
+			flows.push({
+				id: generateId("Flow"),
+				sourceRef: mergeId,
+				targetRef: el.id,
+				extensionElements: [],
+				unknownAttributes: {},
+			})
+			continue
+		}
+		flows.push({
+			id: generateId("Flow"),
+			sourceRef: anchor.sourceRef,
+			targetRef: mergeId,
+			extensionElements: [],
+			unknownAttributes: {},
+		})
+		anchor.sourceRef = mergeId
+		moved.add(anchor.id)
+	}
+	return moved
+}
+
+/**
  * Settles a finished scope: infer the joins its branches imply, name its
  * sequence flows after what they connect, then rebuild the `incoming`/
  * `outgoing` lists the ids feed. Order matters — a flow's endpoints are not
@@ -1703,6 +1982,7 @@ function finalizeScope(elements: BpmnFlowElement[], flows: BpmnSequenceFlow[]): 
 		if ("eventDefinitions" in el) assignEventDefinitionIds(el.id, el.eventDefinitions)
 	}
 	insertJoinGateways(elements, flows)
+	insertMergeGateways(elements, flows)
 	assignStableFlowIds(elements, flows)
 	recomputeIncomingOutgoing(elements, flows)
 }
@@ -1737,6 +2017,17 @@ function traceBackToSplit(
  * Use `.condition(expr)` to set a FEEL condition on the outgoing sequence
  * flow from the gateway, or `.defaultFlow()` to mark it as the default path.
  */
+/**
+ * A branch that adds nothing and connects nowhere leaves an unconditioned flow from
+ * the gateway to whatever comes next, which is never what the author meant.
+ */
+function assertBranchAddedSomething(b: BranchBuilder, name: string, gatewayId: string): void {
+	if (b._elements.length > 0 || b._connected) return
+	throw new Error(
+		`branch("${name}") on gateway "${gatewayId}" added no elements: add a node, end it with .endEvent(id), or route it with .connectTo(id)`,
+	)
+}
+
 export class BranchBuilder {
 	/** @internal */
 	readonly _elements: BpmnFlowElement[] = []
@@ -1749,6 +2040,8 @@ export class BranchBuilder {
 	private lastNodeId: string | undefined
 	private readonly gatewayId: string
 	private readonly branchName: string
+	/** False after a parallel or event-based gateway, whose outgoing flows Camunda lints as `superfluous-label` when named. */
+	private readonly nameFlow: boolean
 	private isFirstElement = true
 	private pendingCondition: string | undefined
 	private pendingLabel: string | undefined
@@ -1770,6 +2063,8 @@ export class BranchBuilder {
 	private readonly rootSignals: BpmnSignal[]
 	private readonly rootEscalations: BpmnEscalation[]
 	private readonly rootLayoutHints: Required<LayoutHints>
+	/** Absent inside a sub-process, whose nodes are not lane members. */
+	private readonly lanes: LaneState | undefined
 
 	/** @internal */
 	constructor(
@@ -1780,9 +2075,13 @@ export class BranchBuilder {
 		rootSignals: BpmnSignal[] = [],
 		rootEscalations: BpmnEscalation[] = [],
 		rootLayoutHints: Required<LayoutHints> = emptyLayoutHints(),
+		lanes?: LaneState,
+		nameFlow = true,
 	) {
+		this.lanes = lanes
 		this.gatewayId = gatewayId
 		this.branchName = branchName
+		this.nameFlow = nameFlow
 		this.lastNodeId = gatewayId
 		this.rootErrors = rootErrors
 		this.rootMessages = rootMessages
@@ -1834,9 +2133,17 @@ export class BranchBuilder {
 		if (this.pendingFlowId !== undefined) markExplicitFlowId(flow)
 	}
 
+	/** Moves the rest of this branch (and branches nested in it) to a lane; undone when the branch ends. */
+	inLane(id: string, options?: LaneOptions): this {
+		if (!this.lanes) throw new Error("inLane() is not available inside a sub-process.")
+		this.lanes.enter(id, options?.name)
+		return this
+	}
+
 	private addElement(element: BpmnFlowElement): this {
 		this._elements.push(element)
 		this._ids.add(element.id)
+		this.lanes?.record(element)
 
 		if (isLinkEvent(element, "intermediateCatchEvent")) {
 			this.isFirstElement = false
@@ -1853,7 +2160,9 @@ export class BranchBuilder {
 				id: flowId,
 				sourceRef: this.lastNodeId,
 				targetRef: element.id,
-				name: this.isFirstElement ? (this.pendingLabel ?? this.branchName) : undefined,
+				name: this.isFirstElement
+					? (this.pendingLabel ?? (this.nameFlow ? this.branchName : undefined))
+					: undefined,
 				conditionExpression:
 					this.isFirstElement && this.pendingCondition
 						? makeConditionExpression(this.pendingCondition)
@@ -1913,7 +2222,9 @@ export class BranchBuilder {
 			id: flowId,
 			sourceRef: this.lastNodeId,
 			targetRef: targetId,
-			name: this.isFirstElement ? (this.pendingLabel ?? this.branchName) : undefined,
+			name: this.isFirstElement
+				? (this.pendingLabel ?? (this.nameFlow ? this.branchName : undefined))
+				: undefined,
 			conditionExpression:
 				this.isFirstElement && this.pendingCondition
 					? makeConditionExpression(this.pendingCondition)
@@ -1948,7 +2259,7 @@ export class BranchBuilder {
 
 	/** Declares a data object. Link it to an activity via a `dataObjectReference()`. */
 	dataObject(id: string, options?: DataElementOptions): this {
-		addDataElement(this._elements, this._ids, makeDataElement(id, "dataObject", undefined, options))
+		addDataObject(this._elements, this._ids, id, options)
 		return this
 	}
 
@@ -2291,6 +2602,7 @@ export class BranchBuilder {
 		)
 		const element = makeFlowElement(id, "adHocSubProcess", {
 			name: resolved.options?.name,
+			lane: resolved.options?.lane,
 			documentation: resolved.options?.documentation,
 			executionListeners: resolved.options?.executionListeners,
 			extensionElements,
@@ -2349,8 +2661,13 @@ export class BranchBuilder {
 			this.rootSignals,
 			this.rootEscalations,
 			this.rootLayoutHints,
+			this.lanes,
+			branchesAreNamed(this._elements.find((n) => n.id === this.currentGatewayId)),
 		)
-		callback(b)
+		// Inside a sub-process there is no lane state, but the callback must still run.
+		if (this.lanes) this.lanes.scoped(() => callback(b))
+		else callback(b)
+		assertBranchAddedSomething(b, name, this.currentGatewayId)
 
 		for (const el of b._elements) {
 			if (this._ids.has(el.id)) {
@@ -2657,7 +2974,7 @@ export class SubProcessContentBuilder {
 
 	/** Declares a data object. Link it to an activity via a `dataObjectReference()`. */
 	dataObject(id: string, options?: DataElementOptions): this {
-		addDataElement(this._elements, this._ids, makeDataElement(id, "dataObject", undefined, options))
+		addDataObject(this._elements, this._ids, id, options)
 		return this
 	}
 
@@ -2728,8 +3045,11 @@ export class SubProcessContentBuilder {
 			this.rootSignals,
 			this.rootEscalations,
 			this.rootLayoutHints,
+			undefined,
+			branchesAreNamed(this._elements.find((n) => n.id === this.currentGatewayId)),
 		)
 		callback(b)
+		assertBranchAddedSomething(b, name, this.currentGatewayId)
 
 		for (const el of b._elements) {
 			if (this._ids.has(el.id)) {
@@ -2929,6 +3249,7 @@ export class SubProcessContentBuilder {
 		)
 		const element = makeFlowElement(id, "adHocSubProcess", {
 			name: resolved.options?.name,
+			lane: resolved.options?.lane,
 			documentation: resolved.options?.documentation,
 			executionListeners: resolved.options?.executionListeners,
 			extensionElements,
@@ -3008,6 +3329,7 @@ export class ProcessBuilder {
 	private _pendingSpliceFlowId: string | undefined
 	/** Flows the caller deliberately spliced, exempt from the rewiring guard. */
 	private readonly _splicedFlowIds = new Set<string>()
+	private readonly lanes = new LaneState()
 
 	constructor(processId: string) {
 		this.processId = processId
@@ -3647,8 +3969,11 @@ export class ProcessBuilder {
 			this.rootSignals,
 			this.rootEscalations,
 			this.rootLayoutHints,
+			this.lanes,
+			branchesAreNamed(this.flowElements.find((n) => n.id === this.currentGatewayId)),
 		)
-		callback(b)
+		this.lanes.scoped(() => callback(b))
+		assertBranchAddedSomething(b, name, this.currentGatewayId)
 
 		for (const el of b._elements) {
 			if (this.elementIds.has(el.id)) {
@@ -3751,6 +4076,7 @@ export class ProcessBuilder {
 		)
 		const element = makeFlowElement(id, "adHocSubProcess", {
 			name: resolved.options?.name,
+			lane: resolved.options?.lane,
 			documentation: resolved.options?.documentation,
 			executionListeners: resolved.options?.executionListeners,
 			extensionElements,
@@ -3833,11 +4159,7 @@ export class ProcessBuilder {
 
 	/** Declares a data object. Link it to an activity via a `dataObjectReference()`. */
 	dataObject(id: string, options?: DataElementOptions): this {
-		addDataElement(
-			this.flowElements,
-			this.elementIds,
-			makeDataElement(id, "dataObject", undefined, options),
-		)
+		addDataObject(this.flowElements, this.elementIds, id, options)
 		return this
 	}
 
@@ -3958,26 +4280,35 @@ export class ProcessBuilder {
 			)
 		}
 
+		const sourceFlowIds =
+			this._source === undefined ? undefined : new Set(this._sourceFlowTargets.keys())
+		const movedFlowIds = insertMergeGateways(elements, flows, sourceFlowIds)
+
 		assertElementIdsUnique(elements, this.processId)
 		this.validate(elements, flows)
-		this.assertSourceTopologyIntact(flows)
+		this.assertSourceTopologyIntact(flows, movedFlowIds)
 		// Flows the document already had keep their ids: continuing a model must
 		// not renumber the part the caller did not touch.
-		assignStableFlowIds(
-			elements,
-			flows,
-			this._source === undefined ? undefined : new Set(this._sourceFlowTargets.keys()),
-		)
+		assignStableFlowIds(elements, flows, sourceFlowIds)
 		assertExplicitFlowIdsUnique(elements, flows)
-		// A continued document keeps its untouched part byte-for-byte, ids included.
-		if (this._source === undefined) {
-			for (const el of elements) {
-				if ("eventDefinitions" in el) assignEventDefinitionIds(el.id, el.eventDefinitions)
-			}
+		// A continued document keeps its untouched part byte-for-byte, ids included,
+		// so only the elements this builder added get event definition ids there.
+		const sourceElementIds = new Set(this._source?.process.flowElements.map((el) => el.id))
+		for (const el of elements) {
+			if (sourceElementIds.has(el.id)) continue
+			if ("eventDefinitions" in el) assignEventDefinitionIds(el.id, el.eventDefinitions)
 		}
 		recomputeIncomingOutgoing(elements, flows)
 
-		if (this._source !== undefined) return this.buildOntoSource(this._source, elements, flows)
+		if (this._source !== undefined) {
+			if (this.lanes.names.size > 0) {
+				throw new Error(
+					"inLane() and { lane } build new lanes; they cannot be combined with ProcessBuilder.from(), which keeps the document's own lanes.",
+				)
+			}
+			return this.buildOntoSource(this._source, elements, flows)
+		}
+		const laneSet = this.lanes.toLaneSet(this.processId, elements, beforeCount)
 
 		const extensionElements: XmlElement[] = embeddedFormElements(elements)
 		if (this._versionTag) {
@@ -4000,6 +4331,7 @@ export class ProcessBuilder {
 			groups: [],
 			unknownAttributes: {},
 		}
+		if (laneSet) process.laneSet = laneSet
 
 		const defs: BpmnDefinitions = {
 			id: "Definitions_1",
@@ -4041,7 +4373,7 @@ export class ProcessBuilder {
 				: [],
 		}
 
-		return hoistMessageSubscriptions(
+		return finishDocument(
 			this._autoLayout ? applyAutoLayout(defs, "semantic", this.rootLayoutHints) : defs,
 		)
 	}
@@ -4115,7 +4447,10 @@ export class ProcessBuilder {
 	 * document would come back with edges the caller never touched pointing
 	 * somewhere else. Continuing a model has to leave the model alone.
 	 */
-	private assertSourceTopologyIntact(flows: BpmnSequenceFlow[]): void {
+	private assertSourceTopologyIntact(
+		flows: BpmnSequenceFlow[],
+		mergedFlowIds: ReadonlySet<string>,
+	): void {
 		if (this._source === undefined) return
 		const rewired: string[] = []
 		const byId = new Map(flows.map((flow) => [flow.id, flow]))
@@ -4127,7 +4462,7 @@ export class ProcessBuilder {
 			}
 			// A spliced flow was moved on purpose, but only its source may move:
 			// `insertAfter` inserts into a path, it does not redirect one.
-			if (this._splicedFlowIds.has(id)) {
+			if (this._splicedFlowIds.has(id) || mergedFlowIds.has(id)) {
 				if (flow.targetRef !== target) {
 					rewired.push(`${id} (spliced flow now targets ${flow.targetRef}, not ${target})`)
 				}
@@ -4170,10 +4505,28 @@ export class ProcessBuilder {
 		}
 	}
 
+	/**
+	 * Puts the nodes that follow in lane `id`, declaring it on first use (top to
+	 * bottom in first-use order); a later call may name it. Inside a `branch()`
+	 * callback it changes the lane for that branch only. Once any lane is used,
+	 * every top-level flow node needs one, or `build()` throws.
+	 *
+	 * @example
+	 * ```ts
+	 * Bpmn.createProcess("p").inLane("sales", { name: "Sales" }).startEvent("s")
+	 *   .inLane("ops").serviceTask("t", { taskType: "x" }).endEvent("e").build()
+	 * ```
+	 */
+	inLane(id: string, options?: LaneOptions): this {
+		this.lanes.enter(id, options?.name)
+		return this
+	}
+
 	private addFlowElement(element: BpmnFlowElement): void {
 		if (this.elementIds.has(element.id)) {
 			throw new Error(`Duplicate element ID "${element.id}" in process "${this.processId}"`)
 		}
+		this.lanes.record(element)
 
 		this.flowElements.push(element)
 		this.elementIds.add(element.id)
@@ -4250,6 +4603,26 @@ function mergeRootDefinitions<T extends { id: string }>(into: T[], incoming: rea
 	}
 }
 
+function remapMessageRefs(
+	elements: readonly BpmnFlowElement[],
+	to: ReadonlyMap<string, string>,
+): void {
+	for (const el of elements) {
+		if ("messageRef" in el && typeof el.messageRef === "string") {
+			el.messageRef = to.get(el.messageRef) ?? el.messageRef
+		}
+		if ("eventDefinitions" in el) {
+			for (const d of el.eventDefinitions) {
+				if (d.type === "message" && d.messageRef !== undefined) {
+					d.messageRef = to.get(d.messageRef) ?? d.messageRef
+				}
+			}
+		}
+		if ("flowElements" in el && Array.isArray(el.flowElements))
+			remapMessageRefs(el.flowElements, to)
+	}
+}
+
 /**
  * A message two pools share keeps the correlation key a later pool hoisted onto
  * its copy when the first copy has none; dropping it would leave that pool's
@@ -4270,6 +4643,22 @@ function adoptMessageSubscriptions(into: BpmnMessage[], incoming: readonly BpmnM
  * Builder for a complete BPMN definitions document containing one or more processes.
  * Use `Bpmn.createDiagram(id?)` to obtain an instance.
  */
+/** A "did you mean" suffix naming up to three existing ids close to `ref`. */
+function closeIds(ref: string, existing: string[]): string {
+	const lower = ref.toLowerCase()
+	const close = existing
+		.filter((id) => id.length >= 3)
+		.map((id) => ({ id, d: levenshtein(lower, id.toLowerCase()) }))
+		.filter(
+			({ id, d }) =>
+				d <= Math.max(2, Math.floor(ref.length / 3)) || id.includes(ref) || ref.includes(id),
+		)
+		.sort((a, b) => a.d - b.d)
+		.slice(0, 3)
+		.map(({ id }) => `"${id}"`)
+	return close.length > 0 ? `; did you mean ${close.join(", ")}?` : ""
+}
+
 export class DiagramBuilder {
 	private readonly _id: string
 	private readonly _processes: BpmnProcess[] = []
@@ -4300,6 +4689,23 @@ export class DiagramBuilder {
 		// two pools declaring the same one produce the same definition twice. The
 		// document needs it once.
 		mergeRootDefinitions(this._errors, defs.errors)
+		const remap = new Map<string, string>()
+		for (const incoming of defs.messages) {
+			const declared = this._messages.find(
+				(m) => m.id !== incoming.id && m.name !== undefined && m.name === incoming.name,
+			)
+			if (!declared) continue
+			remap.set(incoming.id, declared.id)
+			// message() ran first under another id: point this pool at that message.
+			const sub = incoming.extensionElements?.find((x) => x.name === "zeebe:subscription")
+			if (sub && !declared.extensionElements?.some((x) => x.name === "zeebe:subscription")) {
+				declared.extensionElements = [...(declared.extensionElements ?? []), sub]
+			}
+		}
+		if (remap.size > 0) {
+			for (const process of defs.processes) remapMessageRefs(process.flowElements, remap)
+			defs.messages = defs.messages.filter((m) => !remap.has(m.id))
+		}
 		mergeRootDefinitions(this._messages, defs.messages)
 		adoptMessageSubscriptions(this._messages, defs.messages)
 		return this
@@ -4339,13 +4745,36 @@ export class DiagramBuilder {
 	 * @param id - The message's element id, used verbatim.
 	 */
 	message(id: string, options: DiagramMessageOptions = {}): this {
-		const message: BpmnMessage = { id, unknownAttributes: {} }
-		if (options.name !== undefined) message.name = options.name
+		const keepOthers = (x: XmlElement) => x.name !== "zeebe:subscription"
 		const extensions = zeebeExtensionsToXmlElements(
 			options.correlationKey === undefined
 				? {}
 				: { subscription: { correlationKey: options.correlationKey } },
 		)
+		// A process that already named the message created it as Message_<name>; a
+		// second definition with that id or name would be a duplicate in the XML.
+		const existing =
+			this._messages.find((m) => m.id === id) ??
+			(options.name === undefined ? undefined : this._messages.find((m) => m.name === options.name))
+		if (existing) {
+			if (existing.id !== id) {
+				// The declared id wins, as it does when message() runs first: message
+				// flows name it, so the pools built so far are re-pointed at it.
+				const renamed = new Map([[existing.id, id]])
+				for (const process of this._processes) remapMessageRefs(process.flowElements, renamed)
+				existing.id = id
+			}
+			if (options.name !== undefined) existing.name = options.name
+			if (extensions.length > 0) {
+				existing.extensionElements = [
+					...(existing.extensionElements ?? []).filter(keepOthers),
+					...extensions,
+				]
+			}
+			return this
+		}
+		const message: BpmnMessage = { id, unknownAttributes: {} }
+		if (options.name !== undefined) message.name = options.name
 		if (extensions.length > 0) message.extensionElements = extensions
 		this._messages.push(message)
 		return this
@@ -4390,6 +4819,36 @@ export class DiagramBuilder {
 			seen.add(id)
 		}
 
+		// Ids are global in a collaboration, so the same id in two pools is a
+		// raw XSD error otherwise; name both pools and the fix.
+		const idOwner = new Map<string, string>()
+		const claimId = (id: string, processId: string): void => {
+			const first = idOwner.get(id)
+			if (first === undefined) idOwner.set(id, processId)
+			else if (first !== processId) {
+				problems.push(
+					`Duplicate element ID "${id}" in processes "${first}" and "${processId}": ids are global in a collaboration; prefix them per pool (e.g. "${processId}_${id}")`,
+				)
+			}
+		}
+		const claimScope = (scope: BpmnFlowElement[], processId: string): void => {
+			for (const element of scope) {
+				claimId(element.id, processId)
+				if ("flowElements" in element && Array.isArray(element.flowElements)) {
+					claimScope(element.flowElements, processId)
+				}
+				for (const flow of "sequenceFlows" in element && Array.isArray(element.sequenceFlows)
+					? (element.sequenceFlows as { id: string }[])
+					: []) {
+					claimId(flow.id, processId)
+				}
+			}
+		}
+		for (const process of this._processes) {
+			claimScope(process.flowElements, process.id)
+			for (const flow of process.sequenceFlows) claimId(flow.id, process.id)
+		}
+
 		const processIds = new Set(this._processes.map((process) => process.id))
 		const claimed = new Map<string, string>()
 		for (const participant of this._participants) {
@@ -4419,7 +4878,7 @@ export class DiagramBuilder {
 			] as const) {
 				if (!owningParticipant.has(ref)) {
 					problems.push(
-						`Message flow "${flow.id}" names ${role} "${ref}", which is not a participant or a flow node in one`,
+						`Message flow "${flow.id}" names ${role} "${ref}", which is not a participant or a flow node in one${closeIds(ref, [...owningParticipant.keys()])}`,
 					)
 				}
 			}
@@ -4479,7 +4938,7 @@ export class DiagramBuilder {
 	}
 
 	private buildModel(): BpmnDefinitions {
-		return hoistMessageSubscriptions({
+		return finishDocument({
 			id: this._id,
 			targetNamespace: "http://bpmn.io/schema/bpmn",
 			exporter: "@bpmnkit/core",

@@ -811,14 +811,17 @@ describe("BpmnProcessBuilder", () => {
 					.build({ validate: false }),
 			)
 
+			// The loop-back joins the start's flow in an exclusive merge before "process".
 			const loopFlow = process.sequenceFlows.find(
-				(f) => f.sourceRef === "fix" && f.targetRef === "process",
+				(f) => f.sourceRef === "fix" && f.targetRef === "process_merge",
 			)
 			expect(loopFlow).toBeDefined()
 
-			// process should have 2 incoming: from start and from fix
 			const processEl = defined(process.flowElements.find((n) => n.id === "process"))
-			expect(processEl.incoming).toHaveLength(2)
+			expect(processEl.incoming).toHaveLength(1)
+			const mergeEl = defined(process.flowElements.find((n) => n.id === "process_merge"))
+			expect(mergeEl.type).toBe("exclusiveGateway")
+			expect(mergeEl.incoming).toHaveLength(2)
 		})
 	})
 
@@ -3549,9 +3552,12 @@ describe("SubProcessContentBuilder branching", () => {
 
 		const sub = defined(defs.processes[0]?.flowElements.find((e) => e.id === "sub"))
 		if (sub.type !== "subProcess") throw new Error("expected subProcess")
-		expect(sub.sequenceFlows.some((f) => f.sourceRef === "check" && f.targetRef === "work")).toBe(
-			true,
-		)
+		expect(
+			sub.sequenceFlows.some((f) => f.sourceRef === "check" && f.targetRef === "work_merge"),
+		).toBe(true)
+		expect(
+			sub.sequenceFlows.some((f) => f.sourceRef === "work_merge" && f.targetRef === "work"),
+		).toBe(true)
 	})
 
 	it("sub-process supports businessRuleTask and sendTask", () => {

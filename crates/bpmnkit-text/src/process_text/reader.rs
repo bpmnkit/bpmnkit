@@ -723,6 +723,9 @@ impl Reader {
                 ("called", Some(v)) if is_type(element, BpmnElementType::CallActivity) => {
                     element.called_process = Some(v.to_owned());
                 }
+                ("decision", Some(v)) if is_type(element, BpmnElementType::BusinessRuleTask) => {
+                    element.decision_id = Some(v.to_owned());
+                }
                 ("key", Some(v))
                     if in_types(element, &EVENTS)
                         || is_type(element, BpmnElementType::ReceiveTask) =>

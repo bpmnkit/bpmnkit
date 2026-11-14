@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_testing" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_testing" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:message id="Message_payment_confirmed" name="payment-confirmed"/>
   <bpmn:process id="order-process" isExecutable="true">
     <bpmn:startEvent id="start">
@@ -36,7 +36,7 @@
     <bpmn:sequenceFlow id="f_start" sourceRef="start" targetRef="payment"/>
     <bpmn:sequenceFlow id="f_paid" sourceRef="payment" targetRef="paid_gw"/>
     <bpmn:sequenceFlow id="f_ship" sourceRef="paid_gw" targetRef="ship">
-      <bpmn:conditionExpression>=paid = true</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=paid = true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="f_unpaid" sourceRef="paid_gw" targetRef="end_cancel"/>
     <bpmn:sequenceFlow id="f_shipped" sourceRef="ship" targetRef="end_ok"/>

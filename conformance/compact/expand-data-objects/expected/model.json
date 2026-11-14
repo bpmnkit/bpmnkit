@@ -53,17 +53,6 @@
               "x": 7,
               "y": 160
             },
-            "bpmnElement": "do",
-            "id": "do_di",
-            "unknownAttributes": {}
-          },
-          {
-            "bounds": {
-              "height": 50,
-              "width": 36,
-              "x": 7,
-              "y": 290
-            },
             "bpmnElement": "ref",
             "id": "ref_di",
             "unknownAttributes": {}
@@ -73,7 +62,7 @@
               "height": 50,
               "width": 50,
               "x": 0,
-              "y": 420
+              "y": 290
             },
             "bpmnElement": "ds",
             "id": "ds_di",

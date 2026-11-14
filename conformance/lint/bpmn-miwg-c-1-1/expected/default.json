@@ -10,9 +10,9 @@
     "data-flow"
   ],
   "counts": {
-    "error": 7,
+    "error": 1,
     "info": 2,
-    "warning": 16
+    "warning": 10
   },
   "diagnostics": [
     {
@@ -53,156 +53,6 @@
       "processId": "handle-invoice",
       "severity": "error",
       "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "Bpmn_DataObject_approver"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"Bpmn_DataObject_approver\" (dataObject) is not reachable from any start event.",
-      "processId": "handle-invoice",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "Bpmn_DataObject_approver"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"Bpmn_DataObject_approver\" (dataObject) has no outgoing sequence flows.",
-      "processId": "handle-invoice",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "Bpmn_DataObjectReference_assignApprover"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"Bpmn_DataObjectReference_assignApprover\" (dataObjectReference) is not reachable from any start event.",
-      "plane": "handle-invoice",
-      "processId": "handle-invoice",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "Bpmn_DataObjectReference_assignApprover"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"Bpmn_DataObjectReference_assignApprover\" (dataObjectReference) has no outgoing sequence flows.",
-      "plane": "handle-invoice",
-      "processId": "handle-invoice",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "Bpmn_DataObject_WUfQYrH1EeSuDf0W70XLGw"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"Bpmn_DataObject_WUfQYrH1EeSuDf0W70XLGw\" (dataObject) is not reachable from any start event.",
-      "processId": "handle-invoice",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "Bpmn_DataObject_WUfQYrH1EeSuDf0W70XLGw"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"Bpmn_DataObject_WUfQYrH1EeSuDf0W70XLGw\" (dataObject) has no outgoing sequence flows.",
-      "processId": "handle-invoice",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "Bpmn_DataObjectReference_YGA4YLH1EeSuDf0W70XLGw"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"Bpmn_DataObjectReference_YGA4YLH1EeSuDf0W70XLGw\" (dataObjectReference) is not reachable from any start event.",
-      "plane": "handle-invoice",
-      "processId": "handle-invoice",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "Bpmn_DataObjectReference_YGA4YLH1EeSuDf0W70XLGw"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"Bpmn_DataObjectReference_YGA4YLH1EeSuDf0W70XLGw\" (dataObjectReference) has no outgoing sequence flows.",
-      "plane": "handle-invoice",
-      "processId": "handle-invoice",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "Bpmn_DataObject_aT_L0rH1EeSuDf0W70XLGw"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"Bpmn_DataObject_aT_L0rH1EeSuDf0W70XLGw\" (dataObject) is not reachable from any start event.",
-      "processId": "handle-invoice",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "Bpmn_DataObject_aT_L0rH1EeSuDf0W70XLGw"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"Bpmn_DataObject_aT_L0rH1EeSuDf0W70XLGw\" (dataObject) has no outgoing sequence flows.",
-      "processId": "handle-invoice",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "Bpmn_DataObjectReference_cdsDQLH1EeSuDf0W70XLGw"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"Bpmn_DataObjectReference_cdsDQLH1EeSuDf0W70XLGw\" (dataObjectReference) is not reachable from any start event.",
-      "plane": "handle-invoice",
-      "processId": "handle-invoice",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "Bpmn_DataObjectReference_cdsDQLH1EeSuDf0W70XLGw"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"Bpmn_DataObjectReference_cdsDQLH1EeSuDf0W70XLGw\" (dataObjectReference) has no outgoing sequence flows.",
-      "plane": "handle-invoice",
-      "processId": "handle-invoice",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
     },
     {
       "category": "pattern",
@@ -339,5 +189,5 @@
   "platform": {
     "id": "none"
   },
-  "total": 25
+  "total": 13
 }

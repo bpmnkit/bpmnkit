@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_parity" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_parity" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:process id="proc" isExecutable="true">
     <bpmn:startEvent id="start" name="Start">
       <bpmn:outgoing>f_start</bpmn:outgoing>
@@ -126,7 +126,7 @@
       <bpmn:sequenceFlow id="sf6" sourceRef="sub_join_task" targetRef="sub_mixed"/>
       <bpmn:sequenceFlow id="sf7" sourceRef="sub_orphan" targetRef="sub_mixed"/>
       <bpmn:sequenceFlow id="sf8" sourceRef="sub_mixed" targetRef="sub_redundant" name="ok">
-        <bpmn:conditionExpression>= ok</bpmn:conditionExpression>
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= ok</bpmn:conditionExpression>
       </bpmn:sequenceFlow>
       <bpmn:sequenceFlow id="sf9" sourceRef="sub_mixed" targetRef="sub_dead"/>
       <bpmn:sequenceFlow id="sf10" sourceRef="sub_redundant" targetRef="sub_end"/>
@@ -159,7 +159,7 @@
     <bpmn:dataStoreReference id="store_ref"/>
     <bpmn:sequenceFlow id="f_start" sourceRef="start" targetRef="gw_split"/>
     <bpmn:sequenceFlow id="f_cond" sourceRef="gw_split" targetRef="sub">
-      <bpmn:conditionExpression>= a</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= a</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="f_default" sourceRef="gw_split" targetRef="gw_xor" name="Otherwise"/>
     <bpmn:sequenceFlow id="f_plain" sourceRef="gw_split" targetRef="task_blank"/>
@@ -279,14 +279,11 @@
       <bpmndi:BPMNShape id="adhoc_di" bpmnElement="adhoc" isExpanded="true">
         <dc:Bounds x="0" y="2354" width="340" height="208"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="data_obj_di" bpmnElement="data_obj">
+      <bpmndi:BPMNShape id="data_ref_di" bpmnElement="data_ref">
         <dc:Bounds x="152" y="2642" width="36" height="50"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="data_ref_di" bpmnElement="data_ref">
-        <dc:Bounds x="152" y="2772" width="36" height="50"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="store_ref_di" bpmnElement="store_ref">
-        <dc:Bounds x="145" y="2902" width="50" height="50"/>
+        <dc:Bounds x="145" y="2772" width="50" height="50"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sub_start_di" bpmnElement="sub_start">
         <dc:Bounds x="672" y="526" width="36" height="36"/>

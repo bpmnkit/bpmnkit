@@ -817,6 +817,8 @@ class Reader {
 			else if (key === "job" && value) element.jobType = value
 			else if (key === "called" && value && element.type === "callActivity")
 				element.calledProcess = value
+			else if (key === "decision" && value && element.type === "businessRuleTask")
+				element.decisionId = value
 			else if (
 				key === "key" &&
 				value &&
@@ -883,8 +885,37 @@ class Reader {
 				element.timerDuration = duration(value)
 			} else if (key === "result" && value && ACTIVITIES.has(element.type)) {
 				element.resultVariable = value
-			} else
-				this.problems.push({ line: n, message: `unknown attribute "${attr}" on "${id}"; ignored` })
+			} else if (
+				key === "retries" &&
+				value &&
+				(element.type === "serviceTask" || element.type === "sendTask")
+			) {
+				element.retries = value
+			} else if (
+				key?.startsWith("header.") &&
+				key.length > 7 &&
+				value &&
+				ACTIVITIES.has(element.type)
+			) {
+				element.taskHeaders = { ...element.taskHeaders, [key.slice(7)]: value }
+			} else if (key !== undefined && value && USER_ATTRS.has(key) && element.type === "userTask") {
+				const field = USER_ATTRS.get(key) as USERFIELD
+				// `;` separates list items: `,` already separates attributes
+				if (field === "priority") element.priority = /^\d+$/.test(value) ? Number(value) : value
+				else element[field] = value.replace(/;/g, ",")
+			} else if (key !== undefined && value && (key === "retries" || USER_ATTRS.has(key))) {
+				this.problems.push({
+					line: n,
+					message: `${key}= takes a ${key === "retries" ? "service or send" : "user"} task; ignored on "${id}"`,
+				})
+			} else {
+				const typo = /^([A-Za-z][\w.-]*)=+(.+)$/.exec(attr)
+				const hint = attr.includes("==") && typo ? `; did you mean ${typo[1]}=${typo[2]}` : ""
+				this.problems.push({
+					line: n,
+					message: `unknown attribute "${attr}" on "${id}"${hint}; ignored`,
+				})
+			}
 		}
 		if (feel !== undefined) {
 			// `calc[task Count open issues | feel=…]`: a step that evaluates FEEL is a script task
@@ -947,6 +978,16 @@ class Reader {
 	}
 }
 
+type USERFIELD = "assignee" | "candidateGroups" | "candidateUsers" | "dueDate" | "priority"
+/** Text attribute → user task field (assignment, schedule, priority). */
+const USER_ATTRS = new Map<string, USERFIELD>([
+	["assignee", "assignee"],
+	["groups", "candidateGroups"],
+	["users", "candidateUsers"],
+	["due", "dueDate"],
+	["priority", "priority"],
+])
+
 /** "Every day" is a schedule, not a list. */
 const TIME_WORDS = new Set([
 	"second",
@@ -993,6 +1034,17 @@ const UNITS: Record<string, string> = { s: "S", m: "M", h: "H", d: "D", w: "W" }
  * An ISO 8601 duration from what models write: `PT5M` as it is, `5m`, `5 min`,
  * `5 minutes`, `2 hours` or `1 day`, also inside a name ("Wait 5 minutes").
  */
+/** A readable decision id from a task name: `Assess risk` → `assess-risk`. */
+export function decisionIdFrom(name: string): string | undefined {
+	const id = name
+		.trim()
+		.toLowerCase()
+		.replace(/[^a-z0-9]+/g, "-")
+		.replace(/^-+|-+$/g, "")
+	if (id === "") return undefined
+	return /^[a-z]/.test(id) ? id : `decision-${id}`
+}
+
 /** The trigger an attribute names (`msg=` a message): {@link parseProcessText} reads it as the event's. */
 const NAMED_TRIGGERS = new Map([
 	["msg", "message"],
@@ -1890,13 +1942,16 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
 		// A caught error or escalation without a code catches every one
 		if (el.eventType === "error" && throws) el.errorCode ??= el.id
 		if (el.eventType === "escalation" && throws) el.escalationCode ??= el.id
-		// A DMN task needs a decision to deploy; the id stands in, as it does for a job type.
+		// A DMN task needs a decision to deploy. Its name reads better as the DMN's id than an
+		// element id does, and the DMN file is written to match it.
 		if (
 			node.element.type === "businessRuleTask" &&
 			node.element.jobType === undefined &&
 			node.element.decisionId === undefined
 		) {
-			node.element.decisionId = node.element.id
+			const decision = decisionIdFrom(node.element.name ?? "") ?? node.element.id
+			node.element.decisionId = decision
+			fixes.push(`"${node.element.id}" calls decision "${decision}"; set decision= to call another`)
 		}
 	}
 
@@ -2037,7 +2092,7 @@ function assemble(reader: Reader, final: boolean): ProcessTextResult {
  *   gateway's question; flows out of anything else carry no condition or label;
  * - an unnamed event, task or decision is named from its id;
  * - a service or send task without `job=` uses its id as its job type, and a
- *   rule task its id as its decision id.
+ *   rule task its name, kebab-cased, as its decision id (`decision=` names another).
  *
  * @example
  * ```typescript

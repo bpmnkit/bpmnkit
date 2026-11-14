@@ -1,0 +1,21 @@
+# Order fulfilment
+[annotation Orders ship within two days]
+## Shop | id=shop
+### Sales
+[start:message Order placed] > [service Check stock] > [send Request payment]
+Request payment > [catch Payment received | key=orderId] > [sub Pack order]
+Pack order {
+  [start Packing started] > [user Pick item | each=items] > [user Box items] > [end Packed]
+}
+### Warehouse
+Pack order > [user Ship order] > [end Order shipped]
+Check stock ..> [store Stock DB]
+Ship order ..> [object Packing slip]
+[annotation Fragile items get extra padding] ..> Pack order
+## Restock | id=restock
+[start:condition Stock low | cond=stock < 10] > [service Reorder stock] > [end Stock reordered]
+## Bank | blackbox
+## Customer | blackbox
+Customer ~> Order placed: Order
+Request payment ~> Bank: Payment request
+Bank ~> Payment received: Payment confirmed

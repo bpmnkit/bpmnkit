@@ -516,6 +516,25 @@ function applyLanes(
 	for (const leaf of leaves) {
 		for (const ref of leaf.refs) laneOf.set(ref, leaf)
 	}
+	// A data object or store is never a lane member (BPMN lanes hold flow nodes), so it
+	// follows the first laned activity wired to it; otherwise it lands below the
+	// lanes, outside the pool.
+	const dataHome = new Map<string, string>()
+	const follow = (ref: string, lane: LaneNode, activity: string): void => {
+		if (laneOf.has(ref)) return
+		laneOf.set(ref, lane)
+		dataHome.set(ref, activity)
+	}
+	for (const node of graph.nodes) {
+		const lane = laneOf.get(node.id)
+		if (!lane) continue
+		for (const a of node.dataInputAssociations ?? []) {
+			for (const ref of a.sourceRefs) follow(ref, lane, node.id)
+		}
+		for (const a of node.dataOutputAssociations ?? []) {
+			if (a.targetRef !== undefined) follow(a.targetRef, lane, node.id)
+		}
+	}
 
 	const members = new Map<string, string[]>()
 	for (const leaf of leaves) members.set(leaf.id, [])
@@ -526,6 +545,8 @@ function applyLanes(
 		if (list) list.push(node.id)
 		else orphans.push(node.id)
 	}
+
+	placeDataUnderActivities(members, dataHome, bounds)
 
 	let minX = Number.POSITIVE_INFINITY
 	let maxX = Number.NEGATIVE_INFINITY
@@ -586,6 +607,34 @@ function applyLanes(
 
 	// Outermost first, so a parent lane is drawn behind the lanes it contains.
 	return slots.sort((a, b) => b.bounds.height - a.bounds.height || a.bounds.y - b.bounds.y)
+}
+
+/**
+ * Puts each lane's data objects and stores in a row under the lane's flow nodes,
+ * each centred below the activity it is wired to, so the lane grows by one row
+ * instead of stretching to wherever the data was ranked.
+ */
+function placeDataUnderActivities(
+	members: Map<string, string[]>,
+	dataHome: Map<string, string>,
+	bounds: Map<string, Bounds>,
+): void {
+	for (const ids of members.values()) {
+		const flow = ids.filter((id) => !dataHome.has(id)).map((id) => bounds.get(id))
+		const homeX = (id: string) => bounds.get(dataHome.get(id) ?? "")?.x ?? 0
+		const data = ids.filter((id) => dataHome.has(id)).sort((a, b) => homeX(a) - homeX(b))
+		if (data.length === 0 || flow.length === 0) continue
+		const bottom = Math.max(...flow.map((b) => (b ? b.y + b.height : 0)))
+		let right = Number.NEGATIVE_INFINITY
+		for (const id of data) {
+			const b = bounds.get(id)
+			const home = bounds.get(dataHome.get(id) ?? "")
+			if (!b || !home) continue
+			b.x = Math.max(home.x + home.width / 2 - b.width / 2, right + H_GAP / 2)
+			b.y = bottom + V_GAP / 2
+			right = b.x + b.width
+		}
+	}
 }
 
 interface LaneNode {

@@ -1,6 +1,7 @@
 import { associationWaypoints, packAnnotations } from "../layout/annotations.js"
 import type { MessageLink } from "../layout/collaboration/alignment.js"
 import { alignPools } from "../layout/collaboration/alignment.js"
+import { placeMessageFlowLabels } from "../layout/collaboration/message-labels.js"
 import type { PoolLink } from "../layout/collaboration/ordering.js"
 import { orderPools } from "../layout/collaboration/ordering.js"
 import { collapseCollinear } from "../layout/grid/grid-router.js"
@@ -26,6 +27,39 @@ import type {
 const POOL_HEADER = 30
 const LANE_HEADER = 30
 const PADDING = 20
+
+/**
+ * Lane bands grown to hold the annotations the packer put above or below them:
+ * the pool takes the bands' height, so an annotation outside them would hang
+ * over the pool's edge. The outermost band on that side grows.
+ */
+function stretchBands(
+	bands: Array<{ id: string; bounds: Bounds }>,
+	annotations: Iterable<Bounds>,
+): Array<{ id: string; bounds: Bounds }> {
+	const out = bands.map((b) => ({ ...b, bounds: { ...b.bounds } }))
+	if (out.length === 0) return out
+	let top = Math.min(...out.map((b) => b.bounds.y))
+	let bottom = Math.max(...out.map((b) => b.bounds.y + b.bounds.height))
+	for (const a of annotations) {
+		const high = a.y - PADDING
+		const low = a.y + a.height + PADDING
+		if (low > bottom) {
+			for (const b of out)
+				if (b.bounds.y + b.bounds.height === bottom) b.bounds.height += low - bottom
+			bottom = low
+		}
+		if (high < top) {
+			for (const b of out)
+				if (b.bounds.y === top) {
+					b.bounds.height += top - high
+					b.bounds.y = high
+				}
+			top = high
+		}
+	}
+	return out
+}
 const POOL_GAP = 30
 
 type LocalBounds = { x: number; y: number; width: number; height: number }
@@ -218,6 +252,19 @@ function buildLaneShapes(
 	})
 }
 
+/** Data associations drawn as association edges; only those with an id can have a DI edge. */
+function dataAssociations(el: BpmnFlowElement, out: BpmnProcess["associations"]): void {
+	for (const a of el.dataInputAssociations ?? []) {
+		const source = a.sourceRefs[0]
+		if (a.id !== undefined && source !== undefined)
+			out.push({ id: a.id, sourceRef: source, targetRef: el.id, unknownAttributes: {} })
+	}
+	for (const a of el.dataOutputAssociations ?? []) {
+		if (a.id !== undefined && a.targetRef !== undefined)
+			out.push({ id: a.id, sourceRef: el.id, targetRef: a.targetRef, unknownAttributes: {} })
+	}
+}
+
 /**
  * A view of `process` whose annotations and associations include those declared
  * inside (nested) sub-processes. The builder stores them on the sub-process
@@ -234,6 +281,7 @@ function withNestedAnnotations(process: BpmnProcess): BpmnProcess {
 				textAnnotations?: BpmnProcess["textAnnotations"]
 				associations?: BpmnProcess["associations"]
 			}
+			dataAssociations(el, associations)
 			if (scope.textAnnotations) textAnnotations.push(...scope.textAnnotations)
 			if (scope.associations) associations.push(...scope.associations)
 			if (scope.flowElements) walk(scope.flowElements)
@@ -851,6 +899,7 @@ export function applyAutoLayout(
 		const order = orderPools(
 			participantPools.length,
 			poolLinks(collab, poolOwners(defs, collab), (id) => depths.get(id)),
+			new Set(participantPools.flatMap((pool, i) => (pool.process ? [] : [i]))),
 		)
 		for (const index of order) {
 			const pool = participantPools[index]
@@ -948,7 +997,8 @@ export function applyAutoLayout(
 		// Engine lane bands already stack the content vertically, so the pool
 		// aligns to the band space rather than to the content bounding box —
 		// otherwise the shapes drift out of the lanes drawn around them.
-		const laneBands = hasLanes ? engineLanes : undefined
+		const laneBands =
+			hasLanes && engineLanes ? stretchBands(engineLanes, annBounds.values()) : undefined
 		// Bands arrive outermost first and nested lanes overlap their parent, so the
 		// pool spans their extent rather than the first band or the sum of heights.
 		const bandTop = laneBands ? Math.min(...laneBands.map((lane) => lane.bounds.y)) : 0
@@ -1164,6 +1214,24 @@ export function applyAutoLayout(
 
 	const repair = routeRepair(defs)
 	repair(allShapes, allEdges)
+	if (collab && collab.messageFlows.length > 0) {
+		const pools = new Set(collab.participants.map((p) => p.id))
+		placeMessageFlowLabels({
+			shapes: allShapes,
+			edges: allEdges,
+			names: new Map(
+				collab.messageFlows.flatMap((f) =>
+					f.name?.trim() ? [[f.id, f.name.trim()] as const] : [],
+				),
+			),
+			containers: new Set([
+				...pools,
+				...defs.processes.flatMap((p) => (p.laneSet?.lanes ?? []).map((lane) => lane.id)),
+				...allShapes.filter((s) => s.isExpanded === true).map((s) => s.bpmnElement),
+			]),
+			pools,
+		})
+	}
 	for (const plane of rootPlanes) repair(plane.shapes, plane.edges)
 
 	const planeBpmnElement = collab?.id ?? defs.processes[0]?.id ?? "plane"
