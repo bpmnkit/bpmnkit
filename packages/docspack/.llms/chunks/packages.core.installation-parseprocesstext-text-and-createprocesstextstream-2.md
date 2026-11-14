@@ -6,6 +6,28 @@ h > w[catch Paid | msg=payment-received key=orderId] > n[throw:message Notify | 
 failed[boundary:error Failed | on=h error=PAYMENT_FAILED] > f[end:error Give up | error=GIVEN_UP]
 ```
 
+**Lanes and pools.** Three line kinds, written after the paths:
+
+```text
+lane sales[Sales team]: start, review, ok    the lane a role works in; one line per role
+pool bank[Bank]                              another party, drawn as an empty pool
+msg pay >(Payment) bank                      a message to that party; msg bank > paid one from it
+```
+
+The parser writes them as the compact `lanes`, `participants` and `messageFlows`, and `expand`
+draws the process in its own pool with its lanes. A node no lane lists — a join or end event the
+parser added, a boundary event, a node the model forgot — goes into its predecessor's lane (a
+boundary into its host's), else its successor's, else the first lane, and is listed in `fixes`.
+A node listed in two lanes stays in the later one; a member that is not a top-level node is left
+out. A message has one end in the process and the other on a `pool` line: a message between two
+pools, between two nodes of the process, out of a start or catch event, into an end or throw
+event, or touching a gateway is left out with a problem. Its label is kept as written, colons
+included. A lane without a bracket, `lane back_office: …`, is named from its id; `lane back_office[]: …`
+has no name. A pool needs its bracket (`pool tax_office[Tax office]`, or `pool tax_office[]` for no
+name), so two words of prose such as "pool party" stay prose. The writer writes an unnamed lane or
+pool with `[]`, so it reads back unnamed. Ids such as `lane_check[…]` still start paths: the keyword
+needs a space after it.
+
 ```typescript
 import { expand, Bpmn, parseProcessText, PROCESS_TEXT_GUIDE } from "@bpmnkit/core";
 

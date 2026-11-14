@@ -29,6 +29,10 @@ use bpmnkit_bpmn::feel_condition::to_feel_condition;
 use bpmnkit_bpmn::js::js_number_to_string;
 use bpmnkit_bpmn::rest_connector::rest_connector_task_type;
 use bpmnkit_bpmn::stable_ids::{assign_event_definition_ids, root_definition_id};
+use bpmnkit_bpmn::swimlanes::{
+    assign_lane, build_lane_set, collaboration_problems, lane_for_new_node, lane_of,
+    pool_laned_processes, LaneSpec, DATA_ELEMENT_TYPES,
+};
 use bpmnkit_bpmn::zeebe::make_conditional_definition;
 use bpmnkit_bpmn::{
     Attrs, BpmnActivity, BpmnAdHocSubProcess, BpmnAssociation, BpmnBoundaryEvent, BpmnBounds,
@@ -40,10 +44,11 @@ use bpmnkit_bpmn::{
     BpmnSequenceFlow, BpmnSignal, BpmnStartEvent, BpmnSubProcess, BpmnTextAnnotation,
     BpmnTransaction, BpmnWaypoint, XmlElement,
 };
+use bpmnkit_bpmn::{BpmnCollaboration, BpmnMessageFlow, BpmnParticipant};
 use bpmnkit_compat::compat::normalize_camunda_version;
 use bpmnkit_compat::zeebe::{assert_deployable, AssertOptions};
 use bpmnkit_layout::annotations::pack_annotations;
-use bpmnkit_layout::auto_layout::add_annotation_shapes;
+use bpmnkit_layout::auto_layout::{add_annotation_shapes, apply_auto_layout_owned};
 use bpmnkit_layout::{layout_process, LayoutEngine};
 use indexmap::{IndexMap, IndexSet};
 use std::borrow::Cow;
@@ -186,8 +191,9 @@ impl Problems {
     }
 }
 
-/// TS's `compactProblems`: every reason the diagram cannot become valid BPMN.
-fn compact_problems(compact: &CompactDiagram) -> Vec<String> {
+/// TS's `compactProblems`: every reason the diagram cannot become valid BPMN, and every id
+/// the diagram claims.
+fn compact_problems(compact: &CompactDiagram) -> (Vec<String>, IndexSet<String>) {
     let mut state = Problems::default();
     for process in &compact.processes {
         state.claim(&process.id, "process");
@@ -204,8 +210,90 @@ fn compact_problems(compact: &CompactDiagram) -> Vec<String> {
                 ));
             }
         }
+        // Claims push their duplicates straight away, ahead of the lane findings.
+        let lane_problems = compact_lane_problems(process, &mut state);
+        state.problems.extend(lane_problems);
     }
-    state.problems
+    for participant in compact.participants.iter().flatten() {
+        state.claim(&participant.id, "participant");
+    }
+    for flow in compact.message_flows.iter().flatten() {
+        state.claim(&flow.id, "message flow");
+    }
+    (state.problems, state.seen)
+}
+
+/// TS's `compactLaneProblems`: members on a lane with child lanes, a member that is not a
+/// top-level flow node of this process, and a node listed in two lanes. Lane ids are
+/// claimed through `state`. A node in no lane is not a problem; `expand` places it.
+fn compact_lane_problems(process: &CompactProcess, state: &mut Problems) -> Vec<String> {
+    fn visit(
+        process: &CompactProcess,
+        lanes: &[CompactLane],
+        state: &mut Problems,
+        lane_of_member: &mut IndexMap<String, String>,
+        problems: &mut Vec<String>,
+    ) {
+        for lane in lanes {
+            state.claim(&lane.id, "lane");
+            let children = lane.lanes.as_deref().unwrap_or_default();
+            let members = lane.members.as_deref().unwrap_or_default();
+            if !children.is_empty() && !members.is_empty() {
+                problems.push(format!(
+                    "lane \"{}\" has child lanes and members; members go on its leaf lanes",
+                    lane.id
+                ));
+            }
+            for member in members {
+                let element = process.elements.iter().find(|e| &e.id == member);
+                if let Some(problem) =
+                    member_problem(process, &lane.id, member, element, lane_of_member)
+                {
+                    problems.push(problem);
+                }
+            }
+            visit(process, children, state, lane_of_member, problems);
+        }
+    }
+    let mut problems = Vec::new();
+    visit(
+        process,
+        process.lanes.as_deref().unwrap_or_default(),
+        state,
+        &mut IndexMap::new(),
+        &mut problems,
+    );
+    problems
+}
+
+/// TS's `memberProblem`: why `member` cannot sit in lane `lane_id`, or `None`; records the
+/// lane of a valid member.
+fn member_problem(
+    process: &CompactProcess,
+    lane_id: &str,
+    member: &str,
+    element: Option<&CompactElement>,
+    lane_of_member: &mut IndexMap<String, String>,
+) -> Option<String> {
+    let Some(element) = element else {
+        return Some(format!(
+            "lane \"{lane_id}\" lists \"{member}\", which is not a top-level flow node of process \"{}\"",
+            process.id
+        ));
+    };
+    if DATA_ELEMENT_TYPES.contains(&element.type_.as_str()) {
+        return Some(format!(
+            "lane \"{lane_id}\" lists \"{member}\", a {}; lanes hold flow nodes only",
+            element.type_
+        ));
+    }
+    if let Some(other) = lane_of_member.get(member).filter(|other| *other != lane_id) {
+        return Some(format!(
+            "\"{member}\" is in lanes \"{other}\" and \"{lane_id}\"; a node belongs to one lane"
+        ));
+    }
+    lane_of_member.insert(member.to_owned(), lane_id.to_owned());
+    None
 }
 
 /// TS's `makeEventDef`: an empty definition of the named type, or `None`.
@@ -941,8 +1029,9 @@ fn build_diagram(process_id: &str, process: &BpmnProcess) -> BpmnDiagram {
 /// TS's `expandProcess`.
 fn expand_process(
     compact: &CompactProcess,
+    is_executable: bool,
     roots: &mut CompactRoots,
-) -> Result<(BpmnProcess, BpmnDiagram), TextError> {
+) -> Result<BpmnProcess, TextError> {
     let (incoming, outgoing) = flow_maps(&compact.flows);
     let defaults = default_flows(&compact.elements, &compact.flows)?;
     let mut flow_elements = Vec::with_capacity(compact.elements.len());
@@ -983,7 +1072,7 @@ fn expand_process(
         id: compact.id.clone(),
         name: compact.name.clone(),
         documentation: compact.documentation.clone(),
-        is_executable: Some(true),
+        is_executable: Some(is_executable),
         contents: BpmnProcessContents {
             flow_elements,
             sequence_flows,
@@ -993,8 +1082,188 @@ fn expand_process(
         },
         ..BpmnProcess::default()
     };
-    let diagram = build_diagram(&compact.id, &process);
-    Ok((process, diagram))
+    Ok(process)
+}
+
+/// TS's `isPooled`: true when the compact describes pools or lanes, which switches
+/// `expand` to the collaboration path.
+pub fn is_pooled(compact: &CompactDiagram) -> bool {
+    compact.participants.as_ref().is_some_and(|p| !p.is_empty())
+        || compact
+            .message_flows
+            .as_ref()
+            .is_some_and(|f| !f.is_empty())
+        || compact
+            .processes
+            .iter()
+            .any(|process| process.lanes.as_ref().is_some_and(|l| !l.is_empty()))
+}
+
+/// TS's `executability`: `isExecutable` per process. Absent means executable, except that
+/// in a pooled diagram only the first process without the key gets the default.
+pub fn executability(compact: &CompactDiagram, pooled: bool) -> Vec<bool> {
+    let mut default_taken = false;
+    compact
+        .processes
+        .iter()
+        .map(|process| match process.executable {
+            Some(executable) => executable,
+            None if !pooled => true,
+            None => !std::mem::replace(&mut default_taken, true),
+        })
+        .collect()
+}
+
+fn lane_spec(lane: &CompactLane) -> LaneSpec {
+    LaneSpec {
+        id: lane.id.clone(),
+        name: lane.name.clone(),
+        lanes: lane.lanes.iter().flatten().map(lane_spec).collect(),
+    }
+}
+
+/// TS's `withLanes`: `process` with the lane set `lanes` describes. Members come from leaf
+/// lanes only; a node no lane lists goes in the lane [`lane_for_new_node`] picks for it.
+pub fn with_lanes(
+    process: BpmnProcess,
+    lanes: Option<&[CompactLane]>,
+) -> Result<BpmnProcess, String> {
+    let Some(lanes) = lanes.filter(|lanes| !lanes.is_empty()) else {
+        return Ok(process);
+    };
+    fn collect(children: &[CompactLane], leaf_of: &mut IndexMap<String, String>) {
+        for lane in children {
+            match lane.lanes.as_deref() {
+                Some(inner) if !inner.is_empty() => collect(inner, leaf_of),
+                _ => {
+                    for member in lane.members.iter().flatten() {
+                        leaf_of.insert(member.clone(), lane.id.clone());
+                    }
+                }
+            }
+        }
+    }
+    let mut leaf_of = IndexMap::new();
+    collect(lanes, &mut leaf_of);
+    let specs: Vec<LaneSpec> = lanes.iter().map(lane_spec).collect();
+    let lane_set = build_lane_set(&process, &specs, &leaf_of)?;
+    let ids: Vec<String> = process
+        .contents
+        .flow_elements
+        .iter()
+        .map(|element| element.base().id.clone())
+        .collect();
+    let laned = BpmnProcess {
+        lane_set: Some(lane_set),
+        ..process
+    };
+    fill_lanes(laned, &ids)
+}
+
+/// TS's `fillLanes`: puts each of `node_ids` that is a top-level flow node of laned
+/// `process` and in no lane yet into the lane [`lane_for_new_node`] picks, in order.
+pub fn fill_lanes(process: BpmnProcess, node_ids: &[String]) -> Result<BpmnProcess, String> {
+    if process.lane_set.is_none() {
+        return Ok(process);
+    }
+    let mut laned = process;
+    // One pass in the order given: an unlisted node whose only neighbours are later
+    // unlisted nodes lands in the first leaf. Models leave single nodes unlisted, not
+    // whole chains; a chain would need passes until nothing moves.
+    for id in node_ids {
+        let flow_node = laned
+            .contents
+            .flow_elements
+            .iter()
+            .find(|e| &e.base().id == id)
+            .is_some_and(|e| !DATA_ELEMENT_TYPES.contains(&e.type_name()));
+        if !flow_node || lane_of(&laned, id).is_some() {
+            continue;
+        }
+        if let Some(lane_id) = lane_for_new_node(&laned, id).map(|lane| lane.id.clone()) {
+            laned = assign_lane(&laned, id, &lane_id)?;
+        }
+    }
+    Ok(laned)
+}
+
+/// TS's `expandCollaborations`: the first collaboration `compact` describes, under the
+/// first free `Collaboration_<n>` id. Empty without participants or message flows.
+pub fn expand_collaborations(
+    compact: &CompactDiagram,
+    ids: &IndexSet<String>,
+) -> Vec<BpmnCollaboration> {
+    let participants = compact.participants.as_deref().unwrap_or_default();
+    let message_flows = compact.message_flows.as_deref().unwrap_or_default();
+    if participants.is_empty() && message_flows.is_empty() {
+        return Vec::new();
+    }
+    // Bounded: at most ids.len() candidates can be taken.
+    let mut n = 1;
+    while ids.contains(&format!("Collaboration_{n}")) && n <= ids.len() {
+        n += 1;
+    }
+    vec![BpmnCollaboration {
+        id: format!("Collaboration_{n}"),
+        participants: participants
+            .iter()
+            .map(|participant| BpmnParticipant {
+                id: participant.id.clone(),
+                name: participant.name.clone(),
+                process_ref: participant.process_id.clone(),
+                ..BpmnParticipant::default()
+            })
+            .collect(),
+        message_flows: message_flows
+            .iter()
+            .map(|flow| BpmnMessageFlow {
+                id: flow.id.clone(),
+                name: flow.name.clone(),
+                source_ref: flow.source.clone(),
+                target_ref: flow.target.clone(),
+                ..BpmnMessageFlow::default()
+            })
+            .collect(),
+        ..BpmnCollaboration::default()
+    }]
+}
+
+/// TS's `expandPools`: `defs` with the pools and lanes `compact` describes, laid out on one
+/// collaboration plane.
+fn expand_pools(
+    compact: &CompactDiagram,
+    mut defs: BpmnDefinitions,
+    ids: &IndexSet<String>,
+) -> Result<BpmnDefinitions, TextError> {
+    defs.collaborations = expand_collaborations(compact, ids);
+    let processes = std::mem::take(&mut defs.processes);
+    defs.processes = processes
+        .into_iter()
+        .enumerate()
+        .map(|(index, process)| {
+            let lanes = compact
+                .processes
+                .get(index)
+                .and_then(|p| p.lanes.as_deref());
+            with_lanes(process, lanes)
+        })
+        .collect::<Result<_, _>>()
+        .map_err(TextError::new)?;
+    let with_pools = pool_laned_processes(defs);
+    // Checked on the built model: a message flow's ends and a pool's process can only be
+    // judged once every pool, synthesized ones included, exists.
+    let pool_problems = collaboration_problems(&with_pools);
+    if !pool_problems.is_empty() {
+        return Err(TextError::new(format!(
+            "expand: invalid CompactDiagram \u{2014} {}",
+            pool_problems.join("; ")
+        )));
+    }
+    Ok(apply_auto_layout_owned(
+        with_pools,
+        LayoutEngine::Semantic,
+        None,
+    ))
 }
 
 /// TS's `ExpandOptions`. The default gates: a compact diagram is written for Camunda 8.
@@ -1038,7 +1307,7 @@ pub fn expand(
     compact: &CompactDiagram,
     options: &ExpandOptions,
 ) -> Result<BpmnDefinitions, TextError> {
-    let problems = compact_problems(compact);
+    let (problems, ids) = compact_problems(compact);
     if !problems.is_empty() {
         return Err(TextError::new(format!(
             "expand: invalid CompactDiagram \u{2014} {}",
@@ -1046,12 +1315,15 @@ pub fn expand(
         )));
     }
     let mut roots = CompactRoots::default();
+    let pooled = is_pooled(compact);
+    let executable = executability(compact, pooled);
     let mut processes = Vec::new();
-    let mut diagrams = Vec::new();
-    for cp in &compact.processes {
-        let (process, diagram) = expand_process(cp, &mut roots)?;
-        processes.push(process);
-        diagrams.push(diagram);
+    for (index, cp) in compact.processes.iter().enumerate() {
+        processes.push(expand_process(
+            cp,
+            executable.get(index).copied().unwrap_or(true),
+            &mut roots,
+        )?);
     }
     let platform = compact.execution_platform_version.as_ref();
     // Gated output is Camunda 8 output: marking it so makes `export_bpmn`'s "auto" agree.
@@ -1093,8 +1365,20 @@ pub fn expand(
         messages: roots.messages,
         signals: roots.signals,
         processes,
-        diagrams,
         ..BpmnDefinitions::default()
+    };
+    let definitions = if pooled {
+        expand_pools(compact, definitions, &ids)?
+    } else {
+        let diagrams = definitions
+            .processes
+            .iter()
+            .map(|process| build_diagram(&process.id, process))
+            .collect();
+        BpmnDefinitions {
+            diagrams,
+            ..definitions
+        }
     };
     if !options.validate {
         return Ok(definitions);

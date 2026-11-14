@@ -60,7 +60,7 @@ initEditorHud(editor, {
 
 // Sidebar with Properties + AI tabs
 const dock = createSideDock(document.body)
-editor.loadXML(bpmnXml)
+editor.load(bpmnXml)
 ```
 
 ## API Reference

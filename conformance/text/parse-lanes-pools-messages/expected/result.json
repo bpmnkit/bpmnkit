@@ -1,0 +1,138 @@
+{
+  "connectors": [],
+  "diagram": {
+    "id": "Definitions_1",
+    "messageFlows": [
+      {
+        "id": "MessageFlow_1",
+        "name": "Payment request: invoice",
+        "source": "pay",
+        "target": "bank"
+      },
+      {
+        "id": "MessageFlow_2",
+        "source": "bank",
+        "target": "wait"
+      }
+    ],
+    "participants": [
+      {
+        "id": "bank",
+        "name": "Bank"
+      }
+    ],
+    "processes": [
+      {
+        "elements": [
+          {
+            "id": "start",
+            "name": "Order received",
+            "type": "startEvent"
+          },
+          {
+            "id": "review",
+            "name": "Review order",
+            "type": "userTask"
+          },
+          {
+            "id": "ok",
+            "name": "Approved?",
+            "type": "exclusiveGateway"
+          },
+          {
+            "id": "pay",
+            "jobType": "pay",
+            "name": "Request payment",
+            "type": "sendTask"
+          },
+          {
+            "correlationKey": "=orderId",
+            "id": "wait",
+            "messageName": "paid",
+            "name": "Payment received",
+            "type": "receiveTask"
+          },
+          {
+            "id": "done",
+            "name": "Shipped",
+            "type": "endEvent"
+          },
+          {
+            "id": "reject",
+            "name": "Rejected",
+            "type": "endEvent"
+          }
+        ],
+        "flows": [
+          {
+            "from": "start",
+            "id": "Flow_1",
+            "to": "review"
+          },
+          {
+            "from": "review",
+            "id": "Flow_2",
+            "to": "ok"
+          },
+          {
+            "condition": "= approved",
+            "from": "ok",
+            "id": "Flow_3",
+            "name": "Yes",
+            "to": "pay"
+          },
+          {
+            "from": "pay",
+            "id": "Flow_4",
+            "to": "wait"
+          },
+          {
+            "from": "wait",
+            "id": "Flow_5",
+            "to": "done"
+          },
+          {
+            "from": "ok",
+            "id": "Flow_6",
+            "isDefault": true,
+            "name": "No",
+            "to": "reject"
+          }
+        ],
+        "id": "Order",
+        "lanes": [
+          {
+            "id": "sales",
+            "members": [
+              "start",
+              "review",
+              "ok",
+              "reject"
+            ],
+            "name": "Sales team"
+          },
+          {
+            "id": "ops",
+            "members": [
+              "pay",
+              "wait",
+              "done"
+            ],
+            "name": "Ops"
+          }
+        ],
+        "name": "Order"
+      }
+    ]
+  },
+  "fixes": [
+    "put \"done\", which no lane named, in lane ops"
+  ],
+  "problems": [
+    {
+      "line": 10,
+      "message": "msg bank > reject: an end event cannot receive a message; left out"
+    }
+  ],
+  "questions": []
+}

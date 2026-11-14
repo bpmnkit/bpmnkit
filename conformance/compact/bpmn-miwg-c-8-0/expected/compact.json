@@ -143,6 +143,7 @@
           "type": "dataObjectReference"
         }
       ],
+      "executable": false,
       "flows": [
         {
           "from": "_b1625a52-aaf0-4694-86cb-7af891212ac6",

@@ -19,6 +19,7 @@ use bpmnkit_bpmn::BpmnElementType;
 use indexmap::{IndexMap, IndexSet};
 
 use super::reader::Reader;
+use super::swimlanes::{fill_lanes, read_lanes, read_messages, read_pools};
 use super::tokens::{
     is_conditional, is_event, is_gateway, is_job_task, is_otherwise, name_from_id, type_from_id,
     variable_from, Edge, Node, EVENTS, GATEWAYS,
@@ -912,6 +913,28 @@ pub(crate) fn assemble(reader: &Reader, final_: bool) -> ProcessTextResult {
         }
     }
 
+    // Before the process and flow ids are chosen, so those step around lane and pool ids.
+    let mut lanes = read_lanes(
+        reader,
+        &a.nodes,
+        &a.child_nodes,
+        &mut a.taken,
+        final_,
+        &mut a.problems,
+    );
+    if !lanes.is_empty() {
+        fill_lanes(&mut lanes, &a.nodes, &a.edges, &mut a.fixes);
+    }
+    let pools = read_pools(reader, &a.nodes, &lanes, &mut a.taken, &mut a.problems);
+    let message_flows = read_messages(
+        reader,
+        &a.nodes,
+        &pools,
+        &mut a.taken,
+        final_,
+        &mut a.problems,
+    );
+
     let title = reader.title.as_deref().filter(|t| !t.is_empty());
     let process_base = title.map_or_else(|| "Process_1".to_owned(), slugify);
     let starts_well = process_base
@@ -1065,7 +1088,11 @@ pub(crate) fn assemble(reader: &Reader, final_: bool) -> ProcessTextResult {
                 elements: a.nodes.values().map(|n| n.element.clone()).collect(),
                 flows,
                 notes: (!notes.is_empty()).then_some(notes),
+                lanes: (!lanes.is_empty()).then_some(lanes),
+                executable: None,
             }],
+            participants: (!pools.is_empty()).then(|| pools.into_values().collect()),
+            message_flows: (!message_flows.is_empty()).then_some(message_flows),
         },
         problems,
         fixes: a.fixes,

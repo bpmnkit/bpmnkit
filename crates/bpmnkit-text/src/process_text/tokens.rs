@@ -227,6 +227,94 @@ fn id_len(s: &str) -> usize {
         .map_or(s.len(), |(i, _)| i)
 }
 
+/// `[A-Za-z_][\w.-]*`, as a regex fragment.
+macro_rules! id_re {
+    () => {
+        r"([A-Za-z_][A-Za-z0-9_.-]*)"
+    };
+}
+
+/// TS's `LANE_LINE`: `lane <id>[Name]: a, b`. The keyword is lowercase only, as the guides
+/// teach it: prose such as "Lane changes: move review into sales" starts with a capital.
+static LANE_LINE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(concat!(
+        r"^lane",
+        js_s!(),
+        "+",
+        id_re!(),
+        js_s!(),
+        r"*(?:\[([^\]]*)\])?",
+        js_s!(),
+        "*:",
+        js_s!(),
+        r"*([^\n\r\u{2028}\u{2029}]*)$"
+    ))
+    .expect("LANE_LINE")
+});
+
+/// TS's `POOL_LINE`: `pool <id>[Name]`. The bracket is required: without it, two words of
+/// prose such as "pool party" would declare a pool.
+static POOL_LINE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(concat!(
+        r"^pool",
+        js_s!(),
+        "+",
+        id_re!(),
+        js_s!(),
+        r"*\[([^\]]*)\]",
+        js_s!(),
+        "*$"
+    ))
+    .expect("POOL_LINE")
+});
+
+/// TS's `MESSAGE_LINE`: `msg a >(Label) b`. Its own keyword, so a path can never mix
+/// sequence and message flows; the label is kept as written, colons included.
+static MESSAGE_LINE: LazyLock<Regex> = LazyLock::new(|| {
+    Regex::new(concat!(
+        r"^msg",
+        js_s!(),
+        "+",
+        id_re!(),
+        js_s!(),
+        "*-{0,2}>",
+        js_s!(),
+        r"*(?:\(([^()]*)\)",
+        js_s!(),
+        "*)?",
+        id_re!(),
+        js_s!(),
+        "*$"
+    ))
+    .expect("MESSAGE_LINE")
+});
+
+/// `LANE_LINE.exec(text)`: `(id, name inside the brackets, member list)`.
+pub(crate) fn match_lane_line(text: &str) -> Option<(&str, Option<&str>, &str)> {
+    let c = LANE_LINE.captures(text)?;
+    Some((
+        c.get(1)?.as_str(),
+        c.get(2).map(|m| m.as_str()),
+        c.get(3).map_or("", |m| m.as_str()),
+    ))
+}
+
+/// `POOL_LINE.exec(text)`: `(id, name inside the brackets)`.
+pub(crate) fn match_pool_line(text: &str) -> Option<(&str, &str)> {
+    let c = POOL_LINE.captures(text)?;
+    Some((c.get(1)?.as_str(), c.get(2)?.as_str()))
+}
+
+/// `MESSAGE_LINE.exec(text)`: `(from, label, to)`.
+pub(crate) fn match_message_line(text: &str) -> Option<(&str, Option<&str>, &str)> {
+    let c = MESSAGE_LINE.captures(text)?;
+    Some((
+        c.get(1)?.as_str(),
+        c.get(2).map(|m| m.as_str()),
+        c.get(3)?.as_str(),
+    ))
+}
+
 /// `/^(?:note|doc)\s+([A-Za-z_][\w.-]*)\s*:\s*(.*)$/i` for the keyword `word`.
 fn match_keyword_line<'a>(text: &'a str, word: &str) -> Option<(&'a str, &'a str)> {
     let head = text.get(..word.len())?;

@@ -1,5 +1,5 @@
-//! Port of `bpmn/process-text.ts` lines 457–888: the `Reader` class, which reads lines
-//! into nodes, edges, notes, docs and `with` lines without judging the whole.
+//! Port of `bpmn/process-text.ts`'s `Reader` class, which reads lines into nodes, edges,
+//! notes, docs, `lane`/`pool`/`msg` lines and `with` lines without judging the whole.
 //!
 //! Porter notes:
 //! - `line()` trims with JS `trim()`; a carried line (one that ended in an arrow) is
@@ -23,10 +23,10 @@ use regex::Regex;
 
 use super::tokens::{
     alias as alias_word, condition_or_label, cycle, dangles, duration, edge_label, is_event,
-    is_feel, is_header_segment, item_of, kind as kind_word, match_doc_line, match_note_line,
-    named_trigger, split_feel, split_mappings, strip_dangling, tokenize_path, type_from_id, Edge,
-    EdgeLabel, Mapping, MappingDirection, Node, SplitMappings, ACTIVITIES, EVENTS, GATEWAYS,
-    TIME_WORDS, TRIGGERS,
+    is_feel, is_header_segment, item_of, kind as kind_word, match_doc_line, match_lane_line,
+    match_message_line, match_note_line, match_pool_line, named_trigger, split_feel,
+    split_mappings, strip_dangling, tokenize_path, type_from_id, Edge, EdgeLabel, Mapping,
+    MappingDirection, Node, SplitMappings, ACTIVITIES, EVENTS, GATEWAYS, TIME_WORDS, TRIGGERS,
 };
 use super::{ConnectorRef, ProcessTextProblem};
 use crate::compact::{CompactElement, CompactMultiInstance};
@@ -49,6 +49,42 @@ pub(crate) struct WrittenNote {
     pub line: u32,
 }
 
+/// TS's `Ref`: an id written on a `lane` or `msg` line, and the node it meant when the
+/// line was read (`None` when it was not declared yet).
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct WrittenRef {
+    pub written: String,
+    pub resolved: Option<String>,
+}
+
+/// A `lane` line.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct WrittenLane {
+    pub written: String,
+    pub name: Option<String>,
+    /// Written with an empty `[]`: no name, not even one taken from the id.
+    pub unnamed: bool,
+    pub members: Vec<WrittenRef>,
+    pub line: u32,
+}
+
+/// A `pool` line.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct WrittenPool {
+    pub written: String,
+    pub name: Option<String>,
+    pub line: u32,
+}
+
+/// A `msg` line.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub(crate) struct WrittenMessage {
+    pub from: WrittenRef,
+    pub to: WrittenRef,
+    pub name: Option<String>,
+    pub line: u32,
+}
+
 /// TS's `Reader`.
 #[derive(Debug, Clone, Default)]
 pub(crate) struct Reader {
@@ -64,6 +100,9 @@ pub(crate) struct Reader {
     pub connectors: Vec<ConnectorRef>,
     pub notes: Vec<WrittenNote>,
     pub docs: Vec<WrittenNote>,
+    pub lanes: Vec<WrittenLane>,
+    pub pools: Vec<WrittenPool>,
+    pub messages: Vec<WrittenMessage>,
     pub guessed_message: IndexSet<String>,
     pub title: Option<String>,
     /// `executionPlatformVersion` from `# Name | camunda=8.10`.
@@ -302,6 +341,9 @@ impl Reader {
             self.docs.push(doc);
             return true;
         }
+        if self.swimlane(&text, n) {
+            return true;
+        }
         // `> stop[end Done]`: the path above wrapped before its arrow
         if let Some(tail) = self.tail.as_ref().filter(|_| arrow_start(&text)) {
             self.problems.push(ProcessTextProblem {
@@ -317,6 +359,68 @@ impl Reader {
             return false;
         }
         self.read(&text, n)
+    }
+
+    /// TS's `ref`: an id as written, and the node it means now, if declared by then.
+    fn written_ref(&self, written: &str) -> WrittenRef {
+        WrittenRef {
+            written: written.to_owned(),
+            resolved: self.current.get(written).cloned(),
+        }
+    }
+
+    /// TS's `resolve`: the node a reference means. One read before its node was declared
+    /// means the first node declared under that id, as the line came before any reuse.
+    pub fn resolve(&self, r: &WrittenRef) -> String {
+        r.resolved
+            .clone()
+            .or_else(|| {
+                self.declared
+                    .get(&r.written)
+                    .and_then(|d| d.first().cloned())
+            })
+            .unwrap_or_else(|| r.written.clone())
+    }
+
+    /// TS's private `swimlane`: reads `lane`, `pool` and `msg` lines; whether it was one.
+    fn swimlane(&mut self, text: &str, n: u32) -> bool {
+        if let Some((written, name, list)) = match_lane_line(text) {
+            let name = name.map(js_trim);
+            let members = list
+                .split(|c: char| is_js_space(c) || c == ',')
+                .filter(|w| !w.is_empty())
+                .map(|id| self.written_ref(id))
+                .collect();
+            self.lanes.push(WrittenLane {
+                written: written.to_owned(),
+                name: name.filter(|n| !n.is_empty()).map(str::to_owned),
+                unnamed: name == Some(""),
+                members,
+                line: n,
+            });
+            return true;
+        }
+        if let Some((written, name)) = match_pool_line(text) {
+            let name = js_trim(name);
+            self.pools.push(WrittenPool {
+                written: written.to_owned(),
+                name: (!name.is_empty()).then(|| name.to_owned()),
+                line: n,
+            });
+            return true;
+        }
+        if let Some((from, name, to)) = match_message_line(text) {
+            let name = name.map(js_trim).filter(|n| !n.is_empty());
+            let message = WrittenMessage {
+                from: self.written_ref(from),
+                to: self.written_ref(to),
+                name: name.map(str::to_owned),
+                line: n,
+            };
+            self.messages.push(message);
+            return true;
+        }
+        false
     }
 
     fn written_note(&self, written: &str, body: &str, n: u32) -> WrittenNote {

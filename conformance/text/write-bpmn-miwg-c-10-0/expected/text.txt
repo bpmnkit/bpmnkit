@@ -4,3 +4,11 @@ on_site_meeting >(Yes) check_employee_s_availability[user Check employee's avail
 on_site_meeting >(No) answer_client_directly[throw:message Answer client directly] > client_answered[end Client answered]
 employee_available >(No) notify_client_personel_not[throw:message Notify client personel not available] > no_personnel_available[end No personnel available]
 employee_available >(Yes) plan_trip[call Plan trip] > update_employee_s_calendar[service Update employee's calendar] > prepare_confirmation_email[user Prepare confirmation email] > send_confirmation_email[send Send confirmation email] > recieve_meeting_details[catch:message Recieve meeting details] > record_meeting_details[user Record meeting details] > trip_planned[end Trip planned]
+lane employee[Employee]: record_meeting_details, trip_planned, prepare_confirmation_email, plan_trip, update_employee_s_calendar, recieve_meeting_details, send_confirmation_email
+lane project_office[Project Office]: client_answered, no_personnel_available, notify_client_personel_not, answer_client_directly, check_client_request, e_mail_received, check_employee_s_availability, on_site_meeting, employee_available
+pool client[Client]
+msg client > e_mail_received
+msg client > recieve_meeting_details
+msg send_confirmation_email > client
+msg answer_client_directly > client
+msg notify_client_personel_not > client

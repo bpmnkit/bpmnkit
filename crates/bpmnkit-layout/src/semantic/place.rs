@@ -27,6 +27,8 @@ const GRID_GAP_Y: f64 = 20.0;
 pub const COMPONENT_GAP: f64 = 80.0;
 pub const LANE_PADDING: f64 = 40.0;
 pub const BOUNDARY_SIZE: f64 = 36.0;
+/// Height of a lane band with nothing in it: room for one boundary-sized row.
+pub const MIN_LANE_HEIGHT: f64 = 2.0 * LANE_PADDING + BOUNDARY_SIZE;
 
 const DEFAULT_SIZE: (f64, f64) = (100.0, 80.0);
 
@@ -676,22 +678,26 @@ fn separate_same_cell(
 
 struct LaneNode<'a> {
     id: &'a str,
+    /// 0 for a lane directly in the lane set, one more per `childLaneSet` level.
+    depth: usize,
     refs: &'a [String],
     children: Vec<LaneNode<'a>>,
 }
 
-/// `laneTree`.
-fn lane_tree(lane_set: &BpmnLaneSet) -> Vec<LaneNode<'_>> {
+/// `laneTree`. The TS guard against a lane set containing itself has no
+/// counterpart: owned lane sets cannot alias.
+fn lane_tree(lane_set: &BpmnLaneSet, depth: usize) -> Vec<LaneNode<'_>> {
     lane_set
         .lanes
         .iter()
         .map(|lane| LaneNode {
             id: lane.id.as_str(),
+            depth,
             refs: lane.flow_node_refs.as_slice(),
             children: lane
                 .child_lane_set
                 .as_ref()
-                .map_or_else(Vec::new, lane_tree),
+                .map_or_else(Vec::new, |set| lane_tree(set, depth + 1)),
         })
         .collect()
 }
@@ -709,7 +715,7 @@ fn collect_leaves<'a, 'b>(nodes: &'b [LaneNode<'a>], leaves: &mut Vec<&'b LaneNo
 fn emit_lanes<'a>(
     nodes: &[LaneNode<'a>],
     span: &mut IndexMap<&'a str, (f64, f64)>,
-    slots: &mut Vec<LaneBand>,
+    slots: &mut Vec<(usize, LaneBand)>,
     left: f64,
     width: f64,
 ) -> Option<(f64, f64)> {
@@ -724,15 +730,18 @@ fn emit_lanes<'a>(
         if !node.children.is_empty() {
             span.insert(node.id, own);
         }
-        slots.push(LaneBand {
-            id: node.id.to_string(),
-            bounds: Bounds {
-                x: left,
-                y: own.0,
-                width,
-                height: own.1 - own.0,
+        slots.push((
+            node.depth,
+            LaneBand {
+                id: node.id.to_string(),
+                bounds: Bounds {
+                    x: left,
+                    y: own.0,
+                    width,
+                    height: own.1 - own.0,
+                },
             },
-        });
+        ));
         extent = Some(match extent {
             Some(e) => (e.0.min(own.0), e.1.max(own.1)),
             None => own,
@@ -752,7 +761,7 @@ fn apply_lanes(
     lane_set: &BpmnLaneSet,
     bounds: &mut IndexMap<&str, Bounds>,
 ) -> Vec<LaneBand> {
-    let tree = lane_tree(lane_set);
+    let tree = lane_tree(lane_set, 0);
     if tree.is_empty() {
         return Vec::new();
     }
@@ -807,7 +816,7 @@ fn apply_lanes(
                     .collect()
             })
             .unwrap_or_default();
-        let mut height = 2.0 * LANE_PADDING + BOUNDARY_SIZE;
+        let mut height = MIN_LANE_HEIGHT;
         if !own.is_empty() {
             let lowest = own
                 .iter()
@@ -852,14 +861,18 @@ fn apply_lanes(
         }
     }
 
-    let mut slots: Vec<LaneBand> = Vec::new();
+    let mut slots: Vec<(usize, LaneBand)> = Vec::new();
     emit_lanes(&tree, &mut span, &mut slots, left, width);
 
-    // Outermost first, so a parent lane is drawn behind the lanes it contains.
-    slots.sort_by(|a, b| {
-        cmp_num(b.bounds.height, a.bounds.height).then_with(|| cmp_num(a.bounds.y, b.bounds.y))
+    // Outermost first, so a parent lane is drawn behind the lanes it contains. A
+    // parent with one child has the child's exact bounds, so depth decides; the
+    // height and y keys keep the order flat lane sets have always had.
+    slots.sort_by(|(da, a), (db, b)| {
+        da.cmp(db)
+            .then_with(|| cmp_num(b.bounds.height, a.bounds.height))
+            .then_with(|| cmp_num(a.bounds.y, b.bounds.y))
     });
-    slots
+    slots.into_iter().map(|(_, band)| band).collect()
 }
 
 /// `dockBoundaryEvents`: dock boundary events on their host's edge (escalation

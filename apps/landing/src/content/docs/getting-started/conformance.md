@@ -123,7 +123,7 @@ publishes vendor-submitted results separately.
 | Multi-instance and loop markers | ✓ | ✓ | Properties panel | Multi-instance executed |
 | Data objects, data stores, associations | ✓ | ✓ | — | — |
 | Groups, text annotations | ✓ | ✓ | ✓ | — |
-| Pools, lanes, message flows | ✓ | ✓ | ✓ | — |
+| Pools, lanes, message flows | ✓ | ✓ | One pool with lanes, black-box partners | — |
 | Choreography and conversation diagrams | — | — | — | — |
 
 The TypeScript simulator is for tests, demos and step-through debugging. It follows Zeebe's

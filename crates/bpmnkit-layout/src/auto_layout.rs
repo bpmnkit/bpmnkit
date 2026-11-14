@@ -9,6 +9,7 @@ use crate::hash::{IndexMap as FxIndexMap, IndexSet as FxIndexSet};
 use crate::js;
 use crate::orthogonal::Side;
 use crate::repair::{repair_routes, ConnectionKind, PlaneEdge, PlaneShape};
+use crate::semantic::place::MIN_LANE_HEIGHT;
 use crate::types::{
     Bounds, LaneBand, LayoutEdge, LayoutHints, LayoutNode, LayoutResult, Plane, Waypoint,
 };
@@ -36,6 +37,142 @@ const MESSAGE_FLOW_STEM_STEP: f64 = 8.0;
 const MESSAGE_FLOW_JOG: f64 = 20.0;
 const MESSAGE_FLOW_MAX_JOG: f64 = 2400.0;
 const EMPTY_POOL_WIDTH: f64 = 300.0;
+
+/// One lane of a lane set, with where it sits in the nesting.
+struct LaneLevel<'a> {
+    lane: &'a BpmnLane,
+    /// 0 for a lane directly in the pool, one more per `childLaneSet` level.
+    depth: usize,
+    /// The lane whose `childLaneSet` holds this one; absent at the top level.
+    parent_id: Option<&'a str>,
+    /// True when the lane has no child lanes, so nodes sit in it directly.
+    leaf: bool,
+}
+
+/// `laneLevels`: every lane of a lane set, each parent before its children.
+/// The TS guard against a lane occurring twice has no counterpart: owned lane
+/// sets cannot alias.
+fn lane_levels(lane_set: Option<&BpmnLaneSet>) -> Vec<LaneLevel<'_>> {
+    fn walk<'a>(
+        set: &'a BpmnLaneSet,
+        depth: usize,
+        parent_id: Option<&'a str>,
+        out: &mut Vec<LaneLevel<'a>>,
+    ) {
+        for lane in &set.lanes {
+            let leaf = lane
+                .child_lane_set
+                .as_ref()
+                .is_none_or(|c| c.lanes.is_empty());
+            out.push(LaneLevel {
+                lane,
+                depth,
+                parent_id,
+                leaf,
+            });
+            if let Some(child) = &lane.child_lane_set {
+                walk(child, depth + 1, Some(lane.id.as_str()), out);
+            }
+        }
+    }
+    let mut levels = Vec::new();
+    if let Some(set) = lane_set {
+        walk(set, 0, None, &mut levels);
+    }
+    levels
+}
+
+/// `laneHeadersWidth`: one header per nesting level, since each level is
+/// inset by one header; 0 without lanes.
+fn lane_headers_width(levels: &[LaneLevel]) -> f64 {
+    match levels.iter().map(|level| level.depth).max() {
+        Some(depth) => (depth + 1) as f64 * LANE_HEADER,
+        None => 0.0,
+    }
+}
+
+/// `emptyLanedPool`: pool and lane shapes for a laned process with no flow
+/// nodes. Each leaf lane gets a band of [`MIN_LANE_HEIGHT`] and each parent
+/// spans its children, so every lane keeps DI to draw and to drop into.
+/// Returns the shapes, pool first, and the pool height.
+fn empty_laned_pool(
+    participant_id: &str,
+    levels: &[LaneLevel],
+    pool_y: f64,
+) -> (Vec<BpmnDiShape>, f64) {
+    let mut span: IndexMap<&str, (f64, f64)> = IndexMap::new();
+    let mut top = 0.0;
+    for level in levels.iter().filter(|level| level.leaf) {
+        span.insert(&level.lane.id, (top, top + MIN_LANE_HEIGHT));
+        top += MIN_LANE_HEIGHT;
+    }
+    // Reversed pre-order reaches every child before its parent.
+    for level in levels.iter().rev() {
+        let (Some(parent_id), Some(&own)) = (level.parent_id, span.get(level.lane.id.as_str()))
+        else {
+            continue;
+        };
+        let merged = match span.get(parent_id) {
+            Some(&parent) => (js::min(parent.0, own.0), js::max(parent.1, own.1)),
+            None => own,
+        };
+        span.insert(parent_id, merged);
+    }
+
+    let mut pool = new_shape(
+        participant_id,
+        BpmnBounds {
+            x: 0.0,
+            y: pool_y,
+            width: EMPTY_POOL_WIDTH,
+            height: top,
+        },
+    );
+    pool.is_horizontal = Some(true);
+    let mut shapes = vec![pool];
+    let top_of = |level: &LaneLevel| span.get(level.lane.id.as_str()).map_or(0.0, |s| s.0);
+    let mut ordered: Vec<&LaneLevel> = levels.iter().collect();
+    ordered.sort_by(|a, b| {
+        a.depth
+            .cmp(&b.depth)
+            .then_with(|| js::cmp_num(top_of(a), top_of(b)))
+    });
+    for level in ordered {
+        let Some(&(band_top, band_bottom)) = span.get(level.lane.id.as_str()) else {
+            continue;
+        };
+        let inset = POOL_HEADER + level.depth as f64 * LANE_HEADER;
+        let mut shape = new_shape(
+            &level.lane.id,
+            BpmnBounds {
+                x: inset,
+                y: pool_y + band_top,
+                width: EMPTY_POOL_WIDTH - inset,
+                height: band_bottom - band_top,
+            },
+        );
+        shape.is_horizontal = Some(true);
+        shapes.push(shape);
+    }
+    (shapes, top)
+}
+
+/// `NOT_LANE_MEMBERS`: data elements are never lane members, and the engine
+/// stacks them below the bands; growing the pool for them leaves tall empty
+/// tails, so only flow nodes count.
+const NOT_LANE_MEMBERS: [&str; 3] = ["dataObject", "dataObjectReference", "dataStoreReference"];
+
+/// `orphanExtent`: where a laned pool has to end so the nodes no lane claims
+/// stay inside it. The engine stacks those nodes below the lane bands, so they
+/// are the ones whose top lies at or under `band_bottom`.
+fn orphan_extent(nodes: &[LayoutNode], band_bottom: f64) -> f64 {
+    nodes
+        .iter()
+        .filter(|node| node.bounds.y >= band_bottom && !NOT_LANE_MEMBERS.contains(&&*node.kind))
+        .map(|node| node.bounds.y + node.bounds.height)
+        .reduce(js::max)
+        .map_or(band_bottom, |max_y| max_y + PADDING)
+}
 
 #[derive(Debug, Clone, Copy)]
 struct BBox {
@@ -156,31 +293,51 @@ fn edge_to_shape(edge: &LayoutEdge, dx: f64, dy: f64) -> BpmnDiEdge {
     di
 }
 
-/// `laneShapesFor(...)`: the engine's bands when it placed nodes by lane,
-/// otherwise the top-level lanes tiled proportionally over the content height.
-#[allow(clippy::too_many_arguments)]
-fn lane_shapes_for(
+/// Where the outermost lanes of a pool sit: they start at `left` and span
+/// `width`; `top` and `height` are the extent proportional bands tile.
+struct LaneFrame {
+    left: f64,
+    top: f64,
+    width: f64,
+    height: f64,
+}
+
+/// `laneShapesOf(...)`: the engine's bands when it placed the nodes by lane,
+/// each nesting level one header further in with right edges aligned; else
+/// top-level bands tiled in proportion to the nodes each lane holds.
+fn lane_shapes_of(
     lanes: &[BpmnLane],
+    levels: &[LaneLevel],
     lane_bands: Option<&Vec<LaneBand>>,
     nodes: &[LayoutNode],
     dy: f64,
-    top: f64,
-    x: f64,
-    width: f64,
-    height: f64,
+    frame: LaneFrame,
 ) -> Vec<BpmnDiShape> {
     let Some(bands) = lane_bands else {
-        return build_lane_shapes(lanes, nodes, dy, top, x, width, height);
+        return build_lane_shapes(
+            lanes,
+            nodes,
+            dy,
+            frame.top,
+            frame.left,
+            frame.width,
+            frame.height,
+        );
     };
+    let depth_of: IndexMap<&str, usize> = levels
+        .iter()
+        .map(|level| (level.lane.id.as_str(), level.depth))
+        .collect();
     bands
         .iter()
         .map(|lane| {
+            let inset = depth_of.get(lane.id.as_str()).copied().unwrap_or(0) as f64 * LANE_HEADER;
             let mut s = new_shape(
                 &lane.id,
                 BpmnBounds {
-                    x: js::round(x),
+                    x: js::round(frame.left + inset),
                     y: js::round(lane.bounds.y + dy),
-                    width: js::round(width),
+                    width: js::round(frame.width - inset),
                     height: js::round(lane.bounds.height),
                 },
             );
@@ -945,11 +1102,11 @@ fn message_links(
             continue;
         }
         let b = content_bbox(&layout.nodes, []);
-        let has_lanes = pool
-            .process
-            .and_then(|p| defs.processes[p].lane_set.as_ref())
-            .is_some_and(|s| !s.lanes.is_empty());
-        let elem_x = POOL_HEADER + if has_lanes { LANE_HEADER } else { 0.0 } + PADDING;
+        let levels = lane_levels(
+            pool.process
+                .and_then(|p| defs.processes[p].lane_set.as_ref()),
+        );
+        let elem_x = POOL_HEADER + lane_headers_width(&levels) + PADDING;
         for node in &layout.nodes {
             centres.insert(
                 &node.id,
@@ -1086,6 +1243,7 @@ pub fn apply_auto_layout(
         processes: defs.processes.clone(),
         diagrams,
         unknown_children: defs.unknown_children.clone(),
+        primary_process_id: defs.primary_process_id.clone(),
     }
 }
 
@@ -1247,6 +1405,8 @@ fn laid_out_diagrams(
             .map(|s: &BpmnLaneSet| s.lanes.as_slice())
             .unwrap_or(&empty_lanes);
         let has_lanes = !lanes.is_empty();
+        let levels = lane_levels(process.and_then(|p| p.lane_set.as_ref()));
+        let headers_width = lane_headers_width(&levels);
 
         let result = &layouts[pool_index];
         let align_dx = alignment.get(pool_index).copied().unwrap_or(0.0);
@@ -1275,6 +1435,13 @@ fn laid_out_diagrams(
                     );
                     continue;
                 }
+            }
+            // Lanes with nothing in them still need bands, or they have no DI at all.
+            if let (Some(participant_id), true) = (participant_id, has_lanes) {
+                let (shapes, height) = empty_laned_pool(participant_id, &levels, pool_y);
+                all_shapes.extend(shapes);
+                pool_y += height + POOL_GAP;
+                continue;
             }
             if let Some(participant_id) = participant_id {
                 let mut shape = new_shape(
@@ -1338,7 +1505,7 @@ fn laid_out_diagrams(
         let dx: f64;
         let dy: f64;
         if participant_id.is_some() {
-            let elem_x = POOL_HEADER + if has_lanes { LANE_HEADER } else { 0.0 } + PADDING;
+            let elem_x = POOL_HEADER + headers_width + PADDING;
             dx = elem_x - bbox.min_x + align_dx;
             dy = if lane_bands.is_some() {
                 pool_y - band_top
@@ -1348,9 +1515,9 @@ fn laid_out_diagrams(
         } else {
             // A process outside any pool draws its lanes on the plane itself (bpmn-js
             // imports lane DI under a process root), header at x 0, so the content
-            // clears the lane header the way it does in a pool.
+            // clears the lane headers the way it does in a pool.
             // A layout pass must not invent a participant to hold them.
-            dx = (if has_lanes { LANE_HEADER } else { 0.0 }) + PADDING - bbox.min_x;
+            dx = headers_width + PADDING - bbox.min_x;
             dy = if lane_bands.is_some() {
                 process_top - band_top
             } else {
@@ -1359,18 +1526,21 @@ fn laid_out_diagrams(
         }
         // Lanes of a process outside any pool, drawn straight on its plane.
         let bare_lanes: Vec<BpmnDiShape> = if participant_id.is_none() && has_lanes {
-            lane_shapes_for(
+            lane_shapes_of(
                 lanes,
+                &levels,
                 lane_bands,
                 &result.nodes,
                 dy,
-                process_top,
-                0.0,
-                LANE_HEADER + content_w + 2.0 * PADDING,
-                if lane_bands.is_some() {
-                    band_height
-                } else {
-                    content_h + 2.0 * PADDING
+                LaneFrame {
+                    left: 0.0,
+                    top: process_top,
+                    width: headers_width + content_w + 2.0 * PADDING,
+                    height: if lane_bands.is_some() {
+                        band_height
+                    } else {
+                        content_h + 2.0 * PADDING
+                    },
                 },
             )
         } else {
@@ -1430,11 +1600,15 @@ fn laid_out_diagrams(
         all_shapes.extend(bare_lanes);
 
         if let Some(participant_id) = participant_id {
-            let inner_w =
-                (if has_lanes { LANE_HEADER } else { 0.0 }) + content_w + 2.0 * PADDING + align_dx;
-            // Lanes must tile the pool exactly, so the pool takes their height.
+            let inner_w = headers_width + content_w + 2.0 * PADDING + align_dx;
+            // Lanes must tile the pool exactly, so the pool takes their height, and
+            // grows past them only for nodes no lane claims, which the engine
+            // places below the bands.
             let inner_h = if lane_bands.is_some() {
-                band_height
+                js::max(
+                    band_height,
+                    orphan_extent(&result.nodes, band_top + band_height) - band_top,
+                )
             } else {
                 content_h + 2.0 * PADDING
             };
@@ -1453,15 +1627,18 @@ fn laid_out_diagrams(
             all_shapes.push(pool_shape);
 
             if has_lanes {
-                all_shapes.extend(lane_shapes_for(
+                all_shapes.extend(lane_shapes_of(
                     lanes,
+                    &levels,
                     lane_bands,
                     &result.nodes,
                     dy,
-                    pool_y,
-                    POOL_HEADER,
-                    inner_w,
-                    inner_h,
+                    LaneFrame {
+                        left: POOL_HEADER,
+                        top: pool_y,
+                        width: inner_w,
+                        height: inner_h,
+                    },
                 ));
             }
 
@@ -1512,9 +1689,9 @@ fn laid_out_diagrams(
             .processes
             .iter()
             .flat_map(|p| {
-                p.lane_set
-                    .iter()
-                    .flat_map(|s| s.lanes.iter().map(|l| l.id.as_str()))
+                lane_levels(p.lane_set.as_ref())
+                    .into_iter()
+                    .map(|level| level.lane.id.as_str())
             })
             .collect();
         // Pools and lanes are containers; message flows cross them by design. It is

@@ -20,11 +20,15 @@ fn err(xml: &str) -> String {
 }
 
 #[test]
+fn definitions_id_is_optional() {
+    // The schema makes it optional and the Flowable Modeler leaves it out.
+    let defs = parse_bpmn(r#"<bpmn:definitions targetNamespace="t"/>"#).expect("parses");
+    assert_eq!(defs.id, "");
+    assert!(!serialize_bpmn(&defs).contains(" id="));
+}
+
+#[test]
 fn missing_required_attribute_names_attribute_and_element() {
-    assert_eq!(
-        err(r#"<bpmn:definitions targetNamespace="t"/>"#),
-        r#"Missing required attribute "id" on <bpmn:definitions>"#
-    );
     assert_eq!(
         err(r#"<definitions id="d"/>"#),
         r#"Missing required attribute "targetNamespace" on <definitions>"#
@@ -196,4 +200,45 @@ fn serializer_declares_xsi_when_the_document_lost_it() {
         out.contains("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\""),
         "{out}"
     );
+}
+
+const PINNED: &str = r#"<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmnkit="https://bpmnkit.com/schema/bpmn" id="d" targetNamespace="t" bpmnkit:primaryProcess="b"><bpmn:collaboration id="c"><bpmn:participant id="pa" processRef="a"/><bpmn:participant id="pb" processRef="b"/></bpmn:collaboration><bpmn:process id="a"><bpmn:task id="t"/></bpmn:process><bpmn:process id="b"/></bpmn:definitions>"#;
+
+/// What TS's `serializeBpmn` writes for [`PINNED`], parsed or pinned in memory.
+const PINNED_OUT: &str = r#"<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmnkit="https://bpmnkit.com/schema/bpmn" id="d" targetNamespace="t" bpmnkit:primaryProcess="b">
+  <bpmn:collaboration id="c">
+    <bpmn:participant id="pa" processRef="a"/>
+    <bpmn:participant id="pb" processRef="b"/>
+  </bpmn:collaboration>
+  <bpmn:process id="a">
+    <bpmn:task id="t"/>
+  </bpmn:process>
+  <bpmn:process id="b"/>
+</bpmn:definitions>
+
+"#;
+
+#[test]
+fn primary_process_pin_round_trips() {
+    let defs = parse_bpmn(PINNED).expect("parses");
+    assert_eq!(defs.primary_process_id.as_deref(), Some("b"));
+    assert!(defs.unknown_attributes.is_empty());
+    assert!(defs.namespaces.contains_key("bpmnkit"));
+    assert_eq!(serialize_bpmn(&defs), PINNED_OUT);
+}
+
+#[test]
+fn primary_process_pin_is_written_only_where_it_changes_the_choice() {
+    let bare_xml = PINNED
+        .replace(r#" xmlns:bpmnkit="https://bpmnkit.com/schema/bpmn""#, "")
+        .replace(r#" bpmnkit:primaryProcess="b""#, "");
+    let bare = parse_bpmn(&bare_xml).expect("parses");
+    let mut pinned = bare.clone();
+    pinned.primary_process_id = Some("b".to_owned());
+    // Pinning declares the namespace, as a parsed pinned file has it.
+    assert_eq!(serialize_bpmn(&pinned), PINNED_OUT);
+    // `a` is what the file alone already leads to, so the pin adds nothing.
+    pinned.primary_process_id = Some("a".to_owned());
+    assert_eq!(serialize_bpmn(&pinned), serialize_bpmn(&bare));
 }

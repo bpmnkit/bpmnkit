@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions__a9e3a63e-db87-4fa1-9091-328acae4f490" targetNamespace="http://bpmn.io/schema/bpmn">
-  <bpmn:process id="VacationRequestProcess" name="Vacation Request - (i18n)" isExecutable="true">
+  <bpmn:process id="VacationRequestProcess" name="Vacation Request - (i18n)" isExecutable="false">
     <bpmn:documentation>Vacation Request - BPMN MIWG demo for 2022</bpmn:documentation>
     <bpmn:dataObject id="_775c93ab-82e5-4a62-97f0-d305eda76c92" name="Current Vacation Status"/>
     <bpmn:endEvent id="_1cd5fe29-b3ec-4f21-a1aa-57773f0729ca" name="Vacation Approved by Manager">
