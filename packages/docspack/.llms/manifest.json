@@ -21,7 +21,7 @@
 		{
 			"id": "agent-cards.bpmn",
 			"file": "chunks/agent-cards.bpmn.md",
-			"tokens": 461,
+			"tokens": 531,
 			"tags": [
 				"agent-card",
 				"cheat-sheet",
@@ -65,7 +65,7 @@
 		{
 			"id": "agent-cards.bpmn.traps",
 			"file": "chunks/agent-cards.bpmn.traps.md",
-			"tokens": 424,
+			"tokens": 491,
 			"tags": [
 				"agent-cards",
 				"bpmn",
@@ -76,14 +76,14 @@
 				"decisionId",
 				"Bpmn.parse",
 				"withAutoLayout()",
+				"applyAutoLayout",
 				"Bpmn.export",
+				"placeNewShapes",
 				"timerDuration",
 				"build()",
 				"expand()",
 				"defaultFlow",
-				"taskType",
-				"correlationKey",
-				"DeployabilityError"
+				"taskType"
 			]
 		},
 		{
@@ -740,13 +740,19 @@
 		{
 			"id": "cli.diff.flags",
 			"file": "chunks/cli.diff.flags.md",
-			"tokens": 301,
+			"tokens": 561,
 			"tags": [
 				"cli",
 				"diff",
 				"flags"
 			],
-			"entities": []
+			"entities": [
+				"@resvg/resvg-js",
+				"diff.html",
+				"diff.png",
+				"renderDiffHtml()",
+				"@bpmnkit/core"
+			]
 		},
 		{
 			"id": "cli.diff.the-same-diff-elsewhere",
@@ -1622,7 +1628,7 @@
 		{
 			"id": "getting-started.stability.product-tiers",
 			"file": "chunks/getting-started.stability.product-tiers.md",
-			"tokens": 422,
+			"tokens": 425,
 			"tags": [
 				"getting-started",
 				"stability",
@@ -3874,6 +3880,103 @@
 			"entities": [
 				"engine.getDeployedProcesses()"
 			]
+		},
+		{
+			"id": "guides.single-file-bpmn-viewer",
+			"file": "chunks/guides.single-file-bpmn-viewer.md",
+			"tokens": 153,
+			"tags": [
+				"viewer-lite",
+				"html",
+				"single-file",
+				"export",
+				"self-contained",
+				"offline",
+				"bpmn",
+				"template",
+				"include_str",
+				"rust",
+				"bpmnkit-viewer",
+				"to_html"
+			],
+			"entities": [
+				"@bpmnkit/viewer-lite",
+				"@bpmnkit/core"
+			]
+		},
+		{
+			"id": "guides.single-file-bpmn-viewer.from-node",
+			"file": "chunks/guides.single-file-bpmn-viewer.from-node.md",
+			"tokens": 167,
+			"tags": [
+				"guides",
+				"single-file-bpmn-viewer",
+				"node"
+			],
+			"entities": [
+				"toHtml"
+			]
+		},
+		{
+			"id": "guides.single-file-bpmn-viewer.theme-and-brand-colours",
+			"file": "chunks/guides.single-file-bpmn-viewer.theme-and-brand-colours.md",
+			"tokens": 261,
+			"tags": [
+				"guides",
+				"single-file-bpmn-viewer",
+				"theme",
+				"brand",
+				"colours"
+			],
+			"entities": [
+				"shapeFill",
+				"shapeStroke",
+				"flowStroke",
+				"poolHeader",
+				"textHalo",
+				"toHtml"
+			]
+		},
+		{
+			"id": "guides.single-file-bpmn-viewer.from-rust",
+			"file": "chunks/guides.single-file-bpmn-viewer.from-rust.md",
+			"tokens": 299,
+			"tags": [
+				"guides",
+				"single-file-bpmn-viewer",
+				"rust"
+			],
+			"entities": [
+				"toHtml"
+			]
+		},
+		{
+			"id": "guides.single-file-bpmn-viewer.from-any-other-language",
+			"file": "chunks/guides.single-file-bpmn-viewer.from-any-other-language.md",
+			"tokens": 292,
+			"tags": [
+				"guides",
+				"single-file-bpmn-viewer",
+				"any",
+				"other",
+				"language"
+			],
+			"entities": [
+				"@bpmnkit/viewer-lite/template.html",
+				"toHtml"
+			]
+		},
+		{
+			"id": "guides.single-file-bpmn-viewer.your-own-page",
+			"file": "chunks/guides.single-file-bpmn-viewer.your-own-page.md",
+			"tokens": 58,
+			"tags": [
+				"guides",
+				"single-file-bpmn-viewer",
+				"own",
+				"page"
+			],
+			"entities": []
 		},
 		{
 			"id": "guides.templates",
@@ -7249,6 +7352,127 @@
 				"also"
 			],
 			"entities": []
+		},
+		{
+			"id": "rust.embedding.overview",
+			"file": "chunks/rust.embedding.overview.md",
+			"tokens": 308,
+			"tags": [
+				"rust",
+				"embedding",
+				"overview",
+				"load",
+				"anything",
+				"detect"
+			],
+			"entities": [
+				"DocKind",
+				"ProcessText",
+				"CompactJson"
+			]
+		},
+		{
+			"id": "rust.embedding.one-error-type",
+			"file": "chunks/rust.embedding.one-error-type.md",
+			"tokens": 200,
+			"tags": [
+				"rust",
+				"embedding",
+				"one",
+				"error",
+				"type",
+				"lint",
+				"reports",
+				"people"
+			],
+			"entities": [
+				"source()",
+				"FeatureDisabled",
+				"LintReport",
+				"CheckFinding"
+			]
+		},
+		{
+			"id": "rust.embedding.feel-and-dmn-results-in-chat",
+			"file": "chunks/rust.embedding.feel-and-dmn-results-in-chat.md",
+			"tokens": 150,
+			"tags": [
+				"rust",
+				"embedding",
+				"feel",
+				"dmn",
+				"results",
+				"chat"
+			],
+			"entities": [
+				"string()",
+				"to_json()",
+				"from_json()"
+			]
+		},
+		{
+			"id": "rust.embedding.cargo-features",
+			"file": "chunks/rust.embedding.cargo-features.md",
+			"tokens": 210,
+			"tags": [
+				"rust",
+				"embedding",
+				"cargo",
+				"features"
+			],
+			"entities": []
+		},
+		{
+			"id": "rust.embedding.render-a-diagram",
+			"file": "chunks/rust.embedding.render-a-diagram.md",
+			"tokens": 163,
+			"tags": [
+				"rust",
+				"embedding",
+				"render",
+				"diagram",
+				"text",
+				"picture",
+				"one",
+				"call"
+			],
+			"entities": [
+				"exportSvg"
+			]
+		},
+		{
+			"id": "rust.embedding.stable-ids-in-a-server",
+			"file": "chunks/rust.embedding.stable-ids-in-a-server.md",
+			"tokens": 290,
+			"tags": [
+				"rust",
+				"embedding",
+				"stable",
+				"ids",
+				"server",
+				"diff",
+				"two",
+				"models"
+			],
+			"entities": [
+				"BpmnDiff",
+				"renderDiffHtml"
+			]
+		},
+		{
+			"id": "rust.embedding.slack-recipe",
+			"file": "chunks/rust.embedding.slack-recipe.md",
+			"tokens": 125,
+			"tags": [
+				"rust",
+				"embedding",
+				"slack",
+				"recipe",
+				"examples"
+			],
+			"entities": [
+				"files.uploadV2"
+			]
 		}
 	]
 }

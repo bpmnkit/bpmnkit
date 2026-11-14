@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-14 — Lanes and pools land on main
+
+- kendalen's lane and pool work (#258, which also carries #263 and #272) cherry-picked onto main (Rust twin crates, `placeNewShapes`, viewer-lite), authorship kept. Doc conflicts keep both sides.
+- Regenerated after the merge: `api-surface.json` (main's diff exports were missing from the PR side), the docspack `llms.txt` and manifest, `packages/plugins/i18n/en.json` ("Create pool"), and `apps/landing/src/generated/ecosystem.ts` (versions from #286).
+
 ## 2026-11-14 — bpmnkit-viewer: theme and colours; viewer-lite gate 8.5 KB
 
 - `bpmnkit-viewer` `HtmlOptions` gets `theme(Theme::{Light,Dark,Auto})` and `colors(Colors)`, byte-identical to the JS `toHtml`. Colours are checked (`ViewerError::InvalidColor`). `ViewerParts` gains `body_attrs` (the `data-theme` for your `<body>`); `head` carries the CSS and the `body` script carries `data-theme`. The facade re-exports `Colors` and `ViewerTheme`.

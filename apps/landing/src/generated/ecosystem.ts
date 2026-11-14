@@ -127,7 +127,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "apps/cli",
 		name: "@bpmnkit/cli",
-		version: "1.7.0",
+		version: "1.8.0",
 		description: "Command-line interface for Camunda 8 — deploy, manage, and monitor processes from the terminal",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/cli",
@@ -167,7 +167,7 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/core",
 		name: "@bpmnkit/core",
-		version: "1.13.0",
+		version: "1.14.0",
 		description: "TypeScript-first BPMN 2.0 SDK — parse, build, layout, and optimize diagrams",
 		tier: "core",
 		npm: "https://www.npmjs.com/package/@bpmnkit/core",
@@ -327,8 +327,8 @@ export const PACKAGE_FACTS: readonly PackageFact[] = [
 	{
 		dir: "packages/viewer-lite",
 		name: "@bpmnkit/viewer-lite",
-		version: "0.0.0",
-		description: "Dependency-free BPMN viewer for one self-contained HTML file — an 8 KB script that turns embedded BPMN XML into a pannable, zoomable SVG",
+		version: "0.1.0",
+		description: "Dependency-free BPMN viewer for one self-contained HTML file — an 8.5 KB script that turns embedded BPMN XML into a pannable, zoomable SVG",
 		tier: "tools",
 		npm: "https://www.npmjs.com/package/@bpmnkit/viewer-lite",
 		github: "https://github.com/bpmnkit/bpmnkit/tree/main/packages/viewer-lite",
@@ -362,7 +362,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/vscode",
 		name: "BPMN Kit for VS Code",
-		version: "0.5.16",
+		version: "0.5.17",
 		description: "View, edit, lint, diff and simulate BPMN, DMN and Forms in VS Code",
 		tier: "tools",
 		github: "https://github.com/bpmnkit/bpmnkit/tree/main/apps/vscode",
@@ -371,7 +371,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/drop",
 		name: "Drop",
-		version: "0.4.13",
+		version: "0.4.14",
 		description: "Share a BPMN, DMN or Form file as a link at bpmnkit.com/drop",
 		tier: "tools",
 		github: "https://github.com/bpmnkit/bpmnkit/tree/main/apps/drop",
@@ -389,7 +389,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/studio",
 		name: "Studio",
-		version: "0.2.13",
+		version: "0.2.14",
 		description: "Browser workspace for models, a local WASM engine and cluster monitoring",
 		tier: "experimental",
 		github: "https://github.com/bpmnkit/bpmnkit/tree/main/apps/studio",
@@ -398,7 +398,7 @@ export const APP_FACTS: readonly AppFact[] = [
 	{
 		dir: "apps/desktop",
 		name: "Desktop app",
-		version: "0.1.59",
+		version: "0.1.60",
 		description: "Tauri build of the editor for Windows, macOS and Linux",
 		tier: "experimental",
 		github: "https://github.com/bpmnkit/bpmnkit/tree/main/apps/desktop",
