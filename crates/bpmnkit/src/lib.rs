@@ -60,5 +60,5 @@ pub mod prelude {
     #[cfg(feature = "render")]
     pub use bpmnkit_render::{bpmn_to_svg, RenderOptions, Svg, Theme};
     #[cfg(feature = "viewer")]
-    pub use bpmnkit_viewer::HtmlOptions;
+    pub use bpmnkit_viewer::{Colors, HtmlOptions, Theme as ViewerTheme};
 }

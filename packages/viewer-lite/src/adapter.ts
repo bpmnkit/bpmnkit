@@ -8,11 +8,11 @@ import type { BpmnDefinitions } from "@bpmnkit/core/svg"
 
 type Obj = Record<string, unknown>
 
-const kids = (e: Element, ...names: string[]): Element[] =>
-	Array.from(e.children).filter((c) => names.length === 0 || names.includes(c.localName))
+const kids = (e: Element, name?: string): Element[] =>
+	Array.from(e.children).filter((c) => !name || name === c.localName)
 const kid = (e: Element, name: string): Element | undefined => kids(e, name)[0]
 const attr = (e: Element, name: string): string | undefined => e.getAttribute(name) ?? undefined
-const num = (e: Element, name: string): number => Number(attr(e, name) ?? 0)
+const num = (e: Element, name: string): number => Number(e.getAttribute(name))
 const bool = (e: Element, name: string): boolean | undefined => {
 	const v = attr(e, name)
 	return v === undefined ? undefined : v === "true"
@@ -20,7 +20,7 @@ const bool = (e: Element, name: string): boolean | undefined => {
 
 const FLOW_NODE =
 	/(Event|Task|Gateway)$|^(task|callActivity|subProcess|adHocSubProcess|transaction|dataObject(Reference)?|dataStoreReference)$/
-const CONTAINERS = new Set(["subProcess", "adHocSubProcess", "eventSubProcess", "transaction"])
+const CONTAINERS = /[sS]ubProcess$|^transaction$/
 
 function flowElement(e: Element): Obj {
 	const type = e.localName
@@ -33,10 +33,9 @@ function flowElement(e: Element): Obj {
 	}
 	const loop = kid(e, "multiInstanceLoopCharacteristics")
 	if (loop) el.loopCharacteristics = { isSequential: bool(loop, "isSequential") }
-	if (bool(e, "isForCompensation")) el.isForCompensation = true
-	if (bool(e, "isCollection")) el.isCollection = true
+	for (const n of ["isForCompensation", "isCollection"]) if (bool(e, n)) el[n] = true
 	el.default = attr(e, "default")
-	if (CONTAINERS.has(type)) Object.assign(el, flowContents(e))
+	if (CONTAINERS.test(type)) Object.assign(el, flowContents(e))
 	return el
 }
 

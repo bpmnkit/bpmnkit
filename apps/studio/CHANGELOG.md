@@ -1,5 +1,13 @@
 # @bpmnkit/studio
 
+## 0.2.14
+
+### Patch Changes
+
+- Updated dependencies [086acf7]
+- Updated dependencies [19c5bd0]
+  - @bpmnkit/core@1.14.0
+
 ## 0.2.13
 
 ### Patch Changes

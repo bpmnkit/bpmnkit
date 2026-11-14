@@ -1,5 +1,13 @@
 # @bpmnkit/drop
 
+## 0.4.14
+
+### Patch Changes
+
+- Updated dependencies [086acf7]
+- Updated dependencies [19c5bd0]
+  - @bpmnkit/core@1.14.0
+
 ## 0.4.13
 
 ### Patch Changes

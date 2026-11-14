@@ -7,7 +7,7 @@ import { toHtml } from "@bpmnkit/viewer-lite/html"
 writeFileSync("order.html", toHtml(readFileSync("order.bpmn", "utf8"), { title: "Order process" }))
 ```
 
-`toHtml(xml, { title? })` returns the page as a string. The XML sits inside
+`toHtml(xml, { title?, theme?, colors? })` returns the page as a string. The XML sits inside
 `<script type="application/bpmn+xml">`, where an HTML parser ends the element at the first
 `</script`. `toHtml` hides it without changing what the XML parses to: in text it is already
 `&lt;/script`, in CDATA the section is split and rejoined, in a comment it is escaped. XML with a real

@@ -15,7 +15,7 @@ exclude = ["tests/", "benches/", "package.json"]
 
 [dependencies]
 bpmnkit-bpmn = { workspace = true }
-bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.2.1", default-features = false }
+bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.3.0", default-features = false }
 bpmnkit-spec = { workspace = true }
 bpmnkit-xml = { workspace = true }
 indexmap = { workspace = true }

@@ -3,7 +3,7 @@
 
 use std::fmt;
 
-/// The viewer script (`@bpmnkit/viewer-lite`, minified IIFE, about 8 KB gzip). It defines
+/// The viewer script (`@bpmnkit/viewer-lite`, minified IIFE, about 8.5 KB gzip). It defines
 /// the `BpmnLite` global and, once the document is parsed, replaces every
 /// `<script type="application/bpmn+xml">` element with the rendered diagram.
 /// Safe to inline: it holds no `</script`.
@@ -31,6 +31,15 @@ pub enum ViewerError {
     /// The XML has a real `<script>` element (a `</script` outside CDATA and comments),
     /// which no escape can hide inside an HTML `<script>` element.
     ScriptElement,
+    /// A [`Colors`] value is not plain colour syntax (hex, name, `rgb()`/`hsl()`/`oklch()`,
+    /// at most 64 characters) or uses `url(`, `var(` or `expression`: it could break out of
+    /// the CSS.
+    InvalidColor {
+        /// The colour key, as in [`Colors`] (`"bg"`, `"pool-header"`, ...).
+        key: &'static str,
+        /// The rejected value.
+        value: String,
+    },
 }
 
 impl fmt::Display for ViewerError {
@@ -39,11 +48,104 @@ impl fmt::Display for ViewerError {
             ViewerError::ScriptElement => f.write_str(
                 "The BPMN XML contains a <script> element, which cannot be inlined in HTML",
             ),
+            ViewerError::InvalidColor { key, value } => {
+                write!(f, "Invalid colour for \"{key}\": {value:?}")
+            }
         }
     }
 }
 
 impl std::error::Error for ViewerError {}
+
+/// The page colour scheme. Without a theme the page is light.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Theme {
+    /// Light colours (the default look); sets `data-theme="light"`.
+    Light,
+    /// Dark colours.
+    Dark,
+    /// Light, dark when the reader's `prefers-color-scheme` is dark.
+    Auto,
+}
+
+impl Theme {
+    fn name(self) -> &'static str {
+        match self {
+            Theme::Light => "light",
+            Theme::Dark => "dark",
+            Theme::Auto => "auto",
+        }
+    }
+}
+
+/// Brand colours, written as `--bpmnkit-viewer-*` CSS variables that the page and the
+/// viewer both read. Unset fields keep the theme's colour. Values are checked (see
+/// [`ViewerError::InvalidColor`]).
+#[derive(Debug, Clone, Default, PartialEq, Eq)]
+pub struct Colors {
+    /// Page and diagram background (`--bpmnkit-viewer-bg`).
+    pub bg: Option<String>,
+    /// Shape fill (`--bpmnkit-viewer-fill`).
+    pub fill: Option<String>,
+    /// Shape outline (`--bpmnkit-viewer-stroke`).
+    pub stroke: Option<String>,
+    /// Sequence and message flows (`--bpmnkit-viewer-flow`).
+    pub flow: Option<String>,
+    /// Labels (`--bpmnkit-viewer-text`).
+    pub text: Option<String>,
+    /// Pool and lane header fill (`--bpmnkit-viewer-pool-header`).
+    pub pool_header: Option<String>,
+    /// Outline behind labels (`--bpmnkit-viewer-halo`).
+    pub halo: Option<String>,
+}
+
+impl Colors {
+    /// Key, CSS variable suffix and value, in the order the variables are written.
+    fn entries(&self) -> [(&'static str, &Option<String>); 7] {
+        [
+            ("bg", &self.bg),
+            ("fill", &self.fill),
+            ("stroke", &self.stroke),
+            ("flow", &self.flow),
+            ("text", &self.text),
+            ("pool-header", &self.pool_header),
+            ("halo", &self.halo),
+        ]
+    }
+
+    /// `:root{...}` for the set keys, or "". Checks every value first.
+    fn css(&self) -> Result<String, ViewerError> {
+        let mut decls = Vec::new();
+        for (key, value) in self.entries() {
+            let Some(value) = value else { continue };
+            if !valid_color(value) {
+                return Err(ViewerError::InvalidColor {
+                    key,
+                    value: value.clone(),
+                });
+            }
+            decls.push(format!("--bpmnkit-viewer-{key}:{value}"));
+        }
+        Ok(if decls.is_empty() {
+            String::new()
+        } else {
+            format!(":root{{{}}}", decls.join(";"))
+        })
+    }
+}
+
+// Plain colour syntax only, as the JS `^[#a-zA-Z0-9(),.% /-]{1,64}$`; no quotes, braces,
+// `;`, `\` or `<`, and nothing that loads a resource.
+fn valid_color(v: &str) -> bool {
+    let plain = (1..=64).contains(&v.len())
+        && v.bytes()
+            .all(|b| b.is_ascii_alphanumeric() || b"#(),.% /-".contains(&b));
+    let lower = v.to_ascii_lowercase();
+    plain
+        && !["url(", "var(", "expression"]
+            .iter()
+            .any(|w| lower.contains(w))
+}
 
 /// Options for [`to_html`] and [`parts`]. `HtmlOptions::default()` matches the JS
 /// `toHtml(xml)` defaults.
@@ -51,6 +153,8 @@ impl std::error::Error for ViewerError {}
 pub struct HtmlOptions {
     title: String,
     picker: bool,
+    theme: Option<Theme>,
+    colors: Colors,
 }
 
 impl Default for HtmlOptions {
@@ -58,6 +162,8 @@ impl Default for HtmlOptions {
         HtmlOptions {
             title: DEFAULT_TITLE.to_owned(),
             picker: true,
+            theme: None,
+            colors: Colors::default(),
         }
     }
 }
@@ -66,6 +172,19 @@ impl HtmlOptions {
     /// The page's `<title>` (HTML-escaped for you). Default: "BPMN diagram".
     pub fn title(mut self, title: impl Into<String>) -> Self {
         self.title = title.into();
+        self
+    }
+
+    /// The colour scheme, also set as `data-theme` on the page and the diagram script.
+    /// Default: none (light).
+    pub fn theme(mut self, theme: Theme) -> Self {
+        self.theme = Some(theme);
+        self
+    }
+
+    /// Brand colours on top of the theme.
+    pub fn colors(mut self, colors: Colors) -> Self {
+        self.colors = colors;
         self
     }
 
@@ -87,7 +206,7 @@ impl HtmlOptions {
 ///     <meta charset="utf-8">
 ///     {head}        <!-- style; once per page -->
 ///   </head>
-///   <body>
+///   <body{body_attrs}>   <!-- body_attrs is "" unless a theme is set -->
 ///     <h1>Your page</h1>
 ///     {body}        <!-- where the diagram goes; one per diagram -->
 ///     {scripts}     <!-- before </body>; once per page, however many diagrams -->
@@ -95,13 +214,18 @@ impl HtmlOptions {
 /// </html>
 /// ```
 ///
-/// The page must be UTF-8. [`to_html`] is exactly this skeleton with the picker and a
+/// `body_attrs` (` data-theme="dark"`, or empty) goes on your `<body>` so the page colours
+/// follow the theme; the diagram script in `body` carries its own `data-theme`. The page
+/// must be UTF-8. [`to_html`] is exactly this skeleton with the picker and a
 /// title. To serve the scripts as files (for a `script-src 'self'` CSP), use [`VIEWER_JS`]
 /// and [`LOADER_JS`] instead of `scripts`.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ViewerParts {
     /// `<style>` element: put it in `<head>`. Optional (see [`CSS`]).
     pub head: String,
+    /// Attributes for your `<body>` tag, with a leading space: ` data-theme="X"` when a
+    /// theme is set, else empty.
+    pub body_attrs: String,
     /// The diagram: the picker `<header>` (unless [`HtmlOptions::no_picker`]) and the
     /// escaped `<script type="application/bpmn+xml">` element, or the "Open or drop a
     /// .bpmn file" placeholder for blank XML. Put it where the diagram should appear.
@@ -114,7 +238,7 @@ pub struct ViewerParts {
 /// One self-contained HTML page showing the diagram: no network, no other files. The
 /// page has a file picker and accepts a dropped `.bpmn` file; blank `xml` gives an empty
 /// viewer that only shows that hint. The bytes are the same as the JS
-/// `toHtml(xml, { title })` of `@bpmnkit/viewer-lite`.
+/// `toHtml(xml, { title, theme, colors })` of `@bpmnkit/viewer-lite`.
 ///
 /// Serve it as `text/html; charset=utf-8`, or send it as a `.html` file (a Slack upload,
 /// an email attachment): it opens offline in any browser.
@@ -127,11 +251,12 @@ pub struct ViewerParts {
 pub fn to_html(xml: &str, options: &HtmlOptions) -> Result<String, ViewerError> {
     let ViewerParts {
         head,
+        body_attrs,
         body,
         scripts,
     } = parts(xml, options)?;
     Ok(format!(
-        "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>{}</title>{head}</head><body>{body}{scripts}</body></html>\n",
+        "<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><title>{}</title>{head}</head><body{body_attrs}>{body}{scripts}</body></html>\n",
         escape_html(&options.title)
     ))
 }
@@ -157,11 +282,25 @@ pub fn empty_html(options: &HtmlOptions) -> String {
 /// # Ok::<(), bpmnkit_viewer::ViewerError>(())
 /// ```
 pub fn parts(xml: &str, options: &HtmlOptions) -> Result<ViewerParts, ViewerError> {
+    let mut css = String::new();
+    if let Some(theme @ (Theme::Dark | Theme::Auto)) = options.theme {
+        let rule = ":root{--bpmnkit-viewer-bg:#1e1e2e;--bpmnkit-viewer-text:#cdd6f4}";
+        if theme == Theme::Dark {
+            css.push_str(rule);
+        } else {
+            css.push_str(&format!("@media (prefers-color-scheme:dark){{{rule}}}"));
+        }
+    }
+    css.push_str(&options.colors.css()?);
+    let theme_attr = options
+        .theme
+        .map(|t| format!(" data-theme=\"{}\"", t.name()))
+        .unwrap_or_default();
     let diagram = if is_blank(xml) {
         EMPTY_VIEWER.to_owned()
     } else {
         format!(
-            "<script type=\"application/bpmn+xml\">{}</script>",
+            "<script type=\"application/bpmn+xml\"{theme_attr}>{}</script>",
             escape_xml_for_script(xml)?
         )
     };
@@ -171,7 +310,8 @@ pub fn parts(xml: &str, options: &HtmlOptions) -> Result<ViewerParts, ViewerErro
         ("", String::new())
     };
     Ok(ViewerParts {
-        head: format!("<style>{CSS}</style>"),
+        head: format!("<style>{CSS}{css}</style>"),
+        body_attrs: theme_attr,
         body: format!("{picker}{diagram}"),
         scripts: format!("<script>{VIEWER_JS}</script>{loader}"),
     })
@@ -364,6 +504,55 @@ mod tests {
         assert!(full
             .scripts
             .ends_with(&format!("<script>{LOADER_JS}</script>")));
+    }
+
+    #[test]
+    fn theme_and_colors() {
+        let o = HtmlOptions::default().theme(Theme::Dark).colors(Colors {
+            bg: Some("#fff".into()),
+            pool_header: Some("rgb(1, 2, 3)".into()),
+            ..Colors::default()
+        });
+        let p = parts(XML, &o).unwrap();
+        assert!(p.head.ends_with(
+            ":root{--bpmnkit-viewer-bg:#1e1e2e;--bpmnkit-viewer-text:#cdd6f4}:root{--bpmnkit-viewer-bg:#fff;--bpmnkit-viewer-pool-header:rgb(1, 2, 3)}</style>"
+        ));
+        assert_eq!(p.body_attrs, r#" data-theme="dark""#);
+        assert!(p
+            .body
+            .contains(r#"<script type="application/bpmn+xml" data-theme="dark">"#));
+        let auto = parts("", &HtmlOptions::default().theme(Theme::Auto)).unwrap();
+        assert!(auto.head.ends_with("@media (prefers-color-scheme:dark){:root{--bpmnkit-viewer-bg:#1e1e2e;--bpmnkit-viewer-text:#cdd6f4}}</style>"));
+        assert!(!auto.body.contains("data-theme"));
+        let none = parts(XML, &HtmlOptions::default()).unwrap();
+        assert_eq!(none.head, format!("<style>{CSS}</style>"));
+        assert_eq!(none.body_attrs, "");
+    }
+
+    #[test]
+    fn rejects_unsafe_colors() {
+        for bad in [
+            "",
+            "red;}",
+            "url(x)",
+            "VAR(--a)",
+            "expression(1)",
+            "a\"b",
+            "é",
+            &"a".repeat(65),
+        ] {
+            let o = HtmlOptions::default().colors(Colors {
+                flow: Some(bad.into()),
+                ..Colors::default()
+            });
+            assert!(
+                matches!(
+                    parts(XML, &o),
+                    Err(ViewerError::InvalidColor { key: "flow", .. })
+                ),
+                "{bad:?}"
+            );
+        }
     }
 
     #[test]

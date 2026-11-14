@@ -6,7 +6,7 @@ sidebar:
 ---
 
 Send a process to someone who has no modeler: one `.html` file, no server, no CDN, no other files.
-`@bpmnkit/viewer-lite` is an 8 KB (gzip) script that draws BPMN XML as a pannable, zoomable SVG,
+`@bpmnkit/viewer-lite` is an 8.5 KB (gzip) script that draws BPMN XML as a pannable, zoomable SVG,
 small enough to inline into the page that carries the diagram.
 
 <!-- docspack: tags=viewer-lite,html,single-file,export,self-contained,offline,bpmn,template,include_str,rust,bpmnkit-viewer,to_html,embed -->
@@ -30,11 +30,30 @@ import { toHtml } from "@bpmnkit/viewer-lite/html"
 writeFileSync("order.html", toHtml(readFileSync("order.bpmn", "utf8"), { title: "Order process" }))
 ```
 
-`toHtml(xml, { title? })` returns the page as a string. The XML sits inside
+`toHtml(xml, { title?, theme?, colors? })` returns the page as a string. The XML sits inside
 `<script type="application/bpmn+xml">`, where an HTML parser ends the element at the first
 `</script`. `toHtml` hides it without changing what the XML parses to: in text it is already
 `&lt;/script`, in CDATA the section is split and rejoined, in a comment it is escaped. XML with a real
 `<script>` element cannot be inlined, and `toHtml` throws.
+
+## Theme and brand colours
+
+The viewer is light by default: dark strokes on a light page, whatever the reader's OS says. Opt in to
+the other themes with `theme: "dark"` or `theme: "auto"` (follow `prefers-color-scheme`):
+
+```typescript
+toHtml(xml, { theme: "auto" })
+toHtml(xml, { colors: { bg: "#101820", text: "#e8eef5", shapeStroke: "#0b5fff" } })
+```
+
+`colors` takes any of `bg`, `shapeFill`, `shapeStroke`, `flowStroke`, `text`, `poolHeader` and
+`textHalo`, merged over the light theme. `toHtml` writes them as `--bpmnkit-viewer-*` CSS variables and
+throws on a value that could break out of the CSS. In your own page, set the variables (`-bg`, `-fill`,
+`-stroke`, `-flow`, `-text`, `-pool-header`, `-halo`; the halo defaults to the background) on the
+element or an ancestor, or put `data-theme="light|dark|auto"` on the script. In code,
+`render(xml, el, { theme })` also takes a partial palette, which wins over the variables.
+
+From the shell: `casen export html order.bpmn --theme dark --color stroke=#0b5fff --color bg=#101820`.
 
 ## From Rust
 
@@ -80,7 +99,7 @@ fn to_html(xml: &str) -> String {
 }
 ```
 
-The page also has a file picker and accepts a dropped `.bpmn` file (a small second inline script, outside the 8 KB viewer script). Replace `{{BPMN}}` with nothing for a page that only shows "Open or drop a .bpmn file"; with `toHtml("")` the hint is built in.
+The page also has a file picker and accepts a dropped `.bpmn` file (a small second inline script, outside the 8.5 KB viewer script). Replace `{{BPMN}}` with nothing for a page that only shows "Open or drop a .bpmn file"; with `toHtml("")` the hint is built in.
 
 `replacen(…, 1)` replaces only the first placeholder. This simple escape turns `</script` inside a CDATA
 section into the literal text `&lt;/script`, which is fine for display but not byte-exact. Use `toHtml`

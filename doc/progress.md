@@ -81,6 +81,23 @@
 - `builder-reference.md` is generated: `scripts/generate-builder-reference.mjs` now emits a DiagramBuilder section (methods + participant/message/message-flow options). Token budget test raised 3300 → 3600. `AGENTS.md`/`llms.txt` (via `scripts/sync-agent-cards.mjs`) mention collaboration and the compact path.
 - New `packages/core/tests/agent-card-examples.test.ts` runs every `@bpmnkit/core` ts block of `agent-cards/*.md` against the source (exit 1 on lint error fails the test).
 
+## 2026-11-14 — bpmnkit-viewer: theme and colours; viewer-lite gate 8.5 KB
+
+- `bpmnkit-viewer` `HtmlOptions` gets `theme(Theme::{Light,Dark,Auto})` and `colors(Colors)`, byte-identical to the JS `toHtml`. Colours are checked (`ViewerError::InvalidColor`). `ViewerParts` gains `body_attrs` (the `data-theme` for your `<body>`); `head` carries the CSS and the `body` script carries `data-theme`. The facade re-exports `Colors` and `ViewerTheme`.
+- Golden cases `dark`, `auto`, `colors`, `light-title` are written by `scripts/viewer-assets.mjs` and checked by both sides.
+- viewer-lite size gate raised from 8 KB to 8.5 KB (`check-size.mjs`, package description, generated READMEs, docs).
+
+## 2026-11-14 — viewer-lite: light by default, custom colours
+
+- `render` defaults to the light theme; `theme: "auto"` follows `prefers-color-scheme`; the page css lost its dark media query. `theme` also takes `Partial<SvgThemeColors>` (merged over light). `--bpmnkit-viewer-{bg,fill,stroke,flow,text,pool-header,halo}` read from the element with `getComputedStyle` (an explicit palette wins; halo defaults to bg); `boot` reads `data-theme` from the script and renders after the placeholder is in the document so the variables resolve.
+- `toHtml(xml, { theme, colors })`: `data-theme` on the script and `<body>`, `:root{--bpmnkit-viewer-*}` after the page style (dark: bg and text; auto: the same inside `@media (prefers-color-scheme:dark)`), values validated (plain colour syntax only, no `url(`/`var(`), deterministic order. `casen export html --theme --color key=value` (repeatable). `@bpmnkit/core/svg` exports `SVG_THEMES` (already in the bundle, no bytes).
+- Size: the new code cost ~230 B gzip; recovered in the viewer's own code (compact pan/zoom, palette loop, messages "No diagram layout.", "Cannot show: …") to 7999 B under the unchanged 8,000 B gate. Vendored crate assets and golden pages resynced; the Rust port of `theme`/`colors` is not done yet.
+- Tests: default light even with matchMedia dark, auto, partial palette, CSS variables, data-theme, toHtml colours/escaping, CLI flags.
+
+## 2026-11-12 — viewer-lite: the bundle imports under Node
+
+- The release after #284 failed in `check:consumable`: importing `@bpmnkit/viewer-lite/viewer-lite.min.js` under Node threw `document is not defined` (CI runs only `--pack-only`). The IIFE now auto-boots only when a `document` exists; test `node-import.test.ts`; vendored crate asset and golden pages resynced. Size unchanged (7.9 KB).
+
 ## 2026-11-12 — `bpmnkit-viewer`: the one-file viewer for Rust
 
 - New zero-dependency crate `crates/bpmnkit-viewer` (`@crates/bpmnkit-viewer`, fixed group; facade feature `viewer`, in `full`; `bpmnkit::Error::Viewer`; `prelude::HtmlOptions`). `to_html(xml, &HtmlOptions)` is byte-identical to the JS `toHtml`; `empty_html`; `parts` → `ViewerParts { head, body, scripts }` for embedding in your own page; `escape_xml_for_script`; raw `VIEWER_JS`, `LOADER_JS`, `CSS`; `HtmlOptions::title`, `no_picker` (Rust-only). Example `viewer_html`.

@@ -3965,13 +3965,33 @@
 		{
 			"id": "guides.single-file-bpmn-viewer.from-node",
 			"file": "chunks/guides.single-file-bpmn-viewer.from-node.md",
-			"tokens": 163,
+			"tokens": 167,
 			"tags": [
 				"guides",
 				"single-file-bpmn-viewer",
 				"node"
 			],
 			"entities": [
+				"toHtml"
+			]
+		},
+		{
+			"id": "guides.single-file-bpmn-viewer.theme-and-brand-colours",
+			"file": "chunks/guides.single-file-bpmn-viewer.theme-and-brand-colours.md",
+			"tokens": 261,
+			"tags": [
+				"guides",
+				"single-file-bpmn-viewer",
+				"theme",
+				"brand",
+				"colours"
+			],
+			"entities": [
+				"shapeFill",
+				"shapeStroke",
+				"flowStroke",
+				"poolHeader",
+				"textHalo",
 				"toHtml"
 			]
 		},

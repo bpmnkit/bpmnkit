@@ -17,5 +17,26 @@
 	},
 	{
 		"name": "blank"
+	},
+	{
+		"name": "dark",
+		"theme": "dark"
+	},
+	{
+		"name": "auto",
+		"theme": "auto"
+	},
+	{
+		"name": "colors",
+		"colors": {
+			"bg": "#fff8e1",
+			"stroke": "rgb(10, 20, 30)",
+			"pool-header": "oklch(70% 0.1 200)"
+		}
+	},
+	{
+		"name": "light-title",
+		"theme": "light",
+		"title": "Light & titled"
 	}
 ]

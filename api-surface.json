@@ -668,6 +668,7 @@
 		},
 		"./svg": {
 			"BpmnDefinitions": "type",
+			"SVG_THEMES": "value",
 			"SvgCtx": "type",
 			"SvgElementKind": "type",
 			"SvgExportOptions": "type",
