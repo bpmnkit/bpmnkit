@@ -30,11 +30,30 @@ import { toHtml } from "@bpmnkit/viewer-lite/html"
 writeFileSync("order.html", toHtml(readFileSync("order.bpmn", "utf8"), { title: "Order process" }))
 ```
 
-`toHtml(xml, { title? })` returns the page as a string. The XML sits inside
+`toHtml(xml, { title?, theme?, colors? })` returns the page as a string. The XML sits inside
 `<script type="application/bpmn+xml">`, where an HTML parser ends the element at the first
 `</script`. `toHtml` hides it without changing what the XML parses to: in text it is already
 `&lt;/script`, in CDATA the section is split and rejoined, in a comment it is escaped. XML with a real
 `<script>` element cannot be inlined, and `toHtml` throws.
+
+## Theme and brand colours
+
+The viewer is light by default: dark strokes on a light page, whatever the reader's OS says. Opt in to
+the other themes with `theme: "dark"` or `theme: "auto"` (follow `prefers-color-scheme`):
+
+```typescript
+toHtml(xml, { theme: "auto" })
+toHtml(xml, { colors: { bg: "#101820", text: "#e8eef5", shapeStroke: "#0b5fff" } })
+```
+
+`colors` takes any of `bg`, `shapeFill`, `shapeStroke`, `flowStroke`, `text`, `poolHeader` and
+`textHalo`, merged over the light theme. `toHtml` writes them as `--bpmnkit-viewer-*` CSS variables and
+throws on a value that could break out of the CSS. In your own page, set the variables (`-bg`, `-fill`,
+`-stroke`, `-flow`, `-text`, `-pool-header`, `-halo`; the halo defaults to the background) on the
+element or an ancestor, or put `data-theme="light|dark|auto"` on the script. In code,
+`render(xml, el, { theme })` also takes a partial palette, which wins over the variables.
+
+From the shell: `casen export html order.bpmn --theme dark --color stroke=#0b5fff --color bg=#101820`.
 
 ## From Rust
 

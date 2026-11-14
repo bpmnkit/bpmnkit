@@ -63,6 +63,12 @@ const DARK: Theme = {
 	textHalo: "#1e1e2e",
 }
 
+/** The built-in palettes, so a custom theme can start from one. */
+export const SVG_THEMES: { readonly light: SvgThemeColors; readonly dark: SvgThemeColors } = {
+	light: LIGHT,
+	dark: DARK,
+}
+
 // ── Public API ─────────────────────────────────────────────────────────────────
 
 export interface SvgExportOptions {
