@@ -1,5 +1,16 @@
 # @bpmnkit/learn
 
+## 0.1.20
+
+### Patch Changes
+
+- Updated dependencies [e7f0bc0]
+- Updated dependencies [e7f0bc0]
+- Updated dependencies [e7f0bc0]
+- Updated dependencies [e7f0bc0]
+- Updated dependencies [e7f0bc0]
+  - @bpmnkit/core@1.15.0
+
 ## 0.1.19
 
 ### Patch Changes
