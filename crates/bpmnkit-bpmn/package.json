@@ -1,6 +1,6 @@
 {
 	"name": "@crates/bpmnkit-bpmn",
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"private": true,
 	"description": "Rust crate bpmnkit-bpmn (crates.io). Versioned by changesets; Cargo.toml synced by scripts/crates-version.mjs."
 }
