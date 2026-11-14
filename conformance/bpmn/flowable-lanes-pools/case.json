@@ -1,0 +1,4 @@
+{
+  "deployable": false,
+  "deployableReason": "Flowable Modeler fixture (Flowable service tasks carry no zeebe:taskDefinition); the case pins lane/pool round-tripping, not a Zeebe-deployable model."
+}
