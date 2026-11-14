@@ -33,7 +33,7 @@ const withText = (text) =>
 			`<bpmn:textAnnotation id="TA"><bpmn:text>${text}</bpmn:text></bpmn:textAnnotation></bpmn:process>`,
 	)
 
-/** Each case is `<name>.bpmn` (input) and `<name>.html` (expected); titles in cases.json. */
+/** Each case is `<name>.bpmn` (input) and `<name>.html` (expected); options (title, theme, colors) in cases.json. */
 const cases = [
 	{ name: "order", xml: order },
 	{ name: "title", xml: order, title: "A <b> & c {{BPMN}}" },
@@ -41,24 +41,46 @@ const cases = [
 	{ name: "comment", xml: withText("x<!-- </script> -->y {{BPMN}} $&") },
 	{ name: "empty", xml: "" },
 	{ name: "blank", xml: "  \n" },
+	{ name: "dark", xml: order, theme: "dark" },
+	{ name: "auto", xml: order, theme: "auto" },
+	{
+		name: "colors",
+		xml: order,
+		colors: { bg: "#fff8e1", stroke: "rgb(10, 20, 30)", "pool-header": "oklch(70% 0.1 200)" },
+	},
+	{ name: "light-title", xml: order, theme: "light", title: "Light & titled" },
 ]
+// Option keys use the Rust spelling for colours (`pool-header`); JS names differ.
+const JS_COLORS = {
+	bg: "bg",
+	fill: "shapeFill",
+	stroke: "shapeStroke",
+	flow: "flowStroke",
+	text: "text",
+	"pool-header": "poolHeader",
+	halo: "textHalo",
+}
+const optionsOf = ({ title, theme, colors }) => ({
+	...(title === undefined ? {} : { title }),
+	...(theme === undefined ? {} : { theme }),
+	...(colors === undefined
+		? {}
+		: { colors: Object.fromEntries(Object.entries(colors).map(([k, v]) => [JS_COLORS[k], v])) }),
+})
 
 const files = {
 	"assets/viewer-lite.min.js": readFileSync(join(lite, "dist/viewer-lite.min.js"), "utf8"),
 	"assets/loader.js": picker,
 	"assets/viewer.css": css,
 	"tests/golden/cases.json": `${JSON.stringify(
-		cases.map(({ name, title }) => (title === undefined ? { name } : { name, title })),
+		cases.map(({ xml, ...rest }) => rest),
 		null,
 		"\t",
 	)}\n`,
 }
 for (const c of cases) {
 	files[`tests/golden/${c.name}.bpmn`] = c.xml
-	files[`tests/golden/${c.name}.html`] = toHtml(
-		c.xml,
-		c.title === undefined ? {} : { title: c.title },
-	)
+	files[`tests/golden/${c.name}.html`] = toHtml(c.xml, optionsOf(c))
 }
 
 const stale = []

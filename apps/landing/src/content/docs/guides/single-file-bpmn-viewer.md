@@ -6,7 +6,7 @@ sidebar:
 ---
 
 Send a process to someone who has no modeler: one `.html` file, no server, no CDN, no other files.
-`@bpmnkit/viewer-lite` is an 8 KB (gzip) script that draws BPMN XML as a pannable, zoomable SVG,
+`@bpmnkit/viewer-lite` is an 8.5 KB (gzip) script that draws BPMN XML as a pannable, zoomable SVG,
 small enough to inline into the page that carries the diagram.
 
 <!-- docspack: tags=viewer-lite,html,single-file,export,self-contained,offline,bpmn,template,include_str,rust,bpmnkit-viewer,to_html,embed -->
@@ -99,7 +99,7 @@ fn to_html(xml: &str) -> String {
 }
 ```
 
-The page also has a file picker and accepts a dropped `.bpmn` file (a small second inline script, outside the 8 KB viewer script). Replace `{{BPMN}}` with nothing for a page that only shows "Open or drop a .bpmn file"; with `toHtml("")` the hint is built in.
+The page also has a file picker and accepts a dropped `.bpmn` file (a small second inline script, outside the 8.5 KB viewer script). Replace `{{BPMN}}` with nothing for a page that only shows "Open or drop a .bpmn file"; with `toHtml("")` the hint is built in.
 
 `replacen(…, 1)` replaces only the first placeholder. This simple escape turns `</script` inside a CDATA
 section into the literal text `&lt;/script`, which is fine for display but not byte-exact. Use `toHtml`

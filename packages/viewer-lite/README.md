@@ -1,7 +1,7 @@
 <div align="center">
   <a href="https://bpmnkit.com"><img src="https://bpmnkit.com/favicon.svg" width="72" height="72" alt="BPMN Kit logo"></a>
   <h1>@bpmnkit/viewer-lite</h1>
-  <p>Dependency-free BPMN viewer for one self-contained HTML file — an 8 KB script that turns embedded BPMN XML into a pannable, zoomable SVG</p>
+  <p>Dependency-free BPMN viewer for one self-contained HTML file — an 8.5 KB script that turns embedded BPMN XML into a pannable, zoomable SVG</p>
 
   [![npm](https://img.shields.io/npm/v/@bpmnkit/viewer-lite?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/viewer-lite)
   [![license](https://img.shields.io/npm/l/@bpmnkit/viewer-lite?style=flat-square)](https://github.com/bpmnkit/bpmnkit/blob/main/LICENSE)
@@ -18,7 +18,7 @@
 
 ## Overview
 
-`@bpmnkit/viewer-lite` draws a BPMN 2.0 diagram in the browser with no dependencies, small enough (under 8 KB gzip) to inline into the HTML file that carries the diagram. One file, no server, no CDN: e-mail it, attach it to a ticket, open it offline.
+`@bpmnkit/viewer-lite` draws a BPMN 2.0 diagram in the browser with no dependencies, small enough (under 8.5 KB gzip) to inline into the HTML file that carries the diagram. One file, no server, no CDN: e-mail it, attach it to a ticket, open it offline.
 
 It uses the same SVG renderer as `@bpmnkit/core`'s `exportSvg`, fed by a small `DOMParser` reader instead of the full parser.
 
@@ -31,7 +31,7 @@ It uses the same SVG renderer as `@bpmnkit/core`'s `exportSvg`, fed by a small `
 - **Light by default** — dark strokes on a light page whatever the reader's OS says; `theme: "dark"` or `"auto"` (follow `prefers-color-scheme`) are opt-in
 - **Your colours** — a partial palette, or `--bpmnkit-viewer-*` CSS variables, no rebuild
 - **Same drawing as core** — tested against every conformance fixture
-- **Size gate** — the build fails when the minified script is over 8 KB gzip
+- **Size gate** — the build fails when the minified script is over 8.5 KB gzip
 
 ## Installation
 

@@ -205,7 +205,7 @@ jobs:
       - name: Test scripts
         run: pnpm test:scripts
 
-      # Real-browser check of the 8 KB viewer: pan/zoom, escaped XML, every conformance fixture.
+      # Real-browser check of the 8.5 KB viewer: pan/zoom, escaped XML, every conformance fixture.
       - name: Install Chromium
         run: pnpm exec playwright install --with-deps chromium
 

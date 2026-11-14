@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-14 — bpmnkit-viewer: theme and colours; viewer-lite gate 8.5 KB
+
+- `bpmnkit-viewer` `HtmlOptions` gets `theme(Theme::{Light,Dark,Auto})` and `colors(Colors)`, byte-identical to the JS `toHtml`. Colours are checked (`ViewerError::InvalidColor`). `ViewerParts` gains `body_attrs` (the `data-theme` for your `<body>`); `head` carries the CSS and the `body` script carries `data-theme`. The facade re-exports `Colors` and `ViewerTheme`.
+- Golden cases `dark`, `auto`, `colors`, `light-title` are written by `scripts/viewer-assets.mjs` and checked by both sides.
+- viewer-lite size gate raised from 8 KB to 8.5 KB (`check-size.mjs`, package description, generated READMEs, docs).
+
 ## 2026-11-14 — viewer-lite: light by default, custom colours
 
 - `render` defaults to the light theme; `theme: "auto"` follows `prefers-color-scheme`; the page css lost its dark media query. `theme` also takes `Partial<SvgThemeColors>` (merged over light). `--bpmnkit-viewer-{bg,fill,stroke,flow,text,pool-header,halo}` read from the element with `getComputedStyle` (an explicit palette wins; halo defaults to bg); `boot` reads `data-theme` from the script and renders after the placeholder is in the document so the variables resolve.

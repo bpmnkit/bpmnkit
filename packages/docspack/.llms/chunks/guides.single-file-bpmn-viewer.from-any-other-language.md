@@ -15,7 +15,7 @@ fn to_html(xml: &str) -> String {
 }
 ```
 
-The page also has a file picker and accepts a dropped `.bpmn` file (a small second inline script, outside the 8 KB viewer script). Replace `{{BPMN}}` with nothing for a page that only shows "Open or drop a .bpmn file"; with `toHtml("")` the hint is built in.
+The page also has a file picker and accepts a dropped `.bpmn` file (a small second inline script, outside the 8.5 KB viewer script). Replace `{{BPMN}}` with nothing for a page that only shows "Open or drop a .bpmn file"; with `toHtml("")` the hint is built in.
 
 `replacen(…, 1)` replaces only the first placeholder. This simple escape turns `</script` inside a CDATA
 section into the literal text `&lt;/script`, which is fine for display but not byte-exact. Use `toHtml`

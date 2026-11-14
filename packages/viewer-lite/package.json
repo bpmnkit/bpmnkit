@@ -27,7 +27,7 @@
 	"dependencies": {
 		"@bpmnkit/core": "workspace:^"
 	},
-	"description": "Dependency-free BPMN viewer for one self-contained HTML file — an 8 KB script that turns embedded BPMN XML into a pannable, zoomable SVG",
+	"description": "Dependency-free BPMN viewer for one self-contained HTML file — an 8.5 KB script that turns embedded BPMN XML into a pannable, zoomable SVG",
 	"keywords": ["bpmn", "bpmn2", "viewer", "svg", "html", "diagram", "standalone"],
 	"license": "MIT",
 	"repository": {
