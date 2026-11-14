@@ -17,7 +17,7 @@ exclude = ["tests/", "package.json"]
 bpmnkit-spec = { workspace = true, optional = true }
 bpmnkit-xml = { workspace = true, optional = true }
 bpmnkit-bpmn = { workspace = true, optional = true }
-bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.2.1", optional = true }
+bpmnkit-feel = { path = "../bpmnkit-feel", version = "0.3.0", optional = true }
 bpmnkit-dmn = { workspace = true, optional = true }
 bpmnkit-form = { workspace = true, optional = true }
 bpmnkit-compat = { workspace = true, optional = true }
