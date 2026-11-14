@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-11-14 — fix: spec shorthand broke S04 card-payment specs (`build-terse.ts`)
+
+- Anonymous nodes whose name has no usable letters at the start (`[catch:message 3-D Secure confirmed | …]`, `[boundary:timer 3-D Secure timed out | …]`) got the raw kind as id, colon included → `expected ">"`. The fallback id is now camelCased (`catchMessage`, `boundaryTimer`).
+- `[service Authorize card | id=authorizeCard job=…]`: `id=` inside anonymous brackets is the node id (was "unknown attribute").
+- `key==orderId` is corrected to `key=orderId` with a fix line instead of failing.
+- Names at line start (`3-D Secure result? > …`) resolve like ids; the "only one branch" check already runs after the whole text is read in core — the earlier errors were the id cascade above. Regression tests for all three S04 specs (lint clean) in `build.test.ts`; both card templates still build.
+
 ## 2026-11-14 — `casen build`: forms from conditions, spec shorthand, proof in the success line
 
 - Generated forms: a user task without `fields=` gets one field per variable the conditions on the way to the next user task read (`x = true` → checkbox, `x > 1` → number, `x = "a"` → select of the literals, else textfield; not variables a step sets with `result=`/outputs). Also for new user tasks of `--edit`. "Done" stays only when nothing is found (`build-forms.ts`).

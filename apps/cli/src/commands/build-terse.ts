@@ -20,6 +20,7 @@ interface Span {
 }
 
 const ID_BEFORE = /([A-Za-z_][\w.-]*)$/
+const ID_ATTR = /(^|[\s|])id=([A-Za-z_][\w.-]*)(?=\s|$)/
 const ID = /^[A-Za-z_][\w.-]*$/
 const JOB_KINDS = /^(?:service|send|(?:end|throw):message)$/
 const MESSAGE_KINDS = /^(?:(?:start|catch|boundary|end|throw):message|receive)$/
@@ -45,13 +46,23 @@ function spans(line: string): Span[] {
 		} else if (line[i] === "[") {
 			const end = closing(line, i, "[", "]")
 			if (end < 0) break
-			const id = ID_BEFORE.exec(line.slice(0, i))?.[1]
+			const before = ID_BEFORE.exec(line.slice(0, i))?.[1]
+			let body = line.slice(i + 1, end)
+			// `[service Authorize card | id=authorizeCard job=…]`: the id written as an attribute.
+			let id = before
+			if (id === undefined) {
+				const attr = ID_ATTR.exec(body)
+				if (attr !== null) {
+					id = attr[2]
+					body = body.replace(ID_ATTR, "$1").replace(/\s*\|\s*$/, "")
+				}
+			}
 			out.push({
-				start: id === undefined ? i : i - id.length,
+				start: before === undefined ? i : i - before.length,
 				end: end + 1,
 				kind: "decl",
 				id,
-				body: line.slice(i + 1, end),
+				body,
 			})
 			i = end
 		}
@@ -142,7 +153,10 @@ export function desugarSpec(text: string, poolId: (name: string) => string): Des
 			const { kind, name } = parts(s.body)
 			if (s.id === undefined) {
 				const base =
-					(kind !== "annotation" && camelId(name)) || (kind === "annotation" ? "note" : kind)
+					(kind !== "annotation" && camelId(name)) ||
+					(kind === "annotation"
+						? "note"
+						: kind.replace(/:(\w)/g, (_m, c: string) => c.toUpperCase()))
 				let id = base
 				for (let i = counters.get(base) ?? 2; taken.has(id); i++) {
 					id = `${base}${i}`
@@ -204,6 +218,10 @@ export function desugarSpec(text: string, poolId: (name: string) => string): Des
 			if (s.kind === "label") return s.body
 			const { kind, name } = parts(s.body)
 			let body = s.body
+			if (/(?:^|[\s|])key==/.test(body)) {
+				body = body.replace(/((?:^|[\s|])key)==/, "$1=")
+				fixes.push(`line ${n}: "key==" is a typo for "key="; corrected`)
+			}
 			const id = s.id ?? ""
 			if (JOB_KINDS.test(kind) && !hasAttr(body, "job")) body = withAttr(body, "job", kebab(id))
 			const messages = MESSAGE_KINDS.test(kind) || (kind === "catch" && hasAttr(body, "key"))

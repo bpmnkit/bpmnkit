@@ -101,6 +101,64 @@ delivered ~> customer: Delivery notice
 confirm ~> customer: Confirmation
 refuse ~> customer: Refusal`
 
+const CARD_ANON = `# Card payment | id=card-payment
+[start Order needs payment] > [service Authorize card | job=payment-authorize] > [eventgw 3-D Secure result?]
+3-D Secure result? > [catch:message 3-D Secure confirmed | msg=ThreeDSConfirmed key=orderId] > [service Capture payment | job=payment-capture retries=3] > [end Payment completed]
+3-D Secure result? > [catch:timer 10 minutes elapsed | after=PT10M] > [service Cancel authorization | job=payment-cancel] > [end Payment timed out]
+[boundary:error Card declined | on=authorizeCard error=CARD_DECLINED] > [service Notify customer | job=notify-customer] > [end Payment declined]
+[boundary:error Capture failed | on=capturePayment error=CAPTURE_FAILED] > [user Resolve capture failure | groups=finance fields=resolutionNote:textarea] > [end Payment failed]`
+const CARD_TRIGGER_REFS = `# Card payment | id=card-payment
+[start Order needs payment] > authorizeCard[service Authorize card | job=payment-authorize] > waitFor3ds[receive Wait for 3-D Secure confirmation | msg=ThreeDSConfirmed key=orderId] > capturePayment[service Capture payment | job=payment-capture retries=3] > [end Payment completed]
+[boundary:error Card declined | on=authorizeCard error=CARD_DECLINED] > notifyCustomer[service Notify customer | job=notify-customer] > [end Payment declined]
+[boundary:timer 3-D Secure timed out | on=waitFor3ds after=PT10M] > cancelAuthorization[service Cancel authorization | job=payment-cancel] > [end Payment timed out]`
+const CARD_ID_ATTR = `# Card payment | id=card-payment
+[start Order needs payment] > [service Authorize card | id=authorizeCard job=payment-authorize] > [eventgw Await confirmation | id=awaitConfirmation]
+[boundary:error Card declined | on=authorizeCard error=CARD_DECLINED] > [service Notify customer | job=notify-customer] > [end Payment declined]
+awaitConfirmation > [catch 3-D Secure confirmed | id=threeDConfirmed msg=ThreeDSConfirmed key=orderId] > [service Capture payment | id=capturePayment job=payment-capture retries=3] > [end Payment completed]
+awaitConfirmation > [catch:timer Confirmation timeout | id=confirmationTimeout after=PT10M] > [service Cancel authorization | job=payment-cancel] > [end Payment timed out]`
+
+describe("text spec shorthand regressions (S04 card payment)", () => {
+	const clean = (spec: string) => {
+		const { definitions, problems, fixes } = compileTextSpec(spec)
+		expect(problems).toEqual([])
+		expect(lintDiagram(Bpmn.parse(Bpmn.export(definitions))).counts.error).toBe(0)
+		return { definitions, fixes }
+	}
+
+	it("gives anonymous triggers a colon-free id and resolves names with ?, - and spaces", () => {
+		const { definitions: d } = clean(CARD_ANON)
+		const ids = d.processes[0]?.flowElements.map((e) => e.id) ?? []
+		expect(ids).toEqual(expect.arrayContaining(["catchMessage", "catchTimer", "eventgw"]))
+		expect(ids.some((i) => i.includes(":"))).toBe(false)
+		// the gateway keeps both branches: the count check sees the whole spec
+		expect(d.processes[0]?.sequenceFlows.filter((f) => f.sourceRef === "eventgw")).toHaveLength(2)
+	})
+
+	it("reads a boundary trigger after an id-less node", () => {
+		clean(CARD_TRIGGER_REFS)
+	})
+
+	it("takes id=<id> inside anonymous brackets as the node id", () => {
+		const { definitions: d } = clean(CARD_ID_ATTR)
+		const ids = d.processes[0]?.flowElements.map((e) => e.id) ?? []
+		expect(ids).toEqual(
+			expect.arrayContaining([
+				"authorizeCard",
+				"awaitConfirmation",
+				"threeDConfirmed",
+				"confirmationTimeout",
+			]),
+		)
+	})
+
+	it("corrects key==x to key=x with a warning instead of failing", () => {
+		const { fixes } = clean(
+			"# P | id=p\n[start Go] > [catch:message Paid | msg=Paid key==orderId] > [end Done]",
+		)
+		expect(fixes.join("\n")).toMatch(/"key==" is a typo for "key="/)
+	})
+})
+
 describe("compileTextSpec", () => {
 	it("builds sub-process bodies, conditional starts and free annotations, all drawn", () => {
 		const { definitions: d, problems } = compileTextSpec(S16X)
