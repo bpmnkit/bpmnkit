@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-11-14 — `casen build`: forms from conditions, spec shorthand, proof in the success line
+
+- Generated forms: a user task without `fields=` gets one field per variable the conditions on the way to the next user task read (`x = true` → checkbox, `x > 1` → number, `x = "a"` → select of the literals, else textfield; not variables a step sets with `result=`/outputs). Also for new user tasks of `--edit`. "Done" stays only when nothing is found (`build-forms.ts`).
+- Text spec shorthand (`build-terse.ts`, CLI only, so no Rust mirror): `[user Review expense]` without an id gets `reviewExpense`; nodes and pools may be referenced by exact name; `job=` defaults to the id kebab-cased, `msg=` to the name kebab-cased. Old specs read as before. Ambiguous or unknown names are one `✖` line each.
+- Measured (chars/4): S16X spec 1004 → 873 chars (251 → 218 tokens, −13 %); card template 1 444 → 359. The rest of S16X's ~5k output tokens is planning, which the card now forbids in its first line.
+- Success line adds what agents grepped the XML for: `pools, processes <ids>, tasks, gateways, message flows, forms · Camunda <version>`.
+- BPMN card: "do not plan in prose" first; after ✓ run the gate as given, deploy `.bpmn` + listed forms, answer in one line, do not inspect the XML. Templates use the shorthand; card 2258 → 1990 tokens (the 2k budget test was failing), templates and card back in sync.
+- Not done: message-flow routing between pools (item 4), left for its own change.
+
 ## 2026-11-13 — `casen build` collaboration fidelity and layout (judge findings on S16X)
 
 - Conditions: `expand` (TS + Rust) writes `conditionExpression xsi:type="bpmn:tFormalExpression"`.

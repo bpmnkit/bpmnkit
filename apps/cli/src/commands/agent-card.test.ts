@@ -191,13 +191,16 @@ describe("bpmn card templates build as printed", () => {
 			write.mockRestore()
 		}
 		expect(ok).toEqual([
-			"bpmn-process.bpmn + 2 forms · lint clean",
-			"bpmn-pools.bpmn + 1 form · lint clean",
-			"bpmn-process.bpmn + 1 form · lint clean",
+			"bpmn-process.bpmn + 2 forms (expense-reviewExpense.form, expense-reworkExpense.form) · lint clean · process expense, tasks 4, gateways 2, forms 2 · Camunda 8.10.0",
+			"bpmn-pools.bpmn + 3 forms (shop-pickItem.form, shop-boxItems.form, shop-shipOrder.form) · lint clean · pools 4, processes shop+restock, tasks 6, gateways 0, message flows 3, forms 3 · Camunda 8.10.0",
+			"bpmn-process.bpmn + 1 form (expense-fix.form) · lint clean · process expense, tasks 6, gateways 3, forms 3 · Camunda 8.10.0",
 		])
+		// The decision after the review reads `approved`: the generated form asks for it.
+		const review = JSON.parse(readFileSync(join(dir, "expense-reviewExpense.form"), "utf8"))
+		expect(review.components.at(-1)).toMatchObject({ type: "checkbox", key: "approved" })
 		const edited = Bpmn.parse(readFileSync(join(dir, "bpmn-process.bpmn"), "utf8"))
 		expect(edited.processes[0]?.flowElements.some((e) => e.id === "validate")).toBe(true)
-		expect(readdirSync(dir).filter((f) => f.endsWith(".form"))).toHaveLength(4)
+		expect(readdirSync(dir).filter((f) => f.endsWith(".form"))).toHaveLength(6)
 		rmSync(dir, { recursive: true, force: true })
 	})
 })

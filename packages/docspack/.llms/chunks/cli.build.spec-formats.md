@@ -2,7 +2,7 @@
 
 | Spec | What it is |
 |------|------------|
-| `.txt` (any other extension) | The process [line format](/agent-cards/bpmn/) plus `## Pool \| id=…` sections (`\| blackbox` for a partner pool), `### Lane` headers, `a ~> b: label` message flows, `d[object Name] ..> task` / `task ..> d[store Name]` data, `sp[sub Name]` with an `sp {` … `}` body (expanded sub-process), `n[annotation Text]` (`..> task` links it), `start:condition` / `catch:condition` with `cond=<FEEL>`, and `fields=` on user tasks |
+| `.txt` (any other extension) | The process [line format](/agent-cards/bpmn/) plus `## Pool \| id=…` sections (`\| blackbox` for a partner pool), `### Lane` headers, `a ~> b: label` message flows, `d[object Name] ..> task` / `task ..> d[store Name]` data, `sp[sub Name]` with an `sp {` … `}` body (expanded sub-process), `n[annotation Text]` (`..> task` links it), `start:condition` / `catch:condition` with `cond=<FEEL>`, and `fields=` on user tasks (without it, the fields are the variables the next conditions read). Shorthand: a node without an id gets its name camelCased (`[user Review expense]` → `reviewExpense`) and may be referenced by name; `job=` defaults to the id kebab-cased, `msg=` to the name kebab-cased |
 | `.json` | A `CompactDiagram` |
 | `.mjs` / `.js` / `.ts` | A module whose default export is a model, a builder, or `(kit, model) => …` returning either; `kit` is `@bpmnkit/core` |
 

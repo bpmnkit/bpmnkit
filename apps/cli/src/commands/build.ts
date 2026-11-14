@@ -16,6 +16,7 @@ import {
 	placeNewShapes,
 } from "@bpmnkit/core"
 import type { Command, CommandGroup } from "../types.js"
+import { deriveFormFields } from "./build-forms.js"
 import {
 	BUILD_SPEC_GUIDE,
 	compileTextSpec,
@@ -228,6 +229,36 @@ function withPlatformVersion(xml: string, defs: BpmnDefinitions): string {
 	})
 }
 
+/**
+ * What an agent would otherwise grep the XML for: counts, process ids (the
+ * deploy keys) and the target version, e.g.
+ * `pools 3, processes hiring+talent, tasks 7, gateways 2, message flows 3, forms 3 · Camunda 8.10.0`.
+ */
+export function proof(defs: BpmnDefinitions, forms: number): string {
+	let tasks = 0
+	let gateways = 0
+	const visit = (elements: readonly core.BpmnFlowElement[]) => {
+		for (const el of elements) {
+			if (el.type === "task" || el.type.endsWith("Task")) tasks++
+			else if (el.type.endsWith("Gateway")) gateways++
+			if ("flowElements" in el && Array.isArray(el.flowElements)) visit(el.flowElements)
+		}
+	}
+	for (const p of defs.processes) visit(p.flowElements)
+	const pools = defs.collaborations.reduce((n, c) => n + c.participants.length, 0)
+	const messageFlows = defs.collaborations.reduce((n, c) => n + c.messageFlows.length, 0)
+	const counts = [
+		...(pools > 0 ? [`pools ${pools}`] : []),
+		`process${defs.processes.length === 1 ? "" : "es"} ${defs.processes.map((p) => p.id).join("+")}`,
+		`tasks ${tasks}`,
+		`gateways ${gateways}`,
+		...(pools > 0 ? [`message flows ${messageFlows}`] : []),
+		`forms ${forms}`,
+	].join(", ")
+	const version = defs.unknownAttributes["modeler:executionPlatformVersion"]
+	return version ? `${counts} · Camunda ${version}` : counts
+}
+
 const buildCmd: Command = {
 	name: "build",
 	description:
@@ -364,6 +395,7 @@ const buildCmd: Command = {
 		// An edit gives forms to the user tasks it adds; the ones already there stay as they are.
 		const before = original === undefined ? undefined : Bpmn.parse(original)
 		const skip = before === undefined ? undefined : elementIds(before)
+		if (ctx.flags.forms !== false) deriveFormFields(defs, fields, skip)
 		const { forms } =
 			ctx.flags.forms === false
 				? { forms: [] }
@@ -421,6 +453,7 @@ const buildCmd: Command = {
 				throw new Error(`Lint: ${errors} error${errors === 1 ? "" : "s"} (file written)`)
 			parts.push(rows.length === 0 ? "lint clean" : `${rows.length} warning(s)`)
 		}
+		parts.push(proof(defs, formFiles.length))
 		if (ctx.flags.deploy === true) {
 			const resources = await Promise.all(
 				files.map(async (f) => ({ name: basename(f), content: await readFile(f, "utf8") })),

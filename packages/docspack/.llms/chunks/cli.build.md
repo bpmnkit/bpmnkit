@@ -10,7 +10,7 @@ casen build expense.txt --deploy
 ```
 
 ```
-✓ expense.bpmn + 2 forms · lint clean · deployed 3 to camunda8 (key 2251799813685249)
+✓ expense.bpmn + 2 forms (expense-review.form, expense-fix.form) · lint clean · process expense, tasks 3, gateways 2, forms 2 · Camunda 8.10.0 · deployed 3 to camunda8 (key 2251799813685249)
 ```
 
 ---

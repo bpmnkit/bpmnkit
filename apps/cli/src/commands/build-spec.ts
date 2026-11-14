@@ -24,6 +24,7 @@ import {
 	expand,
 	parseProcessText,
 } from "@bpmnkit/core"
+import { desugarSpec } from "./build-terse.js"
 
 /** The guide `casen build --help` and the agent card show. */
 export const BUILD_SPEC_GUIDE = `# Title | id=<process id> camunda=8.10   first line; one pool = one process
@@ -35,7 +36,10 @@ d[object Name] ..> task                 data input; task ..> d[store Name] = dat
 sp[sub Name] > …  then  sp {            expanded sub-process: its body paths up to a line "}"
 n[annotation Text]                      text annotation; n[annotation Text] ..> task links it
 start:condition / catch:condition       conditional event: cond=<FEEL> (last)
-r[rule Assess risk | decision=risk]     DMN decision id; default: the name kebab-cased (assess-risk)`
+r[rule Assess risk | decision=risk]     DMN decision id; default: the name kebab-cased (assess-risk)
+[user Review expense]                   no id: it is the name camelCased (reviewExpense); refer to a node by id or exact name
+                                        job= defaults to the id kebab-cased, msg= to the name kebab-cased
+                                        a user task without fields= asks for what the next conditions read`
 
 export interface SpecBuild {
 	definitions: BpmnDefinitions
@@ -236,7 +240,10 @@ export function compileTextSpec(text: string): SpecBuild {
 	const problems: string[] = []
 	const fixes: string[] = []
 	const fields: Record<string, string> = {}
-	const raw = text.split(/\r?\n/)
+	const sugar = desugarSpec(text, specId)
+	problems.push(...sugar.problems)
+	fixes.push(...sugar.fixes)
+	const raw = sugar.text.split(/\r?\n/)
 
 	let title: { name: string; attrs: Map<string, string> } | undefined
 	const sections: Section[] = []

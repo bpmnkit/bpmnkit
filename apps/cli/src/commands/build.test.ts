@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { parseArgs } from "../args.js"
 import { resolveOutputFormat } from "../output.js"
 import type { RunContext } from "../types.js"
+import { deriveFormFields } from "./build-forms.js"
 import { compileTextSpec, keyThrownMessages } from "./build-spec.js"
 import { buildGroup } from "./build.js"
 import { clusterFromEnv } from "./deploy.js"
@@ -49,6 +50,27 @@ opened[start:condition Headcount opened | cond=openings > 0] > search[service Se
 candidate ~> received: Application
 offer ~> candidate: Offer
 candidate ~> answer: Answer`
+
+/** S16X with the shorthand: no ids, jobs and messages from names, references by name. */
+const S16X_TERSE = `# Hiring
+[annotation Hiring follows the company policy]
+## HR | id=hiring
+### Recruiter
+[start:message Application received] > [user Screen candidate] > [sub Organise interviews] > [xor Hire?]
+Organise interviews {
+  [start Interviews needed] > [user Plan interviews] > [user Hold interview | each=interviewers] > [end Interviews held]
+}
+### Manager
+Hire? >(Yes: hire = true) [send Send offer] > [catch Answer received | key=candidateId] > [end Hired]
+Hire? >(No: default) [send Send rejection] > [end Rejected]
+[object CV] ..> Screen candidate
+[annotation Offers need manager approval] ..> Send offer
+## Talent pool | id=talent
+[start:condition Headcount opened | cond=openings > 0] > [service Search talent pool] > [end Search done]
+## Candidate | blackbox
+Candidate ~> Application received: Application
+Send offer ~> Candidate: Offer
+Candidate ~> Answer received: Answer`
 
 const S16Y = `# Order fulfilment
 policy[annotation Orders ship within two days]
@@ -106,6 +128,42 @@ describe("compileTextSpec", () => {
 		expect(n2 && pool && n2.y + n2.height <= pool.y + pool.height).toBe(true)
 		const report = lintDiagram(Bpmn.parse(Bpmn.export(d)))
 		expect(report.diagnostics.filter((x) => x.severity === "error")).toEqual([])
+	})
+
+	it("reads the shorthand: ids from names, references by name, default jobs and messages", () => {
+		const { definitions: d, problems, fixes } = compileTextSpec(S16X_TERSE)
+		expect(problems).toEqual([])
+		expect(fixes[0]).toMatch(/^ids from names: /)
+		const all = d.processes.flatMap((p) => [...p.flowElements])
+		const ids = all.map((e) => e.id)
+		for (const id of [
+			"applicationReceived",
+			"screenCandidate",
+			"organiseInterviews",
+			"hire",
+			"sendOffer",
+			"answerReceived",
+			"searchTalentPool",
+			"cv",
+		])
+			expect(ids).toContain(id)
+		const send = all.find((e) => e.id === "sendOffer")
+		expect(JSON.stringify(send?.extensionElements)).toContain('"type":"send-offer"')
+		const flows = d.collaborations[0]?.messageFlows ?? []
+		expect(flows.map((f) => `${f.sourceRef}>${f.targetRef}`)).toEqual(
+			expect.arrayContaining(["sendOffer>candidate"]),
+		)
+		expect(d.messages.map((m) => m.name)).toEqual(expect.arrayContaining(["answer-received"]))
+		// chars/4 ≈ tokens: the shorthand is the cheaper spec to decode.
+		expect(S16X_TERSE.length).toBeLessThan(S16X.length)
+	})
+
+	it("says when a name matches no node or more than one", () => {
+		const { problems } = compileTextSpec(
+			"# P\n[start Go] > [user Do it] > [end Done]\nDo that > Done\n[user Done] > Done",
+		)
+		expect(problems.join("\n")).toMatch(/"Do that" names no node/)
+		expect(problems.join("\n")).toMatch(/"Done" names more than one node/)
 	})
 
 	it("says in one line what the spec cannot use and where to go instead", () => {
@@ -186,6 +244,29 @@ describe("compileTextSpec", () => {
 		expect(compileTextSpec("## P\na[task A]\n## Q\nb[task B]\na ~> zz").problems).toEqual([
 			'line 5: no node or pool "zz"',
 		])
+	})
+})
+
+describe("deriveFormFields", () => {
+	it("asks for what the next decisions read, typed by the comparison", () => {
+		const { definitions: d } = compileTextSpec(`# Claim | id=claim
+[start Claim filed] > [user Assess claim] > [xor Covered?]
+Covered? >(Yes: covered = true) [xor Amount?]
+Covered? >(No: default) [end Rejected]
+Amount? >(High: amount > 1000 and risk = "high") [user Approve claim] > [xor Approved?]
+Amount? >(Low: risk = "low") [service Pay claim | result=paid] > [end Paid]
+Amount? >(Other: default) [end Parked]
+Approved? >(Yes: not(declined)) [end Approved]
+Approved? >(No: default) [user Note reason] > [end Noted]`)
+		const fields: Record<string, string> = {}
+		deriveFormFields(d, fields)
+		expect(fields).toEqual({
+			assessClaim: "covered:checkbox,amount:number,risk:select(high|low)",
+			approveClaim: "declined:checkbox",
+		})
+		const kept = { assessClaim: "x" }
+		deriveFormFields(d, kept, new Set(["approveClaim"]))
+		expect(kept).toEqual({ assessClaim: "x" })
 	})
 })
 
@@ -320,7 +401,7 @@ describe("casen build", () => {
 		await writeFile(join(dir, "s04.txt"), S04)
 		await run([join(dir, "s04.txt")])
 		expect(lines).toEqual([
-			"ok s04.bpmn + 2 forms (expense-review.form, expense-fix.form) · lint clean",
+			"ok s04.bpmn + 2 forms (expense-review.form, expense-fix.form) · lint clean · process expense, tasks 3, gateways 2, forms 2 · Camunda 8.10.0",
 		])
 		expect((await readdir(dir)).sort()).toEqual([
 			"expense-fix.form",
@@ -339,12 +420,24 @@ describe("casen build", () => {
 	it("builds five pools with shared store, message ends and a DMN task, lint clean", async () => {
 		await writeFile(join(dir, "s16y.txt"), S16Y)
 		await run([join(dir, "s16y.txt")])
-		expect(lines.at(-1)).toMatch(/^ok s16y\.bpmn \+ 2 forms .* · lint clean$/)
+		expect(lines.at(-1)).toMatch(
+			/^ok s16y\.bpmn \+ 2 forms .* · lint clean · pools 5, processes shipping\+shop\+warehouse, tasks 7, gateways 1, message flows 9, forms 2 · Camunda 8\.10\.0$/,
+		)
 		const xml = await readFile(join(dir, "s16y.bpmn"), "utf8")
 		expect(xml.match(/<bpmn:dataStore /g)).toHaveLength(1)
 		for (const id of ["delivered", "confirm", "refuse"])
 			expect(xml).toMatch(new RegExp(`id="${id}"[\\s\\S]*?messageRef="Message_`))
 		expect(xml).toContain('decisionId="assess-risk"')
+	})
+
+	it("builds the shorthand S16X lint clean with a checkbox form for the decision", async () => {
+		await writeFile(join(dir, "s16x.txt"), S16X_TERSE)
+		await run([join(dir, "s16x.txt")])
+		expect(lines.at(-1)).toMatch(
+			/^ok s16x\.bpmn \+ 3 forms .* · lint clean · pools 3, processes hiring\+talent, tasks 6, /,
+		)
+		const form = JSON.parse(await readFile(join(dir, "hiring-screenCandidate.form"), "utf8"))
+		expect(form.components.at(-1)).toMatchObject({ type: "checkbox", key: "hire", label: "Hire" })
 	})
 
 	it("-o is the output file, not the global --output format", async () => {
@@ -368,7 +461,9 @@ describe("casen build", () => {
 		)
 		await writeFile(join(dir, "s.txt"), S04)
 		await run([join(dir, "s.txt")], { out: join(dir, "out.bpmn") })
-		expect(lines).toEqual(["ok out.bpmn + 1 form (expense-fix.form) · lint clean"])
+		expect(lines).toEqual([
+			"ok out.bpmn + 1 form (expense-fix.form) · lint clean · process expense, tasks 3, gateways 2, forms 2 · Camunda 8.10.0",
+		])
 		await writeFile(join(dir, "bad.txt"), "a[task A] > b[task B]\na ~> b")
 		await expect(run([join(dir, "bad.txt")])).rejects.toThrow(/problem/)
 		expect((await readdir(dir)).includes("bad.bpmn")).toBe(false)
@@ -385,7 +480,9 @@ describe("casen build", () => {
 		)
 		lines.length = 0
 		await run([join(dir, "edit.mjs")], { edit: join(dir, "s04.bpmn") })
-		expect(lines).toEqual(["ok s04.bpmn · lint clean"])
+		expect(lines).toEqual([
+			"ok s04.bpmn · lint clean · process expense, tasks 4, gateways 2, forms 2 · Camunda 8.10.0",
+		])
 		const after = Bpmn.parse(await readFile(join(dir, "s04.bpmn"), "utf8"))
 		const at = (d: typeof before, id: string) =>
 			d.diagrams[0]?.plane.shapes.find((s) => s.bpmnElement === id)?.bounds
@@ -405,7 +502,9 @@ describe("casen build", () => {
 	.branch("b", (b) => b.intermediateCatchEvent("t", { name: "Hour", timerDuration: "PT1H" }).serviceTask("r", { name: "Remind", taskType: "remind" }).connectTo("gw"))`,
 		)
 		await run([join(dir, "loop.mjs")])
-		expect(lines).toEqual(["ok loop.bpmn · lint clean"])
+		expect(lines).toEqual([
+			"ok loop.bpmn · lint clean · process p, tasks 1, gateways 2, forms 0 · Camunda 8.10.0",
+		])
 		const defs = Bpmn.parse(await readFile(join(dir, "loop.bpmn"), "utf8"))
 		const merge = defs.processes[0]?.flowElements.find((e) => e.id === "gw_merge")
 		expect(merge?.type).toBe("exclusiveGateway")
@@ -430,7 +529,9 @@ describe("casen build", () => {
 			"8.10",
 		])
 		await run(parsed.positional.slice(1), parsed.flags)
-		expect(lines).toEqual(["ok s04.bpmn + 1 form (expense-archive.form) · lint clean"])
+		expect(lines).toEqual([
+			"ok s04.bpmn + 1 form (expense-archive.form) · lint clean · process expense, tasks 4, gateways 2, forms 3 · Camunda 8.10.0",
+		])
 		const xml = await readFile(join(dir, "s04.bpmn"), "utf8")
 		expect(xml).toContain('executionPlatformVersion="8.10.0"')
 		expect(xml).toContain('assignee="clerk" candidateGroups="finance"')
@@ -453,7 +554,7 @@ describe("casen build", () => {
 		await writeFile(join(dir, "s04.txt"), S04)
 		await run([join(dir, "s04.txt")], { deploy: true })
 		expect(lines).toEqual([
-			"ok s04.bpmn + 2 forms (expense-review.form, expense-fix.form) · lint clean · deployed 3 to camunda8 (key 42)",
+			"ok s04.bpmn + 2 forms (expense-review.form, expense-fix.form) · lint clean · process expense, tasks 3, gateways 2, forms 2 · Camunda 8.10.0 · deployed 3 to camunda8 (key 42)",
 		])
 		expect(fetch.mock.calls[0]?.[0]).toBe("http://cluster:8080/v2/deployments")
 		const body = fetch.mock.calls[0]?.[1]?.body as FormData

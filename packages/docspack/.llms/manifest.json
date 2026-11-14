@@ -21,7 +21,7 @@
 		{
 			"id": "agent-cards.bpmn",
 			"file": "chunks/agent-cards.bpmn.md",
-			"tokens": 437,
+			"tokens": 415,
 			"tags": [
 				"agent-card",
 				"cheat-sheet",
@@ -45,19 +45,21 @@
 		{
 			"id": "agent-cards.bpmn.1.-one-pool",
 			"file": "chunks/agent-cards.bpmn.1.-one-pool.md",
-			"tokens": 505,
+			"tokens": 546,
 			"tags": [
 				"agent-cards",
 				"bpmn",
 				"one",
 				"pool"
 			],
-			"entities": []
+			"entities": [
+				"reviewExpense"
+			]
 		},
 		{
 			"id": "agent-cards.bpmn.2.-pools-lanes-message-flows-data",
 			"file": "chunks/agent-cards.bpmn.2.-pools-lanes-message-flows-data.md",
-			"tokens": 491,
+			"tokens": 448,
 			"tags": [
 				"agent-cards",
 				"bpmn",
@@ -72,7 +74,7 @@
 		{
 			"id": "agent-cards.bpmn.3.-edit-an-existing-file",
 			"file": "chunks/agent-cards.bpmn.3.-edit-an-existing-file.md",
-			"tokens": 444,
+			"tokens": 344,
 			"tags": [
 				"agent-cards",
 				"bpmn",
@@ -81,7 +83,6 @@
 				"file"
 			],
 			"entities": [
-				"order.bpmn",
 				"executionPlatformVersion",
 				"@bpmnkit/core"
 			]
@@ -89,7 +90,7 @@
 		{
 			"id": "agent-cards.bpmn.not-in-the-text-spec",
 			"file": "chunks/agent-cards.bpmn.not-in-the-text-spec.md",
-			"tokens": 313,
+			"tokens": 220,
 			"tags": [
 				"agent-cards",
 				"bpmn",
@@ -100,9 +101,8 @@
 			],
 			"entities": [
 				"flow.mjs",
-				"kit.Bpmn.createDiagram",
-				"formId",
-				"correlationKey"
+				"createDiagram",
+				"formId"
 			]
 		},
 		{
@@ -258,7 +258,7 @@
 		{
 			"id": "cli.build",
 			"file": "chunks/cli.build.md",
-			"tokens": 134,
+			"tokens": 157,
 			"tags": [
 				"cli",
 				"build"
@@ -268,7 +268,7 @@
 		{
 			"id": "cli.build.spec-formats",
 			"file": "chunks/cli.build.spec-formats.md",
-			"tokens": 577,
+			"tokens": 640,
 			"tags": [
 				"cli",
 				"build",
@@ -276,6 +276,7 @@
 				"formats"
 			],
 			"entities": [
+				"reviewExpense",
 				"CompactDiagram",
 				"@bpmnkit/core",
 				"messageRef"

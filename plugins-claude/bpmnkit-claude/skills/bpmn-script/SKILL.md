@@ -11,7 +11,9 @@ Follow this card. Start from its template or script, change it to fit the task, 
 
 # BPMN agent card
 
-Build a Camunda 8 BPMN file in one command. Write a short spec with the Write tool, then run `casen build <spec>`: it writes the laid-out `.bpmn` and a `.form` per user task, lints like c8ctl (bpmnlint + camunda-compat), and with `--deploy` deploys them together. This card is all you need: do not plan in prose or read other docs; copy the template that fits, change it, run it once.
+Do not plan in prose and do not read other docs: write the spec directly with the Write tool from the template that fits, run `casen build <spec>` once, fix what it reports.
+
+`casen build` writes the laid-out `.bpmn` and a `.form` per user task, lints like c8ctl and, with `--deploy`, deploys them.
 
 <!-- docspack: tags=agent-card,cheat-sheet,build,build-script,bpmn,process,create,write,script,builder,edit,casen-build,sub-process,annotation,conditional,text-spec,collaboration,pools,lanes,message-flow,data-object,form -->
 
@@ -21,93 +23,89 @@ Build a Camunda 8 BPMN file in one command. Write a short spec with the Write to
 | Pools, lanes, message flows, data | `shop.txt` (template 2) | `casen build shop.txt --deploy` |
 | Change an existing `.bpmn` | `edit.mjs` (template 3) | `casen build edit.mjs --edit order.bpmn --deploy` |
 
-- Success is one line: `✓ order.bpmn + 2 forms · lint clean · deployed 3 to camunda8`. Otherwise one `✖` line per problem: fix the spec, run again. Then stop and answer in one line. The layout is final: never move DI by hand or render images.
-- One command per Bash call. Write files with the Write tool, not heredocs or `cd … &&`.
-- `-o out.bpmn` sets the output (default: the spec's name; with `--edit`, that file). `.dmn`/`.form` files after the spec are linted and deployed with it.
-- `--deploy` goes to `ZEEBE_REST_ADDRESS` (+ `CAMUNDA_CLIENT_ID`, `CAMUNDA_CLIENT_SECRET`, `CAMUNDA_OAUTH_URL`), else the casen profile, else local Reebe. If the task deploys another way (c8ctl), deploy the `.bpmn` and the written `.form` files.
-- No `casen` on PATH? `npm i -D @bpmnkit/cli`, then `npx casen …`.
+- Success is one line: `✓ order.bpmn + 2 forms (…) · lint clean · process order, tasks 4, gateways 2, forms 2 · Camunda 8.10.0`. It is the proof: do not inspect the XML. Otherwise one `✖` line per problem: fix the spec, run again.
+- After ✓: run the task's gate commands as given (one per Bash call), deploy the `.bpmn` plus the listed `.form` files, answer in one line. The layout is final: never move DI by hand or render images.
+- Write files with the Write tool, not heredocs. `-o out.bpmn` sets the output. `.dmn`/`.form` files after the spec are linted and deployed with it.
+- `--deploy` goes to `ZEEBE_REST_ADDRESS` (+ the `CAMUNDA_*` client variables), else the casen profile, else local Reebe. No `casen` on PATH? `npm i -D @bpmnkit/cli`, then `npx casen …`.
 
 ## 1. One pool
 
 ```text
 # Expense approval | id=expense
-start[start Expense submitted] > review[user Review expense | fields=amount:number,approved:checkbox] > ok[xor Approved?]
-ok >(Yes: approved = true) pay[service Pay expense | job=pay-expense] > paid[end Expense paid]
-ok >(No: default) rework[user Rework expense] > review
-failed[boundary:error Payment failed | on=pay error=PAY_FAILED] > notify[send Notify submitter | job=notify] > notified[end Payment failed]
+[start Expense submitted] > [user Review expense] > [xor Approved?]
+Approved? >(Yes: approved = true) [service Pay expense] > [end Expense paid]
+Approved? >(No: default) [user Rework expense] > Review expense
+[boundary:error Payment failed | on=payExpense error=PAY_FAILED] > [send Notify submitter] > [end Submitter notified]
 ```
 
-- `# Name | id=<process id>`: the process id is the deploy key. Add `camunda=8.8` for an older cluster (default 8.10).
-- `a > b > c` is a path. Declare a node the first time: `id[kind Name | attrs]`; later write only `id`.
-- Kinds: `start end task user service rule send receive script manual call sub xor and or eventgw catch throw boundary adhoc`. Triggers: `start:message`, `start:timer`, `start:condition`, `catch:timer`, `catch:condition`, `boundary:timer`, `boundary:error`, `end:error`, `end:message`, `end:terminate`, `signal`, `escalation`.
+- `# Name | id=<process id>`: the process id is the deploy key. `camunda=8.8` for an older cluster (default 8.10).
+- `a > b > c` is a path. Declare a node once: `[kind Name | attrs]`; its id is the name in camelCase (`[user Review expense]` is `reviewExpense`), or write `id[kind Name]`. Later write its id or its exact name. A path that stops gets an end event.
+- Kinds: `start end task user service rule send receive script manual call sub xor and or eventgw catch throw boundary adhoc`. Triggers: `<event kind>:message|timer|condition|error|signal|escalation|terminate`, e.g. `start:timer`, `boundary:error`, `end:message`.
 - Decision: `gw >(Label: FEEL condition) x` per branch, exactly one `gw >(Label: default) y`. Branches that meet are joined for you; parallel work: `and` split, `and` join.
-- Attributes: `job=` job type (service, send, message end; default: the id) · `form=<form id>` (default: generated `<process id>-<task id>`) · `fields=key[:number|checkbox|textarea|date|select(a|b)],…` for the generated form · `msg=` + `key=<FEEL>` (every message caught after the start) · `after=PT1H`, `every=R/PT1H`, `at=2026-01-31T09:00:00Z` (timers; a timer start takes only a literal date, `catch:timer at==<FEEL>` a variable) · `cond=<FEEL>` (conditional, last) · `error=`, `signal=`, `escalation=` · `on=<task>` and `nonint` (boundary) · `result=<var>` · `called=<process id>` · `each=<list var>` (multi-instance: once per item) · `in.x=<FEEL>`, `out.x=<FEEL>` · `feel=<FEEL>` (script, last) · service/send: `retries=3`, `header.k=v` · user: `assignee=` `groups=a;b` `users=` `due=P2D` `priority=0-100`.
-- A rule task calls `decision=<id>`; without it, its name kebab-cased (`risk[rule Assess risk]` calls `assess-risk`). Pass the `.dmn` too: `casen build order.txt risk.dmn --deploy`.
+- Forms: a user task without `fields=` gets a field per variable the next decisions read (`approved = true` → checkbox, `amount > 1000` → number, `risk = "low"` → select). `fields=key[:number|checkbox|textarea|date|select(a|b)],…` sets them; `form=<id>` links your own.
+- Defaults: `job=` (service, send, message end) is the id kebab-cased (`pay-expense`); `msg=` is the name kebab-cased. Other attributes: `key=<FEEL>` (every message caught after the start) · `after=PT1H`, `every=R/PT1H`, `at=2026-01-31T09:00:00Z` (a timer start takes only a literal date; `catch:timer at==<FEEL>` a variable) · `cond=<FEEL>` (last) · `error=`, `signal=`, `escalation=` · `on=<task id>`, `nonint` (boundary) · `result=<var>` · `called=<process id>` · `each=<list var>` · `in.x=`, `out.x=` · `feel=<FEEL>` (script, last) · `retries=3`, `header.k=v` · `assignee=` `groups=a;b` `users=` `due=P2D` `priority=0-100`.
+- A rule task calls `decision=<id>`, default its name kebab-cased (`[rule Assess risk]` calls `assess-risk`). Pass the `.dmn` too: `casen build order.txt risk.dmn --deploy`.
 
 ## 2. Pools, lanes, message flows, data
 
 ```text
 # Order fulfilment
-policy[annotation Orders ship within two days]
+[annotation Orders ship within two days]
 ## Shop | id=shop
 ### Sales
-placed[start:message Order placed | msg=order-placed] > check[service Check stock | job=check-stock] > ask[send Request payment | job=request-payment]
-ask > paid[catch Payment received | msg=payment-received key=orderId] > pack[sub Pack order]
-pack {
-  ps[start Packing started] > pick[user Pick item | each=items] > box[user Box items] > pe[end Packed]
+[start:message Order placed] > [service Check stock] > [send Request payment]
+Request payment > [catch Payment received | key=orderId] > [sub Pack order]
+Pack order {
+  [start Packing started] > [user Pick item | each=items] > [user Box items] > [end Packed]
 }
 ### Warehouse
-pack > ship[user Ship order] > done[end Order shipped]
-check ..> stock[store Stock DB]
-ship ..> slip[object Packing slip]
-fragile[annotation Fragile items get extra padding] ..> pack
+Pack order > [user Ship order] > [end Order shipped]
+Check stock ..> [store Stock DB]
+Ship order ..> [object Packing slip]
+[annotation Fragile items get extra padding] ..> Pack order
 ## Restock | id=restock
-low[start:condition Stock low | cond=stock < 10] > reorder[service Reorder stock | job=reorder] > reordered[end Stock reordered]
+[start:condition Stock low | cond=stock < 10] > [service Reorder stock] > [end Stock reordered]
 ## Bank | blackbox
 ## Customer | blackbox
-customer ~> placed: Order
-ask ~> bank: Payment request
-bank ~> paid: Payment confirmed
+Customer ~> Order placed: Order
+Request payment ~> Bank: Payment request
+Bank ~> Payment received: Payment confirmed
 ```
 
-- `## Name | id=<process id>` starts a pool with its own process; `## Name | blackbox` a partner pool without one (its id: `id=` or the name in lower case).
-- `### Lane`: nodes declared after it go in that lane; repeat a header to switch back. Gateways and events the reader adds follow their neighbours.
-- `a ~> b: label` is a message flow; `a` and `b` are node ids or pool ids, in different pools. A plain `start` it reaches becomes a message start. A same-name `store` in several pools is one data store.
-- `d[object Name] ..> task`: the task reads it; `task ..> d[store Name]`: the task writes it. `objects` marks a collection.
-- `sp[sub Name]`, then `sp {`, its paths (own start and end), `}`: an expanded sub-process. Bodies nest.
-- `n[annotation Text]`: a text annotation, on the collaboration when written before the first `##`; `n[annotation Text] ..> task` links it.
-- Ids are global: give every node a unique id across pools.
+- `## Name | id=<process id>` starts a pool with its own process; `## Name | blackbox` a partner pool (id: `id=` or the name kebab-cased).
+- `### Lane`: nodes declared after it go in that lane; repeat a header to switch back.
+- `a ~> b: label` is a message flow between nodes or pools (ids or names) of different pools. A plain `start` it reaches becomes a message start. A same-name `store` in several pools is one data store.
+- `[object Name] ..> task`: the task reads it; `task ..> [store Name]`: it writes it. `objects` marks a collection.
+- `[sub Name]`, then `Name {`, its paths (own start and end), `}`: an expanded sub-process. Bodies nest.
+- `[annotation Text]`: on the collaboration before the first `##`; `[annotation Text] ..> task` links it. Ids are global across pools.
 
 ## 3. Edit an existing file
 
 ```js
-// Insert a step after "review" with an error path that loops back to it.
+// Insert a step after "reviewExpense" with an error path that loops back to it.
 export default (kit, model) =>
 	kit.Bpmn.continueProcess(model, "expense")
-		.insertAfter("review")
+		.insertAfter("reviewExpense")
 		.serviceTask("validate", { name: "Validate receipt", taskType: "validate-receipt" })
 		.withBoundary("invalid", { name: "Receipt invalid", errorCode: "INVALID" }, (b) =>
 			b.userTask("fix", { name: "Fix receipt" }).connectTo("validate"),
 		)
 ```
 
-`casen build edit.mjs --edit order.bpmn` rewrites `order.bpmn` in place. Existing shapes, tasks and their forms stay as they are; shapes right of the insertion move only as far as the new steps need; a second flow into a task gets a merge gateway; only new user tasks get forms (`--no-forms`: none). `--camunda 8.10` sets the file's `executionPlatformVersion`, other attributes kept. `kit` is `@bpmnkit/core`, `model` the parsed file.
+`--edit order.bpmn` rewrites it in place: existing shapes and forms stay, shapes right of the insertion move only as needed, new user tasks get forms. `--camunda 8.10` sets `executionPlatformVersion`. `kit` is `@bpmnkit/core`, `model` the parsed file.
 
-- `continueProcess(model, processId)`: `.insertAfter(id)` splices into the path after `id`; `.at(id)` continues from a node that has no outgoing flow.
-- Steps: `serviceTask(id, { name, taskType })` · `userTask(id, { name, formId, assignee, candidateGroups })` · `sendTask(id, { name, taskType })` · `intermediateCatchEvent(id, { name, messageName, correlationKey: "=orderId" })` or `{ timerDuration: "PT1H" }` · `endEvent(id, { name })` · `.connectTo(id)` joins an existing node.
-- Decision: `.exclusiveGateway(id, { name }).branch("yes", (b) => b.condition("=x > 1").label("Yes")…).branch("no", (b) => b.defaultFlow().label("No")…)`.
-- Boundary: `.withBoundary(id, { errorCode } | { timerDuration } | { messageName, correlationKey }, (b) => …)` on the step before it.
-- Rename or set one attribute: change `model` and return it: `model.processes[0].flowElements.find((e) => e.id === "pay").name = "Pay now"; return model`.
-- Builder FEEL starts with `=`; text-spec conditions do not.
+- `continueProcess(model, processId)`: `.insertAfter(id)` splices in after `id`; `.at(id)` continues from a node without outgoing flow.
+- Steps: `serviceTask(id, { name, taskType })` · `userTask(id, { name, formId, assignee, candidateGroups })` · `intermediateCatchEvent(id, { name, messageName, correlationKey: "=orderId" })` or `{ timerDuration: "PT1H" }` · `endEvent(id, { name })` · `.connectTo(id)`.
+- Decision: `.exclusiveGateway(id, { name }).branch("yes", (b) => b.condition("=x > 1").label("Yes")…).branch("no", (b) => b.defaultFlow().label("No")…)`. Boundary: `.withBoundary(id, { errorCode } | { timerDuration } | { messageName, correlationKey }, (b) => …)`.
+- One attribute: change `model` and return it. Builder FEEL starts with `=`; text-spec conditions do not.
 
 ## Not in the text spec
 
-Event sub-processes, transactions, compensation, groups, nested lanes, a collapsed sub-process: write a module `flow.mjs` with `export default (kit) => kit.Bpmn.createProcess("id")…` (or `kit.Bpmn.createDiagram` for pools; `.eventSubProcess(id, (b) => …)`, `.transaction(id, (b) => …)`) and run `casen build flow.mjs`. The build splits a gateway that both joins and splits, and unlinks a message only thrown, as for a text spec.
+Event sub-processes, transactions, compensation, groups, nested lanes: write `flow.mjs`, `export default (kit) => kit.Bpmn.createProcess("id")…` (pools: `createDiagram`; `.eventSubProcess(id, (b) => …)`, `.transaction(…)`), run `casen build flow.mjs`.
 
 ## Traps
 
-- A finding reads `✖ order.bpmn pay: <message> [<rule id>, .bpmnlintrc "<key>"]`: the key is what c8ctl lint calls the rule. Fix the model; do not silence rules unless the task says so.
-- Deploy ids: `formId` and decision ids must equal the deployed form's and decision's ids. Generated forms already do; a hand-written `.form` next to the output is used instead of generating one with its id.
-- A message caught after the start needs `key=` (`correlationKey`); a message start event does not. A message only thrown keeps its message and takes the key the process waits with (else `=correlationKey`).
-- An event-based gateway (`eventgw`) is followed only by catch events.
+- A finding reads `✖ order.bpmn pay: <message> [<rule id>, .bpmnlintrc "<key>"]`: the key is c8ctl's rule name. Fix the model; do not silence rules unless the task says so.
+- `formId` and decision ids must equal the deployed form's and decision's ids. Generated forms already do; a hand-written `.form` next to the output is used instead.
+- A message caught after the start needs `key=`; a message start does not. An `eventgw` is followed only by catch events.
 - `casen build` refuses what Camunda 8 cannot deploy, one line per problem, `- <id>: <message> (zeebe/<rule>)`, and writes nothing.
