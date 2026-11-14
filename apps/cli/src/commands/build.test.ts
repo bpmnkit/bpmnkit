@@ -602,6 +602,52 @@ describe("casen build", () => {
 		expect(at(after, "archive")?.y).toBe(at(before, "pay")?.y)
 	})
 
+	it("an edit leaves existing formless user tasks untouched; only the new one gets a form", async () => {
+		const task = (id: string, name: string, inc: string, out: string) =>
+			`<bpmn:userTask id="${id}" name="${name}"><bpmn:incoming>${inc}</bpmn:incoming><bpmn:outgoing>${out}</bpmn:outgoing></bpmn:userTask>`
+		const shape = (id: string, x: number, w = 100, h = 80) =>
+			`<bpmndi:BPMNShape id="${id}_di" bpmnElement="${id}"><dc:Bounds x="${x}" y="78" width="${w}" height="${h}"/></bpmndi:BPMNShape>`
+		await writeFile(
+			join(dir, "expense.bpmn"),
+			`<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="d" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:process id="expense" isExecutable="true">
+<bpmn:startEvent id="s"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
+${task("submit", "Submit expense report", "f1", "f2")}
+${task("approve", "Approve expense", "f2", "f3")}
+<bpmn:endEvent id="e"><bpmn:incoming>f3</bpmn:incoming></bpmn:endEvent>
+<bpmn:sequenceFlow id="f1" sourceRef="s" targetRef="submit"/>
+<bpmn:sequenceFlow id="f2" sourceRef="submit" targetRef="approve"/>
+<bpmn:sequenceFlow id="f3" sourceRef="approve" targetRef="e"/>
+</bpmn:process>
+<bpmndi:BPMNDiagram id="D"><bpmndi:BPMNPlane id="P" bpmnElement="expense">
+${shape("s", 100, 36, 36)}${shape("submit", 200)}${shape("approve", 360)}${shape("e", 520, 36, 36)}
+<bpmndi:BPMNEdge id="f1_di" bpmnElement="f1"><di:waypoint x="136" y="118"/><di:waypoint x="200" y="118"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="f2_di" bpmnElement="f2"><di:waypoint x="300" y="118"/><di:waypoint x="360" y="118"/></bpmndi:BPMNEdge>
+<bpmndi:BPMNEdge id="f3_di" bpmnElement="f3"><di:waypoint x="460" y="118"/><di:waypoint x="520" y="118"/></bpmndi:BPMNEdge>
+</bpmndi:BPMNPlane></bpmndi:BPMNDiagram></bpmn:definitions>`,
+		)
+		await writeFile(
+			join(dir, "edit.mjs"),
+			`export default (kit, model) => kit.Bpmn.continueProcess(model, "expense")
+	.insertAfter("submit").serviceTask("validate", { name: "Validate receipts", taskType: "validate" })
+	.boundaryEvent("err", { attachedTo: "validate", errorRef: "receipt_error", name: "Invalid" })
+	.userTask("correct", { name: "Correct expense report" })
+	.connectTo("submit")`,
+		)
+		await run([join(dir, "edit.mjs")], { edit: join(dir, "expense.bpmn"), lint: false })
+		const after = Bpmn.parse(await readFile(join(dir, "expense.bpmn"), "utf8"))
+		const els = new Map(after.processes[0]?.flowElements.map((e) => [e.id, e]))
+		const link = (id: string) => els.get(id)?.extensionElements.map((x) => x.name)
+		expect(link("submit")).toEqual([])
+		expect(link("approve")).toEqual([])
+		expect(link("correct")).toContain("zeebe:formDefinition")
+		expect(lines[0]).toContain("+ 1 form (expense-correct.form)")
+		expect((await readdir(dir)).filter((f) => f.endsWith(".form"))).toEqual([
+			"expense-correct.form",
+		])
+	})
+
 	it("deploys the model with its forms in one request", async () => {
 		vi.stubEnv("ZEEBE_REST_ADDRESS", "http://cluster:8080")
 		const fetch = vi.fn(
