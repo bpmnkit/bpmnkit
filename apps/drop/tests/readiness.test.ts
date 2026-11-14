@@ -23,7 +23,7 @@ describe("readiness", () => {
 		expect(result.missing[0]?.what).toMatch(/job type|connector/)
 	})
 
-	it("lists user, script and business rule tasks that cannot run as drafted", () => {
+	it("lists user and script tasks that cannot run as drafted, but not a named rule task", () => {
 		const result = readiness(
 			draft(
 				"# P\nstart[start Go] > b[user Review] > e[script Calc] > d[rule Decide] > f[end Done]",
@@ -31,7 +31,8 @@ describe("readiness", () => {
 		)
 		expect(result.state).toBe("shape-only")
 		if (result.state !== "shape-only") return
-		expect(result.missing.map((m) => m.elementId).sort()).toEqual(["b", "d", "e"])
+		// A rule task's decision id defaults to its kebab-cased name, so it has a target.
+		expect(result.missing.map((m) => m.elementId).sort()).toEqual(["b", "e"])
 	})
 
 	it("calls a draft with only events and gateways ready", () => {

@@ -6,7 +6,7 @@
 
 Writing a BPMN process, DMN decision or form? Read its agent card first: a runnable script, the top options and the traps (`casen agent-card bpmn|dmn|form` prints the same card).
 
-- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 5 chunks, 1973 tokens
+- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 5 chunks, 1979 tokens
 - [DMN agent card](.llms/chunks/agent-cards.dmn.md) — 5 chunks, 1331 tokens
 - [Form agent card](.llms/chunks/agent-cards.form.md) — 4 chunks, 876 tokens
 
@@ -19,7 +19,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 
 ## agent-cards
 
-- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 415 tokens
+- [BPMN agent card](.llms/chunks/agent-cards.bpmn.md) — 421 tokens
 - [BPMN agent card — 1. One pool](.llms/chunks/agent-cards.bpmn.1.-one-pool.md) — 546 tokens
 - [BPMN agent card — 2. Pools, lanes, message flows, data](.llms/chunks/agent-cards.bpmn.2.-pools-lanes-message-flows-data.md) — 448 tokens
 - [BPMN agent card — 3. Edit an existing file](.llms/chunks/agent-cards.bpmn.3.-edit-an-existing-file.md) — 344 tokens

@@ -1,6 +1,6 @@
 # @bpmnkit/core for agents
 
-Do not read README.md (20 KB) or the .d.ts files. Read the one card for your task (~2k tokens each); it is self-sufficient. BPMN: write a short spec with the Write tool and run one command, `casen build <spec> --deploy` (`@bpmnkit/cli`; `npx casen` if not on PATH); it writes the .bpmn and its forms, lints and deploys.
+Read this file and the one card for your task once (~2k tokens each; `casen agent-card <bpmn|dmn|form>` prints the same cards). The card is self-sufficient: do not read README.md (20 KB) and do not search `dist/*.d.ts`. BPMN: write a short spec with the Write tool and run one command, `casen build <spec> --deploy` (`@bpmnkit/cli`; `npx casen` if not on PATH); it writes the .bpmn and its forms, lints and deploys.
 
 | You write | Read |
 | --- | --- |
