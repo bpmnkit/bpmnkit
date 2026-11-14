@@ -1,7 +1,7 @@
 <div align="center">
   <a href="https://bpmnkit.com"><img src="https://bpmnkit.com/favicon.svg" width="72" height="72" alt="BPMN Kit logo"></a>
   <h1>@bpmnkit/viewer-lite</h1>
-  <p>Dependency-free BPMN viewer for one self-contained HTML file — an 8 KB script that turns embedded BPMN XML into a pannable, zoomable SVG</p>
+  <p>Dependency-free BPMN viewer for one self-contained HTML file — an 8.5 KB script that turns embedded BPMN XML into a pannable, zoomable SVG</p>
 
   [![npm](https://img.shields.io/npm/v/@bpmnkit/viewer-lite?style=flat-square&color=6244d7)](https://www.npmjs.com/package/@bpmnkit/viewer-lite)
   [![license](https://img.shields.io/npm/l/@bpmnkit/viewer-lite?style=flat-square)](https://github.com/bpmnkit/bpmnkit/blob/main/LICENSE)
@@ -18,7 +18,7 @@
 
 ## Overview
 
-`@bpmnkit/viewer-lite` draws a BPMN 2.0 diagram in the browser with no dependencies, small enough (under 8 KB gzip) to inline into the HTML file that carries the diagram. One file, no server, no CDN: e-mail it, attach it to a ticket, open it offline.
+`@bpmnkit/viewer-lite` draws a BPMN 2.0 diagram in the browser with no dependencies, small enough (under 8.5 KB gzip) to inline into the HTML file that carries the diagram. One file, no server, no CDN: e-mail it, attach it to a ticket, open it offline.
 
 It uses the same SVG renderer as `@bpmnkit/core`'s `exportSvg`, fed by a small `DOMParser` reader instead of the full parser.
 
@@ -28,9 +28,10 @@ It uses the same SVG renderer as `@bpmnkit/core`'s `exportSvg`, fed by a small `
 - **Open and drop** — the template has a file picker (`.bpmn`, `.xml`) and accepts a dropped file, so one page can open any diagram; `toHtml("")` makes an empty viewer
 - **Auto-boot** — every `<script type="application/bpmn+xml">` on the page is replaced by its diagram
 - **Fit, pan and zoom** — fits the width on load; drag to pan, wheel to zoom
-- **Light and dark** — follows `prefers-color-scheme`
+- **Light by default** — dark strokes on a light page whatever the reader's OS says; `theme: "dark"` or `"auto"` (follow `prefers-color-scheme`) are opt-in
+- **Your colours** — a partial palette, or `--bpmnkit-viewer-*` CSS variables, no rebuild
 - **Same drawing as core** — tested against every conformance fixture
-- **Size gate** — the build fails when the minified script is over 8 KB gzip
+- **Size gate** — the build fails when the minified script is over 8.5 KB gzip
 
 ## Installation
 
@@ -51,7 +52,16 @@ writeFileSync("order.html", toHtml(readFileSync("order.bpmn", "utf8"), { title: 
 
 `toHtml` inlines the script and the XML into `dist/template.html` and escapes any `</script` in the XML (text and comments are safe; CDATA is split and rejoined). Or from the shell: `casen export html order.bpmn -o order.html`. From another language, replace `{{BPMN}}` in `@bpmnkit/viewer-lite/template.html` with the XML, escaping `</script` the same way.
 
-Or in your own page:
+Choose the theme and brand colours (the colours become `--bpmnkit-viewer-*` variables; a value that could break out of the CSS throws):
+
+```typescript
+toHtml(xml, { theme: "dark" }) // or "auto"
+toHtml(xml, { colors: { bg: "#101820", shapeStroke: "#0b5fff" } })
+```
+
+`casen export html order.bpmn --theme dark --color stroke=#0b5fff --color bg=#101820`. Keys: `bg`, `fill`, `stroke`, `flow`, `text`, `pool-header`, `halo`.
+
+Or in your own page (`data-theme="light|dark|auto"` on the script picks the theme):
 
 ```html
 <script type="application/bpmn+xml">
@@ -69,12 +79,15 @@ function render(xml: string, el: Element, options?: RenderOptions): boolean  // 
 function boot(root?: ParentNode): void            // replace application/bpmn+xml scripts
 function parseBpmnLite(xml: string): BpmnDefinitions  // the fields exportSvg draws
 // Node: import { toHtml } from "@bpmnkit/viewer-lite/html"
-function toHtml(xml: string, options?: { title?: string }): string  // one self-contained page; blank xml: empty viewer
+function toHtml(xml: string, options?: HtmlOptions): string  // one self-contained page; blank xml: empty viewer
+interface HtmlOptions { title?: string; theme?: "light" | "dark" | "auto"; colors?: Partial<SvgThemeColors> }
 
 interface RenderOptions {
-  theme?: "light" | "dark"   // default: prefers-color-scheme
+  theme?: "light" | "dark" | "auto" | Partial<SvgThemeColors>  // default "light"; "auto" follows prefers-color-scheme
   interactive?: boolean      // drag to pan, wheel to zoom; default true
 }
+// CSS variables on the element (or an ancestor) override the preset; an explicit palette overrides them:
+// --bpmnkit-viewer-bg | -fill | -stroke | -flow | -text | -pool-header | -halo  (halo defaults to bg)
 ```
 
 A file without diagram layout (`bpmndi`) shows a short message; lay it out first with `@bpmnkit/core`. Label fonts from `bpmndi:BPMNLabelStyle` and DI colours are not drawn.

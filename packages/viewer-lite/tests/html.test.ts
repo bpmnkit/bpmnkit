@@ -19,7 +19,7 @@ const withText = (text: string) =>
 
 /** What the page's script element holds, as the viewer reads it. */
 const embedded = (html: string): string => {
-	const m = /<script type="application\/bpmn\+xml">([\s\S]*?)<\/script>/.exec(html)
+	const m = /<script type="application\/bpmn\+xml"[^>]*>([\s\S]*?)<\/script>/.exec(html)
 	if (!m) throw new Error("no bpmn script")
 	return m[1] ?? ""
 }
@@ -92,5 +92,61 @@ describe("toHtml", () => {
 			expect(html).not.toContain(`<script type="application/bpmn+xml">`)
 			expect(html).toContain("Open or drop a .bpmn file")
 		}
+	})
+})
+
+describe("toHtml theme and colors", () => {
+	it("is light and has no theme markup by default", () => {
+		const html = toHtml(xml)
+		expect(html).not.toContain('data-theme="')
+		expect(html).not.toContain("@media (prefers-color-scheme")
+		expect(html).toContain("background:var(--bpmnkit-viewer-bg,#f8f9fa)")
+	})
+
+	it("sets data-theme on the script and body, and dark page colours", () => {
+		const dark = toHtml(xml, { theme: "dark" })
+		expect(dark).toContain('<script type="application/bpmn+xml" data-theme="dark">')
+		expect(dark).toContain('<body data-theme="dark">')
+		expect(dark).toContain(":root{--bpmnkit-viewer-bg:#1e1e2e;--bpmnkit-viewer-text:#cdd6f4}")
+		const auto = toHtml(xml, { theme: "auto" })
+		expect(auto).toContain(
+			"@media (prefers-color-scheme:dark){:root{--bpmnkit-viewer-bg:#1e1e2e;--bpmnkit-viewer-text:#cdd6f4}}",
+		)
+		expect(embedded(toHtml(xml, { theme: "light" }))).toBe(xml)
+		expect(toHtml("", { theme: "dark" })).toContain('<body data-theme="dark">')
+	})
+
+	it("emits colours as variables in a fixed order", () => {
+		const html = toHtml(xml, {
+			colors: { textHalo: "#fff", bg: "#123456", poolHeader: "rgba(0,0,0,.1)" },
+		})
+		expect(html).toContain(
+			":root{--bpmnkit-viewer-bg:#123456;--bpmnkit-viewer-pool-header:rgba(0,0,0,.1);--bpmnkit-viewer-halo:#fff}</style>",
+		)
+		expect(embedded(html)).toBe(xml)
+	})
+
+	it("is deterministic", () => {
+		const o = { theme: "auto", colors: { bg: "#fff", text: "#000" } } as const
+		expect(toHtml(xml, o)).toBe(toHtml(xml, o))
+	})
+
+	it("rejects values that could break out of the CSS or HTML", () => {
+		for (const bad of [
+			"red;}body{display:none",
+			"red</style><script>alert(1)</script>",
+			'red" onload="x',
+			"url(https://evil.example/x)",
+			"var(--x)",
+			"red\\",
+			"red/*",
+			"a{b}",
+			"",
+			"x".repeat(65),
+		]) {
+			expect(() => toHtml(xml, { colors: { bg: bad } }), bad).toThrow(/Invalid colour/)
+		}
+		expect(() => toHtml(xml, { colors: { nope: "#fff" } as never })).toThrow(/Unknown colour/)
+		expect(() => toHtml(xml, { theme: "x" as never })).toThrow(/Unknown theme/)
 	})
 })

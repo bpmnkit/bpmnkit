@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Fails when dist/viewer-lite.min.js, gzipped at level 9, is over the 8 KB
+ * Fails when dist/viewer-lite.min.js, gzipped at level 9, is over the 8.5 KB
  * budget: the viewer is inlined into every exported HTML file. Runs after
  * `scripts/build.mjs` in the package's build.
  */
@@ -8,7 +8,7 @@
 import { readFileSync } from "node:fs"
 import { gzipSync } from "node:zlib"
 
-export const BUDGET = 8_000
+export const BUDGET = 8_500
 const JS = new URL("../dist/viewer-lite.min.js", import.meta.url)
 
 const size = gzipSync(readFileSync(JS), { level: 9 }).length

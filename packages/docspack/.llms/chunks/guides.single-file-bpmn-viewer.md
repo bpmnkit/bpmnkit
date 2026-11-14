@@ -1,7 +1,7 @@
 # One-File BPMN Viewer
 
 Send a process to someone who has no modeler: one `.html` file, no server, no CDN, no other files.
-`@bpmnkit/viewer-lite` is an 8 KB (gzip) script that draws BPMN XML as a pannable, zoomable SVG,
+`@bpmnkit/viewer-lite` is an 8.5 KB (gzip) script that draws BPMN XML as a pannable, zoomable SVG,
 small enough to inline into the page that carries the diagram.
 
 
