@@ -48,7 +48,7 @@ const service: ApiService = {"id":"grafana","name":"Grafana API","auth":{"type":
 	{"method":"GET","path":"/admin/users/{user_id}/quotas","summary":"Fetch user quota"},
 	{"method":"PUT","path":"/admin/users/{user_id}/quotas/{quota_target}","summary":"Update user quota","body":["limit","target"]},
 	{"method":"POST","path":"/admin/users/{user_id}/revoke-auth-token","summary":"Revoke auth token for user","body":["authTokenId"]},
-	{"method":"GET","path":"/annotations","summary":"Find Annotations","query":["from","to","userId","userUID","alertId","alertUID"]},
+	{"method":"GET","path":"/annotations","summary":"Find Annotations","query":["from","to","userId","userUID","alertUID","dashboardId"]},
 	{"method":"POST","path":"/annotations","summary":"Create Annotation","body":["text*","dashboardId","dashboardUID","data","panelId","tags"]},
 	{"method":"POST","path":"/annotations/graphite","summary":"Create Annotation in Graphite format","body":["data","tags","what","when"]},
 	{"method":"POST","path":"/annotations/mass-delete","summary":"Delete multiple annotations","body":["annotationId","dashboardId","dashboardUID","panelId"]},
