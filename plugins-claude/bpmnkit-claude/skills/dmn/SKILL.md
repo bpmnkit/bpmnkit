@@ -7,7 +7,7 @@ description: "Write or edit a Camunda 8 DMN decision table with @bpmnkit/core (c
 
 Task: $ARGUMENTS
 
-Follow this card. Start from its script, change it to fit the task, run it, and fix every lint error before you finish.
+Follow this card. Start from its template or script, change it to fit the task, run it, and fix every lint error before you finish.
 
 # DMN agent card
 

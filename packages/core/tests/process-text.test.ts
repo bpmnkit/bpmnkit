@@ -240,9 +240,13 @@ describe("parseProcessText", () => {
 		})
 	})
 
-	it("gives a rule task its id as decision id, so it deploys", () => {
-		const els = elements("s[start] > credit[rule Check credit] > e[end]")
-		expect(els.find((e) => e.id === "credit")?.decisionId).toBe("credit")
+	it("gives a rule task a decision id from its name, or decision=, so it deploys", () => {
+		const els = elements(
+			"s[start] > credit[rule Check credit] > score[rule 2nd score | decision=score-v2] > x[rule] > e[end]",
+		)
+		expect(els.find((e) => e.id === "credit")?.decisionId).toBe("check-credit")
+		expect(els.find((e) => e.id === "score")?.decisionId).toBe("score-v2")
+		expect(els.find((e) => e.id === "x")?.decisionId).toBe("x")
 	})
 
 	it("adds an id that is used but never declared as a task named from it", () => {
@@ -1168,6 +1172,34 @@ describe("forms, mappings and platform version", () => {
 			"a[start A] > t[task T | in.x=if a=1 then 2 else 3] > e[end E]",
 		)
 		expect(problems.map((p) => p.message).join()).toContain('unknown attribute "a=1"')
+	})
+
+	it("reads retries, task headers and user task assignment", () => {
+		const { problems, diagram } = parseProcessText(
+			"a[start A] > t[service T | job=x retries=3 header.region=eu] > u[user U | assignee=alice groups=ops;qa due=P2D priority=80] > e[end E]",
+		)
+		expect(problems).toEqual([])
+		const xml = Bpmn.export(expand(diagram, { validate: false }))
+		expect(xml).toContain('retries="3"')
+		expect(xml).toContain('key="region" value="eu"')
+		expect(xml).toContain('assignee="alice"')
+		expect(xml).toContain('candidateGroups="ops,qa"')
+		expect(xml).toContain('dueDate="P2D"')
+		expect(xml).toContain('priority="80"')
+		const bad = parseProcessText(
+			"a[start A] > t[task T | retries=3] > u[service U | assignee=x] > e[end E]",
+		)
+		expect(bad.problems.map((p) => p.message)).toEqual([
+			expect.stringContaining("retries= takes a service or send task"),
+			expect.stringContaining("assignee= takes a user task"),
+		])
+	})
+
+	it("suggests the fix for a doubled =", () => {
+		const { problems } = parseProcessText(
+			"a[start A] > c[catch:message C | msg=m key==orderId] > e[end E]",
+		)
+		expect(problems[0]?.message).toContain("did you mean key=orderId")
 	})
 
 	it("ignores form= on a kind that cannot have one", () => {

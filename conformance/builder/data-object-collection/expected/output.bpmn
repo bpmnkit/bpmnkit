@@ -10,7 +10,7 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_s_t</bpmn:incoming>
       <bpmn:outgoing>Flow_t_e</bpmn:outgoing>
-      <bpmn:dataOutputAssociation>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_t_DOR1_1">
         <bpmn:targetRef>DOR1</bpmn:targetRef>
       </bpmn:dataOutputAssociation>
     </bpmn:serviceTask>

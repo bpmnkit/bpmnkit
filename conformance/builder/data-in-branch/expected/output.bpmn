@@ -15,7 +15,7 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_g_t</bpmn:incoming>
       <bpmn:outgoing>Flow_t_e1</bpmn:outgoing>
-      <bpmn:dataOutputAssociation>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_t_R_1">
         <bpmn:targetRef>R</bpmn:targetRef>
       </bpmn:dataOutputAssociation>
     </bpmn:serviceTask>

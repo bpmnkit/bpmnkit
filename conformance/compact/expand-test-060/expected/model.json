@@ -460,7 +460,9 @@
         },
         {
           "conditionExpression": {
-            "attributes": {},
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
             "text": "= ok"
           },
           "extensionElements": [],

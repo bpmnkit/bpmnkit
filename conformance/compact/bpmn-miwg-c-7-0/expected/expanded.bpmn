@@ -144,15 +144,6 @@
       <bpmndi:BPMNShape id="_c68abea8-c5b4-4aef-b1a5-1e81caec0cba_di" bpmnElement="_c68abea8-c5b4-4aef-b1a5-1e81caec0cba">
         <dc:Bounds x="104" y="760" width="36" height="50"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_ef29e636-bdfe-4eb0-9633-7d0195a8ae3a_di" bpmnElement="_ef29e636-bdfe-4eb0-9633-7d0195a8ae3a">
-        <dc:Bounds x="104" y="890" width="36" height="50"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_8f2796af-2fbe-4f72-80c1-96933c38990f_di" bpmnElement="_8f2796af-2fbe-4f72-80c1-96933c38990f">
-        <dc:Bounds x="104" y="1020" width="36" height="50"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_f60fe1d9-58bd-462c-9d62-153e530dc79d_di" bpmnElement="_f60fe1d9-58bd-462c-9d62-153e530dc79d">
-        <dc:Bounds x="104" y="1150" width="36" height="50"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_d3aa8a96-e9df-4336-9b0d-01b17e6587ad_di" bpmnElement="_d3aa8a96-e9df-4336-9b0d-01b17e6587ad" isHorizontal="true">
         <dc:Bounds x="0" y="0" width="1468" height="460"/>
       </bpmndi:BPMNShape>

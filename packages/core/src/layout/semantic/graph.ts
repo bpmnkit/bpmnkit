@@ -50,6 +50,8 @@ export function buildSemanticGraph(
 	const nodes: BpmnFlowElement[] = []
 	const attachers = new Map<string, BpmnBoundaryEvent[]>()
 	for (const el of flowElements) {
+		// A data object has no shape: its references are what a diagram draws.
+		if (el.type === "dataObject") continue
 		if (el.type === "boundaryEvent") {
 			const be = el as BpmnBoundaryEvent
 			const list = attachers.get(be.attachedToRef)

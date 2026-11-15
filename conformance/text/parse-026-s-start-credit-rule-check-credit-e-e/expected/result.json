@@ -11,7 +11,7 @@
             "type": "startEvent"
           },
           {
-            "decisionId": "credit",
+            "decisionId": "check-credit",
             "id": "credit",
             "name": "Check credit",
             "type": "businessRuleTask"
@@ -39,7 +39,8 @@
     ]
   },
   "fixes": [
-    "named 2 unnamed element(s) from their ids"
+    "named 2 unnamed element(s) from their ids",
+    "\"credit\" calls decision \"check-credit\"; set decision= to call another"
   ],
   "problems": [],
   "questions": []

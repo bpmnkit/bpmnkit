@@ -67,6 +67,8 @@ pub(crate) struct FlowElementOptions {
     pub task_listeners: Option<Vec<ZeebeListener>>,
     /// Send task and message throw/end event: the job Camunda 8 runs for the message.
     pub task_type: Option<String>,
+    /// Message end/throw event: `(message name, correlation key)` for the `zeebe:subscription`.
+    pub message_subscription: Option<String>,
 }
 
 impl From<&ElementOptions> for FlowElementOptions {
@@ -226,6 +228,51 @@ fn element_at_mut<'a>(
     } else {
         element_at_mut(&mut el.contents_mut()?.flow_elements, rest)
     }
+}
+
+/// TS's `finishDocument`: hoists message subscriptions, then declares root data stores.
+pub(crate) fn finish_document(defs: BpmnDefinitions) -> BpmnDefinitions {
+    declare_data_stores(hoist_message_subscriptions(defs))
+}
+
+/// TS's `declareDataStores`: a `dataStoreReference` points at a root `bpmn:dataStore`; it is
+/// declared once per id here, after the model is complete.
+fn declare_data_stores(mut defs: BpmnDefinitions) -> BpmnDefinitions {
+    fn visit(
+        elements: &[BpmnFlowElement],
+        declared: &mut IndexSet<String>,
+        out: &mut Vec<XmlElement>,
+    ) {
+        for el in elements {
+            if let BpmnFlowElement::DataStoreReference(d) = el {
+                if let Some(store) = &d.data_store_ref {
+                    if declared.insert(store.clone()) {
+                        let mut x = XmlElement::new("bpmn:dataStore");
+                        x.attributes.insert("id".to_owned(), store.clone());
+                        if let Some(name) = &d.base.name {
+                            x.attributes.insert("name".to_owned(), name.clone());
+                        }
+                        out.push(x);
+                    }
+                }
+            }
+            if let Some(c) = el.contents() {
+                visit(&c.flow_elements, declared, out);
+            }
+        }
+    }
+    let mut declared: IndexSet<String> = defs
+        .unknown_children
+        .iter()
+        .filter(|c| c.name == "bpmn:dataStore")
+        .filter_map(|c| c.attributes.get("id").cloned())
+        .collect();
+    let mut stores = Vec::new();
+    for process in &defs.processes {
+        visit(&process.contents.flow_elements, &mut declared, &mut stores);
+    }
+    defs.unknown_children.extend(stores);
+    defs
 }
 
 /// TS's `hoistMessageSubscriptions`: moves each element's `zeebe:subscription` onto the
@@ -508,6 +555,21 @@ pub(crate) fn make_flow_element(
             extension_elements: options.extension_elements,
         },
     );
+    if let Some(key) = options.message_subscription.filter(|k| !k.is_empty()) {
+        if matches!(
+            ty,
+            BpmnElementType::IntermediateThrowEvent | BpmnElementType::EndEvent
+        ) {
+            el.base_mut()
+                .extension_elements
+                .extend(zeebe_extensions_to_xml_elements(&ZeebeExtensions {
+                    subscription: Some(ZeebeSubscription {
+                        correlation_key: key,
+                    }),
+                    ..ZeebeExtensions::default()
+                }));
+        }
+    }
     if let Some(task_type) = options.task_type {
         if matches!(
             ty,
@@ -886,6 +948,7 @@ pub(crate) fn make_service_task_el(
         id,
         BpmnElementType::ServiceTask,
         FlowElementOptions {
+            message_subscription: None,
             name: Some(options.name.clone()),
             documentation: options.documentation.clone(),
             extension_elements: Some(build_service_task_extensions(options)?),
@@ -912,6 +975,7 @@ pub(crate) fn make_script_task_el(
         id,
         BpmnElementType::ScriptTask,
         FlowElementOptions {
+            message_subscription: None,
             name: options.name.clone(),
             documentation: options.documentation.clone(),
             execution_listeners: options.execution_listeners.clone(),
@@ -979,6 +1043,7 @@ pub(crate) fn make_start_event_el(
         id,
         BpmnElementType::StartEvent,
         FlowElementOptions {
+            message_subscription: None,
             name: options.and_then(|o| o.element.name.clone()),
             documentation: options.and_then(|o| o.element.documentation.clone()),
             execution_listeners: options.and_then(|o| o.element.execution_listeners.clone()),
@@ -1081,6 +1146,7 @@ pub(crate) fn make_user_task_el(
         id,
         BpmnElementType::UserTask,
         FlowElementOptions {
+            message_subscription: None,
             name: options.and_then(|o| o.name.clone()),
             documentation: options.and_then(|o| o.documentation.clone()),
             execution_listeners: options.and_then(|o| o.execution_listeners.clone()),
@@ -1193,6 +1259,7 @@ pub(crate) fn make_business_rule_task_el(
         id,
         BpmnElementType::BusinessRuleTask,
         FlowElementOptions {
+            message_subscription: None,
             name: options.and_then(|o| o.name.clone()),
             documentation: options.and_then(|o| o.documentation.clone()),
             execution_listeners: options.and_then(|o| o.execution_listeners.clone()),
@@ -1230,6 +1297,7 @@ pub(crate) fn make_call_activity_el(
         id,
         BpmnElementType::CallActivity,
         FlowElementOptions {
+            message_subscription: None,
             name: options.name.clone(),
             documentation: options.documentation.clone(),
             execution_listeners: options.execution_listeners.clone(),
@@ -1365,6 +1433,11 @@ pub(crate) fn make_end_event_el(
         options
             .map(|o| FlowElementOptions {
                 task_type: o.task_type.clone(),
+                message_subscription: o
+                    .message_name
+                    .as_deref()
+                    .filter(|n| !n.is_empty())
+                    .and(o.correlation_key.clone()),
                 ..FlowElementOptions::from(&o.element)
             })
             .unwrap_or_default(),
@@ -1387,6 +1460,11 @@ pub(crate) fn make_intermediate_throw_event_el(
         options
             .map(|o| FlowElementOptions {
                 task_type: o.task_type.clone(),
+                message_subscription: o
+                    .message_name
+                    .as_deref()
+                    .filter(|n| !n.is_empty())
+                    .and(o.correlation_key.clone()),
                 ..FlowElementOptions::from(&o.element)
             })
             .unwrap_or_default(),
@@ -1603,6 +1681,94 @@ pub(crate) fn insert_join_gateways(
     }
 }
 
+/// TS's `insertMergeGateways`: an exclusive `<target>_merge` gateway in front of every
+/// non-gateway node that still has several incoming flows after join inference. With
+/// `source_flows` (a continued document) at most one of those may enter the node; it keeps
+/// its id and target and only its source moves to the merge. Returns the moved flow ids.
+pub(crate) fn insert_merge_gateways(
+    elements: &mut Vec<BpmnFlowElement>,
+    flows: &mut Vec<BpmnSequenceFlow>,
+    source_flows: Option<&IndexSet<String>>,
+) -> IndexSet<String> {
+    let mut moved: IndexSet<String> = IndexSet::new();
+    let mut taken: IndexSet<String> = elements.iter().map(|e| e.base().id.clone()).collect();
+    let mut incoming: IndexMap<String, Vec<usize>> = IndexMap::new();
+    for (i, flow) in flows.iter().enumerate() {
+        incoming.entry(flow.target_ref.clone()).or_default().push(i);
+    }
+    let candidates: Vec<(String, BpmnElementType)> = elements
+        .iter()
+        .map(|e| (e.base().id.clone(), e.element_type()))
+        .collect();
+    for (el_id, ty) in candidates {
+        if is_gateway_type(ty) || ty == BpmnElementType::StartEvent {
+            continue;
+        }
+        let in_flows = incoming.get(&el_id).cloned().unwrap_or_default();
+        if in_flows.len() < 2 {
+            continue;
+        }
+        let kept: Vec<usize> = in_flows
+            .iter()
+            .copied()
+            .filter(|&fi| source_flows.is_some_and(|s| s.contains(&flows[fi].id)))
+            .collect();
+        if kept.len() > 1 {
+            continue;
+        }
+        // A kept flow carrying a gateway's decision cannot have its source moved.
+        if let Some(&fi) = kept.first() {
+            let fixed = &flows[fi];
+            if fixed.condition_expression.is_some()
+                || elements
+                    .iter()
+                    .any(|e| e.default_flow() == Some(fixed.id.as_str()))
+            {
+                continue;
+            }
+        }
+
+        let mut merge_id = format!("{el_id}_merge");
+        let mut n = 2;
+        while taken.contains(&merge_id) {
+            merge_id = format!("{el_id}_merge_{n}");
+            n += 1;
+        }
+        taken.insert(merge_id.clone());
+        elements.push(create_flow_element(
+            &merge_id,
+            BpmnElementType::ExclusiveGateway,
+            CreateFlowElementOptions::default(),
+        ));
+
+        let anchor = kept.first().copied();
+        for &fi in &in_flows {
+            if Some(fi) != anchor {
+                flows[fi].target_ref = merge_id.clone();
+            }
+        }
+        match anchor {
+            None => flows.push(BpmnSequenceFlow {
+                id: generate_id("Flow"),
+                source_ref: merge_id,
+                target_ref: el_id,
+                ..BpmnSequenceFlow::default()
+            }),
+            Some(fi) => {
+                let source_ref = std::mem::replace(&mut flows[fi].source_ref, merge_id.clone());
+                moved.insert(flows[fi].id.clone());
+                flows.push(BpmnSequenceFlow {
+                    id: generate_id("Flow"),
+                    source_ref,
+                    target_ref: merge_id,
+                    ..BpmnSequenceFlow::default()
+                });
+            }
+        }
+    }
+    moved
+}
+
 /// TS's `finalizeScope`: event-definition ids, joins, stable flow ids, incoming/outgoing.
 pub(crate) fn finalize_scope(
     elements: &mut Vec<BpmnFlowElement>,
@@ -1616,6 +1782,7 @@ pub(crate) fn finalize_scope(
         }
     }
     insert_join_gateways(elements, flows);
+    insert_merge_gateways(elements, flows, None);
     assign_stable_flow_ids(elements, flows, &mut shared.flow_tags, None)?;
     recompute_incoming_outgoing(elements, flows);
     Ok(())

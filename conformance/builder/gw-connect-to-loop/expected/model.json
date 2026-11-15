@@ -27,7 +27,7 @@
           "id": "s",
           "incoming": [],
           "outgoing": [
-            "Flow_s_work"
+            "Flow_s_work_merge"
           ],
           "type": "startEvent",
           "unknownAttributes": {}
@@ -44,8 +44,7 @@
           ],
           "id": "work",
           "incoming": [
-            "Flow_s_work",
-            "Flow_fix_work"
+            "Flow_work_merge_work"
           ],
           "name": "work",
           "outgoing": [
@@ -85,7 +84,7 @@
           ],
           "name": "fix",
           "outgoing": [
-            "Flow_fix_work"
+            "Flow_fix_work_merge"
           ],
           "type": "serviceTask",
           "unknownAttributes": {}
@@ -100,6 +99,19 @@
           "outgoing": [],
           "type": "endEvent",
           "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "work_merge",
+          "incoming": [
+            "Flow_s_work_merge",
+            "Flow_fix_work_merge"
+          ],
+          "outgoing": [
+            "Flow_work_merge_work"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
         }
       ],
       "groups": [],
@@ -108,9 +120,9 @@
       "sequenceFlows": [
         {
           "extensionElements": [],
-          "id": "Flow_s_work",
+          "id": "Flow_s_work_merge",
           "sourceRef": "s",
-          "targetRef": "work",
+          "targetRef": "work_merge",
           "unknownAttributes": {}
         },
         {
@@ -136,9 +148,9 @@
         },
         {
           "extensionElements": [],
-          "id": "Flow_fix_work",
+          "id": "Flow_fix_work_merge",
           "sourceRef": "fix",
-          "targetRef": "work",
+          "targetRef": "work_merge",
           "unknownAttributes": {}
         },
         {
@@ -147,6 +159,13 @@
           "name": "done",
           "sourceRef": "g",
           "targetRef": "e",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_work_merge_work",
+          "sourceRef": "work_merge",
+          "targetRef": "work",
           "unknownAttributes": {}
         }
       ],

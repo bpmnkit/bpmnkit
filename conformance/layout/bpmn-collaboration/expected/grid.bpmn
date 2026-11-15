@@ -103,12 +103,18 @@
         <di:waypoint x="239" y="130"/>
         <di:waypoint x="128" y="130"/>
         <di:waypoint x="128" y="150"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="84" y="133" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="MessageFlow_ack_di" bpmnElement="MessageFlow_ack">
         <di:waypoint x="128" y="150"/>
         <di:waypoint x="128" y="140"/>
         <di:waypoint x="239" y="140"/>
         <di:waypoint x="239" y="120"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="243" y="123" width="105" height="14"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

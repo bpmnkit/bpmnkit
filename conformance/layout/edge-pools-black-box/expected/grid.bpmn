@@ -72,10 +72,16 @@
       <bpmndi:BPMNEdge id="m1_di" bpmnElement="m1">
         <di:waypoint x="220" y="110"/>
         <di:waypoint x="220" y="60"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="224" y="68" width="49" height="14"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="m2_di" bpmnElement="m2">
         <di:waypoint x="370" y="60"/>
         <di:waypoint x="370" y="110"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="374" y="68" width="56" height="14"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="m3_di" bpmnElement="m3">
         <di:waypoint x="70" y="240"/>

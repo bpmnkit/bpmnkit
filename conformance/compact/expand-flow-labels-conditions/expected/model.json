@@ -182,7 +182,9 @@
         },
         {
           "conditionExpression": {
-            "attributes": {},
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
             "text": "= ok"
           },
           "extensionElements": [],
@@ -194,7 +196,9 @@
         },
         {
           "conditionExpression": {
-            "attributes": {},
+            "attributes": {
+              "xsi:type": "bpmn:tFormalExpression"
+            },
             "text": "= not(ok)"
           },
           "extensionElements": [],

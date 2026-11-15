@@ -244,12 +244,18 @@
       <bpmndi:BPMNEdge id="_b467921a-ef7b-44c5-bf78-fd624c400d17_di" bpmnElement="_b467921a-ef7b-44c5-bf78-fd624c400d17">
         <di:waypoint x="254" y="100"/>
         <di:waypoint x="254" y="268"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="258" y="128" width="98" height="14"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="_c311cc87-677e-47a4-bdb1-8744c4ec3147_di" bpmnElement="_c311cc87-677e-47a4-bdb1-8744c4ec3147">
         <di:waypoint x="994" y="268"/>
         <di:waypoint x="994" y="140"/>
         <di:waypoint x="414" y="140"/>
         <di:waypoint x="414" y="100"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="998" y="197" width="98" height="14"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -4,7 +4,7 @@
 //! travel vertically. Small collaborations use an exhaustive search; larger ones use
 //! repeated remove-and-reinsert.
 
-use crate::hash::IndexMap;
+use crate::hash::{IndexMap, IndexSet};
 
 /// Above this many pools, permuting every order costs more than it is worth.
 const EXHAUSTIVE_LIMIT: usize = 8;
@@ -67,10 +67,14 @@ fn pair_costs(links: &[PoolLink]) -> Vec<PairCost> {
     pairs.into_values().collect()
 }
 
+/// What an edge pool costs for sitting between two others: one message's pool step.
+/// It settles near-ties toward the rim but never stretches the messages further.
+const EDGE_PENALTY: f64 = 1.0;
+
 /// How far the messages travel in this order, weighted by how many there are, plus how
 /// much of their own pools they cross to get out. The declaration-order term is a
 /// tie-break: with nothing to gain from moving, the pools stay where the author put them.
-fn cost(order: &[usize], pairs: &[PairCost]) -> f64 {
+fn cost(order: &[usize], pairs: &[PairCost], edges: &IndexSet<usize>) -> f64 {
     let mut position: Vec<Option<usize>> = Vec::new();
     for (i, &id) in order.iter().enumerate() {
         if position.len() <= id {
@@ -88,6 +92,12 @@ fn cost(order: &[usize], pairs: &[PairCost]) -> f64 {
             + (if a < b { pair.a_above } else { pair.a_below });
     }
 
+    for id in order.iter().take(order.len().saturating_sub(1)).skip(1) {
+        if edges.contains(id) {
+            total += EDGE_PENALTY;
+        }
+    }
+
     let mut drift = 0.0;
     for (i, &o) in order.iter().enumerate() {
         drift += (o as f64 - i as f64).abs();
@@ -96,10 +106,11 @@ fn cost(order: &[usize], pairs: &[PairCost]) -> f64 {
     total + drift / (n * n + 1.0)
 }
 
-/// `orderPools(count, links)`: indices into the input order.
+/// `orderPools(count, links, edges)`: indices into the input order.
 ///
+/// `edges` are pools that read better at the top or bottom of the stack (black boxes).
 /// An input with no message flows comes back unchanged.
-pub fn order_pools(count: usize, links: &[PoolLink]) -> Vec<usize> {
+pub fn order_pools(count: usize, links: &[PoolLink], edges: &IndexSet<usize>) -> Vec<usize> {
     let identity: Vec<usize> = (0..count).collect();
     if count < 3 || links.is_empty() {
         return identity;
@@ -107,23 +118,24 @@ pub fn order_pools(count: usize, links: &[PoolLink]) -> Vec<usize> {
 
     let pairs = pair_costs(links);
     if count <= EXHAUSTIVE_LIMIT {
-        exhaustive(identity, &pairs)
+        exhaustive(identity, &pairs, edges)
     } else {
-        refine(identity, &pairs)
+        refine(identity, &pairs, edges)
     }
 }
 
 /// Every order, best first-found wins, so declaration order survives a tie.
-fn exhaustive(identity: Vec<usize>, pairs: &[PairCost]) -> Vec<usize> {
+fn exhaustive(identity: Vec<usize>, pairs: &[PairCost], edges: &IndexSet<usize>) -> Vec<usize> {
     struct Search<'a> {
         pairs: &'a [PairCost],
+        edges: &'a IndexSet<usize>,
         best: Vec<usize>,
         best_cost: f64,
     }
 
     fn permute(s: &mut Search, prefix: &mut Vec<usize>, rest: &[usize]) {
         if rest.is_empty() {
-            let candidate = cost(prefix, s.pairs);
+            let candidate = cost(prefix, s.pairs, s.edges);
             if candidate < s.best_cost {
                 s.best = prefix.clone();
                 s.best_cost = candidate;
@@ -141,7 +153,8 @@ fn exhaustive(identity: Vec<usize>, pairs: &[PairCost]) -> Vec<usize> {
 
     let mut s = Search {
         pairs,
-        best_cost: cost(&identity, pairs),
+        edges,
+        best_cost: cost(&identity, pairs, edges),
         best: identity.clone(),
     };
     permute(&mut s, &mut Vec::new(), &identity);
@@ -150,9 +163,9 @@ fn exhaustive(identity: Vec<usize>, pairs: &[PairCost]) -> Vec<usize> {
 
 /// Take each pool out and put it back wherever it fits best, repeating until a full
 /// sweep changes nothing.
-fn refine(identity: Vec<usize>, pairs: &[PairCost]) -> Vec<usize> {
+fn refine(identity: Vec<usize>, pairs: &[PairCost], edges: &IndexSet<usize>) -> Vec<usize> {
     let mut order = identity;
-    let mut current = cost(&order, pairs);
+    let mut current = cost(&order, pairs, edges);
 
     for _sweep in 0..order.len() {
         let mut improved = false;
@@ -167,7 +180,7 @@ fn refine(identity: Vec<usize>, pairs: &[PairCost]) -> Vec<usize> {
                 }
                 let mut candidate = without.clone();
                 candidate.insert(to, pool);
-                let candidate_cost = cost(&candidate, pairs);
+                let candidate_cost = cost(&candidate, pairs, edges);
                 if candidate_cost < current {
                     order = candidate;
                     current = candidate_cost;
@@ -214,7 +227,11 @@ mod tests {
                 .iter()
                 .map(|v| v.as_u64().unwrap() as usize)
                 .collect();
-            assert_eq!(order_pools(count, &links), expected, "case {n}");
+            assert_eq!(
+                order_pools(count, &links, &IndexSet::default()),
+                expected,
+                "case {n}"
+            );
         }
     }
 }

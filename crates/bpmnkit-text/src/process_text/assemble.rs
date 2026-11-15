@@ -865,6 +865,7 @@ pub(crate) fn assemble(reader: &Reader, final_: bool) -> ProcessTextResult {
         a.guessed_messages(&reader.guessed_message);
     }
 
+    let mut decision_fixes = Vec::new();
     for node in a.nodes.values_mut().chain(a.child_nodes.iter_mut()) {
         let element = &mut node.element;
         let ty = element.element_type();
@@ -904,14 +905,21 @@ pub(crate) fn assemble(reader: &Reader, final_: bool) -> ProcessTextResult {
         if escalation && throws {
             element.escalation_code.get_or_insert_with(|| id.clone());
         }
-        // A DMN task needs a decision to deploy; the id stands in, as it does for a job type.
+        // A DMN task needs a decision to deploy. Its name reads better as the DMN's id than an
+        // element id does, and the DMN file is written to match it.
         if ty == Some(BpmnElementType::BusinessRuleTask)
             && element.job_type.is_none()
             && element.decision_id.is_none()
         {
-            element.decision_id = Some(element.id.clone());
+            let decision = decision_id_from(element.name.as_deref().unwrap_or(""))
+                .unwrap_or_else(|| id.clone());
+            decision_fixes.push(format!(
+                "\"{id}\" calls decision \"{decision}\"; set decision= to call another"
+            ));
+            element.decision_id = Some(decision);
         }
     }
+    a.fixes.extend(decision_fixes);
 
     // Before the process and flow ids are chosen, so those step around lane and pool ids.
     let mut lanes = read_lanes(
@@ -1099,6 +1107,27 @@ pub(crate) fn assemble(reader: &Reader, final_: bool) -> ProcessTextResult {
         questions,
         connectors,
     }
+}
+
+/// A readable decision id from a task name: `Assess risk` → `assess-risk`.
+pub fn decision_id_from(name: &str) -> Option<String> {
+    let mut id = String::new();
+    for c in name.trim().to_lowercase().chars() {
+        if c.is_ascii_lowercase() || c.is_ascii_digit() {
+            id.push(c);
+        } else if !id.ends_with('-') {
+            id.push('-');
+        }
+    }
+    let id = id.trim_matches('-');
+    if id.is_empty() {
+        return None;
+    }
+    Some(if id.starts_with(|c: char| c.is_ascii_lowercase()) {
+        id.to_owned()
+    } else {
+        format!("decision-{id}")
+    })
 }
 
 #[cfg(test)]

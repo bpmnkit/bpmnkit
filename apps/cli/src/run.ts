@@ -21,6 +21,7 @@ import {
 	createOutputWriter,
 	printHttpErrorDetails,
 	printRawResponse,
+	resolveOutputFormat,
 } from "./output.js"
 import { loadPlugins } from "./plugin-loader.js"
 import { runProfileManager } from "./profile-tui.js"
@@ -109,7 +110,7 @@ export async function run(argv: string[]): Promise<void> {
 		return
 	}
 
-	const outputFormat = (flags.output ?? flags.o ?? "table") as OutputFormat
+	const outputFormat = resolveOutputFormat(positional[0], flags)
 	const profileName = (flags.profile as string | undefined) ?? (flags.p as string | undefined)
 
 	// ── Top-level: main menu TUI or help ─────────────────────────────────────
@@ -160,13 +161,14 @@ export async function run(argv: string[]): Promise<void> {
 
 	// ── dev: `casen dev [dir]` — the one positional is a directory, not a subcommand ──
 	// ── check: `casen check <file...>` — every positional is a file ──
-	if (group.name === "dev" || group.name === "check") {
+	// ── build: `casen build <spec> [resources…]`; -o is the output file there, not the format ──
+	if (group.name === "dev" || group.name === "check" || group.name === "build") {
 		const cmd = group.commands[0]
 		if (wantHelp) {
 			if (cmd) printCommandHelp(group, cmd, colors)
 			return
 		}
-		const output = createOutputWriter(outputFormat, noColor)
+		const output = createOutputWriter(group.name === "build" ? "table" : outputFormat, noColor)
 		const ctx: RunContext = {
 			positional: positional.slice(1),
 			flags,

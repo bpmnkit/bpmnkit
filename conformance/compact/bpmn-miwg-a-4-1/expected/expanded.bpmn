@@ -259,10 +259,16 @@
         <di:waypoint x="1004" y="180"/>
         <di:waypoint x="417" y="180"/>
         <di:waypoint x="417" y="120"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1008" y="332" width="98" height="14"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-D0B859BF-CBFB-4B35-BBC8-BCA308F6455C_di" bpmnElement="sid-D0B859BF-CBFB-4B35-BBC8-BCA308F6455C">
         <di:waypoint x="257" y="120"/>
         <di:waypoint x="257" y="230"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="261" y="168" width="98" height="14"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

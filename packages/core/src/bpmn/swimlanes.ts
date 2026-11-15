@@ -20,6 +20,7 @@ import type {
 	BpmnParticipant,
 	BpmnProcess,
 } from "./bpmn-model.js"
+import { levenshtein } from "./optimize/variable-flow.js"
 
 /** A lane to build: a leaf when `lanes` is absent or empty. Same shape as compact's lane. */
 export interface LaneSpec {
@@ -773,7 +774,25 @@ export function collaborationProblems(
 	// Every id in the document, not only pools and message flows: two processes
 	// may each declare the same lane, and a node may share a pool's id, which
 	// would also make the owning pool of a message-flow end ambiguous.
-	for (const id of duplicateIds(defs)) problems.push(`Duplicate element ID "${id}"`)
+	// Ids are global in a collaboration, so the same id in two pools gets both
+	// pools named and the fix.
+	const owners = new Map<string, Set<string>>()
+	for (const process of defs.processes) {
+		const ids = [
+			...process.flowElements.map((element) => element.id),
+			...nestedElementIds(process.flowElements),
+			...process.sequenceFlows.map((flow) => flow.id),
+		]
+		for (const id of ids) owners.set(id, (owners.get(id) ?? new Set()).add(process.id))
+	}
+	for (const id of duplicateIds(defs)) {
+		const [first, second] = owners.get(id) ?? []
+		problems.push(
+			first !== undefined && second !== undefined
+				? `Duplicate element ID "${id}" in processes "${first}" and "${second}": ids are global in a collaboration; prefix them per pool (e.g. "${second}_${id}")`
+				: `Duplicate element ID "${id}"`,
+		)
+	}
 
 	const processIds = new Set(defs.processes.map((process) => process.id))
 	const claimed = new Map<string, string>()
@@ -804,7 +823,7 @@ export function collaborationProblems(
 		] as const) {
 			if (!owningParticipant.has(ref)) {
 				problems.push(
-					`Message flow "${flow.id}" names ${role} "${ref}", which is not a participant or a flow node in one`,
+					`Message flow "${flow.id}" names ${role} "${ref}", which is not a participant or a flow node in one${closeIds(ref, [...owningParticipant.keys()])}`,
 				)
 			}
 		}
@@ -832,6 +851,22 @@ export function collaborationProblems(
 		}
 	}
 	return problems
+}
+
+/** A "did you mean" suffix naming up to three existing ids close to `ref`. */
+function closeIds(ref: string, existing: string[]): string {
+	const lower = ref.toLowerCase()
+	const close = existing
+		.filter((id) => id.length >= 3)
+		.map((id) => ({ id, d: levenshtein(lower, id.toLowerCase()) }))
+		.filter(
+			({ id, d }) =>
+				d <= Math.max(2, Math.floor(ref.length / 3)) || id.includes(ref) || ref.includes(id),
+		)
+		.sort((a, b) => a.d - b.d)
+		.slice(0, 3)
+		.map(({ id }) => `"${id}"`)
+	return close.length > 0 ? `; did you mean ${close.join(", ")}?` : ""
 }
 
 /** Maps every participant id and every flow node id (nested ones included) to its owning participant. */

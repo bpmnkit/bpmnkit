@@ -13,9 +13,9 @@
     "connector"
   ],
   "counts": {
-    "error": 74,
+    "error": 71,
     "info": 3,
-    "warning": 17
+    "warning": 14
   },
   "diagnostics": [
     {
@@ -161,30 +161,6 @@
     {
       "category": "flow",
       "elementIds": [
-        "DF1373638080458"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"DF1373638080458\" (dataObject) is not reachable from any start event.",
-      "processId": "WFP-6-1",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "DF1373638080458"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"DF1373638080458\" (dataObject) has no outgoing sequence flows.",
-      "processId": "WFP-6-1",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
         "_149a6e1d-0385-4d0f-a90c-c2150a291a67"
       ],
       "fixable": false,
@@ -194,32 +170,6 @@
       "processId": "WFP-6-1",
       "severity": "warning",
       "suggestion": "Add flow elements inside the sub-process or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_aa8c769a-276c-4589-b182-7c7bbd0a9e1e"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"_aa8c769a-276c-4589-b182-7c7bbd0a9e1e\" (dataObjectReference) is not reachable from any start event.",
-      "plane": "C1373638080953",
-      "processId": "WFP-6-1",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_aa8c769a-276c-4589-b182-7c7bbd0a9e1e"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"_aa8c769a-276c-4589-b182-7c7bbd0a9e1e\" (dataObjectReference) has no outgoing sequence flows.",
-      "plane": "C1373638080953",
-      "processId": "WFP-6-1",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
     },
     {
       "category": "naming",
@@ -555,32 +505,6 @@
       "processId": "WFP-6-2",
       "severity": "error",
       "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_b9385abf-d293-40b7-848b-8add4db48415"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"_b9385abf-d293-40b7-848b-8add4db48415\" (dataStoreReference) is not reachable from any start event.",
-      "plane": "C1373638080953",
-      "processId": "WFP-6-2",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_b9385abf-d293-40b7-848b-8add4db48415"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"_b9385abf-d293-40b7-848b-8add4db48415\" (dataStoreReference) has no outgoing sequence flows.",
-      "plane": "C1373638080953",
-      "processId": "WFP-6-2",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
     },
     {
       "category": "naming",
@@ -1228,5 +1152,5 @@
   "platform": {
     "id": "none"
   },
-  "total": 94
+  "total": 88
 }

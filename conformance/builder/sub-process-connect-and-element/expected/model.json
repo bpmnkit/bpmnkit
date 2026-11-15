@@ -63,8 +63,8 @@
               ],
               "name": "a",
               "outgoing": [
-                "Flow_a_b",
-                "Flow_a_b_2"
+                "Flow_a_b_merge",
+                "Flow_a_b_merge_2"
               ],
               "type": "serviceTask",
               "unknownAttributes": {}
@@ -81,8 +81,7 @@
               ],
               "id": "b",
               "incoming": [
-                "Flow_a_b",
-                "Flow_a_b_2"
+                "Flow_b_merge_b"
               ],
               "name": "b",
               "outgoing": [],
@@ -96,6 +95,19 @@
               "incoming": [],
               "outgoing": [],
               "type": "endEvent",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "b_merge",
+              "incoming": [
+                "Flow_a_b_merge",
+                "Flow_a_b_merge_2"
+              ],
+              "outgoing": [
+                "Flow_b_merge_b"
+              ],
+              "type": "exclusiveGateway",
               "unknownAttributes": {}
             }
           ],
@@ -117,15 +129,22 @@
             },
             {
               "extensionElements": [],
-              "id": "Flow_a_b",
+              "id": "Flow_a_b_merge",
               "sourceRef": "a",
-              "targetRef": "b",
+              "targetRef": "b_merge",
               "unknownAttributes": {}
             },
             {
               "extensionElements": [],
-              "id": "Flow_a_b_2",
+              "id": "Flow_a_b_merge_2",
               "sourceRef": "a",
+              "targetRef": "b_merge",
+              "unknownAttributes": {}
+            },
+            {
+              "extensionElements": [],
+              "id": "Flow_b_merge_b",
+              "sourceRef": "b_merge",
               "targetRef": "b",
               "unknownAttributes": {}
             }

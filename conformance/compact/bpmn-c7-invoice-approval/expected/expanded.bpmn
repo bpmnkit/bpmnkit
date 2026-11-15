@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_07hq2mb" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_07hq2mb" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:message id="Message_InvoiceReceived" name="InvoiceReceived"/>
   <bpmn:process id="invoice-approval" name="Invoice approval" isExecutable="true">
     <bpmn:startEvent id="StartEvent_invoice" name="Invoice received">
@@ -48,10 +48,10 @@
     <bpmn:sequenceFlow id="Flow_toApprove" sourceRef="Task_classify" targetRef="Task_approve"/>
     <bpmn:sequenceFlow id="Flow_toDecision" sourceRef="Task_approve" targetRef="Gateway_approved"/>
     <bpmn:sequenceFlow id="Flow_yes" sourceRef="Gateway_approved" targetRef="Task_archive" name="yes">
-      <bpmn:conditionExpression>=approved = true</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=approved = true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_no" sourceRef="Gateway_approved" targetRef="Timer_clarify" name="no">
-      <bpmn:conditionExpression>=approved = false</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=approved = false</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_toRejected" sourceRef="Timer_clarify" targetRef="EndEvent_rejected"/>
     <bpmn:sequenceFlow id="Flow_toBook" sourceRef="Task_archive" targetRef="Task_book"/>

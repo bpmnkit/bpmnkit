@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Collab" targetNamespace="http://bpmn.io/schema/bpmn" exporter="@bpmnkit/core" exporterVersion="0.0.23" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.10.0">
-  <bpmn:message id="Message_order" name="order"/>
-  <bpmn:message id="Message_invoice" name="invoice">
-    <bpmn:extensionElements>
-      <zeebe:subscription correlationKey="=id"/>
-    </bpmn:extensionElements>
-  </bpmn:message>
   <bpmn:message id="Msg_Order" name="order">
     <bpmn:extensionElements>
       <zeebe:subscription correlationKey="=orderId"/>
     </bpmn:extensionElements>
   </bpmn:message>
-  <bpmn:message id="Msg_Invoice" name="invoice"/>
+  <bpmn:message id="Msg_Invoice" name="invoice">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=id"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
   <bpmn:collaboration id="Collab_1">
     <bpmn:participant id="Buyer" name="Buyer" processRef="buyer"/>
     <bpmn:participant id="Seller" name="Seller" processRef="seller"/>
@@ -22,14 +20,14 @@
     <bpmn:startEvent id="bs">
       <bpmn:outgoing>Flow_bs_order</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sendTask id="order" messageRef="Message_order">
+    <bpmn:sendTask id="order" messageRef="Msg_Order">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="send-order"/>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_bs_order</bpmn:incoming>
       <bpmn:outgoing>Flow_order_invoice</bpmn:outgoing>
     </bpmn:sendTask>
-    <bpmn:receiveTask id="invoice" messageRef="Message_invoice">
+    <bpmn:receiveTask id="invoice" messageRef="Msg_Invoice">
       <bpmn:incoming>Flow_order_invoice</bpmn:incoming>
       <bpmn:outgoing>Flow_invoice_be</bpmn:outgoing>
     </bpmn:receiveTask>
@@ -43,7 +41,7 @@
   <bpmn:process id="seller" isExecutable="true">
     <bpmn:startEvent id="ss">
       <bpmn:outgoing>Flow_ss_ship</bpmn:outgoing>
-      <bpmn:messageEventDefinition id="ss_MessageEventDefinition" messageRef="Message_order"/>
+      <bpmn:messageEventDefinition id="ss_MessageEventDefinition" messageRef="Msg_Order"/>
     </bpmn:startEvent>
     <bpmn:serviceTask id="ship" name="ship">
       <bpmn:extensionElements>
@@ -52,7 +50,7 @@
       <bpmn:incoming>Flow_ss_ship</bpmn:incoming>
       <bpmn:outgoing>Flow_ship_bill</bpmn:outgoing>
     </bpmn:serviceTask>
-    <bpmn:sendTask id="bill" messageRef="Message_invoice">
+    <bpmn:sendTask id="bill" messageRef="Msg_Invoice">
       <bpmn:extensionElements>
         <zeebe:taskDefinition type="send-invoice"/>
       </bpmn:extensionElements>

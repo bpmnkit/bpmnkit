@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:process id="Process_1" isExecutable="true">
     <bpmn:startEvent id="s" name="S">
       <bpmn:outgoing>Flow_1</bpmn:outgoing>
@@ -37,12 +37,12 @@
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_1" sourceRef="s" targetRef="g1"/>
     <bpmn:sequenceFlow id="Flow_2" sourceRef="g1" targetRef="g2" name="Yes">
-      <bpmn:conditionExpression>= a</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= a</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_3" sourceRef="g1" targetRef="n1" name="No"/>
     <bpmn:sequenceFlow id="Flow_4" sourceRef="n1" targetRef="e_join"/>
     <bpmn:sequenceFlow id="Flow_5" sourceRef="g2" targetRef="y" name="Yes">
-      <bpmn:conditionExpression>= b</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= b</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_6" sourceRef="y" targetRef="e_join"/>
     <bpmn:sequenceFlow id="Flow_7" sourceRef="g2" targetRef="n2" name="No"/>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_agents" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_agents" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:process id="agents" isExecutable="true">
     <bpmn:serviceTask id="outsideTool">
       <bpmn:extensionElements>
@@ -173,7 +173,7 @@
       <bpmn:sequenceFlow id="chainAtoB" sourceRef="chainA" targetRef="chainB"/>
       <bpmn:sequenceFlow id="chainBtoC" sourceRef="chainB" targetRef="chainC"/>
       <bpmn:sequenceFlow id="branchToA" sourceRef="branch" targetRef="branchA">
-        <bpmn:conditionExpression>=fromAi(toolCall.z) = 1</bpmn:conditionExpression>
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=fromAi(toolCall.z) = 1</bpmn:conditionExpression>
       </bpmn:sequenceFlow>
       <bpmn:sequenceFlow id="branchToB" sourceRef="branch" targetRef="branchB"/>
     </bpmn:adHocSubProcess>

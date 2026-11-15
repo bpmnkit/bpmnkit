@@ -10,7 +10,7 @@
     </bpmn:userTask>
     <bpmn:businessRuleTask id="verify" name="Verify data">
       <bpmn:extensionElements>
-        <zeebe:calledDecision decisionId="verify" resultVariable="result"/>
+        <zeebe:calledDecision decisionId="verify-data" resultVariable="result"/>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_2</bpmn:incoming>
       <bpmn:outgoing>Flow_3</bpmn:outgoing>

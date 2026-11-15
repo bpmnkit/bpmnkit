@@ -558,7 +558,7 @@ describe("growth: lane bands drawn without a pool frame the process as a pool do
 		const defs = poolLessNested(false)
 		// s lands at y -10, its centre still in LA1; the bands reach 30 above it.
 		const up = run(defs, move("s", 0, -50))
-		expect(boundsOf(up, "LA")).toEqual({ ...boundsOf(defs, "LA"), y: -40, height: 316 })
+		expect(boundsOf(up, "LA")).toEqual({ ...boundsOf(defs, "LA"), y: -40, height: 396 })
 		expect(boundsOf(up, "LA1")).toEqual({ ...boundsOf(defs, "LA1"), y: -40, height: 156 })
 		expect(boundsOf(up, "LA2")).toEqual(boundsOf(defs, "LA2"))
 		expect(leafOf(up, "s")).toBe("LA1")
@@ -593,11 +593,11 @@ describe("growth: lane bands drawn without a pool frame the process as a pool do
 	it("leaves a laneless node out of the bands when a space drag moves it", () => {
 		const defs = poolLessNested()
 		for (const op of [
-			{ kind: "space", axis: "v", origin: 400, delta: 50 },
+			{ kind: "space", axis: "v", origin: 480, delta: 50 },
 			{ kind: "space", axis: "h", origin: 60, delta: 100 },
 		] satisfies EditorOp[]) {
 			const after = run(defs, op)
-			expect(boundsOf(after, "LB"), op.axis).toMatchObject({ y: 276, height: 116 })
+			expect(boundsOf(after, "LB"), op.axis).toMatchObject({ y: 356, height: 116 })
 			expect(leafOf(after, "loose"), op.axis).toBeUndefined()
 		}
 	})

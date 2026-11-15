@@ -100,7 +100,8 @@ function coerce(value: string): string | number | boolean {
 	if (value === "true") return true
 	if (value === "false") return false
 	const n = Number(value)
-	if (!Number.isNaN(n) && value.trim() !== "") return n
+	// Only when the number reads back the same: "8.10" is a version, not 8.1.
+	if (!Number.isNaN(n) && value.trim() !== "" && String(n) === value) return n
 	return value
 }
 

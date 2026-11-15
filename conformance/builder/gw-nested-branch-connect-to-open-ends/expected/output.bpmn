@@ -4,10 +4,10 @@
     <bpmn:startEvent id="s">
       <bpmn:outgoing>Flow_s_g</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:exclusiveGateway id="g" default="Flow_g_end">
+    <bpmn:exclusiveGateway id="g" default="Flow_g_end_merge">
       <bpmn:incoming>Flow_s_g</bpmn:incoming>
       <bpmn:outgoing>Flow_g_g2</bpmn:outgoing>
-      <bpmn:outgoing>Flow_g_end</bpmn:outgoing>
+      <bpmn:outgoing>Flow_g_end_merge</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:exclusiveGateway id="g2" default="Flow_g2_t2">
       <bpmn:incoming>Flow_g_g2</bpmn:incoming>
@@ -29,13 +29,17 @@
       <bpmn:outgoing>Flow_t2_g2_join</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:endEvent id="end">
-      <bpmn:incoming>Flow_g_end</bpmn:incoming>
-      <bpmn:incoming>Flow_g2_join_end</bpmn:incoming>
+      <bpmn:incoming>Flow_end_merge_end</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:exclusiveGateway id="g2_join">
       <bpmn:incoming>Flow_t1_g2_join</bpmn:incoming>
       <bpmn:incoming>Flow_t2_g2_join</bpmn:incoming>
-      <bpmn:outgoing>Flow_g2_join_end</bpmn:outgoing>
+      <bpmn:outgoing>Flow_g2_join_end_merge</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="end_merge">
+      <bpmn:incoming>Flow_g_end_merge</bpmn:incoming>
+      <bpmn:incoming>Flow_g2_join_end_merge</bpmn:incoming>
+      <bpmn:outgoing>Flow_end_merge_end</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_s_g" sourceRef="s" targetRef="g"/>
     <bpmn:sequenceFlow id="Flow_g_g2" sourceRef="g" targetRef="g2" name="a">
@@ -47,8 +51,9 @@
     <bpmn:sequenceFlow id="Flow_g2_t2" sourceRef="g2" targetRef="t2" name="y"/>
     <bpmn:sequenceFlow id="Flow_t1_g2_join" sourceRef="t1" targetRef="g2_join"/>
     <bpmn:sequenceFlow id="Flow_t2_g2_join" sourceRef="t2" targetRef="g2_join"/>
-    <bpmn:sequenceFlow id="Flow_g_end" sourceRef="g" targetRef="end" name="b"/>
-    <bpmn:sequenceFlow id="Flow_g2_join_end" sourceRef="g2_join" targetRef="end"/>
+    <bpmn:sequenceFlow id="Flow_g_end_merge" sourceRef="g" targetRef="end_merge" name="b"/>
+    <bpmn:sequenceFlow id="Flow_g2_join_end_merge" sourceRef="g2_join" targetRef="end_merge"/>
+    <bpmn:sequenceFlow id="Flow_end_merge_end" sourceRef="end_merge" targetRef="end"/>
   </bpmn:process>
 </bpmn:definitions>
 

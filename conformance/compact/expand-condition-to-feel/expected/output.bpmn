@@ -32,13 +32,13 @@
     </bpmn:intermediateCatchEvent>
     <bpmn:sequenceFlow id="f0" sourceRef="s" targetRef="g"/>
     <bpmn:sequenceFlow id="f1" sourceRef="g" targetRef="a">
-      <bpmn:conditionExpression>=x &gt; 1</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=x &gt; 1</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="f2" sourceRef="g" targetRef="b">
-      <bpmn:conditionExpression>=amount &gt;= 100 and approved</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=amount &gt;= 100 and approved</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="f3" sourceRef="g" targetRef="w">
-      <bpmn:conditionExpression>= y</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= y</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="f4" sourceRef="g" targetRef="c"/>
     <bpmn:sequenceFlow id="f5" sourceRef="w" targetRef="d"/>

@@ -430,9 +430,14 @@ macro_rules! scope_methods {
                 .current_gateway_id
                 .clone()
                 .filter(|g| !g.is_empty());
-            let Ok(outcome) =
-                $crate::shared::run_branch(&self.shared, gateway.as_deref(), name, callback)
-            else {
+            let name_flow = self.scope.branches_are_named(gateway.as_deref());
+            let Ok(outcome) = $crate::shared::run_branch(
+                &self.shared,
+                gateway.as_deref(),
+                name,
+                name_flow,
+                callback,
+            ) else {
                 return self;
             };
             let merged = self.scope.merge_branch(outcome);
@@ -561,6 +566,7 @@ pub(crate) fn make_ad_hoc_sub_process_el(
         id,
         BpmnElementType::AdHocSubProcess,
         FlowElementOptions {
+            message_subscription: None,
             name: options.and_then(|o| o.element.name.clone()),
             documentation: options.and_then(|o| o.element.documentation.clone()),
             execution_listeners: options.and_then(|o| o.element.execution_listeners.clone()),

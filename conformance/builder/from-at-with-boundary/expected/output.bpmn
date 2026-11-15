@@ -22,7 +22,7 @@
     </bpmn:task>
     <bpmn:boundaryEvent id="bt" attachedToRef="open">
       <bpmn:outgoing>Flow_bt_late</bpmn:outgoing>
-      <bpmn:timerEventDefinition>
+      <bpmn:timerEventDefinition id="bt_TimerEventDefinition">
         <bpmn:timeDuration>PT1M</bpmn:timeDuration>
       </bpmn:timerEventDefinition>
     </bpmn:boundaryEvent>

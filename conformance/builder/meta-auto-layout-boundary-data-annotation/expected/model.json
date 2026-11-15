@@ -69,6 +69,21 @@
                 "y": 50
               }
             ]
+          },
+          {
+            "bpmnElement": "DataInputAssociation_t_R_1",
+            "id": "DataInputAssociation_t_R_1_di",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 56,
+                "y": 356
+              },
+              {
+                "x": 116,
+                "y": 180
+              }
+            ]
           }
         ],
         "id": "p_di_plane",
@@ -123,17 +138,6 @@
               "width": 36,
               "x": 20,
               "y": 356
-            },
-            "bpmnElement": "DO",
-            "id": "DO_di",
-            "unknownAttributes": {}
-          },
-          {
-            "bounds": {
-              "height": 50,
-              "width": 36,
-              "x": 20,
-              "y": 486
             },
             "bpmnElement": "R",
             "id": "R_di",
@@ -207,6 +211,7 @@
         {
           "dataInputAssociations": [
             {
+              "id": "DataInputAssociation_t_R_1",
               "sourceRefs": [
                 "R"
               ],

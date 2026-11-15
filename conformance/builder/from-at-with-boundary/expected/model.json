@@ -215,6 +215,7 @@
           "attachedToRef": "open",
           "eventDefinitions": [
             {
+              "id": "bt_TimerEventDefinition",
               "timeDuration": "PT1M",
               "type": "timer"
             }

@@ -1,5 +1,5 @@
 import { spawnSync } from "node:child_process"
-import { mkdtempSync, readFileSync, rmSync } from "node:fs"
+import { copyFileSync, mkdtempSync, readFileSync, readdirSync, rmSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { fileURLToPath } from "node:url"
@@ -12,10 +12,12 @@ import {
 	agentCardGroup,
 	readAgentCard,
 } from "./agent-card.js"
+import { buildGroup } from "./build.js"
 import { commandGroups } from "./index.js"
 
 const CARDS = fileURLToPath(new URL("../../agent-cards/", import.meta.url))
 const ROOT = fileURLToPath(new URL("../../../../", import.meta.url))
+const BPMN_TEMPLATES = ["bpmn-process.txt", "bpmn-pools.txt", "bpmn-edit.mjs"]
 
 async function print(kind: AgentCardKind, flags: Record<string, boolean> = {}): Promise<string> {
 	const cmd = agentCardGroup.commands.find((c) => c.name === kind)
@@ -56,13 +58,28 @@ describe("casen agent-card", () => {
 		expect(readAgentCard(kind).length / 4).toBeLessThan(2000)
 	})
 
-	it.each(AGENT_CARD_KINDS)("shows the %s script exactly as the tested file", (kind) => {
+	it.each(["dmn", "form"] as const)("shows the %s script exactly as the tested file", (kind) => {
 		const fence = readAgentCard(kind).match(/```ts\n([\s\S]*?)```/)?.[1]
 		expect(fence).toBe(readFileSync(join(CARDS, "scripts", `${kind}.ts`), "utf8"))
 	})
 
+	it("shows the bpmn templates exactly as the tested files", () => {
+		const fences = [...readAgentCard("bpmn").matchAll(/```(?:text|js)\n([\s\S]*?)```/g)].map(
+			(m) => m[1],
+		)
+		expect(fences).toEqual(
+			BPMN_TEMPLATES.map((name) => readFileSync(join(CARDS, "scripts", name), "utf8")),
+		)
+	})
+
+	it("keeps the bpmn card under 150 lines", () => {
+		expect(readAgentCard("bpmn").split("\n").length).toBeLessThan(150)
+	})
+
 	it("points each card at the concrete casen check gate", () => {
-		for (const kind of AGENT_CARD_KINDS) expect(readAgentCard(kind)).toContain("casen check ")
+		// The BPMN card's one command lints (and deploys) what it builds.
+		for (const kind of AGENT_CARD_KINDS)
+			expect(readAgentCard(kind)).toContain(kind === "bpmn" ? "casen build " : "casen check ")
 	})
 
 	it("shows the multi-decision DRD script exactly as the tested file", () => {
@@ -151,5 +168,39 @@ describe("agent card scripts run as printed", () => {
 		expect(decision?.name).toBe("Order risk level")
 		expect(form.executionPlatformVersion).toBe("8.10.0")
 		expect(form.components.at(-1)?.id).toBe("Field_note")
+	})
+})
+
+describe("bpmn card templates build as printed", () => {
+	it("builds templates 1 and 2 lint clean, then edits 1 with template 3", async () => {
+		const dir = mkdtempSync(join(tmpdir(), "agent-card-build-"))
+		const ok: string[] = []
+		const run = (positional: string[], flags: RunContext["flags"] = {}) =>
+			(buildGroup.commands[0] as { run(c: RunContext): Promise<void> }).run({
+				positional,
+				flags,
+				output: { ok: (m: string) => ok.push(m), info: () => {} },
+			} as unknown as RunContext)
+		const write = vi.spyOn(process.stdout, "write").mockImplementation(() => true)
+		try {
+			for (const name of BPMN_TEMPLATES) copyFileSync(join(CARDS, "scripts", name), join(dir, name))
+			await run([join(dir, "bpmn-process.txt")])
+			await run([join(dir, "bpmn-pools.txt")])
+			await run([join(dir, "bpmn-edit.mjs")], { edit: join(dir, "bpmn-process.bpmn") })
+		} finally {
+			write.mockRestore()
+		}
+		expect(ok).toEqual([
+			"bpmn-process.bpmn + 2 forms (expense-reviewExpense.form, expense-reworkExpense.form) · lint clean · process expense, tasks 4, gateways 2, forms 2 · Camunda 8.10.0",
+			"bpmn-pools.bpmn + 3 forms (shop-pickItem.form, shop-boxItems.form, shop-shipOrder.form) · lint clean · pools 4, processes shop+restock, tasks 6, gateways 0, message flows 3, forms 3 · Camunda 8.10.0",
+			"bpmn-process.bpmn + 1 form (expense-fix.form) · lint clean · process expense, tasks 6, gateways 3, forms 3 · Camunda 8.10.0",
+		])
+		// The decision after the review reads `approved`: the generated form asks for it.
+		const review = JSON.parse(readFileSync(join(dir, "expense-reviewExpense.form"), "utf8"))
+		expect(review.components.at(-1)).toMatchObject({ type: "checkbox", key: "approved" })
+		const edited = Bpmn.parse(readFileSync(join(dir, "bpmn-process.bpmn"), "utf8"))
+		expect(edited.processes[0]?.flowElements.some((e) => e.id === "validate")).toBe(true)
+		expect(readdirSync(dir).filter((f) => f.endsWith(".form"))).toHaveLength(6)
+		rmSync(dir, { recursive: true, force: true })
 	})
 })

@@ -1,5 +1,6 @@
 import { readFile } from "node:fs/promises"
 import { basename, resolve } from "node:path"
+import type { CamundaClientInput } from "@bpmnkit/api"
 import { DeployabilityError, assertDeployableXml } from "@bpmnkit/core"
 import { clusterApiUrl, getActiveProfile, getAuthHeader } from "@bpmnkit/profiles"
 import type { Command, CommandGroup } from "../types.js"
@@ -20,6 +21,85 @@ export function gateDeployment(fileName: string, content: string): void {
 			`${err.message}\nNot deployed. Fix the model (casen check ${fileName} --deploy), or pass --no-validate to send it anyway.`,
 		)
 	}
+}
+
+export type DeployTarget = "auto" | "local" | "camunda8"
+
+/**
+ * A Camunda 8 cluster named by the environment, the way c8ctl and the Camunda SDKs
+ * read it: `ZEEBE_REST_ADDRESS` (or `CAMUNDA_REST_ADDRESS`), OAuth with
+ * `CAMUNDA_CLIENT_ID`/`_SECRET`/`CAMUNDA_OAUTH_URL`, basic auth with
+ * `CAMUNDA_BASIC_AUTH_USERNAME`/`_PASSWORD`, otherwise none.
+ */
+export function clusterFromEnv(
+	env: NodeJS.ProcessEnv = process.env,
+): CamundaClientInput | undefined {
+	const address = env.ZEEBE_REST_ADDRESS ?? env.CAMUNDA_REST_ADDRESS
+	if (!address) return undefined
+	const clientId = env.CAMUNDA_CLIENT_ID ?? env.ZEEBE_CLIENT_ID
+	const clientSecret = env.CAMUNDA_CLIENT_SECRET ?? env.ZEEBE_CLIENT_SECRET
+	const tokenUrl = env.CAMUNDA_OAUTH_URL ?? env.ZEEBE_AUTHORIZATION_SERVER_URL
+	if (clientId && clientSecret && tokenUrl) {
+		const audience = env.CAMUNDA_TOKEN_AUDIENCE ?? env.ZEEBE_TOKEN_AUDIENCE ?? "zeebe.camunda.io"
+		return {
+			baseUrl: address,
+			auth: { type: "oauth2", clientId, clientSecret, tokenUrl, audience },
+		}
+	}
+	const username = env.CAMUNDA_BASIC_AUTH_USERNAME
+	if (username) {
+		const password = env.CAMUNDA_BASIC_AUTH_PASSWORD ?? ""
+		return { baseUrl: address, auth: { type: "basic", username, password } }
+	}
+	return { baseUrl: address, auth: { type: "none" } }
+}
+
+/**
+ * Deploys resources in one request, so a process and the forms and decisions it
+ * links arrive together. `auto` picks the environment's cluster, then the active
+ * profile, then local Reebe.
+ */
+export async function deployResources(
+	resources: readonly { name: string; content: string }[],
+	target: string,
+): Promise<{ target: "local" | "camunda8"; result: unknown }> {
+	const formData = new FormData()
+	for (const r of resources) {
+		formData.append(
+			"resources[]",
+			new Blob([r.content], { type: "application/octet-stream" }),
+			r.name,
+		)
+	}
+
+	const env = target === "local" ? undefined : clusterFromEnv()
+	const config = env ?? (target === "local" ? undefined : getActiveProfile()?.config)
+	if (target === "camunda8" && !config?.baseUrl) {
+		throw new Error(
+			"No Camunda 8 cluster: set ZEEBE_REST_ADDRESS (+ CAMUNDA_CLIENT_ID/SECRET/OAUTH_URL) or run: casen profile create",
+		)
+	}
+	if (config?.baseUrl) {
+		const authHeader = await getAuthHeader(config)
+		const res = await fetch(clusterApiUrl(config.baseUrl, "/deployments"), {
+			method: "POST",
+			headers: authHeader ? { authorization: authHeader } : {},
+			body: formData,
+		})
+		if (!res.ok) throw new Error(`Camunda 8 deploy failed: ${res.status} ${await res.text()}`)
+		return { target: "camunda8", result: await res.json() }
+	}
+
+	let res: Response
+	try {
+		res = await fetch(`${ZEEBE_ADDRESS}/v2/deployments`, { method: "POST", body: formData })
+	} catch (err) {
+		throw new Error(
+			`Cannot reach Reebe at ${ZEEBE_ADDRESS}. Start it with: casen reebe start, or set ZEEBE_REST_ADDRESS for a cluster\n${String(err)}`,
+		)
+	}
+	if (!res.ok) throw new Error(`Local deploy failed: ${res.status} ${await res.text()}`)
+	return { target: "local", result: await res.json() }
 }
 
 const deployCmd: Command = {
@@ -60,42 +140,9 @@ const deployCmd: Command = {
 		})
 		if (ctx.flags.validate !== false) gateDeployment(basename(absPath), content)
 
-		const formData = new FormData()
-		formData.append(
-			"resources[]",
-			new Blob([content], { type: "application/octet-stream" }),
-			basename(absPath),
-		)
-
 		const target = typeof ctx.flags.target === "string" ? ctx.flags.target : "local"
-
-		if (target === "camunda8") {
-			const profile = getActiveProfile()
-			if (!profile?.config.baseUrl) {
-				throw new Error("No active Camunda 8 profile. Run: casen profile create")
-			}
-			const authHeader = await getAuthHeader(profile.config)
-			const baseUrl = profile.config.baseUrl.replace(/\/$/, "")
-			const res = await fetch(clusterApiUrl(baseUrl, "/deployments"), {
-				method: "POST",
-				headers: { authorization: authHeader },
-				body: formData,
-			})
-			if (!res.ok) throw new Error(`Camunda 8 deploy failed: ${res.status} ${await res.text()}`)
-			ctx.output.print({ success: true, target: "camunda8", result: await res.json() })
-			return
-		}
-
-		let res: Response
-		try {
-			res = await fetch(`${ZEEBE_ADDRESS}/v2/deployments`, { method: "POST", body: formData })
-		} catch (err) {
-			throw new Error(
-				`Cannot reach Reebe at ${ZEEBE_ADDRESS}. Start it with: casen reebe start\n${String(err)}`,
-			)
-		}
-		if (!res.ok) throw new Error(`Local deploy failed: ${res.status} ${await res.text()}`)
-		ctx.output.print({ success: true, target: "local", result: await res.json() })
+		const deployed = await deployResources([{ name: basename(absPath), content }], target)
+		ctx.output.print({ success: true, ...deployed })
 	},
 }
 

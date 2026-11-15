@@ -27,7 +27,7 @@
           "id": "s",
           "incoming": [],
           "outgoing": [
-            "Flow_s_work"
+            "Flow_s_work_merge"
           ],
           "type": "startEvent",
           "unknownAttributes": {}
@@ -44,8 +44,7 @@
           ],
           "id": "work",
           "incoming": [
-            "Flow_s_work",
-            "Flow_g_work"
+            "Flow_work_merge_work"
           ],
           "name": "work",
           "outgoing": [
@@ -62,7 +61,7 @@
             "Flow_work_g"
           ],
           "outgoing": [
-            "Flow_g_work",
+            "Flow_g_work_merge",
             "Flow_g_e"
           ],
           "type": "exclusiveGateway",
@@ -78,6 +77,19 @@
           "outgoing": [],
           "type": "endEvent",
           "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "work_merge",
+          "incoming": [
+            "Flow_s_work_merge",
+            "Flow_g_work_merge"
+          ],
+          "outgoing": [
+            "Flow_work_merge_work"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
         }
       ],
       "groups": [],
@@ -86,9 +98,9 @@
       "sequenceFlows": [
         {
           "extensionElements": [],
-          "id": "Flow_s_work",
+          "id": "Flow_s_work_merge",
           "sourceRef": "s",
-          "targetRef": "work",
+          "targetRef": "work_merge",
           "unknownAttributes": {}
         },
         {
@@ -106,10 +118,10 @@
             "text": "=retry"
           },
           "extensionElements": [],
-          "id": "Flow_g_work",
+          "id": "Flow_g_work_merge",
           "name": "again",
           "sourceRef": "g",
-          "targetRef": "work",
+          "targetRef": "work_merge",
           "unknownAttributes": {}
         },
         {
@@ -118,6 +130,13 @@
           "name": "done",
           "sourceRef": "g",
           "targetRef": "e",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_work_merge_work",
+          "sourceRef": "work_merge",
+          "targetRef": "work",
           "unknownAttributes": {}
         }
       ],

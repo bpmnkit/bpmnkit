@@ -7,9 +7,11 @@ import {
 import { discoverElementTemplates } from "@bpmnkit/connectors/node"
 import {
 	Bpmn,
+	CAMUNDA_COMPAT_RULES,
 	USER_TASK_FORM_RULE,
 	applyBpmnlintConfig,
 	applyCamundaCompatConfig,
+	bpmnlintRuleForFinding,
 	compactify,
 	detectExecutionPlatform,
 	lintCategories,
@@ -67,6 +69,31 @@ const SEVERITY_SYMBOL: Record<string, string> = {
 }
 
 const DEFAULT_SERVER = "http://localhost:3033"
+
+/** Kit finding id → `camunda-compat/<rule>` for the findings the plugin reports under another name. */
+const COMPAT_EQUIVALENT: ReadonlyMap<string, string> = new Map(
+	Object.entries(CAMUNDA_COMPAT_RULES).flatMap(([rule, entry]) =>
+		(entry.equivalents ?? []).map((id) => [id, `camunda-compat/${rule}`] as const),
+	),
+)
+
+/**
+ * The key that switches a finding off in `.bpmnlintrc` (and that c8ctl / Camunda
+ * Modeler lint print), or `undefined` when no bpmnlint rule reports it:
+ * `compat/user-task-definition` → `camunda-compat/user-task-definition`,
+ * `flow/mixed-gateway` → `no-gateway-join-fork`, `bpmnlint/x` → `x`.
+ */
+export function bpmnlintrcKey(findingId: string): string | undefined {
+	if (findingId.startsWith("bpmnlint/")) return findingId.slice("bpmnlint/".length)
+	if (findingId.startsWith("compat/")) return `camunda-compat/${findingId.slice("compat/".length)}`
+	return bpmnlintRuleForFinding(findingId) ?? COMPAT_EQUIVALENT.get(findingId)
+}
+
+/** ` (.bpmnlintrc "<key>")` for a finding a bpmnlint rule reports, else empty. */
+export function bpmnlintrcSuffix(findingId: string): string {
+	const key = bpmnlintrcKey(findingId)
+	return key === undefined ? "" : ` (.bpmnlintrc "${key}")`
+}
 
 /** Real bpmnlint's findings are listed under this category, and selected by it in `--categories`. */
 const BPMNLINT_CATEGORY = "bpmnlint"
@@ -371,8 +398,11 @@ const lintCmd: Command = {
 		for (const f of findings) {
 			const symbol = SEVERITY_SYMBOL[f.severity] ?? "·"
 			const elIds = f.elementIds.length > 0 ? ` [${f.elementIds.join(", ")}]` : ""
-			const rule = f.bpmnlintRule !== undefined ? ` (${f.bpmnlintRule})` : ""
-			ctx.output.info(`${symbol} [${f.category}]${elIds} ${f.message}${rule}`)
+			// (key) is the rule's name in .bpmnlintrc / c8ctl lint; [id] is BPMN Kit's finding id.
+			const key = f.bpmnlintRule ?? bpmnlintrcKey(f.id)
+			const rule = key !== undefined ? ` (${key})` : ""
+			const id = f.category === BPMNLINT_CATEGORY ? "" : ` [${f.id}]`
+			ctx.output.info(`${symbol} [${f.category}]${elIds} ${f.message}${rule}${id}`)
 		}
 
 		const total = findings.length

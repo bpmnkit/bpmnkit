@@ -40,10 +40,10 @@
       <bpmn:incoming>Flow_t_e2</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_s_eg" sourceRef="s" targetRef="eg"/>
-    <bpmn:sequenceFlow id="Flow_eg_m" sourceRef="eg" targetRef="m" name="msg"/>
+    <bpmn:sequenceFlow id="Flow_eg_m" sourceRef="eg" targetRef="m"/>
     <bpmn:sequenceFlow id="Flow_m_handle" sourceRef="m" targetRef="handle"/>
     <bpmn:sequenceFlow id="Flow_handle_e1" sourceRef="handle" targetRef="e1"/>
-    <bpmn:sequenceFlow id="Flow_eg_t" sourceRef="eg" targetRef="t" name="timeout"/>
+    <bpmn:sequenceFlow id="Flow_eg_t" sourceRef="eg" targetRef="t"/>
     <bpmn:sequenceFlow id="Flow_t_e2" sourceRef="t" targetRef="e2"/>
   </bpmn:process>
 </bpmn:definitions>

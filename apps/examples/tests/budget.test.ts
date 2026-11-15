@@ -40,7 +40,8 @@ interface Budget {
 const BUDGETS: Record<string, Budget> = {
 	"01-employee-onboarding": { lines: 65, elements: 22 },
 	"02-incident-response": { lines: 97, elements: 34 },
-	"03-loan-approval": { lines: 112, elements: 34 },
+	// +2 elements: two branches connectTo one task, so build() inserts a merge gateway and its flow.
+	"03-loan-approval": { lines: 112, elements: 36 },
 	"04-invoice-processing": { lines: 117, elements: 35 },
 	// +1 line: the message catch needs a correlationKey to deploy on Camunda 8.
 	"05-content-publishing": { lines: 140, elements: 46 },

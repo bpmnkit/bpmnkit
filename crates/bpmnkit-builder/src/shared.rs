@@ -173,6 +173,9 @@ pub(crate) struct Scope {
     pub last_node_id: Option<String>,
     pub current_gateway_id: Option<String>,
     pub open_branch_ends: Vec<String>,
+    /// Data objects a `dataObjectReference()` declared on its own; a later explicit
+    /// `dataObject()` adopts them instead of colliding (TS's `implicitDataObjects`).
+    pub implicit_data_objects: IndexSet<String>,
 }
 
 /// What a finished branch hands back to the builder that opened it (TS reads these off the
@@ -191,6 +194,14 @@ pub(crate) struct BranchOutcome {
 }
 
 impl Scope {
+    /// TS's `branchesAreNamed`: only decision gateways label their branches' flows.
+    pub fn branches_are_named(&self, gateway_id: Option<&str>) -> bool {
+        !matches!(
+            gateway_id.and_then(|id| self.find(id)),
+            Some(BpmnFlowElement::ParallelGateway(_) | BpmnFlowElement::EventBasedGateway(_))
+        )
+    }
+
     pub fn find(&self, id: &str) -> Option<&BpmnFlowElement> {
         self.elements.iter().find(|e| e.base().id == id)
     }
@@ -230,6 +241,19 @@ impl Scope {
     /// TS's `addDataElement`: beside the chain, no flows, cursor unmoved.
     pub fn add_data_element(&mut self, element: BpmnFlowElement) -> Result<(), String> {
         let id = element.base().id.clone();
+        if let BpmnFlowElement::DataObject(explicit) = &element {
+            if self.implicit_data_objects.shift_remove(&id) {
+                if let Some(BpmnFlowElement::DataObject(implicit)) = self.find_mut(&id) {
+                    if explicit.base.name.is_some() {
+                        implicit.base.name = explicit.base.name.clone();
+                    }
+                    if explicit.is_collection == Some(true) {
+                        implicit.is_collection = Some(true);
+                    }
+                    return Ok(());
+                }
+            }
+        }
         if self.ids.contains(&id) {
             return Err(format!("Duplicate element ID \"{id}\""));
         }
@@ -246,6 +270,21 @@ impl Scope {
         data_object_ref: &str,
         is_collection: bool,
     ) -> Result<(), String> {
+        // An unresolved dataObjectRef is a raw XSD IDREF error at build; declare the object.
+        if !matches!(
+            self.find(data_object_ref),
+            Some(BpmnFlowElement::DataObject(_))
+        ) {
+            let object = crate::elements::make_data_element(
+                data_object_ref,
+                bpmnkit_bpmn::BpmnElementType::DataObject,
+                None,
+                None,
+            );
+            self.add_data_element(object)?;
+            self.implicit_data_objects
+                .insert(data_object_ref.to_owned());
+        }
         self.add_data_element(element)?;
         if is_collection {
             if let Some(BpmnFlowElement::DataObject(d)) = self.find_mut(data_object_ref) {
@@ -268,6 +307,17 @@ impl Scope {
                 "dataAssociation(): no element \"{activity_id}\" in this scope"
             ));
         };
+        let base = activity.base();
+        let id = match direction {
+            DataDirection::Input => format!(
+                "DataInputAssociation_{activity_id}_{data_ref_id}_{}",
+                base.data_input_associations.len() + 1
+            ),
+            DataDirection::Output => format!(
+                "DataOutputAssociation_{activity_id}_{data_ref_id}_{}",
+                base.data_output_associations.len() + 1
+            ),
+        };
         match direction {
             DataDirection::Input => {
                 let target = target_ref_placeholder(activity);
@@ -275,6 +325,7 @@ impl Scope {
                     .base_mut()
                     .data_input_associations
                     .push(BpmnDataAssociation {
+                        id: Some(id),
                         source_refs: vec![data_ref_id.to_owned()],
                         target_ref: Some(target),
                         ..BpmnDataAssociation::default()
@@ -285,6 +336,7 @@ impl Scope {
                     .base_mut()
                     .data_output_associations
                     .push(BpmnDataAssociation {
+                        id: Some(id),
                         source_refs: vec![],
                         target_ref: Some(data_ref_id.to_owned()),
                         ..BpmnDataAssociation::default()
@@ -345,6 +397,7 @@ pub(crate) fn run_branch(
     shared: &SharedRef,
     current_gateway_id: Option<&str>,
     name: &str,
+    name_flow: bool,
     callback: impl FnOnce(&mut BranchBuilder),
 ) -> Result<BranchOutcome, Failed> {
     let Some(gateway_id) = current_gateway_id else {
@@ -353,7 +406,7 @@ pub(crate) fn run_branch(
             "branch() must be called after a gateway element",
         ));
     };
-    let mut branch = BranchBuilder::new(gateway_id, name, Rc::clone(shared));
+    let mut branch = BranchBuilder::new(gateway_id, name, name_flow, Rc::clone(shared));
     callback(&mut branch);
     if is_failed(shared) {
         return Err(Failed);

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:process id="KYCOnboarding" name="KYC Customer Onboarding" isExecutable="true">
     <bpmn:startEvent id="start" name="Onboarding Started">
       <bpmn:outgoing>Flow_compact_1</bpmn:outgoing>
@@ -110,32 +110,32 @@
     <bpmn:sequenceFlow id="Flow_compact_2" sourceRef="uploadDocument" targetRef="verifyDocument"/>
     <bpmn:sequenceFlow id="Flow_compact_3" sourceRef="verifyDocument" targetRef="documentQuality"/>
     <bpmn:sequenceFlow id="Flow_compact_4" sourceRef="documentQuality" targetRef="uploadDocument" name="verification-failed-retry">
-      <bpmn:conditionExpression>=ocrResponse.verified = false and (uploadRetries != null and uploadRetries &lt; 2)</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=ocrResponse.verified = false and (uploadRetries != null and uploadRetries &lt; 2)</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_compact_5" sourceRef="documentQuality" targetRef="notifyRejection" name="verification-failed-exhausted">
-      <bpmn:conditionExpression>=ocrResponse.verified = false and (uploadRetries = null or uploadRetries &gt;= 2)</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=ocrResponse.verified = false and (uploadRetries = null or uploadRetries &gt;= 2)</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_compact_6" sourceRef="documentQuality" targetRef="sanctionsScreening" name="verification-passed">
-      <bpmn:conditionExpression>=ocrResponse.verified = true</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=ocrResponse.verified = true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_compact_7" sourceRef="sanctionsScreening" targetRef="riskRouting"/>
     <bpmn:sequenceFlow id="Flow_compact_8" sourceRef="riskRouting" targetRef="standardDueDiligence" name="standard-risk">
-      <bpmn:conditionExpression>=screeningResponse.riskLevel = "low"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=screeningResponse.riskLevel = "low"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_compact_9" sourceRef="riskRouting" targetRef="enhancedDueDiligence" name="enhanced-risk">
-      <bpmn:conditionExpression>=screeningResponse.riskLevel = "high" or screeningResponse.pepMatch = true</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=screeningResponse.riskLevel = "high" or screeningResponse.pepMatch = true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_compact_10" sourceRef="standardDueDiligence" targetRef="finalRiskClassification"/>
     <bpmn:sequenceFlow id="Flow_compact_11" sourceRef="enhancedDueDiligence" targetRef="finalRiskClassification"/>
     <bpmn:sequenceFlow id="Flow_compact_12" sourceRef="finalRiskClassification" targetRef="classificationGateway"/>
     <bpmn:sequenceFlow id="Flow_compact_13" sourceRef="classificationGateway" targetRef="notifyApproval" name="approved">
-      <bpmn:conditionExpression>=riskClassification.outcome = "approved"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=riskClassification.outcome = "approved"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_compact_14" sourceRef="classificationGateway" targetRef="notifyRejection" name="rejected">
-      <bpmn:conditionExpression>=riskClassification.outcome = "rejected"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=riskClassification.outcome = "rejected"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_compact_15" sourceRef="classificationGateway" targetRef="endEscalated" name="escalate">
-      <bpmn:conditionExpression>=riskClassification.outcome = "escalate"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=riskClassification.outcome = "escalate"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_compact_16" sourceRef="notifyApproval" targetRef="endApproved"/>
     <bpmn:sequenceFlow id="Flow_compact_17" sourceRef="notifyRejection" targetRef="endRejected"/>

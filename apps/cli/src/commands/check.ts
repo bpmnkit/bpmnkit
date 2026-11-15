@@ -12,7 +12,7 @@ import {
 	validateDeployableXml,
 } from "@bpmnkit/core"
 import type { Command, CommandGroup, ParsedFlags } from "../types.js"
-import { lintBpmn } from "./lint.js"
+import { bpmnlintrcSuffix, lintBpmn } from "./lint.js"
 
 export type CheckKind = "bpmn" | "dmn" | "form"
 
@@ -383,7 +383,9 @@ const checkCmd: Command = {
 				ctx.output.info(file)
 				for (const r of own) {
 					const at = r.elementId !== undefined ? ` [${r.elementId}]` : ""
-					ctx.output.info(`  ${SEVERITY_SYMBOL[r.severity]} ${r.rule}${at} ${r.message}`)
+					ctx.output.info(
+						`  ${SEVERITY_SYMBOL[r.severity]} ${r.rule}${bpmnlintrcSuffix(r.rule)}${at} ${r.message}`,
+					)
 					ctx.output.info(`      fix: ${r.fix}`)
 				}
 			}

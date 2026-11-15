@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_tasks" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_tasks" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:message id="Message_ok" name="ok">
     <bpmn:extensionElements>
       <zeebe:subscription correlationKey="=orderId"/>
@@ -125,7 +125,7 @@
     <bpmn:sequenceFlow id="flowNoCondition" sourceRef="split" targetRef="plainTask"/>
     <bpmn:sequenceFlow id="flowDefault" sourceRef="split" targetRef="manual"/>
     <bpmn:sequenceFlow id="flowConditionFromTask" sourceRef="noType" targetRef="emptyType">
-      <bpmn:conditionExpression>=true</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="flowEventGateway" sourceRef="eventGateway" targetRef="afterEventGateway"/>
   </bpmn:process>
@@ -223,9 +223,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="adHocEmpty_di" bpmnElement="adHocEmpty" isExpanded="true">
         <dc:Bounds x="0" y="4018" width="362" height="236"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="data_di" bpmnElement="data">
-        <dc:Bounds x="163" y="4334" width="36" height="50"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="collapsedStart_di" bpmnElement="collapsedStart">
         <dc:Bounds x="163" y="3636" width="36" height="36"/>

@@ -50,6 +50,7 @@
             {
               "dataInputAssociations": [
                 {
+                  "id": "DataInputAssociation_t_R1_1",
                   "sourceRefs": [
                     "R1"
                   ],
@@ -59,6 +60,7 @@
               ],
               "dataOutputAssociations": [
                 {
+                  "id": "DataOutputAssociation_t_DS1_1",
                   "sourceRefs": [],
                   "targetRef": "DS1",
                   "unknownAttributes": {}
@@ -198,5 +200,14 @@
   "unknownAttributes": {
     "modeler:executionPlatform": "Camunda Cloud",
     "modeler:executionPlatformVersion": "8.10.0"
-  }
+  },
+  "unknownChildren": [
+    {
+      "attributes": {
+        "id": "Store_x"
+      },
+      "children": [],
+      "name": "bpmn:dataStore"
+    }
+  ]
 }

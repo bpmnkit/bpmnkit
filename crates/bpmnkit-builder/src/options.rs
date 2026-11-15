@@ -307,6 +307,8 @@ pub struct IntermediateThrowEventOptions {
     #[serde(flatten)]
     pub element: ElementOptions,
     pub message_name: Option<String>,
+    /// `zeebe:subscription` key of the thrown message, hoisted onto the message.
+    pub correlation_key: Option<String>,
     pub signal_name: Option<String>,
     pub escalation_code: Option<String>,
     pub compensation: Option<bool>,
@@ -325,6 +327,8 @@ pub struct EndEventOptions {
     pub error_code: Option<String>,
     pub error_ref: Option<String>,
     pub message_name: Option<String>,
+    /// `zeebe:subscription` key of the thrown message, hoisted onto the message.
+    pub correlation_key: Option<String>,
     pub signal_name: Option<String>,
     pub escalation_code: Option<String>,
     /// Job type of the worker that publishes the message (`zeebe:taskDefinition`).

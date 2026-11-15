@@ -126,7 +126,8 @@
     ]
   },
   "fixes": [
-    "named 2 unnamed element(s) from their ids"
+    "named 2 unnamed element(s) from their ids",
+    "\"d\" calls decision \"d\"; set decision= to call another"
   ],
   "problems": [],
   "questions": []

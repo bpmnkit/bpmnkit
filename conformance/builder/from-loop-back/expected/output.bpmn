@@ -2,11 +2,10 @@
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
   <bpmn:process id="proc" isExecutable="true">
     <bpmn:startEvent id="start" name="Start">
-      <bpmn:outgoing>f1</bpmn:outgoing>
+      <bpmn:outgoing>Flow_start_validate_merge</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:serviceTask id="validate" name="Validate">
       <bpmn:incoming>f1</bpmn:incoming>
-      <bpmn:incoming>Flow_open_validate</bpmn:incoming>
       <bpmn:outgoing>f2</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="gw" name="OK?">
@@ -19,13 +18,19 @@
     </bpmn:endEvent>
     <bpmn:task id="open" name="Open end">
       <bpmn:incoming>f4</bpmn:incoming>
-      <bpmn:outgoing>Flow_open_validate</bpmn:outgoing>
+      <bpmn:outgoing>Flow_open_validate_merge</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:sequenceFlow id="f1" sourceRef="start" targetRef="validate"/>
+    <bpmn:exclusiveGateway id="validate_merge">
+      <bpmn:incoming>Flow_open_validate_merge</bpmn:incoming>
+      <bpmn:incoming>Flow_start_validate_merge</bpmn:incoming>
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="f1" sourceRef="validate_merge" targetRef="validate"/>
     <bpmn:sequenceFlow id="f2" sourceRef="validate" targetRef="gw"/>
     <bpmn:sequenceFlow id="f3" sourceRef="gw" targetRef="end"/>
     <bpmn:sequenceFlow id="f4" sourceRef="gw" targetRef="open"/>
-    <bpmn:sequenceFlow id="Flow_open_validate" sourceRef="open" targetRef="validate"/>
+    <bpmn:sequenceFlow id="Flow_open_validate_merge" sourceRef="open" targetRef="validate_merge"/>
+    <bpmn:sequenceFlow id="Flow_start_validate_merge" sourceRef="start" targetRef="validate_merge"/>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="proc">

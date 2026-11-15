@@ -47,7 +47,8 @@ describe("buildSdkSystemPrompt", () => {
 	it("is much smaller than the README-based prompt", () => {
 		const readme = readFileSync(join(REPO_ROOT, "packages/core/README.md"), "utf-8")
 		const reference = readFileSync(join(REPO_ROOT, "packages/core/builder-reference.md"), "utf-8")
-		expect(reference.length).toBeLessThan(readme.length * 0.7)
+		// 0.75: the reference gained the DiagramBuilder and lanes sections the README lacks.
+		expect(reference.length).toBeLessThan(readme.length * 0.75)
 	})
 })
 

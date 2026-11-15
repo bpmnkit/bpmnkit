@@ -61,6 +61,10 @@ pub fn build_semantic_graph<'a>(
     let mut nodes: Vec<&'a BpmnFlowElement> = Vec::with_capacity(flow_elements.len());
     let mut attachers: IndexMap<&'a str, Vec<&'a BpmnBoundaryEvent>> = IndexMap::default();
     for el in flow_elements {
+        // A data object has no shape: its references are what a diagram draws.
+        if matches!(el, BpmnFlowElement::DataObject(_)) {
+            continue;
+        }
         if let BpmnFlowElement::BoundaryEvent(be) = el {
             attachers
                 .entry(be.attached_to_ref.as_str())

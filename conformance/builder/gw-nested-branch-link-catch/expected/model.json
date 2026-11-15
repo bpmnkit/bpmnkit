@@ -114,7 +114,7 @@
           "id": "lc",
           "incoming": [],
           "outgoing": [
-            "Flow_lc_t3"
+            "Flow_lc_t3_merge"
           ],
           "type": "intermediateCatchEvent",
           "unknownAttributes": {}
@@ -131,8 +131,7 @@
           ],
           "id": "t3",
           "incoming": [
-            "Flow_lc_t3",
-            "Flow_g2_join_t3"
+            "Flow_t3_merge_t3"
           ],
           "name": "t3",
           "outgoing": [
@@ -177,7 +176,20 @@
             "Flow_t2_g2_join"
           ],
           "outgoing": [
-            "Flow_g2_join_t3"
+            "Flow_g2_join_t3_merge"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "t3_merge",
+          "incoming": [
+            "Flow_lc_t3_merge",
+            "Flow_g2_join_t3_merge"
+          ],
+          "outgoing": [
+            "Flow_t3_merge_t3"
           ],
           "type": "exclusiveGateway",
           "unknownAttributes": {}
@@ -232,9 +244,9 @@
         },
         {
           "extensionElements": [],
-          "id": "Flow_lc_t3",
+          "id": "Flow_lc_t3_merge",
           "sourceRef": "lc",
-          "targetRef": "t3",
+          "targetRef": "t3_merge",
           "unknownAttributes": {}
         },
         {
@@ -268,8 +280,15 @@
         },
         {
           "extensionElements": [],
-          "id": "Flow_g2_join_t3",
+          "id": "Flow_g2_join_t3_merge",
           "sourceRef": "g2_join",
+          "targetRef": "t3_merge",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "Flow_t3_merge_t3",
+          "sourceRef": "t3_merge",
           "targetRef": "t3",
           "unknownAttributes": {}
         }

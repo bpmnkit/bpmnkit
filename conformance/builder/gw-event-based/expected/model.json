@@ -157,7 +157,6 @@
         {
           "extensionElements": [],
           "id": "Flow_eg_m",
-          "name": "msg",
           "sourceRef": "eg",
           "targetRef": "m",
           "unknownAttributes": {}
@@ -179,7 +178,6 @@
         {
           "extensionElements": [],
           "id": "Flow_eg_t",
-          "name": "timeout",
           "sourceRef": "eg",
           "targetRef": "t",
           "unknownAttributes": {}

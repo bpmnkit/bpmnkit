@@ -32,8 +32,8 @@
       <bpmn:outgoing>Flow_fork_join_e</bpmn:outgoing>
     </bpmn:parallelGateway>
     <bpmn:sequenceFlow id="Flow_s_fork" sourceRef="s" targetRef="fork"/>
-    <bpmn:sequenceFlow id="Flow_fork_ta" sourceRef="fork" targetRef="ta" name="a"/>
-    <bpmn:sequenceFlow id="Flow_fork_tb" sourceRef="fork" targetRef="tb" name="b"/>
+    <bpmn:sequenceFlow id="Flow_fork_ta" sourceRef="fork" targetRef="ta"/>
+    <bpmn:sequenceFlow id="Flow_fork_tb" sourceRef="fork" targetRef="tb"/>
     <bpmn:sequenceFlow id="Flow_ta_fork_join" sourceRef="ta" targetRef="fork_join"/>
     <bpmn:sequenceFlow id="Flow_tb_fork_join" sourceRef="tb" targetRef="fork_join"/>
     <bpmn:sequenceFlow id="Flow_fork_join_e" sourceRef="fork_join" targetRef="e"/>

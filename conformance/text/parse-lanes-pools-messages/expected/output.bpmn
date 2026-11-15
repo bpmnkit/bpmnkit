@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:message id="Message_paid" name="paid">
     <bpmn:extensionElements>
       <zeebe:subscription correlationKey="=orderId"/>
@@ -57,7 +57,7 @@
     <bpmn:sequenceFlow id="Flow_1" sourceRef="start" targetRef="review"/>
     <bpmn:sequenceFlow id="Flow_2" sourceRef="review" targetRef="ok"/>
     <bpmn:sequenceFlow id="Flow_3" sourceRef="ok" targetRef="pay" name="Yes">
-      <bpmn:conditionExpression>= approved</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">= approved</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_4" sourceRef="pay" targetRef="wait"/>
     <bpmn:sequenceFlow id="Flow_5" sourceRef="wait" targetRef="done"/>
@@ -98,7 +98,7 @@
       <bpmndi:BPMNShape id="reject_di" bpmnElement="reject">
         <dc:Bounds x="509" y="152" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="499" y="192" width="56" height="14"/>
+          <dc:Bounds x="549" y="188" width="56" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_Order_di" bpmnElement="Participant_Order" isHorizontal="true">
@@ -144,6 +144,9 @@
       <bpmndi:BPMNEdge id="MessageFlow_1_di" bpmnElement="MessageFlow_1">
         <di:waypoint x="547" y="290"/>
         <di:waypoint x="547" y="60"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="375" y="68" width="168" height="14"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="MessageFlow_2_di" bpmnElement="MessageFlow_2">
         <di:waypoint x="687" y="60"/>

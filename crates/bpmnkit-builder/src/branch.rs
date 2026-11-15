@@ -40,6 +40,8 @@ pub struct BranchBuilder {
     pub(crate) scope: Scope,
     pub(crate) gateway_id: String,
     pub(crate) branch_name: String,
+    /// False after a parallel or event-based gateway: Camunda lints a named flow there.
+    pub(crate) name_flow: bool,
     pub(crate) is_first_element: bool,
     pub(crate) pending_condition: Option<String>,
     pub(crate) pending_label: Option<String>,
@@ -52,7 +54,12 @@ pub struct BranchBuilder {
 }
 
 impl BranchBuilder {
-    pub(crate) fn new(gateway_id: &str, branch_name: &str, shared: SharedRef) -> Self {
+    pub(crate) fn new(
+        gateway_id: &str,
+        branch_name: &str,
+        name_flow: bool,
+        shared: SharedRef,
+    ) -> Self {
         Self {
             shared,
             scope: Scope {
@@ -61,6 +68,7 @@ impl BranchBuilder {
             },
             gateway_id: gateway_id.to_owned(),
             branch_name: branch_name.to_owned(),
+            name_flow,
             is_first_element: true,
             pending_condition: None,
             pending_label: None,
@@ -115,11 +123,13 @@ impl BranchBuilder {
             id,
             source_ref: source.to_owned(),
             target_ref: target.to_owned(),
-            name: first.then(|| {
-                self.pending_label
-                    .clone()
-                    .unwrap_or_else(|| self.branch_name.clone())
-            }),
+            name: first
+                .then(|| {
+                    self.pending_label
+                        .clone()
+                        .or_else(|| self.name_flow.then(|| self.branch_name.clone()))
+                })
+                .flatten(),
             condition_expression: self
                 .pending_condition
                 .as_deref()

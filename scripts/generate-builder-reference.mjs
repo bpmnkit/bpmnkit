@@ -277,12 +277,12 @@ function isPublic(member) {
 }
 
 /** Public methods of a class in declaration order: { name, signature, node }. */
-function publicMethods(sf, className) {
+function publicMethods(sf, className, skip = SKIP_METHODS) {
 	const cls = sf.statements.find((s) => ts.isClassDeclaration(s) && s.name?.text === className)
 	if (!cls) throw new Error(`class ${className} not found in ${sf.fileName}`)
 	const out = []
 	for (const m of cls.members) {
-		if (!ts.isMethodDeclaration(m) || !isPublic(m) || SKIP_METHODS.has(m.name.getText(sf))) continue
+		if (!ts.isMethodDeclaration(m) || !isPublic(m) || skip.has(m.name.getText(sf))) continue
 		const params = m.parameters.map((p) => squash(p.getText(sf)).replace(/ = .*$/, "")).join(", ")
 		const isStatic = hasModifier(m, ts.SyntaxKind.StaticKeyword)
 		out.push({ name: m.name.getText(sf), signature: `${m.name.getText(sf)}(${params})`, isStatic })
@@ -475,6 +475,30 @@ export function generateBuilderReference() {
 		"",
 	)
 	out.push(...renderOptions(interfaces, aliases, options))
+	// A pool is what a DiagramBuilder is for, so its participant() stays listed.
+	const diagram = publicMethods(
+		main,
+		"DiagramBuilder",
+		new Set([...SKIP_METHODS].filter((name) => name !== "participant")),
+	)
+	out.push(
+		"",
+		"## DiagramBuilder (pools, message flows)",
+		"",
+		"`Bpmn.createDiagram(id?)`: several processes in one file. Call `.withAutoLayout()` before `.build()` to draw shapes. Omit `processId` on `participant` for a black-box pool. Lanes go on each process (`inLane()`).",
+		"",
+	)
+	for (const m of diagram) out.push(`- ${m.signature}`)
+	out.push(
+		"",
+		...renderOptions(
+			interfaces,
+			aliases,
+			["ParticipantOptions", "DiagramMessageOptions", "MessageFlowOptions"].filter((n) =>
+				interfaces.has(n),
+			),
+		),
+	)
 	out.push("", "## Examples", "")
 	for (const example of EXAMPLES) out.push("```typescript", example, "```", "")
 	return `${out.join("\n").trimEnd()}\n`

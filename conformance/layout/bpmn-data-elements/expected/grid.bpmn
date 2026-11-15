@@ -53,6 +53,14 @@
         <di:waypoint x="245" y="465"/>
         <di:waypoint x="327" y="465"/>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataInputAssoc_1_di" bpmnElement="DataInputAssoc_1">
+        <di:waypoint x="63" y="210"/>
+        <di:waypoint x="145" y="425"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssoc_1_di" bpmnElement="DataOutputAssoc_1">
+        <di:waypoint x="145" y="425"/>
+        <di:waypoint x="70" y="350"/>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions>

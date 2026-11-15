@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <bpmn:message id="Message_payment_confirmed" name="payment-confirmed"/>
   <bpmn:process id="QuoteToCash" name="Quote-to-Cash Process" isExecutable="true">
     <bpmn:startEvent id="start" name="Opportunity Received">
@@ -236,28 +236,28 @@
     <bpmn:sequenceFlow id="Flow_XjhCYuOK" sourceRef="start" targetRef="generateQuote"/>
     <bpmn:sequenceFlow id="Flow_bchUvOZ2" sourceRef="generateQuote" targetRef="discountApproval"/>
     <bpmn:sequenceFlow id="Flow_QZRbwxhU" sourceRef="discountApproval" targetRef="generateContract" name="no-approval-needed">
-      <bpmn:conditionExpression>=discountPercent &lt;= 10</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=discountPercent &lt;= 10</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_7TjRkdGd" sourceRef="discountApproval" targetRef="managerApproval" name="manager-approval">
-      <bpmn:conditionExpression>=discountPercent &gt; 10 and discountPercent &lt;= 25</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=discountPercent &gt; 10 and discountPercent &lt;= 25</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_McQkxpe9" sourceRef="managerApproval" targetRef="approvalDecision"/>
     <bpmn:sequenceFlow id="Flow_y9NbTDhR" sourceRef="discountApproval" targetRef="vpApproval" name="vp-approval"/>
     <bpmn:sequenceFlow id="Flow_fpJ7UEWD" sourceRef="vpApproval" targetRef="approvalDecision"/>
     <bpmn:sequenceFlow id="Flow_oExsK6c1" sourceRef="approvalDecision" targetRef="generateContract" name="discount-approved">
-      <bpmn:conditionExpression>=discountApproved = true</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=discountApproved = true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_va69mGZx" sourceRef="approvalDecision" targetRef="endContractRejected" name="discount-rejected"/>
     <bpmn:sequenceFlow id="Flow_2s0JeKjV" sourceRef="generateContract" targetRef="sendForSignature"/>
     <bpmn:sequenceFlow id="Flow_GqAZEa9L" sourceRef="sendForSignature" targetRef="signatureCheck"/>
     <bpmn:sequenceFlow id="Flow_TtJzWXLn" sourceRef="signatureCheck" targetRef="endContractRejected" name="signature-declined">
-      <bpmn:conditionExpression>=signatureResponse.status = "declined"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=signatureResponse.status = "declined"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_bm3sKMZA" sourceRef="signatureCheck" targetRef="orderType" name="signature-signed">
-      <bpmn:conditionExpression>=signatureResponse.status = "signed"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=signatureResponse.status = "signed"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_K9wwadg1" sourceRef="orderType" targetRef="provisionStandard" name="standard-order">
-      <bpmn:conditionExpression>=order.type = "standard"</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=order.type = "standard"</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_MJRLe9Ud" sourceRef="provisionStandard" targetRef="orderType_join"/>
     <bpmn:sequenceFlow id="Flow_U58MqVEA" sourceRef="orderType" targetRef="provisionBundle" name="bundled-order"/>
@@ -270,12 +270,12 @@
     <bpmn:sequenceFlow id="Flow_z74FHoCS" sourceRef="paymentWindowElapsed" targetRef="dunning"/>
     <bpmn:sequenceFlow id="Flow_FRNklBg3" sourceRef="dunning" targetRef="collectionCheck"/>
     <bpmn:sequenceFlow id="Flow_tTnmOKZY" sourceRef="collectionCheck" targetRef="endPaymentReceived" name="collected-during-dunning">
-      <bpmn:conditionExpression>=paymentReceived = true</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=paymentReceived = true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_baF9j4Dg" sourceRef="collectionCheck" targetRef="collectionsAgency" name="still-unpaid"/>
     <bpmn:sequenceFlow id="Flow_ZTOMVwy0" sourceRef="collectionsAgency" targetRef="collectionsResult"/>
     <bpmn:sequenceFlow id="Flow_V7DE8MG5" sourceRef="collectionsResult" targetRef="endPaymentReceived" name="debt-recovered">
-      <bpmn:conditionExpression>=recovered = true</bpmn:conditionExpression>
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">=recovered = true</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_fyHvSVmV" sourceRef="collectionsResult" targetRef="endWrittenOff" name="debt-written-off"/>
     <bpmn:sequenceFlow id="Flow_mGa16ca8" sourceRef="orderType_join" targetRef="generateInvoice"/>

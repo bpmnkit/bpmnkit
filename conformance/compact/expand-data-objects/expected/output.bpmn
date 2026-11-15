@@ -20,14 +20,11 @@
       <bpmndi:BPMNShape id="t_di" bpmnElement="t">
         <dc:Bounds x="110" y="0" width="100" height="80"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="do_di" bpmnElement="do">
+      <bpmndi:BPMNShape id="ref_di" bpmnElement="ref">
         <dc:Bounds x="7" y="160" width="36" height="50"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="ref_di" bpmnElement="ref">
-        <dc:Bounds x="7" y="290" width="36" height="50"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ds_di" bpmnElement="ds">
-        <dc:Bounds x="0" y="420" width="50" height="50"/>
+        <dc:Bounds x="0" y="290" width="50" height="50"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_Start_P_di" bpmnElement="Flow_Start_P">
         <di:waypoint x="43" y="40"/>

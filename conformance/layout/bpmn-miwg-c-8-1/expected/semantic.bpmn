@@ -1067,9 +1067,6 @@ Your BOC Adonis Process Automation</MailBody>
         <dc:Bounds x="1220" y="440" width="100" height="80"/>
         <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" labelStyle="LS_a9e3a63e-db87-4fa1-9091-328acae4f490_0"/>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_775c93ab-82e5-4a62-97f0-d305eda76c92_di" bpmnElement="_775c93ab-82e5-4a62-97f0-d305eda76c92">
-        <dc:Bounds x="120" y="600" width="36" height="50"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_9486f920-6c9a-4149-bd21-feb4d3b4c4f8" bpmnElement="_3ae826ca-5f38-43c4-be3a-35d1157aa27f" color:background-color="#ffffff" color:border-color="#000000">
         <dc:Bounds x="1473" y="462" width="36" height="36"/>
         <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" labelStyle="LS_a9e3a63e-db87-4fa1-9091-328acae4f490_0">
@@ -1090,25 +1087,16 @@ Your BOC Adonis Process Automation</MailBody>
           <dc:Bounds x="390" y="362" width="126" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_4234afd4-3ab0-4e09-8a7c-b475458db18a_di" bpmnElement="_4234afd4-3ab0-4e09-8a7c-b475458db18a">
-        <dc:Bounds x="120" y="730" width="36" height="50"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="vacationApproved_di" bpmnElement="vacationApproved">
-        <dc:Bounds x="120" y="860" width="36" height="50"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="vacationRefused_di" bpmnElement="vacationRefused">
-        <dc:Bounds x="120" y="990" width="36" height="50"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_eb45bc41-a7c9-40fc-a64a-ba273fed7c5c" bpmnElement="_f8fcb377-3d7d-4138-9a7e-6ab58b97e29d" color:background-color="#ffffff" color:border-color="#000000">
         <dc:Bounds x="275" y="222" width="36" height="36"/>
         <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" labelStyle="LS_a9e3a63e-db87-4fa1-9091-328acae4f490_0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_831726fb-e5ba-40aa-b484-1fc65de4980a_di" bpmnElement="_831726fb-e5ba-40aa-b484-1fc65de4980a" color:background-color="#ffffff" color:border-color="#000000">
-        <dc:Bounds x="120" y="1120" width="36" height="50"/>
+        <dc:Bounds x="120" y="600" width="36" height="50"/>
         <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" labelStyle="LS_a9e3a63e-db87-4fa1-9091-328acae4f490_0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_04dpvds_di" bpmnElement="Participant_04dpvds" color:background-color="#ffffff" color:border-color="#000000" isHorizontal="true">
-        <dc:Bounds x="0" y="0" width="1819" height="1190"/>
+        <dc:Bounds x="0" y="0" width="1819" height="670"/>
         <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" labelStyle="LS_a9e3a63e-db87-4fa1-9091-328acae4f490_0"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="_5c28fa46-52d1-43f2-989b-b876a038a9ab" bpmnElement="_b02b5bfa-5629-4af5-b1bc-ac2a86d88adb" color:border-color="#000000">
@@ -1203,6 +1191,11 @@ Your BOC Adonis Process Automation</MailBody>
       <bpmndi:BPMNEdge id="_e58460d8-86b0-41e4-b7c3-aef425f1bfd3" bpmnElement="_d79c991e-446c-47d1-ac9d-9d0113e35b93" color:border-color="#000000">
         <di:waypoint x="343" y="200"/>
         <di:waypoint x="403" y="200"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_a9e3a63e-db87-4fa1-9091-328acae4f490_0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_bcc87914-de5c-495d-a4ae-6f663c7ce552" bpmnElement="_40d3cb58-31bb-47a4-9591-032a38011de3" color:border-color="#000000" sourceElement="_ed8ce459-db6d-40e9-849c-851e388c694f">
+        <di:waypoint x="243" y="240"/>
+        <di:waypoint x="156" y="600"/>
         <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_a9e3a63e-db87-4fa1-9091-328acae4f490_0"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

@@ -74,7 +74,7 @@
       <bpmndi:BPMNShape id="PrA_e_di" bpmnElement="PrA_e">
         <dc:Bounds x="308" y="42" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="306" y="82" width="40" height="14"/>
+          <dc:Bounds x="306" y="24" width="40" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="PA_di" bpmnElement="PA" isHorizontal="true">
@@ -157,6 +157,9 @@
       <bpmndi:BPMNEdge id="m1_di" bpmnElement="m1">
         <di:waypoint x="198" y="100"/>
         <di:waypoint x="198" y="170"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="202" y="128" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="m2_di" bpmnElement="m2">
         <di:waypoint x="358" y="250"/>
@@ -167,6 +170,9 @@
         <di:waypoint x="518" y="140"/>
         <di:waypoint x="326" y="140"/>
         <di:waypoint x="326" y="78"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="522" y="278" width="63" height="14"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

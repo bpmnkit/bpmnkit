@@ -35,6 +35,7 @@
         {
           "dataInputAssociations": [
             {
+              "id": "DataInputAssociation_t_DOR1_1",
               "sourceRefs": [
                 "DOR1"
               ],
@@ -42,6 +43,7 @@
               "unknownAttributes": {}
             },
             {
+              "id": "DataInputAssociation_t_DOR1_2",
               "sourceRefs": [
                 "DOR1"
               ],

@@ -21,6 +21,13 @@ import {
 	removeFlow,
 } from "./utils.js"
 
+/** Data elements sit beside the flow: no sequence flow in or out, by design. */
+const OFF_FLOW_TYPES: ReadonlySet<string> = new Set([
+	"dataObject",
+	"dataObjectReference",
+	"dataStoreReference",
+])
+
 export function analyzeFlow(p: BpmnProcess, _opts: ResolvedOptions): OptimizationFinding[] {
 	const findings: OptimizationFinding[] = []
 	const processId = p.id
@@ -80,6 +87,7 @@ export function analyzeFlow(p: BpmnProcess, _opts: ResolvedOptions): Optimizatio
 	const reachable = reachableFrom(startIds, reachabilityEdges)
 
 	for (const el of p.flowElements) {
+		if (OFF_FLOW_TYPES.has(el.type)) continue
 		// flow/unreachable
 		if (!reachable.has(el.id)) {
 			findings.push({

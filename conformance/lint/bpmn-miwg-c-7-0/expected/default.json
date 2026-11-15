@@ -10,9 +10,9 @@
     "data-flow"
   ],
   "counts": {
-    "error": 9,
+    "error": 3,
     "info": 0,
-    "warning": 12
+    "warning": 6
   },
   "diagnostics": [
     {
@@ -57,32 +57,6 @@
     {
       "category": "flow",
       "elementIds": [
-        "_bd7b6a15-4ef8-46a9-8be9-20a5abb32abd"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"_bd7b6a15-4ef8-46a9-8be9-20a5abb32abd\" (dataObjectReference) is not reachable from any start event.",
-      "plane": "_0322c8c5-b921-44cc-9bf7-261dcb16f257",
-      "processId": "_4a690dd7-809a-4fa9-ad63-515ac6685375",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_bd7b6a15-4ef8-46a9-8be9-20a5abb32abd"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"_bd7b6a15-4ef8-46a9-8be9-20a5abb32abd\" (dataObjectReference) has no outgoing sequence flows.",
-      "plane": "_0322c8c5-b921-44cc-9bf7-261dcb16f257",
-      "processId": "_4a690dd7-809a-4fa9-ad63-515ac6685375",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
         "_d3435084-f2c7-43cc-abcc-c679bc4232ac"
       ],
       "fixable": true,
@@ -92,130 +66,6 @@
       "processId": "_4a690dd7-809a-4fa9-ad63-515ac6685375",
       "severity": "error",
       "suggestion": "Add an exclusive gateway before this element to join the incoming flows."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_bac0224d-62f1-46aa-bb4c-5371c3983ffb"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"_bac0224d-62f1-46aa-bb4c-5371c3983ffb\" (dataObjectReference) is not reachable from any start event.",
-      "plane": "_0322c8c5-b921-44cc-9bf7-261dcb16f257",
-      "processId": "_4a690dd7-809a-4fa9-ad63-515ac6685375",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_bac0224d-62f1-46aa-bb4c-5371c3983ffb"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"_bac0224d-62f1-46aa-bb4c-5371c3983ffb\" (dataObjectReference) has no outgoing sequence flows.",
-      "plane": "_0322c8c5-b921-44cc-9bf7-261dcb16f257",
-      "processId": "_4a690dd7-809a-4fa9-ad63-515ac6685375",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_c68abea8-c5b4-4aef-b1a5-1e81caec0cba"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"_c68abea8-c5b4-4aef-b1a5-1e81caec0cba\" (dataObjectReference) is not reachable from any start event.",
-      "plane": "_0322c8c5-b921-44cc-9bf7-261dcb16f257",
-      "processId": "_4a690dd7-809a-4fa9-ad63-515ac6685375",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_c68abea8-c5b4-4aef-b1a5-1e81caec0cba"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"_c68abea8-c5b4-4aef-b1a5-1e81caec0cba\" (dataObjectReference) has no outgoing sequence flows.",
-      "plane": "_0322c8c5-b921-44cc-9bf7-261dcb16f257",
-      "processId": "_4a690dd7-809a-4fa9-ad63-515ac6685375",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_ef29e636-bdfe-4eb0-9633-7d0195a8ae3a"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"_ef29e636-bdfe-4eb0-9633-7d0195a8ae3a\" (dataObject) is not reachable from any start event.",
-      "processId": "_4a690dd7-809a-4fa9-ad63-515ac6685375",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_ef29e636-bdfe-4eb0-9633-7d0195a8ae3a"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"_ef29e636-bdfe-4eb0-9633-7d0195a8ae3a\" (dataObject) has no outgoing sequence flows.",
-      "processId": "_4a690dd7-809a-4fa9-ad63-515ac6685375",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_8f2796af-2fbe-4f72-80c1-96933c38990f"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"_8f2796af-2fbe-4f72-80c1-96933c38990f\" (dataObject) is not reachable from any start event.",
-      "processId": "_4a690dd7-809a-4fa9-ad63-515ac6685375",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_8f2796af-2fbe-4f72-80c1-96933c38990f"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"_8f2796af-2fbe-4f72-80c1-96933c38990f\" (dataObject) has no outgoing sequence flows.",
-      "processId": "_4a690dd7-809a-4fa9-ad63-515ac6685375",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_f60fe1d9-58bd-462c-9d62-153e530dc79d"
-      ],
-      "fixable": false,
-      "id": "flow/unreachable",
-      "message": "Element \"_f60fe1d9-58bd-462c-9d62-153e530dc79d\" (dataObject) is not reachable from any start event.",
-      "processId": "_4a690dd7-809a-4fa9-ad63-515ac6685375",
-      "severity": "error",
-      "suggestion": "Connect this element to the process flow or remove it."
-    },
-    {
-      "category": "flow",
-      "elementIds": [
-        "_f60fe1d9-58bd-462c-9d62-153e530dc79d"
-      ],
-      "fixable": true,
-      "id": "flow/dead-end",
-      "message": "Element \"_f60fe1d9-58bd-462c-9d62-153e530dc79d\" (dataObject) has no outgoing sequence flows.",
-      "processId": "_4a690dd7-809a-4fa9-ad63-515ac6685375",
-      "severity": "warning",
-      "suggestion": "Connect this element to a downstream element or an end event."
     },
     {
       "category": "pattern",
@@ -286,5 +136,5 @@
   "platform": {
     "id": "none"
   },
-  "total": 21
+  "total": 9
 }

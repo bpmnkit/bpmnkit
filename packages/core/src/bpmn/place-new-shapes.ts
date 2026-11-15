@@ -58,7 +58,12 @@ export interface PlaceNewShapesResult {
 	resized: string[]
 	/** Flow nodes added to a lane's `flowNodeRefs`. */
 	laneAssigned: string[]
-	/** What could not be placed, and why. */
+	/**
+	 * What could not be placed, and why. A new shape that could only be put on
+	 * top of another shape or label is drawn anyway (its edges need it) and
+	 * listed here too, with a reason that says what it overlaps: existing shapes
+	 * never move, so making room is the caller's call.
+	 */
 	unplaced: Array<{ id: string; reason: string }>
 }
 
@@ -169,6 +174,8 @@ class Placer {
 	private readonly laneOf = new Map<string, BpmnLane>()
 	private readonly lanesOfProcess = new Map<string, BpmnLane[]>()
 	private readonly mainPlane: BpmnDiPlane
+	/** Shapes this run chose a spot for one by one, rather than as a laid-out block. */
+	private readonly spotted: string[] = []
 
 	constructor(
 		private readonly defs: BpmnDefinitions,
@@ -215,6 +222,7 @@ class Placer {
 		this.placePools()
 		this.placeFlowNodes()
 		this.placeAnnotations()
+		this.reportOverlaps()
 		this.reportLanes()
 		this.routeEdges()
 	}
@@ -436,7 +444,7 @@ class Placer {
 
 		let chosen: Rect | undefined
 		if (direction === "below" && anchorId) {
-			chosen = this.boundarySpot(el.id, anchorId, size, plane)
+			chosen = this.boundarySpot(el.id, anchorId, size, label, plane)
 		} else {
 			chosen = this.bestSpot(el.id, size, label, anchorId, direction, box, plane)
 		}
@@ -452,6 +460,7 @@ class Placer {
 		const shape = this.addShape(plane, el.id, chosen, extra)
 		if (label) shape.label = { bounds: this.labelRect(chosen, label) }
 		this.result.placed.push(el.id)
+		this.spotted.push(el.id)
 
 		if (content) {
 			const dx = chosen.x + INNER_PADDING - content.minX
@@ -794,6 +803,7 @@ class Placer {
 		id: string,
 		hostId: string,
 		size: { width: number; height: number },
+		label: { width: number; height: number } | undefined,
 		plane: BpmnDiPlane,
 	): Rect | undefined {
 		const host = this.shapes.get(hostId)?.shape.bounds
@@ -804,13 +814,24 @@ class Placer {
 				return el?.type === "boundaryEvent" && (el as BpmnBoundaryEvent).attachedToRef === hostId
 			})
 			.map((s) => s.bounds)
+		// The first free spot on the border, unless it or its label would sit on
+		// another shape and a later spot would not.
+		// The shape sits on the host's border by design; its label may not.
+		const obstacles = this.obstacles(plane, id)
+		const others = obstacles.filter((o) => o !== host)
+		let first: Rect | undefined
 		for (const y of [host.y + host.height - size.height / 2, host.y - size.height / 2]) {
 			for (let x = host.x + host.width - size.width - 8; x >= host.x + 4; x -= 6) {
 				const r = { x: Math.round(x), y: Math.round(y), ...size }
 				if (siblings.some((s) => overlaps(r, s, 6))) continue
+				first ??= r
+				const l = label ? this.labelRect(r, label) : undefined
+				if (others.some((o) => overlaps(r, o, 0))) continue
+				if (l !== undefined && obstacles.some((o) => overlaps(l, o, 0))) continue
 				return r
 			}
 		}
+		if (first) return first
 		this.result.unplaced.push({ id, reason: `no room left on the border of ${hostId}` })
 		return undefined
 	}
@@ -928,6 +949,36 @@ class Placer {
 			if (box) this.growToFit(box, spot, undefined, plane)
 			this.addShape(plane, annotation.id, spot, {})
 			this.result.placed.push(annotation.id)
+			this.spotted.push(annotation.id)
+		}
+	}
+
+	/**
+	 * Placement keeps new shapes clear of others when it can, but a crowded
+	 * spot (a boundary event's border, a label) can leave no clean choice. Say
+	 * so instead of reporting a clean result over a diagram that reads wrong.
+	 */
+	private reportOverlaps(): void {
+		for (const id of this.spotted) {
+			const own = this.shapes.get(id)
+			// A sub-process drawn around its content overlaps that content by design.
+			if (!own || this.isContainerShape(own.shape)) continue
+			const host = (this.elements.get(id) as { attachedToRef?: string } | undefined)?.attachedToRef
+			const mine = [own.shape.bounds, ...(own.shape.label?.bounds ? [own.shape.label.bounds] : [])]
+			const clash = own.plane.shapes.find((other) => {
+				if (other.bpmnElement === id || this.isContainerShape(other)) return false
+				const theirHost = (this.elements.get(other.bpmnElement) as { attachedToRef?: string })
+					?.attachedToRef
+				// A boundary event sits on its host's border by design.
+				if (other.bpmnElement === host || theirHost === id) return false
+				const theirs = [other.bounds, ...(other.label?.bounds ? [other.label.bounds] : [])]
+				return mine.some((m) => theirs.some((t) => overlaps(m, t, 0)))
+			})
+			if (!clash) continue
+			this.result.unplaced.push({
+				id,
+				reason: `placed, but it or its label overlaps "${clash.bpmnElement}"; existing shapes do not move, so move one by hand or redraw with applyAutoLayout`,
+			})
 		}
 	}
 

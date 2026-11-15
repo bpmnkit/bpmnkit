@@ -403,12 +403,6 @@
           <dc:Bounds x="3492" y="562" width="196" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_0fa2af52-a3d6-4be6-9ecc-9fad8ca4d448_di" bpmnElement="_0fa2af52-a3d6-4be6-9ecc-9fad8ca4d448">
-        <dc:Bounds x="178" y="1830" width="36" height="50"/>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="_79993b0e-60c2-487b-a12e-0cbecc2ef5c1_di" bpmnElement="_79993b0e-60c2-487b-a12e-0cbecc2ef5c1">
-        <dc:Bounds x="178" y="1960" width="36" height="50"/>
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_f200a9f1-5554-4868-b895-707186915d62_di" bpmnElement="_f200a9f1-5554-4868-b895-707186915d62" isHorizontal="true">
         <dc:Bounds x="0" y="0" width="4311.5" height="620"/>
       </bpmndi:BPMNShape>

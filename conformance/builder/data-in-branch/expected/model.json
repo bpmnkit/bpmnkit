@@ -49,6 +49,7 @@
         {
           "dataOutputAssociations": [
             {
+              "id": "DataOutputAssociation_t_R_1",
               "sourceRefs": [],
               "targetRef": "R",
               "unknownAttributes": {}

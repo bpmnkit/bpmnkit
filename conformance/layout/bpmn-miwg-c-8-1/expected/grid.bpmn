@@ -1208,6 +1208,51 @@ Your BOC Adonis Process Automation</MailBody>
         <di:waypoint x="375" y="60"/>
         <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_a9e3a63e-db87-4fa1-9091-328acae4f490_0"/>
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_bcc87914-de5c-495d-a4ae-6f663c7ce552" bpmnElement="_40d3cb58-31bb-47a4-9591-032a38011de3" color:border-color="#000000" sourceElement="_ed8ce459-db6d-40e9-849c-851e388c694f">
+        <di:waypoint x="225" y="100"/>
+        <di:waypoint x="143" y="735"/>
+        <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_a9e3a63e-db87-4fa1-9091-328acae4f490_0"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_9425c610-3ef7-4a5c-bc39-e4242bd1d1a1_di" bpmnElement="_9425c610-3ef7-4a5c-bc39-e4242bd1d1a1">
+        <di:waypoint x="143" y="175"/>
+        <di:waypoint x="375" y="100"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_3f72d33b-e9cb-4dce-b97f-34b1975ba494_di" bpmnElement="_3f72d33b-e9cb-4dce-b97f-34b1975ba494">
+        <di:waypoint x="143" y="175"/>
+        <di:waypoint x="675" y="100"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_c5b9c7c0-35dc-4efb-93bd-a019fe7d0f5b_di" bpmnElement="_c5b9c7c0-35dc-4efb-93bd-a019fe7d0f5b">
+        <di:waypoint x="143" y="315"/>
+        <di:waypoint x="675" y="100"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_06dd6266-3084-46f1-b5fd-11ae71afdc68_di" bpmnElement="_06dd6266-3084-46f1-b5fd-11ae71afdc68">
+        <di:waypoint x="143" y="200"/>
+        <di:waypoint x="675" y="200"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_32df05cc-b9ef-417d-9eca-34c98a381182_di" bpmnElement="_32df05cc-b9ef-417d-9eca-34c98a381182">
+        <di:waypoint x="143" y="225"/>
+        <di:waypoint x="675" y="300"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_76336c7a-b159-4425-94c9-57df39f635c2_di" bpmnElement="_76336c7a-b159-4425-94c9-57df39f635c2">
+        <di:waypoint x="143" y="200"/>
+        <di:waypoint x="975" y="200"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_912f2b3a-c01f-4e9c-ab7a-20e42ccc4f1f_di" bpmnElement="_912f2b3a-c01f-4e9c-ab7a-20e42ccc4f1f">
+        <di:waypoint x="143" y="340"/>
+        <di:waypoint x="1275" y="340"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_d81e3c4f-3ffc-4321-83ed-979433de0163_di" bpmnElement="_d81e3c4f-3ffc-4321-83ed-979433de0163">
+        <di:waypoint x="143" y="225"/>
+        <di:waypoint x="1275" y="300"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_2c85e650-0096-4780-b6fe-f52a9654af77_di" bpmnElement="_2c85e650-0096-4780-b6fe-f52a9654af77">
+        <di:waypoint x="143" y="225"/>
+        <di:waypoint x="825" y="300"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="_3c85e650-0096-4780-b6fe-f52a9654af78_di" bpmnElement="_3c85e650-0096-4780-b6fe-f52a9654af78">
+        <di:waypoint x="143" y="200"/>
+        <di:waypoint x="1125" y="200"/>
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
     <bpmndi:BPMNLabelStyle id="LS_a9e3a63e-db87-4fa1-9091-328acae4f490_0">
       <dc:Font name="arial,helvetica,sans-serif" size="11" isBold="false" isItalic="false" isStrikeThrough="false" isUnderline="false"/>
