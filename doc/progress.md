@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-16 — Claude plugin: one-line install via root marketplace
+
+- Added `.claude-plugin/marketplace.json` at the repo root (plugin `bpmnkit`, source `./plugins-claude/bpmnkit-claude`), so `/plugin marketplace add bpmnkit/bpmnkit` then `/plugin install bpmnkit@bpmnkit` works. All install docs, the AIKit skill and the `casen skills` hint use this form (the `github:` prefix is gone).
+- Fixed `plugin.json`, which `claude plugin validate` rejected: `agents` is now a list of files, and `userConfig` entries have `type` and `title`.
+
 ## 2026-11-16 — Docs: AI setup for humans and for agents
 
 - New guides `ai-setup-for-humans` (install, Claude Code plugin / `casen skills install`, AGENTS.md line, docspack, Camunda credentials, then use cases: agent-in-a-flow build + deploy, `--edit`, forms, `--camunda`) and `ai-setup-for-agents` (exact commands, success/failure signals, do/don't, example spec). Both appear in the sidebar and `llms.txt` automatically; pointer added to the landing page's AI card. Commands and flags checked against `apps/cli/src/commands/build.ts`; the example spec compiles with `compileTextSpec`.
