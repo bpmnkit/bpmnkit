@@ -17,7 +17,7 @@ casen skills install
 
 `casen agent-card bpmn|dmn|form` prints the [agent card](/docs/agent-cards/bpmn) for a file type: a ~1–1.5k-token cheat sheet with a runnable create/export/edit/validate script, the top options and the traps. `--text` on `bpmn` adds the line-format guide `parseProcessText` reads.
 
-For the richer skill set (`/bpmnkit:implement`, `:extend`, `:agent`, `:connect`, plus generated reference docs), install the Claude Code plugin instead: `/plugin marketplace add bpmnkit/bpmnkit` then `/plugin install bpmnkit@bpmnkit`. See [AIKit Skills](/docs/cli/skills) for full documentation.
+For the richer skill set (`/bpmnkit:implement`, `:extend`, `:agent`, `:connect`, plus generated reference docs), install the Claude Code plugin instead: `/plugin marketplace add bpmnkit/bpmnkit` then `/plugin install bpmnkit@bpmnkit` ([Claude Code plugin](/docs/guides/claude-code-plugin#via-marketplace)). See [AIKit Skills](/docs/cli/skills) for full documentation.
 
 ---
 Source: https://bpmnkit.com/docs/cli/casen

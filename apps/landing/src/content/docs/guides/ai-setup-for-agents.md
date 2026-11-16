@@ -37,8 +37,8 @@ Spec syntax: `casen agent-card bpmn --text`. Do not guess it.
 ## Signals
 
 - **Success**: one line starting `✓ <file>.bpmn … · lint clean · … [· deployed N to <target> (key …)]`. Done. Do not read the XML, move shapes or render images.
-- **Warnings**: `lint` count in the `✓` line, with `⚠` lines above. The file is valid; fix them if cheap.
-- **Failure**: one `✖ <file> <element>: <message> [<rule>]` line per problem, and a non-zero exit. Spec problems write nothing; lint errors leave the file written. Fix the spec, run again.
+- **Warnings**: `N warning(s)` in place of `lint clean`, with `⚠` lines above. The file is valid; fix them if cheap.
+- **Failure**: non-zero exit. A spec problem prints an error naming the line and writes nothing; lint errors print one `✖ <file> <element>: <message> [<rule>]` line each and leave the file written. Fix the spec, run again.
 - **Deploy failure**: no cluster reachable. Set `ZEEBE_REST_ADDRESS` (+ `CAMUNDA_CLIENT_ID`, `CAMUNDA_CLIENT_SECRET`, `CAMUNDA_OAUTH_URL`, or `CAMUNDA_BASIC_AUTH_USERNAME`/`PASSWORD`), run `casen profile create`, or `casen reebe start`. Ask the user for credentials; never invent them.
 
 ## Do / don't
@@ -59,4 +59,4 @@ Within budget? >(Yes: within = true) [end Paid]
 Within budget? >(No: default) [user Review expense | fields=amount:number,reason] > Paid
 ```
 
-`casen build expense.txt --deploy` → `✓ expense.bpmn + 1 form (…) · lint clean · … · deployed 2 to camunda8 (key …)`
+`casen build expense.txt --deploy` → `✓ expense.bpmn + 1 form (expense-reviewExpense.form) · lint clean · process expense, tasks 2, gateways 2, forms 1 · Camunda 8.10.0 · deployed 2 to camunda8 (key …)`

@@ -9,6 +9,9 @@ BPMN Kit is designed from the ground up to work with AI agents. The compact inte
 format lets a complete process diagram fit in a single LLM prompt, and the builder API
 produces valid BPMN without requiring the AI to write raw XML.
 
+Setting up a coding agent? [AI setup — for humans](/docs/guides/ai-setup-for-humans) (five
+copy-paste steps) · [for agents](/docs/guides/ai-setup-for-agents) (terse procedure).
+
 ## The Compact Format
 
 Raw BPMN XML is far too verbose for LLMs — a simple three-node process generates ~60 lines.

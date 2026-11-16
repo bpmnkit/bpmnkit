@@ -12,7 +12,7 @@ Writing for the agent itself? See [AI setup — for agents](/docs/guides/ai-setu
 npm install -g @bpmnkit/cli          # or: npm i -D @bpmnkit/cli, then npx casen …
 
 # 2. Claude Code plugin (skills such as /bpmnkit:bpmn-script, /bpmnkit:deploy)
-#    run inside Claude Code:
+#    inside Claude Code:
 /plugin marketplace add bpmnkit/bpmnkit
 /plugin install bpmnkit@bpmnkit
 
