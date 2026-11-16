@@ -2950,7 +2950,7 @@ New package that wires storage and tabs together so client apps don't need to ma
 - **`@bpmnkit/worker-client` package** — thin Zeebe REST client for standalone workers; OAuth2 support for Camunda SaaS; `createWorkerClient()` + async `poll()` generator
 - **Worker scaffolder** — `worker_scaffold` MCP tool generates TypeScript workers (`index.ts`) using `@bpmnkit/worker-client`; `tsx` for dev (no build step), `tsc` for production; multi-stage Docker in README
 - **`casen worker start [name]`** — starts scaffolded workers from `./workers/` directory via `npm start`
-- **`.claude/mcp.json`** — project-level MCP config registers `bpmnkit-aikit` server with Claude Code automatically
+- **`.mcp.json`** — project-level MCP config registers `bpmnkit-aikit` server with Claude Code automatically
 
 ## Code Mode MCP Tools (2026-06-13)
 

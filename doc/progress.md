@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-16 — agent context: trim `CLAUDE.md`, move MCP config to `.mcp.json`
+
+- `CLAUDE.md`: the docspack block no longer repeats what the `docspack` / `docspack-repo` skills already say; the efficiency rules are compressed (~400 tokens less per session).
+- `.claude/mcp.json` was never read by Claude Code (project servers live in `.mcp.json` at the root); moved there so `bpmnkit-aikit` is actually registered. It needs `apps/proxy` built (`dist/aikit-mcp.js`) and the proxy on `:3033`.
+
 ## 2026-11-16 — FEEL: `formatFeel` keeps needed parentheses; Rust `format()` (#291)
 
 - `formatFeel` dropped parentheses, so `(1 + 2) * 3` became `1 + 2 * 3` and `x in (1, 2)` became `x in 1, 2`. It now adds parentheses only where precedence, associativity or a trailing `if`/`for`/`some`/`every`/function needs them, and prints `in (a, b)`.
