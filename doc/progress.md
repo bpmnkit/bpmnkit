@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-16 — FEEL: `formatFeel` keeps needed parentheses; Rust `format()` (#291)
+
+- `formatFeel` dropped parentheses, so `(1 + 2) * 3` became `1 + 2 * 3` and `x in (1, 2)` became `x in 1, 2`. It now adds parentheses only where precedence, associativity or a trailing `if`/`for`/`some`/`every`/function needs them, and prints `in (a, b)`.
+- New `bpmnkit_feel::format` (+ `Expression::format()`, `UnaryTests::format()`): the Rust twin, same output.
+- Shared fixture `conformance/feel-format/cases.json`; TS and Rust tests assert it and check that the formatted text re-parses to the same value.
+
 ## 2026-11-15 — Lanes and pools: merge main (`casen build`, `inLane()`)
 
 - Merged main (#288 `casen build`, #290 version packages, viewer-lite patch). Main's `inLane()` / `{ lane }` and the branch's `lane()` / `participant()` both stay: an `inLane()` lane set now goes through the same pool handling (lanes imply a pool; `participant()` names it), and mixing `inLane()` with `lane()` in one process throws. `lane()` takes the new `DeclaredLaneOptions` (extends main's `LaneOptions`). The builder reference lists `DiagramBuilder.participant()` and `.withAutoLayout()` again. Main's collaboration checks (per-pool duplicate-id message, "did you mean" on message-flow ends) moved into `swimlanes.ts`'s `collaborationProblems`; `DiagramBuilder` declares data stores via `finishDocument`.

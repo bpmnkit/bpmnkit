@@ -1,0 +1,154 @@
+[
+	{
+		"input": "(1 + 2) * 3",
+		"output": "(1 + 2) * 3"
+	},
+	{
+		"input": "1 - (2 - 3)",
+		"output": "1 - (2 - 3)"
+	},
+	{
+		"input": "2 ** (3 ** 2)",
+		"output": "2 ** (3 ** 2)"
+	},
+	{
+		"input": "-(2 ** 2)",
+		"output": "-(2 ** 2)"
+	},
+	{
+		"input": "(a or b) and c",
+		"output": "(a or b) and c"
+	},
+	{
+		"input": "(if true then 1 else 2) + 10",
+		"output": "(if true then 1 else 2) + 10"
+	},
+	{
+		"input": "(for i in [1, 2] return i) = [1, 2]",
+		"output": "(for i in [1, 2] return i) = [1, 2]"
+	},
+	{
+		"input": "x in (1, 2)",
+		"output": "x in (1, 2)"
+	},
+	{
+		"input": "5 between (1 + 1) and 10",
+		"output": "5 between (1 + 1) and 10"
+	},
+	{
+		"input": "((1)) + (2 * 3)",
+		"output": "1 + 2 * 3"
+	},
+	{
+		"input": "(1 - 2) - 3",
+		"output": "1 - 2 - 3"
+	},
+	{
+		"input": "(2 ** 3) ** 2",
+		"output": "2 ** 3 ** 2"
+	},
+	{
+		"input": "(-2) ** 2",
+		"output": "-2 ** 2"
+	},
+	{
+		"input": "a or (b and c)",
+		"output": "a or b and c"
+	},
+	{
+		"input": "10 + (if true then 1 else 2)",
+		"output": "10 + if true then 1 else 2"
+	},
+	{
+		"input": "(x in (1, 2)) or b",
+		"output": "(x in (1, 2)) or b"
+	},
+	{
+		"input": "(function(n) n + 1)(2)",
+		"output": "(function(n) n + 1)(2)"
+	},
+	{
+		"input": "(1 + 1 between 0 and 5) = true",
+		"output": "1 + 1 between 0 and 5 = true"
+	},
+	{
+		"input": "-(-x)",
+		"output": "-(-x)"
+	},
+	{
+		"input": "{k: (1 + 2) * x}.k",
+		"output": "{k: (1 + 2) * x}.k"
+	},
+	{
+		"input": "[1, 2, 3][item > 1]",
+		"output": "[1, 2, 3][item > 1]"
+	},
+	{
+		"input": "(1 + 2).x",
+		"output": "(1 + 2).x"
+	},
+	{
+		"input": "(a + b)[1]",
+		"output": "(a + b)[1]"
+	},
+	{
+		"input": "(if a then f else g)(1)",
+		"output": "(if a then f else g)(1)"
+	},
+	{
+		"input": "(1 + 2) instance of number",
+		"output": "1 + 2 instance of number"
+	},
+	{
+		"input": "(a and b) instance of boolean",
+		"output": "(a and b) instance of boolean"
+	},
+	{
+		"input": "(some i in [1] satisfies i > 0) and b",
+		"output": "(some i in [1] satisfies i > 0) and b"
+	},
+	{
+		"input": "1 - (2 + 3)",
+		"output": "1 - (2 + 3)"
+	},
+	{
+		"input": "2 * (3 / 4)",
+		"output": "2 * (3 / 4)"
+	},
+	{
+		"input": "(a = b) = c",
+		"output": "a = b = c"
+	},
+	{
+		"input": "-(1 + 2)",
+		"output": "-(1 + 2)"
+	},
+	{
+		"input": "(5 between 1 and 10) and true",
+		"output": "5 between 1 and 10 and true"
+	},
+	{
+		"input": "1 + 2 between (3 - 1) and 10",
+		"output": "1 + 2 between (3 - 1) and 10"
+	},
+	{
+		"input": "x in [1..5]",
+		"output": "x in [1..5]"
+	},
+	{
+		"input": "x in < 5",
+		"output": "x in ? < 5"
+	},
+	{
+		"input": "? < 10",
+		"output": "? < 10"
+	},
+	{
+		"input": "(1 + 2) * (3 - 4)",
+		"output": "(1 + 2) * (3 - 4)"
+	},
+	{
+		"input": "a - (b - (c - d))",
+		"output": "a - (b - (c - d))"
+	}
+]
