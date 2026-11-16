@@ -1,5 +1,16 @@
 # @bpmnkit/cli
 
+## 1.9.1
+
+### Patch Changes
+
+- 3582cc4: `casen generate bpmn --help` documents the compact `executable`, `lanes`, `participants` and `messageFlows` keys. The proxy's prompts and its MCP tools describe lanes, pools and message flows, and a diagram with pools or lanes is laid out on one collaboration plane, so its lanes, pools and message flows are drawn instead of dropped.
+- Updated dependencies [3582cc4]
+- Updated dependencies [3582cc4]
+- Updated dependencies [3582cc4]
+  - @bpmnkit/core@1.16.0
+  - @bpmnkit/proxy@0.8.0
+
 ## 1.9.0
 
 ### Minor Changes

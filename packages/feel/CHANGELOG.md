@@ -1,5 +1,11 @@
 # @bpmnkit/feel
 
+## 1.1.3
+
+### Patch Changes
+
+- 65901c8: `formatFeel` keeps the parentheses the printed text needs, so formatting a parsed expression no longer changes its value or breaks re-parsing (`(1 + 2) * 3`, `x in (1, 2)`, …). New Rust `bpmnkit_feel::format()` (and `Expression::format()`, `UnaryTests::format()`) gives the same output.
+
 ## 1.1.2
 
 ### Patch Changes
