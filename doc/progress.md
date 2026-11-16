@@ -5,13 +5,9 @@
 - Added `.claude-plugin/marketplace.json` at the repo root (plugin `bpmnkit`, source `./plugins-claude/bpmnkit-claude`), so `/plugin marketplace add bpmnkit/bpmnkit` then `/plugin install bpmnkit@bpmnkit` works. All install docs, the AIKit skill and the `casen skills` hint use this form (the `github:` prefix is gone).
 - Fixed `plugin.json`, which `claude plugin validate` rejected: `agents` is now a list of files, and `userConfig` entries have `type` and `title`.
 
-## 2026-11-16 — Docs: working plugin install in `claude-code-plugin` and `casen`
-
-- `/plugin marketplace add github:bpmnkit/bpmnkit` cannot work: the marketplace file is in `plugins-claude/bpmnkit-claude`, not the repository root. Both pages now add it from a clone and install `bpmnkit@bpmnkit`.
-
 ## 2026-11-16 — Docs: AI setup for humans and for agents
 
-- New guides `ai-setup-for-humans` (install, Claude Code plugin / `casen skills install`, AGENTS.md line, docspack, Camunda credentials, then use cases: agent-in-a-flow build + deploy, `--edit`, forms, `--camunda`) and `ai-setup-for-agents` (exact commands, success/failure signals, do/don't, example spec). Both appear in the sidebar and `llms.txt` automatically; pointer added to the landing page's AI card. Commands and flags checked against `apps/cli/src/commands/build.ts`; the example spec is pinned by a `casen build` test (`build.test.ts`). Review fixes: plugin install goes through the in-repo marketplace (`plugins-claude/bpmnkit-claude`, no root `marketplace.json`), agent-card link is `/docs/agent-cards/bpmn`, the landing pointer moved from nested links in the AI card (invalid `<a>` in `<a>`) to card text plus a line atop `guides/ai`, exact success/failure output.
+- New guides `ai-setup-for-humans` (install, Claude Code plugin / `casen skills install`, AGENTS.md line, docspack, Camunda credentials, then use cases: agent-in-a-flow build + deploy, `--edit`, forms, `--camunda`) and `ai-setup-for-agents` (exact commands, success/failure signals, do/don't, example spec). Both appear in the sidebar and `llms.txt` automatically; pointer added to the landing page's AI card. Commands and flags checked against `apps/cli/src/commands/build.ts`; the example spec is pinned by a `casen build` test (`build.test.ts`). Review fixes: agent-card link is `/docs/agent-cards/bpmn`, the landing pointer moved from nested links in the AI card (invalid `<a>` in `<a>`) to card text plus a line atop `guides/ai`, exact success/failure output.
 
 ## 2026-11-16 — FEEL: `formatFeel` keeps needed parentheses; Rust `format()` (#291)
 
