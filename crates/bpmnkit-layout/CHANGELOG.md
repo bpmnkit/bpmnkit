@@ -1,5 +1,11 @@
 # @crates/bpmnkit-layout
 
+## 0.5.0
+
+### Patch Changes
+
+- 3582cc4: Lanes and pools: write support and round-trip fixes (Flowable Modeler files included).
+
 ## 0.4.0
 
 ### Minor Changes

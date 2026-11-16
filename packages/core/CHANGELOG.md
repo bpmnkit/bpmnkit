@@ -1,5 +1,17 @@
 # @bpmnkit/core
 
+## 1.16.0
+
+### Minor Changes
+
+- 3582cc4: Lanes, pools and message flows can be written. `ProcessBuilder.lane()` and `.participant()`, `DiagramBuilder.withAutoLayout()`; the compact format's `lanes`, `executable`, `participants` and `messageFlows` keys (`CompactLane`, `CompactParticipant`, `CompactMessageFlow`), which `reconcileCompact` checks; `lane`, `pool` and `msg` lines in process text, written by `writeProcessText` and read by `parseProcessText` and `parseProcessDelta` (with `- msg`); a `pool` line needs its bracket (`pool id[Name]`, or `pool id[]` for no name), and `lane id[]: …` is an unnamed lane, so an unnamed lane or pool reads back unnamed. Auto-layout insets nested lanes and draws the lanes of a pool with no nodes yet. New helpers: `allLanes`, `leafLanes`, `laneOf`, `assignLane`, `laneForNewNode`, `laneProblems`, `collaborationProblems`, `messageEndProblem`, `primaryProcess`, `pinPrimaryProcess`, `nameFromId`, `writableMessageLabel`, `POOL_LINE`, `MESSAGE_LINE`. `BpmnDefinitions.primaryProcessId` is written as `bpmnkit:primaryProcess` on `<definitions>` only when the file alone would lead `primaryProcess` to another process. Continuing a laned document puts a new node in its predecessor's lane; `DiagramBuilder` keeps a child process's pool and refuses a collaboration in which a process with content has no participant, or in which an id is used twice anywhere in the document (two processes declaring the same lane included). A boundary event stays in its host's lane: `assignLane` refuses to move it elsewhere and `laneProblems` reports one that is.
+
+### Patch Changes
+
+- 3582cc4: Reading Flowable Modeler files: a `<definitions>` without an `id` (the schema makes it optional, and the Flowable Modeler omits it) now parses, with `id: ""`, and is written back without one; it used to throw `ParseError`. `isExecutable` is read as an `xsd:boolean`, so `1`/`0` and surrounding whitespace count, and a value that is not a boolean is dropped rather than read as `false`. Nested lanes saved by earlier versions inside a `<laneSet>` (instead of `<childLaneSet>`) are read back instead of lost. `semanticHash` moves only for files that use those spellings or legacy nested lane sets, which previously lost the value or the lanes.
+- Updated dependencies [65901c8]
+  - @bpmnkit/feel@1.1.3
+
 ## 1.15.0
 
 ### Minor Changes
