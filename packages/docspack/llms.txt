@@ -10,7 +10,7 @@ Writing a BPMN process, DMN decision or form? Read its agent card first: a runna
 - [DMN agent card](.llms/chunks/agent-cards.dmn.md) — 5 chunks, 1331 tokens
 - [Form agent card](.llms/chunks/agent-cards.form.md) — 4 chunks, 876 tokens
 
-Version 1.3.1. 469 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
+Version 1.3.1. 476 chunks documenting @bpmnkit/core, @bpmnkit/canvas, @bpmnkit/editor, @bpmnkit/engine, @bpmnkit/feel, @bpmnkit/plugins, @bpmnkit/api, @bpmnkit/ascii, @bpmnkit/connector-gen, @bpmnkit/connectors, @bpmnkit/patterns, @bpmnkit/worker-client, @bpmnkit/cli.
 
 ```sh
 npm i -D @bpmnkit/docspack
@@ -172,6 +172,13 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [On-device generation in Chrome — Messages](.llms/chunks/guides.ai-on-device.messages.md) — 158 tokens
 - [On-device generation in Chrome — Embed it](.llms/chunks/guides.ai-on-device.embed-it.md) — 315 tokens
 - [On-device generation in Chrome — In Drop](.llms/chunks/guides.ai-on-device.in-drop.md) — 214 tokens
+- [AI setup — for agents](.llms/chunks/guides.ai-setup-for-agents.md) — 157 tokens
+- [AI setup — for agents — Commands](.llms/chunks/guides.ai-setup-for-agents.commands.md) — 223 tokens
+- [AI setup — for agents — Signals](.llms/chunks/guides.ai-setup-for-agents.signals.md) — 196 tokens
+- [AI setup — for agents — Do / don't](.llms/chunks/guides.ai-setup-for-agents.do-don-t.md) — 233 tokens
+- [AI setup — for humans](.llms/chunks/guides.ai-setup-for-humans.md) — 398 tokens
+- [AI setup — for humans — Use cases](.llms/chunks/guides.ai-setup-for-humans.use-cases.md) — 508 tokens
+- [AI setup — for humans — Next](.llms/chunks/guides.ai-setup-for-humans.next.md) — 52 tokens
 - [AI Integration](.llms/chunks/guides.ai.md) — 478 tokens
 - [AI Integration — Minimal Empty Diagram](.llms/chunks/guides.ai.minimal-empty-diagram.md) — 247 tokens
 - [AI Integration — Claude API Example](.llms/chunks/guides.ai.claude-api-example.md) — 391 tokens

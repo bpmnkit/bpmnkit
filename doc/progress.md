@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-16 — Docs: AI setup for humans and for agents
+
+- New guides `ai-setup-for-humans` (install, Claude Code plugin / `casen skills install`, AGENTS.md line, docspack, Camunda credentials, then use cases: agent-in-a-flow build + deploy, `--edit`, forms, `--camunda`) and `ai-setup-for-agents` (exact commands, success/failure signals, do/don't, example spec). Both appear in the sidebar and `llms.txt` automatically; pointer added to the landing page's AI card. Commands and flags checked against `apps/cli/src/commands/build.ts`; the example spec compiles with `compileTextSpec`.
+
 ## 2026-11-16 — FEEL: `formatFeel` keeps needed parentheses; Rust `format()` (#291)
 
 - `formatFeel` dropped parentheses, so `(1 + 2) * 3` became `1 + 2 * 3` and `x in (1, 2)` became `x in 1, 2`. It now adds parentheses only where precedence, associativity or a trailing `if`/`for`/`some`/`every`/function needs them, and prints `in (a, b)`.
