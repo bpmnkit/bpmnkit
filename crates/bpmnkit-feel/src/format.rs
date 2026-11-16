@@ -446,4 +446,23 @@ mod tests {
             "-"
         );
     }
+
+    /// The fixture `formatFeel` is tested against, so both print the same text.
+    #[test]
+    fn shared_cases() {
+        let path = concat!(
+            env!("CARGO_MANIFEST_DIR"),
+            "/../../conformance/feel-format/cases.json"
+        );
+        let text = std::fs::read_to_string(path).unwrap();
+        let cases: Vec<serde_json::Value> = serde_json::from_str(&text).unwrap();
+        assert!(!cases.is_empty());
+        for case in cases {
+            let input = case["input"].as_str().unwrap();
+            let output = case["output"].as_str().unwrap();
+            let expr =
+                parse(input, &ParseOptions::default()).unwrap_or_else(|e| panic!("{input}: {e}"));
+            assert_eq!(expr.format(), output, "input: {input}");
+        }
+    }
 }
