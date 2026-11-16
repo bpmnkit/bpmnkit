@@ -1,5 +1,11 @@
 # @bpmnkit/cli
 
+## 1.9.2
+
+### Patch Changes
+
+- 03c71f6: `casen skills` now prints the working Claude Code plugin install: `/plugin marketplace add bpmnkit/bpmnkit` then `/plugin install bpmnkit@bpmnkit`.
+
 ## 1.9.1
 
 ### Patch Changes
