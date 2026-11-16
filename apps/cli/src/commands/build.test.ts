@@ -475,6 +475,19 @@ describe("casen build", () => {
 		])
 	})
 
+	it("builds the AI setup guides' example spec lint clean", async () => {
+		// Same text as apps/landing/src/content/docs/guides/ai-setup-for-*.md; keep them in sync.
+		const spec = `# Expense approval | id=expense
+[start Expense submitted] > [service Check budget | job=check-budget] > [xor Within budget?]
+Within budget? >(Yes: within = true) [end Paid]
+Within budget? >(No: default) [user Review expense | fields=amount:number,reason] > Paid`
+		await writeFile(join(dir, "expense.txt"), spec)
+		await run([join(dir, "expense.txt")])
+		expect(lines).toEqual([
+			"ok expense.bpmn + 1 form (expense-reviewExpense.form) · lint clean · process expense, tasks 2, gateways 2, forms 1 · Camunda 8.10.0",
+		])
+	})
+
 	it("builds five pools with shared store, message ends and a DMN task, lint clean", async () => {
 		await writeFile(join(dir, "s16y.txt"), S16Y)
 		await run([join(dir, "s16y.txt")])
