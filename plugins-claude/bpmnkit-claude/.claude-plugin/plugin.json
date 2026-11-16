@@ -11,14 +11,18 @@
 	"license": "MIT",
 	"keywords": ["bpmn", "camunda", "workflow", "process-automation"],
 	"skills": "./skills/",
-	"agents": "./agents/",
+	"agents": ["./agents/incident-resolver.md", "./agents/process-builder.md"],
 	"hooks": "./hooks/hooks.json",
 	"userConfig": {
 		"camunda_endpoint": {
+			"type": "string",
+			"title": "Camunda endpoint",
 			"description": "Camunda 8 REST API endpoint (optional, leave blank for local reebe)",
 			"sensitive": false
 		},
 		"camunda_token": {
+			"type": "string",
+			"title": "Camunda token",
 			"description": "Camunda 8 OAuth2 token (optional, leave blank for local reebe)",
 			"sensitive": true
 		}

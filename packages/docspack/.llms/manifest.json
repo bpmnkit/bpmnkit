@@ -435,7 +435,7 @@
 		{
 			"id": "cli.casen.aikit-skills",
 			"file": "chunks/cli.casen.aikit-skills.md",
-			"tokens": 293,
+			"tokens": 301,
 			"tags": [
 				"cli",
 				"casen",
@@ -2230,9 +2230,91 @@
 			"entities": []
 		},
 		{
+			"id": "guides.ai-setup-for-agents",
+			"file": "chunks/guides.ai-setup-for-agents.md",
+			"tokens": 157,
+			"tags": [
+				"guides",
+				"ai-setup-for-agents",
+				"procedure"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.ai-setup-for-agents.commands",
+			"file": "chunks/guides.ai-setup-for-agents.commands.md",
+			"tokens": 223,
+			"tags": [
+				"guides",
+				"ai-setup-for-agents",
+				"commands"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.ai-setup-for-agents.signals",
+			"file": "chunks/guides.ai-setup-for-agents.signals.md",
+			"tokens": 207,
+			"tags": [
+				"guides",
+				"ai-setup-for-agents",
+				"signals"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.ai-setup-for-agents.do-don-t",
+			"file": "chunks/guides.ai-setup-for-agents.do-don-t.md",
+			"tokens": 248,
+			"tags": [
+				"guides",
+				"ai-setup-for-agents",
+				"don",
+				"example"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.ai-setup-for-humans",
+			"file": "chunks/guides.ai-setup-for-humans.md",
+			"tokens": 397,
+			"tags": [
+				"guides",
+				"ai-setup-for-humans",
+				"set"
+			],
+			"entities": []
+		},
+		{
+			"id": "guides.ai-setup-for-humans.use-cases",
+			"file": "chunks/guides.ai-setup-for-humans.use-cases.md",
+			"tokens": 508,
+			"tags": [
+				"guides",
+				"ai-setup-for-humans",
+				"cases"
+			],
+			"entities": [
+				"expense.txt",
+				"order.bpmn",
+				"executionPlatformVersion"
+			]
+		},
+		{
+			"id": "guides.ai-setup-for-humans.next",
+			"file": "chunks/guides.ai-setup-for-humans.next.md",
+			"tokens": 52,
+			"tags": [
+				"guides",
+				"ai-setup-for-humans",
+				"next"
+			],
+			"entities": []
+		},
+		{
 			"id": "guides.ai",
 			"file": "chunks/guides.ai.md",
-			"tokens": 478,
+			"tokens": 510,
 			"tags": [
 				"guides",
 				"ai",

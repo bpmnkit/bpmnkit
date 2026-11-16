@@ -39,8 +39,8 @@ Or add to your project's `.claude/settings.json`:
 ### Via marketplace
 
 ```sh
-/plugin marketplace add github:bpmnkit/bpmnkit
-/plugin install bpmnkit
+/plugin marketplace add bpmnkit/bpmnkit
+/plugin install bpmnkit@bpmnkit
 ```
 
 ---
