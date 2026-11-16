@@ -38,9 +38,14 @@ Or add to your project's `.claude/settings.json`:
 
 ### Via marketplace
 
+The marketplace file lives in `plugins-claude/bpmnkit-claude`, not at the repository root, so add
+it from a clone:
+
 ```sh
-/plugin marketplace add github:bpmnkit/bpmnkit
-/plugin install bpmnkit
+git clone --depth 1 https://github.com/bpmnkit/bpmnkit
+# then, inside Claude Code:
+/plugin marketplace add ./bpmnkit/plugins-claude/bpmnkit-claude
+/plugin install bpmnkit@bpmnkit
 ```
 
 ---

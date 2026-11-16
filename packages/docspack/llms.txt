@@ -48,7 +48,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [casen CLI — Plugins](.llms/chunks/cli.casen.plugins.md) — 270 tokens
 - [casen CLI — BPMN generation pipeline](.llms/chunks/cli.casen.bpmn-generation-pipeline.md) — 487 tokens
 - [casen CLI — BPMN generation pipeline — Run process tests](.llms/chunks/cli.casen.bpmn-generation-pipeline-run-process-tests.md) — 507 tokens
-- [casen CLI — AIKit Skills](.llms/chunks/cli.casen.aikit-skills.md) — 293 tokens
+- [casen CLI — AIKit Skills](.llms/chunks/cli.casen.aikit-skills.md) — 308 tokens
 - [casen CLI — Worker commands](.llms/chunks/cli.casen.worker-commands.md) — 233 tokens
 - [casen CLI — Local engine (Reebe)](.llms/chunks/cli.casen.local-engine-reebe.md) — 369 tokens
 - [casen CLI — Local proxy](.llms/chunks/cli.casen.local-proxy.md) — 305 tokens
@@ -214,7 +214,7 @@ npx bpmnkit-docs ask "how do I deploy a process"
 - [Building Processes — Task Defaults](.llms/chunks/guides.building-processes.task-defaults.md) — 141 tokens
 - [Building Processes — Multi-Instance](.llms/chunks/guides.building-processes.multi-instance.md) — 589 tokens
 - [Building Processes — Generated IDs](.llms/chunks/guides.building-processes.generated-ids.md) — 610 tokens
-- [Claude Code Plugin](.llms/chunks/guides.claude-code-plugin.md) — 205 tokens
+- [Claude Code Plugin](.llms/chunks/guides.claude-code-plugin.md) — 247 tokens
 - [Claude Code Plugin — Configuration](.llms/chunks/guides.claude-code-plugin.configuration.md) — 679 tokens
 - [Claude Code Plugin — Reference docs](.llms/chunks/guides.claude-code-plugin.reference-docs.md) — 410 tokens
 - [Claude Code Plugin — Ambient Hooks](.llms/chunks/guides.claude-code-plugin.ambient-hooks.md) — 171 tokens

@@ -435,7 +435,7 @@
 		{
 			"id": "cli.casen.aikit-skills",
 			"file": "chunks/cli.casen.aikit-skills.md",
-			"tokens": 293,
+			"tokens": 308,
 			"tags": [
 				"cli",
 				"casen",
@@ -2864,7 +2864,7 @@
 		{
 			"id": "guides.claude-code-plugin",
 			"file": "chunks/guides.claude-code-plugin.md",
-			"tokens": 205,
+			"tokens": 247,
 			"tags": [
 				"guides",
 				"claude-code-plugin",
@@ -2872,7 +2872,8 @@
 				"installation"
 			],
 			"entities": [
-				"ProcessPlan"
+				"ProcessPlan",
+				"plugins-claude/bpmnkit-claude"
 			]
 		},
 		{
