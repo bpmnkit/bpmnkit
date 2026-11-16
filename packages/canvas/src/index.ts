@@ -100,6 +100,7 @@ export {
 	createDefs,
 	createGrid,
 	buildRenderContext,
+	edgeLabelBounds,
 	renderEdgeGroup,
 	renderShapeGroup,
 } from "./renderer.js"

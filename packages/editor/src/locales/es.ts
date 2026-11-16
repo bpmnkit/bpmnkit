@@ -25,6 +25,15 @@ export const es: Locale = {
 	name: "Español",
 	messages: {
 		".docx for Word and LibreOffice": ".docx para Word y LibreOffice",
+		"Add lane": "Añadir carril",
+		"Add lane above": "Añadir carril encima",
+		"Add lane below": "Añadir carril debajo",
+		"Add pool": "Añadir pool",
+		"Cannot create a pool: another process with content has no pool":
+			"No se puede crear un pool: otro proceso con contenido no tiene pool",
+		"Create pool": "Crear pool",
+		"Divide into three lanes": "Dividir en tres carriles",
+		"Divide into two lanes": "Dividir en dos carriles",
 		"Download HTML": "Descargar HTML",
 		"Download Markdown": "Descargar Markdown",
 		"Download Word": "Descargar Word",
@@ -374,6 +383,8 @@ export const es: Locale = {
 		"Optimize diagram": "Optimizar diagrama",
 		"Parallel (for each, all at once)": "Paralelo (para cada uno, todos a la vez)",
 		"Parallel Gateway": "Compuerta paralela",
+		"Partner pool: no lanes or nodes in this version":
+			"Pool asociado: sin carriles ni nodos en esta versión",
 		Paste: "Pegar",
 		Pattern: "Patrón",
 		Play: "Reproducir",

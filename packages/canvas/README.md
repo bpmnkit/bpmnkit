@@ -49,7 +49,7 @@ const canvas = new BpmnCanvas({
 })
 
 // Load a diagram
-canvas.loadXML(bpmnXml)
+canvas.load(bpmnXml)
 
 // Respond to element clicks
 canvas.on("element:click", (id, event) => {
@@ -57,7 +57,7 @@ canvas.on("element:click", (id, event) => {
 })
 
 // Fit diagram to container
-canvas.fit()
+canvas.fitView()
 ```
 
 ## API Reference
@@ -74,19 +74,20 @@ interface CanvasOptions {
 }
 ```
 
-### CanvasApi Methods
+### BpmnCanvas Methods
 
 | Method | Description |
 |--------|-------------|
-| `loadXML(xml)` | Parse and render a BPMN XML string |
-| `fit()` | Fit the diagram to the container |
-| `zoom(factor)` | Set zoom level (1 = 100%) |
-| `getShapes()` | All rendered `RenderedShape` objects |
-| `getEdges()` | All rendered `RenderedEdge` objects |
+| `load(xml, options?)` | Parse and render a BPMN XML string |
+| `loadDefinitions(defs, options?)` | Render an already parsed `BpmnDefinitions` |
+| `fitView(padding?)` | Fit the diagram to the container |
+| `zoom(scaleOrFit?, center?)` | Set the zoom level (1 = 100%), or `"fit"` |
 | `setTheme(theme)` | Switch theme at runtime |
+| `on(event, handler)` | Subscribe to a canvas event; returns the unsubscribe function |
 | `destroy()` | Remove canvas and clean up |
-| `on(event, handler)` | Subscribe to a canvas event |
-| `off(event, handler)` | Unsubscribe |
+
+Plugins get a `CanvasApi` instead, which adds `getShapes()` and `getEdges()` (the rendered
+shapes and edges) and markers.
 
 ### Events
 

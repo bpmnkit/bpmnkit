@@ -1,0 +1,78 @@
+{
+  "collaborations": [],
+  "diagrams": [],
+  "errors": [],
+  "escalations": [],
+  "id": "Definitions_1",
+  "messages": [],
+  "namespaces": {
+    "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "Start1",
+          "incoming": [],
+          "outgoing": [],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "One",
+      "isExecutable": true,
+      "sequenceFlows": [],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    },
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "Start2",
+          "incoming": [],
+          "outgoing": [],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "Zero",
+      "isExecutable": false,
+      "sequenceFlows": [],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    },
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "Start3",
+          "incoming": [],
+          "outgoing": [],
+          "type": "startEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "NotBoolean",
+      "sequenceFlows": [],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://bpmn.io/schema/bpmn",
+  "unknownAttributes": {}
+}

@@ -4,6 +4,7 @@
 
 use crate::model::*;
 use crate::number::js_number_to_string;
+use crate::swimlanes::{pinned_primary_to_write, with_bpmnkit_namespace};
 use bpmnkit_xml::{serialize_xml, Attrs, XmlElement};
 use indexmap::IndexSet;
 
@@ -904,7 +905,12 @@ fn declare_used_namespaces(root: &mut XmlElement) {
 
 /// Serializes a model to BPMN XML.
 pub fn serialize_bpmn(definitions: &BpmnDefinitions) -> String {
-    let ns = &definitions.namespaces;
+    let pinned = pinned_primary_to_write(definitions);
+    // Declared with the others, so a parsed copy writes the same bytes.
+    let pin = pinned.map(|_| with_bpmnkit_namespace(&definitions.namespaces));
+    let ns = pin
+        .as_ref()
+        .map_or(&definitions.namespaces, |(namespaces, _)| namespaces);
     let p = Prefixes {
         bp: qualifier(ns, BPMN_NS, "bpmn"),
         bdi: qualifier(ns, BPMNDI_NS, "bpmndi"),
@@ -921,7 +927,9 @@ pub fn serialize_bpmn(definitions: &BpmnDefinitions) -> String {
             attrs.insert(format!("xmlns:{prefix}"), uri.clone());
         }
     }
-    attrs.insert("id".into(), definitions.id.clone());
+    if !definitions.id.is_empty() {
+        attrs.insert("id".into(), definitions.id.clone());
+    }
     attrs.insert(
         "targetNamespace".into(),
         definitions.target_namespace.clone(),
@@ -930,6 +938,9 @@ pub fn serialize_bpmn(definitions: &BpmnDefinitions) -> String {
     set(&mut attrs, "exporterVersion", &definitions.exporter_version);
     for (k, v) in &definitions.unknown_attributes {
         attrs.insert(k.clone(), v.clone());
+    }
+    if let (Some((_, prefix)), Some(pinned)) = (&pin, pinned) {
+        attrs.insert(format!("{prefix}:primaryProcess"), pinned.to_owned());
     }
 
     let mut children = Vec::new();

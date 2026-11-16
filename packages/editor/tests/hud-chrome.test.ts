@@ -82,7 +82,7 @@ describe("HUD control inventory", () => {
 		],
 		[
 			"#hud-bottom-center",
-			["#btn-bc-toggle", "#btn-select", "#btn-pan", "#btn-space", "#tool-groups"],
+			["#btn-bc-toggle", "#btn-select", "#btn-pan", "#btn-space", "#btn-pool", "#tool-groups"],
 		],
 	]
 

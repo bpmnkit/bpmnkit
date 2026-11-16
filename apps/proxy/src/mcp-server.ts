@@ -34,6 +34,7 @@ import {
 	type FormDefinition,
 	type RestConnectorConfig,
 	allElementTypes,
+	applyAutoLayout,
 	applyBpmnOperations,
 	compactify,
 	compactifyDmn,
@@ -135,6 +136,20 @@ function buildBpmnDiagram(proc: BpmnProcess): BpmnDiagram {
 }
 
 /**
+ * The diagrams to write for `defs`. Pools and lanes are drawn only by the
+ * whole-diagram layout, on a plane bound to the collaboration, so a diagram
+ * with either goes through it; a lane-free diagram keeps the per-process layout
+ * it always had.
+ */
+function layoutDiagrams(defs: BpmnDefinitions): BpmnDiagram[] {
+	const pooled =
+		defs.collaborations.length > 0 || defs.processes.some((proc) => proc.laneSet !== undefined)
+	return pooled
+		? applyAutoLayout({ ...defs, diagrams: [] }).diagrams
+		: defs.processes.map(buildBpmnDiagram)
+}
+
+/**
  * Writes the current model out.
  *
  * BPMN goes through the same check `writeBpmn` makes — serialise, parse back,
@@ -162,7 +177,7 @@ function writeFileAtomic(path: string, text: string): void {
 
 /** The BPMN state as XML, with its diagrams laid out again. */
 function bpmnXml(data: BpmnDefinitions): string {
-	data.diagrams = data.processes.map((proc) => buildBpmnDiagram(proc))
+	data.diagrams = layoutDiagrams(data)
 	declareDiNamespaces(data)
 	// The model is still being built: the deploy check is reported to it, not enforced here
 	// (see `MUTATING_TOOLS`); the proxy gates the diagram it finally returns.
@@ -597,7 +612,7 @@ const BPMN_TOOLS = [
 				diagram: {
 					type: "object",
 					description:
-						"CompactDiagram: { id, processes: [{ id, name?, elements: [...], flows: [...] }] }",
+						"CompactDiagram: { id, processes: [{ id, name?, executable?, lanes?: [{ id, name?, members?: [elementId], lanes? }], elements: [...], flows: [...] }], participants?: [{ id, name?, processId? }], messageFlows?: [{ id, source, target, name? }] }",
 				},
 			},
 			required: ["diagram"],

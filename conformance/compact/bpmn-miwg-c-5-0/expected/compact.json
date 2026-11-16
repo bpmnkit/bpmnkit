@@ -1,5 +1,12 @@
 {
   "id": "_5f5fbc02-46c1-4615-b2bd-89b2d938ac0b",
+  "participants": [
+    {
+      "id": "_f200a9f1-5554-4868-b895-707186915d62",
+      "name": "Bank",
+      "processId": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0"
+    }
+  ],
   "processes": [
     {
       "elements": [
@@ -403,6 +410,57 @@
         }
       ],
       "id": "_3d1ef204-2d4c-4643-8fc5-c319cc032ec0",
+      "lanes": [
+        {
+          "id": "_2935f981-e194-4a1b-bb22-846ad3c0f72c",
+          "members": [
+            "_0254d83d-d943-466f-8b62-20e87cdfda4e",
+            "_945cd271-46b6-4d71-83a1-530e445af820",
+            "_17db66a1-badd-4942-9ebd-02bc5595cdde",
+            "_138f9ebc-0211-4051-b7c0-1c55695d5246",
+            "_664f14a9-c1f1-490a-bbec-1f66ba4e7fe4",
+            "_d22de266-6170-4783-91f9-40832e4cc58d",
+            "_a4936291-3787-404c-bec7-8a3f3c5fd6e5",
+            "_87785f46-7026-4d3c-b2c0-6a9468da67f6",
+            "_a73027a7-615e-4a4d-95ee-c4cd78ab30c4",
+            "_2b156883-2852-4665-aba0-d9bc57c7c225",
+            "_9c5d383f-df57-4012-b490-fa36f9f90eed",
+            "_3355cffe-aab4-4a05-8388-becf8ad599ae",
+            "_be6ea91a-4f8e-4240-86e8-f85036aee96f",
+            "_000a0565-911b-4f71-9993-1177021edd97",
+            "_f006114d-c7cb-4ce0-9bfe-f0938c36a53e",
+            "_b9338c62-a257-47dd-8c2e-88b80b73c330",
+            "_b360104e-8410-4b99-827a-776e2083fb96",
+            "_8055ae64-cafd-4fd0-be36-2216e3b02e37",
+            "_2fd5c7d3-797d-45a5-a0d8-dfa60654ba5e",
+            "_09074897-556d-4fd2-afb6-2f6c774e1820",
+            "_54d66428-417b-447e-89d5-e726c1f12659",
+            "_29b4f749-037a-4199-b33f-3cd3a3c7805e",
+            "_3f3a831c-9b08-4827-92b3-3877a749e3df"
+          ],
+          "name": "Private Customer Account Manager"
+        },
+        {
+          "id": "_af0d417a-6492-48d6-ace2-f70b807564a8",
+          "members": [
+            "_f0422f0d-396b-4ee7-ad83-fdd34a8bab71",
+            "_a393c065-4412-4b16-b04f-52d07e76b518",
+            "_05a1a66a-9308-41c7-a611-4fc57627a058",
+            "_acfa265a-a449-4e30-baa0-1ba47dbea418"
+          ],
+          "name": "Corporate Account Manager"
+        },
+        {
+          "id": "_1c6c313d-4950-47a0-b6bf-c51a4b2ea7ed",
+          "members": [
+            "_1fc87527-9cad-4f8e-b9c7-ebe106cbe98d",
+            "_5f56934b-8a7e-4c35-b9f7-bf2605711bfd",
+            "_1da34f39-8338-4ecb-a93f-90349fa10260",
+            "_1cf552d4-5152-4595-9218-84f31533bc70"
+          ],
+          "name": "Head of Market Service"
+        }
+      ],
       "name": "Bank - Process"
     },
     {
@@ -436,6 +494,7 @@
           "type": "exclusiveGateway"
         }
       ],
+      "executable": true,
       "flows": [
         {
           "from": "_d8214574-bb4c-42ff-aabb-398eb95b2f2a",

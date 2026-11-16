@@ -1,5 +1,12 @@
 {
   "id": "_7e80c232-2bf0-46e0-b77e-29ec586a23a6",
+  "participants": [
+    {
+      "id": "_d3aa8a96-e9df-4336-9b0d-01b17e6587ad",
+      "name": "EU Bank",
+      "processId": "_4a690dd7-809a-4fa9-ad63-515ac6685375"
+    }
+  ],
   "processes": [
     {
       "elements": [
@@ -161,6 +168,31 @@
         }
       ],
       "id": "_4a690dd7-809a-4fa9-ad63-515ac6685375",
+      "lanes": [
+        {
+          "id": "_b836aa5e-fb94-4479-af77-64a3a5202451",
+          "members": [
+            "_5ba97787-8a90-4002-8277-b0895e45cf1f",
+            "_392c86ba-38b5-4dc9-b98d-f97ad4c2add5",
+            "_15b00027-5049-4081-8952-fd398e8b722a",
+            "_26c40c03-5d1f-46c5-81f1-ddd485868125"
+          ],
+          "name": "Hiring manager"
+        },
+        {
+          "id": "_dd32321b-8e95-4801-8eed-5451399b4378",
+          "members": [
+            "_d3435084-f2c7-43cc-abcc-c679bc4232ac",
+            "_b13d6fa3-fc78-40c7-ae77-609be07493e9",
+            "_64eabfe9-6947-43eb-ac45-8d331745f86c",
+            "_eae674ce-4d6e-48ac-819c-c79e0868e40d",
+            "_0783f019-f40c-43d6-ab40-0f1c81f8d9e7",
+            "_c456dbcc-bbe3-4c75-b57d-9427525c0a94",
+            "_a36ddf2f-23c1-46c5-86d4-bd2a0eb42535"
+          ],
+          "name": "Recruitment"
+        }
+      ],
       "name": "EU Bank - Process"
     }
   ]

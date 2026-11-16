@@ -1,5 +1,26 @@
 {
   "id": "_1373649948794",
+  "messageFlows": [
+    {
+      "id": "_b467921a-ef7b-44c5-bf78-fd624c400d17",
+      "name": "Message Flow 1",
+      "source": "_ab851300-b5de-4ad3-bbec-215553757fc8",
+      "target": "_6fed62c8-8241-4a1d-ae67-266fda7dcead"
+    },
+    {
+      "id": "_c311cc87-677e-47a4-bdb1-8744c4ec3147",
+      "name": "Message Flow 2",
+      "source": "_1c347d0d-750b-4c09-980d-6877caae409b",
+      "target": "_80d1f02b-f39c-45c2-b731-43df75d81779"
+    }
+  ],
+  "participants": [
+    {
+      "id": "_046bff4f-cea3-4512-a6b1-30517fb29f2c",
+      "name": "Pool",
+      "processId": "WFP-6-1"
+    }
+  ],
   "processes": [
     {
       "elements": [
@@ -24,6 +45,7 @@
           "type": "startEvent"
         }
       ],
+      "executable": false,
       "flows": [
         {
           "from": "_c03f2b1f-32dc-41ef-b325-c9811a814fbe",
@@ -143,6 +165,7 @@
           "type": "subProcess"
         }
       ],
+      "executable": false,
       "flows": [
         {
           "from": "_6fed62c8-8241-4a1d-ae67-266fda7dcead",
@@ -175,7 +198,28 @@
           "to": "_6fed62c8-8241-4a1d-ae67-266fda7dcead"
         }
       ],
-      "id": "WFP-6-2"
+      "id": "WFP-6-2",
+      "lanes": [
+        {
+          "id": "_17bebb0f-f31e-475a-b1b1-76fcc2da172b",
+          "members": [
+            "_1c347d0d-750b-4c09-980d-6877caae409b",
+            "_65d1bebf-e613-4317-acb2-b12b69fc67ff",
+            "_ee35fa2c-dfea-40cf-a469-845b765a7b50",
+            "_7c434d45-d319-457b-9fd6-853c218bc3f1",
+            "_6fed62c8-8241-4a1d-ae67-266fda7dcead"
+          ],
+          "name": "Lane 1"
+        },
+        {
+          "id": "_cc1845d0-ec34-44d3-8ba5-4981040d8dfe",
+          "members": [
+            "_8e6cecb7-b247-4c43-a6b6-532fb6a89753",
+            "_f52b6ad0-4dcc-4053-b696-b924dda01db5"
+          ],
+          "name": "Lane 2"
+        }
+      ]
     }
   ]
 }

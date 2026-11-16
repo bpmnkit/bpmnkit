@@ -1,7 +1,11 @@
 {
   "aliases": {
+    "carrier": "Participant_carrier",
     "need_identified": "Start_buyer",
     "ordered": "End_buyer",
-    "place_order": "Task_place_order"
+    "ordering": "Lane_ordering",
+    "place_order": "Task_place_order",
+    "receiving": "Lane_receiving",
+    "seller": "Participant_seller"
   }
 }

@@ -339,8 +339,8 @@ describe("moveShapes label bounds", () => {
 		const shape = moved.diagrams[0]?.plane.shapes.find((s) => s.bpmnElement === id)
 		expect(shape?.bounds.x).toBe(130)
 		expect(shape?.bounds.y).toBe(80)
-		expect(shape?.label?.bounds.x).toBe(139) // 109 + 30
-		expect(shape?.label?.bounds.y).toBe(124) // 144 - 20
+		expect(shape?.label?.bounds?.x).toBe(139) // 109 + 30
+		expect(shape?.label?.bounds?.y).toBe(124) // 144 - 20
 	})
 })
 

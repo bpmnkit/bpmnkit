@@ -1,1 +1,3 @@
 start_event_none_1[start Start Event None 1] > abstract_task_4[task Abstract Task 4] > end_event_none_2[end End Event None 2]
+pool participant[Participant]
+pool pool[Pool]

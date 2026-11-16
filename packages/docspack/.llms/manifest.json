@@ -1333,7 +1333,7 @@
 		{
 			"id": "getting-started.concepts.parsing-and-serializing-round-trip-fidelity",
 			"file": "chunks/getting-started.concepts.parsing-and-serializing-round-trip-fidelity.md",
-			"tokens": 801,
+			"tokens": 829,
 			"tags": [
 				"getting-started",
 				"concepts",
@@ -1354,7 +1354,7 @@
 				"bpmnElement",
 				"packages/core/tests/roundtrip-corpus.test.ts",
 				"packages/core/tests/descriptor-coverage.test.ts",
-				"isExecutable"
+				"isSequential"
 			]
 		},
 		{
@@ -1455,7 +1455,7 @@
 		{
 			"id": "getting-started.conformance.bpmn-elements-by-component",
 			"file": "chunks/getting-started.conformance.bpmn-elements-by-component.md",
-			"tokens": 1916,
+			"tokens": 1922,
 			"tags": [
 				"getting-started",
 				"conformance",
@@ -5189,7 +5189,7 @@
 		{
 			"id": "packages.canvas.overview",
 			"file": "chunks/packages.canvas.overview.md",
-			"tokens": 161,
+			"tokens": 160,
 			"tags": [
 				"packages",
 				"canvas",
@@ -5205,7 +5205,7 @@
 		{
 			"id": "packages.canvas.options",
 			"file": "chunks/packages.canvas.options.md",
-			"tokens": 147,
+			"tokens": 159,
 			"tags": [
 				"packages",
 				"canvas",
@@ -5213,7 +5213,7 @@
 				"api"
 			],
 			"entities": [
-				"canvas.getXML()",
+				"BpmnDefinitions",
 				"canvas.destroy()"
 			]
 		},
@@ -5740,7 +5740,7 @@
 		{
 			"id": "packages.core.installation-bpmn.continueprocess-definitions-processid",
 			"file": "chunks/packages.core.installation-bpmn.continueprocess-definitions-processid.md",
-			"tokens": 517,
+			"tokens": 646,
 			"tags": [
 				"packages",
 				"core",
@@ -5773,7 +5773,7 @@
 		{
 			"id": "packages.core.installation-diagrambuilder-collaborations",
 			"file": "chunks/packages.core.installation-diagrambuilder-collaborations.md",
-			"tokens": 404,
+			"tokens": 560,
 			"tags": [
 				"packages",
 				"core",
@@ -5783,6 +5783,24 @@
 			],
 			"entities": [
 				"applyAutoLayout",
+				"isExecutable",
+				"build()"
+			]
+		},
+		{
+			"id": "packages.core.installation-processbuilder-lanes-and-pools",
+			"file": "chunks/packages.core.installation-processbuilder-lanes-and-pools.md",
+			"tokens": 345,
+			"tags": [
+				"packages",
+				"core",
+				"installation",
+				"processbuilder",
+				"lanes",
+				"pools"
+			],
+			"entities": [
+				"flowNodes",
 				"build()"
 			]
 		},
@@ -5958,7 +5976,7 @@
 		{
 			"id": "packages.core.installation-reconcilecompact-definitions-compact-options",
 			"file": "chunks/packages.core.installation-reconcilecompact-definitions-compact-options.md",
-			"tokens": 129,
+			"tokens": 209,
 			"tags": [
 				"packages",
 				"core",
@@ -5969,13 +5987,14 @@
 				"options"
 			],
 			"entities": [
-				"CompactDiagram"
+				"CompactDiagram",
+				"messageFlows"
 			]
 		},
 		{
 			"id": "packages.core.installation-compactify-definitions",
 			"file": "chunks/packages.core.installation-compactify-definitions.md",
-			"tokens": 342,
+			"tokens": 382,
 			"tags": [
 				"packages",
 				"core",
@@ -5986,6 +6005,10 @@
 			"entities": [
 				"BpmnDefinitions",
 				"CompactDiagram",
+				"processId",
+				"messageFlows",
+				"messageRef",
+				"isExecutable",
 				"isDefault"
 			]
 		},
@@ -6070,7 +6093,7 @@
 		{
 			"id": "packages.core.installation-parseprocesstext-text-and-createprocesstextstream-2",
 			"file": "chunks/packages.core.installation-parseprocesstext-text-and-createprocesstextstream-2.md",
-			"tokens": 1490,
+			"tokens": 1877,
 			"tags": [
 				"packages",
 				"core",
@@ -6080,6 +6103,7 @@
 				"createprocesstextstream"
 			],
 			"entities": [
+				"messageFlows",
 				"parseProcessText",
 				"DeployabilityError",
 				"lintDiagram"
@@ -6106,7 +6130,7 @@
 		{
 			"id": "packages.core.installation-writeprocesstext-defs-and-parseprocessdelta-text",
 			"file": "chunks/packages.core.installation-writeprocesstext-defs-and-parseprocessdelta-text.md",
-			"tokens": 317,
+			"tokens": 654,
 			"tags": [
 				"packages",
 				"core",
@@ -6118,6 +6142,7 @@
 			],
 			"entities": [
 				"writeProcessText",
+				"primaryProcess",
 				"parseProcessDelta",
 				"applyProcessDelta",
 				"@bpmnkit/editor/headless"
@@ -6211,7 +6236,7 @@
 		{
 			"id": "packages.core.installation-processbuilder-methods",
 			"file": "chunks/packages.core.installation-processbuilder-methods.md",
-			"tokens": 831,
+			"tokens": 904,
 			"tags": [
 				"packages",
 				"core",
@@ -6552,39 +6577,71 @@
 		{
 			"id": "packages.editor.basic-setup",
 			"file": "chunks/packages.editor.basic-setup.md",
-			"tokens": 166,
+			"tokens": 149,
+			"tags": [
+				"packages",
+				"editor",
+				"basic",
+				"setup"
+			],
+			"entities": []
+		},
+		{
+			"id": "packages.editor.basic-setup-collaborations",
+			"file": "chunks/packages.editor.basic-setup-collaborations.md",
+			"tokens": 895,
 			"tags": [
 				"packages",
 				"editor",
 				"basic",
 				"setup",
-				"side",
-				"dock"
+				"collaborations"
+			],
+			"entities": [
+				"primaryProcess",
+				"@bpmnkit/core",
+				"primaryProcessId",
+				"flowNodeRef",
+				"messageRef"
+			]
+		},
+		{
+			"id": "packages.editor.basic-setup-collaborations-2",
+			"file": "chunks/packages.editor.basic-setup-collaborations-2.md",
+			"tokens": 445,
+			"tags": [
+				"packages",
+				"editor",
+				"basic",
+				"setup",
+				"collaborations"
 			],
 			"entities": []
 		},
 		{
-			"id": "packages.editor.hud-options",
-			"file": "chunks/packages.editor.hud-options.md",
-			"tokens": 164,
+			"id": "packages.editor.with-side-dock",
+			"file": "chunks/packages.editor.with-side-dock.md",
+			"tokens": 168,
 			"tags": [
 				"packages",
 				"editor",
+				"side",
+				"dock",
 				"hud",
 				"options",
-				"editoroptions",
-				"sidedock",
-				"api"
+				"editoroptions"
 			],
 			"entities": []
 		},
 		{
-			"id": "packages.editor.applying-a-change-script",
-			"file": "chunks/packages.editor.applying-a-change-script.md",
-			"tokens": 465,
+			"id": "packages.editor.sidedock-api",
+			"file": "chunks/packages.editor.sidedock-api.md",
+			"tokens": 861,
 			"tags": [
 				"packages",
 				"editor",
+				"sidedock",
+				"api",
 				"applying",
 				"change",
 				"script"
@@ -6593,6 +6650,9 @@
 				"applyProcessDelta",
 				"parseProcessDelta",
 				"@bpmnkit/core",
+				"primaryProcess",
+				"writeProcessText",
+				"isExecutable",
 				"applyConnectorLines",
 				"@bpmnkit/core/connectors",
 				"applyConnectors",

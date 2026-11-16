@@ -1,0 +1,565 @@
+{
+  "collaborations": [
+    {
+      "associations": [],
+      "extensionElements": [],
+      "groups": [],
+      "id": "Collaboration_order",
+      "messageFlows": [
+        {
+          "id": "MessageFlow_confirm",
+          "name": "Confirmation",
+          "sourceRef": "ship",
+          "targetRef": "Participant_customer",
+          "unknownAttributes": {}
+        }
+      ],
+      "participants": [
+        {
+          "id": "Participant_company",
+          "name": "Company",
+          "processRef": "order",
+          "unknownAttributes": {}
+        },
+        {
+          "id": "Participant_customer",
+          "name": "Customer",
+          "processRef": "customer",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "diagrams": [
+    {
+      "id": "BPMNDiagram_order",
+      "plane": {
+        "bpmnElement": "Collaboration_order",
+        "edges": [
+          {
+            "bpmnElement": "toReview",
+            "id": "BPMNEdge_toReview",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 130,
+                "y": 60
+              },
+              {
+                "x": 180,
+                "y": 60
+              }
+            ]
+          },
+          {
+            "bpmnElement": "toDecide",
+            "id": "BPMNEdge_toDecide",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 280,
+                "y": 60
+              },
+              {
+                "x": 350,
+                "y": 60
+              },
+              {
+                "x": 350,
+                "y": 160
+              }
+            ]
+          },
+          {
+            "bpmnElement": "toShip",
+            "id": "BPMNEdge_toShip",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 350,
+                "y": 200
+              },
+              {
+                "x": 350,
+                "y": 300
+              },
+              {
+                "x": 420,
+                "y": 300
+              }
+            ]
+          },
+          {
+            "bpmnElement": "toRejected",
+            "id": "BPMNEdge_toRejected",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 370,
+                "y": 180
+              },
+              {
+                "x": 600,
+                "y": 179
+              }
+            ]
+          },
+          {
+            "bpmnElement": "toDone",
+            "id": "BPMNEdge_toDone",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 520,
+                "y": 300
+              },
+              {
+                "x": 600,
+                "y": 300
+              }
+            ]
+          },
+          {
+            "bpmnElement": "MessageFlow_confirm",
+            "id": "BPMNEdge_confirm",
+            "unknownAttributes": {},
+            "waypoints": [
+              {
+                "x": 470,
+                "y": 340
+              },
+              {
+                "x": 470,
+                "y": 400
+              }
+            ]
+          }
+        ],
+        "id": "BPMNPlane_order",
+        "shapes": [
+          {
+            "bounds": {
+              "height": 360,
+              "width": 720,
+              "x": 0,
+              "y": 0
+            },
+            "bpmnElement": "Participant_company",
+            "id": "BPMNShape_company",
+            "isHorizontal": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 240,
+              "width": 690,
+              "x": 30,
+              "y": 0
+            },
+            "bpmnElement": "Lane_sales",
+            "id": "BPMNShape_sales",
+            "isHorizontal": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 120,
+              "width": 660,
+              "x": 60,
+              "y": 0
+            },
+            "bpmnElement": "Lane_inside",
+            "id": "BPMNShape_inside",
+            "isHorizontal": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 120,
+              "width": 660,
+              "x": 60,
+              "y": 120
+            },
+            "bpmnElement": "Lane_desk",
+            "id": "BPMNShape_desk",
+            "isHorizontal": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 120,
+              "width": 690,
+              "x": 30,
+              "y": 240
+            },
+            "bpmnElement": "Lane_ops",
+            "id": "BPMNShape_ops",
+            "isHorizontal": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 30,
+              "width": 30,
+              "x": 100,
+              "y": 45
+            },
+            "bpmnElement": "start",
+            "id": "BPMNShape_start",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 180,
+              "y": 20
+            },
+            "bpmnElement": "review",
+            "id": "BPMNShape_review",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 40,
+              "width": 40,
+              "x": 330,
+              "y": 160
+            },
+            "bpmnElement": "decide",
+            "id": "BPMNShape_decide",
+            "isMarkerVisible": true,
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 80,
+              "width": 100,
+              "x": 420,
+              "y": 260
+            },
+            "bpmnElement": "ship",
+            "id": "BPMNShape_ship",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 28,
+              "width": 28,
+              "x": 600,
+              "y": 165
+            },
+            "bpmnElement": "rejected",
+            "id": "BPMNShape_rejected",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 28,
+              "width": 28,
+              "x": 600,
+              "y": 286
+            },
+            "bpmnElement": "done",
+            "id": "BPMNShape_done",
+            "unknownAttributes": {}
+          },
+          {
+            "bounds": {
+              "height": 60,
+              "width": 720,
+              "x": 0,
+              "y": 400
+            },
+            "bpmnElement": "Participant_customer",
+            "id": "BPMNShape_customer",
+            "isHorizontal": true,
+            "unknownAttributes": {}
+          }
+        ]
+      }
+    }
+  ],
+  "errors": [],
+  "escalations": [],
+  "exporter": "Flowable Open Source Modeler",
+  "exporterVersion": "6.8.0",
+  "id": "",
+  "messages": [],
+  "namespaces": {
+    "": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+    "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+    "flowable": "http://flowable.org/bpmn",
+    "omgdc": "http://www.omg.org/spec/DD/20100524/DC",
+    "omgdi": "http://www.omg.org/spec/DD/20100524/DI",
+    "xsd": "http://www.w3.org/2001/XMLSchema",
+    "xsi": "http://www.w3.org/2001/XMLSchema-instance"
+  },
+  "processes": [
+    {
+      "associations": [],
+      "extensionElements": [
+        {
+          "attributes": {
+            "class": "com.acme.StartListener",
+            "event": "start"
+          },
+          "children": [],
+          "name": "flowable:executionListener"
+        }
+      ],
+      "flowElements": [
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "start",
+          "incoming": [],
+          "name": "Order received",
+          "outgoing": [
+            "toReview"
+          ],
+          "type": "startEvent",
+          "unknownAttributes": {
+            "flowable:formKey": "orderForm",
+            "flowable:initiator": "initiator"
+          }
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "delegateExpression": "${reviewListener}",
+                "event": "create"
+              },
+              "children": [],
+              "name": "flowable:taskListener"
+            },
+            {
+              "attributes": {
+                "id": "approved",
+                "name": "Approved",
+                "required": "true",
+                "type": "boolean"
+              },
+              "children": [],
+              "name": "flowable:formProperty"
+            }
+          ],
+          "id": "review",
+          "incoming": [
+            "toReview"
+          ],
+          "name": "Review order",
+          "outgoing": [
+            "toDecide"
+          ],
+          "type": "userTask",
+          "unknownAttributes": {
+            "flowable:assignee": "${initiator}",
+            "flowable:candidateGroups": "sales",
+            "flowable:dueDate": "P2D",
+            "flowable:formKey": "reviewForm"
+          }
+        },
+        {
+          "default": "toRejected",
+          "extensionElements": [],
+          "id": "decide",
+          "incoming": [
+            "toDecide"
+          ],
+          "name": "Approved?",
+          "outgoing": [
+            "toShip",
+            "toRejected"
+          ],
+          "type": "exclusiveGateway",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [
+            {
+              "attributes": {
+                "name": "carrier"
+              },
+              "children": [
+                {
+                  "attributes": {},
+                  "children": [],
+                  "name": "flowable:string",
+                  "text": "ACME"
+                }
+              ],
+              "name": "flowable:field"
+            },
+            {
+              "attributes": {},
+              "children": [],
+              "name": "flowable:failedJobRetryTimeCycle",
+              "text": "R3/PT10M"
+            }
+          ],
+          "id": "ship",
+          "incoming": [
+            "toShip"
+          ],
+          "name": "Ship order",
+          "outgoing": [
+            "toDone"
+          ],
+          "type": "serviceTask",
+          "unknownAttributes": {
+            "flowable:async": "true",
+            "flowable:class": "com.acme.ShipDelegate"
+          }
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "rejected",
+          "incoming": [
+            "toRejected"
+          ],
+          "name": "Rejected",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        },
+        {
+          "eventDefinitions": [],
+          "extensionElements": [],
+          "id": "done",
+          "incoming": [
+            "toDone"
+          ],
+          "name": "Shipped",
+          "outgoing": [],
+          "type": "endEvent",
+          "unknownAttributes": {}
+        }
+      ],
+      "groups": [],
+      "id": "order",
+      "isExecutable": true,
+      "laneSet": {
+        "id": "LaneSet_order",
+        "lanes": [
+          {
+            "childLaneSet": {
+              "id": "LaneSet_sales",
+              "lanes": [
+                {
+                  "flowNodeRefs": [
+                    "start",
+                    "review"
+                  ],
+                  "id": "Lane_inside",
+                  "name": "Inside sales",
+                  "unknownAttributes": {}
+                },
+                {
+                  "flowNodeRefs": [
+                    "decide"
+                  ],
+                  "id": "Lane_desk",
+                  "name": "Sales desk",
+                  "unknownAttributes": {}
+                }
+              ],
+              "unknownAttributes": {}
+            },
+            "flowNodeRefs": [
+              "start",
+              "review",
+              "decide"
+            ],
+            "id": "Lane_sales",
+            "name": "Sales",
+            "unknownAttributes": {}
+          },
+          {
+            "flowNodeRefs": [
+              "ship",
+              "rejected",
+              "done"
+            ],
+            "id": "Lane_ops",
+            "name": "Operations",
+            "unknownAttributes": {}
+          }
+        ],
+        "unknownAttributes": {}
+      },
+      "name": "Order",
+      "sequenceFlows": [
+        {
+          "extensionElements": [],
+          "id": "toReview",
+          "sourceRef": "start",
+          "targetRef": "review",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "toDecide",
+          "sourceRef": "review",
+          "targetRef": "decide",
+          "unknownAttributes": {}
+        },
+        {
+          "conditionExpression": {
+            "attributes": {
+              "xsi:type": "tFormalExpression"
+            },
+            "text": "${approved && amount < 1000}"
+          },
+          "extensionElements": [],
+          "id": "toShip",
+          "name": "yes",
+          "sourceRef": "decide",
+          "targetRef": "ship",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "toRejected",
+          "name": "no",
+          "sourceRef": "decide",
+          "targetRef": "rejected",
+          "unknownAttributes": {}
+        },
+        {
+          "extensionElements": [],
+          "id": "toDone",
+          "sourceRef": "ship",
+          "targetRef": "done",
+          "unknownAttributes": {}
+        }
+      ],
+      "textAnnotations": [],
+      "unknownAttributes": {
+        "flowable:candidateStarterGroups": "sales"
+      }
+    },
+    {
+      "associations": [],
+      "extensionElements": [],
+      "flowElements": [],
+      "groups": [],
+      "id": "customer",
+      "isExecutable": false,
+      "name": "Customer",
+      "sequenceFlows": [],
+      "textAnnotations": [],
+      "unknownAttributes": {}
+    }
+  ],
+  "signals": [],
+  "targetNamespace": "http://www.flowable.org/processdef",
+  "unknownAttributes": {
+    "expressionLanguage": "http://www.w3.org/1999/XPath",
+    "typeLanguage": "http://www.w3.org/2001/XMLSchema"
+  }
+}

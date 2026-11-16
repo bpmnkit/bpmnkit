@@ -227,4 +227,28 @@ describe("builder lanes", () => {
 			/from\(\)/,
 		)
 	})
+
+	it("draws inLane() lanes in a pool, the one participant() names", () => {
+		const built = (named: boolean) => {
+			const b = Bpmn.createProcess("p").inLane("a").startEvent("s").inLane("b").endEvent("e")
+			return (named ? b.participant("Pool_p", { name: "Shop" }) : b).build({ validate: false })
+		}
+		const named = built(true)
+		expect(lanesOf(named)).toEqual({ a: ["s"], b: ["e"] })
+		expect(named.collaborations[0]?.participants).toMatchObject([
+			{ id: "Pool_p", name: "Shop", processRef: "p" },
+		])
+		// Lanes imply a pool even without participant().
+		expect(built(false).collaborations[0]?.participants.map((p) => p.processRef)).toEqual(["p"])
+	})
+
+	it("refuses inLane() and lane() in one process", () => {
+		expect(() =>
+			Bpmn.createProcess("p")
+				.lane("L", { flowNodes: ["s"] })
+				.inLane("a")
+				.startEvent("s")
+				.build({ validate: false }),
+		).toThrow(/cannot be combined with lane\(\)/)
+	})
 })

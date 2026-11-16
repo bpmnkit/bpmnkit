@@ -1,5 +1,31 @@
 {
   "id": "sid-ad44e239-e96e-4a80-b0e4-cf63b741c3cb",
+  "messageFlows": [
+    {
+      "id": "sid-96EF2D8F-C322-42B1-8C08-0DA05524C904",
+      "name": "Message Flow 2 ",
+      "source": "sid-485E1184-9951-4B41-9794-A9AFD42A3249",
+      "target": "sid-1208A5BA-9E1C-49D2-82E3-5DB2C0E9887D"
+    },
+    {
+      "id": "sid-D0B859BF-CBFB-4B35-BBC8-BCA308F6455C",
+      "name": "Message Flow 1 ",
+      "source": "sid-3D477D07-D669-4A26-9454-12AD775FDE70",
+      "target": "sid-34E8C3A5-5C2A-4593-AC67-038B737814D7"
+    }
+  ],
+  "participants": [
+    {
+      "id": "sid-66751F1E-EEB9-4BA7-9FDA-7965A1CA9CD1",
+      "name": "Pool 1",
+      "processId": "sid-34746A54-1D7D-46CA-B219-0C4CEAE51170"
+    },
+    {
+      "id": "sid-7E61DCD0-0700-4828-8A28-CD65132273D7",
+      "name": "Pool 2",
+      "processId": "sid-54D696FD-DEDC-45F3-99DB-1404DA433FC4"
+    }
+  ],
   "processes": [
     {
       "elements": [
@@ -24,6 +50,7 @@
           "type": "task"
         }
       ],
+      "executable": false,
       "flows": [
         {
           "from": "sid-70D2F83B-77E6-4301-835C-AFF6357344F8",
@@ -42,6 +69,18 @@
         }
       ],
       "id": "sid-34746A54-1D7D-46CA-B219-0C4CEAE51170",
+      "lanes": [
+        {
+          "id": "sid-4F568BD0-1CB0-4F1C-8729-9DD775B5B37D",
+          "members": [
+            "sid-5F0F3508-96EF-4F9B-9182-64AD17334E23",
+            "sid-70D2F83B-77E6-4301-835C-AFF6357344F8",
+            "sid-3D477D07-D669-4A26-9454-12AD775FDE70",
+            "sid-1208A5BA-9E1C-49D2-82E3-5DB2C0E9887D"
+          ],
+          "name": "Lane 1"
+        }
+      ],
       "name": "Pool 1"
     },
     {
@@ -144,6 +183,7 @@
           "type": "subProcess"
         }
       ],
+      "executable": false,
       "flows": [
         {
           "from": "sid-645780CC-D61F-4715-8B58-71679305245F",
@@ -177,6 +217,27 @@
         }
       ],
       "id": "sid-54D696FD-DEDC-45F3-99DB-1404DA433FC4",
+      "lanes": [
+        {
+          "id": "sid-FBA8B122-2EFC-4DD5-B714-A13CD36AAA6E",
+          "members": [
+            "sid-78073B2D-35BB-45D5-9CF1-D446602F8E59",
+            "sid-34E8C3A5-5C2A-4593-AC67-038B737814D7",
+            "sid-00A82BF4-1D0A-48DC-8389-C8AAF3E7F754",
+            "sid-485E1184-9951-4B41-9794-A9AFD42A3249",
+            "sid-C189128A-82D2-4E5F-8FB4-F6E21FF27E83"
+          ],
+          "name": "Lane 2 "
+        },
+        {
+          "id": "sid-FC452F0B-05C5-4BB2-AA79-F9195F47BD11",
+          "members": [
+            "sid-93C83C6A-1122-4E0F-9F47-4027C9080456",
+            "sid-645780CC-D61F-4715-8B58-71679305245F"
+          ],
+          "name": "Lane 3"
+        }
+      ],
       "name": "Pool 2"
     }
   ]

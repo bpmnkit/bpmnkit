@@ -1,5 +1,35 @@
 {
   "id": "Definitions_collab",
+  "messageFlows": [
+    {
+      "id": "MessageFlow_order",
+      "name": "Order",
+      "source": "Participant_buyer",
+      "target": "Participant_seller"
+    },
+    {
+      "id": "MessageFlow_ack",
+      "name": "Acknowledgement",
+      "source": "Participant_seller",
+      "target": "Participant_buyer"
+    }
+  ],
+  "participants": [
+    {
+      "id": "Participant_buyer",
+      "name": "Buyer",
+      "processId": "Process_buyer"
+    },
+    {
+      "id": "Participant_seller",
+      "name": "Seller",
+      "processId": "Process_seller"
+    },
+    {
+      "id": "Participant_carrier",
+      "name": "Carrier"
+    }
+  ],
   "processes": [
     {
       "elements": [
@@ -33,6 +63,23 @@
         }
       ],
       "id": "Process_buyer",
+      "lanes": [
+        {
+          "id": "Lane_ordering",
+          "members": [
+            "Start_buyer",
+            "Task_place_order"
+          ],
+          "name": "Ordering"
+        },
+        {
+          "id": "Lane_receiving",
+          "members": [
+            "End_buyer"
+          ],
+          "name": "Receiving"
+        }
+      ],
       "name": "Buyer"
     },
     {
@@ -46,6 +93,7 @@
           "type": "endEvent"
         }
       ],
+      "executable": false,
       "flows": [
         {
           "from": "Start_seller",

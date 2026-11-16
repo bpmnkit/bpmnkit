@@ -35,6 +35,7 @@ pub mod rest_connector;
 mod serializer;
 pub mod slug;
 pub mod stable_ids;
+pub mod swimlanes;
 pub mod zeebe;
 
 pub use bpmnkit_xml::{Attrs, XmlElement};

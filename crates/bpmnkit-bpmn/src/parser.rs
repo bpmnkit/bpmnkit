@@ -7,6 +7,7 @@
 
 use crate::model::*;
 use crate::number::{js_number, js_trim};
+use crate::swimlanes::BPMNKIT_NAMESPACE;
 use bpmnkit_spec::elements::{bpmn_element, BpmnTrait};
 use bpmnkit_xml::{local_name, scan_xml, Attrs, Visit, XmlElement, XmlSink};
 use std::fmt;
@@ -117,6 +118,16 @@ fn attr_string(attrs: &Attrs, name: &str) -> Option<String> {
 
 fn attr_bool(attrs: &Attrs, name: &str) -> Option<bool> {
     attr(attrs, name).map(|v| v == "true")
+}
+
+/// An `xsd:boolean` attribute: `true`/`1` or `false`/`0`, surrounding whitespace ignored.
+/// `None` when absent or not a boolean, so it is not written back.
+fn xsd_boolean(attrs: &Attrs, name: &str) -> Option<bool> {
+    match attr(attrs, name).map(js_trim) {
+        Some("true" | "1") => Some(true),
+        Some("false" | "0") => Some(false),
+        _ => None,
+    }
 }
 
 fn required_attr(attrs: &Attrs, name: &str, element_name: &str) -> Res<String> {
@@ -1602,7 +1613,9 @@ impl Frame for LaneFrame {
             Probe::Hit(c) => Ok(c),
             Probe::Miss(attrs) => Ok(match local {
                 "flowNodeRef" => text_child(Slot::FlowNodeRef, attrs),
-                "childLaneSet" => {
+                // @bpmnkit/core up to 1.9.0 wrote nested lanes as <laneSet>; read those
+                // files back rather than drop their lanes.
+                "childLaneSet" | "laneSet" => {
                     if std::mem::replace(&mut self.child_lane_set_seen, true) {
                         Child::Skip
                     } else {
@@ -1727,8 +1740,8 @@ impl Frame for ProcessFrame {
         Ok(Out::Process(Box::new(BpmnProcess {
             id: self.id.clone(),
             name: attr_string(attrs, "name"),
-            // Absent, "true" and "false" stay three states; a file that says "false" says it again.
-            is_executable: attr_bool(attrs, "isExecutable"),
+            // Absent, true and false stay three states; a file that says "false" says it again.
+            is_executable: xsd_boolean(attrs, "isExecutable"),
             documentation: self.documentation,
             documentation_attributes: self.documentation_attributes,
             extension_elements: self.extension_elements.unwrap_or_default(),
@@ -2150,8 +2163,17 @@ impl Frame for DefinitionsFrame {
                 unknown_attributes.insert(key.clone(), value.clone());
             }
         }
+        // Two prefixes may name the namespace; the pin is under the one that carries it.
+        let pin_key = namespaces
+            .iter()
+            .filter(|(prefix, uri)| !prefix.is_empty() && *uri == BPMNKIT_NAMESPACE)
+            .map(|(prefix, _)| format!("{prefix}:primaryProcess"))
+            .find(|key| unknown_attributes.contains_key(key));
+        // The declaration stays: it is the model's, like any other.
+        let primary_process_id = pin_key.and_then(|key| unknown_attributes.shift_remove(&key));
         Ok(Out::Definitions(Box::new(BpmnDefinitions {
-            id: required_attr(attrs, "id", &self.name)?,
+            // Optional in the schema, and the Flowable Modeler leaves it out.
+            id: attr_string(attrs, "id").unwrap_or_default(),
             target_namespace: required_attr(attrs, "targetNamespace", &self.name)?,
             exporter: attr_string(attrs, "exporter"),
             exporter_version: attr_string(attrs, "exporterVersion"),
@@ -2168,6 +2190,7 @@ impl Frame for DefinitionsFrame {
             processes: self.processes,
             diagrams: self.diagrams,
             unknown_children: self.unknown_children,
+            primary_process_id,
         })))
     }
 }

@@ -7,7 +7,7 @@
 import type { LabelFontCss } from "@bpmnkit/core"
 
 /** Approximate glyph width at the label font — the no-canvas fallback. */
-const AVG_CHAR_PX = 6.5
+export const AVG_CHAR_PX = 6.5
 
 /** Default label font size (px) and family — mirrors `.bpmnkit-label` in css.ts. */
 export const LABEL_FONT_SIZE = 11

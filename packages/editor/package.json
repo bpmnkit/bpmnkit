@@ -56,7 +56,7 @@
 	},
 	"scripts": {
 		"build": "tsc",
-		"typecheck": "tsc --noEmit",
+		"typecheck": "tsc --noEmit && tsc -p tsconfig.test.json",
 		"check": "biome check .",
 		"test": "vitest run"
 	},

@@ -28,7 +28,7 @@ const canvas = new BpmnCanvas({
   theme: "dark",   // "dark" | "light"
 });
 
-await canvas.loadXML(bpmnXml);
+canvas.load(bpmnXml);
 ```
 
 ---

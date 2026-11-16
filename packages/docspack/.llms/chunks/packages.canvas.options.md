@@ -13,11 +13,11 @@ type CanvasOptions = {
 
 | Method | Description |
 |---|---|
-| `canvas.loadXML(xml)` | Load and render a BPMN XML string |
-| `canvas.getXML()` | Return the currently loaded XML |
+| `canvas.load(xml, options?)` | Load and render a BPMN XML string |
+| `canvas.loadDefinitions(defs, options?)` | Render an already parsed `BpmnDefinitions` |
+| `canvas.fitView(padding?)` | Fit the diagram to the container |
 | `canvas.setTheme(theme)` | Switch between dark and light theme |
-| `canvas.on(event, handler)` | Subscribe to canvas events |
-| `canvas.off(event, handler)` | Unsubscribe a handler |
+| `canvas.on(event, handler)` | Subscribe to canvas events; returns the unsubscribe function |
 | `canvas.destroy()` | Clean up the canvas and remove from DOM |
 
 ---

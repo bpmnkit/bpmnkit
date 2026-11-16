@@ -25,6 +25,15 @@ export const nl: Locale = {
 	name: "Nederlands",
 	messages: {
 		".docx for Word and LibreOffice": ".docx voor Word en LibreOffice",
+		"Add lane": "Lane toevoegen",
+		"Add lane above": "Lane erboven toevoegen",
+		"Add lane below": "Lane eronder toevoegen",
+		"Add pool": "Pool toevoegen",
+		"Cannot create a pool: another process with content has no pool":
+			"Kan geen pool maken: een ander proces met inhoud heeft geen pool",
+		"Create pool": "Pool maken",
+		"Divide into three lanes": "Verdelen in drie lanes",
+		"Divide into two lanes": "Verdelen in twee lanes",
 		"Download HTML": "HTML downloaden",
 		"Download Markdown": "Markdown downloaden",
 		"Download Word": "Word downloaden",
@@ -375,6 +384,8 @@ export const nl: Locale = {
 		"Optimize diagram": "Diagram optimaliseren",
 		"Parallel (for each, all at once)": "Parallel (voor elk, allemaal tegelijk)",
 		"Parallel Gateway": "Parallelle gateway",
+		"Partner pool: no lanes or nodes in this version":
+			"Partnerpool: in deze versie zonder lanes en knooppunten",
 		Paste: "Plakken",
 		Pattern: "Patroon",
 		Play: "Afspelen",

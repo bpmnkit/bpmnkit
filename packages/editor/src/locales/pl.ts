@@ -25,6 +25,15 @@ export const pl: Locale = {
 	name: "Polski",
 	messages: {
 		".docx for Word and LibreOffice": ".docx dla Worda i LibreOffice",
+		"Add lane": "Dodaj tor",
+		"Add lane above": "Dodaj tor powyżej",
+		"Add lane below": "Dodaj tor poniżej",
+		"Add pool": "Dodaj pulę",
+		"Cannot create a pool: another process with content has no pool":
+			"Nie można utworzyć puli: inny proces z zawartością nie ma puli",
+		"Create pool": "Utwórz pulę",
+		"Divide into three lanes": "Podziel na trzy tory",
+		"Divide into two lanes": "Podziel na dwa tory",
 		"Download HTML": "Pobierz HTML",
 		"Download Markdown": "Pobierz Markdown",
 		"Download Word": "Pobierz Word",
@@ -368,6 +377,8 @@ export const pl: Locale = {
 		"Optimize diagram": "Optymalizuj diagram",
 		"Parallel (for each, all at once)": "Równolegle (dla każdego, wszystkie naraz)",
 		"Parallel Gateway": "Bramka równoległa",
+		"Partner pool: no lanes or nodes in this version":
+			"Pula partnera: w tej wersji bez torów i węzłów",
 		Paste: "Wklej",
 		Pattern: "Wzorzec",
 		Play: "Odtwarzaj",

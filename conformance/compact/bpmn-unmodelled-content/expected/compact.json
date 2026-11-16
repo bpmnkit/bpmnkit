@@ -1,5 +1,12 @@
 {
   "id": "Definitions_unmodelled",
+  "participants": [
+    {
+      "id": "Participant_main",
+      "name": "Main",
+      "processId": "Process_unmodelled"
+    }
+  ],
   "processes": [
     {
       "elements": [

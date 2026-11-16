@@ -92,7 +92,6 @@ describe("CommandStack", () => {
 	})
 
 	it("enforces maxSize by discarding oldest", () => {
-		// @ts-expect-error — accessing private for test
 		const cs = new CommandStack()
 		// Push 101 items (maxSize = 100)
 		for (let i = 0; i < 101; i++) {

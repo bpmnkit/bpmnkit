@@ -1,3 +1,8 @@
 {
-	"input": "bpmn/miwg-a-4-1/input.bpmn"
+	"input": "bpmn/miwg-a-4-1/input.bpmn",
+	"deployable": false,
+	"deployableReason": "Source bpmn/miwg-a-4-1/input.bpmn marks every process isExecutable=\"false\", which compactify keeps as executable: false, and Zeebe deploys nothing without an executable process; the case pins how it is round-tripped, not a deployable model; expanded with validate:false to keep pinning the expansion.",
+	"expand": {
+		"validate": false
+	}
 }

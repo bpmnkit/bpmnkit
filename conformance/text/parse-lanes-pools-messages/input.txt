@@ -1,0 +1,10 @@
+# Order
+start[start Order received] > review[user Review order] > ok[xor Approved?]
+ok >(Yes: approved) pay[send Request payment] > wait[receive Payment received | msg=paid key=orderId] > done[end Shipped]
+ok >(No: default) reject[end Rejected]
+lane sales[Sales team]: start, review, ok, reject
+lane ops: pay, wait
+pool bank[Bank]
+msg pay >(Payment request: invoice) bank
+msg bank > wait
+msg bank > reject

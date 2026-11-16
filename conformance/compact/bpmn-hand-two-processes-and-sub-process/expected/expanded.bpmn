@@ -26,7 +26,7 @@
     <bpmn:sequenceFlow id="f1" sourceRef="s" targetRef="sp"/>
     <bpmn:sequenceFlow id="f2" sourceRef="sp" targetRef="e"/>
   </bpmn:process>
-  <bpmn:process id="p2" name="Two" isExecutable="true">
+  <bpmn:process id="p2" name="Two" isExecutable="false">
     <bpmn:startEvent id="s2">
       <bpmn:outgoing>g1</bpmn:outgoing>
     </bpmn:startEvent>
