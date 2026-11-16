@@ -2254,7 +2254,7 @@
 		{
 			"id": "guides.ai-setup-for-agents.signals",
 			"file": "chunks/guides.ai-setup-for-agents.signals.md",
-			"tokens": 196,
+			"tokens": 207,
 			"tags": [
 				"guides",
 				"ai-setup-for-agents",
@@ -2265,7 +2265,7 @@
 		{
 			"id": "guides.ai-setup-for-agents.do-don-t",
 			"file": "chunks/guides.ai-setup-for-agents.do-don-t.md",
-			"tokens": 233,
+			"tokens": 248,
 			"tags": [
 				"guides",
 				"ai-setup-for-agents",
@@ -2277,7 +2277,7 @@
 		{
 			"id": "guides.ai-setup-for-humans",
 			"file": "chunks/guides.ai-setup-for-humans.md",
-			"tokens": 398,
+			"tokens": 409,
 			"tags": [
 				"guides",
 				"ai-setup-for-humans",
@@ -2314,7 +2314,7 @@
 		{
 			"id": "guides.ai",
 			"file": "chunks/guides.ai.md",
-			"tokens": 478,
+			"tokens": 510,
 			"tags": [
 				"guides",
 				"ai",

@@ -12,9 +12,10 @@ Writing for the agent itself? See [AI setup — for agents](/docs/guides/ai-setu
 npm install -g @bpmnkit/cli          # or: npm i -D @bpmnkit/cli, then npx casen …
 
 # 2. Claude Code plugin (skills such as /bpmnkit:bpmn-script, /bpmnkit:deploy)
-#    run inside Claude Code:
-/plugin marketplace add github:bpmnkit/bpmnkit
-/plugin install bpmnkit
+git clone --depth 1 https://github.com/bpmnkit/bpmnkit
+#    then, inside Claude Code:
+/plugin marketplace add ./bpmnkit/plugins-claude/bpmnkit-claude
+/plugin install bpmnkit@bpmnkit
 
 # 3. No plugin? Install the lightweight slash commands into .claude/commands/ instead
 casen skills install

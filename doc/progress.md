@@ -2,7 +2,7 @@
 
 ## 2026-11-16 — Docs: AI setup for humans and for agents
 
-- New guides `ai-setup-for-humans` (install, Claude Code plugin / `casen skills install`, AGENTS.md line, docspack, Camunda credentials, then use cases: agent-in-a-flow build + deploy, `--edit`, forms, `--camunda`) and `ai-setup-for-agents` (exact commands, success/failure signals, do/don't, example spec). Both appear in the sidebar and `llms.txt` automatically; pointer added to the landing page's AI card. Commands and flags checked against `apps/cli/src/commands/build.ts`; the example spec compiles with `compileTextSpec`.
+- New guides `ai-setup-for-humans` (install, Claude Code plugin / `casen skills install`, AGENTS.md line, docspack, Camunda credentials, then use cases: agent-in-a-flow build + deploy, `--edit`, forms, `--camunda`) and `ai-setup-for-agents` (exact commands, success/failure signals, do/don't, example spec). Both appear in the sidebar and `llms.txt` automatically; pointer added to the landing page's AI card. Commands and flags checked against `apps/cli/src/commands/build.ts`; the example spec is pinned by a `casen build` test (`build.test.ts`). Review fixes: plugin install goes through the in-repo marketplace (`plugins-claude/bpmnkit-claude`, no root `marketplace.json`), agent-card link is `/docs/agent-cards/bpmn`, the landing pointer moved from nested links in the AI card (invalid `<a>` in `<a>`) to card text plus a line atop `guides/ai`, exact success/failure output.
 
 ## 2026-11-16 — FEEL: `formatFeel` keeps needed parentheses; Rust `format()` (#291)
 

@@ -17,7 +17,7 @@ Within budget? >(Yes: within = true) [end Paid]
 Within budget? >(No: default) [user Review expense | fields=amount:number,reason] > Paid
 ```
 
-`casen build expense.txt --deploy` → `✓ expense.bpmn + 1 form (…) · lint clean · … · deployed 2 to camunda8 (key …)`
+`casen build expense.txt --deploy` → `✓ expense.bpmn + 1 form (expense-reviewExpense.form) · lint clean · process expense, tasks 2, gateways 2, forms 1 · Camunda 8.10.0 · deployed 2 to camunda8 (key …)`
 
 ---
 Source: https://bpmnkit.com/docs/guides/ai-setup-for-agents
