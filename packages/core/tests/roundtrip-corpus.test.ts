@@ -49,6 +49,7 @@ const ALLOWED: Record<string, AllowedChange[]> = {
 	"04-artifacts.bpmn": [],
 	"05-zeebe-extensions.bpmn": [],
 	"07-unmodelled-content.bpmn": [],
+	"08-flowable-lanes-pools.bpmn": [],
 	"06-events-and-containers.bpmn": [
 		{
 			feature: "attr:bpmn:multiInstanceLoopCharacteristics@isSequential",

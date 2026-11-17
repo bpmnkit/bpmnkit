@@ -1,5 +1,12 @@
 {
   "id": "_5SVkEIXnEeSmwfgVk-ryvQ",
+  "participants": [
+    {
+      "id": "Participant_00",
+      "name": "Customer Onboarding",
+      "processId": "customer_onboarding_en"
+    }
+  ],
   "processes": [
     {
       "elements": [

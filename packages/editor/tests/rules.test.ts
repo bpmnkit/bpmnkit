@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest"
-import { canAttach, canConnect, canContain, canMorph, canResize } from "../src/rules.js"
+import {
+	canAttach,
+	canConnect,
+	canContain,
+	canMessageFlow,
+	canMorph,
+	canResize,
+} from "../src/rules.js"
 
 describe("canConnect", () => {
 	it("allows a normal task → task flow", () => {
@@ -77,5 +84,35 @@ describe("canMorph", () => {
 		expect(canMorph("task", "exclusiveGateway")).toBe(false)
 		expect(canMorph("startEvent", "endEvent")).toBe(false)
 		expect(canMorph("task", "task")).toBe(false)
+	})
+})
+
+describe("canMessageFlow", () => {
+	const pool = { type: "participant" }
+
+	it("allows activities, pools and events that can send or receive a message", () => {
+		expect(canMessageFlow({ type: "serviceTask" }, pool)).toBe(true)
+		expect(canMessageFlow(pool, { type: "userTask" })).toBe(true)
+		expect(canMessageFlow(pool, pool)).toBe(true)
+		expect(canMessageFlow({ type: "endEvent", trigger: "message" }, pool)).toBe(true)
+		expect(canMessageFlow(pool, { type: "startEvent" })).toBe(true)
+		expect(canMessageFlow(pool, { type: "boundaryEvent", trigger: "message" })).toBe(true)
+	})
+
+	it("refuses gateways, data, lanes and annotations at either end", () => {
+		expect(canMessageFlow({ type: "exclusiveGateway" }, pool)).toBe(false)
+		expect(canMessageFlow(pool, { type: "parallelGateway" })).toBe(false)
+		expect(canMessageFlow({ type: "dataObjectReference" }, pool)).toBe(false)
+		expect(canMessageFlow({ type: "task" }, { type: "lane" })).toBe(false)
+		expect(canMessageFlow({ type: "lane" }, pool)).toBe(false)
+		expect(canMessageFlow(pool, { type: "textAnnotation" })).toBe(false)
+	})
+
+	it("refuses events that point the wrong way or wait for something else", () => {
+		expect(canMessageFlow({ type: "startEvent" }, pool)).toBe(false)
+		expect(canMessageFlow({ type: "intermediateCatchEvent", trigger: "message" }, pool)).toBe(false)
+		expect(canMessageFlow(pool, { type: "endEvent" })).toBe(false)
+		expect(canMessageFlow(pool, { type: "intermediateThrowEvent" })).toBe(false)
+		expect(canMessageFlow(pool, { type: "startEvent", trigger: "timer" })).toBe(false)
 	})
 })

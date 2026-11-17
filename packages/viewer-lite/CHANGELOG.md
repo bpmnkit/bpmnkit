@@ -1,5 +1,11 @@
 # @bpmnkit/viewer-lite
 
+## 0.1.1
+
+### Patch Changes
+
+- 5aebaaa: Published from CI through npm trusted publishing, with provenance. 0.1.0 was published by hand, so its npm trusted publisher was never validated.
+
 ## 0.1.0
 
 ### Minor Changes

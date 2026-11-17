@@ -12,3 +12,6 @@ subject_to_approval >(No) xor_3[xor] > document_risk_assessment[user Document ri
 subject_to_approval >(Yes) check_risk_and_decide[user Check risk and decide about approval] > approval[xor Approval?]
 approval >(Yes) xor_3
 approval >(No) reject_customer_request[task Reject customer request] > no_business_relation_created[end:signal No business relation created]
+lane private_customer_account_manager[Private Customer Account Manager]: customer_interested_in_bank, interview_customer, prove_provide_identity, legal_entity_or_individual, obtain_supporting_data_and, check_customer_documents, data_complete, copy_sign_and_scan, file_documents_in_customer, and, add_personal_data, and_2, perform_risk_assessment_of, subject_to_approval, document_risk_assessment, check_for_connected_clients, create_customer_in_the, identity_determined_and_new, complete_data_and_documents, perform_know_your_customer, xor, xor_2, xor_3
+lane corporate_account_manager[Corporate Account Manager]: document_the_identity_of, identity_of_the_economic, end_business_relation, business_relation_ended
+lane head_of_market_service[Head of Market Service]: check_risk_and_decide, approval, reject_customer_request, no_business_relation_created

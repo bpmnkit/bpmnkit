@@ -25,6 +25,15 @@ export const ja: Locale = {
 	name: "日本語",
 	messages: {
 		".docx for Word and LibreOffice": "Word と LibreOffice 用の .docx",
+		"Add lane": "レーンを追加",
+		"Add lane above": "上にレーンを追加",
+		"Add lane below": "下にレーンを追加",
+		"Add pool": "プールを追加",
+		"Cannot create a pool: another process with content has no pool":
+			"プールを作成できません: 内容のある別のプロセスにプールがありません",
+		"Create pool": "プールを作成",
+		"Divide into three lanes": "3つのレーンに分割",
+		"Divide into two lanes": "2つのレーンに分割",
 		"Download HTML": "HTML をダウンロード",
 		"Download Markdown": "Markdown をダウンロード",
 		"Download Word": "Word をダウンロード",
@@ -365,6 +374,8 @@ export const ja: Locale = {
 		"Optimize diagram": "図を最適化",
 		"Parallel (for each, all at once)": "並列 (各項目を同時に)",
 		"Parallel Gateway": "並列ゲートウェイ",
+		"Partner pool: no lanes or nodes in this version":
+			"パートナープール: このバージョンではレーンもノードも持てません",
 		Paste: "貼り付け",
 		Pattern: "パターン",
 		Play: "プレイ",

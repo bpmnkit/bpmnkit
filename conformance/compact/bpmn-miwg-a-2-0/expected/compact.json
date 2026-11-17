@@ -44,6 +44,7 @@
           "type": "exclusiveGateway"
         }
       ],
+      "executable": false,
       "flows": [
         {
           "from": "_6b5db6a9-037a-49ad-9201-09201e2aaa97",

@@ -14,28 +14,12 @@ const editor = new BpmnEditor({
 const hud = initEditorHud(editor);
 
 // Load a diagram
-await editor.loadXML(bpmnXml);
+editor.load(bpmnXml);
 ```
 
-
-## With Side Dock
-
-The side dock provides a collapsible properties + AI panel:
-
-```typescript
-import { BpmnEditor, initEditorHud, createSideDock } from "@bpmnkit/editor";
-
-const editor = new BpmnEditor({
-  container: document.getElementById("editor"),
-});
-
-const dock = createSideDock();
-document.body.appendChild(dock.el);
-
-const hud = initEditorHud(editor, {
-  aiButton: dock.aiPane.button,
-});
-```
+A file with flow nodes but no diagram interchange is laid out on load, which fires one
+`diagram:change` with the laid-out document; `diagram:load` lists what the file as given does
+not draw. A file that draws some of its nodes keeps its layout.
 
 ---
 Source: https://bpmnkit.com/docs/packages/editor

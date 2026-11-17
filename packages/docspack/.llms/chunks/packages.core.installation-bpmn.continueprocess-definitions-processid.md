@@ -37,9 +37,17 @@ document already had.
 **Diagram interchange is not regenerated.** Existing shapes keep their positions, and elements
 you add have none until `.withAutoLayout()` or a later `applyAutoLayout()` gives them one.
 
+**Lanes follow the flow.** A node you add joins the lane of its first predecessor that has one
+(a boundary event joins its host's lane), so a laned document stays laned. `.lane(existingId,
+{ flowNodes, name? })` moves nodes into one of the document's existing leaf lanes and renames it;
+declaring a new lane or changing a `parent` is refused. Existing lane refs are never rewritten,
+and `.participant(existingPoolId, { name })` renames the process's pool. `flowable:*`
+attributes and extension elements are kept as they are.
+
 `isExecutable` and the process name are left as they were unless you call `.executable()` or
-`.name()`. BPMN reads an absent `isExecutable` as false, so writing the builder's default onto
-a process that never carried it would make a non-executable process executable.
+`.name()`. Engines disagree on an absent `isExecutable` (Camunda: not executable, Flowable:
+executable), so writing the builder's default onto a process that never carried it would be a
+change nobody asked for.
 
 ---
 Source: https://bpmnkit.com/docs/packages/core

@@ -17,6 +17,7 @@ question nobody can answer later.
 | `04-artifacts.bpmn` | Written for this repository | MIT, with the repository | 2026-09-07 |
 | `05-zeebe-extensions.bpmn` | Written for this repository | MIT, with the repository | 2026-09-07 |
 | `06-events-and-containers.bpmn` | Written for this repository | MIT, with the repository | 2026-09-07 |
+| `08-flowable-lanes-pools.bpmn` | Written for this repository, in the shape the Flowable Modeler exports | MIT, with the repository | 2026-10-27 |
 
 | `miwg-*.bpmn` (22 files) | The `Reference/` models of the [OMG BPMN Model Interchange Working Group test suite](https://github.com/bpmn-miwg/bpmn-miwg-test-suite), commit `2ff82d4` (2026-09-21), copied unmodified with a `miwg-` prefix | [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/) — © the BPMN MIWG contributors; see the suite's `LICENSE.txt`. Test data only: not part of any published package | 2026-09-24 |
 
@@ -35,6 +36,7 @@ Each file isolates a group of constructs, so a failure names its own cause:
 | `04-artifacts.bpmn` | text annotations, associations, groups, `category` / `categoryValue`, task documentation |
 | `05-zeebe-extensions.bpmn` | the Zeebe task surface — task definition, IO mapping, headers, properties, form, called decision, called element, script, user task, assignment, schedule, priority |
 | `06-events-and-containers.bpmn` | every event definition kind, interrupting and non-interrupting boundaries, event sub-process, multi-instance loop with cardinality and completion condition, an exclusive gateway with a default flow, and diagram interchange |
+| `08-flowable-lanes-pools.bpmn` | a Flowable Modeler export: no `definitions` id, `flowable:*` attributes and extensions, nested lanes (`childLaneSet`), a non-executable partner pool, a message flow, `omgdc`/`omgdi` DI |
 
 ### The MIWG reference models
 

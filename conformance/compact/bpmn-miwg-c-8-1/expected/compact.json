@@ -1,5 +1,12 @@
 {
   "id": "_d4aecb6e-8641-4d7a-af45-dcfae1d639ea",
+  "participants": [
+    {
+      "id": "Participant_04dpvds",
+      "name": "Vacation Request",
+      "processId": "VacationRequestProcess"
+    }
+  ],
   "processes": [
     {
       "documentation": "Vacation Request - BPMN MIWG demo for 2022",

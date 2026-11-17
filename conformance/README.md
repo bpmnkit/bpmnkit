@@ -87,10 +87,12 @@ Provenance of the cases added from existing fixtures and samples (paths from the
 | `layout-quote-to-cash` | `apps/landing/src/data/layout-samples/quote-to-cash.bpmn` |
 | `sample-order-process` | `bpmn-samples/order-process.bpmn` |
 | `sample-parallel-approval` | `bpmn-samples/parallel-approval.bpmn` |
+| `flowable-lanes-pools` | `packages/core/tests/fixtures/roundtrip/08-flowable-lanes-pools.bpmn` |
 
 Hand-written cases: `is-executable-false`, `is-executable-absent` (a process's `isExecutable` is
 absent, `"true"` or `"false"`) and `compensation-subprocess` (`isForCompensation` on every
-sub-process kind).
+sub-process kind), `is-executable-xsd-boolean` (`1`, ` 0 ` and a non-boolean value) and
+`lane-set-nested-legacy` (nested lanes as `@bpmnkit/core` up to 1.9.0 wrote them, in `<laneSet>`).
 
 ## Form: `form/<case>/`
 

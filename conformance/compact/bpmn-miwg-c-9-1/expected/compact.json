@@ -1,5 +1,12 @@
 {
   "id": "Definitions_1",
+  "participants": [
+    {
+      "id": "Participant_02",
+      "name": "Document Request",
+      "processId": "requestDocument_en"
+    }
+  ],
   "processes": [
     {
       "elements": [

@@ -1,5 +1,31 @@
 {
   "id": "_1373655174418",
+  "messageFlows": [
+    {
+      "id": "_5d195b1c-ffea-4b53-b98f-78d9616a5038",
+      "name": "Message Flow 1",
+      "source": "_219b9ca1-d4c5-497d-a4f7-06a44a6da20e",
+      "target": "_a38484e2-7bdb-48b1-b62e-139d51d6a147"
+    },
+    {
+      "id": "_9428f666-fc8a-41be-8a77-9b280e14e7ae",
+      "name": "Message\nFlow 2",
+      "source": "_2ee553a1-cb03-41e3-b285-345c826fc88d",
+      "target": "_ec919941-53ec-403d-97e1-6a163a063f21"
+    }
+  ],
+  "participants": [
+    {
+      "id": "_cde15ee4-b395-43a3-9f5e-9028446f8a52",
+      "name": "Participant",
+      "processId": "WFP-6-1"
+    },
+    {
+      "id": "_0623a9bd-fd34-462a-b09d-85cb5004be78",
+      "name": "Pool",
+      "processId": "WFP-6-2"
+    }
+  ],
   "processes": [
     {
       "elements": [
@@ -19,6 +45,7 @@
           "type": "endEvent"
         }
       ],
+      "executable": false,
       "flows": [
         {
           "from": "_200f43e7-1385-46e2-a380-3ef16ebe7847",
@@ -62,6 +89,7 @@
           "type": "serviceTask"
         }
       ],
+      "executable": false,
       "flows": [
         {
           "from": "_e314751e-5c3a-41f2-a1ae-4cb99efa0916",
@@ -215,6 +243,7 @@
           "type": "dataStoreReference"
         }
       ],
+      "executable": false,
       "flows": [
         {
           "from": "_a38484e2-7bdb-48b1-b62e-139d51d6a147",
@@ -297,7 +326,36 @@
           "to": "_2ee553a1-cb03-41e3-b285-345c826fc88d"
         }
       ],
-      "id": "WFP-6-2"
+      "id": "WFP-6-2",
+      "lanes": [
+        {
+          "id": "_4a6df7ac-26d8-4718-ac05-90af463d5e23",
+          "members": [
+            "_2ee553a1-cb03-41e3-b285-345c826fc88d",
+            "_fa3a8e53-5be0-4f0b-8680-d2498e255209",
+            "_ba16239e-181e-4b9f-bc5b-0bb2ee973450",
+            "_93021cd0-6f49-485d-966f-209744c748de",
+            "_3c8c32c3-089a-4643-bf42-6c37c0dac7e0",
+            "_a38484e2-7bdb-48b1-b62e-139d51d6a147",
+            "_be29f267-9d56-46ef-8bbc-e13513b25fce",
+            "_1237e756-d53c-4591-a731-dafffbf0b3f9"
+          ],
+          "name": "Lane 1"
+        },
+        {
+          "id": "_3400f56a-4565-47d1-91db-0ba17b958cb2",
+          "members": [
+            "_1eb62392-1f21-4a63-bbcb-c78880c3165e",
+            "_7706e700-2aed-4b94-8070-961f118aab8f",
+            "_ad81e6ba-40f5-43c1-9602-47d2e58804c8",
+            "_33f30031-2e29-46b6-b080-30a192a36b45",
+            "_7e6ccf38-e740-4537-a439-a8e984d066de",
+            "_fea1c5af-6c76-403f-809e-26d476d92741",
+            "_ae916437-d9aa-4e3d-a7c3-34998c410beb"
+          ],
+          "name": "Lane 2"
+        }
+      ]
     },
     {
       "elements": [
@@ -317,6 +375,7 @@
           "type": "endEvent"
         }
       ],
+      "executable": false,
       "flows": [
         {
           "from": "_18770c5c-c117-4570-aaf2-8c7a6910c34d",

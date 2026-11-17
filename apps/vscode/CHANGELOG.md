@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.5.19
+
+### Patch Changes
+
+- Updated dependencies [3582cc4]
+- Updated dependencies [3582cc4]
+- Updated dependencies [3582cc4]
+- Updated dependencies [3582cc4]
+- Updated dependencies [3582cc4]
+  - @bpmnkit/editor@1.7.0
+  - @bpmnkit/core@1.16.0
+  - @bpmnkit/canvas@1.1.0
+
 ## 0.5.18
 
 ### Patch Changes

@@ -99,6 +99,7 @@
 	"Copy": "Copy",
 	"Correlates the incoming message to a specific process instance.": "Correlates the incoming message to a specific process instance.",
 	"Correlation key": "Correlation key",
+	"Create pool": "Create pool",
 	"Ctrl+A": "Ctrl+A",
 	"Ctrl+C": "Ctrl+C",
 	"Ctrl+D": "Ctrl+D",

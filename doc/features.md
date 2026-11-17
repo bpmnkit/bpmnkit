@@ -42,6 +42,10 @@ The `bpmnkit-*` crates are versioned in lockstep through `@crates/<crate>` chang
 
 `exportSvg(defs, { scale, maxSize, colors: "di", plane, autoLayout, font, elementIds, background, theme })` plus `exportSvgDetailed` (size, viewBox, drawn elements, warnings). Data objects/stores, groups and multi-instance/compensation/call-activity markers are drawn. `exportDrdSvg(dmnDefs)` draws a requirements diagram (laid out when DI is missing) and `exportDecisionTableSvg(table, { name })` a decision table. Recorded as `conformance/render/` fixtures for the Rust renderer.
 
+## FEEL formatter in Rust (2026-11-16)
+
+`bpmnkit_feel::format(node)` (and `Expression::format()`) prints a FEEL AST as text, with the same output as `formatFeel` from `@bpmnkit/feel`. Both add only the parentheses the text needs, so formatting a parsed expression never changes its value.
+
 ## FEEL and DMN results for chat (2026-11-09)
 
 `Value::to_feel_string` / `to_json_string` / `from_json_str` and `Context::from_json_str` (`bpmnkit-feel`) move values to and from text and JSON. `bpmnkit_dmn::report::{result_to_text, result_to_markdown, result_to_slack_mrkdwn}` print a decision result as text, a Markdown table or Slack `mrkdwn`.
@@ -57,6 +61,12 @@ The `bpmnkit-*` crates are versioned in lockstep through `@crates/<crate>` chang
 ## Semantic BPMN diff: `diffBpmn` and `bpmnkit-diff` (2026-11-09)
 
 `diffBpmn(before, after)` (`@bpmnkit/core`) tells a reviewer what changed between two models: each element added, removed, changed (with the changed fields: `name`, `targetRef`, `conditionExpression/text`, `extensionElements/zeebe:taskDefinition/@type`, …) or only moved (position, size, waypoints, with both geometries), per-plane counts for collapsed sub-processes, and a semantic hash of each side (`beforeHash === afterHash` means identical, however the file is formatted or laid out). The Rust crate `bpmnkit-diff` is the twin (`diff_bpmn`, `project_semantics`, `semantic_hash`, `diff_to_text` for plain or Markdown chat output) and is held to the same `conformance/diff/` cases, hashes included.
+## Lanes and pools: write support (2026-11-09)
+
+- Core: `ProcessBuilder.lane()` / `.participant()` write lanes (nested included) and pools, validated at build time; `DiagramBuilder.withAutoLayout()`. The compact format carries `lanes`, `participants`, `messageFlows` and `executable` both ways, so `casen generate`, the proxy and `reconcileCompact` keep swimlanes. Process text reads and writes `lane id[Name]: a, b`, `pool id[Name]` and `msg a >(Label) pool` (taught by `PROCESS_TEXT_GUIDE`, not by the on-device guide). Auto-layout insets nested lanes and draws lanes in a pool that has no nodes yet.
+- Editor: edits the executable process and its diagram even when a partner pool comes first. Pool tool, add lane above or below, divide a pool into lanes, resize and move pools and lanes, space tool across them; membership follows the drawing; connecting two pools draws a message flow; pools, lanes and message flows are renamed in place; lanes and black-box pools can be deleted (the own pool cannot). Change scripts (Drop suggestions, AI chat) apply `lane`, `pool` and `msg` lines and keep the layout.
+- Canvas: message flows show their name, placed beside the longest segment when the file gives no position.
+- Scope: one editable process with lanes; partner pools are black boxes.
 
 ## Deploy gate on every caller: CLI, AI routes, studio, Drop, demo, docs (2026-11-08)
 
@@ -2940,7 +2950,7 @@ New package that wires storage and tabs together so client apps don't need to ma
 - **`@bpmnkit/worker-client` package** — thin Zeebe REST client for standalone workers; OAuth2 support for Camunda SaaS; `createWorkerClient()` + async `poll()` generator
 - **Worker scaffolder** — `worker_scaffold` MCP tool generates TypeScript workers (`index.ts`) using `@bpmnkit/worker-client`; `tsx` for dev (no build step), `tsc` for production; multi-stage Docker in README
 - **`casen worker start [name]`** — starts scaffolded workers from `./workers/` directory via `npm start`
-- **`.claude/mcp.json`** — project-level MCP config registers `bpmnkit-aikit` server with Claude Code automatically
+- **`.mcp.json`** — project-level MCP config registers `bpmnkit-aikit` server with Claude Code automatically
 
 ## Code Mode MCP Tools (2026-06-13)
 

@@ -49,8 +49,11 @@ const move = (v: unknown): boolean => isObject(v) && str(v.id) && num(v.dx) && n
 
 const PORTS = new Set(["top", "right", "bottom", "left"])
 
-/** Field checks per op kind. Anything not listed here is not an op. */
-const SHAPES: Record<string, (op: Json) => boolean> = {
+/**
+ * Field checks per op kind. Anything not listed here is not an op. Keyed by
+ * every kind, so an op the editor gains is a type error here until listed.
+ */
+const SHAPES: Record<EditorOp["kind"], (op: Json) => boolean> = {
 	createShape: (o) =>
 		str(o.type) && bounds(o.bounds) && optStr(o.name) && optStr(o.onEdge) && str(o.seed),
 	createBoundaryEvent: (o) =>
@@ -78,6 +81,7 @@ const SHAPES: Record<string, (op: Json) => boolean> = {
 		list(o.moves, move) &&
 		(o.onEdge === undefined ||
 			(isObject(o.onEdge) && str(o.onEdge.edgeId) && str(o.onEdge.shapeId))),
+	space: (o) => num(o.origin) && (o.axis === "h" || o.axis === "v") && num(o.delta),
 	resize: (o) => str(o.id) && bounds(o.bounds),
 	delete: (o) => list(o.ids, str),
 	rename: (o) => str(o.id) && str(o.name),
@@ -90,6 +94,12 @@ const SHAPES: Record<string, (op: Json) => boolean> = {
 	moveWaypoint: (o) => str(o.edgeId) && int(o.wpIdx) && point(o.point),
 	moveSegment: (o) =>
 		str(o.edgeId) && int(o.segIdx) && typeof o.isHoriz === "boolean" && num(o.delta),
+	addParticipant: (o) => bounds(o.bounds) && optStr(o.name) && str(o.seed),
+	addLane: (o) =>
+		str(o.refId) &&
+		(o.where === "above" || o.where === "below") &&
+		(o.count === undefined || o.count === 2 || o.count === 3) &&
+		str(o.seed),
 	autoLayout: () => true,
 	// A whole document, which `checkIntegrity` is the real gate for. Accepting
 	// one is not a privilege escalation: the holder could reach any document it
@@ -100,6 +110,8 @@ const SHAPES: Record<string, (op: Json) => boolean> = {
 /** The op this value describes, or `null` when it describes none. */
 export function parseOp(value: unknown): EditorOp | null {
 	if (!isObject(value) || typeof value.kind !== "string") return null
-	const check = SHAPES[value.kind]
-	return check?.(value) ? (value as unknown as EditorOp) : null
+	// Own keys only: `constructor` and the like are found on the prototype.
+	if (!Object.hasOwn(SHAPES, value.kind)) return null
+	const check = SHAPES[value.kind as EditorOp["kind"]]
+	return check(value) ? (value as unknown as EditorOp) : null
 }

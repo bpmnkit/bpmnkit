@@ -42,9 +42,10 @@ build instead of quietly widening the loss. See
 **Deliberate normalisations.** The output is not byte-identical to the input, and two rewrites
 are intentional:
 
-- `isExecutable`, `isSequential`, `isForCompensation` and `isCollection` are written only
-  when true. BPMN treats the absent attribute as false, so this is stable and changes
-  nothing.
+- `isSequential`, `isForCompensation` and `isCollection` are written only when true. BPMN
+  treats the absent attribute as false, so this is stable and changes nothing.
+  `isExecutable` is the exception and is written as the file says it, `false` included:
+  Flowable reads an absent `isExecutable` as executable.
 - Empty `<extensionElements/>` elements are dropped, and whitespace and attribute order are
   not preserved.
 

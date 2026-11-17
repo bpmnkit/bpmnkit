@@ -128,6 +128,9 @@ describe("semanticHash", () => {
 			"89c79344d77e365cabe3d0e257ae8074880e3cf292d3a790dc5a0389ab74177f",
 		"07-unmodelled-content.bpmn":
 			"950b8ea3610bcce9f8d25162eddc0f5ad2648a884d1a28c3cb2d51bf0af2797e",
+		// Flowable Modeler style: no definitions id, nested lanes, a partner pool.
+		"08-flowable-lanes-pools.bpmn":
+			"556f9e0189b4b4eb514ce27b91b15b3441df26fa24e63ec630ccbef20bc7c88b",
 		// The MIWG reference models, added 2026-09-24.
 		"miwg-A.1.0.bpmn": "f267ee5c74bfaefcc2d020811450628c4ae16a764582926d20396ba6c2fa0dc0",
 		"miwg-A.2.0.bpmn": "3b2672b2a6ebd7657bbacba2c6b2d0fc91c419cde13aa68cc2da200a43ed41d0",

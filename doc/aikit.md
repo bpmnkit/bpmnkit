@@ -136,7 +136,7 @@ Expand `apps/proxy/src/mcp-server.ts` into the complete programmatic interface f
 
 - [x] Wire all tools into existing MCP stdio server
 - [x] Write MCP tool integration tests (call each tool via MCP protocol)
-- [x] Verify Claude Code can discover and call tools via `.claude/mcp.json` project config
+- [x] Verify Claude Code can discover and call tools via `.mcp.json` project config
 
 ---
 

@@ -1,5 +1,5 @@
-//! Port of `bpmn/compact.ts` lines 241–455: `compactify` (`findAttr`,
-//! `compactifyElement`, `compactifyFlows`).
+//! Port of `bpmn/compact.ts`'s `compactify` (`findAttr`, `compactifyElement`,
+//! `compactifyFlows`, `compactifyLanes`, `compactifyParticipant`, `compactifyMessageFlow`).
 //!
 //! Porter notes:
 //! - `assertBpmnDefinitions` is a runtime type guard; the Rust type makes it moot.
@@ -17,8 +17,10 @@
 //! - `compactifyFlows`: `isDefault` from any element's `default` in the same scope.
 
 use bpmnkit_bpmn::js::{is_js_space, js_number};
+use bpmnkit_bpmn::swimlanes::{primary_process, DATA_ELEMENT_TYPES};
 use bpmnkit_bpmn::{
-    BpmnDefinitions, BpmnEventDefinition, BpmnFlowElement, BpmnSequenceFlow, XmlElement,
+    BpmnDefinitions, BpmnEventDefinition, BpmnFlowElement, BpmnLane, BpmnMessageFlow,
+    BpmnParticipant, BpmnProcess, BpmnSequenceFlow, XmlElement,
 };
 use indexmap::IndexSet;
 
@@ -381,31 +383,122 @@ fn compactify_flows(
         .collect()
 }
 
-/// TS's `compactify`: every process, as `{ id, name, documentation, elements, flows }`
-/// (no `notes`, no `executionPlatformVersion`).
+/// TS's `compactify`: every process, as `{ id, name, documentation, executable?, lanes?,
+/// elements, flows }` (no `notes`, no `executionPlatformVersion`), and the participants and
+/// message flows of the first collaboration.
 pub fn compactify(defs: &BpmnDefinitions) -> CompactDiagram {
+    let pooled =
+        !defs.collaborations.is_empty() || defs.processes.iter().any(|p| p.lane_set.is_some());
+    let primary = primary_process(defs);
+    let collaboration = defs.collaborations.first();
+    let participants: Vec<CompactParticipant> = collaboration
+        .map(|c| c.participants.iter().map(compactify_participant).collect())
+        .unwrap_or_default();
+    let message_flows: Vec<CompactMessageFlow> = collaboration
+        .map(|c| {
+            c.message_flows
+                .iter()
+                .map(compactify_message_flow)
+                .collect()
+        })
+        .unwrap_or_default();
     CompactDiagram {
         id: defs.id.clone(),
         execution_platform_version: None,
         processes: defs
             .processes
             .iter()
-            .map(|process| CompactProcess {
-                id: process.id.clone(),
-                name: process.name.clone(),
-                documentation: process.documentation.clone(),
-                elements: process
-                    .contents
-                    .flow_elements
-                    .iter()
-                    .map(|el| compactify_element(el, defs))
-                    .collect(),
-                flows: compactify_flows(
-                    &process.contents.flow_elements,
-                    &process.contents.sequence_flows,
-                ),
-                notes: None,
+            .map(|process| {
+                let lanes = compactify_lanes(process);
+                // Flowable reads an absent isExecutable as true. Every non-primary pool says
+                // what it is, because expand gives only the first keyless pool the default.
+                let executable = process.is_executable != Some(false);
+                let is_primary = primary.is_some_and(|p| std::ptr::eq(p, process));
+                let written = !executable || (pooled && !is_primary);
+                CompactProcess {
+                    id: process.id.clone(),
+                    name: process.name.clone(),
+                    documentation: process.documentation.clone(),
+                    executable: written.then_some(executable),
+                    lanes: (!lanes.is_empty()).then_some(lanes),
+                    elements: process
+                        .contents
+                        .flow_elements
+                        .iter()
+                        .map(|el| compactify_element(el, defs))
+                        .collect(),
+                    flows: compactify_flows(
+                        &process.contents.flow_elements,
+                        &process.contents.sequence_flows,
+                    ),
+                    notes: None,
+                }
             })
             .collect(),
+        participants: (!participants.is_empty()).then_some(participants),
+        message_flows: (!message_flows.is_empty()).then_some(message_flows),
+    }
+}
+
+/// TS's `compactifyLanes`: the lane tree of `process`, members on leaves only. A member is
+/// kept only when it is a top-level flow node, so what `expand` would refuse is not passed
+/// on; a parent's own refs, which repeat its children's under the union convention, are
+/// dropped.
+pub fn compactify_lanes(process: &BpmnProcess) -> Vec<CompactLane> {
+    let node_ids: IndexSet<&str> = process
+        .contents
+        .flow_elements
+        .iter()
+        .filter(|e| !DATA_ELEMENT_TYPES.contains(&e.type_name()))
+        .map(|e| e.base().id.as_str())
+        .collect();
+    fn to_compact(lane: &BpmnLane, node_ids: &IndexSet<&str>) -> CompactLane {
+        let mut result = CompactLane {
+            id: lane.id.clone(),
+            name: lane.name.clone().filter(|n| !n.is_empty()),
+            ..CompactLane::default()
+        };
+        let children = lane
+            .child_lane_set
+            .as_ref()
+            .map_or(&[][..], |set| set.lanes.as_slice());
+        if !children.is_empty() {
+            result.lanes = Some(children.iter().map(|c| to_compact(c, node_ids)).collect());
+            return result;
+        }
+        let members: IndexSet<&String> = lane
+            .flow_node_refs
+            .iter()
+            .filter(|r| node_ids.contains(r.as_str()))
+            .collect();
+        if !members.is_empty() {
+            result.members = Some(members.into_iter().cloned().collect());
+        }
+        result
+    }
+    process
+        .lane_set
+        .iter()
+        .flat_map(|set| &set.lanes)
+        .map(|lane| to_compact(lane, &node_ids))
+        .collect()
+}
+
+/// TS's `compactifyParticipant`: a pool; a black box has no `processId`.
+pub fn compactify_participant(participant: &BpmnParticipant) -> CompactParticipant {
+    CompactParticipant {
+        id: participant.id.clone(),
+        name: participant.name.clone().filter(|n| !n.is_empty()),
+        process_id: participant.process_ref.clone(),
+    }
+}
+
+/// TS's `compactifyMessageFlow`.
+pub fn compactify_message_flow(flow: &BpmnMessageFlow) -> CompactMessageFlow {
+    CompactMessageFlow {
+        id: flow.id.clone(),
+        source: flow.source_ref.clone(),
+        target: flow.target_ref.clone(),
+        name: flow.name.clone().filter(|n| !n.is_empty()),
     }
 }

@@ -16,6 +16,7 @@
 pub mod ast;
 mod builtins;
 mod evaluator;
+mod format;
 mod lexer;
 mod ops;
 mod parser;
@@ -26,6 +27,7 @@ use std::cell::RefCell;
 use std::fmt;
 use std::sync::Arc;
 
+pub use format::format;
 pub use parser::{ParseError, ParseOptions};
 pub use rust_decimal::Decimal;
 pub use value::{
@@ -168,6 +170,11 @@ impl Expression {
         &self.ast
     }
 
+    /// FEEL source that parses back to this expression, as `formatFeel` prints it.
+    pub fn format(&self) -> String {
+        format::format(&self.ast)
+    }
+
     pub fn evaluate(&self, context: &Context) -> Value {
         evaluator::evaluate_root(&self.ast, context, None, None)
     }
@@ -184,6 +191,11 @@ impl Expression {
 }
 
 impl UnaryTests {
+    /// FEEL source that parses back to these tests, as `formatFeel` prints them.
+    pub fn format(&self) -> String {
+        format::format(&self.ast)
+    }
+
     /// Whether `input` satisfies the tests.
     pub fn test(&self, input: &Value, context: &Context) -> bool {
         evaluator::test_unary(&self.ast, input, context, None)

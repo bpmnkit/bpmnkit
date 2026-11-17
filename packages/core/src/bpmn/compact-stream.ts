@@ -15,6 +15,13 @@
  * block in an assistant's prose, or the body of a `compose_diagram` snippet all
  * carry the same literals, and none of them have to be valid as a whole.
  *
+ * Lanes, participants and message flows are not previewed: frames show one
+ * process without pools, and the authoritative result adds them at the end.
+ * Their literals never pass for an element or a flow, since none has a `type`,
+ * and a message flow says `source`/`target` rather than `from`/`to`. Reading
+ * them here would mean placing members whose nodes have not arrived yet and
+ * switching the preview to the pooled layout mid-stream, which moves every shape.
+ *
  * **Frames are advisory.** Everything here is a guess at an unfinished
  * document, and the caller is expected to have an authoritative result coming.
  * That is what lets it drop what it cannot place instead of reporting an error,

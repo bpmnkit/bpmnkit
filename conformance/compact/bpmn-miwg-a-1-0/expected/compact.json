@@ -29,6 +29,7 @@
           "type": "endEvent"
         }
       ],
+      "executable": false,
       "flows": [
         {
           "from": "_93c466ab-b271-4376-a427-f4c353d55ce8",

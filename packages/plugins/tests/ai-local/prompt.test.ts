@@ -31,6 +31,9 @@ describe("ai-local prompt", () => {
 			"out.<",
 			"each=",
 			"camunda=",
+			"lane ",
+			"pool ",
+			"msg ",
 		]) {
 			expect(AI_LOCAL_GUIDE).not.toContain(s)
 		}

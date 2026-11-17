@@ -111,7 +111,7 @@ Not available inside callbacks (top-level only): at, insertAfter, withAutoLayout
 
 ## DiagramBuilder (pools, message flows)
 
-`Bpmn.createDiagram(id?)`: several processes in one file. `.build()` returns definitions; draw shapes with `applyAutoLayout(defs)` before `Bpmn.export`. Omit `processId` on `participant` for a black-box pool. No lane API yet.
+`Bpmn.createDiagram(id?)`: several processes in one file. Call `.withAutoLayout()` before `.build()` to draw shapes. Omit `processId` on `participant` for a black-box pool. Lanes go on each process (`inLane()`).
 
 - executionPlatformVersion(version: string)
 - process(id: string, callback: (b: ProcessBuilder) => void)
@@ -119,6 +119,7 @@ Not available inside callbacks (top-level only): at, insertAfter, withAutoLayout
 - participant(id: string, options: ParticipantOptions)
 - message(id: string, options: DiagramMessageOptions)
 - messageFlow(id: string, options: MessageFlowOptions)
+- withAutoLayout()
 - build(options?: BuildGateOptions)
 
 - ParticipantOptions: name?: string (Pool label); processId?: string (Id of the process this pool…)

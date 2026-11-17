@@ -3,8 +3,8 @@
 The richest way to drive this pipeline is the `bpmnkit` Claude Code plugin:
 
 ```sh
-/plugin marketplace add github:bpmnkit/bpmnkit
-/plugin install bpmnkit
+/plugin marketplace add bpmnkit/bpmnkit
+/plugin install bpmnkit@bpmnkit
 ```
 
 It's **CLI-first**: every skill drives `casen` via Bash — no MCP server, no proxy daemon. Each skill reads the relevant generated/hand-written reference doc (plan format, connector catalog, agentic pattern, FEEL syntax, modeling conventions) before authoring a plan.

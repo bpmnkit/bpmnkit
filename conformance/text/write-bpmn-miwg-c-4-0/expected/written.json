@@ -6,6 +6,7 @@
     "end_event": "_36baf139-fb74-43ef-8936-d490238c2825",
     "get_signature_on_contract": "_aa275782-c989-49ba-bf94-c58916ca7bb5",
     "give_employee_welcome_package": "_52401cbb-02b8-4eaf-84f1-1edbc0854a4a",
+    "hr_department": "_ff7ff8f6-a4f1-4e93-84e1-01cdb85eb755",
     "inform_employee_of_company": "_0e71ed63-93f9-44b6-a89d-da9628652926",
     "input_from_facilities_ready": "_db9147a9-7fbc-4657-a506-15e777f2cfd9",
     "input_from_it_ready": "_74e2cc7b-99ca-426b-ad53-ad70a56506aa",
@@ -21,6 +22,7 @@
     "perform_training_for_time": "_67944b4c-4950-45a2-a131-1c4679c6b433",
     "register_for_medical_insurance": "_4c95f4a0-f4ec-45ed-9fdb-7b236155d6f5",
     "request_preparations_for_a": "_986cf801-0780-49d3-91cd-2cc6d3c1aac3",
+    "responsible_department": "_937b5086-463f-4c8c-837d-f5eee5cbc1f4",
     "review_terms_of_contract": "_987b9b74-333a-4043-a72a-daadf667acc7",
     "send_candidate_contract": "_f8973a92-3d84-4672-a1a3-b0df154121e1"
   }

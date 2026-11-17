@@ -75,6 +75,9 @@ const SKIP_METHODS = new Set([
 	// Variants of startEvent for multi-start layouts; the plain call covers generation.
 	"addStartEvent",
 	"disconnectedStartEvent",
+	// Lanes and pools stay out, as in the on-device guide: the token budget goes to flow.
+	"lane",
+	"participant",
 ])
 
 /** Method families, first match wins. A method that matches none is listed under "other". */
@@ -274,12 +277,12 @@ function isPublic(member) {
 }
 
 /** Public methods of a class in declaration order: { name, signature, node }. */
-function publicMethods(sf, className) {
+function publicMethods(sf, className, skip = SKIP_METHODS) {
 	const cls = sf.statements.find((s) => ts.isClassDeclaration(s) && s.name?.text === className)
 	if (!cls) throw new Error(`class ${className} not found in ${sf.fileName}`)
 	const out = []
 	for (const m of cls.members) {
-		if (!ts.isMethodDeclaration(m) || !isPublic(m) || SKIP_METHODS.has(m.name.getText(sf))) continue
+		if (!ts.isMethodDeclaration(m) || !isPublic(m) || skip.has(m.name.getText(sf))) continue
 		const params = m.parameters.map((p) => squash(p.getText(sf)).replace(/ = .*$/, "")).join(", ")
 		const isStatic = hasModifier(m, ts.SyntaxKind.StaticKeyword)
 		out.push({ name: m.name.getText(sf), signature: `${m.name.getText(sf)}(${params})`, isStatic })
@@ -472,12 +475,17 @@ export function generateBuilderReference() {
 		"",
 	)
 	out.push(...renderOptions(interfaces, aliases, options))
-	const diagram = publicMethods(main, "DiagramBuilder")
+	// A pool is what a DiagramBuilder is for, so its participant() stays listed.
+	const diagram = publicMethods(
+		main,
+		"DiagramBuilder",
+		new Set([...SKIP_METHODS].filter((name) => name !== "participant")),
+	)
 	out.push(
 		"",
 		"## DiagramBuilder (pools, message flows)",
 		"",
-		"`Bpmn.createDiagram(id?)`: several processes in one file. `.build()` returns definitions; draw shapes with `applyAutoLayout(defs)` before `Bpmn.export`. Omit `processId` on `participant` for a black-box pool. No lane API yet.",
+		"`Bpmn.createDiagram(id?)`: several processes in one file. Call `.withAutoLayout()` before `.build()` to draw shapes. Omit `processId` on `participant` for a black-box pool. Lanes go on each process (`inLane()`).",
 		"",
 	)
 	for (const m of diagram) out.push(`- ${m.signature}`)
