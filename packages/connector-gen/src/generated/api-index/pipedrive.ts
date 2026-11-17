@@ -55,7 +55,7 @@ const service: ApiService = {"id":"pipedrive","name":"Pipedrive CRM API","baseUr
 	{"method":"GET","path":"/goals/find","summary":"Find goals","query":["title","type.name","is_active","assignee.id","assignee.type","expected_outcome.target"]},
 	{"method":"PUT","path":"/goals/{id}","summary":"Update existing goal","body":["title","assignee","type","expected_outcome","duration","interval"]},
 	{"method":"DELETE","path":"/goals/{id}","summary":"Delete existing goal"},
-	{"method":"GET","path":"/goals/{id}/results","summary":"Get result of a goal","query":["period.start*","period.end*"]},
+	{"method":"GET","path":"/goals/{id}/results","summary":"Get result of a goal","query":["period.start*","period.end*","timezone"]},
 	{"method":"GET","path":"/leads","summary":"Get all leads","query":["limit","start","owner_id","person_id","organization_id","filter_id"]},
 	{"method":"POST","path":"/leads","summary":"Add a lead","body":["title*","owner_id","label_ids","person_id","organization_id","value"]},
 	{"method":"GET","path":"/leads/archived","summary":"Get all archived leads","query":["limit","start","owner_id","person_id","organization_id","filter_id"]},

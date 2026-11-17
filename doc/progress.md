@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-17 — connector-gen: refreshed API index changeset
+
+- `.changeset/connector-api-index-refresh.md`: patch changeset for `@bpmnkit/connector-gen` so the weekly API-index refresh (PR #294) passes the changeset check and reaches npm.
+- `.cargo/audit.toml`: ignore RUSTSEC-2026-0543 / -0555 (`chrono`, `chrono-tz` unmaintained, no fixed release) so the root `cargo audit --deny warnings` step passes.
+
 ## 2026-11-16 — agent context: trim `CLAUDE.md`, move MCP config to `.mcp.json`
 
 - `CLAUDE.md`: the docspack block no longer repeats what the `docspack` / `docspack-repo` skills already say; the efficiency rules are compressed (~400 tokens less per session).
