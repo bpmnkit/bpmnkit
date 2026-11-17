@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-16 — agent context: trim `CLAUDE.md`, move MCP config to `.mcp.json`
+
+- `CLAUDE.md`: the docspack block no longer repeats what the `docspack` / `docspack-repo` skills already say; the efficiency rules are compressed (~400 tokens less per session).
+- `.claude/mcp.json` was never read by Claude Code (project servers live in `.mcp.json` at the root); moved there so `bpmnkit-aikit` is actually registered. It needs `apps/proxy` built (`dist/aikit-mcp.js`) and the proxy on `:3033`.
+
 ## 2026-11-16 — Claude plugin: one-line install via root marketplace
 
 - Added `.claude-plugin/marketplace.json` at the repo root (plugin `bpmnkit`, source `./plugins-claude/bpmnkit-claude`), so `/plugin marketplace add bpmnkit/bpmnkit` then `/plugin install bpmnkit@bpmnkit` works. All install docs, the AIKit skill and the `casen skills` hint use this form (the `github:` prefix is gone).

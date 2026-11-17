@@ -21,7 +21,7 @@ pnpm workspaces + Turborepo, TypeScript strict, Biome (lint + format), Vitest.
 - All `devDependencies` go in the root `package.json`; runtime `dependencies` go in the package that uses them. Add a package only when it can't reasonably be written in-repo.
 - Frontend state lives in Zustand stores with narrow selectors, not scattered hooks. Prefer type-level guarantees (discriminated unions, branded types) over runtime checks.
 - Comments explain why, not what.
-- Use docspack (block below) before broad searches. A `PreToolUse` hook (`scripts/docspack-nudge.mjs`) nudges toward it; follow the nudge.
+- Use docspack before broad searches; follow the `PreToolUse` nudge.
 
 ## BPMN Kit's own docs: ask before answering from memory
 
@@ -63,30 +63,11 @@ Never hand-write a published package's `README.md` or `LICENSE`; the scripts ove
 - `README.md`: on significant changes.
 
 <!-- docspack:start recipe=repo -->
-## Documentation for this project's dependencies
+## Working efficiently
 
-Run `npx docspack ask "<question>"` for documentation on this project's
-dependencies. It answers from the installed versions.
-
-## Finding things in this repository
-
-Before reading files to find where something is, ask the index:
-
-- `npx docspack recall --name repo-code "<what the code does>"` answers with the `file:line`,
-  signature and doc comment of matching declarations. Then read only that range.
-- `npx docspack recall --name repo-docs "<question>"` answers from this repository's Markdown.
-
-An answer is a pointer: read the file before you edit it. If you already know a name,
-`grep` is as good. If `recall` says nothing is indexed, run `npx docspack index --repo`.
-
-## Working efficiently in this repository
-
-Every tool call is a turn, and every turn resends the whole conversation. Use fewer, larger calls:
-
-- Read several files, or several ranges of one file, in one shell command
-  (`sed -n '40,90p' a.ts; sed -n '1,60p' b.ts`) instead of one Read per file.
-- Search once, with a pattern that covers everything you are looking for.
-- Make related edits together, and run the tests once the change is complete.
+Dependency docs and repo lookups: the `docspack` and `docspack-repo` skills. Every call resends the
+conversation, so batch: read several files/ranges in one shell command, search once with a broad
+pattern, make related edits together, test once at the end.
 
 <!-- Written by `npx docspack agent install`. Re-run it to update this block. -->
 <!-- docspack:end -->
