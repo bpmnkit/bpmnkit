@@ -1,0 +1,11 @@
+# `cargo audit` settings for the root workspace (Cargo.lock).
+# Keep this list empty unless an advisory has no fix the lockfile can reach.
+
+[advisories]
+ignore = [
+    # chrono / chrono-tz flagged unmaintained (informational, no vulnerability). No fixed
+    # release or drop-in successor exists; FEEL date/time semantics depend on them. Remove
+    # once a maintained replacement lands.
+    "RUSTSEC-2026-0543",
+    "RUSTSEC-2026-0555",
+]
