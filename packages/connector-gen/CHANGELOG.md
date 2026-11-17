@@ -1,5 +1,11 @@
 # @bpmnkit/connector-gen
 
+## 1.1.4
+
+### Patch Changes
+
+- cd19ddc: Refresh the generated API index from the latest OpenAPI specs in the connector-gen catalog.
+
 ## 1.1.3
 
 ### Patch Changes

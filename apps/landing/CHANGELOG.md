@@ -1,5 +1,12 @@
 # @bpmnkit/landing
 
+## 0.0.66
+
+### Patch Changes
+
+- Updated dependencies [cd19ddc]
+  - @bpmnkit/connector-gen@1.1.4
+
 ## 0.0.65
 
 ### Patch Changes
