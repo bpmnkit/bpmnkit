@@ -791,29 +791,30 @@ fn compact_lane(graph: &SemanticGraph, ids: &[&str], bounds: &mut IndexMap<&str,
             .filter(|id| row_of.get(id).copied() == Some(row))
             .collect()
     };
-    let fits = |bounds: &IndexMap<&str, Bounds>, row_of: &IndexMap<&str, f64>, id: &str, row: f64| {
-        let b = &bounds[id];
-        let on = members(row_of, row);
-        for m in &on {
-            let o = &bounds[m];
-            if b.x - H_GAP < o.x + o.width && o.x - H_GAP < b.x + b.width {
-                return false;
+    let fits =
+        |bounds: &IndexMap<&str, Bounds>, row_of: &IndexMap<&str, f64>, id: &str, row: f64| {
+            let b = &bounds[id];
+            let on = members(row_of, row);
+            for m in &on {
+                let o = &bounds[m];
+                if b.x - H_GAP < o.x + o.width && o.x - H_GAP < b.x + b.width {
+                    return false;
+                }
             }
-        }
-        for f in graph.outgoing.values().flatten() {
-            if !on.contains(&f.source_ref.as_str()) || !on.contains(&f.target_ref.as_str()) {
-                continue;
+            for f in graph.outgoing.values().flatten() {
+                if !on.contains(&f.source_ref.as_str()) || !on.contains(&f.target_ref.as_str()) {
+                    continue;
+                }
+                let from = &bounds[f.source_ref.as_str()];
+                let to = &bounds[f.target_ref.as_str()];
+                let left = from.x.min(to.x);
+                let right = (from.x + from.width).max(to.x + to.width);
+                if b.x < right && b.x + b.width > left {
+                    return false;
+                }
             }
-            let from = &bounds[f.source_ref.as_str()];
-            let to = &bounds[f.target_ref.as_str()];
-            let left = from.x.min(to.x);
-            let right = (from.x + from.width).max(to.x + to.width);
-            if b.x < right && b.x + b.width > left {
-                return false;
-            }
-        }
-        true
-    };
+            true
+        };
     for &row in &rows[1..] {
         for id in members(&row_of, row) {
             let near = neighbours(id);
@@ -983,8 +984,10 @@ fn apply_lanes(
             for l in &leaves {
                 by_id.insert(l.id, *l);
             }
-            let sorted: Vec<Option<&LaneNode>> =
-                order.iter().map(|id| by_id.get(id.as_str()).copied()).collect();
+            let sorted: Vec<Option<&LaneNode>> = order
+                .iter()
+                .map(|id| by_id.get(id.as_str()).copied())
+                .collect();
             if sorted.iter().all(Option::is_some) {
                 leaves = sorted.into_iter().flatten().collect();
             }
@@ -1062,7 +1065,11 @@ fn apply_lanes(
 
     for leaf in &leaves {
         if opts.compact {
-            compact_lane(graph, members.get(leaf.id).map_or(&[][..], |v| v.as_slice()), bounds);
+            compact_lane(
+                graph,
+                members.get(leaf.id).map_or(&[][..], |v| v.as_slice()),
+                bounds,
+            );
         }
         // Duplicated ids stay in the list: the TS shifts the shared bounds once per entry.
         let own: Vec<&str> = members

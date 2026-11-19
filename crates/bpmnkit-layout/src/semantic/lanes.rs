@@ -272,7 +272,10 @@ fn happy_axis_dev(result: &LayoutResult) -> f64 {
             seen.insert(next.target_ref.as_str());
             cur = next.target_ref.as_str();
         }
-        let ys: Vec<f64> = seen.iter().filter_map(|id| centre_y.get(id).copied()).collect();
+        let ys: Vec<f64> = seen
+            .iter()
+            .filter_map(|id| centre_y.get(id).copied())
+            .collect();
         let len = js::max(1.0, ys.len() as f64);
         let mean = ys.iter().fold(0.0, |a, b| a + b) / len;
         devs.push((ys.iter().fold(0.0, |a, y| a + (y - mean) * (y - mean)) / len).sqrt());

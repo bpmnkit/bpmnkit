@@ -2,6 +2,7 @@
 
 pub mod bands;
 pub mod graph;
+pub mod lanes;
 pub mod place;
 pub mod route;
 
@@ -15,8 +16,8 @@ use crate::types::{
 };
 use bands::{assign_bands, boundary_side};
 use bpmnkit_bpmn::model::{BpmnFlowElement, BpmnLaneSet, BpmnProcess, BpmnSequenceFlow};
-use graph::{build_semantic_graph, place_exception_row};
-use place::{external_label_width, place, size_of};
+use graph::{assign_ranks, build_semantic_graph, place_exception_row};
+use place::{external_label_width, place, size_of, LaneOptions};
 use route::route_flows;
 
 /// Padding between an expanded sub-process border and its children.
@@ -145,44 +146,124 @@ pub fn semantic_layout(
             collapsed,
         );
     }
-    let mut band_layout = assign_bands(&graph, &titled);
-    // Lanes decide a handler's row themselves, so the exception row is for lane-free scopes.
-    if lane_set.is_none()
-        && place_exception_row(&mut graph, &band_layout.bands, &|event, host| {
-            boundary_side(event, titled.contains(host))
-        })
-    {
-        band_layout = assign_bands(&graph, &titled);
+    let lane_info = lane_set.map(|ls| lanes::lane_plan(&graph, ls));
+    let graph = std::cell::RefCell::new(graph);
+    let run = |handoffs: IndexSet<&str>,
+               lane_opts: &LaneOptions,
+               children: IndexMap<&str, LayoutResult>,
+               planes: Vec<Plane>|
+     -> LayoutResult {
+        let mut graph = graph.borrow_mut();
+        graph.handoffs = handoffs;
+        assign_ranks(&mut graph, &IndexMap::default());
+        let mut band_layout = assign_bands(&graph, &titled);
+        // Lanes decide a handler's row themselves, so the exception row is for lane-free scopes.
+        if lane_set.is_none()
+            && place_exception_row(&mut graph, &band_layout.bands, &|event, host| {
+                boundary_side(event, titled.contains(host))
+            })
+        {
+            band_layout = assign_bands(&graph, &titled);
+        }
+        let placement = place(
+            &graph,
+            &band_layout,
+            &sizes,
+            lane_set,
+            in_container,
+            &titled,
+            grid,
+            &axes,
+            slot_artifacts,
+            lane_opts,
+        );
+        let edges = route_flows(
+            &graph,
+            sequence_flows,
+            &placement.bounds,
+            &band_layout,
+            &placement.gutter_x,
+        );
+        finish(
+            &graph,
+            flow_elements,
+            &placement.bounds,
+            edges,
+            &|id| band_layout.bands.get(id).copied().unwrap_or(0),
+            placement.lanes,
+            children,
+            planes,
+            collapsed,
+        )
+    };
+    // Nested lane sets keep the placement they always had.
+    let Some(info) = lane_info.filter(|info| info.flat) else {
+        return run(
+            IndexSet::default(),
+            &LaneOptions::default(),
+            child_results,
+            planes,
+        );
+    };
+    // finish() moves the children, and a laned scope is laid out twice or more.
+    let again = || (child_results.clone(), planes.clone());
+    // The layout as it always was comes first and wins ties: a refinement is kept
+    // only when it is strictly cheaper (see `lane_cost`).
+    let mut orders: Vec<Option<&Vec<&str>>> = vec![None];
+    if let Some(order) = &info.order {
+        orders.push(Some(order));
     }
-    let placement = place(
-        &graph,
-        &band_layout,
-        &sizes,
-        lane_set,
-        in_container,
-        &titled,
-        grid,
-        &axes,
-        slot_artifacts,
-    );
-    let edges = route_flows(
-        &graph,
-        sequence_flows,
-        &placement.bounds,
-        &band_layout,
-        &placement.gutter_x,
-    );
-    finish(
-        &graph,
-        flow_elements,
-        &placement.bounds,
-        edges,
-        &|id| band_layout.bands.get(id).copied().unwrap_or(0),
-        placement.lanes,
-        child_results,
-        planes,
-        collapsed,
-    )
+    let legacy = {
+        let (c, p) = again();
+        run(IndexSet::default(), &LaneOptions::default(), c, p)
+    };
+    let legacy_cost = lanes::lane_cost(&legacy);
+    let mut best = legacy;
+    let mut best_cost = legacy_cost;
+    for order in orders {
+        let lane_ids: &[&str] = order.unwrap_or(&info.declared);
+        let opts = |compact: bool, by_lane: bool| LaneOptions {
+            order: order.map(|o| o.iter().map(|id| id.to_string()).collect()),
+            compact,
+            by_lane,
+        };
+        let handoffs = |plain_only: bool| {
+            lanes::lane_handoffs(&graph.borrow(), &info.leaf_of, lane_ids, plain_only)
+        };
+        // `None` is the TS's shared empty `none` set: it always runs.
+        let mut variants: Vec<(Option<IndexSet<&str>>, LaneOptions)> = vec![
+            (None, opts(true, false)),
+            (None, opts(true, true)),
+            (Some(handoffs(true)), opts(true, true)),
+            (Some(handoffs(false)), opts(true, true)),
+        ];
+        if order.is_some() {
+            variants.insert(0, (None, opts(false, false)));
+        }
+        for (h, lane_opts) in variants {
+            if h.as_ref().is_some_and(|h| h.is_empty()) {
+                continue;
+            }
+            let (c, p) = again();
+            let result = run(h.unwrap_or_default(), &lane_opts, c, p);
+            let cost = lanes::lane_cost(&result);
+            // Must not lose to the old layout anywhere; among those that do not, the cheapest in order.
+            if lanes::cheaper(&cost, &legacy_cost) && lexicographically_less(&cost, &best_cost) {
+                best = result;
+                best_cost = cost;
+            }
+        }
+    }
+    best
+}
+
+fn lexicographically_less(a: &[f64], b: &[f64]) -> bool {
+    for i in 0..a.len() {
+        if a[i] != b[i] {
+            return a[i] < b[i];
+        }
+    }
+    false
 }
 
 /// The layered engine covers scopes without lanes and without a packed tool
