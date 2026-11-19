@@ -413,7 +413,7 @@
         <dc:Bounds x="92" y="1032" width="50" height="50"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant__f0035388-f829-470c-b82b-0b15c3da3399_di" bpmnElement="Participant__f0035388-f829-470c-b82b-0b15c3da3399" isHorizontal="true">
-        <dc:Bounds x="0" y="722" width="1210.5" height="380"/>
+        <dc:Bounds x="0" y="722" width="2839.5" height="380"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_3d4130c6-48c9-47fe-8e95-2eeb56060e2b_di" bpmnElement="_3d4130c6-48c9-47fe-8e95-2eeb56060e2b">
         <dc:Bounds x="99" y="1174" width="36" height="36"/>
@@ -449,7 +449,7 @@
         <dc:Bounds x="92" y="1445" width="50" height="50"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant__da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4_di" bpmnElement="Participant__da743a6f-d9e5-4fcf-8a96-d2fd5cfb73d4" isHorizontal="true">
-        <dc:Bounds x="0" y="1132" width="944" height="383"/>
+        <dc:Bounds x="0" y="1132" width="2839.5" height="383"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_94a62738-dc7a-49f6-81d8-f5642f7ae850_di" bpmnElement="_94a62738-dc7a-49f6-81d8-f5642f7ae850">
         <dc:Bounds x="102" y="1587" width="36" height="36"/>
@@ -473,7 +473,7 @@
         <dc:Bounds x="95" y="1725" width="50" height="50"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant__3486bf55-0a7f-4ff1-be15-1555669f58ad_di" bpmnElement="Participant__3486bf55-0a7f-4ff1-be15-1555669f58ad" isHorizontal="true">
-        <dc:Bounds x="0" y="1545" width="639" height="250"/>
+        <dc:Bounds x="0" y="1545" width="2839.5" height="250"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="_6d1a9d5a-127d-477a-8dbe-268f125f20d8_di" bpmnElement="_6d1a9d5a-127d-477a-8dbe-268f125f20d8">
         <di:waypoint x="182" y="80"/>

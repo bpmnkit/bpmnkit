@@ -98,7 +98,7 @@
       <bpmndi:BPMNShape id="reject_di" bpmnElement="reject">
         <dc:Bounds x="509" y="152" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="549" y="188" width="56" height="14"/>
+          <dc:Bounds x="499" y="192" width="56" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_Order_di" bpmnElement="Participant_Order" isHorizontal="true">
@@ -142,10 +142,10 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="MessageFlow_1_di" bpmnElement="MessageFlow_1">
-        <di:waypoint x="547" y="290"/>
-        <di:waypoint x="547" y="60"/>
+        <di:waypoint x="557" y="290"/>
+        <di:waypoint x="557" y="60"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="375" y="68" width="168" height="14"/>
+          <dc:Bounds x="385" y="68" width="168" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="MessageFlow_2_di" bpmnElement="MessageFlow_2">

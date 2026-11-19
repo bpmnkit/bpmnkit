@@ -269,7 +269,7 @@
         <dc:Bounds x="50" y="734" width="36" height="50"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_Process_ID-73a31a41-43d5-11f1-744d-b02628b36240_di" bpmnElement="Participant_Process_ID-73a31a41-43d5-11f1-744d-b02628b36240" isHorizontal="true">
-        <dc:Bounds x="0" y="554" width="522" height="250"/>
+        <dc:Bounds x="0" y="554" width="1960.5" height="250"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="_17_di" bpmnElement="_17">
         <di:waypoint x="572" y="466"/>

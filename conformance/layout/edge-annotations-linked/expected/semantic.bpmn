@@ -58,7 +58,7 @@
         <dc:Bounds x="50" y="70" width="200" height="30"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="PA_di" bpmnElement="PA" isHorizontal="true">
-        <dc:Bounds x="0" y="0" width="270" height="120"/>
+        <dc:Bounds x="0" y="0" width="538" height="120"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Pw_s_di" bpmnElement="Pw_s">
         <dc:Bounds x="52" y="322" width="36" height="36"/>

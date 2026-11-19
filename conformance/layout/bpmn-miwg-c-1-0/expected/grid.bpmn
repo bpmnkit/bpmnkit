@@ -722,7 +722,7 @@
       <bpmndi:BPMNShape id="sid-40EC6574-E644-425C-8CE7-EE384F0C3520_gui" bpmnElement="sid-40EC6574-E644-425C-8CE7-EE384F0C3520" color:background-color="#2953e7">
         <omgdc:Bounds x="568" y="42" width="36" height="36"/>
         <bpmndi:BPMNLabel id="Bpmndi_BPMNLabel_4qM6ILbIEeS1kPPByrr18w" labelStyle="Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig">
-          <omgdc:Bounds x="511" y="82" width="150" height="14"/>
+          <omgdc:Bounds x="511" y="24" width="150" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD_gui" bpmnElement="sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD" color:background-color="#c2d7eb">
@@ -744,7 +744,7 @@
       <bpmndi:BPMNShape id="sid-B548B980-12E3-408E-9AC4-7031B85A8F2D_gui" bpmnElement="sid-B548B980-12E3-408E-9AC4-7031B85A8F2D" color:background-color="#2953e7">
         <omgdc:Bounds x="1018" y="182" width="36" height="36"/>
         <bpmndi:BPMNLabel id="Bpmndi_BPMNLabel_4qNhMLbIEeS1kPPByrr18w" labelStyle="Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig">
-          <omgdc:Bounds x="961" y="222" width="150" height="14"/>
+          <omgdc:Bounds x="961" y="164" width="150" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D_gui" bpmnElement="sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D" color:background-color="#c2d7eb">
@@ -755,11 +755,11 @@
         <omgdc:Bounds x="1318" y="182" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sid-46891B57-A9D3-4A8B-AEBF-D4BA5F3961AD_gui" bpmnElement="sid-46891B57-A9D3-4A8B-AEBF-D4BA5F3961AD" isHorizontal="true">
-        <omgdc:Bounds x="0" y="0" width="1374" height="260"/>
+        <omgdc:Bounds x="0" y="0" width="1429.5" height="260"/>
         <bpmndi:BPMNLabel id="Bpmndi_BPMNLabel__lsVELdWEeSAMrpVrpCJkg" labelStyle="Bpmndi_BPMNLabelStyle_M44qwJ1_EeS1-pEyeWEPig"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sid-744AEFB3-C93D-46A3-8976-EFA91784A51F_gui" bpmnElement="sid-744AEFB3-C93D-46A3-8976-EFA91784A51F" isHorizontal="true">
-        <omgdc:Bounds x="30" y="0" width="1344" height="260"/>
+        <omgdc:Bounds x="30" y="0" width="1399.5" height="260"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="StartEvent_1_gui" bpmnElement="StartEvent_1" color:background-color="#6db700">
         <omgdc:Bounds x="418" y="332" width="36" height="36"/>
@@ -938,8 +938,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-7A070DED-8B83-48E1-88A1-5543C481E7BC_gui" bpmnElement="sid-7A070DED-8B83-48E1-88A1-5543C481E7BC">
         <omgdi:waypoint x="286" y="100"/>
-        <omgdi:waypoint x="286" y="265"/>
-        <omgdi:waypoint x="436" y="265"/>
+        <omgdi:waypoint x="286" y="270"/>
+        <omgdi:waypoint x="436" y="270"/>
         <omgdi:waypoint x="436" y="332"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-90902E27-C1CD-4F90-A8F2-486DA4F42117_gui" bpmnElement="sid-90902E27-C1CD-4F90-A8F2-486DA4F42117">

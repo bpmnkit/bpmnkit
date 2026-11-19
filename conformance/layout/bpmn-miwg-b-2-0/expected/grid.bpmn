@@ -712,7 +712,7 @@
         <bpmndi:BPMNLabel labelStyle="LS1373638080849"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="S1373638080848__cde15ee4-b395-43a3-9f5e-9028446f8a52" bpmnElement="_cde15ee4-b395-43a3-9f5e-9028446f8a52" isHorizontal="true">
-        <dc:Bounds x="0" y="0" width="2753" height="665"/>
+        <dc:Bounds x="0" y="0" width="3400" height="665"/>
         <bpmndi:BPMNLabel labelStyle="LS1373638080849"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="S1373638080911__a38484e2-7bdb-48b1-b62e-139d51d6a147" bpmnElement="_a38484e2-7bdb-48b1-b62e-139d51d6a147">
@@ -1477,20 +1477,20 @@
         <di:waypoint x="2405" y="1297"/>
         <di:waypoint x="2405" y="1277"/>
         <di:waypoint x="2425" y="1277"/>
-        <di:waypoint x="2425" y="685"/>
-        <di:waypoint x="2067" y="685"/>
+        <di:waypoint x="2425" y="680"/>
+        <di:waypoint x="2067" y="680"/>
         <di:waypoint x="2067" y="645"/>
         <bpmndi:BPMNLabel labelStyle="LS1373638080849">
-          <dc:Bounds x="2429" y="974" width="98" height="14"/>
+          <dc:Bounds x="2429" y="972" width="98" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="E1373638081031__09e7cb23-4a1b-4165-b93a-cf635c223ee5" bpmnElement="_09e7cb23-4a1b-4165-b93a-cf635c223ee5" messageVisibleKind="initiating">
         <di:waypoint x="417" y="225"/>
-        <di:waypoint x="417" y="675"/>
-        <di:waypoint x="155" y="675"/>
+        <di:waypoint x="417" y="680"/>
+        <di:waypoint x="155" y="680"/>
         <di:waypoint x="155" y="737"/>
         <bpmndi:BPMNLabel labelStyle="LS1373638080849">
-          <dc:Bounds x="421" y="443" width="98" height="14"/>
+          <dc:Bounds x="421" y="446" width="98" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

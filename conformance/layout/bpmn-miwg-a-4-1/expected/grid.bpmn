@@ -211,11 +211,11 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sid-66751F1E-EEB9-4BA7-9FDA-7965A1CA9CD1_gui" bpmnElement="sid-66751F1E-EEB9-4BA7-9FDA-7965A1CA9CD1" isHorizontal="true">
-        <omgdc:Bounds x="0" y="0" width="641" height="120"/>
+        <omgdc:Bounds x="0" y="0" width="1241" height="120"/>
         <bpmndi:BPMNLabel labelStyle="sid-ae9a9300-bd5c-4531-84ab-5f0791d9f49f"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sid-4F568BD0-1CB0-4F1C-8729-9DD775B5B37D_gui" bpmnElement="sid-4F568BD0-1CB0-4F1C-8729-9DD775B5B37D" isHorizontal="true">
-        <omgdc:Bounds x="30" y="0" width="611" height="120"/>
+        <omgdc:Bounds x="30" y="0" width="1211" height="120"/>
         <bpmndi:BPMNLabel labelStyle="sid-ae9a9300-bd5c-4531-84ab-5f0791d9f49f"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sid-C189128A-82D2-4E5F-8FB4-F6E21FF27E83_gui" bpmnElement="sid-C189128A-82D2-4E5F-8FB4-F6E21FF27E83">
@@ -251,7 +251,7 @@
       <bpmndi:BPMNShape id="sid-93C83C6A-1122-4E0F-9F47-4027C9080456_gui" bpmnElement="sid-93C83C6A-1122-4E0F-9F47-4027C9080456">
         <omgdc:Bounds x="1011" y="192" width="36" height="36"/>
         <bpmndi:BPMNLabel labelStyle="sid-b486dfff-4569-4ca7-85f3-5be00f2c3a65">
-          <omgdc:Bounds x="1051" y="228" width="84" height="14"/>
+          <omgdc:Bounds x="987" y="232" width="84" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sid-00A82BF4-1D0A-48DC-8389-C8AAF3E7F754_gui" bpmnElement="sid-00A82BF4-1D0A-48DC-8389-C8AAF3E7F754" isExpanded="true">
@@ -350,12 +350,12 @@
         <omgdi:waypoint x="1161" y="490"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-96EF2D8F-C322-42B1-8C08-0DA05524C904_gui" bpmnElement="sid-96EF2D8F-C322-42B1-8C08-0DA05524C904">
-        <omgdi:waypoint x="1049" y="450"/>
-        <omgdi:waypoint x="1049" y="140"/>
-        <omgdi:waypoint x="429" y="140"/>
+        <omgdi:waypoint x="1079" y="450"/>
+        <omgdi:waypoint x="1079" y="135"/>
+        <omgdi:waypoint x="429" y="135"/>
         <omgdi:waypoint x="429" y="100"/>
         <bpmndi:BPMNLabel labelStyle="sid-b486dfff-4569-4ca7-85f3-5be00f2c3a65">
-          <omgdc:Bounds x="1053" y="288" width="98" height="14"/>
+          <omgdc:Bounds x="1083" y="286" width="98" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-D0B859BF-CBFB-4B35-BBC8-BCA308F6455C_gui" bpmnElement="sid-D0B859BF-CBFB-4B35-BBC8-BCA308F6455C">

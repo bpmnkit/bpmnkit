@@ -78,7 +78,7 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="PA_di" bpmnElement="PA" isHorizontal="true">
-        <dc:Bounds x="0" y="0" width="366" height="120"/>
+        <dc:Bounds x="0" y="0" width="686" height="120"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="PrB_s_di" bpmnElement="PrB_s">
         <dc:Bounds x="52" y="192" width="36" height="36"/>
@@ -99,7 +99,7 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="PB_di" bpmnElement="PB" isHorizontal="true">
-        <dc:Bounds x="0" y="150" width="526" height="120"/>
+        <dc:Bounds x="0" y="150" width="686" height="120"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="PrC_s_di" bpmnElement="PrC_s">
         <dc:Bounds x="212" y="342" width="36" height="36"/>
@@ -167,8 +167,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="m3_di" bpmnElement="m3">
         <di:waypoint x="518" y="320"/>
-        <di:waypoint x="518" y="140"/>
-        <di:waypoint x="326" y="140"/>
+        <di:waypoint x="518" y="135"/>
+        <di:waypoint x="326" y="135"/>
         <di:waypoint x="326" y="78"/>
         <bpmndi:BPMNLabel>
           <dc:Bounds x="522" y="278" width="63" height="14"/>

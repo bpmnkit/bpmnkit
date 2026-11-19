@@ -211,11 +211,11 @@
         <bpmndi:BPMNLabel labelStyle="sid-ae9a9300-bd5c-4531-84ab-5f0791d9f49f"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sid-66751F1E-EEB9-4BA7-9FDA-7965A1CA9CD1_gui" bpmnElement="sid-66751F1E-EEB9-4BA7-9FDA-7965A1CA9CD1" isHorizontal="true">
-        <omgdc:Bounds x="0" y="0" width="607" height="160"/>
+        <omgdc:Bounds x="0" y="0" width="1194" height="160"/>
         <bpmndi:BPMNLabel labelStyle="sid-ae9a9300-bd5c-4531-84ab-5f0791d9f49f"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sid-4F568BD0-1CB0-4F1C-8729-9DD775B5B37D_gui" bpmnElement="sid-4F568BD0-1CB0-4F1C-8729-9DD775B5B37D" isHorizontal="true">
-        <omgdc:Bounds x="30" y="0" width="577" height="160"/>
+        <omgdc:Bounds x="30" y="0" width="1164" height="160"/>
         <bpmndi:BPMNLabel labelStyle="sid-ae9a9300-bd5c-4531-84ab-5f0791d9f49f"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sid-78073B2D-35BB-45D5-9CF1-D446602F8E59_gui" bpmnElement="sid-78073B2D-35BB-45D5-9CF1-D446602F8E59">
@@ -353,11 +353,11 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-96EF2D8F-C322-42B1-8C08-0DA05524C904_gui" bpmnElement="sid-96EF2D8F-C322-42B1-8C08-0DA05524C904">
         <omgdi:waypoint x="1004" y="498"/>
-        <omgdi:waypoint x="1004" y="180"/>
-        <omgdi:waypoint x="417" y="180"/>
+        <omgdi:waypoint x="1004" y="175"/>
+        <omgdi:waypoint x="417" y="175"/>
         <omgdi:waypoint x="417" y="120"/>
         <bpmndi:BPMNLabel labelStyle="sid-b486dfff-4569-4ca7-85f3-5be00f2c3a65">
-          <omgdc:Bounds x="1008" y="332" width="98" height="14"/>
+          <omgdc:Bounds x="1008" y="330" width="98" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-D0B859BF-CBFB-4B35-BBC8-BCA308F6455C_gui" bpmnElement="sid-D0B859BF-CBFB-4B35-BBC8-BCA308F6455C">

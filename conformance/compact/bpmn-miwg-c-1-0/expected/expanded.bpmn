@@ -182,7 +182,7 @@
       <bpmndi:BPMNShape id="sid-40EC6574-E644-425C-8CE7-EE384F0C3520_di" bpmnElement="sid-40EC6574-E644-425C-8CE7-EE384F0C3520">
         <dc:Bounds x="558" y="62" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="492" y="102" width="168" height="14"/>
+          <dc:Bounds x="492" y="44" width="168" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD_di" bpmnElement="sid-64AFCE49-96A2-4A51-96CB-9DF689C37DAD">
@@ -194,7 +194,7 @@
       <bpmndi:BPMNShape id="sid-B548B980-12E3-408E-9AC4-7031B85A8F2D_di" bpmnElement="sid-B548B980-12E3-408E-9AC4-7031B85A8F2D">
         <dc:Bounds x="965" y="180" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="906" y="220" width="154" height="14"/>
+          <dc:Bounds x="906" y="162" width="154" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D_di" bpmnElement="sid-6FC20E19-AF3A-4A77-8588-2D671C98D93D">
@@ -210,10 +210,10 @@
         <dc:Bounds x="1238" y="180" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sid-46891B57-A9D3-4A8B-AEBF-D4BA5F3961AD_di" bpmnElement="sid-46891B57-A9D3-4A8B-AEBF-D4BA5F3961AD" isHorizontal="true">
-        <dc:Bounds x="0" y="0" width="1294" height="278"/>
+        <dc:Bounds x="0" y="0" width="1414" height="278"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sid-744AEFB3-C93D-46A3-8976-EFA91784A51F_di" bpmnElement="sid-744AEFB3-C93D-46A3-8976-EFA91784A51F" isHorizontal="true">
-        <dc:Bounds x="30" y="0" width="1264" height="278"/>
+        <dc:Bounds x="30" y="0" width="1384" height="278"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="approveInvoice_di" bpmnElement="approveInvoice">
         <dc:Bounds x="686" y="348" width="100" height="80"/>
@@ -373,8 +373,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-915AC9A0-CD35-4DF2-93F7-4535397622F8_di" bpmnElement="sid-915AC9A0-CD35-4DF2-93F7-4535397622F8">
         <di:waypoint x="1128" y="238"/>
-        <di:waypoint x="1128" y="303"/>
-        <di:waypoint x="1006" y="303"/>
+        <di:waypoint x="1128" y="298"/>
+        <di:waypoint x="1006" y="298"/>
         <di:waypoint x="1006" y="648"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-AB6EB7C8-DF5E-42C2-88D0-FA166583AF15_di" bpmnElement="sid-AB6EB7C8-DF5E-42C2-88D0-FA166583AF15">
@@ -385,8 +385,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-7A070DED-8B83-48E1-88A1-5543C481E7BC_di" bpmnElement="sid-7A070DED-8B83-48E1-88A1-5543C481E7BC">
         <di:waypoint x="264" y="120"/>
-        <di:waypoint x="264" y="283"/>
-        <di:waypoint x="448" y="283"/>
+        <di:waypoint x="264" y="288"/>
+        <di:waypoint x="448" y="288"/>
         <di:waypoint x="448" y="530"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-90902E27-C1CD-4F90-A8F2-486DA4F42117_di" bpmnElement="sid-90902E27-C1CD-4F90-A8F2-486DA4F42117">
@@ -395,8 +395,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="sid-0518A412-1ED3-4CFD-A75C-69FF37EFFC16_di" bpmnElement="sid-0518A412-1ED3-4CFD-A75C-69FF37EFFC16">
         <di:waypoint x="1006" y="648"/>
-        <di:waypoint x="1006" y="298"/>
-        <di:waypoint x="983" y="298"/>
+        <di:waypoint x="1006" y="288"/>
+        <di:waypoint x="983" y="288"/>
         <di:waypoint x="983" y="216"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

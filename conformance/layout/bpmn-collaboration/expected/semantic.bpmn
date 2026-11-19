@@ -81,7 +81,7 @@
         <dc:Bounds x="146" y="326" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_seller_di" bpmnElement="Participant_seller" isHorizontal="true">
-        <dc:Bounds x="0" y="306" width="202" height="76"/>
+        <dc:Bounds x="0" y="306" width="433" height="76"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_carrier_di" bpmnElement="Participant_carrier" isHorizontal="true">
         <dc:Bounds x="0" y="412" width="433" height="60"/>
@@ -101,20 +101,16 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="MessageFlow_order_di" bpmnElement="MessageFlow_order">
         <di:waypoint x="217" y="276"/>
-        <di:waypoint x="217" y="286"/>
-        <di:waypoint x="101" y="286"/>
-        <di:waypoint x="101" y="306"/>
+        <di:waypoint x="217" y="306"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="57" y="289" width="40" height="14"/>
+          <dc:Bounds x="221" y="284" width="40" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="MessageFlow_ack_di" bpmnElement="MessageFlow_ack">
-        <di:waypoint x="101" y="306"/>
-        <di:waypoint x="101" y="296"/>
-        <di:waypoint x="217" y="296"/>
+        <di:waypoint x="217" y="306"/>
         <di:waypoint x="217" y="276"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="221" y="279" width="105" height="14"/>
+          <dc:Bounds x="108" y="284" width="105" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

@@ -185,17 +185,17 @@
       <bpmndi:BPMNShape id="_5b5df749-2e58-4dd2-aa92-90420c83b3a2" bpmnElement="__0ef615c7-5456-45c8-9cfb-f1fe30c44436">
         <dc:Bounds x="490" y="42" width="36" height="36"/>
         <bpmndi:BPMNLabel labelStyle="LSPage_1">
-          <dc:Bounds x="400" y="24" width="217" height="14"/>
+          <dc:Bounds x="399" y="24" width="217" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_6160434e-d9c9-4cd2-a2fd-276b06de88a7" bpmnElement="__4011aa2d-a7a9-4e1a-9f16-8a662d138bd4">
         <dc:Bounds x="794" y="42" width="36" height="36"/>
         <bpmndi:BPMNLabel labelStyle="LSPage_1">
-          <dc:Bounds x="774" y="82" width="77" height="14"/>
+          <dc:Bounds x="774" y="24" width="77" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_841b32fb-4579-4ce5-9d5d-57b3cbbaec14" bpmnElement="__3cf88d6c-e5e4-489e-bc73-e2a18be946bf" isHorizontal="true">
-        <dc:Bounds x="0" y="0" width="870.5" height="120"/>
+        <dc:Bounds x="0" y="0" width="1833.5" height="120"/>
         <bpmndi:BPMNLabel labelStyle="LSPage_1"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_5c88e114-2108-4511-ae55-585af71fbc97" bpmnElement="__f5b8cb41-0574-4c29-aaaa-84ecce589f84">
@@ -263,7 +263,7 @@
       <bpmndi:BPMNShape id="_d46c1239-177f-4c83-98c3-1448831c562f" bpmnElement="_f35ee29d-018c-47e2-afeb-eebc2e25925e">
         <dc:Bounds x="1042" y="431" width="36" height="36"/>
         <bpmndi:BPMNLabel labelStyle="LSPage_1">
-          <dc:Bounds x="1025" y="471" width="70" height="14"/>
+          <dc:Bounds x="1025" y="413" width="70" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_3220bd86-e721-4d9e-9f12-2f7293617842" bpmnElement="_df393d97-f22e-4442-95be-918b8fdd4c3c">
@@ -271,7 +271,7 @@
         <bpmndi:BPMNLabel labelStyle="LSPage_1"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_47d14f7b-f0f5-47ac-a2e6-08b1de420e57" bpmnElement="__6f70606b-6781-4f26-b207-5bfff80115d8" isHorizontal="true">
-        <dc:Bounds x="0" y="150" width="1546.5" height="501"/>
+        <dc:Bounds x="0" y="150" width="1833.5" height="501"/>
         <bpmndi:BPMNLabel labelStyle="LSPage_1"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_a7b7ffc8-f701-4c59-a1d4-a9d5bf95ef5c" bpmnElement="__fd16081c-ecf9-4e0f-857f-f3404a7ee784">
@@ -331,7 +331,7 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_d156d69d-91b2-4d6e-a25f-034244e746f4" bpmnElement="__bb6766c5-51e3-4f04-aedc-6c9e4afe0582" isHorizontal="true">
-        <dc:Bounds x="0" y="1031" width="1547" height="120"/>
+        <dc:Bounds x="0" y="1031" width="1833.5" height="120"/>
         <bpmndi:BPMNLabel labelStyle="LSPage_1"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="_8fb6b2d9-a592-4cc3-b960-70c230e25059" bpmnElement="__47cf5284-b9ff-4136-93fd-f0f32b87810f">
@@ -497,11 +497,11 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="_a3b1d7c1-82fb-4b28-ad4f-c1daf17cc1c7" bpmnElement="__86b33cf0-1b17-437f-a7cf-510e0766561f">
         <di:waypoint x="812" y="288"/>
-        <di:waypoint x="812" y="130"/>
-        <di:waypoint x="508" y="130"/>
+        <di:waypoint x="812" y="135"/>
+        <di:waypoint x="508" y="135"/>
         <di:waypoint x="508" y="78"/>
         <bpmndi:BPMNLabel labelStyle="LSPage_1">
-          <dc:Bounds x="816" y="202" width="196" height="14"/>
+          <dc:Bounds x="816" y="205" width="196" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="_f10d64de-2a78-421b-8a62-69bb9560958c" bpmnElement="__0c171c64-b342-4f84-8020-a63b6a5b296d">
