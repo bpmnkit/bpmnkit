@@ -5,6 +5,7 @@ import { Bpmn } from "../src/bpmn/index.js"
 import { pathCrossings } from "../src/layout/collaboration/crossings.js"
 import { flipDockedLabels } from "../src/layout/collaboration/docked-labels.js"
 import { assignTracks } from "../src/layout/collaboration/message-tracks.js"
+import { orderByCrossings, stackCrossings } from "../src/layout/collaboration/stack-crossings.js"
 
 // Three pools of different lengths, one laned, plus a black box.
 const RAGGED = `<?xml version="1.0" encoding="UTF-8"?>
@@ -120,9 +121,70 @@ describe("pathCrossings", () => {
 			{ x: 0, y: 50 },
 			{ x: 100, y: 50 },
 		]
-		expect(pathCrossings(run, [{ x: 50, y: 0 }, { x: 50, y: 100 }])).toBe(1)
-		expect(pathCrossings(run, [{ x: 100, y: 50 }, { x: 100, y: 100 }])).toBe(0)
-		expect(pathCrossings(run, [{ x: 50, y: 50 }, { x: 50, y: 100 }])).toBe(0)
-		expect(pathCrossings(run, [{ x: 20, y: 50 }, { x: 80, y: 50 }])).toBe(0)
+		expect(
+			pathCrossings(run, [
+				{ x: 50, y: 0 },
+				{ x: 50, y: 100 },
+			]),
+		).toBe(1)
+		expect(
+			pathCrossings(run, [
+				{ x: 100, y: 50 },
+				{ x: 100, y: 100 },
+			]),
+		).toBe(0)
+		expect(
+			pathCrossings(run, [
+				{ x: 50, y: 50 },
+				{ x: 50, y: 100 },
+			]),
+		).toBe(0)
+		expect(
+			pathCrossings(run, [
+				{ x: 20, y: 50 },
+				{ x: 80, y: 50 },
+			]),
+		).toBe(0)
 	})
+})
+
+describe("pool order by crossings", () => {
+	// Pool 0 talks to 1 and 2; both run a flow across their whole width at
+	// mid-height, below and above the message's element. Stacked 0, 1, 2 the
+	// message to 2 passes through 1 and crosses its flow; with 0 in the middle
+	// nothing crosses, though both orders are one pool step per message.
+	const flow = [
+		{ x: 0, y: 40 },
+		{ x: 400, y: 40 },
+	]
+	const pools = [
+		{ height: 80, paths: [] },
+		{ height: 80, paths: [flow] },
+		{ height: 80, paths: [flow] },
+	]
+	const end = (x: number) => ({ x, top: 20, bottom: 60 })
+	const messages = [
+		{ from: 0, to: 1, fromEnd: end(100), toEnd: end(100) },
+		{ from: 0, to: 2, fromEnd: end(300), toEnd: end(300) },
+	]
+
+	it("counts a message crossing the process it passes", () => {
+		expect(stackCrossings([0, 1, 2], pools, messages)).toBe(1)
+		expect(stackCrossings([1, 0, 2], pools, messages)).toBe(0)
+	})
+
+	it("moves pools until nothing crosses, and keeps a start that cannot improve", () => {
+		expect(stackCrossings(orderByCrossings([0, 1, 2], pools, messages), pools, messages)).toBe(0)
+		expect(orderByCrossings([1, 0, 2], pools, messages)).toEqual([1, 0, 2])
+	})
+})
+
+it("stacks lane-less pools on the 10 px grid", () => {
+	const laid = applyAutoLayout(Bpmn.parse(RAGGED))
+	const shapes = laid.diagrams[0]?.plane.shapes ?? []
+	for (const id of ["Short", "Box"]) {
+		const pool = shapes.find((s) => s.bpmnElement === id)
+		expect(pool && pool.bounds.y % 10, id).toBe(0)
+		expect(pool && pool.bounds.height % 10, id).toBe(0)
+	}
 })

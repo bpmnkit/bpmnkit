@@ -8,6 +8,8 @@ import { placeMessageFlowLabels } from "../layout/collaboration/message-labels.j
 import { assignTracks } from "../layout/collaboration/message-tracks.js"
 import type { PoolLink } from "../layout/collaboration/ordering.js"
 import { orderPools } from "../layout/collaboration/ordering.js"
+import type { StackMessage, StackPool } from "../layout/collaboration/stack-crossings.js"
+import { orderByCrossings } from "../layout/collaboration/stack-crossings.js"
 import { collapseCollinear } from "../layout/grid/grid-router.js"
 import type { LayoutEngine } from "../layout/layout-engine.js"
 import { layoutProcess } from "../layout/layout-engine.js"
@@ -928,6 +930,60 @@ function poolOwners(defs: BpmnDefinitions, collab: BpmnCollaboration): Map<strin
 }
 
 /**
+ * The pools as the crossing sketch sees them: each at its aligned offset with
+ * its sequence flows and shapes, plus every message between them.
+ */
+function stackSketch(
+	collab: BpmnCollaboration,
+	participantPools: Array<{ participantId: string; process?: BpmnProcess }>,
+	layoutOf: Map<BpmnProcess, LayoutResult>,
+): { pools: StackPool[]; messages: StackMessage[] } {
+	const layouts = participantPools.map(
+		(p): LayoutResult => (p.process && layoutOf.get(p.process)) || { nodes: [], edges: [] },
+	)
+	const offsets = alignPools(
+		participantPools.length,
+		layouts.map(contentWidth),
+		messageLinks(collab, participantPools, layouts),
+	)
+	const ends = new Map<string, { pool: number; x: number; top: number; bottom: number }>()
+	const pools: StackPool[] = layouts.map((layout, index) => {
+		if (layout.nodes.length === 0) return { height: EMPTY_POOL_HEIGHT, paths: [] }
+		const { minX, minY, maxY } = contentBbox(layout.nodes)
+		const lanes = laneLevels(participantPools[index]?.process?.laneSet)
+		const dx = (offsets[index] ?? 0) + POOL_HEADER + laneHeadersWidth(lanes) + PADDING - minX
+		const dy = PADDING - minY
+		for (const node of layout.nodes) {
+			ends.set(node.id, {
+				pool: index,
+				x: Math.round(node.bounds.x + node.bounds.width / 2 + dx),
+				top: node.bounds.y + dy,
+				bottom: node.bounds.y + node.bounds.height + dy,
+			})
+		}
+		return {
+			height: poolHeightOf(maxY - minY),
+			paths: layout.edges.map((e) => e.waypoints.map((w) => ({ x: w.x + dx, y: w.y + dy }))),
+			boxes: layout.nodes.map((n) => ({ ...n.bounds, x: n.bounds.x + dx, y: n.bounds.y + dy })),
+		}
+	})
+	const poolIndex = new Map(participantPools.map((p, i) => [p.participantId, i]))
+	const messages: StackMessage[] = []
+	for (const flow of collab.messageFlows) {
+		const a = ends.get(flow.sourceRef)
+		const b = ends.get(flow.targetRef)
+		const from = a?.pool ?? poolIndex.get(flow.sourceRef)
+		const to = b?.pool ?? poolIndex.get(flow.targetRef)
+		if (from === undefined || to === undefined) continue
+		const message: StackMessage = { from, to }
+		if (a) message.fromEnd = a
+		if (b) message.toEnd = b
+		messages.push(message)
+	}
+	return { pools, messages }
+}
+
+/**
  * Message flows as pool-to-pool relationships, one per flow, each carrying how
  * deep inside its pool the message leaves and arrives.
  */
@@ -1067,10 +1123,128 @@ function gridPhase(nodes: LayoutNode[], dx: number, dy: number): { x: number; y:
 	return best
 }
 
+/**
+ * A lane-less pool's height: content plus padding, to the nearest 10 px, so
+ * the pools below start on the grid whatever order they are stacked in.
+ */
+function poolHeightOf(contentHeight: number): number {
+	return Math.round((contentHeight + 2 * PADDING) / 10) * 10
+}
+
+/**
+ * Vertical shift (-4..5 px, inside the pool's padding) that puts the most
+ * shapes on the 10 px grid; the smallest shift wins a tie.
+ */
+function poolGridPhase(nodes: LayoutNode[], dx: number, dy: number): number {
+	const on = (v: number): boolean => Math.round(v) % 10 === 0
+	let best = 0
+	let bestN = -1
+	for (const t of [0, -1, 1, -2, 2, -3, 3, -4, 4, 5]) {
+		let n = 0
+		for (const node of nodes) if (on(node.bounds.x + dx) && on(node.bounds.y + dy + t)) n++
+		if (n > bestN) {
+			bestN = n
+			best = t
+		}
+	}
+	return best
+}
+
 export function applyAutoLayout(
 	defs: BpmnDefinitions,
 	engine: LayoutEngine = "semantic",
 	hints?: LayoutHints,
+): BpmnDefinitions {
+	const nearest: PoolOrdering = { useSketch: false, sketchDiffers: false }
+	const laidOut = layoutDefinitions(defs, engine, hints, nearest)
+	if (!nearest.sketchDiffers) return laidOut
+	// The sketch only estimates; the drawn result decides. The crossing order
+	// wins only when it crosses less without bending or slanting more.
+	const crossing = layoutDefinitions(defs, engine, hints, {
+		useSketch: true,
+		sketchDiffers: true,
+	})
+	const a = messageScore(laidOut)
+	const b = messageScore(crossing)
+	const better =
+		b.crossings < a.crossings &&
+		b.bends <= a.bends &&
+		b.slanted <= a.slanted &&
+		b.labelsCrossed <= a.labelsCrossed &&
+		b.onGrid >= a.onGrid
+	return better ? crossing : laidOut
+}
+
+/** Which pool order a layout pass uses, and whether the two candidates differ. */
+interface PoolOrdering {
+	/** Stack the pools by the crossing sketch instead of message distance. */
+	useSketch: boolean
+	/** Set by the pass: the crossing sketch prefers another order. */
+	sketchDiffers: boolean
+}
+
+/**
+ * What a pool order changes in a laid-out diagram: message-flow crossings
+ * (with anything), message bends and slanted messages, labels an edge runs
+ * through, and shapes on the 10 px grid (pools stacked at other heights shift
+ * whole processes off it).
+ */
+function messageScore(defs: BpmnDefinitions): {
+	crossings: number
+	bends: number
+	slanted: number
+	labelsCrossed: number
+	onGrid: number
+} {
+	const ids = new Set(defs.collaborations.flatMap((c) => c.messageFlows.map((f) => f.id)))
+	const plane = defs.diagrams[0]?.plane
+	const edges = plane?.edges ?? []
+	const shapes = plane?.shapes ?? []
+	const messages = edges.filter((e) => ids.has(e.bpmnElement))
+	const others = edges.filter((e) => !ids.has(e.bpmnElement))
+	let crossings = 0
+	let bends = 0
+	let slanted = 0
+	for (let i = 0; i < messages.length; i++) {
+		const path = messages[i]?.waypoints ?? []
+		for (let j = i + 1; j < messages.length; j++)
+			crossings += pathCrossings(path, messages[j]?.waypoints ?? [])
+		for (const other of others) crossings += pathCrossings(path, other.waypoints)
+		bends += Math.max(0, path.length - 2)
+		if (path.length > 2) slanted++
+	}
+	const labels = [...shapes, ...edges].flatMap((item) =>
+		item.label?.bounds ? [{ owner: item.bpmnElement, bounds: item.label.bounds }] : [],
+	)
+	const labelsCrossed = labels.filter((label) =>
+		edges.some((e) => e.bpmnElement !== label.owner && pathThrough(e.waypoints, label.bounds)),
+	).length
+	const onGrid = shapes.filter((s) => s.bounds.x % 10 === 0 && s.bounds.y % 10 === 0).length
+	return { crossings, bends, slanted, labelsCrossed, onGrid }
+}
+
+/** Does an orthogonal polyline pass through the inside of `r` (1 px in from its outline)? */
+function pathThrough(points: BpmnWaypoint[], r: BpmnBounds): boolean {
+	for (let i = 1; i < points.length; i++) {
+		const p = points[i - 1]
+		const q = points[i]
+		if (!p || !q) continue
+		if (
+			Math.max(p.x, q.x) > r.x + 1 &&
+			Math.min(p.x, q.x) < r.x + r.width - 1 &&
+			Math.max(p.y, q.y) > r.y + 1 &&
+			Math.min(p.y, q.y) < r.y + r.height - 1
+		)
+			return true
+	}
+	return false
+}
+
+function layoutDefinitions(
+	defs: BpmnDefinitions,
+	engine: LayoutEngine,
+	hints: LayoutHints | undefined,
+	ordering: PoolOrdering,
 ): BpmnDefinitions {
 	if (defs.processes.length === 0) return defs
 
@@ -1114,11 +1288,18 @@ export function applyAutoLayout(
 		const depths = depthIndex(layoutOf.values())
 		const contentOf = (pool: { process?: BpmnProcess }): LayoutNode[] =>
 			(pool.process && layoutOf.get(pool.process)?.nodes) || []
-		const order = orderPools(
+		const nearest = orderPools(
 			participantPools.length,
 			poolLinks(collab, poolOwners(defs, collab), (id) => depths.get(id)),
 			new Set(participantPools.flatMap((pool, i) => (contentOf(pool).length > 0 ? [] : [i]))),
 		)
+		let order = nearest
+		if (participantPools.length >= 3 && collab.messageFlows.length > 0) {
+			const sketch = stackSketch(collab, participantPools, layoutOf)
+			const fewer = orderByCrossings(nearest, sketch.pools, sketch.messages)
+			ordering.sketchDiffers = fewer.some((pool, i) => pool !== nearest[i])
+			if (ordering.useSketch) order = fewer
+		}
 		for (const index of order) {
 			const pool = participantPools[index]
 			if (pool) pools.push(pool)
@@ -1245,6 +1426,9 @@ export function applyAutoLayout(
 			const elemX = POOL_HEADER + headersWidth + PADDING
 			dx = elemX - minX + alignDx
 			dy = laneBands ? poolY - bandTop : poolY + PADDING - minY
+			// x is the message alignment's to keep, and lane bands fix y; otherwise
+			// a few px of the padding put the most shapes on the 10 px grid.
+			if (!laneBands) dy += poolGridPhase(result.nodes, dx, dy)
 		} else {
 			// A process outside any pool draws its lanes on the plane itself (bpmn-js
 			// imports lane DI under a process root), header at x 0, so the content
@@ -1302,7 +1486,7 @@ export function applyAutoLayout(
 			// places below the bands.
 			const innerH = laneBands
 				? Math.max(bandHeight, orphanExtent(result.nodes, bandTop + bandHeight) - bandTop)
-				: contentH + 2 * PADDING
+				: poolHeightOf(contentH)
 
 			allShapes.push({
 				id: `${participantId}_di`,

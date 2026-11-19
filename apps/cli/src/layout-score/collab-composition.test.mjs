@@ -50,6 +50,16 @@ it("tidying message docks never adds a crossing on hub-and-spoke collaborations"
 	}
 })
 
+it("stacks hub-and-spoke pools by crossings when that bends and slants no more", async () => {
+	// Before (message-distance order): crossings 29 and 30, non-vertical 77.8 and 69 %.
+	const admissions = await score("collab-hub-admissions")
+	expect(admissions.crossings).toBeLessThan(29)
+	expect(admissions.nonVerticalMsgPct).toBeLessThan(77.8)
+	const wedding = await score("collab-hub-wedding")
+	expect(wedding.crossings).toBeLessThan(30)
+	expect(wedding.nonVerticalMsgPct).toBeLessThan(69)
+})
+
 it("the corpus spec files stay invented processes", () => {
 	for (const name of [
 		"collab-festival-permits",

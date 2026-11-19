@@ -114,7 +114,7 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant_02_di" bpmnElement="Participant_02" isHorizontal="true">
-        <dc:Bounds x="0" y="0" width="766.5" height="396"/>
+        <dc:Bounds x="0" y="0" width="766.5" height="400"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_6_di" bpmnElement="SequenceFlow_6">
         <di:waypoint x="454" y="60"/>

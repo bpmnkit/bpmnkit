@@ -272,10 +272,10 @@ describe("auto-layout with nested lanes", () => {
 
 describe("auto-layout without nested lanes", () => {
 	// Serialized layouts captured before nested-lane support (02-collaboration
-	// re-captured after the P1 collaboration composition); any drift here is
-	// a layout change for diagrams the feature must not touch.
+	// re-captured after the P1 collaboration composition and the P1b pool grid);
+	// any drift here is a layout change for diagrams the feature must not touch.
 	it.each([
-		["02-collaboration.bpmn", "76eddfab0cd0b3338db0bf9e972055e685c085cc17ff98f2052392cb1e81c5ef"],
+		["02-collaboration.bpmn", "da4e4920ef89210316714892d71f899e889b237ff371c8d8df6903bb87b50d68"],
 		// Its laned process WFP-6-2 has no pool: its lanes are drawn on its own plane.
 		["miwg-A.4.0.bpmn", "32120d1df7a834451c21d9bc91a467bcf0b5d5a8ee1ace54d5556d096945b2d6"],
 	])("lays out %s byte for byte as before", (name, hash) => {
