@@ -1,0 +1,14 @@
+# Staff onboarding | id=staffOnboarding
+## Firm | id=firm
+### HR
+[start Offer signed] > [user Collect documents] > [and Prepare start]
+### IT
+[service Create account] > [user Hand out laptop] > [and All ready]
+### Facilities
+[user Assign desk] > [user Issue badge]
+### HR
+[user Welcome talk] > [end Onboarded]
+Prepare start > Create account
+Prepare start > Assign desk
+Issue badge > All ready
+All ready > Welcome talk

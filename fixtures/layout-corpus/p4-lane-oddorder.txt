@@ -1,0 +1,11 @@
+# Parcel return | id=parcelReturn
+## Shop | id=shop
+### Finance
+[service Refund payment] > [end Refunded]
+### Customer
+[start Return requested] > [user Pack parcel] > [user Hand to courier]
+### Warehouse
+[user Inspect parcel] > [xor Intact?]
+Hand to courier > Inspect parcel
+Intact? >(Yes: intact = true) Refund payment
+Intact? >(No: default) [end Parcel rejected]

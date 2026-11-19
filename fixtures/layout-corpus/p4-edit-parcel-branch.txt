@@ -1,0 +1,2 @@
+# Parcel intake | id=parcelIntake
+[start Parcel arrives] > [user Scan label] > [user Weigh parcel] > [end Parcel shelved]

@@ -1,0 +1,9 @@
+# Expense claim | id=expenseClaim
+## Company | id=company
+### Employee
+[start Receipt in hand] > [user Submit claim]
+### Manager
+[user Approve claim]
+### Finance
+[service Book expense] > [end Claim paid]
+Submit claim > Approve claim > Book expense

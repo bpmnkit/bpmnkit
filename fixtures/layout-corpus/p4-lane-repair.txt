@@ -1,0 +1,12 @@
+# Bike service | id=bikeService
+## Workshop | id=workshop
+### Front desk
+[start Bike dropped off] > [user Write ticket] > [xor Parts needed?]
+### Mechanic
+[user Fix bike] > [user Test ride] > [xor Rides well?]
+### Front desk
+[user Call owner] > [end Bike collected]
+Parts needed? >(Yes: parts = true) [user Order parts] > Fix bike
+Parts needed? >(No: default) Fix bike
+Rides well? >(Yes: ok = true) Call owner
+Rides well? >(No: default) Fix bike
