@@ -363,6 +363,12 @@ fn handler_entries<'a>(
             if flows.is_empty() {
                 continue;
             }
+            // A rework loop (handler leads back to an earlier merge) is no exception
+            // path: its back edge routes below the diagram anyway, so a row of its
+            // own would only push the other branches down.
+            if flows.iter().any(|f| loops_back(graph, &f.target_ref)) {
+                continue;
+            }
             entries.push(HandlerEntry {
                 host,
                 side: side_of(event, host),
@@ -371,6 +377,16 @@ fn handler_entries<'a>(
         }
     }
     entries
+}
+
+/// True when the handler chain starting at `entry` leaves through a back edge.
+fn loops_back<'a>(graph: &SemanticGraph<'a>, entry: &'a str) -> bool {
+    chain_of(graph, entry).iter().any(|id| {
+        graph
+            .outgoing
+            .get(id)
+            .is_some_and(|v| v.iter().any(|f| graph.back_edges.contains(f.id.as_str())))
+    })
 }
 
 /// `chainOf`: the nodes only `entry` leads to.

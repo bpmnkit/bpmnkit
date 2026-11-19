@@ -1,0 +1,5 @@
+# Lab retest | id=labretest
+[start Sample received] > [user Prepare sample] > [xor Ready to measure] > [user Run measurement] > [xor Result valid?]
+[boundary:timer Instrument timeout | on=runMeasurement after=PT30M] > [user Reset instrument] > Ready to measure
+Result valid? >(Yes: valid = true) [service Store result] > [end Result stored]
+Result valid? >(No: default) [service Flag sample] > [end Sample flagged]

@@ -1,0 +1,5 @@
+# Expense rework | id=expenserework
+[start Receipt filed] > [user Collect receipts] > [xor Complete?] > [user Enter expense] > [service Check policy] > [xor Compliant?]
+[boundary:error Policy error | on=checkPolicy error=POLICY] > [user Correct expense] > Complete?
+Compliant? >(Yes: compliant = true) [service Reimburse] > [end Expense paid]
+Compliant? >(No: default) [user Review manually] > [end Expense reviewed]
