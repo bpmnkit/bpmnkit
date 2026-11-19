@@ -118,15 +118,13 @@
         <di:waypoint x="590" y="200"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="flow-legal-done_di" bpmnElement="flow-legal-done">
-        <di:waypoint x="480" y="300"/>
-        <di:waypoint x="480" y="270"/>
-        <di:waypoint x="615" y="270"/>
+        <di:waypoint x="530" y="340"/>
+        <di:waypoint x="615" y="340"/>
         <di:waypoint x="615" y="225"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="flow-finance-done_di" bpmnElement="flow-finance-done">
-        <di:waypoint x="480" y="100"/>
-        <di:waypoint x="480" y="130"/>
-        <di:waypoint x="615" y="130"/>
+        <di:waypoint x="530" y="60"/>
+        <di:waypoint x="615" y="60"/>
         <di:waypoint x="615" y="175"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="flow3_di" bpmnElement="flow3">

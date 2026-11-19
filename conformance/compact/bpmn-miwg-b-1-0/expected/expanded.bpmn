@@ -221,7 +221,7 @@
       <bpmndi:BPMNShape id="_93021cd0-6f49-485d-966f-209744c748de_di" bpmnElement="_93021cd0-6f49-485d-966f-209744c748de" isMarkerVisible="true">
         <dc:Bounds x="1308" y="480" width="50" height="50"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1225" y="534" width="217" height="14"/>
+          <dc:Bounds x="1225" y="462" width="217" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_3c8c32c3-089a-4643-bf42-6c37c0dac7e0_di" bpmnElement="_3c8c32c3-089a-4643-bf42-6c37c0dac7e0" isMarkerVisible="true">
@@ -386,9 +386,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="_61abe245-5604-46ba-8152-94d6e68ffda4_di" bpmnElement="_61abe245-5604-46ba-8152-94d6e68ffda4">
         <di:waypoint x="821" y="645"/>
-        <di:waypoint x="1044" y="645"/>
-        <di:waypoint x="1044" y="505"/>
-        <di:waypoint x="1308" y="505"/>
+        <di:waypoint x="1333" y="645"/>
+        <di:waypoint x="1333" y="530"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="_00d30c39-29a7-4c36-86e3-bc6e893efb42_di" bpmnElement="_00d30c39-29a7-4c36-86e3-bc6e893efb42">
         <di:waypoint x="593" y="883"/>
@@ -404,15 +403,12 @@
         <di:waypoint x="894" y="1033"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="_f5c5d52a-204f-4f97-b872-817d63cf36ab_di" bpmnElement="_f5c5d52a-204f-4f97-b872-817d63cf36ab">
-        <di:waypoint x="944" y="465"/>
-        <di:waypoint x="944" y="425"/>
-        <di:waypoint x="1333" y="425"/>
-        <di:waypoint x="1333" y="480"/>
+        <di:waypoint x="994" y="505"/>
+        <di:waypoint x="1308" y="505"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="_657f30ba-0690-4a14-8b8e-d8939efcc7bd_di" bpmnElement="_657f30ba-0690-4a14-8b8e-d8939efcc7bd">
-        <di:waypoint x="944" y="1073"/>
-        <di:waypoint x="944" y="1113"/>
-        <di:waypoint x="1699" y="1113"/>
+        <di:waypoint x="994" y="1033"/>
+        <di:waypoint x="1699" y="1033"/>
         <di:waypoint x="1699" y="908"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="_54f45351-aa18-4c65-b0d0-edc3aa0a140d_di" bpmnElement="_54f45351-aa18-4c65-b0d0-edc3aa0a140d">

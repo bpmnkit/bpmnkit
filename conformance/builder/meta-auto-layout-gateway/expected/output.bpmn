@@ -92,9 +92,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ta_g_join_di" bpmnElement="Flow_ta_g_join">
         <di:waypoint x="330" y="200"/>
-        <di:waypoint x="360" y="200"/>
-        <di:waypoint x="360" y="60"/>
-        <di:waypoint x="390" y="60"/>
+        <di:waypoint x="415" y="200"/>
+        <di:waypoint x="415" y="85"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_tb_g_join_di" bpmnElement="Flow_tb_g_join">
         <di:waypoint x="330" y="60"/>

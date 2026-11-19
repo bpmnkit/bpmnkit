@@ -104,15 +104,13 @@
         <di:waypoint x="550" y="200"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="jd_di" bpmnElement="jd">
-        <di:waypoint x="440" y="300"/>
-        <di:waypoint x="440" y="263"/>
-        <di:waypoint x="575" y="263"/>
+        <di:waypoint x="490" y="340"/>
+        <di:waypoint x="575" y="340"/>
         <di:waypoint x="575" y="225"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="jc_di" bpmnElement="jc">
-        <di:waypoint x="280" y="100"/>
-        <di:waypoint x="280" y="130"/>
-        <di:waypoint x="575" y="130"/>
+        <di:waypoint x="330" y="60"/>
+        <di:waypoint x="575" y="60"/>
         <di:waypoint x="575" y="175"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="fe_di" bpmnElement="fe">

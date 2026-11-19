@@ -101,3 +101,26 @@ it("stacks a detour branch under the sibling target it feeds", async () => {
 	expect(metrics.shapeOverlaps).toBe(0)
 	expect(metrics.seqCrossings).toBe(0)
 })
+
+// P2: gateway ports — a split is left vertically at its centre-x, then the flow
+// turns horizontal; a join is reached horizontally, then the flow turns into it.
+it("routes split and join branches with one bend each, through the gateways' top and bottom", async () => {
+	const { defs, shape, plane } = await lay("p2-kiln-firing")
+	const flows = defs.processes[0].sequenceFlows
+	const route = (f) => plane.edges.find((e) => e.bpmnElement === f.id).waypoints
+	const split = shape("prepareFiring")
+	const join = shape("readyToFire")
+	for (const f of flows.filter((f) => f.sourceRef === "prepareFiring")) {
+		const w = route(f)
+		expect(w.length - 2, f.id).toBeLessThanOrEqual(1)
+		if (w.length === 3) expect(w[0].x, f.id).toBeCloseTo(centreX(split), 0)
+	}
+	for (const f of flows.filter((f) => f.targetRef === "readyToFire")) {
+		const w = route(f)
+		expect(w.length - 2, f.id).toBeLessThanOrEqual(1)
+		if (w.length === 3) {
+			expect(w[2].x, f.id).toBeCloseTo(centreX(join), 0)
+			expect(w[0].y, f.id).toBe(w[1].y)
+		}
+	}
+})

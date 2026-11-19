@@ -210,9 +210,8 @@
         <di:waypoint x="1364" y="240"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="_847352f2-ac0c-44be-9e24-f4c7f76bfe7e_di" bpmnElement="_847352f2-ac0c-44be-9e24-f4c7f76bfe7e">
-        <di:waypoint x="1137" y="340"/>
-        <di:waypoint x="1137" y="303"/>
-        <di:waypoint x="1272" y="303"/>
+        <di:waypoint x="1187" y="380"/>
+        <di:waypoint x="1272" y="380"/>
         <di:waypoint x="1272" y="265"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

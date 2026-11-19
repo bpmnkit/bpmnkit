@@ -381,9 +381,8 @@
         <di:waypoint x="390" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="pf5_di" bpmnElement="pf5">
-        <di:waypoint x="280" y="160"/>
-        <di:waypoint x="280" y="130"/>
-        <di:waypoint x="415" y="130"/>
+        <di:waypoint x="330" y="200"/>
+        <di:waypoint x="415" y="200"/>
         <di:waypoint x="415" y="85"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="pf6_di" bpmnElement="pf6">

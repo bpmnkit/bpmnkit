@@ -582,9 +582,8 @@
         <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_f1aecfc3-a3da-4bde-bece-87786e25273d_0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="_8a6158ef-d4c5-47b3-a177-7e50896367ae" bpmnElement="_b62ef735-9d04-494a-aeb4-95fd4862cc45" color:border-color="#000000">
-        <di:waypoint x="1091" y="949"/>
-        <di:waypoint x="1091" y="914"/>
-        <di:waypoint x="1194" y="914"/>
+        <di:waypoint x="1109" y="967"/>
+        <di:waypoint x="1194" y="967"/>
         <di:waypoint x="1194" y="878"/>
         <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_f1aecfc3-a3da-4bde-bece-87786e25273d_0"/>
       </bpmndi:BPMNEdge>

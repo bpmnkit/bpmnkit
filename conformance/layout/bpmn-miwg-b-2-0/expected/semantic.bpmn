@@ -1142,14 +1142,13 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="E1373638080961__b41b9c86-bc41-4b6e-ac32-70e1342e6128" bpmnElement="_b41b9c86-bc41-4b6e-ac32-70e1342e6128">
         <di:waypoint x="1910" y="348"/>
-        <di:waypoint x="1910" y="297"/>
-        <di:waypoint x="2239" y="297"/>
-        <di:waypoint x="2239" y="245"/>
+        <di:waypoint x="1910" y="220"/>
+        <di:waypoint x="2214" y="220"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="E1373638080975__de249cbe-d431-4e1f-bc8c-a90aec438683" bpmnElement="_de249cbe-d431-4e1f-bc8c-a90aec438683">
-        <di:waypoint x="2104" y="348"/>
-        <di:waypoint x="2104" y="220"/>
-        <di:waypoint x="2214" y="220"/>
+        <di:waypoint x="2154" y="388"/>
+        <di:waypoint x="2239" y="388"/>
+        <di:waypoint x="2239" y="245"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="E1373638080994__5f52bb2a-c49d-43ae-9253-7b89a8251b2b" bpmnElement="_5f52bb2a-c49d-43ae-9253-7b89a8251b2b">
         <di:waypoint x="1766" y="60"/>

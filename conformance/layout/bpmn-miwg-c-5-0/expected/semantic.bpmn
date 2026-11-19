@@ -791,9 +791,8 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="_35cc1b09-7647-48f5-b3f9-b406117a3de5" bpmnElement="_52e3c106-b055-40a0-a9f9-db9529adfb38" color:border-color="#000000">
-        <di:waypoint x="1908" y="180"/>
-        <di:waypoint x="1908" y="143"/>
-        <di:waypoint x="2043" y="143"/>
+        <di:waypoint x="1958" y="220"/>
+        <di:waypoint x="2043" y="220"/>
         <di:waypoint x="2043" y="105"/>
         <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" labelStyle="LS_2fcf7782-05d8-4e1d-a8d2-51ea0ec65d7e_0"/>
       </bpmndi:BPMNEdge>
@@ -804,9 +803,8 @@
         <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" labelStyle="LS_2fcf7782-05d8-4e1d-a8d2-51ea0ec65d7e_0"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="_bba9a75c-9810-4909-9a7e-f157b3dcb9a3" bpmnElement="_a4eaa7b6-f9ef-458a-ba70-e1fd3ff0595a" color:border-color="#000000">
-        <di:waypoint x="2608" y="180"/>
-        <di:waypoint x="2608" y="150"/>
-        <di:waypoint x="2743" y="150"/>
+        <di:waypoint x="2658" y="220"/>
+        <di:waypoint x="2743" y="220"/>
         <di:waypoint x="2743" y="105"/>
         <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" labelStyle="LS_2fcf7782-05d8-4e1d-a8d2-51ea0ec65d7e_0"/>
       </bpmndi:BPMNEdge>

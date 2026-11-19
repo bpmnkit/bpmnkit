@@ -340,9 +340,8 @@
         <di:waypoint x="1005.5" y="320"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1u29yKxb_di" bpmnElement="Flow_1u29yKxb">
-        <di:waypoint x="1055.5" y="280"/>
-        <di:waypoint x="1055.5" y="250"/>
-        <di:waypoint x="1228.5" y="250"/>
+        <di:waypoint x="1105.5" y="320"/>
+        <di:waypoint x="1228.5" y="320"/>
         <di:waypoint x="1228.5" y="205"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_NFb6OA8f_di" bpmnElement="Flow_NFb6OA8f">

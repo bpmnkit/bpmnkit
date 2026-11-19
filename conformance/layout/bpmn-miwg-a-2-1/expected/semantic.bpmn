@@ -256,17 +256,17 @@
         <di_1:waypoint x="757" y="310"/>
       </di:BPMNEdge>
       <di:BPMNEdge id="_To-A0zOCEeSknpIVFCxNIQ" bpmnElement="_To9Z8zOCEeSknpIVFCxNIQ">
-        <di_1:waypoint x="480" y="170"/>
-        <di_1:waypoint x="480" y="140"/>
-        <di_1:waypoint x="782" y="140"/>
+        <di_1:waypoint x="530" y="210"/>
+        <di_1:waypoint x="782" y="210"/>
         <di_1:waypoint x="782" y="285"/>
         <di:BPMNLabel id="Bpmndi_BPMNLabel_HOBncH4gEeWe1Mf7vUgLJg" labelStyle="_cVFcQTOCEeSknpIVFCxNIQ">
-          <dc:Bounds x="524" y="150" width="63" height="14"/>
+          <dc:Bounds x="561" y="186" width="63" height="14"/>
         </di:BPMNLabel>
       </di:BPMNEdge>
       <di:BPMNEdge id="_To-A2TOCEeSknpIVFCxNIQ" bpmnElement="_To9Z9jOCEeSknpIVFCxNIQ">
-        <di_1:waypoint x="782" y="285"/>
-        <di_1:waypoint x="782" y="70"/>
+        <di_1:waypoint x="807" y="310"/>
+        <di_1:waypoint x="847" y="310"/>
+        <di_1:waypoint x="847" y="70"/>
         <di_1:waypoint x="887" y="70"/>
       </di:BPMNEdge>
       <di:BPMNEdge id="_To-A3jOCEeSknpIVFCxNIQ" bpmnElement="_To9Z-TOCEeSknpIVFCxNIQ">
@@ -281,8 +281,8 @@
       </di:BPMNEdge>
       <di:BPMNEdge id="Bpmndi_BPMNEdge_edepQgbbEealeL5I4Yl3Dw" bpmnElement="Bpmn_SequenceFlow_edepQQbbEealeL5I4Yl3Dw">
         <di_1:waypoint x="480" y="110"/>
-        <di_1:waypoint x="480" y="120"/>
-        <di_1:waypoint x="640" y="120"/>
+        <di_1:waypoint x="480" y="140"/>
+        <di_1:waypoint x="640" y="140"/>
         <di_1:waypoint x="640" y="270"/>
         <di:BPMNLabel id="Bpmndi_BPMNLabel_edepQwbbEealeL5I4Yl3Dw" labelStyle="Bpmndi_BPMNLabelStyle_edhFgAbbEealeL5I4Yl3Dw"/>
       </di:BPMNEdge>

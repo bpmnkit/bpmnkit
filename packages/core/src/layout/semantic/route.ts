@@ -125,6 +125,12 @@ export function routeFlows(
 		direct: { waypoints: Waypoint[]; crossings: number } | null
 	}> = []
 
+	// A boundary handler leaving a host has to get past the host's column; a
+	// join template from that column would close the row it passes through.
+	const handlerRanks = new Set<number>()
+	for (const [host, events] of graph.attachers) {
+		if (events.length > 0) handlerRanks.add(graph.ranks.get(host) ?? -1)
+	}
 	for (const flow of flows) {
 		const source = bounds.get(flow.sourceRef)
 		const target = bounds.get(flow.targetRef)
@@ -147,7 +153,16 @@ export function routeFlows(
 						target,
 						targetRank,
 					)
-				: forwardCandidates(ctx, source, target, sourceRank, targetRank)
+				: forwardCandidates(
+						ctx,
+						source,
+						target,
+						sourceRank,
+						targetRank,
+						isJoinGateway(graph, flow.targetRef) &&
+							!isSplitGateway(graph, flow.sourceRef) &&
+							!handlerRanks.has(sourceRank ?? -1),
+					)
 
 		const clear = pick(direct, ctx, flow.sourceRef, flow.targetRef)
 		if (clear && clear.crossings <= CROSSING_TOLERANCE) {
@@ -268,6 +283,22 @@ function commit(
 			])
 		}
 	}
+}
+
+const GATEWAYS = new Set([
+	"exclusiveGateway",
+	"parallelGateway",
+	"inclusiveGateway",
+	"eventBasedGateway",
+	"complexGateway",
+])
+
+function isJoinGateway(graph: SemanticGraph, id: string): boolean {
+	return GATEWAYS.has(graph.byId.get(id)?.type ?? "") && (graph.incoming.get(id) ?? []).length > 1
+}
+
+function isSplitGateway(graph: SemanticGraph, id: string): boolean {
+	return GATEWAYS.has(graph.byId.get(id)?.type ?? "") && (graph.outgoing.get(id) ?? []).length > 1
 }
 
 function hostOf(graph: SemanticGraph, eventId: string): string {
@@ -412,6 +443,8 @@ function forwardCandidates(
 	target: Bounds,
 	sourceRank: number | undefined,
 	targetRank: number | undefined,
+	/** The target is a join gateway reached from something other than a split. */
+	intoJoin = false,
 ): Waypoint[][] {
 	const from = centre(source)
 	const to = centre(target)
@@ -477,6 +510,16 @@ function forwardCandidates(
 			{ x: target.x, y: to.y },
 		],
 	]
+
+	// A join is reached the way its split was left, mirrored: along the
+	// branch's own row, then up or down into the gateway at its centre-x.
+	if (intoJoin) {
+		candidates.unshift([
+			{ x: source.x + source.width, y: from.y },
+			{ x: to.x, y: from.y },
+			{ x: to.x, y: down ? target.y : target.y + target.height },
+		])
+	}
 
 	// Turning in the gutter right behind the source instead reaches the target
 	// band early; which of the two crosses less depends on what is already

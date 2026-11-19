@@ -104,9 +104,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
         <di:waypoint x="340" y="194"/>
-        <di:waypoint x="370" y="194"/>
-        <di:waypoint x="370" y="40"/>
-        <di:waypoint x="400" y="40"/>
+        <di:waypoint x="425" y="194"/>
+        <di:waypoint x="425" y="65"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
         <di:waypoint x="180" y="40"/>
