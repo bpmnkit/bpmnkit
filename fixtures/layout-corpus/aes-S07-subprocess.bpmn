@@ -3,10 +3,10 @@
 <process id="Process_1" isExecutable="true">
 <startEvent id="start" name="Application received"><outgoing>fProcess_1_0</outgoing></startEvent>
 <subProcess id="screen" name="Screen applicant"><incoming>fProcess_1_0</incoming><outgoing>fProcess_1_1</outgoing>
-<startEvent id="sStart"></startEvent>
-<userTask id="cv" name="Review CV"></userTask>
-<userTask id="call" name="Phone screen"></userTask>
-<endEvent id="sEnd"></endEvent>
+<startEvent id="sStart"><outgoing>fscreen_0</outgoing></startEvent>
+<userTask id="cv" name="Review CV"><incoming>fscreen_0</incoming><outgoing>fscreen_1</outgoing></userTask>
+<userTask id="call" name="Phone screen"><incoming>fscreen_1</incoming><outgoing>fscreen_2</outgoing></userTask>
+<endEvent id="sEnd"><incoming>fscreen_2</incoming></endEvent>
 <sequenceFlow id="fscreen_0" sourceRef="sStart" targetRef="cv"/>
 <sequenceFlow id="fscreen_1" sourceRef="cv" targetRef="call"/>
 <sequenceFlow id="fscreen_2" sourceRef="call" targetRef="sEnd"/>

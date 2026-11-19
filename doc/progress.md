@@ -1,5 +1,15 @@
 # Progress
 
+## 2026-11-19 — layout P1: collaboration composition
+
+- Uniform pool frame (`auto-layout.ts` `uniformPoolFrame`): every pool, black box and lane ends at the widest pool's right edge.
+- Message-flow alignment: a dock within 1 px of its partner's x snaps to it (no 2-bend jog); a leg nudges its dock to miss element labels when that costs no bend.
+- Message tracks (`collaboration/message-tracks.ts`): runs sharing a gap are stacked by a riser-vs-run constraint order (crossings avoided where not cyclic); non-overlapping runs share a track.
+- Docked labels (`collaboration/docked-labels.ts`): an event/gateway name on the side its message flows dock on moves to the free far side.
+- Tried and dropped (ratchet regressions on the insurance case): px-based pool ordering with black boxes pinned to the rim, and a joint coordinate-descent alignment; pool ordering and the greedy alignment stay as they were.
+- Corpus: two invented cases (`collab-festival-permits`, `collab-lab-samples`); baseline refreshed (only improvements: poolWidthSD → 0 on all 6 collaborations, travel booking bends/msg 1.5 → 1, non-vertical 50 → 37.5 %). Rust twin in `crates/bpmnkit-layout`; conformance re-recorded.
+- `fixtures/layout-corpus/aes-S07-subprocess.bpmn`: sub-process children get `incoming`/`outgoing` so bpmnlint parity passes.
+
 ## 2026-11-19 — layout P0: full metric set, synthetic corpus, `pnpm layout:score`, ratchet
 
 - `scripts/layout-aesthetics/metrics.mjs`: adds the plan's gate metrics (seq / msg×seq / msg×msg crossings, bends per seq/msg flow, max bends, non-vertical msg %, pool width and left-padding SD, area/node, empty area %, shared centre-x %, 10 px grid %, boundary labels crossed, label×label overlaps).
