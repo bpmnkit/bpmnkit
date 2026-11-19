@@ -1,0 +1,6 @@
+# Visa slot hold | id=visahold
+[start] > holdSlot[service Hold visa slot | job=hold-slot] > applicantReply[eventgw Applicant reply]
+applicantReply > docsSent[catch Documents received | msg=docs-received key=caseId] > bookSlot[service Book visa slot | job=book-slot] > [end]
+applicantReply > lapsed[catch:timer 5 days lapsed | after=P5D] > freeSlot[service Free held slot | job=free-slot] > [end]
+holdFailed[boundary:error Hold failed | on=holdSlot error=HOLD_FAILED] > notifyApplicant[service Notify applicant | job=notify-applicant] > [end]
+bookFailed[boundary:error Booking failed | on=bookSlot error=BOOK_FAILED] > phoneApplicant[user Phone applicant] > [end]

@@ -533,6 +533,14 @@ pub fn place_exception_row<'a>(
     }
     let band = |id: &str| -> i64 { bands.get(id).copied().unwrap_or(0) };
     let mut busy = vec![false; entries.len()];
+    let mut blocked: IndexSet<(Option<usize>, i64, i64)> = IndexSet::default();
+    let row_key = |entry: &HandlerEntry| {
+        (
+            component_of.get(entry.host).copied(),
+            band(entry.host),
+            entry.side,
+        )
+    };
     for (k, entry) in entries.iter().enumerate() {
         let host_rank = graph.ranks.get(entry.host).copied();
         let sibling = graph.nodes.iter().any(|n| {
@@ -544,6 +552,16 @@ pub fn place_exception_row<'a>(
                 && (band(id) - band(entry.host)) * entry.side > 0
         });
         if sibling || band(entry.host) != 0 {
+            busy[k] = true;
+        }
+        if sibling {
+            blocked.insert(row_key(entry));
+        }
+    }
+    // One row per scope, band and side: when a sibling branch blocks one handler's
+    // column, the row would be split between the handlers, so all keep the step.
+    for (k, entry) in entries.iter().enumerate() {
+        if blocked.contains(&row_key(entry)) {
             busy[k] = true;
         }
     }

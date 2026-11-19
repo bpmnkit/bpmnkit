@@ -352,6 +352,9 @@ export function placeExceptionRow(
 	}
 	const band = (id: string): number => bands.get(id) ?? 0
 	const busy = new Set<HandlerEntry>()
+	const blocked = new Set<string>()
+	const rowKey = (entry: HandlerEntry): string =>
+		`${componentOf.get(entry.host) ?? 0}:${band(entry.host)}:${entry.side}`
 	for (const entry of entries) {
 		const hostRank = graph.ranks.get(entry.host)
 		const sibling = graph.nodes.some(
@@ -363,7 +366,12 @@ export function placeExceptionRow(
 				(band(n.id) - band(entry.host)) * entry.side > 0,
 		)
 		if (sibling || band(entry.host) !== 0) busy.add(entry)
+		if (sibling) blocked.add(rowKey(entry))
 	}
+	// One row per scope, band and side: when a sibling branch blocks one handler's
+	// column, the row would be split between the handlers (a long drop for one, a
+	// step for the other), so all of them keep the step.
+	for (const entry of entries) if (blocked.has(rowKey(entry))) busy.add(entry)
 
 	const steps = new Map<string, number>()
 	for (const entry of entries)

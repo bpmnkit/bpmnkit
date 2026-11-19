@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-19 — layout P2d: spine handlers stay together when a sibling branch blocks one
+
+- Cause: in `p2-room-deposit` (event gateway after a task with an error boundary, second error boundary on a branch task) P2b's exception row took the first handler into the shared row (156 px drop) while a sibling branch forced the second one to keep its step. Split handlers: edgeLenCV 0.66 → 0.71. Ablation (exception row off) reproduced the 4fc4cf29 layout exactly.
+- Fix (`semantic/graph.ts` `placeExceptionRow`, Rust twin in `semantic/graph.rs`): when a sibling branch blocks one handler's column, every handler of that scope, band and side keeps the step. The row stays for the other cases (zero ratchet regressions, conformance unchanged).
+- Corpus: `p2-room-deposit`, `p2-visa-hold`, `p2-pallet-reserve` (three-way event gateway). Baseline entries are the 4fc4cf29 values (width 1028 / 881 / 872, height 341 / 341 / 481, edgeLenCV 0.66 / 0.72 / 0.69), all met exactly. Test in `p2-rules.test.mjs`. cargo fmt/clippy/test green; no Rust oracle fixture changed.
+
 ## 2026-11-19 — layout P2c: rework-loop boundary handlers stay out of the exception row
 
 - Cause: P2b's `placeExceptionRow` treated any single-entry boundary handler as an exception path, including a handler that loops back to an earlier merge gateway (rework loop). It got its own row, the lower branches moved down ~30 px and the spine bent (`p2-timesheet-approval`: height 266 → 299, happyAxisDev 57 → 70).
