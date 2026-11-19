@@ -1,0 +1,62 @@
+# Wedding planning agency
+## Venue Manager | id=venue
+[start:message Venue hold requested] > [service Check calendar] > [xor Date free?]
+Date free? >(Yes: free = true) [send Hold venue] > [end Venue reserved]
+Date free? >(No: default) [send Decline date] > [end Date declined]
+## Caterer | id=caterer
+[start:message Catering quote requested] > [user Plan menu] > [xor Capacity ok?]
+Capacity ok? >(Yes: ok = true) [send Send catering quote] > [catch:message Catering accepted | key=weddingId] > [send Confirm menu] > [end Menu fixed]
+Capacity ok? >(No: default) [send Decline catering] > [end Catering dropped]
+## Florist | id=florist
+[start:message Flower quote requested] > [user Design arrangements] > [send Send florals ready] > [end Florals done]
+## Event Planner | id=planner
+[start:message Couple briefing] > [service Draft event plan] > [send Request venue hold] > [eventgw Await venue]
+Await venue > [catch:message Venue held | key=weddingId] > [send Brief vendor coordination] > [catch:message Vendors confirmed | key=weddingId] > [send Send save-the-date] > [send Request shuttle] > [end Plan locked]
+Await venue > [catch:message Venue unavailable | key=weddingId] > [send Propose alternatives] > [end Alternatives proposed]
+Await venue > [catch:timer Venue silent | after=P3D] > [send Chase venue] > [end Venue chased]
+## Photographer | id=photographer
+[start:message Photographer booking] > [service Check availability] > [send Confirm shoot] > [end Shoot booked]
+## Music Band | id=band
+[start:message Band inquiry] > [user Check repertoire] > [send Confirm band] > [end Band set]
+## Vendor Coordination | id=vendors
+[start:message Vendor briefing] > [service Compile vendor list] > [send Request catering quote] > [send Request flower quote] > [send Book photographer] > [send Book band] > [eventgw Await quotes]
+Await quotes > [catch:message Catering quote | key=weddingId] > [send Accept catering] > [catch:message Florals ready | key=weddingId] > [send Confirm vendors] > [end Vendors done]
+Await quotes > [catch:message Catering declined | key=weddingId] > [send Switch caterer] > [end Caterer switched]
+Await quotes > [catch:timer Quotes late | after=P2D] > [send Remind vendors] > [end Vendors reminded]
+## Transport Fleet | id=fleet
+[start:message Shuttle requested] > [service Plan shuttle] > [send Confirm shuttle] > [end Shuttle planned]
+## Guest Registry | id=guests
+[start:message Guest list requested] > [user Collect RSVPs] > [send Send guest count] > [end Guests counted]
+## Invitation Printer | id=printer
+[start:message Invitation request] > [service Print cards] > [send Ship invitations] > [end Invitations shipped]
+## Couple | blackbox
+## Marriage Registry | blackbox
+Couple ~> Couple briefing: Wishes
+Couple ~> Vendor briefing: Budget
+Marriage Registry ~> Draft event plan: Legal dates
+Request venue hold ~> Venue hold requested: Hold request
+Hold venue ~> Venue held: Hold
+Hold venue ~> Compile vendor list: Venue specs
+Decline date ~> Venue unavailable: Decline
+Chase venue ~> Check calendar: Reminder
+Brief vendor coordination ~> Vendor briefing: Plan brief
+Request catering quote ~> Catering quote requested: Quote order
+Send catering quote ~> Catering quote: Quote
+Decline catering ~> Catering declined: Decline note
+Accept catering ~> Catering accepted: Acceptance
+Confirm menu ~> Draft event plan: Menu note
+Request flower quote ~> Flower quote requested: Flower order
+Send florals ready ~> Florals ready: Florals
+Book photographer ~> Photographer booking: Booking
+Confirm shoot ~> Compile vendor list: Shoot slot
+Book band ~> Band inquiry: Band booking
+Confirm band ~> Couple: Band confirmation
+Confirm vendors ~> Vendors confirmed: Vendor list
+Send save-the-date ~> Invitation request: Invitation order
+Ship invitations ~> Collect RSVPs: Invitation batch
+Send guest count ~> Compile vendor list: Headcount
+Send guest count ~> Plan shuttle: Headcount shuttle
+Request shuttle ~> Shuttle requested: Shuttle order
+Confirm shuttle ~> Marriage Registry: Pickup time
+Propose alternatives ~> Couple: Options
+Send save-the-date ~> Guest list requested: Guest request

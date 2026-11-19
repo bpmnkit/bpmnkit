@@ -1,0 +1,62 @@
+# University admissions
+## Admissions Office | id=admissions
+[start:message Application submitted] > [service Check completeness] > [send Request transcript check] > [send Request language score] > [eventgw Await verification]
+Await verification > [catch:message Transcripts verified | key=applicantId] > [send Forward to faculty] > [catch:message Faculty decision | key=applicantId] > [send Issue offer] > [end Offer issued]
+Await verification > [catch:message Transcripts invalid | key=applicantId] > [send Reject application] > [end Application rejected]
+Await verification > [catch:timer Verification stalled | after=P10D] > [send Chase verification] > [end Chased]
+## Applicant Portal | id=portal
+[start Applicant registers] > [user Submit application] > [send Submit documents] > [eventgw Await response]
+Await response > [catch:message Offer letter | key=applicantId] > [user Review offer] > [send Accept offer] > [end Offer taken]
+Await response > [catch:message Rejection letter | key=applicantId] > [end Rejection noted]
+## Faculty Review Board | id=faculty
+[start:message Faculty review requested] > [user Review application] > [send Report faculty decision] > [end Review done]
+## Scholarship Committee | id=scholarship
+[start:message Scholarship screening] > [user Rank candidates] > [send Award scholarship] > [end Scholarship awarded]
+## Housing Office | id=housing
+[start:message Housing requested] > [service Allocate room] > [xor Room free?]
+Room free? >(Yes: free = true) [send Confirm room] > [end Room assigned]
+Room free? >(No: default) [send Deny housing] > [end No room]
+## Transcript Verification | id=transcripts
+[start:message Transcript check requested] > [service Verify records] > [xor Records valid?]
+Records valid? >(Yes: valid = true) [send Confirm transcripts] > [end Records fine]
+Records valid? >(No: default) [send Flag invalid transcripts] > [end Records flagged]
+## Visa Support | id=visa
+[start:message Visa support requested] > [user Prepare visa letter] > [send Send visa letter] > [end Visa done]
+## Student Finance | id=finance
+[start:message Tuition plan requested] > [service Compute tuition] > [send Report tuition plan] > [end Finance done]
+## Orientation Team | id=orientation
+[start:message Orientation slot requested] > [user Plan session] > [send Confirm orientation] > [end Orientation planned]
+## Enrollment Services | id=enrollment
+[start:message Offer accepted] > [service Open student record] > [send Request tuition plan] > [send Request housing] > [eventgw Await readiness]
+Await readiness > [catch:message Tuition plan ready | key=studentId] > [send Request orientation slot] > [catch:message Orientation booked | key=studentId] > [send Confirm enrollment] > [end Enrolled]
+Await readiness > [catch:message Housing denied | key=studentId] > [send Offer off-campus list] > [end Off-campus advised]
+Await readiness > [catch:timer Readiness overdue | after=P14D] > [send Send reminder] > [end Reminder sent]
+## Language Testing Agency | blackbox
+## Immigration Service | blackbox
+Submit documents ~> Application submitted: Application
+Request transcript check ~> Transcript check requested: Check order
+Confirm transcripts ~> Transcripts verified: Verified
+Flag invalid transcripts ~> Transcripts invalid: Invalid
+Chase verification ~> Verify records: Reminder
+Request language score ~> Language Testing Agency: Score query
+Language Testing Agency ~> Review application: Score report
+Forward to faculty ~> Faculty review requested: Case file
+Report faculty decision ~> Faculty decision: Decision
+Report faculty decision ~> Open student record: Cohort size
+Check completeness ~> Scholarship screening: Candidate pool
+Award scholarship ~> Compute tuition: Award
+Issue offer ~> Offer letter: Offer
+Issue offer ~> Visa support requested: Offer copy
+Reject application ~> Rejection letter: Rejection
+Accept offer ~> Offer accepted: Acceptance
+Send visa letter ~> Immigration Service: Support letter
+Immigration Service ~> Open student record: Visa status
+Request tuition plan ~> Tuition plan requested: Tuition query
+Report tuition plan ~> Tuition plan ready: Tuition plan
+Request housing ~> Housing requested: Housing order
+Confirm room ~> Plan session: Room info
+Deny housing ~> Housing denied: Denial
+Offer off-campus list ~> Review offer: Off-campus list
+Send reminder ~> Review offer: Reminder
+Request orientation slot ~> Orientation slot requested: Slot request
+Confirm orientation ~> Orientation booked: Slot

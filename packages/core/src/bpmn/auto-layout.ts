@@ -1,6 +1,7 @@
 import { associationWaypoints, packAnnotations } from "../layout/annotations.js"
 import type { MessageLink } from "../layout/collaboration/alignment.js"
 import { alignPools } from "../layout/collaboration/alignment.js"
+import { pathCrossings } from "../layout/collaboration/crossings.js"
 import type { MessageDock } from "../layout/collaboration/docked-labels.js"
 import { flipDockedLabels } from "../layout/collaboration/docked-labels.js"
 import { placeMessageFlowLabels } from "../layout/collaboration/message-labels.js"
@@ -782,6 +783,8 @@ function messageFlowRoute(
 	containers: BpmnBounds[] = [],
 	/** Shape labels, which a leg sidesteps only when that costs no bend. */
 	labels: BpmnBounds[] = [],
+	/** Snap docks a rounding apart onto one x. */
+	snap = true,
 ): { source: BpmnWaypoint[]; target: BpmnWaypoint[]; gap: number } {
 	const srcBelow = src.y + src.height / 2 > tgt.y + tgt.height / 2
 	const sy = srcBelow ? src.y : src.y + src.height
@@ -798,7 +801,7 @@ function messageFlowRoute(
 	const centreX = Math.round(tgt.x + tgt.width / 2)
 	// Centres a rounding apart are meant to line up: a 1 px jog would cost the
 	// message two bends for nothing.
-	const tgtX = Math.abs(centreX - srcX) <= 1 ? srcX : centreX
+	const tgtX = snap && Math.abs(centreX - srcX) <= 1 ? srcX : centreX
 	const build = (
 		bandY: number,
 	): { source: BpmnWaypoint[]; target: BpmnWaypoint[]; blocked: boolean } => {
@@ -849,6 +852,16 @@ function messageFlowRoute(
 	const fallback = candidates[0]
 	const route = build(fallback?.y ?? midpoint)
 	return { source: route.source, target: route.target, gap: fallback?.index ?? -1 }
+}
+
+/** Two routes of one message flow that draw the same line. */
+function sameRoute(
+	a: { source: BpmnWaypoint[]; target: BpmnWaypoint[]; gap: number },
+	b: { source: BpmnWaypoint[]; target: BpmnWaypoint[]; gap: number },
+): boolean {
+	const same = (p: BpmnWaypoint[], q: BpmnWaypoint[]): boolean =>
+		p.length === q.length && p.every((w, i) => w.x === q[i]?.x && w.y === q[i]?.y)
+	return a.gap === b.gap && same(a.source, b.source) && same(a.target, b.target)
 }
 
 /**
@@ -1318,6 +1331,7 @@ export function applyAutoLayout(
 	// ragged column, black boxes included.
 	if (collab) uniformPoolFrame(allShapes, collab, defs)
 
+	const repair = routeRepair(defs)
 	if (collab && collab.messageFlows.length > 0) {
 		const shapeByElement = new Map(allShapes.map((s) => [s.bpmnElement, s.bounds]))
 		// An endpoint inside a collapsed sub-process has no shape on this plane;
@@ -1345,16 +1359,15 @@ export function applyAutoLayout(
 		const labels = inside.flatMap((s) => (s.label?.bounds ? [s.label.bounds] : []))
 		const poolGaps = poolBands(allShapes, participantIds)
 
-		const runs: Array<{
-			id: string
-			from: string
-			to: string
-			source: BpmnWaypoint[]
-			target: BpmnWaypoint[]
-			gap: number
-		}> = []
-
-		/** Bounds of every expanded scope an element sits inside. */
+		type Route = { source: BpmnWaypoint[]; target: BpmnWaypoint[]; gap: number }
+		/**
+		 * Each message flow routed twice: `tidy` lines up docks a rounding apart
+		 * and nudges a riser off element labels; `plain` does neither. A nudge is
+		 * local and can push a riser across another message's run, so a flow keeps
+		 * its tidy route only where that adds no crossing (see below).
+		 */
+		const candidates: Array<{ id: string; from: string; to: string; tidy: Route; plain: Route }> =
+			[]
 		const containersOf = (id: string): BpmnBounds[] => {
 			const out: BpmnBounds[] = []
 			let parent = visibleAncestors.get(id)
@@ -1382,11 +1395,8 @@ export function applyAutoLayout(
 			const src = shapeByElement.get(sourceRef)
 			const tgt = shapeByElement.get(targetRef)
 			if (!src || !tgt) continue
-			const run = {
-				id: mf.id,
-				from: sourceRef,
-				to: targetRef,
-				...messageFlowRoute(
+			const route = (tidy: boolean): Route =>
+				messageFlowRoute(
 					src,
 					tgt,
 					participantIds.has(sourceRef),
@@ -1397,54 +1407,109 @@ export function applyAutoLayout(
 					[
 						...containersOf(sourceRef),
 						...containersOf(targetRef),
-						...labelOf(sourceRef),
-						...labelOf(targetRef),
+						...(tidy ? [...labelOf(sourceRef), ...labelOf(targetRef)] : []),
 					],
-					labels,
-				),
-			}
-			runs.push(run)
+					tidy ? labels : [],
+					tidy,
+				)
+			candidates.push({
+				id: mf.id,
+				from: sourceRef,
+				to: targetRef,
+				tidy: route(true),
+				plain: route(false),
+			})
 			stemOffset = (stemOffset + MESSAGE_FLOW_STEM_STEP) % (MESSAGE_FLOW_STEM_STEP * 4)
 		}
 
-		// Flows sharing a gap get their own line inside it, so parallel runs do not
-		// pile onto one row and cross every other flow's riser.
-		const perGap = new Map<number, typeof runs>()
-		for (const run of runs) {
-			const list = perGap.get(run.gap)
-			if (list) list.push(run)
-			else perGap.set(run.gap, [run])
+		const endX = (points: BpmnWaypoint[]): number => points[points.length - 1]?.x ?? 0
+		const copy = (points: BpmnWaypoint[]): BpmnWaypoint[] => points.map((p) => ({ ...p }))
+		/** The finished waypoints of every message flow, tidy where `tidy[i]`. */
+		const place = (tidy: readonly boolean[]): BpmnWaypoint[][] => {
+			const runs = candidates.map((c, i) => {
+				const r = tidy[i] ? c.tidy : c.plain
+				return { source: copy(r.source), target: copy(r.target), gap: r.gap }
+			})
+			// Flows sharing a gap get their own line inside it, so parallel runs do
+			// not pile onto one row and cross every other flow's riser.
+			const perGap = new Map<number, typeof runs>()
+			for (const run of runs) {
+				const list = perGap.get(run.gap)
+				if (list) list.push(run)
+				else perGap.set(run.gap, [run])
+			}
+			for (const [index, list] of perGap) {
+				const gap = poolGaps[index]
+				if (!gap) continue
+				// The gap is clear ground, so moving the crossing inside it cannot
+				// introduce a collision; the track order decides the crossings.
+				const fromAbove = (run: (typeof runs)[number]): boolean => (run.source[0]?.y ?? 0) < gap.top
+				const ys = assignTracks(
+					list.map((run) => ({
+						upper: fromAbove(run) ? endX(run.source) : endX(run.target),
+						lower: fromAbove(run) ? endX(run.target) : endX(run.source),
+					})),
+					gap.top,
+					gap.bottom,
+				)
+				for (let i = 0; i < list.length; i++) {
+					const run = list[i]
+					const y = ys[i]
+					if (!run || y === undefined) continue
+					const last = run.source[run.source.length - 1]
+					const lastTarget = run.target[run.target.length - 1]
+					if (last) last.y = y
+					if (lastTarget) lastTarget.y = y
+				}
+			}
+			return runs.map((run) => collapseCollinear([...run.source, ...[...run.target].reverse()]))
 		}
 
-		const endX = (points: BpmnWaypoint[]): number => points[points.length - 1]?.x ?? 0
-		for (const [index, list] of perGap) {
-			const gap = poolGaps[index]
-			if (!gap) continue
-			// The gap is clear ground, so moving the crossing inside it cannot
-			// introduce a collision; the track order decides the crossings.
-			const fromAbove = (run: (typeof runs)[number]): boolean => (run.source[0]?.y ?? 0) < gap.top
-			const ys = assignTracks(
-				list.map((run) => ({
-					upper: fromAbove(run) ? endX(run.source) : endX(run.target),
-					lower: fromAbove(run) ? endX(run.target) : endX(run.source),
-				})),
-				gap.top,
-				gap.bottom,
-			)
-			for (let i = 0; i < list.length; i++) {
-				const run = list[i]
-				const y = ys[i]
-				if (!run || y === undefined) continue
-				const last = run.source[run.source.length - 1]
-				const lastTarget = run.target[run.target.length - 1]
-				if (last) last.y = y
-				if (lastTarget) lastTarget.y = y
+		// Start from the plain routes and take each tidy one that adds no
+		// crossing with the other messages or the flows already drawn, so the
+		// tidying can never cost a crossing. Scored after the final route repair,
+		// which reroutes a message still running through a shape.
+		const crossingsOf = (paths: BpmnWaypoint[][]): number => {
+			const drawn: BpmnDiEdge[] = allEdges.map((e) => ({
+				...e,
+				waypoints: e.waypoints.map((w) => ({ ...w })),
+			}))
+			const messages: BpmnDiEdge[] = candidates.map((c, i) => ({
+				id: `${c.id}_di`,
+				bpmnElement: c.id,
+				waypoints: copy(paths[i] ?? []),
+				unknownAttributes: {},
+			}))
+			repair(allShapes, [...drawn, ...messages])
+			let n = 0
+			for (let i = 0; i < messages.length; i++) {
+				const path = messages[i]?.waypoints ?? []
+				for (let j = i + 1; j < messages.length; j++)
+					n += pathCrossings(path, messages[j]?.waypoints ?? [])
+				for (const other of drawn) n += pathCrossings(path, other.waypoints)
 			}
+			return n
+		}
+		const tidy = candidates.map(() => false)
+		let paths = place(tidy)
+		let best = crossingsOf(paths)
+		for (let i = 0; i < candidates.length; i++) {
+			const c = candidates[i]
+			if (!c || sameRoute(c.tidy, c.plain)) continue
+			tidy[i] = true
+			const trial = place(tidy)
+			const n = crossingsOf(trial)
+			if (n <= best) {
+				best = n
+				paths = trial
+			} else tidy[i] = false
 		}
 
 		const docks: MessageDock[] = []
-		for (const run of runs) {
-			const waypoints = collapseCollinear([...run.source, ...[...run.target].reverse()])
+		for (let i = 0; i < candidates.length; i++) {
+			const run = candidates[i]
+			const waypoints = paths[i]
+			if (!run || !waypoints) continue
 			allEdges.push({ id: `${run.id}_di`, bpmnElement: run.id, waypoints, unknownAttributes: {} })
 			docks.push(
 				{ element: run.from, y: waypoints[0]?.y ?? 0 },
@@ -1463,7 +1528,6 @@ export function applyAutoLayout(
 		)
 	}
 
-	const repair = routeRepair(defs)
 	repair(allShapes, allEdges)
 	if (collab && collab.messageFlows.length > 0) {
 		const pools = new Set(collab.participants.map((p) => p.id))

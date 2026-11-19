@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 import { applyAutoLayout } from "../src/bpmn/auto-layout.js"
 import type { BpmnDiShape } from "../src/bpmn/bpmn-model.js"
 import { Bpmn } from "../src/bpmn/index.js"
+import { pathCrossings } from "../src/layout/collaboration/crossings.js"
 import { flipDockedLabels } from "../src/layout/collaboration/docked-labels.js"
 import { assignTracks } from "../src/layout/collaboration/message-tracks.js"
 
@@ -110,5 +111,18 @@ describe("flipDockedLabels", () => {
 			new Set(),
 		)
 		expect(shapes[0]?.label?.bounds?.y).toBe(140)
+	})
+})
+
+describe("pathCrossings", () => {
+	it("counts a riser through a run, not a shared dock or a touching corner", () => {
+		const run = [
+			{ x: 0, y: 50 },
+			{ x: 100, y: 50 },
+		]
+		expect(pathCrossings(run, [{ x: 50, y: 0 }, { x: 50, y: 100 }])).toBe(1)
+		expect(pathCrossings(run, [{ x: 100, y: 50 }, { x: 100, y: 100 }])).toBe(0)
+		expect(pathCrossings(run, [{ x: 50, y: 50 }, { x: 50, y: 100 }])).toBe(0)
+		expect(pathCrossings(run, [{ x: 20, y: 50 }, { x: 80, y: 50 }])).toBe(0)
 	})
 })
