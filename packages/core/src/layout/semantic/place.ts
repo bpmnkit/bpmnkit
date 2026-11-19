@@ -212,7 +212,7 @@ export function place(
  * label sits between two neighbouring columns, or where events' and gateways'
  * labels, centred below shapes narrower than themselves, would meet.
  */
-function columnGaps(
+export function columnGaps(
 	graph: SemanticGraph,
 	sizes: Map<string, { width: number; height: number }>,
 	colWidth: Map<number, number>,
@@ -706,7 +706,7 @@ function laneTree(laneSet: BpmnLaneSet, depth = 0, seen: Set<BpmnLane> = new Set
  * The side comes from {@link boundarySide}, the rule that also placed the
  * handler's band, so a handler is never routed around its own host.
  */
-function dockBoundaryEvents(
+export function dockBoundaryEvents(
 	graph: SemanticGraph,
 	bounds: Map<string, Bounds>,
 	titled: ReadonlySet<string>,
@@ -831,7 +831,7 @@ const ARTIFACT_SPACING = 20
  * Flow-less data references mapped to the activity they are wired to (the
  * first one declared), so they can be slotted next to it.
  */
-function artifactOwnersOf(graph: SemanticGraph): Map<string, string> {
+export function artifactOwnersOf(graph: SemanticGraph): Map<string, string> {
 	const owners = new Map<string, string>()
 	const isArtifact = (id: string): boolean => {
 		const el = graph.byId.get(id)
@@ -867,7 +867,7 @@ function artifactOwnersOf(graph: SemanticGraph): Map<string, string> {
  * (and first when boundary events hang below). More go beside those, and a
  * taken spot sends the artifact down until the area is clear.
  */
-function placeArtifacts(
+export function placeArtifacts(
 	graph: SemanticGraph,
 	owners: ReadonlyMap<string, string>,
 	bounds: Map<string, Bounds>,

@@ -5,6 +5,7 @@ import type {
 	BpmnSequenceFlow,
 } from "../../bpmn/bpmn-model.js"
 import { placeEdgeLabels } from "../grid/edge-labels.js"
+import { layeredPlace } from "../layered/index.js"
 import type {
 	Bounds,
 	GridHint,
@@ -48,6 +49,8 @@ export function semanticLayoutProcess(
 	collapsed?: ReadonlySet<string>,
 	grids?: LayoutHints["grids"],
 	inPool = false,
+	/** Run the layered (Sugiyama) placement and routing on every lane-free scope. */
+	layered = false,
 ): LayoutResult {
 	return semanticLayout(
 		process.flowElements,
@@ -58,6 +61,7 @@ export function semanticLayoutProcess(
 		grids,
 		undefined,
 		!inPool,
+		layered,
 	)
 }
 
@@ -75,6 +79,8 @@ export function semanticLayout(
 	grid?: GridHint,
 	/** Slot data references under the activity they are wired to. */
 	slotArtifacts = false,
+	/** See {@link semanticLayoutProcess}. */
+	layered = false,
 ): LayoutResult {
 	if (flowElements.length === 0) return { nodes: [], edges: [] }
 
@@ -87,7 +93,7 @@ export function semanticLayout(
 	const sizes = new Map<string, { width: number; height: number }>()
 	const axes = new Map<string, number>()
 	for (const el of graph.nodes) {
-		const child = childLayoutOf(el, collapsed, grids)
+		const child = childLayoutOf(el, collapsed, grids, layered)
 		if (!child) {
 			sizes.set(el.id, sizeOf(el))
 			continue
@@ -108,6 +114,20 @@ export function semanticLayout(
 	const titled = new Set(
 		[...childResults.keys()].filter((id) => graph.byId.get(id)?.name !== undefined),
 	)
+	if (layered && useLayered(graph, laneSet, inContainer, grid)) {
+		const placed = layeredPlace(graph, sequenceFlows, sizes, titled, slotArtifacts)
+		return finish(
+			graph,
+			flowElements,
+			placed.bounds,
+			placed.edges,
+			(id) => placed.row.get(id) ?? 0,
+			[],
+			childResults,
+			planes,
+			collapsed,
+		)
+	}
 	let bandLayout = assignBands(graph, titled)
 	// Lanes decide a handler's row themselves, so the exception row is for lane-free scopes.
 	if (
@@ -129,6 +149,53 @@ export function semanticLayout(
 		axes,
 		slotArtifacts,
 	)
+	const edges = routeFlows(graph, sequenceFlows, bounds, bandLayout, gutterX)
+	return finish(
+		graph,
+		flowElements,
+		bounds,
+		edges,
+		(id) => bandLayout.bands.get(id) ?? 0,
+		lanes,
+		childResults,
+		planes,
+		collapsed,
+	)
+}
+
+/**
+ * The layered engine covers scopes without lanes and without a packed tool
+ * grid; lanes stay with the semantic placement until lane-aware ordering lands.
+ */
+function useLayered(
+	graph: SemanticGraph,
+	laneSet: BpmnLaneSet | undefined,
+	inContainer: boolean,
+	grid: GridHint | undefined,
+): boolean {
+	if (laneSet || grid) return false
+	const flowless = graph.components.filter(
+		(c) =>
+			c.length === 1 &&
+			(graph.outgoing.get(c[0] as string) ?? []).length === 0 &&
+			(graph.incoming.get(c[0] as string) ?? []).length === 0,
+	).length
+	if (inContainer && flowless >= 2) return false
+	return graph.components.length > flowless
+}
+
+/** Nodes, labels and children of a placed and routed scope. */
+function finish(
+	graph: SemanticGraph,
+	flowElements: BpmnFlowElement[],
+	bounds: Map<string, Bounds>,
+	edges: LayoutEdge[],
+	rowOf: (id: string) => number,
+	lanes: Array<{ id: string; bounds: Bounds }>,
+	childResults: Map<string, LayoutResult>,
+	planes: Array<{ elementId: string; result: LayoutResult }>,
+	collapsed: ReadonlySet<string>,
+): LayoutResult {
 	const besideStem = boundaryLabels(graph, bounds)
 
 	const nodes: LayoutNode[] = []
@@ -140,8 +207,8 @@ export function semanticLayout(
 			type: el.type,
 			bounds: b,
 			layer: graph.ranks.get(el.id) ?? 0,
-			position: bandLayout.bands.get(el.id) ?? 0,
-			gridRow: bandLayout.bands.get(el.id) ?? 0,
+			position: rowOf(el.id),
+			gridRow: rowOf(el.id),
 		}
 		if (el.name) {
 			node.label = el.name
@@ -152,8 +219,6 @@ export function semanticLayout(
 		else if (collapsed.has(el.id)) node.isExpanded = false
 		nodes.push(node)
 	}
-
-	const edges = routeFlows(graph, sequenceFlows, bounds, bandLayout, gutterX)
 
 	// Drop the children in, translated into their parent's interior.
 	for (const [parentId, child] of childResults) {
@@ -196,6 +261,7 @@ function childLayoutOf(
 	el: BpmnFlowElement,
 	collapsed: ReadonlySet<string>,
 	grids: LayoutHints["grids"],
+	layered: boolean,
 ): {
 	result: LayoutResult
 	size: { width: number; height: number }
@@ -216,6 +282,8 @@ function childLayoutOf(
 		!collapsed.has(el.id),
 		grids,
 		grids?.get(el.id),
+		false,
+		layered,
 	)
 	const extent = extentOf(result)
 	if (!extent) return null
