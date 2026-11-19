@@ -340,7 +340,7 @@
 			"targetRef": "managerApproval",
 			"waypoints": [{ "x": 375, "y": 95 }, { "x": 375, "y": 210 }, { "x": 475, "y": 210 }],
 			"label": "manager-approval",
-			"labelBounds": { "x": 351, "y": 145.5, "width": 112, "height": 14 }
+			"labelBounds": { "x": 385, "y": 145.5, "width": 112, "height": 14 }
 		},
 		{
 			"id": "Flow_y9NbTDhR",
@@ -381,7 +381,7 @@
 			"targetRef": "endContractRejected",
 			"waypoints": [{ "x": 700, "y": 210 }, { "x": 957, "y": 210 }],
 			"label": "discount-rejected",
-			"labelBounds": { "x": 769, "y": 186, "width": 119, "height": 14 }
+			"labelBounds": { "x": 769, "y": 220, "width": 119, "height": 14 }
 		},
 		{
 			"id": "Flow_2s0JeKjV",
@@ -400,7 +400,8 @@
 			"sourceRef": "signatureCheck",
 			"targetRef": "endContractRejected",
 			"waypoints": [{ "x": 825, "y": 95 }, { "x": 825, "y": 210 }, { "x": 957, "y": 210 }],
-			"label": "signature-declined"
+			"label": "signature-declined",
+			"labelBounds": { "x": 828, "y": 186, "width": 126, "height": 14 }
 		},
 		{
 			"id": "Flow_bm3sKMZA",
@@ -429,7 +430,7 @@
 				{ "x": 1375, "y": 280 }
 			],
 			"label": "bundled-order",
-			"labelBounds": { "x": 1267, "y": 186, "width": 91, "height": 14 }
+			"labelBounds": { "x": 1135.75, "y": 186, "width": 91, "height": 14 }
 		},
 		{
 			"id": "Flow_MJRLe9Ud",
@@ -530,7 +531,7 @@
 				{ "x": 3675, "y": 88 }
 			],
 			"label": "debt-recovered",
-			"labelBounds": { "x": 3651, "y": 317, "width": 98, "height": 14 }
+			"labelBounds": { "x": 3685, "y": 317, "width": 98, "height": 14 }
 		},
 		{
 			"id": "Flow_fyHvSVmV",
@@ -543,7 +544,7 @@
 				{ "x": 3675, "y": 612 }
 			],
 			"label": "debt-written-off",
-			"labelBounds": { "x": 3651, "y": 369, "width": 112, "height": 14 }
+			"labelBounds": { "x": 3685, "y": 369, "width": 112, "height": 14 }
 		},
 		{
 			"id": "Flow_mGa16ca8",
