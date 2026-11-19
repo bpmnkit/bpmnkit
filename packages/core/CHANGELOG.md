@@ -1,5 +1,11 @@
 # @bpmnkit/core
 
+## 1.18.0
+
+### Minor Changes
+
+- 2a2a5cd: `FormBuilder` and `GroupBuilder` gain fluent methods for every form-js component type: `number`, `datetime`, `taglist`, `button`, `dynamiclist`, `iframe`, `image`, `table`, `html`, `separator`, `spacer`, `expression`, `filepicker`, `documentPreview`.
+
 ## 1.17.0
 
 ### Minor Changes
