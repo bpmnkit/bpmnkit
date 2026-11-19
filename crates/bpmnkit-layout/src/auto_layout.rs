@@ -2,7 +2,9 @@
 
 use crate::annotations::{association_waypoints, pack_annotations};
 use crate::collaboration::alignment::{align_pools, MessageLink};
+use crate::collaboration::docked_labels::{flip_docked_labels, MessageDock};
 use crate::collaboration::message_labels::{place_message_flow_labels, MessageLabelInput};
+use crate::collaboration::message_tracks::{assign_tracks, GapRun};
 use crate::collaboration::ordering::{order_pools, PoolLink};
 use crate::engine::{layout_process, LayoutEngine};
 use crate::grid::router::collapse_collinear;
@@ -854,6 +856,7 @@ struct Leg {
 /// of the descent — the same move a modeller makes by hand, and the only way past a
 /// shape sitting directly below the dock. `stem_offset` staggers the stem so two
 /// flows jogging side by side do not share a line.
+#[allow(clippy::too_many_arguments)]
 fn message_flow_leg(
     dock_x: f64,
     from_y: f64,
@@ -862,7 +865,16 @@ fn message_flow_leg(
     own: &[&BpmnBounds],
     dock: &BpmnBounds,
     stem_offset: f64,
+    labels: &[&BpmnBounds],
 ) -> Leg {
+    let with_labels: Vec<&BpmnBounds> = obstacles.iter().chain(labels.iter()).copied().collect();
+    let tidy = clear_column(dock_x, from_y, to_y, &with_labels, own, dock);
+    if !column_blocked(tidy, from_y, to_y, &with_labels, own) {
+        return Leg {
+            points: vec![wp(tidy, from_y), wp(tidy, to_y)],
+            blocked: false,
+        };
+    }
     let straight = clear_column(dock_x, from_y, to_y, obstacles, own, dock);
     if !column_blocked(straight, from_y, to_y, obstacles, own) {
         return Leg {
@@ -936,6 +948,7 @@ fn message_flow_route(
     obstacles: &[&BpmnBounds],
     stem_offset: f64,
     containers: &[&BpmnBounds],
+    labels: &[&BpmnBounds],
 ) -> MessageRoute {
     let src_below = src.y + src.height / 2.0 > tgt.y + tgt.height / 2.0;
     let sy = if src_below { src.y } else { src.y + src.height };
@@ -955,25 +968,18 @@ fn message_flow_route(
         blocked: bool,
     }
 
+    let src_x = js::round(src.x + src.width / 2.0);
+    let centre_x = js::round(tgt.x + tgt.width / 2.0);
+    // Centres a rounding apart are meant to line up: a 1 px jog would cost the
+    // message two bends for nothing.
+    let tgt_x = if (centre_x - src_x).abs() <= 1.0 {
+        src_x
+    } else {
+        centre_x
+    };
     let build = |band_y: f64| -> Built {
-        let source = message_flow_leg(
-            js::round(src.x + src.width / 2.0),
-            sy,
-            band_y,
-            obstacles,
-            &own,
-            src,
-            stem_offset,
-        );
-        let target = message_flow_leg(
-            js::round(tgt.x + tgt.width / 2.0),
-            ty,
-            band_y,
-            obstacles,
-            &own,
-            tgt,
-            stem_offset,
-        );
+        let source = message_flow_leg(src_x, sy, band_y, obstacles, &own, src, stem_offset, labels);
+        let target = message_flow_leg(tgt_x, ty, band_y, obstacles, &own, tgt, stem_offset, labels);
         // A pool has no position of its own to respect: dock it under whatever it
         // is talking to, so the flow drops straight instead of fanning into the
         // pool's centre along with every other flow.
@@ -1025,6 +1031,56 @@ fn message_flow_route(
         source: route.source,
         target: route.target,
         gap: fallback.map(|c| c.0 as i64).unwrap_or(-1),
+    }
+}
+
+/// `uniformPoolFrame(shapes, collab, defs)`: give every pool the width of the widest,
+/// lanes included. Pools already share x 0, so only the right edges move; a lane
+/// grows with its pool when it ends where the pool did.
+fn uniform_pool_frame(
+    shapes: &mut [BpmnDiShape],
+    collab: &BpmnCollaboration,
+    defs: &BpmnDefinitions,
+) {
+    let participant_ids: IndexSet<&str> =
+        collab.participants.iter().map(|p| p.id.as_str()).collect();
+    let lane_ids: IndexSet<&str> = defs
+        .processes
+        .iter()
+        .flat_map(|p| {
+            lane_levels(p.lane_set.as_ref())
+                .into_iter()
+                .map(|level| level.lane.id.as_str())
+        })
+        .collect();
+    let pools: Vec<usize> = shapes
+        .iter()
+        .enumerate()
+        .filter(|(_, s)| participant_ids.contains(s.bpmn_element.as_str()))
+        .map(|(i, _)| i)
+        .collect();
+    let right = |b: &BpmnBounds| -> f64 { b.x + b.width };
+    let widest = pools.iter().fold(EMPTY_POOL_WIDTH, |max, &i| {
+        js::max(max, right(&shapes[i].bounds))
+    });
+    for &pool in &pools {
+        let edge = right(&shapes[pool].bounds);
+        if edge >= widest {
+            continue;
+        }
+        let top = shapes[pool].bounds.y;
+        let bottom = top + shapes[pool].bounds.height;
+        for lane in shapes.iter_mut() {
+            let b = &mut lane.bounds;
+            if !lane_ids.contains(lane.bpmn_element.as_str()) || right(b) != edge {
+                continue;
+            }
+            if b.y >= top && b.y + b.height <= bottom {
+                b.width = widest - b.x;
+            }
+        }
+        let b = &mut shapes[pool].bounds;
+        b.width = widest - b.x;
     }
 }
 
@@ -1257,6 +1313,8 @@ fn ancestor_index<'a>(
 
 struct Run {
     id: String,
+    from: String,
+    to: String,
     source: Vec<BpmnWaypoint>,
     target: Vec<BpmnWaypoint>,
     gap: i64,
@@ -1402,7 +1460,11 @@ fn laid_out_diagrams(
             &participant_pools
                 .iter()
                 .enumerate()
-                .filter(|(_, pool)| pool.process.is_none())
+                .filter(|(_, pool)| {
+                    pool.process
+                        .and_then(|p| layout_of.get(&p))
+                        .is_none_or(|l| l.nodes.is_empty())
+                })
                 .map(|(i, _)| i)
                 .collect(),
         );
@@ -1465,9 +1527,6 @@ fn laid_out_diagrams(
         &message_links(defs, collab, &pools, &layouts),
     );
 
-    // Pools with nothing to draw; widened to match the others once all are placed.
-    // Held as indices into `all_shapes`.
-    let mut black_box_pools: Vec<usize> = Vec::new();
     // Root processes that are not the primary one, each on a plane of its own.
     let mut root_planes: Vec<RootPlane> = Vec::new();
     let primary_process_id = defs.processes.first().map(|p| p.id.as_str());
@@ -1530,7 +1589,6 @@ fn laid_out_diagrams(
                     },
                 );
                 shape.is_horizontal = Some(true);
-                black_box_pools.push(all_shapes.len());
                 all_shapes.push(shape);
                 pool_y += EMPTY_POOL_HEIGHT + POOL_GAP;
             }
@@ -1726,22 +1784,10 @@ fn laid_out_diagrams(
         }
     }
 
-    // Give the black boxes the width of the widest pool that has content, so the
-    // stack reads as one diagram rather than a ragged column.
-    if !black_box_pools.is_empty() {
-        let participant_ids: IndexSet<&str> = collab
-            .map(|c| c.participants.iter().map(|p| p.id.as_str()).collect())
-            .unwrap_or_default();
-        let widest = all_shapes
-            .iter()
-            .enumerate()
-            .filter(|(i, s)| {
-                participant_ids.contains(s.bpmn_element.as_str()) && !black_box_pools.contains(i)
-            })
-            .fold(EMPTY_POOL_WIDTH, |max, (_, s)| js::max(max, s.bounds.width));
-        for &i in &black_box_pools {
-            all_shapes[i].bounds.width = widest;
-        }
+    // One frame for every pool: the stack reads as one diagram rather than a
+    // ragged column, black boxes included.
+    if let Some(collab) = collab {
+        uniform_pool_frame(&mut all_shapes, collab, defs);
     }
 
     if let Some(collab) = collab.filter(|c| !c.message_flows.is_empty()) {
@@ -1776,13 +1822,19 @@ fn laid_out_diagrams(
             .collect();
         // Pools and lanes are containers; message flows cross them by design. It is
         // the elements inside that a route has to miss.
-        let obstacles: Vec<&BpmnBounds> = all_shapes
+        let inside: Vec<&BpmnDiShape> = all_shapes
             .iter()
             .filter(|s| {
                 !participant_ids.contains(s.bpmn_element.as_str())
                     && !lane_ids.contains(s.bpmn_element.as_str())
             })
-            .map(|s| &s.bounds)
+            .collect();
+        let obstacles: Vec<&BpmnBounds> = inside.iter().map(|s| &s.bounds).collect();
+        // Labels are worth a sideways nudge on the dock, never a jog: a riser
+        // through a name is hard to read, but two extra bends read worse.
+        let labels: Vec<&BpmnBounds> = inside
+            .iter()
+            .filter_map(|s| s.label.as_ref().and_then(|l| l.bounds.as_ref()))
             .collect();
         let pool_gaps = pool_bands(&all_shapes, &participant_ids);
 
@@ -1801,6 +1853,17 @@ fn laid_out_diagrams(
             out
         };
 
+        let mut label_by_element: FxIndexMap<&str, &BpmnBounds> = FxIndexMap::default();
+        for s in &all_shapes {
+            if let Some(b) = s.label.as_ref().and_then(|l| l.bounds.as_ref()) {
+                label_by_element.insert(&s.bpmn_element, b);
+            }
+        }
+        // An endpoint's own label: the message starts or ends right beside it.
+        let label_of = |id: &str| -> Vec<&BpmnBounds> {
+            label_by_element.get(id).copied().into_iter().collect()
+        };
+
         let mut stem_offset = 0.0_f64;
         for mf in &collab.message_flows {
             let source_ref = resolve(&mf.source_ref);
@@ -1813,6 +1876,8 @@ fn laid_out_diagrams(
             };
             let mut containers = containers_of(&source_ref);
             containers.extend(containers_of(&target_ref));
+            containers.extend(label_of(&source_ref));
+            containers.extend(label_of(&target_ref));
             let route = message_flow_route(
                 src,
                 tgt,
@@ -1822,9 +1887,12 @@ fn laid_out_diagrams(
                 &obstacles,
                 stem_offset,
                 &containers,
+                &labels,
             );
             runs.push(Run {
                 id: mf.id.clone(),
+                from: source_ref.clone(),
+                to: target_ref.clone(),
                 source: route.source,
                 target: route.target,
                 gap: route.gap,
@@ -1844,14 +1912,35 @@ fn laid_out_diagrams(
             let Some(gap) = usize::try_from(*index).ok().and_then(|i| pool_gaps.get(i)) else {
                 continue;
             };
-            let key = |i: usize| js::min(end_x(&runs[i].source), end_x(&runs[i].target));
-            list.sort_by(|a, b| js::cmp_num(key(*a), key(*b)));
+            // The gap is clear ground, so moving the crossing inside it cannot
+            // introduce a collision; the track order decides the crossings.
+            let from_above =
+                |run: &Run| -> bool { run.source.first().map_or(0.0, |p| p.y) < gap.top };
+            let ys = assign_tracks(
+                &list
+                    .iter()
+                    .map(|&i| {
+                        let run = &runs[i];
+                        if from_above(run) {
+                            GapRun {
+                                upper: end_x(&run.source),
+                                lower: end_x(&run.target),
+                            }
+                        } else {
+                            GapRun {
+                                upper: end_x(&run.target),
+                                lower: end_x(&run.source),
+                            }
+                        }
+                    })
+                    .collect::<Vec<_>>(),
+                gap.top,
+                gap.bottom,
+            );
             for (i, run_index) in list.iter().enumerate() {
-                // The gap is clear ground, so moving the crossing inside it cannot
-                // introduce a collision.
-                let y = js::round(
-                    gap.top + ((i + 1) as f64 * (gap.bottom - gap.top)) / (list.len() + 1) as f64,
-                );
+                let Some(y) = ys.get(i).copied().flatten() else {
+                    continue;
+                };
                 let run = &mut runs[*run_index];
                 if let Some(last) = run.source.last_mut() {
                     last.y = y;
@@ -1863,6 +1952,7 @@ fn laid_out_diagrams(
         }
 
         let mut flow_edges = Vec::new();
+        let mut docks: Vec<MessageDock> = Vec::new();
         for run in &runs {
             let mut pts: Vec<Waypoint> = run
                 .source
@@ -1870,13 +1960,33 @@ fn laid_out_diagrams(
                 .map(|p| Waypoint { x: p.x, y: p.y })
                 .collect();
             pts.extend(run.target.iter().rev().map(|p| Waypoint { x: p.x, y: p.y }));
-            let waypoints = collapse_collinear(&pts)
+            let waypoints: Vec<BpmnWaypoint> = collapse_collinear(&pts)
                 .into_iter()
                 .map(|p| wp(p.x, p.y))
                 .collect();
+            docks.push(MessageDock {
+                element: run.from.clone(),
+                y: waypoints.first().map_or(0.0, |p| p.y),
+            });
+            docks.push(MessageDock {
+                element: run.to.clone(),
+                y: waypoints.last().map_or(0.0, |p| p.y),
+            });
             flow_edges.push(new_edge(&run.id, waypoints));
         }
         all_edges.extend(flow_edges);
+        let mut flip_containers: HashSet<String> = participant_ids
+            .iter()
+            .chain(lane_ids.iter())
+            .map(|s| s.to_string())
+            .collect();
+        for s in &all_shapes {
+            if s.is_expanded == Some(true) {
+                flip_containers.insert(s.bpmn_element.clone());
+            }
+        }
+        // The borrows above end here; the labels move in place.
+        flip_docked_labels(&mut all_shapes, &all_edges, &docks, &flip_containers);
     }
 
     let repair = RouteRepair::new(defs);
@@ -2590,6 +2700,41 @@ mod tests {
         "compensation-subprocess",
         "artifacts",
     ];
+
+    #[test]
+    fn uniform_pool_frame_gives_every_pool_black_box_and_lane_one_right_edge() {
+        let xml = r#"<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" id="d" targetNamespace="t">
+  <collaboration id="c">
+    <participant id="Long" processRef="PL" />
+    <participant id="Short" processRef="PS" />
+    <participant id="Box" />
+    <messageFlow id="m1" sourceRef="l2" targetRef="s1" />
+    <messageFlow id="m2" sourceRef="s2" targetRef="Box" />
+  </collaboration>
+  <process id="PL">
+    <laneSet id="ls"><lane id="LA"><flowNodeRef>l1</flowNodeRef><flowNodeRef>l2</flowNodeRef></lane>
+      <lane id="LB"><flowNodeRef>l3</flowNodeRef><flowNodeRef>l4</flowNodeRef><flowNodeRef>l5</flowNodeRef></lane></laneSet>
+    <startEvent id="l1" /><task id="l2" /><task id="l3" /><task id="l4" /><endEvent id="l5" />
+    <sequenceFlow id="f1" sourceRef="l1" targetRef="l2" /><sequenceFlow id="f2" sourceRef="l2" targetRef="l3" />
+    <sequenceFlow id="f3" sourceRef="l3" targetRef="l4" /><sequenceFlow id="f4" sourceRef="l4" targetRef="l5" />
+  </process>
+  <process id="PS">
+    <startEvent id="s1" /><task id="s2" /><endEvent id="s3" />
+    <sequenceFlow id="g1" sourceRef="s1" targetRef="s2" /><sequenceFlow id="g2" sourceRef="s2" targetRef="s3" />
+  </process>
+</definitions>"#;
+        let out = apply_auto_layout(&parse_bpmn(xml).unwrap(), LayoutEngine::Semantic, None);
+        let shapes = &out.diagrams[0].plane.shapes;
+        let of = |id: &str| &shapes.iter().find(|s| s.bpmn_element == id).unwrap().bounds;
+        let right = |id: &str| of(id).x + of(id).width;
+        for pool in ["Long", "Short", "Box"] {
+            assert_eq!(of(pool).x, 0.0);
+            assert_eq!(right(pool), right("Long"));
+        }
+        assert_eq!(right("LA"), right("Long"));
+        assert_eq!(right("LB"), right("Long"));
+    }
 
     fn end_to_end(name: &str) {
         let root = env!("CARGO_MANIFEST_DIR");
