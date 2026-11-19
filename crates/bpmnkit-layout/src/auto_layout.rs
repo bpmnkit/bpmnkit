@@ -1653,6 +1653,33 @@ fn laid_out_diagrams(
     engine: LayoutEngine,
     hints: Option<&LayoutHints>,
 ) -> Option<Vec<BpmnDiagram>> {
+    if engine == LayoutEngine::Layered
+        && defs
+            .collaborations
+            .iter()
+            .any(|c| !c.message_flows.is_empty())
+    {
+        // Pools are laid out one by one, blind to the message flows between them.
+        // The layered collaboration stands unless it crosses more messages than
+        // the semantic one composed from the same pool order rules.
+        let layered = layout_with_ordering(defs, LayoutEngine::Layered, hints)?;
+        let semantic = layout_with_ordering(defs, LayoutEngine::Semantic, hints)?;
+        return Some(
+            if message_score(defs, &layered).crossings <= message_score(defs, &semantic).crossings {
+                layered
+            } else {
+                semantic
+            },
+        );
+    }
+    layout_with_ordering(defs, engine, hints)
+}
+
+fn layout_with_ordering(
+    defs: &BpmnDefinitions,
+    engine: LayoutEngine,
+    hints: Option<&LayoutHints>,
+) -> Option<Vec<BpmnDiagram>> {
     let mut nearest = PoolOrdering {
         use_sketch: false,
         sketch_differs: false,

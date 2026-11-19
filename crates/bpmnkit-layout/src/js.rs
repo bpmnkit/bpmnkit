@@ -40,6 +40,12 @@ pub fn cmp_num(a: f64, b: f64) -> std::cmp::Ordering {
     a.partial_cmp(&b).unwrap_or(std::cmp::Ordering::Equal)
 }
 
+/// `a < b` on JS strings: UTF-16 code-unit order, which differs from UTF-8 byte
+/// order only for characters past the BMP.
+pub fn str_lt(a: &str, b: &str) -> bool {
+    a.encode_utf16().lt(b.encode_utf16())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

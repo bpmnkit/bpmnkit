@@ -10,6 +10,9 @@ pub enum LayoutEngine {
     #[default]
     Semantic,
     Grid,
+    /// Semantic graph, sizes and labels, but lane-free scopes are placed and routed
+    /// Sugiyama-style (see `layered`); experimental.
+    Layered,
 }
 
 /// `layoutProcess(process, engine, collapsed, grids, inPool)`.
@@ -25,9 +28,13 @@ pub fn layout_process(
             &process.contents.flow_elements,
             &process.contents.sequence_flows,
         ),
-        LayoutEngine::Semantic => {
-            crate::semantic::semantic_layout_process(process, collapsed, grids, in_pool)
-        }
+        LayoutEngine::Semantic | LayoutEngine::Layered => crate::semantic::semantic_layout_process(
+            process,
+            collapsed,
+            grids,
+            in_pool,
+            engine == LayoutEngine::Layered,
+        ),
     }
 }
 
