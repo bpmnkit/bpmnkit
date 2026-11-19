@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.20
+
+### Patch Changes
+
+- Updated dependencies [2130e32]
+  - @bpmnkit/core@1.17.0
+
 ## 0.5.19
 
 ### Patch Changes
