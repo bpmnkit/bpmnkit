@@ -883,6 +883,56 @@ function uniformPoolFrame(
 }
 
 /**
+ * Grid phase for pooled content, before message flows are routed: one x shift
+ * for the content of every pool, so columns stay aligned across pools and
+ * message flows stay vertical. It stays within the padding (-4..5 px), so no
+ * pool or lane frame moves. Rows are left alone: a y shift moves where message
+ * flows can run past element labels.
+ */
+function poolGridPhase(
+	shapes: BpmnDiShape[],
+	edges: BpmnDiEdge[],
+	collab: BpmnCollaboration,
+	defs: BpmnDefinitions,
+): void {
+	const participantIds = new Set(collab.participants.map((p) => p.id))
+	const laneIds = new Set(
+		defs.processes.flatMap((p) => laneLevels(p.laneSet).map((level) => level.lane.id)),
+	)
+	const pools = shapes.filter((s) => participantIds.has(s.bpmnElement))
+	const within = (y: number, pool: BpmnDiShape): boolean =>
+		y >= pool.bounds.y && y <= pool.bounds.y + pool.bounds.height
+	const inPool = (y: number): boolean => pools.some((pool) => within(y, pool))
+	const content = shapes.filter(
+		(s) =>
+			!participantIds.has(s.bpmnElement) &&
+			!laneIds.has(s.bpmnElement) &&
+			inPool(s.bounds.y + s.bounds.height / 2),
+	)
+	if (content.length === 0) return
+	let tx = 0
+	let best = -1
+	for (let t = 0; t < 10; t++) {
+		const n = content.filter((s) => (Math.round(s.bounds.x) + t) % 10 === 0).length
+		if (n > best) {
+			best = n
+			tx = t > 5 ? t - 10 : t
+		}
+	}
+	if (tx === 0) return
+	for (const s of content) {
+		s.bounds.x += tx
+		if (s.label?.bounds) s.label.bounds.x += tx
+	}
+	for (const e of edges) {
+		const pool = pools.find((p) => e.waypoints[0] && within(e.waypoints[0].y, p))
+		if (!pool || !e.waypoints.every((w) => within(w.y, pool))) continue
+		for (const w of e.waypoints) w.x += tx
+		if (e.label?.bounds) e.label.bounds.x += tx
+	}
+}
+
+/**
  * Apply auto-layout to all processes in a BpmnDefinitions, replacing the
  * diagram interchange (BPMNDi) with freshly computed positions.
  *
@@ -1317,6 +1367,7 @@ export function applyAutoLayout(
 	// One frame for every pool: the stack reads as one diagram rather than a
 	// ragged column, black boxes included.
 	if (collab) uniformPoolFrame(allShapes, collab, defs)
+	if (collab) poolGridPhase(allShapes, allEdges, collab, defs)
 
 	if (collab && collab.messageFlows.length > 0) {
 		const shapeByElement = new Map(allShapes.map((s) => [s.bpmnElement, s.bounds]))

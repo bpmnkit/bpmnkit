@@ -1,0 +1,7 @@
+# Suit tailoring
+## Customer | id=customer
+[start Suit wanted] > [send Send measurements] > [catch Fitting invitation | key=orderId] > [user Attend fitting] > [end Suit collected]
+## Tailor | id=tailor
+[start:message Measurements received] > [user Cut cloth] > [user Sew suit] > [send Invite to fitting] > [end Fitting booked]
+Send measurements ~> Measurements received: Sizes
+Invite to fitting ~> Fitting invitation: Date

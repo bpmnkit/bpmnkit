@@ -100,23 +100,23 @@
   <bpmndi:BPMNDiagram id="Trisotech_Visio-_6" documentation="" name="A.4.0" resolution="96.00000267028808">
     <bpmndi:BPMNPlane bpmnElement="C1373649949206">
       <bpmndi:BPMNShape id="S1373649949192__c03f2b1f-32dc-41ef-b325-c9811a814fbe" bpmnElement="_c03f2b1f-32dc-41ef-b325-c9811a814fbe">
-        <dc:Bounds x="78" y="42" width="36" height="36"/>
+        <dc:Bounds x="80" y="42" width="36" height="36"/>
         <bpmndi:BPMNLabel labelStyle="LS1373649949186">
-          <dc:Bounds x="50" y="82" width="91" height="14"/>
+          <dc:Bounds x="52" y="82" width="91" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="S1373649949189__ab851300-b5de-4ad3-bbec-215553757fc8" bpmnElement="_ab851300-b5de-4ad3-bbec-215553757fc8">
-        <dc:Bounds x="196" y="20" width="100" height="80"/>
+        <dc:Bounds x="198" y="20" width="100" height="80"/>
         <bpmndi:BPMNLabel labelStyle="LS1373649949186"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="S1373649949190__80d1f02b-f39c-45c2-b731-43df75d81779" bpmnElement="_80d1f02b-f39c-45c2-b731-43df75d81779">
-        <dc:Bounds x="346" y="20" width="100" height="80"/>
+        <dc:Bounds x="348" y="20" width="100" height="80"/>
         <bpmndi:BPMNLabel labelStyle="LS1373649949186"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="S1373649949191__6e79c19f-749d-48c4-8271-d9ca028354fa" bpmnElement="_6e79c19f-749d-48c4-8271-d9ca028354fa">
-        <dc:Bounds x="528" y="42" width="36" height="36"/>
+        <dc:Bounds x="530" y="42" width="36" height="36"/>
         <bpmndi:BPMNLabel labelStyle="LS1373649949186">
-          <dc:Bounds x="507" y="82" width="77" height="14"/>
+          <dc:Bounds x="509" y="82" width="77" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="S1373649949185__046bff4f-cea3-4512-a6b1-30517fb29f2c" bpmnElement="_046bff4f-cea3-4512-a6b1-30517fb29f2c" isHorizontal="true">
@@ -124,16 +124,16 @@
         <bpmndi:BPMNLabel labelStyle="LS1373649949186"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="E1373649949222__44b1d373-57a1-4b8e-ba2e-3204c32519e5" bpmnElement="_44b1d373-57a1-4b8e-ba2e-3204c32519e5">
-        <di:waypoint x="114" y="60"/>
-        <di:waypoint x="196" y="60"/>
+        <di:waypoint x="116" y="60"/>
+        <di:waypoint x="198" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="E1373649949217__f35e3b07-7b1f-433d-9595-7fdea8996954" bpmnElement="_f35e3b07-7b1f-433d-9595-7fdea8996954">
-        <di:waypoint x="446" y="60"/>
-        <di:waypoint x="528" y="60"/>
+        <di:waypoint x="448" y="60"/>
+        <di:waypoint x="530" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="E1373649949214__6b7f2411-77f7-4152-be39-d8dbeb8bc460" bpmnElement="_6b7f2411-77f7-4152-be39-d8dbeb8bc460">
-        <di:waypoint x="296" y="60"/>
-        <di:waypoint x="346" y="60"/>
+        <di:waypoint x="298" y="60"/>
+        <di:waypoint x="348" y="60"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
     <bpmndi:BPMNLabelStyle id="LS1373649949186">

@@ -144,3 +144,14 @@ it("keeps a loop tight under its row and enters the merge gateway from below", a
 	expect(last.y).toBeCloseTo(merge.y + merge.height, 0)
 	expect(metrics.seqCrossings).toBe(0)
 })
+
+// P2: grid phase inside pools — one x shift for every pool's content keeps
+// columns (and vertical message flows) aligned while origins land on the grid.
+it("puts pooled content on the 10 px grid without moving any pool frame", async () => {
+	const { shape, metrics } = await lay("p2-collab-tailor")
+	expect(metrics.gridPct).toBeGreaterThanOrEqual(40)
+	expect(metrics.poolWidthSD).toBe(0)
+	expect(metrics.maxBendsMsg).toBeLessThanOrEqual(2)
+	expect(metrics.labelOnEdge).toBe(0)
+	for (const id of ["Pool_customer", "Pool_tailor"]) expect(shape(id).x % 10).toBe(0)
+})
