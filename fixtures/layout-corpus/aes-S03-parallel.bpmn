@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="defs" targetNamespace="http://bpmn.io/schema/bpmn">
+<process id="Process_1" isExecutable="true">
+<startEvent id="start" name="Order paid"><outgoing>fProcess_1_0</outgoing></startEvent>
+<parallelGateway id="fork"><incoming>fProcess_1_0</incoming><outgoing>fProcess_1_1</outgoing><outgoing>fProcess_1_2</outgoing><outgoing>fProcess_1_3</outgoing></parallelGateway>
+<userTask id="pick" name="Pick items"><incoming>fProcess_1_1</incoming><outgoing>fProcess_1_4</outgoing></userTask>
+<serviceTask id="invoice" name="Create invoice"><incoming>fProcess_1_2</incoming><outgoing>fProcess_1_5</outgoing></serviceTask>
+<serviceTask id="label" name="Print shipping label"><incoming>fProcess_1_3</incoming><outgoing>fProcess_1_6</outgoing></serviceTask>
+<parallelGateway id="sync"><incoming>fProcess_1_4</incoming><incoming>fProcess_1_5</incoming><incoming>fProcess_1_6</incoming><outgoing>fProcess_1_7</outgoing></parallelGateway>
+<userTask id="ship" name="Ship parcel"><incoming>fProcess_1_7</incoming><outgoing>fProcess_1_8</outgoing></userTask>
+<endEvent id="end" name="Order shipped"><incoming>fProcess_1_8</incoming></endEvent>
+<sequenceFlow id="fProcess_1_0" sourceRef="start" targetRef="fork"/>
+<sequenceFlow id="fProcess_1_1" sourceRef="fork" targetRef="pick"/>
+<sequenceFlow id="fProcess_1_2" sourceRef="fork" targetRef="invoice"/>
+<sequenceFlow id="fProcess_1_3" sourceRef="fork" targetRef="label"/>
+<sequenceFlow id="fProcess_1_4" sourceRef="pick" targetRef="sync"/>
+<sequenceFlow id="fProcess_1_5" sourceRef="invoice" targetRef="sync"/>
+<sequenceFlow id="fProcess_1_6" sourceRef="label" targetRef="sync"/>
+<sequenceFlow id="fProcess_1_7" sourceRef="sync" targetRef="ship"/>
+<sequenceFlow id="fProcess_1_8" sourceRef="ship" targetRef="end"/>
+</process>
+</definitions>

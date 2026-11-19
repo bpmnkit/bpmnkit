@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="defs" targetNamespace="http://bpmn.io/schema/bpmn">
+<collaboration id="Collab_1">
+<participant id="P_Customer" name="Customer" processRef="Process_Customer"/>
+<participant id="P_Shop" name="Pizza shop" processRef="Process_Shop"/>
+<messageFlow id="m1" name="order" sourceRef="cOrder" targetRef="sStart"/>
+<messageFlow id="m2" name="pizza" sourceRef="sDeliver" targetRef="cWait"/>
+<messageFlow id="m3" name="money" sourceRef="cPay" targetRef="sPaid"/>
+</collaboration>
+<process id="Process_Customer" isExecutable="true">
+<startEvent id="cStart" name="Hungry"><outgoing>fProcess_Customer_0</outgoing></startEvent>
+<sendTask id="cOrder" name="Place order"><incoming>fProcess_Customer_0</incoming><outgoing>fProcess_Customer_1</outgoing></sendTask>
+<intermediateCatchEvent id="cWait" name="Pizza delivered"><incoming>fProcess_Customer_1</incoming><outgoing>fProcess_Customer_2</outgoing><messageEventDefinition/></intermediateCatchEvent>
+<sendTask id="cPay" name="Pay pizza"><incoming>fProcess_Customer_2</incoming><outgoing>fProcess_Customer_3</outgoing></sendTask>
+<endEvent id="cEnd" name="Hunger satisfied"><incoming>fProcess_Customer_3</incoming></endEvent>
+<sequenceFlow id="fProcess_Customer_0" sourceRef="cStart" targetRef="cOrder"/>
+<sequenceFlow id="fProcess_Customer_1" sourceRef="cOrder" targetRef="cWait"/>
+<sequenceFlow id="fProcess_Customer_2" sourceRef="cWait" targetRef="cPay"/>
+<sequenceFlow id="fProcess_Customer_3" sourceRef="cPay" targetRef="cEnd"/>
+</process>
+<process id="Process_Shop" isExecutable="true">
+<startEvent id="sStart" name="Order received"><outgoing>fProcess_Shop_0</outgoing><messageEventDefinition/></startEvent>
+<userTask id="sBake" name="Bake pizza"><incoming>fProcess_Shop_0</incoming><outgoing>fProcess_Shop_1</outgoing></userTask>
+<sendTask id="sDeliver" name="Deliver pizza"><incoming>fProcess_Shop_1</incoming><outgoing>fProcess_Shop_2</outgoing></sendTask>
+<receiveTask id="sPaid" name="Receive payment"><incoming>fProcess_Shop_2</incoming><outgoing>fProcess_Shop_3</outgoing></receiveTask>
+<endEvent id="sEnd" name="Order done"><incoming>fProcess_Shop_3</incoming></endEvent>
+<sequenceFlow id="fProcess_Shop_0" sourceRef="sStart" targetRef="sBake"/>
+<sequenceFlow id="fProcess_Shop_1" sourceRef="sBake" targetRef="sDeliver"/>
+<sequenceFlow id="fProcess_Shop_2" sourceRef="sDeliver" targetRef="sPaid"/>
+<sequenceFlow id="fProcess_Shop_3" sourceRef="sPaid" targetRef="sEnd"/>
+</process>
+</definitions>

@@ -1,0 +1,20 @@
+# Library loan | id=loan
+[start:message Loan requested] > [user Verify member card] > [xor Card valid?]
+Card valid? >(Yes: valid = true) [service Reserve book] > [xor Book found?]
+Card valid? >(No: default) [user Request card renewal] > Verify member card
+Book found? >(Yes: found = true) [user Hand over book] > [sub Loan period]
+Book found? >(No: default) [service Query partner library] > [xor Retry search?]
+Retry search? >(Retry: attempts < 3) Reserve book
+Retry search? >(Give up: default) [send Notify unavailable] > [end Loan declined]
+Loan period {
+  [start Period started] > [service Send due reminder] > [user Return book] > [xor Damaged?]
+  Damaged? >(Yes: damaged = true) [sub Damage handling] > [end Period ended]
+  Damaged? >(No: default) [service Shelve book] > Period ended
+  Damage handling {
+    [start Damage found] > [user Inspect damage] > [xor Repairable?]
+    Repairable? >(Yes: repairable = true) [user Repair book] > [user Quality check] > [xor Quality ok?]
+    Quality ok? >(No: default) Repair book
+    Quality ok? >(Yes: ok = true) [end Book repaired]
+    Repairable? >(No: default) [service Charge replacement fee] > [end Fee charged]
+  }
+}

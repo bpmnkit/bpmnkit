@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" id="Definitions_handover" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:collaboration id="collab">
+    <bpmn:participant id="sellerPool" name="Seller" processRef="sellerProcess" />
+    <bpmn:participant id="carrierPool" name="Carrier" processRef="carrierProcess" />
+    <bpmn:messageFlow id="handover" name="Parcel handover" sourceRef="handParcel" targetRef="carrierStart" />
+  </bpmn:collaboration>
+  <bpmn:process id="sellerProcess" isExecutable="true">
+    <bpmn:startEvent id="sellerStart" name="Order packed"><bpmn:outgoing>s1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:sendTask id="handParcel" name="Hand parcel to carrier"><bpmn:incoming>s1</bpmn:incoming><bpmn:outgoing>s2</bpmn:outgoing></bpmn:sendTask>
+    <bpmn:endEvent id="sellerEnd" name="Seller done"><bpmn:incoming>s2</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="s1" sourceRef="sellerStart" targetRef="handParcel" />
+    <bpmn:sequenceFlow id="s2" sourceRef="handParcel" targetRef="sellerEnd" />
+  </bpmn:process>
+  <bpmn:process id="carrierProcess" isExecutable="true">
+    <bpmn:startEvent id="carrierStart" name="Parcel received"><bpmn:outgoing>c1</bpmn:outgoing><bpmn:messageEventDefinition /></bpmn:startEvent>
+    <bpmn:userTask id="deliver" name="Deliver parcel"><bpmn:incoming>c1</bpmn:incoming><bpmn:outgoing>c2</bpmn:outgoing></bpmn:userTask>
+    <bpmn:endEvent id="carrierEnd" name="Delivered"><bpmn:incoming>c2</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="c1" sourceRef="carrierStart" targetRef="deliver" />
+    <bpmn:sequenceFlow id="c2" sourceRef="deliver" targetRef="carrierEnd" />
+  </bpmn:process>
+</bpmn:definitions>

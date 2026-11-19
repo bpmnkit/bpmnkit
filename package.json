@@ -35,7 +35,8 @@
 		"desktop:dev": "pnpm --filter @bpmnkit/desktop tauri:dev",
 		"desktop:build": "pnpm --filter @bpmnkit/desktop tauri:build",
 		"build:wasm": "node scripts/build-wasm.mjs",
-		"bootstrap": "pnpm install && pnpm build:wasm"
+		"bootstrap": "pnpm install && pnpm build:wasm",
+		"layout:score": "tsx scripts/layout-score.mjs"
 	},
 	"devDependencies": {
 		"@astrojs/check": "^0.9",

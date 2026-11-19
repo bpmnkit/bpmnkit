@@ -1,0 +1,4 @@
+# Hotel check-in | id=checkin
+[start Guest arrives] > [user Verify identity] > [xor Reservation found?]
+Reservation found? >(Yes: found = true) [service Assign room] > [user Hand over key] > [end Guest checked in]
+Reservation found? >(No: default) [user Create walk-in booking] > Assign room

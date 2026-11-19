@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="defs" targetNamespace="http://bpmn.io/schema/bpmn">
+<process id="Process_1" isExecutable="true">
+<startEvent id="start" name="Payment requested"><outgoing>fProcess_1_0</outgoing></startEvent>
+<serviceTask id="charge" name="Charge card"><incoming>fProcess_1_0</incoming><outgoing>fProcess_1_1</outgoing></serviceTask>
+<userTask id="confirm" name="Confirm payment"><incoming>fProcess_1_1</incoming><outgoing>fProcess_1_2</outgoing></userTask>
+<endEvent id="end" name="Payment done"><incoming>fProcess_1_2</incoming></endEvent>
+<boundaryEvent id="err" name="Card declined" attachedToRef="charge"><outgoing>fProcess_1_3</outgoing><errorEventDefinition/></boundaryEvent>
+<serviceTask id="refund" name="Notify customer"><incoming>fProcess_1_3</incoming><outgoing>fProcess_1_4</outgoing></serviceTask>
+<endEvent id="endErr" name="Payment failed"><incoming>fProcess_1_4</incoming></endEvent>
+<boundaryEvent id="timer" name="24h" attachedToRef="confirm" cancelActivity="false"><outgoing>fProcess_1_5</outgoing><timerEventDefinition/></boundaryEvent>
+<sendTask id="remind" name="Send reminder"><incoming>fProcess_1_5</incoming><outgoing>fProcess_1_6</outgoing></sendTask>
+<endEvent id="endRemind" name="Reminder sent"><incoming>fProcess_1_6</incoming></endEvent>
+<sequenceFlow id="fProcess_1_0" sourceRef="start" targetRef="charge"/>
+<sequenceFlow id="fProcess_1_1" sourceRef="charge" targetRef="confirm"/>
+<sequenceFlow id="fProcess_1_2" sourceRef="confirm" targetRef="end"/>
+<sequenceFlow id="fProcess_1_3" sourceRef="err" targetRef="refund"/>
+<sequenceFlow id="fProcess_1_4" sourceRef="refund" targetRef="endErr"/>
+<sequenceFlow id="fProcess_1_5" sourceRef="timer" targetRef="remind"/>
+<sequenceFlow id="fProcess_1_6" sourceRef="remind" targetRef="endRemind"/>
+</process>
+</definitions>

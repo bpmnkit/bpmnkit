@@ -179,7 +179,7 @@ function setPlatformVersion(defs: BpmnDefinitions, camunda: string): void {
  * route still runs to `b` and would block the spot the new node belongs in.
  * Drops those routes so placeNewShapes draws them again.
  */
-function dropRewiredEdges(defs: BpmnDefinitions, before: BpmnDefinitions): void {
+export function dropRewiredEdges(defs: BpmnDefinitions, before: BpmnDefinitions): void {
 	const ends = new Map<string, string>()
 	const visit = (flows: readonly core.BpmnSequenceFlow[], into: Map<string, string>) => {
 		for (const f of flows) into.set(f.id, `${f.sourceRef}>${f.targetRef}`)

@@ -112,6 +112,27 @@ function happyPaths(defs) {
 	return paths
 }
 
+/** Fraction of `xs` (0..100) that match another entry within `tol`: a share of "same column" members. */
+function sharedPct(xs, tol = 1) {
+	if (xs.length === 0) return 100
+	const shared = xs.filter((x, i) => xs.some((y, j) => j !== i && Math.abs(x - y) <= tol)).length
+	return (100 * shared) / xs.length
+}
+
+/** Crossings between two edge lists (each pair once; `same` = the lists are one list). */
+export function countCrossings(listA, listB, same) {
+	let n = 0
+	for (let i = 0; i < listA.length; i++) {
+		for (let j = same ? i + 1 : 0; j < listB.length; j++) {
+			for (const [a, b] of segments(listA[i].waypoints))
+				for (const [c, d] of segments(listB[j].waypoints)) if (segCross(a, b, c, d)) n++
+		}
+	}
+	return n
+}
+
+const round = (x, d = 2) => +x.toFixed(d)
+
 export function measure(defs) {
 	const { elements, flows } = index(defs)
 	const plane = defs.diagrams[0]?.plane
@@ -184,13 +205,13 @@ export function measure(defs) {
 	}
 
 	// ── crossings, edges through shapes ──
-	let crossings = 0
-	for (let i = 0; i < seq.length; i++) {
-		for (let j = i + 1; j < seq.length; j++) {
-			for (const [a, b] of segments(seq[i].waypoints))
-				for (const [c, d] of segments(seq[j].waypoints)) if (segCross(a, b, c, d)) crossings++
-		}
-	}
+	const isMsg = (e) => flows.get(e.bpmnElement)?.message === true
+	const seqEdges = seq.filter((e) => !isMsg(e))
+	const msgEdges = seq.filter(isMsg)
+	const seqCrossings = countCrossings(seqEdges, seqEdges, true)
+	const msgSeqCrossings = countCrossings(msgEdges, seqEdges, false)
+	const msgMsgCrossings = countCrossings(msgEdges, msgEdges, true)
+	const crossings = seqCrossings + msgSeqCrossings + msgMsgCrossings
 	let throughShapes = 0
 	for (const e of seq) {
 		const f = flows.get(e.bpmnElement)
@@ -227,6 +248,8 @@ export function measure(defs) {
 	}
 	let labelCollisions = 0
 	let labelOnEdge = 0
+	let boundaryLabelsCrossed = 0
+	let labelLabelOverlaps = 0
 	// The SVG renderer wraps a label that does not fit its box; a short name broken in two reads badly.
 	let wrappedLabels = 0
 	const unlabelled = [...edges.filter((e) => flows.get(e.bpmnElement)?.name && !e.label?.bounds)]
@@ -241,6 +264,13 @@ export function measure(defs) {
 				break
 			}
 		}
+		if (elements.get(l.owner)?.type === "boundaryEvent") {
+			// Its own outgoing flow counts: that is the usual offender.
+			if (edges.some((e) => segments(e.waypoints).some(([p, q]) => segHits(p, q, l.b, 1))))
+				boundaryLabelsCrossed++
+		}
+		for (let j = i + 1; j < labels.length; j++)
+			if (overlaps(labels[j].b, l.b, 1)) labelLabelOverlaps++
 		if (!hit) {
 			for (const s of solid) {
 				if (s.bpmnElement === l.owner) continue
@@ -256,6 +286,37 @@ export function measure(defs) {
 			wrappedLabels++
 	}
 
+	// ── composition ──
+	const seqBends = seqEdges.map((e) => Math.max(0, e.waypoints.length - 2))
+	const msgBends = msgEdges.map((e) => Math.max(0, e.waypoints.length - 2))
+	const vertical = (e) => e.waypoints.every((w) => Math.abs(w.x - e.waypoints[0].x) < 1)
+	const participants = shapes.filter((s) => elements.get(s.bpmnElement)?.type === "participant")
+	const processOf = new Map()
+	for (const c of defs.collaborations)
+		for (const p of c.participants) if (p.processRef) processOf.set(p.processRef, p.id)
+	const owned = new Map()
+	const walkOwner = (els, pid) => {
+		for (const el of els) {
+			owned.set(el.id, pid)
+			if (el.flowElements) walkOwner(el.flowElements, pid)
+		}
+	}
+	for (const p of defs.processes) walkOwner(p.flowElements, processOf.get(p.id))
+	const pads = []
+	for (const part of participants) {
+		const xs = shapes
+			.filter(
+				(s) =>
+					owned.get(s.bpmnElement) === part.bpmnElement &&
+					!isContainer(elements.get(s.bpmnElement), s),
+			)
+			.map((s) => s.bounds.x)
+		if (xs.length) pads.push(Math.min(...xs) - part.bounds.x)
+	}
+	const centresX = solid.map((s) => centre(s.bounds).x)
+	const onGrid = shapes.filter((s) => s.bounds.x % 10 === 0 && s.bounds.y % 10 === 0).length
+	const area = width * height
+
 	return {
 		width: Math.round(width),
 		height: Math.round(height),
@@ -268,6 +329,24 @@ export function measure(defs) {
 		happyStraight: happyFlows ? +(happyStraight / happyFlows).toFixed(2) : 1,
 		happyAxisDev: Math.round(mean(axisDevs)),
 		crossings,
+		seqCrossings,
+		msgSeqCrossings,
+		msgMsgCrossings,
+		bendsPerSeq: round(mean(seqBends)),
+		bendsPerMsg: round(mean(msgBends)),
+		maxBendsSeq: Math.max(0, ...seqBends),
+		maxBendsMsg: Math.max(0, ...msgBends),
+		nonVerticalMsgPct: msgEdges.length
+			? round((100 * msgEdges.filter((e) => !vertical(e)).length) / msgEdges.length, 1)
+			: 0,
+		poolWidthSD: Math.round(std(participants.map((p) => p.bounds.width))),
+		poolPadSD: Math.round(std(pads)),
+		areaPerNode: Math.round(area / Math.max(1, solid.length)),
+		emptyAreaPct: round(100 * (1 - inkArea / Math.max(1, area)), 1),
+		sharedCentreXPct: round(sharedPct(centresX), 1),
+		gridPct: shapes.length ? round((100 * onGrid) / shapes.length, 1) : 100,
+		boundaryLabelsCrossed,
+		labelLabelOverlaps,
 		throughShapes,
 		shapeOverlaps,
 		labelCollisions,
@@ -278,4 +357,23 @@ export function measure(defs) {
 }
 
 /** Lower is better unless listed here. */
-export const HIGHER_IS_BETTER = new Set(["density", "happyStraight"])
+export const HIGHER_IS_BETTER = new Set(["density", "happyStraight", "sharedCentreXPct", "gridPct"])
+/** Neither direction is better (shape of the canvas, spacing): excluded from ratchets. */
+export const NEUTRAL = new Set(["aspect", "meanGap"])
+/** Integer counts: a ratchet allows no slack on these. */
+export const COUNTS = new Set([
+	"crossings",
+	"seqCrossings",
+	"msgSeqCrossings",
+	"msgMsgCrossings",
+	"maxBendsSeq",
+	"maxBendsMsg",
+	"throughShapes",
+	"shapeOverlaps",
+	"labelCollisions",
+	"labelOnEdge",
+	"labelLabelOverlaps",
+	"boundaryLabelsCrossed",
+	"wrappedLabels",
+	"unlabelled",
+])

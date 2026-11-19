@@ -1,5 +1,13 @@
 # Progress
 
+## 2026-11-19 — layout P0: full metric set, synthetic corpus, `pnpm layout:score`, ratchet
+
+- `scripts/layout-aesthetics/metrics.mjs`: adds the plan's gate metrics (seq / msg×seq / msg×msg crossings, bends per seq/msg flow, max bends, non-vertical msg %, pool width and left-padding SD, area/node, empty area %, shared centre-x %, 10 px grid %, boundary labels crossed, label×label overlaps).
+- `fixtures/layout-corpus/`: 19 cases: 10 existing aesthetics scenarios plus invented specs (12-pool insurance collaboration, travel booking, IT incident, grant lanes, library loops, clinic data/annotations, hotel check-in `--edit` pair, two DI-less `.bpmn`).
+- `pnpm layout:score [--dir <any folder>] [--engine X] [--json out] [--update-baseline]`; `render-corpus.mjs` writes one PNG per case.
+- `doc/layout-aesthetics/baseline.json` + vitest ratchet (`apps/cli/src/layout-score`): fails if any metric on any case is worse (counts 0 slack, others 1 %).
+- No layout algorithm change. The blind pairwise judge (`judge.mjs`) is left out for now.
+
 ## 2026-11-19 — layout: current-state map and improvement plan (docs only)
 
 - `doc/plans/layout-current-state.md`: auto-layout pipeline, constants, tests, TS/Rust parity, 12 ranked weaknesses.

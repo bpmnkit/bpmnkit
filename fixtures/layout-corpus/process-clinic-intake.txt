@@ -1,0 +1,13 @@
+# Clinic patient intake | id=clinic
+[annotation Insurance data must be verified before any treatment]
+[annotation Allergies are mandatory fields] ..> Record vitals
+[start Patient arrives] > [user Register patient] > [user Record vitals] > [service Check insurance] > [xor Insured?]
+Insured? >(Yes: insured = true) [user Assign doctor] > [end Intake complete]
+Insured? >(No: default) [user Collect deposit] > Assign doctor
+[object Intake form] ..> Register patient
+Register patient ..> [store Patient records]
+[object Lab results] ..> Record vitals
+Record vitals ..> [object Vital signs]
+Check insurance ..> [store Insurer registry]
+[store Patient records] ..> Assign doctor
+[annotation Deposit waived for emergency cases] ..> Collect deposit

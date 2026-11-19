@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="defs" targetNamespace="http://bpmn.io/schema/bpmn">
+<process id="Process_1" isExecutable="true">
+<startEvent id="start" name="Request received"><outgoing>fProcess_1_0</outgoing></startEvent>
+<serviceTask id="validate" name="Validate request"><incoming>fProcess_1_0</incoming><outgoing>fProcess_1_1</outgoing></serviceTask>
+<serviceTask id="enrich" name="Enrich customer data"><incoming>fProcess_1_1</incoming><outgoing>fProcess_1_2</outgoing></serviceTask>
+<userTask id="approve" name="Approve request"><incoming>fProcess_1_2</incoming><outgoing>fProcess_1_3</outgoing></userTask>
+<sendTask id="notify" name="Notify requester"><incoming>fProcess_1_3</incoming><outgoing>fProcess_1_4</outgoing></sendTask>
+<endEvent id="end" name="Request handled"><incoming>fProcess_1_4</incoming></endEvent>
+<sequenceFlow id="fProcess_1_0" sourceRef="start" targetRef="validate"/>
+<sequenceFlow id="fProcess_1_1" sourceRef="validate" targetRef="enrich"/>
+<sequenceFlow id="fProcess_1_2" sourceRef="enrich" targetRef="approve"/>
+<sequenceFlow id="fProcess_1_3" sourceRef="approve" targetRef="notify"/>
+<sequenceFlow id="fProcess_1_4" sourceRef="notify" targetRef="end"/>
+</process>
+</definitions>

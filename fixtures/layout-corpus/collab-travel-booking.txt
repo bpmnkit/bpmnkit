@@ -1,0 +1,26 @@
+# Travel booking
+## Traveler Portal | id=portal
+[start:message Trip requested] > [user Choose itinerary] > [send Request flight] > [catch Flight offer received | key=tripId] > [send Request hotel] > [catch Hotel offer received | key=tripId] > [send Request payment] > [catch Payment settled | key=tripId] > [end Trip booked]
+Choose itinerary ..> [store Booking DB]
+## Flight Desk | id=flights
+[start:message Flight query] > [service Search flights] > [send Send flight offer] > [end Flights done]
+Search flights ..> [store Booking DB]
+## Hotel Desk | id=hotels
+[start:message Hotel query] > [service Search rooms] > [xor Room free?]
+Room free? >(Yes: free = true) [send Send hotel offer] > [end Hotel offered]
+Room free? >(No: default) [send Send sold out] > [end Sold out]
+Search rooms ..> [store Booking DB]
+## Billing | id=billing
+[start:message Charge requested] > [service Charge card] > [send Send receipt] > [end Billed]
+Charge card ..> [store Booking DB]
+## Notifications | id=notify
+[start:message Booking complete] > [service Send itinerary mail] > [end Mail sent]
+## Card Network | blackbox
+Request flight ~> Flight query: Route
+Send flight offer ~> Flight offer received: Offer
+Request hotel ~> Hotel query: Dates
+Send hotel offer ~> Hotel offer received: Offer
+Request payment ~> Charge requested: Amount
+Charge card ~> Card Network: Authorization
+Card Network ~> Payment settled: Approval
+Send receipt ~> Booking complete: Receipt

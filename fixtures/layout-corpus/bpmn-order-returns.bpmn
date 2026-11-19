@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="Definitions_returns" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="orderReturns" name="Order returns" isExecutable="true">
+    <bpmn:startEvent id="returnRequested" name="Return requested"><bpmn:outgoing>f1</bpmn:outgoing></bpmn:startEvent>
+    <bpmn:userTask id="checkReason" name="Check return reason"><bpmn:incoming>f1</bpmn:incoming><bpmn:outgoing>f2</bpmn:outgoing></bpmn:userTask>
+    <bpmn:exclusiveGateway id="eligible" name="Eligible?" default="f4"><bpmn:incoming>f2</bpmn:incoming><bpmn:outgoing>f3</bpmn:outgoing><bpmn:outgoing>f4</bpmn:outgoing></bpmn:exclusiveGateway>
+    <bpmn:parallelGateway id="split"><bpmn:incoming>f3</bpmn:incoming><bpmn:outgoing>f5</bpmn:outgoing><bpmn:outgoing>f6</bpmn:outgoing></bpmn:parallelGateway>
+    <bpmn:serviceTask id="createLabel" name="Create return label"><bpmn:incoming>f5</bpmn:incoming><bpmn:outgoing>f7</bpmn:outgoing><bpmn:extensionElements><zeebe:taskDefinition type="create-label" /></bpmn:extensionElements></bpmn:serviceTask>
+    <bpmn:userTask id="inspectItem" name="Inspect returned item"><bpmn:incoming>f6</bpmn:incoming><bpmn:outgoing>f8</bpmn:outgoing></bpmn:userTask>
+    <bpmn:parallelGateway id="join"><bpmn:incoming>f7</bpmn:incoming><bpmn:incoming>f8</bpmn:incoming><bpmn:outgoing>f9</bpmn:outgoing></bpmn:parallelGateway>
+    <bpmn:serviceTask id="refund" name="Refund customer"><bpmn:incoming>f9</bpmn:incoming><bpmn:outgoing>f10</bpmn:outgoing><bpmn:extensionElements><zeebe:taskDefinition type="refund" /></bpmn:extensionElements></bpmn:serviceTask>
+    <bpmn:endEvent id="returnDone" name="Return completed"><bpmn:incoming>f10</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sendTask id="sendRejection" name="Send rejection"><bpmn:incoming>f4</bpmn:incoming><bpmn:outgoing>f11</bpmn:outgoing><bpmn:extensionElements><zeebe:taskDefinition type="send-rejection" /></bpmn:extensionElements></bpmn:sendTask>
+    <bpmn:endEvent id="returnRejected" name="Return rejected"><bpmn:incoming>f11</bpmn:incoming></bpmn:endEvent>
+    <bpmn:sequenceFlow id="f1" sourceRef="returnRequested" targetRef="checkReason" />
+    <bpmn:sequenceFlow id="f2" sourceRef="checkReason" targetRef="eligible" />
+    <bpmn:sequenceFlow id="f3" name="Yes" sourceRef="eligible" targetRef="split"><bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">=eligible = true</bpmn:conditionExpression></bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="f4" name="No" sourceRef="eligible" targetRef="sendRejection" />
+    <bpmn:sequenceFlow id="f5" sourceRef="split" targetRef="createLabel" />
+    <bpmn:sequenceFlow id="f6" sourceRef="split" targetRef="inspectItem" />
+    <bpmn:sequenceFlow id="f7" sourceRef="createLabel" targetRef="join" />
+    <bpmn:sequenceFlow id="f8" sourceRef="inspectItem" targetRef="join" />
+    <bpmn:sequenceFlow id="f9" sourceRef="join" targetRef="refund" />
+    <bpmn:sequenceFlow id="f10" sourceRef="refund" targetRef="returnDone" />
+    <bpmn:sequenceFlow id="f11" sourceRef="sendRejection" targetRef="returnRejected" />
+  </bpmn:process>
+</bpmn:definitions>
