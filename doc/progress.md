@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-19 — FormBuilder / GroupBuilder cover every form element (#301)
+
+- `FormBuilder` and `GroupBuilder` now share one abstract `ComponentContainer` (scope naming + all component methods); `FormBuilder` adds form metadata and `build()`, `GroupBuilder` keeps `_id`. Output of the existing methods is unchanged.
+- New fluent methods: `number`, `datetime`, `taglist`, `button`, `dynamiclist` (nested `GroupBuilder` callback, scoped by its id), `iframe`, `image`, `table`, `html`, `separator`, `spacer`, `expression`, `filepicker`, `documentPreview`, with exported `*Options` types. Keyed types name by key; others by label/url/source/content; separator and spacer use an empty identity so repeats are numbered.
+- Tests: one per method (top level and in a group), dynamiclist nesting and determinism, and a check that every `FORM_ELEMENT_NAMES` entry has a method on both builders.
+
 ## 2026-11-19 — layout P4: lanes, edit path, cleanup
 
 - Lanes (`semantic/lanes.ts`, `place.ts`, `index.ts`): a flat lane set is laid out in a handful of variants and the old layout stays unless a variant is no worse in every term of `laneCost` (flows through shapes, crossings, bends, happy-path row spread, edge-length CV, area) and better in one. Variants: lane order (the cheapest of ≤ 6 lanes by cross-lane distance, ignoring loops and end events, ties keep the declared order), per-lane compaction (an off-row node moves up onto an earlier row of its lane when its lane neighbours are there, the column is free and no flow of that row runs through it), tight lane padding (30 instead of 40, so a hand-over is 60 px, the column gap) and hand-overs (a flow into the lane directly above or below shares its source's column: rank step 0, vertical straight flow; plain chains only, or also splits). Nested lane sets and non-laned scopes are untouched.
