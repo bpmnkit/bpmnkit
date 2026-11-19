@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-11-19 — layout P2b (TS): exception row, shared columns, join port, pooled grid phase
+
+- Exception row: a boundary handler starts in its host's column and drops straight down (0 bends) onto a row shared by the spine's handlers; a second event on one host fans one column right. Falls back to the old step when the column is taken; scopes without lanes only.
+- Shared columns: a one-node detour of a split that feeds the split's other target takes that target's rank and stacks under it (40 px gap). Off in pools and containers.
+- Join port template: run along the branch row, then turn vertically into the join's centre-x (skipped under hosts with boundary handlers). Tight loops: engine already did it; regression case only.
+- Pooled content gets one shared x shift (-4..5 px) for the grid, before message routing.
+- Tried and dropped: 50 px pitch (edgeLenCV worse on ~20 cases), per-pool y shift and artifact slots inside pools (message flow through a label in insurance/travel cases). Order-dependent first fit remains.
+- Corpus means (23 cases, before → after): bendsPerSeq 0.30 → 0.24, maxBendsSeq 1.48 → 1.17, seqCrossings 0.17 → 0.13, edgeLenCV 0.63 → 0.58, sharedCentreX 46.3 → 48.0 %, gridPct 27.2 → 30.7 %, height 550 → 542; labels unchanged. Five invented cases (`p2-bike-repair`, `p2-paint-order`, `p2-kiln-firing`, `p2-bread-proofing`, `p2-collab-tailor`) with six tests in `p2-rules.test.mjs`.
+
 ## 2026-11-19 — layout P2b (Rust): twin of the P2 TS layout changes
 
 - `crates/bpmnkit-layout` mirrors detour stacking, exception row, join port template, detour/exception row gaps, boundary column docking and `poolGridPhase`; oracle fixtures (`auto_layout/*.expected.bpmn`, `semantic/cases.json`) regenerated from the TS build. `conformance/` unchanged.
