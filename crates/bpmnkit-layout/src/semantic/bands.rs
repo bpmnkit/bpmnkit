@@ -1,6 +1,6 @@
 //! Twin of `layout/semantic/bands.ts`.
 
-use super::graph::{reaches_end, SemanticGraph};
+use super::graph::{enters_detour, reaches_end, SemanticGraph};
 use crate::hash::{IndexMap, IndexSet};
 use bpmnkit_bpmn::model::{
     BpmnBoundaryEvent, BpmnEventDefinition, BpmnFlowElement, BpmnSequenceFlow,
@@ -367,6 +367,7 @@ fn trace_spine<'a>(
             index: usize,
             handler: i64,
             ends: i64,
+            detour: i64,
             is_default: i64,
         }
         let mut scored: Vec<Scored> = candidates
@@ -383,6 +384,8 @@ fn trace_spine<'a>(
                 } else {
                     1
                 },
+                // A detour stacked under its sibling target is a side trip, not the narrative.
+                detour: if enters_detour(graph, flow) { 1 } else { 0 },
                 is_default: if is_default_flow(source, flow) { 0 } else { 1 },
             })
             .collect();
@@ -390,6 +393,7 @@ fn trace_spine<'a>(
             a.handler
                 .cmp(&b.handler)
                 .then_with(|| a.ends.cmp(&b.ends))
+                .then_with(|| a.detour.cmp(&b.detour))
                 .then_with(|| a.is_default.cmp(&b.is_default))
                 .then_with(|| a.index.cmp(&b.index))
         });

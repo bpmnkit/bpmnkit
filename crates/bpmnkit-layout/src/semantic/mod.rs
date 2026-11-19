@@ -12,9 +12,9 @@ use crate::types::{
     Bounds, GridHint, LayoutEdge, LayoutNode, LayoutResult, Plane, Waypoint, LABEL_CHAR_WIDTH,
     LABEL_HEIGHT, LABEL_MIN_WIDTH, SUBPROCESS_PADDING,
 };
-use bands::assign_bands;
+use bands::{assign_bands, boundary_side};
 use bpmnkit_bpmn::model::{BpmnFlowElement, BpmnLaneSet, BpmnProcess, BpmnSequenceFlow};
-use graph::build_semantic_graph;
+use graph::{build_semantic_graph, place_exception_row};
 use place::{external_label_width, place, size_of};
 use route::route_flows;
 
@@ -80,7 +80,7 @@ pub fn semantic_layout(
         return LayoutResult::default();
     }
 
-    let graph = build_semantic_graph(flow_elements, sequence_flows);
+    let mut graph = build_semantic_graph(flow_elements, sequence_flows, slot_artifacts);
 
     // Children first: an expanded sub-process is sized by what it contains, while
     // a collapsed one stays activity-sized and its contents move to their own plane.
@@ -126,7 +126,15 @@ pub fn semantic_layout(
                 .is_some_and(|el| el.base().name.is_some())
         })
         .collect();
-    let band_layout = assign_bands(&graph, &titled);
+    let mut band_layout = assign_bands(&graph, &titled);
+    // Lanes decide a handler's row themselves, so the exception row is for lane-free scopes.
+    if lane_set.is_none()
+        && place_exception_row(&mut graph, &band_layout.bands, &|event, host| {
+            boundary_side(event, titled.contains(host))
+        })
+    {
+        band_layout = assign_bands(&graph, &titled);
+    }
     let placement = place(
         &graph,
         &band_layout,

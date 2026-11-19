@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-19 — layout P2b (Rust): twin of the P2 TS layout changes
+
+- `crates/bpmnkit-layout` mirrors detour stacking, exception row, join port template, detour/exception row gaps, boundary column docking and `poolGridPhase`; oracle fixtures (`auto_layout/*.expected.bpmn`, `semantic/cases.json`) regenerated from the TS build. `conformance/` unchanged.
+
 ## 2026-11-19 — layout P1: collaboration composition
 
 - Uniform pool frame (`auto-layout.ts` `uniformPoolFrame`): every pool, black box and lane ends at the widest pool's right edge.

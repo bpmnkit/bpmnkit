@@ -1084,6 +1084,90 @@ fn uniform_pool_frame(
     }
 }
 
+/// `poolGridPhase(shapes, edges, collab, defs)`: one x shift for the content of
+/// every pool, so columns stay aligned across pools and message flows stay
+/// vertical. It stays within the padding (-4..5 px), so no pool or lane frame
+/// moves. Rows are left alone.
+fn pool_grid_phase(
+    shapes: &mut [BpmnDiShape],
+    edges: &mut [BpmnDiEdge],
+    collab: &BpmnCollaboration,
+    defs: &BpmnDefinitions,
+) {
+    let participant_ids: IndexSet<&str> =
+        collab.participants.iter().map(|p| p.id.as_str()).collect();
+    let lane_ids: IndexSet<&str> = defs
+        .processes
+        .iter()
+        .flat_map(|p| {
+            lane_levels(p.lane_set.as_ref())
+                .into_iter()
+                .map(|level| level.lane.id.as_str())
+        })
+        .collect();
+    let pools: Vec<(f64, f64)> = shapes
+        .iter()
+        .filter(|s| participant_ids.contains(s.bpmn_element.as_str()))
+        .map(|s| (s.bounds.y, s.bounds.y + s.bounds.height))
+        .collect();
+    let within = |y: f64, pool: &(f64, f64)| y >= pool.0 && y <= pool.1;
+    let in_pool = |y: f64| pools.iter().any(|pool| within(y, pool));
+    let content: Vec<usize> = shapes
+        .iter()
+        .enumerate()
+        .filter(|(_, s)| {
+            !participant_ids.contains(s.bpmn_element.as_str())
+                && !lane_ids.contains(s.bpmn_element.as_str())
+                && in_pool(s.bounds.y + s.bounds.height / 2.0)
+        })
+        .map(|(i, _)| i)
+        .collect();
+    if content.is_empty() {
+        return;
+    }
+    let mut tx = 0i64;
+    let mut best = -1i64;
+    for t in 0..10i64 {
+        let n = content
+            .iter()
+            .filter(|&&i| (js::round(shapes[i].bounds.x) as i64 + t) % 10 == 0)
+            .count() as i64;
+        if n > best {
+            best = n;
+            tx = if t > 5 { t - 10 } else { t };
+        }
+    }
+    if tx == 0 {
+        return;
+    }
+    let tx = tx as f64;
+    for &i in &content {
+        let s = &mut shapes[i];
+        s.bounds.x += tx;
+        if let Some(b) = s.label.as_mut().and_then(|l| l.bounds.as_mut()) {
+            b.x += tx;
+        }
+    }
+    for e in edges.iter_mut() {
+        let Some(pool) = e
+            .waypoints
+            .first()
+            .and_then(|w0| pools.iter().find(|p| within(w0.y, p)))
+        else {
+            continue;
+        };
+        if !e.waypoints.iter().all(|w| within(w.y, pool)) {
+            continue;
+        }
+        for w in e.waypoints.iter_mut() {
+            w.x += tx;
+        }
+        if let Some(b) = e.label.as_mut().and_then(|l| l.bounds.as_mut()) {
+            b.x += tx;
+        }
+    }
+}
+
 /// `poolOwners(defs, collab)`: every element id in a collaboration mapped to the
 /// index of the pool holding it.
 fn pool_owners<'a>(
@@ -1821,6 +1905,7 @@ fn laid_out_diagrams(
     // ragged column, black boxes included.
     if let Some(collab) = collab {
         uniform_pool_frame(&mut all_shapes, collab, defs);
+        pool_grid_phase(&mut all_shapes, &mut all_edges, collab, defs);
     }
 
     if let Some(collab) = collab.filter(|c| !c.message_flows.is_empty()) {

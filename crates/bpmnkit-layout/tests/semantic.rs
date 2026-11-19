@@ -237,6 +237,8 @@ fn graph_of<'a>(
             .map(|e| (str_ref(&e[0]), e[1].as_i64().expect("rank")))
             .collect(),
         end_reach: RefCell::new(None),
+        exception_row: Default::default(),
+        stack_detours: false,
     }
 }
 

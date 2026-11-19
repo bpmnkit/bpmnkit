@@ -1,7 +1,7 @@
 //! Twin of `layout/semantic/place.ts`.
 
 use super::bands::{boundary_side, BandLayout};
-use super::graph::SemanticGraph;
+use super::graph::{is_detour, SemanticGraph};
 use crate::hash::{IndexMap, IndexSet};
 use crate::js::cmp_num;
 use crate::types::{
@@ -15,6 +15,8 @@ use bpmnkit_bpmn::model::{BpmnBoundaryEvent, BpmnFlowElement, BpmnLaneSet};
 /// gaps only where a flow label or a long event label needs the room.
 pub const H_GAP: f64 = 60.0;
 pub const V_GAP: f64 = 60.0;
+/// Gap above a row of stacked detours (see `is_detour`): tasks on a 120 px pitch.
+const DETOUR_GAP: f64 = 40.0;
 /// Gap beside a column holding an expanded container. The container's border,
 /// its title and the notes on its children crowd that gap, so it keeps more air.
 pub const CONTAINER_GAP: f64 = 100.0;
@@ -25,8 +27,11 @@ const EXTERNAL_LABEL_OFFSET: f64 = 4.0;
 const GRID_GAP_X: f64 = 40.0;
 const GRID_GAP_Y: f64 = 20.0;
 pub const COMPONENT_GAP: f64 = 80.0;
+const ROW_GRID: f64 = 10.0;
 pub const LANE_PADDING: f64 = 40.0;
 pub const BOUNDARY_SIZE: f64 = 36.0;
+/// Air kept between two boundary events docked side by side, and before a host's corner.
+const BOUNDARY_CLEARANCE: f64 = 4.0;
 /// Height of a lane band with nothing in it: room for one boundary-sized row.
 pub const MIN_LANE_HEIGHT: f64 = 2.0 * LANE_PADDING + BOUNDARY_SIZE;
 
@@ -498,13 +503,21 @@ fn band_lines<'a>(
         let mut previous = 0.0;
         for band in list {
             let wide = span(band);
+            let members: &[&str] = by_band.get(&band).map_or(&[][..], |v| v.as_slice());
+            // A row of stacked detours only carries short vertical flows into the
+            // row beside it: a 120 px row pitch for tasks, as hand layouts use.
+            let gap = if members.iter().all(|id| is_detour(graph, id)) {
+                DETOUR_GAP
+            } else {
+                V_GAP
+            };
             let mut y = previous + dir as f64;
             for bx in &placed {
                 if x_overlap((bx.left, bx.right), wide) {
                     y = if dir == 1 {
-                        y.max(bx.bottom + V_GAP)
+                        y.max(bx.bottom + gap)
                     } else {
-                        y.min(bx.top - V_GAP)
+                        y.min(bx.top - gap)
                     };
                 }
                 for &id in by_band.get(&band).into_iter().flatten() {
@@ -518,11 +531,19 @@ fn band_lines<'a>(
                         continue;
                     }
                     y = if dir == 1 {
-                        y.max(bx.bottom + V_GAP + e.above)
+                        y.max(bx.bottom + gap + e.above)
                     } else {
-                        y.min(bx.top - V_GAP - e.below)
+                        y.min(bx.top - gap - e.below)
                     };
                 }
+            }
+            // A row of nothing but exception handlers or stacked detours keeps the
+            // spine's 10 px phase, so its tasks share the main row's grid.
+            if members
+                .iter()
+                .all(|id| graph.exception_row.contains(id) || is_detour(graph, id))
+            {
+                y = dir as f64 * (y.abs() / ROW_GRID).ceil() * ROW_GRID;
             }
             place_band(band, y, &mut line, &mut placed);
             previous = y;
@@ -997,12 +1018,36 @@ fn dock_boundary_events<'a>(
                 })
             });
             let n = ordered.len();
+            // A handler in the host's own column is under the host's centre: its
+            // event docks there and the flow drops straight down. The others
+            // share the half toward their handlers, right.
+            let pitch = if n > 1 {
+                (host.width / 2.0 - BOUNDARY_CLEARANCE) / (n - 1) as f64
+            } else {
+                0.0
+            };
+            let column: Option<usize> = if n == 1 || pitch >= BOUNDARY_SIZE + BOUNDARY_CLEARANCE {
+                ordered
+                    .iter()
+                    .position(|e| in_host_column(graph, bounds, host_id, &host, *top, &e.base.id))
+            } else {
+                None
+            };
+            let slot = |i: usize| -> f64 {
+                let Some(col) = column else {
+                    return ((i + 1) as f64 * host.width) / (n + 1) as f64;
+                };
+                if i == col {
+                    return host.width / 2.0;
+                }
+                let rank = (0..i).filter(|j| *j != col).count();
+                host.width / 2.0 + (rank + 1) as f64 * pitch
+            };
             for (i, event) in ordered.iter().enumerate() {
                 bounds.insert(
                     &event.base.id,
                     Bounds {
-                        x: host.x + ((i + 1) as f64 * host.width) / (n + 1) as f64
-                            - BOUNDARY_SIZE / 2.0,
+                        x: host.x + slot(i) - BOUNDARY_SIZE / 2.0,
                         y: (if *top { host.y } else { host.y + host.height }) - BOUNDARY_SIZE / 2.0,
                         width: BOUNDARY_SIZE,
                         height: BOUNDARY_SIZE,
@@ -1049,6 +1094,39 @@ fn handler_depth(
     } else {
         0.0
     }
+}
+
+/// `inHostColumn`: a handler of this event sits straight out from the host's
+/// centre, past the docked side.
+fn in_host_column(
+    graph: &SemanticGraph,
+    bounds: &IndexMap<&str, Bounds>,
+    host_id: &str,
+    host: &Bounds,
+    top: bool,
+    event_id: &str,
+) -> bool {
+    let mid = host.x + host.width / 2.0;
+    for flow in graph.outgoing.get(host_id).into_iter().flatten() {
+        if flow.source_ref != event_id {
+            continue;
+        }
+        let Some(target) = bounds.get(flow.target_ref.as_str()) else {
+            continue;
+        };
+        if (target.x + target.width / 2.0 - mid).abs() >= 1.0 {
+            continue;
+        }
+        let past = if top {
+            target.y + target.height < host.y
+        } else {
+            target.y > host.y + host.height
+        };
+        if past {
+            return true;
+        }
+    }
+    false
 }
 
 /// `handlerReach`: how far the handler of a boundary event runs, in ranks.

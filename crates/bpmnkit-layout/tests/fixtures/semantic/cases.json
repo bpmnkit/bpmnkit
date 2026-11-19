@@ -345,12 +345,7 @@
 						"id": "Flow_K56CWSVL",
 						"sourceRef": "standardDueDiligence",
 						"targetRef": "dueDiligenceGateway_join",
-						"waypoints": [
-							{ "x": 1144, "y": 323 },
-							{ "x": 1174, "y": 323 },
-							{ "x": 1174, "y": 180 },
-							{ "x": 1204, "y": 180 }
-						]
+						"waypoints": [{ "x": 1144, "y": 323 }, { "x": 1229, "y": 323 }, { "x": 1229, "y": 205 }]
 					},
 					{
 						"id": "Flow_P4BQYrEw",
@@ -764,12 +759,7 @@
 						"id": "Flow_K56CWSVL",
 						"sourceRef": "standardDueDiligence",
 						"targetRef": "dueDiligenceGateway_join",
-						"waypoints": [
-							{ "x": 1141, "y": 330 },
-							{ "x": 1174, "y": 330 },
-							{ "x": 1174, "y": 199 },
-							{ "x": 1194, "y": 199 }
-						]
+						"waypoints": [{ "x": 1141, "y": 330 }, { "x": 1219, "y": 330 }, { "x": 1219, "y": 224 }]
 					},
 					{
 						"id": "Flow_P4BQYrEw",
@@ -1569,12 +1559,7 @@
 					"id": "Flow_K56CWSVL",
 					"sourceRef": "standardDueDiligence",
 					"targetRef": "dueDiligenceGateway_join",
-					"waypoints": [
-						{ "x": 1144, "y": 323 },
-						{ "x": 1174, "y": 323 },
-						{ "x": 1174, "y": 180 },
-						{ "x": 1204, "y": 180 }
-					]
+					"waypoints": [{ "x": 1144, "y": 323 }, { "x": 1229, "y": 323 }, { "x": 1229, "y": 205 }]
 				},
 				{
 					"id": "Flow_P4BQYrEw",
@@ -2000,9 +1985,8 @@
 						"sourceRef": "complianceReview",
 						"targetRef": "dueDiligenceGateway_join",
 						"waypoints": [
-							{ "x": 1055.5, "y": 280 },
-							{ "x": 1055.5, "y": 250 },
-							{ "x": 1228.5, "y": 250 },
+							{ "x": 1105.5, "y": 320 },
+							{ "x": 1228.5, "y": 320 },
 							{ "x": 1228.5, "y": 205 }
 						]
 					},
@@ -2417,9 +2401,8 @@
 						"targetRef": "dueDiligenceGateway_join",
 						"waypoints": [
 							{ "x": 1117.5, "y": 301 },
-							{ "x": 1154.5, "y": 301 },
-							{ "x": 1154.5, "y": 188 },
-							{ "x": 1184.5, "y": 188 }
+							{ "x": 1209.5, "y": 301 },
+							{ "x": 1209.5, "y": 213 }
 						]
 					},
 					{
@@ -2825,9 +2808,9 @@
 						"sourceRef": "standardDueDiligence",
 						"targetRef": "dueDiligenceGateway_join",
 						"waypoints": [
-							{ "x": 1012.5, "y": 148 },
-							{ "x": 1012.5, "y": 137 },
-							{ "x": 1194.5, "y": 137 }
+							{ "x": 1062.5, "y": 188 },
+							{ "x": 1219.5, "y": 188 },
+							{ "x": 1219.5, "y": 162 }
 						]
 					},
 					{
@@ -2847,9 +2830,8 @@
 						"targetRef": "dueDiligenceGateway_join",
 						"waypoints": [
 							{ "x": 1075.5, "y": 319 },
-							{ "x": 1154.5, "y": 319 },
-							{ "x": 1154.5, "y": 137 },
-							{ "x": 1194.5, "y": 137 }
+							{ "x": 1219.5, "y": 319 },
+							{ "x": 1219.5, "y": 162 }
 						]
 					},
 					{
@@ -2922,8 +2904,9 @@
 						"sourceRef": "dueDiligenceGateway_join",
 						"targetRef": "riskClassification",
 						"waypoints": [
-							{ "x": 1219.5, "y": 162 },
-							{ "x": 1219.5, "y": 235 },
+							{ "x": 1244.5, "y": 137 },
+							{ "x": 1302.5, "y": 137 },
+							{ "x": 1302.5, "y": 235 },
 							{ "x": 1347.5, "y": 235 }
 						]
 					}
@@ -3239,9 +3222,8 @@
 					"sourceRef": "complianceReview",
 					"targetRef": "dueDiligenceGateway_join",
 					"waypoints": [
-						{ "x": 1055.5, "y": 280 },
-						{ "x": 1055.5, "y": 250 },
-						{ "x": 1228.5, "y": 250 },
+						{ "x": 1105.5, "y": 320 },
+						{ "x": 1228.5, "y": 320 },
 						{ "x": 1228.5, "y": 205 }
 					]
 				},
@@ -3426,12 +3408,7 @@
 						"id": "flow4",
 						"sourceRef": "reject",
 						"targetRef": "gw-merge",
-						"waypoints": [
-							{ "x": 416, "y": 140 },
-							{ "x": 416, "y": 110 },
-							{ "x": 551, "y": 110 },
-							{ "x": 551, "y": 65 }
-						]
+						"waypoints": [{ "x": 466, "y": 180 }, { "x": 551, "y": 180 }, { "x": 551, "y": 65 }]
 					},
 					{
 						"id": "flow5",
@@ -3567,12 +3544,7 @@
 						"id": "flow4",
 						"sourceRef": "reject",
 						"targetRef": "gw-merge",
-						"waypoints": [
-							{ "x": 406, "y": 125 },
-							{ "x": 406, "y": 100 },
-							{ "x": 562, "y": 100 },
-							{ "x": 562, "y": 63 }
-						]
+						"waypoints": [{ "x": 456, "y": 165 }, { "x": 562, "y": 165 }, { "x": 562, "y": 63 }]
 					},
 					{
 						"id": "flow5",
@@ -3708,12 +3680,7 @@
 						"id": "flow4",
 						"sourceRef": "reject",
 						"targetRef": "gw-merge",
-						"waypoints": [
-							{ "x": 428, "y": 178 },
-							{ "x": 428, "y": 129.5 },
-							{ "x": 582, "y": 129.5 },
-							{ "x": 582, "y": 60 }
-						]
+						"waypoints": [{ "x": 478, "y": 218 }, { "x": 582, "y": 218 }, { "x": 582, "y": 60 }]
 					},
 					{
 						"id": "flow5",
@@ -3853,12 +3820,7 @@
 					"id": "flow4",
 					"sourceRef": "reject",
 					"targetRef": "gw-merge",
-					"waypoints": [
-						{ "x": 416, "y": 140 },
-						{ "x": 416, "y": 110 },
-						{ "x": 551, "y": 110 },
-						{ "x": 551, "y": 65 }
-					]
+					"waypoints": [{ "x": 466, "y": 180 }, { "x": 551, "y": 180 }, { "x": 551, "y": 65 }]
 				},
 				{
 					"id": "flow5",
@@ -4008,8 +3970,8 @@
 						["Sub_work", 1],
 						["Gateway_check", 2],
 						["Throw_escalate", 3],
-						["End_ok", 4],
-						["End_err", 2],
+						["End_ok", 3],
+						["End_err", 1],
 						["End_late", 2],
 						["Sub_event", 0]
 					]
@@ -4019,13 +3981,13 @@
 					["Start_e", { "x": 98, "y": 78, "width": 36, "height": 36 }],
 					["Sub_work", { "x": 332, "y": 0, "width": 328, "height": 164 }],
 					["Gateway_check", { "x": 760, "y": 71, "width": 50, "height": 50 }],
-					["Throw_escalate", { "x": 870, "y": 224, "width": 36, "height": 36 }],
-					["End_ok", { "x": 966, "y": 78, "width": 36, "height": 36 }],
-					["End_err", { "x": 767, "y": 224, "width": 36, "height": 36 }],
-					["End_late", { "x": 767, "y": 320, "width": 36, "height": 36 }],
-					["Sub_event", { "x": 0, "y": 436, "width": 232, "height": 164 }],
-					["Boundary_timer", { "x": 423.3333333333333, "y": 146, "width": 36, "height": 36 }],
-					["Boundary_error", { "x": 532.6666666666666, "y": 146, "width": 36, "height": 36 }]
+					["Throw_escalate", { "x": 870, "y": 248, "width": 36, "height": 36 }],
+					["End_ok", { "x": 870, "y": 78, "width": 36, "height": 36 }],
+					["End_err", { "x": 478, "y": 248, "width": 36, "height": 36 }],
+					["End_late", { "x": 767, "y": 248, "width": 36, "height": 36 }],
+					["Sub_event", { "x": 0, "y": 364, "width": 232, "height": 164 }],
+					["Boundary_timer", { "x": 638, "y": 146, "width": 36, "height": 36 }],
+					["Boundary_error", { "x": 478, "y": 146, "width": 36, "height": 36 }]
 				],
 				"bandLayout": {
 					"bands": [
@@ -4035,13 +3997,13 @@
 						["End_ok", 0],
 						["Sub_event", 0],
 						["End_err", 1],
-						["End_late", 2],
+						["End_late", 1],
 						["Throw_escalate", 1]
 					],
 					"spine": ["Start_e", "Sub_work", "Gateway_check", "End_ok", "Sub_event"],
 					"straightFlows": ["Flow_e1", "Flow_e2", "Flow_no"]
 				},
-				"gutterX": [[0, -30], [1, 282], [2, 710], [3, 840], [4, 936]],
+				"gutterX": [[0, -30], [1, 282], [2, 710], [3, 840]],
 				"edges": [
 					{
 						"id": "Flow_e1",
@@ -4062,8 +4024,8 @@
 						"waypoints": [
 							{ "x": 810, "y": 96 },
 							{ "x": 840, "y": 96 },
-							{ "x": 840, "y": 242 },
-							{ "x": 870, "y": 242 }
+							{ "x": 840, "y": 266 },
+							{ "x": 870, "y": 266 }
 						],
 						"label": "Yes"
 					},
@@ -4074,8 +4036,8 @@
 						"waypoints": [
 							{ "x": 785, "y": 71 },
 							{ "x": 785, "y": 31 },
-							{ "x": 984, "y": 31 },
-							{ "x": 984, "y": 78 }
+							{ "x": 888, "y": 31 },
+							{ "x": 888, "y": 78 }
 						],
 						"label": "No"
 					},
@@ -4083,27 +4045,19 @@
 						"id": "Flow_e3",
 						"sourceRef": "Throw_escalate",
 						"targetRef": "End_ok",
-						"waypoints": [{ "x": 888, "y": 224 }, { "x": 888, "y": 96 }, { "x": 966, "y": 96 }]
+						"waypoints": [{ "x": 888, "y": 248 }, { "x": 888, "y": 114 }]
 					},
 					{
 						"id": "Flow_err",
 						"sourceRef": "Boundary_error",
 						"targetRef": "End_err",
-						"waypoints": [
-							{ "x": 550.6666666666666, "y": 182 },
-							{ "x": 550.6666666666666, "y": 242 },
-							{ "x": 767, "y": 242 }
-						]
+						"waypoints": [{ "x": 496, "y": 182 }, { "x": 496, "y": 248 }]
 					},
 					{
 						"id": "Flow_late",
 						"sourceRef": "Boundary_timer",
 						"targetRef": "End_late",
-						"waypoints": [
-							{ "x": 441.3333333333333, "y": 182 },
-							{ "x": 441.3333333333333, "y": 338 },
-							{ "x": 767, "y": 338 }
-						]
+						"waypoints": [{ "x": 656, "y": 182 }, { "x": 656, "y": 266 }, { "x": 767, "y": 266 }]
 					}
 				]
 			},
@@ -4165,8 +4119,8 @@
 						["Sub_work", 1],
 						["Gateway_check", 2],
 						["Throw_escalate", 3],
-						["End_ok", 4],
-						["End_err", 2],
+						["End_ok", 3],
+						["End_err", 1],
 						["End_late", 2],
 						["Sub_event", 0]
 					]
@@ -4176,13 +4130,13 @@
 					["Start_e", { "x": 106, "y": 86, "width": 36, "height": 36 }],
 					["Sub_work", { "x": 351, "y": 18, "width": 328, "height": 164 }],
 					["Gateway_check", { "x": 774, "y": 63, "width": 50, "height": 50 }],
-					["Throw_escalate", { "x": 871, "y": 225, "width": 36, "height": 36 }],
-					["End_ok", { "x": 950, "y": 75, "width": 36, "height": 36 }],
-					["End_err", { "x": 770, "y": 239, "width": 36, "height": 36 }],
-					["End_late", { "x": 765, "y": 329, "width": 36, "height": 36 }],
-					["Sub_event", { "x": 15, "y": 445, "width": 232, "height": 164 }],
-					["Boundary_timer", { "x": 435.3333333333333, "y": 154, "width": 36, "height": 36 }],
-					["Boundary_error", { "x": 542.6666666666666, "y": 127, "width": 36, "height": 36 }]
+					["Throw_escalate", { "x": 871, "y": 249, "width": 36, "height": 36 }],
+					["End_ok", { "x": 854, "y": 75, "width": 36, "height": 36 }],
+					["End_err", { "x": 481, "y": 263, "width": 36, "height": 36 }],
+					["End_late", { "x": 765, "y": 257, "width": 36, "height": 36 }],
+					["Sub_event", { "x": 15, "y": 373, "width": 232, "height": 164 }],
+					["Boundary_timer", { "x": 650, "y": 154, "width": 36, "height": 36 }],
+					["Boundary_error", { "x": 488, "y": 127, "width": 36, "height": 36 }]
 				],
 				"bandLayout": {
 					"bands": [
@@ -4192,13 +4146,13 @@
 						["End_ok", 0],
 						["Sub_event", 0],
 						["End_err", 1],
-						["End_late", 2],
+						["End_late", 1],
 						["Throw_escalate", 1]
 					],
 					"spine": ["Start_e", "Sub_work", "Gateway_check", "End_ok", "Sub_event"],
 					"straightFlows": ["Flow_e1", "Flow_e2", "Flow_no"]
 				},
-				"gutterX": [[0, -30], [1, 282], [2, 710], [3, 840], [4, 936]],
+				"gutterX": [[0, -30], [1, 282], [2, 710], [3, 840]],
 				"edges": [
 					{
 						"id": "Flow_e1",
@@ -4216,52 +4170,38 @@
 						"id": "Flow_yes",
 						"sourceRef": "Gateway_check",
 						"targetRef": "Throw_escalate",
-						"waypoints": [
-							{ "x": 824, "y": 88 },
-							{ "x": 840, "y": 88 },
-							{ "x": 840, "y": 243 },
-							{ "x": 871, "y": 243 }
-						],
+						"waypoints": [{ "x": 799, "y": 113 }, { "x": 799, "y": 267 }, { "x": 871, "y": 267 }],
 						"label": "Yes"
 					},
 					{
 						"id": "Flow_no",
 						"sourceRef": "Gateway_check",
 						"targetRef": "End_ok",
-						"waypoints": [
-							{ "x": 799, "y": 63 },
-							{ "x": 799, "y": 23 },
-							{ "x": 968, "y": 23 },
-							{ "x": 968, "y": 75 }
-						],
+						"waypoints": [{ "x": 824, "y": 93 }, { "x": 854, "y": 93 }],
 						"label": "No"
 					},
 					{
 						"id": "Flow_e3",
 						"sourceRef": "Throw_escalate",
 						"targetRef": "End_ok",
-						"waypoints": [{ "x": 889, "y": 225 }, { "x": 889, "y": 93 }, { "x": 950, "y": 93 }]
+						"waypoints": [{ "x": 889, "y": 249 }, { "x": 872, "y": 111 }]
 					},
 					{
 						"id": "Flow_err",
 						"sourceRef": "Boundary_error",
 						"targetRef": "End_err",
 						"waypoints": [
-							{ "x": 560.6666666666666, "y": 163 },
-							{ "x": 560.6666666666666, "y": 210.5 },
-							{ "x": 788, "y": 210.5 },
-							{ "x": 788, "y": 239 }
+							{ "x": 506, "y": 163 },
+							{ "x": 506, "y": 226.5 },
+							{ "x": 499, "y": 226.5 },
+							{ "x": 499, "y": 263 }
 						]
 					},
 					{
 						"id": "Flow_late",
 						"sourceRef": "Boundary_timer",
 						"targetRef": "End_late",
-						"waypoints": [
-							{ "x": 453.3333333333333, "y": 190 },
-							{ "x": 453.3333333333333, "y": 347 },
-							{ "x": 765, "y": 347 }
-						]
+						"waypoints": [{ "x": 668, "y": 190 }, { "x": 668, "y": 275 }, { "x": 765, "y": 275 }]
 					}
 				]
 			},
@@ -4323,8 +4263,8 @@
 						["Sub_work", 1],
 						["Gateway_check", 2],
 						["Throw_escalate", 3],
-						["End_ok", 4],
-						["End_err", 2],
+						["End_ok", 3],
+						["End_err", 1],
 						["End_late", 2],
 						["Sub_event", 0]
 					]
@@ -4334,13 +4274,13 @@
 					["Start_e", { "x": 144, "y": 81, "width": 36, "height": 36 }],
 					["Sub_work", { "x": 328, "y": -52, "width": 328, "height": 164 }],
 					["Gateway_check", { "x": 786, "y": 70, "width": 50, "height": 50 }],
-					["Throw_escalate", { "x": 890, "y": 246, "width": 36, "height": 36 }],
-					["End_ok", { "x": 930, "y": 128, "width": 36, "height": 36 }],
-					["End_err", { "x": 811, "y": 271, "width": 36, "height": 36 }],
-					["End_late", { "x": 772, "y": 277, "width": 36, "height": 36 }],
-					["Sub_event", { "x": -6, "y": 495, "width": 232, "height": 164 }],
-					["Boundary_timer", { "x": 389.3333333333333, "y": 140, "width": 36, "height": 36 }],
-					["Boundary_error", { "x": 510.66666666666663, "y": 148, "width": 36, "height": 36 }]
+					["Throw_escalate", { "x": 890, "y": 270, "width": 36, "height": 36 }],
+					["End_ok", { "x": 834, "y": 128, "width": 36, "height": 36 }],
+					["End_err", { "x": 522, "y": 295, "width": 36, "height": 36 }],
+					["End_late", { "x": 772, "y": 205, "width": 36, "height": 36 }],
+					["Sub_event", { "x": -6, "y": 423, "width": 232, "height": 164 }],
+					["Boundary_timer", { "x": 604, "y": 140, "width": 36, "height": 36 }],
+					["Boundary_error", { "x": 456, "y": 148, "width": 36, "height": 36 }]
 				],
 				"bandLayout": {
 					"bands": [
@@ -4350,13 +4290,13 @@
 						["End_ok", 0],
 						["Sub_event", 0],
 						["End_err", 1],
-						["End_late", 2],
+						["End_late", 1],
 						["Throw_escalate", 1]
 					],
 					"spine": ["Start_e", "Sub_work", "Gateway_check", "End_ok", "Sub_event"],
 					"straightFlows": ["Flow_e1", "Flow_e2", "Flow_no"]
 				},
-				"gutterX": [[0, -30], [1, 282], [2, 710], [3, 840], [4, 936]],
+				"gutterX": [[0, -30], [1, 282], [2, 710], [3, 840]],
 				"edges": [
 					{
 						"id": "Flow_e1",
@@ -4374,7 +4314,7 @@
 						"id": "Flow_yes",
 						"sourceRef": "Gateway_check",
 						"targetRef": "Throw_escalate",
-						"waypoints": [{ "x": 811, "y": 120 }, { "x": 811, "y": 264 }, { "x": 890, "y": 264 }],
+						"waypoints": [{ "x": 811, "y": 120 }, { "x": 811, "y": 288 }, { "x": 890, "y": 288 }],
 						"label": "Yes"
 					},
 					{
@@ -4383,9 +4323,9 @@
 						"targetRef": "End_ok",
 						"waypoints": [
 							{ "x": 836, "y": 95 },
-							{ "x": 936, "y": 95 },
-							{ "x": 936, "y": 146 },
-							{ "x": 930, "y": 146 }
+							{ "x": 840, "y": 95 },
+							{ "x": 840, "y": 146 },
+							{ "x": 834, "y": 146 }
 						],
 						"label": "No"
 					},
@@ -4393,28 +4333,19 @@
 						"id": "Flow_e3",
 						"sourceRef": "Throw_escalate",
 						"targetRef": "End_ok",
-						"waypoints": [{ "x": 908, "y": 246 }, { "x": 908, "y": 146 }, { "x": 930, "y": 146 }]
+						"waypoints": [{ "x": 908, "y": 270 }, { "x": 852, "y": 164 }]
 					},
 					{
 						"id": "Flow_err",
 						"sourceRef": "Boundary_error",
 						"targetRef": "End_err",
-						"waypoints": [
-							{ "x": 528.6666666666666, "y": 184 },
-							{ "x": 528.6666666666666, "y": 227.5 },
-							{ "x": 829, "y": 227.5 },
-							{ "x": 829, "y": 271 }
-						]
+						"waypoints": [{ "x": 474, "y": 184 }, { "x": 474, "y": 313 }, { "x": 522, "y": 313 }]
 					},
 					{
 						"id": "Flow_late",
 						"sourceRef": "Boundary_timer",
 						"targetRef": "End_late",
-						"waypoints": [
-							{ "x": 407.3333333333333, "y": 176 },
-							{ "x": 407.3333333333333, "y": 295 },
-							{ "x": 772, "y": 295 }
-						]
+						"waypoints": [{ "x": 622, "y": 176 }, { "x": 622, "y": 223 }, { "x": 772, "y": 223 }]
 					}
 				]
 			}
@@ -4442,7 +4373,7 @@
 				{
 					"id": "Boundary_error",
 					"type": "boundaryEvent",
-					"bounds": { "x": 532.6666666666666, "y": 146, "width": 36, "height": 36 },
+					"bounds": { "x": 478, "y": 146, "width": 36, "height": 36 },
 					"layer": 0,
 					"position": 0,
 					"gridRow": 0
@@ -4450,7 +4381,7 @@
 				{
 					"id": "Boundary_timer",
 					"type": "boundaryEvent",
-					"bounds": { "x": 423.3333333333333, "y": 146, "width": 36, "height": 36 },
+					"bounds": { "x": 638, "y": 146, "width": 36, "height": 36 },
 					"layer": 0,
 					"position": 0,
 					"gridRow": 0
@@ -4468,7 +4399,7 @@
 				{
 					"id": "Throw_escalate",
 					"type": "intermediateThrowEvent",
-					"bounds": { "x": 870, "y": 224, "width": 36, "height": 36 },
+					"bounds": { "x": 870, "y": 248, "width": 36, "height": 36 },
 					"layer": 3,
 					"position": 1,
 					"gridRow": 1
@@ -4476,31 +4407,31 @@
 				{
 					"id": "End_ok",
 					"type": "endEvent",
-					"bounds": { "x": 966, "y": 78, "width": 36, "height": 36 },
-					"layer": 4,
+					"bounds": { "x": 870, "y": 78, "width": 36, "height": 36 },
+					"layer": 3,
 					"position": 0,
 					"gridRow": 0
 				},
 				{
 					"id": "End_err",
 					"type": "endEvent",
-					"bounds": { "x": 767, "y": 224, "width": 36, "height": 36 },
-					"layer": 2,
+					"bounds": { "x": 478, "y": 248, "width": 36, "height": 36 },
+					"layer": 1,
 					"position": 1,
 					"gridRow": 1
 				},
 				{
 					"id": "End_late",
 					"type": "endEvent",
-					"bounds": { "x": 767, "y": 320, "width": 36, "height": 36 },
+					"bounds": { "x": 767, "y": 248, "width": 36, "height": 36 },
 					"layer": 2,
-					"position": 2,
-					"gridRow": 2
+					"position": 1,
+					"gridRow": 1
 				},
 				{
 					"id": "Sub_event",
 					"type": "subProcess",
-					"bounds": { "x": 0, "y": 436, "width": 232, "height": 164 },
+					"bounds": { "x": 0, "y": 364, "width": 232, "height": 164 },
 					"layer": 0,
 					"position": 0,
 					"gridRow": 0,
@@ -4534,7 +4465,7 @@
 				{
 					"id": "Start_signal",
 					"type": "startEvent",
-					"bounds": { "x": 50, "y": 514, "width": 36, "height": 36 },
+					"bounds": { "x": 50, "y": 442, "width": 36, "height": 36 },
 					"layer": 0,
 					"position": 0,
 					"gridRow": 0
@@ -4542,7 +4473,7 @@
 				{
 					"id": "End_signal",
 					"type": "endEvent",
-					"bounds": { "x": 146, "y": 514, "width": 36, "height": 36 },
+					"bounds": { "x": 146, "y": 442, "width": 36, "height": 36 },
 					"layer": 1,
 					"position": 0,
 					"gridRow": 0
@@ -4568,11 +4499,11 @@
 					"waypoints": [
 						{ "x": 810, "y": 96 },
 						{ "x": 840, "y": 96 },
-						{ "x": 840, "y": 242 },
-						{ "x": 870, "y": 242 }
+						{ "x": 840, "y": 266 },
+						{ "x": 870, "y": 266 }
 					],
 					"label": "Yes",
-					"labelBounds": { "x": 816, "y": 162, "width": 40, "height": 14 }
+					"labelBounds": { "x": 816, "y": 174, "width": 40, "height": 14 }
 				},
 				{
 					"id": "Flow_no",
@@ -4581,8 +4512,8 @@
 					"waypoints": [
 						{ "x": 785, "y": 71 },
 						{ "x": 785, "y": 31 },
-						{ "x": 984, "y": 31 },
-						{ "x": 984, "y": 78 }
+						{ "x": 888, "y": 31 },
+						{ "x": 888, "y": 78 }
 					],
 					"label": "No",
 					"labelBounds": { "x": 791, "y": 51, "width": 40, "height": 14 }
@@ -4591,27 +4522,19 @@
 					"id": "Flow_e3",
 					"sourceRef": "Throw_escalate",
 					"targetRef": "End_ok",
-					"waypoints": [{ "x": 888, "y": 224 }, { "x": 888, "y": 96 }, { "x": 966, "y": 96 }]
+					"waypoints": [{ "x": 888, "y": 248 }, { "x": 888, "y": 114 }]
 				},
 				{
 					"id": "Flow_err",
 					"sourceRef": "Boundary_error",
 					"targetRef": "End_err",
-					"waypoints": [
-						{ "x": 550.6666666666666, "y": 182 },
-						{ "x": 550.6666666666666, "y": 242 },
-						{ "x": 767, "y": 242 }
-					]
+					"waypoints": [{ "x": 496, "y": 182 }, { "x": 496, "y": 248 }]
 				},
 				{
 					"id": "Flow_late",
 					"sourceRef": "Boundary_timer",
 					"targetRef": "End_late",
-					"waypoints": [
-						{ "x": 441.3333333333333, "y": 182 },
-						{ "x": 441.3333333333333, "y": 338 },
-						{ "x": 767, "y": 338 }
-					]
+					"waypoints": [{ "x": 656, "y": 182 }, { "x": 656, "y": 266 }, { "x": 767, "y": 266 }]
 				},
 				{
 					"id": "Flow_i1",
@@ -4629,7 +4552,7 @@
 					"id": "Flow_sig",
 					"sourceRef": "Start_signal",
 					"targetRef": "End_signal",
-					"waypoints": [{ "x": 86, "y": 532 }, { "x": 146, "y": 532 }]
+					"waypoints": [{ "x": 86, "y": 460 }, { "x": 146, "y": 460 }]
 				}
 			]
 		}
@@ -5801,7 +5724,7 @@
 						["_95a2fb99-bb98-4d26-b5ec-3dae3a32fd79", 5],
 						["__509f09eb-5518-4995-b98b-db3cf3f8ea00", 3],
 						["__f61e9ae0-855f-4ce6-9e3a-4b4f5c7dd0b8", 1],
-						["__8f9632f2-9fdb-4e3c-8b10-6a05091de766", 5]
+						["__8f9632f2-9fdb-4e3c-8b10-6a05091de766", 4]
 					]
 				},
 				"flows": [
@@ -5845,7 +5768,7 @@
 					],
 					[
 						"__8f9632f2-9fdb-4e3c-8b10-6a05091de766",
-						{ "x": 1312.5, "y": 425, "width": 36, "height": 36 }
+						{ "x": 855.25, "y": 450, "width": 36, "height": 36 }
 					],
 					[
 						"__cec149db-adae-4b69-8ea4-b866f2eef248",
@@ -5918,11 +5841,7 @@
 						"id": "__dc6ef6c1-9c24-48ae-800f-2f9fb76d7ce6",
 						"sourceRef": "__cec149db-adae-4b69-8ea4-b866f2eef248",
 						"targetRef": "__8f9632f2-9fdb-4e3c-8b10-6a05091de766",
-						"waypoints": [
-							{ "x": 873.25, "y": 383 },
-							{ "x": 873.25, "y": 443 },
-							{ "x": 1312.5, "y": 443 }
-						]
+						"waypoints": [{ "x": 873.25, "y": 383 }, { "x": 873.25, "y": 450 }]
 					},
 					{
 						"id": "__92bd8ebf-e3b1-4270-96bb-2f6d6978c64a",
@@ -6018,7 +5937,7 @@
 						["_95a2fb99-bb98-4d26-b5ec-3dae3a32fd79", 5],
 						["__509f09eb-5518-4995-b98b-db3cf3f8ea00", 3],
 						["__f61e9ae0-855f-4ce6-9e3a-4b4f5c7dd0b8", 1],
-						["__8f9632f2-9fdb-4e3c-8b10-6a05091de766", 5]
+						["__8f9632f2-9fdb-4e3c-8b10-6a05091de766", 4]
 					]
 				},
 				"flows": [
@@ -6062,7 +5981,7 @@
 					],
 					[
 						"__8f9632f2-9fdb-4e3c-8b10-6a05091de766",
-						{ "x": 1320.5, "y": 437, "width": 36, "height": 36 }
+						{ "x": 863.25, "y": 462, "width": 36, "height": 36 }
 					],
 					[
 						"__cec149db-adae-4b69-8ea4-b866f2eef248",
@@ -6135,11 +6054,7 @@
 						"id": "__dc6ef6c1-9c24-48ae-800f-2f9fb76d7ce6",
 						"sourceRef": "__cec149db-adae-4b69-8ea4-b866f2eef248",
 						"targetRef": "__8f9632f2-9fdb-4e3c-8b10-6a05091de766",
-						"waypoints": [
-							{ "x": 881.25, "y": 393 },
-							{ "x": 881.25, "y": 455 },
-							{ "x": 1320.5, "y": 455 }
-						]
+						"waypoints": [{ "x": 881.25, "y": 393 }, { "x": 881.25, "y": 462 }]
 					},
 					{
 						"id": "__92bd8ebf-e3b1-4270-96bb-2f6d6978c64a",
@@ -6235,7 +6150,7 @@
 						["_95a2fb99-bb98-4d26-b5ec-3dae3a32fd79", 5],
 						["__509f09eb-5518-4995-b98b-db3cf3f8ea00", 3],
 						["__f61e9ae0-855f-4ce6-9e3a-4b4f5c7dd0b8", 1],
-						["__8f9632f2-9fdb-4e3c-8b10-6a05091de766", 5]
+						["__8f9632f2-9fdb-4e3c-8b10-6a05091de766", 4]
 					]
 				},
 				"flows": [
@@ -6279,7 +6194,7 @@
 					],
 					[
 						"__8f9632f2-9fdb-4e3c-8b10-6a05091de766",
-						{ "x": 1269.5, "y": 384, "width": 36, "height": 36 }
+						{ "x": 812.25, "y": 409, "width": 36, "height": 36 }
 					],
 					[
 						"__cec149db-adae-4b69-8ea4-b866f2eef248",
@@ -6355,9 +6270,8 @@
 						"waypoints": [
 							{ "x": 871.25, "y": 426 },
 							{ "x": 871.25, "y": 446 },
-							{ "x": 1230.5, "y": 446 },
-							{ "x": 1230.5, "y": 402 },
-							{ "x": 1269.5, "y": 402 }
+							{ "x": 848.25, "y": 446 },
+							{ "x": 848.25, "y": 427 }
 						]
 					},
 					{
@@ -6461,8 +6375,8 @@
 				{
 					"id": "__8f9632f2-9fdb-4e3c-8b10-6a05091de766",
 					"type": "endEvent",
-					"bounds": { "x": 1312.5, "y": 425, "width": 36, "height": 36 },
-					"layer": 5,
+					"bounds": { "x": 855.25, "y": 450, "width": 36, "height": 36 },
+					"layer": 4,
 					"position": 1,
 					"gridRow": 1
 				},
@@ -6567,11 +6481,7 @@
 					"id": "__dc6ef6c1-9c24-48ae-800f-2f9fb76d7ce6",
 					"sourceRef": "__cec149db-adae-4b69-8ea4-b866f2eef248",
 					"targetRef": "__8f9632f2-9fdb-4e3c-8b10-6a05091de766",
-					"waypoints": [
-						{ "x": 873.25, "y": 383 },
-						{ "x": 873.25, "y": 443 },
-						{ "x": 1312.5, "y": 443 }
-					]
+					"waypoints": [{ "x": 873.25, "y": 383 }, { "x": 873.25, "y": 450 }]
 				},
 				{
 					"id": "__92bd8ebf-e3b1-4270-96bb-2f6d6978c64a",

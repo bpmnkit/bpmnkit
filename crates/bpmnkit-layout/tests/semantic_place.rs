@@ -49,7 +49,7 @@ fn semantic_graph_bands_and_place_match_ts() {
         let defs = parse_bpmn(&xml).unwrap();
         let process = &defs.processes[0];
         let flow_elements = &process.contents.flow_elements;
-        let graph = build_semantic_graph(flow_elements, &process.contents.sequence_flows);
+        let graph = build_semantic_graph(flow_elements, &process.contents.sequence_flows, false);
 
         // Graph.
         let g = &case["graph"];
