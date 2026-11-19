@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Defs_1" targetNamespace="http://bpmn.io/schema/bpmn">
+  <bpmn:process id="P" isExecutable="true">
+    <bpmn:startEvent id="S" name="Start">
+      <bpmn:outgoing>f1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:subProcess id="Sub" name="A sub-process with a rather long title that wraps">
+      <bpmn:incoming>f1</bpmn:incoming>
+      <bpmn:outgoing>f2</bpmn:outgoing>
+      <bpmn:startEvent id="SS" name="Begin">
+        <bpmn:outgoing>sf1</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:userTask id="ST" name="Review request">
+        <bpmn:incoming>sf1</bpmn:incoming>
+        <bpmn:outgoing>sf2</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:userTask id="ST2" name="Approve">
+        <bpmn:incoming>sf2</bpmn:incoming>
+        <bpmn:outgoing>sf3</bpmn:outgoing>
+      </bpmn:userTask>
+      <bpmn:endEvent id="SE" name="Finish">
+        <bpmn:incoming>sf3</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="sf1" sourceRef="SS" targetRef="ST"/>
+      <bpmn:sequenceFlow id="sf2" sourceRef="ST" targetRef="ST2"/>
+      <bpmn:sequenceFlow id="sf3" sourceRef="ST2" targetRef="SE"/>
+    </bpmn:subProcess>
+    <bpmn:boundaryEvent id="B1" name="Timeout" attachedToRef="Sub">
+      <bpmn:outgoing>b1</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="ed1">
+        <bpmn:timeDuration>PT1H</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="B2" name="Info" attachedToRef="Sub" cancelActivity="false">
+      <bpmn:outgoing>b2</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="ed2"/>
+    </bpmn:boundaryEvent>
+    <bpmn:endEvent id="E" name="End">
+      <bpmn:incoming>f2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="E2" name="Timed out">
+      <bpmn:incoming>b1</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Notify" name="Notify">
+      <bpmn:incoming>b2</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="f1" sourceRef="S" targetRef="Sub"/>
+    <bpmn:sequenceFlow id="f2" sourceRef="Sub" targetRef="E"/>
+    <bpmn:sequenceFlow id="b1" sourceRef="B1" targetRef="E2"/>
+    <bpmn:sequenceFlow id="b2" sourceRef="B2" targetRef="Notify"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="P">
+      <bpmndi:BPMNShape id="S_di" bpmnElement="S">
+        <dc:Bounds x="26" y="108" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="24" y="148" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Sub_di" bpmnElement="Sub" isExpanded="true">
+        <dc:Bounds x="162" y="22" width="557" height="208"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="B1_di" bpmnElement="B1">
+        <dc:Bounds x="423" y="212" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="388" y="252" width="49" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="B2_di" bpmnElement="B2">
+        <dc:Bounds x="697" y="212" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="671" y="252" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E_di" bpmnElement="E">
+        <dc:Bounds x="851" y="108" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="849" y="148" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="E2_di" bpmnElement="E2">
+        <dc:Bounds x="423" y="306" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="409" y="346" width="63" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Notify_di" bpmnElement="Notify">
+        <dc:Bounds x="819" y="202" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SS_di" bpmnElement="SS">
+        <dc:Bounds x="214" y="122" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="212" y="162" width="40" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ST_di" bpmnElement="ST">
+        <dc:Bounds x="310" y="100" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ST2_di" bpmnElement="ST2">
+        <dc:Bounds x="470" y="100" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="SE_di" bpmnElement="SE">
+        <dc:Bounds x="630" y="122" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="627" y="162" width="42" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1">
+        <di:waypoint x="62" y="126"/>
+        <di:waypoint x="162" y="126"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2">
+        <di:waypoint x="719" y="126"/>
+        <di:waypoint x="851" y="126"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="b1_di" bpmnElement="b1">
+        <di:waypoint x="441" y="248"/>
+        <di:waypoint x="441" y="306"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="b2_di" bpmnElement="b2">
+        <di:waypoint x="715" y="248"/>
+        <di:waypoint x="715" y="268"/>
+        <di:waypoint x="769" y="268"/>
+        <di:waypoint x="769" y="242"/>
+        <di:waypoint x="819" y="242"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf1_di" bpmnElement="sf1">
+        <di:waypoint x="250" y="140"/>
+        <di:waypoint x="310" y="140"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf2_di" bpmnElement="sf2">
+        <di:waypoint x="410" y="140"/>
+        <di:waypoint x="470" y="140"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="sf3_di" bpmnElement="sf3">
+        <di:waypoint x="570" y="140"/>
+        <di:waypoint x="630" y="140"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
+

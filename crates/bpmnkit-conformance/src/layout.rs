@@ -89,6 +89,7 @@ fn engine(o: &Json) -> Result<LayoutEngine, String> {
     match o.get("engine").and_then(Json::as_str) {
         None | Some("semantic") => Ok(LayoutEngine::Semantic),
         Some("grid") => Ok(LayoutEngine::Grid),
+        Some("layered") => Ok(LayoutEngine::Layered),
         Some(other) => Err(format!("unknown engine {other:?}")),
     }
 }

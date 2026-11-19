@@ -6,6 +6,33 @@
 - Fix (`semantic/graph.ts` `placeExceptionRow`, Rust twin in `semantic/graph.rs`): when a sibling branch blocks one handler's column, every handler of that scope, band and side keeps the step. The row stays for the other cases (zero ratchet regressions, conformance unchanged).
 - Corpus: `p2-room-deposit`, `p2-visa-hold`, `p2-pallet-reserve` (three-way event gateway). Baseline entries are the 4fc4cf29 values (width 1028 / 881 / 872, height 341 / 341 / 481, edgeLenCV 0.66 / 0.72 / 0.69), all met exactly. Test in `p2-rules.test.mjs`. cargo fmt/clippy/test green; no Rust oracle fixture changed.
 
+## 2026-11-19 — layout P3: layered (Sugiyama) engine behind `engine: "layered"`
+
+- `packages/core/src/layout/layered/`: `layers.ts` (DFS back edges as before, longest path + network-simplex pull, dummy chains, median/transpose ordering keeping the best crossing count), `coords.ts` (Brandes–Köpf: type-1 conflicts, four alignments + balanced mean; `index.ts` picks the one whose planned routes bend least, then the most even flow lengths), `route.ts` (flows planned on centre lines: split side exits, join side entries, boundary drops/stems; jogs get gutter tracks ordered by a pairwise crossing cost; loops in the nearest clear corridor, fewer crossings then shorter; A* fallback). P2 rules reused as constraints (detour stacked under its sibling target, first boundary handler under its host). Lanes and packed tool grids fall back to semantic (lane-aware ordering is P4).
+- `applyAutoLayout(defs, "layered")`: a collaboration keeps its layered composition unless that crosses more message flows than the semantic composition (pools are laid out blind to messages). Without this guard the layered means were crossings 2.97 (worse; hub-wedding 22 → 26, insurance 8 → 11) and the other means as below.
+- Semantic is byte-identical: conformance unchanged for `semantic`/`grid`, ratchet zero regressions. `pnpm layout:score --engine X --update-baseline` writes `doc/layout-aesthetics/baseline-<X>.json`; the vitest ratchet checks `layered` against `baseline-layered.json`.
+- Corpus means (34 cases), semantic → layered:
+
+| metric | semantic | layered |
+|---|---|---|
+| crossings | 2.82 | 2.76 |
+| seqCrossings | 0.09 | 0.06 |
+| msgSeqCrossings | 1.79 | 1.74 |
+| msgMsgCrossings | 0.94 | 0.97 |
+| bendsPerEdge | 0.36 | 0.32 |
+| bendsPerSeq | 0.24 | 0.20 |
+| maxBendsSeq | 1.21 | 1.15 |
+| edgeLenCV | 0.62 | 0.58 |
+| throughShapes | 0 | 0 |
+| shapeOverlaps | 0 | 0 |
+| labelCollisions | 0.82 | 0.74 |
+| happyStraight | 0.92 | 0.92 |
+| width × height | 1188 × 648 | 1176 × 642 |
+| gridPct | 33.3 | 32.4 |
+
+- Worse cases: `aes-S10-mixed` (+1 crossing: the escalation branch's jog crosses the SLA handler's end flow), `process-library-loan` (+1 crossing, +1 label collision, CV 1.37 → 1.54: the retry loop falls back to A*), `aes-S02` CV 0.59 → 0.67, `process-it-incident` CV 0.91 → 1.07, hub-admissions msg×msg 10 → 11. Biggest wins: S06 and bike-repair bends → 0, it-incident crossings 3 → 0, festival-permits CV 0.84 → 0.41.
+- Tests: `packages/core/tests/layered-layout.test.ts` (8); conformance: 13 `conformance/layout/layered-*` cases (inputs reused, run `layered` only). Rust twin in `crates/bpmnkit-layout/src/layered/`. The default engine is unchanged.
+
 ## 2026-11-19 — layout P2c: rework-loop boundary handlers stay out of the exception row
 
 - Cause: P2b's `placeExceptionRow` treated any single-entry boundary handler as an exception path, including a handler that loops back to an earlier merge gateway (rework loop). It got its own row, the lower branches moved down ~30 px and the spine bent (`p2-timesheet-approval`: height 266 → 299, happyAxisDev 57 → 70).

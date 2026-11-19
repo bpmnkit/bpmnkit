@@ -1,0 +1,4 @@
+{
+  "input": "layout/edge-subprocess-nested/input.bpmn",
+  "runs": { "layered": { "engine": "layered" } }
+}

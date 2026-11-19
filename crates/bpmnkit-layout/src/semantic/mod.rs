@@ -8,9 +8,10 @@ pub mod route;
 use crate::grid::edge_labels::place_edge_labels;
 use crate::hash::{IndexMap, IndexSet};
 use crate::js;
+use crate::layered::layered_place;
 use crate::types::{
-    Bounds, GridHint, LayoutEdge, LayoutNode, LayoutResult, Plane, Waypoint, LABEL_CHAR_WIDTH,
-    LABEL_HEIGHT, LABEL_MIN_WIDTH, SUBPROCESS_PADDING,
+    Bounds, GridHint, LaneBand, LayoutEdge, LayoutNode, LayoutResult, Plane, Waypoint,
+    LABEL_CHAR_WIDTH, LABEL_HEIGHT, LABEL_MIN_WIDTH, SUBPROCESS_PADDING,
 };
 use bands::{assign_bands, boundary_side};
 use bpmnkit_bpmn::model::{BpmnFlowElement, BpmnLaneSet, BpmnProcess, BpmnSequenceFlow};
@@ -45,6 +46,8 @@ pub fn semantic_layout_process(
     collapsed: &indexmap::IndexSet<String>,
     grids: Option<&indexmap::IndexMap<String, GridHint>>,
     in_pool: bool,
+    // Run the layered (Sugiyama) placement and routing on every lane-free scope.
+    layered: bool,
 ) -> LayoutResult {
     semantic_layout(
         &process.contents.flow_elements,
@@ -55,6 +58,7 @@ pub fn semantic_layout_process(
         grids,
         None,
         !in_pool,
+        layered,
     )
 }
 
@@ -75,6 +79,7 @@ pub fn semantic_layout(
     grids: Option<&indexmap::IndexMap<String, GridHint>>,
     grid: Option<&GridHint>,
     slot_artifacts: bool,
+    layered: bool,
 ) -> LayoutResult {
     if flow_elements.is_empty() {
         return LayoutResult::default();
@@ -91,7 +96,7 @@ pub fn semantic_layout(
     let mut axes: IndexMap<&str, f64> = IndexMap::default();
     for el in &graph.nodes {
         let id = el.base().id.as_str();
-        let Some(mut child) = child_layout_of(el, collapsed, grids) else {
+        let Some(mut child) = child_layout_of(el, collapsed, grids, layered) else {
             sizes.insert(id, size_of(el, None));
             continue;
         };
@@ -126,6 +131,20 @@ pub fn semantic_layout(
                 .is_some_and(|el| el.base().name.is_some())
         })
         .collect();
+    if layered && use_layered(&graph, lane_set, in_container, grid) {
+        let placed = layered_place(&mut graph, sequence_flows, &sizes, &titled, slot_artifacts);
+        return finish(
+            &graph,
+            flow_elements,
+            &placed.bounds,
+            placed.edges,
+            &|id| placed.row.get(id).copied().unwrap_or(0),
+            Vec::new(),
+            child_results,
+            planes,
+            collapsed,
+        );
+    }
     let mut band_layout = assign_bands(&graph, &titled);
     // Lanes decide a handler's row themselves, so the exception row is for lane-free scopes.
     if lane_set.is_none()
@@ -146,8 +165,66 @@ pub fn semantic_layout(
         &axes,
         slot_artifacts,
     );
-    let bounds = &placement.bounds;
-    let beside_stem = boundary_labels(&graph, bounds);
+    let edges = route_flows(
+        &graph,
+        sequence_flows,
+        &placement.bounds,
+        &band_layout,
+        &placement.gutter_x,
+    );
+    finish(
+        &graph,
+        flow_elements,
+        &placement.bounds,
+        edges,
+        &|id| band_layout.bands.get(id).copied().unwrap_or(0),
+        placement.lanes,
+        child_results,
+        planes,
+        collapsed,
+    )
+}
+
+/// The layered engine covers scopes without lanes and without a packed tool
+/// grid; lanes stay with the semantic placement until lane-aware ordering lands.
+fn use_layered(
+    graph: &graph::SemanticGraph,
+    lane_set: Option<&BpmnLaneSet>,
+    in_container: bool,
+    grid: Option<&GridHint>,
+) -> bool {
+    if lane_set.is_some() || grid.is_some() {
+        return false;
+    }
+    let no_flow = |id: &str| {
+        graph.outgoing.get(id).is_none_or(|v| v.is_empty())
+            && graph.incoming.get(id).is_none_or(|v| v.is_empty())
+    };
+    let flowless = graph
+        .components
+        .iter()
+        .filter(|c| c.len() == 1 && no_flow(c[0]))
+        .count();
+    if in_container && flowless >= 2 {
+        return false;
+    }
+    graph.components.len() > flowless
+}
+
+/// Nodes, labels and children of a placed and routed scope.
+#[allow(clippy::too_many_arguments)]
+fn finish(
+    graph: &graph::SemanticGraph,
+    flow_elements: &[BpmnFlowElement],
+    bounds: &IndexMap<&str, Bounds>,
+    mut edges: Vec<LayoutEdge>,
+    row_of: &dyn Fn(&str) -> i64,
+    lanes: Vec<LaneBand>,
+    child_results: IndexMap<&str, LayoutResult>,
+    planes: Vec<Plane>,
+    collapsed: &indexmap::IndexSet<String>,
+) -> LayoutResult {
+    let beside_stem = boundary_labels(graph, bounds);
 
     let mut nodes: Vec<LayoutNode> = Vec::with_capacity(flow_elements.len());
     for el in flow_elements {
@@ -156,7 +233,7 @@ pub fn semantic_layout(
         let Some(b) = bounds.get(id).copied() else {
             continue;
         };
-        let band = band_layout.bands.get(id).copied().unwrap_or(0);
+        let band = row_of(id);
         let mut node = LayoutNode {
             id: base.id.clone(),
             kind: el.type_name().into(),
@@ -182,14 +259,6 @@ pub fn semantic_layout(
         }
         nodes.push(node);
     }
-
-    let mut edges = route_flows(
-        &graph,
-        sequence_flows,
-        bounds,
-        &band_layout,
-        &placement.gutter_x,
-    );
 
     // Drop the children in, translated into their parent's interior.
     for (parent_id, child) in child_results {
@@ -251,7 +320,6 @@ pub fn semantic_layout(
     }
     place_edge_labels(&mut edges, &node_map, &near_source);
 
-    let lanes = placement.lanes;
     LayoutResult {
         nodes,
         edges,
@@ -276,6 +344,7 @@ fn child_layout_of(
     el: &BpmnFlowElement,
     collapsed: &indexmap::IndexSet<String>,
     grids: Option<&indexmap::IndexMap<String, GridHint>>,
+    layered: bool,
 ) -> Option<ChildLayout> {
     if !is_container_type(el.type_name()) {
         return None;
@@ -298,6 +367,7 @@ fn child_layout_of(
         grids,
         grids.and_then(|g| g.get(&base.id)),
         false,
+        layered,
     );
     let extent = extent_of(&result)?;
 

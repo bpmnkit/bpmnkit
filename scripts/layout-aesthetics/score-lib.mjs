@@ -109,5 +109,10 @@ export function regressions(baseline, current) {
 }
 
 export const baselinePath = new URL("../../doc/layout-aesthetics/baseline.json", import.meta.url)
+/** Each engine ratchets against its own baseline; `semantic` keeps the original file. */
+export const baselineFor = (engine = "semantic") =>
+	engine === "semantic"
+		? baselinePath
+		: new URL(`../../doc/layout-aesthetics/baseline-${engine}.json`, import.meta.url)
 export const corpusDir = new URL("../../fixtures/layout-corpus/", import.meta.url)
-export const baselineExists = () => existsSync(baselinePath)
+export const baselineExists = (engine = "semantic") => existsSync(baselineFor(engine))

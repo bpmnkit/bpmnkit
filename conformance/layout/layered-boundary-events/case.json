@@ -1,0 +1,4 @@
+{
+  "input": "layout/edge-boundary-events/input.bpmn",
+  "runs": { "layered": { "engine": "layered" } }
+}

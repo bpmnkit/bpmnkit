@@ -1,0 +1,4 @@
+{
+  "input": "bpmn/events-and-containers/input.bpmn",
+  "runs": { "layered": { "engine": "layered" } }
+}

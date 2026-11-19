@@ -256,7 +256,7 @@ pub fn place<'a>(
 /// `columnGaps`: the gap in front of each rank. At least [`H_GAP`]; wider where
 /// a flow label sits between two neighbouring columns, or where events' and
 /// gateways' labels, centred below shapes narrower than themselves, would meet.
-fn column_gaps(
+pub fn column_gaps(
     graph: &SemanticGraph,
     sizes: &IndexMap<&str, (f64, f64)>,
     col_width: &IndexMap<i64, f64>,
@@ -989,7 +989,7 @@ fn apply_lanes(
 /// how far it runs, farthest first, so outer slots serve outer paths and the
 /// routes nest. The side comes from [`boundary_side`], the rule that also placed
 /// the handler's band, so a handler is never routed around its own host.
-fn dock_boundary_events<'a>(
+pub fn dock_boundary_events<'a>(
     graph: &SemanticGraph<'a>,
     bounds: &mut IndexMap<&'a str, Bounds>,
     titled: &IndexSet<&str>,
@@ -1159,7 +1159,7 @@ const ARTIFACT_SPACING: f64 = 20.0;
 
 /// `artifactOwnersOf`: flow-less data references mapped to the activity they are
 /// wired to (the first one declared), in claim order.
-fn artifact_owners_of<'a>(graph: &SemanticGraph<'a>) -> IndexMap<&'a str, &'a str> {
+pub fn artifact_owners_of<'a>(graph: &SemanticGraph<'a>) -> IndexMap<&'a str, &'a str> {
     let mut owners: IndexMap<&'a str, &'a str> = IndexMap::default();
     let is_artifact = |id: &str| -> bool {
         graph.by_id.get(id).is_some_and(|el| {
@@ -1195,7 +1195,7 @@ fn artifact_owners_of<'a>(graph: &SemanticGraph<'a>) -> IndexMap<&'a str, &'a st
 /// `placeArtifacts`: put each artifact on its activity's centre line, below it
 /// first, above it for a second one (and first when boundary events hang below).
 /// More go beside those, and a taken spot sends the artifact down until clear.
-fn place_artifacts<'a>(
+pub fn place_artifacts<'a>(
     graph: &SemanticGraph<'a>,
     owners: &IndexMap<&'a str, &'a str>,
     bounds: &mut IndexMap<&'a str, Bounds>,

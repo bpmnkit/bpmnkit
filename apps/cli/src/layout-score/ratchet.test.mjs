@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs"
 import { fileURLToPath } from "node:url"
 import { expect, it } from "vitest"
 import {
+	baselineFor,
 	baselinePath,
 	corpusDir,
 	regressions,
@@ -23,3 +24,17 @@ it("no corpus metric is worse than doc/layout-aesthetics/baseline.json", async (
 	expect(missing, "new case: run pnpm layout:score --update-baseline").toEqual([])
 	expect(worse).toEqual([])
 }, 120_000)
+
+// The experimental layered engine has a ratchet of its own: `pnpm layout:score --engine layered --update-baseline`.
+it("no layered-engine corpus metric is worse than doc/layout-aesthetics/baseline-layered.json", async () => {
+	const result = await scoreDir(
+		fileURLToPath(corpusDir),
+		{ compileTextSpec, keyThrownMessages, dropRewiredEdges },
+		{ engine: "layered" },
+	)
+	expect(result.errors).toEqual({})
+	const baseline = JSON.parse(readFileSync(baselineFor("layered"), "utf8"))
+	const { worse, missing } = regressions(baseline, result.cases)
+	expect(missing, "new case: run pnpm layout:score --engine layered --update-baseline").toEqual([])
+	expect(worse).toEqual([])
+}, 180_000)
