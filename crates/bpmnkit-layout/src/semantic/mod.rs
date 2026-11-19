@@ -24,6 +24,9 @@ const SUB_PADDING: f64 = SUBPROCESS_PADDING;
 const TITLE_BAND: f64 = 28.0;
 /// Gap between an event or gateway and its external label.
 const LABEL_OFFSET: f64 = 4.0;
+/// Step and limit when a blocked external label slides along a stem.
+const LABEL_SLIDE: f64 = 10.0;
+const MAX_LABEL_SLIDE: f64 = 60.0;
 
 fn is_container_type(kind: &str) -> bool {
     matches!(
@@ -32,7 +35,7 @@ fn is_container_type(kind: &str) -> bool {
     )
 }
 
-/// `semanticLayoutProcess(process, collapsed, grids)`.
+/// `semanticLayoutProcess(process, collapsed, grids, inPool)`.
 ///
 /// Lay out a process the way the BPMN reads: ranks carry the flow left to right,
 /// semantic bands carry branch meaning up and down, and lane membership wins over
@@ -41,6 +44,7 @@ pub fn semantic_layout_process(
     process: &BpmnProcess,
     collapsed: &indexmap::IndexSet<String>,
     grids: Option<&indexmap::IndexMap<String, GridHint>>,
+    in_pool: bool,
 ) -> LayoutResult {
     semantic_layout(
         &process.contents.flow_elements,
@@ -50,6 +54,7 @@ pub fn semantic_layout_process(
         false,
         grids,
         None,
+        !in_pool,
     )
 }
 
@@ -60,6 +65,7 @@ pub fn semantic_layout_process(
 /// `place`'s `packLoose`). `grids`: tool-grid hints by container id, applied to the
 /// containers in this scope and below. `grid`: the hint for this scope's own grid,
 /// when it is a hinted container's interior.
+#[allow(clippy::too_many_arguments)]
 pub fn semantic_layout(
     flow_elements: &[BpmnFlowElement],
     sequence_flows: &[BpmnSequenceFlow],
@@ -68,6 +74,7 @@ pub fn semantic_layout(
     in_container: bool,
     grids: Option<&indexmap::IndexMap<String, GridHint>>,
     grid: Option<&GridHint>,
+    slot_artifacts: bool,
 ) -> LayoutResult {
     if flow_elements.is_empty() {
         return LayoutResult::default();
@@ -129,6 +136,7 @@ pub fn semantic_layout(
         &titled,
         grid,
         &axes,
+        slot_artifacts,
     );
     let bounds = &placement.bounds;
     let beside_stem = boundary_labels(&graph, bounds);
@@ -281,6 +289,7 @@ fn child_layout_of(
         !collapsed.contains(&base.id),
         grids,
         grids.and_then(|g| g.get(&base.id)),
+        false,
     );
     let extent = extent_of(&result)?;
 
@@ -544,6 +553,21 @@ fn clear_external_labels(nodes: &mut [LayoutNode], edges: &[LayoutEdge]) {
                 ..label
             },
         ];
+        let mut candidates = candidates.to_vec();
+        // Still blocked, usually by a task beside the gateway: slide the label
+        // along the stem until it is past that neighbour.
+        let mut slide = LABEL_SLIDE;
+        while slide <= MAX_LABEL_SLIDE {
+            for (x, y) in [
+                (cx + beside, below + slide),
+                (cx - beside - label.width, below + slide),
+                (cx + beside, above - slide),
+                (cx - beside - label.width, above - slide),
+            ] {
+                candidates.push(Bounds { x, y, ..label });
+            }
+            slide += LABEL_SLIDE;
+        }
         if let Some(spot) = candidates.iter().find(|c| clear(nodes, c)) {
             if let Some(lb) = nodes[k].label_bounds.as_mut() {
                 lb.x = spot.x;

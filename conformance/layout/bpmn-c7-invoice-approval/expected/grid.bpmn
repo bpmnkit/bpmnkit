@@ -75,92 +75,92 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="invoice-approval">
       <bpmndi:BPMNShape id="StartEvent_invoice_di" bpmnElement="StartEvent_invoice">
-        <dc:Bounds x="58" y="42" width="36" height="36"/>
+        <dc:Bounds x="62" y="42" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="20" y="82" width="112" height="14"/>
+          <dc:Bounds x="24" y="82" width="112" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_classify_di" bpmnElement="Task_classify">
-        <dc:Bounds x="176" y="20" width="100" height="80"/>
+        <dc:Bounds x="180" y="20" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_approve_di" bpmnElement="Task_approve">
-        <dc:Bounds x="326" y="20" width="100" height="80"/>
+        <dc:Bounds x="330" y="20" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_approved_di" bpmnElement="Gateway_approved" isMarkerVisible="true">
-        <dc:Bounds x="501" y="35" width="50" height="50"/>
+        <dc:Bounds x="505" y="35" width="50" height="50"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="495" y="89" width="63" height="14"/>
+          <dc:Bounds x="499" y="89" width="63" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_archive_di" bpmnElement="Task_archive">
-        <dc:Bounds x="626" y="20" width="100" height="80"/>
+        <dc:Bounds x="630" y="20" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_book_di" bpmnElement="Task_book">
-        <dc:Bounds x="776" y="20" width="100" height="80"/>
+        <dc:Bounds x="780" y="20" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_total_di" bpmnElement="Task_total">
-        <dc:Bounds x="926" y="20" width="100" height="80"/>
+        <dc:Bounds x="930" y="20" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_done_di" bpmnElement="EndEvent_done">
-        <dc:Bounds x="1108" y="42" width="36" height="36"/>
+        <dc:Bounds x="1112" y="42" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1077" y="82" width="98" height="14"/>
+          <dc:Bounds x="1081" y="82" width="98" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Timer_clarify_di" bpmnElement="Timer_clarify">
-        <dc:Bounds x="658" y="182" width="36" height="36"/>
+        <dc:Bounds x="662" y="182" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="634" y="222" width="84" height="14"/>
+          <dc:Bounds x="638" y="222" width="84" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_rejected_di" bpmnElement="EndEvent_rejected">
-        <dc:Bounds x="808" y="182" width="36" height="36"/>
+        <dc:Bounds x="812" y="182" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="770" y="222" width="112" height="14"/>
+          <dc:Bounds x="774" y="222" width="112" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_toClassify_di" bpmnElement="Flow_toClassify">
-        <di:waypoint x="94" y="60"/>
-        <di:waypoint x="176" y="60"/>
+        <di:waypoint x="98" y="60"/>
+        <di:waypoint x="180" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_toApprove_di" bpmnElement="Flow_toApprove">
-        <di:waypoint x="276" y="60"/>
-        <di:waypoint x="326" y="60"/>
+        <di:waypoint x="280" y="60"/>
+        <di:waypoint x="330" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_toDecision_di" bpmnElement="Flow_toDecision">
-        <di:waypoint x="426" y="60"/>
-        <di:waypoint x="501" y="60"/>
+        <di:waypoint x="430" y="60"/>
+        <di:waypoint x="505" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_yes_di" bpmnElement="Flow_yes">
-        <di:waypoint x="551" y="60"/>
-        <di:waypoint x="626" y="60"/>
+        <di:waypoint x="555" y="60"/>
+        <di:waypoint x="630" y="60"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="569" y="36" width="40" height="14"/>
+          <dc:Bounds x="573" y="36" width="40" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_no_di" bpmnElement="Flow_no">
-        <di:waypoint x="526" y="85"/>
-        <di:waypoint x="526" y="200"/>
-        <di:waypoint x="658" y="200"/>
+        <di:waypoint x="530" y="85"/>
+        <di:waypoint x="530" y="200"/>
+        <di:waypoint x="662" y="200"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="572" y="176" width="40" height="14"/>
+          <dc:Bounds x="576" y="176" width="40" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_toRejected_di" bpmnElement="Flow_toRejected">
-        <di:waypoint x="694" y="200"/>
-        <di:waypoint x="808" y="200"/>
+        <di:waypoint x="698" y="200"/>
+        <di:waypoint x="812" y="200"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_toBook_di" bpmnElement="Flow_toBook">
-        <di:waypoint x="726" y="60"/>
-        <di:waypoint x="776" y="60"/>
+        <di:waypoint x="730" y="60"/>
+        <di:waypoint x="780" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_toTotal_di" bpmnElement="Flow_toTotal">
-        <di:waypoint x="876" y="60"/>
-        <di:waypoint x="926" y="60"/>
+        <di:waypoint x="880" y="60"/>
+        <di:waypoint x="930" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_toDone_di" bpmnElement="Flow_toDone">
-        <di:waypoint x="1026" y="60"/>
-        <di:waypoint x="1108" y="60"/>
+        <di:waypoint x="1030" y="60"/>
+        <di:waypoint x="1112" y="60"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

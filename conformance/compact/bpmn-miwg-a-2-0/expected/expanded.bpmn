@@ -71,7 +71,7 @@
       <bpmndi:BPMNShape id="_35fe57a7-1302-44e2-bf58-032f11af7ecb_di" bpmnElement="_35fe57a7-1302-44e2-bf58-032f11af7ecb" isMarkerVisible="true">
         <dc:Bounds x="259" y="155" width="50" height="50"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="214" y="209" width="140" height="14"/>
+          <dc:Bounds x="292" y="229" width="140" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="_7d399717-1aba-47ac-8d7d-8aaa033255e0_di" bpmnElement="_7d399717-1aba-47ac-8d7d-8aaa033255e0">

@@ -152,6 +152,7 @@ fn semantic_graph_bands_and_place_match_ts() {
             &titled,
             grid.as_ref(),
             &IndexMap::default(),
+            false,
         );
         let p = &case["place"];
         let bounds: Vec<(String, [f64; 4])> = placement

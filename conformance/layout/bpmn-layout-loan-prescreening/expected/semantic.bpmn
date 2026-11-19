@@ -73,89 +73,89 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="loan-approval-process">
       <bpmndi:BPMNShape id="StartEvent_LoanRequest_di" bpmnElement="StartEvent_LoanRequest">
-        <dc:Bounds x="90" y="45" width="36" height="36"/>
+        <dc:Bounds x="93" y="48" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="20" y="85" width="175" height="14"/>
+          <dc:Bounds x="23" y="88" width="175" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_CreditScoreCheck_di" bpmnElement="Task_CreditScoreCheck">
-        <dc:Bounds x="213" y="23" width="100" height="80"/>
+        <dc:Bounds x="216" y="26" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_PreScreen_di" bpmnElement="Gateway_PreScreen" isMarkerVisible="true">
-        <dc:Bounds x="373" y="38" width="50" height="50"/>
+        <dc:Bounds x="376" y="41" width="50" height="50"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="353" y="20" width="91" height="14"/>
+          <dc:Bounds x="356" y="23" width="91" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_RiskScoring_di" bpmnElement="Task_RiskScoring">
-        <dc:Bounds x="527" y="137" width="100" height="80"/>
+        <dc:Bounds x="530" y="140" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_UnderwriterReview_di" bpmnElement="Task_UnderwriterReview">
-        <dc:Bounds x="687" y="137" width="100" height="80"/>
+        <dc:Bounds x="690" y="140" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_FinalDecision_di" bpmnElement="Gateway_FinalDecision" isMarkerVisible="true">
-        <dc:Bounds x="850" y="152" width="50" height="50"/>
+        <dc:Bounds x="853" y="155" width="50" height="50"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="805" y="206" width="140" height="14"/>
+          <dc:Bounds x="808" y="209" width="140" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_Approved_di" bpmnElement="EndEvent_Approved">
-        <dc:Bounds x="991" y="159" width="36" height="36"/>
+        <dc:Bounds x="994" y="162" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="963" y="199" width="91" height="14"/>
+          <dc:Bounds x="966" y="202" width="91" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_Rejected_di" bpmnElement="EndEvent_Rejected">
-        <dc:Bounds x="991" y="45" width="36" height="36"/>
+        <dc:Bounds x="994" y="48" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="963" y="27" width="91" height="14"/>
+          <dc:Bounds x="966" y="30" width="91" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_ToCreditCheck_di" bpmnElement="Flow_ToCreditCheck">
-        <di:waypoint x="126" y="63"/>
-        <di:waypoint x="213" y="63"/>
+        <di:waypoint x="129" y="66"/>
+        <di:waypoint x="216" y="66"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToPreScreen_di" bpmnElement="Flow_ToPreScreen">
-        <di:waypoint x="313" y="63"/>
-        <di:waypoint x="373" y="63"/>
+        <di:waypoint x="316" y="66"/>
+        <di:waypoint x="376" y="66"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_RejectLowScore_di" bpmnElement="Flow_RejectLowScore">
-        <di:waypoint x="423" y="63"/>
-        <di:waypoint x="991" y="63"/>
+        <di:waypoint x="426" y="66"/>
+        <di:waypoint x="994" y="66"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="429" y="46" width="77" height="14"/>
+          <dc:Bounds x="432" y="49" width="77" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_PassPreScreen_di" bpmnElement="Flow_PassPreScreen">
-        <di:waypoint x="398" y="88"/>
-        <di:waypoint x="398" y="177"/>
-        <di:waypoint x="527" y="177"/>
+        <di:waypoint x="401" y="91"/>
+        <di:waypoint x="401" y="180"/>
+        <di:waypoint x="530" y="180"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="404" y="94" width="84" height="14"/>
+          <dc:Bounds x="407" y="97" width="84" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToUnderwriter_di" bpmnElement="Flow_ToUnderwriter">
-        <di:waypoint x="627" y="177"/>
-        <di:waypoint x="687" y="177"/>
+        <di:waypoint x="630" y="180"/>
+        <di:waypoint x="690" y="180"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_ToDecisionGateway_di" bpmnElement="Flow_ToDecisionGateway">
-        <di:waypoint x="787" y="177"/>
-        <di:waypoint x="850" y="177"/>
+        <di:waypoint x="790" y="180"/>
+        <di:waypoint x="853" y="180"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_Approved_di" bpmnElement="Flow_Approved">
-        <di:waypoint x="900" y="177"/>
-        <di:waypoint x="991" y="177"/>
+        <di:waypoint x="903" y="180"/>
+        <di:waypoint x="994" y="180"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="906" y="160" width="56" height="14"/>
+          <dc:Bounds x="909" y="163" width="56" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_Rejected_di" bpmnElement="Flow_Rejected">
-        <di:waypoint x="875" y="152"/>
-        <di:waypoint x="875" y="117"/>
-        <di:waypoint x="1009" y="117"/>
-        <di:waypoint x="1009" y="81"/>
+        <di:waypoint x="878" y="155"/>
+        <di:waypoint x="878" y="120"/>
+        <di:waypoint x="1012" y="120"/>
+        <di:waypoint x="1012" y="84"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="881" y="132" width="56" height="14"/>
+          <dc:Bounds x="884" y="135" width="56" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

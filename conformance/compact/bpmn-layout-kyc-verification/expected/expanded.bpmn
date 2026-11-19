@@ -181,7 +181,7 @@
       <bpmndi:BPMNShape id="classificationGateway_di" bpmnElement="classificationGateway" isMarkerVisible="true">
         <dc:Bounds x="1276.5" y="155" width="50" height="50"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1221" y="209" width="161" height="14"/>
+          <dc:Bounds x="1309.5" y="229" width="161" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="notifyRejection_di" bpmnElement="notifyRejection">

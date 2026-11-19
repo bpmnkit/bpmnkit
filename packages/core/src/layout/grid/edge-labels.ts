@@ -75,20 +75,33 @@ export function placeEdgeLabels(
 		// Generate candidate positions along the segment
 		const candidates = generateLabelCandidates(segStart, segEnd, labelWidth, labelHeight)
 
-		// Pick the first non-overlapping candidate
+		// A spot no other flow crosses wins; only when none exists is a crossed one accepted.
+		const crossed = (c: Bounds): boolean =>
+			segments.some((s) => s.edge !== edge && segmentThrough(s.a, s.b, c))
+		const clear = (c: Bounds): boolean => !occupied.some((ob) => boundsOverlap(c, ob))
 		let placed = false
-		for (const candidate of candidates) {
-			if (!occupied.some((ob) => boundsOverlap(candidate, ob))) {
-				edge.labelBounds = candidate
-				occupied.push(candidate)
-				placed = true
-				break
+		for (const strict of [true, false]) {
+			for (const candidate of candidates) {
+				if (clear(candidate) && !(strict && crossed(candidate))) {
+					edge.labelBounds = candidate
+					occupied.push(candidate)
+					placed = true
+					break
+				}
 			}
+			if (placed) break
 		}
 
 		// Fallback: slide along segment to find clear space
 		if (!placed) {
-			const fallback = slideLabelAlongSegment(segStart, segEnd, labelWidth, labelHeight, occupied)
+			const fallback = slideLabelAlongSegment(
+				segStart,
+				segEnd,
+				labelWidth,
+				labelHeight,
+				occupied,
+				crossed,
+			)
 			if (fallback) {
 				edge.labelBounds = fallback
 				occupied.push(fallback)
@@ -197,8 +210,10 @@ function slideLabelAlongSegment(
 	labelWidth: number,
 	labelHeight: number,
 	occupied: Bounds[],
+	crossed: (c: Bounds) => boolean,
 ): Bounds | undefined {
 	const isHorizontal = Math.abs(segEnd.y - segStart.y) < 1
+	let crossedSpot: Bounds | undefined
 
 	for (let step = 0; step <= LABEL_SLIDE_STEPS; step++) {
 		const t = step / LABEL_SLIDE_STEPS
@@ -220,9 +235,11 @@ function slideLabelAlongSegment(
 				}
 
 		if (!occupied.some((ob) => boundsOverlap(candidate, ob))) {
-			return candidate
+			if (!crossed(candidate)) return candidate
+			crossedSpot ??= candidate
 		}
 	}
+	if (crossedSpot) return crossedSpot
 
 	// No clear position found — skip label placement rather than forcing an overlap
 	return undefined

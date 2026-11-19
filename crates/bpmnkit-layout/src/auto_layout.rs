@@ -1189,6 +1189,30 @@ fn depth_index<'a>(layouts: impl Iterator<Item = &'a LayoutResult>) -> FxIndexMa
     depths
 }
 
+/// `gridPhase(nodes, dx, dy)`: translation (0-9 px per axis) that puts the most
+/// shape origins on the 10 px grid; ties keep the first (unshifted) position.
+fn grid_phase(nodes: &[LayoutNode], dx: f64, dy: f64) -> (f64, f64) {
+    let on = |v: f64, t: f64| (js::round(v) + t) % 10.0 == 0.0;
+    let mut best = (0.0, 0.0);
+    let mut best_n: i64 = -1;
+    for ty in 0..10 {
+        for tx in 0..10 {
+            let (tx, ty) = (tx as f64, ty as f64);
+            let mut n = 0;
+            for node in nodes {
+                if on(node.bounds.x + dx, tx) && on(node.bounds.y + dy, ty) {
+                    n += 1;
+                }
+            }
+            if n > best_n {
+                best_n = n;
+                best = (tx, ty);
+            }
+        }
+    }
+    best
+}
+
 /// `contentWidth(layout)`: width of a laid-out process, ignoring where in space it
 /// happens to sit.
 fn content_width(layout: &LayoutResult) -> f64 {
@@ -1446,7 +1470,7 @@ fn laid_out_diagrams(
                 if !layout_of.contains_key(&p) {
                     layout_of.insert(
                         p,
-                        layout_process(&defs.processes[p], engine, &collapsed, grids),
+                        layout_process(&defs.processes[p], engine, &collapsed, grids, true),
                     );
                 }
             }
@@ -1515,7 +1539,13 @@ fn laid_out_diagrams(
                     layout_of.get(&p).cloned()
                 };
                 early.unwrap_or_else(|| {
-                    layout_process(&defs.processes[p], engine, &collapsed, grids)
+                    layout_process(
+                        &defs.processes[p],
+                        engine,
+                        &collapsed,
+                        grids,
+                        pool.participant_id.is_some(),
+                    )
                 })
             }
             None => LayoutResult::default(),
@@ -1640,8 +1670,8 @@ fn laid_out_diagrams(
         } else {
             0.0
         };
-        let dx: f64;
-        let dy: f64;
+        let mut dx: f64;
+        let mut dy: f64;
         if participant_id.is_some() {
             let elem_x = POOL_HEADER + headers_width + PADDING;
             dx = elem_x - bbox.min_x + align_dx;
@@ -1661,6 +1691,9 @@ fn laid_out_diagrams(
             } else {
                 process_top + PADDING - bbox.min_y
             };
+            let (px, py) = grid_phase(&result.nodes, dx, dy);
+            dx += px;
+            dy += py;
         }
         // Lanes of a process outside any pool, drawn straight on its plane.
         let bare_lanes: Vec<BpmnDiShape> = if participant_id.is_none() && has_lanes {

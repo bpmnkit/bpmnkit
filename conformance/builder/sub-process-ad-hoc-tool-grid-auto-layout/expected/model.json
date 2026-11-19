@@ -12,11 +12,11 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 56,
+                "x": 60,
                 "y": 60
               },
               {
-                "x": 156,
+                "x": 160,
                 "y": 60
               }
             ]
@@ -27,11 +27,11 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 636,
+                "x": 640,
                 "y": 60
               },
               {
-                "x": 736,
+                "x": 740,
                 "y": 60
               }
             ]
@@ -43,7 +43,7 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 20,
+              "x": 24,
               "y": 42
             },
             "bpmnElement": "s",
@@ -54,7 +54,7 @@
             "bounds": {
               "height": 280,
               "width": 480,
-              "x": 156,
+              "x": 160,
               "y": 20
             },
             "bpmnElement": "ah",
@@ -66,7 +66,7 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 736,
+              "x": 740,
               "y": 42
             },
             "bpmnElement": "e",
@@ -77,7 +77,7 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 206,
+              "x": 210,
               "y": 70
             },
             "bpmnElement": "t1",
@@ -88,7 +88,7 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 346,
+              "x": 350,
               "y": 70
             },
             "bpmnElement": "t2",
@@ -99,7 +99,7 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 486,
+              "x": 490,
               "y": 70
             },
             "bpmnElement": "t3",
@@ -110,7 +110,7 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 206,
+              "x": 210,
               "y": 170
             },
             "bpmnElement": "t4",
@@ -121,7 +121,7 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 346,
+              "x": 350,
               "y": 170
             },
             "bpmnElement": "t5",
@@ -132,7 +132,7 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 486,
+              "x": 490,
               "y": 170
             },
             "bpmnElement": "t6",

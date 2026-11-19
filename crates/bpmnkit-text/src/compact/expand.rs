@@ -924,7 +924,13 @@ pub fn build_flow_element(
 
 /// TS's `buildDiagram`.
 fn build_diagram(process_id: &str, process: &BpmnProcess) -> BpmnDiagram {
-    let layout = layout_process(process, LayoutEngine::Semantic, &IndexSet::new(), None);
+    let layout = layout_process(
+        process,
+        LayoutEngine::Semantic,
+        &IndexSet::new(),
+        None,
+        false,
+    );
     let bounds = |b: &bpmnkit_layout::Bounds| BpmnBounds {
         x: b.x,
         y: b.y,

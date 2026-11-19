@@ -53,89 +53,89 @@
   <bpmndi:BPMNDiagram id="diagram1">
     <bpmndi:BPMNPlane id="plane1" bpmnElement="parallel-approval">
       <bpmndi:BPMNShape id="start_di" bpmnElement="start">
-        <dc:Bounds x="62" y="182" width="36" height="36"/>
+        <dc:Bounds x="64" y="182" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="20" y="222" width="119" height="14"/>
+          <dc:Bounds x="22" y="222" width="119" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="prepare_di" bpmnElement="prepare">
-        <dc:Bounds x="158" y="160" width="100" height="80"/>
+        <dc:Bounds x="160" y="160" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="split_di" bpmnElement="split">
-        <dc:Bounds x="318" y="175" width="50" height="50"/>
+        <dc:Bounds x="320" y="175" width="50" height="50"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="351" y="229" width="40" height="14"/>
+          <dc:Bounds x="353" y="229" width="40" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="mgr-approve_di" bpmnElement="mgr-approve">
-        <dc:Bounds x="428" y="160" width="100" height="80"/>
+        <dc:Bounds x="430" y="160" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="legal-review_di" bpmnElement="legal-review">
-        <dc:Bounds x="428" y="300" width="100" height="80"/>
+        <dc:Bounds x="430" y="300" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="finance-check_di" bpmnElement="finance-check">
-        <dc:Bounds x="428" y="20" width="100" height="80"/>
+        <dc:Bounds x="430" y="20" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="join_di" bpmnElement="join">
-        <dc:Bounds x="588" y="175" width="50" height="50"/>
+        <dc:Bounds x="590" y="175" width="50" height="50"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="621" y="229" width="40" height="14"/>
+          <dc:Bounds x="623" y="229" width="40" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="finalize_di" bpmnElement="finalize">
-        <dc:Bounds x="698" y="160" width="100" height="80"/>
+        <dc:Bounds x="700" y="160" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="end_di" bpmnElement="end">
-        <dc:Bounds x="858" y="182" width="36" height="36"/>
+        <dc:Bounds x="860" y="182" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="820" y="222" width="112" height="14"/>
+          <dc:Bounds x="822" y="222" width="112" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="flow1_di" bpmnElement="flow1">
-        <di:waypoint x="98" y="200"/>
-        <di:waypoint x="158" y="200"/>
+        <di:waypoint x="100" y="200"/>
+        <di:waypoint x="160" y="200"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="flow2_di" bpmnElement="flow2">
-        <di:waypoint x="258" y="200"/>
-        <di:waypoint x="318" y="200"/>
+        <di:waypoint x="260" y="200"/>
+        <di:waypoint x="320" y="200"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="flow-mgr_di" bpmnElement="flow-mgr">
-        <di:waypoint x="368" y="200"/>
-        <di:waypoint x="428" y="200"/>
+        <di:waypoint x="370" y="200"/>
+        <di:waypoint x="430" y="200"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="flow-legal_di" bpmnElement="flow-legal">
-        <di:waypoint x="343" y="225"/>
-        <di:waypoint x="343" y="340"/>
-        <di:waypoint x="428" y="340"/>
+        <di:waypoint x="345" y="225"/>
+        <di:waypoint x="345" y="340"/>
+        <di:waypoint x="430" y="340"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="flow-finance_di" bpmnElement="flow-finance">
-        <di:waypoint x="343" y="175"/>
-        <di:waypoint x="343" y="60"/>
-        <di:waypoint x="428" y="60"/>
+        <di:waypoint x="345" y="175"/>
+        <di:waypoint x="345" y="60"/>
+        <di:waypoint x="430" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="flow-mgr-done_di" bpmnElement="flow-mgr-done">
-        <di:waypoint x="528" y="200"/>
-        <di:waypoint x="588" y="200"/>
+        <di:waypoint x="530" y="200"/>
+        <di:waypoint x="590" y="200"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="flow-legal-done_di" bpmnElement="flow-legal-done">
-        <di:waypoint x="478" y="300"/>
-        <di:waypoint x="478" y="270"/>
-        <di:waypoint x="613" y="270"/>
-        <di:waypoint x="613" y="225"/>
+        <di:waypoint x="480" y="300"/>
+        <di:waypoint x="480" y="270"/>
+        <di:waypoint x="615" y="270"/>
+        <di:waypoint x="615" y="225"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="flow-finance-done_di" bpmnElement="flow-finance-done">
-        <di:waypoint x="478" y="100"/>
-        <di:waypoint x="478" y="130"/>
-        <di:waypoint x="613" y="130"/>
-        <di:waypoint x="613" y="175"/>
+        <di:waypoint x="480" y="100"/>
+        <di:waypoint x="480" y="130"/>
+        <di:waypoint x="615" y="130"/>
+        <di:waypoint x="615" y="175"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="flow3_di" bpmnElement="flow3">
-        <di:waypoint x="638" y="200"/>
-        <di:waypoint x="698" y="200"/>
+        <di:waypoint x="640" y="200"/>
+        <di:waypoint x="700" y="200"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="flow4_di" bpmnElement="flow4">
-        <di:waypoint x="798" y="200"/>
-        <di:waypoint x="858" y="200"/>
+        <di:waypoint x="800" y="200"/>
+        <di:waypoint x="860" y="200"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
