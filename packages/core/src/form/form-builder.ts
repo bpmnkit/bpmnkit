@@ -1,16 +1,30 @@
 import { generateId } from "../types/id-generator.js"
 import { compositeKey, stableToken } from "../types/stable-key.js"
 import type {
+	FormButtonComponent,
 	FormCheckboxComponent,
 	FormChecklistComponent,
 	FormComponent,
 	FormConditional,
+	FormDatetimeComponent,
 	FormDefinition,
+	FormDocumentPreviewComponent,
+	FormDynamicListComponent,
 	FormExporter,
+	FormExpressionComponent,
+	FormFilepickerComponent,
 	FormGroupComponent,
+	FormHtmlComponent,
+	FormIframeComponent,
+	FormImageComponent,
 	FormLayoutInput,
+	FormNumberComponent,
 	FormRadioComponent,
 	FormSelectComponent,
+	FormSeparatorComponent,
+	FormSpacerComponent,
+	FormTableComponent,
+	FormTaglistComponent,
 	FormTextAreaComponent,
 	FormTextComponent,
 	FormTextFieldComponent,
@@ -88,8 +102,277 @@ class ScopeNames {
 	}
 }
 
+/**
+ * What FormBuilder and GroupBuilder share: the scope's naming and every
+ * component method. Keeping them in one place is what stops the two from
+ * drifting when a component type is added.
+ */
+abstract class ComponentContainer {
+	/** @internal */
+	readonly _components: FormComponent[] = []
+	/** @internal Replaced by `FormBuilder.id()`, which moves the naming scope. */
+	protected _names: ScopeNames
+
+	protected constructor(scope: string) {
+		this._names = new ScopeNames(scope)
+	}
+
+	/** Appends a component, adding the layout and conditional the way every method does. */
+	private add(component: FormComponent, names: ComponentNames): this {
+		component.layout = names.layout
+		if (names.conditional !== undefined) component.conditional = names.conditional
+		this._components.push(component)
+		return this
+	}
+
+	/** Builds a nested scope whose generated names hang off the container's id. */
+	private nest(names: ComponentNames, builder: (group: GroupBuilder) => void): GroupBuilder {
+		const nested = new GroupBuilder(names.id)
+		builder(nested)
+		return nested
+	}
+
+	/** Adds a static text component. */
+	text(
+		text: string,
+		options?: {
+			id?: string
+			label?: string
+			layout?: FormLayoutInput
+			conditional?: FormConditional
+		},
+	): this {
+		const names = this._names.resolve("text", text, options)
+		const component: FormTextComponent = { type: "text", id: names.id, text }
+		if (options?.label !== undefined) component.label = options.label
+		return this.add(component, names)
+	}
+
+	/** Adds a text field component. */
+	textfield(label: string, key: string, options?: TextFieldOptions): this {
+		const names = this._names.resolve("textfield", key, options)
+		const component: FormTextFieldComponent = { type: "textfield", id: names.id, label, key }
+		if (options?.validate !== undefined) component.validate = options.validate
+		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
+		return this.add(component, names)
+	}
+
+	/** Adds a textarea component. */
+	textarea(label: string, key: string, options?: TextFieldOptions): this {
+		const names = this._names.resolve("textarea", key, options)
+		const component: FormTextAreaComponent = { type: "textarea", id: names.id, label, key }
+		if (options?.validate !== undefined) component.validate = options.validate
+		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
+		return this.add(component, names)
+	}
+
+	/** Adds a number input component. */
+	number(label: string, key: string, options?: NumberOptions): this {
+		const names = this._names.resolve("number", key, options)
+		const component: FormNumberComponent = { type: "number", id: names.id, label, key }
+		if (options?.validate !== undefined) component.validate = options.validate
+		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
+		return this.add(component, names)
+	}
+
+	/** Adds a date and/or time picker component. */
+	datetime(key: string, options?: DatetimeOptions): this {
+		const names = this._names.resolve("datetime", key, options)
+		const component: FormDatetimeComponent = { type: "datetime", id: names.id, key }
+		if (options?.subtype !== undefined) component.subtype = options.subtype
+		if (options?.dateLabel !== undefined) component.dateLabel = options.dateLabel
+		if (options?.timeLabel !== undefined) component.timeLabel = options.timeLabel
+		if (options?.validate !== undefined) component.validate = options.validate
+		return this.add(component, names)
+	}
+
+	/** Adds a select dropdown component. */
+	select(label: string, key: string, options?: SelectOptions): this {
+		const names = this._names.resolve("select", key, options)
+		const component: FormSelectComponent = { type: "select", id: names.id, label, key }
+		if (options?.values !== undefined) component.values = options.values
+		if (options?.valuesKey !== undefined) component.valuesKey = options.valuesKey
+		if (options?.validate !== undefined) component.validate = options.validate
+		if (options?.searchable !== undefined) component.searchable = options.searchable
+		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
+		return this.add(component, names)
+	}
+
+	/** Adds a radio button group component. */
+	radio(label: string, key: string, values: FormValueOption[], options?: RadioOptions): this {
+		const names = this._names.resolve("radio", key, options)
+		const component: FormRadioComponent = { type: "radio", id: names.id, label, key, values }
+		if (options?.validate !== undefined) component.validate = options.validate
+		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
+		return this.add(component, names)
+	}
+
+	/** Adds a checkbox component. */
+	checkbox(label: string, key: string, options?: CheckboxOptions): this {
+		const names = this._names.resolve("checkbox", key, options)
+		const component: FormCheckboxComponent = { type: "checkbox", id: names.id, label, key }
+		if (options?.validate !== undefined) component.validate = options.validate
+		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
+		return this.add(component, names)
+	}
+
+	/** Adds a checklist component. */
+	checklist(
+		label: string,
+		key: string,
+		values: FormValueOption[],
+		options?: ChecklistOptions,
+	): this {
+		const names = this._names.resolve("checklist", key, options)
+		const component: FormChecklistComponent = {
+			type: "checklist",
+			id: names.id,
+			label,
+			key,
+			values,
+		}
+		if (options?.validate !== undefined) component.validate = options.validate
+		return this.add(component, names)
+	}
+
+	/** Adds a tag list component. */
+	taglist(label: string, key: string, options?: TaglistOptions): this {
+		const names = this._names.resolve("taglist", key, options)
+		const component: FormTaglistComponent = { type: "taglist", id: names.id, label, key }
+		if (options?.values !== undefined) component.values = options.values
+		if (options?.valuesKey !== undefined) component.valuesKey = options.valuesKey
+		if (options?.validate !== undefined) component.validate = options.validate
+		return this.add(component, names)
+	}
+
+	/** Adds a button component. */
+	button(label: string, options?: ButtonOptions): this {
+		const names = this._names.resolve("button", label, options)
+		const component: FormButtonComponent = { type: "button", id: names.id, label }
+		if (options?.action !== undefined) component.action = options.action
+		return this.add(component, names)
+	}
+
+	/** Adds a group component with nested children built via a callback. */
+	group(label: string, builder: (group: GroupBuilder) => void, options?: GroupOptions): this {
+		const names = this._names.resolve("group", label, options)
+		const nested = this.nest(names, builder)
+		const component: FormGroupComponent = {
+			type: "group",
+			id: nested._id,
+			label,
+			components: nested._components,
+		}
+		if (options?.showOutline !== undefined) component.showOutline = options.showOutline
+		return this.add(component, names)
+	}
+
+	/** Adds a repeating list whose item components are built via a callback. */
+	dynamiclist(
+		label: string,
+		builder: (group: GroupBuilder) => void,
+		options?: DynamicListOptions,
+	): this {
+		const names = this._names.resolve("dynamiclist", label, options)
+		const nested = this.nest(names, builder)
+		const component: FormDynamicListComponent = {
+			type: "dynamiclist",
+			id: nested._id,
+			label,
+			components: nested._components,
+		}
+		if (options?.path !== undefined) component.path = options.path
+		if (options?.isRepeating !== undefined) component.isRepeating = options.isRepeating
+		if (options?.allowAddRemove !== undefined) component.allowAddRemove = options.allowAddRemove
+		if (options?.defaultRepetitions !== undefined) {
+			component.defaultRepetitions = options.defaultRepetitions
+		}
+		if (options?.showOutline !== undefined) component.showOutline = options.showOutline
+		return this.add(component, names)
+	}
+
+	/** Adds an embedded iframe component. */
+	iframe(url: string, options?: IframeOptions): this {
+		const names = this._names.resolve("iframe", url, options)
+		const component: FormIframeComponent = { type: "iframe", id: names.id, url }
+		if (options?.label !== undefined) component.label = options.label
+		if (options?.height !== undefined) component.height = options.height
+		if (options?.security !== undefined) component.security = options.security
+		return this.add(component, names)
+	}
+
+	/** Adds an image component; `source` is a URL or FEEL expression. */
+	image(source: string, options?: ImageOptions): this {
+		const names = this._names.resolve("image", source, options)
+		const component: FormImageComponent = { type: "image", id: names.id, source }
+		if (options?.alt !== undefined) component.alt = options.alt
+		return this.add(component, names)
+	}
+
+	/** Adds a read-only data table component. */
+	table(label: string, options?: TableOptions): this {
+		const names = this._names.resolve("table", label, options)
+		const component: FormTableComponent = { type: "table", id: names.id, label }
+		if (options?.dataSource !== undefined) component.dataSource = options.dataSource
+		if (options?.rowCount !== undefined) component.rowCount = options.rowCount
+		if (options?.columns !== undefined) component.columns = options.columns
+		return this.add(component, names)
+	}
+
+	/** Adds a raw HTML content component. */
+	html(content: string, options?: HtmlOptions): this {
+		const names = this._names.resolve("html", content, options)
+		const component: FormHtmlComponent = { type: "html", id: names.id, content }
+		return this.add(component, names)
+	}
+
+	/** Adds a separator line. */
+	separator(options?: SeparatorOptions): this {
+		// No identity: occurrence numbering tells repeated separators apart.
+		const names = this._names.resolve("separator", "", options)
+		const component: FormSeparatorComponent = { type: "separator", id: names.id }
+		return this.add(component, names)
+	}
+
+	/** Adds a blank spacer. */
+	spacer(options?: SpacerOptions): this {
+		const names = this._names.resolve("spacer", "", options)
+		const component: FormSpacerComponent = { type: "spacer", id: names.id }
+		if (options?.height !== undefined) component.height = options.height
+		return this.add(component, names)
+	}
+
+	/** Adds a FEEL expression component that writes its result to `key`. */
+	expression(key: string, options?: ExpressionOptions): this {
+		const names = this._names.resolve("expression", key, options)
+		const component: FormExpressionComponent = { type: "expression", id: names.id, key }
+		if (options?.expression !== undefined) component.expression = options.expression
+		if (options?.computeOn !== undefined) component.computeOn = options.computeOn
+		return this.add(component, names)
+	}
+
+	/** Adds a file picker component. */
+	filepicker(label: string, key: string, options?: FilepickerOptions): this {
+		const names = this._names.resolve("filepicker", key, options)
+		const component: FormFilepickerComponent = { type: "filepicker", id: names.id, label, key }
+		if (options?.multiple !== undefined) component.multiple = options.multiple
+		return this.add(component, names)
+	}
+
+	/** Adds a document preview component. */
+	documentPreview(label: string, options?: DocumentPreviewOptions): this {
+		const names = this._names.resolve("documentPreview", label, options)
+		const component: FormDocumentPreviewComponent = {
+			type: "documentPreview",
+			id: names.id,
+			label,
+		}
+		return this.add(component, names)
+	}
+}
+
 /** Builder for constructing Camunda Forms programmatically. */
-export class FormBuilder {
+export class FormBuilder extends ComponentContainer {
 	private _id: string
 	private _type = "default"
 	private _executionPlatform = "Camunda Cloud"
@@ -97,12 +380,11 @@ export class FormBuilder {
 	private _exporter?: FormExporter
 	private _schemaVersion?: number
 	private _generated?: boolean
-	private readonly _components: FormComponent[] = []
-	private _names: ScopeNames
 
 	constructor(id?: string) {
-		this._id = id ?? generateId("Form")
-		this._names = new ScopeNames(this._id)
+		const formId = id ?? generateId("Form")
+		super(formId)
+		this._id = formId
 	}
 
 	/**
@@ -150,158 +432,6 @@ export class FormBuilder {
 		return this
 	}
 
-	/** Adds a static text component. */
-	text(
-		text: string,
-		options?: {
-			id?: string
-			label?: string
-			layout?: FormLayoutInput
-			conditional?: FormConditional
-		},
-	): this {
-		const names = this._names.resolve("text", text, options)
-		const component: FormTextComponent = {
-			type: "text",
-			id: names.id,
-			text,
-		}
-		if (options?.label !== undefined) component.label = options.label
-		component.layout = names.layout
-		if (names.conditional !== undefined) component.conditional = names.conditional
-		this._components.push(component)
-		return this
-	}
-
-	/** Adds a text field component. */
-	textfield(label: string, key: string, options?: TextFieldOptions): this {
-		const names = this._names.resolve("textfield", key, options)
-		const component: FormTextFieldComponent = {
-			type: "textfield",
-			id: names.id,
-			label,
-			key,
-		}
-		if (options?.validate !== undefined) component.validate = options.validate
-		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
-		component.layout = names.layout
-		if (names.conditional !== undefined) component.conditional = names.conditional
-		this._components.push(component)
-		return this
-	}
-
-	/** Adds a textarea component. */
-	textarea(label: string, key: string, options?: TextFieldOptions): this {
-		const names = this._names.resolve("textarea", key, options)
-		const component: FormTextAreaComponent = {
-			type: "textarea",
-			id: names.id,
-			label,
-			key,
-		}
-		if (options?.validate !== undefined) component.validate = options.validate
-		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
-		component.layout = names.layout
-		if (names.conditional !== undefined) component.conditional = names.conditional
-		this._components.push(component)
-		return this
-	}
-
-	/** Adds a select dropdown component. */
-	select(label: string, key: string, options?: SelectOptions): this {
-		const names = this._names.resolve("select", key, options)
-		const component: FormSelectComponent = {
-			type: "select",
-			id: names.id,
-			label,
-			key,
-		}
-		if (options?.values !== undefined) component.values = options.values
-		if (options?.valuesKey !== undefined) component.valuesKey = options.valuesKey
-		if (options?.validate !== undefined) component.validate = options.validate
-		if (options?.searchable !== undefined) component.searchable = options.searchable
-		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
-		component.layout = names.layout
-		if (names.conditional !== undefined) component.conditional = names.conditional
-		this._components.push(component)
-		return this
-	}
-
-	/** Adds a radio button group component. */
-	radio(label: string, key: string, values: FormValueOption[], options?: RadioOptions): this {
-		const names = this._names.resolve("radio", key, options)
-		const component: FormRadioComponent = {
-			type: "radio",
-			id: names.id,
-			label,
-			key,
-			values,
-		}
-		if (options?.validate !== undefined) component.validate = options.validate
-		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
-		component.layout = names.layout
-		if (names.conditional !== undefined) component.conditional = names.conditional
-		this._components.push(component)
-		return this
-	}
-
-	/** Adds a checkbox component. */
-	checkbox(label: string, key: string, options?: CheckboxOptions): this {
-		const names = this._names.resolve("checkbox", key, options)
-		const component: FormCheckboxComponent = {
-			type: "checkbox",
-			id: names.id,
-			label,
-			key,
-		}
-		if (options?.validate !== undefined) component.validate = options.validate
-		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
-		component.layout = names.layout
-		if (names.conditional !== undefined) component.conditional = names.conditional
-		this._components.push(component)
-		return this
-	}
-
-	/** Adds a checklist component. */
-	checklist(
-		label: string,
-		key: string,
-		values: FormValueOption[],
-		options?: ChecklistOptions,
-	): this {
-		const names = this._names.resolve("checklist", key, options)
-		const component: FormChecklistComponent = {
-			type: "checklist",
-			id: names.id,
-			label,
-			key,
-			values,
-		}
-		if (options?.validate !== undefined) component.validate = options.validate
-		component.layout = names.layout
-		if (names.conditional !== undefined) component.conditional = names.conditional
-		this._components.push(component)
-		return this
-	}
-
-	/** Adds a group component with nested children built via a callback. */
-	group(label: string, builder: (group: GroupBuilder) => void, options?: GroupOptions): this {
-		const names = this._names.resolve("group", label, options)
-		const groupBuilder = new GroupBuilder(names.id)
-		builder(groupBuilder)
-		const component: FormGroupComponent = {
-			type: "group",
-			id: groupBuilder._id,
-			label,
-			components: groupBuilder._components,
-		}
-		if (options?.showOutline !== undefined) component.showOutline = options.showOutline
-		component.layout = names.layout
-		if (names.conditional !== undefined) component.conditional = names.conditional
-		this._components.push(component)
-		return this
-	}
-
 	/** Builds the final FormDefinition. */
 	build(): FormDefinition {
 		const definition: FormDefinition = {
@@ -322,13 +452,10 @@ export class FormBuilder {
 	}
 }
 
-/** Sub-builder for group components. Supports the same component methods as FormBuilder. */
-export class GroupBuilder {
+/** Sub-builder for group and dynamiclist components. Supports the same component methods as FormBuilder. */
+export class GroupBuilder extends ComponentContainer {
 	/** @internal */
 	readonly _id: string
-	/** @internal */
-	readonly _components: FormComponent[] = []
-	private readonly _names: ScopeNames
 
 	/**
 	 * @param id - The group component's id, and the scope its children's generated
@@ -338,152 +465,9 @@ export class GroupBuilder {
 	 *   gets a random one, and its children inherit that instability.
 	 */
 	constructor(id?: string) {
-		this._id = id ?? generateId("Field")
-		this._names = new ScopeNames(this._id)
-	}
-
-	text(
-		text: string,
-		options?: {
-			id?: string
-			label?: string
-			layout?: FormLayoutInput
-			conditional?: FormConditional
-		},
-	): this {
-		const names = this._names.resolve("text", text, options)
-		const component: FormTextComponent = {
-			type: "text",
-			id: names.id,
-			text,
-		}
-		if (options?.label !== undefined) component.label = options.label
-		component.layout = names.layout
-		if (names.conditional !== undefined) component.conditional = names.conditional
-		this._components.push(component)
-		return this
-	}
-
-	textfield(label: string, key: string, options?: TextFieldOptions): this {
-		const names = this._names.resolve("textfield", key, options)
-		const component: FormTextFieldComponent = {
-			type: "textfield",
-			id: names.id,
-			label,
-			key,
-		}
-		if (options?.validate !== undefined) component.validate = options.validate
-		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
-		component.layout = names.layout
-		if (names.conditional !== undefined) component.conditional = names.conditional
-		this._components.push(component)
-		return this
-	}
-
-	textarea(label: string, key: string, options?: TextFieldOptions): this {
-		const names = this._names.resolve("textarea", key, options)
-		const component: FormTextAreaComponent = {
-			type: "textarea",
-			id: names.id,
-			label,
-			key,
-		}
-		if (options?.validate !== undefined) component.validate = options.validate
-		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
-		component.layout = names.layout
-		if (names.conditional !== undefined) component.conditional = names.conditional
-		this._components.push(component)
-		return this
-	}
-
-	select(label: string, key: string, options?: SelectOptions): this {
-		const names = this._names.resolve("select", key, options)
-		const component: FormSelectComponent = {
-			type: "select",
-			id: names.id,
-			label,
-			key,
-		}
-		if (options?.values !== undefined) component.values = options.values
-		if (options?.valuesKey !== undefined) component.valuesKey = options.valuesKey
-		if (options?.validate !== undefined) component.validate = options.validate
-		if (options?.searchable !== undefined) component.searchable = options.searchable
-		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
-		component.layout = names.layout
-		if (names.conditional !== undefined) component.conditional = names.conditional
-		this._components.push(component)
-		return this
-	}
-
-	radio(label: string, key: string, values: FormValueOption[], options?: RadioOptions): this {
-		const names = this._names.resolve("radio", key, options)
-		const component: FormRadioComponent = {
-			type: "radio",
-			id: names.id,
-			label,
-			key,
-			values,
-		}
-		if (options?.validate !== undefined) component.validate = options.validate
-		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
-		component.layout = names.layout
-		if (names.conditional !== undefined) component.conditional = names.conditional
-		this._components.push(component)
-		return this
-	}
-
-	checkbox(label: string, key: string, options?: CheckboxOptions): this {
-		const names = this._names.resolve("checkbox", key, options)
-		const component: FormCheckboxComponent = {
-			type: "checkbox",
-			id: names.id,
-			label,
-			key,
-		}
-		if (options?.validate !== undefined) component.validate = options.validate
-		if (options?.defaultValue !== undefined) component.defaultValue = options.defaultValue
-		component.layout = names.layout
-		if (names.conditional !== undefined) component.conditional = names.conditional
-		this._components.push(component)
-		return this
-	}
-
-	checklist(
-		label: string,
-		key: string,
-		values: FormValueOption[],
-		options?: ChecklistOptions,
-	): this {
-		const names = this._names.resolve("checklist", key, options)
-		const component: FormChecklistComponent = {
-			type: "checklist",
-			id: names.id,
-			label,
-			key,
-			values,
-		}
-		if (options?.validate !== undefined) component.validate = options.validate
-		component.layout = names.layout
-		if (names.conditional !== undefined) component.conditional = names.conditional
-		this._components.push(component)
-		return this
-	}
-
-	group(label: string, builder: (group: GroupBuilder) => void, options?: GroupOptions): this {
-		const names = this._names.resolve("group", label, options)
-		const groupBuilder = new GroupBuilder(names.id)
-		builder(groupBuilder)
-		const component: FormGroupComponent = {
-			type: "group",
-			id: groupBuilder._id,
-			label,
-			components: groupBuilder._components,
-		}
-		if (options?.showOutline !== undefined) component.showOutline = options.showOutline
-		component.layout = names.layout
-		if (names.conditional !== undefined) component.conditional = names.conditional
-		this._components.push(component)
-		return this
+		const groupId = id ?? generateId("Field")
+		super(groupId)
+		this._id = groupId
 	}
 }
 
@@ -538,6 +522,133 @@ export interface ChecklistOptions {
 export interface GroupOptions {
 	id?: string
 	showOutline?: boolean
+	layout?: FormLayoutInput
+	conditional?: FormConditional
+}
+
+/** Options for number components. */
+export interface NumberOptions {
+	id?: string
+	validate?: FormValidation
+	defaultValue?: number
+	layout?: FormLayoutInput
+	conditional?: FormConditional
+}
+
+/** Options for datetime components. */
+export interface DatetimeOptions {
+	id?: string
+	/** "date", "time" or "datetime". */
+	subtype?: string
+	dateLabel?: string
+	timeLabel?: string
+	validate?: FormValidation
+	layout?: FormLayoutInput
+	conditional?: FormConditional
+}
+
+/** Options for taglist components. */
+export interface TaglistOptions {
+	id?: string
+	values?: FormValueOption[]
+	valuesKey?: string
+	validate?: FormValidation
+	layout?: FormLayoutInput
+	conditional?: FormConditional
+}
+
+/** Options for button components. */
+export interface ButtonOptions {
+	id?: string
+	/** "submit" or "reset". */
+	action?: string
+	layout?: FormLayoutInput
+	conditional?: FormConditional
+}
+
+/** Options for dynamiclist components. */
+export interface DynamicListOptions {
+	id?: string
+	path?: string
+	isRepeating?: boolean
+	allowAddRemove?: boolean
+	defaultRepetitions?: number
+	showOutline?: boolean
+	layout?: FormLayoutInput
+	conditional?: FormConditional
+}
+
+/** Options for iframe components. */
+export interface IframeOptions {
+	id?: string
+	label?: string
+	height?: number
+	security?: { allowScripts?: boolean }
+	layout?: FormLayoutInput
+	conditional?: FormConditional
+}
+
+/** Options for image components. */
+export interface ImageOptions {
+	id?: string
+	alt?: string
+	layout?: FormLayoutInput
+	conditional?: FormConditional
+}
+
+/** Options for table components. */
+export interface TableOptions {
+	id?: string
+	dataSource?: string
+	rowCount?: number
+	columns?: Array<{ label: string; key: string }>
+	layout?: FormLayoutInput
+	conditional?: FormConditional
+}
+
+/** Options for html components. */
+export interface HtmlOptions {
+	id?: string
+	layout?: FormLayoutInput
+	conditional?: FormConditional
+}
+
+/** Options for separator components. */
+export interface SeparatorOptions {
+	id?: string
+	layout?: FormLayoutInput
+	conditional?: FormConditional
+}
+
+/** Options for spacer components. */
+export interface SpacerOptions {
+	id?: string
+	height?: number
+	layout?: FormLayoutInput
+	conditional?: FormConditional
+}
+
+/** Options for expression components. */
+export interface ExpressionOptions {
+	id?: string
+	expression?: string
+	/** "change" or "submit". */
+	computeOn?: string
+	layout?: FormLayoutInput
+	conditional?: FormConditional
+}
+
+/** Options for filepicker components. */
+export interface FilepickerOptions {
+	id?: string
+	multiple?: boolean
+	layout?: FormLayoutInput
+	conditional?: FormConditional
+}
+
+/** Options for documentPreview components. */
+export interface DocumentPreviewOptions {
+	id?: string
 	layout?: FormLayoutInput
 	conditional?: FormConditional
 }

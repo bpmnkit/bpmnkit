@@ -42,6 +42,20 @@ export type {
 	CheckboxOptions,
 	ChecklistOptions,
 	GroupOptions,
+	NumberOptions,
+	DatetimeOptions,
+	TaglistOptions,
+	ButtonOptions,
+	DynamicListOptions,
+	IframeOptions,
+	ImageOptions,
+	TableOptions,
+	HtmlOptions,
+	SeparatorOptions,
+	SpacerOptions,
+	ExpressionOptions,
+	FilepickerOptions,
+	DocumentPreviewOptions,
 } from "./form-builder.js"
 export { compactifyForm, expandForm } from "./compact.js"
 export type { CompactForm, CompactFormField } from "./compact.js"

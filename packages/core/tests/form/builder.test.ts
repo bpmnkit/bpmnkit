@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it } from "vitest"
-import { FormBuilder } from "../../src/form/form-builder.js"
+import { FormBuilder, GroupBuilder } from "../../src/form/form-builder.js"
 import type { FormComponent, FormGroupComponent } from "../../src/form/form-model.js"
 import { parseForm } from "../../src/form/form-parser.js"
 import { exportForm } from "../../src/form/form-serializer.js"
+import { FORM_ELEMENT_NAMES } from "../../src/generated/form-elements.js"
 import { resetIdCounter } from "../../src/types/id-generator.js"
 
 beforeEach(() => {
@@ -357,5 +358,144 @@ describe("FormBuilder", () => {
 
 		const group = asGroup(at(form.components, 0))
 		expect(group.components).toHaveLength(8)
+	})
+})
+
+describe("FormBuilder: every element type", () => {
+	const build = (fn: (f: FormBuilder) => FormBuilder) =>
+		at(fn(new FormBuilder("f")).build().components, 0)
+	const inGroup = (fn: (g: GroupBuilder) => GroupBuilder) =>
+		at(asGroup(build((f) => f.group("G", (g) => void fn(g)))).components, 0)
+
+	const cases: Array<
+		[string, (b: GroupBuilder | FormBuilder) => unknown, Record<string, unknown>]
+	> = [
+		[
+			"number",
+			(b) => b.number("Age", "age", { defaultValue: 3 }),
+			{ type: "number", label: "Age", key: "age", defaultValue: 3 },
+		],
+		[
+			"datetime",
+			(b) => b.datetime("when", { subtype: "date", dateLabel: "D" }),
+			{ type: "datetime", key: "when", subtype: "date", dateLabel: "D" },
+		],
+		[
+			"taglist",
+			(b) => b.taglist("Tags", "tags", { valuesKey: "vk" }),
+			{ type: "taglist", label: "Tags", key: "tags", valuesKey: "vk" },
+		],
+		[
+			"button",
+			(b) => b.button("Go", { action: "submit" }),
+			{ type: "button", label: "Go", action: "submit" },
+		],
+		[
+			"iframe",
+			(b) => b.iframe("https://x.test", { height: 100, label: "L" }),
+			{ type: "iframe", url: "https://x.test", label: "L", height: 100 },
+		],
+		[
+			"image",
+			(b) => b.image("https://x.test/a.png", { alt: "A" }),
+			{ type: "image", source: "https://x.test/a.png", alt: "A" },
+		],
+		[
+			"table",
+			(b) => b.table("T", { dataSource: "=rows", rowCount: 5 }),
+			{ type: "table", label: "T", dataSource: "=rows", rowCount: 5 },
+		],
+		["html", (b) => b.html("<b>x</b>"), { type: "html", content: "<b>x</b>" }],
+		["separator", (b) => b.separator(), { type: "separator" }],
+		["spacer", (b) => b.spacer({ height: 20 }), { type: "spacer", height: 20 }],
+		[
+			"expression",
+			(b) => b.expression("total", { expression: "=1+1", computeOn: "change" }),
+			{ type: "expression", key: "total", expression: "=1+1", computeOn: "change" },
+		],
+		[
+			"filepicker",
+			(b) => b.filepicker("Files", "files", { multiple: true }),
+			{ type: "filepicker", label: "Files", key: "files", multiple: true },
+		],
+		[
+			"documentPreview",
+			(b) => b.documentPreview("Docs"),
+			{ type: "documentPreview", label: "Docs" },
+		],
+	]
+
+	for (const [name, add, expected] of cases) {
+		it(`${name} builds at top level with layout and conditional`, () => {
+			const c = build((f) => {
+				add(f)
+				return f
+			})
+			expect(c).toMatchObject(expected)
+			expect(c.layout).toEqual({ row: expect.any(String), columns: null })
+			expect(Object.keys(c).slice(-1)).toEqual(["layout"])
+			const again = build((f) => {
+				add(f)
+				return f
+			})
+			expect(again).toEqual(c)
+		})
+
+		it(`${name} builds nested in a group`, () => {
+			const c = inGroup((g) => {
+				add(g)
+				return g
+			})
+			expect(c).toMatchObject(expected)
+			expect(c.id).not.toBe(
+				build((f) => {
+					add(f)
+					return f
+				}).id,
+			)
+		})
+	}
+
+	it("keeps conditional after layout", () => {
+		const c = build((f) => f.number("A", "a", { conditional: { hide: "=true" } }))
+		expect(Object.keys(c).slice(-2)).toEqual(["layout", "conditional"])
+	})
+
+	it("numbers repeated separators and spacers distinctly", () => {
+		const f = new FormBuilder("f").separator().separator().spacer().spacer().build()
+		expect(new Set(f.components.map((c) => c.id)).size).toBe(4)
+	})
+
+	it("dynamiclist nests children scoped by its id, deterministically", () => {
+		const make = () =>
+			new FormBuilder("f").dynamiclist("Items", (g) => g.textfield("N", "n").separator(), {
+				path: "items",
+				isRepeating: true,
+			})
+		const c = at(make().build().components, 0)
+		if (c.type !== "dynamiclist") throw new Error("expected dynamiclist")
+		expect(c.path).toBe("items")
+		expect(c.components.map((x) => x.type)).toEqual(["textfield", "separator"])
+		expect(make().build()).toEqual(make().build())
+		const plain = at(new FormBuilder("f").textfield("N", "n").build().components, 0)
+		expect(at(c.components, 0).id).not.toBe(plain.id)
+		const nested = at(
+			asGroup(
+				build((f) => f.group("G", (g) => void g.dynamiclist("L", (d) => void d.number("X", "x")))),
+			).components,
+			0,
+		)
+		expect(nested.type).toBe("dynamiclist")
+	})
+
+	it("has a method on both builders for every FORM_ELEMENT_NAMES entry", () => {
+		for (const name of FORM_ELEMENT_NAMES) {
+			expect(typeof (FormBuilder.prototype as unknown as Record<string, unknown>)[name]).toBe(
+				"function",
+			)
+			expect(typeof (GroupBuilder.prototype as unknown as Record<string, unknown>)[name]).toBe(
+				"function",
+			)
+		}
 	})
 })
