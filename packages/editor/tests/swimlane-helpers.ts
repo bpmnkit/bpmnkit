@@ -201,11 +201,11 @@ export function poolLessFlowable(laned: boolean): BpmnDefinitions {
 
 /**
  * An executable process `P` with nested lanes and no pool, laid out by
- * auto-layout: `LA` (0-356, split into `LA1` 0-116 holding `s` and `LA2`
- * holding `t`, both inset 30) over `LB` (356-472, holding `e`), 456 wide from
+ * auto-layout: `LA` (4-360, split into `LA1` 4-120 holding `s` and `LA2`
+ * holding `t`, both inset 30) over `LB` (360-476, holding `e`), 456 wide from
  * x 0. The data reference `dor` that `t` writes to is no lane member but is
- * drawn in `LA2`, under `t` (y 266); auto-layout draws the task `loose`, which
- * no lane holds, below the bands (y 512, left out without `loose`).
+ * drawn in `LA2`, under `t` (y 270); auto-layout draws the task `loose`, which
+ * no lane holds, below the bands (y 516, left out without `loose`).
  */
 export function poolLessNested(loose = true): BpmnDefinitions {
 	const xml = `<?xml version="1.0" encoding="UTF-8"?>

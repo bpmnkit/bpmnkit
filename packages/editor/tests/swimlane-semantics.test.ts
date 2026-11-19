@@ -493,15 +493,15 @@ describe("growth: a node crossing the own pool's top, left or right edge", () =>
 })
 
 describe("growth: lane bands drawn without a pool frame the process as a pool does", () => {
-	// poolLessFlowable(true): Sales 0-160, Finance 160-320, Operations 320-436, all 665 wide from x 0.
+	// poolLessFlowable(true): Sales 0-140, Finance 140-280, Operations 280-376, all 457 wide from x 0.
 	const lanes = ["Lane_sales", "Lane_finance", "Lane_ops"]
 
 	it("widens every band for a node that crosses their right edge, the node in its lane", () => {
 		const defs = poolLessFlowable(true)
-		// Task_pay lands at x 597..697, its centre inside; the bands reach 30 past it.
-		const after = run(defs, move("Task_pay", 150, 0))
+		// Task_pay lands at x 400..500, its centre (450) inside; the bands reach 30 past it.
+		const after = run(defs, move("Task_pay", 60, 0))
 		for (const lane of lanes)
-			expect(boundsOf(after, lane), lane).toMatchObject({ x: 0, width: 727 })
+			expect(boundsOf(after, lane), lane).toMatchObject({ x: 0, width: 530 })
 		expect(leafOf(after, "Task_pay")).toBe("Lane_finance")
 		expect(participants(after)).toEqual([])
 		expectUnmoved(defs, after, ["Task_pay", ...lanes])
@@ -510,9 +510,9 @@ describe("growth: lane bands drawn without a pool frame the process as a pool do
 
 	it("deepens the bottom band for a node that crosses the bottom edge, its ref following", () => {
 		const defs = poolLessFlowable(true)
-		// Task_pay lands at y 380..460, its centre in Operations; the band reaches 30 below it.
-		const after = run(defs, move("Task_pay", 0, 180))
-		expect(boundsOf(after, "Lane_ops")).toEqual({ x: 0, y: 320, width: 665, height: 170 })
+		// Task_pay lands at y 300..380, its centre in Operations; the band reaches 30 below it.
+		const after = run(defs, move("Task_pay", 0, 130))
+		expect(boundsOf(after, "Lane_ops")).toEqual({ x: 0, y: 280, width: 457, height: 130 })
 		expect(boundsOf(after, "Lane_finance")).toEqual(boundsOf(defs, "Lane_finance"))
 		expect(leafOf(after, "Task_pay")).toBe("Lane_ops")
 		expectUnmoved(defs, after, ["Task_pay", "Lane_ops"])
@@ -522,12 +522,12 @@ describe("growth: lane bands drawn without a pool frame the process as a pool do
 	it("grows the top band up and every band left, as a pool's", () => {
 		const defs = poolLessFlowable(true)
 		const up = run(defs, move("Task_review", 0, -70))
-		expect(boundsOf(up, "Lane_sales")).toEqual({ x: 0, y: -60, width: 665, height: 220 })
+		expect(boundsOf(up, "Lane_sales")).toEqual({ x: 0, y: -70, width: 457, height: 210 })
 		expect(leafOf(up, "Task_review")).toBe("Lane_sales")
-		// Start_1 lands at x 11, over the name strip: every band moves 30 past it to the left.
+		// Start_1 lands at x 14, over the name strip: every band moves 60 past it to the left.
 		const left = run(defs, move("Start_1", -70, 0))
 		for (const lane of lanes)
-			expect(boundsOf(left, lane), lane).toMatchObject({ x: -49, width: 714 })
+			expect(boundsOf(left, lane), lane).toMatchObject({ x: -46, width: 503 })
 		expectSwimlanesSound(up)
 		expectSwimlanesSound(left)
 	})
@@ -539,15 +539,15 @@ describe("growth: lane bands drawn without a pool frame the process as a pool do
 			kind: "createConnected",
 			sourceId: "End_1",
 			type: "task",
-			bounds: { x: 690, y: 338, width: 100, height: 80 },
+			bounds: { x: 490, y: 288, width: 100, height: 80 },
 			waypoints: [
-				{ x: 643, y: 378 },
-				{ x: 690, y: 378 },
+				{ x: 408, y: 328 },
+				{ x: 490, y: 328 },
 			],
 			seed: "q",
 		})
 		const [id = ""] = r.created
-		for (const lane of lanes) expect(boundsOf(r.defs, lane), lane).toMatchObject({ width: 820 })
+		for (const lane of lanes) expect(boundsOf(r.defs, lane), lane).toMatchObject({ width: 620 })
 		expect(leafOf(r.defs, id)).toBe("Lane_ops")
 		expectSwimlanesSound(r.defs)
 	})
@@ -556,14 +556,14 @@ describe("growth: lane bands drawn without a pool frame the process as a pool do
 
 	it("grows the top lane chain up and every nested band left, keeping the inset", () => {
 		const defs = poolLessNested(false)
-		// s lands at y -10, its centre still in LA1; the bands reach 30 above it.
+		// s lands at y -6, its centre still in LA1; the bands reach 30 above it.
 		const up = run(defs, move("s", 0, -50))
-		expect(boundsOf(up, "LA")).toEqual({ ...boundsOf(defs, "LA"), y: -40, height: 396 })
-		expect(boundsOf(up, "LA1")).toEqual({ ...boundsOf(defs, "LA1"), y: -40, height: 156 })
+		expect(boundsOf(up, "LA")).toEqual({ ...boundsOf(defs, "LA"), y: -36, height: 396 })
+		expect(boundsOf(up, "LA1")).toEqual({ ...boundsOf(defs, "LA1"), y: -36, height: 156 })
 		expect(boundsOf(up, "LA2")).toEqual(boundsOf(defs, "LA2"))
 		expect(leafOf(up, "s")).toBe("LA1")
 		// s lands at x 10, over LA1's name strip (x 0-60): every band moves 50 left.
-		const left = run(defs, move("s", -70, 0))
+		const left = run(defs, move("s", -74, 0))
 		for (const [lane, x] of [
 			["LA", -50],
 			["LA1", -20],
@@ -597,7 +597,7 @@ describe("growth: lane bands drawn without a pool frame the process as a pool do
 			{ kind: "space", axis: "h", origin: 60, delta: 100 },
 		] satisfies EditorOp[]) {
 			const after = run(defs, op)
-			expect(boundsOf(after, "LB"), op.axis).toMatchObject({ y: 356, height: 116 })
+			expect(boundsOf(after, "LB"), op.axis).toMatchObject({ y: 360, height: 116 })
 			expect(leafOf(after, "loose"), op.axis).toBeUndefined()
 		}
 	})
@@ -614,9 +614,9 @@ describe("growth: lane bands drawn without a pool frame the process as a pool do
 			)
 		const defs = Bpmn.parse(xml)
 		expect(participants(defs).map((p) => p.id)).toEqual(["BB"])
-		// The black box ends at y -45: growing LA's top to -46 runs onto it, to -40 does not.
-		expectRefused(defs, move("s", 0, -56))
-		expect(boundsOf(run(defs, move("s", 0, -50)), "LA")).toMatchObject({ y: -40 })
+		// The black box ends at y -45: growing LA's top to -46 runs onto it, to -36 does not.
+		expectRefused(defs, move("s", 0, -60))
+		expect(boundsOf(run(defs, move("s", 0, -50)), "LA")).toMatchObject({ y: -36 })
 	})
 })
 
