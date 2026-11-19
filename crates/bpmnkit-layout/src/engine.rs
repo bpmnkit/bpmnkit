@@ -12,12 +12,13 @@ pub enum LayoutEngine {
     Grid,
 }
 
-/// `layoutProcess(process, engine, collapsed, grids)`.
+/// `layoutProcess(process, engine, collapsed, grids, inPool)`.
 pub fn layout_process(
     process: &BpmnProcess,
     engine: LayoutEngine,
     collapsed: &IndexSet<String>,
     grids: Option<&IndexMap<String, GridHint>>,
+    in_pool: bool,
 ) -> LayoutResult {
     match engine {
         LayoutEngine::Grid => crate::grid::engine::grid_layout_flow_nodes(
@@ -25,7 +26,7 @@ pub fn layout_process(
             &process.contents.sequence_flows,
         ),
         LayoutEngine::Semantic => {
-            crate::semantic::semantic_layout_process(process, collapsed, grids)
+            crate::semantic::semantic_layout_process(process, collapsed, grids, in_pool)
         }
     }
 }

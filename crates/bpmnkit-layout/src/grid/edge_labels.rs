@@ -84,21 +84,35 @@ pub fn place_edge_labels(
         // Generate candidate positions along the segment
         let candidates = generate_label_candidates(seg_start, seg_end, label_width, label_height);
 
-        // Pick the first non-overlapping candidate
-        let mut placed = false;
-        for candidate in candidates {
-            if !occupied.iter().any(|ob| bounds_overlap(&candidate, ob)) {
-                edge.label_bounds = Some(candidate);
-                occupied.push(candidate);
-                placed = true;
-                break;
-            }
+        // A spot no other flow crosses wins; only when none exists is a crossed one accepted.
+        let crossed = |c: &Bounds| -> bool {
+            segments
+                .iter()
+                .any(|(sei, a, b)| *sei != ei && segment_through(a, b, c))
+        };
+        let clear = |c: &Bounds| -> bool { !occupied.iter().any(|ob| bounds_overlap(c, ob)) };
+        let picked = [true, false].into_iter().find_map(|strict| {
+            candidates
+                .iter()
+                .find(|c| clear(c) && !(strict && crossed(c)))
+                .copied()
+        });
+        let placed = picked.is_some();
+        if let Some(candidate) = picked {
+            edge.label_bounds = Some(candidate);
+            occupied.push(candidate);
         }
 
         // Fallback: slide along segment to find clear space
         if !placed {
-            let fallback =
-                slide_label_along_segment(seg_start, seg_end, label_width, label_height, &occupied);
+            let fallback = slide_label_along_segment(
+                seg_start,
+                seg_end,
+                label_width,
+                label_height,
+                &occupied,
+                &crossed,
+            );
             if let Some(fb) = fallback {
                 edge.label_bounds = Some(fb);
                 occupied.push(fb);
@@ -222,8 +236,10 @@ fn slide_label_along_segment(
     label_width: f64,
     label_height: f64,
     occupied: &[Bounds],
+    crossed: &dyn Fn(&Bounds) -> bool,
 ) -> Option<Bounds> {
     let is_horizontal = (seg_end.y - seg_start.y).abs() < 1.0;
+    let mut crossed_spot: Option<Bounds> = None;
 
     for step in 0..=LABEL_SLIDE_STEPS {
         let t = step as f64 / LABEL_SLIDE_STEPS as f64;
@@ -247,8 +263,14 @@ fn slide_label_along_segment(
         };
 
         if !occupied.iter().any(|ob| bounds_overlap(&candidate, ob)) {
-            return Some(candidate);
+            if !crossed(&candidate) {
+                return Some(candidate);
+            }
+            crossed_spot.get_or_insert(candidate);
         }
+    }
+    if crossed_spot.is_some() {
+        return crossed_spot;
     }
 
     // No clear position found: skip label placement rather than forcing an overlap

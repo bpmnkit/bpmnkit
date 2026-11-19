@@ -94,7 +94,7 @@ struct XSpan {
     width: f64,
 }
 
-/// `place(graph, bandLayout, sizes, laneSet, packLoose, titled, grid, axes)`.
+/// `place(graph, bandLayout, sizes, laneSet, packLoose, titled, grid, axes, slotArtifacts)`.
 ///
 /// Turn ranks and bands into coordinates.
 ///
@@ -117,6 +117,7 @@ pub fn place<'a>(
     titled: &IndexSet<&str>,
     grid: Option<&GridHint>,
     axes: &IndexMap<&str, f64>,
+    slot_artifacts: bool,
 ) -> Placement<'a> {
     let mut bounds: IndexMap<&'a str, Bounds> =
         IndexMap::with_capacity_and_hasher(graph.by_id.len(), Default::default());
@@ -167,6 +168,12 @@ pub fn place<'a>(
         Vec::new()
     };
     let loose_set: IndexSet<&str> = loose.iter().copied().collect();
+    let artifact_owners: IndexMap<&'a str, &'a str> =
+        if lane_set.is_some() || pack_loose || !slot_artifacts {
+            IndexMap::default()
+        } else {
+            artifact_owners_of(graph)
+        };
     let mut cursor_y = 0.0;
     for members_all in &graph.components {
         let members: Vec<&'a str> = members_all
@@ -175,6 +182,10 @@ pub fn place<'a>(
             .filter(|id| graph.by_id.contains_key(id))
             .collect();
         if members.is_empty() {
+            continue;
+        }
+        // An artifact wired to one activity is slotted under it below, not stacked apart.
+        if members.len() == 1 && artifact_owners.contains_key(members[0]) {
             continue;
         }
         if members.len() == 1 && loose_set.contains(members[0]) {
@@ -229,6 +240,7 @@ pub fn place<'a>(
         None => Vec::new(),
     };
     dock_boundary_events(graph, &mut bounds, titled);
+    place_artifacts(graph, &artifact_owners, &mut bounds);
     Placement {
         bounds,
         lanes,
@@ -1057,4 +1069,109 @@ fn handler_reach(graph: &SemanticGraph, event_id: &str) -> i64 {
         }
     }
     reach
+}
+
+fn is_artifact_type(kind: &str) -> bool {
+    matches!(kind, "dataObjectReference" | "dataStoreReference")
+}
+/// Gap between an activity and the artifact slotted beside it.
+const ARTIFACT_GAP: f64 = 40.0;
+const ARTIFACT_CLEARANCE: f64 = 10.0;
+const ARTIFACT_SPACING: f64 = 20.0;
+
+/// `artifactOwnersOf`: flow-less data references mapped to the activity they are
+/// wired to (the first one declared), in claim order.
+fn artifact_owners_of<'a>(graph: &SemanticGraph<'a>) -> IndexMap<&'a str, &'a str> {
+    let mut owners: IndexMap<&'a str, &'a str> = IndexMap::default();
+    let is_artifact = |id: &str| -> bool {
+        graph.by_id.get(id).is_some_and(|el| {
+            is_artifact_type(el.type_name())
+                && graph.outgoing.get(id).is_none_or(|v| v.is_empty())
+                && graph.incoming.get(id).is_none_or(|v| v.is_empty())
+        })
+    };
+    let mut claim = |r: &'a str, owner: &'a str| {
+        if !owners.contains_key(r)
+            && is_artifact(r)
+            && !is_artifact_type(graph.by_id.get(owner).map_or("", |el| el.type_name()))
+        {
+            owners.insert(r, owner);
+        }
+    };
+    for node in &graph.nodes {
+        let base = node.base();
+        for a in &base.data_input_associations {
+            for r in &a.source_refs {
+                claim(r.as_str(), base.id.as_str());
+            }
+        }
+        for a in &base.data_output_associations {
+            if let Some(t) = &a.target_ref {
+                claim(t.as_str(), base.id.as_str());
+            }
+        }
+    }
+    owners
+}
+
+/// `placeArtifacts`: put each artifact on its activity's centre line, below it
+/// first, above it for a second one (and first when boundary events hang below).
+/// More go beside those, and a taken spot sends the artifact down until clear.
+fn place_artifacts<'a>(
+    graph: &SemanticGraph<'a>,
+    owners: &IndexMap<&'a str, &'a str>,
+    bounds: &mut IndexMap<&'a str, Bounds>,
+) {
+    let mut taken: Vec<Bounds> = bounds.values().copied().collect();
+    let hits = |taken: &[Bounds], b: &Bounds| -> bool {
+        taken.iter().any(|o| {
+            b.x - ARTIFACT_CLEARANCE < o.x + o.width
+                && o.x < b.x + b.width + ARTIFACT_CLEARANCE
+                && b.y - ARTIFACT_CLEARANCE < o.y + o.height
+                && o.y < b.y + b.height + ARTIFACT_CLEARANCE
+        })
+    };
+    for (&r, &owner) in owners {
+        let Some(host) = bounds.get(owner).copied() else {
+            continue;
+        };
+        let size = graph
+            .by_id
+            .get(r)
+            .and_then(|el| element_size(el.type_name()))
+            .unwrap_or(DEFAULT_SIZE);
+        let centre = host.x + host.width / 2.0;
+        let below = host.y + host.height + ARTIFACT_GAP;
+        let above = host.y - ARTIFACT_GAP - size.1;
+        let at = |dx: f64, y: f64| Bounds {
+            x: centre + dx - size.0 / 2.0,
+            y,
+            width: size.0,
+            height: size.1,
+        };
+        let hung = graph.attachers.get(owner).is_some_and(|v| !v.is_empty());
+        let mut candidates = if hung {
+            vec![at(0.0, above), at(0.0, below)]
+        } else {
+            vec![at(0.0, below), at(0.0, above)]
+        };
+        let step = size.0 + ARTIFACT_SPACING;
+        for k in [1.0, 2.0, 3.0] {
+            candidates.push(at(k * step, below));
+            candidates.push(at(-k * step, below));
+        }
+        let mut spot = match candidates.iter().find(|b| !hits(&taken, b)) {
+            Some(b) => *b,
+            None => {
+                let mut s = at(0.0, below);
+                while hits(&taken, &s) {
+                    s.y += 10.0;
+                }
+                s
+            }
+        };
+        spot.width = size.0;
+        bounds.insert(r, spot);
+        taken.push(spot);
+    }
 }

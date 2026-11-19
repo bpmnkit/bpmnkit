@@ -1,5 +1,14 @@
 # Progress
 
+## 2026-11-19 — layout P2 (partial): grid phase, artifacts under their task, label placement
+
+- `bpmn/auto-layout.ts`: `gridPhase` shifts each non-pool process by 0-9 px so the most shape origins land on the 10 px grid (a pure translation: no distance changes, nothing else can regress). Pools are left to P1.
+- `semantic/place.ts`: flow-less data objects/stores wired to one activity are slotted on its centre line (below first, above for a second one or when boundary events hang below, beside after that) instead of a loose column at the bottom. Not applied inside pools (message routing depends on pool sizes), lanes or containers.
+- `semantic/index.ts`: a gateway/event label blocked on every side slides along the stem (up to 60 px) instead of staying on a flow. `grid/edge-labels.ts`: edge labels prefer spots no other flow crosses.
+- Corpus (19 original cases, mean before → after): gridPct 8.7 → 29.2, height 603 → 569, areaPerNode 45.9k → 43.6k, labelCollisions / labelOnEdge 0.16 → 0.05; crossings, bends, through-shapes unchanged. Ratchet: zero regressions. Two invented cases added (`p2-parcel-dispatch`, `p2-seed-order`) with targeted tests in `apps/cli/src/layout-score/p2-rules.test.mjs`.
+- Not done (still open in P2): exception row for boundary handlers, gateway port templates, tight loops, 50 px pitch / content-based gaps, shared columns. Exact centring makes a full grid impossible (event/gateway half-sizes are not multiples of 10).
+- Conformance, golden hashes and the bake-off fixture re-recorded; Rust twin ported.
+
 ## 2026-11-19 — layout P0: full metric set, synthetic corpus, `pnpm layout:score`, ratchet
 
 - `scripts/layout-aesthetics/metrics.mjs`: adds the plan's gate metrics (seq / msg×seq / msg×msg crossings, bends per seq/msg flow, max bends, non-vertical msg %, pool width and left-padding SD, area/node, empty area %, shared centre-x %, 10 px grid %, boundary labels crossed, label×label overlaps).
