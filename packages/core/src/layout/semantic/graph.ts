@@ -30,6 +30,11 @@ export interface SemanticGraph {
 	endReach?: Set<string>
 	/** Nodes of the handlers placed on an exception row by `placeExceptionRow`. */
 	exceptionRow: Set<string>
+	/**
+	 * Stack one-node detours under their sibling target. Off inside pools, where
+	 * message routing depends on the pool's shape, and inside containers.
+	 */
+	stackDetours: boolean
 }
 
 /**
@@ -45,6 +50,8 @@ function effectiveSource(flow: BpmnSequenceFlow, byId: Map<string, BpmnFlowEleme
 export function buildSemanticGraph(
 	flowElements: BpmnFlowElement[],
 	sequenceFlows: BpmnSequenceFlow[],
+	/** Stack one-node detours under their sibling target; see {@link feedsSibling}. */
+	stackDetours = false,
 ): SemanticGraph {
 	const byId = new Map<string, BpmnFlowElement>()
 	for (const el of flowElements) byId.set(el.id, el)
@@ -88,6 +95,7 @@ export function buildSemanticGraph(
 		starts: [],
 		ranks: new Map(),
 		exceptionRow: new Set(),
+		stackDetours,
 	}
 
 	findComponents(graph)
@@ -180,6 +188,37 @@ function sharesRank(graph: SemanticGraph, flow: BpmnSequenceFlow): boolean {
 	return isJoin(graph, source.id) && isJoin(graph, target.id)
 }
 
+/**
+ * A one-node detour of a split that leads straight into the split's other
+ * target (order pigment, then mix paint) shares that target's column: it is
+ * stacked under (or over) it and flows in vertically, instead of pushing the
+ * target and everything after it one column right. True for the detour's
+ * flow into that target.
+ */
+function feedsSibling(graph: SemanticGraph, flow: BpmnSequenceFlow): boolean {
+	if (!graph.stackDetours) return false
+	const into = graph.incoming.get(flow.sourceRef) ?? []
+	const out = graph.outgoing.get(flow.sourceRef) ?? []
+	if (into.length !== 1 || out.length !== 1) return false
+	const split = into[0] as BpmnSequenceFlow
+	if (graph.byId.get(split.sourceRef)?.type === "boundaryEvent") return false
+	if (graph.backEdges.has(split.id) || graph.backEdges.has(flow.id)) return false
+	return (graph.outgoing.get(split.sourceRef) ?? []).some(
+		(f) => f.targetRef === flow.targetRef && f !== split && !graph.backEdges.has(f.id),
+	)
+}
+
+/** True when `id` is a detour stacked under its sibling target (see {@link feedsSibling}). */
+export function isDetour(graph: SemanticGraph, id: string): boolean {
+	const out = graph.outgoing.get(id) ?? []
+	return out.length === 1 && feedsSibling(graph, out[0] as BpmnSequenceFlow)
+}
+
+/** True when `flow` enters a detour that {@link feedsSibling}: the spine takes the sibling instead. */
+export function entersDetour(graph: SemanticGraph, flow: BpmnSequenceFlow): boolean {
+	return isDetour(graph, flow.targetRef)
+}
+
 interface HandlerEntry {
 	host: string
 	/** The side the event docks on: -1 top, 1 bottom. Handlers on one side share a row. */
@@ -247,7 +286,8 @@ function assignRanks(graph: SemanticGraph, steps: ReadonlyMap<string, number> = 
 		for (const node of graph.nodes) {
 			const rank = ranks.get(node.id) ?? 0
 			for (const flow of forward(node.id)) {
-				const step = sharesRank(graph, flow) ? 0 : (steps.get(flow.id) ?? 1)
+				const step =
+					sharesRank(graph, flow) || feedsSibling(graph, flow) ? 0 : (steps.get(flow.id) ?? 1)
 				const target = ranks.get(flow.targetRef) ?? 0
 				if (target < rank + step) {
 					ranks.set(flow.targetRef, rank + step)

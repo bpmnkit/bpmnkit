@@ -13,7 +13,7 @@ import {
 	LABEL_VERTICAL_OFFSET,
 } from "../types.js"
 import { type BandLayout, boundarySide } from "./bands.js"
-import type { SemanticGraph } from "./graph.js"
+import { type SemanticGraph, isDetour } from "./graph.js"
 
 /**
  * Geometry constants. Layout may add space beyond these; it never takes any back.
@@ -22,6 +22,8 @@ import type { SemanticGraph } from "./graph.js"
  */
 export const H_GAP = 60
 export const V_GAP = 60
+/** Gap above a row of stacked detours (see `isDetour`): tasks on a 120 px pitch. */
+const DETOUR_GAP = 40
 /**
  * Gap beside a column holding an expanded container. The container's border,
  * its title and the notes on its children crowd that gap, so it keeps more air.
@@ -378,10 +380,14 @@ function bandLines(
 		let previous = 0
 		for (const band of list) {
 			const wide = span(band)
+			const members = byBand.get(band) ?? []
+			// A row of stacked detours only carries short vertical flows into the
+			// row beside it: a 120 px row pitch for tasks, as hand layouts use.
+			const gap = members.every((id) => isDetour(graph, id)) ? DETOUR_GAP : V_GAP
 			let y = previous + dir
 			for (const box of placed) {
 				if (xOverlap(box, wide)) {
-					y = dir === 1 ? Math.max(y, box.bottom + V_GAP) : Math.min(y, box.top - V_GAP)
+					y = dir === 1 ? Math.max(y, box.bottom + gap) : Math.min(y, box.top - gap)
 				}
 				for (const id of byBand.get(band) ?? []) {
 					const b = xOf(id)
@@ -390,13 +396,13 @@ function bandLines(
 					if (!xOverlap(box, reach)) continue
 					y =
 						dir === 1
-							? Math.max(y, box.bottom + V_GAP + e.above)
-							: Math.min(y, box.top - V_GAP - e.below)
+							? Math.max(y, box.bottom + gap + e.above)
+							: Math.min(y, box.top - gap - e.below)
 				}
 			}
-			// A row of nothing but exception handlers keeps the spine's 10 px phase,
-			// so its tasks share the main row's grid.
-			if ((byBand.get(band) ?? []).every((id) => graph.exceptionRow.has(id)))
+			// A row of nothing but exception handlers or stacked detours keeps the
+			// spine's 10 px phase, so its tasks share the main row's grid.
+			if (members.every((id) => graph.exceptionRow.has(id) || isDetour(graph, id)))
 				y = dir * Math.ceil(Math.abs(y) / ROW_GRID) * ROW_GRID
 			place(band, y)
 			previous = y

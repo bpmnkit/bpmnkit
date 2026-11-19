@@ -82,3 +82,22 @@ it("drops each boundary handler straight down into one shared row", async () => 
 	expect(Math.abs(centreY(delay) - centreY(notify))).toBeLessThan(1)
 	expect(centreX(delay)).toBeGreaterThan(centreX(refused))
 })
+
+// P2: shared columns — a branch that only detours into its sibling target is
+// stacked under it in one column, not shifted a layer right.
+it("stacks a detour branch under the sibling target it feeds", async () => {
+	const { defs, shape, plane, metrics } = await lay("p2-paint-order")
+	// The text compiler merges the two ways into Mix paint with a join gateway.
+	const flow = defs.processes[0].sequenceFlows.find((f) => f.sourceRef === "orderPigment")
+	const into = shape(flow.targetRef)
+	const pigment = shape("orderPigment")
+	const mix = shape("mixPaint")
+	expect(Math.abs(centreX(pigment) - centreX(into))).toBeLessThan(1)
+	expect(pigment.y).toBeGreaterThan(into.y + into.height)
+	// Mix paint follows the split directly, one column after the join.
+	expect(mix.x - (into.x + into.width)).toBeLessThan(100)
+	const edge = plane.edges.find((e) => e.bpmnElement === flow.id)
+	expect(edge.waypoints.length).toBe(2)
+	expect(metrics.shapeOverlaps).toBe(0)
+	expect(metrics.seqCrossings).toBe(0)
+})

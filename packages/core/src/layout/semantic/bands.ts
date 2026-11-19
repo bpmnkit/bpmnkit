@@ -1,6 +1,6 @@
 import type { BpmnBoundaryEvent, BpmnFlowElement, BpmnSequenceFlow } from "../../bpmn/bpmn-model.js"
 import type { SemanticGraph } from "./graph.js"
-import { reachesEnd } from "./graph.js"
+import { entersDetour, reachesEnd } from "./graph.js"
 
 /**
  * Vertical narrative roles for one process scope.
@@ -243,11 +243,17 @@ function traceSpine(
 			// narrative — it only continues the spine if nothing else can.
 			handler: flow.sourceRef === current ? 0 : 1,
 			ends: reachesEnd(graph, flow.targetRef) ? 0 : 1,
+			// A detour stacked under its sibling target is a side trip, not the narrative.
+			detour: entersDetour(graph, flow) ? 1 : 0,
 			isDefault: isDefaultFlow(source, flow) ? 0 : 1,
 		}))
 		scored.sort(
 			(a, b) =>
-				a.handler - b.handler || a.ends - b.ends || a.isDefault - b.isDefault || a.index - b.index,
+				a.handler - b.handler ||
+				a.ends - b.ends ||
+				a.detour - b.detour ||
+				a.isDefault - b.isDefault ||
+				a.index - b.index,
 		)
 
 		const next = scored[0]

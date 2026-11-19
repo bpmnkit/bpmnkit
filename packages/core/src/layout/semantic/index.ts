@@ -78,7 +78,7 @@ export function semanticLayout(
 ): LayoutResult {
 	if (flowElements.length === 0) return { nodes: [], edges: [] }
 
-	const graph = buildSemanticGraph(flowElements, sequenceFlows)
+	const graph = buildSemanticGraph(flowElements, sequenceFlows, slotArtifacts)
 
 	// Children first: an expanded sub-process is sized by what it contains, while
 	// a collapsed one stays activity-sized and its contents move to their own plane.
