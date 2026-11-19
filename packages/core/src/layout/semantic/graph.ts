@@ -245,10 +245,21 @@ function handlerEntries(
 					(graph.incoming.get(f.targetRef) ?? []).length === 1,
 			)
 			if (flows.length === 0) continue
+			// A rework loop (handler leads back to an earlier merge) is no exception
+			// path: its back edge routes below the diagram anyway, so a row of its
+			// own would only push the other branches down.
+			if (flows.some((f) => loopsBack(graph, f.targetRef))) continue
 			entries.push({ host, side: sideOf(event, host), flows })
 		}
 	}
 	return entries
+}
+
+/** True when the handler chain starting at `entry` leaves through a back edge. */
+function loopsBack(graph: SemanticGraph, entry: string): boolean {
+	for (const id of chainOf(graph, entry))
+		if ((graph.outgoing.get(id) ?? []).some((f) => graph.backEdges.has(f.id))) return true
+	return false
 }
 
 /** The nodes only `entry` leads to: it, and successors reached from nowhere else. */

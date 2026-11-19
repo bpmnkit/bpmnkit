@@ -1,5 +1,12 @@
 # Progress
 
+## 2026-11-19 — layout P2c: rework-loop boundary handlers stay out of the exception row
+
+- Cause: P2b's `placeExceptionRow` treated any single-entry boundary handler as an exception path, including a handler that loops back to an earlier merge gateway (rework loop). It got its own row, the lower branches moved down ~30 px and the spine bent (`p2-timesheet-approval`: height 266 → 299, happyAxisDev 57 → 70).
+- Fix (`semantic/graph.ts` `handlerEntries` + `loopsBack`, Rust twin in `semantic/graph.rs`): a handler whose chain leaves through a back edge is not an exception-row entry; it keeps the pre-P2b placement. All other corpus cases unchanged.
+- Corpus: `p2-timesheet-approval` (error boundary → back to merge), `p2-expense-rework` (error boundary), `p2-lab-retest` (timer boundary). Baseline entries are the 4fc4cf29 values (measured on that commit's `packages/core/src`), so the ratchet guards them; all three now equal them (height 266, happyAxisDev 57 / 62 / 65). Test in `p2-rules.test.mjs`. Ratchet: zero regressions; conformance unchanged; cargo fmt/clippy/test green.
+- No Rust oracle fixture for the new cases (oracles are conformance-based); parity is by construction of the same predicate.
+
 ## 2026-11-19 — layout P2b (TS): exception row, shared columns, join port, pooled grid phase
 
 - Exception row: a boundary handler starts in its host's column and drops straight down (0 bends) onto a row shared by the spine's handlers; a second event on one host fans one column right. Falls back to the old step when the column is taken; scopes without lanes only.

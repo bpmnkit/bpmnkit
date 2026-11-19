@@ -155,3 +155,18 @@ it("puts pooled content on the 10 px grid without moving any pool frame", async 
 	expect(metrics.labelOnEdge).toBe(0)
 	for (const id of ["Pool_customer", "Pool_tailor"]) expect(shape(id).x % 10).toBe(0)
 })
+
+// P2c: a boundary handler that loops back to an earlier merge is a rework
+// loop, not an exception path: no exception row, no extra height, straight spine.
+it("keeps rework-loop boundary handlers out of the exception row", async () => {
+	for (const [name, maxHeight, maxAxisDev] of [
+		["p2-timesheet-approval", 266, 57],
+		["p2-expense-rework", 266, 62],
+		["p2-lab-retest", 266, 65],
+	]) {
+		const { metrics } = await lay(name)
+		expect(metrics.height, name).toBeLessThanOrEqual(maxHeight)
+		expect(metrics.happyAxisDev, name).toBeLessThanOrEqual(maxAxisDev)
+		expect(metrics.seqCrossings, name).toBe(0)
+	}
+})
