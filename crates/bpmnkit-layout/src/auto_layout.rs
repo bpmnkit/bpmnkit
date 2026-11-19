@@ -2,6 +2,7 @@
 
 use crate::annotations::{association_waypoints, pack_annotations};
 use crate::collaboration::alignment::{align_pools, MessageLink};
+use crate::collaboration::crossings::path_crossings;
 use crate::collaboration::docked_labels::{flip_docked_labels, MessageDock};
 use crate::collaboration::message_labels::{place_message_flow_labels, MessageLabelInput};
 use crate::collaboration::message_tracks::{assign_tracks, GapRun};
@@ -924,6 +925,7 @@ fn message_flow_leg(
     }
 }
 
+#[derive(Clone)]
 struct MessageRoute {
     source: Vec<BpmnWaypoint>,
     target: Vec<BpmnWaypoint>,
@@ -949,6 +951,7 @@ fn message_flow_route(
     stem_offset: f64,
     containers: &[&BpmnBounds],
     labels: &[&BpmnBounds],
+    snap: bool,
 ) -> MessageRoute {
     let src_below = src.y + src.height / 2.0 > tgt.y + tgt.height / 2.0;
     let sy = if src_below { src.y } else { src.y + src.height };
@@ -972,7 +975,7 @@ fn message_flow_route(
     let centre_x = js::round(tgt.x + tgt.width / 2.0);
     // Centres a rounding apart are meant to line up: a 1 px jog would cost the
     // message two bends for nothing.
-    let tgt_x = if (centre_x - src_x).abs() <= 1.0 {
+    let tgt_x = if snap && (centre_x - src_x).abs() <= 1.0 {
         src_x
     } else {
         centre_x
@@ -1032,6 +1035,14 @@ fn message_flow_route(
         target: route.target,
         gap: fallback.map(|c| c.0 as i64).unwrap_or(-1),
     }
+}
+
+/// `sameRoute(a, b)`: two routes of one message flow that draw the same line.
+fn same_route(a: &MessageRoute, b: &MessageRoute) -> bool {
+    let same = |p: &[BpmnWaypoint], q: &[BpmnWaypoint]| {
+        p.len() == q.len() && p.iter().zip(q).all(|(w, v)| w.x == v.x && w.y == v.y)
+    };
+    a.gap == b.gap && same(&a.source, &b.source) && same(&a.target, &b.target)
 }
 
 /// `uniformPoolFrame(shapes, collab, defs)`: give every pool the width of the widest,
@@ -1333,15 +1344,6 @@ fn ancestor_index<'a>(
     }
 
     parents
-}
-
-struct Run {
-    id: String,
-    from: String,
-    to: String,
-    source: Vec<BpmnWaypoint>,
-    target: Vec<BpmnWaypoint>,
-    gap: i64,
 }
 
 struct RootPlane {
@@ -1822,6 +1824,7 @@ fn laid_out_diagrams(
     if let Some(collab) = collab {
         uniform_pool_frame(&mut all_shapes, collab, defs);
     }
+    let repair = RouteRepair::new(defs);
 
     if let Some(collab) = collab.filter(|c| !c.message_flows.is_empty()) {
         let mut shape_by_element: FxIndexMap<&str, &BpmnBounds> =
@@ -1871,7 +1874,16 @@ fn laid_out_diagrams(
             .collect();
         let pool_gaps = pool_bands(&all_shapes, &participant_ids);
 
-        let mut runs: Vec<Run> = Vec::new();
+        // Each message flow routed twice: `tidy` lines up docks a rounding apart
+        // and nudges a riser off element labels; `plain` does neither.
+        struct Candidate {
+            id: String,
+            from: String,
+            to: String,
+            tidy: MessageRoute,
+            plain: MessageRoute,
+        }
+        let mut candidates: Vec<Candidate> = Vec::new();
 
         // Bounds of every expanded scope an element sits inside.
         let containers_of = |id: &str| -> Vec<&BpmnBounds> {
@@ -1907,96 +1919,163 @@ fn laid_out_diagrams(
             ) else {
                 continue;
             };
-            let mut containers = containers_of(&source_ref);
-            containers.extend(containers_of(&target_ref));
-            containers.extend(label_of(&source_ref));
-            containers.extend(label_of(&target_ref));
-            let route = message_flow_route(
-                src,
-                tgt,
-                participant_ids.contains(source_ref.as_str()),
-                participant_ids.contains(target_ref.as_str()),
-                &pool_gaps,
-                &obstacles,
-                stem_offset,
-                &containers,
-                &labels,
-            );
-            runs.push(Run {
+            let route = |tidy: bool| -> MessageRoute {
+                let mut containers = containers_of(&source_ref);
+                containers.extend(containers_of(&target_ref));
+                if tidy {
+                    containers.extend(label_of(&source_ref));
+                    containers.extend(label_of(&target_ref));
+                }
+                message_flow_route(
+                    src,
+                    tgt,
+                    participant_ids.contains(source_ref.as_str()),
+                    participant_ids.contains(target_ref.as_str()),
+                    &pool_gaps,
+                    &obstacles,
+                    stem_offset,
+                    &containers,
+                    if tidy { &labels } else { &[] },
+                    tidy,
+                )
+            };
+            candidates.push(Candidate {
                 id: mf.id.clone(),
                 from: source_ref.clone(),
                 to: target_ref.clone(),
-                source: route.source,
-                target: route.target,
-                gap: route.gap,
+                tidy: route(true),
+                plain: route(false),
             });
             stem_offset = (stem_offset + MESSAGE_FLOW_STEM_STEP) % (MESSAGE_FLOW_STEM_STEP * 4.0);
         }
 
-        // Flows sharing a gap get their own line inside it, so parallel runs do not
-        // pile onto one row and cross every other flow's riser.
-        let mut per_gap: IndexMap<i64, Vec<usize>> = IndexMap::new();
-        for (i, run) in runs.iter().enumerate() {
-            per_gap.entry(run.gap).or_default().push(i);
-        }
-
         let end_x = |points: &[BpmnWaypoint]| -> f64 { points.last().map(|p| p.x).unwrap_or(0.0) };
-        for (index, list) in per_gap.iter_mut() {
-            let Some(gap) = usize::try_from(*index).ok().and_then(|i| pool_gaps.get(i)) else {
-                continue;
-            };
-            // The gap is clear ground, so moving the crossing inside it cannot
-            // introduce a collision; the track order decides the crossings.
-            let from_above =
-                |run: &Run| -> bool { run.source.first().map_or(0.0, |p| p.y) < gap.top };
-            let ys = assign_tracks(
-                &list
-                    .iter()
-                    .map(|&i| {
-                        let run = &runs[i];
-                        if from_above(run) {
-                            GapRun {
-                                upper: end_x(&run.source),
-                                lower: end_x(&run.target),
-                            }
-                        } else {
-                            GapRun {
-                                upper: end_x(&run.target),
-                                lower: end_x(&run.source),
-                            }
-                        }
-                    })
-                    .collect::<Vec<_>>(),
-                gap.top,
-                gap.bottom,
-            );
-            for (i, run_index) in list.iter().enumerate() {
-                let Some(y) = ys.get(i).copied().flatten() else {
+        // The finished waypoints of every message flow, tidy where `tidy[i]`.
+        let place = |tidy: &[bool]| -> Vec<Vec<Waypoint>> {
+            let mut runs: Vec<MessageRoute> = candidates
+                .iter()
+                .zip(tidy)
+                .map(|(c, &t)| if t { c.tidy.clone() } else { c.plain.clone() })
+                .collect();
+            // Flows sharing a gap get their own line inside it, so parallel runs do
+            // not pile onto one row and cross every other flow's riser.
+            let mut per_gap: IndexMap<i64, Vec<usize>> = IndexMap::new();
+            for (i, run) in runs.iter().enumerate() {
+                per_gap.entry(run.gap).or_default().push(i);
+            }
+            for (index, list) in per_gap.iter() {
+                let Some(gap) = usize::try_from(*index).ok().and_then(|i| pool_gaps.get(i)) else {
                     continue;
                 };
-                let run = &mut runs[*run_index];
-                if let Some(last) = run.source.last_mut() {
-                    last.y = y;
+                // The gap is clear ground, so moving the crossing inside it cannot
+                // introduce a collision; the track order decides the crossings.
+                let from_above = |run: &MessageRoute| -> bool {
+                    run.source.first().map_or(0.0, |p| p.y) < gap.top
+                };
+                let ys = assign_tracks(
+                    &list
+                        .iter()
+                        .map(|&i| {
+                            let run = &runs[i];
+                            if from_above(run) {
+                                GapRun {
+                                    upper: end_x(&run.source),
+                                    lower: end_x(&run.target),
+                                }
+                            } else {
+                                GapRun {
+                                    upper: end_x(&run.target),
+                                    lower: end_x(&run.source),
+                                }
+                            }
+                        })
+                        .collect::<Vec<_>>(),
+                    gap.top,
+                    gap.bottom,
+                );
+                for (i, run_index) in list.iter().enumerate() {
+                    let Some(y) = ys.get(i).copied().flatten() else {
+                        continue;
+                    };
+                    let run = &mut runs[*run_index];
+                    if let Some(last) = run.source.last_mut() {
+                        last.y = y;
+                    }
+                    if let Some(last) = run.target.last_mut() {
+                        last.y = y;
+                    }
                 }
-                if let Some(last) = run.target.last_mut() {
-                    last.y = y;
+            }
+            runs.iter()
+                .map(|run| {
+                    let mut pts: Vec<Waypoint> = run
+                        .source
+                        .iter()
+                        .map(|p| Waypoint { x: p.x, y: p.y })
+                        .collect();
+                    pts.extend(run.target.iter().rev().map(|p| Waypoint { x: p.x, y: p.y }));
+                    collapse_collinear(&pts)
+                })
+                .collect()
+        };
+
+        // Start from the plain routes and take each tidy one that adds no
+        // crossing with the other messages or the flows already drawn, so the
+        // tidying can never cost a crossing. Scored after route repair, which
+        // reroutes a message still running through a shape.
+        let crossings_of = |paths: &[Vec<Waypoint>]| -> usize {
+            let drawn: Vec<BpmnDiEdge> = all_edges.clone();
+            let messages: Vec<BpmnDiEdge> = candidates
+                .iter()
+                .zip(paths)
+                .map(|(c, p)| new_edge(&c.id, p.iter().map(|w| wp(w.x, w.y)).collect()))
+                .collect();
+            let mut all: Vec<BpmnDiEdge> = drawn;
+            let drawn_len = all.len();
+            all.extend(messages);
+            repair.apply(&all_shapes, &mut all);
+            let as_points = |e: &BpmnDiEdge| -> Vec<Waypoint> {
+                e.waypoints
+                    .iter()
+                    .map(|w| Waypoint { x: w.x, y: w.y })
+                    .collect()
+            };
+            let (drawn, messages) = all.split_at(drawn_len);
+            let drawn: Vec<Vec<Waypoint>> = drawn.iter().map(as_points).collect();
+            let messages: Vec<Vec<Waypoint>> = messages.iter().map(as_points).collect();
+            let mut n = 0;
+            for (i, path) in messages.iter().enumerate() {
+                for other in &messages[i + 1..] {
+                    n += path_crossings(path, other);
                 }
+                for other in &drawn {
+                    n += path_crossings(path, other);
+                }
+            }
+            n
+        };
+        let mut tidy: Vec<bool> = vec![false; candidates.len()];
+        let mut paths = place(&tidy);
+        let mut best = crossings_of(&paths);
+        for (i, c) in candidates.iter().enumerate() {
+            if same_route(&c.tidy, &c.plain) {
+                continue;
+            }
+            tidy[i] = true;
+            let trial = place(&tidy);
+            let n = crossings_of(&trial);
+            if n <= best {
+                best = n;
+                paths = trial;
+            } else {
+                tidy[i] = false;
             }
         }
 
         let mut flow_edges = Vec::new();
         let mut docks: Vec<MessageDock> = Vec::new();
-        for run in &runs {
-            let mut pts: Vec<Waypoint> = run
-                .source
-                .iter()
-                .map(|p| Waypoint { x: p.x, y: p.y })
-                .collect();
-            pts.extend(run.target.iter().rev().map(|p| Waypoint { x: p.x, y: p.y }));
-            let waypoints: Vec<BpmnWaypoint> = collapse_collinear(&pts)
-                .into_iter()
-                .map(|p| wp(p.x, p.y))
-                .collect();
+        for (run, points) in candidates.iter().zip(&paths) {
+            let waypoints: Vec<BpmnWaypoint> = points.iter().map(|p| wp(p.x, p.y)).collect();
             docks.push(MessageDock {
                 element: run.from.clone(),
                 y: waypoints.first().map_or(0.0, |p| p.y),
@@ -2022,7 +2101,6 @@ fn laid_out_diagrams(
         flip_docked_labels(&mut all_shapes, &all_edges, &docks, &flip_containers);
     }
 
-    let repair = RouteRepair::new(defs);
     repair.apply(&all_shapes, &mut all_edges);
     if let Some(collab) = collab.filter(|c| !c.message_flows.is_empty()) {
         let pools: HashSet<String> = collab.participants.iter().map(|p| p.id.clone()).collect();
