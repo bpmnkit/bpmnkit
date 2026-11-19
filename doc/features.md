@@ -1,5 +1,9 @@
 # Features
 
+## Lane layout: hand-overs, lane order, edit path (2026-11-19)
+
+Flat lane sets are laid out with straight vertical hand-overs between adjacent lanes, the cheapest lane order, per-lane compaction and tight lane padding, each kept only when it is no worse than the previous layout in every term (see `semantic/lanes.ts`). `makeRoom` moves successors that sit under the insertion point and `placeNewShapes` places new tasks inside laned pools. `engine: "grid"` and `layoutFlowNodes` are unchanged.
+
 ## Layered auto-layout engine, opt-in (2026-11-19)
 
 `applyAutoLayout(defs, "layered")` (and `layoutProcess(process, "layered")`, Rust `LayoutEngine::Layered`) runs a Sugiyama-style placement on every lane-free scope: declaration-order-independent cycle breaking (DFS back edges), longest-path columns with a network-simplex pull, dummy nodes for long flows, median sweeps with transpose, Brandes–Köpf centre lines (the variant whose flows route with the fewest bends wins) and orthogonal routing with one track per jog in each gutter, ordered to avoid crossings; loops run in corridors past both ends, the A* router is the fallback. P2's rules are layering constraints: a one-node detour stacks under the split's other target, a boundary handler drops straight under its host. Labels, boundary docking, artifacts, sub-processes and collaboration composition are shared with `semantic`; scopes with lanes and packed tool grids stay semantic. Collaborations keep the layered composition unless it crosses more message flows than the semantic one. `pnpm layout:score --engine layered` scores it against its own baseline (`doc/layout-aesthetics/baseline-layered.json`). The default stays `semantic`.

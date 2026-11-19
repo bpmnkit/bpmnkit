@@ -3,5 +3,7 @@ export default (kit, model) =>
 		.insertAfter("scanLabel")
 		.exclusiveGateway("tooBig", { name: "Too big?" })
 		.branch("Yes", (b) =>
-			b.userTask("labelOversize", { name: "Label oversize" }).userTask("moveToYard", { name: "Move to yard" }),
+			b
+				.userTask("labelOversize", { name: "Label oversize" })
+				.userTask("moveToYard", { name: "Move to yard" }),
 		)

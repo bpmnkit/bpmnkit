@@ -38,6 +38,8 @@ pub struct SemanticGraph<'a> {
     /// Stack one-node detours under their sibling target. Off inside pools, where
     /// message routing depends on the pool's shape, and inside containers.
     pub stack_detours: bool,
+    /// Ids of flows between adjacent lanes that share their source's column; see `lane_handoffs`.
+    pub handoffs: IndexSet<&'a str>,
 }
 
 /// `effectiveSource(flow, byId)`: a flow out of a boundary event belongs to the
@@ -110,6 +112,7 @@ pub fn build_semantic_graph<'a>(
         end_reach: RefCell::new(None),
         exception_row: IndexSet::default(),
         stack_detours,
+        handoffs: IndexSet::default(),
     };
 
     find_components(&mut graph);
@@ -413,7 +416,7 @@ fn chain_of<'a>(graph: &SemanticGraph<'a>, entry: &'a str) -> IndexSet<&'a str> 
 /// `assignRanks`: longest-path ranks over the acyclic remainder. `steps`
 /// overrides the one-rank step of individual flows. Ranks are reset in place, as
 /// the TS does, so keys of non-node targets keep their earlier values.
-fn assign_ranks<'a>(graph: &mut SemanticGraph<'a>, steps: &IndexMap<&str, i64>) {
+pub fn assign_ranks<'a>(graph: &mut SemanticGraph<'a>, steps: &IndexMap<&str, i64>) {
     let mut ranks: IndexMap<&'a str, i64> = std::mem::take(&mut graph.ranks);
     for node in &graph.nodes {
         ranks.insert(&node.base().id, 0);
@@ -443,7 +446,10 @@ fn assign_ranks<'a>(graph: &mut SemanticGraph<'a>, steps: &IndexMap<&str, i64>) 
                 if graph.back_edges.contains(flow.id.as_str()) {
                     continue;
                 }
-                let step = if shares_rank(graph, flow) || feeds_sibling(graph, flow) {
+                let step = if shares_rank(graph, flow)
+                    || feeds_sibling(graph, flow)
+                    || graph.handoffs.contains(flow.id.as_str())
+                {
                     0
                 } else {
                     steps.get(flow.id.as_str()).copied().unwrap_or(1)

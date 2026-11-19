@@ -2,6 +2,7 @@
 
 use super::bands::{boundary_side, BandLayout};
 use super::graph::{is_detour, SemanticGraph};
+use super::lanes::leaf_lanes;
 use crate::hash::{IndexMap, IndexSet};
 use crate::js::cmp_num;
 use crate::types::{
@@ -34,6 +35,9 @@ pub const BOUNDARY_SIZE: f64 = 36.0;
 const BOUNDARY_CLEARANCE: f64 = 4.0;
 /// Height of a lane band with nothing in it: room for one boundary-sized row.
 pub const MIN_LANE_HEIGHT: f64 = 2.0 * LANE_PADDING + BOUNDARY_SIZE;
+
+/// Vertical lane padding when lanes hand over in a shared column: 2 x 30 + 80 puts rows 140 apart, a 60 px flow.
+const HAND_OVER_PADDING: f64 = 30.0;
 
 const DEFAULT_SIZE: (f64, f64) = (100.0, 80.0);
 
@@ -112,6 +116,16 @@ struct XSpan {
 /// `titled` are hosts whose title is drawn along their top border. `grid` is the
 /// shape of the `pack_loose` grid. `axes`: for expanded containers with a flow
 /// inside, the distance from the container's top to its inner spine.
+#[derive(Debug, Clone, Default)]
+pub struct LaneOptions {
+    /// Leaf lane ids top to bottom (default: declared order).
+    pub order: Option<Vec<String>>,
+    /// Pull off-row nodes up onto earlier rows of their lane.
+    pub compact: bool,
+    /// Nodes of different lanes never push each other down a row.
+    pub by_lane: bool,
+}
+
 #[allow(clippy::too_many_arguments)]
 pub fn place<'a>(
     graph: &SemanticGraph<'a>,
@@ -123,6 +137,8 @@ pub fn place<'a>(
     grid: Option<&GridHint>,
     axes: &IndexMap<&str, f64>,
     slot_artifacts: bool,
+    // Lane refinements; default lays lanes out the way they always were.
+    lane_opts: &LaneOptions,
 ) -> Placement<'a> {
     let mut bounds: IndexMap<&'a str, Bounds> =
         IndexMap::with_capacity_and_hasher(graph.by_id.len(), Default::default());
@@ -239,9 +255,13 @@ pub fn place<'a>(
         cursor_y = bottom + dy + COMPONENT_GAP;
     }
 
-    separate_same_cell(graph, band_layout, &mut bounds);
+    let leaf_of = match lane_set {
+        Some(ls) if lane_opts.by_lane => Some(leaf_lanes(ls).leaf_of),
+        _ => None,
+    };
+    separate_same_cell(graph, band_layout, &mut bounds, leaf_of.as_ref());
     let lanes = match lane_set {
-        Some(ls) => apply_lanes(graph, ls, &mut bounds),
+        Some(ls) => apply_lanes(graph, ls, &mut bounds, lane_opts),
         None => Vec::new(),
     };
     dock_boundary_events(graph, &mut bounds, titled);
@@ -652,6 +672,8 @@ fn separate_same_cell(
     graph: &SemanticGraph,
     band_layout: &BandLayout,
     bounds: &mut IndexMap<&str, Bounds>,
+    // Nodes in different lanes never share a row, so a hand-over column needs no push.
+    leaf_of: Option<&IndexMap<&str, &str>>,
 ) {
     let mut component_of: IndexMap<&str, usize> = IndexMap::default();
     for (i, comp) in graph.components.iter().enumerate() {
@@ -666,13 +688,14 @@ fn separate_same_cell(
     // the same key.
     // Cells in order of first appearance, each node's cell, and a counting sort
     // into one list: the per-cell id lists without a list per cell.
-    let mut cells: IndexMap<(usize, i64, i64), usize> = IndexMap::default();
+    let mut cells: IndexMap<(usize, i64, i64, &str), usize> = IndexMap::default();
     let mut cell_of: Vec<usize> = Vec::with_capacity(graph.nodes.len());
     for node in &graph.nodes {
         let id = node.base().id.as_str();
         let rank = graph.ranks.get(id).copied().unwrap_or(0);
         let band = band_layout.bands.get(id).copied().unwrap_or(0);
-        let key = (component_of.get(id).copied().unwrap_or(0), rank, band);
+        let lane = leaf_of.and_then(|m| m.get(id).copied()).unwrap_or("");
+        let key = (component_of.get(id).copied().unwrap_or(0), rank, band, lane);
         let next = cells.len();
         cell_of.push(*cells.entry(key).or_insert(next));
     }
@@ -705,6 +728,110 @@ fn separate_same_cell(
             };
             b.y += offset;
             offset += b.height + V_GAP;
+        }
+    }
+}
+
+/// `compactLane`: pull a lane's off-row nodes up onto an earlier row of the same
+/// lane when that row has room at their column and no flow between its own nodes
+/// runs through it. Only nodes whose lane neighbours are all on the target row
+/// (or that have none) move: a node never leaves its chain.
+fn compact_lane(graph: &SemanticGraph, ids: &[&str], bounds: &mut IndexMap<&str, Bounds>) {
+    let flow_nodes: Vec<&str> = ids
+        .iter()
+        .copied()
+        .filter(|id| graph.by_id.contains_key(id) && bounds.contains_key(id))
+        .collect();
+    if flow_nodes.len() < 2
+        || flow_nodes.iter().any(|id| {
+            graph
+                .by_id
+                .get(id)
+                .is_some_and(|el| el.type_name().starts_with("data"))
+        })
+    {
+        return;
+    }
+    let in_lane: IndexSet<&str> = flow_nodes.iter().copied().collect();
+    let centre_y = |bounds: &IndexMap<&str, Bounds>, id: &str| -> f64 {
+        let b = &bounds[id];
+        b.y + b.height / 2.0
+    };
+    let mut row_of: IndexMap<&str, f64> = IndexMap::default();
+    for id in &flow_nodes {
+        row_of.insert(id, centre_y(bounds, id));
+    }
+    let mut rows: Vec<f64> = row_of.values().copied().collect();
+    rows.sort_by(|a, b| cmp_num(*a, *b));
+    rows.dedup();
+    if rows.len() < 2 {
+        return;
+    }
+    let neighbours = |id: &str| -> Vec<&str> {
+        let out = graph
+            .outgoing
+            .get(id)
+            .into_iter()
+            .flatten()
+            .map(|f| f.target_ref.as_str());
+        let inc = graph
+            .incoming
+            .get(id)
+            .into_iter()
+            .flatten()
+            .map(|f| f.source_ref.as_str());
+        out.chain(inc)
+            .filter(|n| in_lane.contains(n) && *n != id)
+            .collect()
+    };
+    let members = |row_of: &IndexMap<&str, f64>, row: f64| -> Vec<&str> {
+        flow_nodes
+            .iter()
+            .copied()
+            .filter(|id| row_of.get(id).copied() == Some(row))
+            .collect()
+    };
+    let fits = |bounds: &IndexMap<&str, Bounds>, row_of: &IndexMap<&str, f64>, id: &str, row: f64| {
+        let b = &bounds[id];
+        let on = members(row_of, row);
+        for m in &on {
+            let o = &bounds[m];
+            if b.x - H_GAP < o.x + o.width && o.x - H_GAP < b.x + b.width {
+                return false;
+            }
+        }
+        for f in graph.outgoing.values().flatten() {
+            if !on.contains(&f.source_ref.as_str()) || !on.contains(&f.target_ref.as_str()) {
+                continue;
+            }
+            let from = &bounds[f.source_ref.as_str()];
+            let to = &bounds[f.target_ref.as_str()];
+            let left = from.x.min(to.x);
+            let right = (from.x + from.width).max(to.x + to.width);
+            if b.x < right && b.x + b.width > left {
+                return false;
+            }
+        }
+        true
+    };
+    for &row in &rows[1..] {
+        for id in members(&row_of, row) {
+            let near = neighbours(id);
+            for &target in &rows {
+                if target >= row {
+                    break;
+                }
+                if near.iter().any(|n| row_of.get(n).copied() != Some(target))
+                    || !fits(bounds, &row_of, id, target)
+                {
+                    continue;
+                }
+                if let Some(b) = bounds.get_mut(id) {
+                    b.y += target - row;
+                }
+                row_of.insert(id, target);
+                break;
+            }
         }
     }
 }
@@ -841,6 +968,7 @@ fn apply_lanes(
     graph: &SemanticGraph,
     lane_set: &BpmnLaneSet,
     bounds: &mut IndexMap<&str, Bounds>,
+    opts: &LaneOptions,
 ) -> Vec<LaneBand> {
     let tree = lane_tree(lane_set, 0);
     if tree.is_empty() {
@@ -849,6 +977,19 @@ fn apply_lanes(
 
     let mut leaves: Vec<&LaneNode> = Vec::new();
     collect_leaves(&tree, &mut leaves);
+    if let Some(order) = &opts.order {
+        if order.len() == leaves.len() {
+            let mut by_id: IndexMap<&str, &LaneNode> = IndexMap::default();
+            for l in &leaves {
+                by_id.insert(l.id, *l);
+            }
+            let sorted: Vec<Option<&LaneNode>> =
+                order.iter().map(|id| by_id.get(id.as_str()).copied()).collect();
+            if sorted.iter().all(Option::is_some) {
+                leaves = sorted.into_iter().flatten().collect();
+            }
+        }
+    }
 
     let mut lane_of: IndexMap<&str, &LaneNode> = IndexMap::default();
     for leaf in &leaves {
@@ -912,8 +1053,17 @@ fn apply_lanes(
     let left = min_x - LANE_PADDING;
     let mut span: IndexMap<&str, (f64, f64)> = IndexMap::default();
     let mut top = 0.0;
+    // Tight lanes make a hand-over exactly as long as the gap between columns.
+    let pad = if opts.by_lane {
+        HAND_OVER_PADDING
+    } else {
+        LANE_PADDING
+    };
 
     for leaf in &leaves {
+        if opts.compact {
+            compact_lane(graph, members.get(leaf.id).map_or(&[][..], |v| v.as_slice()), bounds);
+        }
         // Duplicated ids stay in the list: the TS shifts the shared bounds once per entry.
         let own: Vec<&str> = members
             .get(leaf.id)
@@ -935,8 +1085,8 @@ fn apply_lanes(
                 .map(|n| bounds[*n].y + bounds[*n].height)
                 .fold(f64::NEG_INFINITY, f64::max)
                 - lowest
-                + 2.0 * LANE_PADDING;
-            let shift = top + LANE_PADDING - lowest;
+                + 2.0 * pad;
+            let shift = top + pad - lowest;
             for n in &own {
                 if let Some(b) = bounds.get_mut(*n) {
                     b.y += shift;
