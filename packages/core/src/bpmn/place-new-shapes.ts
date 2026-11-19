@@ -1316,8 +1316,10 @@ class Placer {
 			.filter((shape) => {
 				if (!this.isContainerShape(shape)) return false
 				if (!own) return true
-				// Ancestors of the box (its pool, its parent lane) contain it.
-				return !contains(shape.bounds, own)
+				// Ancestors of the box (its pool, its parent lane) contain it. A laned pool can
+				// end half a pixel inside its lanes (the engine rounds lane widths up), so allow 1 px.
+				const b = shape.bounds
+				return !contains({ x: b.x - 1, y: b.y - 1, width: b.width + 2, height: b.height + 2 }, own)
 			})
 			.map((shape) => shape.bounds)
 	}

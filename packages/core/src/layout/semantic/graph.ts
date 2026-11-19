@@ -35,6 +35,8 @@ export interface SemanticGraph {
 	 * message routing depends on the pool's shape, and inside containers.
 	 */
 	stackDetours: boolean
+	/** Ids of flows between adjacent lanes that share their source's column; see `laneHandoffs`. */
+	handoffs: Set<string>
 }
 
 /**
@@ -96,6 +98,7 @@ export function buildSemanticGraph(
 		ranks: new Map(),
 		exceptionRow: new Set(),
 		stackDetours,
+		handoffs: new Set(),
 	}
 
 	findComponents(graph)
@@ -283,7 +286,10 @@ function chainOf(graph: SemanticGraph, entry: string): Set<string> {
  * a boundary handler never precedes the activity it is attached to. `steps`
  * overrides the one-rank step of individual flows.
  */
-function assignRanks(graph: SemanticGraph, steps: ReadonlyMap<string, number> = new Map()): void {
+export function assignRanks(
+	graph: SemanticGraph,
+	steps: ReadonlyMap<string, number> = new Map(),
+): void {
 	const { ranks } = graph
 	for (const node of graph.nodes) ranks.set(node.id, 0)
 
@@ -298,7 +304,9 @@ function assignRanks(graph: SemanticGraph, steps: ReadonlyMap<string, number> = 
 			const rank = ranks.get(node.id) ?? 0
 			for (const flow of forward(node.id)) {
 				const step =
-					sharesRank(graph, flow) || feedsSibling(graph, flow) ? 0 : (steps.get(flow.id) ?? 1)
+					sharesRank(graph, flow) || feedsSibling(graph, flow) || graph.handoffs.has(flow.id)
+						? 0
+						: (steps.get(flow.id) ?? 1)
 				const target = ranks.get(flow.targetRef) ?? 0
 				if (target < rank + step) {
 					ranks.set(flow.targetRef, rank + step)

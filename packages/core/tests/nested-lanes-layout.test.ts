@@ -276,9 +276,12 @@ describe("auto-layout without nested lanes", () => {
 	// grid phase); any drift here is a layout change for diagrams the feature
 	// must not touch.
 	it.each([
-		["02-collaboration.bpmn", "02247d1a7126c72dd3baebba36e699942196c03def222ac772387447278b294e"],
+		[
+			"02-collaboration.bpmn", // Re-recorded in layout P4 (both: flat lanes now hand over in a shared column, tighter lane padding).
+			"3483c087f431595169f19d21240c05e308f7907f993e778299f87e17f1bb0245",
+		],
 		// Its laned process WFP-6-2 has no pool: its lanes are drawn on its own plane.
-		["miwg-A.4.0.bpmn", "eeeff47196f35216554fd0b80fbe7092d438ada9d32d5b240d52286930c35959"],
+		["miwg-A.4.0.bpmn", "2c711ee7ac8d58f940650260ca8ab5da6aac2b22c0e246f2f378d6887e8e70ae"],
 	])("lays out %s byte for byte as before", (name, hash) => {
 		expect(sha256Hex(serializeBpmn(applyAutoLayout(fixture(name))))).toBe(hash)
 	})

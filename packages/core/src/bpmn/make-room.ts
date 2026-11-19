@@ -70,6 +70,16 @@ export function makeRoom(input: BpmnDefinitions): MakeRoomResult {
 	}
 
 	const anchors: Array<{ shape: BpmnDiShape; after: string; dx: number }> = []
+	// Drawn nodes the new path flows into that sit at or left of its anchor, as
+	// a lane hand-over column leaves them: they and what follows move right of the path.
+	const stragglers: Array<{
+		shape: BpmnDiShape
+		after: string
+		need: number
+		down: string[]
+		/** For a one-node path into one straggler: the column centre that straggler is stacked on. */
+		column?: { id: string; centre: number }
+	}> = []
 	for (const process of defs.processes) {
 		for (const scope of scopes(process.flowElements, process.sequenceFlows)) {
 			const byId = new Map(scope.elements.map((e) => [e.id, e]))
@@ -124,6 +134,20 @@ export function makeRoom(input: BpmnDefinitions): MakeRoomResult {
 					if (s === shape || containers.has(s.bpmnElement) || b.x < x0) continue
 					if (b.y + b.height > top && b.y < bottom) nextX = Math.min(nextX, b.x)
 				}
+				const downstream = reachableDrawn(scope, chain, el.id, byId, shapeOf)
+				if (
+					downstream.some((id) => {
+						const b = shapeOf.get(id)?.bounds
+						return b !== undefined && b.x < x0 && !containers.has(id)
+					})
+				)
+					stragglers.push({
+						shape,
+						after: el.id,
+						need,
+						down: downstream,
+						column: soleExit(scope, chain, shape, byId, shapeOf, downstream),
+					})
 				const dx = Math.max(0, need + GAP - (nextX - x0))
 				if (dx === 0) continue
 				anchors.push({ shape, after: el.id, dx })
@@ -153,5 +177,107 @@ export function makeRoom(input: BpmnDefinitions): MakeRoomResult {
 		}
 		result.shifted.push({ after, dx })
 	}
+	// Per insertion point, after the global shifts: left-over successors clear the new path.
+	for (const { shape, after, need, down, column } of stragglers) {
+		const x0 = shape.bounds.x + shape.bounds.width
+		let minX = Number.POSITIVE_INFINITY
+		for (const id of down) {
+			const b = shapeOf.get(id)?.bounds
+			if (b && b.x < x0 && !containers.has(id)) minX = Math.min(minX, b.x)
+		}
+		const target = column ? shapeOf.get(column.id)?.bounds : undefined
+		const stacked = column && target ? column.centre - (target.x + target.width / 2) : 0
+		const dx = stacked > 0 ? stacked : x0 + need + GAP - minX
+		if (!Number.isFinite(minX) || dx <= 0) continue
+		const moved = new Set(down)
+		for (const id of down) {
+			const s = shapeOf.get(id)
+			if (!s) continue
+			s.bounds.x += dx
+			if (s.label?.bounds) s.label.bounds.x += dx
+		}
+		for (const edge of defs.diagrams.flatMap((d) => d.plane.edges)) {
+			const flow = defs.processes
+				.flatMap((p) => p.sequenceFlows)
+				.find((f) => f.id === edge.bpmnElement)
+			if (flow && moved.has(flow.sourceRef) && moved.has(flow.targetRef)) {
+				for (const p of edge.waypoints) p.x += dx
+				if (edge.label?.bounds) edge.label.bounds.x += dx
+			}
+		}
+		// Pools and lanes grow to hold them.
+		for (const s of shapes) {
+			const b = s.bounds
+			if (
+				containers.has(s.bpmnElement) &&
+				b.x < x0 &&
+				b.x + b.width < x0 + dx + 100 &&
+				b.x + b.width > x0
+			)
+				b.width += dx
+		}
+		result.shifted.push({ after, dx })
+	}
 	return result
+}
+
+/**
+ * A one-node new path whose only exit is a drawn node in another row (a
+ * lane hand-over): that node goes under the new node, so the flow stays
+ * vertical, as the engine lays such hand-overs out.
+ */
+function soleExit(
+	scope: Scope,
+	chain: ReadonlySet<string>,
+	anchor: BpmnDiShape,
+	byId: ReadonlyMap<string, BpmnFlowElement>,
+	shapeOf: ReadonlyMap<string, BpmnDiShape>,
+	downstream: readonly string[],
+): { id: string; centre: number } | undefined {
+	if (chain.size !== 1) return undefined
+	const [only] = [...chain]
+	const node = only === undefined ? undefined : byId.get(only)
+	const exits = scope.flows.filter((f) => f.sourceRef === only && !chain.has(f.targetRef))
+	const exit = exits.length === 1 ? exits[0]?.targetRef : undefined
+	const b = exit === undefined || !downstream.includes(exit) ? undefined : shapeOf.get(exit)?.bounds
+	if (!node || !b) return undefined
+	const a = anchor.bounds
+	if (b.y < a.y + a.height && b.y + b.height > a.y) return undefined
+	return { id: exit as string, centre: a.x + a.width + GAP + sizeOf(node).width / 2 }
+}
+
+/**
+ * Drawn nodes reached from a new chain's exits, leaving out the ones that
+ * lead back into the anchor (a loop's upstream half does not follow the path).
+ */
+function reachableDrawn(
+	scope: Scope,
+	chain: ReadonlySet<string>,
+	anchor: string,
+	byId: ReadonlyMap<string, BpmnFlowElement>,
+	shapeOf: ReadonlyMap<string, BpmnDiShape>,
+): string[] {
+	const upstream = new Set([anchor])
+	for (let grew = true; grew; ) {
+		grew = false
+		for (const f of scope.flows)
+			if (upstream.has(f.targetRef) && !upstream.has(f.sourceRef)) {
+				upstream.add(f.sourceRef)
+				grew = true
+			}
+	}
+	const out: string[] = []
+	const seen = new Set<string>()
+	const queue = scope.flows
+		.filter((f) => chain.has(f.sourceRef) && !chain.has(f.targetRef))
+		.map((f) => f.targetRef)
+	while (queue.length > 0) {
+		const id = queue.shift() ?? ""
+		if (seen.has(id) || upstream.has(id) || chain.has(id)) continue
+		seen.add(id)
+		if (byId.get(id)?.type === "boundaryEvent") continue
+		if (shapeOf.has(id)) out.push(id)
+		for (const f of scope.flows) if (f.sourceRef === id) queue.push(f.targetRef)
+	}
+	return out
 }

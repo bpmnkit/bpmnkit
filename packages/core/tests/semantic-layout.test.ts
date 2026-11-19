@@ -244,7 +244,8 @@ describe("semantic layout — lanes", () => {
 	it("keeps left-to-right flow when lanes move nodes vertically", () => {
 		const nodes = byId(layoutProcess(laneProcess()))
 		const xs = ["s", "a", "b", "e"].map((id) => nodes.get(id)?.bounds.x ?? 0)
-		for (let i = 1; i < xs.length; i++) expect(xs[i]).toBeGreaterThan(xs[i - 1] ?? 0)
+		// A hand-over into the next lane shares its source's column (P4), so never left, not always right.
+		for (let i = 1; i < xs.length; i++) expect(xs[i]).toBeGreaterThanOrEqual(xs[i - 1] ?? 0)
 	})
 
 	it("spans a parent lane across the lanes nested inside it", () => {

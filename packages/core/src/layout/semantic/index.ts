@@ -17,8 +17,9 @@ import type {
 } from "../types.js"
 import { LABEL_CHAR_WIDTH, LABEL_HEIGHT, LABEL_MIN_WIDTH, SUBPROCESS_PADDING } from "../types.js"
 import { assignBands, boundarySide } from "./bands.js"
-import { type SemanticGraph, buildSemanticGraph, placeExceptionRow } from "./graph.js"
-import { externalLabelWidth, place, sizeOf } from "./place.js"
+import { type SemanticGraph, assignRanks, buildSemanticGraph, placeExceptionRow } from "./graph.js"
+import { cheaper, laneCost, laneHandoffs, lanePlan } from "./lanes.js"
+import { type LaneOptions, externalLabelWidth, place, sizeOf } from "./place.js"
 import { routeFlows } from "./route.js"
 
 /** Padding between an expanded sub-process border and its children. */
@@ -128,39 +129,86 @@ export function semanticLayout(
 			collapsed,
 		)
 	}
-	let bandLayout = assignBands(graph, titled)
-	// Lanes decide a handler's row themselves, so the exception row is for lane-free scopes.
-	if (
-		!laneSet &&
-		placeExceptionRow(graph, bandLayout.bands, (event, host) =>
-			boundarySide(event, titled.has(host)),
+	const laneInfo = laneSet ? lanePlan(graph, laneSet) : undefined
+	const run = (handoffs: Set<string>, laneOpts: LaneOptions = {}): LayoutResult => {
+		graph.handoffs = handoffs
+		assignRanks(graph)
+		// finish() moves the children, and a laned scope is laid out twice
+		const children = laneSet ? structuredClone(childResults) : childResults
+		let bandLayout = assignBands(graph, titled)
+		// Lanes decide a handler's row themselves, so the exception row is for lane-free scopes.
+		if (
+			!laneSet &&
+			placeExceptionRow(graph, bandLayout.bands, (event, host) =>
+				boundarySide(event, titled.has(host)),
+			)
+		) {
+			bandLayout = assignBands(graph, titled)
+		}
+		const { bounds, lanes, gutterX } = place(
+			graph,
+			bandLayout,
+			sizes,
+			laneSet,
+			inContainer,
+			titled,
+			grid,
+			axes,
+			slotArtifacts,
+			laneOpts,
 		)
-	) {
-		bandLayout = assignBands(graph, titled)
+		const edges = routeFlows(graph, sequenceFlows, bounds, bandLayout, gutterX)
+		return finish(
+			graph,
+			flowElements,
+			bounds,
+			edges,
+			(id) => bandLayout.bands.get(id) ?? 0,
+			lanes,
+			children,
+			planes,
+			collapsed,
+		)
 	}
-	const { bounds, lanes, gutterX } = place(
-		graph,
-		bandLayout,
-		sizes,
-		laneSet,
-		inContainer,
-		titled,
-		grid,
-		axes,
-		slotArtifacts,
-	)
-	const edges = routeFlows(graph, sequenceFlows, bounds, bandLayout, gutterX)
-	return finish(
-		graph,
-		flowElements,
-		bounds,
-		edges,
-		(id) => bandLayout.bands.get(id) ?? 0,
-		lanes,
-		childResults,
-		planes,
-		collapsed,
-	)
+	// Nested lane sets keep the placement they always had.
+	if (!laneSet || !laneInfo || !laneInfo.flat) return run(graph.handoffs)
+	// The layout as it always was comes first and wins ties: a refinement is kept
+	// only when it is strictly cheaper (see `laneCost`).
+	const orders: Array<readonly string[] | undefined> = [undefined]
+	if (laneInfo.order) orders.push(laneInfo.order)
+	const legacy = run(new Set())
+	const legacyCost = laneCost(legacy)
+	let best = legacy
+	let bestCost = legacyCost
+	const none = new Set<string>()
+	for (const order of orders) {
+		const lanes = order ?? laneInfo.declared
+		const variants: Array<[Set<string>, LaneOptions]> = [
+			[none, { order, compact: true }],
+			[none, { order, compact: true, byLane: true }],
+			[laneHandoffs(graph, laneInfo.leafOf, lanes, true), { order, compact: true, byLane: true }],
+			[laneHandoffs(graph, laneInfo.leafOf, lanes), { order, compact: true, byLane: true }],
+		]
+		if (order) variants.unshift([none, { order }])
+		for (const [h, opts] of variants) {
+			if (h !== none && h.size === 0) continue
+			const result = run(h, opts)
+			const cost = laneCost(result)
+			// Must not lose to the old layout anywhere; among those that do not, the cheapest in order.
+			if (cheaper(cost, legacyCost) && lexicographicallyLess(cost, bestCost)) {
+				best = result
+				bestCost = cost
+			}
+		}
+	}
+	return best
+}
+
+function lexicographicallyLess(a: readonly number[], b: readonly number[]): boolean {
+	for (let i = 0; i < a.length; i++) {
+		if ((a[i] as number) !== (b[i] as number)) return (a[i] as number) < (b[i] as number)
+	}
+	return false
 }
 
 /**

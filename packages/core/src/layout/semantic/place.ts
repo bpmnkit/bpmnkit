@@ -14,6 +14,7 @@ import {
 } from "../types.js"
 import { type BandLayout, boundarySide } from "./bands.js"
 import { type SemanticGraph, isDetour } from "./graph.js"
+import { leafLanes } from "./lanes.js"
 
 /**
  * Geometry constants. Layout may add space beyond these; it never takes any back.
@@ -38,6 +39,8 @@ const GRID_GAP_Y = 20
 export const COMPONENT_GAP = 80
 const ROW_GRID = 10
 export const LANE_PADDING = 40
+/** Vertical lane padding when lanes hand over in a shared column: 2 × 30 + 80 puts rows 140 apart, a 60 px flow. */
+const HAND_OVER_PADDING = 30
 export const BOUNDARY_SIZE = 36
 /** Air kept between two boundary events docked side by side, and before a host's corner. */
 const BOUNDARY_CLEARANCE = 4
@@ -95,6 +98,15 @@ export function sizeOf(
  * their tallest. Nodes are centred in both, so any two nodes sharing a band
  * share a centre line and the spine routes as one straight segment.
  */
+export interface LaneOptions {
+	/** Leaf lane ids top to bottom (default: declared order). */
+	order?: readonly string[]
+	/** Pull off-row nodes up onto earlier rows of their lane. */
+	compact?: boolean
+	/** Nodes of different lanes never push each other down a row. */
+	byLane?: boolean
+}
+
 export function place(
 	graph: SemanticGraph,
 	bandLayout: BandLayout,
@@ -123,6 +135,8 @@ export function place(
 	axes: ReadonlyMap<string, number> = new Map(),
 	/** Slot flow-less data references under the activity they are wired to. */
 	slotArtifacts = false,
+	/** Lane refinements; absent or all off lays lanes out the way they always were. */
+	laneOpts: LaneOptions = {},
 ): Placement {
 	const bounds = new Map<string, Bounds>()
 	const componentOf = new Map<string, number>()
@@ -200,8 +214,13 @@ export function place(
 		cursorY = bottom + dy + COMPONENT_GAP
 	}
 
-	separateSameCell(graph, bandLayout, bounds)
-	const lanes = laneSet ? applyLanes(graph, laneSet, bounds) : []
+	separateSameCell(
+		graph,
+		bandLayout,
+		bounds,
+		laneSet && laneOpts.byLane ? leafLanes(laneSet).leafOf : undefined,
+	)
+	const lanes = laneSet ? applyLanes(graph, laneSet, bounds, laneOpts) : []
 	dockBoundaryEvents(graph, bounds, titled)
 	placeArtifacts(graph, artifactOwners, bounds)
 	return { bounds, lanes, gutterX }
@@ -485,6 +504,8 @@ function separateSameCell(
 	graph: SemanticGraph,
 	bandLayout: BandLayout,
 	bounds: Map<string, Bounds>,
+	/** Nodes in different lanes never share a row, so a hand-over column needs no push. */
+	leafOf?: ReadonlyMap<string, string>,
 ): void {
 	const componentOf = new Map<string, number>()
 	for (let i = 0; i < graph.components.length; i++) {
@@ -497,7 +518,7 @@ function separateSameCell(
 	for (const node of graph.nodes) {
 		const rank = graph.ranks.get(node.id) ?? 0
 		const band = bandLayout.bands.get(node.id) ?? 0
-		const key = `${componentOf.get(node.id) ?? 0}:${rank}:${band}`
+		const key = `${componentOf.get(node.id) ?? 0}:${rank}:${band}:${leafOf?.get(node.id) ?? ""}`
 		const list = cells.get(key)
 		if (list) list.push(node.id)
 		else cells.set(key, [node.id])
@@ -526,6 +547,7 @@ function applyLanes(
 	graph: SemanticGraph,
 	laneSet: BpmnLaneSet,
 	bounds: Map<string, Bounds>,
+	{ order, compact, byLane }: LaneOptions = {},
 ): Array<{ id: string; bounds: Bounds }> {
 	const tree = laneTree(laneSet)
 	if (tree.length === 0) return []
@@ -538,6 +560,12 @@ function applyLanes(
 		}
 	}
 	collectLeaves(tree)
+	if (order && order.length === leaves.length) {
+		const byId = new Map(leaves.map((l) => [l.id, l]))
+		const sorted = order.map((id) => byId.get(id))
+		if (sorted.every((l): l is LaneNode => l !== undefined))
+			leaves.splice(0, leaves.length, ...sorted)
+	}
 
 	const laneOf = new Map<string, LaneNode>()
 	for (const leaf of leaves) {
@@ -587,16 +615,19 @@ function applyLanes(
 	const left = minX - LANE_PADDING
 	const span = new Map<string, { top: number; bottom: number }>()
 	let top = 0
+	// Tight lanes make a hand-over exactly as long as the gap between columns.
+	const pad = byLane ? HAND_OVER_PADDING : LANE_PADDING
 
 	for (const leaf of leaves) {
+		if (compact) compactLane(graph, members.get(leaf.id) ?? [], bounds)
 		const own = (members.get(leaf.id) ?? [])
 			.map((n) => bounds.get(n))
 			.filter((b): b is Bounds => b !== undefined)
 		let height = MIN_LANE_HEIGHT
 		if (own.length > 0) {
 			const lowest = Math.min(...own.map((b) => b.y))
-			height = Math.max(...own.map((b) => b.y + b.height)) - lowest + 2 * LANE_PADDING
-			const shift = top + LANE_PADDING - lowest
+			height = Math.max(...own.map((b) => b.y + b.height)) - lowest + 2 * pad
+			const shift = top + pad - lowest
 			for (const b of own) b.y += shift
 		}
 		span.set(leaf.id, { top, bottom: top + height })
@@ -667,6 +698,62 @@ function placeDataUnderActivities(
 			b.x = Math.max(home.x + home.width / 2 - b.width / 2, right + H_GAP / 2)
 			b.y = bottom + V_GAP / 2
 			right = b.x + b.width
+		}
+	}
+}
+
+/**
+ * Pull a lane's off-row nodes up onto an earlier row of the same lane when
+ * that row has room at their column and no flow between its own nodes runs
+ * through it, so a lane is as tall as its busiest row rather than as the
+ * bands it happened to inherit. Only nodes whose lane neighbours are all on
+ * the target row (or that have none) move: a node never leaves its chain.
+ */
+function compactLane(graph: SemanticGraph, ids: string[], bounds: Map<string, Bounds>): void {
+	const flowNodes = ids.filter((id) => graph.byId.has(id) && bounds.has(id))
+	if (flowNodes.length < 2 || flowNodes.some((id) => graph.byId.get(id)?.type.startsWith("data")))
+		return
+	const inLane = new Set(flowNodes)
+	const centreY = (id: string): number => {
+		const b = bounds.get(id) as Bounds
+		return b.y + b.height / 2
+	}
+	const rowOf = new Map(flowNodes.map((id) => [id, centreY(id)]))
+	const rows = [...new Set(rowOf.values())].sort((a, b) => a - b)
+	if (rows.length < 2) return
+	const neighbours = (id: string): string[] =>
+		[
+			...(graph.outgoing.get(id) ?? []).map((f) => f.targetRef),
+			...(graph.incoming.get(id) ?? []).map((f) => graph.byId.get(f.sourceRef)?.id ?? f.sourceRef),
+		].filter((n) => inLane.has(n) && n !== id)
+	const members = (row: number): string[] => flowNodes.filter((id) => rowOf.get(id) === row)
+	const fits = (id: string, row: number): boolean => {
+		const b = bounds.get(id) as Bounds
+		const on = members(row)
+		for (const m of on) {
+			const o = bounds.get(m) as Bounds
+			if (b.x - H_GAP < o.x + o.width && o.x - H_GAP < b.x + b.width) return false
+		}
+		for (const f of [...graph.outgoing.values()].flat()) {
+			if (!on.includes(f.sourceRef) || !on.includes(f.targetRef)) continue
+			const from = bounds.get(f.sourceRef) as Bounds
+			const to = bounds.get(f.targetRef) as Bounds
+			const left = Math.min(from.x, to.x)
+			const right = Math.max(from.x + from.width, to.x + to.width)
+			if (b.x < right && b.x + b.width > left) return false
+		}
+		return true
+	}
+	for (const row of rows.slice(1)) {
+		for (const id of members(row)) {
+			const near = neighbours(id)
+			for (const target of rows) {
+				if (target >= row) break
+				if (near.some((n) => rowOf.get(n) !== target) || !fits(id, target)) continue
+				;(bounds.get(id) as Bounds).y += target - row
+				rowOf.set(id, target)
+				break
+			}
 		}
 	}
 }
