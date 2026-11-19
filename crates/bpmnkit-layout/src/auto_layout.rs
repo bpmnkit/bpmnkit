@@ -7,6 +7,9 @@ use crate::collaboration::docked_labels::{flip_docked_labels, MessageDock};
 use crate::collaboration::message_labels::{place_message_flow_labels, MessageLabelInput};
 use crate::collaboration::message_tracks::{assign_tracks, GapRun};
 use crate::collaboration::ordering::{order_pools, PoolLink};
+use crate::collaboration::stack_crossings::{
+    order_by_crossings, StackEnd, StackMessage, StackPool,
+};
 use crate::engine::{layout_process, LayoutEngine};
 use crate::grid::router::collapse_collinear;
 use crate::hash::{IndexMap as FxIndexMap, IndexSet as FxIndexSet};
@@ -1224,6 +1227,148 @@ fn grid_phase(nodes: &[LayoutNode], dx: f64, dy: f64) -> (f64, f64) {
     best
 }
 
+/// `poolHeightOf(contentHeight)`: a lane-less pool's height, content plus padding to
+/// the nearest 10 px, so the pools below start on the grid whatever order they stack in.
+fn pool_height_of(content_height: f64) -> f64 {
+    js::round((content_height + 2.0 * PADDING) / 10.0) * 10.0
+}
+
+/// `poolGridPhase(nodes, dx, dy)`: vertical shift (-4..5 px, inside the pool's padding)
+/// that puts the most shapes on the 10 px grid; the first strict maximum wins a tie.
+fn pool_grid_phase(nodes: &[LayoutNode], dx: f64, dy: f64) -> f64 {
+    let on = |v: f64| js::round(v) % 10.0 == 0.0;
+    let mut best = 0.0;
+    let mut best_n: i64 = -1;
+    for t in [0.0, -1.0, 1.0, -2.0, 2.0, -3.0, 3.0, -4.0, 4.0, 5.0] {
+        let mut n = 0;
+        for node in nodes {
+            if on(node.bounds.x + dx) && on(node.bounds.y + dy + t) {
+                n += 1;
+            }
+        }
+        if n > best_n {
+            best_n = n;
+            best = t;
+        }
+    }
+    best
+}
+
+/// `stackSketch(collab, participantPools, layoutOf)`: the pools as the crossing sketch
+/// sees them, each at its aligned offset with its sequence flows and shapes, plus every
+/// message between them.
+fn stack_sketch(
+    defs: &BpmnDefinitions,
+    collab: &BpmnCollaboration,
+    participant_pools: &[Pool],
+    layout_of: &IndexMap<usize, LayoutResult>,
+) -> (Vec<StackPool>, Vec<StackMessage>) {
+    let empty = LayoutResult::default();
+    let layouts: Vec<&LayoutResult> = participant_pools
+        .iter()
+        .map(|p| p.process.and_then(|i| layout_of.get(&i)).unwrap_or(&empty))
+        .collect();
+    let owned: Vec<LayoutResult> = layouts.iter().map(|l| (*l).clone()).collect();
+    let offsets = align_pools(
+        participant_pools.len(),
+        &owned.iter().map(content_width).collect::<Vec<_>>(),
+        &message_links(defs, Some(collab), participant_pools, &owned),
+    );
+    struct End {
+        pool: usize,
+        end: StackEnd,
+    }
+    let mut ends: FxIndexMap<&str, End> = FxIndexMap::default();
+    let mut pools: Vec<StackPool> = Vec::new();
+    for (index, layout) in layouts.iter().enumerate() {
+        if layout.nodes.is_empty() {
+            pools.push(StackPool {
+                height: EMPTY_POOL_HEIGHT,
+                paths: Vec::new(),
+                boxes: Vec::new(),
+            });
+            continue;
+        }
+        let b = content_bbox(&layout.nodes, []);
+        let lanes = lane_levels(
+            participant_pools[index]
+                .process
+                .and_then(|p| defs.processes[p].lane_set.as_ref()),
+        );
+        let dx = offsets.get(index).copied().unwrap_or(0.0)
+            + POOL_HEADER
+            + lane_headers_width(&lanes)
+            + PADDING
+            - b.min_x;
+        let dy = PADDING - b.min_y;
+        for node in &layout.nodes {
+            ends.insert(
+                &node.id,
+                End {
+                    pool: index,
+                    end: StackEnd {
+                        x: js::round(node.bounds.x + node.bounds.width / 2.0 + dx),
+                        top: node.bounds.y + dy,
+                        bottom: node.bounds.y + node.bounds.height + dy,
+                    },
+                },
+            );
+        }
+        pools.push(StackPool {
+            height: pool_height_of(b.max_y - b.min_y),
+            paths: layout
+                .edges
+                .iter()
+                .map(|e| {
+                    e.waypoints
+                        .iter()
+                        .map(|w| Waypoint {
+                            x: w.x + dx,
+                            y: w.y + dy,
+                        })
+                        .collect()
+                })
+                .collect(),
+            boxes: layout
+                .nodes
+                .iter()
+                .map(|n| Bounds {
+                    x: n.bounds.x + dx,
+                    y: n.bounds.y + dy,
+                    ..n.bounds
+                })
+                .collect(),
+        });
+    }
+    let mut pool_index: FxIndexMap<&str, usize> = FxIndexMap::default();
+    for (i, p) in participant_pools.iter().enumerate() {
+        if let Some(id) = &p.participant_id {
+            pool_index.insert(id, i);
+        }
+    }
+    let mut messages: Vec<StackMessage> = Vec::new();
+    for flow in &collab.message_flows {
+        let a = ends.get(flow.source_ref.as_str());
+        let b = ends.get(flow.target_ref.as_str());
+        let from = a
+            .map(|e| e.pool)
+            .or_else(|| pool_index.get(flow.source_ref.as_str()).copied());
+        let to = b
+            .map(|e| e.pool)
+            .or_else(|| pool_index.get(flow.target_ref.as_str()).copied());
+        let (Some(from), Some(to)) = (from, to) else {
+            continue;
+        };
+        messages.push(StackMessage {
+            from,
+            to,
+            from_end: a.map(|e| e.end),
+            to_end: b.map(|e| e.end),
+        });
+    }
+    (pools, messages)
+}
+
 /// `contentWidth(layout)`: width of a laid-out process, ignoring where in space it
 /// happens to sit.
 fn content_width(layout: &LayoutResult) -> f64 {
@@ -1421,6 +1566,142 @@ fn laid_out_diagrams(
     engine: LayoutEngine,
     hints: Option<&LayoutHints>,
 ) -> Option<Vec<BpmnDiagram>> {
+    let mut nearest = PoolOrdering {
+        use_sketch: false,
+        sketch_differs: false,
+    };
+    let laid_out = layout_definitions(defs, engine, hints, &mut nearest)?;
+    if !nearest.sketch_differs {
+        return Some(laid_out);
+    }
+    // The sketch only estimates; the drawn result decides. The crossing order wins
+    // only when it crosses less without bending or slanting more.
+    let mut sketch = PoolOrdering {
+        use_sketch: true,
+        sketch_differs: true,
+    };
+    let crossing = layout_definitions(defs, engine, hints, &mut sketch)?;
+    let a = message_score(defs, &laid_out);
+    let b = message_score(defs, &crossing);
+    let better = b.crossings < a.crossings
+        && b.bends <= a.bends
+        && b.slanted <= a.slanted
+        && b.labels_crossed <= a.labels_crossed
+        && b.on_grid >= a.on_grid;
+    Some(if better { crossing } else { laid_out })
+}
+
+/// Which pool order a layout pass uses, and whether the two candidates differ.
+struct PoolOrdering {
+    /// Stack the pools by the crossing sketch instead of message distance.
+    use_sketch: bool,
+    /// Set by the pass: the crossing sketch prefers another order.
+    sketch_differs: bool,
+}
+
+struct MessageScore {
+    crossings: usize,
+    bends: usize,
+    slanted: usize,
+    labels_crossed: usize,
+    on_grid: usize,
+}
+
+/// `messageScore(defs)`: what a pool order changes in a laid-out diagram: message-flow
+/// crossings (with anything), message bends and slanted messages, labels an edge runs
+/// through, and shapes on the 10 px grid.
+fn message_score(defs: &BpmnDefinitions, diagrams: &[BpmnDiagram]) -> MessageScore {
+    let ids: HashSet<&str> = defs
+        .collaborations
+        .iter()
+        .flat_map(|c| c.message_flows.iter().map(|f| f.id.as_str()))
+        .collect();
+    let plane = diagrams.first().map(|d| &d.plane);
+    let edges: &[BpmnDiEdge] = plane.map_or(&[], |p| p.edges.as_slice());
+    let shapes: &[BpmnDiShape] = plane.map_or(&[], |p| p.shapes.as_slice());
+    let to_points = |w: &[BpmnWaypoint]| -> Vec<Waypoint> {
+        w.iter().map(|p| Waypoint { x: p.x, y: p.y }).collect()
+    };
+    let messages: Vec<Vec<Waypoint>> = edges
+        .iter()
+        .filter(|e| ids.contains(e.bpmn_element.as_str()))
+        .map(|e| to_points(&e.waypoints))
+        .collect();
+    let others: Vec<Vec<Waypoint>> = edges
+        .iter()
+        .filter(|e| !ids.contains(e.bpmn_element.as_str()))
+        .map(|e| to_points(&e.waypoints))
+        .collect();
+    let mut crossings = 0;
+    let mut bends = 0;
+    let mut slanted = 0;
+    for i in 0..messages.len() {
+        let path = &messages[i];
+        for later in &messages[i + 1..] {
+            crossings += path_crossings(path, later);
+        }
+        for other in &others {
+            crossings += path_crossings(path, other);
+        }
+        bends += path.len().saturating_sub(2);
+        if path.len() > 2 {
+            slanted += 1;
+        }
+    }
+    let labels: Vec<(&str, &BpmnBounds)> = shapes
+        .iter()
+        .filter_map(|s| {
+            s.label
+                .as_ref()
+                .and_then(|l| l.bounds.as_ref())
+                .map(|b| (s.bpmn_element.as_str(), b))
+        })
+        .chain(edges.iter().filter_map(|e| {
+            e.label
+                .as_ref()
+                .and_then(|l| l.bounds.as_ref())
+                .map(|b| (e.bpmn_element.as_str(), b))
+        }))
+        .collect();
+    let labels_crossed = labels
+        .iter()
+        .filter(|(owner, bounds)| {
+            edges
+                .iter()
+                .any(|e| e.bpmn_element != *owner && path_through(&e.waypoints, bounds))
+        })
+        .count();
+    let on_grid = shapes
+        .iter()
+        .filter(|s| s.bounds.x % 10.0 == 0.0 && s.bounds.y % 10.0 == 0.0)
+        .count();
+    MessageScore {
+        crossings,
+        bends,
+        slanted,
+        labels_crossed,
+        on_grid,
+    }
+}
+
+/// `pathThrough(points, r)`: does an orthogonal polyline pass through the inside of
+/// `r` (1 px in from its outline)?
+fn path_through(points: &[BpmnWaypoint], r: &BpmnBounds) -> bool {
+    points.windows(2).any(|w| {
+        let (p, q) = (&w[0], &w[1]);
+        js::max(p.x, q.x) > r.x + 1.0
+            && js::min(p.x, q.x) < r.x + r.width - 1.0
+            && js::max(p.y, q.y) > r.y + 1.0
+            && js::min(p.y, q.y) < r.y + r.height - 1.0
+    })
+}
+
+fn layout_definitions(
+    defs: &BpmnDefinitions,
+    engine: LayoutEngine,
+    hints: Option<&LayoutHints>,
+    ordering: &mut PoolOrdering,
+) -> Option<Vec<BpmnDiagram>> {
     if defs.processes.is_empty() {
         return None;
     }
@@ -1478,7 +1759,7 @@ fn laid_out_diagrams(
             }
         }
         let depths = depth_index(layout_of.values());
-        let order = order_pools(
+        let nearest = order_pools(
             participant_pools.len(),
             &pool_links(collab, &pool_owners(defs, collab), |id| {
                 depths.get(id).copied()
@@ -1494,6 +1775,19 @@ fn laid_out_diagrams(
                 .map(|(i, _)| i)
                 .collect(),
         );
+        let mut order = nearest.clone();
+        if participant_pools.len() >= 3 && !collab.message_flows.is_empty() {
+            let (sketch_pools, sketch_messages) =
+                stack_sketch(defs, collab, &participant_pools, &layout_of);
+            let fewer = order_by_crossings(&nearest, &sketch_pools, &sketch_messages);
+            ordering.sketch_differs = fewer
+                .iter()
+                .enumerate()
+                .any(|(i, &pool)| nearest.get(i) != Some(&pool));
+            if ordering.use_sketch {
+                order = fewer;
+            }
+        }
         for index in order {
             // An index may repeat in TS; a pool is cheap to rebuild from its parts.
             if let Some(pool) = participant_pools.get(index) {
@@ -1682,6 +1976,11 @@ fn laid_out_diagrams(
             } else {
                 pool_y + PADDING - bbox.min_y
             };
+            // x is the message alignment's to keep, and lane bands fix y; otherwise a
+            // few px of the padding put the most shapes on the 10 px grid.
+            if lane_bands.is_none() {
+                dy += pool_grid_phase(&result.nodes, dx, dy);
+            }
         } else {
             // A process outside any pool draws its lanes on the plane itself (bpmn-js
             // imports lane DI under a process root), header at x 0, so the content
@@ -1783,7 +2082,7 @@ fn laid_out_diagrams(
                     orphan_extent(&result.nodes, band_top + band_height) - band_top,
                 )
             } else {
-                content_h + 2.0 * PADDING
+                pool_height_of(content_h)
             };
             let pool_w = POOL_HEADER + inner_w;
 
