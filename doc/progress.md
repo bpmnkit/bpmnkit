@@ -1,5 +1,10 @@
 # Progress
 
+## 2026-11-19 — layout: current-state map and improvement plan (docs only)
+
+- `doc/plans/layout-current-state.md`: auto-layout pipeline, constants, tests, TS/Rust parity, 12 ranked weaknesses.
+- `doc/plans/layout-improvement-plan.md`: phased plan (P0 metrics gate → P1 collaboration composition → P2 process composition → P3 layered core → P4 lanes/edit → P5 eval confirm) with metric gates vs Bare-Opus eval layouts and a session split. No code changed.
+
 ## 2026-11-17 — connector-gen: refreshed API index changeset
 
 - `.changeset/connector-api-index-refresh.md`: patch changeset for `@bpmnkit/connector-gen` so the weekly API-index refresh (PR #294) passes the changeset check and reaches npm.
