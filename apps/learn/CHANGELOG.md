@@ -1,5 +1,12 @@
 # @bpmnkit/learn
 
+## 0.1.22
+
+### Patch Changes
+
+- Updated dependencies [2130e32]
+  - @bpmnkit/core@1.17.0
+
 ## 0.1.21
 
 ### Patch Changes

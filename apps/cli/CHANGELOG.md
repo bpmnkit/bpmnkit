@@ -1,5 +1,13 @@
 # @bpmnkit/cli
 
+## 1.9.3
+
+### Patch Changes
+
+- 2130e32: Auto-layout composes cleaner diagrams: one frame for all pools, crossing-aware pool order, stacked message tracks, a 10 px grid phase, artifacts under their task, an exception row for boundary handlers, shared columns for detours, and compacted lanes. New opt-in `engine: "layered"` (Sugiyama-style) next to the default `semantic` engine. `pnpm layout:score` scores layouts against a ratchet baseline.
+- Updated dependencies [2130e32]
+  - @bpmnkit/core@1.17.0
+
 ## 1.9.2
 
 ### Patch Changes
