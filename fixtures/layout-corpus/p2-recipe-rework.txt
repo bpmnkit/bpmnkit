@@ -1,0 +1,5 @@
+# Recipe trial | id=recipetrial
+[start Recipe drafted] > [user Gather ingredients] > [xor Stocked?] > [user Cook dish] > [service Score taste] > [xor Tasty?]
+[boundary:error Dish burnt | on=scoreTaste error=BURNT] > [user Adjust recipe] > Stocked?
+Tasty? >(Yes: tasty = true) [service Publish recipe] > [end Recipe published]
+Tasty? >(No: default) [user Rework by hand] > [end Recipe shelved]

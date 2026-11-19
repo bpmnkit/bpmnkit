@@ -161,7 +161,7 @@ it("puts pooled content on the 10 px grid without moving any pool frame", async 
 it("keeps rework-loop boundary handlers out of the exception row", async () => {
 	for (const [name, maxHeight, maxAxisDev] of [
 		["p2-timesheet-approval", 266, 57],
-		["p2-expense-rework", 266, 62],
+		["p2-recipe-rework", 266, 62],
 		["p2-lab-retest", 266, 65],
 	]) {
 		const { metrics } = await lay(name)
