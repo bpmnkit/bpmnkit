@@ -440,7 +440,7 @@
         <dc:Bounds x="807" y="685" width="50" height="50"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Participant__774bc005-0917-43d5-ab70-0f9fe123fbd1_di" bpmnElement="Participant__774bc005-0917-43d5-ab70-0f9fe123fbd1" isHorizontal="true">
-        <dc:Bounds x="0" y="650" width="4311.5" height="123"/>
+        <dc:Bounds x="0" y="650" width="4311.5" height="120"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="_bac89998-7084-4b2e-a2ea-dff839336d74_di" bpmnElement="_bac89998-7084-4b2e-a2ea-dff839336d74">
         <di:waypoint x="216" y="80"/>

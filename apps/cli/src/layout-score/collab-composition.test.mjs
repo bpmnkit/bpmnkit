@@ -35,7 +35,38 @@ it("moves an event's name off the side its message docks on", async () => {
 	expect((await score("collab-lab-samples")).labelCollisions).toBeLessThan(7)
 })
 
+// Hub-and-spoke collaborations (11-12 pools, request/reply pairs, black
+// boxes): the label nudge and dock snap once added crossings here. Bounds are
+// the layout before those rules (5898d579).
+it("tidying message docks never adds a crossing on hub-and-spoke collaborations", async () => {
+	for (const [name, msgMsg, total] of [
+		["collab-hub-admissions", 14, 29], // P1 alone: 17, 33
+		["collab-hub-wedding", 15, 30], // P1 alone: 15, 33
+		["collab-hub-transplant", 9, 33], // P1 alone: 9, 34
+	]) {
+		const m = await score(name)
+		expect(m.msgMsgCrossings, name).toBeLessThanOrEqual(msgMsg)
+		expect(m.crossings, name).toBeLessThanOrEqual(total)
+	}
+})
+
+it("stacks hub-and-spoke pools by crossings when that bends and slants no more", async () => {
+	// Before (message-distance order): crossings 29 and 30, non-vertical 77.8 and 69 %.
+	const admissions = await score("collab-hub-admissions")
+	expect(admissions.crossings).toBeLessThan(29)
+	expect(admissions.nonVerticalMsgPct).toBeLessThan(77.8)
+	const wedding = await score("collab-hub-wedding")
+	expect(wedding.crossings).toBeLessThan(30)
+	expect(wedding.nonVerticalMsgPct).toBeLessThan(69)
+})
+
 it("the corpus spec files stay invented processes", () => {
-	for (const name of ["collab-festival-permits", "collab-lab-samples"])
+	for (const name of [
+		"collab-festival-permits",
+		"collab-lab-samples",
+		"collab-hub-admissions",
+		"collab-hub-wedding",
+		"collab-hub-transplant",
+	])
 		expect(readFileSync(new URL(`${name}.txt`, corpusDir), "utf8")).toMatch(/^# /)
 })

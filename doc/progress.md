@@ -13,6 +13,16 @@
 
 - `crates/bpmnkit-layout` mirrors detour stacking, exception row, join port template, detour/exception row gaps, boundary column docking and `poolGridPhase`; oracle fixtures (`auto_layout/*.expected.bpmn`, `semantic/cases.json`) regenerated from the TS build. `conformance/` unchanged.
 
+## 2026-11-19 — layout P1b: msg×msg regression fixed, pool order by crossings
+
+- Regression (an 11-pool hub-and-spoke collaboration: P1 took msg×msg 9 → 10): reproduced on invented cases (`collab-hub-admissions` 14 → 17, `collab-hub-wedding` total 30 → 33, `collab-hub-transplant` 33 → 34). Ablation: the label nudge on message docks (and once the 1 px dock snap); tracks, frame and docked labels were neutral or better.
+- Fix (`auto-layout.ts`): every message is routed plain (pre-P1) and tidy (snap + nudge); from all-plain, a flow keeps its tidy route only if crossings after route repair do not grow (`collaboration/crossings.ts` counts like `layout:score`). Never worse than before P1 on the 8 invented hub cases.
+- Pool order (`collaboration/stack-crossings.ts`): a sketch of the stack (aligned pools, sequence flows, shapes, riser–run–riser messages on router tracks) scores crossings plus risers through shapes; remove-and-reinsert from the distance order. Both orders are laid out and the sketch's wins only with fewer message crossings and no more message bends, slanted messages, crossed labels or off-grid shapes. Black boxes pinned to the rim measured equal or worse on all 8 hub cases (up to +40 crossings) and stay unpinned.
+- Lane-less pools: height rounded to 10 px and content phased -4..5 px, so pools start on the grid whatever the order.
+- Invented hub cases (8, three in the corpus), pre-P1 → now: crossings 34.6 → 30.8 mean (port 52 → 35, wedding 30 → 22, admissions 29 → 25, none worse), msg×msg 14.1 → 11.8, non-vertical 73.6 → 68.8 %, bends/msg 2.30 → 2.15. Corpus: insurance crossings 13 → 8, collaboration gridPct up on all; ratchet clean, baseline refreshed (only improvements and new cases).
+- Cost: collaborations whose sketch order differs are laid out twice; message tidying runs route repair per changed flow. Rust layout bench vs 4fc4cf29 on the same machine: semantic +7 %, grid +3–10 % (within the 20 % budget). `pnpm bench:rs` against the stored baseline fails on every crate here (FEEL/DMN +30–50 % too, untouched): this container is slower than the baseline CPU, so the baseline is not rewritten.
+- Rust twin in `crates/bpmnkit-layout`; conformance re-recorded.
+
 ## 2026-11-19 — layout P1: collaboration composition
 
 - Uniform pool frame (`auto-layout.ts` `uniformPoolFrame`): every pool, black box and lane ends at the widest pool's right edge.

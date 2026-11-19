@@ -1,0 +1,61 @@
+# Transplant coordination
+## Transplant Desk | id=desk
+[start:message Organ offered] > [service Screen offer] > [send Request tissue typing] > [eventgw Await typing]
+Await typing > [catch:message Typing compatible | key=caseId] > [send Book surgery] > [catch:message Surgery team ready | key=caseId] > [send Dispatch courier] > [catch:message Outcome reported | key=caseId] > [end Transplant done]
+Await typing > [catch:message Typing mismatch | key=caseId] > [send Decline offer] > [end Offer declined]
+Await typing > [catch:timer Typing overdue | after=PT4H] > [send Escalate delay] > [end Escalated]
+## Donor Registry | id=registry
+[start Donor registered] > [user Verify consent] > [send Announce organ] > [send Request donor imaging] > [eventgw Await imaging]
+Await imaging > [catch:message Imaging clear | key=donorId] > [send Confirm viability] > [catch:message Case closure | key=donorId] > [end Registry closed]
+Await imaging > [catch:message Imaging abnormal | key=donorId] > [send Withdraw organ] > [end Organ withdrawn]
+## Surgical Team | id=surgery
+[start:message Surgery requested] > [user Assemble team] > [send Request blood units] > [catch:message Blood units reserved | key=caseId] > [send Report team ready] > [catch:message Organ arrived | key=caseId] > [user Perform transplant] > [send Report outcome] > [end Surgery done]
+## Tissue Typing Lab | id=lab
+[start:message Typing requested] > [service Run HLA match] > [xor Compatible?]
+Compatible? >(Yes: score >= 80) [send Report match] > [end Match reported]
+Compatible? >(No: default) [send Report mismatch] > [end Mismatch reported]
+## Organ Transport | id=transport
+[start:message Courier requested] > [service Plan route] > [send Notify ministry] > [user Collect organ] > [send Deliver organ] > [end Organ delivered]
+## Recipient Ward | id=ward
+[start:message Recipient called in] > [user Prepare recipient] > [send Confirm recipient ready] > [end Recipient admitted]
+## Blood Bank | id=blood
+[start:message Blood requested] > [service Crossmatch units] > [send Reserve units] > [end Blood reserved]
+## Pharmacy | id=pharmacy
+[start:message Immunosuppression ordered] > [user Prepare regimen] > [send Dispatch drugs] > [end Drugs sent]
+## Insurance Liaison | id=insurer
+[start:message Coverage check] > [service Verify coverage] > [send Approve coverage] > [end Coverage approved]
+## Imaging Unit | id=imaging
+[start:message Imaging requested] > [service Acquire scan] > [xor Scan normal?]
+Scan normal? >(Yes: normal = true) [send Report clear scan] > [end Scan clear]
+Scan normal? >(No: default) [send Report abnormal scan] > [end Scan abnormal]
+## Donor Family | blackbox
+## Health Ministry | blackbox
+Announce organ ~> Organ offered: Organ offer
+Request tissue typing ~> Typing requested: Typing order
+Report match ~> Typing compatible: Match result
+Report mismatch ~> Typing mismatch: Mismatch result
+Book surgery ~> Surgery requested: Surgery order
+Report team ready ~> Surgery team ready: Team ready
+Dispatch courier ~> Courier requested: Courier order
+Deliver organ ~> Organ arrived: Organ handover
+Request blood units ~> Blood requested: Blood order
+Reserve units ~> Blood units reserved: Reservation
+Request donor imaging ~> Imaging requested: Imaging order
+Report clear scan ~> Imaging clear: Clear scan
+Report abnormal scan ~> Imaging abnormal: Abnormal scan
+Report clear scan ~> Assemble team: Scan copy
+Book surgery ~> Recipient called in: Call-in
+Confirm recipient ready ~> Assemble team: Recipient status
+Book surgery ~> Immunosuppression ordered: Drug order
+Dispatch drugs ~> Prepare recipient: Drug plan
+Screen offer ~> Coverage check: Coverage query
+Approve coverage ~> Health Ministry: Coverage notice
+Notify ministry ~> Health Ministry: Transport permit request
+Health Ministry ~> Verify consent: Legal clearance
+Withdraw organ ~> Donor Family: Withdrawal notice
+Donor Family ~> Donor registered: Donation consent
+Escalate delay ~> Health Ministry: Delay report
+Report outcome ~> Outcome reported: Outcome
+Report outcome ~> Donor Family: Outcome letter
+Decline offer ~> Case closure: Decline notice
+Report mismatch ~> Case closure: Mismatch notice
