@@ -1,0 +1,5 @@
+# Bread proofing | id=bread
+[start Dough mixed] > [user Knead dough] > [user Let dough rise] > [xor Risen enough?]
+Risen enough? >(Yes: risen = true) [service Bake loaf] > [end Loaf baked]
+Risen enough? >(No: default) Knead dough
+[boundary:timer Oven overheats | on=bakeLoaf after=PT50M] > [user Discard loaf] > [end Loaf discarded]

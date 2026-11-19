@@ -124,3 +124,23 @@ it("routes split and join branches with one bend each, through the gateways' top
 		}
 	}
 })
+
+// P2: tight loops — a back edge runs just below its own row, inside the band
+// between its endpoints and the row below, and enters the merge from below.
+it("keeps a loop tight under its row and enters the merge gateway from below", async () => {
+	const { defs, shape, plane, metrics } = await lay("p2-bread-proofing")
+	const loop = defs.processes[0].sequenceFlows.find(
+		(f) => f.sourceRef === "risenEnough" && f.targetRef === "kneadDough_join",
+	)
+	const w = plane.edges.find((e) => e.bpmnElement === loop.id).waypoints
+	const merge = shape("kneadDough_join")
+	const rise = shape("letDoughRise")
+	const lowest = Math.max(...w.map((p) => p.y))
+	expect(w.length - 2).toBeLessThanOrEqual(2)
+	expect(lowest).toBeGreaterThan(rise.y + rise.height)
+	expect(lowest).toBeLessThan(shape("discardLoaf").y)
+	const last = w[w.length - 1]
+	expect(last.x).toBeCloseTo(centreX(merge), 0)
+	expect(last.y).toBeCloseTo(merge.y + merge.height, 0)
+	expect(metrics.seqCrossings).toBe(0)
+})
