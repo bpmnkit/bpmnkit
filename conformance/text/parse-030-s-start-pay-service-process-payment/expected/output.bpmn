@@ -51,9 +51,9 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="failed_di" bpmnElement="failed">
-        <dc:Bounds x="256" y="158" width="36" height="36"/>
+        <dc:Bounds x="128" y="182" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="218" y="198" width="112" height="14"/>
+          <dc:Bounds x="90" y="222" width="112" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
@@ -66,8 +66,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
         <di:waypoint x="146" y="98"/>
-        <di:waypoint x="146" y="176"/>
-        <di:waypoint x="256" y="176"/>
+        <di:waypoint x="146" y="182"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

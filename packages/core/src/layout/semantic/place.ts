@@ -34,8 +34,11 @@ const EXTERNAL_LABEL_OFFSET = 4
 const GRID_GAP_X = 40
 const GRID_GAP_Y = 20
 export const COMPONENT_GAP = 80
+const ROW_GRID = 10
 export const LANE_PADDING = 40
 export const BOUNDARY_SIZE = 36
+/** Air kept between two boundary events docked side by side, and before a host's corner. */
+const BOUNDARY_CLEARANCE = 4
 /** Height of a lane band with nothing in it: room for one boundary-sized row. */
 export const MIN_LANE_HEIGHT = 2 * LANE_PADDING + BOUNDARY_SIZE
 
@@ -391,6 +394,10 @@ function bandLines(
 							: Math.min(y, box.top - V_GAP - e.below)
 				}
 			}
+			// A row of nothing but exception handlers keeps the spine's 10 px phase,
+			// so its tasks share the main row's grid.
+			if ((byBand.get(band) ?? []).every((id) => graph.exceptionRow.has(id)))
+				y = dir * Math.ceil(Math.abs(y) / ROW_GRID) * ROW_GRID
 			place(band, y)
 			previous = y
 		}
@@ -718,11 +725,26 @@ function dockBoundaryEvents(
 					handlerReach(graph, b.id) - handlerReach(graph, a.id),
 			)
 			const n = ordered.length
+			// A handler in the host's own column (see handlerSteps in graph.ts) is
+			// under the host's centre: its event docks there and the flow drops
+			// straight down. The others share the half toward their handlers, right.
+			const pitch = n > 1 ? (host.width / 2 - BOUNDARY_CLEARANCE) / (n - 1) : 0
+			const column =
+				n === 1 || pitch >= BOUNDARY_SIZE + BOUNDARY_CLEARANCE
+					? ordered.find((e) => inHostColumn(graph, bounds, hostId, host, side, e.id))
+					: undefined
+			const others = ordered.filter((e) => e !== column)
+			const slot = (i: number): number => {
+				const event = ordered[i]
+				if (column === undefined) return ((i + 1) * host.width) / (n + 1)
+				if (event === column) return host.width / 2
+				return host.width / 2 + (others.indexOf(event as BpmnBoundaryEvent) + 1) * pitch
+			}
 			for (let i = 0; i < n; i++) {
 				const event = ordered[i]
 				if (!event) continue
 				bounds.set(event.id, {
-					x: host.x + ((i + 1) * host.width) / (n + 1) - BOUNDARY_SIZE / 2,
+					x: host.x + slot(i) - BOUNDARY_SIZE / 2,
 					y: (side === "top" ? host.y : host.y + host.height) - BOUNDARY_SIZE / 2,
 					width: BOUNDARY_SIZE,
 					height: BOUNDARY_SIZE,
@@ -759,6 +781,26 @@ function handlerDepth(
 		depth = Math.max(depth, side === "top" ? host.y - centre : centre - (host.y + host.height))
 	}
 	return Number.isFinite(depth) ? depth : 0
+}
+
+/** True when a handler of this event sits straight out from the host's centre, past the docked side. */
+function inHostColumn(
+	graph: SemanticGraph,
+	bounds: Map<string, Bounds>,
+	hostId: string,
+	host: Bounds,
+	side: "top" | "bottom",
+	eventId: string,
+): boolean {
+	const mid = host.x + host.width / 2
+	for (const flow of graph.outgoing.get(hostId) ?? []) {
+		if (flow.sourceRef !== eventId) continue
+		const target = bounds.get(flow.targetRef)
+		if (!target || Math.abs(target.x + target.width / 2 - mid) >= 1) continue
+		if (side === "bottom" ? target.y > host.y + host.height : target.y + target.height < host.y)
+			return true
+	}
+	return false
 }
 
 /** How far the handler of a boundary event runs, in ranks. */

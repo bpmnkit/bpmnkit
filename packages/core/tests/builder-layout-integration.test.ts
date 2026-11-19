@@ -586,17 +586,14 @@ describe("Builder → auto-layout integration", () => {
 		expect(b1CenterY).toBeCloseTo(taskBottom, 0)
 		expect(b2CenterY).toBeCloseTo(taskBottom, 0)
 
-		// The grid engine divides the host width into n+1 gaps (bpmn-auto-layout
-		// convention): the two boundary events sit at 1/3 and 2/3 of the host width.
-		// On a 100px-wide task their 36px shapes touch, so this asserts the
-		// spec-defined distinct, symmetric placement rather than a min-gap.
-		// EB2 sits in the band below EB1, so B2 takes the outer (left) slot: B1's
-		// route turns right above EB2's level and never crosses B2's stem.
-		const hostLeft = taskShape.bounds.x
-		const hostW = taskShape.bounds.width
-		expect(b2Shape.bounds.x + b2Shape.bounds.width / 2).toBeCloseTo(hostLeft + hostW / 3, 0)
-		expect(b1Shape.bounds.x + b1Shape.bounds.width / 2).toBeCloseTo(hostLeft + (2 * hostW) / 3, 0)
-		expect(b2Shape.bounds.x).toBeLessThan(b1Shape.bounds.x)
+		// Exception row: B1's handler sits in the host's column, so B1 docks at the
+		// host's centre and drops straight down; B2's handler fans out one column
+		// right, and B2 docks right of B1, clear of it.
+		const hostCentre = taskShape.bounds.x + taskShape.bounds.width / 2
+		expect(b1Shape.bounds.x + b1Shape.bounds.width / 2).toBeCloseTo(hostCentre, 0)
+		expect(b2Shape.bounds.x).toBeGreaterThanOrEqual(b1Shape.bounds.x + b1Shape.bounds.width)
+		const eb1 = shapeFor(diagram.plane.shapes, "EB1").bounds
+		expect(eb1.x + eb1.width / 2).toBeCloseTo(hostCentre, 0)
 
 		// Chain end events must exist in the diagram
 		shapeFor(diagram.plane.shapes, "EB1")
@@ -629,7 +626,7 @@ describe("Builder → auto-layout integration", () => {
 		expect(bCenterY).toBeCloseTo(taskBottom, 0)
 	})
 
-	it("two boundary events are distributed symmetrically on host task bottom edge", () => {
+	it("two boundary events: the first over its handler in the host's column, the second right of it", () => {
 		const defs = Bpmn.createProcess("P")
 			.withAutoLayout()
 			.startEvent("S")
@@ -652,22 +649,11 @@ describe("Builder → auto-layout integration", () => {
 		const b1CenterX = b1Shape.bounds.x + b1Shape.bounds.width / 2
 		const b2CenterX = b2Shape.bounds.x + b2Shape.bounds.width / 2
 
-		// The two events must be symmetric around task center (within 1px)
-		const leftDistance = Math.abs(taskCenterX - b2CenterX)
-		const rightDistance = Math.abs(taskCenterX - b1CenterX)
-		expect(Math.abs(leftDistance - rightDistance)).toBeLessThanOrEqual(2)
-
-		// The grid engine divides the host width into n+1 gaps (bpmn-auto-layout
-		// convention): the two boundary events sit at 1/3 and 2/3 of the host width.
-		// On a 100px-wide task their 36px shapes touch, so this asserts the
-		// spec-defined distinct, symmetric placement rather than a min-gap.
-		// EB2 sits in the band below EB1, so B2 takes the outer (left) slot: B1's
-		// route turns right above EB2's level and never crosses B2's stem.
-		const hostLeft = taskShape.bounds.x
-		const hostW = taskShape.bounds.width
-		expect(b2Shape.bounds.x + b2Shape.bounds.width / 2).toBeCloseTo(hostLeft + hostW / 3, 0)
-		expect(b1Shape.bounds.x + b1Shape.bounds.width / 2).toBeCloseTo(hostLeft + (2 * hostW) / 3, 0)
-		expect(b2Shape.bounds.x).toBeLessThan(b1Shape.bounds.x)
+		// Exception row: B1 docks at the centre over its handler, B2 to its right
+		// over the handler fanned out one column right; their stems never meet.
+		expect(Math.abs(b1CenterX - taskCenterX)).toBeLessThanOrEqual(1)
+		expect(b2CenterX).toBeGreaterThan(taskCenterX)
+		expect(b2Shape.bounds.x).toBeGreaterThanOrEqual(b1Shape.bounds.x + b1Shape.bounds.width)
 	})
 
 	// -----------------------------------------------------------------------

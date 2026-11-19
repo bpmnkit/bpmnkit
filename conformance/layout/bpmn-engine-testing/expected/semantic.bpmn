@@ -275,13 +275,13 @@
         <dc:Bounds x="152" y="82" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="r_done_di" bpmnElement="r_done">
-        <dc:Bounds x="312" y="42" width="36" height="36"/>
+        <dc:Bounds x="280" y="42" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="escalate_di" bpmnElement="escalate">
-        <dc:Bounds x="280" y="138" width="100" height="80"/>
+        <dc:Bounds x="120" y="180" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="r_escalated_di" bpmnElement="r_escalated">
-        <dc:Bounds x="440" y="160" width="36" height="36"/>
+        <dc:Bounds x="280" y="202" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="rf1_di" bpmnElement="rf1">
         <di:waypoint x="60" y="60"/>
@@ -289,16 +289,15 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="rf2_di" bpmnElement="rf2">
         <di:waypoint x="220" y="60"/>
-        <di:waypoint x="312" y="60"/>
+        <di:waypoint x="280" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="rf3_di" bpmnElement="rf3">
         <di:waypoint x="170" y="118"/>
-        <di:waypoint x="170" y="178"/>
-        <di:waypoint x="280" y="178"/>
+        <di:waypoint x="170" y="180"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="rf4_di" bpmnElement="rf4">
-        <di:waypoint x="380" y="178"/>
-        <di:waypoint x="440" y="178"/>
+        <di:waypoint x="220" y="220"/>
+        <di:waypoint x="280" y="220"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

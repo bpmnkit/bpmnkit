@@ -133,9 +133,9 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_fraud_di" bpmnElement="EndEvent_fraud">
-        <dc:Bounds x="350" y="256" width="36" height="36"/>
+        <dc:Bounds x="190" y="280" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="322" y="296" width="91" height="14"/>
+          <dc:Bounds x="162" y="320" width="91" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="StartEvent_item_di" bpmnElement="StartEvent_item">
@@ -169,8 +169,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_toFraudEnd_di" bpmnElement="Flow_toFraudEnd">
         <di:waypoint x="208" y="196"/>
-        <di:waypoint x="208" y="274"/>
-        <di:waypoint x="350" y="274"/>
+        <di:waypoint x="208" y="280"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_toPrice_di" bpmnElement="Flow_toPrice">
         <di:waypoint x="604" y="138"/>

@@ -15,8 +15,8 @@ import type {
 	Waypoint,
 } from "../types.js"
 import { LABEL_CHAR_WIDTH, LABEL_HEIGHT, LABEL_MIN_WIDTH, SUBPROCESS_PADDING } from "../types.js"
-import { assignBands } from "./bands.js"
-import { type SemanticGraph, buildSemanticGraph } from "./graph.js"
+import { assignBands, boundarySide } from "./bands.js"
+import { type SemanticGraph, buildSemanticGraph, placeExceptionRow } from "./graph.js"
 import { externalLabelWidth, place, sizeOf } from "./place.js"
 import { routeFlows } from "./route.js"
 
@@ -108,7 +108,16 @@ export function semanticLayout(
 	const titled = new Set(
 		[...childResults.keys()].filter((id) => graph.byId.get(id)?.name !== undefined),
 	)
-	const bandLayout = assignBands(graph, titled)
+	let bandLayout = assignBands(graph, titled)
+	// Lanes decide a handler's row themselves, so the exception row is for lane-free scopes.
+	if (
+		!laneSet &&
+		placeExceptionRow(graph, bandLayout.bands, (event, host) =>
+			boundarySide(event, titled.has(host)),
+		)
+	) {
+		bandLayout = assignBands(graph, titled)
+	}
 	const { bounds, lanes, gutterX } = place(
 		graph,
 		bandLayout,

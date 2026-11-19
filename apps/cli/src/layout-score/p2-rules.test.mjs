@@ -53,3 +53,32 @@ it("keeps the gateway label clear of every flow", async () => {
 	expect(metrics.labelOnEdge).toBe(0)
 	expect(plane.shapes.length).toBeGreaterThan(5)
 })
+
+// P2: exception row — a handler starts in its host's column, straight below the
+// event, and all handlers share one row; a second boundary fans out to the right.
+it("drops each boundary handler straight down into one shared row", async () => {
+	const { defs, shape, plane, metrics } = await lay("p2-bike-repair")
+	expect(metrics.shapeOverlaps).toBe(0)
+	const centreY = (b) => b.y + b.height / 2
+	const flows = defs.processes.flatMap((p) => p.sequenceFlows)
+	const edgeFrom = (id) => {
+		const flow = flows.find((f) => f.sourceRef === id)
+		return plane.edges.find((e) => e.bpmnElement === flow?.id)
+	}
+	const inspect = shape("inspectBike")
+	const repair = shape("repairBike")
+	const notify = shape("notifyOwner")
+	const refused = shape("repairRefused")
+	const delay = shape("delayLogged")
+	expect(Math.abs(centreX(notify) - centreX(inspect))).toBeLessThan(1)
+	expect(Math.abs(centreX(refused) - centreX(repair))).toBeLessThan(1)
+	for (const id of ["inspectionOverdue", "frameCracked"]) {
+		const e = edgeFrom(id)
+		expect(e, id).toBeTruthy()
+		expect(e.waypoints.length, id).toBe(2)
+	}
+	expect(notify.y).toBeGreaterThan(inspect.y + inspect.height)
+	expect(Math.abs(centreY(refused) - centreY(notify))).toBeLessThan(1)
+	expect(Math.abs(centreY(delay) - centreY(notify))).toBeLessThan(1)
+	expect(centreX(delay)).toBeGreaterThan(centreX(refused))
+})

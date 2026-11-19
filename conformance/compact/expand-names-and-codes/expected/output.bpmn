@@ -117,16 +117,16 @@
         <dc:Bounds x="136" y="0" width="488" height="208"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="failed_di" bpmnElement="failed">
-        <dc:Bounds x="508.4" y="190" width="36" height="36"/>
+        <dc:Bounds x="362" y="190" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="escalated_di" bpmnElement="escalated">
-        <dc:Bounds x="410.8" y="190" width="36" height="36"/>
+        <dc:Bounds x="602" y="190" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="cancel_di" bpmnElement="cancel">
-        <dc:Bounds x="313.2" y="190" width="36" height="36"/>
+        <dc:Bounds x="522" y="190" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="stop_di" bpmnElement="stop">
-        <dc:Bounds x="215.6" y="190" width="36" height="36"/>
+        <dc:Bounds x="442" y="190" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="again_di" bpmnElement="again">
         <dc:Bounds x="724" y="100" width="36" height="36"/>
@@ -141,16 +141,16 @@
         <dc:Bounds x="1012" y="100" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="e_failed_di" bpmnElement="e_failed">
-        <dc:Bounds x="724" y="268" width="36" height="36"/>
+        <dc:Bounds x="362" y="290" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="e_escalated_di" bpmnElement="e_escalated">
-        <dc:Bounds x="724" y="364" width="36" height="36"/>
+        <dc:Bounds x="724" y="290" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="e_cancel_di" bpmnElement="e_cancel">
-        <dc:Bounds x="724" y="460" width="36" height="36"/>
+        <dc:Bounds x="724" y="390" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="e_stop_di" bpmnElement="e_stop">
-        <dc:Bounds x="724" y="556" width="36" height="36"/>
+        <dc:Bounds x="724" y="490" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="sub_start_di" bpmnElement="sub_start">
         <dc:Bounds x="186" y="100" width="36" height="36"/>
@@ -185,24 +185,23 @@
         <di:waypoint x="1012" y="118"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f6_di" bpmnElement="f6">
-        <di:waypoint x="526.4" y="226"/>
-        <di:waypoint x="526.4" y="286"/>
-        <di:waypoint x="724" y="286"/>
+        <di:waypoint x="380" y="226"/>
+        <di:waypoint x="380" y="290"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f7_di" bpmnElement="f7">
-        <di:waypoint x="428.8" y="226"/>
-        <di:waypoint x="428.8" y="382"/>
-        <di:waypoint x="724" y="382"/>
+        <di:waypoint x="620" y="226"/>
+        <di:waypoint x="620" y="308"/>
+        <di:waypoint x="724" y="308"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f8_di" bpmnElement="f8">
-        <di:waypoint x="331.2" y="226"/>
-        <di:waypoint x="331.2" y="478"/>
-        <di:waypoint x="724" y="478"/>
+        <di:waypoint x="540" y="226"/>
+        <di:waypoint x="540" y="408"/>
+        <di:waypoint x="724" y="408"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f9_di" bpmnElement="f9">
-        <di:waypoint x="233.6" y="226"/>
-        <di:waypoint x="233.6" y="574"/>
-        <di:waypoint x="724" y="574"/>
+        <di:waypoint x="460" y="226"/>
+        <di:waypoint x="460" y="508"/>
+        <di:waypoint x="724" y="508"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="s1_di" bpmnElement="s1">
         <di:waypoint x="222" y="118"/>

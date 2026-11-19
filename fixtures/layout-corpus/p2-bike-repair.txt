@@ -1,0 +1,5 @@
+# Bike repair | id=bikeRepair
+[start Bike dropped off] > [user Inspect bike] > [service Order parts] > [user Repair bike] > [service Book test ride] > [end Bike collected]
+[boundary:timer Inspection overdue | on=inspectBike after=PT2H nonint] > [send Notify owner] > [end Owner notified]
+[boundary:error Frame cracked | on=repairBike error=CRACKED] > [end Repair refused]
+[boundary:timer Repair overdue | on=repairBike after=P1D nonint] > [end Delay logged]
