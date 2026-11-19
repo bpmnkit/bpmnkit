@@ -25,9 +25,11 @@ export function layoutProcess(
 	collapsed?: ReadonlySet<string>,
 	/** Tool-grid hints; only the `semantic` engine packs tools into a grid, so `grid` ignores them. */
 	grids?: LayoutHints["grids"],
+	/** The process is a pool's: its artifacts keep the stacked placement (pool sizes drive message routing). */
+	inPool = false,
 ): LayoutResult {
 	if (engine === "grid") return gridLayoutFlowNodes(process.flowElements, process.sequenceFlows)
-	return semanticLayoutProcess(process, collapsed, grids)
+	return semanticLayoutProcess(process, collapsed, grids, inPool)
 }
 
 /** Layout a set of flow nodes and sequence flows (used by ascii, proxy, compact). */

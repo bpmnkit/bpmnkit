@@ -182,99 +182,99 @@
   <bpmndi:BPMNDiagram id="ai-agent-chat-with-tools_di">
     <bpmndi:BPMNPlane id="ai-agent-chat-with-tools_di_plane" bpmnElement="ai-agent-chat-with-tools">
       <bpmndi:BPMNShape id="StartEvent_TaskReceived_di" bpmnElement="StartEvent_TaskReceived">
-        <dc:Bounds x="102" y="271" width="36" height="36"/>
+        <dc:Bounds x="107" y="272" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="45" y="311" width="150" height="14"/>
+          <dc:Bounds x="50" y="312" width="150" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_RunAgent_di" bpmnElement="Gateway_RunAgent" isMarkerVisible="true">
-        <dc:Bounds x="245" y="264" width="50" height="50"/>
+        <dc:Bounds x="250" y="265" width="50" height="50"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="AI_Agent_di" bpmnElement="AI_Agent" isExpanded="true">
-        <dc:Bounds x="370" y="249" width="700" height="220"/>
+        <dc:Bounds x="375" y="250" width="700" height="220"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="LookupSampleUsers_di" bpmnElement="LookupSampleUsers">
-        <dc:Bounds x="445" y="319" width="100" height="80"/>
+        <dc:Bounds x="450" y="320" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="SearchRecipes_di" bpmnElement="SearchRecipes">
-        <dc:Bounds x="595" y="319" width="100" height="80"/>
+        <dc:Bounds x="600" y="320" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="FetchSafeJoke_di" bpmnElement="FetchSafeJoke">
-        <dc:Bounds x="745" y="319" width="100" height="80"/>
+        <dc:Bounds x="750" y="320" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ListSampleTechnologyProducts_di" bpmnElement="ListSampleTechnologyProducts">
-        <dc:Bounds x="895" y="319" width="100" height="80"/>
+        <dc:Bounds x="900" y="320" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="UserTask_ReviewAgentResponse_di" bpmnElement="UserTask_ReviewAgentResponse">
-        <dc:Bounds x="1120" y="249" width="100" height="80"/>
+        <dc:Bounds x="1125" y="250" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_UserSatisfied_di" bpmnElement="Gateway_UserSatisfied" isMarkerVisible="true">
-        <dc:Bounds x="1295" y="264" width="50" height="50"/>
+        <dc:Bounds x="1300" y="265" width="50" height="50"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1268" y="318" width="105" height="14"/>
+          <dc:Bounds x="1273" y="319" width="105" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="EndEvent_UserSatisfied_di" bpmnElement="EndEvent_UserSatisfied">
-        <dc:Bounds x="1452" y="271" width="36" height="36"/>
+        <dc:Bounds x="1457" y="272" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1421" y="311" width="98" height="14"/>
+          <dc:Bounds x="1426" y="312" width="98" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_StartEvent_TaskReceived_1_di" bpmnElement="TextAnnotation_StartEvent_TaskReceived_1">
-        <dc:Bounds x="20" y="106" width="200" height="115"/>
+        <dc:Bounds x="25" y="107" width="200" height="115"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_AI_Agent_1_di" bpmnElement="TextAnnotation_AI_Agent_1">
-        <dc:Bounds x="620" y="141" width="200" height="58"/>
+        <dc:Bounds x="625" y="142" width="200" height="58"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_FetchSafeJoke_1_di" bpmnElement="TextAnnotation_FetchSafeJoke_1">
-        <dc:Bounds x="695" y="20" width="200" height="101"/>
+        <dc:Bounds x="700" y="21" width="200" height="101"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_StartEvent_TaskReceived_Gateway_RunAgent_di" bpmnElement="Flow_StartEvent_TaskReceived_Gateway_RunAgent">
-        <di:waypoint x="138" y="289"/>
-        <di:waypoint x="245" y="289"/>
+        <di:waypoint x="143" y="290"/>
+        <di:waypoint x="250" y="290"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_Gateway_RunAgent_AI_Agent_di" bpmnElement="Flow_Gateway_RunAgent_AI_Agent">
-        <di:waypoint x="295" y="289"/>
-        <di:waypoint x="370" y="289"/>
+        <di:waypoint x="300" y="290"/>
+        <di:waypoint x="375" y="290"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_AI_Agent_UserTask_ReviewAgentResponse_di" bpmnElement="Flow_AI_Agent_UserTask_ReviewAgentResponse">
-        <di:waypoint x="1070" y="289"/>
-        <di:waypoint x="1120" y="289"/>
+        <di:waypoint x="1075" y="290"/>
+        <di:waypoint x="1125" y="290"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied_di" bpmnElement="Flow_UserTask_ReviewAgentResponse_Gateway_UserSatisfied">
-        <di:waypoint x="1220" y="289"/>
-        <di:waypoint x="1295" y="289"/>
+        <di:waypoint x="1225" y="290"/>
+        <di:waypoint x="1300" y="290"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_Yes_di" bpmnElement="Flow_Yes">
-        <di:waypoint x="1345" y="289"/>
-        <di:waypoint x="1452" y="289"/>
+        <di:waypoint x="1350" y="290"/>
+        <di:waypoint x="1457" y="290"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1379" y="265" width="40" height="14"/>
+          <dc:Bounds x="1384" y="266" width="40" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_No_di" bpmnElement="Flow_No">
-        <di:waypoint x="1320" y="314"/>
-        <di:waypoint x="1320" y="499"/>
-        <di:waypoint x="270" y="499"/>
-        <di:waypoint x="270" y="314"/>
+        <di:waypoint x="1325" y="315"/>
+        <di:waypoint x="1325" y="500"/>
+        <di:waypoint x="275" y="500"/>
+        <di:waypoint x="275" y="315"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="775" y="475" width="40" height="14"/>
+          <dc:Bounds x="780" y="476" width="40" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_StartEvent_TaskReceived_1_di" bpmnElement="Association_StartEvent_TaskReceived_1">
-        <di:waypoint x="120" y="271"/>
-        <di:waypoint x="120" y="221"/>
+        <di:waypoint x="125" y="272"/>
+        <di:waypoint x="125" y="222"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_AI_Agent_1_di" bpmnElement="Association_AI_Agent_1">
-        <di:waypoint x="720" y="249"/>
-        <di:waypoint x="720" y="199"/>
+        <di:waypoint x="725" y="250"/>
+        <di:waypoint x="725" y="200"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Association_FetchSafeJoke_1_di" bpmnElement="Association_FetchSafeJoke_1">
-        <di:waypoint x="845" y="359"/>
-        <di:waypoint x="857" y="359"/>
-        <di:waypoint x="857" y="133"/>
-        <di:waypoint x="795" y="133"/>
-        <di:waypoint x="795" y="121"/>
+        <di:waypoint x="850" y="360"/>
+        <di:waypoint x="862" y="360"/>
+        <di:waypoint x="862" y="134"/>
+        <di:waypoint x="800" y="134"/>
+        <di:waypoint x="800" y="122"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

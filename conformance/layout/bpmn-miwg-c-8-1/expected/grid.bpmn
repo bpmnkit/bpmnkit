@@ -1133,7 +1133,7 @@ Your BOC Adonis Process Automation</MailBody>
         <di:waypoint x="575" y="200"/>
         <di:waypoint x="675" y="200"/>
         <bpmndi:BPMNLabel color:color="#000000" triso:defaultBounds="true" triso:labelPosition="midbottom" labelStyle="LS_a9e3a63e-db87-4fa1-9091-328acae4f490_0">
-          <dc:Bounds x="551" y="136" width="182" height="14"/>
+          <dc:Bounds x="585" y="136" width="182" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="_2922ee8a-0adb-4253-aa64-7ee31136438d" bpmnElement="_325973e7-0bc8-4136-b6df-be1e681d8608" color:border-color="#000000">

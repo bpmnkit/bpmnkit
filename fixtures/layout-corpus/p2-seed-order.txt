@@ -1,0 +1,6 @@
+# Seed order | id=seeds
+[start Seed order placed] > [user Pick seed packets] > [service Pack crate] > [end Crate shipped]
+[object Packing list] ..> Pick seed packets
+[store Seed stock] ..> Pick seed packets
+Pick seed packets ..> [object Stock adjustment]
+[object Crate label] ..> Pack crate

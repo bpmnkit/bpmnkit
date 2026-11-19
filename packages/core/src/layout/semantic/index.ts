@@ -26,6 +26,9 @@ const SUB_PADDING = SUBPROCESS_PADDING
 const TITLE_BAND = 28
 /** Gap between an event or gateway and its external label. */
 const LABEL_OFFSET = 4
+/** Step and limit when a blocked external label slides along a stem. */
+const LABEL_SLIDE = 10
+const MAX_LABEL_SLIDE = 60
 
 const CONTAINER_TYPES = new Set(["subProcess", "adHocSubProcess", "eventSubProcess", "transaction"])
 
@@ -44,6 +47,7 @@ export function semanticLayoutProcess(
 	process: BpmnProcess,
 	collapsed?: ReadonlySet<string>,
 	grids?: LayoutHints["grids"],
+	inPool = false,
 ): LayoutResult {
 	return semanticLayout(
 		process.flowElements,
@@ -52,6 +56,8 @@ export function semanticLayoutProcess(
 		collapsed,
 		false,
 		grids,
+		undefined,
+		!inPool,
 	)
 }
 
@@ -67,6 +73,8 @@ export function semanticLayout(
 	grids?: LayoutHints["grids"],
 	/** The hint for this scope's own grid, when it is a hinted container's interior. */
 	grid?: GridHint,
+	/** Slot data references under the activity they are wired to. */
+	slotArtifacts = false,
 ): LayoutResult {
 	if (flowElements.length === 0) return { nodes: [], edges: [] }
 
@@ -110,6 +118,7 @@ export function semanticLayout(
 		titled,
 		grid,
 		axes,
+		slotArtifacts,
 	)
 	const besideStem = boundaryLabels(graph, bounds)
 
@@ -377,6 +386,18 @@ function clearExternalLabels(nodes: LayoutNode[], edges: LayoutEdge[]): void {
 			{ ...label, x: cx + beside, y: above },
 			{ ...label, x: cx - beside - label.width, y: above },
 		]
+		// Still blocked, usually by a task beside the gateway: slide the label
+		// along the stem until it is past that neighbour.
+		for (let slide = LABEL_SLIDE; slide <= MAX_LABEL_SLIDE; slide += LABEL_SLIDE) {
+			for (const [dx, y] of [
+				[cx + beside, below + slide],
+				[cx - beside - label.width, below + slide],
+				[cx + beside, above - slide],
+				[cx - beside - label.width, above - slide],
+			] as const) {
+				candidates.push({ ...label, x: dx, y })
+			}
+		}
 		const spot = candidates.find(clear)
 		if (spot) {
 			label.x = spot.x

@@ -30,27 +30,27 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ad-hoc-tools">
       <bpmndi:BPMNShape id="start_di" bpmnElement="start">
-        <dc:Bounds x="20" y="42" width="36" height="36"/>
+        <dc:Bounds x="27" y="42" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Agent_di" bpmnElement="Agent" isExpanded="true">
-        <dc:Bounds x="138" y="20" width="400" height="220"/>
+        <dc:Bounds x="145" y="20" width="400" height="220"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="T1_di" bpmnElement="T1">
-        <dc:Bounds x="213" y="90" width="100" height="80"/>
+        <dc:Bounds x="220" y="90" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="T2_di" bpmnElement="T2">
-        <dc:Bounds x="363" y="90" width="100" height="80"/>
+        <dc:Bounds x="370" y="90" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="end_di" bpmnElement="end">
-        <dc:Bounds x="620" y="42" width="36" height="36"/>
+        <dc:Bounds x="627" y="42" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="f1_di" bpmnElement="f1">
-        <di:waypoint x="56" y="60"/>
-        <di:waypoint x="138" y="60"/>
+        <di:waypoint x="63" y="60"/>
+        <di:waypoint x="145" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f2_di" bpmnElement="f2">
-        <di:waypoint x="538" y="60"/>
-        <di:waypoint x="620" y="60"/>
+        <di:waypoint x="545" y="60"/>
+        <di:waypoint x="627" y="60"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

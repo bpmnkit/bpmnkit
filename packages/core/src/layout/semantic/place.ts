@@ -116,6 +116,8 @@ export function place(
 	 * continues the row's line, and the flow runs straight through it.
 	 */
 	axes: ReadonlyMap<string, number> = new Map(),
+	/** Slot flow-less data references under the activity they are wired to. */
+	slotArtifacts = false,
 ): Placement {
 	const bounds = new Map<string, Bounds>()
 	const componentOf = new Map<string, number>()
@@ -153,10 +155,14 @@ export function place(
 	// ── Rows: one line per band, laid out per component then stacked ──
 	const loose = packLoose ? looseNodes(graph) : []
 	const looseSet = new Set(loose)
+	const artifactOwners =
+		laneSet || packLoose || !slotArtifacts ? new Map<string, string>() : artifactOwnersOf(graph)
 	let cursorY = 0
 	for (let component = 0; component < graph.components.length; component++) {
 		const members = (graph.components[component] ?? []).filter((id) => graph.byId.has(id))
 		if (members.length === 0) continue
+		// An artifact wired to one activity is slotted under it below, not stacked apart.
+		if (members.length === 1 && artifactOwners.has(members[0] as string)) continue
 		if (members.length === 1 && looseSet.has(members[0] as string)) {
 			// The whole grid takes the place of the first loose node; the rest are in it.
 			if (members[0] === loose[0]) cursorY = placeGrid(graph, loose, sizes, cursorY, bounds, grid)
@@ -192,6 +198,7 @@ export function place(
 	separateSameCell(graph, bandLayout, bounds)
 	const lanes = laneSet ? applyLanes(graph, laneSet, bounds) : []
 	dockBoundaryEvents(graph, bounds, titled)
+	placeArtifacts(graph, artifactOwners, bounds)
 	return { bounds, lanes, gutterX }
 }
 
@@ -764,4 +771,93 @@ function handlerReach(graph: SemanticGraph, eventId: string): number {
 		}
 	}
 	return reach
+}
+
+const ARTIFACT_TYPES = new Set(["dataObjectReference", "dataStoreReference"])
+/** Gap between an activity and the artifact slotted beside it. */
+const ARTIFACT_GAP = 40
+const ARTIFACT_CLEARANCE = 10
+const ARTIFACT_SPACING = 20
+
+/**
+ * Flow-less data references mapped to the activity they are wired to (the
+ * first one declared), so they can be slotted next to it.
+ */
+function artifactOwnersOf(graph: SemanticGraph): Map<string, string> {
+	const owners = new Map<string, string>()
+	const isArtifact = (id: string): boolean => {
+		const el = graph.byId.get(id)
+		return (
+			el !== undefined &&
+			ARTIFACT_TYPES.has(el.type) &&
+			(graph.outgoing.get(id) ?? []).length === 0 &&
+			(graph.incoming.get(id) ?? []).length === 0
+		)
+	}
+	const claim = (ref: string, owner: string): void => {
+		if (
+			!owners.has(ref) &&
+			isArtifact(ref) &&
+			!ARTIFACT_TYPES.has(graph.byId.get(owner)?.type ?? "")
+		) {
+			owners.set(ref, owner)
+		}
+	}
+	for (const node of graph.nodes) {
+		for (const a of node.dataInputAssociations ?? [])
+			for (const ref of a.sourceRefs) claim(ref, node.id)
+		for (const a of node.dataOutputAssociations ?? []) {
+			if (a.targetRef !== undefined) claim(a.targetRef, node.id)
+		}
+	}
+	return owners
+}
+
+/**
+ * Put each artifact on its activity's centre line, below it first (the
+ * association is then one short vertical line), above it for a second one
+ * (and first when boundary events hang below). More go beside those, and a
+ * taken spot sends the artifact down until the area is clear.
+ */
+function placeArtifacts(
+	graph: SemanticGraph,
+	owners: ReadonlyMap<string, string>,
+	bounds: Map<string, Bounds>,
+): void {
+	const taken: Bounds[] = [...bounds.values()]
+	const hits = (b: Bounds): boolean =>
+		taken.some(
+			(o) =>
+				b.x - ARTIFACT_CLEARANCE < o.x + o.width &&
+				o.x < b.x + b.width + ARTIFACT_CLEARANCE &&
+				b.y - ARTIFACT_CLEARANCE < o.y + o.height &&
+				o.y < b.y + b.height + ARTIFACT_CLEARANCE,
+		)
+	for (const [ref, owner] of owners) {
+		const host = bounds.get(owner)
+		if (!host) continue
+		const size = ELEMENT_SIZES[graph.byId.get(ref)?.type ?? ""] ?? DEFAULT_SIZE
+		const centre = host.x + host.width / 2
+		const below = host.y + host.height + ARTIFACT_GAP
+		const above = host.y - ARTIFACT_GAP - size.height
+		const at = (dx: number, y: number): Bounds => ({
+			x: centre + dx - size.width / 2,
+			y,
+			width: size.width,
+			height: size.height,
+		})
+		const hung = (graph.attachers.get(owner) ?? []).length > 0
+		const candidates = hung ? [at(0, above), at(0, below)] : [at(0, below), at(0, above)]
+		const step = size.width + ARTIFACT_SPACING
+		for (const k of [1, 2, 3]) {
+			candidates.push(at(k * step, below), at(-k * step, below))
+		}
+		let spot = candidates.find((b) => !hits(b))
+		if (!spot) {
+			spot = at(0, below)
+			while (hits(spot)) spot = { ...spot, y: spot.y + 10 }
+		}
+		bounds.set(ref, spot)
+		taken.push(spot)
+	}
 }

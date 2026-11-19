@@ -27,44 +27,44 @@
   <bpmndi:BPMNDiagram id="Trisotech_Visio-_6" documentation="" name="A.1.0" resolution="96.00000267028808">
     <bpmndi:BPMNPlane bpmnElement="WFP-6-">
       <bpmndi:BPMNShape id="S1373649849857__93c466ab-b271-4376-a427-f4c353d55ce8" bpmnElement="_93c466ab-b271-4376-a427-f4c353d55ce8">
-        <dc:Bounds x="41" y="42" width="36" height="36"/>
+        <dc:Bounds x="42" y="42" width="36" height="36"/>
         <bpmndi:BPMNLabel labelStyle="LS1373649849858">
-          <dc:Bounds x="20" y="82" width="77" height="14"/>
+          <dc:Bounds x="21" y="82" width="77" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="S1373649849859__ec59e164-68b4-4f94-98de-ffb1c58a84af" bpmnElement="_ec59e164-68b4-4f94-98de-ffb1c58a84af">
-        <dc:Bounds x="159" y="20" width="100" height="80"/>
+        <dc:Bounds x="160" y="20" width="100" height="80"/>
         <bpmndi:BPMNLabel labelStyle="LS1373649849858"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="S1373649849860__820c21c0-45f3-473b-813f-06381cc637cd" bpmnElement="_820c21c0-45f3-473b-813f-06381cc637cd">
-        <dc:Bounds x="309" y="20" width="100" height="80"/>
+        <dc:Bounds x="310" y="20" width="100" height="80"/>
         <bpmndi:BPMNLabel labelStyle="LS1373649849858"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="S1373649849861__e70a6fcb-913c-4a7b-a65d-e83adc73d69c" bpmnElement="_e70a6fcb-913c-4a7b-a65d-e83adc73d69c">
-        <dc:Bounds x="459" y="20" width="100" height="80"/>
+        <dc:Bounds x="460" y="20" width="100" height="80"/>
         <bpmndi:BPMNLabel labelStyle="LS1373649849858"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="S1373649849862__a47df184-085b-49f7-bb82-031c84625821" bpmnElement="_a47df184-085b-49f7-bb82-031c84625821">
-        <dc:Bounds x="641" y="42" width="36" height="36"/>
+        <dc:Bounds x="642" y="42" width="36" height="36"/>
         <bpmndi:BPMNLabel labelStyle="LS1373649849858">
-          <dc:Bounds x="627" y="82" width="63" height="14"/>
+          <dc:Bounds x="628" y="82" width="63" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="E1373649849865__e16564d7-0c4c-413e-95f6-f668a3f851fb" bpmnElement="_e16564d7-0c4c-413e-95f6-f668a3f851fb">
-        <di:waypoint x="77" y="60"/>
-        <di:waypoint x="159" y="60"/>
+        <di:waypoint x="78" y="60"/>
+        <di:waypoint x="160" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="E1373649849864__d77dd5ec-e4e7-420e-bbe7-8ac9cd1df599" bpmnElement="_d77dd5ec-e4e7-420e-bbe7-8ac9cd1df599">
-        <di:waypoint x="259" y="60"/>
-        <di:waypoint x="309" y="60"/>
+        <di:waypoint x="260" y="60"/>
+        <di:waypoint x="310" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="E1373649849866__2aa47410-1b0e-4f8b-ad54-d6f798080cb4" bpmnElement="_2aa47410-1b0e-4f8b-ad54-d6f798080cb4">
-        <di:waypoint x="409" y="60"/>
-        <di:waypoint x="459" y="60"/>
+        <di:waypoint x="410" y="60"/>
+        <di:waypoint x="460" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="E1373649849867__8e8fe679-eb3b-4c43-a4d6-891e7087ff80" bpmnElement="_8e8fe679-eb3b-4c43-a4d6-891e7087ff80">
-        <di:waypoint x="559" y="60"/>
-        <di:waypoint x="641" y="60"/>
+        <di:waypoint x="560" y="60"/>
+        <di:waypoint x="642" y="60"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
     <bpmndi:BPMNLabelStyle id="LS1373649849858">

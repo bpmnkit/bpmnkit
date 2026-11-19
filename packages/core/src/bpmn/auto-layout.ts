@@ -992,6 +992,30 @@ function ancestorIndex(defs: BpmnDefinitions, collab: BpmnCollaboration): Map<st
  * @param hints - Tool-grid shapes and annotation sides the builder collected;
  *   they steer placement only and are not written to `defs`.
  */
+/**
+ * Translation (0-9 px per axis) that puts the most shape origins on the 10 px
+ * grid. A pure shift keeps every distance, so no other aesthetic moves; ties
+ * keep the unshifted position.
+ */
+function gridPhase(nodes: LayoutNode[], dx: number, dy: number): { x: number; y: number } {
+	const on = (v: number, t: number): boolean => (Math.round(v) + t) % 10 === 0
+	let best = { x: 0, y: 0 }
+	let bestN = -1
+	for (let ty = 0; ty < 10; ty++) {
+		for (let tx = 0; tx < 10; tx++) {
+			let n = 0
+			for (const node of nodes) {
+				if (on(node.bounds.x + dx, tx) && on(node.bounds.y + dy, ty)) n++
+			}
+			if (n > bestN) {
+				bestN = n
+				best = { x: tx, y: ty }
+			}
+		}
+	}
+	return best
+}
+
 export function applyAutoLayout(
 	defs: BpmnDefinitions,
 	engine: LayoutEngine = "semantic",
@@ -1030,7 +1054,10 @@ export function applyAutoLayout(
 		// stack follows the message flows rather than the declaration order.
 		for (const pool of participantPools) {
 			if (pool.process && !layoutOf.has(pool.process)) {
-				layoutOf.set(pool.process, layoutProcess(pool.process, engine, collapsed, hints?.grids))
+				layoutOf.set(
+					pool.process,
+					layoutProcess(pool.process, engine, collapsed, hints?.grids, true),
+				)
 			}
 		}
 		const depths = depthIndex(layoutOf.values())
@@ -1054,7 +1081,14 @@ export function applyAutoLayout(
 	// geometry is committed.
 	const layouts = pools.map((pool) =>
 		pool.process
-			? (layoutOf.get(pool.process) ?? layoutProcess(pool.process, engine, collapsed, hints?.grids))
+			? (layoutOf.get(pool.process) ??
+				layoutProcess(
+					pool.process,
+					engine,
+					collapsed,
+					hints?.grids,
+					pool.participantId !== undefined,
+				))
 			: { nodes: [], edges: [] },
 	)
 	const alignment = alignPools(
@@ -1168,6 +1202,9 @@ export function applyAutoLayout(
 			// A layout pass must not invent a participant to hold them.
 			dx = headersWidth + PADDING - minX
 			dy = laneBands ? processTop - bandTop : processTop + PADDING - minY
+			const phase = gridPhase(result.nodes, dx, dy)
+			dx += phase.x
+			dy += phase.y
 		}
 		/** Lanes of a process outside any pool, drawn straight on its plane. */
 		const bareLanes =

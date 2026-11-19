@@ -449,7 +449,7 @@
         <di:waypoint x="1960" y="4"/>
         <di:waypoint x="1960" y="35"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="579" y="106" width="63" height="14"/>
+          <dc:Bounds x="1929" y="106" width="63" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f_plain_di" bpmnElement="f_plain">

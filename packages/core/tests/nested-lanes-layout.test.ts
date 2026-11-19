@@ -277,7 +277,7 @@ describe("auto-layout without nested lanes", () => {
 	it.each([
 		["02-collaboration.bpmn", "df7cac0b613db38ed687cc0ba1ac0640e0d1f4e4f335898289432670c48c0ca4"],
 		// Its laned process WFP-6-2 has no pool: its lanes are drawn on its own plane.
-		["miwg-A.4.0.bpmn", "1088af4f848819f4e06d29c416fa7182c2dfaee753ebd02ea9f1dd20eb715aec"],
+		["miwg-A.4.0.bpmn", "32120d1df7a834451c21d9bc91a467bcf0b5d5a8ee1ace54d5556d096945b2d6"],
 	])("lays out %s byte for byte as before", (name, hash) => {
 		expect(sha256Hex(serializeBpmn(applyAutoLayout(fixture(name))))).toBe(hash)
 	})
