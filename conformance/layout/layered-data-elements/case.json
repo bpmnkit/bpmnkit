@@ -1,0 +1,4 @@
+{
+  "input": "bpmn/data-elements/input.bpmn",
+  "runs": { "layered": { "engine": "layered" } }
+}

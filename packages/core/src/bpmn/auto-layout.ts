@@ -1207,6 +1207,22 @@ export function applyAutoLayout(
 	engine: LayoutEngine = "semantic",
 	hints?: LayoutHints,
 ): BpmnDefinitions {
+	if (engine === "layered" && defs.collaborations.some((c) => c.messageFlows.length > 0)) {
+		// Pools are laid out one by one, blind to the message flows between them.
+		// The layered collaboration stands unless it crosses more messages than
+		// the semantic one composed from the same pool order rules.
+		const layered = layoutWithOrdering(defs, "layered", hints)
+		const semantic = layoutWithOrdering(defs, "semantic", hints)
+		return messageScore(layered).crossings <= messageScore(semantic).crossings ? layered : semantic
+	}
+	return layoutWithOrdering(defs, engine, hints)
+}
+
+function layoutWithOrdering(
+	defs: BpmnDefinitions,
+	engine: LayoutEngine,
+	hints?: LayoutHints,
+): BpmnDefinitions {
 	const nearest: PoolOrdering = { useSketch: false, sketchDiffers: false }
 	const laidOut = layoutDefinitions(defs, engine, hints, nearest)
 	if (!nearest.sketchDiffers) return laidOut

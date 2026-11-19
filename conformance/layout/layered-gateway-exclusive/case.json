@@ -1,0 +1,4 @@
+{
+  "input": "layout/edge-gateway-exclusive/input.bpmn",
+  "runs": { "layered": { "engine": "layered" } }
+}

@@ -364,7 +364,7 @@ Run options (all optional):
 
 | Option | Meaning |
 |---|---|
-| `engine` | `"semantic"` (default) or `"grid"`: the `LayoutEngine` passed to `applyAutoLayout`. |
+| `engine` | `"semantic"` (default), `"grid"` or `"layered"`: the `LayoutEngine` passed to `applyAutoLayout`. The `layered-*` cases run only `layered`. |
 | `hints.grids` | `{"<adHocSubProcessId>": {"columns"?: n, "fill"?: "row" \| "column"}}`: `LayoutHints.grids` (a `Map` in TS). |
 | `hints.annotationSides` | `{"<textAnnotationId>": "above" \| "below" \| "left" \| "right"}`: `LayoutHints.annotationSides`. |
 
