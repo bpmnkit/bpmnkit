@@ -239,6 +239,7 @@ fn graph_of<'a>(
         end_reach: RefCell::new(None),
         exception_row: Default::default(),
         stack_detours: false,
+        handoffs: Default::default(),
     }
 }
 

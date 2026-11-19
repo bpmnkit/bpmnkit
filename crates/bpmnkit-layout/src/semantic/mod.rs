@@ -148,7 +148,7 @@ pub fn semantic_layout(
     }
     let lane_info = lane_set.map(|ls| lanes::lane_plan(&graph, ls));
     let graph = std::cell::RefCell::new(graph);
-    let run = |handoffs: IndexSet<&str>,
+    let run = |handoffs: IndexSet<_>,
                lane_opts: &LaneOptions,
                children: IndexMap<&str, LayoutResult>,
                planes: Vec<Plane>|

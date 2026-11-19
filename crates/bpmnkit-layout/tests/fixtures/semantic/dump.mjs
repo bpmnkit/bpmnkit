@@ -13,9 +13,11 @@ const CONF = "/home/user/bpmnkit/conformance/bpmn"
 let src = readFileSync(`${DIST}/layout/semantic/index.js`, "utf8")
 src = src
 	.replace('"../grid/edge-labels.js"', `"${DIST}/layout/grid/edge-labels.js"`)
+	.replace('"../layered/index.js"', `"${DIST}/layout/layered/index.js"`)
 	.replace('"../types.js"', `"${DIST}/layout/types.js"`)
 	.replace('"./bands.js"', `"${DIST}/layout/semantic/bands.js"`)
 	.replace('"./graph.js"', `"${DIST}/layout/semantic/graph.js"`)
+	.replace('"./lanes.js"', `"${DIST}/layout/semantic/lanes.js"`)
 	.replace('"./place.js"', `"${DIST}/layout/semantic/place.js"`)
 	.replace(
 		'import { routeFlows } from "./route.js";',

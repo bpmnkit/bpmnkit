@@ -6,7 +6,7 @@ use bpmnkit_bpmn::parse_bpmn;
 use bpmnkit_layout::hash::{IndexMap, IndexSet};
 use bpmnkit_layout::semantic::bands::assign_bands;
 use bpmnkit_layout::semantic::graph::build_semantic_graph;
-use bpmnkit_layout::semantic::place::{place, size_of};
+use bpmnkit_layout::semantic::place::{place, size_of, LaneOptions};
 use bpmnkit_layout::{GridFill, GridHint};
 use serde_json::Value;
 use std::path::PathBuf;
@@ -153,6 +153,7 @@ fn semantic_graph_bands_and_place_match_ts() {
             grid.as_ref(),
             &IndexMap::default(),
             false,
+            &LaneOptions::default(),
         );
         let p = &case["place"];
         let bounds: Vec<(String, [f64; 4])> = placement
