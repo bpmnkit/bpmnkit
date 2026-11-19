@@ -13,7 +13,8 @@ import {
 	LABEL_VERTICAL_OFFSET,
 } from "../types.js"
 import { type BandLayout, boundarySide } from "./bands.js"
-import type { SemanticGraph } from "./graph.js"
+import { type SemanticGraph, isDetour } from "./graph.js"
+import { leafLanes } from "./lanes.js"
 
 /**
  * Geometry constants. Layout may add space beyond these; it never takes any back.
@@ -22,6 +23,8 @@ import type { SemanticGraph } from "./graph.js"
  */
 export const H_GAP = 60
 export const V_GAP = 60
+/** Gap above a row of stacked detours (see `isDetour`): tasks on a 120 px pitch. */
+const DETOUR_GAP = 40
 /**
  * Gap beside a column holding an expanded container. The container's border,
  * its title and the notes on its children crowd that gap, so it keeps more air.
@@ -34,8 +37,13 @@ const EXTERNAL_LABEL_OFFSET = 4
 const GRID_GAP_X = 40
 const GRID_GAP_Y = 20
 export const COMPONENT_GAP = 80
+const ROW_GRID = 10
 export const LANE_PADDING = 40
+/** Vertical lane padding when lanes hand over in a shared column: 2 × 30 + 80 puts rows 140 apart, a 60 px flow. */
+const HAND_OVER_PADDING = 30
 export const BOUNDARY_SIZE = 36
+/** Air kept between two boundary events docked side by side, and before a host's corner. */
+const BOUNDARY_CLEARANCE = 4
 /** Height of a lane band with nothing in it: room for one boundary-sized row. */
 export const MIN_LANE_HEIGHT = 2 * LANE_PADDING + BOUNDARY_SIZE
 
@@ -90,6 +98,15 @@ export function sizeOf(
  * their tallest. Nodes are centred in both, so any two nodes sharing a band
  * share a centre line and the spine routes as one straight segment.
  */
+export interface LaneOptions {
+	/** Leaf lane ids top to bottom (default: declared order). */
+	order?: readonly string[]
+	/** Pull off-row nodes up onto earlier rows of their lane. */
+	compact?: boolean
+	/** Nodes of different lanes never push each other down a row. */
+	byLane?: boolean
+}
+
 export function place(
 	graph: SemanticGraph,
 	bandLayout: BandLayout,
@@ -116,6 +133,10 @@ export function place(
 	 * continues the row's line, and the flow runs straight through it.
 	 */
 	axes: ReadonlyMap<string, number> = new Map(),
+	/** Slot flow-less data references under the activity they are wired to. */
+	slotArtifacts = false,
+	/** Lane refinements; absent or all off lays lanes out the way they always were. */
+	laneOpts: LaneOptions = {},
 ): Placement {
 	const bounds = new Map<string, Bounds>()
 	const componentOf = new Map<string, number>()
@@ -153,10 +174,14 @@ export function place(
 	// ── Rows: one line per band, laid out per component then stacked ──
 	const loose = packLoose ? looseNodes(graph) : []
 	const looseSet = new Set(loose)
+	const artifactOwners =
+		laneSet || packLoose || !slotArtifacts ? new Map<string, string>() : artifactOwnersOf(graph)
 	let cursorY = 0
 	for (let component = 0; component < graph.components.length; component++) {
 		const members = (graph.components[component] ?? []).filter((id) => graph.byId.has(id))
 		if (members.length === 0) continue
+		// An artifact wired to one activity is slotted under it below, not stacked apart.
+		if (members.length === 1 && artifactOwners.has(members[0] as string)) continue
 		if (members.length === 1 && looseSet.has(members[0] as string)) {
 			// The whole grid takes the place of the first loose node; the rest are in it.
 			if (members[0] === loose[0]) cursorY = placeGrid(graph, loose, sizes, cursorY, bounds, grid)
@@ -189,9 +214,15 @@ export function place(
 		cursorY = bottom + dy + COMPONENT_GAP
 	}
 
-	separateSameCell(graph, bandLayout, bounds)
-	const lanes = laneSet ? applyLanes(graph, laneSet, bounds) : []
+	separateSameCell(
+		graph,
+		bandLayout,
+		bounds,
+		laneSet && laneOpts.byLane ? leafLanes(laneSet).leafOf : undefined,
+	)
+	const lanes = laneSet ? applyLanes(graph, laneSet, bounds, laneOpts) : []
 	dockBoundaryEvents(graph, bounds, titled)
+	placeArtifacts(graph, artifactOwners, bounds)
 	return { bounds, lanes, gutterX }
 }
 
@@ -200,7 +231,7 @@ export function place(
  * label sits between two neighbouring columns, or where events' and gateways'
  * labels, centred below shapes narrower than themselves, would meet.
  */
-function columnGaps(
+export function columnGaps(
 	graph: SemanticGraph,
 	sizes: Map<string, { width: number; height: number }>,
 	colWidth: Map<number, number>,
@@ -368,10 +399,14 @@ function bandLines(
 		let previous = 0
 		for (const band of list) {
 			const wide = span(band)
+			const members = byBand.get(band) ?? []
+			// A row of stacked detours only carries short vertical flows into the
+			// row beside it: a 120 px row pitch for tasks, as hand layouts use.
+			const gap = members.every((id) => isDetour(graph, id)) ? DETOUR_GAP : V_GAP
 			let y = previous + dir
 			for (const box of placed) {
 				if (xOverlap(box, wide)) {
-					y = dir === 1 ? Math.max(y, box.bottom + V_GAP) : Math.min(y, box.top - V_GAP)
+					y = dir === 1 ? Math.max(y, box.bottom + gap) : Math.min(y, box.top - gap)
 				}
 				for (const id of byBand.get(band) ?? []) {
 					const b = xOf(id)
@@ -380,10 +415,14 @@ function bandLines(
 					if (!xOverlap(box, reach)) continue
 					y =
 						dir === 1
-							? Math.max(y, box.bottom + V_GAP + e.above)
-							: Math.min(y, box.top - V_GAP - e.below)
+							? Math.max(y, box.bottom + gap + e.above)
+							: Math.min(y, box.top - gap - e.below)
 				}
 			}
+			// A row of nothing but exception handlers or stacked detours keeps the
+			// spine's 10 px phase, so its tasks share the main row's grid.
+			if (members.every((id) => graph.exceptionRow.has(id) || isDetour(graph, id)))
+				y = dir * Math.ceil(Math.abs(y) / ROW_GRID) * ROW_GRID
 			place(band, y)
 			previous = y
 		}
@@ -465,6 +504,8 @@ function separateSameCell(
 	graph: SemanticGraph,
 	bandLayout: BandLayout,
 	bounds: Map<string, Bounds>,
+	/** Nodes in different lanes never share a row, so a hand-over column needs no push. */
+	leafOf?: ReadonlyMap<string, string>,
 ): void {
 	const componentOf = new Map<string, number>()
 	for (let i = 0; i < graph.components.length; i++) {
@@ -477,7 +518,7 @@ function separateSameCell(
 	for (const node of graph.nodes) {
 		const rank = graph.ranks.get(node.id) ?? 0
 		const band = bandLayout.bands.get(node.id) ?? 0
-		const key = `${componentOf.get(node.id) ?? 0}:${rank}:${band}`
+		const key = `${componentOf.get(node.id) ?? 0}:${rank}:${band}:${leafOf?.get(node.id) ?? ""}`
 		const list = cells.get(key)
 		if (list) list.push(node.id)
 		else cells.set(key, [node.id])
@@ -506,6 +547,7 @@ function applyLanes(
 	graph: SemanticGraph,
 	laneSet: BpmnLaneSet,
 	bounds: Map<string, Bounds>,
+	{ order, compact, byLane }: LaneOptions = {},
 ): Array<{ id: string; bounds: Bounds }> {
 	const tree = laneTree(laneSet)
 	if (tree.length === 0) return []
@@ -518,6 +560,12 @@ function applyLanes(
 		}
 	}
 	collectLeaves(tree)
+	if (order && order.length === leaves.length) {
+		const byId = new Map(leaves.map((l) => [l.id, l]))
+		const sorted = order.map((id) => byId.get(id))
+		if (sorted.every((l): l is LaneNode => l !== undefined))
+			leaves.splice(0, leaves.length, ...sorted)
+	}
 
 	const laneOf = new Map<string, LaneNode>()
 	for (const leaf of leaves) {
@@ -567,16 +615,19 @@ function applyLanes(
 	const left = minX - LANE_PADDING
 	const span = new Map<string, { top: number; bottom: number }>()
 	let top = 0
+	// Tight lanes make a hand-over exactly as long as the gap between columns.
+	const pad = byLane ? HAND_OVER_PADDING : LANE_PADDING
 
 	for (const leaf of leaves) {
+		if (compact) compactLane(graph, members.get(leaf.id) ?? [], bounds)
 		const own = (members.get(leaf.id) ?? [])
 			.map((n) => bounds.get(n))
 			.filter((b): b is Bounds => b !== undefined)
 		let height = MIN_LANE_HEIGHT
 		if (own.length > 0) {
 			const lowest = Math.min(...own.map((b) => b.y))
-			height = Math.max(...own.map((b) => b.y + b.height)) - lowest + 2 * LANE_PADDING
-			const shift = top + LANE_PADDING - lowest
+			height = Math.max(...own.map((b) => b.y + b.height)) - lowest + 2 * pad
+			const shift = top + pad - lowest
 			for (const b of own) b.y += shift
 		}
 		span.set(leaf.id, { top, bottom: top + height })
@@ -651,6 +702,62 @@ function placeDataUnderActivities(
 	}
 }
 
+/**
+ * Pull a lane's off-row nodes up onto an earlier row of the same lane when
+ * that row has room at their column and no flow between its own nodes runs
+ * through it, so a lane is as tall as its busiest row rather than as the
+ * bands it happened to inherit. Only nodes whose lane neighbours are all on
+ * the target row (or that have none) move: a node never leaves its chain.
+ */
+function compactLane(graph: SemanticGraph, ids: string[], bounds: Map<string, Bounds>): void {
+	const flowNodes = ids.filter((id) => graph.byId.has(id) && bounds.has(id))
+	if (flowNodes.length < 2 || flowNodes.some((id) => graph.byId.get(id)?.type.startsWith("data")))
+		return
+	const inLane = new Set(flowNodes)
+	const centreY = (id: string): number => {
+		const b = bounds.get(id) as Bounds
+		return b.y + b.height / 2
+	}
+	const rowOf = new Map(flowNodes.map((id) => [id, centreY(id)]))
+	const rows = [...new Set(rowOf.values())].sort((a, b) => a - b)
+	if (rows.length < 2) return
+	const neighbours = (id: string): string[] =>
+		[
+			...(graph.outgoing.get(id) ?? []).map((f) => f.targetRef),
+			...(graph.incoming.get(id) ?? []).map((f) => graph.byId.get(f.sourceRef)?.id ?? f.sourceRef),
+		].filter((n) => inLane.has(n) && n !== id)
+	const members = (row: number): string[] => flowNodes.filter((id) => rowOf.get(id) === row)
+	const fits = (id: string, row: number): boolean => {
+		const b = bounds.get(id) as Bounds
+		const on = members(row)
+		for (const m of on) {
+			const o = bounds.get(m) as Bounds
+			if (b.x - H_GAP < o.x + o.width && o.x - H_GAP < b.x + b.width) return false
+		}
+		for (const f of [...graph.outgoing.values()].flat()) {
+			if (!on.includes(f.sourceRef) || !on.includes(f.targetRef)) continue
+			const from = bounds.get(f.sourceRef) as Bounds
+			const to = bounds.get(f.targetRef) as Bounds
+			const left = Math.min(from.x, to.x)
+			const right = Math.max(from.x + from.width, to.x + to.width)
+			if (b.x < right && b.x + b.width > left) return false
+		}
+		return true
+	}
+	for (const row of rows.slice(1)) {
+		for (const id of members(row)) {
+			const near = neighbours(id)
+			for (const target of rows) {
+				if (target >= row) break
+				if (near.some((n) => rowOf.get(n) !== target) || !fits(id, target)) continue
+				;(bounds.get(id) as Bounds).y += target - row
+				rowOf.set(id, target)
+				break
+			}
+		}
+	}
+}
+
 interface LaneNode {
 	id: string
 	/** 0 for a lane directly in the lane set, one more per `childLaneSet` level. */
@@ -686,7 +793,7 @@ function laneTree(laneSet: BpmnLaneSet, depth = 0, seen: Set<BpmnLane> = new Set
  * The side comes from {@link boundarySide}, the rule that also placed the
  * handler's band, so a handler is never routed around its own host.
  */
-function dockBoundaryEvents(
+export function dockBoundaryEvents(
 	graph: SemanticGraph,
 	bounds: Map<string, Bounds>,
 	titled: ReadonlySet<string>,
@@ -711,11 +818,26 @@ function dockBoundaryEvents(
 					handlerReach(graph, b.id) - handlerReach(graph, a.id),
 			)
 			const n = ordered.length
+			// A handler in the host's own column (see handlerSteps in graph.ts) is
+			// under the host's centre: its event docks there and the flow drops
+			// straight down. The others share the half toward their handlers, right.
+			const pitch = n > 1 ? (host.width / 2 - BOUNDARY_CLEARANCE) / (n - 1) : 0
+			const column =
+				n === 1 || pitch >= BOUNDARY_SIZE + BOUNDARY_CLEARANCE
+					? ordered.find((e) => inHostColumn(graph, bounds, hostId, host, side, e.id))
+					: undefined
+			const others = ordered.filter((e) => e !== column)
+			const slot = (i: number): number => {
+				const event = ordered[i]
+				if (column === undefined) return ((i + 1) * host.width) / (n + 1)
+				if (event === column) return host.width / 2
+				return host.width / 2 + (others.indexOf(event as BpmnBoundaryEvent) + 1) * pitch
+			}
 			for (let i = 0; i < n; i++) {
 				const event = ordered[i]
 				if (!event) continue
 				bounds.set(event.id, {
-					x: host.x + ((i + 1) * host.width) / (n + 1) - BOUNDARY_SIZE / 2,
+					x: host.x + slot(i) - BOUNDARY_SIZE / 2,
 					y: (side === "top" ? host.y : host.y + host.height) - BOUNDARY_SIZE / 2,
 					width: BOUNDARY_SIZE,
 					height: BOUNDARY_SIZE,
@@ -754,6 +876,26 @@ function handlerDepth(
 	return Number.isFinite(depth) ? depth : 0
 }
 
+/** True when a handler of this event sits straight out from the host's centre, past the docked side. */
+function inHostColumn(
+	graph: SemanticGraph,
+	bounds: Map<string, Bounds>,
+	hostId: string,
+	host: Bounds,
+	side: "top" | "bottom",
+	eventId: string,
+): boolean {
+	const mid = host.x + host.width / 2
+	for (const flow of graph.outgoing.get(hostId) ?? []) {
+		if (flow.sourceRef !== eventId) continue
+		const target = bounds.get(flow.targetRef)
+		if (!target || Math.abs(target.x + target.width / 2 - mid) >= 1) continue
+		if (side === "bottom" ? target.y > host.y + host.height : target.y + target.height < host.y)
+			return true
+	}
+	return false
+}
+
 /** How far the handler of a boundary event runs, in ranks. */
 function handlerReach(graph: SemanticGraph, eventId: string): number {
 	let reach = 0
@@ -764,4 +906,93 @@ function handlerReach(graph: SemanticGraph, eventId: string): number {
 		}
 	}
 	return reach
+}
+
+const ARTIFACT_TYPES = new Set(["dataObjectReference", "dataStoreReference"])
+/** Gap between an activity and the artifact slotted beside it. */
+const ARTIFACT_GAP = 40
+const ARTIFACT_CLEARANCE = 10
+const ARTIFACT_SPACING = 20
+
+/**
+ * Flow-less data references mapped to the activity they are wired to (the
+ * first one declared), so they can be slotted next to it.
+ */
+export function artifactOwnersOf(graph: SemanticGraph): Map<string, string> {
+	const owners = new Map<string, string>()
+	const isArtifact = (id: string): boolean => {
+		const el = graph.byId.get(id)
+		return (
+			el !== undefined &&
+			ARTIFACT_TYPES.has(el.type) &&
+			(graph.outgoing.get(id) ?? []).length === 0 &&
+			(graph.incoming.get(id) ?? []).length === 0
+		)
+	}
+	const claim = (ref: string, owner: string): void => {
+		if (
+			!owners.has(ref) &&
+			isArtifact(ref) &&
+			!ARTIFACT_TYPES.has(graph.byId.get(owner)?.type ?? "")
+		) {
+			owners.set(ref, owner)
+		}
+	}
+	for (const node of graph.nodes) {
+		for (const a of node.dataInputAssociations ?? [])
+			for (const ref of a.sourceRefs) claim(ref, node.id)
+		for (const a of node.dataOutputAssociations ?? []) {
+			if (a.targetRef !== undefined) claim(a.targetRef, node.id)
+		}
+	}
+	return owners
+}
+
+/**
+ * Put each artifact on its activity's centre line, below it first (the
+ * association is then one short vertical line), above it for a second one
+ * (and first when boundary events hang below). More go beside those, and a
+ * taken spot sends the artifact down until the area is clear.
+ */
+export function placeArtifacts(
+	graph: SemanticGraph,
+	owners: ReadonlyMap<string, string>,
+	bounds: Map<string, Bounds>,
+): void {
+	const taken: Bounds[] = [...bounds.values()]
+	const hits = (b: Bounds): boolean =>
+		taken.some(
+			(o) =>
+				b.x - ARTIFACT_CLEARANCE < o.x + o.width &&
+				o.x < b.x + b.width + ARTIFACT_CLEARANCE &&
+				b.y - ARTIFACT_CLEARANCE < o.y + o.height &&
+				o.y < b.y + b.height + ARTIFACT_CLEARANCE,
+		)
+	for (const [ref, owner] of owners) {
+		const host = bounds.get(owner)
+		if (!host) continue
+		const size = ELEMENT_SIZES[graph.byId.get(ref)?.type ?? ""] ?? DEFAULT_SIZE
+		const centre = host.x + host.width / 2
+		const below = host.y + host.height + ARTIFACT_GAP
+		const above = host.y - ARTIFACT_GAP - size.height
+		const at = (dx: number, y: number): Bounds => ({
+			x: centre + dx - size.width / 2,
+			y,
+			width: size.width,
+			height: size.height,
+		})
+		const hung = (graph.attachers.get(owner) ?? []).length > 0
+		const candidates = hung ? [at(0, above), at(0, below)] : [at(0, below), at(0, above)]
+		const step = size.width + ARTIFACT_SPACING
+		for (const k of [1, 2, 3]) {
+			candidates.push(at(k * step, below), at(-k * step, below))
+		}
+		let spot = candidates.find((b) => !hits(b))
+		if (!spot) {
+			spot = at(0, below)
+			while (hits(spot)) spot = { ...spot, y: spot.y + 10 }
+		}
+		bounds.set(ref, spot)
+		taken.push(spot)
+	}
 }

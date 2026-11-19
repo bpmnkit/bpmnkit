@@ -36,7 +36,7 @@
       <bpmndi:BPMNShape id="Pr_s_di" bpmnElement="Pr_s">
         <dc:Bounds x="52" y="132" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="50" y="172" width="40" height="14"/>
+          <dc:Bounds x="50" y="114" width="40" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Pr_call_di" bpmnElement="Pr_call">
@@ -48,7 +48,7 @@
       <bpmndi:BPMNShape id="Pr_e_di" bpmnElement="Pr_e">
         <dc:Bounds x="502" y="132" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="500" y="172" width="40" height="14"/>
+          <dc:Bounds x="500" y="114" width="40" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="PA_di" bpmnElement="PA" isHorizontal="true">

@@ -1,7 +1,8 @@
 //! Twin of `layout/semantic/place.ts`.
 
 use super::bands::{boundary_side, BandLayout};
-use super::graph::SemanticGraph;
+use super::graph::{is_detour, SemanticGraph};
+use super::lanes::leaf_lanes;
 use crate::hash::{IndexMap, IndexSet};
 use crate::js::cmp_num;
 use crate::types::{
@@ -15,6 +16,8 @@ use bpmnkit_bpmn::model::{BpmnBoundaryEvent, BpmnFlowElement, BpmnLaneSet};
 /// gaps only where a flow label or a long event label needs the room.
 pub const H_GAP: f64 = 60.0;
 pub const V_GAP: f64 = 60.0;
+/// Gap above a row of stacked detours (see `is_detour`): tasks on a 120 px pitch.
+const DETOUR_GAP: f64 = 40.0;
 /// Gap beside a column holding an expanded container. The container's border,
 /// its title and the notes on its children crowd that gap, so it keeps more air.
 pub const CONTAINER_GAP: f64 = 100.0;
@@ -25,10 +28,16 @@ const EXTERNAL_LABEL_OFFSET: f64 = 4.0;
 const GRID_GAP_X: f64 = 40.0;
 const GRID_GAP_Y: f64 = 20.0;
 pub const COMPONENT_GAP: f64 = 80.0;
+const ROW_GRID: f64 = 10.0;
 pub const LANE_PADDING: f64 = 40.0;
 pub const BOUNDARY_SIZE: f64 = 36.0;
+/// Air kept between two boundary events docked side by side, and before a host's corner.
+const BOUNDARY_CLEARANCE: f64 = 4.0;
 /// Height of a lane band with nothing in it: room for one boundary-sized row.
 pub const MIN_LANE_HEIGHT: f64 = 2.0 * LANE_PADDING + BOUNDARY_SIZE;
+
+/// Vertical lane padding when lanes hand over in a shared column: 2 x 30 + 80 puts rows 140 apart, a 60 px flow.
+const HAND_OVER_PADDING: f64 = 30.0;
 
 const DEFAULT_SIZE: (f64, f64) = (100.0, 80.0);
 
@@ -94,7 +103,7 @@ struct XSpan {
     width: f64,
 }
 
-/// `place(graph, bandLayout, sizes, laneSet, packLoose, titled, grid, axes)`.
+/// `place(graph, bandLayout, sizes, laneSet, packLoose, titled, grid, axes, slotArtifacts)`.
 ///
 /// Turn ranks and bands into coordinates.
 ///
@@ -107,6 +116,16 @@ struct XSpan {
 /// `titled` are hosts whose title is drawn along their top border. `grid` is the
 /// shape of the `pack_loose` grid. `axes`: for expanded containers with a flow
 /// inside, the distance from the container's top to its inner spine.
+#[derive(Debug, Clone, Default)]
+pub struct LaneOptions {
+    /// Leaf lane ids top to bottom (default: declared order).
+    pub order: Option<Vec<String>>,
+    /// Pull off-row nodes up onto earlier rows of their lane.
+    pub compact: bool,
+    /// Nodes of different lanes never push each other down a row.
+    pub by_lane: bool,
+}
+
 #[allow(clippy::too_many_arguments)]
 pub fn place<'a>(
     graph: &SemanticGraph<'a>,
@@ -117,6 +136,9 @@ pub fn place<'a>(
     titled: &IndexSet<&str>,
     grid: Option<&GridHint>,
     axes: &IndexMap<&str, f64>,
+    slot_artifacts: bool,
+    // Lane refinements; default lays lanes out the way they always were.
+    lane_opts: &LaneOptions,
 ) -> Placement<'a> {
     let mut bounds: IndexMap<&'a str, Bounds> =
         IndexMap::with_capacity_and_hasher(graph.by_id.len(), Default::default());
@@ -167,6 +189,12 @@ pub fn place<'a>(
         Vec::new()
     };
     let loose_set: IndexSet<&str> = loose.iter().copied().collect();
+    let artifact_owners: IndexMap<&'a str, &'a str> =
+        if lane_set.is_some() || pack_loose || !slot_artifacts {
+            IndexMap::default()
+        } else {
+            artifact_owners_of(graph)
+        };
     let mut cursor_y = 0.0;
     for members_all in &graph.components {
         let members: Vec<&'a str> = members_all
@@ -175,6 +203,10 @@ pub fn place<'a>(
             .filter(|id| graph.by_id.contains_key(id))
             .collect();
         if members.is_empty() {
+            continue;
+        }
+        // An artifact wired to one activity is slotted under it below, not stacked apart.
+        if members.len() == 1 && artifact_owners.contains_key(members[0]) {
             continue;
         }
         if members.len() == 1 && loose_set.contains(members[0]) {
@@ -223,12 +255,17 @@ pub fn place<'a>(
         cursor_y = bottom + dy + COMPONENT_GAP;
     }
 
-    separate_same_cell(graph, band_layout, &mut bounds);
+    let leaf_of = match lane_set {
+        Some(ls) if lane_opts.by_lane => Some(leaf_lanes(ls).leaf_of),
+        _ => None,
+    };
+    separate_same_cell(graph, band_layout, &mut bounds, leaf_of.as_ref());
     let lanes = match lane_set {
-        Some(ls) => apply_lanes(graph, ls, &mut bounds),
+        Some(ls) => apply_lanes(graph, ls, &mut bounds, lane_opts),
         None => Vec::new(),
     };
     dock_boundary_events(graph, &mut bounds, titled);
+    place_artifacts(graph, &artifact_owners, &mut bounds);
     Placement {
         bounds,
         lanes,
@@ -239,7 +276,7 @@ pub fn place<'a>(
 /// `columnGaps`: the gap in front of each rank. At least [`H_GAP`]; wider where
 /// a flow label sits between two neighbouring columns, or where events' and
 /// gateways' labels, centred below shapes narrower than themselves, would meet.
-fn column_gaps(
+pub fn column_gaps(
     graph: &SemanticGraph,
     sizes: &IndexMap<&str, (f64, f64)>,
     col_width: &IndexMap<i64, f64>,
@@ -486,13 +523,21 @@ fn band_lines<'a>(
         let mut previous = 0.0;
         for band in list {
             let wide = span(band);
+            let members: &[&str] = by_band.get(&band).map_or(&[][..], |v| v.as_slice());
+            // A row of stacked detours only carries short vertical flows into the
+            // row beside it: a 120 px row pitch for tasks, as hand layouts use.
+            let gap = if members.iter().all(|id| is_detour(graph, id)) {
+                DETOUR_GAP
+            } else {
+                V_GAP
+            };
             let mut y = previous + dir as f64;
             for bx in &placed {
                 if x_overlap((bx.left, bx.right), wide) {
                     y = if dir == 1 {
-                        y.max(bx.bottom + V_GAP)
+                        y.max(bx.bottom + gap)
                     } else {
-                        y.min(bx.top - V_GAP)
+                        y.min(bx.top - gap)
                     };
                 }
                 for &id in by_band.get(&band).into_iter().flatten() {
@@ -506,11 +551,19 @@ fn band_lines<'a>(
                         continue;
                     }
                     y = if dir == 1 {
-                        y.max(bx.bottom + V_GAP + e.above)
+                        y.max(bx.bottom + gap + e.above)
                     } else {
-                        y.min(bx.top - V_GAP - e.below)
+                        y.min(bx.top - gap - e.below)
                     };
                 }
+            }
+            // A row of nothing but exception handlers or stacked detours keeps the
+            // spine's 10 px phase, so its tasks share the main row's grid.
+            if members
+                .iter()
+                .all(|id| graph.exception_row.contains(id) || is_detour(graph, id))
+            {
+                y = dir as f64 * (y.abs() / ROW_GRID).ceil() * ROW_GRID;
             }
             place_band(band, y, &mut line, &mut placed);
             previous = y;
@@ -619,6 +672,8 @@ fn separate_same_cell(
     graph: &SemanticGraph,
     band_layout: &BandLayout,
     bounds: &mut IndexMap<&str, Bounds>,
+    // Nodes in different lanes never share a row, so a hand-over column needs no push.
+    leaf_of: Option<&IndexMap<&str, &str>>,
 ) {
     let mut component_of: IndexMap<&str, usize> = IndexMap::default();
     for (i, comp) in graph.components.iter().enumerate() {
@@ -633,13 +688,14 @@ fn separate_same_cell(
     // the same key.
     // Cells in order of first appearance, each node's cell, and a counting sort
     // into one list: the per-cell id lists without a list per cell.
-    let mut cells: IndexMap<(usize, i64, i64), usize> = IndexMap::default();
+    let mut cells: IndexMap<(usize, i64, i64, &str), usize> = IndexMap::default();
     let mut cell_of: Vec<usize> = Vec::with_capacity(graph.nodes.len());
     for node in &graph.nodes {
         let id = node.base().id.as_str();
         let rank = graph.ranks.get(id).copied().unwrap_or(0);
         let band = band_layout.bands.get(id).copied().unwrap_or(0);
-        let key = (component_of.get(id).copied().unwrap_or(0), rank, band);
+        let lane = leaf_of.and_then(|m| m.get(id).copied()).unwrap_or("");
+        let key = (component_of.get(id).copied().unwrap_or(0), rank, band, lane);
         let next = cells.len();
         cell_of.push(*cells.entry(key).or_insert(next));
     }
@@ -672,6 +728,111 @@ fn separate_same_cell(
             };
             b.y += offset;
             offset += b.height + V_GAP;
+        }
+    }
+}
+
+/// `compactLane`: pull a lane's off-row nodes up onto an earlier row of the same
+/// lane when that row has room at their column and no flow between its own nodes
+/// runs through it. Only nodes whose lane neighbours are all on the target row
+/// (or that have none) move: a node never leaves its chain.
+fn compact_lane(graph: &SemanticGraph, ids: &[&str], bounds: &mut IndexMap<&str, Bounds>) {
+    let flow_nodes: Vec<&str> = ids
+        .iter()
+        .copied()
+        .filter(|id| graph.by_id.contains_key(id) && bounds.contains_key(id))
+        .collect();
+    if flow_nodes.len() < 2
+        || flow_nodes.iter().any(|id| {
+            graph
+                .by_id
+                .get(id)
+                .is_some_and(|el| el.type_name().starts_with("data"))
+        })
+    {
+        return;
+    }
+    let in_lane: IndexSet<&str> = flow_nodes.iter().copied().collect();
+    let centre_y = |bounds: &IndexMap<&str, Bounds>, id: &str| -> f64 {
+        let b = &bounds[id];
+        b.y + b.height / 2.0
+    };
+    let mut row_of: IndexMap<&str, f64> = IndexMap::default();
+    for id in &flow_nodes {
+        row_of.insert(id, centre_y(bounds, id));
+    }
+    let mut rows: Vec<f64> = row_of.values().copied().collect();
+    rows.sort_by(|a, b| cmp_num(*a, *b));
+    rows.dedup();
+    if rows.len() < 2 {
+        return;
+    }
+    let neighbours = |id: &str| -> Vec<&str> {
+        let out = graph
+            .outgoing
+            .get(id)
+            .into_iter()
+            .flatten()
+            .map(|f| f.target_ref.as_str());
+        let inc = graph
+            .incoming
+            .get(id)
+            .into_iter()
+            .flatten()
+            .map(|f| f.source_ref.as_str());
+        out.chain(inc)
+            .filter(|n| in_lane.contains(n) && *n != id)
+            .collect()
+    };
+    let members = |row_of: &IndexMap<&str, f64>, row: f64| -> Vec<&str> {
+        flow_nodes
+            .iter()
+            .copied()
+            .filter(|id| row_of.get(id).copied() == Some(row))
+            .collect()
+    };
+    let fits =
+        |bounds: &IndexMap<&str, Bounds>, row_of: &IndexMap<&str, f64>, id: &str, row: f64| {
+            let b = &bounds[id];
+            let on = members(row_of, row);
+            for m in &on {
+                let o = &bounds[m];
+                if b.x - H_GAP < o.x + o.width && o.x - H_GAP < b.x + b.width {
+                    return false;
+                }
+            }
+            for f in graph.outgoing.values().flatten() {
+                if !on.contains(&f.source_ref.as_str()) || !on.contains(&f.target_ref.as_str()) {
+                    continue;
+                }
+                let from = &bounds[f.source_ref.as_str()];
+                let to = &bounds[f.target_ref.as_str()];
+                let left = from.x.min(to.x);
+                let right = (from.x + from.width).max(to.x + to.width);
+                if b.x < right && b.x + b.width > left {
+                    return false;
+                }
+            }
+            true
+        };
+    for &row in &rows[1..] {
+        for id in members(&row_of, row) {
+            let near = neighbours(id);
+            for &target in &rows {
+                if target >= row {
+                    break;
+                }
+                if near.iter().any(|n| row_of.get(n).copied() != Some(target))
+                    || !fits(bounds, &row_of, id, target)
+                {
+                    continue;
+                }
+                if let Some(b) = bounds.get_mut(id) {
+                    b.y += target - row;
+                }
+                row_of.insert(id, target);
+                break;
+            }
         }
     }
 }
@@ -808,6 +969,7 @@ fn apply_lanes(
     graph: &SemanticGraph,
     lane_set: &BpmnLaneSet,
     bounds: &mut IndexMap<&str, Bounds>,
+    opts: &LaneOptions,
 ) -> Vec<LaneBand> {
     let tree = lane_tree(lane_set, 0);
     if tree.is_empty() {
@@ -816,6 +978,21 @@ fn apply_lanes(
 
     let mut leaves: Vec<&LaneNode> = Vec::new();
     collect_leaves(&tree, &mut leaves);
+    if let Some(order) = &opts.order {
+        if order.len() == leaves.len() {
+            let mut by_id: IndexMap<&str, &LaneNode> = IndexMap::default();
+            for l in &leaves {
+                by_id.insert(l.id, *l);
+            }
+            let sorted: Vec<Option<&LaneNode>> = order
+                .iter()
+                .map(|id| by_id.get(id.as_str()).copied())
+                .collect();
+            if sorted.iter().all(Option::is_some) {
+                leaves = sorted.into_iter().flatten().collect();
+            }
+        }
+    }
 
     let mut lane_of: IndexMap<&str, &LaneNode> = IndexMap::default();
     for leaf in &leaves {
@@ -879,8 +1056,21 @@ fn apply_lanes(
     let left = min_x - LANE_PADDING;
     let mut span: IndexMap<&str, (f64, f64)> = IndexMap::default();
     let mut top = 0.0;
+    // Tight lanes make a hand-over exactly as long as the gap between columns.
+    let pad = if opts.by_lane {
+        HAND_OVER_PADDING
+    } else {
+        LANE_PADDING
+    };
 
     for leaf in &leaves {
+        if opts.compact {
+            compact_lane(
+                graph,
+                members.get(leaf.id).map_or(&[][..], |v| v.as_slice()),
+                bounds,
+            );
+        }
         // Duplicated ids stay in the list: the TS shifts the shared bounds once per entry.
         let own: Vec<&str> = members
             .get(leaf.id)
@@ -902,8 +1092,8 @@ fn apply_lanes(
                 .map(|n| bounds[*n].y + bounds[*n].height)
                 .fold(f64::NEG_INFINITY, f64::max)
                 - lowest
-                + 2.0 * LANE_PADDING;
-            let shift = top + LANE_PADDING - lowest;
+                + 2.0 * pad;
+            let shift = top + pad - lowest;
             for n in &own {
                 if let Some(b) = bounds.get_mut(*n) {
                     b.y += shift;
@@ -956,7 +1146,7 @@ fn apply_lanes(
 /// how far it runs, farthest first, so outer slots serve outer paths and the
 /// routes nest. The side comes from [`boundary_side`], the rule that also placed
 /// the handler's band, so a handler is never routed around its own host.
-fn dock_boundary_events<'a>(
+pub fn dock_boundary_events<'a>(
     graph: &SemanticGraph<'a>,
     bounds: &mut IndexMap<&'a str, Bounds>,
     titled: &IndexSet<&str>,
@@ -985,12 +1175,36 @@ fn dock_boundary_events<'a>(
                 })
             });
             let n = ordered.len();
+            // A handler in the host's own column is under the host's centre: its
+            // event docks there and the flow drops straight down. The others
+            // share the half toward their handlers, right.
+            let pitch = if n > 1 {
+                (host.width / 2.0 - BOUNDARY_CLEARANCE) / (n - 1) as f64
+            } else {
+                0.0
+            };
+            let column: Option<usize> = if n == 1 || pitch >= BOUNDARY_SIZE + BOUNDARY_CLEARANCE {
+                ordered
+                    .iter()
+                    .position(|e| in_host_column(graph, bounds, host_id, &host, *top, &e.base.id))
+            } else {
+                None
+            };
+            let slot = |i: usize| -> f64 {
+                let Some(col) = column else {
+                    return ((i + 1) as f64 * host.width) / (n + 1) as f64;
+                };
+                if i == col {
+                    return host.width / 2.0;
+                }
+                let rank = (0..i).filter(|j| *j != col).count();
+                host.width / 2.0 + (rank + 1) as f64 * pitch
+            };
             for (i, event) in ordered.iter().enumerate() {
                 bounds.insert(
                     &event.base.id,
                     Bounds {
-                        x: host.x + ((i + 1) as f64 * host.width) / (n + 1) as f64
-                            - BOUNDARY_SIZE / 2.0,
+                        x: host.x + slot(i) - BOUNDARY_SIZE / 2.0,
                         y: (if *top { host.y } else { host.y + host.height }) - BOUNDARY_SIZE / 2.0,
                         width: BOUNDARY_SIZE,
                         height: BOUNDARY_SIZE,
@@ -1039,6 +1253,39 @@ fn handler_depth(
     }
 }
 
+/// `inHostColumn`: a handler of this event sits straight out from the host's
+/// centre, past the docked side.
+fn in_host_column(
+    graph: &SemanticGraph,
+    bounds: &IndexMap<&str, Bounds>,
+    host_id: &str,
+    host: &Bounds,
+    top: bool,
+    event_id: &str,
+) -> bool {
+    let mid = host.x + host.width / 2.0;
+    for flow in graph.outgoing.get(host_id).into_iter().flatten() {
+        if flow.source_ref != event_id {
+            continue;
+        }
+        let Some(target) = bounds.get(flow.target_ref.as_str()) else {
+            continue;
+        };
+        if (target.x + target.width / 2.0 - mid).abs() >= 1.0 {
+            continue;
+        }
+        let past = if top {
+            target.y + target.height < host.y
+        } else {
+            target.y > host.y + host.height
+        };
+        if past {
+            return true;
+        }
+    }
+    false
+}
+
 /// `handlerReach`: how far the handler of a boundary event runs, in ranks.
 fn handler_reach(graph: &SemanticGraph, event_id: &str) -> i64 {
     let mut reach = 0;
@@ -1057,4 +1304,109 @@ fn handler_reach(graph: &SemanticGraph, event_id: &str) -> i64 {
         }
     }
     reach
+}
+
+fn is_artifact_type(kind: &str) -> bool {
+    matches!(kind, "dataObjectReference" | "dataStoreReference")
+}
+/// Gap between an activity and the artifact slotted beside it.
+const ARTIFACT_GAP: f64 = 40.0;
+const ARTIFACT_CLEARANCE: f64 = 10.0;
+const ARTIFACT_SPACING: f64 = 20.0;
+
+/// `artifactOwnersOf`: flow-less data references mapped to the activity they are
+/// wired to (the first one declared), in claim order.
+pub fn artifact_owners_of<'a>(graph: &SemanticGraph<'a>) -> IndexMap<&'a str, &'a str> {
+    let mut owners: IndexMap<&'a str, &'a str> = IndexMap::default();
+    let is_artifact = |id: &str| -> bool {
+        graph.by_id.get(id).is_some_and(|el| {
+            is_artifact_type(el.type_name())
+                && graph.outgoing.get(id).is_none_or(|v| v.is_empty())
+                && graph.incoming.get(id).is_none_or(|v| v.is_empty())
+        })
+    };
+    let mut claim = |r: &'a str, owner: &'a str| {
+        if !owners.contains_key(r)
+            && is_artifact(r)
+            && !is_artifact_type(graph.by_id.get(owner).map_or("", |el| el.type_name()))
+        {
+            owners.insert(r, owner);
+        }
+    };
+    for node in &graph.nodes {
+        let base = node.base();
+        for a in &base.data_input_associations {
+            for r in &a.source_refs {
+                claim(r.as_str(), base.id.as_str());
+            }
+        }
+        for a in &base.data_output_associations {
+            if let Some(t) = &a.target_ref {
+                claim(t.as_str(), base.id.as_str());
+            }
+        }
+    }
+    owners
+}
+
+/// `placeArtifacts`: put each artifact on its activity's centre line, below it
+/// first, above it for a second one (and first when boundary events hang below).
+/// More go beside those, and a taken spot sends the artifact down until clear.
+pub fn place_artifacts<'a>(
+    graph: &SemanticGraph<'a>,
+    owners: &IndexMap<&'a str, &'a str>,
+    bounds: &mut IndexMap<&'a str, Bounds>,
+) {
+    let mut taken: Vec<Bounds> = bounds.values().copied().collect();
+    let hits = |taken: &[Bounds], b: &Bounds| -> bool {
+        taken.iter().any(|o| {
+            b.x - ARTIFACT_CLEARANCE < o.x + o.width
+                && o.x < b.x + b.width + ARTIFACT_CLEARANCE
+                && b.y - ARTIFACT_CLEARANCE < o.y + o.height
+                && o.y < b.y + b.height + ARTIFACT_CLEARANCE
+        })
+    };
+    for (&r, &owner) in owners {
+        let Some(host) = bounds.get(owner).copied() else {
+            continue;
+        };
+        let size = graph
+            .by_id
+            .get(r)
+            .and_then(|el| element_size(el.type_name()))
+            .unwrap_or(DEFAULT_SIZE);
+        let centre = host.x + host.width / 2.0;
+        let below = host.y + host.height + ARTIFACT_GAP;
+        let above = host.y - ARTIFACT_GAP - size.1;
+        let at = |dx: f64, y: f64| Bounds {
+            x: centre + dx - size.0 / 2.0,
+            y,
+            width: size.0,
+            height: size.1,
+        };
+        let hung = graph.attachers.get(owner).is_some_and(|v| !v.is_empty());
+        let mut candidates = if hung {
+            vec![at(0.0, above), at(0.0, below)]
+        } else {
+            vec![at(0.0, below), at(0.0, above)]
+        };
+        let step = size.0 + ARTIFACT_SPACING;
+        for k in [1.0, 2.0, 3.0] {
+            candidates.push(at(k * step, below));
+            candidates.push(at(-k * step, below));
+        }
+        let mut spot = match candidates.iter().find(|b| !hits(&taken, b)) {
+            Some(b) => *b,
+            None => {
+                let mut s = at(0.0, below);
+                while hits(&taken, &s) {
+                    s.y += 10.0;
+                }
+                s
+            }
+        };
+        spot.width = size.0;
+        bounds.insert(r, spot);
+        taken.push(spot);
+    }
 }

@@ -1,0 +1,7 @@
+# Timesheet approval | id=timesheet
+[start Week closed] > [user Enter hours] > [xor Entry ready] > [service Validate hours] > [xor Overtime?]
+[boundary:error Invalid entry | on=validateHours error=INVALID] > [user Fix entry] > Entry ready
+Overtime? >(Yes: overtime = true) [user Approve overtime] > [xor Approved?]
+Overtime? >(No: default) [xor Ready to pay] > [service Book payroll] > [end Payroll booked]
+Approved? >(Yes: approved = true) Ready to pay
+Approved? >(No: default) [service Reject sheet] > [end Sheet rejected]

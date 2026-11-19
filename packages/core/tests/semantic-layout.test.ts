@@ -244,7 +244,8 @@ describe("semantic layout — lanes", () => {
 	it("keeps left-to-right flow when lanes move nodes vertically", () => {
 		const nodes = byId(layoutProcess(laneProcess()))
 		const xs = ["s", "a", "b", "e"].map((id) => nodes.get(id)?.bounds.x ?? 0)
-		for (let i = 1; i < xs.length; i++) expect(xs[i]).toBeGreaterThan(xs[i - 1] ?? 0)
+		// A hand-over into the next lane shares its source's column (P4), so never left, not always right.
+		for (let i = 1; i < xs.length; i++) expect(xs[i]).toBeGreaterThanOrEqual(xs[i - 1] ?? 0)
 	})
 
 	it("spans a parent lane across the lanes nested inside it", () => {
@@ -269,9 +270,10 @@ describe("semantic layout — lanes", () => {
 })
 
 describe("semantic layout — cycles and containers", () => {
-	it("sends a loop over the top when the band below it is busy", () => {
-		// The gateway's alternative occupies the band under the spine, so the loop
-		// from "c" back to "a" would have to cut across it to run underneath.
+	it("keeps a loop between the spine and a busy band below, crossing nothing", () => {
+		// The gateway's alternative occupies the band under the spine. Its flow
+		// into the join runs along that band and turns up into the gateway, so the
+		// gap under the spine stays clear for the loop from "c" back to "a".
 		const process = proc(
 			[
 				node("s", "startEvent"),
@@ -305,8 +307,14 @@ describe("semantic layout — cycles and containers", () => {
 
 		// Precondition: the alternative really does sit below the spine.
 		expect(branch.y).toBeGreaterThan(spine.y)
-		// The loop goes over the top rather than squeezing between the two.
-		expect(Math.max(...loop.waypoints.map((wp) => wp.y))).toBeLessThanOrEqual(spine.y)
+		// The loop stays above the branch rather than wrapping around it, and
+		// cuts across none of the branch's flows.
+		expect(Math.max(...loop.waypoints.map((wp) => wp.y))).toBeLessThan(branch.y)
+		const join = result.edges.find((edge) => edge.id === "br2")
+		expect(join).toBeTruthy()
+		const lowest = Math.max(...loop.waypoints.map((wp) => wp.y))
+		const run = join?.waypoints.find((wp, i, all) => i > 0 && all[i - 1]?.y === wp.y)
+		expect(run?.y).toBeGreaterThan(lowest)
 	})
 
 	it("routes a loop back below the nodes it spans", () => {

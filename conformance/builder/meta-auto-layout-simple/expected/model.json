@@ -12,11 +12,11 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 56,
+                "x": 60,
                 "y": 60
               },
               {
-                "x": 116,
+                "x": 120,
                 "y": 60
               }
             ]
@@ -27,11 +27,11 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 216,
+                "x": 220,
                 "y": 60
               },
               {
-                "x": 276,
+                "x": 280,
                 "y": 60
               }
             ]
@@ -42,11 +42,11 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 376,
+                "x": 380,
                 "y": 60
               },
               {
-                "x": 436,
+                "x": 440,
                 "y": 60
               }
             ]
@@ -58,7 +58,7 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 20,
+              "x": 24,
               "y": 42
             },
             "bpmnElement": "s",
@@ -69,7 +69,7 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 116,
+              "x": 120,
               "y": 20
             },
             "bpmnElement": "a",
@@ -80,7 +80,7 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 276,
+              "x": 280,
               "y": 20
             },
             "bpmnElement": "b",
@@ -91,7 +91,7 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 436,
+              "x": 440,
               "y": 42
             },
             "bpmnElement": "e",

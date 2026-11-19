@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="defs" targetNamespace="http://bpmn.io/schema/bpmn">
+<process id="Process_1" isExecutable="true">
+<startEvent id="start" name="Draft created"><outgoing>fProcess_1_0</outgoing></startEvent>
+<userTask id="write" name="Write article"><incoming>fProcess_1_0</incoming><incoming>fProcess_1_4</incoming><outgoing>fProcess_1_1</outgoing></userTask>
+<userTask id="review" name="Review article"><incoming>fProcess_1_1</incoming><outgoing>fProcess_1_2</outgoing></userTask>
+<exclusiveGateway id="ok" name="Approved?"><incoming>fProcess_1_2</incoming><outgoing>fProcess_1_3</outgoing><outgoing>fProcess_1_4</outgoing></exclusiveGateway>
+<serviceTask id="publish" name="Publish article"><incoming>fProcess_1_3</incoming><outgoing>fProcess_1_5</outgoing></serviceTask>
+<endEvent id="end" name="Published"><incoming>fProcess_1_5</incoming></endEvent>
+<sequenceFlow id="fProcess_1_0" sourceRef="start" targetRef="write"/>
+<sequenceFlow id="fProcess_1_1" sourceRef="write" targetRef="review"/>
+<sequenceFlow id="fProcess_1_2" sourceRef="review" targetRef="ok"/>
+<sequenceFlow id="fProcess_1_3" sourceRef="ok" targetRef="publish" name="yes"/>
+<sequenceFlow id="fProcess_1_4" sourceRef="ok" targetRef="write" name="no"/>
+<sequenceFlow id="fProcess_1_5" sourceRef="publish" targetRef="end"/>
+</process>
+</definitions>

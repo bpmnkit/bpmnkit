@@ -1,0 +1,6 @@
+# Room deposit | id=deposit
+[start] > holdDeposit[service Hold room deposit on card | job=hold-deposit] > guestAnswer[eventgw Guest answer on deposit]
+guestAnswer > guestConfirmed[catch Guest deposit confirmation received | msg=guest-confirmed key=bookingId] > takeDeposit[service Take room deposit | job=take-deposit] > [end]
+guestAnswer > waited[catch:timer 2 days elapsed | after=P2D] > releaseRoom[service Release held room | job=release-room] > [end]
+holdRefused[boundary:error Hold refused | on=holdDeposit error=REFUSED] > informGuest[service Inform guest of refusal | job=inform-guest] > [end]
+chargeFailed[boundary:error Charge failed | on=takeDeposit error=FAILED] > callGuest[user Call guest about failed charge] > [end]

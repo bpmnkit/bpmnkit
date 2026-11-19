@@ -1,0 +1,7 @@
+# Pallet reservation | id=palletres
+[start] > reservePallet[service Reserve pallet | job=reserve-pallet] > carrierAnswer[eventgw Carrier answer]
+carrierAnswer > accepted[catch Carrier accepted | msg=carrier-accepted key=loadId] > confirmLoad[service Confirm load | job=confirm-load] > [end]
+carrierAnswer > silent[catch:timer 1 day silent | after=P1D] > releasePallet[service Release pallet | job=release-pallet] > [end]
+carrierAnswer > declined[catch Carrier declined | msg=carrier-declined key=loadId] > rebookLoad[user Rebook with other carrier] > [end]
+noPallet[boundary:error No pallet free | on=reservePallet error=NO_PALLET] > alertDock[service Alert dock | job=alert-dock] > [end]
+confirmFailed[boundary:error Confirm failed | on=confirmLoad error=CONFIRM_FAILED] > callCarrier[user Call carrier] > [end]

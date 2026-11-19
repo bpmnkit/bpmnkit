@@ -12,24 +12,16 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 87.5,
+                "x": 12.5,
                 "y": 116
               },
               {
-                "x": 87.5,
-                "y": 136
+                "x": 12.5,
+                "y": 198
               },
               {
-                "x": 130,
-                "y": 136
-              },
-              {
-                "x": 130,
-                "y": 58
-              },
-              {
-                "x": 160,
-                "y": 58
+                "x": 32,
+                "y": 198
               }
             ]
           },
@@ -39,16 +31,16 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 12.5,
+                "x": 25,
                 "y": 116
               },
               {
-                "x": 12.5,
-                "y": 176
+                "x": 25,
+                "y": 178
               },
               {
                 "x": 160,
-                "y": 176
+                "y": 178
               }
             ]
           }
@@ -70,7 +62,7 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 69.5,
+              "x": -5.5,
               "y": 80
             },
             "bpmnElement": "b1",
@@ -81,7 +73,7 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": -5.5,
+              "x": 7,
               "y": 80
             },
             "bpmnElement": "b2",
@@ -92,7 +84,7 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 7,
+              "x": 19.5,
               "y": 80
             },
             "bpmnElement": "b3",
@@ -103,7 +95,7 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 19.5,
+              "x": 32,
               "y": 80
             },
             "bpmnElement": "b4",
@@ -125,7 +117,7 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 32,
+              "x": 44.5,
               "y": 80
             },
             "bpmnElement": "b6",
@@ -136,7 +128,7 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 44.5,
+              "x": 57,
               "y": 80
             },
             "bpmnElement": "b7",
@@ -147,7 +139,7 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 57,
+              "x": 69.5,
               "y": 80
             },
             "bpmnElement": "b8",
@@ -158,8 +150,8 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 160,
-              "y": 40
+              "x": 32,
+              "y": 180
             },
             "bpmnElement": "x1",
             "id": "x1_di",
@@ -170,7 +162,7 @@
               "height": 36,
               "width": 36,
               "x": 160,
-              "y": 158
+              "y": 160
             },
             "bpmnElement": "x2",
             "id": "x2_di",

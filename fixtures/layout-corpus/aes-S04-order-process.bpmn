@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="defs" targetNamespace="http://bpmn.io/schema/bpmn">
+<process id="Process_1" isExecutable="true">
+<startEvent id="start" name="Order received"><outgoing>fProcess_1_0</outgoing></startEvent>
+<serviceTask id="check" name="Check stock"><incoming>fProcess_1_0</incoming><outgoing>fProcess_1_1</outgoing></serviceTask>
+<exclusiveGateway id="inStock" name="In stock?"><incoming>fProcess_1_1</incoming><outgoing>fProcess_1_2</outgoing><outgoing>fProcess_1_3</outgoing></exclusiveGateway>
+<serviceTask id="reserve" name="Reserve items"><incoming>fProcess_1_2</incoming><incoming>fProcess_1_4</incoming><outgoing>fProcess_1_5</outgoing></serviceTask>
+<userTask id="backorder" name="Order from supplier"><incoming>fProcess_1_3</incoming><outgoing>fProcess_1_4</outgoing></userTask>
+<serviceTask id="payment" name="Charge payment"><incoming>fProcess_1_5</incoming><outgoing>fProcess_1_6</outgoing></serviceTask>
+<exclusiveGateway id="paid" name="Payment ok?"><incoming>fProcess_1_6</incoming><outgoing>fProcess_1_7</outgoing><outgoing>fProcess_1_8</outgoing></exclusiveGateway>
+<serviceTask id="ship" name="Ship order"><incoming>fProcess_1_7</incoming><outgoing>fProcess_1_9</outgoing></serviceTask>
+<serviceTask id="cancel" name="Cancel order"><incoming>fProcess_1_8</incoming><outgoing>fProcess_1_10</outgoing></serviceTask>
+<endEvent id="endOk" name="Order completed"><incoming>fProcess_1_9</incoming></endEvent>
+<endEvent id="endFail" name="Order cancelled"><incoming>fProcess_1_10</incoming></endEvent>
+<sequenceFlow id="fProcess_1_0" sourceRef="start" targetRef="check"/>
+<sequenceFlow id="fProcess_1_1" sourceRef="check" targetRef="inStock"/>
+<sequenceFlow id="fProcess_1_2" sourceRef="inStock" targetRef="reserve" name="yes"/>
+<sequenceFlow id="fProcess_1_3" sourceRef="inStock" targetRef="backorder" name="no"/>
+<sequenceFlow id="fProcess_1_4" sourceRef="backorder" targetRef="reserve"/>
+<sequenceFlow id="fProcess_1_5" sourceRef="reserve" targetRef="payment"/>
+<sequenceFlow id="fProcess_1_6" sourceRef="payment" targetRef="paid"/>
+<sequenceFlow id="fProcess_1_7" sourceRef="paid" targetRef="ship" name="yes"/>
+<sequenceFlow id="fProcess_1_8" sourceRef="paid" targetRef="cancel" name="no"/>
+<sequenceFlow id="fProcess_1_9" sourceRef="ship" targetRef="endOk"/>
+<sequenceFlow id="fProcess_1_10" sourceRef="cancel" targetRef="endFail"/>
+</process>
+</definitions>

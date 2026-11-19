@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="defs" targetNamespace="http://bpmn.io/schema/bpmn">
+<process id="Process_1" isExecutable="true">
+<startEvent id="start" name="Ticket opened"><outgoing>fProcess_1_0</outgoing></startEvent>
+<userTask id="triage" name="Triage ticket"><incoming>fProcess_1_0</incoming><incoming>fProcess_1_9</incoming><outgoing>fProcess_1_1</outgoing></userTask>
+<exclusiveGateway id="sev" name="Severity?"><incoming>fProcess_1_1</incoming><outgoing>fProcess_1_2</outgoing><outgoing>fProcess_1_3</outgoing></exclusiveGateway>
+<userTask id="fix" name="Fix issue"><incoming>fProcess_1_2</incoming><outgoing>fProcess_1_4</outgoing></userTask>
+<userTask id="escalate" name="Escalate to L2"><incoming>fProcess_1_3</incoming><outgoing>fProcess_1_5</outgoing></userTask>
+<exclusiveGateway id="merge"><incoming>fProcess_1_4</incoming><incoming>fProcess_1_5</incoming><outgoing>fProcess_1_6</outgoing></exclusiveGateway>
+<userTask id="verify" name="Verify fix"><incoming>fProcess_1_6</incoming><outgoing>fProcess_1_7</outgoing></userTask>
+<exclusiveGateway id="works" name="Resolved?"><incoming>fProcess_1_7</incoming><outgoing>fProcess_1_8</outgoing><outgoing>fProcess_1_9</outgoing></exclusiveGateway>
+<serviceTask id="close" name="Close ticket"><incoming>fProcess_1_8</incoming><outgoing>fProcess_1_10</outgoing></serviceTask>
+<endEvent id="end" name="Ticket closed"><incoming>fProcess_1_10</incoming></endEvent>
+<boundaryEvent id="sla" name="SLA 4h" attachedToRef="fix" cancelActivity="false"><outgoing>fProcess_1_11</outgoing><timerEventDefinition/></boundaryEvent>
+<sendTask id="page" name="Page on-call"><incoming>fProcess_1_11</incoming><outgoing>fProcess_1_12</outgoing></sendTask>
+<endEvent id="endPage"><incoming>fProcess_1_12</incoming></endEvent>
+<sequenceFlow id="fProcess_1_0" sourceRef="start" targetRef="triage"/>
+<sequenceFlow id="fProcess_1_1" sourceRef="triage" targetRef="sev"/>
+<sequenceFlow id="fProcess_1_2" sourceRef="sev" targetRef="fix" name="normal"/>
+<sequenceFlow id="fProcess_1_3" sourceRef="sev" targetRef="escalate" name="critical"/>
+<sequenceFlow id="fProcess_1_4" sourceRef="fix" targetRef="merge"/>
+<sequenceFlow id="fProcess_1_5" sourceRef="escalate" targetRef="merge"/>
+<sequenceFlow id="fProcess_1_6" sourceRef="merge" targetRef="verify"/>
+<sequenceFlow id="fProcess_1_7" sourceRef="verify" targetRef="works"/>
+<sequenceFlow id="fProcess_1_8" sourceRef="works" targetRef="close" name="yes"/>
+<sequenceFlow id="fProcess_1_9" sourceRef="works" targetRef="triage" name="no"/>
+<sequenceFlow id="fProcess_1_10" sourceRef="close" targetRef="end"/>
+<sequenceFlow id="fProcess_1_11" sourceRef="sla" targetRef="page"/>
+<sequenceFlow id="fProcess_1_12" sourceRef="page" targetRef="endPage"/>
+</process>
+</definitions>

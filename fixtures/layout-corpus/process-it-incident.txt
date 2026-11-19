@@ -1,0 +1,15 @@
+# IT incident response | id=incident
+[start:message Incident reported] > [user Triage incident] > [xor Severity?]
+Severity? >(Critical: severity = "critical") [sub Major incident handling] > [user Write postmortem] > [end Incident closed]
+Severity? >(Normal: severity = "normal") [user Diagnose issue] > [service Apply fix] > [eventgw Wait for confirmation]
+Severity? >(Low: default) [service Log for backlog] > [end Backlog item created]
+Wait for confirmation > [catch:message User confirms fix | key=incidentId] > [end Resolved]
+Wait for confirmation > [catch:timer No reply in 3 days | after=P3D] > [send Notify auto close] > [end Auto closed]
+Major incident handling {
+  [start Bridge opened] > [and Fan out] > [user Coordinate responders] > [and Fan in] > [end Bridge closed]
+  Fan out > [service Page on-call] > Fan in
+}
+[boundary:timer Triage too slow | on=triageIncident after=PT30M] > [send Escalate to manager] > [end Escalated]
+[boundary:error Fix failed | on=applyFix error=FIX_FAILED] > [user Rollback change] > [end Rolled back]
+[boundary:timer Bridge exceeded 4h | on=majorIncidentHandling after=PT4H nonint] > [send Notify executives] > [end Executives informed]
+[boundary:error Diagnosis blocked | on=diagnoseIssue error=BLOCKED] > [user Ask vendor] > [end Vendor engaged]

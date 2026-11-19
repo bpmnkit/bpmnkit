@@ -12,12 +12,12 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 56,
-                "y": 140
+                "x": 58,
+                "y": 218
               },
               {
-                "x": 116,
-                "y": 140
+                "x": 118,
+                "y": 218
               }
             ]
           },
@@ -27,16 +27,12 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 166,
-                "y": 198
+                "x": 168,
+                "y": 276
               },
               {
-                "x": 166,
-                "y": 258
-              },
-              {
-                "x": 276,
-                "y": 258
+                "x": 168,
+                "y": 340
               }
             ]
           },
@@ -46,12 +42,12 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 216,
-                "y": 140
+                "x": 218,
+                "y": 218
               },
               {
-                "x": 276,
-                "y": 140
+                "x": 278,
+                "y": 218
               }
             ]
           },
@@ -61,12 +57,12 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 166,
-                "y": 100
+                "x": 218,
+                "y": 178
               },
               {
-                "x": 166,
-                "y": 50
+                "x": 188,
+                "y": 58
               }
             ]
           },
@@ -76,12 +72,12 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 56,
-                "y": 356
+                "x": 168,
+                "y": 138
               },
               {
-                "x": 116,
-                "y": 180
+                "x": 168,
+                "y": 178
               }
             ]
           }
@@ -92,8 +88,8 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 20,
-              "y": 122
+              "x": 22,
+              "y": 200
             },
             "bpmnElement": "s",
             "id": "s_di",
@@ -103,8 +99,8 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 116,
-              "y": 100
+              "x": 118,
+              "y": 178
             },
             "bpmnElement": "t",
             "id": "t_di",
@@ -114,8 +110,8 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 148,
-              "y": 162
+              "x": 150,
+              "y": 240
             },
             "bpmnElement": "bt",
             "id": "bt_di",
@@ -125,8 +121,8 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 276,
-              "y": 240
+              "x": 150,
+              "y": 340
             },
             "bpmnElement": "timeout",
             "id": "timeout_di",
@@ -136,8 +132,8 @@
             "bounds": {
               "height": 50,
               "width": 36,
-              "x": 20,
-              "y": 356
+              "x": 150,
+              "y": 88
             },
             "bpmnElement": "R",
             "id": "R_di",
@@ -147,8 +143,8 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 276,
-              "y": 122
+              "x": 278,
+              "y": 200
             },
             "bpmnElement": "e",
             "id": "e_di",
@@ -158,8 +154,8 @@
             "bounds": {
               "height": 30,
               "width": 200,
-              "x": 66,
-              "y": 20
+              "x": 188,
+              "y": 28
             },
             "bpmnElement": "TextAnnotation_t_1",
             "id": "TextAnnotation_t_1_di",

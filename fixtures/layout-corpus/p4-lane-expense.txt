@@ -1,0 +1,14 @@
+# Expense claim | id=expenseClaim
+## Company | id=company
+### Employee
+[start Receipt in hand] > [user Submit claim] > [xor Claim valid?]
+### Manager
+[user Approve claim] > [xor Approved?]
+### Finance
+[service Book expense] > [user Pay out] > [end Claim paid]
+Claim valid? >(Yes: valid = true) Approve claim
+Claim valid? >(No: default) [end Claim withdrawn]
+Approved? >(Yes: approved = true) Book expense
+Approved? >(No: default) [user Fix claim]
+### Employee
+Fix claim > Submit claim

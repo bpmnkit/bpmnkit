@@ -369,16 +369,16 @@
         <dc:Bounds x="135" y="2415" width="50" height="50"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="pool_di" bpmnElement="pool" isHorizontal="true">
-        <dc:Bounds x="0" y="0" width="2450" height="2485"/>
+        <dc:Bounds x="0" y="0" width="2450" height="2490"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="lane_unnamed_di" bpmnElement="lane_unnamed" isHorizontal="true">
-        <dc:Bounds x="30" y="0" width="2420" height="1243"/>
+        <dc:Bounds x="30" y="0" width="2420" height="1245"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="lane_named_di" bpmnElement="lane_named" isHorizontal="true">
-        <dc:Bounds x="30" y="1243" width="2420" height="1242"/>
+        <dc:Bounds x="30" y="1245" width="2420" height="1245"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="blackbox_di" bpmnElement="blackbox" isHorizontal="true">
-        <dc:Bounds x="0" y="2515" width="2450" height="60"/>
+        <dc:Bounds x="0" y="2520" width="2450" height="60"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="sf1_di" bpmnElement="sf1">
         <di:waypoint x="853" y="130"/>
@@ -449,7 +449,7 @@
         <di:waypoint x="1960" y="4"/>
         <di:waypoint x="1960" y="35"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="579" y="106" width="63" height="14"/>
+          <dc:Bounds x="1929" y="106" width="63" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f_plain_di" bpmnElement="f_plain">

@@ -1,0 +1,4 @@
+{
+  "input": "layout/edge-boundary-subprocess-titled/input.bpmn",
+  "runs": { "layered": { "engine": "layered" } }
+}

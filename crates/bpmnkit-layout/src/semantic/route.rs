@@ -154,6 +154,27 @@ struct Pending<'r> {
     direct: Option<Picked>,
 }
 
+fn is_gateway(graph: &SemanticGraph, id: &str) -> bool {
+    graph.by_id.get(id).is_some_and(|el| {
+        matches!(
+            el.type_name(),
+            "exclusiveGateway"
+                | "parallelGateway"
+                | "inclusiveGateway"
+                | "eventBasedGateway"
+                | "complexGateway"
+        )
+    })
+}
+
+fn is_join_gateway(graph: &SemanticGraph, id: &str) -> bool {
+    is_gateway(graph, id) && graph.incoming.get(id).map_or(0, |v| v.len()) > 1
+}
+
+fn is_split_gateway(graph: &SemanticGraph, id: &str) -> bool {
+    is_gateway(graph, id) && graph.outgoing.get(id).map_or(0, |v| v.len()) > 1
+}
+
 fn is_boundary(graph: &SemanticGraph, id: &str) -> bool {
     graph
         .by_id
@@ -192,6 +213,14 @@ pub fn route_flows(
     let mut routed: IndexMap<&str, Vec<Waypoint>> = IndexMap::default();
     let mut pending: Vec<Pending> = Vec::new();
 
+    // A boundary handler leaving a host has to get past the host's column; a
+    // join template from that column would close the row it passes through.
+    let mut handler_ranks: IndexSet<i64> = IndexSet::default();
+    for (host, events) in &graph.attachers {
+        if !events.is_empty() {
+            handler_ranks.insert(graph.ranks.get(host).copied().unwrap_or(-1));
+        }
+    }
     for flow in flows {
         let (Some(source), Some(target)) = (
             bounds.get(flow.source_ref.as_str()).copied(),
@@ -223,7 +252,16 @@ pub fn route_flows(
                 target_rank,
             )
         } else {
-            forward_candidates(&ctx, &source, &target, source_rank, target_rank)
+            forward_candidates(
+                &ctx,
+                &source,
+                &target,
+                source_rank,
+                target_rank,
+                is_join_gateway(graph, &flow.target_ref)
+                    && !is_split_gateway(graph, &flow.source_ref)
+                    && !handler_ranks.contains(&source_rank.unwrap_or(-1)),
+            )
         };
 
         let clear = pick(direct, &ctx, &flow.source_ref, &flow.target_ref);
@@ -553,6 +591,8 @@ fn forward_candidates(
     target: &Bounds,
     source_rank: Option<i64>,
     target_rank: Option<i64>,
+    // The target is a join gateway reached from something other than a split.
+    into_join: bool,
 ) -> Vec<Vec<Waypoint>> {
     let from = centre(source);
     let to = centre(target);
@@ -633,6 +673,26 @@ fn forward_candidates(
             wp(target.x, to.y),
         ],
     ];
+
+    // A join is reached the way its split was left, mirrored: along the
+    // branch's own row, then up or down into the gateway at its centre-x.
+    if into_join {
+        candidates.insert(
+            0,
+            vec![
+                wp(source.x + source.width, from.y),
+                wp(to.x, from.y),
+                wp(
+                    to.x,
+                    if down {
+                        target.y
+                    } else {
+                        target.y + target.height
+                    },
+                ),
+            ],
+        );
+    }
 
     // Turning in the gutter right behind the source instead reaches the target
     // band early; which of the two crosses less depends on what is already

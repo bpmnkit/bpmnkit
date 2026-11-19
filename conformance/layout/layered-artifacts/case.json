@@ -1,0 +1,4 @@
+{
+  "input": "bpmn/artifacts/input.bpmn",
+  "runs": { "layered": { "engine": "layered" } }
+}

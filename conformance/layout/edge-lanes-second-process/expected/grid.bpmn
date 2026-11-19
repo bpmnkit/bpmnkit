@@ -55,21 +55,21 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_P2">
     <bpmndi:BPMNPlane id="BPMNPlane_P2" bpmnElement="P2">
       <bpmndi:BPMNShape id="P2_s_di" bpmnElement="P2_s">
-        <dc:Bounds x="57" y="42" width="36" height="36"/>
+        <dc:Bounds x="62" y="42" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="50" y="82" width="49" height="14"/>
+          <dc:Bounds x="55" y="82" width="49" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="P2_A_di" bpmnElement="P2_A">
-        <dc:Bounds x="175" y="20" width="100" height="80"/>
+        <dc:Bounds x="180" y="20" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="P2_B_di" bpmnElement="P2_B">
-        <dc:Bounds x="325" y="20" width="100" height="80"/>
+        <dc:Bounds x="330" y="20" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="P2_e_di" bpmnElement="P2_e">
-        <dc:Bounds x="507" y="42" width="36" height="36"/>
+        <dc:Bounds x="512" y="42" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="505" y="82" width="40" height="14"/>
+          <dc:Bounds x="510" y="82" width="40" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="P2_L1_di" bpmnElement="P2_L1" isHorizontal="true">
@@ -79,16 +79,16 @@
         <dc:Bounds x="0" y="60" width="565" height="60"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="P2_f1_di" bpmnElement="P2_f1">
-        <di:waypoint x="93" y="60"/>
-        <di:waypoint x="175" y="60"/>
+        <di:waypoint x="98" y="60"/>
+        <di:waypoint x="180" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="P2_f2_di" bpmnElement="P2_f2">
-        <di:waypoint x="275" y="60"/>
-        <di:waypoint x="325" y="60"/>
+        <di:waypoint x="280" y="60"/>
+        <di:waypoint x="330" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="P2_f3_di" bpmnElement="P2_f3">
-        <di:waypoint x="425" y="60"/>
-        <di:waypoint x="507" y="60"/>
+        <di:waypoint x="430" y="60"/>
+        <di:waypoint x="512" y="60"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -1,0 +1,16 @@
+# Grant application | id=grant
+## Grant office | id=grant-office
+### Applicant desk
+[start:message Application received] > [user Check completeness] > [xor Complete?]
+Complete? >(Yes: complete = true) [and Start reviews]
+Complete? >(No: default) [send Request missing data] > [end Returned to applicant]
+### Review panel
+Start reviews > [user Score scientific merit] > [and Merge reviews]
+Start reviews > [user Assess budget] > Merge reviews
+Start reviews > [service Run plagiarism check] > Merge reviews
+### Finance
+Merge reviews > [user Decide funding] > [xor Funded?]
+Funded? >(Yes: funded = true) [service Create grant account] > [or Notify parties]
+Funded? >(No: default) [send Send rejection] > [end Rejected]
+Notify parties > [send Send award letter] > [end Awarded]
+Notify parties > [service Update public register] > [end Registered]

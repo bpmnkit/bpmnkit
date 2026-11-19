@@ -1,0 +1,12 @@
+# Seed library
+## Library | id=library
+### Desk
+[start Member asks] > [user Check stock] > [xor In stock?]
+### Archive
+[user Pull packet] > [send Send packet]
+In stock? >(Yes: stock = true) Pull packet
+In stock? >(No: default) [end Request closed]
+## Member | id=member
+[start Needs seeds] > [send Ask library] > [catch Packet arrives | key=requestId] > [end Seeds sown]
+Ask library ~> Member asks
+Send packet ~> Packet arrives

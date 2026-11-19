@@ -272,12 +272,16 @@ describe("auto-layout with nested lanes", () => {
 
 describe("auto-layout without nested lanes", () => {
 	// Serialized layouts captured before nested-lane support (02-collaboration
-	// re-captured after main's message-flow label layout); any drift here is
-	// a layout change for diagrams the feature must not touch.
+	// re-captured after the P1 collaboration composition, both after the P2/P1b pool
+	// grid phase); any drift here is a layout change for diagrams the feature
+	// must not touch.
 	it.each([
-		["02-collaboration.bpmn", "df7cac0b613db38ed687cc0ba1ac0640e0d1f4e4f335898289432670c48c0ca4"],
+		[
+			"02-collaboration.bpmn", // Re-recorded in layout P4 (both: flat lanes now hand over in a shared column, tighter lane padding).
+			"3483c087f431595169f19d21240c05e308f7907f993e778299f87e17f1bb0245",
+		],
 		// Its laned process WFP-6-2 has no pool: its lanes are drawn on its own plane.
-		["miwg-A.4.0.bpmn", "1088af4f848819f4e06d29c416fa7182c2dfaee753ebd02ea9f1dd20eb715aec"],
+		["miwg-A.4.0.bpmn", "2c711ee7ac8d58f940650260ca8ab5da6aac2b22c0e246f2f378d6887e8e70ae"],
 	])("lays out %s byte for byte as before", (name, hash) => {
 		expect(sha256Hex(serializeBpmn(applyAutoLayout(fixture(name))))).toBe(hash)
 	})

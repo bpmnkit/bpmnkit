@@ -68,9 +68,9 @@
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="re_di" bpmnElement="re">
-        <dc:Bounds x="375" y="158" width="36" height="36"/>
+        <dc:Bounds x="247" y="182" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="373" y="198" width="40" height="14"/>
+          <dc:Bounds x="245" y="222" width="40" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
@@ -87,8 +87,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">
         <di:waypoint x="265" y="98"/>
-        <di:waypoint x="265" y="176"/>
-        <di:waypoint x="375" y="176"/>
+        <di:waypoint x="265" y="182"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -87,16 +87,12 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 526.4,
+                "x": 380,
                 "y": 226
               },
               {
-                "x": 526.4,
-                "y": 286
-              },
-              {
-                "x": 724,
-                "y": 286
+                "x": 380,
+                "y": 290
               }
             ]
           },
@@ -106,16 +102,16 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 428.8,
+                "x": 620,
                 "y": 226
               },
               {
-                "x": 428.8,
-                "y": 382
+                "x": 620,
+                "y": 308
               },
               {
                 "x": 724,
-                "y": 382
+                "y": 308
               }
             ]
           },
@@ -125,16 +121,16 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 331.2,
+                "x": 540,
                 "y": 226
               },
               {
-                "x": 331.2,
-                "y": 478
+                "x": 540,
+                "y": 408
               },
               {
                 "x": 724,
-                "y": 478
+                "y": 408
               }
             ]
           },
@@ -144,16 +140,16 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 233.6,
+                "x": 460,
                 "y": 226
               },
               {
-                "x": 233.6,
-                "y": 574
+                "x": 460,
+                "y": 508
               },
               {
                 "x": 724,
-                "y": 574
+                "y": 508
               }
             ]
           },
@@ -232,7 +228,7 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 508.4,
+              "x": 362,
               "y": 190
             },
             "bpmnElement": "failed",
@@ -243,7 +239,7 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 410.8,
+              "x": 602,
               "y": 190
             },
             "bpmnElement": "escalated",
@@ -254,7 +250,7 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 313.2,
+              "x": 522,
               "y": 190
             },
             "bpmnElement": "cancel",
@@ -265,7 +261,7 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 215.6,
+              "x": 442,
               "y": 190
             },
             "bpmnElement": "stop",
@@ -320,8 +316,8 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 724,
-              "y": 268
+              "x": 362,
+              "y": 290
             },
             "bpmnElement": "e_failed",
             "id": "e_failed_di",
@@ -332,7 +328,7 @@
               "height": 36,
               "width": 36,
               "x": 724,
-              "y": 364
+              "y": 290
             },
             "bpmnElement": "e_escalated",
             "id": "e_escalated_di",
@@ -343,7 +339,7 @@
               "height": 36,
               "width": 36,
               "x": 724,
-              "y": 460
+              "y": 390
             },
             "bpmnElement": "e_cancel",
             "id": "e_cancel_di",
@@ -354,7 +350,7 @@
               "height": 36,
               "width": 36,
               "x": 724,
-              "y": 556
+              "y": 490
             },
             "bpmnElement": "e_stop",
             "id": "e_stop_di",

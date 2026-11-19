@@ -9,8 +9,10 @@ import type { LayoutHints, LayoutResult } from "./types.js"
  * `semantic` places nodes by rank and narrative band and honours lane
  * membership. `grid` is the older cell-grid walk, kept for collaborations,
  * where pool and message-flow geometry is still decided by the caller.
+ * `layered` keeps the semantic graph, sizes and labels but places and routes
+ * lane-free scopes Sugiyama-style (see `layered/index.ts`); experimental.
  */
-export type LayoutEngine = "semantic" | "grid"
+export type LayoutEngine = "semantic" | "grid" | "layered"
 
 /**
  * Layout a full process. Boundary events, expanded subprocesses and edge
@@ -25,9 +27,11 @@ export function layoutProcess(
 	collapsed?: ReadonlySet<string>,
 	/** Tool-grid hints; only the `semantic` engine packs tools into a grid, so `grid` ignores them. */
 	grids?: LayoutHints["grids"],
+	/** The process is a pool's: its artifacts keep the stacked placement (pool sizes drive message routing). */
+	inPool = false,
 ): LayoutResult {
 	if (engine === "grid") return gridLayoutFlowNodes(process.flowElements, process.sequenceFlows)
-	return semanticLayoutProcess(process, collapsed, grids)
+	return semanticLayoutProcess(process, collapsed, grids, inPool, engine === "layered")
 }
 
 /** Layout a set of flow nodes and sequence flows (used by ascii, proxy, compact). */

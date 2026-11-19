@@ -99,15 +99,6 @@ export interface LayoutEdge {
 	labelBounds?: Bounds
 }
 
-/** Result of laying out a sub-process's children, linked to its parent. */
-export interface SubProcessChildResult {
-	parentId: string
-	result: LayoutResult
-	/** Subprocess position at the time children were translated to absolute coordinates. */
-	parentX: number
-	parentY: number
-}
-
 /** How the unconnected children of an ad-hoc sub-process are arranged in their grid. */
 export interface GridHint {
 	/** Columns in the grid; defaults to `ceil(sqrt(n))`. */

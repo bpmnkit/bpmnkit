@@ -12,11 +12,11 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 56,
+                "x": 60,
                 "y": 110
               },
               {
-                "x": 156,
+                "x": 160,
                 "y": 110
               }
             ]
@@ -27,11 +27,11 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 548,
+                "x": 552,
                 "y": 110
               },
               {
-                "x": 648,
+                "x": 652,
                 "y": 110
               }
             ]
@@ -42,11 +42,11 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 242,
+                "x": 246,
                 "y": 110
               },
               {
-                "x": 302,
+                "x": 306,
                 "y": 110
               }
             ]
@@ -57,11 +57,11 @@
             "unknownAttributes": {},
             "waypoints": [
               {
-                "x": 402,
+                "x": 406,
                 "y": 110
               },
               {
-                "x": 462,
+                "x": 466,
                 "y": 110
               }
             ]
@@ -73,7 +73,7 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 20,
+              "x": 24,
               "y": 92
             },
             "bpmnElement": "s",
@@ -84,7 +84,7 @@
             "bounds": {
               "height": 180,
               "width": 392,
-              "x": 156,
+              "x": 160,
               "y": 20
             },
             "bpmnElement": "sp",
@@ -96,7 +96,7 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 648,
+              "x": 652,
               "y": 92
             },
             "bpmnElement": "e",
@@ -107,7 +107,7 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 206,
+              "x": 210,
               "y": 92
             },
             "bpmnElement": "is",
@@ -118,7 +118,7 @@
             "bounds": {
               "height": 80,
               "width": 100,
-              "x": 302,
+              "x": 306,
               "y": 70
             },
             "bpmnElement": "a",
@@ -129,7 +129,7 @@
             "bounds": {
               "height": 36,
               "width": 36,
-              "x": 462,
+              "x": 466,
               "y": 92
             },
             "bpmnElement": "ie",

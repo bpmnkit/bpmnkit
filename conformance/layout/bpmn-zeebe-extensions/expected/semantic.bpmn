@@ -68,49 +68,49 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_zeebe">
       <bpmndi:BPMNShape id="Start_z_di" bpmnElement="Start_z">
-        <dc:Bounds x="20" y="42" width="36" height="36"/>
+        <dc:Bounds x="24" y="42" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_service_di" bpmnElement="Task_service">
-        <dc:Bounds x="116" y="20" width="100" height="80"/>
+        <dc:Bounds x="120" y="20" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_human_di" bpmnElement="Task_human">
-        <dc:Bounds x="276" y="20" width="100" height="80"/>
+        <dc:Bounds x="280" y="20" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_decide_di" bpmnElement="Task_decide">
-        <dc:Bounds x="436" y="20" width="100" height="80"/>
+        <dc:Bounds x="440" y="20" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_call_di" bpmnElement="Task_call">
-        <dc:Bounds x="596" y="20" width="100" height="80"/>
+        <dc:Bounds x="600" y="20" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Task_script_di" bpmnElement="Task_script">
-        <dc:Bounds x="756" y="20" width="100" height="80"/>
+        <dc:Bounds x="760" y="20" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="End_z_di" bpmnElement="End_z">
-        <dc:Bounds x="916" y="42" width="36" height="36"/>
+        <dc:Bounds x="920" y="42" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_z1_di" bpmnElement="Flow_z1">
-        <di:waypoint x="56" y="60"/>
-        <di:waypoint x="116" y="60"/>
+        <di:waypoint x="60" y="60"/>
+        <di:waypoint x="120" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_z2_di" bpmnElement="Flow_z2">
-        <di:waypoint x="216" y="60"/>
-        <di:waypoint x="276" y="60"/>
+        <di:waypoint x="220" y="60"/>
+        <di:waypoint x="280" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_z3_di" bpmnElement="Flow_z3">
-        <di:waypoint x="376" y="60"/>
-        <di:waypoint x="436" y="60"/>
+        <di:waypoint x="380" y="60"/>
+        <di:waypoint x="440" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_z4_di" bpmnElement="Flow_z4">
-        <di:waypoint x="536" y="60"/>
-        <di:waypoint x="596" y="60"/>
+        <di:waypoint x="540" y="60"/>
+        <di:waypoint x="600" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_z5_di" bpmnElement="Flow_z5">
-        <di:waypoint x="696" y="60"/>
-        <di:waypoint x="756" y="60"/>
+        <di:waypoint x="700" y="60"/>
+        <di:waypoint x="760" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_z6_di" bpmnElement="Flow_z6">
-        <di:waypoint x="856" y="60"/>
-        <di:waypoint x="916" y="60"/>
+        <di:waypoint x="860" y="60"/>
+        <di:waypoint x="920" y="60"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

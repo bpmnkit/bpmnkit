@@ -28,6 +28,15 @@ export interface SemanticGraph {
 	ranks: Map<string, number>
 	/** Lazily built: ids from which an end (or terminal) node is reachable. See {@link reachesEnd}. */
 	endReach?: Set<string>
+	/** Nodes of the handlers placed on an exception row by `placeExceptionRow`. */
+	exceptionRow: Set<string>
+	/**
+	 * Stack one-node detours under their sibling target. Off inside pools, where
+	 * message routing depends on the pool's shape, and inside containers.
+	 */
+	stackDetours: boolean
+	/** Ids of flows between adjacent lanes that share their source's column; see `laneHandoffs`. */
+	handoffs: Set<string>
 }
 
 /**
@@ -43,6 +52,8 @@ function effectiveSource(flow: BpmnSequenceFlow, byId: Map<string, BpmnFlowEleme
 export function buildSemanticGraph(
 	flowElements: BpmnFlowElement[],
 	sequenceFlows: BpmnSequenceFlow[],
+	/** Stack one-node detours under their sibling target; see {@link feedsSibling}. */
+	stackDetours = false,
 ): SemanticGraph {
 	const byId = new Map<string, BpmnFlowElement>()
 	for (const el of flowElements) byId.set(el.id, el)
@@ -85,6 +96,9 @@ export function buildSemanticGraph(
 		components: [],
 		starts: [],
 		ranks: new Map(),
+		exceptionRow: new Set(),
+		stackDetours,
+		handoffs: new Set(),
 	}
 
 	findComponents(graph)
@@ -178,10 +192,104 @@ function sharesRank(graph: SemanticGraph, flow: BpmnSequenceFlow): boolean {
 }
 
 /**
- * Longest-path ranks over the acyclic remainder, then a bounded fixed point so
- * a boundary handler never precedes the activity it is attached to.
+ * A one-node detour of a split that leads straight into the split's other
+ * target (order pigment, then mix paint) shares that target's column: it is
+ * stacked under (or over) it and flows in vertically, instead of pushing the
+ * target and everything after it one column right. True for the detour's
+ * flow into that target.
  */
-function assignRanks(graph: SemanticGraph): void {
+function feedsSibling(graph: SemanticGraph, flow: BpmnSequenceFlow): boolean {
+	if (!graph.stackDetours) return false
+	const into = graph.incoming.get(flow.sourceRef) ?? []
+	const out = graph.outgoing.get(flow.sourceRef) ?? []
+	if (into.length !== 1 || out.length !== 1) return false
+	const split = into[0] as BpmnSequenceFlow
+	if (graph.byId.get(split.sourceRef)?.type === "boundaryEvent") return false
+	if (graph.backEdges.has(split.id) || graph.backEdges.has(flow.id)) return false
+	return (graph.outgoing.get(split.sourceRef) ?? []).some(
+		(f) => f.targetRef === flow.targetRef && f !== split && !graph.backEdges.has(f.id),
+	)
+}
+
+/** True when `id` is a detour stacked under its sibling target (see {@link feedsSibling}). */
+export function isDetour(graph: SemanticGraph, id: string): boolean {
+	const out = graph.outgoing.get(id) ?? []
+	return out.length === 1 && feedsSibling(graph, out[0] as BpmnSequenceFlow)
+}
+
+/** True when `flow` enters a detour that {@link feedsSibling}: the spine takes the sibling instead. */
+export function entersDetour(graph: SemanticGraph, flow: BpmnSequenceFlow): boolean {
+	return isDetour(graph, flow.targetRef)
+}
+
+interface HandlerEntry {
+	host: string
+	/** The side the event docks on: -1 top, 1 bottom. Handlers on one side share a row. */
+	side: 1 | -1
+	flows: BpmnSequenceFlow[]
+}
+
+/**
+ * The entry flows of each boundary event's handler, in host then event order.
+ * Only a handler entered by that flow alone is listed: a shared target belongs
+ * to whatever else reaches it.
+ */
+function handlerEntries(
+	graph: SemanticGraph,
+	sideOf: (event: BpmnBoundaryEvent, host: string) => 1 | -1,
+): HandlerEntry[] {
+	const entries: HandlerEntry[] = []
+	for (const [host, events] of graph.attachers) {
+		for (const event of events) {
+			const flows = (graph.outgoing.get(host) ?? []).filter(
+				(f) =>
+					f.sourceRef === event.id &&
+					!graph.backEdges.has(f.id) &&
+					(graph.incoming.get(f.targetRef) ?? []).length === 1,
+			)
+			if (flows.length === 0) continue
+			// A rework loop (handler leads back to an earlier merge) is no exception
+			// path: its back edge routes below the diagram anyway, so a row of its
+			// own would only push the other branches down.
+			if (flows.some((f) => loopsBack(graph, f.targetRef))) continue
+			entries.push({ host, side: sideOf(event, host), flows })
+		}
+	}
+	return entries
+}
+
+/** True when the handler chain starting at `entry` leaves through a back edge. */
+function loopsBack(graph: SemanticGraph, entry: string): boolean {
+	for (const id of chainOf(graph, entry))
+		if ((graph.outgoing.get(id) ?? []).some((f) => graph.backEdges.has(f.id))) return true
+	return false
+}
+
+/** The nodes only `entry` leads to: it, and successors reached from nowhere else. */
+function chainOf(graph: SemanticGraph, entry: string): Set<string> {
+	const chain = new Set([entry])
+	const stack = [entry]
+	while (stack.length > 0) {
+		const id = stack.pop() as string
+		for (const f of graph.outgoing.get(id) ?? []) {
+			if (graph.backEdges.has(f.id) || chain.has(f.targetRef)) continue
+			if ((graph.incoming.get(f.targetRef) ?? []).length !== 1) continue
+			chain.add(f.targetRef)
+			stack.push(f.targetRef)
+		}
+	}
+	return chain
+}
+
+/**
+ * Longest-path ranks over the acyclic remainder, then a bounded fixed point so
+ * a boundary handler never precedes the activity it is attached to. `steps`
+ * overrides the one-rank step of individual flows.
+ */
+export function assignRanks(
+	graph: SemanticGraph,
+	steps: ReadonlyMap<string, number> = new Map(),
+): void {
 	const { ranks } = graph
 	for (const node of graph.nodes) ranks.set(node.id, 0)
 
@@ -195,7 +303,10 @@ function assignRanks(graph: SemanticGraph): void {
 		for (const node of graph.nodes) {
 			const rank = ranks.get(node.id) ?? 0
 			for (const flow of forward(node.id)) {
-				const step = sharesRank(graph, flow) ? 0 : 1
+				const step =
+					sharesRank(graph, flow) || feedsSibling(graph, flow) || graph.handoffs.has(flow.id)
+						? 0
+						: (steps.get(flow.id) ?? 1)
 				const target = ranks.get(flow.targetRef) ?? 0
 				if (target < rank + step) {
 					ranks.set(flow.targetRef, rank + step)
@@ -215,6 +326,112 @@ function assignRanks(graph: SemanticGraph): void {
 		if (min === 0 || !Number.isFinite(min)) continue
 		for (const id of members) ranks.set(id, (ranks.get(id) ?? 0) - min)
 	}
+}
+
+/**
+ * Exception row: re-rank so a boundary handler starts in its host's own column
+ * and its flow drops straight down (or up) from the event, onto a row the
+ * handlers of the spine share. A second event on one host fans out one column
+ * right. A handler whose column is taken (a sibling branch on that side, or an
+ * earlier handler's tail) keeps its step to the right, as before.
+ *
+ * Needs the hosts' bands, so it runs after a first band assignment; returns
+ * true when ranks changed and bands must be assigned again.
+ */
+export function placeExceptionRow(
+	graph: SemanticGraph,
+	bands: ReadonlyMap<string, number>,
+	sideOf: (event: BpmnBoundaryEvent, host: string) => 1 | -1,
+): boolean {
+	const entries = handlerEntries(graph, sideOf)
+	if (entries.length === 0) return false
+	const componentOf = new Map<string, number>()
+	graph.components.forEach((members, i) => {
+		for (const id of members) componentOf.set(id, i)
+	})
+	const chains = new Map<string, Set<string>>()
+	const handlerNodes = new Set<string>()
+	for (const entry of entries) {
+		for (const flow of entry.flows) {
+			const chain = chainOf(graph, flow.targetRef)
+			chains.set(flow.targetRef, chain)
+			for (const id of chain) handlerNodes.add(id)
+		}
+	}
+	const band = (id: string): number => bands.get(id) ?? 0
+	const busy = new Set<HandlerEntry>()
+	const blocked = new Set<string>()
+	const rowKey = (entry: HandlerEntry): string =>
+		`${componentOf.get(entry.host) ?? 0}:${band(entry.host)}:${entry.side}`
+	for (const entry of entries) {
+		const hostRank = graph.ranks.get(entry.host)
+		const sibling = graph.nodes.some(
+			(n) =>
+				n.id !== entry.host &&
+				!handlerNodes.has(n.id) &&
+				graph.ranks.get(n.id) === hostRank &&
+				componentOf.get(n.id) === componentOf.get(entry.host) &&
+				(band(n.id) - band(entry.host)) * entry.side > 0,
+		)
+		if (sibling || band(entry.host) !== 0) busy.add(entry)
+		if (sibling) blocked.add(rowKey(entry))
+	}
+	// One row per scope, band and side: when a sibling branch blocks one handler's
+	// column, the row would be split between the handlers (a long drop for one, a
+	// step for the other), so all of them keep the step.
+	for (const entry of entries) if (blocked.has(rowKey(entry))) busy.add(entry)
+
+	const steps = new Map<string, number>()
+	for (const entry of entries)
+		for (const flow of entry.flows) steps.set(flow.id, busy.has(entry) ? 1 : 0)
+	if (busy.size === entries.length) return false
+	const lastRank = (chain: Set<string>): number =>
+		Math.max(...[...chain].map((id) => graph.ranks.get(id) ?? 0))
+
+	/** Entries that keep their old step because they would collide on the row. */
+	const demoted = new Set<HandlerEntry>()
+	const demote = (entry: HandlerEntry): void => {
+		demoted.add(entry)
+		for (const flow of entry.flows) steps.set(flow.id, 1)
+	}
+	for (let round = 0; round <= entries.length; round++) {
+		assignRanks(graph, steps)
+		const { ranks } = graph
+		const order = [...entries].sort((a, b) => (ranks.get(a.host) ?? 0) - (ranks.get(b.host) ?? 0))
+		/** Per row and side: the first rank no earlier handler occupies. */
+		const free = new Map<string, number>()
+		const last = new Map<string, HandlerEntry>()
+		let changed = false
+		for (const entry of order) {
+			if (busy.has(entry)) continue
+			const key = `${componentOf.get(entry.host) ?? 0}:${band(entry.host)}:${entry.side}`
+			const from = free.get(key) ?? Number.NEGATIVE_INFINITY
+			if (!demoted.has(entry) && from > (ranks.get(entry.host) ?? 0)) {
+				// An earlier handler on the row holds this host's column. A second
+				// event of the same host steps right as before; for another host the
+				// earlier handler's tail would sit in the way of its event, so both do.
+				demote(entry)
+				const before = last.get(key)
+				if (before && before.host !== entry.host && !demoted.has(before)) demote(before)
+				changed = true
+				break
+			}
+			last.set(key, entry)
+			let end = Number.NEGATIVE_INFINITY
+			for (const flow of entry.flows)
+				end = Math.max(end, lastRank(chains.get(flow.targetRef) ?? new Set()))
+			free.set(key, Math.max(from, end + 1))
+		}
+		if (!changed) break
+	}
+	if (!entries.some((e) => !busy.has(e) && !demoted.has(e))) return false
+	// Demoted handlers still sit on the row, one column right of their host.
+	for (const entry of entries) {
+		if (busy.has(entry)) continue
+		for (const flow of entry.flows)
+			for (const id of chains.get(flow.targetRef) ?? []) graph.exceptionRow.add(id)
+	}
+	return true
 }
 
 /**

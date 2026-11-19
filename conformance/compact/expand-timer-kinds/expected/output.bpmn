@@ -75,7 +75,7 @@
         <dc:Bounds x="320" y="136" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="remind_end_di" bpmnElement="remind_end">
-        <dc:Bounds x="448" y="214" width="36" height="36"/>
+        <dc:Bounds x="320" y="236" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="done_di" bpmnElement="done">
         <dc:Bounds x="448" y="96" width="36" height="36"/>
@@ -104,8 +104,7 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="f6_di" bpmnElement="f6">
         <di:waypoint x="338" y="172"/>
-        <di:waypoint x="338" y="232"/>
-        <di:waypoint x="448" y="232"/>
+        <di:waypoint x="338" y="236"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

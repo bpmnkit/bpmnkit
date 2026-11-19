@@ -1,0 +1,52 @@
+# Insurance claim handling
+[annotation Claims above the review threshold need a second opinion]
+## Claims Intake | id=intake
+[start:message Claim reported] > [user Register claim] > [service Validate policy] > [send Request documents] > [end Intake done]
+## Policy Admin | id=policy
+[start:message Policy lookup requested] > [service Load policy] > [xor Policy active?]
+Policy active? >(Yes: active = true) [send Return coverage] > [end Coverage returned]
+Policy active? >(No: default) [send Report lapse] > [end Lapse reported]
+## Damage Assessment | id=assessment
+[start:message Assessment ordered] > [user Inspect damage] > [service Estimate cost] > [send Deliver estimate] > [end Assessment done]
+## Fraud Check | id=fraud
+[start:message Screening requested] > [service Score claim] > [xor Suspicious?]
+Suspicious? >(Yes: score > 80) [user Investigate case] > [send Report finding]
+Suspicious? >(No: default) Report finding
+Report finding > [end Screening done]
+## Claims Approval | id=approval
+[start:message Approval requested] > [user Review claim] > [xor Approved?]
+Approved? >(Yes: approved = true) [send Authorize payout] > [end Claim approved]
+Approved? >(No: default) [send Notify rejection] > [end Claim rejected]
+## Payment Service | id=payment
+[start:message Payout authorized] > [service Prepare transfer] > [send Request bank transfer] > [catch Transfer confirmed | key=claimId] > [send Confirm payment] > [end Payment done]
+## Legal Review | id=legal
+[start:message Legal input requested] > [user Assess liability] > [service Draft opinion] > [send Send opinion] > [end Legal done]
+## Customer Service | id=service
+[start:message Customer inquiry] > [user Answer inquiry] > [send Send status update] > [end Inquiry closed]
+## Archive | id=archive
+[start:message Archive request] > [service Store documents] > [service Index record] > [end Archived]
+## Customer | blackbox
+## Bank | blackbox
+## Regulator | blackbox
+Customer ~> Claim reported: Claim form
+Request documents ~> Customer: Document request
+Customer ~> Customer inquiry: Question
+Send status update ~> Customer: Status
+Validate policy ~> Policy lookup requested: Policy id
+Return coverage ~> Estimate cost: Coverage limits
+Report lapse ~> Notify rejection: Lapse notice
+Request documents ~> Assessment ordered: Order inspection
+Deliver estimate ~> Review claim: Estimate
+Register claim ~> Screening requested: Claim data
+Report finding ~> Review claim: Fraud result
+Authorize payout ~> Payout authorized: Payout order
+Request bank transfer ~> Bank: Transfer order
+Bank ~> Transfer confirmed: Booking
+Confirm payment ~> Send status update: Paid
+Notify rejection ~> Customer: Rejection letter
+Inspect damage ~> Assess liability: Photos
+Send opinion ~> Review claim: Legal opinion
+Confirm payment ~> Archive request: Close file
+Authorize payout ~> Regulator: Large loss report
+Regulator ~> Legal input requested: Audit query
+Notify rejection ~> Archive request: Closed rejected

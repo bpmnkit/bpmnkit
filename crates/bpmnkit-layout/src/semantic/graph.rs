@@ -33,6 +33,13 @@ pub struct SemanticGraph<'a> {
     pub ranks: IndexMap<&'a str, i64>,
     /// Lazily built by [`reaches_end`].
     pub end_reach: RefCell<Option<IndexSet<&'a str>>>,
+    /// Nodes of the handlers placed on an exception row by [`place_exception_row`].
+    pub exception_row: IndexSet<&'a str>,
+    /// Stack one-node detours under their sibling target. Off inside pools, where
+    /// message routing depends on the pool's shape, and inside containers.
+    pub stack_detours: bool,
+    /// Ids of flows between adjacent lanes that share their source's column; see `lane_handoffs`.
+    pub handoffs: IndexSet<&'a str>,
 }
 
 /// `effectiveSource(flow, byId)`: a flow out of a boundary event belongs to the
@@ -51,6 +58,7 @@ fn effective_source<'a>(
 pub fn build_semantic_graph<'a>(
     flow_elements: &'a [BpmnFlowElement],
     sequence_flows: &'a [BpmnSequenceFlow],
+    stack_detours: bool,
 ) -> SemanticGraph<'a> {
     let mut by_id: IndexMap<&'a str, &'a BpmnFlowElement> =
         IndexMap::with_capacity_and_hasher(flow_elements.len(), Default::default());
@@ -102,11 +110,14 @@ pub fn build_semantic_graph<'a>(
         starts: Vec::new(),
         ranks: IndexMap::default(),
         end_reach: RefCell::new(None),
+        exception_row: IndexSet::default(),
+        stack_detours,
+        handoffs: IndexSet::default(),
     };
 
     find_components(&mut graph);
     mark_back_edges(&mut graph);
-    assign_ranks(&mut graph);
+    assign_ranks(&mut graph, &IndexMap::default());
     graph
 }
 
@@ -264,10 +275,149 @@ fn shares_rank(graph: &SemanticGraph, flow: &BpmnSequenceFlow) -> bool {
     is_join(graph, &source.base().id) && is_join(graph, &target.base().id)
 }
 
-/// `assignRanks`: longest-path ranks over the acyclic remainder.
-fn assign_ranks(graph: &mut SemanticGraph) {
-    let mut ranks: IndexMap<&str, i64> =
-        IndexMap::with_capacity_and_hasher(graph.nodes.len(), Default::default());
+/// `feedsSibling`: a one-node detour of a split that leads straight into the
+/// split's other target shares that target's column. True for the detour's
+/// flow into that target.
+fn feeds_sibling(graph: &SemanticGraph, flow: &BpmnSequenceFlow) -> bool {
+    if !graph.stack_detours {
+        return false;
+    }
+    let into = graph
+        .incoming
+        .get(flow.source_ref.as_str())
+        .map_or(&[][..], |v| v.as_slice());
+    let out = graph
+        .outgoing
+        .get(flow.source_ref.as_str())
+        .map_or(&[][..], |v| v.as_slice());
+    if into.len() != 1 || out.len() != 1 {
+        return false;
+    }
+    let split = into[0];
+    if graph
+        .by_id
+        .get(split.source_ref.as_str())
+        .is_some_and(|el| el.type_name() == "boundaryEvent")
+    {
+        return false;
+    }
+    if graph.back_edges.contains(split.id.as_str()) || graph.back_edges.contains(flow.id.as_str()) {
+        return false;
+    }
+    graph
+        .outgoing
+        .get(split.source_ref.as_str())
+        .is_some_and(|fs| {
+            fs.iter().any(|f| {
+                f.target_ref == flow.target_ref
+                    && !std::ptr::eq(*f, split)
+                    && !graph.back_edges.contains(f.id.as_str())
+            })
+        })
+}
+
+/// `isDetour`: `id` is a detour stacked under its sibling target.
+pub fn is_detour(graph: &SemanticGraph, id: &str) -> bool {
+    match graph.outgoing.get(id) {
+        Some(out) if out.len() == 1 => feeds_sibling(graph, out[0]),
+        _ => false,
+    }
+}
+
+/// `entersDetour`: `flow` enters a detour; the spine takes the sibling instead.
+pub fn enters_detour(graph: &SemanticGraph, flow: &BpmnSequenceFlow) -> bool {
+    is_detour(graph, &flow.target_ref)
+}
+
+/// `HandlerEntry`.
+struct HandlerEntry<'a> {
+    host: &'a str,
+    /// The side the event docks on: -1 top, 1 bottom.
+    side: i64,
+    flows: Vec<&'a BpmnSequenceFlow>,
+}
+
+/// `handlerEntries`: the entry flows of each boundary event's handler, in host
+/// then event order. Only a handler entered by that flow alone is listed.
+fn handler_entries<'a>(
+    graph: &SemanticGraph<'a>,
+    side_of: &dyn Fn(&BpmnBoundaryEvent, &str) -> i64,
+) -> Vec<HandlerEntry<'a>> {
+    let mut entries = Vec::new();
+    for (&host, events) in &graph.attachers {
+        for event in events {
+            let flows: Vec<&'a BpmnSequenceFlow> = graph
+                .outgoing
+                .get(host)
+                .map(|v| v.as_slice())
+                .unwrap_or(&[])
+                .iter()
+                .copied()
+                .filter(|f| {
+                    f.source_ref == event.base.id
+                        && !graph.back_edges.contains(f.id.as_str())
+                        && graph
+                            .incoming
+                            .get(f.target_ref.as_str())
+                            .map_or(0, |v| v.len())
+                            == 1
+                })
+                .collect();
+            if flows.is_empty() {
+                continue;
+            }
+            // A rework loop (handler leads back to an earlier merge) is no exception
+            // path: its back edge routes below the diagram anyway, so a row of its
+            // own would only push the other branches down.
+            if flows.iter().any(|f| loops_back(graph, &f.target_ref)) {
+                continue;
+            }
+            entries.push(HandlerEntry {
+                host,
+                side: side_of(event, host),
+                flows,
+            });
+        }
+    }
+    entries
+}
+
+/// True when the handler chain starting at `entry` leaves through a back edge.
+fn loops_back<'a>(graph: &SemanticGraph<'a>, entry: &'a str) -> bool {
+    chain_of(graph, entry).iter().any(|id| {
+        graph
+            .outgoing
+            .get(id)
+            .is_some_and(|v| v.iter().any(|f| graph.back_edges.contains(f.id.as_str())))
+    })
+}
+
+/// `chainOf`: the nodes only `entry` leads to.
+fn chain_of<'a>(graph: &SemanticGraph<'a>, entry: &'a str) -> IndexSet<&'a str> {
+    let mut chain: IndexSet<&'a str> = IndexSet::default();
+    chain.insert(entry);
+    let mut stack = vec![entry];
+    while let Some(id) = stack.pop() {
+        for f in graph.outgoing.get(id).map(|v| v.as_slice()).unwrap_or(&[]) {
+            let t = f.target_ref.as_str();
+            if graph.back_edges.contains(f.id.as_str()) || chain.contains(t) {
+                continue;
+            }
+            if graph.incoming.get(t).map_or(0, |v| v.len()) != 1 {
+                continue;
+            }
+            chain.insert(t);
+            stack.push(t);
+        }
+    }
+    chain
+}
+
+/// `assignRanks`: longest-path ranks over the acyclic remainder. `steps`
+/// overrides the one-rank step of individual flows. Ranks are reset in place, as
+/// the TS does, so keys of non-node targets keep their earlier values.
+pub fn assign_ranks<'a>(graph: &mut SemanticGraph<'a>, steps: &IndexMap<&str, i64>) {
+    let mut ranks: IndexMap<&'a str, i64> = std::mem::take(&mut graph.ranks);
     for node in &graph.nodes {
         ranks.insert(&node.base().id, 0);
     }
@@ -296,7 +446,14 @@ fn assign_ranks(graph: &mut SemanticGraph) {
                 if graph.back_edges.contains(flow.id.as_str()) {
                     continue;
                 }
-                let step = if shares_rank(graph, flow) { 0 } else { 1 };
+                let step = if shares_rank(graph, flow)
+                    || feeds_sibling(graph, flow)
+                    || graph.handoffs.contains(flow.id.as_str())
+                {
+                    0
+                } else {
+                    steps.get(flow.id.as_str()).copied().unwrap_or(1)
+                };
                 relax.push(Relax {
                     source,
                     target_id: &flow.target_ref,
@@ -348,6 +505,164 @@ fn assign_ranks(graph: &mut SemanticGraph) {
         }
     }
     graph.ranks = ranks;
+}
+
+/// `placeExceptionRow`: re-rank so a boundary handler starts in its host's own
+/// column and its flow drops straight down (or up) from the event, onto a row
+/// the handlers of the spine share. Returns true when ranks changed and bands
+/// must be assigned again.
+pub fn place_exception_row<'a>(
+    graph: &mut SemanticGraph<'a>,
+    bands: &IndexMap<&'a str, i64>,
+    side_of: &dyn Fn(&BpmnBoundaryEvent, &str) -> i64,
+) -> bool {
+    let entries = handler_entries(graph, side_of);
+    if entries.is_empty() {
+        return false;
+    }
+    let mut component_of: IndexMap<&str, usize> = IndexMap::default();
+    for (i, members) in graph.components.iter().enumerate() {
+        for &id in members {
+            component_of.insert(id, i);
+        }
+    }
+    let mut chains: IndexMap<&'a str, IndexSet<&'a str>> = IndexMap::default();
+    let mut handler_nodes: IndexSet<&'a str> = IndexSet::default();
+    for entry in &entries {
+        for flow in &entry.flows {
+            let chain = chain_of(graph, flow.target_ref.as_str());
+            for &id in &chain {
+                handler_nodes.insert(id);
+            }
+            chains.insert(flow.target_ref.as_str(), chain);
+        }
+    }
+    let band = |id: &str| -> i64 { bands.get(id).copied().unwrap_or(0) };
+    let mut busy = vec![false; entries.len()];
+    let mut blocked: IndexSet<(Option<usize>, i64, i64)> = IndexSet::default();
+    let row_key = |entry: &HandlerEntry| {
+        (
+            component_of.get(entry.host).copied(),
+            band(entry.host),
+            entry.side,
+        )
+    };
+    for (k, entry) in entries.iter().enumerate() {
+        let host_rank = graph.ranks.get(entry.host).copied();
+        let sibling = graph.nodes.iter().any(|n| {
+            let id = n.base().id.as_str();
+            id != entry.host
+                && !handler_nodes.contains(id)
+                && graph.ranks.get(id).copied() == host_rank
+                && component_of.get(id).copied() == component_of.get(entry.host).copied()
+                && (band(id) - band(entry.host)) * entry.side > 0
+        });
+        if sibling || band(entry.host) != 0 {
+            busy[k] = true;
+        }
+        if sibling {
+            blocked.insert(row_key(entry));
+        }
+    }
+    // One row per scope, band and side: when a sibling branch blocks one handler's
+    // column, the row would be split between the handlers, so all keep the step.
+    for (k, entry) in entries.iter().enumerate() {
+        if blocked.contains(&row_key(entry)) {
+            busy[k] = true;
+        }
+    }
+
+    let mut steps: IndexMap<&str, i64> = IndexMap::default();
+    for (k, entry) in entries.iter().enumerate() {
+        for flow in &entry.flows {
+            steps.insert(flow.id.as_str(), if busy[k] { 1 } else { 0 });
+        }
+    }
+    if busy.iter().filter(|b| **b).count() == entries.len() {
+        return false;
+    }
+    let last_rank = |graph: &SemanticGraph, chain: &IndexSet<&str>| -> i64 {
+        chain
+            .iter()
+            .map(|id| graph.ranks.get(id).copied().unwrap_or(0))
+            .max()
+            .unwrap_or(i64::MIN)
+    };
+
+    // Entries that keep their old step because they would collide on the row.
+    let mut demoted = vec![false; entries.len()];
+    for _round in 0..=entries.len() {
+        assign_ranks(graph, &steps);
+        let mut order: Vec<usize> = (0..entries.len()).collect();
+        order.sort_by_key(|&k| graph.ranks.get(entries[k].host).copied().unwrap_or(0));
+        // Per row and side: the first rank no earlier handler occupies.
+        let mut free: IndexMap<(i64, i64, i64), f64> = IndexMap::default();
+        let mut last: IndexMap<(i64, i64, i64), usize> = IndexMap::default();
+        let mut changed = false;
+        for &k in &order {
+            if busy[k] {
+                continue;
+            }
+            let entry = &entries[k];
+            let key = (
+                component_of.get(entry.host).copied().unwrap_or(0) as i64,
+                band(entry.host),
+                entry.side,
+            );
+            let from = free.get(&key).copied().unwrap_or(f64::NEG_INFINITY);
+            if !demoted[k] && from > graph.ranks.get(entry.host).copied().unwrap_or(0) as f64 {
+                // An earlier handler on the row holds this host's column.
+                let mut demote = |j: usize, demoted: &mut Vec<bool>| {
+                    demoted[j] = true;
+                    for flow in &entries[j].flows {
+                        steps.insert(flow.id.as_str(), 1);
+                    }
+                };
+                demote(k, &mut demoted);
+                if let Some(&before) = last.get(&key) {
+                    if entries[before].host != entry.host && !demoted[before] {
+                        demote(before, &mut demoted);
+                    }
+                }
+                changed = true;
+                break;
+            }
+            last.insert(key, k);
+            let mut end = f64::NEG_INFINITY;
+            for flow in &entry.flows {
+                let lr = chains
+                    .get(flow.target_ref.as_str())
+                    .map_or(i64::MIN, |c| last_rank(graph, c));
+                let lr = if lr == i64::MIN {
+                    f64::NEG_INFINITY
+                } else {
+                    lr as f64
+                };
+                end = end.max(lr);
+            }
+            free.insert(key, from.max(end + 1.0));
+        }
+        if !changed {
+            break;
+        }
+    }
+    if !(0..entries.len()).any(|k| !busy[k] && !demoted[k]) {
+        return false;
+    }
+    // Demoted handlers still sit on the row, one column right of their host.
+    for (k, entry) in entries.iter().enumerate() {
+        if busy[k] {
+            continue;
+        }
+        for flow in &entry.flows {
+            if let Some(chain) = chains.get(flow.target_ref.as_str()) {
+                for &id in chain {
+                    graph.exception_row.insert(id);
+                }
+            }
+        }
+    }
+    true
 }
 
 /// `reachesEnd(graph, id)`: true when an end event is reachable from `id`

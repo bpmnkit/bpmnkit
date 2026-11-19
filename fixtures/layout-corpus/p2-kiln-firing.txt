@@ -1,0 +1,6 @@
+# Kiln firing | id=kiln
+[start Pottery shaped] > [user Dry pieces] > [and Prepare firing]
+Prepare firing > [service Heat kiln] > [and Ready to fire]
+Prepare firing > [user Glaze pieces] > Ready to fire
+Prepare firing > [user Book kiln slot] > Ready to fire
+Ready to fire > [service Fire kiln] > [end Pieces fired]

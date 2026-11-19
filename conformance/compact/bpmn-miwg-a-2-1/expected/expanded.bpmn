@@ -112,14 +112,14 @@
         <di:waypoint x="708" y="280"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="_To9Z8zOCEeSknpIVFCxNIQ_di" bpmnElement="_To9Z8zOCEeSknpIVFCxNIQ">
-        <di:waypoint x="431.5" y="140"/>
-        <di:waypoint x="431.5" y="110"/>
-        <di:waypoint x="733" y="110"/>
+        <di:waypoint x="481.5" y="180"/>
+        <di:waypoint x="733" y="180"/>
         <di:waypoint x="733" y="255"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="_To9Z9jOCEeSknpIVFCxNIQ_di" bpmnElement="_To9Z9jOCEeSknpIVFCxNIQ">
-        <di:waypoint x="733" y="255"/>
-        <di:waypoint x="733" y="40"/>
+        <di:waypoint x="758" y="280"/>
+        <di:waypoint x="798" y="280"/>
+        <di:waypoint x="798" y="40"/>
         <di:waypoint x="838" y="40"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="_To9Z-TOCEeSknpIVFCxNIQ_di" bpmnElement="_To9Z-TOCEeSknpIVFCxNIQ">
@@ -134,8 +134,8 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Bpmn_SequenceFlow_edepQQbbEealeL5I4Yl3Dw_di" bpmnElement="Bpmn_SequenceFlow_edepQQbbEealeL5I4Yl3Dw">
         <di:waypoint x="431.5" y="80"/>
-        <di:waypoint x="431.5" y="90"/>
-        <di:waypoint x="591.5" y="90"/>
+        <di:waypoint x="431.5" y="110"/>
+        <di:waypoint x="591.5" y="110"/>
         <di:waypoint x="591.5" y="240"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Bpmn_SequenceFlow_f9nmUQbbEealeL5I4Yl3Dw_di" bpmnElement="Bpmn_SequenceFlow_f9nmUQbbEealeL5I4Yl3Dw">

@@ -496,7 +496,7 @@
         <di:waypoint x="1320" y="112"/>
         <di:waypoint x="1320" y="100"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1296" y="326" width="140" height="14"/>
+          <dc:Bounds x="1330" y="326" width="140" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="BPMNEdge_SequenceFlow_6" bpmnElement="SequenceFlow_6" sourceElement="_BPMNShape_StartEvent_4" targetElement="ServiceTask_0tixwo5_di">

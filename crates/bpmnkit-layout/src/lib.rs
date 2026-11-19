@@ -31,6 +31,7 @@ pub mod engine;
 pub mod grid;
 pub mod hash;
 pub mod js;
+pub mod layered;
 pub mod orthogonal;
 pub mod overlap;
 pub mod repair;

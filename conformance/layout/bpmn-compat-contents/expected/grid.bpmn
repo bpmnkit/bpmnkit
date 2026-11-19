@@ -359,51 +359,51 @@
   <bpmndi:BPMNDiagram id="BPMNDiagram_waits">
     <bpmndi:BPMNPlane id="BPMNPlane_waits" bpmnElement="waits">
       <bpmndi:BPMNShape id="waitsStart_di" bpmnElement="waitsStart">
-        <dc:Bounds x="20" y="42" width="36" height="36"/>
+        <dc:Bounds x="22" y="42" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="waitsTask_di" bpmnElement="waitsTask">
-        <dc:Bounds x="138" y="20" width="100" height="80"/>
+        <dc:Bounds x="140" y="20" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="waitsService_di" bpmnElement="waitsService">
-        <dc:Bounds x="288" y="20" width="100" height="80"/>
+        <dc:Bounds x="290" y="20" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="waitsToTask_di" bpmnElement="waitsToTask">
-        <di:waypoint x="56" y="60"/>
-        <di:waypoint x="138" y="60"/>
+        <di:waypoint x="58" y="60"/>
+        <di:waypoint x="140" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="waitsToService_di" bpmnElement="waitsToService">
-        <di:waypoint x="238" y="60"/>
-        <di:waypoint x="288" y="60"/>
+        <di:waypoint x="240" y="60"/>
+        <di:waypoint x="290" y="60"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="waitsBack_di" bpmnElement="waitsBack">
-        <di:waypoint x="338" y="100"/>
-        <di:waypoint x="338" y="130"/>
-        <di:waypoint x="188" y="130"/>
-        <di:waypoint x="188" y="100"/>
+        <di:waypoint x="340" y="100"/>
+        <di:waypoint x="340" y="130"/>
+        <di:waypoint x="190" y="130"/>
+        <di:waypoint x="190" y="100"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
   <bpmndi:BPMNDiagram id="BPMNDiagram_recursive">
     <bpmndi:BPMNPlane id="BPMNPlane_recursive" bpmnElement="recursive">
       <bpmndi:BPMNShape id="recursiveStart_di" bpmnElement="recursiveStart">
-        <dc:Bounds x="20" y="42" width="36" height="36"/>
+        <dc:Bounds x="22" y="42" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="recursiveSub_di" bpmnElement="recursiveSub" isExpanded="true">
-        <dc:Bounds x="138" y="20" width="400" height="220"/>
+        <dc:Bounds x="140" y="20" width="400" height="220"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="recursiveSubStart_di" bpmnElement="recursiveSubStart">
-        <dc:Bounds x="245" y="112" width="36" height="36"/>
+        <dc:Bounds x="247" y="112" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="recursiveCall_di" bpmnElement="recursiveCall">
-        <dc:Bounds x="363" y="90" width="100" height="80"/>
+        <dc:Bounds x="365" y="90" width="100" height="80"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="recursiveToCall_di" bpmnElement="recursiveToCall">
-        <di:waypoint x="281" y="130"/>
-        <di:waypoint x="363" y="130"/>
+        <di:waypoint x="283" y="130"/>
+        <di:waypoint x="365" y="130"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="recursiveToSub_di" bpmnElement="recursiveToSub">
-        <di:waypoint x="56" y="60"/>
-        <di:waypoint x="138" y="60"/>
+        <di:waypoint x="58" y="60"/>
+        <di:waypoint x="140" y="60"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

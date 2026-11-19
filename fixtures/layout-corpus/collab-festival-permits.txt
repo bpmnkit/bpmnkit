@@ -1,0 +1,18 @@
+# Street festival permits
+## Organizer | id=org
+[start Festival planned] > [send Apply for road closure] > [send Apply for noise permit] > [send Book first aid] > [catch Closure approved | key=eventId] > [catch Noise permit issued | key=eventId] > [catch First aid confirmed | key=eventId] > [end Festival cleared]
+## City Office | id=city
+[start:message Closure application] > [service Check route] > [xor Route free?]
+Route free? >(Yes: free = true) [send Approve closure] > [end Closure done]
+Route free? >(No: default) [user Propose detour] > Approve closure
+[start:message Noise application] > [service Check decibel limits] > [send Issue noise permit] > [end Noise done]
+## Medical Service | id=med
+[start:message First aid request] > [user Assign paramedics] > [send Confirm first aid] > [end Booked]
+## Residents | blackbox
+Apply for road closure ~> Closure application: Route
+Apply for noise permit ~> Noise application: Stage plan
+Book first aid ~> First aid request: Crowd size
+Approve closure ~> Closure approved: Closure
+Issue noise permit ~> Noise permit issued: Permit
+Confirm first aid ~> First aid confirmed: Crew
+Approve closure ~> Residents: Road notice

@@ -1,5 +1,109 @@
 # Progress
 
+## 2026-11-19 — layout P4: lanes, edit path, cleanup
+
+- Lanes (`semantic/lanes.ts`, `place.ts`, `index.ts`): a flat lane set is laid out in a handful of variants and the old layout stays unless a variant is no worse in every term of `laneCost` (flows through shapes, crossings, bends, happy-path row spread, edge-length CV, area) and better in one. Variants: lane order (the cheapest of ≤ 6 lanes by cross-lane distance, ignoring loops and end events, ties keep the declared order), per-lane compaction (an off-row node moves up onto an earlier row of its lane when its lane neighbours are there, the column is free and no flow of that row runs through it), tight lane padding (30 instead of 40, so a hand-over is 60 px, the column gap) and hand-overs (a flow into the lane directly above or below shares its source's column: rank step 0, vertical straight flow; plain chains only, or also splits). Nested lane sets and non-laned scopes are untouched.
+- Edit path: `makeRoom` also moves the drawn successors that sit under the anchor (a hand-over column), and for a one-node path into one of them stacks the successor under the new node; `placeNewShapes` tolerates a pool half a pixel narrower than its lanes (the engine rounds lane widths up), which had made every new task in a laned pool land far right.
+- Corpus (semantic, 41 cases incl. 7 new laned/edit ones): width 1152 → 1122, height 603 → 593, bendsPerSeq 0.28 → 0.24, edgeLenCV 0.68 → 0.64, happyAxisDev 43.4 → 40.7, gridPct 35.4 → 36.4, areaPerNode 39769 → 36861, crossings equal. `aes-S08-lanes` 1208 × 576 → 651 × 420 with 0 bends (was 0.63), `p4-edit-lane-expense` bends 0.6 → 0, CV 0.60 → 0.07. Layered baseline moves the same way (laned scopes fall back to semantic). Both ratchets: zero regressions, baselines refreshed.
+- Conformance re-recorded (6 layout, 6 compact, 1 layered, 1 text case); against the old output all changed cases are better on width/height/bends/CV except `gridPct` (3 cases) and `edgeLenCV` +0.03 in miwg-c-2-0. Tests: `lane-layout.test.ts`; the "left to right" lane test is now "never left" and the two flat-lane golden hashes in `nested-lanes-layout.test.ts` were re-recorded.
+- Cleanup: removed the unused `SubProcessChildResult` type. The legacy `grid` engine stays: `layoutFlowNodes`, `layoutProcess(…, "grid")` and `applyAutoLayout(defs, "grid")` are exported from `@bpmnkit/core` and used by ascii, proxy and compact; removing it is a breaking change.
+- Not done: lane/pool height growth in `placeNewShapes` (a full lane is still `unplaced`), local re-layout of new subgraphs with pinned shapes, lane-aware layering in the layered engine (laned scopes still fall back to semantic), the agent-card caveats stay.
+
+## 2026-11-19 — layout P2d: spine handlers stay together when a sibling branch blocks one
+
+- Cause: in `p2-room-deposit` (event gateway after a task with an error boundary, second error boundary on a branch task) P2b's exception row took the first handler into the shared row (156 px drop) while a sibling branch forced the second one to keep its step. Split handlers: edgeLenCV 0.66 → 0.71. Ablation (exception row off) reproduced the 4fc4cf29 layout exactly.
+- Fix (`semantic/graph.ts` `placeExceptionRow`, Rust twin in `semantic/graph.rs`): when a sibling branch blocks one handler's column, every handler of that scope, band and side keeps the step. The row stays for the other cases (zero ratchet regressions, conformance unchanged).
+- Corpus: `p2-room-deposit`, `p2-visa-hold`, `p2-pallet-reserve` (three-way event gateway). Baseline entries are the 4fc4cf29 values (width 1028 / 881 / 872, height 341 / 341 / 481, edgeLenCV 0.66 / 0.72 / 0.69), all met exactly. Test in `p2-rules.test.mjs`. cargo fmt/clippy/test green; no Rust oracle fixture changed.
+
+## 2026-11-19 — layout P3: layered (Sugiyama) engine behind `engine: "layered"`
+
+- `packages/core/src/layout/layered/`: `layers.ts` (DFS back edges as before, longest path + network-simplex pull, dummy chains, median/transpose ordering keeping the best crossing count), `coords.ts` (Brandes–Köpf: type-1 conflicts, four alignments + balanced mean; `index.ts` picks the one whose planned routes bend least, then the most even flow lengths), `route.ts` (flows planned on centre lines: split side exits, join side entries, boundary drops/stems; jogs get gutter tracks ordered by a pairwise crossing cost; loops in the nearest clear corridor, fewer crossings then shorter; A* fallback). P2 rules reused as constraints (detour stacked under its sibling target, first boundary handler under its host). Lanes and packed tool grids fall back to semantic (lane-aware ordering is P4).
+- `applyAutoLayout(defs, "layered")`: a collaboration keeps its layered composition unless that crosses more message flows than the semantic composition (pools are laid out blind to messages). Without this guard the layered means were crossings 2.97 (worse; hub-wedding 22 → 26, insurance 8 → 11) and the other means as below.
+- Semantic is byte-identical: conformance unchanged for `semantic`/`grid`, ratchet zero regressions. `pnpm layout:score --engine X --update-baseline` writes `doc/layout-aesthetics/baseline-<X>.json`; the vitest ratchet checks `layered` against `baseline-layered.json`.
+- Corpus means (34 cases), semantic → layered:
+
+| metric | semantic | layered |
+|---|---|---|
+| crossings | 2.82 | 2.76 |
+| seqCrossings | 0.09 | 0.06 |
+| msgSeqCrossings | 1.79 | 1.74 |
+| msgMsgCrossings | 0.94 | 0.97 |
+| bendsPerEdge | 0.36 | 0.32 |
+| bendsPerSeq | 0.24 | 0.20 |
+| maxBendsSeq | 1.21 | 1.15 |
+| edgeLenCV | 0.62 | 0.58 |
+| throughShapes | 0 | 0 |
+| shapeOverlaps | 0 | 0 |
+| labelCollisions | 0.82 | 0.74 |
+| happyStraight | 0.92 | 0.92 |
+| width × height | 1188 × 648 | 1176 × 642 |
+| gridPct | 33.3 | 32.4 |
+
+- Worse cases: `aes-S10-mixed` (+1 crossing: the escalation branch's jog crosses the SLA handler's end flow), `process-library-loan` (+1 crossing, +1 label collision, CV 1.37 → 1.54: the retry loop falls back to A*), `aes-S02` CV 0.59 → 0.67, `process-it-incident` CV 0.91 → 1.07, hub-admissions msg×msg 10 → 11. Biggest wins: S06 and bike-repair bends → 0, it-incident crossings 3 → 0, festival-permits CV 0.84 → 0.41.
+- Tests: `packages/core/tests/layered-layout.test.ts` (8); conformance: 13 `conformance/layout/layered-*` cases (inputs reused, run `layered` only). Rust twin in `crates/bpmnkit-layout/src/layered/`. The default engine is unchanged.
+
+## 2026-11-19 — layout P2c: rework-loop boundary handlers stay out of the exception row
+
+- Cause: P2b's `placeExceptionRow` treated any single-entry boundary handler as an exception path, including a handler that loops back to an earlier merge gateway (rework loop). It got its own row, the lower branches moved down ~30 px and the spine bent (`p2-timesheet-approval`: height 266 → 299, happyAxisDev 57 → 70).
+- Fix (`semantic/graph.ts` `handlerEntries` + `loopsBack`, Rust twin in `semantic/graph.rs`): a handler whose chain leaves through a back edge is not an exception-row entry; it keeps the pre-P2b placement. All other corpus cases unchanged.
+- Corpus: `p2-timesheet-approval` (error boundary → back to merge), `p2-recipe-rework` (error boundary), `p2-lab-retest` (timer boundary). Baseline entries are the 4fc4cf29 values (measured on that commit's `packages/core/src`), so the ratchet guards them; all three now equal them (height 266, happyAxisDev 57 / 62 / 65). Test in `p2-rules.test.mjs`. Ratchet: zero regressions; conformance unchanged; cargo fmt/clippy/test green.
+- No Rust oracle fixture for the new cases (oracles are conformance-based); parity is by construction of the same predicate.
+
+## 2026-11-19 — layout P2b (TS): exception row, shared columns, join port, pooled grid phase
+
+- Exception row: a boundary handler starts in its host's column and drops straight down (0 bends) onto a row shared by the spine's handlers; a second event on one host fans one column right. Falls back to the old step when the column is taken; scopes without lanes only.
+- Shared columns: a one-node detour of a split that feeds the split's other target takes that target's rank and stacks under it (40 px gap). Off in pools and containers.
+- Join port template: run along the branch row, then turn vertically into the join's centre-x (skipped under hosts with boundary handlers). Tight loops: engine already did it; regression case only.
+- Pooled content gets one shared x shift (-4..5 px) for the grid, before message routing.
+- Tried and dropped: 50 px pitch (edgeLenCV worse on ~20 cases), per-pool y shift and artifact slots inside pools (message flow through a label in insurance/travel cases). Order-dependent first fit remains.
+- Corpus means (23 cases, before → after): bendsPerSeq 0.30 → 0.24, maxBendsSeq 1.48 → 1.17, seqCrossings 0.17 → 0.13, edgeLenCV 0.63 → 0.58, sharedCentreX 46.3 → 48.0 %, gridPct 27.2 → 30.7 %, height 550 → 542; labels unchanged. Five invented cases (`p2-bike-repair`, `p2-paint-order`, `p2-kiln-firing`, `p2-bread-proofing`, `p2-collab-tailor`) with six tests in `p2-rules.test.mjs`.
+
+## 2026-11-19 — layout P2b (Rust): twin of the P2 TS layout changes
+
+- `crates/bpmnkit-layout` mirrors detour stacking, exception row, join port template, detour/exception row gaps, boundary column docking and `poolGridPhase`; oracle fixtures (`auto_layout/*.expected.bpmn`, `semantic/cases.json`) regenerated from the TS build. `conformance/` unchanged.
+
+## 2026-11-19 — layout P1b: msg×msg regression fixed, pool order by crossings
+
+- Regression (an 11-pool hub-and-spoke collaboration: P1 took msg×msg 9 → 10): reproduced on invented cases (`collab-hub-admissions` 14 → 17, `collab-hub-wedding` total 30 → 33, `collab-hub-transplant` 33 → 34). Ablation: the label nudge on message docks (and once the 1 px dock snap); tracks, frame and docked labels were neutral or better.
+- Fix (`auto-layout.ts`): every message is routed plain (pre-P1) and tidy (snap + nudge); from all-plain, a flow keeps its tidy route only if crossings after route repair do not grow (`collaboration/crossings.ts` counts like `layout:score`). Never worse than before P1 on the 8 invented hub cases.
+- Pool order (`collaboration/stack-crossings.ts`): a sketch of the stack (aligned pools, sequence flows, shapes, riser–run–riser messages on router tracks) scores crossings plus risers through shapes; remove-and-reinsert from the distance order. Both orders are laid out and the sketch's wins only with fewer message crossings and no more message bends, slanted messages, crossed labels or off-grid shapes. Black boxes pinned to the rim measured equal or worse on all 8 hub cases (up to +40 crossings) and stay unpinned.
+- Lane-less pools: height rounded to 10 px and content phased -4..5 px, so pools start on the grid whatever the order.
+- Invented hub cases (8, three in the corpus), pre-P1 → now: crossings 34.6 → 30.8 mean (port 52 → 35, wedding 30 → 22, admissions 29 → 25, none worse), msg×msg 14.1 → 11.8, non-vertical 73.6 → 68.8 %, bends/msg 2.30 → 2.15. Corpus: insurance crossings 13 → 8, collaboration gridPct up on all; ratchet clean, baseline refreshed (only improvements and new cases).
+- Cost: collaborations whose sketch order differs are laid out twice; message tidying runs route repair per changed flow. Rust layout bench vs 4fc4cf29 on the same machine: semantic +7 %, grid +3–10 % (within the 20 % budget). `pnpm bench:rs` against the stored baseline fails on every crate here (FEEL/DMN +30–50 % too, untouched): this container is slower than the baseline CPU, so the baseline is not rewritten.
+- Rust twin in `crates/bpmnkit-layout`; conformance re-recorded.
+
+## 2026-11-19 — layout P1: collaboration composition
+
+- Uniform pool frame (`auto-layout.ts` `uniformPoolFrame`): every pool, black box and lane ends at the widest pool's right edge.
+- Message-flow alignment: a dock within 1 px of its partner's x snaps to it (no 2-bend jog); a leg nudges its dock to miss element labels when that costs no bend.
+- Message tracks (`collaboration/message-tracks.ts`): runs sharing a gap are stacked by a riser-vs-run constraint order (crossings avoided where not cyclic); non-overlapping runs share a track.
+- Docked labels (`collaboration/docked-labels.ts`): an event/gateway name on the side its message flows dock on moves to the free far side.
+- Tried and dropped (ratchet regressions on the insurance case): px-based pool ordering with black boxes pinned to the rim, and a joint coordinate-descent alignment; pool ordering and the greedy alignment stay as they were.
+- Corpus: two invented cases (`collab-festival-permits`, `collab-lab-samples`); baseline refreshed (only improvements: poolWidthSD → 0 on all 6 collaborations, travel booking bends/msg 1.5 → 1, non-vertical 50 → 37.5 %). Rust twin in `crates/bpmnkit-layout`; conformance re-recorded.
+- `fixtures/layout-corpus/aes-S07-subprocess.bpmn`: sub-process children get `incoming`/`outgoing` so bpmnlint parity passes.
+
+## 2026-11-19 — layout P2 (partial): grid phase, artifacts under their task, label placement
+
+- `bpmn/auto-layout.ts`: `gridPhase` shifts each non-pool process by 0-9 px so the most shape origins land on the 10 px grid (a pure translation: no distance changes, nothing else can regress). Pools are left to P1.
+- `semantic/place.ts`: flow-less data objects/stores wired to one activity are slotted on its centre line (below first, above for a second one or when boundary events hang below, beside after that) instead of a loose column at the bottom. Not applied inside pools (message routing depends on pool sizes), lanes or containers.
+- `semantic/index.ts`: a gateway/event label blocked on every side slides along the stem (up to 60 px) instead of staying on a flow. `grid/edge-labels.ts`: edge labels prefer spots no other flow crosses.
+- Corpus (19 original cases, mean before → after): gridPct 8.7 → 29.2, height 603 → 569, areaPerNode 45.9k → 43.6k, labelCollisions / labelOnEdge 0.16 → 0.05; crossings, bends, through-shapes unchanged. Ratchet: zero regressions. Two invented cases added (`p2-parcel-dispatch`, `p2-seed-order`) with targeted tests in `apps/cli/src/layout-score/p2-rules.test.mjs`.
+- Not done (still open in P2): exception row for boundary handlers, gateway port templates, tight loops, 50 px pitch / content-based gaps, shared columns. Exact centring makes a full grid impossible (event/gateway half-sizes are not multiples of 10).
+- Conformance, golden hashes and the bake-off fixture re-recorded; Rust twin ported.
+
+## 2026-11-19 — layout P0: full metric set, synthetic corpus, `pnpm layout:score`, ratchet
+
+- `scripts/layout-aesthetics/metrics.mjs`: adds the plan's gate metrics (seq / msg×seq / msg×msg crossings, bends per seq/msg flow, max bends, non-vertical msg %, pool width and left-padding SD, area/node, empty area %, shared centre-x %, 10 px grid %, boundary labels crossed, label×label overlaps).
+- `fixtures/layout-corpus/`: 19 cases: 10 existing aesthetics scenarios plus invented specs (12-pool insurance collaboration, travel booking, IT incident, grant lanes, library loops, clinic data/annotations, hotel check-in `--edit` pair, two DI-less `.bpmn`).
+- `pnpm layout:score [--dir <any folder>] [--engine X] [--json out] [--update-baseline]`; `render-corpus.mjs` writes one PNG per case.
+- `doc/layout-aesthetics/baseline.json` + vitest ratchet (`apps/cli/src/layout-score`): fails if any metric on any case is worse (counts 0 slack, others 1 %).
+- No layout algorithm change. The blind pairwise judge (`judge.mjs`) is left out for now.
+
+## 2026-11-19 — layout: current-state map and improvement plan (docs only)
+
+- `doc/plans/layout-current-state.md`: auto-layout pipeline, constants, tests, TS/Rust parity, 12 ranked weaknesses.
+- `doc/plans/layout-improvement-plan.md`: phased plan (P0 metrics gate → P1 collaboration composition → P2 process composition → P3 layered core → P4 lanes/edit → P5 eval confirm) with metric gates vs Bare-Opus eval layouts and a session split. No code changed.
+
 ## 2026-11-17 — connector-gen: refreshed API index changeset
 
 - `.changeset/connector-api-index-refresh.md`: patch changeset for `@bpmnkit/connector-gen` so the weekly API-index refresh (PR #294) passes the changeset check and reaches npm.

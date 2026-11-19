@@ -22,14 +22,11 @@
         <dc:Bounds x="32" y="62" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="x_di" bpmnElement="x">
-        <dc:Bounds x="160" y="22" width="36" height="36"/>
+        <dc:Bounds x="32" y="162" width="36" height="36"/>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="f_di" bpmnElement="f">
         <di:waypoint x="50" y="98"/>
-        <di:waypoint x="50" y="118"/>
-        <di:waypoint x="130" y="118"/>
-        <di:waypoint x="130" y="40"/>
-        <di:waypoint x="160" y="40"/>
+        <di:waypoint x="50" y="162"/>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -493,9 +493,8 @@
         <di:waypoint x="1087.5" y="829"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="_b62ef735-9d04-494a-aeb4-95fd4862cc45_di" bpmnElement="_b62ef735-9d04-494a-aeb4-95fd4862cc45">
-        <di:waypoint x="1009.5" y="925"/>
-        <di:waypoint x="1009.5" y="889.5"/>
-        <di:waypoint x="1112.5" y="889.5"/>
+        <di:waypoint x="1027.5" y="943"/>
+        <di:waypoint x="1112.5" y="943"/>
         <di:waypoint x="1112.5" y="854"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="_64d60a4e-90cf-4a9a-afbb-631739b6b704_di" bpmnElement="_64d60a4e-90cf-4a9a-afbb-631739b6b704">

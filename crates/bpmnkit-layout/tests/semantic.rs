@@ -237,6 +237,9 @@ fn graph_of<'a>(
             .map(|e| (str_ref(&e[0]), e[1].as_i64().expect("rank")))
             .collect(),
         end_reach: RefCell::new(None),
+        exception_row: Default::default(),
+        stack_detours: false,
+        handoffs: Default::default(),
     }
 }
 
@@ -317,7 +320,8 @@ fn semantic_layout_process_matches_ts() {
             .iter()
             .find(|p| p.id == str_of(&case["process"]))
             .expect("process");
-        let actual = semantic_layout_process(process, &indexmap::IndexSet::default(), None);
+        let actual =
+            semantic_layout_process(process, &indexmap::IndexSet::default(), None, false, false);
         assert_eq!(
             actual,
             result(&case["result"]),

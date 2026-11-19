@@ -1,0 +1,4 @@
+# Paint order | id=paintOrder
+[start Paint ordered] > [user Check colour stock] > [xor Colour in stock?]
+Colour in stock? >(Yes: inStock = true) [service Mix paint] > [user Fill tins] > [end Tins shipped]
+Colour in stock? >(No: default) [user Order pigment] > Mix paint

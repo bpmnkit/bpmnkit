@@ -1,0 +1,7 @@
+# Parcel dispatch | id=parcel
+[start Parcel received] > [user Weigh parcel] > [xor Oversize parcel?]
+Oversize parcel? >(Yes: oversize = true) [user Book freight] > [end Parcel handed over]
+Oversize parcel? >(No: default) [service Print label] > Parcel handed over
+[object Customs form] ..> Weigh parcel
+Weigh parcel ..> [store Parcel register]
+Print label ..> [object Shipping label]

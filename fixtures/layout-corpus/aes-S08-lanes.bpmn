@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="defs" targetNamespace="http://bpmn.io/schema/bpmn">
+<collaboration id="Collab_1"><participant id="P_1" name="Sales process" processRef="Process_1"/></collaboration>
+<process id="Process_1" isExecutable="true">
+<laneSet>
+<lane id="laneCustomer" name="Customer">
+<flowNodeRef>start</flowNodeRef>
+<flowNodeRef>submit</flowNodeRef>
+<flowNodeRef>endOk</flowNodeRef>
+<flowNodeRef>endRej</flowNodeRef>
+</lane>
+<lane id="laneSales" name="Sales">
+<flowNodeRef>qualify</flowNodeRef>
+<flowNodeRef>gw</flowNodeRef>
+<flowNodeRef>quote</flowNodeRef>
+</lane>
+<lane id="laneFinance" name="Finance">
+<flowNodeRef>credit</flowNodeRef>
+<flowNodeRef>approve</flowNodeRef>
+</lane>
+</laneSet>
+<startEvent id="start" name="Need identified"><outgoing>fProcess_1_0</outgoing></startEvent>
+<userTask id="submit" name="Submit inquiry"><incoming>fProcess_1_0</incoming><outgoing>fProcess_1_1</outgoing></userTask>
+<userTask id="qualify" name="Qualify lead"><incoming>fProcess_1_1</incoming><outgoing>fProcess_1_2</outgoing></userTask>
+<exclusiveGateway id="gw" name="Qualified?"><incoming>fProcess_1_2</incoming><outgoing>fProcess_1_3</outgoing><outgoing>fProcess_1_4</outgoing></exclusiveGateway>
+<serviceTask id="credit" name="Check credit"><incoming>fProcess_1_3</incoming><outgoing>fProcess_1_5</outgoing></serviceTask>
+<userTask id="approve" name="Approve terms"><incoming>fProcess_1_5</incoming><outgoing>fProcess_1_6</outgoing></userTask>
+<sendTask id="quote" name="Send quote"><incoming>fProcess_1_6</incoming><outgoing>fProcess_1_7</outgoing></sendTask>
+<endEvent id="endOk" name="Quote received"><incoming>fProcess_1_7</incoming></endEvent>
+<endEvent id="endRej" name="Inquiry declined"><incoming>fProcess_1_4</incoming></endEvent>
+<sequenceFlow id="fProcess_1_0" sourceRef="start" targetRef="submit"/>
+<sequenceFlow id="fProcess_1_1" sourceRef="submit" targetRef="qualify"/>
+<sequenceFlow id="fProcess_1_2" sourceRef="qualify" targetRef="gw"/>
+<sequenceFlow id="fProcess_1_3" sourceRef="gw" targetRef="credit" name="yes"/>
+<sequenceFlow id="fProcess_1_4" sourceRef="gw" targetRef="endRej" name="no"/>
+<sequenceFlow id="fProcess_1_5" sourceRef="credit" targetRef="approve"/>
+<sequenceFlow id="fProcess_1_6" sourceRef="approve" targetRef="quote"/>
+<sequenceFlow id="fProcess_1_7" sourceRef="quote" targetRef="endOk"/>
+</process>
+</definitions>

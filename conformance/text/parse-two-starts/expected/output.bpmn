@@ -46,7 +46,7 @@
       <bpmndi:BPMNShape id="s2_di" bpmnElement="s2">
         <dc:Bounds x="0" y="0" width="36" height="36"/>
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="-3" y="-18" width="42" height="14"/>
+          <dc:Bounds x="-3" y="40" width="42" height="14"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="a_join_di" bpmnElement="a_join" isMarkerVisible="true">
@@ -61,9 +61,8 @@
         <di:waypoint x="366" y="132"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_3_di" bpmnElement="Flow_3">
-        <di:waypoint x="18" y="36"/>
-        <di:waypoint x="18" y="71.5"/>
-        <di:waypoint x="121" y="71.5"/>
+        <di:waypoint x="36" y="18"/>
+        <di:waypoint x="121" y="18"/>
         <di:waypoint x="121" y="107"/>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_4_di" bpmnElement="Flow_4">

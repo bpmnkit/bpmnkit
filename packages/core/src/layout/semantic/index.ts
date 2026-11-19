@@ -5,6 +5,7 @@ import type {
 	BpmnSequenceFlow,
 } from "../../bpmn/bpmn-model.js"
 import { placeEdgeLabels } from "../grid/edge-labels.js"
+import { layeredPlace } from "../layered/index.js"
 import type {
 	Bounds,
 	GridHint,
@@ -15,9 +16,10 @@ import type {
 	Waypoint,
 } from "../types.js"
 import { LABEL_CHAR_WIDTH, LABEL_HEIGHT, LABEL_MIN_WIDTH, SUBPROCESS_PADDING } from "../types.js"
-import { assignBands } from "./bands.js"
-import { type SemanticGraph, buildSemanticGraph } from "./graph.js"
-import { externalLabelWidth, place, sizeOf } from "./place.js"
+import { assignBands, boundarySide } from "./bands.js"
+import { type SemanticGraph, assignRanks, buildSemanticGraph, placeExceptionRow } from "./graph.js"
+import { cheaper, laneCost, laneHandoffs, lanePlan } from "./lanes.js"
+import { type LaneOptions, externalLabelWidth, place, sizeOf } from "./place.js"
 import { routeFlows } from "./route.js"
 
 /** Padding between an expanded sub-process border and its children. */
@@ -26,6 +28,9 @@ const SUB_PADDING = SUBPROCESS_PADDING
 const TITLE_BAND = 28
 /** Gap between an event or gateway and its external label. */
 const LABEL_OFFSET = 4
+/** Step and limit when a blocked external label slides along a stem. */
+const LABEL_SLIDE = 10
+const MAX_LABEL_SLIDE = 60
 
 const CONTAINER_TYPES = new Set(["subProcess", "adHocSubProcess", "eventSubProcess", "transaction"])
 
@@ -44,6 +49,9 @@ export function semanticLayoutProcess(
 	process: BpmnProcess,
 	collapsed?: ReadonlySet<string>,
 	grids?: LayoutHints["grids"],
+	inPool = false,
+	/** Run the layered (Sugiyama) placement and routing on every lane-free scope. */
+	layered = false,
 ): LayoutResult {
 	return semanticLayout(
 		process.flowElements,
@@ -52,6 +60,9 @@ export function semanticLayoutProcess(
 		collapsed,
 		false,
 		grids,
+		undefined,
+		!inPool,
+		layered,
 	)
 }
 
@@ -67,10 +78,14 @@ export function semanticLayout(
 	grids?: LayoutHints["grids"],
 	/** The hint for this scope's own grid, when it is a hinted container's interior. */
 	grid?: GridHint,
+	/** Slot data references under the activity they are wired to. */
+	slotArtifacts = false,
+	/** See {@link semanticLayoutProcess}. */
+	layered = false,
 ): LayoutResult {
 	if (flowElements.length === 0) return { nodes: [], edges: [] }
 
-	const graph = buildSemanticGraph(flowElements, sequenceFlows)
+	const graph = buildSemanticGraph(flowElements, sequenceFlows, slotArtifacts)
 
 	// Children first: an expanded sub-process is sized by what it contains, while
 	// a collapsed one stays activity-sized and its contents move to their own plane.
@@ -79,7 +94,7 @@ export function semanticLayout(
 	const sizes = new Map<string, { width: number; height: number }>()
 	const axes = new Map<string, number>()
 	for (const el of graph.nodes) {
-		const child = childLayoutOf(el, collapsed, grids)
+		const child = childLayoutOf(el, collapsed, grids, layered)
 		if (!child) {
 			sizes.set(el.id, sizeOf(el))
 			continue
@@ -100,17 +115,135 @@ export function semanticLayout(
 	const titled = new Set(
 		[...childResults.keys()].filter((id) => graph.byId.get(id)?.name !== undefined),
 	)
-	const bandLayout = assignBands(graph, titled)
-	const { bounds, lanes, gutterX } = place(
-		graph,
-		bandLayout,
-		sizes,
-		laneSet,
-		inContainer,
-		titled,
-		grid,
-		axes,
-	)
+	if (layered && useLayered(graph, laneSet, inContainer, grid)) {
+		const placed = layeredPlace(graph, sequenceFlows, sizes, titled, slotArtifacts)
+		return finish(
+			graph,
+			flowElements,
+			placed.bounds,
+			placed.edges,
+			(id) => placed.row.get(id) ?? 0,
+			[],
+			childResults,
+			planes,
+			collapsed,
+		)
+	}
+	const laneInfo = laneSet ? lanePlan(graph, laneSet) : undefined
+	const run = (handoffs: Set<string>, laneOpts: LaneOptions = {}): LayoutResult => {
+		graph.handoffs = handoffs
+		assignRanks(graph)
+		// finish() moves the children, and a laned scope is laid out twice
+		const children = laneSet ? structuredClone(childResults) : childResults
+		let bandLayout = assignBands(graph, titled)
+		// Lanes decide a handler's row themselves, so the exception row is for lane-free scopes.
+		if (
+			!laneSet &&
+			placeExceptionRow(graph, bandLayout.bands, (event, host) =>
+				boundarySide(event, titled.has(host)),
+			)
+		) {
+			bandLayout = assignBands(graph, titled)
+		}
+		const { bounds, lanes, gutterX } = place(
+			graph,
+			bandLayout,
+			sizes,
+			laneSet,
+			inContainer,
+			titled,
+			grid,
+			axes,
+			slotArtifacts,
+			laneOpts,
+		)
+		const edges = routeFlows(graph, sequenceFlows, bounds, bandLayout, gutterX)
+		return finish(
+			graph,
+			flowElements,
+			bounds,
+			edges,
+			(id) => bandLayout.bands.get(id) ?? 0,
+			lanes,
+			children,
+			planes,
+			collapsed,
+		)
+	}
+	// Nested lane sets keep the placement they always had.
+	if (!laneSet || !laneInfo || !laneInfo.flat) return run(graph.handoffs)
+	// The layout as it always was comes first and wins ties: a refinement is kept
+	// only when it is strictly cheaper (see `laneCost`).
+	const orders: Array<readonly string[] | undefined> = [undefined]
+	if (laneInfo.order) orders.push(laneInfo.order)
+	const legacy = run(new Set())
+	const legacyCost = laneCost(legacy)
+	let best = legacy
+	let bestCost = legacyCost
+	const none = new Set<string>()
+	for (const order of orders) {
+		const lanes = order ?? laneInfo.declared
+		const variants: Array<[Set<string>, LaneOptions]> = [
+			[none, { order, compact: true }],
+			[none, { order, compact: true, byLane: true }],
+			[laneHandoffs(graph, laneInfo.leafOf, lanes, true), { order, compact: true, byLane: true }],
+			[laneHandoffs(graph, laneInfo.leafOf, lanes), { order, compact: true, byLane: true }],
+		]
+		if (order) variants.unshift([none, { order }])
+		for (const [h, opts] of variants) {
+			if (h !== none && h.size === 0) continue
+			const result = run(h, opts)
+			const cost = laneCost(result)
+			// Must not lose to the old layout anywhere; among those that do not, the cheapest in order.
+			if (cheaper(cost, legacyCost) && lexicographicallyLess(cost, bestCost)) {
+				best = result
+				bestCost = cost
+			}
+		}
+	}
+	return best
+}
+
+function lexicographicallyLess(a: readonly number[], b: readonly number[]): boolean {
+	for (let i = 0; i < a.length; i++) {
+		if ((a[i] as number) !== (b[i] as number)) return (a[i] as number) < (b[i] as number)
+	}
+	return false
+}
+
+/**
+ * The layered engine covers scopes without lanes and without a packed tool
+ * grid; lanes stay with the semantic placement until lane-aware ordering lands.
+ */
+function useLayered(
+	graph: SemanticGraph,
+	laneSet: BpmnLaneSet | undefined,
+	inContainer: boolean,
+	grid: GridHint | undefined,
+): boolean {
+	if (laneSet || grid) return false
+	const flowless = graph.components.filter(
+		(c) =>
+			c.length === 1 &&
+			(graph.outgoing.get(c[0] as string) ?? []).length === 0 &&
+			(graph.incoming.get(c[0] as string) ?? []).length === 0,
+	).length
+	if (inContainer && flowless >= 2) return false
+	return graph.components.length > flowless
+}
+
+/** Nodes, labels and children of a placed and routed scope. */
+function finish(
+	graph: SemanticGraph,
+	flowElements: BpmnFlowElement[],
+	bounds: Map<string, Bounds>,
+	edges: LayoutEdge[],
+	rowOf: (id: string) => number,
+	lanes: Array<{ id: string; bounds: Bounds }>,
+	childResults: Map<string, LayoutResult>,
+	planes: Array<{ elementId: string; result: LayoutResult }>,
+	collapsed: ReadonlySet<string>,
+): LayoutResult {
 	const besideStem = boundaryLabels(graph, bounds)
 
 	const nodes: LayoutNode[] = []
@@ -122,8 +255,8 @@ export function semanticLayout(
 			type: el.type,
 			bounds: b,
 			layer: graph.ranks.get(el.id) ?? 0,
-			position: bandLayout.bands.get(el.id) ?? 0,
-			gridRow: bandLayout.bands.get(el.id) ?? 0,
+			position: rowOf(el.id),
+			gridRow: rowOf(el.id),
 		}
 		if (el.name) {
 			node.label = el.name
@@ -134,8 +267,6 @@ export function semanticLayout(
 		else if (collapsed.has(el.id)) node.isExpanded = false
 		nodes.push(node)
 	}
-
-	const edges = routeFlows(graph, sequenceFlows, bounds, bandLayout, gutterX)
 
 	// Drop the children in, translated into their parent's interior.
 	for (const [parentId, child] of childResults) {
@@ -178,6 +309,7 @@ function childLayoutOf(
 	el: BpmnFlowElement,
 	collapsed: ReadonlySet<string>,
 	grids: LayoutHints["grids"],
+	layered: boolean,
 ): {
 	result: LayoutResult
 	size: { width: number; height: number }
@@ -198,6 +330,8 @@ function childLayoutOf(
 		!collapsed.has(el.id),
 		grids,
 		grids?.get(el.id),
+		false,
+		layered,
 	)
 	const extent = extentOf(result)
 	if (!extent) return null
@@ -377,6 +511,18 @@ function clearExternalLabels(nodes: LayoutNode[], edges: LayoutEdge[]): void {
 			{ ...label, x: cx + beside, y: above },
 			{ ...label, x: cx - beside - label.width, y: above },
 		]
+		// Still blocked, usually by a task beside the gateway: slide the label
+		// along the stem until it is past that neighbour.
+		for (let slide = LABEL_SLIDE; slide <= MAX_LABEL_SLIDE; slide += LABEL_SLIDE) {
+			for (const [dx, y] of [
+				[cx + beside, below + slide],
+				[cx - beside - label.width, below + slide],
+				[cx + beside, above - slide],
+				[cx - beside - label.width, above - slide],
+			] as const) {
+				candidates.push({ ...label, x: dx, y })
+			}
+		}
 		const spot = candidates.find(clear)
 		if (spot) {
 			label.x = spot.x

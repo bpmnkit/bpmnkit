@@ -1,0 +1,13 @@
+# Clinical lab sample handling
+## Ward | id=ward
+[start Tests ordered] > [send Send blood sample] > [send Send urine sample] > [send Send swab] > [catch Blood results in | key=sampleId] > [catch Urine results in | key=sampleId] > [catch Swab results in | key=sampleId] > [user Review results] > [end Results reviewed]
+## Lab | id=lab
+[start:message Blood sample arrives] > [service Run blood panel] > [send Report blood results] > [end Blood done]
+[start:message Urine sample arrives] > [service Run urinalysis] > [send Report urine results] > [end Urine done]
+[start:message Swab arrives] > [service Culture swab] > [user Read culture] > [send Report swab results] > [end Swab done]
+Send blood sample ~> Blood sample arrives
+Send urine sample ~> Urine sample arrives
+Send swab ~> Swab arrives
+Report blood results ~> Blood results in
+Report urine results ~> Urine results in
+Report swab results ~> Swab results in

@@ -77,7 +77,7 @@ describe("lane builder — no new calls, identical output", () => {
 		[
 			"plain chain, auto-layout",
 			() => plainChain().withAutoLayout().build(),
-			"1c0018366259672eec8c7d094b3e7aa799ca2e970c0c5be44fbae8801c066fde",
+			"63eea96fce9232378be1e149c952141d732b80f81a65ef13853701fcc2d49c90",
 		],
 		[
 			"diagram with two pools",
