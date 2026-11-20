@@ -266,15 +266,21 @@ function toScale(v: FeelValue | undefined): number | null {
 }
 
 /** Rounds `n` at `scale` with the given rounding of a value exactly halfway. */
-function roundAt(n: number, scale: number, round: (x: number) => number): number {
+function roundAt(n: number, scale: number, round: (x: number) => number): number | null {
 	// No double has a digit past 10^-300 that rounding would change, so a finer scale
 	// keeps n. A coarser one rounds to a multiple of 10^-scale, which is 0 for most n:
 	// decimal(1, -301) is 0, as in the Rust twin.
 	if (scale > SCALE_LIMIT) return n
 	if (scale < -SCALE_LIMIT) {
 		const step = 10 ** -scale
-		const units = round(n / step)
-		return units === 0 ? 0 : units * step
+		// |n / step| < 1 here, but it can underflow to 0 (or step overflow to Infinity),
+		// and ceiling(1, -400) must still round away from zero instead of to 0.
+		const q = n / step || Math.sign(n) * Number.MIN_VALUE
+		const units = round(q)
+		if (units === 0) return 0
+		// 10^400 has no double, so the result is out of range: null, as in the Rust twin.
+		const r = units * step
+		return Number.isFinite(r) ? r : null
 	}
 	const factor = 10 ** scale
 	// Re-reading the scaled value through its decimal form keeps a product like
@@ -482,8 +488,11 @@ reg("string length", (s) => {
 reg("substring", (str, start, length) => {
 	const s = toStr(str)
 	if (s === null) return null
-	const st = toNum(start)
-	if (st === null) return null
+	const n = toNum(start)
+	if (n === null) return null
+	// Camunda truncates the start position (and length) to an integer, so a start in
+	// (0, 1) is 0: past the end.
+	const st = Math.trunc(n)
 	// FEEL substring is 1-based over characters, and a negative start counts
 	// back from the end.
 	const chars = [...s]
@@ -491,7 +500,7 @@ reg("substring", (str, start, length) => {
 	if (length !== undefined && length !== null) {
 		const len = toNum(length)
 		if (len === null) return null
-		return chars.slice(idx, idx + len).join("")
+		return chars.slice(idx, idx + Math.trunc(len)).join("")
 	}
 	return chars.slice(idx).join("")
 })

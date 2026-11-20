@@ -21,3 +21,5 @@
 {"id":"fuzz/21","expr":"(sqrt(-0))[true]","context":{},"expected":{"t":"list","v":[{"t":"number","v":"0"}]}}
 {"id":"fuzz/22","expr":"0 + min(b)","context":{"b":{"t":"list","v":[{"t":"list","v":[{"t":"number","v":"0"}]}]}},"expected":{"t":"null"}}
 {"id":"fuzz/23","expr":"[min([[0]]), count([[1, 2]]), sum([[1, 2]]), mean([[1, 2]]), product([[2, 3]]), all([[true]])]","context":{},"expected":{"t":"list","v":[{"t":"list","v":[{"t":"number","v":"0"}]},{"t":"number","v":"1"},{"t":"null"},{"t":"null"},{"t":"null"},{"t":"null"}]}}
+{"id":"fuzz/24","expr":"[ceiling(1, -3090.0), ceiling(1, -400), floor(-1, -400), round up(1, -400), floor(1, -400), decimal(1, -400)]","context":{},"expected":{"t":"list","v":[{"t":"null"},{"t":"null"},{"t":"null"},{"t":"null"},{"t":"number","v":"0"},{"t":"number","v":"0"}]}}
+{"id":"fuzz/25","expr":"[substring(\"abc\", .5), substring(\"abc\", 1.5, 1.5), substring(\"abc\", -1.5)]","context":{},"expected":{"t":"list","v":[{"t":"string","v":""},{"t":"string","v":"a"},{"t":"string","v":"c"}]}}

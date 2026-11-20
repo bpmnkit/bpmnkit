@@ -98,16 +98,18 @@ fn substring(args: &[Value]) -> Value {
     };
     let chars: Vec<char> = s.chars().collect();
     let len = chars.len();
+    // Camunda truncates the start (and length) to an integer: a start in (0, 1) is 0.
+    let start = start.trunc();
     // 1-based over characters; a negative start counts back from the end.
-    let idx = if *start > Decimal::ZERO {
-        *start - Decimal::ONE
+    let idx = if start > Decimal::ZERO {
+        start - Decimal::ONE
     } else {
-        (Decimal::from(len) + *start).max(Decimal::ZERO)
+        (Decimal::from(len) + start).max(Decimal::ZERO)
     };
     let from = slice_bound(idx, len);
     let to = match args.get(2) {
         None | Some(Value::Null) => len,
-        Some(Value::Number(l)) => slice_bound(idx + *l, len),
+        Some(Value::Number(l)) => slice_bound(idx + l.trunc(), len),
         Some(_) => return Value::Null,
     };
     Value::String(chars[from.min(to)..to].iter().collect())
