@@ -1,5 +1,11 @@
 # @bpmnkit/feel
 
+## 1.1.4
+
+### Patch Changes
+
+- e7cde10: FEEL: TS and Rust agree on context equality (key sets and kind), decimal modulo, huge-scale rounding, fractional `substring` start, `sublist`/time integer args, `index of` and list positions.
+
 ## 1.1.3
 
 ### Patch Changes
