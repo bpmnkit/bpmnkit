@@ -92,14 +92,23 @@ function parseDate(s: string): FeelDate | null {
 // The largest UTC offset XSD allows.
 const MAX_OFFSET_SECONDS = 18 * 3600
 
+// Building an Intl.DateTimeFormat costs tens of microseconds, and a zoned literal
+// inside a loop is parsed again on every pass.
+const knownTimezones = new Map<string, boolean>()
+
 /** True for a zone name the platform's time zone database knows. */
 function isKnownTimezone(name: string): boolean {
+	const cached = knownTimezones.get(name)
+	if (cached !== undefined) return cached
+	let known = true
 	try {
 		new Intl.DateTimeFormat("en-US", { timeZone: name })
-		return true
 	} catch {
-		return false
+		known = false
 	}
+	if (knownTimezones.size > 512) knownTimezones.clear()
+	knownTimezones.set(name, known)
+	return known
 }
 
 function parseTime(s: string): FeelTime | null {
@@ -266,15 +275,21 @@ function toScale(v: FeelValue | undefined): number | null {
 }
 
 /** Rounds `n` at `scale` with the given rounding of a value exactly halfway. */
-function roundAt(n: number, scale: number, round: (x: number) => number): number {
+function roundAt(n: number, scale: number, round: (x: number) => number): number | null {
 	// No double has a digit past 10^-300 that rounding would change, so a finer scale
 	// keeps n. A coarser one rounds to a multiple of 10^-scale, which is 0 for most n:
 	// decimal(1, -301) is 0, as in the Rust twin.
 	if (scale > SCALE_LIMIT) return n
 	if (scale < -SCALE_LIMIT) {
 		const step = 10 ** -scale
-		const units = round(n / step)
-		return units === 0 ? 0 : units * step
+		// |n / step| < 1 here, but it can underflow to 0 (or step overflow to Infinity),
+		// and ceiling(1, -400) must still round away from zero instead of to 0.
+		const q = n / step || Math.sign(n) * Number.MIN_VALUE
+		const units = round(q)
+		if (units === 0) return 0
+		// 10^400 has no double, so the result is out of range: null, as in the Rust twin.
+		const r = units * step
+		return Number.isFinite(r) ? r : null
 	}
 	const factor = 10 ** scale
 	// Re-reading the scaled value through its decimal form keeps a product like
@@ -482,8 +497,11 @@ reg("string length", (s) => {
 reg("substring", (str, start, length) => {
 	const s = toStr(str)
 	if (s === null) return null
-	const st = toNum(start)
-	if (st === null) return null
+	const n = toNum(start)
+	if (n === null) return null
+	// Camunda truncates the start position (and length) to an integer, so a start in
+	// (0, 1) is 0: past the end.
+	const st = Math.trunc(n)
 	// FEEL substring is 1-based over characters, and a negative start counts
 	// back from the end.
 	const chars = [...s]
@@ -491,7 +509,7 @@ reg("substring", (str, start, length) => {
 	if (length !== undefined && length !== null) {
 		const len = toNum(length)
 		if (len === null) return null
-		return chars.slice(idx, idx + len).join("")
+		return chars.slice(idx, idx + Math.trunc(len)).join("")
 	}
 	return chars.slice(idx).join("")
 })
@@ -865,8 +883,25 @@ reg("modulo", (n, d) => {
 	const num = toNum(n)
 	const div = toNum(d)
 	if (num === null || div === null || div === 0) return null
+	// FEEL numbers are decimals: modulo(1000000, -0.1) is 0, but the double -0.1 is not
+	// exactly a tenth and leaves a -5.5e-12 remainder. Scaling both to integers by their
+	// written decimal places keeps such operands exact.
+	const f = 10 ** Math.max(fractionDigits(num), fractionDigits(div))
+	const a = Math.round(num * f)
+	const b = Math.round(div * f)
+	if (Number.isSafeInteger(a) && Number.isSafeInteger(b) && a / f === num && b / f === div) {
+		return (((a % b) + b) % b) / f + 0
+	}
 	return ((num % div) + div) % div
 })
+
+/** Digits after the point in the shortest decimal form of `n` (99 when not plain). */
+function fractionDigits(n: number): number {
+	const text = String(n)
+	if (text.includes("e")) return 99
+	const dot = text.indexOf(".")
+	return dot < 0 ? 0 : text.length - dot - 1
+}
 
 reg("sqrt", (n) => {
 	const num = toNum(n)
@@ -1045,13 +1080,15 @@ reg("any", (...args) => {
 
 reg("sublist", (list, start, length) => {
 	if (!isFeelList(list)) return null
-	const st = toNum(start)
-	if (st === null) return null
+	const n = toNum(start)
+	if (n === null) return null
+	// Truncated to an integer, as substring() does: a start in (0, 1) is 0.
+	const st = Math.trunc(n)
 	const sliceIdx = st > 0 ? st - 1 : Math.max(0, list.length + st)
 	if (length !== undefined && length !== null) {
 		const len = toNum(length)
 		if (len === null) return null
-		return list.slice(sliceIdx, sliceIdx + len)
+		return list.slice(sliceIdx, sliceIdx + Math.trunc(len))
 	}
 	return list.slice(sliceIdx)
 })
@@ -1075,8 +1112,10 @@ reg("concatenate", (...args) => {
 
 reg("insert before", (list, pos, newItem) => {
 	if (!isFeelList(list)) return null
-	const p = toNum(pos)
-	if (p === null) return null
+	const n = toNum(pos)
+	if (n === null) return null
+	// Truncated to an integer, as substring() does.
+	const p = Math.trunc(n)
 	const idx = p > 0 ? p - 1 : list.length + p
 	const result = [...list]
 	result.splice(idx, 0, newItem ?? null)
@@ -1085,8 +1124,10 @@ reg("insert before", (list, pos, newItem) => {
 
 reg("remove", (list, pos) => {
 	if (!isFeelList(list)) return null
-	const p = toNum(pos)
-	if (p === null) return null
+	const n = toNum(pos)
+	if (n === null) return null
+	// Truncated to an integer, as substring() does.
+	const p = Math.trunc(n)
 	const idx = p > 0 ? p - 1 : list.length + p
 	const result = [...list]
 	result.splice(idx, 1)
@@ -1102,7 +1143,8 @@ reg("index of", (list, match) => {
 	if (!isFeelList(list)) return null
 	const result: FeelValue[] = []
 	for (let i = 0; i < list.length; i++) {
-		if (list[i] === match) result.push(i + 1)
+		// By value, like the Rust twin: dates, lists and contexts are distinct objects.
+		if (sameItem(list[i] ?? null, match ?? null)) result.push(i + 1)
 	}
 	return result
 })
@@ -1347,7 +1389,8 @@ reg("time", (...args) => {
 		const m = toNum(at(args, 1))
 		const s = toNum(at(args, 2))
 		if (h === null || m === null || s === null) return null
-		if (!isValidTime(h, m, s)) return null
+		// Only the second may have a fraction: time(0, 0.1, 0) is an error, not "00:0.1:00".
+		if (!Number.isInteger(h) || !Number.isInteger(m) || !isValidTime(h, m, s)) return null
 		const t: FeelTime = { type: "time", hour: h, minute: m, second: s }
 		const off = at(args, 3)
 		if (off !== null && isFeelDayTimeDuration(off)) t.offsetSeconds = off.seconds
@@ -1838,7 +1881,8 @@ function deepEquals(a: FeelValue, b: FeelValue): boolean {
 	if (isFeelContext(a) && isFeelContext(b)) {
 		const keys = Object.keys(a)
 		if (keys.length !== Object.keys(b).length) return false
-		return keys.every((k) => deepEquals(a[k] ?? null, b[k] ?? null))
+		// A key missing on one side is not a null entry: {a: null} is not {b: null}.
+		return keys.every((k) => Object.hasOwn(b, k) && deepEquals(a[k] ?? null, b[k] ?? null))
 	}
 	return false
 }

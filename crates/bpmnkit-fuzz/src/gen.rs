@@ -144,6 +144,17 @@ fn feel_leaf() -> impl Strategy<Value = String> {
     ]
 }
 
+/// Built-ins whose second argument is a rounding scale.
+const ROUNDING: &[&str] = &[
+    "decimal",
+    "floor",
+    "ceiling",
+    "round up",
+    "round down",
+    "round half up",
+    "round half down",
+];
+
 /// `**` is generated apart with a small exponent: a large power leaves Rust's decimal range
 /// (about 7.9e28), where only float64 has a value, and that is the number model, not a defect.
 const BIN_OPS: &[&str] = &[
@@ -177,7 +188,26 @@ fn feel_expr() -> impl Strategy<Value = String> {
             2 => (inner.clone(), inner.clone()).prop_map(|(l, f)| format!("({l})[{f}]")),
             1 => inner.clone().prop_map(|f| format!("l[item > {f}]")),
             4 => (select(builtins), vec(inner.clone(), 0..4))
-                .prop_map(|(f, args)| format!("{f}({})", args.join(", "))),
+                .prop_map(|(f, mut args)| {
+                    // Like `**`: a scale below -28 rounds to 10^29 and past, outside Rust's
+                    // decimal range, where only float64 has a value (the number model).
+                    if ROUNDING.contains(&f) {
+                        if let Some(s) = args.get_mut(1) {
+                            if s.trim().parse::<f64>().is_ok_and(|n| n < -28.0) {
+                                *s = "-2".into();
+                            }
+                        }
+                    }
+                    // e^66 is past 7.9e28 too.
+                    if f == "exp" {
+                        if let Some(s) = args.first_mut() {
+                            if s.trim().parse::<f64>().is_ok_and(|n| n > 60.0) {
+                                *s = "2".into();
+                            }
+                        }
+                    }
+                    format!("{f}({})", args.join(", "))
+                }),
             1 => (inner.clone(), inner.clone()).prop_map(|(l, r)| format!("for x in {l} return {r}")),
             1 => inner.clone().prop_map(|r| format!("for i in 1..3 return i * {r}")),
             1 => (select(&["some", "every"][..]), inner.clone(), inner.clone())

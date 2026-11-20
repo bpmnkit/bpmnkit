@@ -244,6 +244,8 @@ fn sublist(args: &[Value]) -> Value {
     let Some(st) = num(args.get(1)) else {
         return Value::Null;
     };
+    // Truncated to an integer, as substring() does: a start in (0, 1) is 0.
+    let st = st.trunc();
     let from = if st > Decimal::ZERO {
         st - Decimal::ONE
     } else {
@@ -251,7 +253,7 @@ fn sublist(args: &[Value]) -> Value {
     };
     let end = match args.get(2) {
         None | Some(Value::Null) => Decimal::from(list.len()),
-        Some(Value::Number(len)) => from.saturating_add(*len),
+        Some(Value::Number(len)) => from.saturating_add(len.trunc()),
         Some(_) => return Value::Null,
     };
     let (a, b) = (js_index(list.len(), from), js_index(list.len(), end));
@@ -280,6 +282,8 @@ fn concatenate(args: &[Value]) -> Value {
 
 /// The splice start for a 1-based (or negative, from-the-end) FEEL position.
 fn position(len: usize, p: Decimal) -> usize {
+    // Truncated to an integer, as substring() does.
+    let p = p.trunc();
     let idx = if p > Decimal::ZERO {
         p - Decimal::ONE
     } else {
@@ -326,7 +330,7 @@ fn index_of(args: &[Value]) -> Value {
     Value::List(
         list.iter()
             .enumerate()
-            .filter(|(_, v)| deep_equals(v, m))
+            .filter(|(_, v)| same_item(v, m))
             .map(|(i, _)| (i + 1).into())
             .collect(),
     )

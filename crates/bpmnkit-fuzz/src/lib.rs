@@ -176,7 +176,12 @@ fn close_text(a: &str, b: &str) -> bool {
         let mut cur = String::new();
         let mut numeric = false;
         for ch in s.chars() {
-            let is_num = ch.is_ascii_digit() || ch == '.';
+            // A number in scientific form (`string(exp(-39))`) is one part: its mantissa
+            // alone has fewer digits on Rust's side, whose decimal stops 28 places in.
+            let exponent = numeric
+                && (ch == 'e' && cur.starts_with(|c: char| c.is_ascii_digit())
+                    || (ch == '-' || ch == '+') && cur.ends_with('e'));
+            let is_num = ch.is_ascii_digit() || ch == '.' || exponent;
             if is_num != numeric && !cur.is_empty() {
                 parts.push(std::mem::take(&mut cur));
             }

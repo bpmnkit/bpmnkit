@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-20 — fuzz: TS/Rust FEEL agree again (CI fuzz jobs green)
+
+- Fixed the TS/Rust mismatches the `Fuzz feel` and `Fuzz dmn-eval` jobs kept finding: context equality checks key sets and kind (a context never equals a duration, which also broke DMN rule matching), decimal modulo, huge-scale rounding, fractional `substring` start, `sublist`/time integer args, `index of` by value, list positions.
+- Fuzz generator keeps `exp()` arguments inside Rust's decimal range. Regression rows in `conformance/feel/fuzz.jsonl` plus evaluator tests.
+- Known limit: TS can't tell a context with a literal `type` key from a temporal value (needs a storage change).
+
 ## 2026-11-19 — FormBuilder / GroupBuilder cover every form element (#301)
 
 - `FormBuilder` and `GroupBuilder` now share one abstract `ComponentContainer` (scope naming + all component methods); `FormBuilder` adds form metadata and `build()`, `GroupBuilder` keeps `_id`. Output of the existing methods is unchanged.

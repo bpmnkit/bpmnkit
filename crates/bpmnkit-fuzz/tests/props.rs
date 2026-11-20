@@ -2,7 +2,7 @@
 //! text always expands, and the generators mostly produce input that parses (else the
 //! differential run would only compare two parse errors). `PROPTEST_CASES` raises the count.
 
-use bpmnkit_fuzz::{gen, run, Target};
+use bpmnkit_fuzz::{compare, gen, run, Target};
 use proptest::prelude::*;
 use proptest::test_runner::{Config, RngAlgorithm, TestRng, TestRunner};
 use serde_json::Value as Json;
@@ -108,4 +108,17 @@ fn generators_mostly_parse() {
             target.name()
         );
     }
+}
+
+#[test]
+fn scientific_strings_compare_as_numbers() {
+    let s = |v: &str| serde_json::json!({ "value": { "t": "string", "v": v } });
+    // Rust's decimal stops 28 places after the point, so its mantissa is shorter.
+    assert!(compare(
+        Target::Feel,
+        &s(" 1.1548224173e-17"),
+        &s(" 1.1548224173015786e-17")
+    )
+    .is_ok());
+    assert!(compare(Target::Feel, &s(" 1.2e-10"), &s(" 1.3e-10")).is_err());
 }
