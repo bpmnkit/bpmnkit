@@ -460,3 +460,13 @@ describe("regex cache", () => {
 		expect(eval_('split("a1b2c", "[0-9]")')).toEqual(["a", "b", "c"])
 	})
 })
+
+describe("zoned date-time literals in loops", () => {
+	it("does not rebuild the time zone check on every pass", () => {
+		// Uncached, each pass built an Intl.DateTimeFormat: 20 000 passes took over a second.
+		const start = performance.now()
+		const r = eval_('for x in 1..20000 return @"2024-03-31T02:30:00@Europe/Berlin"')
+		expect(Array.isArray(r) && r.length).toBe(20000)
+		expect(performance.now() - start).toBeLessThan(800)
+	})
+})

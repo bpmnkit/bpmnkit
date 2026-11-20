@@ -92,14 +92,23 @@ function parseDate(s: string): FeelDate | null {
 // The largest UTC offset XSD allows.
 const MAX_OFFSET_SECONDS = 18 * 3600
 
+// Building an Intl.DateTimeFormat costs tens of microseconds, and a zoned literal
+// inside a loop is parsed again on every pass.
+const knownTimezones = new Map<string, boolean>()
+
 /** True for a zone name the platform's time zone database knows. */
 function isKnownTimezone(name: string): boolean {
+	const cached = knownTimezones.get(name)
+	if (cached !== undefined) return cached
+	let known = true
 	try {
 		new Intl.DateTimeFormat("en-US", { timeZone: name })
-		return true
 	} catch {
-		return false
+		known = false
 	}
+	if (knownTimezones.size > 512) knownTimezones.clear()
+	knownTimezones.set(name, known)
+	return known
 }
 
 function parseTime(s: string): FeelTime | null {
@@ -1103,8 +1112,10 @@ reg("concatenate", (...args) => {
 
 reg("insert before", (list, pos, newItem) => {
 	if (!isFeelList(list)) return null
-	const p = toNum(pos)
-	if (p === null) return null
+	const n = toNum(pos)
+	if (n === null) return null
+	// Truncated to an integer, as substring() does.
+	const p = Math.trunc(n)
 	const idx = p > 0 ? p - 1 : list.length + p
 	const result = [...list]
 	result.splice(idx, 0, newItem ?? null)
@@ -1113,8 +1124,10 @@ reg("insert before", (list, pos, newItem) => {
 
 reg("remove", (list, pos) => {
 	if (!isFeelList(list)) return null
-	const p = toNum(pos)
-	if (p === null) return null
+	const n = toNum(pos)
+	if (n === null) return null
+	// Truncated to an integer, as substring() does.
+	const p = Math.trunc(n)
 	const idx = p > 0 ? p - 1 : list.length + p
 	const result = [...list]
 	result.splice(idx, 1)
@@ -1130,7 +1143,8 @@ reg("index of", (list, match) => {
 	if (!isFeelList(list)) return null
 	const result: FeelValue[] = []
 	for (let i = 0; i < list.length; i++) {
-		if (list[i] === match) result.push(i + 1)
+		// By value, like the Rust twin: dates, lists and contexts are distinct objects.
+		if (sameItem(list[i] ?? null, match ?? null)) result.push(i + 1)
 	}
 	return result
 })
@@ -1867,7 +1881,8 @@ function deepEquals(a: FeelValue, b: FeelValue): boolean {
 	if (isFeelContext(a) && isFeelContext(b)) {
 		const keys = Object.keys(a)
 		if (keys.length !== Object.keys(b).length) return false
-		return keys.every((k) => deepEquals(a[k] ?? null, b[k] ?? null))
+		// A key missing on one side is not a null entry: {a: null} is not {b: null}.
+		return keys.every((k) => Object.hasOwn(b, k) && deepEquals(a[k] ?? null, b[k] ?? null))
 	}
 	return false
 }

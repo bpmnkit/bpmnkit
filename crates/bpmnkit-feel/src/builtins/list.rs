@@ -282,6 +282,8 @@ fn concatenate(args: &[Value]) -> Value {
 
 /// The splice start for a 1-based (or negative, from-the-end) FEEL position.
 fn position(len: usize, p: Decimal) -> usize {
+    // Truncated to an integer, as substring() does.
+    let p = p.trunc();
     let idx = if p > Decimal::ZERO {
         p - Decimal::ONE
     } else {
@@ -328,7 +330,7 @@ fn index_of(args: &[Value]) -> Value {
     Value::List(
         list.iter()
             .enumerate()
-            .filter(|(_, v)| deep_equals(v, m))
+            .filter(|(_, v)| same_item(v, m))
             .map(|(i, _)| (i + 1).into())
             .collect(),
     )

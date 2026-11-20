@@ -131,7 +131,8 @@ pub fn deep_equals(a: &Value, b: &Value) -> bool {
         (Value::Context(x), Value::Context(y)) => {
             x.len() == y.len()
                 && x.iter()
-                    .all(|(k, v)| deep_equals(v, y.get(k).unwrap_or(&Value::Null)))
+                    // A key missing on one side is not a null entry.
+                    .all(|(k, v)| y.get(k).is_some_and(|w| deep_equals(v, w)))
         }
         _ => a == b,
     }
