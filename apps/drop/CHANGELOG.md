@@ -1,5 +1,12 @@
 # @bpmnkit/drop
 
+## 0.4.20
+
+### Patch Changes
+
+- Updated dependencies [e7cde10]
+  - @bpmnkit/feel@1.1.4
+
 ## 0.4.19
 
 ### Patch Changes
