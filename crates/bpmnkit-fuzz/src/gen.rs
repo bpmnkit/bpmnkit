@@ -198,6 +198,14 @@ fn feel_expr() -> impl Strategy<Value = String> {
                             }
                         }
                     }
+                    // e^66 is past 7.9e28 too.
+                    if f == "exp" {
+                        if let Some(s) = args.first_mut() {
+                            if s.trim().parse::<f64>().is_ok_and(|n| n > 60.0) {
+                                *s = "2".into();
+                            }
+                        }
+                    }
                     format!("{f}({})", args.join(", "))
                 }),
             1 => (inner.clone(), inner.clone()).prop_map(|(l, r)| format!("for x in {l} return {r}")),
