@@ -695,6 +695,8 @@ function deepEqual(a: FeelValue, b: FeelValue): boolean {
 		const bKeys = Object.keys(b)
 		if (aKeys.length !== bKeys.length) return false
 		for (const k of aKeys) {
+			// {a: null} is not {b: null}: a key missing on one side is not a null entry.
+			if (!Object.hasOwn(b, k)) return false
 			const av = (a as Record<string, FeelValue>)[k] ?? null
 			const bv = (b as Record<string, FeelValue>)[k] ?? null
 			if (!deepEqual(av, bv)) return false

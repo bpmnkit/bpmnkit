@@ -244,6 +244,8 @@ fn sublist(args: &[Value]) -> Value {
     let Some(st) = num(args.get(1)) else {
         return Value::Null;
     };
+    // Truncated to an integer, as substring() does: a start in (0, 1) is 0.
+    let st = st.trunc();
     let from = if st > Decimal::ZERO {
         st - Decimal::ONE
     } else {
@@ -251,7 +253,7 @@ fn sublist(args: &[Value]) -> Value {
     };
     let end = match args.get(2) {
         None | Some(Value::Null) => Decimal::from(list.len()),
-        Some(Value::Number(len)) => from.saturating_add(*len),
+        Some(Value::Number(len)) => from.saturating_add(len.trunc()),
         Some(_) => return Value::Null,
     };
     let (a, b) = (js_index(list.len(), from), js_index(list.len(), end));

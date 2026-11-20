@@ -186,7 +186,7 @@ fn time(args: &[Value]) -> Value {
     if args.len() < 3 {
         return Value::Null;
     }
-    // The TS twin lets a fractional hour or minute through; they are errors here.
+    // Only the second may have a fraction; a fractional hour or minute is an error.
     let (Some(h), Some(m), Value::Number(s)) = (int(&args[0]), int(&args[1]), &args[2]) else {
         return Value::Null;
     };

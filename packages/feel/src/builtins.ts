@@ -874,8 +874,25 @@ reg("modulo", (n, d) => {
 	const num = toNum(n)
 	const div = toNum(d)
 	if (num === null || div === null || div === 0) return null
+	// FEEL numbers are decimals: modulo(1000000, -0.1) is 0, but the double -0.1 is not
+	// exactly a tenth and leaves a -5.5e-12 remainder. Scaling both to integers by their
+	// written decimal places keeps such operands exact.
+	const f = 10 ** Math.max(fractionDigits(num), fractionDigits(div))
+	const a = Math.round(num * f)
+	const b = Math.round(div * f)
+	if (Number.isSafeInteger(a) && Number.isSafeInteger(b) && a / f === num && b / f === div) {
+		return (((a % b) + b) % b) / f + 0
+	}
 	return ((num % div) + div) % div
 })
+
+/** Digits after the point in the shortest decimal form of `n` (99 when not plain). */
+function fractionDigits(n: number): number {
+	const text = String(n)
+	if (text.includes("e")) return 99
+	const dot = text.indexOf(".")
+	return dot < 0 ? 0 : text.length - dot - 1
+}
 
 reg("sqrt", (n) => {
 	const num = toNum(n)
@@ -1054,13 +1071,15 @@ reg("any", (...args) => {
 
 reg("sublist", (list, start, length) => {
 	if (!isFeelList(list)) return null
-	const st = toNum(start)
-	if (st === null) return null
+	const n = toNum(start)
+	if (n === null) return null
+	// Truncated to an integer, as substring() does: a start in (0, 1) is 0.
+	const st = Math.trunc(n)
 	const sliceIdx = st > 0 ? st - 1 : Math.max(0, list.length + st)
 	if (length !== undefined && length !== null) {
 		const len = toNum(length)
 		if (len === null) return null
-		return list.slice(sliceIdx, sliceIdx + len)
+		return list.slice(sliceIdx, sliceIdx + Math.trunc(len))
 	}
 	return list.slice(sliceIdx)
 })
@@ -1356,7 +1375,8 @@ reg("time", (...args) => {
 		const m = toNum(at(args, 1))
 		const s = toNum(at(args, 2))
 		if (h === null || m === null || s === null) return null
-		if (!isValidTime(h, m, s)) return null
+		// Only the second may have a fraction: time(0, 0.1, 0) is an error, not "00:0.1:00".
+		if (!Number.isInteger(h) || !Number.isInteger(m) || !isValidTime(h, m, s)) return null
 		const t: FeelTime = { type: "time", hour: h, minute: m, second: s }
 		const off = at(args, 3)
 		if (off !== null && isFeelDayTimeDuration(off)) t.offsetSeconds = off.seconds
