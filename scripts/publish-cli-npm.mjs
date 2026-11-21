@@ -49,7 +49,9 @@ for (const key of Object.keys(PLATFORMS)) {
 	const archive = resolve(artifacts, file)
 	if (!existsSync(archive)) throw new Error(`missing release archive ${archive}`)
 	const out = mkdtempSync(join(tmpdir(), `bpmnkit-${key}-`))
-	sh("tar", ["-xf", archive, "-C", out])
+	// GNU tar on the ubuntu runner cannot read zip, so the Windows archive needs unzip.
+	if (file.endsWith(".zip")) sh("unzip", ["-q", archive, "-d", out])
+	else sh("tar", ["-xf", archive, "-C", out])
 	const win = key.startsWith("win32")
 	const exe = win ? "bpmnkit.exe" : "bpmnkit"
 	// cargo-dist wraps the binary in a directory named after the archive.

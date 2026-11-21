@@ -204,3 +204,28 @@ fn lock_file_lists_rules_and_hash() {
     assert_eq!(lock, bpmnkit_codegen::lock::lock_file(&p, "rust"));
     assert_eq!(lock.kind, Kind::Generated);
 }
+
+// Regression: a job type `errors` clashed with the fixed `src/gen/errors.rs` (DuplicatePath),
+// and a backslash in a job type broke the handler stub's string literal.
+#[test]
+fn job_type_errors_and_backslash_still_generate() {
+    let xml = r#"<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="d" targetNamespace="t">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:serviceTask id="a"><bpmn:extensionElements><zeebe:taskDefinition type="errors"/></bpmn:extensionElements></bpmn:serviceTask>
+    <bpmn:serviceTask id="b"><bpmn:extensionElements><zeebe:taskDefinition type="a\b"/></bpmn:extensionElements></bpmn:serviceTask>
+  </bpmn:process>
+</bpmn:definitions>"#;
+    let files = RustEmitter {
+        all: true,
+        ..RustEmitter::default()
+    }
+    .emit(&project(xml))
+    .unwrap();
+    assert!(files.iter().any(|f| f.path == "src/gen/errors.rs"));
+    assert!(files.iter().any(|f| f.path == "src/gen/errors2.rs"));
+    for f in files.iter().filter(|f| f.path.ends_with(".rs")) {
+        let src = String::from_utf8(f.content.clone()).unwrap();
+        syn::parse_file(&src).unwrap_or_else(|e| panic!("{}: {e}\n{src}", f.path));
+    }
+}

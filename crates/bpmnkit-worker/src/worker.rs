@@ -297,8 +297,8 @@ impl<C: JobClient, H: Handler> Worker<C, H> {
         let mut wait: Option<Duration> = None;
         tokio::pin!(shutdown);
 
-        // Aborted on drop, i.e. when the loop below ends: pushing stops before the drain starts.
-        let _stream_task = match stream.filter(|_| config.stream_enabled) {
+        // Dropped (aborted) right after the loop, so pushing stops before the drain starts.
+        let stream_task = match stream.filter(|_| config.stream_enabled) {
             Some(source) => {
                 let req = StreamRequest {
                     job_type: config.job_type.clone(),
@@ -365,10 +365,11 @@ impl<C: JobClient, H: Handler> Worker<C, H> {
                     }
                     metrics.activated(&config.job_type, jobs.len());
                     for job in jobs {
-                        let Ok(permit) = permits.clone().try_acquire_owned() else {
-                            // Only when the server sends more than asked; the job times out.
-                            tracing::warn!(job_key = %job.job_key, "activated beyond maxJobsActive; not handled");
-                            continue;
+                        // The stream may have taken slots since `free` was read, and the server
+                        // has already locked these jobs: wait for a slot rather than drop one.
+                        // `acquire_owned` only fails on a closed semaphore, which never happens.
+                        let Ok(permit) = permits.clone().acquire_owned().await else {
+                            break;
                         };
                         spawn_job(
                             Arc::clone(&client),
@@ -390,6 +391,7 @@ impl<C: JobClient, H: Handler> Worker<C, H> {
             }
         }
 
+        drop(stream_task);
         let all = u32::try_from(max).unwrap_or(u32::MAX);
         let drained = tokio::time::timeout(config.drain_timeout, permits.acquire_many(all)).await;
         let abandoned: Vec<String> = if drained.is_ok() {

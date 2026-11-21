@@ -188,7 +188,13 @@ impl Authenticator {
         if let Some(s) = &o.scope {
             form.push(("scope", s));
         }
-        let resp = http.post(&o.token_url).form(&form).send().await?;
+        // The cache lock is held across this call, so a hung IdP must not stall every request.
+        let resp = http
+            .post(&o.token_url)
+            .form(&form)
+            .timeout(TOKEN_TIMEOUT)
+            .send()
+            .await?;
         let status = resp.status();
         let body = resp.text().await?;
         if !status.is_success() {
@@ -203,15 +209,45 @@ impl Authenticator {
             .ok_or_else(|| Error::Auth("token response has no access_token".into()))?
             .to_owned();
         // Some providers send expires_in as a string; absent means an assumed 5 minutes.
-        let lifetime = v["expires_in"]
-            .as_u64()
-            .or_else(|| v["expires_in"].as_str().and_then(|s| s.parse().ok()))
-            .unwrap_or(300);
-        let refresh_at = now + Duration::from_millis(lifetime * 800);
+        let refresh_at = now + refresh_after(&v["expires_in"]);
         *cache = Some(CachedToken {
             token: token.clone(),
             refresh_at,
         });
         Ok(token)
+    }
+}
+
+#[cfg(feature = "oauth")]
+const TOKEN_TIMEOUT: Duration = Duration::from_secs(30);
+
+/// 80 % of `expires_in` (seconds; some providers send a string or a float, absent means an
+/// assumed 5 minutes), capped at a year so "never expires" values cannot overflow the clock.
+#[cfg(feature = "oauth")]
+fn refresh_after(expires_in: &serde_json::Value) -> Duration {
+    let secs = expires_in
+        .as_u64()
+        .or_else(|| expires_in.as_f64().filter(|f| *f >= 0.0).map(|f| f as u64))
+        .or_else(|| expires_in.as_str().and_then(|s| s.parse().ok()))
+        .unwrap_or(300)
+        .min(365 * 86_400);
+    Duration::from_millis(secs * 800)
+}
+
+#[cfg(all(test, feature = "oauth"))]
+mod refresh_tests {
+    use super::*;
+    use serde_json::json;
+
+    // Regression: `expires_in` near u64::MAX overflowed `lifetime * 800` and the Instant add.
+    #[test]
+    fn refresh_after_is_80_percent_and_never_overflows() {
+        assert_eq!(refresh_after(&json!(100)), Duration::from_secs(80));
+        assert_eq!(refresh_after(&json!("100")), Duration::from_secs(80));
+        assert_eq!(refresh_after(&json!(100.0)), Duration::from_secs(80));
+        assert_eq!(refresh_after(&json!(null)), Duration::from_secs(240));
+        let capped = Duration::from_millis(365 * 86_400 * 800);
+        assert_eq!(refresh_after(&json!(u64::MAX)), capped);
+        let _ = tokio::time::Instant::now() + refresh_after(&json!(u64::MAX));
     }
 }

@@ -7,7 +7,7 @@ Golden-prompt evaluation harness for AI-driven BPMN generation (WP7 of `doc/spec
 **Plan-level (default, CI-safe, no LLM call).** Every prompt directory that ships a `fixture.plan.json` is run through the real deterministic pipeline: `bpmnkit synth` → `bpmnkit lint --profile deploy` → `bpmnkit test` → an attempted `bpmnkit deploy deploy` against local Reebe. This never shells out to an LLM, so it's safe to run in CI. When `reebe-server` isn't reachable at `ZEEBE_ADDRESS` (e.g. this monorepo's sandboxed dev environments, which lack the Rust toolchain to build it), the deploy dimension is reported as **skipped**, not failed — the report is explicit about how many prompts actually got a deploy attempt vs. how many were skipped.
 
 ```sh
-pnpm --filter @bpmnkit/cli build   # the harness shells out to the built CLI
+pnpm --filter @bpmnkit/cli-legacy build   # the harness shells out to the built CLI
 node scripts/eval-generation/run-eval.mjs
 ```
 

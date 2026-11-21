@@ -287,7 +287,7 @@ async function runFullLlm(promptText, reebeUp) {
 
 async function main() {
 	if (!existsSync(CLI)) {
-		console.error(`CLI not built at ${CLI} — run: pnpm --filter @bpmnkit/cli build`)
+		console.error(`CLI not built at ${CLI} — run: pnpm --filter @bpmnkit/cli-legacy build`)
 		process.exit(1)
 	}
 

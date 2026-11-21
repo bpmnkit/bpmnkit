@@ -556,3 +556,17 @@ async fn streamed_jobs_respect_max_jobs_active() {
     assert_eq!(keys(&client).len(), 6);
     assert_eq!(peak.load(Ordering::SeqCst), 2);
 }
+
+// Regression: a job activated while every slot was taken (the stream raced the poll, or the
+// server sent more than asked) was logged and dropped, left locked until its timeout.
+#[tokio::test(start_paused = true)]
+async fn jobs_beyond_free_slots_wait_for_a_slot_instead_of_being_dropped() {
+    let client = Arc::new(FakeClient::new());
+    client.push_jobs(vec![job("1"), job("2"), job("3")]);
+    let slow = |_: ActivatedJob| async {
+        sleep(Duration::from_millis(10)).await;
+        Ok(Complete::new())
+    };
+    run_for(&client, cfg(1), slow, Duration::from_millis(200)).await;
+    assert_eq!(keys(&client), vec!["1", "2", "3"]);
+}

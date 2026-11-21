@@ -1076,6 +1076,7 @@ not code.
 - [x] P7: Rust connector-gen + `connector bind`; native `lint/layout/diff/render/convert/profile`
 - [x] P8: cargo-dist (`release-cli.yml`), axoupdater `self update`, `@bpmnkit/cli` 2.0.0 launcher + 5 platform packages (dist-tag `next`), `@bpmnkit/cli-legacy`, crates publishable, rename to `bpmnkit` (alias `casen`) + `check-casen` guard, npm smoke matrix (first real release + npm trusted-publisher setup pending)
 - [ ] P9: remaining commands, fallback removal
+- [ ] Review follow-ups (plan §15): `rest_max_rps` limiter, completion retries, connector total deadline + redirect key stripping, stale generated files in `--check`, launcher signal forwarding, `binaryVersion` sync, native `.bpmnlintrc` + `convert --to camunda7`
 - [x] P10: Gradle emitter (`--build gradle`, Kotlin DSL, pinned wrapper, `java-golden-gradle` CI)
 
 ## Completed

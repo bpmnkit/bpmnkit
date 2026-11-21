@@ -250,3 +250,30 @@ D2: `bpmnkit-worker` 0.x; stability review after P4.
 4. Legacy fallback lifetime: **3 minors of `@bpmnkit/cli` 2.x AND at least 6 months, whichever is later.**
 5. `worker run` for Java: **generated projects ship the Maven Wrapper** (`mvnw`, `mvnw.cmd`, `.mvn/wrapper/`, version
    pinned); no local Maven needed. Adds those files to the goldens (P4).
+
+## 15. Follow-ups from the final review (2026-11-21)
+
+Fixed in the review commit: see `doc/progress.md`. Still open (not small enough for the review):
+
+- `rest_max_rps` (D3/R10) is only a classifier input; `bpmnkit-worker` has no request-rate limiter. Needs a design
+  (per client vs per job type, burst, shared with completions).
+- Worker: complete/fail/throwError get one attempt (plus the OAuth 401 retry); retry transient errors with backoff,
+  honour `Retry-After`, treat 404/409 as terminal. Shutdown drops an in-flight activation (jobs locked until timeout).
+  401 `invalidate()` should compare-and-clear. Jitter is applied after the 5 s cap (plan says 10 s).
+- Connector runtime: no total request deadline (per-read timeout only); `max_response_bytes` checks the buffered body
+  except when `Content-Length` is declared; API-key header/query re-sent on cross-host redirects; a user
+  `Authorization` header is sent next to the auth one; `HttpRequest` derives `Debug` (resolved secrets);
+  `errorExpression` marker key can be forged by response JSON.
+- Codegen: `write`/`--check` ignore stale generated files of removed job types; once-only files treated as missing on
+  any read error; I2 tie-break for duplicate `service#op` / `(process, element)` across input files; `no_tokio` test
+  only covers jobspec; R1 ignores an invalid `bpmnkit:mode` silently; `.gitattributes` `eol=lf` for snapshots.
+- CLI: `profile list|show -o json` (legacy global flags) now exits 2 via clap; profile store migration is not atomic
+  (copy to temp + rename); `deprecation_note` may create the config dir 0755; `plugin list` shows `foo` for
+  `bpmnkit-foo.sh` which dispatch cannot run.
+- Distribution: `binaryVersion` in `packages/cli/package.json` has no sync check against the crate version;
+  `publish-mcp.yml` triggers on the changesets Release, not `release-cli.yml`; the launcher's `spawnSync` does not
+  forward SIGTERM/SIGHUP nor map signals to 128+n; `publish-cli-npm.mjs` is not idempotent on re-run; no musl /
+  win32-arm64 package and no clear error for musl; `@bpmnkit/cli-legacy` must be on npm before the launcher.
+- Publish policy: `bpmnkit-jobspec`/`bpmnkit-codegen` have no `publish = false` although a Cargo.toml comment calls
+  their release a separate decision (order in `crates-publish.mjs` is correct: deps first).
+- Not ported (list only): native `.bpmnlintrc` in `bpmnkit lint`; `convert --to camunda7` (both still go to legacy).

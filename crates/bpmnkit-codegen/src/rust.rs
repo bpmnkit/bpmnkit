@@ -48,7 +48,12 @@ fn ident(s: &str) -> String {
 }
 
 fn unique(names: Vec<(String, String)>) -> Vec<(String, String)> {
-    let mut seen = BTreeSet::new();
+    unique_except(names, &[])
+}
+
+/// Like [`unique`], with `taken` names already in use (fixed module names).
+fn unique_except(names: Vec<(String, String)>, taken: &[&str]) -> Vec<(String, String)> {
+    let mut seen: BTreeSet<String> = taken.iter().map(|t| (*t).to_owned()).collect();
     names
         .into_iter()
         .map(|(mut n, src)| {
@@ -151,11 +156,13 @@ struct J<'a> {
 }
 
 fn jobs<'a>(selected: &[&'a JobSpec]) -> Vec<J<'a>> {
-    let modules = unique(
+    // `src/gen/errors.rs` and `mod.rs` are fixed files.
+    let modules = unique_except(
         selected
             .iter()
             .map(|j| (ident(&j.job_type), j.job_type.clone()))
             .collect(),
+        &["errors", "mod"],
     );
     selected
         .iter()
@@ -338,7 +345,7 @@ fn handler_stub(j: &J) -> GenFile {
         format!(
             "use bpmnkit_worker::{{ActivatedJob, JobError}};\n\nuse crate::gen::{m}::{{{ty}Handler, {ty}Input, {ty}Output}};\n\n{kind}pub struct Handler;\n\nimpl {ty}Handler for Handler {{\n    async fn handle(\n        &self,\n        _input: {ty}Input,\n        _job: &ActivatedJob,\n    ) -> Result<{ty}Output, JobError> {{\n        // Return `Err(JobError::bpmn(code, message))` for a BPMN error (see `gen::errors`);\n        // any other error fails the job with retries - 1.\n        Err(JobError::fail(\"job type {jt}: handler not implemented\"))\n    }}\n}}\n",
             m = j.module,
-            jt = j.spec.job_type.replace('"', "'"),
+            jt = j.spec.job_type.replace('\\', "\\\\").replace('"', "'"),
         ),
     )
 }

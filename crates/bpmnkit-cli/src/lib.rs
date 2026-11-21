@@ -106,8 +106,13 @@ enum ConnectorCmd {
 enum ProfileCmd {
     /// List profiles; the active one is marked with `*`
     List,
-    /// Print one profile (default: the active one) as JSON
-    Show { name: Option<String> },
+    /// Print one profile (default: the active one) as JSON, secrets masked
+    Show {
+        name: Option<String>,
+        /// Print secrets (client secret, password, token) in clear
+        #[arg(long)]
+        reveal: bool,
+    },
     /// Print the profile store path (copies a legacy `casen` store first)
     Path,
     // Clap needs the payload to accept unknown subcommands; the legacy CLI re-reads the raw args.
@@ -275,14 +280,18 @@ fn profile(roots: &Roots, action: ProfileCmd) -> i32 {
             }
             Err(e) => fail(&format!("cannot read the profile store: {e}")),
         },
-        ProfileCmd::Show { name } => {
+        ProfileCmd::Show { name, reveal } => {
             let found = match name {
                 Some(n) => bpmnkit_profiles::get(roots, &n).map_err(|e| e.to_string()),
                 None => Ok(bpmnkit_profiles::active_profile(roots)),
             };
             match found {
                 Ok(Some(p)) => {
-                    println!("{}", serde_json::to_string_pretty(&p).unwrap_or_default());
+                    let mut v = p;
+                    if !reveal {
+                        mask_secrets(&mut v);
+                    }
+                    println!("{}", serde_json::to_string_pretty(&v).unwrap_or_default());
                     0
                 }
                 Ok(None) => fail("profile not found"),
@@ -329,4 +338,26 @@ pub(crate) fn exit_code(status: std::process::ExitStatus) -> i32 {
         }
     }
     status.code().unwrap_or(1)
+}
+
+/// Masks string values under credential-like keys: `profile show` output ends up in terminals,
+/// screen shares and CI logs, while the store itself is 0600.
+fn mask_secrets(v: &mut serde_json::Value) {
+    match v {
+        serde_json::Value::Object(m) => {
+            for (k, val) in m.iter_mut() {
+                let k = k.to_ascii_lowercase();
+                let secret = ["secret", "password", "token", "apikey", "api_key"]
+                    .iter()
+                    .any(|w| k.contains(w));
+                if secret && val.is_string() {
+                    *val = serde_json::Value::String("***".into());
+                } else {
+                    mask_secrets(val);
+                }
+            }
+        }
+        serde_json::Value::Array(a) => a.iter_mut().for_each(mask_secrets),
+        _ => {}
+    }
 }

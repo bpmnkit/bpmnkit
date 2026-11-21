@@ -137,6 +137,15 @@ const RESERVED: &[&str] = &[
     "void",
     "volatile",
     "while",
+    // `Object` methods: illegal as record component names.
+    "clone",
+    "finalize",
+    "getClass",
+    "hashCode",
+    "notify",
+    "notifyAll",
+    "toString",
+    "wait",
     "record",
     "var",
     "yield",
@@ -147,7 +156,7 @@ const RESERVED: &[&str] = &[
 ];
 
 /// Make names unique in input order by appending 2, 3, … (inputs are sorted, so this is stable).
-fn unique<'a>(names: impl Iterator<Item = (String, &'a str)>) -> Vec<(String, &'a str)> {
+pub(crate) fn unique<'a>(names: impl Iterator<Item = (String, &'a str)>) -> Vec<(String, &'a str)> {
     let mut seen = BTreeSet::new();
     names
         .map(|(mut n, src)| {
@@ -265,6 +274,17 @@ impl Emitter for JavaEmitter {
         let pkg = if self.package.is_empty() {
             format!("com.example.{}", slug.replace('-', ""))
         } else {
+            // It becomes a directory path and goes into pom.xml / build.gradle.kts verbatim.
+            let ok = self.package.split('.').all(|seg| {
+                let mut c = seg.chars();
+                c.next()
+                    .is_some_and(|f| f.is_ascii_alphabetic() || f == '_')
+                    && c.all(|ch| ch.is_ascii_alphanumeric() || ch == '_')
+                    && !RESERVED.contains(&seg)
+            });
+            if !ok {
+                return Err(EmitError::InvalidPackage(self.package.clone()));
+            }
             self.package.clone()
         };
         let dir = format!("src/main/java/{}", pkg.replace('.', "/"));

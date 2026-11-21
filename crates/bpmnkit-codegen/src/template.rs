@@ -106,8 +106,9 @@ impl Emitter for TemplateEmitter {
             return Err(EmitError::NoJobs);
         }
         let mut files = Vec::new();
-        for j in selected {
-            let slug = file_slug(&j.job_type);
+        // Slugs are lossy (`send-email`, `send_email`): suffix collisions in sorted job order.
+        let slugs = crate::java::unique(selected.iter().map(|j| (file_slug(&j.job_type), "")));
+        for (j, (slug, _)) in selected.into_iter().zip(slugs) {
             let id = format!("io.bpmnkit.rest.{slug}");
             files.push(GenFile::generated(
                 format!("templates/{slug}.json"),

@@ -71,6 +71,85 @@ pub struct GrpcActivatedJob {
     pub variables: String,
     #[prost(string, tag = "14")]
     pub tenant_id: String,
+    #[prost(message, optional, tag = "15")]
+    pub user_task: Option<UserTaskProperties>,
+    /// `ActivatedJob.JobKind`: 0 BPMN element, 1 execution listener, 2 task listener, 3 ad-hoc.
+    #[prost(int32, tag = "16")]
+    pub kind: i32,
+    /// `ActivatedJob.ListenerEventType`, indexed like [`LISTENER_EVENT_TYPES`].
+    #[prost(int32, tag = "17")]
+    pub listener_event_type: i32,
+    #[prost(string, repeated, tag = "18")]
+    pub tags: Vec<String>,
+}
+
+/// gRPC `UserTaskProperties`, set on task-listener jobs.
+#[derive(Clone, PartialEq, prost::Message)]
+pub struct UserTaskProperties {
+    #[prost(string, optional, tag = "1")]
+    pub action: Option<String>,
+    #[prost(string, optional, tag = "2")]
+    pub assignee: Option<String>,
+    #[prost(string, repeated, tag = "3")]
+    pub candidate_groups: Vec<String>,
+    #[prost(string, repeated, tag = "4")]
+    pub candidate_users: Vec<String>,
+    #[prost(string, repeated, tag = "5")]
+    pub changed_attributes: Vec<String>,
+    #[prost(string, optional, tag = "6")]
+    pub due_date: Option<String>,
+    #[prost(string, optional, tag = "7")]
+    pub follow_up_date: Option<String>,
+    #[prost(int64, optional, tag = "8")]
+    pub form_key: Option<i64>,
+    #[prost(int32, optional, tag = "9")]
+    pub priority: Option<i32>,
+    #[prost(int64, optional, tag = "10")]
+    pub user_task_key: Option<i64>,
+}
+
+/// Wire order of `ActivatedJob.ListenerEventType`; REST sends the same names as strings.
+const LISTENER_EVENT_TYPES: [&str; 8] = [
+    "ASSIGNING",
+    "CANCELING",
+    "COMPLETING",
+    "CREATING",
+    "END",
+    "START",
+    "UNSPECIFIED",
+    "UPDATING",
+];
+
+fn job_kind(n: i32) -> JobKind {
+    match n {
+        0 => JobKind::BpmnElement,
+        1 => JobKind::ExecutionListener,
+        2 => JobKind::TaskListener,
+        3 => JobKind::AdHocSubProcess,
+        _ => JobKind::Other,
+    }
+}
+
+/// The REST `UserTaskProperties` shape, so handlers see one form whichever transport ran: keys
+/// become strings like every REST `LongKey`, and unset fields are left out.
+fn user_task_json(u: UserTaskProperties) -> Value {
+    let mut m = Map::new();
+    let mut put = |k: &str, v: Option<Value>| {
+        if let Some(v) = v {
+            m.insert(k.to_owned(), v);
+        }
+    };
+    put("action", u.action.map(Value::from));
+    put("assignee", u.assignee.map(Value::from));
+    put("candidateGroups", Some(u.candidate_groups.into()));
+    put("candidateUsers", Some(u.candidate_users.into()));
+    put("changedAttributes", Some(u.changed_attributes.into()));
+    put("dueDate", u.due_date.map(Value::from));
+    put("followUpDate", u.follow_up_date.map(Value::from));
+    put("formKey", u.form_key.map(|k| k.to_string().into()));
+    put("priority", u.priority.map(Value::from));
+    put("userTaskKey", u.user_task_key.map(|k| k.to_string().into()));
+    Value::Object(m)
 }
 
 fn json_object(field: &str, text: &str) -> Result<Map<String, Value>, Error> {
@@ -89,7 +168,6 @@ fn json_object(field: &str, text: &str) -> Result<Map<String, Value>, Error> {
 impl TryFrom<GrpcActivatedJob> for ActivatedJob {
     type Error = Error;
 
-    /// The gRPC job has no `kind` or listener data: streamed jobs are plain BPMN-element jobs.
     fn try_from(j: GrpcActivatedJob) -> Result<Self, Error> {
         Ok(ActivatedJob {
             job_key: j.key.to_string(),
@@ -106,8 +184,18 @@ impl TryFrom<GrpcActivatedJob> for ActivatedJob {
             deadline: j.deadline,
             variables: json_object("variables", &j.variables)?,
             tenant_id: j.tenant_id,
-            kind: JobKind::BpmnElement,
-            ..ActivatedJob::default()
+            kind: job_kind(j.kind),
+            // proto3 has no unset enum, so a non-listener job reads as ASSIGNING (0) on the wire.
+            listener_event_type: match j.kind {
+                1 | 2 => usize::try_from(j.listener_event_type)
+                    .ok()
+                    .and_then(|i| LISTENER_EVENT_TYPES.get(i))
+                    .unwrap_or(&"UNSPECIFIED"),
+                _ => &"UNSPECIFIED",
+            }
+            .to_string(),
+            user_task: j.user_task.map(user_task_json),
+            tags: (!j.tags.is_empty()).then_some(j.tags),
         })
     }
 }

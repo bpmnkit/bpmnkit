@@ -16,7 +16,13 @@ const PREFIXES: [&str; 2] = ["bpmnkit-", "casen-"];
 fn plugin_bins(roots: &Roots) -> Vec<PathBuf> {
     // `~/.bpmnkit/plugins` first, then the legacy `~/.casen/plugins`; PATH comes first overall.
     let mut dirs: Vec<PathBuf> = std::env::var_os("PATH")
-        .map(|p| std::env::split_paths(&p).collect())
+        // Empty or relative entries resolve against the cwd, so an untrusted checkout could
+        // plant `bpmnkit-<typo>` and receive the active profile (secrets included) in its env.
+        .map(|p| {
+            std::env::split_paths(&p)
+                .filter(|d| d.is_absolute())
+                .collect()
+        })
         .unwrap_or_default();
     dirs.push(roots.home.join(".bpmnkit/plugins/bin"));
     dirs.push(roots.home.join(".casen/plugins/bin"));

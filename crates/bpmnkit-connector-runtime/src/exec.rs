@@ -203,7 +203,8 @@ impl HttpJsonConnector {
         let resp = b
             .send()
             .await
-            .map_err(|e| format!("HTTP request failed: {e}"))?;
+            // Without the URL: it can carry a literal API key or userinfo the redactor never saw.
+            .map_err(|e| format!("HTTP request failed: {}", e.without_url()))?;
         let status = resp.status().as_u16();
         let mut headers = Map::new();
         for (k, v) in resp.headers() {
@@ -218,10 +219,18 @@ impl HttpJsonConnector {
                 }
             }
         }
+        // Refuse a declared oversize body before buffering it.
+        if let (Some(max), Some(len)) = (self.options.max_response_bytes, resp.content_length()) {
+            if len > max as u64 {
+                return Err(format!(
+                    "response of {len} bytes exceeds max_response_bytes ({max})"
+                ));
+            }
+        }
         let bytes = resp
             .bytes()
             .await
-            .map_err(|e| format!("reading the response failed: {e}"))?;
+            .map_err(|e| format!("reading the response failed: {}", e.without_url()))?;
         if let Some(max) = self.options.max_response_bytes {
             if bytes.len() > max {
                 return Err(format!(
@@ -275,7 +284,7 @@ impl HttpJsonConnector {
             .body(form_encode(&form))
             .send()
             .await
-            .map_err(|e| format!("OAuth token request failed: {e}"))?;
+            .map_err(|e| format!("OAuth token request failed: {}", e.without_url()))?;
         let status = resp.status().as_u16();
         let body = resp.bytes().await.map_err(|e| e.to_string())?;
         if status >= 400 {
@@ -340,17 +349,33 @@ fn redact_error(e: JobError, r: &Redactor) -> JobError {
             message: r.redact(&message),
             retries,
             retry_backoff,
-            variables,
+            variables: variables.map(|v| redact_map(v, r)),
         },
+        // Error variables often carry the response, which may echo a credential back.
         JobError::Bpmn {
             code,
             message,
             variables,
         } => JobError::Bpmn {
-            code,
+            code: r.redact(&code),
             message: message.map(|m| r.redact(&m)),
-            variables,
+            variables: variables.map(|v| redact_map(v, r)),
         },
+    }
+}
+
+fn redact_map(m: Map<String, Value>, r: &Redactor) -> Map<String, Value> {
+    m.into_iter()
+        .map(|(k, v)| (k, redact_value(v, r)))
+        .collect()
+}
+
+fn redact_value(v: Value, r: &Redactor) -> Value {
+    match v {
+        Value::String(s) => Value::String(r.redact(&s)),
+        Value::Array(a) => Value::Array(a.into_iter().map(|v| redact_value(v, r)).collect()),
+        Value::Object(m) => Value::Object(redact_map(m, r)),
+        other => other,
     }
 }
 
@@ -416,6 +441,62 @@ fn form_encode(pairs: &[(String, String)]) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    // Regression: only `message` was scrubbed, so a secret echoed in the response reached the
+    // engine through `error.variables` or the error code.
+    #[test]
+    fn error_variables_and_code_are_redacted() {
+        let secrets = Secrets::from_lookup("", |n| (n == "T").then(|| "tok3n".to_owned()));
+        let mut r = Redactor::default();
+        resolve(&mut json!("{{secrets.T}}"), &secrets, &mut r).unwrap();
+        let vars = json!({"response": {"headers": {"echo": "Bearer tok3n"}, "list": ["tok3n", 1]}});
+        let Value::Object(vars) = vars else {
+            unreachable!()
+        };
+        let bpmn = JobError::Bpmn {
+            code: "E_tok3n".into(),
+            message: Some("bad tok3n".into()),
+            variables: Some(vars.clone()),
+        };
+        let JobError::Bpmn {
+            code,
+            message,
+            variables,
+        } = redact_error(bpmn, &r)
+        else {
+            unreachable!()
+        };
+        assert_eq!(code, "E_***");
+        assert_eq!(message.as_deref(), Some("bad ***"));
+        assert_eq!(
+            Value::Object(variables.unwrap()),
+            json!({"response": {"headers": {"echo": "Bearer ***"}, "list": ["***", 1]}})
+        );
+        let fail = JobError::Fail {
+            message: "m".into(),
+            retries: None,
+            retry_backoff: None,
+            variables: Some(vars),
+        };
+        let JobError::Fail { variables, .. } = redact_error(fail, &r) else {
+            unreachable!()
+        };
+        assert!(!Value::Object(variables.unwrap())
+            .to_string()
+            .contains("tok3n"));
+    }
+
+    // Regression: reqwest's error text includes the full URL, which can hold a literal
+    // (non-`{{secrets}}`) API key in the query.
+    #[tokio::test]
+    async fn transport_error_does_not_echo_the_url() {
+        let e = reqwest::Client::new()
+            .get("http://127.0.0.1:1/x?key=LITERALKEY")
+            .send()
+            .await
+            .unwrap_err();
+        assert!(!e.without_url().to_string().contains("LITERALKEY"));
+    }
 
     #[test]
     fn body_parsing() {

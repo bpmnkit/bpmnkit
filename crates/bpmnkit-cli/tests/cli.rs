@@ -221,6 +221,43 @@ mod unix {
         assert!(old.join("config.json").exists());
     }
 
+    // Regression: `profile show` printed client secrets and passwords in clear.
+    #[test]
+    fn profile_show_masks_secrets_unless_revealed() {
+        let t = tempfile::tempdir().unwrap();
+        let dir = t.path().join("cfg/bpmnkit");
+        fs::create_dir_all(&dir).unwrap();
+        fs::write(
+            dir.join("config.json"),
+            r#"{"profiles":{"a":{"baseUrl":"http://x","auth":{"type":"oauth2","clientId":"id","clientSecret":"s3cr3t"},"password":"pw"}},"active":"a","meta":{}}"#,
+        )
+        .unwrap();
+        let out = sandboxed(t.path())
+            .args(["profile", "show"])
+            .assert()
+            .success()
+            .get_output()
+            .stdout
+            .clone();
+        let text = String::from_utf8(out).unwrap();
+        assert!(
+            !text.contains("s3cr3t") && !text.contains("\"pw\""),
+            "{text}"
+        );
+        assert!(
+            text.contains("\"clientId\": \"id\"") && text.contains("***"),
+            "{text}"
+        );
+        let out = sandboxed(t.path())
+            .args(["profile", "show", "a", "--reveal"])
+            .assert()
+            .success()
+            .get_output()
+            .stdout
+            .clone();
+        assert!(String::from_utf8(out).unwrap().contains("s3cr3t"));
+    }
+
     #[test]
     fn non_native_profile_subcommand_goes_to_legacy() {
         let t = tempfile::tempdir().unwrap();

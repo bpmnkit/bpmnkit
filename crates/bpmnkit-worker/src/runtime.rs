@@ -86,9 +86,21 @@ impl<C: JobClient> Runtime<C> {
         self
     }
 
-    /// Runs until Ctrl-C (SIGINT), then drains every worker.
+    /// Runs until Ctrl-C (SIGINT) or, on Unix, SIGTERM (what Docker and Kubernetes send), then
+    /// drains every worker.
     pub async fn run(self) -> Vec<ShutdownReport> {
         self.run_until(async {
+            #[cfg(unix)]
+            {
+                use tokio::signal::unix::{signal, SignalKind};
+                if let Ok(mut term) = signal(SignalKind::terminate()) {
+                    tokio::select! {
+                        _ = tokio::signal::ctrl_c() => {}
+                        _ = term.recv() => {}
+                    }
+                    return;
+                }
+            }
             let _ = tokio::signal::ctrl_c().await;
         })
         .await

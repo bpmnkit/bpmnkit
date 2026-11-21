@@ -31,9 +31,11 @@ export const ALLOWED_PATHS = [
 	"crates/bpmnkit-cli/src/lib.rs",
 	"crates/bpmnkit-cli/src/legacy.rs",
 	"apps/cli/src/plugin-loader.ts",
+	"packages/cli/lib/launch.js",
 	// the rename tooling itself
 	"scripts/rename-casen.mjs",
 	"scripts/check-casen.mjs",
+	"scripts/check-casen.test.mjs",
 	"scripts/lib/casen-rules.mjs",
 	"scripts/migrate-to-bpmnkit.mjs",
 	"scripts/deprecate-old-packages.mjs",

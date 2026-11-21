@@ -62,6 +62,8 @@ pub enum EmitError {
     DuplicatePath(String),
     /// A generated Rust file did not parse (a generator bug; the message has the source).
     Invalid(String),
+    /// `--package` is not a dot-separated list of Java identifiers.
+    InvalidPackage(String),
 }
 
 impl std::fmt::Display for EmitError {
@@ -72,6 +74,12 @@ impl std::fmt::Display for EmitError {
             ),
             EmitError::DuplicatePath(p) => write!(f, "two generated files share the path {p}"),
             EmitError::Invalid(m) => write!(f, "generated source does not parse: {m}"),
+            EmitError::InvalidPackage(p) => {
+                write!(
+                    f,
+                    "package {p:?} is not a dot-separated list of Java identifiers"
+                )
+            }
         }
     }
 }

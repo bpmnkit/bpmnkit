@@ -146,6 +146,21 @@ fn proto_job(key: i64) -> GrpcActivatedJob {
         deadline: 99,
         variables: r#"{"a":1}"#.into(),
         tenant_id: "<default>".into(),
+        user_task: Some(UserTaskProperties {
+            action: Some("assign".into()),
+            assignee: Some("ann".into()),
+            candidate_groups: vec!["g".into()],
+            candidate_users: vec!["u".into()],
+            changed_attributes: vec!["assignee".into()],
+            due_date: Some("2026-01-01T00:00:00Z".into()),
+            follow_up_date: Some("2026-01-02T00:00:00Z".into()),
+            form_key: Some(7),
+            priority: Some(50),
+            user_task_key: Some(8),
+        }),
+        kind: 2,
+        listener_event_type: 2,
+        tags: vec!["vip".into()],
     }
 }
 
@@ -179,7 +194,7 @@ fn job_maps_to_the_rest_shape() {
     assert_eq!(j.element_instance_key, "13");
     assert_eq!(j.variables["a"], 1);
     assert_eq!(j.header("retryBackoff"), Some("PT1S"));
-    assert_eq!(j.kind, JobKind::BpmnElement);
+    assert_eq!(j.kind, JobKind::TaskListener);
     let mut empty = proto_job(1);
     empty.variables.clear();
     empty.custom_headers.clear();
@@ -227,18 +242,27 @@ fn proto_fields(src: &str, message: &str) -> Vec<(String, u32)> {
     let body = src
         .split(&format!("message {message} {{"))
         .nth(1)
-        .and_then(|r| r.split('}').next())
         .unwrap_or_else(|| panic!("message {message} not in proto"));
-    body.lines()
-        .filter_map(|l| {
-            let l = l.trim().strip_suffix(';')?;
-            let (decl, n) = l.split_once('=')?;
-            Some((
-                decl.split_whitespace().last()?.to_owned(),
-                n.trim().parse().ok()?,
-            ))
-        })
-        .collect()
+    // Fields only: skip nested enum bodies and stop at the message's own closing brace.
+    let (mut depth, mut out) = (0, Vec::new());
+    for l in body.lines().map(str::trim) {
+        if l.ends_with('{') {
+            depth += 1;
+        } else if l == "}" {
+            if depth == 0 {
+                break;
+            }
+            depth -= 1;
+        } else if depth == 0 {
+            let Some((decl, n)) = l.strip_suffix(';').and_then(|l| l.split_once('=')) else {
+                continue;
+            };
+            if let (Some(name), Ok(n)) = (decl.split_whitespace().last(), n.trim().parse()) {
+                out.push((name.to_owned(), n));
+            }
+        }
+    }
+    out
 }
 
 #[test]
@@ -279,6 +303,47 @@ fn matches_vendored_proto() {
     assert_eq!(names[3], "bpmnProcessId");
     assert_eq!(names[8], "customHeaders");
     assert_eq!(names[12], "variables");
+    assert_eq!(names[15], "kind");
+    assert_eq!(
+        tags(&prost::Message::encode_to_vec(
+            &proto_job(1).user_task.unwrap()
+        )),
+        want("UserTaskProperties")
+    );
+}
+
+// Regression: the slice once stopped at field 14, so listener and ad-hoc jobs arrived as
+// BPMN_ELEMENT with no user-task data.
+#[test]
+fn streamed_job_keeps_kind_listener_and_user_task() {
+    let job = ActivatedJob::try_from(proto_job(1)).unwrap();
+    assert_eq!(job.kind, JobKind::TaskListener);
+    assert_eq!(job.listener_event_type, "COMPLETING");
+    assert_eq!(job.tags, Some(vec!["vip".to_owned()]));
+    let ut = job.user_task.unwrap();
+    assert_eq!(ut["userTaskKey"], "8");
+    assert_eq!(ut["formKey"], "7");
+    assert_eq!(ut["candidateGroups"][0], "g");
+
+    let plain = ActivatedJob::try_from(GrpcActivatedJob {
+        kind: 3,
+        user_task: None,
+        tags: vec![],
+        ..proto_job(2)
+    })
+    .unwrap();
+    assert_eq!(plain.kind, JobKind::AdHocSubProcess);
+    assert_eq!(plain.listener_event_type, "UNSPECIFIED");
+    assert!(plain.user_task.is_none() && plain.tags.is_none());
+    assert_eq!(
+        ActivatedJob::try_from(GrpcActivatedJob {
+            kind: 9,
+            ..proto_job(3)
+        })
+        .unwrap()
+        .kind,
+        JobKind::Other
+    );
 }
 
 #[tokio::test]

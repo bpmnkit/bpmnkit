@@ -40,6 +40,13 @@ fn target(dir: &Path, rel: &str) -> PathBuf {
 pub fn write(dir: &Path, files: &[GenFile]) -> io::Result<Written> {
     let mut out = Written::default();
     for f in files {
+        // Defence in depth: nothing an emitter returns may leave `dir`.
+        if f.path.starts_with('/') || f.path.split('/').any(|s| s.is_empty() || s == "..") {
+            return Err(io::Error::new(
+                io::ErrorKind::InvalidInput,
+                format!("refusing to write outside the output directory: {}", f.path),
+            ));
+        }
         let path = target(dir, &f.path);
         let existing = std::fs::read(&path).ok();
         match (f.kind, existing) {

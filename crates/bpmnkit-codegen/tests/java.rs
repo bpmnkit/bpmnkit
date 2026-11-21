@@ -377,3 +377,41 @@ fn stream_enables_it_per_worker() {
         .unwrap();
     assert!(String::from_utf8_lossy(&w.content).contains("streamEnabled = true"));
 }
+
+// Regression: `--package` went unchecked into directory paths (`../..` escaped `--out`) and
+// into pom.xml.
+#[test]
+fn package_must_be_java_identifiers() {
+    let p = project(&[ORDER]);
+    for bad in [
+        "../../x",
+        "a/../../etc",
+        "a..b",
+        "1a.b",
+        "a.class",
+        "a-b",
+        ".a",
+    ] {
+        let e = JavaEmitter {
+            package: bad.into(),
+            ..JavaEmitter::default()
+        }
+        .emit(&p);
+        assert_eq!(e, Err(EmitError::InvalidPackage(bad.into())), "{bad}");
+    }
+    assert!(JavaEmitter {
+        package: "com.acme_1.Workers".into(),
+        ..JavaEmitter::default()
+    }
+    .emit(&p)
+    .is_ok());
+}
+
+#[test]
+fn write_refuses_paths_outside_the_directory() {
+    let dir = tempfile::tempdir().unwrap();
+    for rel in ["../x", "/abs", "a//b"] {
+        let f = GenFile::generated(rel.to_owned(), b"x".to_vec());
+        assert!(write(dir.path(), &[f]).is_err(), "{rel}");
+    }
+}

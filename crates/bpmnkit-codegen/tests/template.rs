@@ -56,3 +56,35 @@ fn only_rest_jobs_unless_all_and_deterministic() {
         Err(EmitError::NoJobs)
     );
 }
+
+// Regression: `send-email` and `send_email` share a slug, and the emitter failed with
+// DuplicatePath instead of suffixing the second.
+#[test]
+fn colliding_slugs_are_suffixed() {
+    let xml = r#"<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="d" targetNamespace="t">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:serviceTask id="a"><bpmn:extensionElements><zeebe:taskDefinition type="send-email"/></bpmn:extensionElements></bpmn:serviceTask>
+    <bpmn:serviceTask id="b"><bpmn:extensionElements><zeebe:taskDefinition type="send_email"/></bpmn:extensionElements></bpmn:serviceTask>
+  </bpmn:process>
+</bpmn:definitions>"#;
+    let defs = vec![bpmnkit_bpmn::parse_bpmn(xml).unwrap()];
+    let p = analyze(Inputs {
+        name: "x",
+        definitions: &defs,
+        apis: &ApiIndex::default(),
+        catalog: &Catalog::builtin(),
+        config: &WorkerConfig::default(),
+    })
+    .project;
+    let paths: Vec<String> = TemplateEmitter { all: true }
+        .emit(&p)
+        .unwrap()
+        .into_iter()
+        .map(|f| f.path)
+        .collect();
+    assert_eq!(paths.len(), 4, "{paths:?}");
+    let mut uniq = paths.clone();
+    uniq.dedup();
+    assert_eq!(uniq, paths);
+}
