@@ -232,6 +232,16 @@ if (!packOnly) {
 
 	for (const entry of packed) {
 		if (!entry.consume) continue
+		// A platform binary package (`os`/`cpu`, e.g. @bpmnkit/cli-darwin-arm64) refuses to install
+		// on any other machine (EBADPLATFORM); it ships no JavaScript to consume anyway.
+		const { os, cpu } = entry.packedManifest
+		if (
+			(Array.isArray(os) && !os.includes(process.platform)) ||
+			(Array.isArray(cpu) && !cpu.includes(process.arch))
+		) {
+			console.log(`  ~  ${entry.name}  (skipped, built for ${os ?? "any"}/${cpu ?? "any"})`)
+			continue
+		}
 		if (!entry.ok) {
 			console.log(`  –  ${entry.name}  (skipped, entries missing)`)
 			continue

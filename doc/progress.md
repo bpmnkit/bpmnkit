@@ -1,5 +1,9 @@
 # Progress
 
+## 2026-11-21 — Release job: consumability check skips other platforms' binaries
+
+- `scripts/check-package-consumable.mjs` skips a package whose `os`/`cpu` excludes the runner (the `@bpmnkit/cli-<platform>` packages): npm refuses to install them there (EBADPLATFORM), which failed the Changesets release job on main after the CLI merge. PR CI only runs `--pack-only`, so it did not catch it.
+
 ## 2026-11-21 — One-time release setup for the native CLI
 
 - `doc/release-setup.md`: what to do on npmjs.com (placeholder `0.0.0` for the 7 new names, trusted publishers; `@bpmnkit/cli` moves from `release.yml` to `release-cli.yml`), crates.io (bootstrap token for the 7 new crates), Homebrew (`bpmnkit/homebrew-tap`, `HOMEBREW_TAP_TOKEN`) and the release order (Changesets first, then the `bpmnkit-cli-v*` tag, then `latest`). Linked from `doc/rust-crates-release.md`.
