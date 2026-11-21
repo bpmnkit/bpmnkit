@@ -1,0 +1,29 @@
+[package]
+name = "bpmnkit-cli"
+description = "The bpmnkit command line (alias casen): native commands, subprocess plugins, legacy Node fallback"
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+rust-version.workspace = true
+keywords = ["bpmn", "camunda", "cli", "zeebe", "workflow"]
+categories = ["command-line-utilities"]
+# `publish = false` until P8 (doc/plans/c8-workers-and-rust-cli.md §3).
+publish = false
+
+# The crate name `bpmnkit` is the facade crate, so the bin is renamed.
+[[bin]]
+name = "bpmnkit"
+path = "src/main.rs"
+
+[dependencies]
+bpmnkit-profiles = { path = "../bpmnkit-profiles", version = "0.6.1" }
+clap = { version = "4.5", features = ["derive"] }
+clap_complete = "4.5"
+serde_json = { workspace = true, features = ["preserve_order"] }
+
+[dev-dependencies]
+assert_cmd = "2"
+insta = "1"
+tempfile = "3"

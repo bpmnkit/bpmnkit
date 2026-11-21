@@ -161,8 +161,9 @@ These are contracts even though no TypeScript signature describes them, and the 
 applies — a change that makes an existing file, store or caller stop working is major:
 
 - The **`.bpmn.tests.json` sidecar** read by `casen test` and the runner's Tests tab.
-- **Profile storage on disk** — `~/.config/casen` on Linux, `~/Library/Application Support/casen`
-  on macOS, `%APPDATA%\casen` on Windows. A format change must migrate existing profiles, not
+- **Profile storage on disk** — `~/.config/bpmnkit` on Linux, `~/Library/Application Support/bpmnkit`
+  on macOS, `%APPDATA%\bpmnkit` on Windows. A store that only exists under the old `casen` name is
+  copied (never moved) on first use. A format change must migrate existing profiles, not
   invalidate them.
 - The **`@bpmnkit/proxy` HTTP surface**, for the routes the documentation names.
 - **Element template validation** — a template that validates today does not start failing in

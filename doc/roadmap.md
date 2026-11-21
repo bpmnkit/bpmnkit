@@ -1064,6 +1064,11 @@ not code.
 - [ ] First crates.io publish (needs the `CARGO_REGISTRY_TOKEN` secret and `crates-io` environment)
 - [x] `bpmnkit` facade crate re-exporting the others behind features (§3)
 
+## C8 workers + `bpmnkit` Rust CLI (`doc/plans/c8-workers-and-rust-cli.md`)
+
+- [x] P0: `bpmnkit-cli` skeleton, `bpmnkit-profiles`, `packages/profiles` dual lookup
+- [ ] P1–P10: jobspec, worker runtime, codegen (Rust, Java), connector runtime, native commands, release, Gradle
+
 ## Completed
 
 *(Items moved here from above as they ship)*

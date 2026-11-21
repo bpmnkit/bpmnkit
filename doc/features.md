@@ -1,5 +1,9 @@
 # Features
 
+## `bpmnkit` Rust CLI skeleton (2026-11-21)
+
+`bpmnkit` (alias `casen`) is a Rust binary with native `profile`, `completion`, `plugin` and `self`, subprocess plugins (`bpmnkit-<name>` with `BPMNKIT_PLUGIN_API=1`) and a fallback to the legacy Node CLI for every other command. Profiles now live in `bpmnkit/` (copied once from `casen/`); the TS and Rust lookups agree.
+
 ## Lane layout: hand-overs, lane order, edit path (2026-11-19)
 
 Flat lane sets are laid out with straight vertical hand-overs between adjacent lanes, the cheapest lane order, per-lane compaction and tight lane padding, each kept only when it is no worse than the previous layout in every term (see `semantic/lanes.ts`). `makeRoom` moves successors that sit under the insertion point and `placeNewShapes` places new tasks inside laned pools. `engine: "grid"` and `layoutFlowNodes` are unchanged.

@@ -1,5 +1,13 @@
 # Progress
 
+## 2026-11-21 — P0 of the Rust CLI: `bpmnkit-cli`, `bpmnkit-profiles`, profiles dual lookup
+
+- New `crates/bpmnkit-cli` (bin `bpmnkit`, `casen` via argv0; `publish = false` until P8): clap derive, native `profile list|show|path`, `completion <shell>`, `plugin list`, `self update` (stub until cargo-dist). Any other command runs the plugin `bpmnkit-<name>` (then `casen-<name>`) from PATH, `~/.bpmnkit/plugins/bin` or `~/.casen/plugins/bin` with `BPMNKIT_PLUGIN_API=1`, `BPMNKIT_PROFILE_JSON`, `BPMNKIT_API_BASE`; with no plugin it falls back to the legacy Node CLI (`BPMNKIT_LEGACY_CLI`, else the npm layout; stderr banner; `BPMNKIT_NO_LEGACY=1` disables; exit code passes through). `casen` prints a deprecation note once a day (stamp in the profiles dir).
+- New `crates/bpmnkit-profiles`: OS path rules with injected roots, copy-never-move migration `casen` → `bpmnkit` (writes `migrated_from`, owner-only modes), read helpers. `packages/profiles` uses the same lookup (new dir, copy from `casen` when only that exists, falls back to `casen` if the copy fails), so both CLIs and apps/vscode see one store; stability doc updated.
+- Tests: insta `--help` snapshot, assert_cmd fallback to a fake `node` (argv0 `casen` via symlink, exit code, `BPMNKIT_NO_LEGACY`), `bpmnkit-hello` plugin env contract, migration unit tests on the three OS rules, five new TS migration tests.
+- Plan §14 questions answered (R3 exact type + name heuristics with a separate rule id, one manual fixture recording, publish `bpmnkit-worker` 0.x asap, fallback = 3 minors AND ≥ 6 months, Maven Wrapper in generated projects).
+- Not done: legacy script location for the npm layout is a guess until P8; native `profile create/use/delete` still run in the legacy CLI.
+
 ## 2026-11-21 — plan: C8 job workers (REST-first codegen) + `bpmnkit` Rust CLI
 
 - New `doc/plans/c8-workers-and-rust-cli.md` (round 3, critiqued; no product code): Java + Rust worker codegen with REST/catalog connectors as the default, a native local runner for `io.camunda:http-json:1`, and the `casen` → `bpmnkit` Rust CLI (alias, subprocess plugins, legacy Node fallback). Target Camunda 8.8+.
