@@ -1,0 +1,57 @@
+{
+  "openapi": "3.0.1",
+  "info": { "title": "Orders", "version": "2" },
+  "paths": {
+    "/{tenant}/orders": {
+      "get": {
+        "operationId": "listOrders",
+        "summary": "List orders",
+        "parameters": [
+          { "name": "tenant", "in": "path", "required": true, "schema": { "type": "string" } },
+          { "name": "status", "in": "query", "schema": { "type": "string", "enum": ["open", "closed"] } },
+          { "name": "q", "in": "query", "required": true },
+          { "name": "X-Api-Version", "in": "header", "schema": { "type": "string" } },
+          { "name": "session", "in": "cookie", "schema": { "type": "string" } }
+        ],
+        "responses": {
+          "2XX": {
+            "description": "ok",
+            "content": { "application/json": { "schema": { "type": "object", "properties": { "orders": {}, "total": {}, "page": {}, "pageSize": {} } } } }
+          }
+        }
+      },
+      "post": {
+        "operationId": "createOrder",
+        "description": "Create an order",
+        "parameters": [{ "name": "tenant", "in": "path", "required": true }],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": { "type": "object", "required": ["sku"], "properties": { "sku": { "type": "string", "description": "Stock keeping unit" }, "qty": { "type": "integer" }, "gift": { "type": "boolean" }, "note": { "type": "string", "description": null } } }
+            }
+          }
+        },
+        "responses": { "201": { "description": "created" } }
+      }
+    },
+    "/orders/{id}/cancel": {
+      "post": {
+        "parameters": [{ "name": "id", "in": "path", "required": true }],
+        "requestBody": { "content": { "text/plain": { "schema": { "type": "string" } } } }
+      }
+    },
+    "/health": {
+      "head": { "operationId": "healthHead" },
+      "options": { "operationId": "healthOptions" },
+      "trace": { "operationId": "healthTrace" }
+    },
+    "/ref": { "$ref": "#/x-paths/refItem" }
+  },
+  "x-paths": { "refItem": { "get": { "operationId": "viaRef", "summary": "Reached through a path-item $ref" } } },
+  "components": {
+    "securitySchemes": {
+      "key": { "type": "apiKey", "name": "X-Key", "in": "header" },
+      "bearer": { "type": "http", "scheme": "bearer" }
+    }
+  }
+}

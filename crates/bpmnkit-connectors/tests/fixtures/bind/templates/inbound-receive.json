@@ -1,0 +1,12 @@
+{
+  "id": "test.InboundReceive",
+  "name": "Inbound receive",
+  "appliesTo": ["bpmn:ReceiveTask"],
+  "elementType": { "value": "bpmn:ReceiveTask" },
+  "properties": [
+    { "id": "messageName", "label": "Message name", "type": "String", "value": "shipments 📦/x", "binding": { "type": "bpmn:Message#property", "name": "name" } },
+    { "id": "correlation", "label": "Correlation key", "type": "String", "value": "=shipmentId", "binding": { "type": "bpmn:Message#zeebe:subscription#property", "name": "correlationKey" } },
+    { "id": "retries", "type": "Hidden", "value": "3", "binding": { "type": "zeebe:taskDefinition", "property": "retries" } },
+    { "id": "type", "type": "Hidden", "value": "io.camunda:recv:1", "binding": { "type": "zeebe:taskDefinition", "property": "type" } }
+  ]
+}

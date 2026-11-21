@@ -1,0 +1,94 @@
+swagger: "2.0"
+info: {title: Swagger Pets, version: "1.0"}
+host: api.pets.test
+basePath: /v2
+schemes: [http, https]
+consumes: [application/json, application/xml]
+produces: [application/json, application/xml]
+securityDefinitions:
+  basic_auth:
+    type: basic
+  api_key:
+    type: apiKey
+    name: api_key
+    in: header
+parameters:
+  limit:
+    name: limit
+    in: query
+    type: integer
+    format: int32
+    maximum: 100
+    required: false
+    collectionFormat: csv
+    allowEmptyValue: true
+definitions:
+  Pet:
+    type: object
+    required: [name]
+    properties:
+      id: {type: integer}
+      name: {type: string}
+      tags:
+        type: array
+        items: {type: string}
+responses:
+  NotFound:
+    description: Not found
+    schema:
+      $ref: "#/definitions/Pet"
+paths:
+  /pets:
+    parameters:
+      - $ref: "#/parameters/limit"
+      - {name: X-Shared, in: header, type: string}
+    get:
+      operationId: listPets
+      summary: List pets
+      parameters:
+        - {name: status, in: query, type: array, items: {type: string, enum: [a, b]}, required: true}
+      responses:
+        "200":
+          description: ok
+          schema:
+            type: object
+            properties:
+              pets: {type: array}
+              count: {type: integer}
+          examples:
+            application/json: {pets: []}
+        "404":
+          $ref: "#/responses/NotFound"
+    post:
+      operationId: addPet
+      parameters:
+        - name: body
+          in: body
+          required: true
+          description: The pet
+          schema:
+            $ref: "#/definitions/Pet"
+      responses:
+        "201": {description: created}
+  /pets/{petId}/image:
+    post:
+      operationId: uploadImage
+      consumes: [multipart/form-data]
+      parameters:
+        - {name: petId, in: path, required: true, type: integer}
+        - {name: additionalMetadata, in: formData, type: string, description: Extra}
+        - {name: file, in: formData, type: file, required: true}
+      responses:
+        "200":
+          description: ok
+          schema: {$ref: "#/definitions/Pet"}
+  /pets/{petId}:
+    put:
+      operationId: updatePetWithForm
+      consumes: [application/x-www-form-urlencoded]
+      parameters:
+        - {name: petId, in: path, required: true, type: string}
+        - {name: name, in: formData, type: string}
+        - {name: status, in: formData, type: string, required: true}
+      responses:
+        "400": {description: bad}

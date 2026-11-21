@@ -19,6 +19,16 @@ path = "src/main.rs"
 
 [dependencies]
 bpmnkit-profiles = { path = "../bpmnkit-profiles", version = "0.6.1" }
+bpmnkit-bpmn = { workspace = true }
+bpmnkit-compat = { workspace = true }
+bpmnkit-connectors = { workspace = true }
+bpmnkit-diff = { workspace = true }
+bpmnkit-layout = { workspace = true }
+bpmnkit-lint = { workspace = true }
+bpmnkit-spec = { workspace = true }
+bpmnkit-render = { workspace = true, features = ["auto-layout", "png"] }
+indexmap = { workspace = true }
+serde = { workspace = true }
 clap = { version = "4.5", features = ["derive"] }
 clap_complete = "4.5"
 serde_json = { workspace = true, features = ["preserve_order"] }

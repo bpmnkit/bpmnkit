@@ -1,0 +1,25 @@
+{
+  "id": "test.Conditions",
+  "name": "Conditions",
+  "version": 1,
+  "appliesTo": ["bpmn:Task"],
+  "elementType": { "value": "bpmn:ServiceTask" },
+  "properties": [
+    { "type": "Hidden", "value": "cond", "binding": { "type": "zeebe:taskDefinition", "property": "type" } },
+    { "id": "mode", "label": "Mode", "type": "Dropdown", "value": "a", "choices": [{ "name": "A", "value": "a" }, { "name": "B", "value": "b" }], "binding": { "type": "zeebe:input", "name": "mode" } },
+    { "id": "onlyA", "label": "Only A", "type": "String", "value": "va", "condition": { "property": "mode", "equals": "a" }, "binding": { "type": "zeebe:input", "name": "onlyA" } },
+    { "id": "onlyB", "label": "Only B", "type": "String", "value": "vb", "condition": { "property": "mode", "oneOf": ["b", "c"] }, "binding": { "type": "zeebe:input", "name": "onlyB" } },
+    { "id": "both", "label": "Both", "type": "String", "value": "vboth", "condition": { "allMatch": [{ "property": "mode", "equals": "b" }, { "property": "onlyB", "isActive": true }] }, "binding": { "type": "zeebe:input", "name": "both" } },
+    { "id": "empty", "label": "Empty", "type": "String", "value": "ve", "condition": { "property": "missing", "isEmpty": true }, "binding": { "type": "zeebe:input", "name": "empty" } },
+    { "id": "num", "label": "Num", "type": "Number", "value": 3, "condition": { "property": "flag", "equals": true }, "binding": { "type": "zeebe:input", "name": "num" } },
+    { "id": "flag", "label": "Flag", "type": "Boolean", "value": true, "binding": { "type": "zeebe:input", "name": "flag" } },
+    { "id": "hidden", "type": "Dropdown", "value": "x", "condition": { "property": "mode", "equals": "zzz" }, "binding": { "type": "zeebe:input", "name": "hidden" } },
+    { "id": "gated", "type": "String", "value": "g", "condition": { "property": "hidden", "equals": "x" }, "binding": { "type": "zeebe:input", "name": "gated" } },
+    { "id": "2", "label": "Numeric key", "type": "String", "value": "n2", "binding": { "type": "zeebe:taskHeader", "key": "2" } },
+    { "id": "h1", "label": "H1", "type": "String", "value": "z", "binding": { "type": "zeebe:taskHeader", "key": "zz" } },
+    { "id": "1", "label": "Numeric key 1", "type": "String", "value": "n1", "binding": { "type": "zeebe:taskHeader", "key": "1" } },
+    { "id": "out", "label": "Result", "type": "String", "value": "res", "binding": { "type": "zeebe:output", "source": "=response" } },
+    { "id": "unusedProp", "label": "Plain property", "type": "String", "value": "Renamed", "binding": { "type": "property", "name": "name" } },
+    { "id": "retries", "type": "Hidden", "value": "7", "binding": { "type": "zeebe:taskDefinition", "property": "retries" } }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "test.CalledDecision",
+  "name": "Called decision",
+  "version": 2,
+  "appliesTo": ["bpmn:Task"],
+  "elementType": { "value": "bpmn:BusinessRuleTask" },
+  "properties": [
+    { "type": "Hidden", "value": "io.camunda:dmn", "binding": { "type": "zeebe:taskDefinition:type" } },
+    { "id": "did", "label": "Decision", "type": "String", "constraints": { "notEmpty": true }, "binding": { "type": "zeebe:calledDecision", "property": "decisionId" } },
+    { "id": "rv", "label": "Result", "type": "String", "value": "decision", "binding": { "type": "zeebe:calledDecision", "property": "resultVariable" } },
+    { "id": "bt", "label": "Binding", "type": "Dropdown", "value": "latest", "binding": { "type": "zeebe:calledDecision", "property": "bindingType" } }
+  ]
+}

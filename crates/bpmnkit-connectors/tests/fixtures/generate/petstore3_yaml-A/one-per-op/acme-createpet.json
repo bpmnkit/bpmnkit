@@ -1,0 +1,477 @@
+{
+  "$schema": "https://unpkg.com/@camunda/zeebe-element-templates-json-schema/resources/schema.json",
+  "name": "Create a pet",
+  "id": "io.acme.createpet",
+  "version": 1,
+  "description": "Create a pet",
+  "category": {
+    "id": "connectors",
+    "name": "Connectors"
+  },
+  "appliesTo": [
+    "bpmn:Task"
+  ],
+  "elementType": {
+    "value": "bpmn:ServiceTask"
+  },
+  "groups": [
+    {
+      "id": "endpoint",
+      "label": "HTTP Endpoint"
+    },
+    {
+      "id": "authentication",
+      "label": "Authentication"
+    },
+    {
+      "id": "timeout",
+      "label": "Timeout",
+      "openByDefault": false
+    },
+    {
+      "id": "payload",
+      "label": "Payload"
+    },
+    {
+      "id": "output",
+      "label": "Output Mapping"
+    },
+    {
+      "id": "errors",
+      "label": "Error Handling"
+    },
+    {
+      "id": "retries",
+      "label": "Retries",
+      "openByDefault": false
+    }
+  ],
+  "properties": [
+    {
+      "type": "Hidden",
+      "value": "io.camunda:http-json:1",
+      "binding": {
+        "type": "zeebe:taskDefinition",
+        "property": "type"
+      }
+    },
+    {
+      "type": "Hidden",
+      "value": "POST",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "method"
+      }
+    },
+    {
+      "type": "Hidden",
+      "value": "https://eu.petstore.test/v{basePath}3/pets",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "url"
+      }
+    },
+    {
+      "label": "Query parameters",
+      "type": "Text",
+      "group": "endpoint",
+      "feel": "required",
+      "optional": true,
+      "binding": {
+        "type": "zeebe:input",
+        "name": "queryParameters"
+      },
+      "value": "={}"
+    },
+    {
+      "label": "Headers",
+      "type": "Text",
+      "group": "endpoint",
+      "feel": "required",
+      "optional": true,
+      "binding": {
+        "type": "zeebe:input",
+        "name": "headers"
+      },
+      "value": "={\"X-Trace-Id\": x-trace-idValue}"
+    },
+    {
+      "label": "Request body",
+      "description": "A new pet",
+      "type": "Text",
+      "group": "payload",
+      "feel": "required",
+      "optional": true,
+      "binding": {
+        "type": "zeebe:input",
+        "name": "body"
+      },
+      "value": "={}",
+      "condition": {
+        "property": "method",
+        "oneOf": [
+          "POST",
+          "PUT",
+          "PATCH"
+        ],
+        "type": "simple"
+      }
+    },
+    {
+      "id": "authentication.type",
+      "label": "Type",
+      "type": "Dropdown",
+      "group": "authentication",
+      "value": "basic",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "authentication.type"
+      },
+      "choices": [
+        {
+          "name": "No auth",
+          "value": "noAuth"
+        },
+        {
+          "name": "API key",
+          "value": "apiKey"
+        },
+        {
+          "name": "Basic auth",
+          "value": "basic"
+        },
+        {
+          "name": "Bearer token",
+          "value": "bearer"
+        },
+        {
+          "name": "OAuth 2.0 (Client Credentials)",
+          "value": "oauth-client-credentials-flow"
+        }
+      ]
+    },
+    {
+      "id": "authentication.apiKeyLocation",
+      "label": "API key location",
+      "type": "Dropdown",
+      "group": "authentication",
+      "value": "headers",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "authentication.apiKeyLocation"
+      },
+      "condition": {
+        "property": "authentication.type",
+        "equals": "apiKey",
+        "type": "simple"
+      },
+      "choices": [
+        {
+          "name": "Header",
+          "value": "headers"
+        },
+        {
+          "name": "Query parameter",
+          "value": "query"
+        }
+      ]
+    },
+    {
+      "id": "authentication.apiKeyName",
+      "label": "API key name",
+      "type": "String",
+      "group": "authentication",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "authentication.apiKeyName"
+      },
+      "condition": {
+        "property": "authentication.type",
+        "equals": "apiKey",
+        "type": "simple"
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "authentication.apiKeyValue",
+      "label": "API key value",
+      "type": "String",
+      "group": "authentication",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "authentication.apiKeyValue"
+      },
+      "condition": {
+        "property": "authentication.type",
+        "equals": "apiKey",
+        "type": "simple"
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "authentication.username",
+      "label": "Username",
+      "type": "String",
+      "group": "authentication",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "authentication.username"
+      },
+      "condition": {
+        "property": "authentication.type",
+        "equals": "basic",
+        "type": "simple"
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "authentication.password",
+      "label": "Password",
+      "type": "String",
+      "group": "authentication",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "authentication.password"
+      },
+      "condition": {
+        "property": "authentication.type",
+        "equals": "basic",
+        "type": "simple"
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "authentication.token",
+      "label": "Bearer token",
+      "type": "String",
+      "group": "authentication",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "authentication.token"
+      },
+      "condition": {
+        "property": "authentication.type",
+        "equals": "bearer",
+        "type": "simple"
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "authentication.oauthTokenEndpoint",
+      "label": "OAuth token endpoint",
+      "type": "String",
+      "group": "authentication",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "authentication.oauthTokenEndpoint"
+      },
+      "condition": {
+        "property": "authentication.type",
+        "equals": "oauth-client-credentials-flow",
+        "type": "simple"
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "authentication.clientId",
+      "label": "Client ID",
+      "type": "String",
+      "group": "authentication",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "authentication.clientId"
+      },
+      "condition": {
+        "property": "authentication.type",
+        "equals": "oauth-client-credentials-flow",
+        "type": "simple"
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "authentication.clientSecret",
+      "label": "Client secret",
+      "type": "String",
+      "group": "authentication",
+      "feel": "optional",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "authentication.clientSecret"
+      },
+      "condition": {
+        "property": "authentication.type",
+        "equals": "oauth-client-credentials-flow",
+        "type": "simple"
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "id": "authentication.clientAuthentication",
+      "label": "Client authentication",
+      "type": "Dropdown",
+      "group": "authentication",
+      "value": "basicAuthHeader",
+      "binding": {
+        "type": "zeebe:input",
+        "name": "authentication.clientAuthentication"
+      },
+      "condition": {
+        "property": "authentication.type",
+        "equals": "oauth-client-credentials-flow",
+        "type": "simple"
+      },
+      "choices": [
+        {
+          "name": "Send as Basic Auth header",
+          "value": "basicAuthHeader"
+        },
+        {
+          "name": "Send client credentials in body",
+          "value": "requestBody"
+        }
+      ]
+    },
+    {
+      "id": "authentication.scopes",
+      "label": "Scopes",
+      "type": "String",
+      "group": "authentication",
+      "feel": "optional",
+      "optional": true,
+      "binding": {
+        "type": "zeebe:input",
+        "name": "authentication.scopes"
+      },
+      "condition": {
+        "property": "authentication.type",
+        "equals": "oauth-client-credentials-flow",
+        "type": "simple"
+      }
+    },
+    {
+      "id": "authentication.audience",
+      "label": "Audience",
+      "type": "String",
+      "group": "authentication",
+      "feel": "optional",
+      "optional": true,
+      "binding": {
+        "type": "zeebe:input",
+        "name": "authentication.audience"
+      },
+      "condition": {
+        "property": "authentication.type",
+        "equals": "oauth-client-credentials-flow",
+        "type": "simple"
+      }
+    },
+    {
+      "label": "Connection timeout (seconds)",
+      "type": "Number",
+      "group": "timeout",
+      "value": 20,
+      "feel": "optional",
+      "optional": true,
+      "binding": {
+        "type": "zeebe:input",
+        "name": "connectionTimeoutInSeconds"
+      }
+    },
+    {
+      "label": "Read timeout (seconds)",
+      "type": "Number",
+      "group": "timeout",
+      "value": 20,
+      "feel": "optional",
+      "optional": true,
+      "binding": {
+        "type": "zeebe:input",
+        "name": "readTimeoutInSeconds"
+      }
+    },
+    {
+      "label": "Result variable",
+      "type": "String",
+      "group": "output",
+      "feel": "static",
+      "optional": true,
+      "binding": {
+        "type": "zeebe:taskHeader",
+        "key": "resultVariable"
+      }
+    },
+    {
+      "label": "Result expression",
+      "description": "Example: `={id: response.body.id, name: response.body.name, tag: response.body.tag}`",
+      "type": "Text",
+      "group": "output",
+      "feel": "required",
+      "optional": true,
+      "binding": {
+        "type": "zeebe:taskHeader",
+        "key": "resultExpression"
+      }
+    },
+    {
+      "label": "Error expression",
+      "description": "Example: `=if error.code = 404 then bpmnError(\"NOT_FOUND\", error.message) else null`",
+      "type": "Text",
+      "group": "errors",
+      "feel": "required",
+      "optional": true,
+      "binding": {
+        "type": "zeebe:taskHeader",
+        "key": "errorExpression"
+      }
+    },
+    {
+      "label": "Retries",
+      "type": "String",
+      "group": "retries",
+      "value": "3",
+      "binding": {
+        "type": "zeebe:taskDefinition",
+        "property": "retries"
+      },
+      "constraints": {
+        "notEmpty": true
+      }
+    },
+    {
+      "label": "Retry backoff",
+      "description": "ISO 8601 duration, e.g. PT5S for 5 seconds",
+      "type": "String",
+      "group": "retries",
+      "value": "PT0S",
+      "feel": "static",
+      "optional": true,
+      "binding": {
+        "type": "zeebe:taskHeader",
+        "key": "retryBackoff"
+      }
+    }
+  ]
+}

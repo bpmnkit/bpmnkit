@@ -1,0 +1,5 @@
+{
+  "openapi": "3.0.0",
+  "info": { "title": "Bad ref", "version": "1" },
+  "paths": { "/x": { "get": { "operationId": "x", "parameters": [{ "$ref": "#/components/parameters/Nope" }] } } }
+}

@@ -65,14 +65,14 @@ mod unix {
     }
 
     #[test]
-    fn casen_lint_falls_back_to_legacy_node() {
+    fn casen_falls_back_to_legacy_node() {
         let t = tempfile::tempdir().unwrap();
         fake_node(t.path());
         // argv0 = casen via a symlink to the real binary
         let casen = t.path().join("casen");
         symlink(assert_cmd::cargo::cargo_bin("bpmnkit"), &casen).unwrap();
         let out = std::process::Command::new(&casen)
-            .args(["lint", "x.bpmn"])
+            .args(["check", "x.bpmn"])
             .env_clear()
             .env("HOME", t.path())
             .env("XDG_CONFIG_HOME", t.path().join("cfg"))
@@ -83,14 +83,14 @@ mod unix {
         assert!(out.status.success());
         assert_eq!(
             String::from_utf8_lossy(&out.stdout).trim(),
-            "node:/fake/legacy.js lint x.bpmn"
+            "node:/fake/legacy.js check x.bpmn"
         );
         let err = String::from_utf8_lossy(&out.stderr);
         assert!(err.contains("legacy CLI"), "{err}");
         assert!(err.contains("`casen` is now `bpmnkit`"), "{err}");
         // second call the same day: no deprecation note again
         let again = std::process::Command::new(&casen)
-            .args(["lint", "x.bpmn"])
+            .args(["check", "x.bpmn"])
             .env_clear()
             .env("HOME", t.path())
             .env("XDG_CONFIG_HOME", t.path().join("cfg"))
@@ -107,7 +107,7 @@ mod unix {
         fake_node(t.path());
         sandboxed(t.path())
             .env("BPMNKIT_LEGACY_CLI", "/fake/legacy.js")
-            .args(["lint", "fail"])
+            .args(["check", "fail"])
             .assert()
             .code(7);
     }
@@ -119,7 +119,7 @@ mod unix {
         sandboxed(t.path())
             .env("BPMNKIT_LEGACY_CLI", "/fake/legacy.js")
             .env("BPMNKIT_NO_LEGACY", "1")
-            .arg("lint")
+            .arg("check")
             .assert()
             .code(2)
             .stdout("");
@@ -129,12 +129,12 @@ mod unix {
     fn flags_before_the_command_go_to_legacy_not_plugins() {
         let t = tempfile::tempdir().unwrap();
         fake_node(t.path());
-        script(&t.path().join("path/bpmnkit-lint"), "echo plugin");
+        script(&t.path().join("path/bpmnkit-check"), "echo plugin");
         sandboxed(t.path())
             .env("BPMNKIT_LEGACY_CLI", "/f.js")
-            .args(["--json", "lint"])
+            .args(["--json", "check"])
             .assert()
-            .stdout("node:/f.js --json lint\n");
+            .stdout("node:/f.js --json check\n");
     }
 
     #[test]

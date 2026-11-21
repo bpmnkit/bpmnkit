@@ -2,6 +2,7 @@
 //! fallback to the legacy Node CLI for everything not ported yet.
 
 mod legacy;
+mod native;
 mod plugin;
 
 use std::ffi::OsString;
@@ -13,7 +14,19 @@ use clap::{CommandFactory, FromArgMatches, Parser, Subcommand};
 use clap_complete::Shell;
 
 /// Commands implemented natively; anything else goes to a plugin, then to the legacy CLI.
-const NATIVE: &[&str] = &["profile", "completion", "plugin", "self", "help"];
+const NATIVE: &[&str] = &[
+    "profile",
+    "completion",
+    "plugin",
+    "self",
+    "help",
+    "lint",
+    "layout",
+    "diff",
+    "render",
+    "convert",
+    "connector",
+];
 
 #[derive(Parser)]
 #[command(
@@ -35,6 +48,21 @@ enum Cmd {
         #[command(subcommand)]
         action: ProfileCmd,
     },
+    /// Lint a BPMN file
+    Lint(native::LintArgs),
+    /// Lay out a BPMN file (prints the XML, or writes -o / --in-place)
+    Layout(native::LayoutArgs),
+    /// Compare two BPMN files
+    Diff(native::DiffArgs),
+    /// Render a BPMN file as SVG (or PNG with -o x.png)
+    Render(native::RenderArgs),
+    /// Convert Camunda 7 models to Camunda 8 and report what needs manual work
+    Convert(native::ConvertArgs),
+    /// Connector templates: generate from OpenAPI, bind to a BPMN element
+    Connector {
+        #[command(subcommand)]
+        action: ConnectorCmd,
+    },
     /// Print a shell completion script
     Completion {
         /// Target shell
@@ -51,6 +79,14 @@ enum Cmd {
         #[command(subcommand)]
         action: SelfAction,
     },
+}
+
+#[derive(Subcommand)]
+enum ConnectorCmd {
+    /// Generate element templates from an OpenAPI/Swagger file
+    Gen(native::ConnectorGenArgs),
+    /// Apply an element template to a task or event of a BPMN file
+    Bind(native::ConnectorBindArgs),
 }
 
 #[derive(Subcommand)]
@@ -106,13 +142,24 @@ pub fn run(args: Vec<OsString>) -> i32 {
         None => true, // --help, --version, or nothing: clap answers
         Some(i) => NATIVE.contains(&&*rest[i].to_string_lossy()) && i == 0,
     };
-    if !native {
+    // Subcommands that also exist in the legacy CLI keep its flags and sub-verbs: what the
+    // native port does not cover goes there, and the rest is normalised for clap.
+    let routed = if native && first == Some(0) {
+        route(rest)
+    } else {
+        Some(rest.to_vec())
+    };
+    let Some(rest_args) = routed.filter(|_| native) else {
         return match first {
-            Some(0) => plugin::dispatch(&roots, rest).unwrap_or_else(|| legacy::run(rest)),
+            Some(0) if !native => {
+                plugin::dispatch(&roots, rest).unwrap_or_else(|| legacy::run(rest))
+            }
             _ => legacy::run(rest),
         };
-    }
-    let matches = Cli::command().bin_name(name).get_matches_from(&args);
+    };
+    let mut clap_args = vec![args[0].clone()];
+    clap_args.extend(rest_args);
+    let matches = Cli::command().bin_name(name).get_matches_from(&clap_args);
     match Cli::from_arg_matches(&matches)
         .unwrap_or_else(|e| e.exit())
         .command
@@ -120,6 +167,15 @@ pub fn run(args: Vec<OsString>) -> i32 {
         Cmd::Profile { action } => match action {
             ProfileCmd::Other(_) => legacy::run(rest),
             a => profile(&roots, a),
+        },
+        Cmd::Lint(a) => native::lint(a),
+        Cmd::Layout(a) => native::layout(a),
+        Cmd::Diff(a) => native::diff(a),
+        Cmd::Render(a) => native::render(a),
+        Cmd::Convert(a) => native::convert(a),
+        Cmd::Connector { action } => match action {
+            ConnectorCmd::Gen(a) => native::connector_gen(a),
+            ConnectorCmd::Bind(a) => native::connector_bind(a),
         },
         Cmd::Completion { shell } => {
             let mut cmd = Cli::command().bin_name(name);
@@ -140,6 +196,53 @@ pub fn run(args: Vec<OsString>) -> i32 {
             eprintln!("self update arrives with the cargo-dist release (plan P8); reinstall via npm or the release installer for now");
             1
         }
+    }
+}
+
+/// Normalises a native-capable command's args, or `None` when only the legacy CLI can serve them
+/// (`lint --fix`, `diff --html`, a project `.bpmnlintrc`, `connector generate`, …).
+fn route(rest: &[OsString]) -> Option<Vec<OsString>> {
+    let words: Vec<String> = rest
+        .iter()
+        .map(|a| a.to_string_lossy().into_owned())
+        .collect();
+    let has = |flags: &[&str]| {
+        words.iter().any(|w| {
+            flags
+                .iter()
+                .any(|f| w == f || w.starts_with(&format!("{f}=")))
+        })
+    };
+    // The legacy CLI nests the verb (`lint lint f`, `diff bpmn a b`); both spellings work.
+    let strip = |verb: &str| {
+        let mut v = rest.to_vec();
+        if words.get(1).is_some_and(|w| w == verb) {
+            v.remove(1);
+        }
+        v
+    };
+    match words[0].as_str() {
+        "lint" => {
+            if words.get(1).is_some_and(|w| w == "improve") || has(&["--fix", "--bpmnlintrc"]) {
+                return None;
+            }
+            if !has(&["--no-bpmnlintrc"])
+                && words
+                    .iter()
+                    .filter(|w| w.ends_with(".bpmn"))
+                    .any(|w| native::has_bpmnlintrc(std::path::Path::new(w)))
+            {
+                return None;
+            }
+            Some(strip("lint"))
+        }
+        "diff" => (!has(&["--html", "--png", "--ascii"])).then(|| strip("bpmn")),
+        // The legacy verbs (`generate`, `apply`, `catalog`, `search` …) stay in the legacy CLI.
+        "connector" => words
+            .get(1)
+            .is_some_and(|w| w == "gen" || w == "bind")
+            .then(|| rest.to_vec()),
+        _ => Some(rest.to_vec()),
     }
 }
 

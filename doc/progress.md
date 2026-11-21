@@ -1,5 +1,17 @@
 # Progress
 
+## 2026-11-21 — P7 of the Rust CLI: native `lint/layout/diff/render/convert`, `connector gen|bind`
+
+- Native commands in `bpmnkit-cli` on the existing crates: `lint` (text mirrors the legacy `→ ✖ [category] [ids] message (key) [id]` lines; `--format json`, `--categories`, `--profile deploy|sketch`, `--user-task-forms`), `layout` (stdout, `-o`, `--in-place`, `--engine`), `diff` (text/json, `--exit-code`), `render` (SVG, PNG by `.png` extension, `--theme`), `convert` (Camunda 7 → 8, the legacy `migrate c7` path), `connector gen|bind` on the new `bpmnkit-connectors` crate (Rust port of `@bpmnkit/connector-gen` and `applyTemplateToElement`; see its `lib.rs` for deviations). `profile` was native since P0.
+- Routing: legacy-only spellings still fall back to the legacy CLI: `lint --fix|--bpmnlintrc|improve`, a project `.bpmnlintrc` (unless `--no-bpmnlintrc`), `diff --html|--png|--ascii`, `connector generate|apply|catalog|search|…`. `lint lint f` and `diff bpmn a b` are accepted.
+- Parity: `bpmnkit-connectors` fixtures record the TS output (`scripts/record-connector-fixtures.mjs`): 33 generate cases, all 134 catalog templates (sha256) and 39 bind cases, byte-equal. CLI goldens are recorded from the legacy command objects (`scripts/record-cli-snapshots.mjs`, run in-process because the full CLI bundle needs the reebe-wasm build): `lint` text is byte-equal, JSON is compared on shared fields, `diff` text is byte-equal on diagram-only changes.
+- Deviations: legacy `diff` compares diagrams only, the native one also reports semantic changes; the native `lint` skips the `connector/*` requirement check and `.bpmnlintrc` (falls back); `convert` text is the native report layout and `--to camunda7` is not ported; catalog icons and connector search/cards are not in `bpmnkit-connectors`.
+
+## 2026-11-21 — `bpmnkit-connectors`: connector-gen and applyTemplateToElement in Rust
+
+- New `crates/bpmnkit-connectors` (`publish = false`): `generate` / `write_templates` / `detect_default_auth` / `CATALOG` (port of `@bpmnkit/connector-gen`, OpenAPI 3 + Swagger 2, JSON or YAML) and `apply_template_to_element` / `bind_xml` / `catalog_templates` / `get_template` (port of core's `applyTemplateToElement` onto `BpmnDefinitions`, reusing the Rust zeebe writers, `retype_element`, placement rules and the `bpmnkit-compat` deploy validator).
+- Parity: `scripts/record-connector-fixtures.mjs` records the TS outputs (33 generate cases x option matrix, all 134 catalog templates by SHA-256 with 18 XML files, 39 hand-picked bind cases); the Rust tests compare byte for byte. Not ported: catalog brand icons, `applyElementTemplate` (builder options), connector search/cards. YAML via `yaml-rust2`, `filter` via `regex` (documented in `lib.rs`).
+
 ## 2026-11-21 — P0 of the Rust CLI: `bpmnkit-cli`, `bpmnkit-profiles`, profiles dual lookup
 
 - New `crates/bpmnkit-cli` (bin `bpmnkit`, `casen` via argv0; `publish = false` until P8): clap derive, native `profile list|show|path`, `completion <shell>`, `plugin list`, `self update` (stub until cargo-dist). Any other command runs the plugin `bpmnkit-<name>` (then `casen-<name>`) from PATH, `~/.bpmnkit/plugins/bin` or `~/.casen/plugins/bin` with `BPMNKIT_PLUGIN_API=1`, `BPMNKIT_PROFILE_JSON`, `BPMNKIT_API_BASE`; with no plugin it falls back to the legacy Node CLI (`BPMNKIT_LEGACY_CLI`, else the npm layout; stderr banner; `BPMNKIT_NO_LEGACY=1` disables; exit code passes through). `casen` prints a deprecation note once a day (stamp in the profiles dir).

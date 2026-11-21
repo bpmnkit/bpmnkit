@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" modeler:executionPlatform="Camunda Cloud" modeler:executionPlatformVersion="8.8.0">
+  <bpmn:message id="Message_1" name="orders">
+    <bpmn:extensionElements>
+      <zeebe:subscription correlationKey="=orderId"/>
+    </bpmn:extensionElements>
+  </bpmn:message>
+  <bpmn:message id="Message_2" name="solo"/>
+  <bpmn:process id="Process_1" isExecutable="true">
+    <bpmn:startEvent id="Start_1" zeebe:modelerTemplate="io.camunda.connectors.AWSEventBridge.startEvent.v1" zeebe:modelerTemplateVersion="5" zeebe:modelerTemplateIcon="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 256 256'%3E%3Cdefs%3E%3ClinearGradient id='logosAwsEventbridge0' x1='0%25' x2='100%25' y1='100%25' y2='0%25'%3E%3Cstop offset='0%25' stop-color='%23B0084D'/%3E%3Cstop offset='100%25' stop-color='%23FF4F8B'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath fill='url(%23logosAwsEventbridge0)' d='M0 0h256v256H0z'/%3E%3Cpath fill='%23FFF' d='M171.702 211.2c-6.858 0-12.44-5.61-12.44-12.509s5.582-12.509 12.44-12.509c6.857 0 12.438 5.61 12.438 12.51c0 6.898-5.581 12.508-12.438 12.508Zm-27.278-54.4h-33.071L94.815 128l16.538-28.8h33.071L160.96 128l-16.535 28.8ZM88.387 69.818c-6.857 0-12.438-5.61-12.438-12.51c0-6.898 5.581-12.508 12.438-12.508c6.861 0 12.443 5.61 12.443 12.509s-5.582 12.509-12.443 12.509Zm83.315 109.964c-2.362 0-4.614.458-6.699 1.261l-13.514-22.931l-.713.426L167.39 129.6a3.226 3.226 0 0 0 0-3.2l-18.374-32a3.177 3.177 0 0 0-2.755-1.6h-33.435l.13-.077l-12.39-21.03c4.047-3.469 6.628-8.627 6.628-14.384c0-10.426-8.436-18.909-18.807-18.909c-10.367 0-18.803 8.483-18.803 18.909c0 10.425 8.436 18.909 18.803 18.909c2.365 0 4.618-.458 6.702-1.261l11.567 19.625L88.384 126.4a3.226 3.226 0 0 0 0 3.2l18.377 32c.57.992 1.62 1.6 2.756 1.6h36.744c.264 0 .521-.042.77-.102l12.496 21.21c-4.051 3.468-6.629 8.626-6.629 14.383c0 10.426 8.433 18.909 18.804 18.909c10.37 0 18.803-8.483 18.803-18.909c0-10.425-8.433-18.909-18.803-18.909Zm18.968-77.05c-6.857 0-12.436-5.609-12.436-12.508c0-6.9 5.579-12.509 12.436-12.509c6.858 0 12.44 5.61 12.44 12.509c0 6.9-5.582 12.509-12.44 12.509Zm23.303 23.668l-12.08-21.04c4.592-3.453 7.58-8.944 7.58-15.136c0-10.426-8.432-18.909-18.803-18.909c-2.638 0-5.152.554-7.433 1.549l-9.849-17.155a3.18 3.18 0 0 0-2.756-1.6h-39.448v6.4h37.612l9.11 15.872c-3.703 3.456-6.036 8.374-6.036 13.843c0 10.426 8.433 18.909 18.8 18.909c1.932 0 3.8-.298 5.556-.845L207.545 128l-15.892 27.674l5.512 3.2l16.808-29.274a3.21 3.21 0 0 0 0-3.2Zm-146.04 50.39c-6.86 0-12.442-5.612-12.442-12.508c0-6.9 5.581-12.51 12.442-12.51c6.857 0 12.439 5.61 12.439 12.51c0 6.896-5.582 12.508-12.44 12.508Zm10.393 3.236c5.062-3.392 8.41-9.181 8.41-15.744c0-10.426-8.436-18.91-18.803-18.91c-3.004 0-5.833.73-8.353 1.994L48.458 128l18.428-32.093l-5.515-3.2L42.027 126.4a3.21 3.21 0 0 0 0 3.2l12.388 21.568c-3.268 3.405-5.289 8.022-5.289 13.114c0 10.425 8.436 18.908 18.807 18.908c1.562 0 3.074-.214 4.528-.579l10.15 17.68c.57.989 1.62 1.6 2.757 1.6h39.451v-6.4H87.204l-8.878-15.465Z'/%3E%3C/svg%3E%0A" name="Start">
+      <bpmn:extensionElements>
+        <zeebe:properties>
+          <zeebe:property name="inbound.type" value="io.camunda:webhook:1"/>
+          <zeebe:property name="inbound.subtype" value="aws:eventbridge"/>
+          <zeebe:property name="inbound.method" value="any"/>
+          <zeebe:property name="inbound.shouldValidateHmac" value="disabled"/>
+          <zeebe:property name="inbound.auth.type" value="NONE"/>
+        </zeebe:properties>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_1" name="Do it">
+      <bpmn:incoming>Flow_1</bpmn:incoming>
+      <bpmn:outgoing>Flow_2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:serviceTask id="Service_1" name="Call it">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="old-worker" retries="5"/>
+        <zeebe:ioMapping>
+          <zeebe:input source="=old" target="oldInput"/>
+        </zeebe:ioMapping>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_2</bpmn:incoming>
+      <bpmn:outgoing>Flow_3</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:userTask id="User_1" name="Review">
+      <bpmn:incoming>Flow_3</bpmn:incoming>
+      <bpmn:outgoing>Flow_4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:receiveTask id="Receive_1" name="Wait" messageRef="Message_2">
+      <bpmn:incoming>Flow_4</bpmn:incoming>
+      <bpmn:outgoing>Flow_5</bpmn:outgoing>
+    </bpmn:receiveTask>
+    <bpmn:intermediateCatchEvent id="Catch_1" name="Catch one">
+      <bpmn:incoming>Flow_5</bpmn:incoming>
+      <bpmn:outgoing>Flow_6</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MED_1" messageRef="Message_1"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateCatchEvent id="Catch_2" name="Catch two">
+      <bpmn:incoming>Flow_6</bpmn:incoming>
+      <bpmn:outgoing>Flow_7</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="MED_2" messageRef="Message_1"/>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:intermediateThrowEvent id="Throw_1" name="Throw">
+      <bpmn:incoming>Flow_7</bpmn:incoming>
+      <bpmn:outgoing>Flow_8</bpmn:outgoing>
+    </bpmn:intermediateThrowEvent>
+    <bpmn:subProcess id="Sub_1" name="Sub">
+      <bpmn:incoming>Flow_8</bpmn:incoming>
+      <bpmn:outgoing>Flow_9</bpmn:outgoing>
+      <bpmn:startEvent id="Inner_Start">
+        <bpmn:outgoing>Inner_Flow_1</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:task id="Inner_1" name="Inner">
+        <bpmn:incoming>Inner_Flow_1</bpmn:incoming>
+        <bpmn:outgoing>Inner_Flow_2</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:endEvent id="Inner_End">
+        <bpmn:incoming>Inner_Flow_2</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Inner_Flow_1" sourceRef="Inner_Start" targetRef="Inner_1"/>
+      <bpmn:sequenceFlow id="Inner_Flow_2" sourceRef="Inner_1" targetRef="Inner_End"/>
+    </bpmn:subProcess>
+    <bpmn:endEvent id="End_1" name="End">
+      <bpmn:incoming>Flow_9</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="Boundary_1" attachedToRef="Service_1">
+      <bpmn:timerEventDefinition id="TED_1">
+        <bpmn:timeDuration>PT5M</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:task id="Task_2" name="Loose"/>
+    <bpmn:sequenceFlow id="Flow_1" sourceRef="Start_1" targetRef="Task_1"/>
+    <bpmn:sequenceFlow id="Flow_2" sourceRef="Task_1" targetRef="Service_1"/>
+    <bpmn:sequenceFlow id="Flow_3" sourceRef="Service_1" targetRef="User_1"/>
+    <bpmn:sequenceFlow id="Flow_4" sourceRef="User_1" targetRef="Receive_1"/>
+    <bpmn:sequenceFlow id="Flow_5" sourceRef="Receive_1" targetRef="Catch_1"/>
+    <bpmn:sequenceFlow id="Flow_6" sourceRef="Catch_1" targetRef="Catch_2"/>
+    <bpmn:sequenceFlow id="Flow_7" sourceRef="Catch_2" targetRef="Throw_1"/>
+    <bpmn:sequenceFlow id="Flow_8" sourceRef="Throw_1" targetRef="Sub_1"/>
+    <bpmn:sequenceFlow id="Flow_9" sourceRef="Sub_1" targetRef="End_1"/>
+  </bpmn:process>
+</bpmn:definitions>
+

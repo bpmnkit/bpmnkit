@@ -1,0 +1,18 @@
+[
+	[
+		{
+			"kind": "not-deployable",
+			"message": "Not deployable on Camunda 8.8: Task_1: Must have either one 'zeebe:calledDecision' or one 'zeebe:taskDefinition' extension element (zeebe/business-rule-task-implementation)"
+		}
+	],
+	[
+		{
+			"key": "did",
+			"kind": "missing-required",
+			"message": "Missing required value for \"Decision\" (did)"
+		},
+		{
+			"message": "<zeebe:calledDecision> needs decisionId; it was not written"
+		}
+	]
+]

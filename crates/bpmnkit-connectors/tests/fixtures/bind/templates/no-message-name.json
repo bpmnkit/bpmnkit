@@ -1,0 +1,9 @@
+{
+  "id": "test.NoMessageName",
+  "name": "No message name",
+  "appliesTo": ["bpmn:Task"],
+  "elementType": { "value": "bpmn:ServiceTask" },
+  "properties": [
+    { "id": "correlation", "type": "String", "value": "=k", "binding": { "type": "bpmn:Message#zeebe:subscription#property", "name": "correlationKey" } }
+  ]
+}

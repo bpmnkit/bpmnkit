@@ -1,0 +1,11 @@
+{
+  "id": "test.InboundCatch",
+  "name": "Inbound catch",
+  "version": 1,
+  "appliesTo": ["bpmn:IntermediateCatchEvent", "bpmn:IntermediateThrowEvent"],
+  "elementType": { "value": "bpmn:IntermediateCatchEvent", "eventDefinition": "bpmn:MessageEventDefinition" },
+  "properties": [
+    { "id": "messageName", "label": "Message name", "type": "String", "value": "invoices", "binding": { "type": "bpmn:Message#property", "name": "name" } },
+    { "id": "correlation", "label": "Correlation key", "type": "String", "value": "=invoiceId", "binding": { "type": "bpmn:Message#zeebe:subscription#property", "name": "correlationKey" } }
+  ]
+}

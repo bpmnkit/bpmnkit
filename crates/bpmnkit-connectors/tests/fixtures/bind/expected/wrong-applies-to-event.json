@@ -1,0 +1,7 @@
+[
+	[
+		{
+			"message": "Template \"io.camunda.connectors.HttpJson.v2\" applies to bpmn:Task, not bpmn:startEvent \"Start_1\""
+		}
+	]
+]

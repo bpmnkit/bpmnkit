@@ -1,0 +1,8 @@
+[
+	[],
+	[
+		{
+			"message": "Template \"test.Script\" applies to bpmn:Task, not bpmn:callActivity \"Service_1\""
+		}
+	]
+]

@@ -1,0 +1,13 @@
+---
+source: crates/bpmnkit-cli/tests/native.rs
+expression: "run(&[\"lint\", &f(\"two-errors.bpmn\")], 1)"
+---
+→ ℹ [naming] [start] Start event "start" has no name. [naming/unlabeled-start-event]
+→ ℹ [naming] [end] End event "end" has no name. [naming/unlabeled-end-event]
+→ ⚠ [pattern] [start] Start event "start" has no documentation describing expected input variables. [pattern/start-no-documentation]
+→ ✖ [deploy] [charge] "Charge" (serviceTask) has no zeebe:taskDefinition type. (camunda-compat/implementation) [deploy/service-task-no-type]
+→ ✖ [deploy] [notify] "Notify" (sendTask) has no zeebe:taskDefinition type. (camunda-compat/implementation) [deploy/service-task-no-type]
+→ 
+5 findings: 2 errors, 1 warning, 2 info
+--- stderr
+Error: Lint failed with 2 errors
