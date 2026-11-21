@@ -12,10 +12,11 @@ use std::time::Duration;
 
 use serde_json::{Map, Value};
 use tonic::client::Grpc;
-use tonic::codec::{ProstCodec, Streaming};
+use tonic::codec::Streaming;
 use tonic::codegen::http::uri::PathAndQuery;
 use tonic::transport::{Certificate, Channel, ClientTlsConfig, Endpoint, Identity};
 use tonic::{Request, Status};
+use tonic_prost::ProstCodec;
 
 use crate::client::RestClient;
 use crate::config::{defaults, ClientConfig};

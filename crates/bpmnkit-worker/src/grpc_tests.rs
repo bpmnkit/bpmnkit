@@ -7,7 +7,7 @@ use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Mutex;
 use std::task::{Context, Poll};
 
-use tonic::body::BoxBody;
+use tonic::body::Body as BoxBody;
 use tonic::codegen::{http, tokio_stream, Service};
 use tonic::server::{NamedService, ServerStreamingService};
 use tonic::transport::Server;

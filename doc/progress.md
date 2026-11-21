@@ -7,6 +7,7 @@
 - Windows jobs (`cli npm smoke`, `codegen-windows`) set `core.longpaths` before checkout: camunda docspack chunk names exceed MAX_PATH.
 - `codegen-windows` also sets `core.autocrlf false` (the goldens compare bytes); the jobspec catalog test ignores CRLF so a Windows dev checkout passes too.
 - `.gitattributes` keeps npm `bin/` scripts LF on every checkout: pnpm pack refused the CRLF shebang on Windows (ERR_PNPM_BIN_CRLF).
+- `bpmnkit-worker` `grpc`: tonic 0.12 → 0.14 (+ `tonic-prost`, prost 0.14). 0.12 pulled in `rustls-pemfile`, unmaintained (RUSTSEC-2025-0134), which failed `cargo audit`. Builds on the 1.85 MSRV.
 - Stability page lists `@bpmnkit/cli-legacy`, the five platform binaries (Core) and `@bpmnkit/create-bpmnkit-plugin` (Tools).
 - BPMN agent card trimmed back under 2k tokens after the `casen` → `bpmnkit` rename.
 - Changesets for every published package the rename touched and for the new crates.

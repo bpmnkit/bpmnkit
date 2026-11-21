@@ -22,8 +22,10 @@ tokio = { version = "1.40", features = ["rt", "sync", "time", "macros", "signal"
 tracing = "0.1"
 # `grpc` feature. Hand-written prost messages and client (no protoc, no build script); the
 # vendored proto in spec/ is checked against them by a test.
-tonic = { version = "0.12", optional = true, default-features = false, features = ["transport", "codegen", "prost", "tls", "tls-roots"] }
-prost = { version = "0.13", optional = true }
+# 0.14: 0.12 pulled in the unmaintained rustls-pemfile (RUSTSEC-2025-0134).
+tonic = { version = "0.14", optional = true, default-features = false, features = ["transport", "codegen", "tls-ring", "tls-native-roots"] }
+tonic-prost = { version = "0.14", optional = true }
+prost = { version = "0.14", optional = true }
 
 [features]
 default = ["oauth"]
@@ -34,7 +36,7 @@ prometheus = []
 # `testing::{MockJob, FakeClient, run_handler}` for unit-testing handlers without a cluster.
 testing = []
 # Job streaming (`StreamActivatedJobs`) next to polling. Off by default, as in camunda-client-java.
-grpc = ["dep:tonic", "dep:prost"]
+grpc = ["dep:tonic", "dep:tonic-prost", "dep:prost"]
 
 # Plain loop like the other crates' benches; scripts/bench-rs.mjs parses its stdout.
 [[bench]]
@@ -49,3 +51,5 @@ yaml-rust2 = "0.10"
 tokio = { version = "1.40", features = ["rt-multi-thread", "macros", "test-util", "net"] }
 # 0.6.5 uses let chains (Rust 1.88) without raising its rust-version; 0.6.4 builds on our 1.85 MSRV.
 wiremock = "=0.6.4"
+# The grpc tests run a mock Gateway, which needs tonic's server router; the library does not.
+tonic = { version = "0.14", default-features = false, features = ["router"] }
