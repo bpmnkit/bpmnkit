@@ -35,6 +35,7 @@ jobs:
     env:
       CARGO_TERM_COLOR: always
       BPMNKIT_WORKER_E2E_URL: http://localhost:18080
+      BPMNKIT_WORKER_E2E_GRPC: http://localhost:26599
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -73,7 +74,7 @@ jobs:
 
       - name: E2E tests
         run: |
-          cargo test -p bpmnkit-worker --test reebe_e2e --locked -- --ignored
+          cargo test -p bpmnkit-worker --test reebe_e2e --features grpc --locked -- --ignored --nocapture
           cargo test -p bpmnkit-connector-runtime --test reebe_e2e --locked -- --ignored
 
       - name: reebe log

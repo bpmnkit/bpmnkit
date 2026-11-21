@@ -10,6 +10,7 @@ use crate::client::{JobClient, RestClient};
 use crate::config::WorkerConfig;
 use crate::error::Error;
 use crate::metrics::{Metrics, NoopMetrics};
+use crate::stream::JobStreamSource;
 use crate::worker::{Handler, ShutdownReport, Worker};
 
 type BoxFuture<T> = Pin<Box<dyn Future<Output = T> + Send>>;
@@ -23,6 +24,7 @@ pub struct Runtime<C: JobClient = RestClient> {
     metrics: Arc<dyn Metrics>,
     workers: Vec<Start<C>>,
     default_tenants: Vec<String>,
+    stream: Option<Arc<dyn JobStreamSource>>,
 }
 
 impl Runtime<RestClient> {
@@ -41,6 +43,7 @@ impl<C: JobClient> Runtime<C> {
             metrics: Arc::new(NoopMetrics),
             workers: Vec::new(),
             default_tenants: Vec::new(),
+            stream: None,
         }
     }
 
@@ -55,19 +58,29 @@ impl<C: JobClient> Runtime<C> {
         self
     }
 
+    /// Job stream for every worker registered after this whose config sets `stream_enabled`.
+    pub fn stream(mut self, source: Arc<dyn JobStreamSource>) -> Self {
+        self.stream = Some(source);
+        self
+    }
+
     /// Adds a worker for `config.job_type`.
     pub fn register<H: Handler>(mut self, config: WorkerConfig, handler: H) -> Self {
         let tenants = self.default_tenants.clone();
+        let stream = self.stream.clone();
         self.workers
             .push(Box::new(move |client, metrics, mut stop| {
                 Box::pin(async move {
-                    Worker::new(client, config, handler)
+                    let mut w = Worker::new(client, config, handler)
                         .metrics(metrics)
-                        .default_tenant_ids(&tenants)
-                        .run(async move {
-                            let _ = stop.wait_for(|s| *s).await;
-                        })
-                        .await
+                        .default_tenant_ids(&tenants);
+                    if let Some(s) = stream {
+                        w = w.stream(s);
+                    }
+                    w.run(async move {
+                        let _ = stop.wait_for(|s| *s).await;
+                    })
+                    .await
                 })
             }));
         self

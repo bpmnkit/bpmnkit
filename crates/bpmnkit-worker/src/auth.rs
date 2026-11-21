@@ -139,6 +139,27 @@ impl Authenticator {
         })
     }
 
+    /// The header value `apply` would set, if any. Built through a throwaway request so Basic
+    /// encoding stays in one place.
+    #[cfg(feature = "grpc")]
+    pub(crate) async fn authorization(
+        &self,
+        http: &reqwest::Client,
+    ) -> Result<Option<String>, Error> {
+        if matches!(self.credentials, Credentials::None) {
+            return Ok(None);
+        }
+        let req = self
+            .apply(http, http.get("http://localhost/"))
+            .await?
+            .build()?;
+        Ok(req
+            .headers()
+            .get(reqwest::header::AUTHORIZATION)
+            .and_then(|v| v.to_str().ok())
+            .map(str::to_owned))
+    }
+
     /// Drops a cached token the server rejected; returns whether a retry can help.
     pub(crate) async fn invalidate(&self) -> bool {
         #[cfg(feature = "oauth")]

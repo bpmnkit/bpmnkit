@@ -4,9 +4,17 @@
 
 `bpmnkit connector run` executes Camunda REST connector jobs (`io.camunda:http-json:1`, plus private types via `--as` or `--templates dir`) against your cluster without the Java connector runtime; `bpmnkit connector test template.json --vars vars.json` runs one call from a template and prints the command the engine would get. Secrets as in the 8.8 runtime (`{{secrets.X}}` from env, `CAMUNDA_CONNECTOR_SECRETPROVIDER_ENVIRONMENT_PREFIX`, never logged), auth none / API key / basic / bearer / OAuth2 client credentials, FEEL `resultExpression` / `errorExpression` with `bpmnError`, `jobError`, `ignoreError`. Library: `bpmnkit-connector-runtime`. `connector gen --api-index` writes the API index the worker rules read.
 
+## Job streaming for Rust and Java workers (2026-11-21)
+
+`bpmnkit-worker` with the `grpc` feature receives jobs by push (Zeebe `StreamActivatedJobs`) instead of waiting for the next poll: `WorkerConfig::new("charge").stream_enabled(true)` plus `Runtime::from_env()?.stream(Arc::new(GrpcJobSource::new(client, &config)?))`. It is off by default, as in the Java client. Polling keeps running beside the stream and takes over while the stream is down; the stream reconnects with backoff. Credentials are shared with the REST client (Basic, Bearer, OAuth2), and `CAMUNDA_CA_CERT_PATH` / `CAMUNDA_CLIENT_CERT_PATH` / `CAMUNDA_CLIENT_KEY_PATH` add a private CA and mutual TLS to both transports. `bpmnkit worker gen --lang java --stream` generates workers with `streamEnabled(true)`.
+
 ## Camunda 8 job workers in Rust: `bpmnkit-worker` (2026-11-21)
 
 `Runtime::from_env()?.register(WorkerConfig::new("charge"), handler).run().await` runs job workers against the Camunda 8.8+ REST API (`/v2/jobs`), with camunda-client-java's defaults. Handlers are async functions `ActivatedJob → Result<Complete, JobError>`: `JobError::bpmn` throws a catchable BPMN error, `JobError::fail` (or any `?` error, or a panic) fails with retries − 1 and the `retryBackoff` header. Concurrency is bounded, activation long-polls and backs off with jitter, shutdown drains running handlers. Auth: none, Basic, Bearer, OAuth2 client credentials (cached, refreshed). Metrics trait with Prometheus text; `testing` feature for unit tests (`MockJob`, `run_handler`, `FakeClient`). Facade feature `worker`.
+
+## `bpmnkit worker gen --lang rust|template`, lock file, typed variables (2026-11-21)
+
+`--lang rust` writes a Cargo project on `bpmnkit-worker`: per job type an `Input`/`Output` struct, a handler trait, an adapter and a once-only handler and test stub; `gen::register(Runtime)` wires all workers. `--input-schema|--output-schema <job-type>=<schema.json>` types the variables from a JSON Schema subset (otherwise `serde_json::Value`). `--lang template` writes REST element templates plus binding patches for jobs classified REST. Java and Rust projects get a `bpmnkit.lock.json` (IR hash, generator version, rule per job); `--check` covers it. `--worker-path` uses a path dependency for `bpmnkit-worker`.
 
 ## `bpmnkit worker gen --lang java` (2026-11-21)
 

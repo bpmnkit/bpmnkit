@@ -1,0 +1,36 @@
+// The slice of Zeebe 8.8's gateway protocol (package gateway_protocol, service Gateway) that the
+// `grpc` feature speaks: StreamActivatedJobs and its two messages. Field numbers are the wire
+// contract; src/grpc.rs hand-writes the matching prost messages (no protoc at build time) and its
+// `matches_vendored_proto` test fails if they drift from this file. Source: the gateway.proto
+// that apps/reebe/crates/reebe-grpc serves, which the Zeebe clients' streaming tests run against.
+syntax = "proto3";
+package gateway_protocol;
+
+service Gateway {
+  rpc StreamActivatedJobs(StreamActivatedJobsRequest) returns (stream ActivatedJob) {}
+}
+
+message StreamActivatedJobsRequest {
+  string type = 1;
+  string worker = 2;
+  int64 timeout = 3;
+  repeated string fetchVariable = 5;
+  repeated string tenantIds = 6;
+}
+
+message ActivatedJob {
+  int64 key = 1;
+  string type = 2;
+  int64 processInstanceKey = 3;
+  string bpmnProcessId = 4;
+  int32 processDefinitionVersion = 5;
+  int64 processDefinitionKey = 6;
+  string elementId = 7;
+  int64 elementInstanceKey = 8;
+  string customHeaders = 9;
+  string worker = 10;
+  int32 retries = 11;
+  int64 deadline = 12;
+  string variables = 13;
+  string tenantId = 14;
+}

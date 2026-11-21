@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="d" targetNamespace="t">
+  <bpmn:error id="e1" errorCode="type"/>
+  <bpmn:error id="e2" errorCode="OUT_OF_STOCK"/>
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:serviceTask id="reserve" name="Reserve">
+      <bpmn:extensionElements>
+        <zeebe:taskDefinition type="reserve-stock" retries="5"/>
+        <zeebe:taskHeaders><zeebe:header key="retryBackoff" value="PT5S"/></zeebe:taskHeaders>
+        <zeebe:ioMapping><zeebe:input source="=sku" target="sku"/><zeebe:input source="=qty" target="qty"/><zeebe:output source="=reservation.id" target="reservationId"/></zeebe:ioMapping>
+      </bpmn:extensionElements>
+    </bpmn:serviceTask>
+    <bpmn:boundaryEvent id="b1" attachedToRef="reserve"><bpmn:errorEventDefinition errorRef="e1"/></bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="b2" attachedToRef="reserve"><bpmn:errorEventDefinition errorRef="e2"/></bpmn:boundaryEvent>
+  </bpmn:process>
+</bpmn:definitions>

@@ -37,6 +37,26 @@ async fn main() -> Result<(), bpmnkit_worker::Error> {
 }
 ```
 
-Status: `0.x`, no stability promise until the Rust and Java worker generators both ship. gRPC job streaming is planned as a `grpc` feature.
+Status: `0.x`, no stability promise until the Rust and Java worker generators both ship. 
+
+## Job streaming (`grpc` feature)
+
+Off by default. With the feature on, `WorkerConfig::stream_enabled(true)` and a stream source make the
+gateway push jobs as they become available; polling keeps running as the fallback, and the stream
+reconnects with backoff.
+
+```rust,ignore
+let config = ClientConfig::from_env()?; // CAMUNDA_GRPC_ADDRESS, default http://0.0.0.0:26500
+let rest = Arc::new(RestClient::new(config.clone())?);
+let source = Arc::new(bpmnkit_worker::grpc::GrpcJobSource::new(rest.clone(), &config)?);
+Runtime::new(rest)
+    .stream(source)
+    .register(WorkerConfig::new("charge").stream_enabled(true), charge)
+    .run()
+    .await;
+```
+
+`CAMUNDA_CA_CERT_PATH`, `CAMUNDA_CLIENT_CERT_PATH` and `CAMUNDA_CLIENT_KEY_PATH` add a private CA and
+mutual TLS to REST and gRPC alike.
 
 Licensed under MIT or Apache-2.0.

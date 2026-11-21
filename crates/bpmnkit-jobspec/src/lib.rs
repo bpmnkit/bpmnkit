@@ -29,6 +29,7 @@ pub mod config;
 pub mod ir;
 pub mod openapi;
 pub mod rules;
+pub mod schema;
 
 pub use bpmn::{extract, Extracted};
 pub use catalog::{Catalog, CatalogEntry};
@@ -36,6 +37,7 @@ pub use config::{JobConfig, Mode, WorkerConfig};
 pub use ir::{canonical_json, ir_hash, BoundOperation, JobKind, JobSpec, WorkerProject};
 pub use openapi::ApiIndex;
 pub use rules::{classify, classify_project, Classified, Ctx, Decision, RuleId};
+pub use schema::Schema;
 
 use bpmnkit_bpmn::BpmnDefinitions;
 
