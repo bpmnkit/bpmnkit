@@ -1,5 +1,11 @@
 # Progress
 
+## 2026-11-21 — plan: C8 job workers (REST-first codegen) + `bpmnkit` Rust CLI
+
+- New `doc/plans/c8-workers-and-rust-cli.md` (round 3, critiqued; no product code): Java + Rust worker codegen with REST/catalog connectors as the default, a native local runner for `io.camunda:http-json:1`, and the `casen` → `bpmnkit` Rust CLI (alias, subprocess plugins, legacy Node fallback). Target Camunda 8.8+.
+- Critique fixes: catalog connectors tried before WORKER (rules R1–R12 are pure IR functions with ± fixtures); secrets follow 8.8 (`{{secrets.X}}` from plain env, optional prefix var); bin crate is `bpmnkit-cli` (the `bpmnkit` crate exists); crates inherit the workspace version; profiles path follows `packages/profiles` (`~/.casen` is only the plugin dir); reebe e2e, Java, gRPC and Windows jobs stay outside `verify:rust`; rename via script + regenerated outputs + CI guard.
+- Decisions: Maven only first (Gradle P10), `bpmnkit-worker` 0.x until both emitters ship, `rest_max_rps` default 50.
+
 ## 2026-11-20 — fuzz: TS/Rust FEEL agree again (CI fuzz jobs green)
 
 - Fixed the TS/Rust mismatches the `Fuzz feel` and `Fuzz dmn-eval` jobs kept finding: context equality checks key sets and kind (a context never equals a duration, which also broke DMN rule matching), decimal modulo, huge-scale rounding, fractional `substring` start, `sublist`/time integer args, `index of` by value, list positions.
