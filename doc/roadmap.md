@@ -1064,6 +1064,20 @@ not code.
 - [ ] First crates.io publish (needs the `CARGO_REGISTRY_TOKEN` secret and `crates-io` environment)
 - [x] `bpmnkit` facade crate re-exporting the others behind features (§3)
 
+## C8 job workers + `bpmnkit` Rust CLI (`doc/plans/c8-workers-and-rust-cli.md`)
+
+- [ ] P0: `bpmnkit-cli` skeleton + `bpmnkit-profiles`
+- [ ] P1: `bpmnkit-jobspec` (IR, extractors, classifier)
+- [x] P2: `bpmnkit-worker` REST runtime (client, auth, loop, backoff, drain, metrics, `testing`)
+- [ ] P3: Rust + template emitters, `worker gen --check`
+- [ ] P4: Java emitter (Maven, `--spring`)
+- [ ] P5: `bpmnkit-connector-runtime` (`io.camunda:http-json:1`)
+- [ ] P6: `grpc` feature (job streaming)
+- [ ] P7: Rust connector-gen + native commands
+- [ ] P8: distribution + rename
+- [ ] P9: remaining commands, fallback removal
+- [ ] P10: Gradle emitter
+
 ## Completed
 
 *(Items moved here from above as they ship)*

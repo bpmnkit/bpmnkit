@@ -1,5 +1,13 @@
 # Progress
 
+## 2026-11-21 — `bpmnkit-worker` (plan P2): Camunda 8 REST job worker runtime
+
+- New crate `crates/bpmnkit-worker` (0.x, publishable, facade feature `worker`, not in `full`): `RestClient` for `/v2/jobs` activate / complete (`userTask` and `adHocSubProcess` results) / fail / error / update; credentials none, Basic, Bearer, OAuth2 client credentials (`oauth` feature: one cached token per client, refresh at 80 %, single flight, one refetch on 401), `ClientConfig::from_env` over `CAMUNDA_*`.
+- `Worker` loop: semaphore of `max_jobs_active`, polls again when ≤ 30 % run, long poll, `poll_interval` after an empty answer, camunda-client-java backoff (×1.6, 50 ms..5 s, ±10 % jitter, injectable RNG); handler results → complete / throw error / fail (retries − 1, `retryBackoff` ISO-8601 header), panics fail the job; shutdown drains to a deadline and reports abandoned job keys. `Runtime` runs several workers on one client. `Metrics` facade + `CounterMetrics` (+ Prometheus text, `prometheus` feature). `testing` feature: `MockJob`, `run_handler`, `FakeClient`.
+- Vendored `spec/8.8/rest-api.yaml` (camunda/camunda `stable/8.8` @ `bdfc184`); wiremock tests validate every request body against it with a small schema checker. D5 contract test compares the defaults with verbatim, commit-pinned camunda-client-java source lines (32 jobs, 100 ms, 5 min, 10 s + 1 s offset, backoff numbers). Paused-time tests for backoff, threshold refetch, concurrency bound and drain.
+- reebe e2e (`tests/reebe_e2e.rs`, `#[ignore]`): complete, fail, BPMN error, drain; new workflow `worker-e2e.yml` builds reebe (embedded SQLite) and runs them, plus the no-default / all-features builds. `verify:rust` unchanged apart from the crate's own tests.
+- Deviations: Java 8.8 polls on any free slot; we keep the plan's 30 % refetch threshold. Backoff cap is Java's 5 s (plan said 10 s). `wiremock` pinned `=0.6.4` (0.6.5 needs Rust 1.88). mTLS and `rest_max_rps` not in this phase. reebe ignores `zeebe:taskDefinition retries`, files thrown errors as `FAILED`, and filters job search by `jobType` (8.8: `type`).
+
 ## 2026-11-21 — plan: C8 job workers (REST-first codegen) + `bpmnkit` Rust CLI
 
 - New `doc/plans/c8-workers-and-rust-cli.md` (round 3, critiqued; no product code): Java + Rust worker codegen with REST/catalog connectors as the default, a native local runner for `io.camunda:http-json:1`, and the `casen` → `bpmnkit` Rust CLI (alias, subprocess plugins, legacy Node fallback). Target Camunda 8.8+.

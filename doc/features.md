@@ -1,5 +1,9 @@
 # Features
 
+## Camunda 8 job workers in Rust: `bpmnkit-worker` (2026-11-21)
+
+`Runtime::from_env()?.register(WorkerConfig::new("charge"), handler).run().await` runs job workers against the Camunda 8.8+ REST API (`/v2/jobs`), with camunda-client-java's defaults. Handlers are async functions `ActivatedJob → Result<Complete, JobError>`: `JobError::bpmn` throws a catchable BPMN error, `JobError::fail` (or any `?` error, or a panic) fails with retries − 1 and the `retryBackoff` header. Concurrency is bounded, activation long-polls and backs off with jitter, shutdown drains running handlers. Auth: none, Basic, Bearer, OAuth2 client credentials (cached, refreshed). Metrics trait with Prometheus text; `testing` feature for unit tests (`MockJob`, `run_handler`, `FakeClient`). Facade feature `worker`.
+
 ## Lane layout: hand-overs, lane order, edit path (2026-11-19)
 
 Flat lane sets are laid out with straight vertical hand-overs between adjacent lanes, the cheapest lane order, per-lane compaction and tight lane padding, each kept only when it is no worse than the previous layout in every term (see `semantic/lanes.ts`). `makeRoom` moves successors that sit under the insertion point and `placeNewShapes` places new tasks inside laned pools. `engine: "grid"` and `layoutFlowNodes` are unchanged.

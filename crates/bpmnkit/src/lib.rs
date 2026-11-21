@@ -28,6 +28,8 @@ pub use bpmnkit_spec as spec;
 pub use bpmnkit_text as text;
 #[cfg(feature = "viewer")]
 pub use bpmnkit_viewer as viewer;
+#[cfg(feature = "worker")]
+pub use bpmnkit_worker as worker;
 #[cfg(feature = "xml")]
 pub use bpmnkit_xml as xml;
 

@@ -29,6 +29,7 @@ bpmnkit-render = { workspace = true, optional = true }
 bpmnkit-diff = { workspace = true, optional = true }
 bpmnkit-ascii = { workspace = true, optional = true }
 bpmnkit-viewer = { workspace = true, optional = true }
+bpmnkit-worker = { workspace = true, optional = true }
 serde_json = { workspace = true }
 
 [features]
@@ -62,6 +63,8 @@ diff-html = ["diff", "render", "bpmnkit-diff/html"]
 ascii = ["dep:bpmnkit-ascii"]
 # One self-contained HTML page per diagram (the viewer-lite script inlined), or its parts.
 viewer = ["dep:bpmnkit-viewer"]
+# Camunda 8 job workers over REST (tokio + reqwest). Not in `full`: an async network stack.
+worker = ["dep:bpmnkit-worker", "bpmnkit-worker/oauth"]
 
 [package.metadata.docs.rs]
 all-features = true
