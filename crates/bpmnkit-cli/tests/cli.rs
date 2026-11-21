@@ -232,3 +232,75 @@ mod unix {
             .stdout("node:/f.js profile create x\n");
     }
 }
+
+#[test]
+fn worker_classify_text_and_json() {
+    let dir = tempfile::tempdir().unwrap();
+    let bpmn = r#"<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="d" targetNamespace="t">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:serviceTask id="a" name="Create order"><bpmn:extensionElements><zeebe:taskDefinition type="create-order"/><zeebe:properties><zeebe:property name="bpmnkit:operation" value="shop#createOrder"/></zeebe:properties></bpmn:extensionElements></bpmn:serviceTask>
+    <bpmn:serviceTask id="b" name="Notify on Slack"><bpmn:extensionElements><zeebe:taskDefinition type="notify"/></bpmn:extensionElements></bpmn:serviceTask>
+    <bpmn:serviceTask id="c" name="Score"><bpmn:extensionElements><zeebe:taskDefinition type="score"/></bpmn:extensionElements></bpmn:serviceTask>
+  </bpmn:process>
+</bpmn:definitions>"#;
+    fs::create_dir(dir.path().join("flows")).unwrap();
+    fs::write(dir.path().join("flows/order.bpmn"), bpmn).unwrap();
+    fs::write(
+        dir.path().join("shop.json"),
+        r#"{"id":"shop","name":"Shop","auth":{"type":"bearer"},"operations":[{"method":"POST","path":"/orders","id":"createOrder"}]}"#,
+    )
+    .unwrap();
+    fs::write(
+        dir.path().join("bpmnkit.worker.toml"),
+        "[jobs.create-order]\nrps = 200\n",
+    )
+    .unwrap();
+    let text = bin()
+        .current_dir(dir.path())
+        .args(["worker", "classify", "flows", "--openapi", "shop.json"])
+        .assert()
+        .success()
+        .get_output()
+        .stdout
+        .clone();
+    let text = String::from_utf8(text).unwrap();
+    let lines: Vec<&str> = text.lines().collect();
+    assert!(
+        lines[0].starts_with("create-order\tworker\tR10\t"),
+        "{text}"
+    );
+    assert!(lines[1].starts_with("notify\tconnector\tR13\t"), "{text}");
+    assert!(lines[2].starts_with("score\tworker\tR4\t"), "{text}");
+    assert!(
+        lines[3].starts_with("# 3 job type(s) from 1 file(s), sha256:"),
+        "{text}"
+    );
+
+    let json = bin()
+        .current_dir(dir.path())
+        .args(["worker", "classify", "flows/order.bpmn", "--format", "json"])
+        .args(["--config", "missing.toml"])
+        .assert()
+        .failure()
+        .get_output()
+        .stderr
+        .clone();
+    assert!(String::from_utf8(json).unwrap().contains("missing.toml"));
+
+    let json = bin()
+        .current_dir(dir.path())
+        .args(["worker", "classify", "flows/order.bpmn", "--format", "json"])
+        .assert()
+        .success()
+        .get_output()
+        .stdout
+        .clone();
+    let v: serde_json::Value = serde_json::from_slice(&json).unwrap();
+    assert_eq!(v["irHash"].as_str().unwrap().len(), 64);
+    // Without --openapi the operation stays unbound: a worker (R4) — the toml R10 comes later.
+    assert_eq!(
+        v["project"]["jobs"]["create-order"]["classified"]["rule"],
+        "R4"
+    );
+}

@@ -3,6 +3,7 @@
 
 mod legacy;
 mod plugin;
+mod worker;
 
 use std::ffi::OsString;
 use std::io::Write;
@@ -13,7 +14,7 @@ use clap::{CommandFactory, FromArgMatches, Parser, Subcommand};
 use clap_complete::Shell;
 
 /// Commands implemented natively; anything else goes to a plugin, then to the legacy CLI.
-const NATIVE: &[&str] = &["profile", "completion", "plugin", "self", "help"];
+const NATIVE: &[&str] = &["profile", "completion", "plugin", "self", "worker", "help"];
 
 #[derive(Parser)]
 #[command(
@@ -44,6 +45,11 @@ enum Cmd {
     Plugin {
         #[command(subcommand)]
         action: PluginCmd,
+    },
+    /// Classify job types and (later) generate job workers
+    Worker {
+        #[command(subcommand)]
+        action: worker::WorkerCmd,
     },
     /// Manage this installation
     #[command(name = "self")]
@@ -134,6 +140,7 @@ pub fn run(args: Vec<OsString>) -> i32 {
             }
             0
         }
+        Cmd::Worker { action } => worker::run(action),
         Cmd::Installation {
             action: SelfAction::Update,
         } => {

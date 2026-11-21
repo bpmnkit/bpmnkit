@@ -1067,7 +1067,8 @@ not code.
 ## C8 workers + `bpmnkit` Rust CLI (`doc/plans/c8-workers-and-rust-cli.md`)
 
 - [x] P0: `bpmnkit-cli` skeleton, `bpmnkit-profiles`, `packages/profiles` dual lookup
-- [ ] P1–P10: jobspec, worker runtime, codegen (Rust, Java), connector runtime, native commands, release, Gradle
+- [x] P1: `bpmnkit-jobspec` (BPMN + connector-gen API index → IR, catalog lookup, rules R1–R13), `bpmnkit worker classify`
+- [ ] P2–P10: worker runtime, codegen (Rust, Java), connector runtime, native commands, release, Gradle
 
 ## Completed
 

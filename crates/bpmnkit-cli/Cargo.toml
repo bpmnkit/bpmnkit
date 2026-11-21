@@ -18,6 +18,8 @@ name = "bpmnkit"
 path = "src/main.rs"
 
 [dependencies]
+bpmnkit-bpmn = { workspace = true }
+bpmnkit-jobspec = { path = "../bpmnkit-jobspec", version = "0.6.1" }
 bpmnkit-profiles = { path = "../bpmnkit-profiles", version = "0.6.1" }
 clap = { version = "4.5", features = ["derive"] }
 clap_complete = "4.5"
