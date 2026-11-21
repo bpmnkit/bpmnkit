@@ -60,10 +60,12 @@ jobs:
     name: codegen-windows
     runs-on: windows-latest
     steps:
-      - name: Allow long paths (Windows)
+      - name: Allow long paths, keep LF (Windows)
         # Camunda docspack chunk names exceed MAX_PATH; git on Windows refuses them otherwise.
-        if: runner.os == 'Windows'
-        run: git config --global core.longpaths true
+        # autocrlf off: the goldens compare bytes, and git for Windows defaults to LF -> CRLF.
+        run: |
+          git config --global core.longpaths true
+          git config --global core.autocrlf false
 
       - name: Checkout
         uses: actions/checkout@v4
@@ -76,6 +78,5 @@ jobs:
         with:
           save-if: ${{ github.ref == 'refs/heads/main' }}
 
-      # git must not turn LF into CRLF in the goldens (insta compares the bytes it renders).
       - name: Test jobspec and codegen
         run: cargo test --locked -p bpmnkit-jobspec -p bpmnkit-codegen

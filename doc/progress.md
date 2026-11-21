@@ -5,6 +5,7 @@
 - Clippy on Rust 1.100 flags `result_large_err` on the connector runtime's `execute`/`run`; allowed there like `outcome_to_result` (JobError is the worker's Handler contract).
 - `apps/reebe/.cargo/audit.toml` ignores the chrono / chrono-tz "unmaintained" advisories (RUSTSEC-2026-0543, -0555) like the root one; Reebe tests failed on main too.
 - Windows jobs (`cli npm smoke`, `codegen-windows`) set `core.longpaths` before checkout: camunda docspack chunk names exceed MAX_PATH.
+- `codegen-windows` also sets `core.autocrlf false` (the goldens compare bytes); the jobspec catalog test ignores CRLF so a Windows dev checkout passes too.
 - Stability page lists `@bpmnkit/cli-legacy`, the five platform binaries (Core) and `@bpmnkit/create-bpmnkit-plugin` (Tools).
 - BPMN agent card trimmed back under 2k tokens after the `casen` → `bpmnkit` rename.
 - Changesets for every published package the rename touched and for the new crates.

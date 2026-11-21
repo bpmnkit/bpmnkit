@@ -52,7 +52,10 @@ fn catalog_json_matches_the_spec() {
     if std::env::var_os("BPMNKIT_UPDATE").is_some() {
         std::fs::write(&path, &want).unwrap();
     }
-    let have = std::fs::read_to_string(&path).unwrap();
+    // A Windows checkout with core.autocrlf=true has CRLF; the content is what matters.
+    let have = std::fs::read_to_string(&path)
+        .unwrap()
+        .replace("\r\n", "\n");
     assert!(
         have == want,
         "src/catalog.json is stale: rerun with BPMNKIT_UPDATE=1"
