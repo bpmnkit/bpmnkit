@@ -4,6 +4,10 @@
 
 `bpmnkit lint|layout|diff|render|convert` run natively on the Rust crates, and `bpmnkit connector gen <openapi>` / `connector bind <file> <elementId> -t <template>` generate element templates from OpenAPI/Swagger and apply catalog or custom templates to a BPMN element. The new `bpmnkit-connectors` crate is byte-equal to the TS generator and `applyTemplateToElement` on the recorded fixtures. Flags only the legacy CLI knows fall back to it.
 
+## `bpmnkit worker classify` (2026-11-21)
+
+`bpmnkit worker classify <bpmn…> [--openapi index.json] [--config bpmnkit.worker.toml] [--format text|json]` reads every job type in the BPMN (the same list as `casen gen types`) and decides per type: keep a catalog connector, bind one (by exact type/template id, or by a connector name in the task name), bind the REST connector to an OpenAPI operation (`bpmnkit:operation` property) or URL, or generate a worker (no binding, unsupported auth or media type, pagination, several operations, invalid FEEL mapping, declared load, idempotency key). Each decision carries a stable rule id and a reason; the JSON output adds the IR and its sha256 hash.
+
 ## `bpmnkit` Rust CLI skeleton (2026-11-21)
 
 `bpmnkit` (alias `casen`) is a Rust binary with native `profile`, `completion`, `plugin` and `self`, subprocess plugins (`bpmnkit-<name>` with `BPMNKIT_PLUGIN_API=1`) and a fallback to the legacy Node CLI for every other command. Profiles now live in `bpmnkit/` (copied once from `casen/`); the TS and Rust lookups agree.

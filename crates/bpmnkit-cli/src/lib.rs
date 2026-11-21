@@ -4,6 +4,7 @@
 mod legacy;
 mod native;
 mod plugin;
+mod worker;
 
 use std::ffi::OsString;
 use std::io::Write;
@@ -25,6 +26,7 @@ const NATIVE: &[&str] = &[
     "diff",
     "render",
     "convert",
+    "worker",
     "connector",
 ];
 
@@ -72,6 +74,11 @@ enum Cmd {
     Plugin {
         #[command(subcommand)]
         action: PluginCmd,
+    },
+    /// Classify job types and (later) generate job workers
+    Worker {
+        #[command(subcommand)]
+        action: worker::WorkerCmd,
     },
     /// Manage this installation
     #[command(name = "self")]
@@ -190,6 +197,7 @@ pub fn run(args: Vec<OsString>) -> i32 {
             }
             0
         }
+        Cmd::Worker { action } => worker::run(action),
         Cmd::Installation {
             action: SelfAction::Update,
         } => {

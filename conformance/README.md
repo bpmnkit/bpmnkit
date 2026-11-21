@@ -611,6 +611,14 @@ empty process, no process, unnamed elements); `opt-*` set `title` to text, `""` 
 
 Cases: `rename`, `retype`, `rewire-flow`, `condition-change`, `zeebe-header-change`, `lane-add`, `lane-remove`, `move-only` (DI only), `noop-reformat` (reordered, re-spaced, attribute order and sub-pixel noise: no changes, equal hashes), `ids-only-change`.
 
+## Jobspec: `jobspec/jobs.json`
+
+The job list of `extractProcessContract` (what `casen gen types` reads) for every
+`bpmn/<case>/input.bpmn`, keyed by case: per job type its elements
+(`processId#elementId#elementType`), headers and catchable error codes (`"any"` for a catch-all),
+plus the elements with a FEEL job type. Recorded by `packages/core/tests/conformance-jobspec.test.ts`;
+`crates/bpmnkit-jobspec/tests/conformance.rs` must extract the same.
+
 ## `pending.json`
 
 `{"<case id or bpmn/<case>>": "<reason or issue link>"}`: cases a non-TS runner knows it does

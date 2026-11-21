@@ -18,6 +18,7 @@ name = "bpmnkit"
 path = "src/main.rs"
 
 [dependencies]
+bpmnkit-jobspec = { path = "../bpmnkit-jobspec", version = "0.6.1" }
 bpmnkit-profiles = { path = "../bpmnkit-profiles", version = "0.6.1" }
 bpmnkit-bpmn = { workspace = true }
 bpmnkit-compat = { workspace = true }

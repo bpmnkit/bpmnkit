@@ -16,6 +16,7 @@ Commands:
   connector   Connector templates: generate from OpenAPI, bind to a BPMN element
   completion  Print a shell completion script
   plugin      Inspect plugins
+  worker      Classify job types and (later) generate job workers
   self        Manage this installation
   help        Print this message or the help of the given subcommand(s)
 
