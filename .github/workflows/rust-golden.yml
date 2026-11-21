@@ -1,0 +1,76 @@
+name: Rust golden
+
+# Generates the Rust worker project from a fixture against the in-repo bpmnkit-worker (path
+# dependency override) and builds and tests it (plan P3); and runs the I8 Windows check: the
+# jobspec and codegen goldens must be byte-equal on Windows.
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "crates/bpmnkit-codegen/**"
+      - "crates/bpmnkit-jobspec/**"
+      - "crates/bpmnkit-worker/**"
+      - "crates/bpmnkit-cli/src/worker*"
+      - ".github/workflows/rust-golden.yml"
+  push:
+    branches: [main]
+    paths:
+      - "crates/bpmnkit-codegen/**"
+      - "crates/bpmnkit-jobspec/**"
+      - "crates/bpmnkit-worker/**"
+      - "crates/bpmnkit-cli/src/worker*"
+      - ".github/workflows/rust-golden.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  rust-golden:
+    name: rust-golden
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        run: rustup show active-toolchain
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
+      - name: Generate
+        run: |
+          fx=crates/bpmnkit-codegen/tests/fixtures
+          args="--lang rust --name order-workers --worker-path $GITHUB_WORKSPACE/crates/bpmnkit-worker --input-schema charge-card=$fx/typed.schema.json --out $RUNNER_TEMP/golden"
+          cargo run -q -p bpmnkit-cli -- worker gen $args $fx/order.bpmn
+          cargo run -q -p bpmnkit-cli -- worker gen $args --check $fx/order.bpmn
+
+      # Own target dir: the generated project is not part of the workspace.
+      - name: Build, lint and test the generated project
+        working-directory: ${{ runner.temp }}/golden
+        env:
+          CARGO_TARGET_DIR: ${{ runner.temp }}/golden-target
+        run: |
+          cargo clippy --all-targets -- -D warnings
+          cargo test
+
+  codegen-windows:
+    name: codegen-windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        run: rustup show active-toolchain
+
+      - name: Cache cargo
+        uses: Swatinem/rust-cache@v2
+        with:
+          save-if: ${{ github.ref == 'refs/heads/main' }}
+
+      # git must not turn LF into CRLF in the goldens (insta compares the bytes it renders).
+      - name: Test jobspec and codegen
+        run: cargo test --locked -p bpmnkit-jobspec -p bpmnkit-codegen

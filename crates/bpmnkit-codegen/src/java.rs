@@ -39,7 +39,7 @@ pub struct JavaEmitter {
 }
 
 /// `[a-z0-9]` only, so it is a legal package segment and artifact id.
-fn slug(s: &str) -> String {
+pub(crate) fn slug(s: &str) -> String {
     let mut out = String::new();
     let mut dash = false;
     for c in s.chars() {

@@ -6,6 +6,7 @@ use std::collections::BTreeMap;
 use serde::{Deserialize, Serialize};
 
 use crate::rules::Classified;
+use crate::schema::Schema;
 
 /// Everything generated for one worker project.
 #[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
@@ -103,6 +104,12 @@ pub struct JobSpec {
     pub urls: Vec<String>,
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub classified: Option<Classified>,
+    /// Typed shape of the fetched variables (object schema); absent = free-form `Value`s. Not
+    /// serialized when absent, so IR hashes of schema-less projects do not change.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub input_schema: Option<Schema>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub output_schema: Option<Schema>,
 }
 
 impl JobSpec {
@@ -123,6 +130,8 @@ impl JobSpec {
             bound_operations: Vec::new(),
             urls: Vec::new(),
             classified: None,
+            input_schema: None,
+            output_schema: None,
         }
     }
 

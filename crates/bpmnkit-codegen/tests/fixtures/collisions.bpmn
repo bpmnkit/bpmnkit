@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="d" targetNamespace="t">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:serviceTask id="a" name="A"><bpmn:extensionElements><zeebe:taskDefinition type="ship.order"/><zeebe:ioMapping><zeebe:input source="=x" target="order-id"/><zeebe:input source="=y" target="order_id"/><zeebe:input source="=z" target="match"/></zeebe:ioMapping></bpmn:extensionElements></bpmn:serviceTask>
+    <bpmn:serviceTask id="b" name="B"><bpmn:extensionElements><zeebe:taskDefinition type="ship-order"/></bpmn:extensionElements></bpmn:serviceTask>
+    <bpmn:serviceTask id="c" name="C"><bpmn:extensionElements><zeebe:taskDefinition type="fn"/></bpmn:extensionElements></bpmn:serviceTask>
+  </bpmn:process>
+</bpmn:definitions>

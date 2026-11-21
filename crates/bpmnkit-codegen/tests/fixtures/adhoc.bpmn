@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:zeebe="http://camunda.org/schema/zeebe/1.0" id="d" targetNamespace="t">
+  <bpmn:process id="p" isExecutable="true">
+    <bpmn:adHocSubProcess id="agent" name="Agent"><bpmn:extensionElements><zeebe:taskDefinition type="agent-loop"/></bpmn:extensionElements>
+      <bpmn:task id="inner"/>
+    </bpmn:adHocSubProcess>
+  </bpmn:process>
+</bpmn:definitions>
