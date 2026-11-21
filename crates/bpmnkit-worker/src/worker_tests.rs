@@ -1,5 +1,5 @@
 use std::sync::atomic::{AtomicUsize, Ordering};
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use std::time::Duration;
 
 use serde_json::json;
@@ -347,4 +347,212 @@ fn to_command_rules() {
         parse().unwrap_err(),
         JobError::fail("invalid digit found in string")
     );
+}
+
+// ── streaming ───────────────────────────────────────────────────────────────────────────────
+
+use crate::stream::{BoxFuture, JobStream, JobStreamSource, StreamRequest};
+
+/// Each `open` pops the next script: jobs to push, then either close or break.
+struct Script {
+    jobs: Vec<ActivatedJob>,
+    end: Result<(), Error>,
+}
+
+struct MockSource {
+    scripts: Mutex<std::collections::VecDeque<Result<Script, Error>>>,
+    opens: AtomicUsize,
+    requests: Mutex<Vec<StreamRequest>>,
+}
+
+impl MockSource {
+    fn new(scripts: Vec<Result<Script, Error>>) -> Arc<Self> {
+        Arc::new(Self {
+            scripts: Mutex::new(scripts.into()),
+            opens: AtomicUsize::new(0),
+            requests: Mutex::new(Vec::new()),
+        })
+    }
+}
+
+struct MockStream(Script);
+
+impl JobStream for MockStream {
+    fn next(&mut self) -> BoxFuture<'_, Result<Option<ActivatedJob>, Error>> {
+        Box::pin(async move {
+            if !self.0.jobs.is_empty() {
+                return Ok(Some(self.0.jobs.remove(0)));
+            }
+            match std::mem::replace(&mut self.0.end, Ok(())) {
+                Ok(()) => Ok(None),
+                Err(e) => Err(e),
+            }
+        })
+    }
+}
+
+impl JobStreamSource for MockSource {
+    fn open(&self, req: StreamRequest) -> BoxFuture<'_, Result<Box<dyn JobStream>, Error>> {
+        self.opens.fetch_add(1, Ordering::SeqCst);
+        self.requests.lock().unwrap().push(req);
+        let next = self.scripts.lock().unwrap().pop_front();
+        Box::pin(async move {
+            match next {
+                Some(Ok(s)) => Ok(Box::new(MockStream(s)) as Box<dyn JobStream>),
+                Some(Err(e)) => Err(e),
+                // Out of scripts: an open stream that never pushes.
+                None => Ok(Box::new(MockStream(Script {
+                    jobs: vec![],
+                    end: Ok(()),
+                })) as Box<dyn JobStream>),
+            }
+        })
+    }
+}
+
+fn job(key: &str) -> ActivatedJob {
+    MockJob::new("t").key(key).build()
+}
+
+async fn run_streaming(
+    client: &Arc<FakeClient>,
+    source: Arc<MockSource>,
+    config: WorkerConfig,
+    d: Duration,
+) -> ShutdownReport {
+    Worker::new(Arc::clone(client), config, ok)
+        .rng(Box::new(Half))
+        .stream(source)
+        .run(sleep(d))
+        .await
+}
+
+fn keys(client: &FakeClient) -> Vec<String> {
+    let mut k: Vec<String> = client
+        .commands()
+        .into_iter()
+        .filter_map(|c| match c {
+            Call::Complete(k, _) => Some(k),
+            _ => None,
+        })
+        .collect();
+    k.sort();
+    k
+}
+
+#[tokio::test(start_paused = true)]
+async fn streamed_jobs_are_handled_and_request_carries_the_config() {
+    let client = Arc::new(FakeClient::new());
+    let source = MockSource::new(vec![Ok(Script {
+        jobs: vec![job("1"), job("2")],
+        end: Err(Error::Stream("x".into())),
+    })]);
+    let cfg = cfg(32)
+        .stream_enabled(true)
+        .worker_name("w")
+        .fetch_variables(["a"])
+        .tenant_ids(["tt"]);
+    run_streaming(&client, Arc::clone(&source), cfg, Duration::from_millis(20)).await;
+    assert_eq!(keys(&client), vec!["1", "2"]);
+    assert_eq!(
+        source.requests.lock().unwrap()[0],
+        StreamRequest {
+            job_type: "t".into(),
+            worker: "w".into(),
+            timeout: 300_000,
+            fetch_variable: vec!["a".into()],
+            tenant_ids: vec!["tt".into()],
+        }
+    );
+}
+
+#[tokio::test(start_paused = true)]
+async fn stream_is_off_unless_enabled() {
+    let client = Arc::new(FakeClient::new());
+    let source = MockSource::new(vec![Ok(Script {
+        jobs: vec![job("1")],
+        end: Ok(()),
+    })]);
+    run_streaming(
+        &client,
+        Arc::clone(&source),
+        cfg(32),
+        Duration::from_millis(20),
+    )
+    .await;
+    assert_eq!(source.opens.load(Ordering::SeqCst), 0);
+    assert!(keys(&client).is_empty());
+}
+
+#[tokio::test(start_paused = true)]
+async fn reconnects_after_close_error_and_failed_open() {
+    let client = Arc::new(FakeClient::new());
+    let source = MockSource::new(vec![
+        Ok(Script {
+            jobs: vec![job("1")],
+            end: Ok(()),
+        }),
+        Err(Error::Stream("refused".into())),
+        Ok(Script {
+            jobs: vec![job("2")],
+            end: Err(Error::Stream("reset".into())),
+        }),
+        Ok(Script {
+            jobs: vec![job("3")],
+            end: Ok(()),
+        }),
+    ]);
+    run_streaming(
+        &client,
+        Arc::clone(&source),
+        cfg(32).stream_enabled(true),
+        Duration::from_secs(30),
+    )
+    .await;
+    assert_eq!(keys(&client), vec!["1", "2", "3"]);
+    assert!(source.opens.load(Ordering::SeqCst) >= 4);
+}
+
+#[tokio::test(start_paused = true)]
+async fn polling_still_delivers_while_the_stream_is_down() {
+    let client = Arc::new(FakeClient::new());
+    client.push_jobs(vec![job("polled")]);
+    let source = MockSource::new(vec![Err(Error::Stream("down".into()))]);
+    run_streaming(
+        &client,
+        source,
+        cfg(32).stream_enabled(true),
+        Duration::from_millis(50),
+    )
+    .await;
+    assert_eq!(keys(&client), vec!["polled"]);
+}
+
+#[tokio::test(start_paused = true)]
+async fn streamed_jobs_respect_max_jobs_active() {
+    let client = Arc::new(FakeClient::new());
+    let source = MockSource::new(vec![Ok(Script {
+        jobs: (1..=6).map(|i| job(&i.to_string())).collect(),
+        end: Ok(()),
+    })]);
+    let running = Arc::new(AtomicUsize::new(0));
+    let peak = Arc::new(AtomicUsize::new(0));
+    let (r, p) = (Arc::clone(&running), Arc::clone(&peak));
+    let handler = move |_: ActivatedJob| {
+        let (r, p) = (Arc::clone(&r), Arc::clone(&p));
+        async move {
+            let now = r.fetch_add(1, Ordering::SeqCst) + 1;
+            p.fetch_max(now, Ordering::SeqCst);
+            sleep(Duration::from_millis(10)).await;
+            r.fetch_sub(1, Ordering::SeqCst);
+            Ok(Complete::new())
+        }
+    };
+    Worker::new(Arc::clone(&client), cfg(2).stream_enabled(true), handler)
+        .rng(Box::new(Half))
+        .stream(source)
+        .run(sleep(Duration::from_millis(200)))
+        .await;
+    assert_eq!(keys(&client).len(), 6);
+    assert_eq!(peak.load(Ordering::SeqCst), 2);
 }

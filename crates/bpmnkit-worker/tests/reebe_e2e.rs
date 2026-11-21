@@ -1,7 +1,8 @@
 //! End to end against a running reebe server (`apps/reebe`): activate → complete / fail /
 //! BPMN error, and drain. Ignored by default so `cargo test --workspace` needs no server; CI's
 //! `worker-e2e` job starts one and runs `cargo test -p bpmnkit-worker --test reebe_e2e -- --ignored`.
-//! `BPMNKIT_WORKER_E2E_URL` points at the server (default `http://localhost:8080`).
+//! `BPMNKIT_WORKER_E2E_URL` points at the server (default `http://localhost:8080`);
+//! the `grpc` feature's stream test also reads `BPMNKIT_WORKER_E2E_GRPC` (default `http://localhost:26599`).
 
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::sync::Arc;
@@ -230,4 +231,69 @@ async fn drains_running_handlers_on_shutdown() {
     let report = run(&t, handler, started, 2).await;
     assert!(report.abandoned.is_empty());
     assert_eq!(states(&t).await, ["COMPLETED"; 2]);
+}
+
+/// Jobs created after the stream opened reach the handler by push: polling is set so far apart
+/// that it cannot be what delivered them. Needs `--features grpc` and reebe's gRPC port.
+#[cfg(feature = "grpc")]
+#[tokio::test]
+#[ignore = "needs a running reebe server"]
+async fn streams_jobs_over_grpc() {
+    use std::sync::Mutex;
+    use std::time::Instant;
+
+    let t = setup("e2e-stream", 0).await;
+    let process = t.replace('-', "_");
+    let rest = ClientConfig {
+        rest_address: base(),
+        grpc_address: std::env::var("BPMNKIT_WORKER_E2E_GRPC")
+            .unwrap_or_else(|_| "http://localhost:26599".into()),
+        ..ClientConfig::default()
+    };
+    let client = Arc::new(RestClient::new(rest.clone()).unwrap());
+    let source = Arc::new(grpc::GrpcJobSource::new(Arc::clone(&client), &rest).unwrap());
+    let latencies = Arc::new(Mutex::new(Vec::<Duration>::new()));
+    let created = Arc::new(Mutex::new(None::<Instant>));
+    let (l, c) = (latencies.clone(), created.clone());
+    let handler = move |job: ActivatedJob| {
+        let (l, c) = (l.clone(), c.clone());
+        async move {
+            if let Some(at) = *c.lock().unwrap() {
+                l.lock().unwrap().push(at.elapsed());
+            }
+            assert_eq!(job.variables["amount"], 5);
+            Ok(Complete::new())
+        }
+    };
+    let config = WorkerConfig::new(&t)
+        .stream_enabled(true)
+        .poll_interval(Duration::from_secs(120))
+        .request_timeout(Duration::from_secs(1))
+        .drain_timeout(Duration::from_secs(10));
+    let (stop_tx, stop_rx) = tokio::sync::oneshot::channel::<()>();
+    let worker = tokio::spawn(Worker::new(client, config, handler).stream(source).run(
+        async move {
+            let _ = stop_rx.await;
+        },
+    ));
+    // The first poll is empty and the next is two minutes away; give the stream time to open.
+    tokio::time::sleep(Duration::from_secs(2)).await;
+    for _ in 0..3 {
+        *created.lock().unwrap() = Some(Instant::now());
+        let r = reqwest::Client::new()
+            .post(format!("{}/v2/process-instances", base()))
+            .json(&json!({ "processDefinitionId": process, "variables": { "amount": 5 } }))
+            .send()
+            .await
+            .unwrap();
+        assert!(r.status().is_success());
+        tokio::time::sleep(Duration::from_millis(500)).await;
+    }
+    let _ = stop_tx.send(());
+    let report = worker.await.unwrap();
+    assert!(report.abandoned.is_empty());
+    assert_eq!(states(&t).await, ["COMPLETED"; 3]);
+    let l = latencies.lock().unwrap();
+    assert_eq!(l.len(), 3);
+    println!("stream latency, create instance -> handler start: {l:?}");
 }

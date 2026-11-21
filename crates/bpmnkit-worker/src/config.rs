@@ -11,6 +11,8 @@ pub mod defaults {
     use std::time::Duration;
 
     pub const REST_ADDRESS: &str = "http://0.0.0.0:8080";
+    /// Camunda 8 gateway gRPC port; used only by the `grpc` feature.
+    pub const GRPC_ADDRESS: &str = "http://0.0.0.0:26500";
     pub const WORKER_NAME: &str = "default";
     pub const PREFER_REST_OVER_GRPC: bool = true;
     pub const STREAM_ENABLED: bool = false;
@@ -30,34 +32,104 @@ pub mod defaults {
     pub const DRAIN_TIMEOUT: Duration = Duration::from_secs(30);
 }
 
+/// Certificates for TLS to the cluster: a private CA, and a client identity for mutual TLS.
+/// PEM bytes, so the caller decides where they come from.
+#[derive(Clone, Default, PartialEq, Eq)]
+pub struct TlsConfig {
+    /// Extra root CA(s) to trust, besides the system roots.
+    pub ca_cert_pem: Option<Vec<u8>>,
+    /// Client certificate chain; set together with `client_key_pem`.
+    pub client_cert_pem: Option<Vec<u8>>,
+    pub client_key_pem: Option<Vec<u8>>,
+}
+
+// The key never reaches logs through `{:?}`.
+impl std::fmt::Debug for TlsConfig {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("TlsConfig")
+            .field("ca_cert_pem", &self.ca_cert_pem.is_some())
+            .field("client_cert_pem", &self.client_cert_pem.is_some())
+            .field(
+                "client_key_pem",
+                &self.client_key_pem.as_ref().map(|_| "<redacted>"),
+            )
+            .finish()
+    }
+}
+
+impl TlsConfig {
+    /// Both halves of the client identity, or neither; anything else is a mistake.
+    pub(crate) fn validate(&self) -> Result<(), Error> {
+        // The TLS stacks accept a PEM with no certificate in it and then trust nothing extra.
+        let is_cert = |p: &[u8]| p.windows(11).any(|w| w == b"-----BEGIN ");
+        for (what, pem) in [("CA", &self.ca_cert_pem), ("client", &self.client_cert_pem)] {
+            if pem.as_deref().is_some_and(|p| !is_cert(p)) {
+                return Err(Error::Config(format!("the {what} certificate is not PEM")));
+            }
+        }
+        if self.client_cert_pem.is_some() != self.client_key_pem.is_some() {
+            return Err(Error::Config(
+                "mutual TLS needs both a client certificate and a client key".into(),
+            ));
+        }
+        Ok(())
+    }
+
+    /// `CAMUNDA_CA_CERT_PATH`, `CAMUNDA_CLIENT_CERT_PATH` and `CAMUNDA_CLIENT_KEY_PATH` name PEM
+    /// files; `None` when none is set.
+    fn from_lookup(get: &impl Fn(&str) -> Option<String>) -> Result<Option<Self>, Error> {
+        let read = |k: &str| -> Result<Option<Vec<u8>>, Error> {
+            get(k)
+                .map(|p| {
+                    std::fs::read(&p)
+                        .map_err(|e| Error::Config(format!("{k}: cannot read {p}: {e}")))
+                })
+                .transpose()
+        };
+        let t = Self {
+            ca_cert_pem: read("CAMUNDA_CA_CERT_PATH")?,
+            client_cert_pem: read("CAMUNDA_CLIENT_CERT_PATH")?,
+            client_key_pem: read("CAMUNDA_CLIENT_KEY_PATH")?,
+        };
+        t.validate()?;
+        Ok((t != Self::default()).then_some(t))
+    }
+}
+
 /// Where the cluster is and how to authenticate.
 #[derive(Clone, Debug)]
 pub struct ClientConfig {
     /// Base URL of the Orchestration Cluster REST API, with or without the `/v2` suffix.
     pub rest_address: String,
+    /// Gateway gRPC address (`grpc` feature only).
+    pub grpc_address: String,
     pub credentials: Credentials,
     /// Deadline of every non-activation request.
     pub request_timeout: Duration,
     pub request_timeout_offset: Duration,
     /// Default tenant ids for workers that set none.
     pub tenant_ids: Vec<String>,
+    /// Private CA and/or mutual-TLS client identity; `None` uses the system roots only.
+    pub tls: Option<TlsConfig>,
 }
 
 impl Default for ClientConfig {
     fn default() -> Self {
         Self {
             rest_address: defaults::REST_ADDRESS.into(),
+            grpc_address: defaults::GRPC_ADDRESS.into(),
             credentials: Credentials::None,
             request_timeout: defaults::REQUEST_TIMEOUT,
             request_timeout_offset: defaults::REQUEST_TIMEOUT_OFFSET,
             tenant_ids: vec![defaults::TENANT_ID.into()],
+            tls: None,
         }
     }
 }
 
 impl ClientConfig {
-    /// Reads `CAMUNDA_REST_ADDRESS`, `CAMUNDA_TENANT_ID` and the credential variables
-    /// (see [`Credentials::from_lookup`]).
+    /// Reads `CAMUNDA_REST_ADDRESS`, `CAMUNDA_GRPC_ADDRESS`, `CAMUNDA_TENANT_ID`, the TLS file
+    /// variables (see [`TlsConfig`]) and the credential variables (see [`Credentials::from_lookup`]).
     pub fn from_env() -> Result<Self, Error> {
         Self::from_lookup(|k| std::env::var(k).ok().filter(|v| !v.is_empty()))
     }
@@ -68,6 +140,10 @@ impl ClientConfig {
         if let Some(a) = get("CAMUNDA_REST_ADDRESS") {
             c.rest_address = a;
         }
+        if let Some(a) = get("CAMUNDA_GRPC_ADDRESS") {
+            c.grpc_address = a;
+        }
+        c.tls = TlsConfig::from_lookup(&get)?;
         if let Some(t) = get("CAMUNDA_TENANT_ID") {
             c.tenant_ids = vec![t];
         }
@@ -120,6 +196,9 @@ pub struct WorkerConfig {
     pub backoff: BackoffConfig,
     /// How long shutdown waits for running handlers before giving up on them.
     pub drain_timeout: Duration,
+    /// Receive jobs pushed over a stream, with polling as the fallback. Needs a stream source on
+    /// the worker; default [`defaults::STREAM_ENABLED`] (off), as in camunda-client-java.
+    pub stream_enabled: bool,
 }
 
 impl WorkerConfig {
@@ -136,6 +215,7 @@ impl WorkerConfig {
             tenant_ids: Vec::new(),
             backoff: BackoffConfig::default(),
             drain_timeout: defaults::DRAIN_TIMEOUT,
+            stream_enabled: defaults::STREAM_ENABLED,
         }
     }
 
@@ -186,6 +266,11 @@ impl WorkerConfig {
 
     pub fn backoff(mut self, b: BackoffConfig) -> Self {
         self.backoff = b;
+        self
+    }
+
+    pub fn stream_enabled(mut self, on: bool) -> Self {
+        self.stream_enabled = on;
         self
     }
 

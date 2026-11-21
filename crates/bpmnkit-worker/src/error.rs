@@ -7,6 +7,8 @@ pub enum Error {
     Http { status: u16, body: String },
     /// Connect, TLS, timeout or protocol failure before a status arrived.
     Transport(reqwest::Error),
+    /// The job stream (gRPC) failed to open or broke off.
+    Stream(String),
     /// The token endpoint refused or answered something that is not a token.
     Auth(String),
     /// A success response whose body is not the documented shape.
@@ -21,7 +23,7 @@ impl Error {
     pub fn is_transient(&self) -> bool {
         match self {
             Error::Http { status, .. } => *status == 429 || *status >= 500,
-            Error::Transport(_) => true,
+            Error::Transport(_) | Error::Stream(_) => true,
             Error::Auth(_) | Error::Decode(_) | Error::Config(_) => false,
         }
     }
@@ -41,6 +43,7 @@ impl fmt::Display for Error {
         match self {
             Error::Http { status, body } => write!(f, "HTTP {status}: {body}"),
             Error::Transport(e) => write!(f, "transport: {e}"),
+            Error::Stream(m) => write!(f, "stream: {m}"),
             Error::Auth(m) => write!(f, "auth: {m}"),
             Error::Decode(m) => write!(f, "decode: {m}"),
             Error::Config(m) => write!(f, "config: {m}"),

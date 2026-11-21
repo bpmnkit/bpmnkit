@@ -34,6 +34,9 @@ pub struct JavaEmitter {
     /// Java package; empty derives `com.example.<name>`.
     pub package: String,
     pub spring: bool,
+    /// Open each worker with `streamEnabled(true)` (gRPC job streaming next to polling).
+    /// Off by default, as in the Java client.
+    pub stream: bool,
     /// Generate for every job type, not only those classified as worker.
     pub all: bool,
 }
@@ -283,11 +286,11 @@ impl Emitter for JavaEmitter {
             files.push(gen(&format!("{}Output", j.class), output));
             files.push(gen(
                 &format!("{}Worker", j.class),
-                worker(&pkg, j, self.spring),
+                worker(&pkg, j, self.spring, self.stream),
             ));
         }
         if !self.spring {
-            files.push(gen("Workers", workers(&pkg, &js)));
+            files.push(gen("Workers", workers(&pkg, &js, self.stream)));
         }
 
         // Once-only — owned by the user after the first run.
@@ -375,7 +378,7 @@ fn bpmn_errors(pkg: &str, js: &[J], spring: bool) -> String {
     s
 }
 
-fn worker(pkg: &str, j: &J, spring: bool) -> String {
+fn worker(pkg: &str, j: &J, spring: bool, stream: bool) -> String {
     let c = &j.class;
     let mut s = format!("package {pkg}.gen;\n\n");
     let fetch = fetch_list(j);
@@ -385,11 +388,14 @@ fn worker(pkg: &str, j: &J, spring: bool) -> String {
         ""
     };
     if spring {
-        let attr = if j.inputs.is_empty() {
+        let mut attr = if j.inputs.is_empty() {
             String::new()
         } else {
             format!(", fetchVariables = {{{fetch}}}")
         };
+        if stream {
+            attr.push_str(", streamEnabled = true");
+        }
         let _ = write!(
             s,
             "import io.camunda.client.annotation.JobWorker;\nimport io.camunda.client.annotation.VariablesAsType;\nimport io.camunda.client.api.response.ActivatedJob;\nimport org.springframework.stereotype.Component;\n\n/** Adapter between the starter and {c}Handler. Fetches exactly the declared inputs. */\n@Component\npublic class {c}Worker {{\n    /** Implemented by the once-only stub in handlers/. */\n    public interface Handler {{\n        {c}Output handle({c}Input input, ActivatedJob job) throws Exception;\n    }}\n\n{fetch_note}    private final Handler handler;\n\n    public {c}Worker(Handler handler) {{\n        this.handler = handler;\n    }}\n\n    @JobWorker(type = JobTypes.{k}{attr})\n    public {c}Output handle(final ActivatedJob job, @VariablesAsType final {c}Input input) throws Exception {{\n        try {{\n            return handler.handle(input, job);\n        }} catch (BpmnErrors.Thrown t) {{\n            throw BpmnErrors.toStarter(t);\n        }}\n    }}\n}}\n",
@@ -404,7 +410,7 @@ fn worker(pkg: &str, j: &J, spring: bool) -> String {
     s
 }
 
-fn workers(pkg: &str, js: &[J]) -> String {
+fn workers(pkg: &str, js: &[J], stream: bool) -> String {
     let mut s = format!(
         "package {pkg}.gen;\n\nimport io.camunda.client.CamundaClient;\nimport io.camunda.client.api.worker.JobWorker;\nimport java.util.ArrayList;\nimport java.util.List;\nimport {pkg}.handlers.*;\n\n/** Opens one job worker per job type. */\npublic final class Workers {{\n    private Workers() {{}}\n\n    public static List<JobWorker> registerAll(CamundaClient client) {{\n        List<JobWorker> workers = new ArrayList<>();\n"
     );
@@ -415,9 +421,14 @@ fn workers(pkg: &str, js: &[J]) -> String {
         } else {
             format!("\n                .fetchVariables({c}Worker.FETCH_VARIABLES)")
         };
+        let stream = if stream {
+            "\n                .streamEnabled(true)"
+        } else {
+            ""
+        };
         let _ = writeln!(
             s,
-            "        workers.add(\n            client\n                .newWorker()\n                .jobType(JobTypes.{k})\n                .handler(new {c}Worker(new {c}Handler())){fetch}\n                .name(\"{name}\")\n                .open());",
+            "        workers.add(\n            client\n                .newWorker()\n                .jobType(JobTypes.{k})\n                .handler(new {c}Worker(new {c}Handler())){fetch}{stream}\n                .name(\"{name}\")\n                .open());",
             k = j.constant,
             name = esc(&j.spec.job_type),
         );

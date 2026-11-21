@@ -36,6 +36,7 @@
 		"bpmnkit-text/text/expand": 6490,
 		"bpmnkit-text/text/expand dmn": 181,
 		"bpmnkit-text/text/parse text": 5400,
-		"bpmnkit-text/text/write text": 2880
+		"bpmnkit-text/text/write text": 2880,
+		"bpmnkit-worker/stream_latency/stream push": 29
 	}
 }

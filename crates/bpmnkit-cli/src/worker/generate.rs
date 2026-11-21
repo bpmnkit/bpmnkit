@@ -25,6 +25,9 @@ pub struct GenArgs {
     /// Java: use the Spring Boot starter (@JobWorker) instead of the plain client
     #[arg(long)]
     spring: bool,
+    /// Java: open workers with streamEnabled(true) (gRPC job streaming next to polling)
+    #[arg(long)]
+    stream: bool,
     /// Java package [default: com.example.<name>]
     #[arg(long, default_value = "")]
     package: String,
@@ -58,6 +61,7 @@ pub fn run(a: &GenArgs) -> Result<i32, String> {
         Lang::Java => JavaEmitter {
             package: a.package.clone(),
             spring: a.spring,
+            stream: a.stream,
             all: a.all,
         },
     };
