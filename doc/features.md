@@ -1,8 +1,14 @@
 # Features
 
+<<<<<<< HEAD
 ## Camunda 8 job workers in Rust: `bpmnkit-worker` (2026-11-21)
 
 `Runtime::from_env()?.register(WorkerConfig::new("charge"), handler).run().await` runs job workers against the Camunda 8.8+ REST API (`/v2/jobs`), with camunda-client-java's defaults. Handlers are async functions `ActivatedJob → Result<Complete, JobError>`: `JobError::bpmn` throws a catchable BPMN error, `JobError::fail` (or any `?` error, or a panic) fails with retries − 1 and the `retryBackoff` header. Concurrency is bounded, activation long-polls and backs off with jitter, shutdown drains running handlers. Auth: none, Basic, Bearer, OAuth2 client credentials (cached, refreshed). Metrics trait with Prometheus text; `testing` feature for unit tests (`MockJob`, `run_handler`, `FakeClient`). Facade feature `worker`.
+=======
+## `bpmnkit` Rust CLI skeleton (2026-11-21)
+
+`bpmnkit` (alias `casen`) is a Rust binary with native `profile`, `completion`, `plugin` and `self`, subprocess plugins (`bpmnkit-<name>` with `BPMNKIT_PLUGIN_API=1`) and a fallback to the legacy Node CLI for every other command. Profiles now live in `bpmnkit/` (copied once from `casen/`); the TS and Rust lookups agree.
+>>>>>>> 11148f790b307aecbef072f89e6b805607a07891
 
 ## Lane layout: hand-overs, lane order, edit path (2026-11-19)
 

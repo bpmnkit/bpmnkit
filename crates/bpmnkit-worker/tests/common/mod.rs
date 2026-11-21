@@ -12,8 +12,38 @@ pub fn spec() -> &'static Value {
     static SPEC: OnceLock<Value> = OnceLock::new();
     SPEC.get_or_init(|| {
         let text = include_str!("../../spec/8.8/rest-api.yaml");
-        serde_yaml::from_str(text).expect("rest-api.yaml parses")
+        let docs = yaml_rust2::YamlLoader::load_from_str(text).expect("rest-api.yaml parses");
+        to_json(&docs[0])
     })
+}
+
+fn to_json(y: &yaml_rust2::Yaml) -> Value {
+    use yaml_rust2::Yaml;
+    match y {
+        Yaml::Hash(h) => Value::Object(
+            h.iter()
+                .map(|(k, v)| {
+                    let key = match k {
+                        Yaml::String(s) => s.clone(),
+                        Yaml::Integer(i) => i.to_string(),
+                        Yaml::Boolean(b) => b.to_string(),
+                        // Response codes and the like; the job schemas use only string keys.
+                        other => format!("{other:?}"),
+                    };
+                    (key, to_json(v))
+                })
+                .collect(),
+        ),
+        Yaml::Array(a) => Value::Array(a.iter().map(to_json).collect()),
+        Yaml::String(s) => Value::String(s.clone()),
+        Yaml::Integer(i) => Value::from(*i),
+        Yaml::Real(r) => r
+            .parse::<f64>()
+            .map(Value::from)
+            .unwrap_or_else(|_| Value::String(r.clone())),
+        Yaml::Boolean(b) => Value::Bool(*b),
+        _ => Value::Null,
+    }
 }
 
 /// The JSON request schema of `method` on `path` (`/jobs/{jobKey}/completion`).

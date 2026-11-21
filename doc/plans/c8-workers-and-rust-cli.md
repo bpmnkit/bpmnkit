@@ -171,7 +171,7 @@ OpenAPI). Rule ids are stable; adding a rule appends an id, never renumbers.
 - Native early: `profile`, `completion <shell>`, `plugin`, `self update` (P0); `lint`, `layout`, `diff`, `render`,
   `convert` (P7; Rust crates exist).
 - Legacy fallback: run `@bpmnkit/cli-legacy` via `node`; banner on stderr; `BPMNKIT_NO_LEGACY=1` disables; exit code
-  passthrough. Removed after 3 minors.
+  passthrough. Removed after 3 minors of `@bpmnkit/cli` 2.x and ≥ 6 months, whichever is later (§14.4).
 - Plugins: `bpmnkit foo` → `bpmnkit-foo` (then `casen-foo`) on PATH or `<plugins dir>/bin`; env
   `BPMNKIT_PLUGIN_API=1`, `BPMNKIT_PROFILE_JSON`, `BPMNKIT_API_BASE`. npm `CasenPlugin` modules via
   `bpmnkit-node-shim` (cli-sdk). Plugin dir: `~/.bpmnkit/plugins`, then `~/.casen/plugins`.
@@ -240,14 +240,13 @@ D2: `bpmnkit-worker` 0.x; stability review after P4.
 | Determinism (maps, floats, paths, locale, Unicode) | I1–I8 |
 | Windows paths/CRLF | I3, I8; `.gitattributes` for goldens `eol=lf` |
 
-## 14. Open questions
+## 14. Open questions (all answered 2026-11-21)
 
-1. R3 catalog match: exact task-type match only (current plan), or also name heuristics (e.g. a task named "Send
-   Slack message")? Heuristics are deterministic but surprising.
-2. Recording fixtures against a real 8.8 connector runtime needs Docker + a Camunda license-free image; acceptable to
-   do once by hand outside CI?
-3. Rust generated projects pin `bpmnkit-worker` from crates.io: publish 0.x from P2 (needed for out-of-repo users) or
-   only path/git deps until P4?
-4. Legacy fallback lifetime "3 minors" — of `@bpmnkit/cli` 2.x?
-5. Should `worker run` for Java require local Maven, or ship a wrapper (`mvnw`) in the generated project (adds files
-   to goldens)?
+1. R3 catalog match: **exact `taskDefinition` type AND deterministic name heuristics.** Exact type always wins; the
+   heuristic has its own rule id (separate from R3), shown in `--explain` and the lock file.
+2. Recording fixtures against a real 8.8 connector runtime (Docker): **ok, once by hand outside CI.**
+3. `bpmnkit-worker` 0.x: **publish to crates.io as soon as possible.** Wire it into `scripts/crates-publish.mjs`
+   from P2; the publish itself is never run by an implementation session.
+4. Legacy fallback lifetime: **3 minors of `@bpmnkit/cli` 2.x AND at least 6 months, whichever is later.**
+5. `worker run` for Java: **generated projects ship the Maven Wrapper** (`mvnw`, `mvnw.cmd`, `.mvn/wrapper/`, version
+   pinned); no local Maven needed. Adds those files to the goldens (P4).

@@ -57,37 +57,89 @@ const saas = {
 // The storage location is a documented stability contract
 // (apps/landing/src/content/docs/getting-started/stability.md).
 describe("on-disk location", () => {
-	it("Linux: ~/.config/casen/config.json", () => {
-		expect(getConfigFilePath()).toBe(join(fakeOs.home, ".config", "casen", "config.json"))
+	it("Linux: ~/.config/bpmnkit/config.json", () => {
+		expect(getConfigFilePath()).toBe(join(fakeOs.home, ".config", "bpmnkit", "config.json"))
 	})
 
 	it("Linux: honours XDG_CONFIG_HOME", () => {
 		process.env.XDG_CONFIG_HOME = join(home.dir, "xdg")
-		expect(getConfigFilePath()).toBe(join(home.dir, "xdg", "casen", "config.json"))
+		expect(getConfigFilePath()).toBe(join(home.dir, "xdg", "bpmnkit", "config.json"))
 	})
 
-	it("macOS: ~/Library/Application Support/casen/config.json, ignoring XDG_CONFIG_HOME", () => {
+	it("macOS: ~/Library/Application Support/bpmnkit/config.json, ignoring XDG_CONFIG_HOME", () => {
 		fakeOs.platform = "darwin"
 		process.env.XDG_CONFIG_HOME = join(home.dir, "xdg")
 		expect(getConfigFilePath()).toBe(
-			join(fakeOs.home, "Library", "Application Support", "casen", "config.json"),
+			join(fakeOs.home, "Library", "Application Support", "bpmnkit", "config.json"),
 		)
 	})
 
-	it("Windows: %APPDATA%\\casen\\config.json", () => {
+	it("Windows: %APPDATA%\\bpmnkit\\config.json", () => {
 		fakeOs.platform = "win32"
 		process.env.APPDATA = join(home.dir, "AppData", "Roaming")
-		expect(getConfigFilePath()).toBe(join(home.dir, "AppData", "Roaming", "casen", "config.json"))
+		expect(getConfigFilePath()).toBe(join(home.dir, "AppData", "Roaming", "bpmnkit", "config.json"))
 	})
 
 	it("Windows without APPDATA: falls back to the home dir", () => {
 		fakeOs.platform = "win32"
-		expect(getConfigFilePath()).toBe(join(fakeOs.home, "casen", "config.json"))
+		expect(getConfigFilePath()).toBe(join(fakeOs.home, "bpmnkit", "config.json"))
 	})
 
 	it("writes to that path, creating the directories", () => {
 		saveProfile("local", local)
-		expect(existsSync(join(fakeOs.home, ".config", "casen", "config.json"))).toBe(true)
+		expect(existsSync(join(fakeOs.home, ".config", "bpmnkit", "config.json"))).toBe(true)
+	})
+})
+
+describe("casen → bpmnkit migration", () => {
+	const oldDir = () => join(fakeOs.home, ".config", "casen")
+	const seed = (
+		content = '{"profiles":{"dev":{"baseUrl":"http://x/v2"}},"active":"dev","meta":{}}',
+	) => {
+		mkdirSync(oldDir(), { recursive: true })
+		writeFileSync(join(oldDir(), "config.json"), content)
+	}
+
+	it("copies a casen-only store, keeps the original and records migrated_from", () => {
+		seed()
+		expect(getActiveName()).toBe("dev")
+		expect(getConfigFilePath()).toBe(join(fakeOs.home, ".config", "bpmnkit", "config.json"))
+		expect(readStore().migrated_from).toBe(oldDir())
+		expect(existsSync(join(oldDir(), "config.json"))).toBe(true)
+		expect(statSync(getConfigFilePath()).mode & 0o777).toBe(0o600)
+	})
+
+	it("migrates on every OS path rule", () => {
+		fakeOs.platform = "darwin"
+		const old = join(fakeOs.home, "Library", "Application Support", "casen")
+		mkdirSync(old, { recursive: true })
+		writeFileSync(join(old, "config.json"), '{"profiles":{},"active":null,"meta":{}}')
+		expect(readStore().migrated_from).toBe(old)
+	})
+
+	it("an existing bpmnkit store wins and casen is untouched", () => {
+		seed()
+		writeStore({ profiles: {}, active: null, meta: {} })
+		expect(listProfiles()).toEqual([])
+		expect(readStore().migrated_from).toBeUndefined()
+	})
+
+	it("does not create the new directory when there is nothing to migrate", () => {
+		listProfiles()
+		expect(existsSync(dirname(getConfigFilePath()))).toBe(false)
+	})
+
+	it("later writes go to the bpmnkit store only", () => {
+		seed()
+		saveProfile("local", local)
+		const old = JSON.parse(readFileSync(join(oldDir(), "config.json"), "utf8")) as {
+			profiles: Record<string, unknown>
+		}
+		expect(Object.keys(old.profiles)).toEqual(["dev"])
+		expect(Object.keys(readStore().profiles as Record<string, unknown>).sort()).toEqual([
+			"dev",
+			"local",
+		])
 	})
 })
 

@@ -1,4 +1,4 @@
-import { chmodSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
+import { chmodSync, cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { homedir, platform } from "node:os"
 import { join } from "node:path"
 import type { CamundaClientInput } from "@bpmnkit/api"
@@ -51,11 +51,39 @@ interface ConfigStore {
 
 // ─── Config directory ─────────────────────────────────────────────────────────
 
-function configDir(): string {
+function configDirFor(app: string): string {
 	const p = platform()
-	if (p === "win32") return join(process.env.APPDATA ?? homedir(), "casen")
-	if (p === "darwin") return join(homedir(), "Library", "Application Support", "casen")
-	return join(process.env.XDG_CONFIG_HOME ?? join(homedir(), ".config"), "casen")
+	if (p === "win32") return join(process.env.APPDATA ?? homedir(), app)
+	if (p === "darwin") return join(homedir(), "Library", "Application Support", app)
+	return join(process.env.XDG_CONFIG_HOME ?? join(homedir(), ".config"), app)
+}
+
+/**
+ * The store lives in `bpmnkit`. A store that only exists under the old `casen` name is copied (never
+ * moved, so the legacy CLI keeps working) and gets `migrated_from`. Same rule as the Rust
+ * `bpmnkit-profiles` crate, so both CLIs and apps/vscode see one store. If the copy fails (for
+ * example a read-only home) the old directory is used rather than hiding existing profiles.
+ */
+function configDir(): string {
+	const next = configDirFor("bpmnkit")
+	const old = configDirFor("casen")
+	if (existsSync(join(next, "config.json")) || !existsSync(join(old, "config.json"))) return next
+	try {
+		mkdirSync(next, { recursive: true, mode: 0o700 })
+		cpSync(old, next, { recursive: true })
+		const file = join(next, "config.json")
+		chmodSync(file, 0o600)
+		const copied: unknown = JSON.parse(readFileSync(file, "utf8"))
+		if (isRecord(copied)) {
+			writeFileSync(file, JSON.stringify({ ...copied, migrated_from: old }, null, 2), {
+				encoding: "utf8",
+				mode: 0o600,
+			})
+		}
+		return next
+	} catch {
+		return old
+	}
 }
 
 function configFilePath(): string {

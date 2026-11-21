@@ -34,7 +34,7 @@ testing = []
 all-features = true
 
 [dev-dependencies]
-serde_yaml = "0.9"
+yaml-rust2 = "0.10"
 tokio = { version = "1.40", features = ["rt-multi-thread", "macros", "test-util"] }
 # 0.6.5 uses let chains (Rust 1.88) without raising its rust-version; 0.6.4 builds on our 1.85 MSRV.
 wiremock = "=0.6.4"
