@@ -1,14 +1,16 @@
 # Features
 
-<<<<<<< HEAD
 ## Camunda 8 job workers in Rust: `bpmnkit-worker` (2026-11-21)
 
 `Runtime::from_env()?.register(WorkerConfig::new("charge"), handler).run().await` runs job workers against the Camunda 8.8+ REST API (`/v2/jobs`), with camunda-client-java's defaults. Handlers are async functions `ActivatedJob → Result<Complete, JobError>`: `JobError::bpmn` throws a catchable BPMN error, `JobError::fail` (or any `?` error, or a panic) fails with retries − 1 and the `retryBackoff` header. Concurrency is bounded, activation long-polls and backs off with jitter, shutdown drains running handlers. Auth: none, Basic, Bearer, OAuth2 client credentials (cached, refreshed). Metrics trait with Prometheus text; `testing` feature for unit tests (`MockJob`, `run_handler`, `FakeClient`). Facade feature `worker`.
-=======
+
+## `bpmnkit worker classify` (2026-11-21)
+
+`bpmnkit worker classify <bpmn…> [--openapi index.json] [--config bpmnkit.worker.toml] [--format text|json]` reads every job type in the BPMN (the same list as `casen gen types`) and decides per type: keep a catalog connector, bind one (by exact type/template id, or by a connector name in the task name), bind the REST connector to an OpenAPI operation (`bpmnkit:operation` property) or URL, or generate a worker (no binding, unsupported auth or media type, pagination, several operations, invalid FEEL mapping, declared load, idempotency key). Each decision carries a stable rule id and a reason; the JSON output adds the IR and its sha256 hash.
+
 ## `bpmnkit` Rust CLI skeleton (2026-11-21)
 
 `bpmnkit` (alias `casen`) is a Rust binary with native `profile`, `completion`, `plugin` and `self`, subprocess plugins (`bpmnkit-<name>` with `BPMNKIT_PLUGIN_API=1`) and a fallback to the legacy Node CLI for every other command. Profiles now live in `bpmnkit/` (copied once from `casen/`); the TS and Rust lookups agree.
->>>>>>> 11148f790b307aecbef072f89e6b805607a07891
 
 ## Lane layout: hand-overs, lane order, edit path (2026-11-19)
 
@@ -79,6 +81,7 @@ The `bpmnkit-*` crates are versioned in lockstep through `@crates/<crate>` chang
 ## Semantic BPMN diff: `diffBpmn` and `bpmnkit-diff` (2026-11-09)
 
 `diffBpmn(before, after)` (`@bpmnkit/core`) tells a reviewer what changed between two models: each element added, removed, changed (with the changed fields: `name`, `targetRef`, `conditionExpression/text`, `extensionElements/zeebe:taskDefinition/@type`, …) or only moved (position, size, waypoints, with both geometries), per-plane counts for collapsed sub-processes, and a semantic hash of each side (`beforeHash === afterHash` means identical, however the file is formatted or laid out). The Rust crate `bpmnkit-diff` is the twin (`diff_bpmn`, `project_semantics`, `semantic_hash`, `diff_to_text` for plain or Markdown chat output) and is held to the same `conformance/diff/` cases, hashes included.
+
 ## Lanes and pools: write support (2026-11-09)
 
 - Core: `ProcessBuilder.lane()` / `.participant()` write lanes (nested included) and pools, validated at build time; `DiagramBuilder.withAutoLayout()`. The compact format carries `lanes`, `participants`, `messageFlows` and `executable` both ways, so `casen generate`, the proxy and `reconcileCompact` keep swimlanes. Process text reads and writes `lane id[Name]: a, b`, `pool id[Name]` and `msg a >(Label) pool` (taught by `PROCESS_TEXT_GUIDE`, not by the on-device guide). Auto-layout insets nested lanes and draws lanes in a pool that has no nodes yet.
@@ -151,14 +154,17 @@ Rust parser and lossless serializer for BPMN 2.0 + Zeebe, with the same model JS
 ## `bpmnkit-feel`: FEEL in Rust (2026-11-06)
 
 A Rust FEEL lexer, parser and evaluator with every built-in, held to `@bpmnkit/feel` by the shared conformance cases (373 of 374 pass) and passing 95.0% of the DMN TCK. Exact decimals, ordered contexts, zoned date-times, durations. Reebe evaluates FEEL with it.
+
 ## Agent cards (2026-11-05)
 
 `casen agent-card bpmn|dmn|form` prints a ~1–1.5k-token cheat sheet for an AI agent: a runnable create/export/edit/validate script, the top builder options and the known traps. The same cards are docs pages under "Agent Cards", ranked first by `@bpmnkit/docspack` (whose `llms.txt` opens with them), and Claude plugin skills (`/bpmnkit:bpmn-script`, `:dmn`, `:form`). Every script is typechecked and run in CI.
 
 `@bpmnkit/core` ships the cards too (`AGENTS.md`, `llms.txt`, `agent-cards/`, `"agents"` field), so an agent with only that package installed finds them; its README opens with the pointer and builder errors end with `agent-cards/<type>.md#traps`.
+
 ## `casen check`: BPMN, DMN and forms in one gate (2026-11-05)
 
 `casen check <file...>` checks any mix of `.bpmn`, `.dmn` and `.form` files and the references between them (a user task's `formId`, a business rule task's `decisionId`). Every finding has a rule id, element id, message and a concrete fix; `--json` for agent loops; non-zero exit on errors. DMN: duplicate ids, requirement hrefs, cycles, FEEL syntax, hit policy, aggregation, types, rule shape. Forms: form-js schema, unique ids and keys, FEEL in conditions and expressions, validation. Profiles: default, `--sketch` (no Camunda 8 rules), `--deploy` (errors only, forms required). The "user task needs a form" rule is off outside the deploy profile. Library: `lintDmn`, `lintForm` in `@bpmnkit/core`.
+
 ## `Dmn.drd()` multi-decision DRD builder (2026-11-05)
 
 Build DRDs where decisions require each other via typed handles or branded ids; labels are rejected with the valid ids listed. Output carries requirement hrefs and DMNDI layout.
@@ -611,7 +617,6 @@ Build DRDs where decisions require each other via typed handles or branded ids; 
   respectively.
 - **A "start here" strip under the hero** — unnumbered, because it is a signpost and
   not a chapter — carrying the two things people arrive already looking for.
-
 
 ## A preview says which part of the diagram the AI added (2026-09-17)
 
@@ -1357,7 +1362,6 @@ matching the command CI already runs, alongside the one `apps/drop` had. A relea
 - **`ELEMENT_TYPE_GROUPS`** — one grouped list of every element type. Tool schemas render from
   it, so a schema can no longer advertise fewer types than the SDK accepts.
 
-
 ## Every element type is reachable from the builder, and stays that way (2026-09-12)
 
 The fluent builder now covers 23 of the 26 `BpmnElementType` members, and a compile-time table
@@ -1375,7 +1379,6 @@ keeps it that way.
   has nowhere to put them. Each exemption carries a written reason, and a test fails if one goes
   stale.
 - **`pnpm --filter @bpmnkit/core check:builder`** prints the coverage table.
-
 
 ## One design system across every editor panel (2026-09-11)
 
@@ -2355,8 +2358,6 @@ A unified Preact web application replacing fragmented Camunda tooling (Modeler, 
 - **Shared components**: `badge(state)`, `cell(text)`, `createStatsCard(label, value, mod)`, `createTable<T>(options)` — generic, use `--bpmnkit-*` tokens.
 - **Icon library**: `IC_UI` — SVG icons for theme (moon/sun/auto/check) and navigation (dashboard/processes/instances/incidents/jobs/tasks).
 
-
-
 ## Monitoring & Operations frontend (2026-03-10) — `packages/operate`
 
 - **`@bpmnkit/operate`**: Zero-dependency monitoring frontend. `createOperate({ container, mock?, proxyUrl?, profile?, theme? })` mounts full monitoring UI.
@@ -2370,8 +2371,6 @@ A unified Preact web application replacing fragmented Camunda tooling (Modeler, 
 - **Profile picker**: Header dropdown populated from `GET /profiles`; switching reconnects all SSE streams.
 - **Mock/demo mode**: Self-contained fixture data, no proxy needed. Used at `/operate` on landing page.
 - **SSE architecture**: proxy polls Camunda server-side, pushes events to frontend — clean frontend, no polling timers client-side.
-
-
 
 ## Landing page DMN/Form examples and live playground (2026-03-10) — `apps/landing`
 

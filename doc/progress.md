@@ -8,6 +8,13 @@
 - reebe e2e (`tests/reebe_e2e.rs`, `#[ignore]`): complete, fail, BPMN error, drain; new workflow `worker-e2e.yml` builds reebe (embedded SQLite) and runs them, plus the no-default / all-features builds. `verify:rust` unchanged apart from the crate's own tests.
 - Deviations: Java 8.8 polls on any free slot; we keep the plan's 30 % refetch threshold. Backoff cap is Java's 5 s (plan said 10 s). `wiremock` pinned `=0.6.4` (0.6.5 needs Rust 1.88). mTLS and `rest_max_rps` not in this phase. reebe ignores `zeebe:taskDefinition retries`, files thrown errors as `FAILED`, and filters job search by `jobType` (8.8: `type`).
 
+## 2026-11-21 — P1 of C8 workers: `bpmnkit-jobspec` + `bpmnkit worker classify`
+
+- New `crates/bpmnkit-jobspec` (WASM-safe, `publish = false` until P3): BPMN → `WorkerProject` IR (per job type: elements, kind, io mappings, headers, catchable error codes, retries, templates, `zeebe:properties`, bound operations, URLs); OpenAPI facts from connector-gen's API index JSON (`ApiService`), plus optional `auth`/media/pagination fields the TS index does not emit yet; the 71 static-type catalog connectors derived from `spec/templates/connectors.json` (`src/catalog.json`, drift test, `BPMNKIT_UPDATE=1` rewrites); `bpmnkit.worker.toml` (`mode`, `rps`, `slo_ms`, `rest_max_rps` = 50); rules R1–R12 per plan §8 plus R13 (catalog name heuristic, between R3 and R4; R3 = exact template id or another version of a catalog type). Canonical JSON + sha256 IR hash; `HashMap`/`HashSet` banned by `clippy.toml`.
+- `bpmnkit worker classify` in `bpmnkit-cli` (text: type, decision, rule, reason; `--format json`: IR + hash).
+- Tests: job list equals TS `extractProcessContract` on all 108 `conformance/bpmn` inputs (new `conformance/jobspec/jobs.json`, recorded by `packages/core/tests/conformance-jobspec.test.ts` via `pnpm conformance:record`); ± fixture per rule, precedence per adjacent pair, near misses; proptest on element/file/JSON-key order → same hash; `cargo metadata` check that jobspec pulls no tokio; CLI black-box test.
+- Deviations: there is no `examples/` dir, so the TS diff runs on `conformance/bpmn`; it compares types, elements, headers and errors (not the variable-flow fallback of `gen types`); the no-tokio test lives in jobspec, not cli. Not done: JSON Schema extractor (with codegen in P3), lock file.
+
 ## 2026-11-21 — P0 of the Rust CLI: `bpmnkit-cli`, `bpmnkit-profiles`, profiles dual lookup
 
 - New `crates/bpmnkit-cli` (bin `bpmnkit`, `casen` via argv0; `publish = false` until P8): clap derive, native `profile list|show|path`, `completion <shell>`, `plugin list`, `self update` (stub until cargo-dist). Any other command runs the plugin `bpmnkit-<name>` (then `casen-<name>`) from PATH, `~/.bpmnkit/plugins/bin` or `~/.casen/plugins/bin` with `BPMNKIT_PLUGIN_API=1`, `BPMNKIT_PROFILE_JSON`, `BPMNKIT_API_BASE`; with no plugin it falls back to the legacy Node CLI (`BPMNKIT_LEGACY_CLI`, else the npm layout; stderr banner; `BPMNKIT_NO_LEGACY=1` disables; exit code passes through). `casen` prints a deprecation note once a day (stamp in the profiles dir).
@@ -252,6 +259,7 @@
 - BPMN agent card (source `apps/cli/agent-cards/bpmn.md`): "Pools and message flows" section with one runnable `createDiagram` example (two pools, a black box, message flows; shapes via `applyAutoLayout`), compact-mode pointer for small new single-pool processes (lossy for pools/lanes/message flows/data stores), "tiny edit = edit the XML, structural = preserving script" rule, an explicit "no lane API yet" note, annotation/data-store pointers.
 - `builder-reference.md` is generated: `scripts/generate-builder-reference.mjs` now emits a DiagramBuilder section (methods + participant/message/message-flow options). Token budget test raised 3300 → 3600. `AGENTS.md`/`llms.txt` (via `scripts/sync-agent-cards.mjs`) mention collaboration and the compact path.
 - New `packages/core/tests/agent-card-examples.test.ts` runs every `@bpmnkit/core` ts block of `agent-cards/*.md` against the source (exit 1 on lint error fails the test).
+
 ## 2026-11-14 — Lanes and pools land on main
 
 - kendalen's lane and pool work (#258, which also carries #263 and #272) cherry-picked onto main (Rust twin crates, `placeNewShapes`, viewer-lite), authorship kept. Doc conflicts keep both sides.
@@ -384,6 +392,7 @@
 - `bpmnkit::Error` (`#[non_exhaustive]`, `From` for every crate error), `bpmnkit::detect` → `DocKind`, `bpmnkit::load` → `Document` (process text and compact JSON expand without the deploy gate), `bpmnkit::prelude`. `text` feature now implies `bpmn` and `dmn`; the facade depends on `serde_json` for JSON sniffing.
 - `bpmnkit_lint::report`: `to_text` (`TextStyle{color,max}`), `to_markdown`, `to_slack_mrkdwn` (escapes `&<>`), plus `check_findings_*` for DMN/form findings. Snapshot tests; `detect`/`load` tested over the conformance corpus.
 - Examples `text_to_bpmn`, `eval_dmn`, `lint_report`; docs page `rust/embedding`. `render`/`diff` features wait for `bpmnkit-render` (T1) and `bpmnkit-diff` (T3).
+
 ## 2026-11-09 — `bpmnkit-render`: BPMN → SVG and PNG in Rust (T1)
 
 - New crate `crates/bpmnkit-render`: `bpmn_to_svg` / `bpmn_xml_to_svg`, a line-by-line port of `packages/core/src/bpmn/svg.ts` (label styles from `label-style.ts` included). Default options give the bytes of TS `exportSvg`; all v2 options of T2 (`theme` light/dark/custom, `padding`, `scale`, `max_size`, `colors: Di`, `plane` by id or process, `auto_layout` via feature `auto-layout`, `font`, `element_ids`, `background`) plus data objects/stores, groups and the activity marker row. Returns `Svg { markup, view_box, width, height, elements, warnings }`; a model with no diagram at all is `RenderError::NoDiagram` (TS draws a 1×1 SVG).
@@ -406,6 +415,7 @@
 
 - `placeNewShapes(definitions)` (core) draws DI only for elements without shapes, never moves existing ones, and may widen pools, lanes and sub-processes. `casen generate bpmn --input --patch` uses it with `exportPreserving` instead of a full re-layout.
 - The `no-bpmndi` / missing-DI lint hint now points scripts at `placeNewShapes`; docs on `continueProcess` and the builder mention it; agent card updated.
+
 ## 2026-11-09 — Rust twin: lanes and pools
 
 - The 41 conformance cases this branch changed (25 `compact/`, 12 `text/write-*`, 4 `layout/`) now pass in Rust; `conformance/pending.json` is back to `main`'s one entry and `MAX_PENDING` stays 1. The `bpmnkit-text` corpus tests no longer need to skip pending cases and are back to `main`'s version.
@@ -637,6 +647,7 @@
   - bpmn round trips 38 → 38 of 51.
 - `apps/examples` 05-content-publishing gives its message catch a `correlationKey` (`=content.id`), which the builder now requires; its line budget goes 139 → 140.
 - Two more serializer XSD bugs were found and are allowlisted for later: `ioSpecification` is written after the data associations (9 MIWG round trips), and compact `expand` writes an `eventSubProcess` element.
+
 ## 2026-11-08 — bpmnlint parity skips deployability repro z07
 
 - `packages/core/tests/node/bpmnlint-parity.test.ts` checks every `.bpmn` in the repo. The repro `doc/deployability/repro/z07_ncname_nested.bpmn` has a nested id that is not an XML name on purpose, and bpmn-moddle skips such ids, so the test now lists it with the other intentionally malformed files.
@@ -959,6 +970,7 @@ Camunda eval (900 runs): agents spent 32–49% of their cost reading bpmnkit doc
 - Eval D04: agents referenced the required decision by name, not id (Haiku 0/18, Sonnet 12/18). New `Dmn.drd()` in `packages/core/src/dmn/drd-builder.ts`: `decision()` returns a handle, `requires` takes a handle or branded `drgId()`; unknown ref throws `ValidationError` listing valid ids, a matching label suggests the id. Emits `informationRequirement` hrefs and DMNDI shapes/edges (auto layout).
 - `expandDmn` (compact.ts) now throws on a dangling `requires` instead of dropping it silently.
 - Tests: `packages/core/tests/dmn-drd.test.ts`. Docs: landing `packages/core.md`.
+
 ## 2026-11-05 — Auto-layout aesthetics for new diagrams
 
 - Benchmark `scripts/layout-aesthetics/` (10 scenarios, deterministic aesthetic metrics, PNG renders); results and before/after in `doc/layout-aesthetics.md`.

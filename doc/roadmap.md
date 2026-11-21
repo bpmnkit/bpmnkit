@@ -1067,7 +1067,7 @@ not code.
 ## C8 job workers + `bpmnkit` Rust CLI (`doc/plans/c8-workers-and-rust-cli.md`)
 
 - [x] P0: `bpmnkit-cli` skeleton, `bpmnkit-profiles`, `packages/profiles` dual lookup
-- [ ] P1: `bpmnkit-jobspec` (IR, extractors, classifier)
+- [x] P1: `bpmnkit-jobspec` (BPMN + connector-gen API index → IR, catalog lookup, rules R1–R13), `bpmnkit worker classify`
 - [x] P2: `bpmnkit-worker` REST runtime (client, auth, loop, backoff, drain, metrics, `testing`)
 - [ ] P3: Rust + template emitters, `worker gen --check`
 - [ ] P4: Java emitter (Maven, `--spring`)
